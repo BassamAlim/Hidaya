@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/prayers_background"
+    tools:context=".ui.prayers.PrayersFragment">
+
+    <!--<TextView
+        android:id="@+id/prayers_text"
+        android:layout_width="263dp"
+        android:layout_height="240dp"
+        android:gravity="center"
+        android:text="أوقات الصلاة"
+        android:textColor="@color/secondary"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.352" />-->
+
+
+    <TextView
+        android:id="@+id/fajrView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Fajr"
+        android:textSize="30sp"
+        android:textColor="@color/secondary"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/dhuhrView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/shorouqView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Shorouq"
+        android:textSize="30sp"
+        android:textColor="@color/secondary"
+        android:textStyle="bold"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fajrView"
+        app:layout_constraintBottom_toTopOf="@id/dhuhrView"/>
+
+    <TextView
+        android:id="@+id/dhuhrView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dhuhr"
+        android:textSize="30sp"
+        android:textColor="@color/secondary"
+        android:textStyle="bold"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shorouqView"
+        app:layout_constraintBottom_toTopOf="@id/asrView"/>
+
+    <TextView
+        android:id="@+id/asrView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Asr"
+        android:textSize="30sp"
+        android:textColor="@color/secondary"
+        android:textStyle="bold"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dhuhrView"
+        app:layout_constraintBottom_toTopOf="@id/maghribView"/>
+
+    <TextView
+        android:id="@+id/maghribView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Maghrib"
+        android:textSize="30sp"
+        android:textColor="@color/secondary"
+        android:textStyle="bold"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/asrView"
+        app:layout_constraintBottom_toBottomOf="@id/ishaaView"/>
+
+    <TextView
+        android:id="@+id/ishaaView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ishaa"
+        android:textSize="30sp"
+        android:textColor="@color/secondary"
+        android:textStyle="bold"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/maghribView"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

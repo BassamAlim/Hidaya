@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START xml_defaults -->
+<defaultsMap>
+
+    <entry>
+        <key>update_available</key>
+        <value>false</value>
+    </entry>
+
+    <entry>
+        <key>latest_app_version</key>
+        <value>1.0.0</value>
+    </entry>
+
+    <entry>
+        <key>update_url</key>
+        <value>https://drive.google.com/file/d/1IlP4-9EBSUx7xya5YuSv3S_Xokbd8vey/view?usp=sharing</value>
+    </entry>
+
+</defaultsMap>
+
+    <!-- END xml_defaults -->

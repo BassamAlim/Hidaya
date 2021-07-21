@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">أذكار</string>
+    <string name="title_prayers">أوقات الصلاة</string>
+    <string name="title_alathkar">الأذكار</string>
+    <string name="title_qibla">القبلة</string>
+    <string name="title_quran">القرآن</string>
+    <string name="title_others">اخرى</string>
+    <string name="whatsapp">Whatsapp</string>
+</resources>

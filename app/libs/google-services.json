@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1051054020889",
+    "project_id": "athkar-a186a",
+    "storage_bucket": "athkar-a186a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051054020889:android:4b471a02747c3b49efcd88",
+        "android_client_info": {
+          "package_name": "com.bassamalim.athkar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1051054020889-q8kpiou7fich3bb49hagreqfitiu627l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmLSIz7WJPvj5H43_8fSuuKnpCiAkJb4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1051054020889-q8kpiou7fich3bb49hagreqfitiu627l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

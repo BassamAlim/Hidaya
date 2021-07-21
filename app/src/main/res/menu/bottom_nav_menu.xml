@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_prayers"
+        android:icon="@drawable/ic_prayers_black_24dp"
+        android:title="@string/title_prayers"/>
+
+    <item
+        android:id="@+id/navigation_alathkar"
+        android:icon="@drawable/ic_alathkar_black_24dp"
+        android:title="@string/title_alathkar"/>
+
+    <item
+        android:id="@+id/navigation_qibla"
+        android:icon="@drawable/ic_qibla_black_24dp"
+        android:title="@string/title_qibla"/>
+
+</menu>

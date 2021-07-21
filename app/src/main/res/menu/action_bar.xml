@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/whatsapp"
+        android:icon="@drawable/ic_whatsapp"
+        android:iconTint="#37CA4A"
+        android:title="@string/whatsapp"
+        app:showAsAction="always"/>
+
+</menu>
