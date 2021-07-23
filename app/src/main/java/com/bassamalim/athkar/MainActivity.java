@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
         }
         else
             findLocation();
-
     }
 
     @Override

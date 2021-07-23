@@ -10,18 +10,18 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
             <TextView
-                android:id="@+id/thikrView"
+                android:id="@+id/quran_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:textSize="30sp"
                 android:textColor="@color/secondary" />
-
 
         </LinearLayout>
 

@@ -12,6 +12,11 @@
         android:title="@string/title_alathkar"/>
 
     <item
+        android:id="@+id/navigation_quran"
+        android:icon="@drawable/ic_quran_black_24dp"
+        android:title="@string/title_quran"/>
+
+    <item
         android:id="@+id/navigation_qibla"
         android:icon="@drawable/ic_qibla_black_24dp"
         android:title="@string/title_qibla"/>

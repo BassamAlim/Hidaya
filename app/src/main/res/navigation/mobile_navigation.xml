@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_alathkar" />
 
     <fragment
+        android:id="@+id/navigation_quran"
+        android:name="com.bassamalim.athkar.ui.Quran.QuranFragment"
+        android:label="@string/title_quran"
+        tools:layout="@layout/quran_fragment" />
+
+    <fragment
         android:id="@+id/navigation_qibla"
         android:name="com.bassamalim.athkar.ui.qibla.QiblaFragment"
         android:label="@string/title_qibla"

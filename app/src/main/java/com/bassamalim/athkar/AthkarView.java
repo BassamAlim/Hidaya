@@ -72,6 +72,4 @@ public class AthkarView extends AppCompatActivity {
         return divider;
     }
 
-
-
 }
