@@ -18,7 +18,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:background="@color/primary">
+            android:background="@color/primary"
+            android:paddingBottom="55dp">
 
 
 
