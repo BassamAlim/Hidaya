@@ -151,7 +151,7 @@ public class QuranFragment extends Fragment {
                 if (i == surah.getJSONArray("ayahs").length()-1)
                     surahText.append(".");
                 else
-                    surahText.append("  *  ");
+                    surahText.append("  ۞  ");
             }
         }
         catch (JSONException e) {

@@ -40,7 +40,4 @@ public class QuranView extends AppCompatActivity {
         binding.quranView.setText(surah);
     }
 
-
-
-
 }

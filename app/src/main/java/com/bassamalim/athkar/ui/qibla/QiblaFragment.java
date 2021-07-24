@@ -95,7 +95,7 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
                 * Math.cos(degToRad(kaabaLatitude)) * Math.sin(dLon/2) * Math.sin(dLon/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         distance = earthRadius * c;
-        distance = (int) (distance * 100) / 100.0;
+        distance = (int) (distance * 10) / 10.0;
     }
 
     @Override
@@ -153,7 +153,7 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
 
             currentDegree = direction;
 
-            String text = "المسافة الى الكعبة: " + distance;
+            String text = "المسافة الى الكعبة: " + distance + " كم";
             binding.distanceText.setText(text);
 
 

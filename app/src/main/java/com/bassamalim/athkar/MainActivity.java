@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(3600).build();
+                .setMinimumFetchIntervalInSeconds(100).build();
         remoteConfig.setConfigSettingsAsync(configSettings);
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
@@ -148,11 +148,13 @@ public class MainActivity extends AppCompatActivity {
             boolean available = remoteConfig.getBoolean(UPDATE_AVAILABLE);
             remoteConfig.fetchAndActivate();
             if (available) {
-                Log.i(TAG, "windBlows");
+                Log.i(TAG, "Update available");
                 String latestVersion = remoteConfig.getString(LATEST_VERSION);
                 String currentVersion = getAppVersion(this);
-                if (!TextUtils.equals(currentVersion, latestVersion))
+                if (!TextUtils.equals(currentVersion, latestVersion)) {
                     showUpdatePrompt();
+                    Log.i(TAG, "WindBlows");
+                }
             }
         });
     }

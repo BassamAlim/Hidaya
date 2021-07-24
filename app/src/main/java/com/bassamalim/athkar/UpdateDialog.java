@@ -25,7 +25,7 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
         super(a);
         this.c = a;
 
-        TextView text = (TextView) findViewById(R.id.textView);
+        TextView text = findViewById(R.id.textView);
         text.setText(msg);
     }
 
@@ -34,8 +34,8 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_dialog);
 
-        yes = (Button) findViewById(R.id.yes);
-        no = (Button) findViewById(R.id.no);
+        yes = findViewById(R.id.yes);
+        no = findViewById(R.id.no);
         yes.setOnClickListener(v -> MainActivity.getInstance().update());
         no.setOnClickListener(v -> dismiss());
     }
