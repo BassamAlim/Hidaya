@@ -29,4 +29,10 @@
         android:label="@string/title_qibla"
         tools:layout="@layout/fragment_qibla" />
 
+    <fragment
+        android:id="@+id/navigation_other"
+        android:name="com.bassamalim.athkar.ui.Other.OtherFragment"
+        android:label="@string/title_qibla"
+        tools:layout="@layout/fragment_qibla" />
+
 </navigation>

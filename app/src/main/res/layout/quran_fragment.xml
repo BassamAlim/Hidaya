@@ -21,8 +21,6 @@
             android:background="@color/primary"
             android:paddingBottom="55dp">
 
-
-
         </LinearLayout>
 
     </ScrollView>

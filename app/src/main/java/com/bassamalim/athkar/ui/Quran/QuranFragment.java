@@ -55,6 +55,17 @@ public class QuranFragment extends Fragment {
         return new QuranFragment();
     }
 
+    /*@Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            isEditing = savedInstanceState.getBoolean(IS_EDITING_KEY, false);
+            randomGoodDeed = savedInstanceState.getString(RANDOM_GOOD_DEED_KEY);
+        } else {
+            randomGoodDeed = viewModel.generateRandomGoodDeed();
+        }
+    }*/
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
@@ -161,4 +172,17 @@ public class QuranFragment extends Fragment {
         return surahText.toString();
     }
 
+    /*@Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(IS_EDITING_KEY, isEditing);
+        outState.putString(RANDOM_GOOD_DEED_KEY, randomGoodDeed);
+        // save state
+    }*/
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

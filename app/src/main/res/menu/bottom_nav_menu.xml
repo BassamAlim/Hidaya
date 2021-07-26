@@ -21,4 +21,9 @@
         android:icon="@drawable/ic_qibla_black_24dp"
         android:title="@string/title_qibla"/>
 
+    <item
+        android:id="@+id/navigation_other"
+        android:icon="@drawable/ic_other_black_24dp"
+        android:title="@string/title_other"/>
+
 </menu>

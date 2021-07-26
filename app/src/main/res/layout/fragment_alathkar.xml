@@ -88,30 +88,6 @@
                     android:textSize="18sp"/>
 
                 <Button
-                    android:id="@+id/post_prayer"
-                    android:layout_width="140dp"
-                    android:layout_height="140dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/secondary"
-                    android:drawableTop="@drawable/ic_post_pray"
-                    android:gravity="center|bottom"
-                    android:text="اذكار بعد الصلاة"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center">
-
-                <Button
                     android:id="@+id/pre_sleep"
                     android:layout_width="140dp"
                     android:layout_height="140dp"
@@ -123,6 +99,30 @@
                     android:drawableTop="@drawable/ic_pre_sleep"
                     android:gravity="center|bottom"
                     android:text="اذكار قبل النوم"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center">
+                
+                <Button
+                    android:id="@+id/post_prayer"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="@color/secondary"
+                    android:drawableTop="@drawable/ic_post_pray"
+                    android:gravity="center|bottom"
+                    android:text="اذكار بعد الصلاة"
                     android:textColor="@color/white"
                     android:textSize="18sp"/>
 
