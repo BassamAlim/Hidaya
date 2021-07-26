@@ -466,9 +466,9 @@ public class PrayTimes {
         double minutes = Math.floor((time - hours) * 60);
         String suffix, result;
         if (hours >= 12) {
-            suffix = "pm";
+            suffix = "م";
         } else {
-            suffix = "am";
+            suffix = "ص";
         }
         hours = ((((hours+ 12) -1) % (12))+ 1);
         /*hours = (hours + 12) - 1;
@@ -919,4 +919,5 @@ public class PrayTimes {
     public ArrayList<String> getTimeNames() {
         return timeNames;
     }
+
 }

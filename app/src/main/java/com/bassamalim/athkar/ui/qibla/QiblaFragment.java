@@ -27,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.FragmentQiblaBinding;
+import com.bassamalim.athkar.ui.prayers.PrayersFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import android.os.Vibrator;

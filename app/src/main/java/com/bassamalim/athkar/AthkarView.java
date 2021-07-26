@@ -53,7 +53,7 @@ public class AthkarView extends AppCompatActivity {
         TextView screen = new TextView(this);
         LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screen.setLayoutParams(screenParams);
-        screen.setTextColor(getResources().getColor(R.color.secondary, getTheme()));
+        screen.setTextColor(getResources().getColor(R.color.white, getTheme()));
         screen.setGravity(Gravity.CENTER);
         screen.setTextSize(25);
         screen.setTypeface(Typeface.DEFAULT_BOLD);

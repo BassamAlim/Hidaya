@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PrayersFragment extends Fragment {
 
@@ -27,6 +29,7 @@ public class PrayersFragment extends Fragment {
     private ArrayList<String> prayerTimes;
     private final int timeZone = 3;
     private Location location;
+
 
     /*public static PrayersFragment newInstance() {
         return new PrayersFragment();
@@ -60,12 +63,14 @@ public class PrayersFragment extends Fragment {
             prayerTimes = prayTimes.getPrayerTimes(calendar, location.getLatitude(),
                     location.getLongitude(), timeZone);
 
-            String fajrText = "الفجر: " + prayerTimes.get(0);
-            String shorouqText = "الشروق: " + prayerTimes.get(1);
-            String dhuhrText = "الظهر: " + prayerTimes.get(2);
-            String asrText = "العصر: " + prayerTimes.get(3);
-            String maghribText = "المغرب: " + prayerTimes.get(5);
-            String ishaaText = "العشاء: " + prayerTimes.get(6);
+            String[] times = translateNumbers(prayerTimes);
+
+            String fajrText = "الفجر: " + times[0];
+            String shorouqText = "الشروق: " + times[1];
+            String dhuhrText = "الظهر: " + times[2];
+            String asrText = "العصر: " + times[3];
+            String maghribText = "المغرب: " + times[5];
+            String ishaaText = "العشاء: " + times[6];
 
             binding.fajrView.setText(fajrText);
             binding.shorouqView.setText(shorouqText);
@@ -80,6 +85,40 @@ public class PrayersFragment extends Fragment {
         }
     }
 
+    public static String[] translateNumbers(ArrayList<String> english) {
+        String[] result = english.toArray(new String[english.size()]);
+
+        HashMap<Character, Character> map = new HashMap<>();
+
+        map.put('0', '٠');
+        map.put('1', '١');
+        map.put('2', '٢');
+        map.put('3', '٣');
+        map.put('4', '٤');
+        map.put('5', '٥');
+        map.put('6', '٦');
+        map.put('7', '٧');
+        map.put('8', '٨');
+        map.put('9', '٩');
+
+        for (int i = 0; i < english.size(); i++) {
+            if (english.get(i).charAt(0) == '0')
+                english.set(i, english.get(i).replaceFirst("0", ""));
+        }
+
+        for (int i = 0; i < english.size(); i++) {
+            StringBuilder temp = new StringBuilder();
+            for (int j = 0; j < english.get(i).length(); j++) {
+                char t = english.get(i).charAt(j);
+                if (map.containsKey(t))
+                    t = map.get(t);
+                temp.append(t);
+            }
+            result[i] = temp.toString();
+        }
+
+        return result;
+    }
 
     public void onDestroyView() {
         super.onDestroyView();
