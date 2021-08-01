@@ -159,7 +159,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
                     android:backgroundTint="@color/secondary"
-                    android:drawableTop="@drawable/ic__athan"
+                    android:drawableTop="@drawable/ic_athan"
                     android:gravity="center|bottom"
                     android:text="اذكار الاذان"
                     android:textColor="@color/white"

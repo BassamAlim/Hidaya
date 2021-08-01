@@ -14,15 +14,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.bassamalim.athkar.databinding.ActivityMainBinding;
@@ -38,11 +36,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String LATEST_VERSION = "latest_app_version";
     public static final String UPDATE_URL = "update_url";
     private static final String TAG = "MainActivity";
-    private FusedLocationProviderClient fusedLocationClient;
-    public static Location userLocation = null;
+    public static Location location;
     private String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
     private int[] grantResults = null;
-
 
     public static MainActivity getInstance() {
         return instance;
@@ -52,33 +48,38 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        instance = this;
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        BottomNavigationView navView = findViewById(R.id.nav_view);
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_prayers, R.id.navigation_alathkar, R.id.navigation_qibla).build();
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment_activity_main);
+        assert navHostFragment != null;
+        NavController navController = navHostFragment.getNavController();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+        BottomNavigationView navView = findViewById(R.id.nav_view);
 
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                 .setMinimumFetchIntervalInSeconds(100).build();
         remoteConfig.setConfigSettingsAsync(configSettings);
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
-        instance = this;
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
         if (!checkPermissions())
             requestPermissions();
 
-        findLocation();
+        Intent intent = getIntent();
+        location = intent.getParcelableExtra("location");
+
+        //Notification notification = new Notification();
 
         checkForUpdate();
     }
@@ -95,15 +96,23 @@ public class MainActivity extends AppCompatActivity {
         checkPermissions();
     }
 
-    public void findLocation() {
+    /*public void findLocation() {
         if (ActivityCompat.checkSelfPermission(getInstance(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getInstance(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
                 if (location != null) {
-                    userLocation = location;
-                    //Toast.makeText(this, "location found", Toast.LENGTH_SHORT).show();
+                    //userLocation = location;
+                    Date now = new Date();
+
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(now);
+
+                    Log.i(TAG, "hay, got the location");
+
+                    times = new PrayTimes().getPayerTimesArray(calendar, location.getLatitude(),
+                            location.getLongitude(), 3);
                 }
                 else
                     Toast.makeText(this, "no location", Toast.LENGTH_LONG).show();
@@ -111,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else
             findLocation();
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

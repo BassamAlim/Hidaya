@@ -1,13 +1,11 @@
 package com.bassamalim.athkar.ui.Quran;
 
 import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,31 +13,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bassamalim.athkar.AthkarView;
-import com.bassamalim.athkar.Quran;
 import com.bassamalim.athkar.QuranView;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.Utils;
 import com.bassamalim.athkar.databinding.QuranFragmentBinding;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-
 public class QuranFragment extends Fragment {
 
     private QuranViewModel quranViewModel;
     private QuranFragmentBinding binding;
-    private Gson gson = new Gson();
+    //private Gson gson = new Gson();
     JSONObject jsonObject;
     private static final String TAG = "QuranFragment";
     JSONObject data;
@@ -49,22 +37,21 @@ public class QuranFragment extends Fragment {
     private LinearLayout linear;
     private String[] surahNames;
     private String basmalah = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
+    private Intent intent;
 
 
     public static QuranFragment newInstance() {
         return new QuranFragment();
     }
 
-    /*@Override
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            isEditing = savedInstanceState.getBoolean(IS_EDITING_KEY, false);
-            randomGoodDeed = savedInstanceState.getString(RANDOM_GOOD_DEED_KEY);
-        } else {
-            randomGoodDeed = viewModel.generateRandomGoodDeed();
+            /*isEditing = savedInstanceState.getBoolean(IS_EDITING_KEY, false);
+            randomGoodDeed = savedInstanceState.getString(RANDOM_GOOD_DEED_KEY);*/
         }
-    }*/
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -113,7 +100,7 @@ public class QuranFragment extends Fragment {
 
             int finalI = i;
             button.setOnClickListener(v -> {
-                Intent intent = new Intent(getContext(), QuranView.class);
+                intent = new Intent(getContext(), QuranView.class);
                 intent.putExtra("key", buildSurah(finalI));
                 intent.putExtra("title", surahNames[finalI]);
                 startActivity(intent);
@@ -172,13 +159,13 @@ public class QuranFragment extends Fragment {
         return surahText.toString();
     }
 
-    /*@Override
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(IS_EDITING_KEY, isEditing);
-        outState.putString(RANDOM_GOOD_DEED_KEY, randomGoodDeed);
+        /*outState.putBoolean(IS_EDITING_KEY, isEditing);
+        outState.putString(RANDOM_GOOD_DEED_KEY, randomGoodDeed);*/
         // save state
-    }*/
+    }
 
     @Override
     public void onDestroyView() {

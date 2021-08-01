@@ -10,9 +10,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +25,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.FragmentQiblaBinding;
-import com.bassamalim.athkar.ui.prayers.PrayersFragment;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import android.os.Vibrator;
 
 public class QiblaFragment extends Fragment implements SensorEventListener {
@@ -38,24 +33,22 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
     private FragmentQiblaBinding binding;
     private Sensor sensor;
     private SensorManager sensorManager;
-    private FusedLocationProviderClient fusedLocationClient;
     private final Location kaaba = new Location(LocationManager.GPS_PROVIDER);
     private final double kaabaLongitude = 39.8251832;
     private final double kaabaLatitude = 21.4224779;
-    private Location location = MainActivity.userLocation;
+    private Location location;
     private float bearing;
     private float currentDegree = 0f;
     private double distance = 0;
     private final double earthRadius = 6371;
     Vibrator vibrator;
-    VibrationEffect vibrationEffect;
 
 
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
+        location = MainActivity.location;
 
         sensorManager = (SensorManager) requireActivity().getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
@@ -80,6 +73,7 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
         binding = FragmentQiblaBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        //orientation = SensorManager.getOrientation()
 
         inflater.inflate(R.layout.fragment_qibla, container, false);
         return root;
@@ -116,6 +110,7 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -157,12 +152,8 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
             String text = "المسافة الى الكعبة: " + distance + " كم";
             binding.distanceText.setText(text);
 
-
-            if (degree == 111 || degree == 112) {
-                /*vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
-                Toast.makeText(getContext(), "بس بس كدا", Toast.LENGTH_SHORT).show();*/
+            if (degree == 111 || degree == 112)
                 binding.bingo.setVisibility(View.VISIBLE);
-            }
             if (degree < 111 || degree > 112)
                 binding.bingo.setVisibility(View.INVISIBLE);
 

@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.OtherFragmentBinding;
 
 public class OtherFragment extends Fragment {
@@ -28,9 +27,6 @@ public class OtherFragment extends Fragment {
 
         binding = OtherFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-
-
 
 
         return root;

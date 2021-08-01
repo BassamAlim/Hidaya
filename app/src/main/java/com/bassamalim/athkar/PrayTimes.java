@@ -381,6 +381,50 @@ public class PrayTimes {
         return getDatePrayerTimes(year, month+1, day, latitude, longitude, tZone);
     }
 
+    public String[] getPayerTimesArray(Calendar date, double latitude,
+                                       double longitude, double tZone) {
+        int year = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH);
+        int day = date.get(Calendar.DATE);
+        ArrayList<String> list = getDatePrayerTimes(year, month+1, day, latitude, longitude, tZone);
+        return translateNumbers(list);
+    }
+
+    public static String[] translateNumbers(ArrayList<String> english) {
+        String[] result = english.toArray(new String[english.size()]);
+
+        HashMap<Character, Character> map = new HashMap<>();
+
+        map.put('0', '٠');
+        map.put('1', '١');
+        map.put('2', '٢');
+        map.put('3', '٣');
+        map.put('4', '٤');
+        map.put('5', '٥');
+        map.put('6', '٦');
+        map.put('7', '٧');
+        map.put('8', '٨');
+        map.put('9', '٩');
+
+        for (int i = 0; i < english.size(); i++) {
+            if (english.get(i).charAt(0) == '0')
+                english.set(i, english.get(i).replaceFirst("0", ""));
+        }
+
+        for (int i = 0; i < english.size(); i++) {
+            StringBuilder temp = new StringBuilder();
+            for (int j = 0; j < english.get(i).length(); j++) {
+                char t = english.get(i).charAt(j);
+                if (map.containsKey(t))
+                    t = map.get(t);
+                temp.append(t);
+            }
+            result[i] = temp.toString();
+        }
+
+        return result;
+    }
+
     // set custom values for calculation parameters
     private void setCustomParams(double[] params) {
 
