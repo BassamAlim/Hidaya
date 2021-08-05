@@ -10,6 +10,9 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
         android:allowBackup="true"
@@ -46,23 +49,6 @@
             </intent-filter>
         </activity>
 
-        <receiver
-            android:name=".Notify"
-            android:enabled="true"
-            android:exported="false" >
-        </receiver>
-
-        <service
-            android:name=".MyNewIntentService"
-            android:exported="false" >
-        </service>
-
-        <receiver android:name=".DeviceBootReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
         <activity
             android:name=".Splash"
             android:theme="@style/LaunchTheme">
@@ -71,6 +57,46 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".receivers.NotificationReceiver"
+            android:enabled="true"
+            android:exported="false">
+        </receiver>
+
+        <receiver
+            android:name=".receivers.RestartReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.android.techtrainner" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".receivers.DeviceBootReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".services.NotifyService"
+            android:enabled="true"
+            android:stopWithTask="false"
+            android:exported="false">
+        </service>
+
+        <service
+            android:name=".services.NotificationService"
+            android:enabled="true"
+            android:stopWithTask="false"
+            android:process=":athan"
+            android:excludeFromRecents="true"
+            android:exported="false">
+        </service>
 
     </application>
 

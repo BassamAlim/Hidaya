@@ -1,19 +1,20 @@
 package com.bassamalim.athkar;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
+import com.bassamalim.athkar.receivers.DeviceBootReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -26,19 +27,22 @@ import androidx.navigation.ui.NavigationUI;
 import com.bassamalim.athkar.databinding.ActivityMainBinding;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
 
     private static MainActivity instance;
     private ActivityMainBinding binding;
-    private final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-    public static final String UPDATE_AVAILABLE = "update_available";
-    public static final String LATEST_VERSION = "latest_app_version";
-    public static final String UPDATE_URL = "update_url";
+    public final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
     private static final String TAG = "MainActivity";
     public static Location location;
-    private String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+    private String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private int[] grantResults = null;
+    public Gson gson;
+    public SharedPreferences myPrefs;
+    public String json;
+    public DataSaver saver;
+    public SharedPreferences.Editor editor;
 
     public static MainActivity getInstance() {
         return instance;
@@ -58,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_prayers, R.id.navigation_alathkar, R.id.navigation_qibla).build();
 
-        //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment_activity_main);
         assert navHostFragment != null;
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(100).build();
+                .setMinimumFetchIntervalInSeconds(5).build(); // change back
         remoteConfig.setConfigSettingsAsync(configSettings);
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
@@ -79,9 +82,36 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         location = intent.getParcelableExtra("location");
 
-        //Notification notification = new Notification();
+        storeLocation(location);
 
-        checkForUpdate();
+        DailyUpdate dailyUpdate = new DailyUpdate();
+
+        receiver();
+
+        Update update = new Update();
+    }
+
+    public void storeLocation(Location givenLocation) {
+        myPrefs = this.getApplicationContext().getSharedPreferences("location", Context.MODE_PRIVATE);
+        editor = myPrefs.edit();
+
+        DataSaver saver = new DataSaver();
+        saver.location = givenLocation;
+
+        gson = new Gson();
+
+        json = gson.toJson(saver);
+
+        editor.putString("location", json);
+        editor.apply();
+    }
+
+    public void receiver() {
+        ComponentName receiver = new ComponentName(getApplicationContext(), DeviceBootReceiver.class);
+        PackageManager pm = getApplicationContext().getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
     }
 
     public static boolean checkPermissions() {
@@ -95,32 +125,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getInstance(), "لازم تسوي سماح للموقع عشان يشتغل", Toast.LENGTH_LONG).show();
         checkPermissions();
     }
-
-    /*public void findLocation() {
-        if (ActivityCompat.checkSelfPermission(getInstance(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getInstance(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-                if (location != null) {
-                    //userLocation = location;
-                    Date now = new Date();
-
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(now);
-
-                    Log.i(TAG, "hay, got the location");
-
-                    times = new PrayTimes().getPayerTimesArray(calendar, location.getLatitude(),
-                            location.getLongitude(), 3);
-                }
-                else
-                    Toast.makeText(this, "no location", Toast.LENGTH_LONG).show();
-            });
-        }
-        else
-            findLocation();
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -146,51 +150,6 @@ public class MainActivity extends AppCompatActivity {
         }
         else
             return super.onOptionsItemSelected(item);
-    }
-
-    private void checkForUpdate() {
-        remoteConfig.fetch().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.i(TAG, "remote config is fetched.");
-                remoteConfig.fetchAndActivate();
-            }
-            boolean available = remoteConfig.getBoolean(UPDATE_AVAILABLE);
-            remoteConfig.fetchAndActivate();
-            if (available) {
-                Log.i(TAG, "Update available");
-                String latestVersion = remoteConfig.getString(LATEST_VERSION);
-                String currentVersion = getAppVersion(this);
-                if (!TextUtils.equals(currentVersion, latestVersion)) {
-                    showUpdatePrompt();
-                    Log.i(TAG, "WindBlows");
-                }
-            }
-        });
-    }
-
-    public void showUpdatePrompt() {
-        UpdateDialog updateDialog = new UpdateDialog(this);
-        updateDialog.show();
-    }
-
-    private String getAppVersion(Context context) {
-        String result = "";
-        try {
-            result = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-            result = result.replaceAll("[a-zA-Z]|-", "");
-        }
-        catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, e.getMessage());
-        }
-        return result;
-    }
-
-    public void update() {
-        String url;
-        url = remoteConfig.getString(UPDATE_URL);
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(url));
-        startActivity(i);
     }
 
 }

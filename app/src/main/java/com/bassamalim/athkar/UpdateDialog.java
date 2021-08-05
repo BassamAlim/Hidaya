@@ -36,7 +36,7 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
 
         yes = findViewById(R.id.yes);
         no = findViewById(R.id.no);
-        yes.setOnClickListener(v -> MainActivity.getInstance().update());
+        yes.setOnClickListener(v -> Update.getInstance().startUpdate());
         no.setOnClickListener(v -> dismiss());
     }
 
@@ -50,21 +50,5 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
         super.setOnDismissListener(listener);
         // put some funny stuff here
     }
-
-    /*public void showDialog(Activity activity, String msg){
-        final Dialog dialog = new Dialog(activity);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.update_dialog);
-
-        TextView text = (TextView) dialog.findViewById(R.id.textView);
-        text.setText(msg);
-
-        Button yes = (Button) dialog.findViewById(R.id.yes);
-        Button no = (Button) dialog.findViewById(R.id.no);
-        yes.setOnClickListener(v -> MainActivity.getInstance().update());
-        no.setOnClickListener(v -> dialog.dismiss());
-
-        dialog.show();
-    }*/
 
 }

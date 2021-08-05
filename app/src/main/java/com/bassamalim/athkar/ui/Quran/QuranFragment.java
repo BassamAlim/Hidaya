@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.QuranView;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.Utils;
@@ -33,7 +35,7 @@ public class QuranFragment extends Fragment {
     JSONObject data;
     JSONArray surahs;
     String jsonFileString;
-    private static final int numOfSurahs = 114;
+
     private LinearLayout linear;
     private String[] surahNames;
     private String basmalah = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
@@ -93,7 +95,7 @@ public class QuranFragment extends Fragment {
     public void setUp() {
         linear = binding.linear;
 
-        for (int i = 0; i < numOfSurahs; i++) {
+        for (int i = 0; i < Constants.NUMBER_OF_SURAHS; i++) {
             Button button = button();
             button.setText(surahNames[i]);
             linear.addView(button);
@@ -124,9 +126,9 @@ public class QuranFragment extends Fragment {
     }
 
     public void getSurahNames() {
-        String[] names = new String[numOfSurahs];
+        String[] names = new String[Constants.NUMBER_OF_SURAHS];
         try {
-            for (int i = 0; i < numOfSurahs; i++)
+            for (int i = 0; i < Constants.NUMBER_OF_SURAHS; i++)
                 names[i] = surahs.getJSONObject(i).getString("name");
         }
         catch (JSONException e) {

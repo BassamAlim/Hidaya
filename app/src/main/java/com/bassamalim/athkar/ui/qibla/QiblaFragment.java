@@ -22,6 +22,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.FragmentQiblaBinding;
@@ -34,13 +36,10 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
     private Sensor sensor;
     private SensorManager sensorManager;
     private final Location kaaba = new Location(LocationManager.GPS_PROVIDER);
-    private final double kaabaLongitude = 39.8251832;
-    private final double kaabaLatitude = 21.4224779;
     private Location location;
     private float bearing;
     private float currentDegree = 0f;
     private double distance = 0;
-    private final double earthRadius = 6371;
     Vibrator vibrator;
 
 
@@ -55,8 +54,8 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
 
         vibrator = (Vibrator) requireActivity().getSystemService(Context.VIBRATOR_SERVICE);
 
-        kaaba.setLatitude(kaabaLatitude);
-        kaaba.setLongitude(kaabaLongitude);
+        kaaba.setLatitude(Constants.KAABA_LATITUDE);
+        kaaba.setLongitude(Constants.KAABA_LONGITUDE);
 
         if (sensor != null)
             // for the system's orientation sensor registered listeners
@@ -84,12 +83,12 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
     }
 
     public void getDistance() {
-        double dLon = degToRad(Math.abs(location.getLatitude() - kaabaLatitude));
-        double dLat = degToRad(Math.abs(location.getLongitude() - kaabaLongitude));
+        double dLon = degToRad(Math.abs(location.getLatitude() - Constants.KAABA_LATITUDE));
+        double dLat = degToRad(Math.abs(location.getLongitude() - Constants.KAABA_LONGITUDE));
         double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(degToRad(location.getLatitude()))
-                * Math.cos(degToRad(kaabaLatitude)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+                * Math.cos(degToRad(Constants.KAABA_LATITUDE)) * Math.sin(dLon/2) * Math.sin(dLon/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        distance = earthRadius * c;
+        distance = Constants.EARTH_RADIUS * c;
         distance = (int) (distance * 10) / 10.0;
     }
 
