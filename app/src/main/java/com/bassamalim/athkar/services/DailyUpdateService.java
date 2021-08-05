@@ -2,9 +2,6 @@ package com.bassamalim.athkar.services;
 
 import android.Manifest;
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -12,29 +9,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.DataSaver;
 import com.bassamalim.athkar.PrayTimes;
-import com.bassamalim.athkar.receivers.AlarmsReceiver;
-import com.bassamalim.athkar.receivers.DailyUpdateReceiver;
+import com.bassamalim.athkar.receivers.NotificationReceiver;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
-
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -58,21 +46,24 @@ public class DailyUpdateService extends Service {
                 == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            location = fusedLocationClient.getLastLocation().getResult();
+            fusedLocationClient.getLastLocation().addOnSuccessListener(loc -> {
+                location = loc;
+                storeLocation(location);
 
-            storeLocation(location);
+                times = getTimes();
 
-            times = getTimes();
+                storeTimes(times);
 
-            storeTimes(times);
+                setAlarms();
+            });
         }
-
-        setAlarms();
 
         return START_STICKY;
     }
 
+
     public Calendar[] getTimes() {
+        Log.i("myself", "out");
         now = new Date();
 
         calendar = Calendar.getInstance();
@@ -117,7 +108,7 @@ public class DailyUpdateService extends Service {
         for (int i = 0; i < times.length; i++) {
             int prayer = i;
 
-            Intent intent = new Intent(getApplicationContext(), AlarmsReceiver.class);
+            Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
             intent.putExtra("prayer", prayer);
 
             PendingIntent pendIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

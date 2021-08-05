@@ -1,7 +1,6 @@
 package com.bassamalim.athkar.ui.prayers;
 
 import androidx.lifecycle.ViewModelProvider;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -15,21 +14,22 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.bassamalim.athkar.Alarms;
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.DataSaver;
 import com.bassamalim.athkar.MainActivity;
-import com.bassamalim.athkar.MyNotification;
 import com.bassamalim.athkar.PrayTimes;
 import com.bassamalim.athkar.databinding.PrayersFragmentBinding;
-import com.bassamalim.athkar.receivers.AlarmsReceiver;
+import com.bassamalim.athkar.receivers.NotificationReceiver;
 import com.google.gson.Gson;
-
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class PrayersFragment extends Fragment {
 
@@ -39,8 +39,6 @@ public class PrayersFragment extends Fragment {
     public static ArrayList<String> times;
     public Calendar[] formattedTimes;
     public static String[] translatedTimes;
-    private Calendar calendar;
-    private Date now;
     public Gson gson;
     public static String json;
     public SharedPreferences myPrefs;
@@ -60,11 +58,13 @@ public class PrayersFragment extends Fragment {
 
         formattedTimes = formatTimes(times);
 
-        MyNotification notification = new MyNotification(formattedTimes);
+        //MyNotification notification = new MyNotification(formattedTimes);
 
         storeTimes(formatTimes(times));
 
-        setAlarms();
+        Alarms alarms = new Alarms(requireContext().getApplicationContext(), location, formattedTimes);
+
+        //setAlarms(test());
 
         return root;
         //return inflater.inflate(R.layout.prayers_fragment, container, false);
@@ -99,9 +99,9 @@ public class PrayersFragment extends Fragment {
     }
 
     public ArrayList<String> getTimes() {
-        now = new Date();
+        Date now = new Date();
 
-        calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
 
         return new PrayTimes().getPrayerTimes(calendar, location.getLatitude(), location.getLongitude(), Constants.TIME_ZONE);
@@ -111,7 +111,6 @@ public class PrayersFragment extends Fragment {
         String[] result = english.toArray(new String[english.size()]);
 
         HashMap<Character, Character> map = new HashMap<>();
-
         map.put('0', '٠');
         map.put('1', '١');
         map.put('2', '٢');
@@ -125,7 +124,6 @@ public class PrayersFragment extends Fragment {
         map.put('A', 'ص');
         map.put('P', 'م');
 
-
         for (int i = 0; i < english.size(); i++) {
             StringBuilder sb = new StringBuilder(english.get(i));
             sb.deleteCharAt(sb.length()-1);
@@ -134,7 +132,6 @@ public class PrayersFragment extends Fragment {
 
             if (english.get(i).charAt(0) == '0')
                 english.set(i, english.get(i).replaceFirst("0", ""));
-
         }
 
         for (int i = 0; i < english.size(); i++) {
@@ -154,10 +151,14 @@ public class PrayersFragment extends Fragment {
         Calendar[] formattedTimes = new Calendar[givenTimes.size()];
 
         for (int i = 0; i < givenTimes.size(); i++) {
-            formattedTimes[i] = Calendar.getInstance();
+            char m = givenTimes.get(i).charAt(6);
+            int hour = Integer.parseInt(givenTimes.get(i).substring(0, 2));
+            if (m == 'P')
+                hour += 12;
 
+            formattedTimes[i] = Calendar.getInstance();
             formattedTimes[i].setTimeInMillis(System.currentTimeMillis());
-            formattedTimes[i].set(Calendar.HOUR_OF_DAY, Integer.parseInt(givenTimes.get(i).substring(0, 2)));
+            formattedTimes[i].set(Calendar.HOUR_OF_DAY, hour);
             formattedTimes[i].set(Calendar.MINUTE, Integer.parseInt(givenTimes.get(i).substring(3, 5)));
         }
         return formattedTimes;
@@ -179,19 +180,45 @@ public class PrayersFragment extends Fragment {
         editor.apply();
     }
 
-    public void setAlarms() {
-        for (int i = 0; i < formattedTimes.length; i++) {
-            int prayer = i;
+    public Calendar[] test() {
+        Calendar[] tester = new Calendar[7];
 
-            Intent intent = new Intent(getContext().getApplicationContext(), AlarmsReceiver.class);
-            intent.putExtra("prayer", prayer);
+        tester[0] = Calendar.getInstance();
+        tester[0].setTimeInMillis(System.currentTimeMillis());
+        tester[0].set(Calendar.HOUR_OF_DAY, 5);
+        tester[0].set(Calendar.MINUTE, 43);
 
-            PendingIntent pendIntent = PendingIntent.getBroadcast(getContext().getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        tester[1] = Calendar.getInstance();
+        tester[1].setTimeInMillis(System.currentTimeMillis());
+        tester[1].set(Calendar.HOUR_OF_DAY, 19);
+        tester[1].set(Calendar.MINUTE, 35);
 
-            AlarmManager myAlarm = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+        tester[2] = Calendar.getInstance();
+        tester[2].setTimeInMillis(System.currentTimeMillis());
+        tester[2].set(Calendar.HOUR_OF_DAY, 1);
+        tester[2].set(Calendar.MINUTE, 35);
 
-            myAlarm.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, formattedTimes[i].getTimeInMillis(), pendIntent);
-        }
+        tester[3] = Calendar.getInstance();
+        tester[3].setTimeInMillis(System.currentTimeMillis());
+        tester[3].set(Calendar.HOUR_OF_DAY, 2);
+        tester[3].set(Calendar.MINUTE, 35);
+
+        tester[4] = Calendar.getInstance();
+        tester[4].setTimeInMillis(System.currentTimeMillis());
+        tester[4].set(Calendar.HOUR_OF_DAY, 18);
+        tester[4].set(Calendar.MINUTE, 35);
+
+        tester[5] = Calendar.getInstance();
+        tester[5].setTimeInMillis(System.currentTimeMillis());
+        tester[5].set(Calendar.HOUR_OF_DAY, 13);
+        tester[5].set(Calendar.MINUTE, 35);
+
+        tester[6] = Calendar.getInstance();
+        tester[6].setTimeInMillis(System.currentTimeMillis());
+        tester[6].set(Calendar.HOUR_OF_DAY, 6);
+        tester[6].set(Calendar.MINUTE, 35);
+
+        return tester;
     }
 
     public void onDestroyView() {

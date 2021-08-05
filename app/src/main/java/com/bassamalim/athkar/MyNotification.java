@@ -18,7 +18,7 @@ public class MyNotification {
     private final Context CONTEXT = MainActivity.getInstance();
     public static Calendar[] times;
     public int prayer;
-    private Intent myIntent;
+    private Intent intent;
     private PendingIntent pendIntent;
     private AlarmManager myAlarm;
     Calendar test;
@@ -26,21 +26,21 @@ public class MyNotification {
     public MyNotification(Calendar[] givenTimes) {
         times = givenTimes;
 
-        setAlarms(times);
-        //test();
+        //setAlarms(times);
+        test();
     }
 
     public void setAlarms(Calendar[] alarmTimes) {
-        myIntent = new Intent(CONTEXT.getApplicationContext(), NotificationReceiver.class);
+        intent = new Intent(CONTEXT.getApplicationContext(), NotificationReceiver.class);
 
-        pendIntent = PendingIntent.getBroadcast(CONTEXT.getApplicationContext(), 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        pendIntent = PendingIntent.getBroadcast(CONTEXT.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         myAlarm = (AlarmManager) CONTEXT.getSystemService(Context.ALARM_SERVICE);
 
         for (Calendar alarmTime : alarmTimes) {
-            if (Calendar.getInstance().getTimeInMillis() <= alarmTime.getTimeInMillis()) {
+            //if (Calendar.getInstance().getTimeInMillis() <= alarmTime.getTimeInMillis()) {
                 myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(), pendIntent);
-            }
+            //}
         }
 
     }
@@ -48,15 +48,15 @@ public class MyNotification {
     private void test() {
         test = Calendar.getInstance();
         test.setTimeInMillis(System.currentTimeMillis());
-        test.set(Calendar.HOUR_OF_DAY, 1);
-        test.set(Calendar.MINUTE, 41);
-        test.set(Calendar.SECOND, 30);
+        test.set(Calendar.HOUR_OF_DAY, 5);
+        test.set(Calendar.MINUTE, 3);
+        test.set(Calendar.SECOND, 0);
 
-        myIntent = new Intent(CONTEXT, NotificationReceiver.class);
-        myIntent.putExtra("prayer", 1);
-        myIntent.putExtra("time", test);
+        intent = new Intent(CONTEXT, NotificationReceiver.class);
+        intent.putExtra("prayer", 1);
+        intent.putExtra("time", test);
 
-        pendIntent = PendingIntent.getBroadcast(CONTEXT.getApplicationContext(), 0, myIntent, PendingIntent.FLAG_ONE_SHOT);
+        pendIntent = PendingIntent.getBroadcast(CONTEXT.getApplicationContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         myAlarm = (AlarmManager) CONTEXT.getSystemService(Context.ALARM_SERVICE);
 

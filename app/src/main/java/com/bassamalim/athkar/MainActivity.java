@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         storeLocation(location);
 
-        DailyUpdate dailyUpdate = new DailyUpdate();
+        //DailyUpdate dailyUpdate = new DailyUpdate();
 
         receiver();
 

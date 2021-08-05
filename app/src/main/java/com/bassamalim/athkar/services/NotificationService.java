@@ -24,7 +24,7 @@ public class NotificationService extends Service {
 
     public static boolean isServiceRunning = false;
     private static final int NOTIFICATION_ID = 3;
-    private String channelId;
+    private String channelId = "Athan";
     private NotificationManagerCompat managerCompat;
 
     @Override
@@ -36,7 +36,7 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? createNotificationChannel(notificationManager) : "";
+        channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? createNotificationChannel(notificationManager) : "Athan";
 
         int prayer = intent.getIntExtra("prayer", 0);
 
@@ -53,7 +53,7 @@ public class NotificationService extends Service {
 
 
     public Notification buildNotification(int prayer) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channelId");
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Athan");
         builder.setSmallIcon(R.drawable.ic_athan);
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_athan);
         builder.setLargeIcon(icon);
@@ -117,7 +117,7 @@ public class NotificationService extends Service {
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel Athan;
-            channelId = "channelId";
+            channelId = "Athan";
             CharSequence name = "Athan Channel";
             String description = "The channel that gives athan notifications";
             int importance = NotificationManager.IMPORTANCE_HIGH;

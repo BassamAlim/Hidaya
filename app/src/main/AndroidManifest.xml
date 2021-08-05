@@ -65,6 +65,12 @@
         </receiver>
 
         <receiver
+            android:name=".receivers.DailyUpdateReceiver"
+            android:enabled="true"
+            android:exported="false">
+        </receiver>
+
+        <receiver
             android:name=".receivers.RestartReceiver"
             android:enabled="true"
             android:exported="false">
@@ -91,6 +97,15 @@
 
         <service
             android:name=".services.NotificationService"
+            android:enabled="true"
+            android:stopWithTask="false"
+            android:process=":athan"
+            android:excludeFromRecents="true"
+            android:exported="false">
+        </service>
+
+        <service
+            android:name=".services.DailyUpdateService"
             android:enabled="true"
             android:stopWithTask="false"
             android:process=":athan"
