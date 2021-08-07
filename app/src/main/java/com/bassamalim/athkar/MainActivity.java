@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.bassamalim.athkar.receivers.DeviceBootReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -34,15 +36,15 @@ public class MainActivity extends AppCompatActivity {
     private static MainActivity instance;
     private ActivityMainBinding binding;
     public final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-    private static final String TAG = "MainActivity";
     public static Location location;
-    private String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private int[] grantResults = null;
     public Gson gson;
     public SharedPreferences myPrefs;
     public String json;
     public DataSaver saver;
     public SharedPreferences.Editor editor;
+    private String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION};
 
     public static MainActivity getInstance() {
         return instance;
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         storeLocation(location);
 
-        //DailyUpdate dailyUpdate = new DailyUpdate();
+        DailyUpdate dailyUpdate = new DailyUpdate();
 
         receiver();
 
@@ -121,7 +123,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void requestPermissions() {
-        ActivityCompat.requestPermissions(getInstance(), new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        ActivityCompat.requestPermissions(getInstance(), new String[]
+                {Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         Toast.makeText(getInstance(), "لازم تسوي سماح للموقع عشان يشتغل", Toast.LENGTH_LONG).show();
         checkPermissions();
     }

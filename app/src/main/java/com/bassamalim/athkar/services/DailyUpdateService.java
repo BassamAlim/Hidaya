@@ -14,6 +14,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+
+import com.bassamalim.athkar.Alarms;
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.DataSaver;
 import com.bassamalim.athkar.PrayTimes;
@@ -54,16 +56,14 @@ public class DailyUpdateService extends Service {
 
                 storeTimes(times);
 
-                setAlarms();
+                Alarms alarms = new Alarms(getApplicationContext(),loc, times);
             });
         }
-
         return START_STICKY;
     }
 
 
     public Calendar[] getTimes() {
-        Log.i("myself", "out");
         now = new Date();
 
         calendar = Calendar.getInstance();
@@ -102,21 +102,6 @@ public class DailyUpdateService extends Service {
 
         editor.putString("times", json);
         editor.apply();
-    }
-
-    public void setAlarms() {
-        for (int i = 0; i < times.length; i++) {
-            int prayer = i;
-
-            Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
-            intent.putExtra("prayer", prayer);
-
-            PendingIntent pendIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            AlarmManager myAlarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-            myAlarm.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, times[i].getTimeInMillis(), pendIntent);
-        }
     }
 
     @Nullable @Override

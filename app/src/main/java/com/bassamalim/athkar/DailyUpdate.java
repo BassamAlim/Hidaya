@@ -20,7 +20,7 @@ public class DailyUpdate {
 
         AlarmManager myAlarm = (AlarmManager) CONTEXT.getSystemService(Context.ALARM_SERVICE);
 
-        myAlarm.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time().getTimeInMillis(), pendIntent);
+        myAlarm.setRepeating(AlarmManager.RTC_WAKEUP, time().getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendIntent);
     }
 
     public Calendar time() {

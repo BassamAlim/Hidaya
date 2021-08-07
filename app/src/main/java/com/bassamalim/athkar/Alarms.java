@@ -57,7 +57,6 @@ public class Alarms extends AppCompatActivity {
         times = gTimes;
 
         setAlarms();
-
     }
 
     public void setAlarms() {
@@ -69,12 +68,12 @@ public class Alarms extends AppCompatActivity {
             intent.putExtra("prayer", prayer);
             intent.putExtra("time", times[i].getTimeInMillis());
 
-            PendingIntent pendIntent = PendingIntent.getBroadcast(appContext, prayer, intent, PendingIntent.FLAG_ONE_SHOT);
+            PendingIntent pendIntent = PendingIntent.getBroadcast(appContext, prayer+1,
+                    intent, PendingIntent.FLAG_ONE_SHOT);
 
             AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
 
             myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, times[i].getTimeInMillis(), pendIntent);
-
         }
     }
 
@@ -101,7 +100,8 @@ public class Alarms extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
 
-        return new PrayTimes().getPrayerTimesArray(calendar, location.getLatitude(), location.getLongitude(), Constants.TIME_ZONE);
+        return new PrayTimes().getPrayerTimesArray(calendar, location.getLatitude(),
+                location.getLongitude(), Constants.TIME_ZONE);
     }
 
 }

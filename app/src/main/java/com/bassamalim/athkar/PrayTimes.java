@@ -391,6 +391,23 @@ public class PrayTimes {
         return formatTimes(getDatePrayerTimes(year, month+1, day, latitude, longitude, tZone));
     }
 
+    private Calendar[] formatTimes(ArrayList<String> givenTimes) {
+        Calendar[] formattedTimes = new Calendar[givenTimes.size()];
+
+        for (int i = 0; i < givenTimes.size(); i++) {
+            char m = givenTimes.get(i).charAt(6);
+            int hour = Integer.parseInt(givenTimes.get(i).substring(0, 2));
+            if (m == 'P')
+                hour += 12;
+
+            formattedTimes[i] = Calendar.getInstance();
+            formattedTimes[i].setTimeInMillis(System.currentTimeMillis());
+            formattedTimes[i].set(Calendar.HOUR_OF_DAY, hour);
+            formattedTimes[i].set(Calendar.MINUTE, Integer.parseInt(givenTimes.get(i).substring(3, 5)));
+        }
+        return formattedTimes;
+    }
+
     // set custom values for calculation parameters
     private void setCustomParams(double[] params) {
 
@@ -542,18 +559,6 @@ public class PrayTimes {
 
     }
 
-    private Calendar[] formatTimes(ArrayList<String> givenTimes) {
-        Calendar[] formattedTimes = new Calendar[givenTimes.size()];
-
-        for (int i = 0; i < givenTimes.size(); i++) {
-            formattedTimes[i] = Calendar.getInstance();
-
-            formattedTimes[i].setTimeInMillis(System.currentTimeMillis());
-            formattedTimes[i].set(Calendar.HOUR_OF_DAY, Integer.parseInt(givenTimes.get(i).substring(0, 2)));
-            formattedTimes[i].set(Calendar.MINUTE, Integer.parseInt(givenTimes.get(i).substring(3, 5)));
-        }
-        return formattedTimes;
-    }
 
     // compute prayer times at given julian date
     private ArrayList<String> computeDayTimes() {

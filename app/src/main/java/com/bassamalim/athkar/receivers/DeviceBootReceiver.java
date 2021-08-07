@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.bassamalim.athkar.DailyUpdate;
 import com.bassamalim.athkar.receivers.NotificationReceiver;
 
 import java.util.Calendar;
@@ -15,8 +16,9 @@ public class DeviceBootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             // on device boot complete, reset the alarm
-            Intent alarmIntent = new Intent(context, NotificationReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, 0);
+            Intent alarmIntent = new Intent(context, DailyUpdateReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
+                    alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 

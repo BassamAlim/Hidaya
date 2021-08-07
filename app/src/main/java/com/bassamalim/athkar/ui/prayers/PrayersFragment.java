@@ -1,10 +1,7 @@
 package com.bassamalim.athkar.ui.prayers;
 
 import androidx.lifecycle.ViewModelProvider;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
@@ -14,22 +11,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import com.bassamalim.athkar.Alarms;
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.DataSaver;
 import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.PrayTimes;
 import com.bassamalim.athkar.databinding.PrayersFragmentBinding;
-import com.bassamalim.athkar.receivers.NotificationReceiver;
 import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class PrayersFragment extends Fragment {
 
@@ -58,16 +51,11 @@ public class PrayersFragment extends Fragment {
 
         formattedTimes = formatTimes(times);
 
-        //MyNotification notification = new MyNotification(formattedTimes);
-
         storeTimes(formatTimes(times));
 
         Alarms alarms = new Alarms(requireContext().getApplicationContext(), location, formattedTimes);
 
-        //setAlarms(test());
-
         return root;
-        //return inflater.inflate(R.layout.prayers_fragment, container, false);
     }
 
     @Override
@@ -104,7 +92,8 @@ public class PrayersFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
 
-        return new PrayTimes().getPrayerTimes(calendar, location.getLatitude(), location.getLongitude(), Constants.TIME_ZONE);
+        return new PrayTimes().getPrayerTimes(calendar, location.getLatitude(),
+                location.getLongitude(), Constants.TIME_ZONE);
     }
 
     public static String[] translateNumbers(ArrayList<String> english) {
