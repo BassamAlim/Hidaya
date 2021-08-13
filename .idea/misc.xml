@@ -4,13 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable-v24/rounded_corners.xml" value="0.19282051282051282" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/splash_background.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/activity_athkar_view.xml" value="0.1648148148148148" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/activity_main.xml" value="0.17222222222222222" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/fragment_alathkar.xml" value="0.16944444444444445" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/fragment_qibla.xml" value="0.1675925925925926" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/other_fragment.xml" value="0.17222222222222222" />
-        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/prayers_fragment.xml" value="0.16944444444444445" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/prayers_fragment.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/quran_fragment.xml" value="0.16197916666666667" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/quran_view.xml" value="0.15925925925925927" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/splash.xml" value="0.17222222222222222" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.19583333333333333" />
       </map>

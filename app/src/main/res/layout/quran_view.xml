@@ -10,18 +10,47 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_gravity="top">
 
-            <TextView
-                android:id="@+id/quran_view"
+            <LinearLayout
+                android:id="@+id/mainLinear"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textSize="30sp"
-                android:textColor="@color/white" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp">
+
+                <Button
+                    android:id="@+id/prev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_corners"
+                    android:text="الصفحة السابقة"
+                    android:textColor="@color/secondary"
+                    android:textSize="22sp"
+                    android:layout_marginEnd="45dp"/>
+
+                <Button
+                    android:id="@+id/next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_corners"
+                    android:text="الصفحة التالية"
+                    android:textColor="@color/secondary"
+                    android:textSize="22sp"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

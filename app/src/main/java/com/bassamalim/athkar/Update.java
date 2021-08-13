@@ -64,12 +64,4 @@ public class Update extends AppCompatActivity {
         return result;
     }
 
-    public void startUpdate() {
-        String url;
-        url = remoteConfig.getString(Constants.UPDATE_URL);
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(url));
-        startActivity(i);
-    }
-
 }

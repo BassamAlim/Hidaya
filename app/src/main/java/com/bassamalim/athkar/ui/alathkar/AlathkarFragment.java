@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import com.bassamalim.athkar.AthkarView;
+import com.bassamalim.athkar.AlathkarView;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.FragmentAlathkarBinding;
 
@@ -49,7 +49,7 @@ public class AlathkarFragment extends Fragment {
 
     public void showThikrs(int givenThikrs, CharSequence title) {
         thikrs = getResources().getStringArray(givenThikrs);
-        Intent intent = new Intent(getContext(), AthkarView.class);
+        Intent intent = new Intent(getContext(), AlathkarView.class);
         intent.putExtra("key", thikrs);
         intent.putExtra("title", title);
         startActivity(intent);

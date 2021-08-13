@@ -5,35 +5,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/prayers_background"
+    android:background="@color/primary"
     tools:context=".ui.prayers.PrayersFragment">
-
-    <!--<TextView
-        android:id="@+id/prayers_text"
-        android:layout_width="263dp"
-        android:layout_height="240dp"
-        android:gravity="center"
-        android:text="أوقات الصلاة"
-        android:textColor="@color/secondary"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.352" />-->
-
+    <!--android:background="@drawable/prayers_background"-->
 
     <TextView
         android:id="@+id/fajrView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="8dp"
         android:text="Fajr"
-        android:textSize="30sp"
         android:textColor="@color/secondary"
+        android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/dhuhrView"
+        app:layout_constraintBottom_toTopOf="@+id/shorouqView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -42,69 +28,75 @@
         android:id="@+id/shorouqView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Shorouq"
-        android:textSize="30sp"
         android:textColor="@color/secondary"
+        android:textSize="30sp"
         android:textStyle="bold"
-        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toTopOf="@id/dhuhrView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fajrView"
-        app:layout_constraintBottom_toTopOf="@id/dhuhrView"/>
+        app:layout_constraintTop_toBottomOf="@+id/fajrView" />
 
     <TextView
         android:id="@+id/dhuhrView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Dhuhr"
-        android:textSize="30sp"
         android:textColor="@color/secondary"
+        android:textSize="30sp"
         android:textStyle="bold"
-        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toTopOf="@id/asrView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shorouqView"
-        app:layout_constraintBottom_toTopOf="@id/asrView"/>
+        app:layout_constraintTop_toBottomOf="@+id/shorouqView" />
 
     <TextView
         android:id="@+id/asrView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Asr"
-        android:textSize="30sp"
         android:textColor="@color/secondary"
+        android:textSize="30sp"
         android:textStyle="bold"
-        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toTopOf="@id/maghribView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dhuhrView"
-        app:layout_constraintBottom_toTopOf="@id/maghribView"/>
+        app:layout_constraintTop_toBottomOf="@+id/dhuhrView" />
 
     <TextView
         android:id="@+id/maghribView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Maghrib"
-        android:textSize="30sp"
         android:textColor="@color/secondary"
+        android:textSize="30sp"
         android:textStyle="bold"
-        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/ishaaView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/asrView"
-        app:layout_constraintBottom_toBottomOf="@id/ishaaView"/>
+        app:layout_constraintTop_toBottomOf="@+id/asrView" />
 
     <TextView
         android:id="@+id/ishaaView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="200dp"
         android:text="Ishaa"
-        android:textSize="30sp"
         android:textColor="@color/secondary"
+        android:textSize="30sp"
         android:textStyle="bold"
-        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/maghribView"/>
+        app:layout_constraintTop_toBottomOf="@+id/maghribView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

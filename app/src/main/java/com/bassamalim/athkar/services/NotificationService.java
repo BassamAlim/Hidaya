@@ -8,17 +8,19 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.IBinder;
+import android.view.Gravity;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.QuranView;
 import com.bassamalim.athkar.R;
-
-import java.util.Calendar;
 
 public class NotificationService extends Service {
 
@@ -34,8 +36,10 @@ public class NotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? createNotificationChannel(notificationManager) : "Athan";
+        NotificationManager notificationManager = (NotificationManager)
+                getSystemService(NOTIFICATION_SERVICE);
+        channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
+                createNotificationChannel(notificationManager) : "Athan";
 
         int prayer = intent.getIntExtra("prayer", 0);
 
@@ -47,12 +51,12 @@ public class NotificationService extends Service {
 
         managerCompat.notify(NOTIFICATION_ID, notification);
 
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
-
     public Notification buildNotification(int prayer) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Athan");
+        NotificationCompat.Builder builder = new
+                NotificationCompat.Builder(this, "Athan");
         builder.setSmallIcon(R.drawable.ic_athan);
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_athan);
         builder.setLargeIcon(icon);
@@ -64,26 +68,27 @@ public class NotificationService extends Service {
                 builder.setContentText("قوم صلي الفجر");
                 break;
             }
-            /*case 1: {
-                builder.setContentTitle("صلاة الفجر");
-                builder.setContentText("قوم صلي الفجر");
+            case 1: {
+                builder.setContentTitle("وقت الشروق");
+                builder.setContentText("إقرأ أذكار الصباح");
                 break;
-            }*/
+            }
             case 2: {
                 builder.setContentTitle("صلاة الظهر");
                 builder.setContentText("قوم صلي الظهر");
                 break;
             }
+
             case 3: {
                 builder.setContentTitle("صلاة العصر");
                 builder.setContentText("قوم صلي العصر");
                 break;
             }
-            /*case 4: {
-                builder.setContentTitle("صلاة الفجر");
-                builder.setContentText("قوم صلي الفجر");
+            case 4: {
+                builder.setContentTitle("وقت الغروب");
+                builder.setContentText("إقرأ أذكار المساء");
                 break;
-            }*/
+            }
             case 5: {
                 builder.setContentTitle("صلاة المغرب");
                 builder.setContentText("قوم صلي المغرب");
@@ -96,9 +101,10 @@ public class NotificationService extends Service {
             }
         }
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
-        builder.setContentIntent(onClick());
         builder.setAutoCancel(true);
         builder.setOnlyAlertOnce(true);
+        builder.setColor(getColor(R.color.secondary));
+        builder.setContentIntent(onClick(prayer));
         //builder.setOngoing(true);
         //builder.setDeleteIntent(contentPendingIntent)  // if needed
 
@@ -110,7 +116,6 @@ public class NotificationService extends Service {
         return notification;
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private String createNotificationChannel(NotificationManager notificationManager) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -132,11 +137,28 @@ public class NotificationService extends Service {
         return channelId;
     }
 
-    private PendingIntent onClick() {
+    private PendingIntent onClick(int prayer) {
         // Create an explicit intent for an Activity in your app
-        Intent intent = new Intent(this, QuranView.class);
+        Intent intent;
+        PendingIntent pendingIntent;
+
+        if (prayer == 1) {
+            intent = new Intent(this, QuranView.class);
+            intent.putExtra("key", R.array.morning);
+            intent.putExtra("title", "أذكار الصباح");
+        }
+        else if (prayer == 4) {
+            intent = new Intent(this, QuranView.class);
+            intent.putExtra("key", R.array.night);
+            intent.putExtra("title", "أذكار المساء");
+        }
+        else {
+            intent = new Intent(this, MainActivity.class);
+        }
+
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingIntent = PendingIntent.getActivity(this,
+                prayer, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         return pendingIntent;
     }

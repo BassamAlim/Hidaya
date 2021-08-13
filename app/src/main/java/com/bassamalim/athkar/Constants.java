@@ -8,6 +8,7 @@ public class Constants {
     public static final double KAABA_LONGITUDE = 39.8251832;
     public static final double EARTH_RADIUS = 6371;
     public static final int NUMBER_OF_SURAHS = 114;
+    public static final int QURAN_PAGES = 604;
     public static final String CHANNEL_ID = "Athan Channel";
     public static final int NOTIFICATION_ID = 1;
 

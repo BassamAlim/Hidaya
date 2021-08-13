@@ -12,12 +12,11 @@ import android.widget.TextView;
 import com.bassamalim.athkar.databinding.ActivityAthkarViewBinding;
 import java.util.Objects;
 
-public class AthkarView extends AppCompatActivity {
+public class AlathkarView extends AppCompatActivity {
 
     ActivityAthkarViewBinding binding;
     LinearLayout linear;
     String[] thikrs = new String[15];
-    private static final String TAG = "AthkarView";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +50,8 @@ public class AthkarView extends AppCompatActivity {
 
     public TextView screen() {
         TextView screen = new TextView(this);
-        LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screen.setLayoutParams(screenParams);
         screen.setTextColor(getResources().getColor(R.color.white, getTheme()));
         screen.setGravity(Gravity.CENTER);
