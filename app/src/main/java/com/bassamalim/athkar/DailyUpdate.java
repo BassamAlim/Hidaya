@@ -10,15 +10,16 @@ import java.util.Calendar;
 
 public class DailyUpdate {
 
-    private final Context CONTEXT = MainActivity.getInstance();
     private int hourOfTheDay = 0;
 
     public DailyUpdate() {
-        Intent myIntent = new Intent(CONTEXT.getApplicationContext(), DailyUpdateReceiver.class);
+        Context context = MainActivity.getInstance();
 
-        PendingIntent pendIntent = PendingIntent.getBroadcast(CONTEXT.getApplicationContext(), 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent myIntent = new Intent(context.getApplicationContext(), DailyUpdateReceiver.class);
 
-        AlarmManager myAlarm = (AlarmManager) CONTEXT.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager myAlarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         myAlarm.setRepeating(AlarmManager.RTC_WAKEUP, time().getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendIntent);
     }

@@ -2,6 +2,7 @@ package com.bassamalim.athkar;
 
 public class Constants {
 
+    public static final String TAG = "FromMeToMe";
     public static final int TIME_ZONE = 3;
     public static final String ACTION_NOTIFY_ATHAN = "com.bassamalim.athkar.action.NOTIFY_ATHAN";
     public static final double KAABA_LATITUDE = 21.4224779;

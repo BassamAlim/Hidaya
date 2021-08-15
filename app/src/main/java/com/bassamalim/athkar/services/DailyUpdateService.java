@@ -26,8 +26,6 @@ public class DailyUpdateService extends Service {
     public static Calendar[] times;
     SharedPreferences myPrefs;
     SharedPreferences.Editor editor;
-    private Calendar calendar;
-    private Date now;
     public Gson gson;
     public static String json;
 
@@ -53,12 +51,13 @@ public class DailyUpdateService extends Service {
         return START_STICKY;
     }
 
+    public static Calendar[] getTimes() {
+        Date now = new Date();
 
-    public Calendar[] getTimes() {
-        now = new Date();
-
-        calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
+
+        Location location = null;
 
         return new PrayTimes().getPrayerTimesArray(calendar, location.getLatitude(),
                 location.getLongitude(), Constants.TIME_ZONE);

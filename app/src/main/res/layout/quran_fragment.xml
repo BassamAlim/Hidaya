@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/primary"
     android:layout_gravity="center"
-    tools:context=".ui.Quran.QuranFragment">
+    tools:context=".ui.quran.QuranFragment">
 
     <ScrollView
         android:layout_width="match_parent"

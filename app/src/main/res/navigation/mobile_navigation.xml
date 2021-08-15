@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_quran"
-        android:name="com.bassamalim.athkar.ui.Quran.QuranFragment"
+        android:name="com.bassamalim.athkar.ui.quran.QuranFragment"
         android:label="@string/title_quran"
         tools:layout="@layout/quran_fragment" />
 
@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/navigation_other"
-        android:name="com.bassamalim.athkar.ui.Other.OtherFragment"
+        android:name="com.bassamalim.athkar.ui.other.OtherFragment"
         android:label="@string/title_other"
         tools:layout="@layout/fragment_qibla" />
 

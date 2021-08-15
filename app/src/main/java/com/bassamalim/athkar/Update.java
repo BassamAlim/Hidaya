@@ -1,12 +1,9 @@
 package com.bassamalim.athkar;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,9 +11,10 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class Update extends AppCompatActivity {
 
+    private final String TAG = "Update";
     private static Update instance;
     private final FirebaseRemoteConfig remoteConfig = MainActivity.getInstance().remoteConfig;
-    private static final String TAG = "MainActivity";
+    public String currentVersion  = getAppVersion(MainActivity.getInstance());
 
     public static Update getInstance() {
         return instance;
@@ -29,21 +27,21 @@ public class Update extends AppCompatActivity {
     }
 
     private void checkForUpdate() {
-        remoteConfig.fetch().addOnCompleteListener(task -> {
+        remoteConfig.fetchAndActivate().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.i(TAG, "remote config is fetched.");
+                boolean available = remoteConfig.getBoolean(Constants.UPDATE_AVAILABLE);
                 remoteConfig.fetchAndActivate();
-            }
-            boolean available = remoteConfig.getBoolean(Constants.UPDATE_AVAILABLE);
-            remoteConfig.fetchAndActivate();
-            if (available) {
-                Log.i(TAG, "Update available");
-                String latestVersion = remoteConfig.getString(Constants.LATEST_VERSION);
-                String currentVersion = getAppVersion(MainActivity.getInstance());
-                if (!TextUtils.equals(currentVersion, latestVersion)) {
-                    showUpdatePrompt();
+                if (available) {
+                    Log.i(TAG, "Update available");
+                    String latestVersion = remoteConfig.getString(Constants.LATEST_VERSION);
+                    if (!TextUtils.equals(currentVersion, latestVersion)) {
+                        showUpdatePrompt();
+                    }
                 }
             }
+            else
+                Log.i(TAG, "Fetch Failed");
         });
     }
 

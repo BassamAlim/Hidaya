@@ -1,8 +1,6 @@
 package com.bassamalim.athkar.ui.qibla;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -19,10 +17,8 @@ import android.view.animation.RotateAnimation;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.R;
@@ -41,7 +37,6 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
     private float currentDegree = 0f;
     private double distance = 0;
     Vibrator vibrator;
-
 
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -102,66 +97,53 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
     @Override
     public void onPause() {
         super.onPause();
-
         // to stop the listener and save battery
         sensorManager.unregisterListener(this);
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        getDistance();
 
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        // get the angle around the z-axis rotated
+        float degree = Math.round(event.values[0]);
+        float head = Math.round(event.values[0]);
 
-            getDistance();
+        bearing = location.bearingTo(kaaba);
 
-            // get the angle around the z-axis rotated
-            float degree = Math.round(event.values[0]);
-            float head = Math.round(event.values[0]);
+        GeomagneticField geoField = new GeomagneticField(Double.valueOf(location.getLatitude()).floatValue(),
+                Double.valueOf(location.getLongitude()).floatValue(),
+                Double.valueOf(location.getAltitude()).floatValue(), System.currentTimeMillis());
+        head -= geoField.getDeclination(); // converts magnetic north into true north
 
-            bearing = location.bearingTo(kaaba);
-
-            GeomagneticField geoField = new GeomagneticField(Double.valueOf(location.getLatitude()).floatValue(),
-                    Double.valueOf(location.getLongitude()).floatValue(),
-                    Double.valueOf(location.getAltitude()).floatValue(), System.currentTimeMillis());
-            head -= geoField.getDeclination(); // converts magnetic north into true north
-
-            if (bearing < 0) {
-                bearing = bearing + 360;
-                //bearTo = -100 + 360  = 260;
-            }
-
-            //This is where we choose to point it
-            float direction = bearing - head;
-
-            // If the direction is smaller than 0, add 360 to get the rotation clockwise.
-            if (direction < 0)
-                direction = direction + 360;
-
-            RotateAnimation raQibla = new RotateAnimation(currentDegree, direction,
-                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            raQibla.setDuration(210);
-            raQibla.setFillAfter(true);
-
-            binding.qiblaView.startAnimation(raQibla);
-
-            currentDegree = direction;
-
-            String text = "المسافة الى الكعبة: " + distance + " كم";
-            binding.distanceText.setText(text);
-
-            if (degree == 111 || degree == 112)
-                binding.bingo.setVisibility(View.VISIBLE);
-            if (degree < 111 || degree > 112)
-                binding.bingo.setVisibility(View.INVISIBLE);
-
-        }
-        else {
-            binding.distanceText.setText("لازم تسوي سماح للموقع عشان يشتغل");
-            MainActivity.requestPermissions();
+        if (bearing < 0) {
+            bearing = bearing + 360;
+            //bearTo = -100 + 360  = 260;
         }
 
+        //This is where we choose to point it
+        float direction = bearing - head;
+
+        // If the direction is smaller than 0, add 360 to get the rotation clockwise.
+        if (direction < 0)
+            direction = direction + 360;
+
+        RotateAnimation raQibla = new RotateAnimation(currentDegree, direction,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        raQibla.setDuration(210);
+        raQibla.setFillAfter(true);
+
+        binding.qiblaView.startAnimation(raQibla);
+
+        currentDegree = direction;
+
+        String text = "المسافة الى الكعبة: " + distance + " كم";
+        binding.distanceText.setText(text);
+
+        if (degree == 111 || degree == 112)
+            binding.bingo.setVisibility(View.VISIBLE);
+        if (degree < 111 || degree > 112)
+            binding.bingo.setVisibility(View.INVISIBLE);
     }
 
     @Override

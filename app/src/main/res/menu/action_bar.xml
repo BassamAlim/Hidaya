@@ -6,7 +6,7 @@
     <item
         android:id="@+id/whatsapp"
         android:icon="@drawable/ic_whatsapp"
-        android:iconTint="#37CA4A"
+        android:iconTint="@color/secondary"
         android:title="@string/whatsapp"
         app:showAsAction="always"/>
 

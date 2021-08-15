@@ -70,7 +70,12 @@ public class Alarms extends AppCompatActivity {
             AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
 
             myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, times[i].getTimeInMillis(), pendIntent);
+
         }
+    }
+
+    public void clearAlarms() {
+
     }
 
     public Location retrieveLocation() {

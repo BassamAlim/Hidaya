@@ -6,6 +6,7 @@
     android:background="@color/primary">
 
     <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -36,7 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_corners"
-                    android:text="الصفحة السابقة"
+                    android:text="@string/prev_page"
                     android:textColor="@color/secondary"
                     android:textSize="22sp"
                     android:layout_marginEnd="45dp"/>
@@ -46,7 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_corners"
-                    android:text="الصفحة التالية"
+                    android:text="@string/next_page"
                     android:textColor="@color/secondary"
                     android:textSize="22sp"/>
 

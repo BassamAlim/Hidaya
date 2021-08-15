@@ -3,10 +3,10 @@
     package="com.bassamalim.athkar">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -24,54 +24,66 @@
         android:theme="@style/Theme.Athkar">
 
         <activity
+            android:name=".Settings"
+            android:exported="true"
+            android:label="@string/title_activity_settings" />
+        <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".AlathkarView"
+            android:name=".views.AlathkarView"
+            android:exported="false"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Athkar"
-            android:exported="false">
+            android:theme="@style/Theme.Athkar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".QuranView"
+            android:name=".views.QuranView"
+            android:exported="false"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Athkar"
-            android:exported="false">
+            android:theme="@style/Theme.Athkar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".views.TvView"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Athkar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Splash"
-            android:theme="@style/LaunchTheme"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/LaunchTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".FullScreenVideoActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.NoActionBar"> <!-- VERY IMPORTANT ... CRASHES WITHOUT IT -->
         </activity>
 
         <receiver
             android:name=".receivers.NotificationReceiver"
-            android:enabled="true">
-        </receiver>
-
+            android:enabled="true" />
         <receiver
             android:name=".receivers.DailyUpdateReceiver"
-            android:enabled="true">
-        </receiver>
-
+            android:enabled="true" />
         <receiver
             android:name=".receivers.DeviceBootReceiver"
             android:enabled="true"
@@ -85,24 +97,18 @@
             android:name=".services.NotifyService"
             android:enabled="true"
             android:process=":athan"
-            android:stopWithTask="false">
-        </service>
-
+            android:stopWithTask="false" />
         <service
             android:name=".services.NotificationService"
             android:enabled="true"
-            android:stopWithTask="false"
+            android:excludeFromRecents="true"
             android:process=":athan"
-            android:excludeFromRecents="true">
-        </service>
-
+            android:stopWithTask="false" />
         <service
             android:name=".services.DailyUpdateService"
             android:enabled="true"
-            android:stopWithTask="false"
-            android:excludeFromRecents="true">
-        </service>
-
+            android:excludeFromRecents="true"
+            android:stopWithTask="false" />
     </application>
 
 </manifest>

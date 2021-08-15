@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import com.bassamalim.athkar.AlathkarView;
+import com.bassamalim.athkar.views.AlathkarView;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.FragmentAlathkarBinding;
 
@@ -26,6 +26,12 @@ public class AlathkarFragment extends Fragment {
         binding = FragmentAlathkarBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        setListeners();
+
+        return root;
+    }
+
+    private void setListeners() {
         binding.morning.setOnClickListener(v -> showThikrs(R.array.morning, binding.morning.getText()));
 
         binding.night.setOnClickListener(v -> showThikrs(R.array.night, binding.night.getText()));
@@ -43,19 +49,17 @@ public class AlathkarFragment extends Fragment {
         binding.wudu.setOnClickListener(v -> showThikrs(R.array.ablution, binding.wudu.getText()));
 
         binding.bathroom.setOnClickListener(v -> showThikrs(R.array.bathroom, binding.bathroom.getText()));
-
-        return root;
     }
 
     public void showThikrs(int givenThikrs, CharSequence title) {
         thikrs = getResources().getStringArray(givenThikrs);
         Intent intent = new Intent(getContext(), AlathkarView.class);
-        intent.putExtra("key", thikrs);
+        intent.putExtra("thikrs", thikrs);
         intent.putExtra("title", title);
         startActivity(intent);
     }
 
-@Override
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;

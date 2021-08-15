@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary">
+
+    <VideoView
+        android:id="@+id/screen"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/quran"/>
+
+    <Button
+        android:id="@+id/quran"
+        android:layout_width="350dp"
+        android:layout_height="90dp"
+        android:background="@drawable/rounded_corners"
+        android:gravity="center_horizontal|center"
+        android:text="القرآن الكريم"
+        android:textColor="@color/secondary"
+        android:textSize="25sp"
+        android:drawableStart="@mipmap/ic_quran_channel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/screen"
+        app:layout_constraintBottom_toTopOf="@id/sunnah"/>
+
+    <Button
+        android:id="@+id/sunnah"
+        android:layout_width="350dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/rounded_corners"
+        android:gravity="center_horizontal|center"
+        android:text="السنة النبوية"
+        android:textColor="@color/secondary"
+        android:textSize="25sp"
+        android:drawableStart="@mipmap/ic_sunnah_channel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/quran"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

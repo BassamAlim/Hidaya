@@ -5,7 +5,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
@@ -16,7 +15,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.MainActivity;
-import com.bassamalim.athkar.QuranView;
+import com.bassamalim.athkar.views.QuranView;
 import com.bassamalim.athkar.R;
 
 public class NotifyService extends IntentService {

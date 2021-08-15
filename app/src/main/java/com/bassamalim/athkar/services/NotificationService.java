@@ -8,26 +8,20 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.IBinder;
-import android.view.Gravity;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-
 import com.bassamalim.athkar.MainActivity;
-import com.bassamalim.athkar.QuranView;
+import com.bassamalim.athkar.views.AlathkarView;
+import com.bassamalim.athkar.views.QuranView;
 import com.bassamalim.athkar.R;
 
 public class NotificationService extends Service {
 
     public static boolean isServiceRunning = false;
-    private static final int NOTIFICATION_ID = 3;
+    private static int notificationId;
     private String channelId = "Athan";
-    private NotificationManagerCompat managerCompat;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -47,9 +41,11 @@ public class NotificationService extends Service {
 
         //startForeground(NOTIFICATION_ID, notification);
 
-        managerCompat = NotificationManagerCompat.from(this);
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
 
-        managerCompat.notify(NOTIFICATION_ID, notification);
+        notificationId = prayer;
+
+        managerCompat.notify(notificationId, notification);
 
         return START_STICKY;
     }
@@ -78,7 +74,6 @@ public class NotificationService extends Service {
                 builder.setContentText("قوم صلي الظهر");
                 break;
             }
-
             case 3: {
                 builder.setContentTitle("صلاة العصر");
                 builder.setContentText("قوم صلي العصر");
@@ -143,12 +138,12 @@ public class NotificationService extends Service {
         PendingIntent pendingIntent;
 
         if (prayer == 1) {
-            intent = new Intent(this, QuranView.class);
+            intent = new Intent(this, AlathkarView.class);
             intent.putExtra("key", R.array.morning);
             intent.putExtra("title", "أذكار الصباح");
         }
         else if (prayer == 4) {
-            intent = new Intent(this, QuranView.class);
+            intent = new Intent(this, AlathkarView.class);
             intent.putExtra("key", R.array.night);
             intent.putExtra("title", "أذكار المساء");
         }
@@ -163,17 +158,17 @@ public class NotificationService extends Service {
         return pendingIntent;
     }
 
-    void stopMyService() {
+    /*void stopMyService() {
         stopForeground(true);
         stopSelf();
         isServiceRunning = false;
-    }
+    }*/
 
-    // In case the service is deleted or crashes some how
     @Override
     public void onDestroy() {
-        isServiceRunning = false;
         super.onDestroy();
+        stopSelf();
+        isServiceRunning = false;
     }
 }
 

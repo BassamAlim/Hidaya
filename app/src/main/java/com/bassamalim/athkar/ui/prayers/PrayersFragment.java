@@ -1,29 +1,15 @@
 package com.bassamalim.athkar.ui.prayers;
 
 import androidx.lifecycle.ViewModelProvider;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.bassamalim.athkar.Alarms;
-import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.DataSaver;
 import com.bassamalim.athkar.MainActivity;
-import com.bassamalim.athkar.PrayTimes;
 import com.bassamalim.athkar.databinding.PrayersFragmentBinding;
-import com.google.gson.Gson;
-import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 public class PrayersFragment extends Fragment {
@@ -44,25 +30,20 @@ public class PrayersFragment extends Fragment {
         times = MainActivity.times;
         translatedTimes = translateNumbers(times);
 
-        if (MainActivity.checkPermissions()) {
-            String fajrText = "الفجر: " + translatedTimes[0];
-            String shorouqText = "الشروق: " + translatedTimes[1];
-            String dhuhrText = "الظهر: " + translatedTimes[2];
-            String asrText = "العصر: " + translatedTimes[3];
-            String maghribText = "المغرب: " + translatedTimes[5];
-            String ishaaText = "العشاء: " + translatedTimes[6];
+        String fajrText = "الفجر: " + translatedTimes[0];
+        String shorouqText = "الشروق: " + translatedTimes[1];
+        String dhuhrText = "الظهر: " + translatedTimes[2];
+        String asrText = "العصر: " + translatedTimes[3];
+        String maghribText = "المغرب: " + translatedTimes[5];
+        String ishaaText = "العشاء: " + translatedTimes[6];
 
-            binding.fajrView.setText(fajrText);
-            binding.shorouqView.setText(shorouqText);
-            binding.dhuhrView.setText(dhuhrText);
-            binding.asrView.setText(asrText);
-            binding.maghribView.setText(maghribText);
-            binding.ishaaView.setText(ishaaText);
-        }
-        else {
-            binding.asrView.setText("لازم تسوي سماح للموقع عشان يشتغل");
-            MainActivity.requestPermissions();
-        }
+        binding.fajrView.setText(fajrText);
+        binding.shorouqView.setText(shorouqText);
+        binding.dhuhrView.setText(dhuhrText);
+        binding.asrView.setText(asrText);
+        binding.maghribView.setText(maghribText);
+        binding.ishaaView.setText(ishaaText);
+
 
         return root;
     }

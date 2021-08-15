@@ -1,6 +1,5 @@
 package com.bassamalim.athkar;
 
-import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,13 +12,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 import com.bassamalim.athkar.receivers.DeviceBootReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -59,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_prayers, R.id.navigation_alathkar, R.id.navigation_qibla).build();
 
@@ -74,12 +69,10 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(60).build();
+                .setMinimumFetchIntervalInSeconds(3600*12).build();
+
         remoteConfig.setConfigSettingsAsync(configSettings);
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
-
-        if (!checkPermissions())
-            requestPermissions();
 
         Intent intent = getIntent();
         location = intent.getParcelableExtra("location");
@@ -93,13 +86,13 @@ public class MainActivity extends AppCompatActivity {
 
         storeTimes(formattedTimes);
 
-        Alarms alarms = new Alarms(this, location, formattedTimes);
+        if (getPreferences(MODE_PRIVATE).getBoolean(getString(R.string.athan_enable_key), true)) {
+            new Alarms(this, location, formattedTimes);
+            new DailyUpdate();
+            receiver();
+        }
 
-        DailyUpdate dailyUpdate = new DailyUpdate();
-
-        receiver();
-
-        Update update = new Update();
+        new Update();
     }
 
     public Calendar[] test() {
@@ -172,14 +165,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void storeTimes(Calendar[] givenTimes) {
         myPrefs = getApplicationContext().getSharedPreferences("times", Context.MODE_PRIVATE);
-        //may produce null;
+
         editor = myPrefs.edit();
 
         DataSaver saver = new DataSaver();
         saver.times = givenTimes;
 
         gson = new Gson();
-
         json = gson.toJson(saver);
 
         editor.putString("times", json);
@@ -194,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
         saver.location = givenLocation;
 
         gson = new Gson();
-
         json = gson.toJson(saver);
 
         editor.putString("location", json);
@@ -209,20 +200,6 @@ public class MainActivity extends AppCompatActivity {
                 PackageManager.DONT_KILL_APP);
     }
 
-    public static boolean checkPermissions() {
-        return ActivityCompat.checkSelfPermission(getInstance(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getInstance(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public static void requestPermissions() {
-        ActivityCompat.requestPermissions(getInstance(), new String[]
-                {Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        Toast.makeText(getInstance(), "لازم تسوي سماح للموقع عشان يشتغل", Toast.LENGTH_LONG).show();
-        checkPermissions();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -230,7 +207,8 @@ public class MainActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary, getTheme())));
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(
+                R.color.primary, getTheme())));
 
         return true;
     }
