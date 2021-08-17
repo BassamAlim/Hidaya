@@ -139,12 +139,12 @@ public class NotificationService extends Service {
 
         if (prayer == 1) {
             intent = new Intent(this, AlathkarView.class);
-            intent.putExtra("key", R.array.morning);
+            intent.putExtra("thikrs", getResources().getStringArray(R.array.morning));
             intent.putExtra("title", "أذكار الصباح");
         }
         else if (prayer == 4) {
             intent = new Intent(this, AlathkarView.class);
-            intent.putExtra("key", R.array.night);
+            intent.putExtra("thikrs", getResources().getStringArray(R.array.night));
             intent.putExtra("title", "أذكار المساء");
         }
         else {

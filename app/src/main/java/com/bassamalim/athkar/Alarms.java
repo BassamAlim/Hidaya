@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bassamalim.athkar.models.DataSaver;
 import com.bassamalim.athkar.receivers.NotificationReceiver;
 import com.google.gson.Gson;
 import java.util.Calendar;
@@ -16,17 +18,15 @@ public class Alarms extends AppCompatActivity {
 
     Context context;
     Context appContext;
-    Gson gson;
-    SharedPreferences myPrefs;
-    DataSaver saver;
+    Keeper keeper;
     Calendar[] times;
     Location location;
-    String json;
 
     public Alarms(Context gContext) {
         context = gContext;
-        location = retrieveLocation();
-        times = retrieveTimes();
+        keeper = new Keeper(this);
+        location = keeper.retrieveLocation();
+        times = getTimes();
 
         setAlarms();
     }
@@ -41,15 +41,6 @@ public class Alarms extends AppCompatActivity {
 
     public Alarms(Context gContext, Calendar[] gTimes) {
         context = gContext;
-        location = retrieveLocation();
-        times = gTimes;
-
-        setAlarms();
-    }
-
-    public Alarms(Context gContext, Location gLocation, Calendar[] gTimes) {
-        context = gContext;
-        location = gLocation;
         times = gTimes;
 
         setAlarms();
@@ -72,28 +63,6 @@ public class Alarms extends AppCompatActivity {
             myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, times[i].getTimeInMillis(), pendIntent);
 
         }
-    }
-
-    public void clearAlarms() {
-
-    }
-
-    public Location retrieveLocation() {
-        gson = new Gson();
-        myPrefs = getSharedPreferences("location", MODE_PRIVATE);
-        json = myPrefs.getString("location", "");
-        saver = gson.fromJson(json, DataSaver.class);
-
-        return saver.location;
-    }
-
-    public Calendar[] retrieveTimes() {
-        gson = new Gson();
-        myPrefs = getSharedPreferences("times", MODE_PRIVATE);
-        json = myPrefs.getString("times", "");
-        saver = gson.fromJson(json, DataSaver.class);
-
-        return saver.times;
     }
 
     public Calendar[] getTimes() {

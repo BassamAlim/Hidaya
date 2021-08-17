@@ -41,4 +41,7 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
+    <string name="search_hint">hint</string>
+    <string name="search_title">بحث</string>
+
 </resources>

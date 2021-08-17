@@ -1,7 +1,6 @@
 package com.bassamalim.athkar;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -9,9 +8,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import com.bassamalim.athkar.models.DataSaver;
 import com.bassamalim.athkar.receivers.DeviceBootReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.NonNull;
@@ -37,11 +38,6 @@ public class MainActivity extends AppCompatActivity {
     public static Location location;
     public static ArrayList<String> times;
     public Calendar[] formattedTimes;
-    public Gson gson;
-    public SharedPreferences myPrefs;
-    public String json;
-    public DataSaver saver;
-    public SharedPreferences.Editor editor;
 
     public static MainActivity getInstance() {
         return instance;
@@ -77,17 +73,26 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         location = intent.getParcelableExtra("location");
 
-        storeLocation(location);
+        try {
+            double test = location.getLatitude();
+            new Keeper(this, location);
+            Log.i(Constants.TAG, "went");
+        }
+        catch (Exception e) {
+            Keeper keeper = new Keeper(this);
+            location = keeper.retrieveLocation();
+            Log.i(Constants.TAG, "didnt");
+        }
 
         times = getTimes();
 
-        formattedTimes = formatTimes(times);
-        //formattedTimes = test();
+        //formattedTimes = formatTimes(times);
+        formattedTimes = test();
 
-        storeTimes(formattedTimes);
+        new Keeper(this, formattedTimes);
 
         if (getPreferences(MODE_PRIVATE).getBoolean(getString(R.string.athan_enable_key), true)) {
-            new Alarms(this, location, formattedTimes);
+            new Alarms(this, formattedTimes);
             new DailyUpdate();
             receiver();
         }
@@ -100,13 +105,13 @@ public class MainActivity extends AppCompatActivity {
 
         tester[0] = Calendar.getInstance();
         tester[0].setTimeInMillis(System.currentTimeMillis());
-        tester[0].set(Calendar.HOUR_OF_DAY, 22);
-        tester[0].set(Calendar.MINUTE, 1);
+        tester[0].set(Calendar.HOUR_OF_DAY, 4);
+        tester[0].set(Calendar.MINUTE, 4);
 
         tester[1] = Calendar.getInstance();
         tester[1].setTimeInMillis(System.currentTimeMillis());
-        tester[1].set(Calendar.HOUR_OF_DAY, 21);
-        tester[1].set(Calendar.MINUTE, 38);
+        tester[1].set(Calendar.HOUR_OF_DAY, 4);
+        tester[1].set(Calendar.MINUTE, 48);
 
         tester[2] = Calendar.getInstance();
         tester[2].setTimeInMillis(System.currentTimeMillis());
@@ -161,35 +166,6 @@ public class MainActivity extends AppCompatActivity {
             formattedTimes[i].set(Calendar.MINUTE, Integer.parseInt(givenTimes.get(i).substring(3, 5)));
         }
         return formattedTimes;
-    }
-
-    public void storeTimes(Calendar[] givenTimes) {
-        myPrefs = getApplicationContext().getSharedPreferences("times", Context.MODE_PRIVATE);
-
-        editor = myPrefs.edit();
-
-        DataSaver saver = new DataSaver();
-        saver.times = givenTimes;
-
-        gson = new Gson();
-        json = gson.toJson(saver);
-
-        editor.putString("times", json);
-        editor.apply();
-    }
-
-    public void storeLocation(Location givenLocation) {
-        myPrefs = this.getApplicationContext().getSharedPreferences("location", Context.MODE_PRIVATE);
-        editor = myPrefs.edit();
-
-        DataSaver saver = new DataSaver();
-        saver.location = givenLocation;
-
-        gson = new Gson();
-        json = gson.toJson(saver);
-
-        editor.putString("location", json);
-        editor.apply();
     }
 
     public void receiver() {

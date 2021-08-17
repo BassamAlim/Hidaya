@@ -41,7 +41,7 @@ public class Settings extends AppCompatActivity {
             athanSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean on = (Boolean) newValue;
                 if (on) {
-                    DailyUpdateService.getTimes();
+
                 }
                 else {
                     for (int i = 0; i < 7; i++) {

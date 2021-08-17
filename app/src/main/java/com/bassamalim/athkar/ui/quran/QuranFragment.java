@@ -30,7 +30,7 @@ public class QuranFragment extends Fragment {
     JSONArray surahs;
     String jsonFileString;
     private LinearLayout linear;
-    private String[] surahNames;
+    public static String[] surahNames;
     private Intent intent;
 
     @Override
