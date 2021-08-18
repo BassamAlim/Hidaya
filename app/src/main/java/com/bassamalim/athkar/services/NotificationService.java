@@ -12,9 +12,8 @@ import android.os.Build;
 import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import com.bassamalim.athkar.MainActivity;
+import com.bassamalim.athkar.Splash;
 import com.bassamalim.athkar.views.AlathkarView;
-import com.bassamalim.athkar.views.QuranView;
 import com.bassamalim.athkar.R;
 
 public class NotificationService extends Service {
@@ -61,7 +60,7 @@ public class NotificationService extends Service {
         switch (prayer) {
             case 0: {
                 builder.setContentTitle("صلاة الفجر");
-                builder.setContentText("قوم صلي الفجر");
+                builder.setContentText("حان موعد أذان الفجر");
                 break;
             }
             case 1: {
@@ -71,12 +70,12 @@ public class NotificationService extends Service {
             }
             case 2: {
                 builder.setContentTitle("صلاة الظهر");
-                builder.setContentText("قوم صلي الظهر");
+                builder.setContentText("حان موعد أذان الظهر");
                 break;
             }
             case 3: {
                 builder.setContentTitle("صلاة العصر");
-                builder.setContentText("قوم صلي العصر");
+                builder.setContentText("حان موعد أذان العصر");
                 break;
             }
             case 4: {
@@ -86,12 +85,12 @@ public class NotificationService extends Service {
             }
             case 5: {
                 builder.setContentTitle("صلاة المغرب");
-                builder.setContentText("قوم صلي المغرب");
+                builder.setContentText("حان موعد أذان المغرب");
                 break;
             }
             case 6: {
                 builder.setContentTitle("صلاة العشاء");
-                builder.setContentText("قوم صلي العشاء");
+                builder.setContentText("حان موعد أذان العشاء");
                 break;
             }
         }
@@ -147,9 +146,8 @@ public class NotificationService extends Service {
             intent.putExtra("thikrs", getResources().getStringArray(R.array.night));
             intent.putExtra("title", "أذكار المساء");
         }
-        else {
-            intent = new Intent(this, MainActivity.class);
-        }
+        else
+            intent = new Intent(this, Splash.class);
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         pendingIntent = PendingIntent.getActivity(this,

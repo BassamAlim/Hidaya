@@ -2,17 +2,14 @@ package com.bassamalim.athkar;
 
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.bassamalim.athkar.models.DataSaver;
 import com.bassamalim.athkar.receivers.DeviceBootReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.NonNull;
@@ -25,7 +22,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.bassamalim.athkar.databinding.ActivityMainBinding;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -73,23 +69,15 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         location = intent.getParcelableExtra("location");
 
-        try {
-            double test = location.getLatitude();
-            new Keeper(this, location);
-            Log.i(Constants.TAG, "went");
-        }
-        catch (Exception e) {
-            Keeper keeper = new Keeper(this);
-            location = keeper.retrieveLocation();
-            Log.i(Constants.TAG, "didnt");
-        }
-
         times = getTimes();
 
-        //formattedTimes = formatTimes(times);
-        formattedTimes = test();
+        formattedTimes = formatTimes(times);
+        //formattedTimes = test();
 
-        new Keeper(this, formattedTimes);
+        if (location.getLatitude() != 0.0)
+            new Keeper(this, location, formattedTimes);
+        else
+            location = new Keeper(this).retrieveLocation();
 
         if (getPreferences(MODE_PRIVATE).getBoolean(getString(R.string.athan_enable_key), true)) {
             new Alarms(this, formattedTimes);
@@ -105,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
         tester[0] = Calendar.getInstance();
         tester[0].setTimeInMillis(System.currentTimeMillis());
-        tester[0].set(Calendar.HOUR_OF_DAY, 4);
-        tester[0].set(Calendar.MINUTE, 4);
+        tester[0].set(Calendar.HOUR_OF_DAY, 2);
+        tester[0].set(Calendar.MINUTE, 49);
 
         tester[1] = Calendar.getInstance();
         tester[1].setTimeInMillis(System.currentTimeMillis());

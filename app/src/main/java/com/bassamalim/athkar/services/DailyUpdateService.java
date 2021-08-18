@@ -18,7 +18,6 @@ public class DailyUpdateService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         location = intent.getParcelableExtra("location");
 
         times = getTimes();
@@ -33,7 +32,6 @@ public class DailyUpdateService extends Service {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
-
 
         return new PrayTimes().getPrayerTimesArray(calendar, location.getLatitude(),
                 location.getLongitude(), Constants.TIME_ZONE);

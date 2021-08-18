@@ -3,6 +3,7 @@ package com.bassamalim.athkar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.os.Build;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bassamalim.athkar.models.DataSaver;
 import com.google.gson.Gson;
@@ -38,13 +39,15 @@ public class Keeper extends AppCompatActivity {
     }
 
     public void storeLocation(Location gLocation) {
-        myPrefs = context.getSharedPreferences("location", Context.MODE_PRIVATE);
+        MyLocation loc = new MyLocation(gLocation);
+
+        myPrefs = context.getSharedPreferences("location file", Context.MODE_PRIVATE);
         editor = myPrefs.edit();
 
         gson = new Gson();
-        json = gson.toJson(gLocation);
+        json = gson.toJson(loc);
 
-        editor.putString("location", json);
+        editor.putString("stored location", json);
         editor.apply();
     }
 
@@ -64,10 +67,13 @@ public class Keeper extends AppCompatActivity {
 
     public Location retrieveLocation() {
         gson = new Gson();
-        myPrefs = context.getSharedPreferences("location", MODE_PRIVATE);
-        json = myPrefs.getString("location", "");
+        myPrefs = context.getSharedPreferences("location file", MODE_PRIVATE);
 
-        return gson.fromJson(json, Location.class);
+        json = myPrefs.getString("stored location", "");
+
+        MyLocation myLocation = gson.fromJson(json, MyLocation.class);
+
+        return toLocation(myLocation);
     }
 
     public Calendar[] retrieveTimes() {
@@ -77,6 +83,27 @@ public class Keeper extends AppCompatActivity {
         saver = gson.fromJson(json, DataSaver.class);
 
         return saver.times;
+    }
+
+    private Location toLocation(MyLocation myLoc) {
+        Location loc = new Location("provider");
+
+        loc.setAccuracy(myLoc.getAccuracy());
+        loc.setTime(myLoc.getTime());
+        loc.setAltitude(myLoc.getAltitude());
+        loc.setBearing(myLoc.getBearing());
+        loc.setBearingAccuracyDegrees(myLoc.getBearingAccuracyDegrees());
+        loc.setElapsedRealtimeNanos(myLoc.getElapsedRealtimeNanos());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            loc.setElapsedRealtimeUncertaintyNanos(loc.getElapsedRealtimeUncertaintyNanos());
+        loc.setLatitude(myLoc.getLatitude());
+        loc.setLongitude(myLoc.getLongitude());
+        loc.setProvider(myLoc.getProvider());
+        loc.setSpeed(myLoc.getSpeed());
+        loc.setSpeedAccuracyMetersPerSecond(myLoc.getSpeedAccuracyMetersPerSecond());
+        loc.setVerticalAccuracyMeters(myLoc.getVerticalAccuracyMeters());
+
+        return loc;
     }
 
 }
