@@ -1,8 +1,7 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.models;
 
 import android.location.Location;
 import android.os.Build;
-import android.os.Bundle;
 import java.io.Serializable;
 
 public class MyLocation implements Serializable {
@@ -32,7 +31,11 @@ public class MyLocation implements Serializable {
         time = loc.getTime();
         altitude = loc.getAltitude();
         bearing = loc.getBearing();
-        bearingAccuracyDegrees = loc.getBearingAccuracyDegrees();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            bearingAccuracyDegrees = loc.getBearingAccuracyDegrees();
+            speedAccuracyMetersPerSecond = loc.getSpeedAccuracyMetersPerSecond();
+            verticalAccuracyMeters = loc.getVerticalAccuracyMeters();
+        }
         elapsedRealtimeNanos = loc.getElapsedRealtimeNanos();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             elapsedRealtimeUncertaintyNanos = loc.getElapsedRealtimeUncertaintyNanos();
@@ -41,8 +44,7 @@ public class MyLocation implements Serializable {
         longitude = loc.getLongitude();
         provider = loc.getProvider();
         speed = loc.getSpeed();
-        speedAccuracyMetersPerSecond = loc.getSpeedAccuracyMetersPerSecond();
-        verticalAccuracyMeters = loc.getVerticalAccuracyMeters();
+
     }
 
 

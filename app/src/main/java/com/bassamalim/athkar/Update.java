@@ -53,7 +53,8 @@ public class Update extends AppCompatActivity {
     private String getAppVersion(Context context) {
         String result = "";
         try {
-            result = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+            result = context.getPackageManager().getPackageInfo(context.getPackageName(),
+                    0).versionName;
             result = result.replaceAll("[a-zA-Z]|-", "");
         }
         catch (PackageManager.NameNotFoundException e) {

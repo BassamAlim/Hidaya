@@ -8,12 +8,6 @@
         android:icon="@drawable/ic_whatsapp"
         android:iconTint="@color/secondary"
         android:title="@string/whatsapp"
-        app:showAsAction="always"/>
-
-    <item android:id="@+id/search"
-        android:title="@string/search_title"
-        android:icon="@drawable/ic_search"
-        app:showAsAction="collapseActionView|ifRoom"
-        app:actionViewClass="android.widget.SearchView" />
+        app:showAsAction="ifRoom"/>
 
 </menu>

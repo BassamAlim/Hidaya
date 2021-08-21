@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.os.Build;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bassamalim.athkar.models.DataSaver;
@@ -60,7 +62,14 @@ public class Alarms extends AppCompatActivity {
 
             AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
 
-            myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, times[i].getTimeInMillis(), pendIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                        times[i].getTimeInMillis(), pendIntent);
+            }
+            else {
+                myAlarm.setExact(AlarmManager.RTC_WAKEUP,
+                        times[i].getTimeInMillis(), pendIntent);
+            }
 
         }
     }

@@ -36,6 +36,8 @@ public class Splash extends AppCompatActivity {
     }
 
     public boolean permissionsGranted() {
+
+
         boolean given;
         if (build >= 29) {
             given = ActivityCompat.checkSelfPermission(this,

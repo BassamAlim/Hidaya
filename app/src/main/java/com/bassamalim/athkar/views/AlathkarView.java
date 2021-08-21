@@ -3,6 +3,7 @@ package com.bassamalim.athkar.views;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -54,7 +55,10 @@ public class AlathkarView extends AppCompatActivity {
         LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screen.setLayoutParams(screenParams);
-        screen.setTextColor(getResources().getColor(R.color.white, getTheme()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            screen.setTextColor(getResources().getColor(R.color.white, getTheme()));
+        else
+            screen.setTextColor(getResources().getColor(R.color.white));
         screen.setGravity(Gravity.CENTER);
         screen.setTextSize(25);
         screen.setTypeface(Typeface.DEFAULT_BOLD);
@@ -68,7 +72,10 @@ public class AlathkarView extends AppCompatActivity {
         dividerParams.setMargins(0,15,0,15);
         divider.setLayoutParams(dividerParams);
         divider.setVisibility(View.VISIBLE);
-        divider.setBackgroundColor(getResources().getColor(R.color.secondary, getTheme()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            divider.setBackgroundColor(getResources().getColor(R.color.secondary, getTheme()));
+        else
+            divider.setBackgroundColor(getResources().getColor(R.color.secondary));
 
         return divider;
     }

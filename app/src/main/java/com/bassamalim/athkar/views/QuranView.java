@@ -3,6 +3,7 @@ package com.bassamalim.athkar.views;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -220,7 +221,10 @@ public class QuranView extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         nameScreen.setLayoutParams(screenParams);
         nameScreen.setPadding(0, 0, 0, 15);
-        nameScreen.setTextColor(getResources().getColor(R.color.secondary, getTheme()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            nameScreen.setTextColor(getResources().getColor(R.color.secondary, getTheme()));
+        else
+            nameScreen.setTextColor(getResources().getColor(R.color.secondary));
         nameScreen.setGravity(Gravity.CENTER);
         nameScreen.setTextSize(textSize+5);
         nameScreen.setTypeface(Typeface.DEFAULT_BOLD);

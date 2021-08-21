@@ -5,7 +5,6 @@
         android:drawable="@color/primary"/>
 
     <item
-        android:drawable="@drawable/icon"
-        android:gravity="center"/>
+        android:drawable="@drawable/ic_launcher_foreground"/>
 
 </layer-list>

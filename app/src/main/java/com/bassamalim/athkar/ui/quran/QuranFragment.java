@@ -2,6 +2,7 @@ package com.bassamalim.athkar.ui.quran;
 
 import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -85,10 +86,18 @@ public class QuranFragment extends Fragment {
         buttonParams.setMargins(0,0,0,10);
         button.setLayoutParams(buttonParams);
         button.setGravity(Gravity.CENTER);
-        button.setBackgroundColor(getResources().getColor(R.color.accent, requireContext().getTheme()));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            button.setBackgroundColor(getResources().getColor(R.color.accent, requireContext().getTheme()));
+            button.setTextColor(getResources().getColor(R.color.secondary, requireContext().getTheme()));
+        }
+        else {
+            button.setBackgroundColor(getResources().getColor(R.color.accent));
+            button.setTextColor(getResources().getColor(R.color.secondary));
+        }
         button.setText("سورة");
         button.setTextSize(20);
-        button.setTextColor(getResources().getColor(R.color.secondary, requireContext().getTheme()));
+
 
         return button;
     }
@@ -109,6 +118,18 @@ public class QuranFragment extends Fragment {
             e.printStackTrace();
         }
         surahNames = names;
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
     }
 
     @Override

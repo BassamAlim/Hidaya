@@ -43,5 +43,8 @@
 
     <string name="search_hint">hint</string>
     <string name="search_title">بحث</string>
+    <string name="update_alert">التحديث الجديد جاهز !</string>
+    <string name="later">ليس الآن</string>
+    <string name="update_now">حدِّث</string>
 
 </resources>

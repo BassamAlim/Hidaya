@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -171,8 +172,14 @@ public class MainActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(
-                R.color.primary, getTheme())));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(
+                    R.color.primary, getTheme())));
+        }
+        else {
+            actionBar.setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.primary)));
+        }
 
         return true;
     }

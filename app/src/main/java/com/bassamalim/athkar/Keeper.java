@@ -6,6 +6,7 @@ import android.location.Location;
 import android.os.Build;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bassamalim.athkar.models.DataSaver;
+import com.bassamalim.athkar.models.MyLocation;
 import com.google.gson.Gson;
 import java.util.Calendar;
 
