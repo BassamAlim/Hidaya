@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.Log;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class Update extends AppCompatActivity {
@@ -35,14 +33,25 @@ public class Update extends AppCompatActivity {
                 if (available) {
                     Log.i(TAG, "Update available");
                     String latestVersion = remoteConfig.getString(Constants.LATEST_VERSION);
-                    if (!TextUtils.equals(currentVersion, latestVersion)) {
+                    Log.i(TAG, "Latest: " + latestVersion);
+                    Log.i(TAG, "current: " + currentVersion);
+                    if (removePoint(currentVersion) < removePoint(latestVersion)) {
+                        Log.i(TAG, "Update needed");
                         showUpdatePrompt();
                     }
+                    /*if (!TextUtils.equals(currentVersion, latestVersion)) {
+                    }*/
                 }
             }
             else
                 Log.i(TAG, "Fetch Failed");
         });
+    }
+
+    private int removePoint(String with) {
+        String without = "";
+        without = with.replace(".", "");
+        return Integer.parseInt(without);
     }
 
     public void showUpdatePrompt() {

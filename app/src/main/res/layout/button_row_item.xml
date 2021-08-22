@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
+
+    <Button
+        android:id="@+id/model_button"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:backgroundTint="@color/accent"
+        android:text="@string/element_text"
+        android:textSize="20sp"
+        android:textColor="@color/secondary"/>
+
+</FrameLayout>

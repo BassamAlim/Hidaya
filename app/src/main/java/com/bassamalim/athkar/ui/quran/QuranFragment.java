@@ -1,26 +1,25 @@
 package com.bassamalim.athkar.ui.quran;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
-import android.content.Intent;
-import android.os.Build;
+import android.animation.Animator;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.view.Gravity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.views.QuranView;
-import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.adapters.MyRecyclerAdapter;
 import com.bassamalim.athkar.Utils;
 import com.bassamalim.athkar.databinding.QuranFragmentBinding;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.ArrayList;
 
 public class QuranFragment extends Fragment {
 
@@ -30,9 +29,9 @@ public class QuranFragment extends Fragment {
     JSONObject data;
     JSONArray surahs;
     String jsonFileString;
-    private LinearLayout linear;
-    public static String[] surahNames;
-    private Intent intent;
+    MyRecyclerAdapter adapter;
+    public static ArrayList<String> surahNames;
+    private Animator animator;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -44,11 +43,38 @@ public class QuranFragment extends Fragment {
 
         setupJson();
 
-        getSurahNames();
+        surahNames = getSurahNames();
 
-        setUp();
+        setupRecycler();
+
+        binding.searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return true;
+            }
+        });
 
         return root;
+    }
+
+    private void setupRecycler() {
+        RecyclerView recyclerView = binding.recycler;
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new MyRecyclerAdapter(getContext(), surahNames);
+        recyclerView.setAdapter(adapter);
+
+        //divider between buttons
+        /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);*/
     }
 
     private void setupJson() {
@@ -64,46 +90,8 @@ public class QuranFragment extends Fragment {
         }
     }
 
-    private void setUp() {
-        linear = binding.linear;
-        for (int i = 0; i < Constants.NUMBER_OF_SURAHS; i++) {
-            Button button = button();
-            button.setText(surahNames[i]);
-            linear.addView(button);
-
-            int finalI = i;
-            button.setOnClickListener(v -> {
-                intent = new Intent(getContext(), QuranView.class);
-                intent.putExtra("surah index", finalI);
-                startActivity(intent);
-            });
-        }
-    }
-
-    private Button button() {
-        Button button = new Button(getContext());
-        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        buttonParams.setMargins(0,0,0,10);
-        button.setLayoutParams(buttonParams);
-        button.setGravity(Gravity.CENTER);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            button.setBackgroundColor(getResources().getColor(R.color.accent, requireContext().getTheme()));
-            button.setTextColor(getResources().getColor(R.color.secondary, requireContext().getTheme()));
-        }
-        else {
-            button.setBackgroundColor(getResources().getColor(R.color.accent));
-            button.setTextColor(getResources().getColor(R.color.secondary));
-        }
-        button.setText("سورة");
-        button.setTextSize(20);
-
-
-        return button;
-    }
-
-    public void getSurahNames() {
-        String[] names = new String[Constants.NUMBER_OF_SURAHS];
+    public ArrayList<String> getSurahNames() {
+        ArrayList<String> names = new ArrayList<>();
         String surahNamesJson = Utils.getJsonFromAssets(requireContext(), "surah_names.json");
         try {
             assert surahNamesJson != null;
@@ -111,25 +99,13 @@ public class QuranFragment extends Fragment {
             JSONArray array = jsonObject.getJSONArray("names");
             for (int i=0; i<Constants.NUMBER_OF_SURAHS; i++) {
                 JSONObject object = array.getJSONObject(i);
-                names[i] = object.getString("name");
+                names.add(object.getString("name"));
             }
         }
         catch (JSONException e) {
             e.printStackTrace();
         }
-        surahNames = names;
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
+        return names;
     }
 
     @Override
