@@ -9,9 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.bassamalim.athkar.Settings;
-import com.bassamalim.athkar.views.AlathkarView;
 import com.bassamalim.athkar.databinding.OtherFragmentBinding;
 import com.bassamalim.athkar.views.TvView;
 

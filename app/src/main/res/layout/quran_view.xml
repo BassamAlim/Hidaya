@@ -40,7 +40,9 @@
                     android:text="@string/prev_page"
                     android:textColor="@color/secondary"
                     android:textSize="22sp"
-                    android:layout_marginEnd="45dp"/>
+                    android:layout_marginEnd="45dp"
+                    android:padding="10dp"
+                    style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/next"
@@ -49,7 +51,9 @@
                     android:background="@drawable/rounded_corners"
                     android:text="@string/next_page"
                     android:textColor="@color/secondary"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp"
+                    android:padding="10dp"
+                    style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
 

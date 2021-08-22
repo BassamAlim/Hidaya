@@ -9,7 +9,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
-import com.bassamalim.athkar.services.DailyUpdateService;
 
 public class Settings extends AppCompatActivity {
 

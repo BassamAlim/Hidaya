@@ -4,15 +4,10 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Build;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.bassamalim.athkar.models.DataSaver;
 import com.bassamalim.athkar.receivers.NotificationReceiver;
-import com.google.gson.Gson;
 import java.util.Calendar;
 import java.util.Date;
 

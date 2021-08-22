@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import com.bassamalim.athkar.receivers.DailyUpdateReceiver;
-
 import java.util.Calendar;
 
 public class DailyUpdate {

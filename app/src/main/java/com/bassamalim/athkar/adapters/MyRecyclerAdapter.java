@@ -1,7 +1,5 @@
 package com.bassamalim.athkar.adapters;
 
-import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.models.SurahButton;
-import com.bassamalim.athkar.views.QuranView;
 import java.util.ArrayList;
 
 public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.ViewHolder> {
 
-    private Context context;
-    private ArrayList<String> surahNames;
-    private ArrayList<String> surahNamesCopy;
+    private ArrayList<SurahButton> surahButtons;
+    private ArrayList<SurahButton> surahButtonsCopy;
 
     /**
      * Provide a reference to the type of views that you are using
@@ -35,22 +31,16 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
             button = view.findViewById(R.id.model_button);
         }
-
-        public Button getButton() {
-            return button;
-        }
     }
 
     /**
      * Initialize the dataset of the Adapter.
      *
-     * @param gContext
-     * @param names String[] containing the data to populate views to be used
+     * @param buttons containing the data to populate views to be used
      */
-    public MyRecyclerAdapter(Context gContext, ArrayList<String> names) {
-        context = gContext;
-        surahNames = new ArrayList<>(names);
-        surahNamesCopy = new ArrayList<>(names);
+    public MyRecyclerAdapter(ArrayList<SurahButton> buttons) {
+        surahButtons = new ArrayList<>(buttons);
+        surahButtonsCopy = new ArrayList<>(buttons);
     }
 
     // Create new views (invoked by the layout manager)
@@ -67,30 +57,25 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-
-        viewHolder.getButton().setText(surahNames.get(position));
-        viewHolder.button.setOnClickListener(v -> {
-            Intent intent = new Intent(context, QuranView.class);
-            intent.putExtra("surah index", position);
-            context.startActivity(intent);
-        });
+        viewHolder.button.setText(surahButtons.get(position).getSurahName());
+        viewHolder.button.setOnClickListener(surahButtons.get(position).getListener());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return surahNames.size();
+        return surahButtons.size();
     }
 
     public void filter(String text) {
-        surahNames.clear();
+        surahButtons.clear();
         if(text.isEmpty())
-            surahNames.addAll(surahNamesCopy);
+            surahButtons.addAll(surahButtonsCopy);
         else {
             //text = text.toLowerCase();
-            for(String surahName: surahNamesCopy) {
-                if(surahName.contains(text))
-                    surahNames.add(surahName);
+            for(SurahButton surahButton: surahButtonsCopy) {
+                if(surahButton.getSurahName().contains(text))
+                    surahButtons.add(surahButton);
             }
         }
         //not so efficient

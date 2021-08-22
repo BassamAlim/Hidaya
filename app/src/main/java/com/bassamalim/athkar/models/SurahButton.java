@@ -1,14 +1,16 @@
 package com.bassamalim.athkar.models;
 
-import android.content.Context;
+import android.view.View;
 
-public class SurahButton extends androidx.appcompat.widget.AppCompatButton {
-    private int number;
-    private String surahName;
+public class SurahButton {
+    private final int number;
+    private final String surahName;
+    private final View.OnClickListener listener;
 
-    public SurahButton(Context context, String surahName) {
-        super(context);
+    public SurahButton(int number, String surahName, View.OnClickListener listener) {
+        this.number = number;
         this.surahName = surahName;
+        this.listener = listener;
     }
 
     public int getNumber() {
@@ -18,4 +20,9 @@ public class SurahButton extends androidx.appcompat.widget.AppCompatButton {
     public String getSurahName() {
         return surahName;
     }
+
+    public View.OnClickListener getListener() {
+        return listener;
+    }
+
 }

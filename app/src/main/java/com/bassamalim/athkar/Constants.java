@@ -11,7 +11,6 @@ public class Constants {
     public static final int NUMBER_OF_SURAHS = 114;
     public static final int QURAN_PAGES = 604;
     public static final String CHANNEL_ID = "Athan Channel";
-    public static final int NOTIFICATION_ID = 1;
 
     public static final String UPDATE_AVAILABLE = "update_available";
     public static final String LATEST_VERSION = "latest_app_version";

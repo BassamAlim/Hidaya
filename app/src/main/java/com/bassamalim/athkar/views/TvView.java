@@ -2,13 +2,10 @@ package com.bassamalim.athkar.views;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.MediaController;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.bassamalim.athkar.FullScreenMediaController;
 import com.bassamalim.athkar.databinding.TvViewBinding;
 

@@ -19,25 +19,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/bingo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="بس بس كدا"
-        android:textColor="#F44336"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        android:layout_marginBottom="70dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/distance_text" />
-
-    <TextView
         android:id="@+id/distance_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Coordinates"
+        android:text="@string/coordinates"
         android:textColor="@color/secondary"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -45,5 +31,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <ImageView
+        android:id="@+id/bingo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_check"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/qibla_view"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

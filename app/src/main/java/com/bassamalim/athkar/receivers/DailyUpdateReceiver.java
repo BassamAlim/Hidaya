@@ -5,13 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.util.Log;
-
 import androidx.core.app.ActivityCompat;
-
-import com.bassamalim.athkar.Alarms;
-import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.services.DailyUpdateService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;

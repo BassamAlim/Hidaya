@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,6 @@ import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.FragmentQiblaBinding;
-import android.os.Vibrator;
 
 public class QiblaFragment extends Fragment implements SensorEventListener {
 
@@ -33,10 +33,10 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
     private SensorManager sensorManager;
     private final Location kaaba = new Location(LocationManager.GPS_PROVIDER);
     private Location location;
-    private float bearing;
     private float currentDegree = 0f;
     private double distance = 0;
-    Vibrator vibrator;
+    GeomagneticField geoField;
+    RotateAnimation raQibla;
 
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -46,8 +46,6 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
 
         sensorManager = (SensorManager) requireActivity().getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-
-        vibrator = (Vibrator) requireActivity().getSystemService(Context.VIBRATOR_SERVICE);
 
         kaaba.setLatitude(Constants.KAABA_LATITUDE);
         kaaba.setLongitude(Constants.KAABA_LONGITUDE);
@@ -66,6 +64,8 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
 
         binding = FragmentQiblaBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        getDistance();
 
         //orientation = SensorManager.getOrientation()
 
@@ -103,23 +103,19 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        getDistance();
-
         // get the angle around the z-axis rotated
         float degree = Math.round(event.values[0]);
         float head = Math.round(event.values[0]);
 
-        bearing = location.bearingTo(kaaba);
+        float bearing = location.bearingTo(kaaba);
 
-        GeomagneticField geoField = new GeomagneticField(Double.valueOf(location.getLatitude()).floatValue(),
+        geoField = new GeomagneticField(Double.valueOf(location.getLatitude()).floatValue(),
                 Double.valueOf(location.getLongitude()).floatValue(),
                 Double.valueOf(location.getAltitude()).floatValue(), System.currentTimeMillis());
         head -= geoField.getDeclination(); // converts magnetic north into true north
 
-        if (bearing < 0) {
+        if (bearing < 0)
             bearing = bearing + 360;
-            //bearTo = -100 + 360  = 260;
-        }
 
         //This is where we choose to point it
         float direction = bearing - head;
@@ -128,7 +124,7 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
         if (direction < 0)
             direction = direction + 360;
 
-        RotateAnimation raQibla = new RotateAnimation(currentDegree, direction,
+        raQibla = new RotateAnimation(currentDegree, direction,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         raQibla.setDuration(210);
         raQibla.setFillAfter(true);
@@ -140,10 +136,22 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
         String text = "المسافة الى الكعبة: " + distance + " كم";
         binding.distanceText.setText(text);
 
-        if (degree == 111 || degree == 112)
+        if (direction > 358 && direction < 360 || direction > 0 && direction < 2)
             binding.bingo.setVisibility(View.VISIBLE);
-        if (degree < 111 || degree > 112)
+        else
             binding.bingo.setVisibility(View.INVISIBLE);
+
+
+        Log.i(Constants.TAG, "degree: " + degree);
+        Log.i(Constants.TAG, "head: " + head);
+        Log.i(Constants.TAG, "currentDegree: " + currentDegree);
+        Log.i(Constants.TAG, "direction: " + direction);
+        Log.i(Constants.TAG, "bearing: " + bearing);
+
+        /*if (degree == 247 || degree == 248)
+            binding.bingo.setVisibility(View.VISIBLE);
+        if (degree < 247 || degree > 248)
+            binding.bingo.setVisibility(View.INVISIBLE);*/
     }
 
     @Override
