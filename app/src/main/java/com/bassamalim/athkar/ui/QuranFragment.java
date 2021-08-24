@@ -25,8 +25,8 @@ import java.util.ArrayList;
 public class QuranFragment extends Fragment {
 
     private QuranFragmentBinding binding;
-    private JSONObject jsonObject;
     private MyRecyclerAdapter adapter;
+    private RecyclerView recyclerView;
     private ArrayList<SurahButton> surahButtons;
 
     @Override
@@ -35,8 +35,6 @@ public class QuranFragment extends Fragment {
 
         binding = QuranFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        setupJson();
 
         surahButtons = makeSurahButtons();
 
@@ -54,7 +52,6 @@ public class QuranFragment extends Fragment {
                 adapter.filter(query);
                 return true;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 adapter.filter(newText);
@@ -64,24 +61,11 @@ public class QuranFragment extends Fragment {
     }
 
     private void setupRecycler() {
-        RecyclerView recyclerView = binding.recycler;
+        recyclerView = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new MyRecyclerAdapter(surahButtons);
         recyclerView.setAdapter(adapter);
-    }
-
-    private void setupJson() {
-        String jsonFileString = Utils.getJsonFromAssets(requireContext(), "quran.json");
-        try {
-            assert jsonFileString != null;
-            jsonObject = new JSONObject(jsonFileString);
-            JSONObject data = jsonObject.getJSONObject("data");
-            JSONArray surahs = data.getJSONArray("surahs");
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     public ArrayList<SurahButton> makeSurahButtons() {
@@ -89,7 +73,7 @@ public class QuranFragment extends Fragment {
         String surahNamesJson = Utils.getJsonFromAssets(requireContext(), "surah_names.json");
         try {
             assert surahNamesJson != null;
-            jsonObject = new JSONObject(surahNamesJson);
+            JSONObject jsonObject = new JSONObject(surahNamesJson);
             JSONArray array = jsonObject.getJSONArray("names");
             for (int i=0; i<Constants.NUMBER_OF_SURAHS; i++) {
                 JSONObject object = array.getJSONObject(i);
@@ -114,6 +98,7 @@ public class QuranFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-
+        recyclerView.setAdapter(null);
+        adapter = null;
     }
 }
