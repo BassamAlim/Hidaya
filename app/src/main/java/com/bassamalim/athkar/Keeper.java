@@ -74,7 +74,7 @@ public class Keeper extends AppCompatActivity {
 
         MyLocation myLocation = gson.fromJson(json, MyLocation.class);
 
-        return toLocation(myLocation);
+        return MyLocation.toLocation(myLocation);
     }
 
     public Calendar[] retrieveTimes() {
@@ -84,27 +84,6 @@ public class Keeper extends AppCompatActivity {
         saver = gson.fromJson(json, DataSaver.class);
 
         return saver.times;
-    }
-
-    private Location toLocation(MyLocation myLoc) {
-        Location loc = new Location("provider");
-
-        loc.setAccuracy(myLoc.getAccuracy());
-        loc.setTime(myLoc.getTime());
-        loc.setAltitude(myLoc.getAltitude());
-        loc.setBearing(myLoc.getBearing());
-        loc.setBearingAccuracyDegrees(myLoc.getBearingAccuracyDegrees());
-        loc.setElapsedRealtimeNanos(myLoc.getElapsedRealtimeNanos());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            loc.setElapsedRealtimeUncertaintyNanos(loc.getElapsedRealtimeUncertaintyNanos());
-        loc.setLatitude(myLoc.getLatitude());
-        loc.setLongitude(myLoc.getLongitude());
-        loc.setProvider(myLoc.getProvider());
-        loc.setSpeed(myLoc.getSpeed());
-        loc.setSpeedAccuracyMetersPerSecond(myLoc.getSpeedAccuracyMetersPerSecond());
-        loc.setVerticalAccuracyMeters(myLoc.getVerticalAccuracyMeters());
-
-        return loc;
     }
 
 }

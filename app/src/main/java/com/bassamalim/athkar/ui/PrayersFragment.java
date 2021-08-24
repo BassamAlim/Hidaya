@@ -1,6 +1,5 @@
-package com.bassamalim.athkar.ui.prayers;
+package com.bassamalim.athkar.ui;
 
-import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,15 +13,12 @@ import java.util.HashMap;
 
 public class PrayersFragment extends Fragment {
 
-    private PrayersViewModel prayersViewModel;
     private PrayersFragmentBinding binding;
     public static ArrayList<String> times;
     public static String[] translatedTimes;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        prayersViewModel = new ViewModelProvider(this).get(PrayersViewModel.class);
 
         binding = PrayersFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();

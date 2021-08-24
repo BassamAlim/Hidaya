@@ -1,4 +1,4 @@
-package com.bassamalim.athkar.ui.qibla;
+package com.bassamalim.athkar.ui;
 
 import android.content.Context;
 import android.hardware.GeomagneticField;
@@ -9,7 +9,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.R;
@@ -27,7 +25,6 @@ import com.bassamalim.athkar.databinding.FragmentQiblaBinding;
 
 public class QiblaFragment extends Fragment implements SensorEventListener {
 
-    private QiblaViewModel qiblaViewModel;
     private FragmentQiblaBinding binding;
     private Sensor sensor;
     private SensorManager sensorManager;
@@ -60,8 +57,6 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        qiblaViewModel = new ViewModelProvider(this).get(QiblaViewModel.class);
-
         binding = FragmentQiblaBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -140,18 +135,6 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
             binding.bingo.setVisibility(View.VISIBLE);
         else
             binding.bingo.setVisibility(View.INVISIBLE);
-
-
-        Log.i(Constants.TAG, "degree: " + degree);
-        Log.i(Constants.TAG, "head: " + head);
-        Log.i(Constants.TAG, "currentDegree: " + currentDegree);
-        Log.i(Constants.TAG, "direction: " + direction);
-        Log.i(Constants.TAG, "bearing: " + bearing);
-
-        /*if (degree == 247 || degree == 248)
-            binding.bingo.setVisibility(View.VISIBLE);
-        if (degree < 247 || degree > 248)
-            binding.bingo.setVisibility(View.INVISIBLE);*/
     }
 
     @Override

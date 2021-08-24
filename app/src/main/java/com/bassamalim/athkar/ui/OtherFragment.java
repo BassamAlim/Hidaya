@@ -1,6 +1,5 @@
-package com.bassamalim.athkar.ui.other;
+package com.bassamalim.athkar.ui;
 
-import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -15,14 +14,11 @@ import com.bassamalim.athkar.views.TvView;
 
 public class OtherFragment extends Fragment {
 
-    private OtherViewModel otherViewModel;
     private OtherFragmentBinding binding;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-        otherViewModel = new ViewModelProvider(this).get(OtherViewModel.class);
 
         binding = OtherFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -43,5 +39,9 @@ public class OtherFragment extends Fragment {
         });
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        binding = null;
+    }
 }

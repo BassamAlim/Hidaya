@@ -254,7 +254,7 @@ public class QuranView extends AppCompatActivity {
         LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screen.setLayoutParams(screenParams);
-        screen.setPadding(10, 0, 10, 0);
+        screen.setPadding(10, 10, 10, 10);
         screen.setGravity(Gravity.CENTER);
         screen.setTextSize(textSize);
         //screen.setTypeface(getResources().getFont(R.font.uthman_ver10));

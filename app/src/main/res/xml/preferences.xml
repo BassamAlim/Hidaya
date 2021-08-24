@@ -10,17 +10,16 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/quran_header">
+    <PreferenceCategory app:title="@string/looks_header">
 
         <SeekBarPreference
             app:key="@string/quran_text_size_key"
             app:title="@string/quran_text_size_title"
-            app:adjustable="true"
             app:showSeekBarValue="true"
-            app:isPreferenceVisible="true"
             app:min="20"
             android:max="50"
             app:defaultValue="25"
+            android:summary="حجم خط المصحف والأذكار"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

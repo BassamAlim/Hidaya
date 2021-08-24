@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".ui.qibla.QiblaFragment">
+    tools:context=".ui.QiblaFragment">
 
     <ImageView
         android:id="@+id/qibla_view"

@@ -3,6 +3,7 @@ package com.bassamalim.athkar;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -66,12 +67,14 @@ public class Splash extends AppCompatActivity {
                 PackageManager.PERMISSION_GRANTED) {
 
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-                if (location != null) {
-                    Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, MainActivity.class);
+
+                if (location != null)
                     intent.putExtra("location", location);
-                    startActivity(intent);
-                } else
-                    Toast.makeText(this, "no location", Toast.LENGTH_LONG).show();
+                else
+                    intent.putExtra("location", new Keeper(this).retrieveLocation());
+
+                startActivity(intent);
             });
         }
     }

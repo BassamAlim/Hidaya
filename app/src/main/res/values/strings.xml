@@ -17,8 +17,8 @@
     <string name="update_now">حدِّث</string>
 
     <!-- Preference Categories -->
-    <string name="quran_header">إعدادات المصحف</string>
     <string name="athan_header">إعدادات الأذان</string>
+    <string name="looks_header">المظهر</string>
 
     <!-- Preference Keys -->
     <string name="quran_text_size_key">"quran_text_size_key"</string>
@@ -33,6 +33,18 @@
 
     <!-- Dialogs Text -->
     <string name="update_alert">التحديث الجديد جاهز !</string>
+
+    <!-- Athkar Buttons Text -->
+    <string name="morning_thikr">اذكار الصباح</string>
+    <string name="night_thikr">اذكار المساء</string>
+    <string name="wakeup_thikr">اذكار الاستيقاظ</string>
+    <string name="before_sleep_thikr">اذكار قبل النوم</string>
+    <string name="after_prayer_thikr">اذكار بعد الصلاة</string>
+    <string name="quran_conclude_thikr">دعاء ختم القرآن</string>
+    <string name="athan_thikr">اذكار الاذان</string>
+    <string name="wudu_thikr">اذكار الوضوء</string>
+    <string name="bathroom_thikr">اذكار الخلاء</string>
+    <string name="travel_thikr">دعاء السفر</string>
 
 
 </resources>

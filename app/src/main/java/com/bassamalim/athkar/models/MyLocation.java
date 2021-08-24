@@ -31,20 +31,19 @@ public class MyLocation implements Serializable {
         time = loc.getTime();
         altitude = loc.getAltitude();
         bearing = loc.getBearing();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            bearingAccuracyDegrees = loc.getBearingAccuracyDegrees();
-            speedAccuracyMetersPerSecond = loc.getSpeedAccuracyMetersPerSecond();
-            verticalAccuracyMeters = loc.getVerticalAccuracyMeters();
-        }
         elapsedRealtimeNanos = loc.getElapsedRealtimeNanos();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            elapsedRealtimeUncertaintyNanos = loc.getElapsedRealtimeUncertaintyNanos();
         //extras = loc.getExtras();
         latitude = loc.getLatitude();
         longitude = loc.getLongitude();
         provider = loc.getProvider();
         speed = loc.getSpeed();
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            bearingAccuracyDegrees = loc.getBearingAccuracyDegrees();
+            speedAccuracyMetersPerSecond = loc.getSpeedAccuracyMetersPerSecond();
+            verticalAccuracyMeters = loc.getVerticalAccuracyMeters();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                elapsedRealtimeUncertaintyNanos = loc.getElapsedRealtimeUncertaintyNanos();
+        }
     }
 
 
@@ -102,6 +101,29 @@ public class MyLocation implements Serializable {
 
     public float getVerticalAccuracyMeters() {
         return verticalAccuracyMeters;
+    }
+
+    public static Location toLocation(MyLocation myLoc) {
+        Location loc = new Location("provider");
+
+        loc.setAccuracy(myLoc.getAccuracy());
+        loc.setTime(myLoc.getTime());
+        loc.setAltitude(myLoc.getAltitude());
+        loc.setBearing(myLoc.getBearing());
+        loc.setElapsedRealtimeNanos(myLoc.getElapsedRealtimeNanos());
+        loc.setLatitude(myLoc.getLatitude());
+        loc.setLongitude(myLoc.getLongitude());
+        loc.setProvider(myLoc.getProvider());
+        loc.setSpeed(myLoc.getSpeed());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            loc.setBearingAccuracyDegrees(myLoc.getBearingAccuracyDegrees());
+            loc.setSpeedAccuracyMetersPerSecond(myLoc.getSpeedAccuracyMetersPerSecond());
+            loc.setVerticalAccuracyMeters(myLoc.getVerticalAccuracyMeters());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                loc.setElapsedRealtimeUncertaintyNanos(loc.getElapsedRealtimeUncertaintyNanos());
+        }
+
+        return loc;
     }
 
 }

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".ui.alathkar.AlathkarFragment">
+    tools:context=".ui.AlathkarFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,11 +39,13 @@
                     android:layout_height="150dp"
                     android:layout_marginEnd="40dp"
                     android:padding="5dp"
-                    android:background="@drawable/rounded_corners"                    android:drawableTop="@drawable/ic_morning"
+                    android:background="@drawable/rounded_corners"
+                    android:drawableTop="@drawable/ic_morning"
                     android:gravity="center|bottom"
-                    android:text="اذكار الصباح"
+                    android:text="@string/morning_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/night"
@@ -52,10 +54,11 @@
                     android:padding="5dp"
                     android:background="@drawable/rounded_corners"
                     android:gravity="bottom|center"
-                    android:text="اذكار المساء"
+                    android:text="@string/night_thikr"
                     android:textColor="@color/secondary"
                     android:textSize="20sp"
-                    android:drawableTop="@drawable/ic_night"/>
+                    android:drawableTop="@drawable/ic_night"
+                    style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
 
@@ -76,9 +79,10 @@
                     android:background="@drawable/rounded_corners"
                     android:gravity="center|bottom"
                     android:drawableTop="@drawable/ic_wakeup"
-                    android:text="اذكار الاستيقاظ"
+                    android:text="@string/wakeup_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/pre_sleep"
@@ -88,9 +92,10 @@
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_pre_sleep"
                     android:gravity="center|bottom"
-                    android:text="اذكار قبل النوم"
+                    android:text="@string/before_sleep_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
 
@@ -111,9 +116,10 @@
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_post_pray"
                     android:gravity="center|bottom"
-                    android:text="اذكار بعد الصلاة"
+                    android:text="@string/after_prayer_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/quran_conclude"
@@ -123,9 +129,10 @@
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_quran_conclude"
                     android:gravity="center|bottom"
-                    android:text="دعاء ختم القرآن"
+                    android:text="@string/quran_conclude_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
 
@@ -146,9 +153,10 @@
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_athan"
                     android:gravity="center|bottom"
-                    android:text="اذكار الاذان"
+                    android:text="@string/athan_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/wudu"
@@ -158,9 +166,10 @@
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_wudu"
                     android:gravity="center|bottom"
-                    android:text="اذكار الوضوء"
+                    android:text="@string/wudu_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
 
@@ -170,19 +179,34 @@
                 android:paddingTop="20dp"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/bathroom"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
+                    android:layout_marginEnd="40dp"
                     android:padding="5dp"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_bathroom"
                     android:gravity="center|bottom"
-                    android:text="اذكار الخلاء"
+                    android:text="@string/bathroom_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    style="?android:attr/buttonBarButtonStyle" />
+
+                <Button
+                    android:id="@+id/travel"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:padding="5dp"
+                    android:background="@drawable/rounded_corners"
+                    android:drawableTop="@drawable/ic_travel"
+                    android:gravity="center|bottom"
+                    android:text="@string/travel_thikr"
+                    android:textColor="@color/secondary"
+                    android:textSize="20sp"
+                    style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
 

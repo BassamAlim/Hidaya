@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/primary"
     android:layout_gravity="center"
-    tools:context=".ui.quran.QuranFragment">
+    tools:context=".ui.QuranFragment">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_bar"

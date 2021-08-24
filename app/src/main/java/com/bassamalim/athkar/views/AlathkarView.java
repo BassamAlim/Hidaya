@@ -1,7 +1,10 @@
 package com.bassamalim.athkar.views;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,19 +14,20 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.bassamalim.athkar.R;
-import com.bassamalim.athkar.databinding.ActivityAthkarViewBinding;
+import com.bassamalim.athkar.databinding.AlathkarViewBinding;
+
 import java.util.Objects;
 
 public class AlathkarView extends AppCompatActivity {
 
-    ActivityAthkarViewBinding binding;
+    AlathkarViewBinding binding;
     LinearLayout linear;
     String[] thikrs = new String[15];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityAthkarViewBinding.inflate(getLayoutInflater());
+        binding = AlathkarViewBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 
@@ -59,8 +63,9 @@ public class AlathkarView extends AppCompatActivity {
             screen.setTextColor(getResources().getColor(R.color.white, getTheme()));
         else
             screen.setTextColor(getResources().getColor(R.color.white));
+        screen.setPadding(10, 0, 10, 0);
         screen.setGravity(Gravity.CENTER);
-        screen.setTextSize(25);
+        screen.setTextSize(getSize());
         screen.setTypeface(Typeface.DEFAULT_BOLD);
 
         return screen;
@@ -78,6 +83,11 @@ public class AlathkarView extends AppCompatActivity {
             divider.setBackgroundColor(getResources().getColor(R.color.secondary));
 
         return divider;
+    }
+
+    private int getSize() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getInt(getString(R.string.quran_text_size_key), 10);
     }
 
 }

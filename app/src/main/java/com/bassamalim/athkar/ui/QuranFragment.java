@@ -1,7 +1,6 @@
-package com.bassamalim.athkar.ui.quran;
+package com.bassamalim.athkar.ui;
 
 import androidx.appcompat.widget.SearchView;
-import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 
 public class QuranFragment extends Fragment {
 
-    private QuranViewModel quranViewModel;
     private QuranFragmentBinding binding;
     JSONObject jsonObject;
     JSONObject data;
@@ -37,8 +35,6 @@ public class QuranFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-        quranViewModel = new ViewModelProvider(this).get(QuranViewModel.class);
 
         binding = QuranFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();

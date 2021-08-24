@@ -8,6 +8,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -180,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setBackgroundDrawable(new ColorDrawable(getResources()
                     .getColor(R.color.primary)));
         }
-
         return true;
     }
 
@@ -198,4 +198,12 @@ public class MainActivity extends AppCompatActivity {
             return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finishAffinity();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }
