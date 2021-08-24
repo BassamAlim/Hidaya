@@ -4,15 +4,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
 import android.os.IBinder;
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 import com.bassamalim.athkar.Alarms;
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.PrayTimes;
 import com.bassamalim.athkar.models.MyLocation;
 import com.google.gson.Gson;
-
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,19 +22,14 @@ public class DailyUpdateService extends Service {
         Gson gson = new Gson();
         String json = intent.getStringExtra("location");
 
-        if (json != null) {
-            Log.i(Constants.TAG, "its ok this time");
-            MyLocation myLocation = gson.fromJson(json, MyLocation.class);
-            location = MyLocation.toLocation(myLocation);
+        MyLocation myLocation = gson.fromJson(json, MyLocation.class);
+        location = MyLocation.toLocation(myLocation);
 
-            Calendar[] times = getTimes();
+        Calendar[] times = getTimes();
 
-            new Alarms(this, times);
-        }
-        else
-            Log.i(Constants.TAG, "THE Error Again");
+        new Alarms(this, times);
 
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     public Calendar[] getTimes() {
