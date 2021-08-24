@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.ViewHolder> {
 
-    private ArrayList<SurahButton> surahButtons;
-    private ArrayList<SurahButton> surahButtonsCopy;
+    private final ArrayList<SurahButton> surahButtons;
+    private final ArrayList<SurahButton> surahButtonsCopy;
 
     /**
      * Provide a reference to the type of views that you are using

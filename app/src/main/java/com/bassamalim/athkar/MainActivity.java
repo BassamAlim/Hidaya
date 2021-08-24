@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.whatsapp) {
             String myNumber = "+966553145230";
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else
             return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

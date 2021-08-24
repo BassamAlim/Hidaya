@@ -15,8 +15,7 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
 
     private final Activity c;
     private final String msg = "";
-
-    private final FirebaseRemoteConfig remoteConfig = MainActivity.getInstance().remoteConfig;
+    private final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
     public UpdateDialog(Activity a) {
         super(a);

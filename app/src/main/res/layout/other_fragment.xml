@@ -41,9 +41,10 @@
                     android:gravity="center|bottom"
                     android:layout_marginEnd="40dp"
                     android:padding="5dp"
-                    android:text="قناة القرآن والسنة"
+                    android:text="@string/quran_and_sunnah_channels"
                     android:textSize="20sp"
-                    android:textColor="@color/secondary"/>
+                    android:textColor="@color/secondary"
+                    style="?android:attr/buttonBarButtonStyle"/>
 
                 <Button
                     android:id="@+id/settings"
@@ -53,20 +54,47 @@
                     android:drawableTop="@drawable/ic_settings"
                     android:gravity="center|bottom"
                     android:padding="5dp"
-                    android:text="الإعدادات"
+                    android:text="@string/settings"
                     android:textSize="20sp"
-                    android:textColor="@color/secondary"/>
+                    android:textColor="@color/secondary"
+                    style="?android:attr/buttonBarButtonStyle"/>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="20dp"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center">
 
+                <Button
+                    android:id="@+id/update"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginEnd="40dp"
+                    android:background="@drawable/rounded_corners"
+                    android:drawableTop="@drawable/ic_update"
+                    android:gravity="center|bottom"
+                    android:padding="5dp"
+                    android:text="@string/update"
+                    android:textSize="20sp"
+                    android:textColor="@color/secondary"
+                    style="?android:attr/buttonBarButtonStyle"/>
 
+                <Button
+                    android:id="@+id/contact"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/rounded_corners"
+                    android:drawableTop="@drawable/ic_whatsapp"
+                    android:gravity="center|bottom"
+                    android:padding="5dp"
+                    android:text="@string/contact"
+                    android:textSize="20sp"
+                    android:textColor="@color/secondary"
+                    style="?android:attr/buttonBarButtonStyle"/>
 
             </LinearLayout>
 

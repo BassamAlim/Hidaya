@@ -9,7 +9,7 @@
     <string name="title_other">المزيد</string>
 
     <!-- Buttons Titles -->
-    <string name="whatsapp">تواصل معي</string>
+    <string name="contact">تواصل معي</string>
     <string name="title_activity_settings">الإعدادات</string>
     <string name="prev_page">الصفحة السابقة</string>
     <string name="next_page">الصفحة التالية</string>
@@ -45,6 +45,9 @@
     <string name="wudu_thikr">اذكار الوضوء</string>
     <string name="bathroom_thikr">اذكار الخلاء</string>
     <string name="travel_thikr">دعاء السفر</string>
+    <string name="quran_and_sunnah_channels">قناة القرآن والسنة</string>
+    <string name="settings">الإعدادات</string>
+    <string name="update">تحديث</string>
 
 
 </resources>
