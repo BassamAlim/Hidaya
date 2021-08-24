@@ -19,7 +19,6 @@ import com.bassamalim.athkar.R;
 public class NotificationService extends Service {
 
     public static boolean isServiceRunning = false;
-    private static int notificationId;
     private String channelId = "Athan";
 
     @Override
@@ -42,9 +41,7 @@ public class NotificationService extends Service {
 
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
 
-        notificationId = prayer;
-
-        managerCompat.notify(notificationId, notification);
+        managerCompat.notify(prayer, notification);
 
         return START_STICKY;
     }
@@ -97,7 +94,10 @@ public class NotificationService extends Service {
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
         builder.setAutoCancel(true);
         builder.setOnlyAlertOnce(true);
-        builder.setColor(getColor(R.color.secondary));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            builder.setColor(getColor(R.color.secondary));
+        else
+            builder.setColor(getResources().getColor(R.color.secondary));
         builder.setContentIntent(onClick(prayer));
         //builder.setOngoing(true);
         //builder.setDeleteIntent(contentPendingIntent)  // if needed

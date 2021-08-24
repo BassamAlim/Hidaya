@@ -18,11 +18,11 @@ import java.util.Collection;
 
 public class Splash extends AppCompatActivity {
 
-    boolean granted = false;
-    int build = Build.VERSION.SDK_INT;
+    private boolean granted = false;
+    private final int build = Build.VERSION.SDK_INT;
     private final String[] PERMISSIONS =
             {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-    String BACKGROUND_PERMISSION = Manifest.permission.ACCESS_BACKGROUND_LOCATION;
+    private String BACKGROUND_PERMISSION = Manifest.permission.ACCESS_BACKGROUND_LOCATION;
     private int stupidity = 0;
     private boolean dump = false;
 

@@ -27,12 +27,10 @@ public class QuranView extends AppCompatActivity {
 
     private QuranViewBinding binding;
     private LinearLayout mainLinear;
-    private int surahIndex;
     private JSONObject jsonObject;
     private JSONArray surahs;
     private int currentPage;
     private int textSize;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +44,7 @@ public class QuranView extends AppCompatActivity {
 
         setupJson();
 
-        surahIndex = intent.getIntExtra("surah index", 0);
+        int surahIndex = intent.getIntExtra("surah index", 0);
 
         currentPage = getPage(surahIndex);
 

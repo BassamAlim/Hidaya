@@ -13,9 +13,6 @@ import com.bassamalim.athkar.views.TvView;
 
 public class FullScreenVideoActivity extends AppCompatActivity {
 
-    private VideoView videoView;
-    private MediaController mediaController;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +22,7 @@ public class FullScreenVideoActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
-        videoView = findViewById(R.id.fullscreen);
+        VideoView videoView = findViewById(R.id.fullscreen);
 
         String fullScreen =  getIntent().getStringExtra("fullScreenInd");
         if ("y".equals(fullScreen))
@@ -39,7 +36,7 @@ public class FullScreenVideoActivity extends AppCompatActivity {
 
         videoView.setVideoURI(videoUri);
 
-        mediaController = new com.bassamalim.athkar.FullScreenMediaController(this);
+        MediaController mediaController = new FullScreenMediaController(this);
         mediaController.setAnchorView(videoView);
 
         videoView.setMediaController(mediaController);

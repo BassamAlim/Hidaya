@@ -14,7 +14,6 @@ import com.bassamalim.athkar.databinding.FragmentAlathkarBinding;
 public class AlathkarFragment extends Fragment {
 
     private FragmentAlathkarBinding binding;
-    public String[] thikrs;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -41,7 +40,7 @@ public class AlathkarFragment extends Fragment {
     }
 
     public void showThikrs(int givenThikrs, CharSequence title) {
-        thikrs = getResources().getStringArray(givenThikrs);
+        String[] thikrs = getResources().getStringArray(givenThikrs);
         Intent intent = new Intent(getContext(), AlathkarView.class);
         intent.putExtra("thikrs", thikrs);
         intent.putExtra("title", title);

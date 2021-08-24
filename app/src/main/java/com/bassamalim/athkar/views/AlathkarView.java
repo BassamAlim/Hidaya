@@ -20,9 +20,9 @@ import java.util.Objects;
 
 public class AlathkarView extends AppCompatActivity {
 
-    AlathkarViewBinding binding;
-    LinearLayout linear;
-    String[] thikrs = new String[15];
+    private AlathkarViewBinding binding;
+    private LinearLayout linear;
+    private String[] thikrs = new String[15];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

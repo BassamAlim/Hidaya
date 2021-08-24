@@ -32,8 +32,6 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
     private Location location;
     private float currentDegree = 0f;
     private double distance = 0;
-    GeomagneticField geoField;
-    RotateAnimation raQibla;
 
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -104,7 +102,7 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
 
         float bearing = location.bearingTo(kaaba);
 
-        geoField = new GeomagneticField(Double.valueOf(location.getLatitude()).floatValue(),
+        GeomagneticField geoField = new GeomagneticField(Double.valueOf(location.getLatitude()).floatValue(),
                 Double.valueOf(location.getLongitude()).floatValue(),
                 Double.valueOf(location.getAltitude()).floatValue(), System.currentTimeMillis());
         head -= geoField.getDeclination(); // converts magnetic north into true north
@@ -119,7 +117,7 @@ public class QiblaFragment extends Fragment implements SensorEventListener {
         if (direction < 0)
             direction = direction + 360;
 
-        raQibla = new RotateAnimation(currentDegree, direction,
+        RotateAnimation raQibla = new RotateAnimation(currentDegree, direction,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         raQibla.setDuration(210);
         raQibla.setFillAfter(true);

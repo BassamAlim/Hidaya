@@ -11,7 +11,7 @@ public class Update extends AppCompatActivity {
     private final String TAG = "Update";
     private static Update instance;
     private final FirebaseRemoteConfig remoteConfig = MainActivity.getInstance().remoteConfig;
-    public String currentVersion  = getAppVersion(MainActivity.getInstance());
+    private final String currentVersion  = getAppVersion(MainActivity.getInstance());
 
     public static Update getInstance() {
         return instance;

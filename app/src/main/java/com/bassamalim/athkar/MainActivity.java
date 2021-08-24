@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     public final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
     public static Location location;
     public static ArrayList<String> times;
-    public Calendar[] formattedTimes;
 
     public static MainActivity getInstance() {
         return instance;
@@ -73,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
 
         times = getTimes();
 
-        formattedTimes = formatTimes(times);
+        Calendar[] formattedTimes = formatTimes(times);
         //formattedTimes = test();
 
         if (location.getLatitude() != 0.0)
-            new Keeper(this, location, formattedTimes);
+            new Keeper(this, location);
         else
             location = new Keeper(this).retrieveLocation();
 

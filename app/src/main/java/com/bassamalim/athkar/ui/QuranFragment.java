@@ -25,12 +25,9 @@ import java.util.ArrayList;
 public class QuranFragment extends Fragment {
 
     private QuranFragmentBinding binding;
-    JSONObject jsonObject;
-    JSONObject data;
-    JSONArray surahs;
-    String jsonFileString;
-    MyRecyclerAdapter adapter;
-    public static ArrayList<SurahButton> surahButtons;
+    private JSONObject jsonObject;
+    private MyRecyclerAdapter adapter;
+    private ArrayList<SurahButton> surahButtons;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -72,20 +69,15 @@ public class QuranFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new MyRecyclerAdapter(surahButtons);
         recyclerView.setAdapter(adapter);
-
-        //divider between buttons
-        /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);*/
     }
 
     private void setupJson() {
-        jsonFileString = Utils.getJsonFromAssets(requireContext(), "quran.json");
+        String jsonFileString = Utils.getJsonFromAssets(requireContext(), "quran.json");
         try {
             assert jsonFileString != null;
             jsonObject = new JSONObject(jsonFileString);
-            data = jsonObject.getJSONObject("data");
-            surahs = data.getJSONArray("surahs");
+            JSONObject data = jsonObject.getJSONObject("data");
+            JSONArray surahs = data.getJSONArray("surahs");
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -122,5 +114,6 @@ public class QuranFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
     }
 }

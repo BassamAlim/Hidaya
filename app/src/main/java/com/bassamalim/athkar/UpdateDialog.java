@@ -13,9 +13,8 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class UpdateDialog extends Dialog implements View.OnClickListener {
 
-    public Activity c;
-    public Button yes, no;
-    public String msg = "";
+    private final Activity c;
+    private final String msg = "";
 
     private final FirebaseRemoteConfig remoteConfig = MainActivity.getInstance().remoteConfig;
 
@@ -37,8 +36,8 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_dialog);
 
-        yes = findViewById(R.id.yes);
-        no = findViewById(R.id.no);
+        Button yes = findViewById(R.id.yes);
+        Button no = findViewById(R.id.no);
         yes.setOnClickListener(v -> startUpdate());
         no.setOnClickListener(v -> dismiss());
     }

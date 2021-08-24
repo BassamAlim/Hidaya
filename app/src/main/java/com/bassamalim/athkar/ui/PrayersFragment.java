@@ -14,8 +14,6 @@ import java.util.HashMap;
 public class PrayersFragment extends Fragment {
 
     private PrayersFragmentBinding binding;
-    public static ArrayList<String> times;
-    public static String[] translatedTimes;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -23,8 +21,8 @@ public class PrayersFragment extends Fragment {
         binding = PrayersFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        times = MainActivity.times;
-        translatedTimes = translateNumbers(times);
+        ArrayList<String> times = MainActivity.times;
+        String[] translatedTimes = translateNumbers(times);
 
         String fajrText = "الفجر: " + translatedTimes[0];
         String shorouqText = "الشروق: " + translatedTimes[1];

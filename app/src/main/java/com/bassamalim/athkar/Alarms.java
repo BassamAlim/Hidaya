@@ -13,15 +13,13 @@ import java.util.Date;
 
 public class Alarms extends AppCompatActivity {
 
-    Context context;
-    Context appContext;
-    Keeper keeper;
-    Calendar[] times;
-    Location location;
+    private final Context context;
+    private final Calendar[] times;
+    private Location location;
 
     public Alarms(Context gContext) {
         context = gContext;
-        keeper = new Keeper(this);
+        Keeper keeper = new Keeper(this);
         location = keeper.retrieveLocation();
         times = getTimes();
 
@@ -44,7 +42,7 @@ public class Alarms extends AppCompatActivity {
     }
 
     public void setAlarms() {
-        appContext = context.getApplicationContext();
+        Context appContext = context.getApplicationContext();
         for (int i = 0; i < times.length; i++) {
             int prayer = i;
 
