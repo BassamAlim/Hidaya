@@ -2,7 +2,6 @@ package com.bassamalim.athkar.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -15,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.AlathkarViewBinding;
-
 import java.util.Objects;
 
 public class AlathkarView extends AppCompatActivity {
@@ -34,8 +32,9 @@ public class AlathkarView extends AppCompatActivity {
         Intent intent = getIntent();
         CharSequence title = intent.getCharSequenceExtra("title");
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
-        //getSupportActionBar().setTitle(title);    works two ... but NOT getActionBar()
+        setSupportActionBar(binding.nameBar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        binding.thikrName.setText(title);
 
         linear = binding.linear;
 

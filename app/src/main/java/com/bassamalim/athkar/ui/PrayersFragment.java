@@ -38,12 +38,11 @@ public class PrayersFragment extends Fragment {
         binding.maghribView.setText(maghribText);
         binding.ishaaView.setText(ishaaText);
 
-
         return root;
     }
 
     public static String[] translateNumbers(ArrayList<String> english) {
-        String[] result = english.toArray(new String[english.size()]);
+        String[] result = english.toArray(new String[0]);
 
         HashMap<Character, Character> map = new HashMap<>();
         map.put('0', '٠');

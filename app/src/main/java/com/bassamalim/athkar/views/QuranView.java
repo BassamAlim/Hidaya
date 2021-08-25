@@ -50,7 +50,10 @@ public class QuranView extends AppCompatActivity {
 
         mainLinear = binding.mainLinear;
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
+        setSupportActionBar(binding.numberBar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        String temp = "رقم الصفحة " + currentPage;
+        binding.pageNumber.setText(temp);
 
         textSize = getSize();
 

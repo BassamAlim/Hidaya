@@ -3,20 +3,13 @@ package com.bassamalim.athkar;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import com.bassamalim.athkar.receivers.DeviceBootReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -24,15 +17,19 @@ import androidx.navigation.ui.NavigationUI;
 import com.bassamalim.athkar.databinding.ActivityMainBinding;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import java.time.chrono.HijrahDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
     private static MainActivity instance;
     private ActivityMainBinding binding;
     public final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+    private final Calendar calendar = Calendar.getInstance();
+    private final Date date = new Date();
     public static Location location;
     public static ArrayList<String> times;
 
@@ -47,7 +44,11 @@ public class MainActivity extends AppCompatActivity {
         instance = this;
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setHijri();
         setContentView(binding.getRoot());
+
+        Toolbar hijriBar = findViewById(R.id.my_hijri_bar);
+        setSupportActionBar(hijriBar);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_prayers, R.id.navigation_alathkar, R.id.navigation_qibla).build();
@@ -56,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
                 .findFragmentById(R.id.nav_host_fragment_activity_main);
         assert navHostFragment != null;
         NavController navController = navHostFragment.getNavController();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        // for the action bar which i removed to create my own
+        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -92,37 +94,37 @@ public class MainActivity extends AppCompatActivity {
     public Calendar[] test() {
         Calendar[] tester = new Calendar[7];
 
-        tester[0] = Calendar.getInstance();
+        tester[0] = calendar;
         tester[0].setTimeInMillis(System.currentTimeMillis());
         tester[0].set(Calendar.HOUR_OF_DAY, 2);
         tester[0].set(Calendar.MINUTE, 49);
 
-        tester[1] = Calendar.getInstance();
+        tester[1] = calendar;
         tester[1].setTimeInMillis(System.currentTimeMillis());
         tester[1].set(Calendar.HOUR_OF_DAY, 4);
         tester[1].set(Calendar.MINUTE, 48);
 
-        tester[2] = Calendar.getInstance();
+        tester[2] = calendar;
         tester[2].setTimeInMillis(System.currentTimeMillis());
         tester[2].set(Calendar.HOUR_OF_DAY, 10);
         tester[2].set(Calendar.MINUTE, 41);
 
-        tester[3] = Calendar.getInstance();
+        tester[3] = calendar;
         tester[3].setTimeInMillis(System.currentTimeMillis());
         tester[3].set(Calendar.HOUR_OF_DAY, 21);
         tester[3].set(Calendar.MINUTE, 41);
 
-        tester[4] = Calendar.getInstance();
+        tester[4] = calendar;
         tester[4].setTimeInMillis(System.currentTimeMillis());
         tester[4].set(Calendar.HOUR_OF_DAY, 16);
         tester[4].set(Calendar.MINUTE, 42);
 
-        tester[5] = Calendar.getInstance();
+        tester[5] = calendar;
         tester[5].setTimeInMillis(System.currentTimeMillis());
         tester[5].set(Calendar.HOUR_OF_DAY, 2);
         tester[5].set(Calendar.MINUTE, 43);
 
-        tester[6] = Calendar.getInstance();
+        tester[6] = calendar;
         tester[6].setTimeInMillis(System.currentTimeMillis());
         tester[6].set(Calendar.HOUR_OF_DAY, 11);
         tester[6].set(Calendar.MINUTE, 54);
@@ -131,10 +133,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public ArrayList<String> getTimes() {
-        Date now = new Date();
-
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
+        calendar.setTime(date);
 
         return new PrayTimes().getPrayerTimes(calendar, location.getLatitude(),
                 location.getLongitude(), Constants.TIME_ZONE);
@@ -149,12 +149,109 @@ public class MainActivity extends AppCompatActivity {
             if (m == 'P')
                 hour += 12;
 
-            formattedTimes[i] = Calendar.getInstance();
+            formattedTimes[i] = calendar;
             formattedTimes[i].setTimeInMillis(System.currentTimeMillis());
             formattedTimes[i].set(Calendar.HOUR_OF_DAY, hour);
             formattedTimes[i].set(Calendar.MINUTE, Integer.parseInt(givenTimes.get(i).substring(3, 5)));
         }
         return formattedTimes;
+    }
+
+    private void setHijri() {
+        String text = whichDay(calendar.get(Calendar.DAY_OF_WEEK)) + " ";
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Calendar cl = Calendar.getInstance();
+            cl.setTime(date);
+
+            HijrahDate hijriDate = HijrahDate.now();
+            String hDate = hijriDate.toString();
+            hDate = hDate.substring(19);
+
+            String year = hDate.substring(0, 4);
+            String month = whichMonth(Integer.parseInt(hDate.substring(5, 7)));
+            String  day = hDate.substring(8, 10);
+
+            year = translateNumbers(year);
+            day = translateNumbers(day);
+
+            text += day + " " + month + " " + year;
+        }
+
+        binding.hijriView.setText(text);
+
+        //OUTPUT: Hijrah-umalqura AH 1436-02-03
+        //substringed: 1436-02-03
+    }
+
+    private String whichDay(int day) {
+        String result;
+
+        HashMap<Integer, String> weekMap = new HashMap<>();
+        weekMap.put(Calendar.SUNDAY, "الأحد");
+        weekMap.put(Calendar.MONDAY, "الأثنين");
+        weekMap.put(Calendar.TUESDAY, "الثلاثاء");
+        weekMap.put(Calendar.WEDNESDAY, "الأربعاء");
+        weekMap.put(Calendar.THURSDAY, "الخميس");
+        weekMap.put(Calendar.FRIDAY, "الجمعة");
+        weekMap.put(Calendar.SATURDAY, "السبت");
+
+        result = weekMap.get(day);
+
+        return result;
+    }
+
+    private String whichMonth(int num) {
+        String result;
+
+        HashMap<Integer, String> monthMap = new HashMap<>();
+        monthMap.put(1, "مُحَرَّم");
+        monthMap.put(2, "صَفَر");
+        monthMap.put(3, "ربيع الأول");
+        monthMap.put(4, "ربيع الثاني");
+        monthMap.put(5, "جُمادى الأول");
+        monthMap.put(6, "جُمادى الآخر");
+        monthMap.put(7, "رجب");
+        monthMap.put(8, "شعبان");
+        monthMap.put(9, "رَمَضان");
+        monthMap.put(10, "شَوَّال");
+        monthMap.put(11, "ذو القِعْدة");
+        monthMap.put(12, "ذو الحِجَّة");
+
+        result = monthMap.get(num);
+
+        return result;
+    }
+
+    public static String translateNumbers(String english) {
+        String result;
+        HashMap<Character, Character> map = new HashMap<>();
+        map.put('0', '٠');
+        map.put('1', '١');
+        map.put('2', '٢');
+        map.put('3', '٣');
+        map.put('4', '٤');
+        map.put('5', '٥');
+        map.put('6', '٦');
+        map.put('7', '٧');
+        map.put('8', '٨');
+        map.put('9', '٩');
+        map.put('A', 'ص');
+        map.put('P', 'م');
+
+            if (english.charAt(0) == '0')
+                english = english.replaceFirst("0", "");
+
+            StringBuilder temp = new StringBuilder();
+            for (int j = 0; j < english.length(); j++) {
+                char t = english.charAt(j);
+                if (map.containsKey(t))
+                    t = map.get(t);
+                temp.append(t);
+            }
+            result = temp.toString();
+
+        return result;
     }
 
     public void receiver() {
@@ -164,38 +261,6 @@ public class MainActivity extends AppCompatActivity {
         pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_bar, menu);
-
-        ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(
-                    R.color.primary, getTheme())));
-        }
-        else {
-            actionBar.setBackgroundDrawable(new ColorDrawable(getResources()
-                    .getColor(R.color.primary)));
-        }
-        return true;
-    }
-
-    /*@Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.whatsapp) {
-            String myNumber = "+966553145230";
-            String url = "https://api.whatsapp.com/send?phone=" + myNumber;
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url));
-            startActivity(i);
-            return true;
-        }
-        else
-            return super.onOptionsItemSelected(item);
-    }*/
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
