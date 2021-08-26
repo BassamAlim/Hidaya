@@ -70,13 +70,13 @@ public class QuranFragment extends Fragment {
 
     public ArrayList<SurahButton> makeSurahButtons() {
         ArrayList<SurahButton> buttons = new ArrayList<>();
-        String surahNamesJson = Utils.getJsonFromAssets(requireContext(), "surah_names.json");
+        String surahNamesJson = Utils.getJsonFromAssets(requireContext(), "sura_names.json");
         try {
             assert surahNamesJson != null;
-            JSONObject jsonObject = new JSONObject(surahNamesJson);
-            JSONArray array = jsonObject.getJSONArray("names");
+            JSONArray namesArray = new JSONArray(surahNamesJson);
+
             for (int i=0; i<Constants.NUMBER_OF_SURAHS; i++) {
-                JSONObject object = array.getJSONObject(i);
+                String name = namesArray.getString(i);
 
                 int finalI = i;
                 View.OnClickListener clickListener = v -> {
@@ -84,7 +84,7 @@ public class QuranFragment extends Fragment {
                     intent.putExtra("surah index", finalI);
                     requireContext().startActivity(intent);
                 };
-                SurahButton button = new SurahButton(i, object.getString("name"), clickListener);
+                SurahButton button = new SurahButton(i,"سُورَة " + name, clickListener);
                 buttons.add(button);
             }
         }

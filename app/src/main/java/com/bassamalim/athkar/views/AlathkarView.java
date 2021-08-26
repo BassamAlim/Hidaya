@@ -86,7 +86,7 @@ public class AlathkarView extends AppCompatActivity {
 
     private int getSize() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPreferences.getInt(getString(R.string.quran_text_size_key), 10);
+        return sharedPreferences.getInt(getString(R.string.alathkar_text_size_key), 25);
     }
 
 }

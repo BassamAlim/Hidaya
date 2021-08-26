@@ -19,16 +19,13 @@ import com.bassamalim.athkar.databinding.QuranViewBinding;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.Objects;
 
 public class QuranView extends AppCompatActivity {
 
     private QuranViewBinding binding;
     private LinearLayout mainLinear;
-    private JSONObject jsonObject;
-    private JSONArray surahs;
+    private JSONArray jsonArray;
     private int currentPage;
     private int textSize;
 
@@ -63,12 +60,10 @@ public class QuranView extends AppCompatActivity {
     }
 
     private void setupJson() {
-        String jsonString = Utils.getJsonFromAssets(this, "quran.json");
+        String jsonString = Utils.getJsonFromAssets(this, "hafs_smart_v8.json");
         try {
             assert jsonString != null;
-            jsonObject = new JSONObject(jsonString);
-            JSONObject data = jsonObject.getJSONObject("data");
-            surahs = data.getJSONArray("surahs");
+            jsonArray = new JSONArray(jsonString);
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -78,10 +73,11 @@ public class QuranView extends AppCompatActivity {
 
     private int getPage(int surahIndex) {
         try {
-            JSONObject surah = surahs.getJSONObject(surahIndex);
-            JSONArray ayahs = surah.getJSONArray("ayahs");
-            JSONObject ayah = ayahs.getJSONObject(0);
-            return ayah.getInt("page");
+            String pagesString = Utils.getJsonFromAssets(this, "pages.json");
+            assert pagesString != null;
+            JSONArray pages = new JSONArray(pagesString);
+            JSONObject page = pages.getJSONObject(surahIndex);
+            return page.getInt("page");
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -90,16 +86,13 @@ public class QuranView extends AppCompatActivity {
         return 0;
     }
 
-    public int[] getPageStart(int pageNumber) {
-        int[] start = new int[2];
+    public int getPageStart(int pageNumber) {
+        int start = 0;
         try {
-            String startString = Utils.getJsonFromAssets(this, "start.json");
-            assert startString != null;
-            jsonObject = new JSONObject(startString);
-            JSONArray pages = jsonObject.getJSONArray("pages");
-            JSONObject page = pages.getJSONObject(pageNumber-1);
-            start[0] = page.getInt("surah");
-            start[1] = page.getInt("ayah");
+            int counter = 0;
+            while (jsonArray.getJSONObject(counter).getInt("page") < pageNumber)
+                counter++;
+            start = counter;
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -110,93 +103,51 @@ public class QuranView extends AppCompatActivity {
 
     public void buildPage(int pageNumber) {
         mainLinear.removeAllViews();
-        JSONObject surah;
-        JSONArray ayahs;
-        JSONObject ayah;
 
-        int[] start = getPageStart(pageNumber);
+        int start = getPageStart(pageNumber);
 
         TextView screen;
         StringBuilder text = new StringBuilder();
-        NumberFormat nf = NumberFormat.getInstance(Locale.forLanguageTag("AR"));
 
-        int startSurah = start[0];
-        int startAyah = start[1];
-        int surahCounter = 0;
-        int ayahCounter = 0;
-        int currentSurah = startSurah + surahCounter;
-        int currentAyah = startAyah + 1;
-        boolean first;
-        boolean last;
-
+        int counter = start;
         try {
-            while (surahCounter < 5) {
-                first = false;
-                last = false;
+            int currentSurah = jsonArray.getJSONObject(counter).getInt("sura_no");
+            do {
+                Log.i(Constants.TAG, "counter is " + counter);
+                JSONObject ayah = jsonArray.getJSONObject(counter);
+                int surahNum = ayah.getInt("sura_no");
+                int ayahNum = ayah.getInt("aya_no");
 
-                surah = surahs.getJSONObject(currentSurah);
-                ayahs = surah.getJSONArray("ayahs");
-                ayah = ayahs.getJSONObject(startAyah + ayahCounter);
+                if (currentSurah != surahNum) {
+                    text.append(".\n");
+                    currentSurah = surahNum;
+                }
 
-                if (currentAyah == 1)
-                    first = true;
-                else if (currentAyah == ayahs.length())
-                    last = true;
-
-                if (ayah.getInt("page") == pageNumber) {
-                    if (first) {
+                if (ayahNum == 1) {
+                    if (text.length() > 0) {
                         screen = screen();
                         screen.setText(text);
                         mainLinear.addView(screen);
-
-                        text.setLength(0);
-                        TextView nameScreen = surahName(surah.getString("name"));
-                        TextView basmalah = basmalah();
-                        mainLinear.addView(nameScreen);
-                        mainLinear.addView(basmalah);
                     }
-                    text.append(ayah.getString("text"));
-                    text.append(" ").append(reverse(nf.format(currentAyah))).append("\u06DD").append(" ");
-                    //text.append(" ").append(nf.format(currentAyah)).append("\u06DD").append(" ");
-                    ayahCounter++;
-                    currentAyah++;
+                    text.setLength(0);
+                    TextView nameScreen = surahName(ayah.getString("sura_name_ar"));
+                    TextView basmalah = basmalah();
+                    mainLinear.addView(nameScreen);
+                    mainLinear.addView(basmalah);
                 }
-                else
-                    break;
 
-                if (last) {
-                    text.append(".\n");
-                    surahCounter++;
-                    startAyah = 0;
-                    ayahCounter = 0;
-                    currentSurah = startSurah + surahCounter;
-                    currentAyah = 1;
-                }
-            }
+                text.append(ayah.getString("aya_text")).append(" ");
+
+            } while (jsonArray.getJSONObject(++counter).getInt("page") == pageNumber);
         }
-        catch (Exception e) {
+        catch (JSONException e) {
             e.printStackTrace();
-            Log.e("myself", "problemo");
+            Log.e(Constants.TAG, "trouble in building page");
         }
+
         screen = screen();
         screen.setText(text);
         mainLinear.addView(screen);
-    }
-
-    private String reverse(String given) {
-        int digits = given.length();
-        if (digits == 1)
-            return given;
-        else {
-            String temp = "";
-
-            if (digits == 3)
-                temp += given.charAt(2);
-
-            temp += given.charAt(1);
-            temp += given.charAt(0);
-            return temp;
-        }
     }
 
     private void setListeners() {
@@ -255,17 +206,22 @@ public class QuranView extends AppCompatActivity {
         LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screen.setLayoutParams(screenParams);
-        screen.setPadding(10, 10, 10, 10);
+        screen.setPadding(0, 0, 0, 10);
         screen.setGravity(Gravity.CENTER);
         screen.setTextSize(textSize);
-        //screen.setTypeface(getResources().getFont(R.font.uthman_ver10));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            screen.setTypeface(getResources().getFont(R.font.hafs_smart_08));
+        else {
+            Typeface typeface = Typeface.createFromAsset(getAssets(), "font/hafs_smart_08");
+            screen.setTypeface(typeface);
+        }
 
         return screen;
     }
 
     private int getSize() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPreferences.getInt(getString(R.string.quran_text_size_key), 10);
+        return sharedPreferences.getInt(getString(R.string.quran_text_size_key), 30);
     }
 
 }

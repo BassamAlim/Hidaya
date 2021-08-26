@@ -43,7 +43,7 @@ public class NotificationService extends Service {
 
         managerCompat.notify(prayer, notification);
 
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     public Notification buildNotification(int prayer) {

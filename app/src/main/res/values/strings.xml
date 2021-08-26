@@ -18,15 +18,18 @@
 
     <!-- Preference Categories -->
     <string name="athan_header">إعدادات الأذان</string>
-    <string name="looks_header">المظهر</string>
+    <string name="quran_header">إعدادات المصحف</string>
+    <string name="alathkar_header">إعدادات الأذكار</string>
 
     <!-- Preference Keys -->
-    <string name="quran_text_size_key">"quran_text_size_key"</string>
-    <string name="athan_enable_key">"athan_enable"</string>
+    <string name="athan_enable_key">athan_enable</string>
+    <string name="quran_text_size_key">quran_text_size_key</string>
+    <string name="alathkar_text_size_key">alathkar_text_size_key</string>
 
     <!-- Preference Titles -->
-    <string name="quran_text_size_title">حجم الخط</string>
     <string name="athan_enable_title">اشعارات الأذان</string>
+    <string name="quran_text_size_title">حجم الخط</string>
+    <string name="alathkar_text_size_title">حجم الخط</string>
 
     <!-- TextViews Text -->
     <string name="coordinates">الإحداثيات</string>
