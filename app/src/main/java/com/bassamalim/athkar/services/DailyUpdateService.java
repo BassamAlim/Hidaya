@@ -4,6 +4,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
 import android.os.IBinder;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import com.bassamalim.athkar.Alarms;
 import com.bassamalim.athkar.Constants;
@@ -19,15 +21,23 @@ public class DailyUpdateService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Gson gson = new Gson();
-        String json = intent.getStringExtra("location");
+        if (intent != null) {
+            Gson gson = new Gson();
+            if (intent.getStringExtra("location") != null) {
+                String json = intent.getStringExtra("location");
 
-        MyLocation myLocation = gson.fromJson(json, MyLocation.class);
-        location = MyLocation.toLocation(myLocation);
+                MyLocation myLocation = gson.fromJson(json, MyLocation.class);
+                location = MyLocation.toLocation(myLocation);
 
-        Calendar[] times = getTimes();
+                Calendar[] times = getTimes();
 
-        new Alarms(this, times);
+                new Alarms(this, times);
+            }
+            else
+                Log.e(Constants.TAG, "StringExtra is null in DailyUpdateService");
+        }
+        else
+            Log.e(Constants.TAG, "Intent is null in DailyUpdateService");
 
         return START_REDELIVER_INTENT;
     }

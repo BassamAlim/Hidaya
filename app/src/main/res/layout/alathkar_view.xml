@@ -39,6 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?actionBarSize"
+
+        android:paddingBottom="?actionBarSize"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +51,9 @@
             android:id="@+id/linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="fill_vertical"
             android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:orientation="vertical">
 
 
