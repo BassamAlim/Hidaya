@@ -75,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
         times = getTimes();
 
         Calendar[] formattedTimes = formatTimes(times);
-        //formattedTimes = test();
+
+        //test();
 
         if (location.getLatitude() != 0.0)
             new Keeper(this, location);
@@ -91,18 +92,18 @@ public class MainActivity extends AppCompatActivity {
         new Update();
     }
 
-    public Calendar[] test() {
+    public void test() {
         Calendar[] tester = new Calendar[7];
 
         tester[0] = calendar;
         tester[0].setTimeInMillis(System.currentTimeMillis());
         tester[0].set(Calendar.HOUR_OF_DAY, 2);
-        tester[0].set(Calendar.MINUTE, 49);
+        tester[0].set(Calendar.MINUTE, 4);
 
         tester[1] = calendar;
         tester[1].setTimeInMillis(System.currentTimeMillis());
-        tester[1].set(Calendar.HOUR_OF_DAY, 4);
-        tester[1].set(Calendar.MINUTE, 48);
+        tester[1].set(Calendar.HOUR_OF_DAY, 2);
+        tester[1].set(Calendar.MINUTE, 8);
 
         tester[2] = calendar;
         tester[2].setTimeInMillis(System.currentTimeMillis());
@@ -129,7 +130,9 @@ public class MainActivity extends AppCompatActivity {
         tester[6].set(Calendar.HOUR_OF_DAY, 11);
         tester[6].set(Calendar.MINUTE, 54);
 
-        return tester;
+        /*Intent intent1 = new Intent(this, NotificationService.class);
+        intent1.putExtra("prayer", 1);
+        startService(intent1);*/
     }
 
     public ArrayList<String> getTimes() {
@@ -255,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void receiver() {
-        ComponentName receiver = new ComponentName(getApplicationContext(), DeviceBootReceiver.class);
+        ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
         PackageManager pm = getApplicationContext().getPackageManager();
 
         pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,

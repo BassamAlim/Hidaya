@@ -19,7 +19,6 @@ import com.bassamalim.athkar.models.SurahButton;
 import com.bassamalim.athkar.views.QuranView;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class QuranFragment extends Fragment {
@@ -71,12 +70,14 @@ public class QuranFragment extends Fragment {
     public ArrayList<SurahButton> makeSurahButtons() {
         ArrayList<SurahButton> buttons = new ArrayList<>();
         String surahNamesJson = Utils.getJsonFromAssets(requireContext(), "sura_names.json");
+        String searchJson = Utils.getJsonFromAssets(requireContext(), "search_names.json");
         try {
-            assert surahNamesJson != null;
             JSONArray namesArray = new JSONArray(surahNamesJson);
+            JSONArray searchNames = new JSONArray(searchJson);
 
             for (int i=0; i<Constants.NUMBER_OF_SURAHS; i++) {
                 String name = namesArray.getString(i);
+                String searchName = searchNames.getString(i);
 
                 int finalI = i;
                 View.OnClickListener clickListener = v -> {
@@ -84,7 +85,7 @@ public class QuranFragment extends Fragment {
                     intent.putExtra("surah index", finalI);
                     requireContext().startActivity(intent);
                 };
-                SurahButton button = new SurahButton(i,"سُورَة " + name, clickListener);
+                SurahButton button = new SurahButton(i,"سُورَة " + name, searchName ,clickListener);
                 buttons.add(button);
             }
         }

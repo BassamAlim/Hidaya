@@ -5,9 +5,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
@@ -39,8 +41,12 @@ public class NotificationService extends Service {
 
         //startForeground(NOTIFICATION_ID, notification);
 
-        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
+        // Request audio focus                                   // Request permanent focus.
+        am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
         managerCompat.notify(prayer, notification);
 
         return START_REDELIVER_INTENT;

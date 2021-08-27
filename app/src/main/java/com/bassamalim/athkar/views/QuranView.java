@@ -224,4 +224,9 @@ public class QuranView extends AppCompatActivity {
         return sharedPreferences.getInt(getString(R.string.quran_text_size_key), 30);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
+    }
 }

@@ -74,7 +74,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         else {
             //text = text.toLowerCase();
             for(SurahButton surahButton: surahButtonsCopy) {
-                if(surahButton.getSurahName().contains(text))
+                if(surahButton.getSearchName().contains(text))
                     surahButtons.add(surahButton);
             }
         }
