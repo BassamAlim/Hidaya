@@ -17,17 +17,19 @@
     <string name="update_now">حدِّث</string>
 
     <!-- Preference Categories -->
-    <string name="athan_header">إعدادات الأذان</string>
+    <string name="notifications_header">الإشعارات</string>
     <string name="quran_header">إعدادات المصحف</string>
     <string name="alathkar_header">إعدادات الأذكار</string>
 
     <!-- Preference Keys -->
     <string name="athan_enable_key">athan_enable</string>
+    <string name="daily_page_key">daily_page_enable</string>
     <string name="quran_text_size_key">quran_text_size_key</string>
     <string name="alathkar_text_size_key">alathkar_text_size_key</string>
 
     <!-- Preference Titles -->
     <string name="athan_enable_title">اشعارات الأذان</string>
+    <string name="daily_page_enable_title">صفحة اليوم</string>
     <string name="quran_text_size_title">حجم الخط</string>
     <string name="alathkar_text_size_title">حجم الخط</string>
 
@@ -51,6 +53,8 @@
     <string name="quran_and_sunnah_channels">قناة القرآن والسنة</string>
     <string name="settings">الإعدادات</string>
     <string name="update">تحديث</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

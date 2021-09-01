@@ -1,13 +1,20 @@
 package com.bassamalim.athkar.ui;
 
 import androidx.appcompat.widget.SearchView;
+
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +27,7 @@ import com.bassamalim.athkar.views.QuranView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class QuranFragment extends Fragment {
 
@@ -27,10 +35,15 @@ public class QuranFragment extends Fragment {
     private MyRecyclerAdapter adapter;
     private RecyclerView recyclerView;
     private ArrayList<SurahButton> surahButtons;
+    private static Bundle mBundleRecyclerViewState;
+    private Parcelable mListState = null;
+    GridLayoutManager gridLayoutManager;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        gridLayoutManager = new GridLayoutManager(getContext(), 1);
 
         binding = QuranFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -42,6 +55,30 @@ public class QuranFragment extends Fragment {
         setSearchListeners();
 
         return root;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mBundleRecyclerViewState = new Bundle();
+        mListState = Objects.requireNonNull(recyclerView.getLayoutManager()).onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable("recycler_state", mListState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mBundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mListState = mBundleRecyclerViewState.getParcelable("recycler_state");
+                    Objects.requireNonNull(recyclerView.getLayoutManager())
+                            .onRestoreInstanceState(mListState);
+                }
+            }, 50);
+        }
+        recyclerView.setLayoutManager(gridLayoutManager);
     }
 
     private void setSearchListeners() {
@@ -82,6 +119,7 @@ public class QuranFragment extends Fragment {
                 int finalI = i;
                 View.OnClickListener clickListener = v -> {
                     Intent intent = new Intent(getContext(), QuranView.class);
+                    intent.setAction("specific");
                     intent.putExtra("surah index", finalI);
                     requireContext().startActivity(intent);
                 };

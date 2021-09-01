@@ -12,16 +12,22 @@ import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.Splash;
 import com.bassamalim.athkar.views.AlathkarView;
 import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.views.QuranView;
 
 public class NotificationService extends Service {
 
-    public static boolean isServiceRunning = false;
-    private String channelId = "Athan";
+    public static boolean isOn = false;
+    private boolean isPrayer;
+    private String channelId;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -30,70 +36,86 @@ public class NotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        NotificationManager notificationManager = (NotificationManager)
-                getSystemService(NOTIFICATION_SERVICE);
-        channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
-                createNotificationChannel(notificationManager) : "Athan";
+        long max = intent.getLongExtra("time", 0) + 60000;
+        if (System.currentTimeMillis() <= max) {
+            NotificationManager notificationManager = (NotificationManager)
+                    getSystemService(NOTIFICATION_SERVICE);
 
-        int prayer = intent.getIntExtra("prayer", 0);
+            channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
+                    createNotificationChannel(notificationManager) : "channel";
 
-        Notification notification = buildNotification(prayer);
+            isPrayer = intent.getAction().equals("prayer");
+            int id = intent.getIntExtra("id", 0);
 
-        //startForeground(NOTIFICATION_ID, notification);
+            Log.i(Constants.TAG, "in notification service for " + id);
 
-        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            Notification notification = build(id);
 
-        // Request audio focus                                   // Request permanent focus.
-        am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            if (isPrayer) {
+                AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                // Request audio focus                                   // Request permanent focus.
+                am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            }
 
-        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
-        managerCompat.notify(prayer, notification);
+            //startForeground(NOTIFICATION_ID, notification);
 
+            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
+            managerCompat.notify(id, notification);
+        }
+        else
+            Log.i(Constants.TAG, "dead intent walking");
+
+        stopSelf();
         return START_REDELIVER_INTENT;
     }
 
-    public Notification buildNotification(int prayer) {
-        NotificationCompat.Builder builder = new
-                NotificationCompat.Builder(this, "Athan");
+    private Notification build(int variable) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
+
         builder.setSmallIcon(R.drawable.ic_athan);
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_athan);
         builder.setLargeIcon(icon);
         builder.setTicker(getResources().getString(R.string.app_name));
 
-        switch (prayer) {
-            case 0: {
+        switch (variable) {
+            case 1: {
                 builder.setContentTitle("صلاة الفجر");
                 builder.setContentText("حان موعد أذان الفجر");
                 break;
             }
-            case 1: {
+            case 2: {
                 builder.setContentTitle("وقت الشروق");
                 builder.setContentText("إقرأ أذكار الصباح");
                 break;
             }
-            case 2: {
+            case 3: {
                 builder.setContentTitle("صلاة الظهر");
                 builder.setContentText("حان موعد أذان الظهر");
                 break;
             }
-            case 3: {
+            case 4: {
                 builder.setContentTitle("صلاة العصر");
                 builder.setContentText("حان موعد أذان العصر");
                 break;
             }
-            case 4: {
+            case 5: {
                 builder.setContentTitle("وقت الغروب");
                 builder.setContentText("إقرأ أذكار المساء");
                 break;
             }
-            case 5: {
+            case 6: {
                 builder.setContentTitle("صلاة المغرب");
                 builder.setContentText("حان موعد أذان المغرب");
                 break;
             }
-            case 6: {
+            case 7: {
                 builder.setContentTitle("صلاة العشاء");
                 builder.setContentText("حان موعد أذان العشاء");
+                break;
+            }
+            case 8: {
+                builder.setContentTitle("صفحة اليوم");
+                builder.setContentText("اضغط لقراءة صفحة اليوم من المصحف");
                 break;
             }
         }
@@ -104,7 +126,7 @@ public class NotificationService extends Service {
             builder.setColor(getColor(R.color.secondary));
         else
             builder.setColor(getResources().getColor(R.color.secondary));
-        builder.setContentIntent(onClick(prayer));
+        builder.setContentIntent(onClick(variable));
         //builder.setOngoing(true);
         //builder.setDeleteIntent(contentPendingIntent)  // if needed
 
@@ -120,49 +142,63 @@ public class NotificationService extends Service {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel Athan;
-            channelId = "Athan";
-            CharSequence name = "Athan Channel";
-            String description = "The channel that gives athan notifications";
+            NotificationChannel notificationChannel;
+            CharSequence name;
+            String description;
+
+            if (isPrayer) {
+                channelId = "Athan";
+                name = "Athan Channel";
+                description = "The channel that gives athan notifications";
+            }
+            else {
+                channelId = "daily";
+                name = "daily Channel";
+                description = "The channel that gives daily notifications";
+            }
             int importance = NotificationManager.IMPORTANCE_HIGH;
-            Athan = new NotificationChannel(channelId, name, importance);
-            Athan.setDescription(description);
-            Athan.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            notificationChannel = new NotificationChannel(channelId, name, importance);
+            notificationChannel.setDescription(description);
+            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
 
             //notificationManager = this.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(Athan);
+            notificationManager.createNotificationChannel(notificationChannel);
         }
         return channelId;
     }
 
-    private PendingIntent onClick(int prayer) {
-        // Create an explicit intent for an Activity in your app
+    private PendingIntent onClick(int variable) {
         Intent intent;
         PendingIntent pendingIntent;
 
-        if (prayer == 1) {
+        if (variable == 2) {
             intent = new Intent(this, AlathkarView.class);
             intent.putExtra("thikrs", getResources().getStringArray(R.array.morning));
             intent.putExtra("title", "أذكار الصباح");
         }
-        else if (prayer == 4) {
+        else if (variable == 5) {
             intent = new Intent(this, AlathkarView.class);
             intent.putExtra("thikrs", getResources().getStringArray(R.array.night));
             intent.putExtra("title", "أذكار المساء");
+        }
+        else if (variable == 8) {
+            intent = new Intent(this, QuranView.class);
+            intent.setAction("random");
+            intent.putExtra("title", "صفحة اليوم");
         }
         else
             intent = new Intent(this, Splash.class);
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         pendingIntent = PendingIntent.getActivity(this,
-                prayer, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                variable, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         return pendingIntent;
     }
 
-    /*void stopMyService() {
+    /*public void stopMyService() {
         stopForeground(true);
         stopSelf();
         isServiceRunning = false;
@@ -172,7 +208,7 @@ public class NotificationService extends Service {
     public void onDestroy() {
         super.onDestroy();
         stopSelf();
-        isServiceRunning = false;
+        isOn = false;
     }
 }
 

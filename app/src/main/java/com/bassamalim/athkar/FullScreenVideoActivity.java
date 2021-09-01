@@ -33,7 +33,6 @@ public class FullScreenVideoActivity extends AppCompatActivity {
         }
 
         Uri videoUri = TvView.getUri();
-
         videoView.setVideoURI(videoUri);
 
         MediaController mediaController = new FullScreenMediaController(this);

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
-
 import androidx.annotation.Nullable;
 import com.bassamalim.athkar.Alarms;
 import com.bassamalim.athkar.Constants;
@@ -17,39 +16,39 @@ import java.util.Date;
 
 public class DailyUpdateService extends Service {
 
-    private Location location;
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null) {
+        Log.i(Constants.TAG, "in daily update service");
+        if (intent != null && intent.getStringExtra("location") != null) {
             Gson gson = new Gson();
-            if (intent.getStringExtra("location") != null) {
-                String json = intent.getStringExtra("location");
+            String json = intent.getStringExtra("location");
 
-                MyLocation myLocation = gson.fromJson(json, MyLocation.class);
-                location = MyLocation.toLocation(myLocation);
+            MyLocation myLocation = gson.fromJson(json, MyLocation.class);
+            Location location = MyLocation.toLocation(myLocation);
 
-                Calendar[] times = getTimes();
+            Calendar[] times = getTimes(location);
 
-                new Alarms(this, times);
-            }
-            else
-                Log.e(Constants.TAG, "StringExtra is null in DailyUpdateService");
+            new Alarms(this, times);
+
+            stopSelf();
         }
-        else
-            Log.e(Constants.TAG, "Intent is null in DailyUpdateService");
+        else {
+            Log.e(Constants.TAG, "Something is null in DailyUpdateService");
+            stopSelf();
+        }
+
 
         return START_REDELIVER_INTENT;
     }
 
-    public Calendar[] getTimes() {
+    public Calendar[] getTimes(Location loc) {
         Date now = new Date();
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
 
-        return new PrayTimes().getPrayerTimesArray(calendar, location.getLatitude(),
-                location.getLongitude(), Constants.TIME_ZONE);
+        return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
+                loc.getLongitude(), Constants.TIME_ZONE);
     }
 
     @Nullable @Override
@@ -57,4 +56,9 @@ public class DailyUpdateService extends Service {
         return null;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopSelf();
+    }
 }

@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Objects;
+import java.util.Random;
 
 public class QuranView extends AppCompatActivity {
 
@@ -37,22 +38,21 @@ public class QuranView extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 
+        mainLinear = binding.mainLinear;
+
         Intent intent = getIntent();
+        String action = intent.getAction();
 
         setupJson();
 
-        int surahIndex = intent.getIntExtra("surah index", 0);
-
-        currentPage = getPage(surahIndex);
-
-        mainLinear = binding.mainLinear;
-
-        setSupportActionBar(binding.numberBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
-        String temp = "رقم الصفحة " + currentPage;
-        binding.pageNumber.setText(temp);
-
         textSize = getSize();
+
+        if (action.equals("specific")) {
+            int surahIndex = intent.getIntExtra("surah index", 0);
+            currentPage = getPage(surahIndex);
+        }
+        else if (action.equals("random"))
+            currentPage = new Random().nextInt(Constants.QURAN_PAGES-1);
 
         buildPage(currentPage);
 
@@ -102,6 +102,11 @@ public class QuranView extends AppCompatActivity {
     }
 
     public void buildPage(int pageNumber) {
+        setSupportActionBar(binding.numberBar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        String temp = "رقم الصفحة " + currentPage;
+        binding.pageNumber.setText(temp);
+
         mainLinear.removeAllViews();
 
         int start = getPageStart(pageNumber);
@@ -113,7 +118,6 @@ public class QuranView extends AppCompatActivity {
         try {
             int currentSurah = jsonArray.getJSONObject(counter).getInt("sura_no");
             do {
-                Log.i(Constants.TAG, "counter is " + counter);
                 JSONObject ayah = jsonArray.getJSONObject(counter);
                 int surahNum = ayah.getInt("sura_no");
                 int ayahNum = ayah.getInt("aya_no");

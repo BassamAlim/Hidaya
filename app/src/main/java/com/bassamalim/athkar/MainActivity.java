@@ -7,12 +7,9 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import com.bassamalim.athkar.receivers.DeviceBootReceiver;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.bassamalim.athkar.databinding.ActivityMainBinding;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -27,8 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static MainActivity instance;
     private ActivityMainBinding binding;
-    public final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-    private final Calendar calendar = Calendar.getInstance();
+    public FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
     private final Date date = new Date();
     public static Location location;
     public static ArrayList<String> times;
@@ -40,45 +36,34 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         instance = this;
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setHijri();
         setContentView(binding.getRoot());
 
-        Toolbar hijriBar = findViewById(R.id.my_hijri_bar);
-        setSupportActionBar(hijriBar);
-
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_prayers, R.id.navigation_alathkar, R.id.navigation_qibla).build();
+        setSupportActionBar(binding.myHijriBar);
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment_activity_main);
         assert navHostFragment != null;
         NavController navController = navHostFragment.getNavController();
-        // for the action bar which i removed to create my own
-        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-
-        BottomNavigationView navView = findViewById(R.id.nav_view);
 
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                 .setMinimumFetchIntervalInSeconds(3600 * 24).build();
-
         remoteConfig.setConfigSettingsAsync(configSettings);
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
         Intent intent = getIntent();
         location = intent.getParcelableExtra("location");
 
-        times = getTimes();
+        times = getTimes(location);
 
         Calendar[] formattedTimes = formatTimes(times);
+        //Calendar[] formattedTimes = test();
 
-        //test();
-
-        if (location.getLatitude() != 0.0)
+        if (location.getLatitude() != 0.0 || location.getLongitude() != 0.0)
             new Keeper(this, location);
         else
             location = new Keeper(this).retrieveLocation();
@@ -86,61 +71,53 @@ public class MainActivity extends AppCompatActivity {
         if (getPreferences(MODE_PRIVATE).getBoolean(getString(R.string.athan_enable_key), true)) {
             new Alarms(this, formattedTimes);
             new DailyUpdate();
-            receiver();
+            setupBootReceiver();
         }
 
         new Update();
     }
 
-    public void test() {
+    private Calendar[] test() {
         Calendar[] tester = new Calendar[7];
 
-        tester[0] = calendar;
+        tester[0] = Calendar.getInstance();
         tester[0].setTimeInMillis(System.currentTimeMillis());
-        tester[0].set(Calendar.HOUR_OF_DAY, 2);
-        tester[0].set(Calendar.MINUTE, 4);
-
-        tester[1] = calendar;
+        tester[0].set(Calendar.HOUR_OF_DAY, 14);
+        tester[0].set(Calendar.MINUTE, 2);
+        tester[1] = Calendar.getInstance();
         tester[1].setTimeInMillis(System.currentTimeMillis());
         tester[1].set(Calendar.HOUR_OF_DAY, 2);
         tester[1].set(Calendar.MINUTE, 8);
-
-        tester[2] = calendar;
+        tester[2] = Calendar.getInstance();
         tester[2].setTimeInMillis(System.currentTimeMillis());
-        tester[2].set(Calendar.HOUR_OF_DAY, 10);
-        tester[2].set(Calendar.MINUTE, 41);
-
-        tester[3] = calendar;
+        tester[2].set(Calendar.HOUR_OF_DAY, 0);
+        tester[2].set(Calendar.MINUTE, 1);
+        tester[3] = Calendar.getInstance();
         tester[3].setTimeInMillis(System.currentTimeMillis());
-        tester[3].set(Calendar.HOUR_OF_DAY, 21);
-        tester[3].set(Calendar.MINUTE, 41);
-
-        tester[4] = calendar;
+        tester[3].set(Calendar.HOUR_OF_DAY, 0);
+        tester[3].set(Calendar.MINUTE, 27);
+        tester[4] = Calendar.getInstance();
         tester[4].setTimeInMillis(System.currentTimeMillis());
-        tester[4].set(Calendar.HOUR_OF_DAY, 16);
-        tester[4].set(Calendar.MINUTE, 42);
-
-        tester[5] = calendar;
+        tester[4].set(Calendar.HOUR_OF_DAY, 0);
+        tester[4].set(Calendar.MINUTE, 5);
+        tester[5] = Calendar.getInstance();
         tester[5].setTimeInMillis(System.currentTimeMillis());
         tester[5].set(Calendar.HOUR_OF_DAY, 2);
         tester[5].set(Calendar.MINUTE, 43);
-
-        tester[6] = calendar;
+        tester[6] = Calendar.getInstance();
         tester[6].setTimeInMillis(System.currentTimeMillis());
-        tester[6].set(Calendar.HOUR_OF_DAY, 11);
-        tester[6].set(Calendar.MINUTE, 54);
+        tester[6].set(Calendar.HOUR_OF_DAY, 4);
+        tester[6].set(Calendar.MINUTE, 43);
 
-        /*Intent intent1 = new Intent(this, NotificationService.class);
-        intent1.putExtra("prayer", 1);
-        startService(intent1);*/
+        return tester;
     }
 
-    public ArrayList<String> getTimes() {
+    private ArrayList<String> getTimes(Location loc) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 
-        return new PrayTimes().getPrayerTimes(calendar, location.getLatitude(),
-                location.getLongitude(), Constants.TIME_ZONE);
+        return new PrayTimes().getPrayerTimes(calendar, loc.getLatitude(),
+                loc.getLongitude(), Constants.TIME_ZONE);
     }
 
     private Calendar[] formatTimes(ArrayList<String> givenTimes) {
@@ -152,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             if (m == 'P')
                 hour += 12;
 
-            formattedTimes[i] = calendar;
+            formattedTimes[i] = Calendar.getInstance();
             formattedTimes[i].setTimeInMillis(System.currentTimeMillis());
             formattedTimes[i].set(Calendar.HOUR_OF_DAY, hour);
             formattedTimes[i].set(Calendar.MINUTE, Integer.parseInt(givenTimes.get(i).substring(3, 5)));
@@ -161,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setHijri() {
-        String text = whichDay(calendar.get(Calendar.DAY_OF_WEEK)) + " ";
+        String text = whichDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) + " ";
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             Calendar cl = Calendar.getInstance();
@@ -189,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
 
     private String whichDay(int day) {
         String result;
-
         HashMap<Integer, String> weekMap = new HashMap<>();
         weekMap.put(Calendar.SUNDAY, "الأحد");
         weekMap.put(Calendar.MONDAY, "الأثنين");
@@ -200,13 +176,11 @@ public class MainActivity extends AppCompatActivity {
         weekMap.put(Calendar.SATURDAY, "السبت");
 
         result = weekMap.get(day);
-
         return result;
     }
 
     private String whichMonth(int num) {
         String result;
-
         HashMap<Integer, String> monthMap = new HashMap<>();
         monthMap.put(1, "مُحَرَّم");
         monthMap.put(2, "صَفَر");
@@ -222,11 +196,10 @@ public class MainActivity extends AppCompatActivity {
         monthMap.put(12, "ذو الحِجَّة");
 
         result = monthMap.get(num);
-
         return result;
     }
 
-    public static String translateNumbers(String english) {
+    private String translateNumbers(String english) {
         String result;
         HashMap<Character, Character> map = new HashMap<>();
         map.put('0', '٠');
@@ -257,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
-    public void receiver() {
+    private void setupBootReceiver() {
         ComponentName receiver = new ComponentName(this, DeviceBootReceiver.class);
         PackageManager pm = getApplicationContext().getPackageManager();
 
@@ -272,5 +245,12 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
+        remoteConfig = null;
     }
 }

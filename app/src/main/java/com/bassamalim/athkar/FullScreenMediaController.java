@@ -18,10 +18,8 @@ public class FullScreenMediaController extends MediaController {
 
     @Override
     public void setAnchorView(View view) {
-
         super.setAnchorView(view);
 
-        //image button for full screen to be added to media controller
         ImageButton fullScreen = new ImageButton(super.getContext());
 
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -30,7 +28,7 @@ public class FullScreenMediaController extends MediaController {
         addView(fullScreen, params);
 
         //fullscreen indicator from intent
-        isFullScreen =  ((Activity)getContext()).getIntent().getStringExtra("fullScreenInd");
+        isFullScreen =  ((Activity) getContext()).getIntent().getStringExtra("fullScreenInd");
 
         if("y".equals(isFullScreen))
             fullScreen.setImageResource(R.drawable.ic_fullscreen_exit);

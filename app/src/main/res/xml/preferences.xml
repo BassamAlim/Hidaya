@@ -1,11 +1,16 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory app:title="@string/athan_header">
+    <PreferenceCategory app:title="@string/notifications_header">
 
         <SwitchPreferenceCompat
             app:key="@string/athan_enable_key"
             app:title="@string/athan_enable_title"
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="@string/daily_page_key"
+            app:title="@string/daily_page_enable_title"
             app:defaultValue="true" />
 
     </PreferenceCategory>

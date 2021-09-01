@@ -3,7 +3,6 @@ package com.bassamalim.athkar;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -36,9 +35,7 @@ public class Splash extends AppCompatActivity {
             requestMultiplePermissions.launch(PERMISSIONS);
     }
 
-    public boolean permissionsGranted() {
-
-
+    private boolean permissionsGranted() {
         boolean given;
         if (build >= 29) {
             given = ActivityCompat.checkSelfPermission(this,
@@ -57,7 +54,7 @@ public class Splash extends AppCompatActivity {
         return given;
     }
 
-    public void getLocation() {
+    private void getLocation() {
         FusedLocationProviderClient fusedLocationClient = LocationServices
                 .getFusedLocationProviderClient(this);
 
