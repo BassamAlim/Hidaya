@@ -11,6 +11,7 @@
         <SwitchPreferenceCompat
             app:key="@string/daily_page_key"
             app:title="@string/daily_page_enable_title"
+
             app:defaultValue="true" />
 
     </PreferenceCategory>

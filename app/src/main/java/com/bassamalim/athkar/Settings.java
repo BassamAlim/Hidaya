@@ -10,11 +10,11 @@ import android.os.Bundle;
 import android.os.Message;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class Settings extends AppCompatActivity {
 
@@ -72,32 +72,7 @@ public class Settings extends AppCompatActivity {
             dailyPageSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean on = (Boolean) newValue;
                 if (on) {
-                    Calendar currentTime = Calendar.getInstance();
-                    int cHour = currentTime.get(Calendar.HOUR_OF_DAY);
-                    int cMinute = currentTime.get(Calendar.MINUTE);
-                    TimePickerDialog timePicker = new TimePickerDialog(getContext(),
-                            (view, hourOfDay, minute) -> {
-
-                        int[] nums = {hourOfDay, minute};
-                        String fixed = fixText(nums);
-                         dailyPageSwitch.setSummary(fixed);
-
-                        SharedPreferences myPref = requireContext().getSharedPreferences(
-                                "daily_page_time", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = myPref.edit();
-
-                        editor.putInt("hour", hourOfDay);
-                        editor.putInt("minute", minute);
-                        editor.putString("text", fixed);
-
-                        editor.apply();
-
-                        new Alarms(getContext());
-                    }, cHour, cMinute, false);
-                    timePicker.setTitle("اختر وقت اشعار الصفحة اليومية");
-                    timePicker.setButton(TimePickerDialog.BUTTON_POSITIVE, "حفظ", (Message) null);
-                    timePicker.setButton(TimePickerDialog.BUTTON_NEGATIVE, "إلغاء", (Message) null);
-                    timePicker.show();
+                    showTimePicker();
                 }
                 else {
                     athanSwitch.setSummary("");
@@ -108,12 +83,48 @@ public class Settings extends AppCompatActivity {
 
                     AlarmManager am = (AlarmManager) requireContext().getApplicationContext()
                             .getSystemService(Context.ALARM_SERVICE);
-                    /*AlarmManager am = (AlarmManager) MainActivity.getInstance()
-                            .getSystemService(Context.ALARM_SERVICE);*/
+
                     am.cancel(pendingIntent);
                 }
                 return true;
             });
+
+        }
+
+        private void showTimePicker() {
+            SwitchPreferenceCompat dailyPageSwitch = findPreference(getString(R.string.daily_page_key));
+            assert dailyPageSwitch != null;
+
+            Calendar currentTime = Calendar.getInstance();
+            int cHour = currentTime.get(Calendar.HOUR_OF_DAY);
+            int cMinute = currentTime.get(Calendar.MINUTE);
+
+            TimePickerDialog timePicker = new TimePickerDialog(getContext(),
+                    (view, hourOfDay, minute) -> {
+
+                int[] nums = {hourOfDay, minute};
+                String fixed = fixText(nums);
+
+                dailyPageSwitch.setSummary(fixed);
+
+                SharedPreferences myPref = requireContext().getSharedPreferences(
+                        "daily_page_time", MODE_PRIVATE);
+                SharedPreferences.Editor editor = myPref.edit();
+                editor.putInt("hour", hourOfDay);
+                editor.putInt("minute", minute);
+                editor.putString("text", fixed);
+                editor.apply();
+
+                new Alarms(getContext(), "extra_only");
+
+                }, cHour, cMinute, false);
+
+            timePicker.setTitle("اختر وقت اشعار الصفحة اليومية");
+            timePicker.setButton(TimePickerDialog.BUTTON_POSITIVE, "حفظ", (Message) null);
+            timePicker.setButton(TimePickerDialog.BUTTON_NEGATIVE, "إلغاء", (Message) null);
+            timePicker.setCancelable(true);
+
+            timePicker.show();
         }
     }
 

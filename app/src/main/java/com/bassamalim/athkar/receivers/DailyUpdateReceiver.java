@@ -30,12 +30,7 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
         cal.setTimeInMillis(System.currentTimeMillis());
         cal.set(Calendar.HOUR_OF_DAY, time);
 
-        Calendar max = Calendar.getInstance();
-        max.setTimeInMillis(System.currentTimeMillis());
-        max.set(Calendar.HOUR_OF_DAY, time+1);
-
-        if (System.currentTimeMillis() >= cal.getTimeInMillis() && System.currentTimeMillis() <
-                max.getTimeInMillis()) {
+        if (System.currentTimeMillis() >= cal.getTimeInMillis()) {
 
             FusedLocationProviderClient fusedLocationClient =
                 LocationServices.getFusedLocationProviderClient(context);

@@ -19,9 +19,12 @@ public class Alarms extends AppCompatActivity {
     private final Context context;
     private final Activity activity;
     private Context appContext;
-    private final Calendar[] times;
+    private Calendar[] times;
     private SharedPreferences myPref;
     private SharedPreferences mySharedPref;
+    private String action = "";
+    private boolean extraOnly = false;
+
 
     public Alarms(Context gContext) {
         context = gContext;
@@ -36,20 +39,36 @@ public class Alarms extends AppCompatActivity {
     public Alarms(Context gContext, Calendar[] gTimes) {
         context = gContext;
         activity = (Activity) gContext;
-
         times = gTimes;
+
+        setup();
+    }
+
+    public Alarms(Context gContext, String gAction) {
+        context = gContext;
+        activity = (Activity) gContext;
+        action = gAction;
 
         setup();
     }
 
     private void setup() {
         appContext = context.getApplicationContext();
-
         myPref = activity.getPreferences(MODE_PRIVATE);
         mySharedPref = context.getSharedPreferences("daily_page_time", MODE_PRIVATE);
 
-        setAlarms();
-        setExtraAlarms();
+        if (action.equals("extra_only"))
+            extraOnly = true;
+
+        if (extraOnly) {
+            setExtraAlarms();
+        }
+        else {
+            if (activity.getPreferences(MODE_PRIVATE).getBoolean(context.getString(R.string.athan_enable_key), true))
+                setAlarms();
+            if (activity.getPreferences(MODE_PRIVATE).getBoolean(context.getString(R.string.daily_page_key), true))
+                setExtraAlarms();
+        }
     }
 
     private void setAlarms() {

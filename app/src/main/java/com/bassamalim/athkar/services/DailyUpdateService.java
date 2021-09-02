@@ -2,13 +2,16 @@ package com.bassamalim.athkar.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import com.bassamalim.athkar.Alarms;
 import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.PrayTimes;
+import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.models.MyLocation;
 import com.google.gson.Gson;
 import java.util.Calendar;
@@ -28,20 +31,18 @@ public class DailyUpdateService extends Service {
 
             Calendar[] times = getTimes(location);
 
-            new Alarms(this, times);
+            new Alarms(MainActivity.getInstance(), times);
 
-            stopSelf();
+            updated();
         }
-        else {
+        else
             Log.e(Constants.TAG, "Something is null in DailyUpdateService");
-            stopSelf();
-        }
 
-
+        stopSelf();
         return START_REDELIVER_INTENT;
     }
 
-    public Calendar[] getTimes(Location loc) {
+    private Calendar[] getTimes(Location loc) {
         Date now = new Date();
 
         Calendar calendar = Calendar.getInstance();
@@ -49,6 +50,16 @@ public class DailyUpdateService extends Service {
 
         return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
                 loc.getLongitude(), Constants.TIME_ZONE);
+    }
+
+    private void updated() {
+        Calendar today = Calendar.getInstance();
+        today.setTimeInMillis(System.currentTimeMillis());
+
+        SharedPreferences myPref = getSharedPreferences("last_update", MODE_PRIVATE);
+        SharedPreferences.Editor editor = myPref.edit();
+        editor.putInt("last_day", today.get(Calendar.DAY_OF_MONTH));
+        editor.apply();
     }
 
     @Nullable @Override

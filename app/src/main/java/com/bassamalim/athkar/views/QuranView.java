@@ -177,14 +177,14 @@ public class QuranView extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         nameScreen.setLayoutParams(screenParams);
         nameScreen.setPadding(0, 0, 0, 15);
+        nameScreen.setGravity(Gravity.CENTER);
+        nameScreen.setTextIsSelectable(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             nameScreen.setTextColor(getResources().getColor(R.color.secondary, getTheme()));
         else
             nameScreen.setTextColor(getResources().getColor(R.color.secondary));
-        nameScreen.setGravity(Gravity.CENTER);
         nameScreen.setTextSize(textSize+5);
         nameScreen.setTypeface(Typeface.DEFAULT_BOLD);
-
         nameScreen.setText(name);
 
         return nameScreen;
@@ -195,8 +195,9 @@ public class QuranView extends AppCompatActivity {
         LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         nameScreen.setLayoutParams(screenParams);
-        nameScreen.setGravity(Gravity.CENTER);
         nameScreen.setPadding(0, 0, 0, 10);
+        nameScreen.setGravity(Gravity.CENTER);
+        nameScreen.setTextIsSelectable(true);
         nameScreen.setTextSize(textSize);
         nameScreen.setTypeface(Typeface.DEFAULT_BOLD);
         //nameScreen.setTypeface(getResources().getFont(R.font.quran_surah1));
@@ -212,6 +213,7 @@ public class QuranView extends AppCompatActivity {
         screen.setLayoutParams(screenParams);
         screen.setPadding(0, 0, 0, 10);
         screen.setGravity(Gravity.CENTER);
+        screen.setTextIsSelectable(true);
         screen.setTextSize(textSize);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             screen.setTypeface(getResources().getFont(R.font.hafs_smart_08));

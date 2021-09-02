@@ -2,10 +2,14 @@ package com.bassamalim.athkar;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Shader;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.KeyEvent;
+
+import com.bassamalim.athkar.receivers.DailyUpdateReceiver;
 import com.bassamalim.athkar.receivers.DeviceBootReceiver;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -68,11 +72,9 @@ public class MainActivity extends AppCompatActivity {
         else
             location = new Keeper(this).retrieveLocation();
 
-        if (getPreferences(MODE_PRIVATE).getBoolean(getString(R.string.athan_enable_key), true)) {
-            new Alarms(this, formattedTimes);
-            new DailyUpdate();
-            setupBootReceiver();
-        }
+        new Alarms(this, formattedTimes);
+
+        setupBootReceiver();
 
         new Update();
     }
@@ -110,6 +112,18 @@ public class MainActivity extends AppCompatActivity {
         tester[6].set(Calendar.MINUTE, 43);
 
         return tester;
+    }
+
+    private void dailyUpdate() {
+        SharedPreferences pref = getSharedPreferences("last_update", MODE_PRIVATE);
+        int day = pref.getInt("last_day", 0);
+
+        Calendar today = Calendar.getInstance();
+        today.setTimeInMillis(System.currentTimeMillis());
+
+        if (day != today.get(Calendar.DAY_OF_MONTH)) {
+            new DailyUpdate();
+        }
     }
 
     private ArrayList<String> getTimes(Location loc) {
