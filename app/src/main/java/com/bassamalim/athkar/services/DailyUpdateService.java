@@ -7,11 +7,11 @@ import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
+
 import com.bassamalim.athkar.Alarms;
 import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.PrayTimes;
-import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.models.MyLocation;
 import com.google.gson.Gson;
 import java.util.Calendar;
@@ -22,6 +22,12 @@ public class DailyUpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(Constants.TAG, "in daily update service");
+
+        Location loc = new Location("");
+        Calendar[] times1 = getTimes(loc);
+
+        new Alarms(this, times1);
+
         if (intent != null && intent.getStringExtra("location") != null) {
             Gson gson = new Gson();
             String json = intent.getStringExtra("location");
@@ -31,7 +37,7 @@ public class DailyUpdateService extends Service {
 
             Calendar[] times = getTimes(location);
 
-            new Alarms(MainActivity.getInstance(), times);
+            new Alarms(this, times);
 
             updated();
         }
@@ -56,7 +62,7 @@ public class DailyUpdateService extends Service {
         Calendar today = Calendar.getInstance();
         today.setTimeInMillis(System.currentTimeMillis());
 
-        SharedPreferences myPref = getSharedPreferences("last_update", MODE_PRIVATE);
+        SharedPreferences myPref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = myPref.edit();
         editor.putInt("last_day", today.get(Calendar.DAY_OF_MONTH));
         editor.apply();

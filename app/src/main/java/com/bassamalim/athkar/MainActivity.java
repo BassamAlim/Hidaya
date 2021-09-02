@@ -4,17 +4,15 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Shader;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.KeyEvent;
-
-import com.bassamalim.athkar.receivers.DailyUpdateReceiver;
 import com.bassamalim.athkar.receivers.DeviceBootReceiver;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
 import com.bassamalim.athkar.databinding.ActivityMainBinding;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -26,21 +24,15 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static MainActivity instance;
     private ActivityMainBinding binding;
     public FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
     private final Date date = new Date();
     public static Location location;
     public static ArrayList<String> times;
 
-    public static MainActivity getInstance() {
-        return instance;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        instance = this;
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setHijri();
@@ -74,9 +66,10 @@ public class MainActivity extends AppCompatActivity {
 
         new Alarms(this, formattedTimes);
 
+        dailyUpdate();
         setupBootReceiver();
 
-        new Update();
+        new Update(this);
     }
 
     private Calendar[] test() {
@@ -115,14 +108,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void dailyUpdate() {
-        SharedPreferences pref = getSharedPreferences("last_update", MODE_PRIVATE);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         int day = pref.getInt("last_day", 0);
 
         Calendar today = Calendar.getInstance();
         today.setTimeInMillis(System.currentTimeMillis());
 
         if (day != today.get(Calendar.DAY_OF_MONTH)) {
-            new DailyUpdate();
+            new DailyUpdate(this);
         }
     }
 

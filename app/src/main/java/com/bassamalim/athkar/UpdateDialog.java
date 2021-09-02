@@ -1,7 +1,7 @@
 package com.bassamalim.athkar;
 
-import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,18 +13,15 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class UpdateDialog extends Dialog implements View.OnClickListener {
 
-    private final Activity c;
     private final String msg = "";
     private final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
-    public UpdateDialog(Activity a) {
-        super(a);
-        this.c = a;
+    public UpdateDialog(Context c) {
+        super(c);
     }
 
-    public UpdateDialog(Activity a, String msg) {
-        super(a);
-        this.c = a;
+    public UpdateDialog(Context c, String msg) {
+        super(c);
 
         TextView text = findViewById(R.id.textView);
         text.setText(msg);
@@ -50,7 +47,7 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
         String url = remoteConfig.getString(Constants.UPDATE_URL);
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
-        c.startActivity(i);
+        getContext().startActivity(i);
     }
 
     @Override

@@ -8,17 +8,14 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class Update extends AppCompatActivity {
 
+    private final Context context;
     private final String TAG = "Update";
-    private static Update instance;
-    private final FirebaseRemoteConfig remoteConfig = MainActivity.getInstance().remoteConfig;
-    private final String currentVersion  = getAppVersion(MainActivity.getInstance());
+    private final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+    private final String currentVersion;
 
-    public static Update getInstance() {
-        return instance;
-    }
-
-    public Update() {
-        instance = this;
+    public Update(Context gContext) {
+        context = gContext;
+        currentVersion = getAppVersion();
 
         checkForUpdate();
     }
@@ -38,8 +35,6 @@ public class Update extends AppCompatActivity {
                         Log.i(TAG, "Update needed");
                         showUpdatePrompt();
                     }
-                    /*if (!TextUtils.equals(currentVersion, latestVersion)) {
-                    }*/
                 }
             }
             else
@@ -48,17 +43,17 @@ public class Update extends AppCompatActivity {
     }
 
     private int removePoint(String with) {
-        String without = "";
+        String without;
         without = with.replace(".", "");
         return Integer.parseInt(without);
     }
 
     public void showUpdatePrompt() {
-        UpdateDialog updateDialog = new UpdateDialog(MainActivity.getInstance());
+        UpdateDialog updateDialog = new UpdateDialog(context);
         updateDialog.show();
     }
 
-    private String getAppVersion(Context context) {
+    private String getAppVersion() {
         String result = "";
         try {
             result = context.getPackageManager().getPackageInfo(context.getPackageName(),

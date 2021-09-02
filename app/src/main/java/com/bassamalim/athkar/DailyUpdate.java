@@ -4,21 +4,20 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
-
+import androidx.appcompat.app.AppCompatActivity;
 import com.bassamalim.athkar.receivers.DailyUpdateReceiver;
 import java.util.Calendar;
 
-public class DailyUpdate {
+public class DailyUpdate extends AppCompatActivity {
 
     private int hourOfTheDay = 0;
 
-    public DailyUpdate() {
+    public DailyUpdate(Context context) {
         Log.i(Constants.TAG, "in daily update");
-        Context context = MainActivity.getInstance().getApplicationContext();
+        //Context context = MainActivity.getInstance().getApplicationContext();
 
-        Intent myIntent = new Intent(context, DailyUpdateReceiver.class);
+        Intent myIntent = new Intent(this, DailyUpdateReceiver.class);
         myIntent.putExtra("time", hourOfTheDay);
 
         PendingIntent pendIntent = PendingIntent.getBroadcast(context, 0, myIntent,

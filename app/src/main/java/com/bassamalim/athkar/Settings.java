@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.os.Message;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -37,12 +37,11 @@ public class Settings extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.preferences, rootKey);
 
-            SharedPreferences mySharedPref = requireContext().getSharedPreferences(
-                    "daily_page_time", MODE_PRIVATE);
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
             SwitchPreferenceCompat dailyPageSwitch = findPreference(getString(R.string.daily_page_key));
             assert dailyPageSwitch != null;
-            dailyPageSwitch.setSummary(mySharedPref.getString("text", "9:00 مساءاً"));
+            dailyPageSwitch.setSummary(pref.getString("text", "9:00 مساءاً"));
 
             setListeners();
         }
