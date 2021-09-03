@@ -9,9 +9,18 @@
             app:defaultValue="true" />
 
         <SwitchPreferenceCompat
+            app:key="@string/morning_athkar_key"
+            app:title="@string/morning_athkar_title"
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="@string/night_athkar_key"
+            app:title="@string/night_athkar_title"
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
             app:key="@string/daily_page_key"
             app:title="@string/daily_page_enable_title"
-
             app:defaultValue="true" />
 
     </PreferenceCategory>

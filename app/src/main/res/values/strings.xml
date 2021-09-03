@@ -23,12 +23,16 @@
 
     <!-- Preference Keys -->
     <string name="athan_enable_key">athan_enable</string>
+    <string name="morning_athkar_key">morning_athkar_key</string>
+    <string name="night_athkar_key">night_athkar_key</string>
     <string name="daily_page_key">daily_page_enable</string>
     <string name="quran_text_size_key">quran_text_size_key</string>
     <string name="alathkar_text_size_key">alathkar_text_size_key</string>
 
     <!-- Preference Titles -->
     <string name="athan_enable_title">اشعارات الأذان</string>
+    <string name="morning_athkar_title">إشعار أذكار الصباح</string>
+    <string name="night_athkar_title">إشعار أذكار المساء</string>
     <string name="daily_page_enable_title">صفحة اليوم</string>
     <string name="quran_text_size_title">حجم الخط</string>
     <string name="alathkar_text_size_title">حجم الخط</string>

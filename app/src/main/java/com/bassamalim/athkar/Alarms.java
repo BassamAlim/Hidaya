@@ -68,7 +68,7 @@ public class Alarms extends AppCompatActivity {
     private void setAlarms() {
         Log.i(Constants.TAG, "in set alarms");
         for (int i = 1; i <= times.length; i++) {
-            if (System.currentTimeMillis() <= times[i-1].getTimeInMillis()) {
+            if (i != 1 && i != 4 && System.currentTimeMillis() <= times[i-1].getTimeInMillis()) {
                 Intent intent = new Intent(appContext, NotificationReceiver.class);
                 intent.setAction("prayer");
                 intent.putExtra("id", i);
@@ -99,44 +99,66 @@ public class Alarms extends AppCompatActivity {
 
     private void setExtraAlarms() {
         Log.i(Constants.TAG, "in set extra alarms");
-        int id;
-        if (pref.getBoolean(context.getString(R.string.daily_page_key), true)) {
-            id = 8;
 
-            int hour = pref.getInt("hour", 21);
-            int minute = pref.getInt("minute", 0);
-            Calendar time = Calendar.getInstance();
-            time.setTimeInMillis(System.currentTimeMillis());
-            time.set(Calendar.HOUR_OF_DAY, hour);
-            time.set(Calendar.MINUTE, minute);
+        if (pref.getBoolean(context.getString(R.string.morning_athkar_key), true))
+            makeExtraAlarm(8);
+        if (pref.getBoolean(context.getString(R.string.night_athkar_key), true))
+            makeExtraAlarm(9);
+        if (pref.getBoolean(context.getString(R.string.daily_page_key), true))
+            makeExtraAlarm(10);
+    }
 
-            if (System.currentTimeMillis() <= time.getTimeInMillis()) {
-                Intent intent = new Intent(appContext, NotificationReceiver.class);
-                intent.setAction("extra");
-                intent.putExtra("id", id);
-                intent.putExtra("time", time.getTimeInMillis());
-                PendingIntent pendIntent;
-
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    pendIntent = PendingIntent.getBroadcast(appContext, id, intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                }
-                else {
-                    pendIntent = PendingIntent.getBroadcast(appContext, id, intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT);
-                }
-
-                AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
-                myAlarm.setRepeating(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
-                        AlarmManager.INTERVAL_DAY, pendIntent);
-
-                Log.i(Constants.TAG, "alarm " + id + " set");
+    private void makeExtraAlarm(int id) {
+        String key = "";
+        int defHour = 0;
+        switch (id) {
+            case 8: {
+                key = context.getString(R.string.morning_athkar_key);
+                defHour = 5;
+                break;
             }
-            else
-                Log.i(Constants.TAG, id + " Passed");
+            case 9: {
+                key = context.getString(R.string.night_athkar_key);
+                defHour = 16;
+                break;
+            }
+            case 10: {
+                key = context.getString(R.string.daily_page_key);
+                defHour = 21;
+                break;
+            }
+        }
+        int hour = pref.getInt(key + "hour", defHour);
+        int minute = pref.getInt(key + "minute", 0);
+        Calendar time = Calendar.getInstance();
+        time.setTimeInMillis(System.currentTimeMillis());
+        time.set(Calendar.HOUR_OF_DAY, hour);
+        time.set(Calendar.MINUTE, minute);
+
+        if (System.currentTimeMillis() <= time.getTimeInMillis()) {
+            Intent intent = new Intent(appContext, NotificationReceiver.class);
+            intent.setAction("extra");
+            intent.putExtra("id", id);
+            intent.putExtra("time", time.getTimeInMillis());
+            PendingIntent pendIntent;
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendIntent = PendingIntent.getBroadcast(appContext, id, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            }
+            else {
+                pendIntent = PendingIntent.getBroadcast(appContext, id, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+
+            AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
+            myAlarm.setRepeating(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, pendIntent);
+
+            Log.i(Constants.TAG, "alarm " + id + " set");
         }
         else
-            Log.i(Constants.TAG, "Daily alarms are off in settings");
+            Log.i(Constants.TAG, id + " Passed");
     }
 
     private Calendar[] getTimes(Location loc) {

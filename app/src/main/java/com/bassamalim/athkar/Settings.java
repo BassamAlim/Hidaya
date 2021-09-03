@@ -37,19 +37,34 @@ public class Settings extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.preferences, rootKey);
 
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
-            SwitchPreferenceCompat dailyPageSwitch = findPreference(getString(R.string.daily_page_key));
-            assert dailyPageSwitch != null;
-            dailyPageSwitch.setSummary(pref.getString("text", "9:00 مساءاً"));
+
+            setInitial();
 
             setListeners();
         }
 
+        private void setInitial() {
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+            SwitchPreferenceCompat pSwitch;
+
+            pSwitch = findPreference(getString(R.string.morning_athkar_key));
+            assert pSwitch != null;
+            pSwitch.setSummary(pref.getString(8 + "text", "٩:٠٠ مساءاً"));
+
+            pSwitch = findPreference(getString(R.string.night_athkar_key));
+            assert pSwitch != null;
+            pSwitch.setSummary(pref.getString(9 + "text", "٥:٠٠ صباحاً"));
+
+            pSwitch = findPreference(getString(R.string.daily_page_key));
+            assert pSwitch != null;
+            pSwitch.setSummary(pref.getString(10 + "text", "٤:٠٠ مساءاًً"));
+        }
+
         private void setListeners() {
-            SwitchPreferenceCompat athanSwitch = findPreference(getString(R.string.athan_enable_key));
-            assert athanSwitch != null;
-            athanSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
+            SwitchPreferenceCompat pSwitch = findPreference(getString(R.string.athan_enable_key));
+            assert pSwitch != null;
+            pSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean on = (Boolean) newValue;
                 if (on)
                     new Alarms(getContext());
@@ -57,7 +72,6 @@ public class Settings extends AppCompatActivity {
                     for (int i = 1; i <= 7; i++) {
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), i,
                                 new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
-
                         AlarmManager am = (AlarmManager) requireContext()
                                 .getSystemService(Context.ALARM_SERVICE);
                         am.cancel(pendingIntent);
@@ -65,34 +79,28 @@ public class Settings extends AppCompatActivity {
                 }
                 return true;
             });
-
-            SwitchPreferenceCompat dailyPageSwitch = findPreference(getString(R.string.daily_page_key));
-            assert dailyPageSwitch != null;
-            dailyPageSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
-                boolean on = (Boolean) newValue;
-                if (on) {
-                    showTimePicker();
-                }
-                else {
-                    athanSwitch.setSummary("");
-
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),
-                            8, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT
-                                    | PendingIntent.FLAG_IMMUTABLE);
-
-                    AlarmManager am = (AlarmManager) requireContext().getApplicationContext()
-                            .getSystemService(Context.ALARM_SERVICE);
-
-                    am.cancel(pendingIntent);
-                }
-                return true;
-            });
-
+            setSwitchListener(getString(R.string.morning_athkar_key));
+            setSwitchListener(getString(R.string.night_athkar_key));
+            setSwitchListener(getString(R.string.daily_page_key));
         }
 
-        private void showTimePicker() {
-            SwitchPreferenceCompat dailyPageSwitch = findPreference(getString(R.string.daily_page_key));
-            assert dailyPageSwitch != null;
+        private void setSwitchListener(String key) {
+            SwitchPreferenceCompat pSwitch = findPreference(key);
+            assert pSwitch != null;
+
+            pSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
+                boolean on = (Boolean) newValue;
+                if (on)
+                    showTimePicker(key);
+                else
+                    cancelAlarm(key);
+                return true;
+            });
+        }
+
+        private void showTimePicker(String key) {
+            SwitchPreferenceCompat pSwitch = findPreference(key);
+            assert pSwitch != null;
 
             Calendar currentTime = Calendar.getInstance();
             int cHour = currentTime.get(Calendar.HOUR_OF_DAY);
@@ -104,26 +112,48 @@ public class Settings extends AppCompatActivity {
                 int[] nums = {hourOfDay, minute};
                 String fixed = fixText(nums);
 
-                dailyPageSwitch.setSummary(fixed);
+                pSwitch.setSummary(fixed);
 
-                SharedPreferences myPref = requireContext().getSharedPreferences(
-                        "daily_page_time", MODE_PRIVATE);
+                SharedPreferences myPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
                 SharedPreferences.Editor editor = myPref.edit();
-                editor.putInt("hour", hourOfDay);
-                editor.putInt("minute", minute);
-                editor.putString("text", fixed);
+                editor.putInt(key + "hour", hourOfDay);
+                editor.putInt(key + "minute", minute);
+                editor.putString(key + "text", fixed);
                 editor.apply();
 
                 new Alarms(getContext(), "extra_only");
 
                 }, cHour, cMinute, false);
 
-            timePicker.setTitle("اختر وقت اشعار الصفحة اليومية");
+            timePicker.setTitle("اختر وقت الإشعار");
             timePicker.setButton(TimePickerDialog.BUTTON_POSITIVE, "حفظ", (Message) null);
             timePicker.setButton(TimePickerDialog.BUTTON_NEGATIVE, "إلغاء", (Message) null);
             timePicker.setCancelable(true);
 
             timePicker.show();
+        }
+
+        private void cancelAlarm(String key) {
+            int id = 0;
+            if (key.equals(getString(R.string.morning_athkar_key)))
+                id = 8;
+            else if (key.equals(getString(R.string.night_athkar_key)))
+                id = 9;
+            else if (key.equals(getString(R.string.daily_page_key)))
+                id = 10;
+
+            SwitchPreferenceCompat pSwitch = findPreference(key);
+            assert pSwitch != null;
+            pSwitch.setSummary("");
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),
+                    id, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT
+                            | PendingIntent.FLAG_IMMUTABLE);
+
+            AlarmManager am = (AlarmManager) requireContext().getApplicationContext()
+                    .getSystemService(Context.ALARM_SERVICE);
+
+            am.cancel(pendingIntent);
         }
     }
 

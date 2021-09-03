@@ -28,6 +28,7 @@ public class NotificationService extends Service {
     public static boolean isOn = false;
     private boolean isPrayer;
     private String channelId;
+    private int id;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -45,7 +46,7 @@ public class NotificationService extends Service {
                     createNotificationChannel(notificationManager) : "channel";
 
             isPrayer = intent.getAction().equals("prayer");
-            int id = intent.getIntExtra("id", 0);
+            id = intent.getIntExtra("id", 0);
 
             Log.i(Constants.TAG, "in notification service for " + id);
 
@@ -83,11 +84,6 @@ public class NotificationService extends Service {
                 builder.setContentText("حان موعد أذان الفجر");
                 break;
             }
-            case 2: {
-                builder.setContentTitle("وقت الشروق");
-                builder.setContentText("إقرأ أذكار الصباح");
-                break;
-            }
             case 3: {
                 builder.setContentTitle("صلاة الظهر");
                 builder.setContentText("حان موعد أذان الظهر");
@@ -98,11 +94,7 @@ public class NotificationService extends Service {
                 builder.setContentText("حان موعد أذان العصر");
                 break;
             }
-            case 5: {
-                builder.setContentTitle("وقت الغروب");
-                builder.setContentText("إقرأ أذكار المساء");
-                break;
-            }
+
             case 6: {
                 builder.setContentTitle("صلاة المغرب");
                 builder.setContentText("حان موعد أذان المغرب");
@@ -114,6 +106,16 @@ public class NotificationService extends Service {
                 break;
             }
             case 8: {
+                builder.setContentTitle("أذكار الصباح");
+                builder.setContentText("اضغط لقراءة أذكار الصباح");
+                break;
+            }
+            case 9: {
+                builder.setContentTitle("أذكار المساء");
+                builder.setContentText("اضغط لقراءة أذكار المساء");
+                break;
+            }
+            case 10: {
                 builder.setContentTitle("صفحة اليوم");
                 builder.setContentText("اضغط لقراءة صفحة اليوم من المصحف");
                 break;
@@ -143,22 +145,21 @@ public class NotificationService extends Service {
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel;
-            CharSequence name;
-            String description;
-
+            CharSequence name = "";
             if (isPrayer) {
                 channelId = "Athan";
-                name = "Athan Channel";
-                description = "The channel that gives athan notifications";
+                name = "إشعارات الصلوات";
             }
-            else {
-                channelId = "daily";
-                name = "daily Channel";
-                description = "The channel that gives daily notifications";
+            else if (id == 8 || id == 9) {
+                channelId = "morning_and_night";
+                name = "أذكار الصباح والمساء";
+            }
+            else if (id == 10) {
+                channelId = "daily_page";
+                name = "إشعار صفحة اليوم";
             }
             int importance = NotificationManager.IMPORTANCE_HIGH;
             notificationChannel = new NotificationChannel(channelId, name, importance);
-            notificationChannel.setDescription(description);
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
@@ -173,17 +174,17 @@ public class NotificationService extends Service {
         Intent intent;
         PendingIntent pendingIntent;
 
-        if (variable == 2) {
+        if (variable == 8) {
             intent = new Intent(this, AlathkarView.class);
             intent.putExtra("thikrs", getResources().getStringArray(R.array.morning));
             intent.putExtra("title", "أذكار الصباح");
         }
-        else if (variable == 5) {
+        else if (variable == 9) {
             intent = new Intent(this, AlathkarView.class);
             intent.putExtra("thikrs", getResources().getStringArray(R.array.night));
             intent.putExtra("title", "أذكار المساء");
         }
-        else if (variable == 8) {
+        else if (variable == 10) {
             intent = new Intent(this, QuranView.class);
             intent.setAction("random");
             intent.putExtra("title", "صفحة اليوم");
