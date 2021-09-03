@@ -215,6 +215,8 @@ public class Settings extends AppCompatActivity {
             h -= 12;
             section = "مساءاً";
         }
+        else if (h == 0)
+            h = 12;
         if (m.length() == 1) {
             if (m.charAt(0) == '0')
                 m += '0';

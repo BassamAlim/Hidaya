@@ -23,7 +23,6 @@ public class Alarms extends AppCompatActivity {
     private String action = "";
     private boolean extraOnly = false;
 
-
     public Alarms(Context gContext) {
         context = gContext;
 
@@ -147,6 +146,7 @@ public class Alarms extends AppCompatActivity {
         time.setTimeInMillis(System.currentTimeMillis());
         time.set(Calendar.HOUR_OF_DAY, hour);
         time.set(Calendar.MINUTE, minute);
+        time.set(Calendar.SECOND, 0);
 
         if (System.currentTimeMillis() <= time.getTimeInMillis()) {
             Intent intent = new Intent(appContext, NotificationReceiver.class);

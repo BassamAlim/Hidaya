@@ -97,7 +97,6 @@
             android:name=".services.NotificationService"
             android:enabled="true"
             android:excludeFromRecents="true"
-            android:process=":athan"
             android:stopWithTask="false" />
         <service
             android:name=".services.DailyUpdateService"

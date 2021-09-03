@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +30,9 @@ public class QuranView extends AppCompatActivity {
     private JSONArray jsonArray;
     private int currentPage;
     private int textSize;
+    boolean swapped = false;
+    private float x1;
+    static final int MIN_DISTANCE = 250;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,37 @@ public class QuranView extends AppCompatActivity {
         buildPage(currentPage);
 
         setListeners();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event){
+        this.onTouchEvent(event);
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if(swapped) {
+            swapped = false;
+            return super.onTouchEvent(event);
+        }
+        switch(event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                float x2 = event.getX();
+                float deltaX = x2 - x1;
+                if (Math.abs(deltaX) > MIN_DISTANCE) {
+                    swapped = true;
+                    if (x2 > x1)    // Left to Right
+                        binding.next.performClick();
+                    else    // Right to left
+                        binding.prev.performClick();
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
     }
 
     private void setupJson() {
