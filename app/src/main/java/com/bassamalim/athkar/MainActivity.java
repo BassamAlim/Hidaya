@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private final Date date = new Date();
     public static Location location;
     public static ArrayList<String> times;
+    public static Calendar[] formattedTimes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         times = getTimes(location);
 
-        Calendar[] formattedTimes = formatTimes(times);
+        formattedTimes = formatTimes(times);
         //Calendar[] formattedTimes = test();
 
         if (location.getLatitude() != 0.0 || location.getLongitude() != 0.0)

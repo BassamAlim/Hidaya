@@ -37,8 +37,6 @@ public class Settings extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.preferences, rootKey);
 
-
-
             setInitial();
 
             setListeners();
@@ -48,57 +46,68 @@ public class Settings extends AppCompatActivity {
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
             SwitchPreferenceCompat pSwitch;
 
-            pSwitch = findPreference(getString(R.string.morning_athkar_key));
+            pSwitch = findPreference(keyGetter(8));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(8 + "text", "٩:٠٠ مساءاً"));
+            pSwitch.setSummary(pref.getString(pSwitch.getKey() + "text", "٥:٠٠ صباحاً"));
 
-            pSwitch = findPreference(getString(R.string.night_athkar_key));
+            pSwitch = findPreference(keyGetter(9));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(9 + "text", "٥:٠٠ صباحاً"));
+            pSwitch.setSummary(pref.getString(pSwitch.getKey() + "text", "٤:٠٠ مساءاًً"));
 
-            pSwitch = findPreference(getString(R.string.daily_page_key));
+            pSwitch = findPreference(keyGetter(10));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(10 + "text", "٤:٠٠ مساءاًً"));
+            pSwitch.setSummary(pref.getString(pSwitch.getKey() + "text", "٩:٠٠ مساءاً"));
         }
 
         private void setListeners() {
-            SwitchPreferenceCompat pSwitch = findPreference(getString(R.string.athan_enable_key));
+            SwitchPreferenceCompat pSwitch;
+
+            pSwitch= findPreference(getString(R.string.athan_enable_key));
             assert pSwitch != null;
             pSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean on = (Boolean) newValue;
                 if (on)
                     new Alarms(getContext());
                 else {
-                    for (int i = 1; i <= 7; i++) {
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), i,
-                                new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
-                        AlarmManager am = (AlarmManager) requireContext()
-                                .getSystemService(Context.ALARM_SERVICE);
-                        am.cancel(pendingIntent);
-                    }
+                    for (int i = 1; i <= 7; i++)
+                        cancelAlarm(i);
                 }
                 return true;
             });
-            setSwitchListener(getString(R.string.morning_athkar_key));
-            setSwitchListener(getString(R.string.night_athkar_key));
-            setSwitchListener(getString(R.string.daily_page_key));
+
+            setSwitchListener(8);
+            setSwitchListener(9);
+            setSwitchListener(10);
+
+            pSwitch= findPreference(getString(R.string.friday_kahf_key));
+            assert pSwitch != null;
+            pSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
+                boolean on = (Boolean) newValue;
+                if (on)
+                    new Alarms(getContext(), "extra_only");
+                else
+                    cancelAlarm(11);
+                return true;
+            });
         }
 
-        private void setSwitchListener(String key) {
+        private void setSwitchListener(int id) {
+            String key = keyGetter(id);
             SwitchPreferenceCompat pSwitch = findPreference(key);
             assert pSwitch != null;
 
             pSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean on = (Boolean) newValue;
                 if (on)
-                    showTimePicker(key);
+                    showTimePicker(id);
                 else
-                    cancelAlarm(key);
+                    cancelAlarm(id);
                 return true;
             });
         }
 
-        private void showTimePicker(String key) {
+        private void showTimePicker(int id) {
+            String key = keyGetter(id);
             SwitchPreferenceCompat pSwitch = findPreference(key);
             assert pSwitch != null;
 
@@ -133,14 +142,17 @@ public class Settings extends AppCompatActivity {
             timePicker.show();
         }
 
-        private void cancelAlarm(String key) {
-            int id = 0;
-            if (key.equals(getString(R.string.morning_athkar_key)))
-                id = 8;
-            else if (key.equals(getString(R.string.night_athkar_key)))
-                id = 9;
-            else if (key.equals(getString(R.string.daily_page_key)))
-                id = 10;
+        private void cancelAlarm(int id) {
+            String key = keyGetter(id);
+
+            if (key == null) {
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), id,
+                        new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
+                AlarmManager am = (AlarmManager) requireContext()
+                        .getSystemService(Context.ALARM_SERVICE);
+                am.cancel(pendingIntent);
+                return;
+            }
 
             SwitchPreferenceCompat pSwitch = findPreference(key);
             assert pSwitch != null;
@@ -154,6 +166,29 @@ public class Settings extends AppCompatActivity {
                     .getSystemService(Context.ALARM_SERVICE);
 
             am.cancel(pendingIntent);
+        }
+
+        private String keyGetter(int id) {
+            String key = null;
+            switch (id) {
+                case 8: {
+                    key = getString(R.string.morning_athkar_key);
+                    break;
+                }
+                case 9: {
+                    key = getString(R.string.night_athkar_key);
+                    break;
+                }
+                case 10: {
+                    key = getString(R.string.daily_page_key);
+                    break;
+                }
+                case 11: {
+                    key = getString(R.string.friday_kahf_key);
+                    break;
+                }
+            }
+            return key;
         }
     }
 

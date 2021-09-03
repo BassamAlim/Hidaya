@@ -48,7 +48,7 @@ public class QuranView extends AppCompatActivity {
         textSize = getSize();
 
         if (action.equals("specific")) {
-            int surahIndex = intent.getIntExtra("surah index", 0);
+            int surahIndex = intent.getIntExtra("surah_index", 0);
             currentPage = getPage(surahIndex);
         }
         else if (action.equals("random"))
@@ -67,7 +67,7 @@ public class QuranView extends AppCompatActivity {
         }
         catch (JSONException e) {
             e.printStackTrace();
-            Log.i("myself", "error in setup json");
+            Log.e("myself", "error in setup json");
         }
     }
 
@@ -81,7 +81,7 @@ public class QuranView extends AppCompatActivity {
         }
         catch (JSONException e) {
             e.printStackTrace();
-            Log.i("myself", "error in get page");
+            Log.e("myself", "error in get page");
         }
         return 0;
     }
@@ -96,7 +96,7 @@ public class QuranView extends AppCompatActivity {
         }
         catch (JSONException e) {
             e.printStackTrace();
-            Log.i("myself", "error in get page start");
+            Log.e("myself", "error in get page start");
         }
         return start;
     }

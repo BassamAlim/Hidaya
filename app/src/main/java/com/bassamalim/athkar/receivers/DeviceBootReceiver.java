@@ -11,11 +11,11 @@ public class DeviceBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i(Constants.TAG, "in device boot receiver");
-        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED") ||
-                intent.getAction().equals("android.intent.action.QUICKBOOT_POWERON")) {
+        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
 
-            Intent setAlarms = new Intent(context, DailyUpdateReceiver.class);
-            context.startActivity(setAlarms);
+            Intent intent1 = new Intent(context, DailyUpdateReceiver.class);
+            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent1);
         }
     }
 

@@ -1,10 +1,7 @@
 package com.bassamalim.athkar.ui;
 
 import androidx.appcompat.widget.SearchView;
-
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -120,7 +116,7 @@ public class QuranFragment extends Fragment {
                 View.OnClickListener clickListener = v -> {
                     Intent intent = new Intent(getContext(), QuranView.class);
                     intent.setAction("specific");
-                    intent.putExtra("surah index", finalI);
+                    intent.putExtra("surah_index", finalI);
                     requireContext().startActivity(intent);
                 };
                 SurahButton button = new SurahButton(i,"سُورَة " + name, searchName ,clickListener);

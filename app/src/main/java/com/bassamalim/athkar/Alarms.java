@@ -68,7 +68,7 @@ public class Alarms extends AppCompatActivity {
     private void setAlarms() {
         Log.i(Constants.TAG, "in set alarms");
         for (int i = 1; i <= times.length; i++) {
-            if (i != 1 && i != 4 && System.currentTimeMillis() <= times[i-1].getTimeInMillis()) {
+            if (i != 2 && i != 5 && System.currentTimeMillis() <= times[i-1].getTimeInMillis()) {
                 Intent intent = new Intent(appContext, NotificationReceiver.class);
                 intent.setAction("prayer");
                 intent.putExtra("id", i);
@@ -100,17 +100,24 @@ public class Alarms extends AppCompatActivity {
     private void setExtraAlarms() {
         Log.i(Constants.TAG, "in set extra alarms");
 
+        Calendar today = Calendar.getInstance();
+        today.setTimeInMillis(System.currentTimeMillis());
+
         if (pref.getBoolean(context.getString(R.string.morning_athkar_key), true))
             makeExtraAlarm(8);
         if (pref.getBoolean(context.getString(R.string.night_athkar_key), true))
             makeExtraAlarm(9);
         if (pref.getBoolean(context.getString(R.string.daily_page_key), true))
             makeExtraAlarm(10);
+        if (pref.getBoolean(context.getString(R.string.friday_kahf_key), true)
+                && today.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+            makeExtraAlarm(11);
     }
 
     private void makeExtraAlarm(int id) {
         String key = "";
         int defHour = 0;
+        int defMinute = 0;
         switch (id) {
             case 8: {
                 key = context.getString(R.string.morning_athkar_key);
@@ -127,9 +134,15 @@ public class Alarms extends AppCompatActivity {
                 defHour = 21;
                 break;
             }
+            case 11: {
+                key = context.getString(R.string.friday_kahf_key);
+                Calendar duhr = MainActivity.formattedTimes[2];
+                defHour = duhr.get(Calendar.HOUR_OF_DAY)+1;
+                defMinute = duhr.get(Calendar.MINUTE);
+            }
         }
         int hour = pref.getInt(key + "hour", defHour);
-        int minute = pref.getInt(key + "minute", 0);
+        int minute = pref.getInt(key + "minute", defMinute);
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(System.currentTimeMillis());
         time.set(Calendar.HOUR_OF_DAY, hour);

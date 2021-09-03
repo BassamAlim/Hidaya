@@ -23,6 +23,11 @@
             app:title="@string/daily_page_enable_title"
             app:defaultValue="true" />
 
+        <SwitchPreferenceCompat
+            app:key="@string/friday_kahf_key"
+            app:title="@string/friday_kahf_title"
+            app:defaultValue="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/quran_header">

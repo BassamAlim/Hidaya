@@ -17,7 +17,7 @@ public class DailyUpdate extends AppCompatActivity {
         Log.i(Constants.TAG, "in daily update");
         //Context context = MainActivity.getInstance().getApplicationContext();
 
-        Intent myIntent = new Intent(this, DailyUpdateReceiver.class);
+        Intent myIntent = new Intent(context, DailyUpdateReceiver.class);
         myIntent.putExtra("time", hourOfTheDay);
 
         PendingIntent pendIntent = PendingIntent.getBroadcast(context, 0, myIntent,

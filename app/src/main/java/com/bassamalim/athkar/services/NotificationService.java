@@ -64,7 +64,7 @@ public class NotificationService extends Service {
             managerCompat.notify(id, notification);
         }
         else
-            Log.i(Constants.TAG, "dead intent walking");
+            Log.e(Constants.TAG, "dead intent walking");
 
         stopSelf();
         return START_REDELIVER_INTENT;
@@ -94,7 +94,6 @@ public class NotificationService extends Service {
                 builder.setContentText("حان موعد أذان العصر");
                 break;
             }
-
             case 6: {
                 builder.setContentTitle("صلاة المغرب");
                 builder.setContentText("حان موعد أذان المغرب");
@@ -118,6 +117,11 @@ public class NotificationService extends Service {
             case 10: {
                 builder.setContentTitle("صفحة اليوم");
                 builder.setContentText("اضغط لقراءة صفحة اليوم من المصحف");
+                break;
+            }
+            case 11: {
+                builder.setContentTitle("جمعة مباركة");
+                builder.setContentText("اضغط لقراءة سورة الكهف");
                 break;
             }
         }
@@ -152,11 +156,15 @@ public class NotificationService extends Service {
             }
             else if (id == 8 || id == 9) {
                 channelId = "morning_and_night";
-                name = "أذكار الصباح والمساء";
+                name = "إشعارات أذكار الصباح والمساء";
             }
             else if (id == 10) {
                 channelId = "daily_page";
                 name = "إشعار صفحة اليوم";
+            }
+            else if (id == 11) {
+                channelId = "friday_kahf";
+                name = "إشعار سورة الكهف";
             }
             int importance = NotificationManager.IMPORTANCE_HIGH;
             notificationChannel = new NotificationChannel(channelId, name, importance);
@@ -187,7 +195,11 @@ public class NotificationService extends Service {
         else if (variable == 10) {
             intent = new Intent(this, QuranView.class);
             intent.setAction("random");
-            intent.putExtra("title", "صفحة اليوم");
+        }
+        else if (variable == 11) {
+            intent = new Intent(this, QuranView.class);
+            intent.setAction("specific");
+            intent.putExtra("surah_index", 17);
         }
         else
             intent = new Intent(this, Splash.class);

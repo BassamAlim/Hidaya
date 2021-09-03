@@ -1,13 +1,11 @@
 package com.bassamalim.athkar.adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.models.SurahButton;
 import java.util.ArrayList;
@@ -26,9 +24,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
         public ViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
-            view.setOnClickListener(v -> Log.i(Constants.TAG, "clicked"));
-
             button = view.findViewById(R.id.model_button);
         }
     }
