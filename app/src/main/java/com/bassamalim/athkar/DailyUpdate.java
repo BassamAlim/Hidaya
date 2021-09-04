@@ -15,12 +15,12 @@ public class DailyUpdate extends AppCompatActivity {
 
     public DailyUpdate(Context context) {
         Log.i(Constants.TAG, "in daily update");
-        //Context context = MainActivity.getInstance().getApplicationContext();
 
-        Intent myIntent = new Intent(context, DailyUpdateReceiver.class);
-        myIntent.putExtra("time", hourOfTheDay);
+        Intent intent = new Intent(context, DailyUpdateReceiver.class);
+        intent.setAction("daily");
+        intent.putExtra("time", hourOfTheDay);
 
-        PendingIntent pendIntent = PendingIntent.getBroadcast(context, 0, myIntent,
+        PendingIntent pendIntent = PendingIntent.getBroadcast(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager myAlarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

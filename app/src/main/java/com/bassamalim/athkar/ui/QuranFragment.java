@@ -65,13 +65,10 @@ public class QuranFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (mBundleRecyclerViewState != null) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mListState = mBundleRecyclerViewState.getParcelable("recycler_state");
-                    Objects.requireNonNull(recyclerView.getLayoutManager())
-                            .onRestoreInstanceState(mListState);
-                }
+            new Handler().postDelayed(() -> {
+                mListState = mBundleRecyclerViewState.getParcelable("recycler_state");
+                Objects.requireNonNull(recyclerView.getLayoutManager())
+                        .onRestoreInstanceState(mListState);
             }, 50);
         }
         recyclerView.setLayoutManager(gridLayoutManager);

@@ -13,6 +13,7 @@ import androidx.preference.PreferenceManager;
 import com.bassamalim.athkar.receivers.NotificationReceiver;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class Alarms extends AppCompatActivity {
 
@@ -180,7 +181,7 @@ public class Alarms extends AppCompatActivity {
         calendar.setTime(now);
 
         return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
-                loc.getLongitude(), Constants.TIME_ZONE);
+                loc.getLongitude(), TimeZone.getDefault().getOffset(now.getTime()));
     }
 
 }

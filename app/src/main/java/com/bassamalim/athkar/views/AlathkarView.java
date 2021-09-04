@@ -73,7 +73,7 @@ public class AlathkarView extends AppCompatActivity {
     public View divider() {
         View divider = new View(this);
         LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 8);
-        dividerParams.setMargins(0,15,0,15);
+        dividerParams.setMargins(0,25,0,25);
         divider.setLayoutParams(dividerParams);
         divider.setVisibility(View.VISIBLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
