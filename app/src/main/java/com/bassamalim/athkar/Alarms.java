@@ -176,12 +176,16 @@ public class Alarms extends AppCompatActivity {
     }
 
     private Calendar[] getTimes(Location loc) {
-        Date now = new Date();
+        Date date = new Date();
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
+        calendar.setTime(date);
+
+        TimeZone timeZoneObj = TimeZone.getDefault();
+        long millis = timeZoneObj.getOffset(date.getTime());
+        double timezone = millis / 3600000.0;
 
         return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
-                loc.getLongitude(), TimeZone.getDefault().getOffset(now.getTime()));
+                loc.getLongitude(), timezone);
     }
 
 }

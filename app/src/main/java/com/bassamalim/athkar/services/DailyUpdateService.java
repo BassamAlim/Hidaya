@@ -16,6 +16,7 @@ import com.bassamalim.athkar.models.MyLocation;
 import com.google.gson.Gson;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class DailyUpdateService extends Service {
 
@@ -49,13 +50,16 @@ public class DailyUpdateService extends Service {
     }
 
     private Calendar[] getTimes(Location loc) {
-        Date now = new Date();
-
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
+        Date date = new Date();
+        calendar.setTime(date);
+
+        TimeZone timeZoneObj = TimeZone.getDefault();
+        long millis = timeZoneObj.getOffset(date.getTime());
+        double timezone = millis / 3600000.0;
 
         return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
-                loc.getLongitude(), Constants.TIME_ZONE);
+                loc.getLongitude(), timezone);
     }
 
     private void updated() {

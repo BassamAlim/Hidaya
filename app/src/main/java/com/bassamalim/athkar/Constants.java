@@ -5,7 +5,6 @@ public class Constants {
     //public static final String ACTION_NOTIFY_ATHAN = "com.bassamalim.athkar.action.NOTIFY_ATHAN";
 
     public static final double EARTH_RADIUS = 6371;
-    public static final int TIME_ZONE = 3;
     public static final double KAABA_LAT = 21.4224779;
     public static final double KAABA_LAT_IN_RAD  = Math.toRadians(KAABA_LAT);
     public static final double KAABA_LNG = 39.8251832;

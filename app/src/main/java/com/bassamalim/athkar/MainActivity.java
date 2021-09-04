@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     public FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-    private final Date date = new Date();
     public static Location location;
     public static ArrayList<String> times;
     public static Calendar[] formattedTimes;
@@ -122,10 +122,15 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<String> getTimes(Location loc) {
         Calendar calendar = Calendar.getInstance();
+        Date date = new Date();
         calendar.setTime(date);
 
+        TimeZone timeZoneObj = TimeZone.getDefault();
+        long millis = timeZoneObj.getOffset(date.getTime());
+        double timezone = millis / 3600000.0;
+
         return new PrayTimes().getPrayerTimes(calendar, loc.getLatitude(),
-                loc.getLongitude(), Constants.TIME_ZONE);
+                loc.getLongitude(), timezone);
     }
 
     private Calendar[] formatTimes(ArrayList<String> givenTimes) {
@@ -150,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             Calendar cl = Calendar.getInstance();
+            Date date = new Date();
             cl.setTime(date);
 
             HijrahDate hijriDate = HijrahDate.now();
