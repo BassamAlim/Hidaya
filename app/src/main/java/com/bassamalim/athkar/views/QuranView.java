@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.preference.PreferenceManager;
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
@@ -142,6 +143,8 @@ public class QuranView extends AppCompatActivity {
         String temp = "رقم الصفحة " + currentPage;
         binding.pageNumber.setText(temp);
 
+        //binding.pagedNumber.setText(temp);
+
         mainLinear.removeAllViews();
 
         int start = getPageStart(pageNumber);
@@ -158,7 +161,7 @@ public class QuranView extends AppCompatActivity {
                 int ayahNum = ayah.getInt("aya_no");
 
                 if (currentSurah != surahNum) {
-                    text.append(".\n");
+                    text.append(".");
                     currentSurah = surahNum;
                 }
 
@@ -210,10 +213,12 @@ public class QuranView extends AppCompatActivity {
         TextView nameScreen = new TextView(this);
         LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        screenParams.bottomMargin = 20;
         nameScreen.setLayoutParams(screenParams);
         nameScreen.setPadding(0, 0, 0, 15);
         nameScreen.setGravity(Gravity.CENTER);
         nameScreen.setTextIsSelectable(true);
+        nameScreen.setBackground(AppCompatResources.getDrawable(this, R.drawable.surah_header));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             nameScreen.setTextColor(getResources().getColor(R.color.secondary, getTheme()));
         else
@@ -246,7 +251,7 @@ public class QuranView extends AppCompatActivity {
         LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screen.setLayoutParams(screenParams);
-        screen.setPadding(0, 0, 0, 10);
+        screen.setPadding(0, 0, 0, 30);
         screen.setGravity(Gravity.CENTER);
         screen.setTextIsSelectable(true);
         screen.setTextSize(textSize);

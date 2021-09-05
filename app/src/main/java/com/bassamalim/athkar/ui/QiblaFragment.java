@@ -48,7 +48,7 @@ public class QiblaFragment extends Fragment {
         String text = "المسافة الى الكعبة: " + distance + " كم";
         binding.distanceText.setText(text);
 
-        inflater.inflate(R.layout.fragment_qibla, container, false);
+        inflater.inflate(R.layout.qibla_fragment, container, false);
         return root;
     }
 

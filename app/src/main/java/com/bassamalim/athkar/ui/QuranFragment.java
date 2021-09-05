@@ -15,7 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.adapters.MyRecyclerAdapter;
+import com.bassamalim.athkar.adapters.SurahButtonAdapter;
 import com.bassamalim.athkar.Utils;
 import com.bassamalim.athkar.databinding.QuranFragmentBinding;
 import com.bassamalim.athkar.models.SurahButton;
@@ -28,7 +28,7 @@ import java.util.Objects;
 public class QuranFragment extends Fragment {
 
     private QuranFragmentBinding binding;
-    private MyRecyclerAdapter adapter;
+    private SurahButtonAdapter adapter;
     private RecyclerView recyclerView;
     private ArrayList<SurahButton> surahButtons;
     private static Bundle mBundleRecyclerViewState;
@@ -93,7 +93,7 @@ public class QuranFragment extends Fragment {
         recyclerView = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new MyRecyclerAdapter(surahButtons);
+        adapter = new SurahButtonAdapter(surahButtons);
         recyclerView.setAdapter(adapter);
     }
 

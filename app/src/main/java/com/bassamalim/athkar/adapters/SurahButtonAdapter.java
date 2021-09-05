@@ -10,7 +10,7 @@ import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.models.SurahButton;
 import java.util.ArrayList;
 
-public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.ViewHolder> {
+public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.ViewHolder> {
 
     private final ArrayList<SurahButton> surahButtons;
     private final ArrayList<SurahButton> surahButtonsCopy;
@@ -33,7 +33,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
      *
      * @param buttons containing the data to populate views to be used
      */
-    public MyRecyclerAdapter(ArrayList<SurahButton> buttons) {
+    public SurahButtonAdapter(ArrayList<SurahButton> buttons) {
         surahButtons = new ArrayList<>(buttons);
         surahButtonsCopy = new ArrayList<>(buttons);
     }

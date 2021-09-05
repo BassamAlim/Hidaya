@@ -15,7 +15,7 @@
         android:id="@+id/navigation_alathkar"
         android:name="com.bassamalim.athkar.ui.AlathkarFragment"
         android:label="@string/title_alathkar"
-        tools:layout="@layout/fragment_alathkar" />
+        tools:layout="@layout/alathkar_fragment" />
 
     <fragment
         android:id="@+id/navigation_quran"
@@ -27,12 +27,12 @@
         android:id="@+id/navigation_qibla"
         android:name="com.bassamalim.athkar.ui.QiblaFragment"
         android:label="@string/title_qibla"
-        tools:layout="@layout/fragment_qibla" />
+        tools:layout="@layout/qibla_fragment" />
 
     <fragment
         android:id="@+id/navigation_other"
         android:name="com.bassamalim.athkar.ui.OtherFragment"
         android:label="@string/title_other"
-        tools:layout="@layout/fragment_qibla" />
+        tools:layout="@layout/qibla_fragment" />
 
 </navigation>

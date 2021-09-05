@@ -48,18 +48,45 @@
             android:orientation="vertical"
             android:layout_gravity="top">
 
+            <!--<androidx.appcompat.widget.Toolbar
+                android:id="@+id/props_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/primary">
+
+                <TextView
+                    android:id="@+id/paged_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="10sp"
+                    android:layout_gravity="center"/>
+
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/quran_upper"
+                android:contentDescription="@string/description" />-->
+
             <LinearLayout
                 android:id="@+id/mainLinear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="10dp"
                 android:orientation="vertical"
                 android:layout_gravity="center">
 
             </LinearLayout>
+
+            <!--<ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/quran_lower"
+                android:contentDescription="@string/description" />-->
 
             <LinearLayout
                 android:layout_width="wrap_content"
