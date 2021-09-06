@@ -136,7 +136,9 @@ public class Alarms extends AppCompatActivity {
             }
             case 11: {
                 key = context.getString(R.string.friday_kahf_key);
-                Calendar duhr = MainActivity.formattedTimes[2];
+                Location loc = new Keeper(appContext).retrieveLocation();
+                Calendar[] times = getTimes(loc);
+                Calendar duhr = times[2];
                 defHour = duhr.get(Calendar.HOUR_OF_DAY)+1;
                 defMinute = duhr.get(Calendar.MINUTE);
             }

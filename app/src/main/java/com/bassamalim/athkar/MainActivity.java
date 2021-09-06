@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import com.bassamalim.athkar.receivers.DeviceBootReceiver;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,8 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     public FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
     public static Location location;
-    public static ArrayList<String> times;
-    public static Calendar[] formattedTimes;
+    public static Calendar[] times;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,15 +57,12 @@ public class MainActivity extends AppCompatActivity {
 
         times = getTimes(location);
 
-        formattedTimes = formatTimes(times);
-        //Calendar[] formattedTimes = test();
-
         if (location.getLatitude() != 0.0 || location.getLongitude() != 0.0)
             new Keeper(this, location);
         else
             location = new Keeper(this).retrieveLocation();
 
-        new Alarms(this, formattedTimes);
+        new Alarms(this, times);
 
         dailyUpdate();
         setupBootReceiver();
@@ -120,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private ArrayList<String> getTimes(Location loc) {
+    private Calendar[] getTimes(Location loc) {
         Calendar calendar = Calendar.getInstance();
         Date date = new Date();
         calendar.setTime(date);
@@ -129,25 +126,8 @@ public class MainActivity extends AppCompatActivity {
         long millis = timeZoneObj.getOffset(date.getTime());
         double timezone = millis / 3600000.0;
 
-        return new PrayTimes().getPrayerTimes(calendar, loc.getLatitude(),
+        return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
                 loc.getLongitude(), timezone);
-    }
-
-    private Calendar[] formatTimes(ArrayList<String> givenTimes) {
-        Calendar[] formattedTimes = new Calendar[givenTimes.size()];
-
-        for (int i = 0; i < givenTimes.size(); i++) {
-            char m = givenTimes.get(i).charAt(6);
-            int hour = Integer.parseInt(givenTimes.get(i).substring(0, 2));
-            if (m == 'P')
-                hour += 12;
-
-            formattedTimes[i] = Calendar.getInstance();
-            formattedTimes[i].setTimeInMillis(System.currentTimeMillis());
-            formattedTimes[i].set(Calendar.HOUR_OF_DAY, hour);
-            formattedTimes[i].set(Calendar.MINUTE, Integer.parseInt(givenTimes.get(i).substring(3, 5)));
-        }
-        return formattedTimes;
     }
 
     private void setHijri() {

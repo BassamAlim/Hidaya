@@ -14,11 +14,13 @@ import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.QiblaMaster;
 import com.bassamalim.athkar.R;
-import com.bassamalim.athkar.databinding.FragmentQiblaBinding;
+import com.bassamalim.athkar.databinding.QiblaFragmentBinding;
+
+import java.util.HashMap;
 
 public class QiblaFragment extends Fragment {
 
-    private FragmentQiblaBinding binding;
+    private QiblaFragmentBinding binding;
     private QiblaMaster compass;
     private Location location;
     private float currentAzimuth;
@@ -42,10 +44,10 @@ public class QiblaFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentQiblaBinding.inflate(inflater, container, false);
+        binding = QiblaFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        String text = "المسافة الى الكعبة: " + distance + " كم";
+        String text = "المسافة الى الكعبة: " + translateNumbers(String.valueOf(distance)) + " كم";
         binding.distanceText.setText(text);
 
         inflater.inflate(R.layout.qibla_fragment, container, false);
@@ -134,6 +136,43 @@ public class QiblaFragment extends Fragment {
         double x = Math.cos(myLatRad) * Math.sin(Constants.KAABA_LAT_IN_RAD) - Math.sin(myLatRad)
                 * Math.cos(Constants.KAABA_LAT_IN_RAD) * Math.cos(lngDiff);
         result = (float) ((Math.toDegrees(Math.atan2(y, x)) + 360) % 360);
+
+        return result;
+    }
+
+    private String translateNumbers(String english) {
+        String result;
+        HashMap<Character, Character> map = new HashMap<>();
+        map.put('0', '٠');
+        map.put('1', '١');
+        map.put('2', '٢');
+        map.put('3', '٣');
+        map.put('4', '٤');
+        map.put('5', '٥');
+        map.put('6', '٦');
+        map.put('7', '٧');
+        map.put('8', '٨');
+        map.put('9', '٩');
+        map.put('A', 'ص');
+        map.put('P', 'م');
+
+        if (english.charAt(0) == '0') {
+            english = english.replaceFirst("0", "");
+            if (english.charAt(0) == '0')
+                english = english.replaceFirst("0:", "");
+        }
+
+
+        english = english.replaceAll(":0", ":");
+
+        StringBuilder temp = new StringBuilder();
+        for (int j = 0; j < english.length(); j++) {
+            char t = english.charAt(j);
+            if (map.containsKey(t))
+                t = map.get(t);
+            temp.append(t);
+        }
+        result = temp.toString();
 
         return result;
     }

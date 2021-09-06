@@ -1,5 +1,7 @@
 package com.bassamalim.athkar;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -378,7 +380,7 @@ public class PrayTimes {
         int month = date.get(Calendar.MONTH);
         int day = date.get(Calendar.DATE);
 
-        return getDatePrayerTimes(year, month+1, day, latitude, longitude, tZone);
+        return translateNumbers(getDatePrayerTimes(year, month+1, day, latitude, longitude, tZone));
     }
 
     public Calendar[] getPrayerTimesArray(Calendar date, double latitude,
@@ -391,6 +393,16 @@ public class PrayTimes {
         return formatTimes(getDatePrayerTimes(year, month+1, day, latitude, longitude, tZone));
     }
 
+    public Calendar getTomorrowFajr(Calendar date, double latitude,
+                                    double longitude, double tZone) {
+
+        int year = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH);
+        int day = date.get(Calendar.DATE+1);
+
+        return formatTimes(getDatePrayerTimes(year, month+1, day, latitude, longitude, tZone))[0];
+    }
+
     private Calendar[] formatTimes(ArrayList<String> givenTimes) {
         Calendar[] formattedTimes = new Calendar[givenTimes.size()];
 
@@ -400,12 +412,53 @@ public class PrayTimes {
             if (m == 'P')
                 hour += 12;
 
+            Calendar today = Calendar.getInstance();
+            today.setTimeInMillis(System.currentTimeMillis());
+
             formattedTimes[i] = Calendar.getInstance();
-            formattedTimes[i].setTimeInMillis(System.currentTimeMillis());
             formattedTimes[i].set(Calendar.HOUR_OF_DAY, hour);
             formattedTimes[i].set(Calendar.MINUTE, Integer.parseInt(givenTimes.get(i).substring(3, 5)));
         }
         return formattedTimes;
+    }
+
+    private ArrayList<String> translateNumbers(ArrayList<String> subject) {
+        HashMap<Character, Character> map = new HashMap<>();
+        map.put('0', '٠');
+        map.put('1', '١');
+        map.put('2', '٢');
+        map.put('3', '٣');
+        map.put('4', '٤');
+        map.put('5', '٥');
+        map.put('6', '٦');
+        map.put('7', '٧');
+        map.put('8', '٨');
+        map.put('9', '٩');
+        map.put('A', 'ص');
+        map.put('P', 'م');
+
+        for (int i = 0; i < subject.size(); i++) {
+            StringBuilder sb = new StringBuilder(subject.get(i));
+            if (sb.charAt(sb.length()-1) == 'M')
+                sb.deleteCharAt(sb.length()-1);
+
+            subject.set(i, sb.toString());
+
+            if (subject.get(i).charAt(0) == '0')
+                subject.set(i, subject.get(i).replaceFirst("0", ""));
+        }
+
+        for (int i = 0; i < subject.size(); i++) {
+            StringBuilder temp = new StringBuilder();
+            for (int j = 0; j < subject.get(i).length(); j++) {
+                char t = subject.get(i).charAt(j);
+                if (map.containsKey(t))
+                    t = map.get(t);
+                temp.append(t);
+            }
+            subject.set(i, temp.toString());
+        }
+        return subject;
     }
 
     // set custom values for calculation parameters

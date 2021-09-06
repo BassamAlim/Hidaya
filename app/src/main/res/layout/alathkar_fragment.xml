@@ -28,35 +28,35 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
+                android:paddingTop="@dimen/my_linear_padding_top"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/morning"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_marginEnd="40dp"
-                    android:padding="5dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
+                    android:layout_marginEnd="@dimen/my_button_margin_end"
+                    android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_morning"
                     android:gravity="center|bottom"
                     android:text="@string/morning_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/night"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:padding="5dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
+                    android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
                     android:gravity="bottom|center"
                     android:text="@string/night_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     android:drawableTop="@drawable/ic_night"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -65,36 +65,36 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
+                android:paddingTop="@dimen/my_linear_padding_top"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/wakeup"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_marginEnd="40dp"
-                    android:padding="5dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
+                    android:layout_marginEnd="@dimen/my_button_margin_end"
+                    android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
                     android:gravity="center|bottom"
                     android:drawableTop="@drawable/ic_wakeup"
                     android:text="@string/wakeup_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/pre_sleep"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:padding="5dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
+                    android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_pre_sleep"
                     android:gravity="center|bottom"
                     android:text="@string/before_sleep_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
@@ -102,36 +102,36 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
+                android:paddingTop="@dimen/my_linear_padding_top"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/post_prayer"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_marginEnd="40dp"
-                    android:padding="5dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
+                    android:layout_marginEnd="@dimen/my_button_margin_end"
+                    android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_post_pray"
                     android:gravity="center|bottom"
                     android:text="@string/after_prayer_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/quran_conclude"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:padding="5dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
+                    android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_quran_conclude"
                     android:gravity="center|bottom"
                     android:text="@string/quran_conclude_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
@@ -139,36 +139,36 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
+                android:paddingTop="@dimen/my_linear_padding_top"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/athan"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_marginEnd="40dp"
-                    android:padding="5dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
+                    android:layout_marginEnd="@dimen/my_button_margin_end"
+                    android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_athan"
                     android:gravity="center|bottom"
                     android:text="@string/athan_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/wudu"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:padding="5dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
+                    android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_wudu"
                     android:gravity="center|bottom"
                     android:text="@string/wudu_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
@@ -176,36 +176,36 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
+                android:paddingTop="@dimen/my_linear_padding_top"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/bathroom"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_marginEnd="40dp"
-                    android:padding="5dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
+                    android:layout_marginEnd="@dimen/my_button_margin_end"
+                    android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_bathroom"
                     android:gravity="center|bottom"
                     android:text="@string/bathroom_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/travel"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:padding="5dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
+                    android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_travel"
                     android:gravity="center|bottom"
                     android:text="@string/travel_thikr"
                     android:textColor="@color/secondary"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>

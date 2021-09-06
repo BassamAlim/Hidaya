@@ -43,7 +43,7 @@ public class AlathkarView extends AppCompatActivity {
         insert();
     }
 
-    public void insert() {
+    private void insert() {
         for (int i = 0; i < thikrs.length; i++) {
             TextView screen = screen();
             screen.setText(thikrs[i]);
@@ -53,7 +53,7 @@ public class AlathkarView extends AppCompatActivity {
         }
     }
 
-    public TextView screen() {
+    private TextView screen() {
         TextView screen = new TextView(this);
         LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -70,7 +70,7 @@ public class AlathkarView extends AppCompatActivity {
         return screen;
     }
 
-    public View divider() {
+    private View divider() {
         View divider = new View(this);
         LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 8);
         dividerParams.setMargins(0,25,0,25);

@@ -5,98 +5,242 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
+    android:layout_gravity="center"
+    android:background="@drawable/background"
     tools:context=".ui.PrayersFragment">
-    <!--android:background="@drawable/prayers_background"-->
 
-    <TextView
-        android:id="@+id/fajrView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="8dp"
-        android:text="Fajr"
-        android:textColor="@color/secondary"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/shorouqView"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/fajr_card"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/prayer_card_height"
+        android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        app:cardBackgroundColor="@color/accent"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintBottom_toTopOf="@id/shorouq_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/shorouqView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Shorouq"
-        android:textColor="@color/secondary"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/dhuhrView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fajrView" />
+        <TextView
+            android:id="@+id/fajr_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/secondary"
+            android:textSize="30sp"
+            android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/dhuhrView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Dhuhr"
-        android:textColor="@color/secondary"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/asrView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shorouqView" />
+        <TextView
+            android:id="@+id/fajr_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:gravity="bottom"
+            android:textColor="@color/secondary"
+            android:textSize="18sp"
+            android:visibility="invisible"/>
 
-    <TextView
-        android:id="@+id/asrView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Asr"
-        android:textColor="@color/secondary"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/maghribView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dhuhrView" />
+    </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/maghribView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Maghrib"
-        android:textColor="@color/secondary"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/ishaaView"
-        app:layout_constraintEnd_toEndOf="parent"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/shorouq_card"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/prayer_card_height"
+        android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        android:orientation="horizontal"
+        app:cardBackgroundColor="@color/accent"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintTop_toBottomOf="@id/fajr_card"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/asrView" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dhuhr_card">
 
-    <TextView
-        android:id="@+id/ishaaView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="200dp"
-        android:text="Ishaa"
-        android:textColor="@color/secondary"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        <TextView
+            android:id="@+id/shorouq_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/secondary"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/shorouq_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:gravity="bottom"
+            android:textColor="@color/secondary"
+            android:textSize="18sp"
+            android:visibility="invisible"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/dhuhr_card"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/prayer_card_height"
+        android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        app:cardBackgroundColor="@color/accent"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintTop_toBottomOf="@id/shorouq_card"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/maghribView" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/asr_card">
+
+        <TextView
+            android:id="@+id/dhuhr_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/secondary"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/dhuhr_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:gravity="bottom"
+            android:textColor="@color/secondary"
+            android:textSize="18sp"
+            android:visibility="invisible"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/asr_card"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/prayer_card_height"
+        android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        app:cardBackgroundColor="@color/accent"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintTop_toBottomOf="@id/dhuhr_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/maghrib_card">
+
+        <TextView
+            android:id="@+id/asr_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/secondary"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/asr_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:gravity="bottom"
+            android:textColor="@color/secondary"
+            android:textSize="18sp"
+            android:visibility="invisible"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/maghrib_card"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/prayer_card_height"
+        android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        app:cardBackgroundColor="@color/accent"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintTop_toBottomOf="@id/asr_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ishaa_card">
+
+        <TextView
+            android:id="@+id/maghrib_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/secondary"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/maghrib_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:gravity="bottom"
+            android:textColor="@color/secondary"
+            android:textSize="18sp"
+            android:visibility="invisible"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ishaa_card"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/prayer_card_height"
+        android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        android:layout_marginBottom="55dp"
+        app:cardBackgroundColor="@color/accent"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintTop_toBottomOf="@id/maghrib_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/ishaa_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/secondary"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/ishaa_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:gravity="bottom"
+            android:textColor="@color/secondary"
+            android:textSize="18sp"
+            android:visibility="invisible"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <!--<androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="100dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

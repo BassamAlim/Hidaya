@@ -28,8 +28,8 @@ import java.util.Objects;
 public class QuranFragment extends Fragment {
 
     private QuranFragmentBinding binding;
-    private SurahButtonAdapter adapter;
     private RecyclerView recyclerView;
+    private SurahButtonAdapter adapter;
     private ArrayList<SurahButton> surahButtons;
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;

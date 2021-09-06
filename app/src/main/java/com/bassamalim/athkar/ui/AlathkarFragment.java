@@ -9,16 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.bassamalim.athkar.views.AlathkarView;
 import com.bassamalim.athkar.R;
-import com.bassamalim.athkar.databinding.FragmentAlathkarBinding;
+import com.bassamalim.athkar.databinding.AlathkarFragmentBinding;
 
 public class AlathkarFragment extends Fragment {
 
-    private FragmentAlathkarBinding binding;
+    private AlathkarFragmentBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentAlathkarBinding.inflate(inflater, container, false);
+        binding = AlathkarFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         setListeners();

@@ -61,5 +61,6 @@
     <string name="update">تحديث</string>
     <string name="description">description</string>
 
+    <string name="remaining">الوقت المتبقي: %1$s</string>
 
 </resources>

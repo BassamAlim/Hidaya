@@ -28,34 +28,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingTop="20dp"
+                android:paddingTop="@dimen/my_linear_padding_top"
                 android:layout_gravity="center"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/channels"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_television"
                     android:gravity="center|bottom"
-                    android:layout_marginEnd="40dp"
-                    android:padding="5dp"
+                    android:layout_marginEnd="@dimen/my_button_margin_end"
+                    android:padding="@dimen/my_button_padding"
                     android:text="@string/quran_and_sunnah_channels"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     android:textColor="@color/secondary"
                     style="?android:attr/buttonBarButtonStyle"/>
 
                 <Button
                     android:id="@+id/settings"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_settings"
                     android:gravity="center|bottom"
-                    android:padding="5dp"
+                    android:padding="@dimen/my_button_padding"
                     android:text="@string/settings"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     android:textColor="@color/secondary"
                     style="?android:attr/buttonBarButtonStyle"/>
 
@@ -64,35 +64,35 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
+                android:paddingTop="@dimen/my_linear_padding_top"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/update"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_marginEnd="40dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
+                    android:layout_marginEnd="@dimen/my_button_margin_end"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_update"
                     android:gravity="center|bottom"
-                    android:padding="5dp"
+                    android:padding="@dimen/my_button_padding"
                     android:text="@string/update"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     android:textColor="@color/secondary"
                     style="?android:attr/buttonBarButtonStyle"/>
 
                 <Button
                     android:id="@+id/contact"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="@dimen/my_button_size"
+                    android:layout_height="@dimen/my_button_size"
                     android:background="@drawable/rounded_corners"
                     android:drawableTop="@drawable/ic_whatsapp"
                     android:gravity="center|bottom"
-                    android:padding="5dp"
+                    android:padding="@dimen/my_button_padding"
                     android:text="@string/contact"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/my_button_text_size"
                     android:textColor="@color/secondary"
                     style="?android:attr/buttonBarButtonStyle"/>
 
