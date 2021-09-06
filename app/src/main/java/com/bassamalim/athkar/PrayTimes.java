@@ -1,7 +1,5 @@
 package com.bassamalim.athkar;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -398,9 +396,21 @@ public class PrayTimes {
 
         int year = date.get(Calendar.YEAR);
         int month = date.get(Calendar.MONTH);
-        int day = date.get(Calendar.DATE+1);
+        int day = date.get(Calendar.DATE) + 1;
 
-        return formatTimes(getDatePrayerTimes(year, month+1, day, latitude, longitude, tZone))[0];
+        String str = getDatePrayerTimes(year, month+1, day, latitude,
+                longitude, tZone).get(0);
+
+        int hour = Integer.parseInt(str.substring(0, 2));
+        if (str.charAt(6) == 'P')
+            hour += 12;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, day);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, Integer.parseInt(str.substring(3, 5)));
+
+        return calendar;
     }
 
     private Calendar[] formatTimes(ArrayList<String> givenTimes) {

@@ -11,21 +11,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.PrayTimes;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.PrayersFragmentBinding;
-import com.bumptech.glide.request.target.FixedSizeDrawable;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 public class PrayersFragment extends Fragment {
 
@@ -52,45 +48,40 @@ public class PrayersFragment extends Fragment {
         formatTimes();
 
         setViews();
-        int closest = findClosest();
         show();
-        count(closest);
-        //countDownStart(closest);
+
+        setupCountdown();
 
         return root;
     }
 
     private ArrayList<String> getTimes() {
-        Calendar today = Calendar.getInstance();
+        PrayTimes prayTimes = new PrayTimes();
+
+        Calendar calendar = Calendar.getInstance();
         Date date = new Date();
-        today.setTime(date);
+        calendar.setTime(date);
 
         TimeZone timeZoneObj = TimeZone.getDefault();
         long millis = timeZoneObj.getOffset(date.getTime());
         double timezone = millis / 3600000.0;
 
-        PrayTimes prayTimes = new PrayTimes();
-
-        tomorrowFajr = prayTimes.getTomorrowFajr(today, location.getLatitude(),
+        tomorrowFajr = prayTimes.getTomorrowFajr(calendar, location.getLatitude(),
                 location.getLongitude(), timezone);
 
-        return prayTimes.getPrayerTimes(today, location.getLatitude(),
+        return prayTimes.getPrayerTimes(calendar, location.getLatitude(),
                 location.getLongitude(), timezone);
     }
 
-    private int findClosest() {
-        int closest = -1;
-        long currentMillis = System.currentTimeMillis();
-        for (int i=0; i<timesArr.length; i++) {
-            if (i != 4) {
-                long millis = timesArr[i].getTimeInMillis();
-                if (millis > currentMillis) {
-                    closest = i;
-                    break;
-                }
-            }
-        }
-        return closest;
+    private void formatTimes() {
+        ArrayList<String> formatted = new ArrayList<>();
+        formatted.add(0, "الفجر: " + times.get(0));
+        formatted.add(1, "الشروق: " + times.get(1));
+        formatted.add(2, "الظهر: " + times.get(2));
+        formatted.add(3, "العصر: " + times.get(3));
+        formatted.add(4, "المغرب: " + times.get(5));
+        formatted.add(5, "العشاء: " + times.get(6));
+        formattedTimes = formatted;
     }
 
     private void setViews() {
@@ -115,91 +106,78 @@ public class PrayersFragment extends Fragment {
         counters[4] = binding.maghribCounter;
         counters[5] = binding.ishaaCounter;
     }
-    
-    private void formatTimes() {
-        ArrayList<String> formatted = new ArrayList<>();
-        formatted.add(0, "الفجر: " + times.get(0));
-        formatted.add(1, "الشروق: " + times.get(1));
-        formatted.add(2, "الظهر: " + times.get(2));
-        formatted.add(3, "العصر: " + times.get(3));
-        formatted.add(4, "المغرب: " + times.get(5));
-        formatted.add(5, "العشاء: " + times.get(6));
-        formattedTimes = formatted;
-    }
-
-    private void count(int i) {
-        TextView screen;
-        TextView counter;
-
-        if (i == -1) {
-            screen = screens[0];
-            screen.setGravity(Gravity.TOP);
-            counter = counters[0];
-            counter.setVisibility(View.VISIBLE);
-
-            timer = new CountDownTimer(tomorrowFajr.getTimeInMillis() -
-                    System.currentTimeMillis(), 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    long hours = millisUntilFinished / (60 * 60 * 1000) % 24;
-                    long minutes = millisUntilFinished / (60 * 1000) % 60;
-                    long seconds = millisUntilFinished / 1000 % 60;
-
-                    String hms = String.format(Locale.US, "%02d:%02d:%02d",
-                            hours, minutes, seconds);
-                    counter.setText(String.format(getString(R.string.remaining), translateNumbers(hms)));
-                }
-                @Override
-                public void onFinish() {
-                    timer.cancel();
-                    screen.setGravity(Gravity.CENTER);
-                    counter.setVisibility(View.INVISIBLE);
-
-                    count(findClosest());
-                }
-            };
-        }
-        else {
-            screen = screens[i];
-            counter = counters[i];
-            counter.setVisibility(View.VISIBLE);
-            FrameLayout.LayoutParams up = new FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-            up.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-            screen.setLayoutParams(up);
-
-            timer = new CountDownTimer(timesArr[i].getTimeInMillis() -
-                    System.currentTimeMillis(), 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    long hours = millisUntilFinished / (60 * 60 * 1000) % 24;
-                    long minutes = millisUntilFinished / (60 * 1000) % 60;
-                    long seconds = millisUntilFinished / 1000 % 60;
-
-                    String hms = String.format(Locale.US, "%02d:%02d:%02d",
-                            hours, minutes, seconds);
-                    counter.setText(String.format(getString(R.string.remaining), translateNumbers(hms)));
-                }
-                @Override
-                public void onFinish() {
-                    timer.cancel();
-                    screen.setGravity(Gravity.CENTER);
-                    counter.setVisibility(View.INVISIBLE);
-
-                    count(findClosest());
-                }
-            };
-        }
-        timer.start();
-    }
 
     private void show() {
         for (int i=0; i<formattedTimes.size(); i++)
             screens[i].setText(formattedTimes.get(i));
     }
 
+    private void setupCountdown() {
+        int coming = findClosest();
+        count(coming);
+    }
+
+    private void count(int i) {
+        boolean tomorrow = false;
+        if (i == -1) {
+            tomorrow = true;
+            i = 0;
+        }
+
+        TextView screen = screens[i];
+        TextView counter = counters[i];
+        counter.setVisibility(View.VISIBLE);
+        FrameLayout.LayoutParams up = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        up.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+        screen.setLayoutParams(up);
+
+        long till = timesArr[i].getTimeInMillis();
+        if (tomorrow)
+            till = tomorrowFajr.getTimeInMillis();
+
+        int finalI = i;
+        timer = new CountDownTimer(till - System.currentTimeMillis(), 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long hours = millisUntilFinished / (60 * 60 * 1000) % 24;
+                long minutes = millisUntilFinished / (60 * 1000) % 60;
+                long seconds = millisUntilFinished / 1000 % 60;
+
+                String hms = String.format(Locale.US, "%02d:%02d:%02d",
+                        hours, minutes, seconds);
+                counter.setText(String.format(getString(R.string.remaining), translateNumbers(hms)));
+            }
+            @Override
+            public void onFinish() {
+                up.gravity = Gravity.CENTER;
+                screens[finalI].setLayoutParams(up);
+                counter.setVisibility(View.INVISIBLE);
+            }
+        }.start();
+    }
+
+    private int findClosest() {
+        int closest = -1;
+        long currentMillis = System.currentTimeMillis();
+        for (int i=0; i<timesArr.length; i++) {
+            if (i != 4) {
+                long millis = timesArr[i].getTimeInMillis();
+                if (millis > currentMillis) {
+                    closest = i;
+                    break;
+                }
+            }
+        }
+        return closest;
+    }
+
+    private void cancelTimer() {
+        if (timer != null)
+            timer.cancel();
+    }
+
     private String translateNumbers(String english) {
-        String result;
         HashMap<Character, Character> map = new HashMap<>();
         map.put('0', '٠');
         map.put('1', '١');
@@ -219,10 +197,6 @@ public class PrayersFragment extends Fragment {
             if (english.charAt(0) == '0')
                 english = english.replaceFirst("0:", "");
         }
-
-
-        english = english.replaceAll(":0", ":");
-
         StringBuilder temp = new StringBuilder();
         for (int j = 0; j < english.length(); j++) {
             char t = english.charAt(j);
@@ -230,14 +204,12 @@ public class PrayersFragment extends Fragment {
                 t = map.get(t);
             temp.append(t);
         }
-        result = temp.toString();
-
-        return result;
+        return temp.toString();
     }
 
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-        timer.cancel();
+        cancelTimer();
     }
 }

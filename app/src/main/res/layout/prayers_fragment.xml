@@ -36,10 +36,11 @@
 
         <TextView
             android:id="@+id/fajr_counter"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:gravity="bottom"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:background="@color/black"
             android:textColor="@color/secondary"
             android:textSize="18sp"
             android:visibility="invisible"/>
@@ -74,10 +75,11 @@
 
         <TextView
             android:id="@+id/shorouq_counter"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:gravity="bottom"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:background="@color/black"
             android:textColor="@color/secondary"
             android:textSize="18sp"
             android:visibility="invisible"/>
@@ -111,10 +113,11 @@
 
         <TextView
             android:id="@+id/dhuhr_counter"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:gravity="bottom"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:background="@color/black"
             android:textColor="@color/secondary"
             android:textSize="18sp"
             android:visibility="invisible"/>
@@ -148,10 +151,11 @@
 
         <TextView
             android:id="@+id/asr_counter"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:gravity="bottom"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:background="@color/black"
             android:textColor="@color/secondary"
             android:textSize="18sp"
             android:visibility="invisible"/>
@@ -185,10 +189,11 @@
 
         <TextView
             android:id="@+id/maghrib_counter"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:gravity="bottom"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:background="@color/black"
             android:textColor="@color/secondary"
             android:textSize="18sp"
             android:visibility="invisible"/>
@@ -223,10 +228,11 @@
 
         <TextView
             android:id="@+id/ishaa_counter"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:gravity="bottom"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:background="@color/black"
             android:textColor="@color/secondary"
             android:textSize="18sp"
             android:visibility="invisible"/>
