@@ -8,9 +8,12 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Build;
 import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
+
 import com.bassamalim.athkar.receivers.NotificationReceiver;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -21,21 +24,12 @@ public class Alarms extends AppCompatActivity {
     private Context appContext;
     private Calendar[] times;
     private SharedPreferences pref;
-    private String action = "";
-    private boolean extraOnly = false;
-
-    public Alarms(Context gContext) {
-        context = gContext;
-
-        Location location = new Keeper(gContext).retrieveLocation();
-        times = getTimes(location);
-
-        setup();
-    }
+    private final String action;
 
     public Alarms(Context gContext, Calendar[] gTimes) {
         context = gContext;
         times = gTimes;
+        action = "all";
 
         setup();
     }
@@ -51,21 +45,24 @@ public class Alarms extends AppCompatActivity {
         appContext = context.getApplicationContext();
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        if (action.equals("extra_only"))
-            extraOnly = true;
-
-        if (extraOnly) {
-            setExtraAlarms();
-        }
-        else {
-            if (pref.getBoolean(context.getString(R.string.athan_enable_key), true))
-                setAlarms();
-            if (pref.getBoolean(context.getString(R.string.daily_page_key), true))
+        switch (action) {
+            case "all":
+                setPrayerAlarms();
                 setExtraAlarms();
+                break;
+            case "prayers":
+                setPrayerAlarms();
+                break;
+            case "extra":
+                setExtraAlarms();
+                break;
         }
     }
 
-    private void setAlarms() {
+    private void setPrayerAlarms() {
+        if (!pref.getBoolean(context.getString(R.string.athan_enable_key), true))
+            return;
+
         Log.i(Constants.TAG, "in set alarms");
         for (int i = 1; i <= times.length; i++) {
             if (i != 2 && i != 5 && System.currentTimeMillis() <= times[i-1].getTimeInMillis()) {
@@ -79,14 +76,14 @@ public class Alarms extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     pendingIntent = PendingIntent.getBroadcast(appContext, i,
                         intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                            // maybe change to one shot
+
                     myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
                             times[i-1].getTimeInMillis(), pendingIntent);
                 }
                 else {
                     pendingIntent = PendingIntent.getBroadcast(appContext, i,
                             intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                        // maybe change to one shot
+
                     myAlarm.setExact(AlarmManager.RTC_WAKEUP,
                             times[i-1].getTimeInMillis(), pendingIntent);
                 }
@@ -104,49 +101,45 @@ public class Alarms extends AppCompatActivity {
         today.setTimeInMillis(System.currentTimeMillis());
 
         if (pref.getBoolean(context.getString(R.string.morning_athkar_key), true))
-            makeExtraAlarm(8);
+            setExtraAlarm(8);
         if (pref.getBoolean(context.getString(R.string.night_athkar_key), true))
-            makeExtraAlarm(9);
+            setExtraAlarm(9);
         if (pref.getBoolean(context.getString(R.string.daily_page_key), true))
-            makeExtraAlarm(10);
+            setExtraAlarm(10);
         if (pref.getBoolean(context.getString(R.string.friday_kahf_key), true)
                 && today.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
-            makeExtraAlarm(11);
+            setExtraAlarm(11);
     }
 
-    private void makeExtraAlarm(int id) {
+    private void setExtraAlarm(int id) {
         String key = "";
         int defHour = 0;
         int defMinute = 0;
         switch (id) {
-            case 8: {
+            case 8:
                 key = context.getString(R.string.morning_athkar_key);
                 defHour = 5;
                 break;
-            }
-            case 9: {
+            case 9:
                 key = context.getString(R.string.night_athkar_key);
                 defHour = 16;
                 break;
-            }
-            case 10: {
+            case 10:
                 key = context.getString(R.string.daily_page_key);
                 defHour = 21;
                 break;
-            }
-            case 11: {
+            case 11:
                 key = context.getString(R.string.friday_kahf_key);
                 Location loc = new Keeper(appContext).retrieveLocation();
                 Calendar[] times = getTimes(loc);
                 Calendar duhr = times[2];
                 defHour = duhr.get(Calendar.HOUR_OF_DAY)+1;
                 defMinute = duhr.get(Calendar.MINUTE);
-            }
+                break;
         }
         int hour = pref.getInt(key + "hour", defHour);
         int minute = pref.getInt(key + "minute", defMinute);
         Calendar time = Calendar.getInstance();
-        time.setTimeInMillis(System.currentTimeMillis());
         time.set(Calendar.HOUR_OF_DAY, hour);
         time.set(Calendar.MINUTE, minute);
         time.set(Calendar.SECOND, 0);
@@ -157,7 +150,6 @@ public class Alarms extends AppCompatActivity {
             intent.putExtra("id", id);
             intent.putExtra("time", time.getTimeInMillis());
             PendingIntent pendIntent;
-
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 pendIntent = PendingIntent.getBroadcast(appContext, id, intent,
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);

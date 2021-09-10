@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
+
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class UpdateDialog extends Dialog implements View.OnClickListener {

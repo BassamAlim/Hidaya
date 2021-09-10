@@ -2,9 +2,6 @@ package com.bassamalim.athkar.ui;
 
 import android.location.Location;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import android.os.CountDownTimer;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,10 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+
 import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.PrayTimes;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.PrayersFragmentBinding;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,7 +46,7 @@ public class PrayersFragment extends Fragment {
         View root = binding.getRoot();
 
         location = MainActivity.location;
-        timesArr = MainActivity.times;
+        timesArr = getTimesArr(MainActivity.times);
         times = getTimes();
         formatTimes();
 
@@ -53,6 +56,17 @@ public class PrayersFragment extends Fragment {
         setupCountdown();
 
         return root;
+    }
+
+    private Calendar[] getTimesArr(Calendar[] given) {
+        Calendar[] result = new Calendar[given.length-1];
+        for (int i = 0; i < given.length; i++) {
+            if (i<4)
+                result[i] = given[i];
+            else if (i>4)
+                result[i-1] = given[i];
+        }
+        return result;
     }
 
     private ArrayList<String> getTimes() {
@@ -161,12 +175,10 @@ public class PrayersFragment extends Fragment {
         int closest = -1;
         long currentMillis = System.currentTimeMillis();
         for (int i=0; i<timesArr.length; i++) {
-            if (i != 4) {
-                long millis = timesArr[i].getTimeInMillis();
-                if (millis > currentMillis) {
-                    closest = i;
-                    break;
-                }
+            long millis = timesArr[i].getTimeInMillis();
+            if (millis > currentMillis) {
+                closest = i;
+                break;
             }
         }
         return closest;

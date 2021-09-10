@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.bassamalim.athkar.views.TvView;
 
 public class FullScreenVideoActivity extends AppCompatActivity {

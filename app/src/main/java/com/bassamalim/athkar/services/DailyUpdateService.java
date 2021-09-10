@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
@@ -14,6 +15,7 @@ import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.PrayTimes;
 import com.bassamalim.athkar.models.MyLocation;
 import com.google.gson.Gson;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;

@@ -1,27 +1,31 @@
 package com.bassamalim.athkar.ui;
 
-import androidx.appcompat.widget.SearchView;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.adapters.SurahButtonAdapter;
 import com.bassamalim.athkar.Utils;
+import com.bassamalim.athkar.adapters.SurahButtonAdapter;
 import com.bassamalim.athkar.databinding.QuranFragmentBinding;
 import com.bassamalim.athkar.models.SurahButton;
 import com.bassamalim.athkar.views.QuranView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Objects;
 

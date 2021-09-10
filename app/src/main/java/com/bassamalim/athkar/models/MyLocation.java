@@ -2,6 +2,7 @@ package com.bassamalim.athkar.models;
 
 import android.location.Location;
 import android.os.Build;
+
 import java.io.Serializable;
 
 public class MyLocation implements Serializable {
@@ -16,7 +17,7 @@ public class MyLocation implements Serializable {
     //private Bundle extras;
     private double latitude;
     private double longitude;
-    private String provider;
+    private final String provider;
     private float speed;
     private float speedAccuracyMetersPerSecond;
     private float verticalAccuracyMeters;

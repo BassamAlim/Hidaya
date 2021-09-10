@@ -1,7 +1,5 @@
 package com.bassamalim.athkar.views;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -12,8 +10,13 @@ import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.AlathkarViewBinding;
+
 import java.util.Objects;
 
 public class AlathkarView extends AppCompatActivity {

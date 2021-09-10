@@ -6,19 +6,20 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
-import com.bassamalim.athkar.receivers.DeviceBootReceiver;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
+
 import com.bassamalim.athkar.databinding.ActivityMainBinding;
+import com.bassamalim.athkar.receivers.DeviceBootReceiver;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+
 import java.time.chrono.HijrahDate;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,31 +75,24 @@ public class MainActivity extends AppCompatActivity {
         Calendar[] tester = new Calendar[7];
 
         tester[0] = Calendar.getInstance();
-        tester[0].setTimeInMillis(System.currentTimeMillis());
         tester[0].set(Calendar.HOUR_OF_DAY, 14);
         tester[0].set(Calendar.MINUTE, 2);
         tester[1] = Calendar.getInstance();
-        tester[1].setTimeInMillis(System.currentTimeMillis());
         tester[1].set(Calendar.HOUR_OF_DAY, 2);
         tester[1].set(Calendar.MINUTE, 8);
         tester[2] = Calendar.getInstance();
-        tester[2].setTimeInMillis(System.currentTimeMillis());
         tester[2].set(Calendar.HOUR_OF_DAY, 0);
         tester[2].set(Calendar.MINUTE, 1);
         tester[3] = Calendar.getInstance();
-        tester[3].setTimeInMillis(System.currentTimeMillis());
         tester[3].set(Calendar.HOUR_OF_DAY, 0);
         tester[3].set(Calendar.MINUTE, 27);
         tester[4] = Calendar.getInstance();
-        tester[4].setTimeInMillis(System.currentTimeMillis());
         tester[4].set(Calendar.HOUR_OF_DAY, 0);
         tester[4].set(Calendar.MINUTE, 5);
         tester[5] = Calendar.getInstance();
-        tester[5].setTimeInMillis(System.currentTimeMillis());
         tester[5].set(Calendar.HOUR_OF_DAY, 2);
         tester[5].set(Calendar.MINUTE, 43);
         tester[6] = Calendar.getInstance();
-        tester[6].setTimeInMillis(System.currentTimeMillis());
         tester[6].set(Calendar.HOUR_OF_DAY, 4);
         tester[6].set(Calendar.MINUTE, 43);
 
@@ -153,9 +147,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         binding.hijriView.setText(text);
-
-        //OUTPUT: Hijrah-umalqura AH 1436-02-03
-        //substringed: 1436-02-03
     }
 
     private String whichDay(int day) {

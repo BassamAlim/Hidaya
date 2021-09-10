@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
+
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -62,14 +64,15 @@ public class Settings extends AppCompatActivity {
         private void setListeners() {
             SwitchPreferenceCompat pSwitch;
 
-            pSwitch= findPreference(getString(R.string.athan_enable_key));
+            pSwitch = findPreference(getString(R.string.athan_enable_key));
             assert pSwitch != null;
             pSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean on = (Boolean) newValue;
                 if (on)
-                    new Alarms(getContext());
+                    new Alarms(getContext(), "prayers");
                 else {
                     for (int i = 1; i <= 7; i++)
+                        if (i != 2 && i != 5)
                         cancelAlarm(i);
                 }
                 return true;
@@ -130,7 +133,7 @@ public class Settings extends AppCompatActivity {
                 editor.putString(key + "text", fixed);
                 editor.apply();
 
-                new Alarms(getContext(), "extra_only");
+                new Alarms(getContext(), "extra");
 
                 }, cHour, cMinute, false);
 
@@ -146,8 +149,17 @@ public class Settings extends AppCompatActivity {
             String key = keyGetter(id);
 
             if (key == null) {
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), id,
-                        new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
+
+                PendingIntent pendingIntent;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    pendingIntent = PendingIntent.getBroadcast(getContext(), id,
+                            new Intent(), PendingIntent.FLAG_CANCEL_CURRENT |
+                                    PendingIntent.FLAG_IMMUTABLE);
+                }
+                else {
+                    pendingIntent = PendingIntent.getBroadcast(getContext(), id,
+                            new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
+                }
                 AlarmManager am = (AlarmManager) requireContext()
                         .getSystemService(Context.ALARM_SERVICE);
                 am.cancel(pendingIntent);
@@ -158,9 +170,16 @@ public class Settings extends AppCompatActivity {
             assert pSwitch != null;
             pSwitch.setSummary("");
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),
-                    id, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT
-                            | PendingIntent.FLAG_IMMUTABLE);
+            PendingIntent pendingIntent;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingIntent = PendingIntent.getBroadcast(getContext(),
+                        id, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT
+                                | PendingIntent.FLAG_IMMUTABLE);
+            }
+            else {
+                pendingIntent = PendingIntent.getBroadcast(getContext(),
+                        id, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
+            }
 
             AlarmManager am = (AlarmManager) requireContext().getApplicationContext()
                     .getSystemService(Context.ALARM_SERVICE);
@@ -171,22 +190,18 @@ public class Settings extends AppCompatActivity {
         private String keyGetter(int id) {
             String key = null;
             switch (id) {
-                case 8: {
+                case 8:
                     key = getString(R.string.morning_athkar_key);
                     break;
-                }
-                case 9: {
+                case 9:
                     key = getString(R.string.night_athkar_key);
                     break;
-                }
-                case 10: {
+                case 10:
                     key = getString(R.string.daily_page_key);
                     break;
-                }
-                case 11: {
+                case 11:
                     key = getString(R.string.friday_kahf_key);
                     break;
-                }
             }
             return key;
         }

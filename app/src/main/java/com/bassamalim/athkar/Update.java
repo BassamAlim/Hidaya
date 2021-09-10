@@ -3,7 +3,9 @@ package com.bassamalim.athkar;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class Update extends AppCompatActivity {

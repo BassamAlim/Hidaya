@@ -13,12 +13,14 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
 import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.Splash;
 import com.bassamalim.athkar.views.AlathkarView;
-import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.views.QuranView;
 
 public class NotificationService extends Service {
@@ -164,8 +166,15 @@ public class NotificationService extends Service {
             intent = new Intent(this, Splash.class);
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        pendingIntent = PendingIntent.getActivity(this,
-                variable, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getActivity(this,
+                    variable, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        }
+        else {
+            pendingIntent = PendingIntent.getActivity(this,
+                    variable, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
 
         return pendingIntent;
     }

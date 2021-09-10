@@ -36,16 +36,16 @@
     <string name="night_athkar_title">إشعار أذكار المساء</string>
     <string name="daily_page_enable_title">إشعار صفحة اليوم</string>
     <string name="friday_kahf_title">إشعار سورة الكهف</string>
-    <string name="quran_text_size_title">حجم الخط</string>
-    <string name="alathkar_text_size_title">حجم الخط</string>
+    <string name="text_size_title">حجم الخط</string>
 
     <!-- TextViews Text -->
     <string name="coordinates">الإحداثيات</string>
+    <string name="remaining">الوقت المتبقي: %1$s</string>
 
     <!-- Dialogs Text -->
     <string name="update_alert">التحديث الجديد جاهز !</string>
 
-    <!-- Athkar Buttons Text -->
+    <!-- Buttons Text -->
     <string name="morning_thikr">اذكار الصباح</string>
     <string name="night_thikr">اذكار المساء</string>
     <string name="wakeup_thikr">اذكار الاستيقاظ</string>
@@ -59,8 +59,11 @@
     <string name="quran_and_sunnah_channels">قناة القرآن والسنة</string>
     <string name="settings">الإعدادات</string>
     <string name="update">تحديث</string>
-    <string name="description">description</string>
+    <string name="quran_channel">القرآن الكريم</string>
+    <string name="sunnah_channel">السنة النبوية</string>
 
-    <string name="remaining">الوقت المتبقي: %1$s</string>
+    <!-- Descriptions -->
+    <string name="qibla_view_description">this is the view that rotates depending on qibla</string>
+    <string name="bingo_view_description">this is the view that shows when pointing towards qibla</string>
 
 </resources>

@@ -6,13 +6,16 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+
 import java.util.Collection;
 
 public class Splash extends AppCompatActivity {
@@ -21,13 +24,16 @@ public class Splash extends AppCompatActivity {
     private final int build = Build.VERSION.SDK_INT;
     private final String[] PERMISSIONS =
             {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-    private String BACKGROUND_PERMISSION = Manifest.permission.ACCESS_BACKGROUND_LOCATION;
+    private String BACKGROUND_PERMISSION;
     private int stupidity = 0;
     private boolean dump = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            BACKGROUND_PERMISSION = Manifest.permission.ACCESS_BACKGROUND_LOCATION;
 
         if (permissionsGranted())
             getLocation();

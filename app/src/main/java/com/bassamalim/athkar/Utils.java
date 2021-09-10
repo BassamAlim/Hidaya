@@ -1,6 +1,7 @@
 package com.bassamalim.athkar;
 
 import android.content.Context;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;

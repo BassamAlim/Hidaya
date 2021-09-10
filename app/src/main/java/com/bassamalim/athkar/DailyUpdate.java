@@ -5,13 +5,16 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.bassamalim.athkar.receivers.DailyUpdateReceiver;
+
 import java.util.Calendar;
 
 public class DailyUpdate extends AppCompatActivity {
 
-    private int hourOfTheDay = 0;
+    private final int hourOfTheDay = 0;
 
     public DailyUpdate(Context context) {
         Log.i(Constants.TAG, "in daily update");
@@ -20,8 +23,15 @@ public class DailyUpdate extends AppCompatActivity {
         intent.setAction("daily");
         intent.putExtra("time", hourOfTheDay);
 
-        PendingIntent pendIntent = PendingIntent.getBroadcast(context, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendIntent = PendingIntent.getBroadcast(context, 0, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        }
+        else {
+            pendIntent = PendingIntent.getBroadcast(context, 0, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        }
 
         AlarmManager myAlarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 

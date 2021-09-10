@@ -4,10 +4,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.models.SurahButton;
+
 import java.util.ArrayList;
 
 public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.ViewHolder> {
@@ -73,9 +76,7 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
                     surahButtons.add(surahButton);
             }
         }
-        //not so efficient
         notifyDataSetChanged();
-        //notifyItemChanged();
     }
 
 }

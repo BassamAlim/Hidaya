@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.services.NotificationService;
 

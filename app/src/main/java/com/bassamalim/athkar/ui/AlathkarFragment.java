@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import com.bassamalim.athkar.views.AlathkarView;
+
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.AlathkarFragmentBinding;
+import com.bassamalim.athkar.views.AlathkarView;
 
 public class AlathkarFragment extends Fragment {
 

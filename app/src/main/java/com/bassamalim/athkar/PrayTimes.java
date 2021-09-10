@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public class PrayTimes {
@@ -59,7 +60,7 @@ public class PrayTimes {
      */
 
     private double[] prayerTimesCurrent;
-    private int[] offsets;
+    private final int[] offsets;
 
     public PrayTimes() {
         // Initialize vars
@@ -97,7 +98,7 @@ public class PrayTimes {
         this.setFloating(3); // floating point number
 
         // Time Names
-        timeNames = new ArrayList<String>();
+        timeNames = new ArrayList<>();
         timeNames.add("Fajr");
         timeNames.add("Sunrise");
         timeNames.add("Dhuhr");
@@ -132,7 +133,7 @@ public class PrayTimes {
          * selector (0 = angle; 1 = minutes after maghrib) iv : isha parameter
          * value (in angle or minutes)
          */
-        methodParams = new HashMap<Integer, double[]>();
+        methodParams = new HashMap<>();
 
         // Jafari
         double[] Jvalues = {16,0,4,0,14};
@@ -476,10 +477,10 @@ public class PrayTimes {
 
         for (int i = 0; i < 5; i++) {
             if (params[i] == -1) {
-                params[i] = methodParams.get(this.getCalcMethod())[i];
+                params[i] = Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[i];
                 methodParams.put(this.getCustom(), params);
             } else {
-                methodParams.get(this.getCustom())[i] = params[i];
+                Objects.requireNonNull(methodParams.get(this.getCustom()))[i] = params[i];
             }
         }
         this.setCalcMethod(this.getCustom());
@@ -603,7 +604,7 @@ public class PrayTimes {
         double[] t = dayPortion(times);
 
         double Fajr = this.computeTime(
-                180 - methodParams.get(this.getCalcMethod())[0], t[0]);
+                180 - Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[0], t[0]);
 
         double Sunrise = this.computeTime(180 - 0.833, t[1]);
 
@@ -612,13 +613,11 @@ public class PrayTimes {
         double Sunset = this.computeTime(0.833, t[4]);
 
         double Maghrib = this.computeTime(
-                methodParams.get(this.getCalcMethod())[2], t[5]);
+                Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[2], t[5]);
         double Isha = this.computeTime(
-                methodParams.get(this.getCalcMethod())[4], t[6]);
+                Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[4], t[6]);
 
-        double[] CTimes = {Fajr, Sunrise, Dhuhr, Asr, Sunset, Maghrib, Isha};
-
-        return CTimes;
+        return new double[]{Fajr, Sunrise, Dhuhr, Asr, Sunset, Maghrib, Isha};
 
     }
 
@@ -631,7 +630,7 @@ public class PrayTimes {
             times = computeTimes(times);
         }
 
-        times = adjustTimes(times);
+        adjustTimes(times);
         tuneTimes(times);
 
         return adjustTimesFormat(times);
@@ -644,13 +643,13 @@ public class PrayTimes {
         }
 
         times[2] += this.getDhuhrMinutes() / 60.0; // Dhuhr
-        if (methodParams.get(this.getCalcMethod())[1] == 1) // Maghrib
+        if (Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[1] == 1) // Maghrib
         {
-            times[5] = times[4] + methodParams.get(this.getCalcMethod())[2]/ 60;
+            times[5] = times[4] + Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[2]/ 60;
         }
-        if (methodParams.get(this.getCalcMethod())[3] == 1) // Isha
+        if (Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[3] == 1) // Isha
         {
-            times[6] = times[5] + methodParams.get(this.getCalcMethod())[4]/ 60;
+            times[6] = times[5] + Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[4]/ 60;
         }
 
         if (this.getAdjustHighLats() != this.getNone()) {
@@ -663,7 +662,7 @@ public class PrayTimes {
     // convert times array to given time format
     private ArrayList<String> adjustTimesFormat(double[] times) {
 
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
 
         if (this.getTimeFormat() == this.getFloating()) {
             for (double time : times) {
@@ -689,21 +688,21 @@ public class PrayTimes {
         double nightTime = timeDiff(times[4], times[1]); // sunset to sunrise
 
         // Adjust Fajr
-        double FajrDiff = nightPortion(methodParams.get(this.getCalcMethod())[0]) * nightTime;
+        double FajrDiff = nightPortion(Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[0]) * nightTime;
 
         if (Double.isNaN(times[0]) || timeDiff(times[0], times[1]) > FajrDiff) {
             times[0] = times[1] - FajrDiff;
         }
 
         // Adjust Isha
-        double IshaAngle = (methodParams.get(this.getCalcMethod())[3] == 0) ? methodParams.get(this.getCalcMethod())[4] : 18;
+        double IshaAngle = (Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[3] == 0) ? Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[4] : 18;
         double IshaDiff = this.nightPortion(IshaAngle) * nightTime;
         if (Double.isNaN(times[6]) || this.timeDiff(times[4], times[6]) > IshaDiff) {
             times[6] = times[4] + IshaDiff;
         }
 
         // Adjust Maghrib
-        double MaghribAngle = (methodParams.get(this.getCalcMethod())[1] == 0) ? methodParams.get(this.getCalcMethod())[2] : 4;
+        double MaghribAngle = (Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[1] == 0) ? Objects.requireNonNull(methodParams.get(this.getCalcMethod()))[2] : 4;
         double MaghribDiff = nightPortion(MaghribAngle) * nightTime;
         if (Double.isNaN(times[5]) || this.timeDiff(times[4], times[5]) > MaghribDiff) {
             times[5] = times[4] + MaghribDiff;
@@ -737,14 +736,7 @@ public class PrayTimes {
     // Tune timings for adjustments
     // Set time offsets
     public void tune(int[] offsetTimes) {
-
-        for (int i = 0; i < offsetTimes.length; i++) { // offsetTimes length
-            // should be 7 in order
-            // of Fajr, Sunrise,
-            // Dhuhr, Asr, Sunset,
-            // Maghrib, Isha
-            this.offsets[i] = offsetTimes[i];
-        }
+        System.arraycopy(offsetTimes, 0, this.offsets, 0, offsetTimes.length);
     }
 
     private double[] tuneTimes(double[] times) {

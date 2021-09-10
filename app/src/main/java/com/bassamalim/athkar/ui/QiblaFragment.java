@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.QiblaMaster;
@@ -79,7 +81,7 @@ public class QiblaFragment extends Fragment {
         compass = new QiblaMaster(requireContext());
 
         QiblaMaster.CompassListener listener = azimuth -> {
-            //adjustGambarDial(azimuth);
+            //adjustNorthDial(azimuth);
             adjust(azimuth);
         };
 
@@ -105,7 +107,7 @@ public class QiblaFragment extends Fragment {
     }
 
     // maybe points north
-    /*public void adjustGambarDial(float azimuth) {
+    /*public void adjustNorthDial(float azimuth) {
         Animation an = new RotateAnimation(-currentAzimuth, -azimuth,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
                 0.5f);

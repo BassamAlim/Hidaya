@@ -3,8 +3,10 @@ package com.bassamalim.athkar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
+
 import com.bassamalim.athkar.models.MyLocation;
 import com.google.gson.Gson;
 

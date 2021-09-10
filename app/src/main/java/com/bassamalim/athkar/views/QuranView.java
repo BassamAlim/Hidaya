@@ -11,16 +11,20 @@ import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.preference.PreferenceManager;
+
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.Utils;
 import com.bassamalim.athkar.databinding.QuranViewBinding;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Objects;
 import java.util.Random;
 
@@ -215,7 +219,6 @@ public class QuranView extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screenParams.bottomMargin = 20;
         nameScreen.setLayoutParams(screenParams);
-        nameScreen.setPadding(0, 0, 0, 15);
         nameScreen.setGravity(Gravity.CENTER);
         nameScreen.setTextIsSelectable(true);
         nameScreen.setBackground(AppCompatResources.getDrawable(this, R.drawable.surah_header));
@@ -255,12 +258,8 @@ public class QuranView extends AppCompatActivity {
         screen.setGravity(Gravity.CENTER);
         screen.setTextIsSelectable(true);
         screen.setTextSize(textSize);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            screen.setTypeface(getResources().getFont(R.font.hafs_smart_08));
-        else {
-            Typeface typeface = Typeface.createFromAsset(getAssets(), "font/hafs_smart_08");
-            screen.setTypeface(typeface);
-        }
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "hafs_smart_08.ttf");
+        screen.setTypeface(typeface);
 
         return screen;
     }
