@@ -43,83 +43,13 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
+            android:id="@+id/mainLinear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:orientation="vertical"
-            android:layout_gravity="top">
-
-            <!--<androidx.appcompat.widget.Toolbar
-                android:id="@+id/props_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/primary">
-
-                <TextView
-                    android:id="@+id/paged_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="10sp"
-                    android:layout_gravity="center"/>
-
-
-            </androidx.appcompat.widget.Toolbar>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/quran_upper"
-                android:contentDescription="@string/description" />-->
-
-            <LinearLayout
-                android:id="@+id/mainLinear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:orientation="vertical"
-                android:layout_gravity="center">
-
-            </LinearLayout>
-
-            <!--<ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/quran_lower"
-                android:contentDescription="@string/description" />-->
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:paddingBottom="15dp"
-                android:orientation="horizontal"
-                android:layout_gravity="center">
-
-                <Button
-                    android:id="@+id/prev"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_corners"
-                    android:text="@string/prev_page"
-                    android:textColor="@color/secondary"
-                    android:textSize="22sp"
-                    android:layout_marginEnd="45dp"
-                    android:padding="10dp"
-                    style="?android:attr/buttonBarButtonStyle" />
-
-                <Button
-                    android:id="@+id/next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_corners"
-                    android:text="@string/next_page"
-                    android:textColor="@color/secondary"
-                    android:textSize="22sp"
-                    android:padding="10dp"
-                    style="?android:attr/buttonBarButtonStyle" />
-
-            </LinearLayout>
+            android:layout_gravity="top|center">
 
         </LinearLayout>
 

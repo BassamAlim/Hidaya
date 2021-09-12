@@ -2,12 +2,19 @@ package com.bassamalim.athkar.views;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,11 +27,13 @@ import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.Utils;
 import com.bassamalim.athkar.databinding.QuranViewBinding;
+import com.bassamalim.athkar.models.Ayah;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
@@ -33,11 +42,12 @@ public class QuranView extends AppCompatActivity {
     private QuranViewBinding binding;
     private LinearLayout mainLinear;
     private JSONArray jsonArray;
+    private JSONArray tafseerArray;
     private int currentPage;
     private int textSize;
     boolean swapped = false;
     private float x1;
-    static final int MIN_DISTANCE = 250;
+    static final int MIN_DISTANCE = 300;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +74,10 @@ public class QuranView extends AppCompatActivity {
             currentPage = new Random().nextInt(Constants.QURAN_PAGES-1);
 
         buildPage(currentPage);
-
-        setListeners();
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent event){
+    public boolean dispatchTouchEvent(MotionEvent event) {
         this.onTouchEvent(event);
         return super.dispatchTouchEvent(event);
     }
@@ -90,9 +98,9 @@ public class QuranView extends AppCompatActivity {
                 if (Math.abs(deltaX) > MIN_DISTANCE) {
                     swapped = true;
                     if (x2 > x1)    // Left to Right
-                        binding.next.performClick();
+                        nextPage();
                     else    // Right to left
-                        binding.prev.performClick();
+                        previousPage();
                 }
                 break;
         }
@@ -101,9 +109,15 @@ public class QuranView extends AppCompatActivity {
 
     private void setupJson() {
         String jsonString = Utils.getJsonFromAssets(this, "hafs_smart_v8.json");
+        String tafseerString = Utils.getJsonFromAssets(this, "tafseer.json");
         try {
             assert jsonString != null;
             jsonArray = new JSONArray(jsonString);
+
+            assert tafseerString != null;
+            JSONObject mainTafseerObject = new JSONObject(tafseerString);
+            JSONObject data = mainTafseerObject.getJSONObject("data");
+            tafseerArray = data.getJSONArray("surahs");
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -147,42 +161,38 @@ public class QuranView extends AppCompatActivity {
         String temp = "رقم الصفحة " + currentPage;
         binding.pageNumber.setText(temp);
 
-        //binding.pagedNumber.setText(temp);
-
         mainLinear.removeAllViews();
 
         int start = getPageStart(pageNumber);
 
-        TextView screen;
-        StringBuilder text = new StringBuilder();
+        ArrayList<Ayah> ayahs = new ArrayList<>();
 
         int counter = start;
         try {
-            int currentSurah = jsonArray.getJSONObject(counter).getInt("sura_no");
             do {
                 JSONObject ayah = jsonArray.getJSONObject(counter);
                 int surahNum = ayah.getInt("sura_no");
                 int ayahNum = ayah.getInt("aya_no");
+                String ayahText = ayah.getString("aya_text");
 
-                if (currentSurah != surahNum) {
-                    text.append(".");
-                    currentSurah = surahNum;
-                }
+                JSONObject tafseerSurah = tafseerArray.getJSONObject(surahNum-1);
+                JSONArray tafseerAyahs = tafseerSurah.getJSONArray("ayahs");
+                JSONObject tafseerAyah = tafseerAyahs.getJSONObject(ayahNum-1);
+                String tafseer = tafseerAyah.getString("text");
+
+                Ayah ayahModel = new Ayah(ayahText + " ", tafseer);
 
                 if (ayahNum == 1) {
-                    if (text.length() > 0) {
-                        screen = screen();
-                        screen.setText(text);
-                        mainLinear.addView(screen);
-                    }
-                    text.setLength(0);
+                    if (ayahs.size() > 0)
+                        publish(ayahs);
+
+                    ayahs.clear();
                     TextView nameScreen = surahName(ayah.getString("sura_name_ar"));
                     TextView basmalah = basmalah();
                     mainLinear.addView(nameScreen);
                     mainLinear.addView(basmalah);
                 }
-
-                text.append(ayah.getString("aya_text")).append(" ");
+                ayahs.add(ayahModel);
 
             } while (jsonArray.getJSONObject(++counter).getInt("page") == pageNumber);
         }
@@ -190,27 +200,58 @@ public class QuranView extends AppCompatActivity {
             e.printStackTrace();
             Log.e(Constants.TAG, "trouble in building page");
         }
+        publish(ayahs);
+    }
 
-        screen = screen();
-        screen.setText(text);
+    private void publish(ArrayList<Ayah> list) {
+        TextView screen = screen();
+        StringBuilder text = new StringBuilder();
+
+        for (int i=0; i<list.size(); i++) {
+            list.get(i).setStart(text.length());
+            text.append(list.get(i).getText());
+            list.get(i).setEnd(text.length()-3);
+        }
+
+        SpannableString ss = new SpannableString(text);
+        for (int i=0; i<list.size(); i++) {
+            int finalI = i;
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(View textView) {
+                    new TafseerDialog(list.get(finalI).getTafseer()).show(getSupportFragmentManager(),
+                            TafseerDialog.TAG);
+                }
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                }
+            };
+            ss.setSpan(clickableSpan, list.get(i).getStart(), list.get(i).getEnd(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        screen.setText(ss);
+        screen.setMovementMethod(LinkMovementMethod.getInstance());
+        screen.setLinkTextColor(Color.WHITE);
         mainLinear.addView(screen);
     }
 
-    private void setListeners() {
-        binding.prev.setOnClickListener(v -> {
-            if (currentPage > 1) {
-                buildPage(--currentPage);
-                Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
-                binding.scrollView.scrollTo(0, 0);
-            }
-        });
-        binding.next.setOnClickListener(v -> {
-            if (currentPage < Constants.QURAN_PAGES) {
-                buildPage(++currentPage);
-                Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
-                binding.scrollView.scrollTo(0, 0);
-            }
-        });
+    private void previousPage() {
+        if (currentPage < Constants.QURAN_PAGES) {
+            buildPage(++currentPage);
+            Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
+            binding.scrollView.scrollTo(0, 0);
+        }
+    }
+
+    private void nextPage() {
+        if (currentPage > 1) {
+            buildPage(--currentPage);
+            Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
+            binding.scrollView.scrollTo(0, 0);
+        }
     }
 
     private TextView surahName(String name) {
@@ -219,6 +260,7 @@ public class QuranView extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screenParams.bottomMargin = 20;
         nameScreen.setLayoutParams(screenParams);
+        nameScreen.setPadding(0, 10, 0, 10);
         nameScreen.setGravity(Gravity.CENTER);
         nameScreen.setTextIsSelectable(true);
         nameScreen.setBackground(AppCompatResources.getDrawable(this, R.drawable.surah_header));
