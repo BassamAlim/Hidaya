@@ -17,12 +17,11 @@
     <string name="update_now">حدِّث</string>
 
     <!-- Preference Categories -->
-    <string name="notifications_header">الإشعارات</string>
+    <string name="notifications_header">الإشعارات الإضافية</string>
     <string name="quran_header">إعدادات المصحف</string>
     <string name="alathkar_header">إعدادات الأذكار</string>
 
     <!-- Preference Keys -->
-    <string name="athan_enable_key">athan_enable_key</string>
     <string name="morning_athkar_key">morning_athkar_key</string>
     <string name="night_athkar_key">night_athkar_key</string>
     <string name="daily_page_key">daily_page_enable_key</string>
@@ -31,7 +30,6 @@
     <string name="alathkar_text_size_key">alathkar_text_size_key</string>
 
     <!-- Preference Titles -->
-    <string name="athan_enable_title">اشعارات الأذان</string>
     <string name="morning_athkar_title">إشعار أذكار الصباح</string>
     <string name="night_athkar_title">إشعار أذكار المساء</string>
     <string name="daily_page_enable_title">إشعار صفحة اليوم</string>
@@ -65,5 +63,12 @@
     <!-- Descriptions -->
     <string name="qibla_view_description">this is the view that rotates depending on qibla</string>
     <string name="bingo_view_description">this is the view that shows when pointing towards qibla</string>
+    <string name="notification_with_sound">إشعار مسموع</string>
+    <string name="silent_notification">إشعار صامت</string>
+    <string name="enable_notification">تفعيل الإشعار</string>
+    <string name="mute_notification">إشعار صامت</string>
+    <string name="disable_notification">إيقاف الإشعار</string>
+    <string name="tafseer">التفسير</string>
+    <string name="adjust_prayer_notification_time">تعديل وقت إشعار الأذان</string>
 
 </resources>

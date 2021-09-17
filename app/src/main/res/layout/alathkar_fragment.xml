@@ -43,7 +43,7 @@
                     android:drawableTop="@drawable/ic_morning"
                     android:gravity="center|bottom"
                     android:text="@string/morning_thikr"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -55,7 +55,7 @@
                     android:background="@drawable/rounded_corners"
                     android:gravity="bottom|center"
                     android:text="@string/night_thikr"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     android:drawableTop="@drawable/ic_night"
                     style="?android:attr/buttonBarButtonStyle" />
@@ -80,7 +80,7 @@
                     android:gravity="center|bottom"
                     android:drawableTop="@drawable/ic_wakeup"
                     android:text="@string/wakeup_thikr"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -93,7 +93,7 @@
                     android:drawableTop="@drawable/ic_pre_sleep"
                     android:gravity="center|bottom"
                     android:text="@string/before_sleep_thikr"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -117,7 +117,7 @@
                     android:drawableTop="@drawable/ic_post_pray"
                     android:gravity="center|bottom"
                     android:text="@string/after_prayer_thikr"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -130,7 +130,7 @@
                     android:drawableTop="@drawable/ic_quran_conclude"
                     android:gravity="center|bottom"
                     android:text="@string/quran_conclude_thikr"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -154,7 +154,7 @@
                     android:drawableTop="@drawable/ic_athan"
                     android:gravity="center|bottom"
                     android:text="@string/athan_thikr"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -167,7 +167,7 @@
                     android:drawableTop="@drawable/ic_wudu"
                     android:gravity="center|bottom"
                     android:text="@string/wudu_thikr"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -191,7 +191,7 @@
                     android:drawableTop="@drawable/ic_bathroom"
                     android:gravity="center|bottom"
                     android:text="@string/bathroom_thikr"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -204,7 +204,7 @@
                     android:drawableTop="@drawable/ic_travel"
                     android:gravity="center|bottom"
                     android:text="@string/travel_thikr"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 

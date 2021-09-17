@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,12 +57,12 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         location = intent.getParcelableExtra("location");
 
-        times = getTimes(location);
-
         if (location.getLatitude() != 0.0 || location.getLongitude() != 0.0)
             new Keeper(this, location);
         else
             location = new Keeper(this).retrieveLocation();
+
+        times = getTimes(location);
 
         new Alarms(this, times);
 
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Calendar[] test() {
-        Calendar[] tester = new Calendar[7];
+        Calendar[] tester = new Calendar[6];
 
         tester[0] = Calendar.getInstance();
         tester[0].set(Calendar.HOUR_OF_DAY, 14);
@@ -92,9 +93,6 @@ public class MainActivity extends AppCompatActivity {
         tester[5] = Calendar.getInstance();
         tester[5].set(Calendar.HOUR_OF_DAY, 2);
         tester[5].set(Calendar.MINUTE, 43);
-        tester[6] = Calendar.getInstance();
-        tester[6].set(Calendar.HOUR_OF_DAY, 4);
-        tester[6].set(Calendar.MINUTE, 43);
 
         return tester;
     }
@@ -104,11 +102,9 @@ public class MainActivity extends AppCompatActivity {
         int day = pref.getInt("last_day", 0);
 
         Calendar today = Calendar.getInstance();
-        today.setTimeInMillis(System.currentTimeMillis());
 
-        if (day != today.get(Calendar.DAY_OF_MONTH)) {
+        if (day != today.get(Calendar.DAY_OF_MONTH))
             new DailyUpdate(this);
-        }
     }
 
     private Calendar[] getTimes(Location loc) {

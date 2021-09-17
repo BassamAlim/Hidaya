@@ -1,10 +1,6 @@
 package com.bassamalim.athkar;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
@@ -29,9 +25,8 @@ public class Settings extends AppCompatActivity {
                     .replace(R.id.settings, new SettingsFragment()).commit();
         }
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
+        if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
@@ -39,70 +34,48 @@ public class Settings extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.preferences, rootKey);
 
-            setInitial();
+            setInitialTimes();
 
             setListeners();
         }
 
-        private void setInitial() {
+        private void setInitialTimes() {
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
             SwitchPreferenceCompat pSwitch;
 
+            pSwitch = findPreference(keyGetter(6));
+            assert pSwitch != null;
+            pSwitch.setSummary(pref.getString(6 + "text", "٥:٠٠ صباحاً"));
+
+            pSwitch = findPreference(keyGetter(7));
+            assert pSwitch != null;
+            pSwitch.setSummary(pref.getString(7 + "text", "٤:٠٠ مساءاًً"));
+
             pSwitch = findPreference(keyGetter(8));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(pSwitch.getKey() + "text", "٥:٠٠ صباحاً"));
-
-            pSwitch = findPreference(keyGetter(9));
-            assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(pSwitch.getKey() + "text", "٤:٠٠ مساءاًً"));
-
-            pSwitch = findPreference(keyGetter(10));
-            assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(pSwitch.getKey() + "text", "٩:٠٠ مساءاً"));
+            pSwitch.setSummary(pref.getString(8 + "text", "٩:٠٠ مساءاً"));
         }
 
         private void setListeners() {
-            SwitchPreferenceCompat pSwitch;
-
-            pSwitch = findPreference(getString(R.string.athan_enable_key));
-            assert pSwitch != null;
-            pSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
-                boolean on = (Boolean) newValue;
-                if (on)
-                    new Alarms(getContext(), "prayers");
-                else {
-                    for (int i = 1; i <= 7; i++)
-                        if (i != 2 && i != 5)
-                        cancelAlarm(i);
-                }
-                return true;
-            });
-
-            setSwitchListener(8);
-            setSwitchListener(9);
-            setSwitchListener(10);
-
-            pSwitch= findPreference(getString(R.string.friday_kahf_key));
-            assert pSwitch != null;
-            pSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
-                boolean on = (Boolean) newValue;
-                if (on)
-                    new Alarms(getContext(), "extra_only");
-                else
-                    cancelAlarm(11);
-                return true;
-            });
+            setSwitchListener(6, true);
+            setSwitchListener(7, true);
+            setSwitchListener(8, true);
+            setSwitchListener(9, false);
         }
 
-        private void setSwitchListener(int id) {
+        private void setSwitchListener(int id, boolean timed) {
             String key = keyGetter(id);
             SwitchPreferenceCompat pSwitch = findPreference(key);
             assert pSwitch != null;
 
             pSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean on = (Boolean) newValue;
-                if (on)
-                    showTimePicker(id);
+                if (on) {
+                    if (timed)
+                        showTimePicker(id);
+                    else
+                        new Alarms(getContext(), id);
+                }
                 else
                     cancelAlarm(id);
                 return true;
@@ -126,14 +99,15 @@ public class Settings extends AppCompatActivity {
 
                 pSwitch.setSummary(fixed);
 
-                SharedPreferences myPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+                SharedPreferences myPref = PreferenceManager.
+                        getDefaultSharedPreferences(requireContext());
                 SharedPreferences.Editor editor = myPref.edit();
-                editor.putInt(key + "hour", hourOfDay);
-                editor.putInt(key + "minute", minute);
-                editor.putString(key + "text", fixed);
+                editor.putInt(id + "hour", hourOfDay);
+                editor.putInt(id + "minute", minute);
+                editor.putString(id + "text", fixed);
                 editor.apply();
 
-                new Alarms(getContext(), "extra");
+                new Alarms(getContext(), id);
 
                 }, cHour, cMinute, false);
 
@@ -146,60 +120,29 @@ public class Settings extends AppCompatActivity {
         }
 
         private void cancelAlarm(int id) {
+            Alarms.cancelAlarm(getContext(), id);
+
             String key = keyGetter(id);
-
-            if (key == null) {
-
-                PendingIntent pendingIntent;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    pendingIntent = PendingIntent.getBroadcast(getContext(), id,
-                            new Intent(), PendingIntent.FLAG_CANCEL_CURRENT |
-                                    PendingIntent.FLAG_IMMUTABLE);
-                }
-                else {
-                    pendingIntent = PendingIntent.getBroadcast(getContext(), id,
-                            new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
-                }
-                AlarmManager am = (AlarmManager) requireContext()
-                        .getSystemService(Context.ALARM_SERVICE);
-                am.cancel(pendingIntent);
-                return;
+            if (key != null) {    // its not a prayer
+                SwitchPreferenceCompat pSwitch = findPreference(key);
+                assert pSwitch != null;
+                pSwitch.setSummary("");
             }
-
-            SwitchPreferenceCompat pSwitch = findPreference(key);
-            assert pSwitch != null;
-            pSwitch.setSummary("");
-
-            PendingIntent pendingIntent;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                pendingIntent = PendingIntent.getBroadcast(getContext(),
-                        id, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT
-                                | PendingIntent.FLAG_IMMUTABLE);
-            }
-            else {
-                pendingIntent = PendingIntent.getBroadcast(getContext(),
-                        id, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
-            }
-
-            AlarmManager am = (AlarmManager) requireContext().getApplicationContext()
-                    .getSystemService(Context.ALARM_SERVICE);
-
-            am.cancel(pendingIntent);
         }
 
         private String keyGetter(int id) {
             String key = null;
             switch (id) {
-                case 8:
+                case 6:
                     key = getString(R.string.morning_athkar_key);
                     break;
-                case 9:
+                case 7:
                     key = getString(R.string.night_athkar_key);
                     break;
-                case 10:
+                case 8:
                     key = getString(R.string.daily_page_key);
                     break;
-                case 11:
+                case 9:
                     key = getString(R.string.friday_kahf_key);
                     break;
             }

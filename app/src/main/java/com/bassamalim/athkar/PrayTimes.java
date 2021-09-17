@@ -368,6 +368,7 @@ public class PrayTimes {
         this.setJDate(julianDate(year, month, day));
         double lonDiff = longitude / (15.0 * 24.0);
         this.setJDate(this.getJDate() - lonDiff);
+
         return computeDayTimes();
     }
 
@@ -379,7 +380,12 @@ public class PrayTimes {
         int month = date.get(Calendar.MONTH);
         int day = date.get(Calendar.DATE);
 
-        return translateNumbers(getDatePrayerTimes(year, month+1, day, latitude, longitude, tZone));
+        // removing sunset time which is the same as maghrib and pushing others
+        ArrayList<String> result = translateNumbers(getDatePrayerTimes(year, month+1,
+                day, latitude, longitude, tZone));
+        result.remove(4);
+
+        return result;
     }
 
     public Calendar[] getPrayerTimesArray(Calendar date, double latitude,
@@ -400,7 +406,7 @@ public class PrayTimes {
         int day = date.get(Calendar.DATE) + 1;
 
         String str = getDatePrayerTimes(year, month+1, day, latitude,
-                longitude, tZone).get(0);
+                longitude, tZone).get(1);
 
         int hour = Integer.parseInt(str.substring(0, 2));
         if (str.charAt(6) == 'P')
@@ -415,7 +421,10 @@ public class PrayTimes {
     }
 
     private Calendar[] formatTimes(ArrayList<String> givenTimes) {
-        Calendar[] formattedTimes = new Calendar[givenTimes.size()];
+        Calendar[] formattedTimes = new Calendar[givenTimes.size()-1]; // subtracted one
+
+        // removing sunset time which is the same as maghrib and pushing others
+        givenTimes.remove(4);
 
         for (int i = 0; i < givenTimes.size(); i++) {
             char m = givenTimes.get(i).charAt(6);

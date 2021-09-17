@@ -24,27 +24,42 @@ public class Alarms extends AppCompatActivity {
     private Context appContext;
     private Calendar[] times;
     private SharedPreferences pref;
-    private final String action;
+    private String action;
+    private int num;
 
     public Alarms(Context gContext, Calendar[] gTimes) {
         context = gContext;
         times = gTimes;
         action = "all";
 
-        setup();
+        setUp();
+        recognize();
     }
 
     public Alarms(Context gContext, String gAction) {
         context = gContext;
         action = gAction;
 
-        setup();
+        setUp();
+        recognize();
     }
 
-    private void setup() {
+    public Alarms(Context gContext, int alarm) {
+        context = gContext;
+        num = alarm;
+
+        times = new Keeper(context).retrieveTimes();
+
+        setUp();
+        setAlarm();
+    }
+
+    private void setUp() {
         appContext = context.getApplicationContext();
         pref = PreferenceManager.getDefaultSharedPreferences(context);
+    }
 
+    private void recognize() {
         switch (action) {
             case "all":
                 setPrayerAlarms();
@@ -59,39 +74,70 @@ public class Alarms extends AppCompatActivity {
         }
     }
 
+    private void setAlarm() {
+        Log.i(Constants.TAG, "in set alarm");
+        if (num >= 0 && num < 6)
+            setPrayerAlarm(num);
+        else if (num >= 6 && num < 10)
+            setExtraAlarm(num);
+    }
+
     private void setPrayerAlarms() {
-        if (!pref.getBoolean(context.getString(R.string.athan_enable_key), true))
-            return;
+        Log.i(Constants.TAG, "in set prayer alarms");
+        for (int i = 0; i < times.length; i++) {
+            if (pref.getInt(i + "notification_type", 2) != 0)
+                setPrayerAlarm(i);
+        }
+    }
 
-        Log.i(Constants.TAG, "in set alarms");
-        for (int i = 1; i <= times.length; i++) {
-            if (i != 2 && i != 5 && System.currentTimeMillis() <= times[i-1].getTimeInMillis()) {
-                Intent intent = new Intent(appContext, NotificationReceiver.class);
-                intent.setAction("prayer");
-                intent.putExtra("id", i);
-                intent.putExtra("time", times[i-1].getTimeInMillis());
-                PendingIntent pendingIntent;
-                AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
+    private void setPrayerAlarm(int id) {
+        Log.i(Constants.TAG, "in set alarm");
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    pendingIntent = PendingIntent.getBroadcast(appContext, i,
+        Log.i(Constants.TAG, "id: " + id);
+
+        long original = times[id].getTimeInMillis();
+
+        long delay;
+        try {
+            delay = pref.getLong(id + "time_delay", (long) 0L);
+        }
+        catch (ClassCastException e) {
+            Log.i(Constants.TAG, "Error in casting long");
+            e.printStackTrace();
+            delay = 0;
+        }
+
+        long delayMillis = delay * 60000L;
+        long millis = original + delayMillis;
+
+        times[id].setTimeInMillis(millis);    // adjust the time with the delay
+
+        if (System.currentTimeMillis() <= millis) {
+            Intent intent = new Intent(appContext, NotificationReceiver.class);
+            intent.setAction("prayer");
+            intent.putExtra("id", id);
+            intent.putExtra("time", millis);
+            PendingIntent pendingIntent;
+            AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                pendingIntent = PendingIntent.getBroadcast(appContext, id,
                         intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-                    myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                            times[i-1].getTimeInMillis(), pendingIntent);
-                }
-                else {
-                    pendingIntent = PendingIntent.getBroadcast(appContext, i,
-                            intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                    myAlarm.setExact(AlarmManager.RTC_WAKEUP,
-                            times[i-1].getTimeInMillis(), pendingIntent);
-                }
-                Log.i(Constants.TAG, "alarm " + i + " set");
+                myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                        times[id].getTimeInMillis(), pendingIntent);
             }
-            else
-                Log.i(Constants.TAG, i + " Passed");
+            else {
+                pendingIntent = PendingIntent.getBroadcast(appContext, id,
+                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                myAlarm.setExact(AlarmManager.RTC_WAKEUP,
+                        times[id].getTimeInMillis(), pendingIntent);
+            }
+            Log.i(Constants.TAG, "alarm " + id + " set");
         }
+        else
+            Log.i(Constants.TAG, id + " Passed");
     }
 
     private void setExtraAlarms() {
@@ -101,72 +147,71 @@ public class Alarms extends AppCompatActivity {
         today.setTimeInMillis(System.currentTimeMillis());
 
         if (pref.getBoolean(context.getString(R.string.morning_athkar_key), true))
-            setExtraAlarm(8);
+            setExtraAlarm(6);
         if (pref.getBoolean(context.getString(R.string.night_athkar_key), true))
-            setExtraAlarm(9);
+            setExtraAlarm(7);
         if (pref.getBoolean(context.getString(R.string.daily_page_key), true))
-            setExtraAlarm(10);
+            setExtraAlarm(8);
         if (pref.getBoolean(context.getString(R.string.friday_kahf_key), true)
                 && today.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
-            setExtraAlarm(11);
+            setExtraAlarm(9);
     }
 
     private void setExtraAlarm(int id) {
-        String key = "";
-        int defHour = 0;
-        int defMinute = 0;
-        switch (id) {
-            case 8:
-                key = context.getString(R.string.morning_athkar_key);
-                defHour = 5;
-                break;
-            case 9:
-                key = context.getString(R.string.night_athkar_key);
-                defHour = 16;
-                break;
-            case 10:
-                key = context.getString(R.string.daily_page_key);
-                defHour = 21;
-                break;
-            case 11:
-                key = context.getString(R.string.friday_kahf_key);
-                Location loc = new Keeper(appContext).retrieveLocation();
-                Calendar[] times = getTimes(loc);
-                Calendar duhr = times[2];
-                defHour = duhr.get(Calendar.HOUR_OF_DAY)+1;
-                defMinute = duhr.get(Calendar.MINUTE);
-                break;
+        Log.i(Constants.TAG, "in set extra alarm");
+        int hour;
+        int minute;
+
+        if (id == 9) {
+            Location loc = new Keeper(appContext).retrieveLocation();
+            Calendar[] times = getTimes(loc);
+            Calendar duhr = times[2];
+            hour = duhr.get(Calendar.HOUR_OF_DAY)+1;
+            minute = duhr.get(Calendar.MINUTE);
         }
-        int hour = pref.getInt(key + "hour", defHour);
-        int minute = pref.getInt(key + "minute", defMinute);
+        else {
+            int defHour = 0;
+            int defMinute = 0;
+            switch (id) {
+                case 6:
+                    defHour = 5;
+                    break;
+                case 7:
+                    defHour = 16;
+                    break;
+                case 8:
+                    defHour = 21;
+                    break;
+            }
+            hour = pref.getInt(id + "hour", defHour);
+            minute = pref.getInt(id + "minute", defMinute);
+        }
+
         Calendar time = Calendar.getInstance();
         time.set(Calendar.HOUR_OF_DAY, hour);
         time.set(Calendar.MINUTE, minute);
         time.set(Calendar.SECOND, 0);
 
-        if (System.currentTimeMillis() <= time.getTimeInMillis()) {
-            Intent intent = new Intent(appContext, NotificationReceiver.class);
-            intent.setAction("extra");
-            intent.putExtra("id", id);
-            intent.putExtra("time", time.getTimeInMillis());
-            PendingIntent pendIntent;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                pendIntent = PendingIntent.getBroadcast(appContext, id, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-            }
-            else {
-                pendIntent = PendingIntent.getBroadcast(appContext, id, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-            }
+        Intent intent = new Intent(appContext, NotificationReceiver.class);
+        intent.setAction("extra");
+        intent.putExtra("id", id);
+        intent.putExtra("time", time.getTimeInMillis());
 
-            AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
-            myAlarm.setRepeating(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY, pendIntent);
-
-            Log.i(Constants.TAG, "alarm " + id + " set");
+        PendingIntent pendIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendIntent = PendingIntent.getBroadcast(appContext, id, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         }
-        else
-            Log.i(Constants.TAG, id + " Passed");
+        else {
+            pendIntent = PendingIntent.getBroadcast(appContext, id, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
+        AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
+        myAlarm.setRepeating(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, pendIntent);
+
+        Log.i(Constants.TAG, "alarm " + id + " set");
     }
 
     private Calendar[] getTimes(Location loc) {
@@ -180,6 +225,22 @@ public class Alarms extends AppCompatActivity {
 
         return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
                 loc.getLongitude(), timezone);
+    }
+
+    public static void cancelAlarm(Context gContext, int id) {
+        Log.i(Constants.TAG, "in cancel alarm");
+        PendingIntent pendingIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getBroadcast(gContext, id, new Intent(),
+                    PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        }
+        else {
+            pendingIntent = PendingIntent.getBroadcast(gContext, id,
+                    new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
+        }
+
+        AlarmManager am = (AlarmManager) gContext.getSystemService(Context.ALARM_SERVICE);
+        am.cancel(pendingIntent);
     }
 
 }

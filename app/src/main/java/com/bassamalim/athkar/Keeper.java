@@ -10,35 +10,73 @@ import androidx.preference.PreferenceManager;
 import com.bassamalim.athkar.models.MyLocation;
 import com.google.gson.Gson;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class Keeper extends AppCompatActivity {
 
+    private final Context context;
     private Gson gson;
-    private final SharedPreferences pref;
-    private String json;
+    private SharedPreferences pref;
+    private String lJson;
+    private String tJson;
 
-    public Keeper(Context context) {
-        pref = PreferenceManager.getDefaultSharedPreferences(context);
+    public Keeper(Context gContext) {
+        context = gContext;
+        setUp();
     }
 
-    public Keeper(Context context, Location gLocation) {
-        pref = PreferenceManager.getDefaultSharedPreferences(context);
+    public Keeper(Context gContext, Location gLocation) {
+        context = gContext;
+        setUp();
         storeLocation(gLocation);
+        storeTimes(getTimes(gLocation));
+    }
+
+    private void setUp() {
+        pref = PreferenceManager.getDefaultSharedPreferences(context);
+        gson = new Gson();
     }
 
     public void storeLocation(Location gLocation) {
         MyLocation loc = new MyLocation(gLocation);
         SharedPreferences.Editor editor = pref.edit();
-        gson = new Gson();
-        json = gson.toJson(loc);
-        editor.putString("stored location", json);
+
+        lJson = gson.toJson(loc);
+        editor.putString("stored location", lJson);
+        editor.apply();
+    }
+
+    public void storeTimes(Calendar[] times) {
+        SharedPreferences.Editor editor = pref.edit();
+        tJson = gson.toJson(times);
+        editor.putString("stored times", tJson);
         editor.apply();
     }
 
     public Location retrieveLocation() {
-        gson = new Gson();
-        json = pref.getString("stored location", "");
-        MyLocation myLocation = gson.fromJson(json, MyLocation.class);
+        lJson = pref.getString("stored location", "");
+        MyLocation myLocation = gson.fromJson(lJson, MyLocation.class);
         return MyLocation.toLocation(myLocation);
+    }
+
+    public Calendar[] retrieveTimes() {
+        tJson = pref.getString("stored times", "");
+        return gson.fromJson(tJson, Calendar[].class);
+    }
+
+    private Calendar[] getTimes(Location loc) {
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date();
+        calendar.setTime(date);
+
+        TimeZone timeZoneObj = TimeZone.getDefault();
+        long millis = timeZoneObj.getOffset(date.getTime());
+        double timezone = millis / 3600000.0;
+
+        return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
+                loc.getLongitude(), timezone);
     }
 
 }

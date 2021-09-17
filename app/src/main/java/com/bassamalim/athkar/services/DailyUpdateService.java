@@ -12,6 +12,7 @@ import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.Alarms;
 import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.Keeper;
 import com.bassamalim.athkar.PrayTimes;
 import com.bassamalim.athkar.models.MyLocation;
 import com.google.gson.Gson;
@@ -22,21 +23,22 @@ import java.util.TimeZone;
 
 public class DailyUpdateService extends Service {
 
+    SharedPreferences pref;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(Constants.TAG, "in daily update service");
 
-        Location loc = new Location("");
-        Calendar[] times1 = getTimes(loc);
-
-        new Alarms(this, times1);
-
         if (intent != null && intent.getStringExtra("location") != null) {
+            pref = PreferenceManager.getDefaultSharedPreferences(this);
+
             Gson gson = new Gson();
             String json = intent.getStringExtra("location");
 
             MyLocation myLocation = gson.fromJson(json, MyLocation.class);
             Location location = MyLocation.toLocation(myLocation);
+
+            new Keeper(this, location);
 
             Calendar[] times = getTimes(location);
 
@@ -66,10 +68,8 @@ public class DailyUpdateService extends Service {
 
     private void updated() {
         Calendar today = Calendar.getInstance();
-        today.setTimeInMillis(System.currentTimeMillis());
 
-        SharedPreferences myPref = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = myPref.edit();
+        SharedPreferences.Editor editor = pref.edit();
         editor.putInt("last_day", today.get(Calendar.DAY_OF_MONTH));
         editor.apply();
     }

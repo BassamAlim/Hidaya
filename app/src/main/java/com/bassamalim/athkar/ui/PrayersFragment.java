@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -18,6 +19,7 @@ import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.PrayTimes;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.PrayersFragmentBinding;
+import com.bassamalim.athkar.dialogs.PrayerPopup;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,13 +32,13 @@ public class PrayersFragment extends Fragment {
 
     private PrayersFragmentBinding binding;
     private Location location;
-    private Calendar[] timesArr;
-    private ArrayList<String> times;
+    private Calendar[] times;
     private ArrayList<String> formattedTimes;
     private Calendar tomorrowFajr;
     private final CardView[] cards = new CardView[6];
     private final TextView[] screens = new TextView[6];
     private final TextView[] counters = new TextView[6];
+    public static final ToggleButton[] toggles = new ToggleButton[6];
     private CountDownTimer timer;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -46,8 +48,7 @@ public class PrayersFragment extends Fragment {
         View root = binding.getRoot();
 
         location = MainActivity.location;
-        timesArr = getTimesArr(MainActivity.times);
-        times = getTimes();
+        getTimes();
         formatTimes();
 
         setViews();
@@ -55,21 +56,12 @@ public class PrayersFragment extends Fragment {
 
         setupCountdown();
 
+        setListeners();
+
         return root;
     }
 
-    private Calendar[] getTimesArr(Calendar[] given) {
-        Calendar[] result = new Calendar[given.length-1];
-        for (int i = 0; i < given.length; i++) {
-            if (i<4)
-                result[i] = given[i];
-            else if (i>4)
-                result[i-1] = given[i];
-        }
-        return result;
-    }
-
-    private ArrayList<String> getTimes() {
+    private void getTimes() {
         PrayTimes prayTimes = new PrayTimes();
 
         Calendar calendar = Calendar.getInstance();
@@ -80,22 +72,23 @@ public class PrayersFragment extends Fragment {
         long millis = timeZoneObj.getOffset(date.getTime());
         double timezone = millis / 3600000.0;
 
-        tomorrowFajr = prayTimes.getTomorrowFajr(calendar, location.getLatitude(),
+        times = prayTimes.getPrayerTimesArray(calendar, location.getLatitude(),
                 location.getLongitude(), timezone);
 
-        return prayTimes.getPrayerTimes(calendar, location.getLatitude(),
+        formattedTimes = prayTimes.getPrayerTimes(calendar, location.getLatitude(),
+                location.getLongitude(), timezone);
+
+        tomorrowFajr = prayTimes.getTomorrowFajr(calendar, location.getLatitude(),
                 location.getLongitude(), timezone);
     }
 
     private void formatTimes() {
-        ArrayList<String> formatted = new ArrayList<>();
-        formatted.add(0, "الفجر: " + times.get(0));
-        formatted.add(1, "الشروق: " + times.get(1));
-        formatted.add(2, "الظهر: " + times.get(2));
-        formatted.add(3, "العصر: " + times.get(3));
-        formatted.add(4, "المغرب: " + times.get(5));
-        formatted.add(5, "العشاء: " + times.get(6));
-        formattedTimes = formatted;
+        formattedTimes.set(0, "الفجر: " + formattedTimes.get(0));
+        formattedTimes.set(1, "الشروق: " + formattedTimes.get(1));
+        formattedTimes.set(2, "الظهر: " + formattedTimes.get(2));
+        formattedTimes.set(3, "العصر: " + formattedTimes.get(3));
+        formattedTimes.set(4, "المغرب: " + formattedTimes.get(4));
+        formattedTimes.set(5, "العشاء: " + formattedTimes.get(5));
     }
 
     private void setViews() {
@@ -108,17 +101,31 @@ public class PrayersFragment extends Fragment {
 
         screens[0] = binding.fajrScreen;
         screens[1] = binding.shorouqScreen;
-        screens[2] = binding.dhuhrScreen;
+        screens[2] = binding.duhrScreen;
         screens[3] = binding.asrScreen;
         screens[4] = binding.maghribScreen;
         screens[5] = binding.ishaaScreen;
 
         counters[0] = binding.fajrCounter;
         counters[1] = binding.shorouqCounter;
-        counters[2] = binding.dhuhrCounter;
+        counters[2] = binding.duhrCounter;
         counters[3] = binding.asrCounter;
         counters[4] = binding.maghribCounter;
         counters[5] = binding.ishaaCounter;
+
+        toggles[0] = binding.fajrToggle;
+        toggles[1] = binding.shorouqToggle;
+        toggles[2] = binding.duhrToggle;
+        toggles[3] = binding.asrToggle;
+        toggles[4] = binding.maghribToggle;
+        toggles[5] = binding.ishaaToggle;
+    }
+
+    private void setListeners() {
+        for (int i=0; i< cards.length; i++) {
+            int finalI = i;
+            cards[i].setOnClickListener(v -> new PrayerPopup(getContext(), v, finalI));
+        }
     }
 
     private void show() {
@@ -143,10 +150,10 @@ public class PrayersFragment extends Fragment {
         counter.setVisibility(View.VISIBLE);
         FrameLayout.LayoutParams up = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        up.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+        up.gravity = Gravity.TOP | Gravity.END;
         screen.setLayoutParams(up);
 
-        long till = timesArr[i].getTimeInMillis();
+        long till = times[i].getTimeInMillis();
         if (tomorrow)
             till = tomorrowFajr.getTimeInMillis();
 
@@ -164,7 +171,7 @@ public class PrayersFragment extends Fragment {
             }
             @Override
             public void onFinish() {
-                up.gravity = Gravity.CENTER;
+                up.gravity = Gravity.CENTER | Gravity.END;
                 screens[finalI].setLayoutParams(up);
                 counter.setVisibility(View.INVISIBLE);
             }
@@ -174,8 +181,8 @@ public class PrayersFragment extends Fragment {
     private int findClosest() {
         int closest = -1;
         long currentMillis = System.currentTimeMillis();
-        for (int i=0; i<timesArr.length; i++) {
-            long millis = timesArr[i].getTimeInMillis();
+        for (int i=0; i<times.length; i++) {
+            long millis = times[i].getTimeInMillis();
             if (millis > currentMillis) {
                 closest = i;
                 break;

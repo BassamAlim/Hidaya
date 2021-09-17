@@ -1,4 +1,4 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.R;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class UpdateDialog extends Dialog implements View.OnClickListener {

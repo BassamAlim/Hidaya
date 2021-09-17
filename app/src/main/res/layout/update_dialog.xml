@@ -17,7 +17,7 @@
         android:textAlignment="center"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:textColor="@color/secondary"
+        android:textColor="@color/accent"
         android:layout_marginBottom="30dp"/>
 
     <LinearLayout
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:text="@string/later"
             android:textSize="20sp"
-            android:textColor="@color/secondary"
+            android:textColor="@color/accent"
             android:gravity="center"
             android:layout_marginEnd="60dp"
             style="?android:attr/buttonBarButtonStyle" />
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:text="@string/update_now"
             android:textSize="20sp"
-            android:textColor="@color/secondary"
+            android:textColor="@color/accent"
             android:gravity="center"
             style="?android:attr/buttonBarButtonStyle" />
 

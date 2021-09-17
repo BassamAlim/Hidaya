@@ -43,7 +43,7 @@
                     android:padding="@dimen/my_button_padding"
                     android:text="@string/quran_and_sunnah_channels"
                     android:textSize="@dimen/my_button_text_size"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     style="?android:attr/buttonBarButtonStyle"/>
 
                 <Button
@@ -56,7 +56,7 @@
                     android:padding="@dimen/my_button_padding"
                     android:text="@string/settings"
                     android:textSize="@dimen/my_button_text_size"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     style="?android:attr/buttonBarButtonStyle"/>
 
             </LinearLayout>
@@ -80,7 +80,7 @@
                     android:padding="@dimen/my_button_padding"
                     android:text="@string/update"
                     android:textSize="@dimen/my_button_text_size"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     style="?android:attr/buttonBarButtonStyle"/>
 
                 <Button
@@ -93,7 +93,7 @@
                     android:padding="@dimen/my_button_padding"
                     android:text="@string/contact"
                     android:textSize="@dimen/my_button_text_size"
-                    android:textColor="@color/secondary"
+                    android:textColor="@color/accent"
                     style="?android:attr/buttonBarButtonStyle"/>
 
             </LinearLayout>

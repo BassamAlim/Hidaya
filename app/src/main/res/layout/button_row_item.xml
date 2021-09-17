@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:gravity="center"
-        android:backgroundTint="@color/accent"
+        android:backgroundTint="@color/secondary"
         android:textSize="20sp"
-        android:textColor="@color/secondary"/>
+        android:textColor="@color/accent"/>
 
 </FrameLayout>

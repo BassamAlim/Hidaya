@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bassamalim.athkar.dialogs.UpdateDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class Update extends AppCompatActivity {

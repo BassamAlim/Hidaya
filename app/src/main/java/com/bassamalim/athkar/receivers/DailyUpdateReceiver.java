@@ -4,10 +4,12 @@ import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
+import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.models.MyLocation;
@@ -20,7 +22,8 @@ import java.util.Calendar;
 
 public class DailyUpdateReceiver extends BroadcastReceiver {
 
-    Context context;
+    private Context context;
+    private int time;
 
     @Override
     public void onReceive(Context gContext, Intent intent) {
@@ -28,17 +31,26 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
         context = gContext;
 
         if (intent.getAction().equals("daily")) {
-            int time = intent.getIntExtra("time", 0);
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(System.currentTimeMillis());
-            cal.set(Calendar.HOUR_OF_DAY, time);
-
-            if (System.currentTimeMillis() >= cal.getTimeInMillis()) {
+            time = intent.getIntExtra("time", 0);
+            if (needed())
                 process();
-            }
+            else
+                Log.i(Constants.TAG, "dead intent walking in daily update receiver");
         }
         else if (intent.getAction().equals("boot"))
             process();
+    }
+
+    private boolean needed() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        int day = pref.getInt("last_day", 0);
+
+        Calendar supposed = Calendar.getInstance();
+        supposed.set(Calendar.HOUR_OF_DAY, time);
+
+        Calendar now = Calendar.getInstance();
+
+        return day != now.get(Calendar.DAY_OF_MONTH) && time >= now.get(Calendar.HOUR_OF_DAY);
     }
 
     private void process() {

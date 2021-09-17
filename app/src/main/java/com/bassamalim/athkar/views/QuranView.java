@@ -27,6 +27,7 @@ import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.Utils;
 import com.bassamalim.athkar.databinding.QuranViewBinding;
+import com.bassamalim.athkar.dialogs.TafseerDialog;
 import com.bassamalim.athkar.models.Ayah;
 
 import org.json.JSONArray;
@@ -45,9 +46,10 @@ public class QuranView extends AppCompatActivity {
     private JSONArray tafseerArray;
     private int currentPage;
     private int textSize;
-    boolean swapped = false;
+    private boolean swapped = false;
     private float x1;
-    static final int MIN_DISTANCE = 300;
+    private float y1;
+    private ArrayList<Ayah> arr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,8 @@ public class QuranView extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        int MIN_X_DISTANCE = 300;
+        int MAX_Y_DISTANCE = 300;
         if(swapped) {
             swapped = false;
             return super.onTouchEvent(event);
@@ -91,16 +95,19 @@ public class QuranView extends AppCompatActivity {
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 x1 = event.getX();
+                y1 = event.getY();
                 break;
             case MotionEvent.ACTION_UP:
                 float x2 = event.getX();
-                float deltaX = x2 - x1;
-                if (Math.abs(deltaX) > MIN_DISTANCE) {
+                float y2 = event.getY();
+                float distanceX = Math.abs(x2 - x1);
+                float distanceY = Math.abs(y2 - y1);
+                if (distanceX > MIN_X_DISTANCE && distanceY < MAX_Y_DISTANCE) {
                     swapped = true;
-                    if (x2 > x1)    // Left to Right
-                        nextPage();
-                    else    // Right to left
+                    if (x2 > x1)    // Right to left
                         previousPage();
+                    else            // Left to Right
+                        nextPage();
                 }
                 break;
         }
@@ -140,7 +147,7 @@ public class QuranView extends AppCompatActivity {
         return 0;
     }
 
-    public int getPageStart(int pageNumber) {
+    private int getPageStart(int pageNumber) {
         int start = 0;
         try {
             int counter = 0;
@@ -155,19 +162,16 @@ public class QuranView extends AppCompatActivity {
         return start;
     }
 
-    public void buildPage(int pageNumber) {
+    private void buildPage(int pageNumber) {
         setSupportActionBar(binding.numberBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         String temp = "رقم الصفحة " + currentPage;
         binding.pageNumber.setText(temp);
 
         mainLinear.removeAllViews();
+        arr = new ArrayList<>();
 
-        int start = getPageStart(pageNumber);
-
-        ArrayList<Ayah> ayahs = new ArrayList<>();
-
-        int counter = start;
+        int counter = getPageStart(pageNumber);
         try {
             do {
                 JSONObject ayah = jsonArray.getJSONObject(counter);
@@ -183,24 +187,25 @@ public class QuranView extends AppCompatActivity {
                 Ayah ayahModel = new Ayah(ayahText + " ", tafseer);
 
                 if (ayahNum == 1) {
-                    if (ayahs.size() > 0)
-                        publish(ayahs);
+                    if (arr.size() > 0)
+                        publish(arr);
 
-                    ayahs.clear();
                     TextView nameScreen = surahName(ayah.getString("sura_name_ar"));
                     TextView basmalah = basmalah();
                     mainLinear.addView(nameScreen);
                     mainLinear.addView(basmalah);
                 }
-                ayahs.add(ayahModel);
+                arr.add(ayahModel);
 
-            } while (jsonArray.getJSONObject(++counter).getInt("page") == pageNumber);
+            } while (++counter != 6236 && jsonArray.getJSONObject(counter)
+                    .getInt("page") == pageNumber);
+
+            publish(arr);
         }
         catch (JSONException e) {
             e.printStackTrace();
             Log.e(Constants.TAG, "trouble in building page");
         }
-        publish(ayahs);
     }
 
     private void publish(ArrayList<Ayah> list) {
@@ -219,8 +224,8 @@ public class QuranView extends AppCompatActivity {
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(View textView) {
-                    new TafseerDialog(list.get(finalI).getTafseer()).show(getSupportFragmentManager(),
-                            TafseerDialog.TAG);
+                    new TafseerDialog(list.get(finalI).getTafseer()).show(
+                            getSupportFragmentManager(), TafseerDialog.TAG);
                 }
                 @Override
                 public void updateDrawState(TextPaint ds) {
@@ -236,6 +241,7 @@ public class QuranView extends AppCompatActivity {
         screen.setMovementMethod(LinkMovementMethod.getInstance());
         screen.setLinkTextColor(Color.WHITE);
         mainLinear.addView(screen);
+        arr = new ArrayList<>();
     }
 
     private void previousPage() {
@@ -263,11 +269,12 @@ public class QuranView extends AppCompatActivity {
         nameScreen.setPadding(0, 10, 0, 10);
         nameScreen.setGravity(Gravity.CENTER);
         nameScreen.setTextIsSelectable(true);
-        nameScreen.setBackground(AppCompatResources.getDrawable(this, R.drawable.surah_header));
+        nameScreen.setBackground(AppCompatResources.
+                getDrawable(this, R.drawable.surah_header));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            nameScreen.setTextColor(getResources().getColor(R.color.secondary, getTheme()));
+            nameScreen.setTextColor(getResources().getColor(R.color.accent, getTheme()));
         else
-            nameScreen.setTextColor(getResources().getColor(R.color.secondary));
+            nameScreen.setTextColor(getResources().getColor(R.color.accent));
         nameScreen.setTextSize(textSize+5);
         nameScreen.setTypeface(Typeface.DEFAULT_BOLD);
         nameScreen.setText(name);
@@ -285,7 +292,6 @@ public class QuranView extends AppCompatActivity {
         nameScreen.setTextIsSelectable(true);
         nameScreen.setTextSize(textSize);
         nameScreen.setTypeface(Typeface.DEFAULT_BOLD);
-        //nameScreen.setTypeface(getResources().getFont(R.font.quran_surah1));
         nameScreen.setText("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ");
 
         return nameScreen;
@@ -307,7 +313,8 @@ public class QuranView extends AppCompatActivity {
     }
 
     private int getSize() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
         return sharedPreferences.getInt(getString(R.string.quran_text_size_key), 30);
     }
 
