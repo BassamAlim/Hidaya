@@ -91,18 +91,16 @@ public class Alarms extends AppCompatActivity {
     }
 
     private void setPrayerAlarm(int id) {
-        Log.i(Constants.TAG, "in set alarm");
-
-        Log.i(Constants.TAG, "id: " + id);
+        Log.i(Constants.TAG, "in set alarm for: " + id);
 
         long original = times[id].getTimeInMillis();
 
         long delay;
         try {
-            delay = pref.getLong(id + "time_delay", (long) 0L);
+            delay = pref.getLong(id + "time_delay", 0L);
         }
         catch (ClassCastException e) {
-            Log.i(Constants.TAG, "Error in casting long");
+            Log.e(Constants.TAG, "Error in casting long");
             e.printStackTrace();
             delay = 0;
         }
@@ -114,7 +112,10 @@ public class Alarms extends AppCompatActivity {
 
         if (System.currentTimeMillis() <= millis) {
             Intent intent = new Intent(appContext, NotificationReceiver.class);
-            intent.setAction("prayer");
+            if (id == 1)
+                intent.setAction("extra");
+            else
+                intent.setAction("prayer");
             intent.putExtra("id", id);
             intent.putExtra("time", millis);
             PendingIntent pendingIntent;

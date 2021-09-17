@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
         else
             location = new Keeper(this).retrieveLocation();
 
-        times = getTimes(location);
+        //times = getTimes(location);
+        times = test();
 
         new Alarms(this, times);
 
@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
         tester[0].set(Calendar.HOUR_OF_DAY, 14);
         tester[0].set(Calendar.MINUTE, 2);
         tester[1] = Calendar.getInstance();
-        tester[1].set(Calendar.HOUR_OF_DAY, 2);
-        tester[1].set(Calendar.MINUTE, 8);
+        tester[1].set(Calendar.HOUR_OF_DAY, 13);
+        tester[1].set(Calendar.MINUTE, 48);
         tester[2] = Calendar.getInstance();
         tester[2].set(Calendar.HOUR_OF_DAY, 0);
         tester[2].set(Calendar.MINUTE, 1);

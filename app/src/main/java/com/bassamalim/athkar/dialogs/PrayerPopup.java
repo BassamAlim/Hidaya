@@ -21,8 +21,6 @@ import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.ui.PrayersFragment;
 
-import java.util.concurrent.CompletionStage;
-
 public class PrayerPopup extends AppCompatActivity {
 
     private final Context context;
@@ -135,7 +133,7 @@ public class PrayerPopup extends AppCompatActivity {
 
                 new Alarms(context, id);
 
-                editor.putLong(id +"time_delay", (long) min);
+                editor.putLong(id +"time_delay", min);
                 editor.putInt(id + "spinner_last", position);
                 editor.apply();
             }

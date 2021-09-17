@@ -88,6 +88,7 @@ public class NotificationService extends Service {
             case 1: {
                 builder.setContentTitle("الشروق");
                 builder.setContentText("حان وقت الشروق");
+                break;
             }
             case 2: {
                 builder.setContentTitle("صلاة الظهر");
