@@ -9,22 +9,22 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.DoubleClickLinkMovementMethod;
+import com.bassamalim.athkar.DoubleClickableSpan;
 import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.SwipeActivity;
 import com.bassamalim.athkar.Utils;
 import com.bassamalim.athkar.databinding.QuranViewBinding;
 import com.bassamalim.athkar.dialogs.TafseerDialog;
@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
-public class QuranView extends AppCompatActivity {
+public class QuranView extends SwipeActivity {
 
     private QuranViewBinding binding;
     private LinearLayout mainLinear;
@@ -46,9 +46,6 @@ public class QuranView extends AppCompatActivity {
     private JSONArray tafseerArray;
     private int currentPage;
     private int textSize;
-    private boolean swapped = false;
-    private float x1;
-    private float y1;
     private ArrayList<Ayah> arr;
 
     @Override
@@ -79,39 +76,21 @@ public class QuranView extends AppCompatActivity {
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        this.onTouchEvent(event);
-        return super.dispatchTouchEvent(event);
+    protected void previous() {
+        if (currentPage < Constants.QURAN_PAGES) {
+            buildPage(++currentPage);
+            Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
+            binding.scrollView.scrollTo(0, 0);
+        }
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        int MIN_X_DISTANCE = 300;
-        int MAX_Y_DISTANCE = 300;
-        if(swapped) {
-            swapped = false;
-            return super.onTouchEvent(event);
+    protected void next() {
+        if (currentPage > 1) {
+            buildPage(--currentPage);
+            Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
+            binding.scrollView.scrollTo(0, 0);
         }
-        switch(event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                x1 = event.getX();
-                y1 = event.getY();
-                break;
-            case MotionEvent.ACTION_UP:
-                float x2 = event.getX();
-                float y2 = event.getY();
-                float distanceX = Math.abs(x2 - x1);
-                float distanceY = Math.abs(y2 - y1);
-                if (distanceX > MIN_X_DISTANCE && distanceY < MAX_Y_DISTANCE) {
-                    swapped = true;
-                    if (x2 > x1)    // Right to left
-                        previousPage();
-                    else            // Left to Right
-                        nextPage();
-                }
-                break;
-        }
-        return super.onTouchEvent(event);
     }
 
     private void setupJson() {
@@ -221,12 +200,14 @@ public class QuranView extends AppCompatActivity {
         SpannableString ss = new SpannableString(text);
         for (int i=0; i<list.size(); i++) {
             int finalI = i;
-            ClickableSpan clickableSpan = new ClickableSpan() {
+            DoubleClickableSpan clickableSpan = new DoubleClickableSpan() {
                 @Override
-                public void onClick(View textView) {
+                public void onDoubleClick(View textView) {
                     new TafseerDialog(list.get(finalI).getTafseer()).show(
                             getSupportFragmentManager(), TafseerDialog.TAG);
                 }
+                @Override
+                public void onClick(@NonNull View widget) {}
                 @Override
                 public void updateDrawState(TextPaint ds) {
                     super.updateDrawState(ds);
@@ -238,26 +219,9 @@ public class QuranView extends AppCompatActivity {
         }
 
         screen.setText(ss);
-        screen.setMovementMethod(LinkMovementMethod.getInstance());
-        screen.setLinkTextColor(Color.WHITE);
+        screen.setMovementMethod(DoubleClickLinkMovementMethod.getInstance());
         mainLinear.addView(screen);
         arr = new ArrayList<>();
-    }
-
-    private void previousPage() {
-        if (currentPage < Constants.QURAN_PAGES) {
-            buildPage(++currentPage);
-            Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
-            binding.scrollView.scrollTo(0, 0);
-        }
-    }
-
-    private void nextPage() {
-        if (currentPage > 1) {
-            buildPage(--currentPage);
-            Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
-            binding.scrollView.scrollTo(0, 0);
-        }
     }
 
     private TextView surahName(String name) {
@@ -268,7 +232,6 @@ public class QuranView extends AppCompatActivity {
         nameScreen.setLayoutParams(screenParams);
         nameScreen.setPadding(0, 10, 0, 10);
         nameScreen.setGravity(Gravity.CENTER);
-        nameScreen.setTextIsSelectable(true);
         nameScreen.setBackground(AppCompatResources.
                 getDrawable(this, R.drawable.surah_header));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -289,7 +252,6 @@ public class QuranView extends AppCompatActivity {
         nameScreen.setLayoutParams(screenParams);
         nameScreen.setPadding(0, 0, 0, 10);
         nameScreen.setGravity(Gravity.CENTER);
-        nameScreen.setTextIsSelectable(true);
         nameScreen.setTextSize(textSize);
         nameScreen.setTypeface(Typeface.DEFAULT_BOLD);
         nameScreen.setText("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ");
@@ -304,10 +266,10 @@ public class QuranView extends AppCompatActivity {
         screen.setLayoutParams(screenParams);
         screen.setPadding(0, 0, 0, 30);
         screen.setGravity(Gravity.CENTER);
-        screen.setTextIsSelectable(true);
         screen.setTextSize(textSize);
         Typeface typeface = Typeface.createFromAsset(getAssets(), "hafs_smart_08.ttf");
         screen.setTypeface(typeface);
+        screen.setLinkTextColor(Color.WHITE);
 
         return screen;
     }

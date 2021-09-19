@@ -1,5 +1,6 @@
 package com.bassamalim.athkar.ui;
 
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -8,12 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.PrayTimes;
@@ -38,8 +41,9 @@ public class PrayersFragment extends Fragment {
     private final CardView[] cards = new CardView[6];
     private final TextView[] screens = new TextView[6];
     private final TextView[] counters = new TextView[6];
-    public static final ToggleButton[] toggles = new ToggleButton[6];
+    public static final ImageView[] images = new ImageView[6];
     private CountDownTimer timer;
+    private SharedPreferences pref;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,11 +51,14 @@ public class PrayersFragment extends Fragment {
         binding = PrayersFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+
         location = MainActivity.location;
         getTimes();
         formatTimes();
 
         setViews();
+        setInitialState();
         show();
 
         setupCountdown();
@@ -113,12 +120,24 @@ public class PrayersFragment extends Fragment {
         counters[4] = binding.maghribCounter;
         counters[5] = binding.ishaaCounter;
 
-        toggles[0] = binding.fajrToggle;
-        toggles[1] = binding.shorouqToggle;
-        toggles[2] = binding.duhrToggle;
-        toggles[3] = binding.asrToggle;
-        toggles[4] = binding.maghribToggle;
-        toggles[5] = binding.ishaaToggle;
+        images[0] = binding.fajrImage;
+        images[1] = binding.shorouqImage;
+        images[2] = binding.duhrImage;
+        images[3] = binding.asrImage;
+        images[4] = binding.maghribImage;
+        images[5] = binding.ishaaImage;
+    }
+
+    private void setInitialState() {
+        for (int i = 0; i < images.length; i++) {
+            int state = pref.getInt(i + "notification_type", 2);
+            if (state == 1)
+                images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext().getResources(),
+                        R.drawable.ic_mute, requireContext().getTheme()));
+            else if (state == 0)
+                images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext().getResources(),
+                        R.drawable.ic_disabled, requireContext().getTheme()));
+        }
     }
 
     private void setListeners() {
@@ -150,7 +169,7 @@ public class PrayersFragment extends Fragment {
         counter.setVisibility(View.VISIBLE);
         FrameLayout.LayoutParams up = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        up.gravity = Gravity.TOP | Gravity.END;
+        up.gravity = Gravity.TOP | Gravity.START;
         screen.setLayoutParams(up);
 
         long till = times[i].getTimeInMillis();

@@ -9,11 +9,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.Alarms;
@@ -30,6 +32,7 @@ public class PrayerPopup extends AppCompatActivity {
     private final SharedPreferences pref;
     private Button[] buttons;
     private Spinner spinner;
+    private ImageView[] images;
 
     public PrayerPopup(Context gContext, View v, int gId) {
         context = gContext;
@@ -69,6 +72,8 @@ public class PrayerPopup extends AppCompatActivity {
 
         spinner = popupWindow.getContentView().findViewById(R.id.time_setting_spinner);
 
+        setImages();
+
         int state = pref.getInt(id + "notification_type", 2);
         selectedState(state);
 
@@ -79,8 +84,8 @@ public class PrayerPopup extends AppCompatActivity {
     private void setListeners() {
         SharedPreferences.Editor editor = pref.edit();
         buttons[2].setOnClickListener(v -> {
-            PrayersFragment.toggles[id].setCompoundDrawables(AppCompatResources.getDrawable(
-                    context, R.drawable.ic_sound), null, null, null);
+            images[id].setImageDrawable(ResourcesCompat.getDrawable(context.getResources(),
+                    R.drawable.ic_sound, context.getTheme()));
 
             new Alarms(context, id);
 
@@ -89,8 +94,8 @@ public class PrayerPopup extends AppCompatActivity {
             editor.apply();
         });
         buttons[1].setOnClickListener(v -> {
-            PrayersFragment.toggles[id].setCompoundDrawables(AppCompatResources.getDrawable(
-                    context, R.drawable.ic_mute), null, null, null);
+            images[id].setImageDrawable(ResourcesCompat.getDrawable(context.getResources(),
+                    R.drawable.ic_mute, context.getTheme()));
 
             new Alarms(context, id);
 
@@ -99,8 +104,8 @@ public class PrayerPopup extends AppCompatActivity {
             editor.apply();
         });
         buttons[0].setOnClickListener(v -> {
-            PrayersFragment.toggles[id].setCompoundDrawables(AppCompatResources.getDrawable(
-                    context, R.drawable.ic_disabled), null, null, null);
+            images[id].setImageDrawable(ResourcesCompat.getDrawable(context.getResources(),
+                    R.drawable.ic_disabled, context.getTheme()));
 
             Alarms.cancelAlarm(context, id);
 
@@ -131,9 +136,11 @@ public class PrayerPopup extends AppCompatActivity {
                 int min = Integer.parseInt(parent.getItemAtPosition(position).toString());
                 Log.i(Constants.TAG, "delay is set to: " + min);
 
+                long millis = min * 60000L;
+
                 new Alarms(context, id);
 
-                editor.putLong(id +"time_delay", min);
+                editor.putLong(id +"time_adjustment", millis);
                 editor.putInt(id + "spinner_last", position);
                 editor.apply();
             }
@@ -150,6 +157,16 @@ public class PrayerPopup extends AppCompatActivity {
         buttons[2].setTextColor(context.getResources().getColor(R.color.white));
 
         buttons[choice].setTextColor(context.getResources().getColor(R.color.accent));
+    }
+
+    private void setImages() {
+        images = new ImageView[6];
+        images[0] = view.findViewById(R.id.fajr_image);
+        images[1] = view.findViewById(R.id.shorouq_image);
+        images[2] = view.findViewById(R.id.duhr_image);
+        images[3] = view.findViewById(R.id.asr_image);
+        images[4] = view.findViewById(R.id.maghrib_image);
+        images[5] = view.findViewById(R.id.ishaa_image);
     }
 
 }

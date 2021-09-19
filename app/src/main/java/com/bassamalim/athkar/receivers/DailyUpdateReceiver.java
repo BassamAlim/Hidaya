@@ -6,29 +6,34 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
+import com.bassamalim.athkar.Alarms;
 import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.models.MyLocation;
-import com.bassamalim.athkar.services.DailyUpdateService;
+import com.bassamalim.athkar.Keeper;
+import com.bassamalim.athkar.PrayTimes;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.gson.Gson;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class DailyUpdateReceiver extends BroadcastReceiver {
 
     private Context context;
+    private SharedPreferences pref;
     private int time;
 
     @Override
     public void onReceive(Context gContext, Intent intent) {
         Log.i(Constants.TAG, "in daily update receiver");
         context = gContext;
+        pref = PreferenceManager.getDefaultSharedPreferences(context);
 
         if (intent.getAction().equals("daily")) {
             time = intent.getIntExtra("time", 0);
@@ -42,7 +47,6 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
     }
 
     private boolean needed() {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         int day = pref.getInt("last_day", 0);
 
         Calendar supposed = Calendar.getInstance();
@@ -61,17 +65,43 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
                 == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            fusedLocationClient.getLastLocation().addOnSuccessListener(loc -> {
-                MyLocation myLocation = new MyLocation(loc);
-
-                Gson gson = new Gson();
-                String st = gson.toJson(myLocation);
-
-                Intent intent1 = new Intent(context, DailyUpdateService.class);
-                intent1.putExtra("location", st);
-                context.startService(intent1);
-            });
+            fusedLocationClient.getLastLocation().addOnSuccessListener(this::update);
         }
+    }
+
+    private void update(Location location) {
+        if (location != null) {
+            new Keeper(context, location);
+
+            Calendar[] times = getTimes(location);
+
+            new Alarms(context, times);
+
+            updated();
+        }
+        else
+            Log.e(Constants.TAG, "Location is null in DailyUpdateService");
+    }
+
+    private Calendar[] getTimes(Location loc) {
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date();
+        calendar.setTime(date);
+
+        TimeZone timeZoneObj = TimeZone.getDefault();
+        long millis = timeZoneObj.getOffset(date.getTime());
+        double timezone = millis / 3600000.0;
+
+        return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
+                loc.getLongitude(), timezone);
+    }
+
+    private void updated() {
+        Calendar today = Calendar.getInstance();
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("last_day", today.get(Calendar.DAY_OF_MONTH));
+        editor.apply();
     }
 
 }

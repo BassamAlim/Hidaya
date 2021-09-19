@@ -22,7 +22,7 @@ public class Alarms extends AppCompatActivity {
 
     private final Context context;
     private Context appContext;
-    private Calendar[] times;
+    private final Calendar[] times;
     private SharedPreferences pref;
     private String action;
     private int num;
@@ -31,14 +31,6 @@ public class Alarms extends AppCompatActivity {
         context = gContext;
         times = gTimes;
         action = "all";
-
-        setUp();
-        recognize();
-    }
-
-    public Alarms(Context gContext, String gAction) {
-        context = gContext;
-        action = gAction;
 
         setUp();
         recognize();
@@ -93,31 +85,18 @@ public class Alarms extends AppCompatActivity {
     private void setPrayerAlarm(int id) {
         Log.i(Constants.TAG, "in set alarm for: " + id);
 
-        long original = times[id].getTimeInMillis();
+        // adjust the time with the delay
+        long adjustment = pref.getLong(id + "time_adjustment", 0);
+        long adjusted = times[id].getTimeInMillis() + adjustment;
 
-        long delay;
-        try {
-            delay = pref.getLong(id + "time_delay", 0L);
-        }
-        catch (ClassCastException e) {
-            Log.e(Constants.TAG, "Error in casting long");
-            e.printStackTrace();
-            delay = 0;
-        }
-
-        long delayMillis = delay * 60000L;
-        long millis = original + delayMillis;
-
-        times[id].setTimeInMillis(millis);    // adjust the time with the delay
-
-        if (System.currentTimeMillis() <= millis) {
+        if (System.currentTimeMillis() <= adjusted) {
             Intent intent = new Intent(appContext, NotificationReceiver.class);
             if (id == 1)
                 intent.setAction("extra");
             else
                 intent.setAction("prayer");
             intent.putExtra("id", id);
-            intent.putExtra("time", millis);
+            intent.putExtra("time", adjusted);
             PendingIntent pendingIntent;
             AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
 

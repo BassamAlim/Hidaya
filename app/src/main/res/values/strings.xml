@@ -70,5 +70,6 @@
     <string name="disable_notification">إيقاف الإشعار</string>
     <string name="tafseer">التفسير</string>
     <string name="adjust_prayer_notification_time">تعديل وقت إشعار الأذان</string>
+    <string name="notification_image_description">shows current notification status</string>
 
 </resources>

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:layoutDirection="rtl"
     android:background="@drawable/background"
     tools:context=".ui.PrayersFragment">
 
@@ -29,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="30dp"
-            android:layout_gravity="end|center"
+            android:layout_gravity="start|center"
             android:gravity="center"
             android:textColor="@color/accent"
             android:textSize="30sp"
@@ -46,17 +47,14 @@
             android:textSize="18sp"
             android:visibility="invisible"/>
 
-        <ToggleButton
-            android:id="@+id/fajr_toggle"
+        <ImageView
+            android:id="@+id/fajr_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="start|center"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/ic_sound"
-            android:checked="true"
-            android:text=""
-            android:textOn=""
-            android:textOff=""/>
+            android:layout_margin="15dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_sound"
+            android:contentDescription="@string/notification_image_description" />
 
     </androidx.cardview.widget.CardView>
 
@@ -81,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="30dp"
-            android:layout_gravity="end|center"
+            android:layout_gravity="center|start"
             android:gravity="center"
             android:textColor="@color/accent"
             android:textSize="30sp"
@@ -98,17 +96,14 @@
             android:textSize="18sp"
             android:visibility="invisible"/>
 
-        <ToggleButton
-            android:id="@+id/shorouq_toggle"
+        <ImageView
+            android:id="@+id/shorouq_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="start|center"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/ic_sound"
-            android:checked="true"
-            android:text=""
-            android:textOn=""
-            android:textOff=""/>
+            android:layout_margin="15dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_disabled"
+            android:contentDescription="@string/notification_image_description" />
 
     </androidx.cardview.widget.CardView>
 
@@ -132,7 +127,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="30dp"
-            android:layout_gravity="end|center"
+            android:layout_gravity="center|start"
             android:gravity="center"
             android:textColor="@color/accent"
             android:textSize="30sp"
@@ -149,17 +144,14 @@
             android:textSize="18sp"
             android:visibility="invisible"/>
 
-        <ToggleButton
-            android:id="@+id/duhr_toggle"
+        <ImageView
+            android:id="@+id/duhr_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="start|center"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/ic_sound"
-            android:checked="true"
-            android:text=""
-            android:textOn=""
-            android:textOff=""/>
+            android:layout_margin="15dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_sound"
+            android:contentDescription="@string/notification_image_description" />
 
     </androidx.cardview.widget.CardView>
 
@@ -183,7 +175,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="30dp"
-            android:layout_gravity="end|center"
+            android:layout_gravity="center|start"
             android:gravity="center"
             android:textColor="@color/accent"
             android:textSize="30sp"
@@ -200,17 +192,14 @@
             android:textSize="18sp"
             android:visibility="invisible"/>
 
-        <ToggleButton
-            android:id="@+id/asr_toggle"
+        <ImageView
+            android:id="@+id/asr_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="start|center"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/ic_sound"
-            android:checked="true"
-            android:text=""
-            android:textOn=""
-            android:textOff=""/>
+            android:layout_margin="15dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_sound"
+            android:contentDescription="@string/notification_image_description" />
 
     </androidx.cardview.widget.CardView>
 
@@ -234,7 +223,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="30dp"
-            android:layout_gravity="end|center"
+            android:layout_gravity="center|start"
             android:gravity="center"
             android:textColor="@color/accent"
             android:textSize="30sp"
@@ -251,17 +240,14 @@
             android:textSize="18sp"
             android:visibility="invisible"/>
 
-        <ToggleButton
-            android:id="@+id/maghrib_toggle"
+        <ImageView
+            android:id="@+id/maghrib_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="start|center"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/ic_sound"
-            android:checked="true"
-            android:text=""
-            android:textOn=""
-            android:textOff=""/>
+            android:layout_margin="15dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_sound"
+            android:contentDescription="@string/notification_image_description" />
 
     </androidx.cardview.widget.CardView>
 
@@ -286,7 +272,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="30dp"
-            android:layout_gravity="end|center"
+            android:layout_gravity="center|start"
             android:gravity="center"
             android:textColor="@color/accent"
             android:textSize="30sp"
@@ -303,17 +289,14 @@
             android:textSize="18sp"
             android:visibility="invisible"/>
 
-        <ToggleButton
-            android:id="@+id/ishaa_toggle"
+        <ImageView
+            android:id="@+id/ishaa_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="start|center"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/ic_sound"
-            android:checked="true"
-            android:text=""
-            android:textOn=""
-            android:textOff=""/>
+            android:layout_margin="15dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_sound"
+            android:contentDescription="@string/notification_image_description" />
 
     </androidx.cardview.widget.CardView>
 

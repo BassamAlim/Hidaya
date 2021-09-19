@@ -61,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
         else
             location = new Keeper(this).retrieveLocation();
 
-        //times = getTimes(location);
-        times = test();
+        times = getTimes(location);
+        //times = test();
 
         new Alarms(this, times);
 
