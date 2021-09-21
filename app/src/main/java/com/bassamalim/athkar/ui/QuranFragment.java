@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,7 @@ import com.bassamalim.athkar.views.QuranView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -37,7 +39,8 @@ public class QuranFragment extends Fragment {
     private ArrayList<SurahButton> surahButtons;
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
-    GridLayoutManager gridLayoutManager;
+    private GridLayoutManager gridLayoutManager;
+    //private String tanzeelArr[];
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -103,15 +106,16 @@ public class QuranFragment extends Fragment {
 
     public ArrayList<SurahButton> makeSurahButtons() {
         ArrayList<SurahButton> buttons = new ArrayList<>();
-        String surahNamesJson = Utils.getJsonFromAssets(requireContext(), "sura_names.json");
-        String searchJson = Utils.getJsonFromAssets(requireContext(), "search_names.json");
+        String buttonJson = Utils.getJsonFromAssets(requireContext(), "surah_button.json");
+        //tanzeelArr = new String[Constants.NUMBER_OF_SURAHS];
         try {
-            JSONArray namesArray = new JSONArray(surahNamesJson);
-            JSONArray searchNames = new JSONArray(searchJson);
+            JSONArray array = new JSONArray(buttonJson);
 
             for (int i=0; i<Constants.NUMBER_OF_SURAHS; i++) {
-                String name = namesArray.getString(i);
-                String searchName = searchNames.getString(i);
+                JSONObject obj = array.getJSONObject(i);
+                String name = obj.getString("name");
+                String searchName = obj.getString("search_name");
+                String tanzeel = obj.getString("tanzeel");
 
                 int finalI = i;
                 View.OnClickListener clickListener = v -> {
@@ -120,7 +124,9 @@ public class QuranFragment extends Fragment {
                     intent.putExtra("surah_index", finalI);
                     requireContext().startActivity(intent);
                 };
-                SurahButton button = new SurahButton(i,"سُورَة " + name, searchName ,clickListener);
+                //tanzeelArr[i] = tanzeel;
+                SurahButton button = new SurahButton(i,"سُورَة " + name,
+                        searchName, tanzeel ,clickListener);
                 buttons.add(button);
             }
         }

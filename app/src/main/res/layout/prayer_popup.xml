@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/parent"
-    android:layout_width="300dp"
-    android:layout_height="450dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="250dp"
+    android:minHeight="350dp"
     android:orientation="vertical"
     android:layout_gravity="center"
     android:background="@drawable/dialog_bg">
+
+    <TextView
+        android:id="@+id/popup_prayer_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="15dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +30,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="10dp"
             android:gravity="center|start"
-            android:background="@drawable/button_selector"
+            android:background="@color/primary"
             android:text="@string/enable_notification"
             android:textSize="20sp"
             android:drawableStart="@drawable/ic_sound" />
@@ -30,7 +41,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="10dp"
             android:gravity="center|start"
-            android:background="@drawable/button_selector"
+            android:background="@color/primary"
             android:text="@string/mute_notification"
             android:textSize="20sp"
             android:drawableStart="@drawable/ic_mute"/>
@@ -41,7 +52,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="10dp"
             android:gravity="center|start"
-            android:background="@drawable/button_selector"
+            android:background="@color/primary"
             android:text="@string/disable_notification"
             android:textSize="20sp"
             android:drawableStart="@drawable/ic_disabled"/>

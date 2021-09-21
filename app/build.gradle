@@ -21,8 +21,8 @@ android {
         applicationId "com.bassamalim.athkar"
         minSdkVersion 22
         targetSdkVersion 30
-        versionCode 123
-        versionName '1.2.3'
+        versionCode 124
+        versionName '1.2.4'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

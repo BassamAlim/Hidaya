@@ -1,11 +1,13 @@
 package com.bassamalim.athkar.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bassamalim.athkar.R;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 
 public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.ViewHolder> {
 
+    private Context context;
     private final ArrayList<SurahButton> surahButtons;
     private final ArrayList<SurahButton> surahButtonsCopy;
 
@@ -27,7 +30,12 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
 
         public ViewHolder(View view) {
             super(view);
+
             button = view.findViewById(R.id.model_button);
+        }
+
+        public Button getButton() {
+            return button;
         }
     }
 
@@ -41,25 +49,32 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
         surahButtonsCopy = new ArrayList<>(buttons);
     }
 
-    // Create new views (invoked by the layout manager)
     @NonNull @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        // Create a new view, which defines the UI of the list item
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.button_row_item, viewGroup, false);
+        context = viewGroup.getContext();
+        View view = LayoutInflater.from(context).inflate(R.layout.button_row_item,
+                viewGroup, false);
+
         return new ViewHolder(view);
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
-        viewHolder.button.setText(surahButtons.get(position).getSurahName());
-        viewHolder.button.setOnClickListener(surahButtons.get(position).getListener());
+        viewHolder.getButton().setText(surahButtons.get(position).getSurahName());
+
+        String tanzeel = surahButtons.get(position).getTanzeel();
+        if (tanzeel.equals("Meccan")) {
+            viewHolder.getButton().setCompoundDrawables(null, null,
+                    AppCompatResources.getDrawable(context, R.drawable.ic_kaaba), null);
+        }
+        else {
+            viewHolder.getButton().setCompoundDrawables(null, null,
+                    AppCompatResources.getDrawable(context, R.drawable.ic_madina), null);
+        }
+
+        viewHolder.getButton().setOnClickListener(surahButtons.get(position).getListener());
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return surahButtons.size();
@@ -67,10 +82,9 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
 
     public void filter(String text) {
         surahButtons.clear();
-        if(text.isEmpty())
+        if (text.isEmpty())
             surahButtons.addAll(surahButtonsCopy);
         else {
-            //text = text.toLowerCase();
             for(SurahButton surahButton: surahButtonsCopy) {
                 if(surahButton.getSearchName().contains(text))
                     surahButtons.add(surahButton);

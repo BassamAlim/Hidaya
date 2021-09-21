@@ -10,18 +10,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.Alarms;
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
-import com.bassamalim.athkar.ui.PrayersFragment;
 
 public class PrayerPopup extends AppCompatActivity {
 
@@ -29,15 +29,17 @@ public class PrayerPopup extends AppCompatActivity {
     private PopupWindow popupWindow;
     private final View view;
     private final int id;
+    private final String name;
     private final SharedPreferences pref;
     private Button[] buttons;
     private Spinner spinner;
     private ImageView[] images;
 
-    public PrayerPopup(Context gContext, View v, int gId) {
+    public PrayerPopup(Context gContext, View v, int gId, String gName) {
         context = gContext;
         view = v;
         id = gId;
+        name = gName;
 
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -50,7 +52,8 @@ public class PrayerPopup extends AppCompatActivity {
 
         View popupView = inflater.inflate(R.layout.prayer_popup, null);
 
-        popupWindow = new PopupWindow(popupView, 700, 900, true);
+        popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT, true);
 
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
@@ -65,6 +68,10 @@ public class PrayerPopup extends AppCompatActivity {
     }
 
     private void setElements() {
+        TextView nameScreen = popupWindow.getContentView().findViewById(R.id.popup_prayer_name);
+        String temp = "إعدادات " + name;
+        nameScreen.setText(temp);
+
         buttons = new Button[3];
         buttons[0] = popupWindow.getContentView().findViewById(R.id.disable_button);
         buttons[1] = popupWindow.getContentView().findViewById(R.id.mute_button);

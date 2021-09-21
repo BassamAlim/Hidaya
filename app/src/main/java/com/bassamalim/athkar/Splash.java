@@ -49,13 +49,15 @@ public class Splash extends AppCompatActivity {
                     && ActivityCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED;
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED;
         }
         else {
             given = ActivityCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+                    Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED;
         }
         return given;
     }
@@ -64,10 +66,11 @@ public class Splash extends AppCompatActivity {
         FusedLocationProviderClient fusedLocationClient = LocationServices
                 .getFusedLocationProviderClient(this);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                        this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED) {
 
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
                 Intent intent = new Intent(this, MainActivity.class);
@@ -94,7 +97,8 @@ public class Splash extends AppCompatActivity {
 
                 if (granted) {
                     if (build >= 29) {
-                        Toast.makeText(this, "اختار السماح طوال الوقت", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "اختر السماح طوال الوقت",
+                                Toast.LENGTH_SHORT).show();
                         background();
                     }
                     else
@@ -106,8 +110,8 @@ public class Splash extends AppCompatActivity {
                 }
     });
 
-    private final ActivityResultLauncher<String> requestBackground =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+    private final ActivityResultLauncher<String> requestBackground = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(), isGranted -> {
 
             if (isGranted)
                 getLocation();
@@ -127,17 +131,20 @@ public class Splash extends AppCompatActivity {
 
         if (!dump) {
             if (per == 1)
-                Toast.makeText(this, "لازم تسوي سماح للموقع عشان يشتغل",
+                Toast.makeText(this, "يجب السماح للتطبيق بالحصول على الموقع",
                         Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(this, "اذهب الى الاعدادت > التطبيقات > أذكار > الاذونات > السماح بالوصول للموقع طوال الوقت", Toast.LENGTH_SHORT).show();
+            else {
+                Toast.makeText(this, "اذهب الى الاعدادت > التطبيقات > أذكار > الاذونات > " +
+                        "السماح بالوصول للموقع طوال الوقت", Toast.LENGTH_SHORT).show();
+            }
             if (per == 1)
                 requestMultiplePermissions.launch(PERMISSIONS);
             else
                 requestBackground.launch(BACKGROUND_PERMISSION);
         }
         else {
-            Toast.makeText(this, "روح لاعدادات التطبيق وسوي سماح للموقع", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "إذهب إلى إعدادات التطبيق وأختر السماح للموقع طوال الوقت",
+                    Toast.LENGTH_SHORT).show();
             finish();
             System.exit(0);
         }

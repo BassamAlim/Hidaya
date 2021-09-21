@@ -56,6 +56,9 @@ public class QuranView extends SwipeActivity {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 
+        setSupportActionBar(binding.infoBar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+
         mainLinear = binding.mainLinear;
 
         Intent intent = getIntent();
@@ -79,7 +82,6 @@ public class QuranView extends SwipeActivity {
     protected void previous() {
         if (currentPage < Constants.QURAN_PAGES) {
             buildPage(++currentPage);
-            Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
             binding.scrollView.scrollTo(0, 0);
         }
     }
@@ -141,14 +143,19 @@ public class QuranView extends SwipeActivity {
         return start;
     }
 
-    private void buildPage(int pageNumber) {
-        setSupportActionBar(binding.numberBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
-        String temp = "رقم الصفحة " + currentPage;
-        binding.pageNumber.setText(temp);
+    private void infoBar(int juz, String name) {
+        String juzText = "جزء " + juz;
+        String surahNameText = "سُورَة " + name;
+        String pageNumberText = "صفحة " + currentPage;
+        binding.juzNumber.setText(juzText);
+        binding.suraName.setText(surahNameText);
+        binding.pageNumber.setText(pageNumberText);
+    }
 
+    private void buildPage(int pageNumber) {
         mainLinear.removeAllViews();
         arr = new ArrayList<>();
+        ArrayList<ArrayList<Ayah>> pageAyahs = new ArrayList<>();
 
         int counter = getPageStart(pageNumber);
         try {
@@ -163,11 +170,14 @@ public class QuranView extends SwipeActivity {
                 JSONObject tafseerAyah = tafseerAyahs.getJSONObject(ayahNum-1);
                 String tafseer = tafseerAyah.getString("text");
 
-                Ayah ayahModel = new Ayah(ayahText + " ", tafseer);
+                Ayah ayahModel = new Ayah(ayah.getInt("jozz"),
+                        ayah.getString("sura_name_ar"), ayahText + " ", tafseer);
 
                 if (ayahNum == 1) {
-                    if (arr.size() > 0)
+                    if (arr.size() > 0) {
+                        pageAyahs.add(arr);
                         publish(arr);
+                    }
 
                     TextView nameScreen = surahName(ayah.getString("sura_name_ar"));
                     TextView basmalah = basmalah();
@@ -178,13 +188,18 @@ public class QuranView extends SwipeActivity {
 
             } while (++counter != 6236 && jsonArray.getJSONObject(counter)
                     .getInt("page") == pageNumber);
-
-            publish(arr);
         }
         catch (JSONException e) {
             e.printStackTrace();
             Log.e(Constants.TAG, "trouble in building page");
         }
+
+        int juz = arr.get(0).getJuz();
+
+        pageAyahs.add(arr);
+        publish(arr);
+
+        infoBar(juz, pageAyahs.get(findMainSurah(pageAyahs)).get(0).getSurahName());
     }
 
     private void publish(ArrayList<Ayah> list) {
@@ -222,6 +237,15 @@ public class QuranView extends SwipeActivity {
         screen.setMovementMethod(DoubleClickLinkMovementMethod.getInstance());
         mainLinear.addView(screen);
         arr = new ArrayList<>();
+    }
+
+    private int findMainSurah(ArrayList<ArrayList<Ayah>> surahs) {
+        int largest = 0;
+        for (int i = 1; i < surahs.size(); i++) {
+            if (surahs.get(i).size() > surahs.get(largest).size())
+                largest = i;
+        }
+        return largest;
     }
 
     private TextView surahName(String name) {

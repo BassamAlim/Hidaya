@@ -35,6 +35,7 @@ public class PrayersFragment extends Fragment {
 
     private PrayersFragmentBinding binding;
     private Location location;
+    private String[] prayerNames;
     private Calendar[] times;
     private ArrayList<String> formattedTimes;
     private Calendar tomorrowFajr;
@@ -90,12 +91,16 @@ public class PrayersFragment extends Fragment {
     }
 
     private void formatTimes() {
-        formattedTimes.set(0, "الفجر: " + formattedTimes.get(0));
-        formattedTimes.set(1, "الشروق: " + formattedTimes.get(1));
-        formattedTimes.set(2, "الظهر: " + formattedTimes.get(2));
-        formattedTimes.set(3, "العصر: " + formattedTimes.get(3));
-        formattedTimes.set(4, "المغرب: " + formattedTimes.get(4));
-        formattedTimes.set(5, "العشاء: " + formattedTimes.get(5));
+        prayerNames = new String[6];
+        prayerNames[0] = "الفجر";
+        prayerNames[1] = "الشروق";
+        prayerNames[2] = "الظهر";
+        prayerNames[3] = "العصر";
+        prayerNames[4] = "المغرب";
+        prayerNames[5] = "العشاء";
+
+        for (int i = 0; i < prayerNames.length; i++)
+            formattedTimes.set(i, prayerNames[i] + ": " + formattedTimes.get(i));
     }
 
     private void setViews() {
@@ -143,7 +148,8 @@ public class PrayersFragment extends Fragment {
     private void setListeners() {
         for (int i=0; i< cards.length; i++) {
             int finalI = i;
-            cards[i].setOnClickListener(v -> new PrayerPopup(getContext(), v, finalI));
+            cards[i].setOnClickListener(v -> new PrayerPopup(getContext(), v,
+                    finalI, prayerNames[finalI]));
         }
     }
 

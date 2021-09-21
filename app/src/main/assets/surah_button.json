@@ -1,0 +1,572 @@
+[
+    {
+    	"name": "الفَاتِحة",
+    	"search_name": "سورة الفاتحة",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "البَقَرَة",
+    	"search_name": "سورة البقرة",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "آل عِمران",
+    	"search_name": "سورة آل عمران",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "النِّسَاء",
+    	"search_name": "سورة النساء",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "المَائدة",
+    	"search_name": "سورة المائدة",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "الأنعَام",
+    	"search_name": "سورة الأنعام",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الأعرَاف",
+    	"search_name": "سورة الأعراف",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الأنفَال",
+    	"search_name": "سورة الأنفال",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "التوبَة",
+    	"search_name": "سورة التوبة",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "يُونس",
+    	"search_name": "سورة يونس",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "هُود",
+    	"search_name": "سورة هود",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "يُوسُف",
+    	"search_name": "سورة يوسف",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الرَّعد",
+    	"search_name": "سورة الرعد",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "إبراهِيم",
+    	"search_name": "سورة ابراهيم",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الحِجر",
+    	"search_name": "سورة الحجر",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "النَّحل",
+    	"search_name": "سورة النحل",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الإسرَاء",
+    	"search_name": "سورة الإسراء",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الكَهف",
+    	"search_name": "سورة الكهف",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "مَريَم",
+    	"search_name": "سورة مريم",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "طه",
+    	"search_name": "سورة طه",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الأنبيَاء",
+    	"search_name": "سورة الأنبياء",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الحج",
+    	"search_name": "سورة الحج",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "المؤمنُون",
+    	"search_name": "سورة المؤمنون",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "النور",
+    	"search_name": "سورة النور",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "الفُرقَان",
+    	"search_name": "سورة الفرقان",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الشعراء",
+    	"search_name": "سورة الشعراء",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "النَّمل",
+    	"search_name": "سورة النمل",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "القَصَص",
+    	"search_name": "سورة القصص",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "العَنكبُوت",
+    	"search_name": "سورة العنكبوت",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الرُّوم",
+    	"search_name": "سورة الروم",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "لُقمَان",
+    	"search_name": "سورة لقمان",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "السَّجدة",
+    	"search_name": "سورة السجدة",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الأحزَاب",
+    	"search_name": "سورة الأحزاب",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "سَبإ",
+    	"search_name": "سورة سبإ",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "فَاطِر",
+    	"search_name": "سورة فاطر",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "يسٓ",
+    	"search_name": "سورة يس",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الصَّافَات",
+    	"search_name": "سورة الصافات",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "صٓ",
+    	"search_name": "سورة ص",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الزُّمَر",
+    	"search_name": "سورة الزمر",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "غَافِر",
+    	"search_name": "سورة غافر",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "فُصِّلَت",
+    	"search_name": "سورة فصلت",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الشُّوري",
+    	"search_name": "سورة الشورى",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الزُّخرُف",
+    	"search_name": "سورة الزخرف",
+    	"tanzeel": "Meccan"
+    },
+    {
+		"name": "الدُّخان",
+    	"search_name": "سورة الدخان",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الجاثِية",
+    	"search_name": "سورة الجاثية",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الأحقَاف",
+    	"search_name": "سورة الأحقاف",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "مُحمد",
+    	"search_name": "سورة محمد",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "الفَتح",
+    	"search_name": "سورة الفتح",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "الحُجُرَات",
+    	"search_name": "سورة الحجرات",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "قٓ",
+    	"search_name": "سورة ق",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الذَّاريَات",
+    	"search_name": "سورة الذاريات",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الطُّور",
+    	"search_name": "سورة الطور",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "النَّجم",
+    	"search_name": "سورة النجم",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "القَمَر",
+    	"search_name": "سورة القمر",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الرَّحمٰن",
+    	"search_name": "سورة الرحمن",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "الوَاقِعة",
+    	"search_name": "سورة الواقعة",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الحدِيد",
+    	"search_name": "سورة الحديد",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "المُجَادلة",
+    	"search_name": "سورة المجادلة",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "الحَشر",
+    	"search_name": "سورة الحشر",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "المُمتَحنَة",
+    	"search_name": "سورة الممتحنة",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "الصَّف",
+    	"search_name": "سورة الصف",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "الجُمعَة",
+    	"search_name": "سورة الجمعة",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "المُنَافِقُونَ",
+    	"search_name": "سورة المنافقون",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "التغَابُن",
+    	"search_name": "سورة التغابن",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "الطَّلَاق",
+    	"search_name": "سورة الطلاق",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "التَّحرِيم",
+    	"search_name": "سورة التحريم",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "المُلك",
+    	"search_name": "سورة الملك",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "القَلَم",
+    	"search_name": "سورة القلم",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الحَاقة",
+    	"search_name": "سورة الحاقة",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "المَعَارج",
+    	"search_name": "سورة المعارج",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "نُوح",
+    	"search_name": "سورة نوح",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الجِن",
+    	"search_name": "سورة الجن",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "المُزمل",
+    	"search_name": "سورة المزمل",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "المُدثر",
+    	"search_name": "سورة المدثر",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "القِيَامة",
+    	"search_name": "سورة القيامة",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الإنسَان",
+    	"search_name": "سورة الانسان",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "المُرسَلات",
+    	"search_name": "سورة المرسلات",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "النَّبَإ",
+    	"search_name": "سورة النبأ",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "النَّازعَات",
+    	"search_name": "سورة النازعات",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "عَبَسَ",
+    	"search_name": "سورة عبس",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "التَّكوير",
+    	"search_name": "سورة التكوير",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الانفِطَار",
+    	"search_name": "سورة الإنفطار",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "المُطَففين",
+    	"search_name": "سورة المطففين",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الانشِقَاق",
+    	"search_name": "سورة الإنشقاق",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "البُرُوج",
+		"search_name": "سورة البروج",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الطَّارق",
+    	"search_name": "سورة الطارق",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الأعلى",
+    	"search_name": "سورة الأعلى",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الغَاشِية",
+    	"search_name": "سورة الغاشية",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الفَجر",
+    	"search_name": "سورة الفجر",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "البَلَد",
+    	"search_name": "سورة البلد",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الشَّمس",
+    	"search_name": "سورة الشمس",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "اللَّيل",
+    	"search_name": "سورة الليل",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الضُّحى",
+    	"search_name": "سورة الضحى",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الشَّرح",
+    	"search_name": "سورة الشرح",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "التِّين",
+    	"search_name": "سورة التين",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "العَلَق",
+    	"search_name": "سورة العلق",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "القَدر",
+    	"search_name": "سورة القدر",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "البَينَة",
+    	"search_name": "سورة البينة",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "الزَّلزَلة",
+    	"search_name": "سورة الزلزلة",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "العَاديَات",
+    	"search_name": "سورة العاديات",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "القَارعَة",
+    	"search_name": "سورة القارعة",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "التَّكاثُر",
+    	"search_name": "سورة التكاثر",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "العَصر",
+    	"search_name": "سورة العصر",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الهُمَزة",
+    	"search_name": "سورة الهمزة",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الفِيل",
+    	"search_name": "سورة الفيل",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "قُرَيش",
+    	"search_name": "سورة قريش",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "المَاعُون",
+    	"search_name": "سورة الماعون",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الكَوثر",
+    	"search_name": "سورة الكوثر",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الكافِرون",
+    	"search_name": "سورة الكافرون",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "النَّصر",
+    	"search_name": "سورة النصر",
+    	"tanzeel": "Medinan"
+    },
+    {
+    	"name": "المَسَد",
+    	"search_name": "سورة المسد",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الإخلَاص",
+    	"search_name": "سورة الإخلاص",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "الفَلَق",
+    	"search_name": "سورة الفلق",
+    	"tanzeel": "Meccan"
+    },
+    {
+    	"name": "النَّاس",
+    	"search_name": "سورة الناس",
+    	"tanzeel": "Meccan"
+    }
+]

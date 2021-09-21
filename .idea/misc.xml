@@ -22,7 +22,9 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_disabled.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_dua_hands.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_duaa.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_kaaba.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.18703703703703703" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_madina.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_morning.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_mute.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_night.xml" value="0.19583333333333333" />
@@ -72,7 +74,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/list_view_items.xml" value="0.1638888888888889" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/other_fragment.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/prayer_dialog.xml" value="0.16018518518518518" />
-        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/prayer_popup.xml" value="0.3333333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/prayer_popup.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/prayer_settings_dialog.xml" value="0.1" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/prayers_fragment.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/qibla_fragment.xml" value="0.1" />
