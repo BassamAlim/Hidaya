@@ -13,6 +13,7 @@ public class QiblaMaster implements SensorEventListener {
 
     public interface CompassListener {
         void onNewAzimuth(float azimuth);
+        void calibration(int accuracy);
     }
 
     private CompassListener listener;
@@ -25,8 +26,8 @@ public class QiblaMaster implements SensorEventListener {
     private final float[] myI = new float[9];
     private float azimuthFix;
 
-    public QiblaMaster(Context context) {
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+    public QiblaMaster(Context gContext) {
+        sensorManager = (SensorManager) gContext.getSystemService(Context.SENSOR_SERVICE);
         aSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
     }
@@ -78,13 +79,14 @@ public class QiblaMaster implements SensorEventListener {
                 if (listener != null) {
                     listener.onNewAzimuth(azimuth);
                 }
-
             }
         }
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        listener.calibration(accuracy);
+    }
 
     public void setListener(CompassListener l) {
         listener = l;

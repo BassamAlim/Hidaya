@@ -8,11 +8,11 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.MediaController;
 
-public class FullScreenMediaController extends MediaController {
+public class FSMediaController extends MediaController {
 
     private String isFullScreen;
 
-    public FullScreenMediaController(Context context) {
+    public FSMediaController(Context context) {
         super(context);
     }
 
@@ -37,14 +37,14 @@ public class FullScreenMediaController extends MediaController {
 
         //add listener to image button to handle full screen and exit full screen events
         fullScreen.setOnClickListener(v ->  {
-            Intent intent = new Intent(getContext(), FullScreenVideoActivity.class);
+            Intent intent = new Intent(getContext(), FSVideoActivity.class);
 
             if("y".equals(isFullScreen))
                 intent.putExtra("fullScreenInd", "");
             else
                 intent.putExtra("fullScreenInd", "y");
 
-            FullScreenMediaController.this.getContext().startActivity(intent);
+            FSMediaController.this.getContext().startActivity(intent);
         });
     }
 

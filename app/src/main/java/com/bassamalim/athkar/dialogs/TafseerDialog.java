@@ -67,23 +67,4 @@ public class TafseerDialog extends DialogFragment {
         return scrollView;
     }
 
-    /*@NonNull @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-
-        View v = LayoutInflater.from(requireContext()).inflate(R.layout.tafseer_dialog, null);
-        ScrollView scroll = v.findViewById(R.id.dialog_scroll);
-        TextView textView = v.findViewById(R.id.tafseer_screen);
-        textView.setText(tafseer);
-        builder.setView(scroll);
-
-        AlertDialog dialog = builder.create();
-
-        //dialog.getWindow().setLayout(100, 100);
-
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        return dialog;
-    }*/
-
 }

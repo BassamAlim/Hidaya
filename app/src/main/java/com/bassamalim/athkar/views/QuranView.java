@@ -21,7 +21,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.DoubleClickLinkMovementMethod;
+import com.bassamalim.athkar.DoubleClickLMM;
 import com.bassamalim.athkar.DoubleClickableSpan;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.SwipeActivity;
@@ -234,7 +234,7 @@ public class QuranView extends SwipeActivity {
         }
 
         screen.setText(ss);
-        screen.setMovementMethod(DoubleClickLinkMovementMethod.getInstance());
+        screen.setMovementMethod(DoubleClickLMM.getInstance());
         mainLinear.addView(screen);
         arr = new ArrayList<>();
     }

@@ -2,6 +2,7 @@ package com.bassamalim.athkar.dialogs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -50,24 +51,21 @@ public class PrayerPopup extends AppCompatActivity {
         LayoutInflater inflater = (LayoutInflater) view.getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View popupView = inflater.inflate(R.layout.prayer_popup, null);
+        View popupView = inflater.inflate(R.layout.prayer_popup,
+                new LinearLayout(context), false);
 
         popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT, true);
 
+        popupWindow.setBackgroundDrawable(new BitmapDrawable(null, ""));
+        popupWindow.setOutsideTouchable(true);
+
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
-        setElements();
-
-        /*popupView.setOnTouchListener((v, event) -> {
-            //Close the window when clicked
-            popupWindow.dismiss();
-            v.performClick();
-            return true;
-        });*/
+        populate();
     }
 
-    private void setElements() {
+    private void populate() {
         TextView nameScreen = popupWindow.getContentView().findViewById(R.id.popup_prayer_name);
         String temp = "إعدادات " + name;
         nameScreen.setText(temp);

@@ -71,5 +71,12 @@
     <string name="tafseer">التفسير</string>
     <string name="adjust_prayer_notification_time">تعديل وقت إشعار الأذان</string>
     <string name="notification_image_description">shows current notification status</string>
+    <string name="compass_calibration_gif_description">gif explaining how to calibrate inaccurate compass</string>
+    <string name="accuracy_indicator_description">accuracy indicator for qibla compass</string>
+
+    <string name="low_accuracy_text">الدقة ضعيفة … يرجى معايرة الجهاز</string>
+    <string name="medium_accuracy_text">الدقة متوسطة</string>
+    <string name="high_accuracy_text">الدقة ممتازة</string>
+    <string name="calibration_info_description">image button for showing calibration instructions</string>
 
 </resources>

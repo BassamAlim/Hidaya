@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bassamalim.athkar.views.TvView;
 
-public class FullScreenVideoActivity extends AppCompatActivity {
+public class FSVideoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class FullScreenVideoActivity extends AppCompatActivity {
         Uri videoUri = TvView.getUri();
         videoView.setVideoURI(videoUri);
 
-        MediaController mediaController = new FullScreenMediaController(this);
+        MediaController mediaController = new FSMediaController(this);
         mediaController.setAnchorView(videoView);
 
         videoView.setMediaController(mediaController);

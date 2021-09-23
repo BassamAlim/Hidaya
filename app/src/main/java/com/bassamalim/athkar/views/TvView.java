@@ -8,7 +8,7 @@ import android.widget.MediaController;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bassamalim.athkar.FullScreenMediaController;
+import com.bassamalim.athkar.FSMediaController;
 import com.bassamalim.athkar.databinding.TvViewBinding;
 
 public class TvView extends AppCompatActivity {
@@ -27,7 +27,7 @@ public class TvView extends AppCompatActivity {
 
         setListeners();
 
-        MediaController controller = new FullScreenMediaController(this);
+        MediaController controller = new FSMediaController(this);
         controller.setAnchorView(binding.screen);
         binding.screen.setMediaController(controller);
     }

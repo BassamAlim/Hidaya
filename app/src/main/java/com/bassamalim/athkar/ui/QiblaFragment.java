@@ -1,5 +1,6 @@
 package com.bassamalim.athkar.ui;
 
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.animation.RotateAnimation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
 import com.bassamalim.athkar.Constants;
@@ -17,6 +19,7 @@ import com.bassamalim.athkar.MainActivity;
 import com.bassamalim.athkar.QiblaMaster;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.QiblaFragmentBinding;
+import com.bassamalim.athkar.dialogs.CompassCalibrate;
 
 import java.util.HashMap;
 
@@ -52,6 +55,8 @@ public class QiblaFragment extends Fragment {
         String text = "المسافة الى الكعبة: " + translateNumbers(String.valueOf(distance)) + " كم";
         binding.distanceText.setText(text);
 
+        binding.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT);
+
         inflater.inflate(R.layout.qibla_fragment, container, false);
         return root;
     }
@@ -80,9 +85,17 @@ public class QiblaFragment extends Fragment {
     private void setupCompass() {
         compass = new QiblaMaster(requireContext());
 
-        QiblaMaster.CompassListener listener = azimuth -> {
-            //adjustNorthDial(azimuth);
-            adjust(azimuth);
+        QiblaMaster.CompassListener listener = new QiblaMaster.CompassListener() {
+            @Override
+            public void onNewAzimuth(float azimuth) {
+                adjust(azimuth);
+                adjustNorthDial(azimuth);
+            }
+
+            @Override
+            public void calibration(int accuracy) {
+                updateAccuracy(accuracy);
+            }
         };
 
         compass.setListener(listener);
@@ -92,11 +105,11 @@ public class QiblaFragment extends Fragment {
         float target = bearing - currentAzimuth;
 
         Animation rotate = new RotateAnimation(target, -azimuth, Animation.RELATIVE_TO_SELF,
-                0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                0.5f, Animation.RELATIVE_TO_SELF, 0.565f);
         rotate.setDuration(500);
         rotate.setRepeatCount(0);
         rotate.setFillAfter(true);
-        binding.qiblaView.startAnimation(rotate);
+        binding.qiblaPointer.startAnimation(rotate);
 
         currentAzimuth = (azimuth);
 
@@ -107,7 +120,7 @@ public class QiblaFragment extends Fragment {
     }
 
     // maybe points north
-    /*public void adjustNorthDial(float azimuth) {
+    public void adjustNorthDial(float azimuth) {
         Animation an = new RotateAnimation(-currentAzimuth, -azimuth,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
                 0.5f);
@@ -115,8 +128,8 @@ public class QiblaFragment extends Fragment {
         an.setDuration(500);
         an.setRepeatCount(0);
         an.setFillAfter(true);
-        imageDial.startAnimation(an);
-    }*/
+        binding.compass.startAnimation(an);
+    }
 
     public double getDistance() {
         double dLon = Math.toRadians(Math.abs(location.getLatitude() - Constants.KAABA_LAT));
@@ -142,6 +155,31 @@ public class QiblaFragment extends Fragment {
         return result;
     }
 
+    private void updateAccuracy(int accuracy) {
+        switch (accuracy) {
+            case 3:
+                binding.accuracyText.setText(R.string.high_accuracy_text);
+                binding.accuracyIndicator.setImageDrawable(AppCompatResources
+                        .getDrawable(requireContext(), R.drawable.green_dot));
+                binding.accuracyIndicator.setOnClickListener(null);
+                break;
+            case 2:
+                binding.accuracyText.setText(R.string.medium_accuracy_text);
+                binding.accuracyIndicator.setImageDrawable(AppCompatResources
+                        .getDrawable(requireContext(), R.drawable.yellow_dot));
+                binding.accuracyIndicator.setOnClickListener(null);
+                break;
+            case 0:
+            case 1:
+                binding.accuracyText.setText(R.string.low_accuracy_text);
+                binding.accuracyIndicator.setImageDrawable(AppCompatResources.getDrawable(
+                        requireContext(), R.drawable.ic_info));
+                binding.accuracyIndicator.setOnClickListener(v -> new CompassCalibrate(getContext())
+                        .show(requireActivity().getSupportFragmentManager(), CompassCalibrate.TAG));
+                break;
+        }
+    }
+
     private String translateNumbers(String english) {
         String result;
         HashMap<Character, Character> map = new HashMap<>();
@@ -163,8 +201,6 @@ public class QiblaFragment extends Fragment {
             if (english.charAt(0) == '0')
                 english = english.replaceFirst("0:", "");
         }
-
-
         english = english.replaceAll(":0", ":");
 
         StringBuilder temp = new StringBuilder();

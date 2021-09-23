@@ -7,9 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-
-import androidx.annotation.Nullable;
 
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
@@ -17,18 +14,10 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class UpdateDialog extends Dialog implements View.OnClickListener {
 
-    private final String msg = "";
     private final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
     public UpdateDialog(Context c) {
         super(c);
-    }
-
-    public UpdateDialog(Context c, String msg) {
-        super(c);
-
-        TextView text = findViewById(R.id.textView);
-        text.setText(msg);
     }
 
     @Override
@@ -52,12 +41,6 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         getContext().startActivity(i);
-    }
-
-    @Override
-    public void setOnDismissListener(@Nullable OnDismissListener listener) {
-        super.setOnDismissListener(listener);
-        // put some funny stuff here
     }
 
 }

@@ -11,17 +11,20 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable-v23/splash.xml" value="0.18703703703703703" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable-v24/rounded_corners.xml" value="0.19282051282051282" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/accuracy_indicator.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/button_background.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/button_bg.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/button_primary.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/button_selector.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/dialog_bg.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/green_dot.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_alathkar_black_24dp.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_bar_quran.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_check.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_disabled.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_dua_hands.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_duaa.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_info.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_kaaba.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.18703703703703703" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_madina.xml" value="0.19583333333333333" />
@@ -51,12 +54,15 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/nav_bar_icon_color.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/nav_bar_item_bg.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/prayers_toggle.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/qibla_pointer.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/red_dot.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/rounded_corners.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/rounded_layout.xml" value="0.19282051282051282" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/splash.xml" value="0.19282051282051282" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/splash_background.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/vivaldi_qkesp1ajb6.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/xml_try.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/yellow_dot.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/activity_athkar_view.xml" value="0.1648148148148148" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/activity_main.xml" value="0.17222222222222222" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/activity_screen_slide.xml" value="0.14907407407407408" />
@@ -66,6 +72,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/button_raw_item.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/button_row_item.xml" value="0.14074074074074075" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/button_view.xml" value="0.14074074074074075" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/compass_calibrate.xml" value="0.1685185185185185" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/fragment_alathkar.xml" value="0.16944444444444445" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/fragment_qibla.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/fragment_screen_slide_page.xml" value="0.14907407407407408" />
@@ -77,7 +84,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/prayer_popup.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/prayer_settings_dialog.xml" value="0.1" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/prayers_fragment.xml" value="0.22" />
-        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/qibla_fragment.xml" value="0.1" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/qibla_fragment.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/quran_fragment.xml" value="0.16197916666666667" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/quran_view.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/layout/scroll_fragment.xml" value="0.14907407407407408" />

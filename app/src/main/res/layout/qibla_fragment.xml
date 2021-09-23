@@ -5,19 +5,71 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layoutDirection="rtl"
     android:background="@drawable/background"
     tools:context=".ui.QiblaFragment">
 
     <ImageView
-        android:id="@+id/qibla_view"
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:src="@drawable/ic_qibla"
+        android:id="@+id/compass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:paddingHorizontal="10dp"
+        android:src="@drawable/compass"
         android:contentDescription="@string/qibla_view_description"
-        android:layout_marginTop="60dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/qibla_pointer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="26dp"
+        android:src="@drawable/qibla_pointer"
+        android:contentDescription="@string/qibla_view_description"
+        app:layout_constraintStart_toStartOf="@id/compass"
+        app:layout_constraintEnd_toEndOf="@id/compass"
+        app:layout_constraintTop_toTopOf="@id/compass"
+        app:layout_constraintBottom_toBottomOf="@id/compass"/>
+
+    <ImageView
+        android:id="@+id/kaaba"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_qibla_kaaba"
+        android:contentDescription="@string/qibla_view_description"
+        app:layout_constraintStart_toStartOf="@id/compass"
+        app:layout_constraintEnd_toEndOf="@id/compass"
+        app:layout_constraintTop_toTopOf="@id/compass"
+        app:layout_constraintBottom_toBottomOf="@id/compass"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/compass">
+
+        <TextView
+            android:id="@+id/accuracy_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:gravity="center"
+            android:textSize="20sp"/>
+
+        <ImageButton
+            android:id="@+id/accuracy_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/accuracy_indicator_description" />
+
+
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/distance_text"
@@ -43,6 +95,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/qibla_view"/>
+        app:layout_constraintBottom_toTopOf="@id/compass"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

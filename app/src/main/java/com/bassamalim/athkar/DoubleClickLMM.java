@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
-public class DoubleClickLinkMovementMethod extends LinkMovementMethod {
+public class DoubleClickLMM extends LinkMovementMethod {
 
     //variable for storing the time of first click
     private long lastClick;
@@ -46,10 +46,10 @@ public class DoubleClickLinkMovementMethod extends LinkMovementMethod {
         return true;
     }
 
-    private static DoubleClickLinkMovementMethod sInstance;
-    public static DoubleClickLinkMovementMethod getInstance() {
+    private static DoubleClickLMM sInstance;
+    public static DoubleClickLMM getInstance() {
         if (sInstance == null)
-            sInstance = new DoubleClickLinkMovementMethod();
+            sInstance = new DoubleClickLMM();
 
         return sInstance;
     }
