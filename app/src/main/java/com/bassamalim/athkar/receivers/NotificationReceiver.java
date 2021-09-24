@@ -74,6 +74,8 @@ public class NotificationReceiver extends BroadcastReceiver {
             }
 
             NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
+            if (id == 7)    // so that night notification would replace morning notification
+                id--;
             managerCompat.notify(id, notification);
 
             //startForeground(NOTIFICATION_ID, notification);

@@ -64,8 +64,7 @@
             android:id="@+id/mainLinear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
+            android:paddingHorizontal="10dp"
             android:orientation="vertical"
             android:layout_gravity="top|center">
 

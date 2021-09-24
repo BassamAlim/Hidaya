@@ -3,7 +3,6 @@ package com.bassamalim.athkar;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -16,8 +15,6 @@ public class DoubleClickLMM extends LinkMovementMethod {
 
     @Override
     public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
-        Log.i(Constants.TAG, "in on touch event");
-
         int x = (int) event.getX();
         int y = (int) event.getY();
         x -= widget.getTotalPaddingLeft();
@@ -34,7 +31,6 @@ public class DoubleClickLMM extends LinkMovementMethod {
                 //constant for defining the time duration between the click that can be considered as double-tap
                 int MAX_DURATION = 1200;
                 if (System.currentTimeMillis() < lastClick + MAX_DURATION && links[0] == lastSpan) {
-                    Log.i(Constants.TAG, "double clicked");
                     links[0].onDoubleClick(widget);
                     lastClick = 0;
                 }

@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,12 +42,16 @@ import java.util.Random;
 public class QuranView extends SwipeActivity {
 
     private QuranViewBinding binding;
+    private String action;
     private LinearLayout mainLinear;
     private JSONArray jsonArray;
     private JSONArray tafseerArray;
+    private int surahIndex;
     private int currentPage;
     private int textSize;
     private ArrayList<Ayah> arr;
+    private ScrollView scroll;
+    private TextView target;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,17 +64,18 @@ public class QuranView extends SwipeActivity {
         setSupportActionBar(binding.infoBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
+        scroll = binding.scrollView;
         mainLinear = binding.mainLinear;
 
         Intent intent = getIntent();
-        String action = intent.getAction();
+        action = intent.getAction();
 
         setupJson();
 
         textSize = getSize();
 
         if (action.equals("specific")) {
-            int surahIndex = intent.getIntExtra("surah_index", 0);
+            surahIndex = intent.getIntExtra("surah_index", 0);
             currentPage = getPage(surahIndex);
         }
         else if (action.equals("random"))
@@ -143,15 +149,6 @@ public class QuranView extends SwipeActivity {
         return start;
     }
 
-    private void infoBar(int juz, String name) {
-        String juzText = "جزء " + juz;
-        String surahNameText = "سُورَة " + name;
-        String pageNumberText = "صفحة " + currentPage;
-        binding.juzNumber.setText(juzText);
-        binding.suraName.setText(surahNameText);
-        binding.pageNumber.setText(pageNumberText);
-    }
-
     private void buildPage(int pageNumber) {
         mainLinear.removeAllViews();
         arr = new ArrayList<>();
@@ -179,10 +176,7 @@ public class QuranView extends SwipeActivity {
                         publish(arr);
                     }
 
-                    TextView nameScreen = surahName(ayah.getString("sura_name_ar"));
-                    TextView basmalah = basmalah();
-                    mainLinear.addView(nameScreen);
-                    mainLinear.addView(basmalah);
+                    addHeader(surahNum, ayah.getString("sura_name_ar"));
                 }
                 arr.add(ayahModel);
 
@@ -199,7 +193,7 @@ public class QuranView extends SwipeActivity {
         pageAyahs.add(arr);
         publish(arr);
 
-        infoBar(juz, pageAyahs.get(findMainSurah(pageAyahs)).get(0).getSurahName());
+        finalize(juz, pageAyahs.get(findMainSurah(pageAyahs)).get(0).getSurahName());
     }
 
     private void publish(ArrayList<Ayah> list) {
@@ -239,6 +233,31 @@ public class QuranView extends SwipeActivity {
         arr = new ArrayList<>();
     }
 
+    private void finalize(int juz, String name) {
+        String juzText = "جزء " + juz;
+        String surahNameText = "سُورَة " + name;
+        String pageNumberText = "صفحة " + currentPage;
+        binding.juzNumber.setText(juzText);
+        binding.suraName.setText(surahNameText);
+        binding.pageNumber.setText(pageNumberText);
+
+        long delay = 100; //delay to let finish with possible modifications to ScrollView
+        scroll.postDelayed(() -> scroll.smoothScrollTo(0, target.getTop()), delay);
+    }
+
+    private void addHeader(int num, String name) {
+        TextView nameScreen = surahName(name);
+        mainLinear.addView(nameScreen);
+
+        if (num != 9) {    // surat At-Taubah has no basmalah
+            TextView basmalah = basmalah();
+            mainLinear.addView(basmalah);
+        }
+
+        if (action.equals("specific") && num == surahIndex+1)
+            target = nameScreen;
+    }
+
     private int findMainSurah(ArrayList<ArrayList<Ayah>> surahs) {
         int largest = 0;
         for (int i = 1; i < surahs.size(); i++) {
@@ -256,8 +275,8 @@ public class QuranView extends SwipeActivity {
         nameScreen.setLayoutParams(screenParams);
         nameScreen.setPadding(0, 10, 0, 10);
         nameScreen.setGravity(Gravity.CENTER);
-        nameScreen.setBackground(AppCompatResources.
-                getDrawable(this, R.drawable.surah_header));
+        nameScreen.setBackground(AppCompatResources
+                .getDrawable(this, R.drawable.surah_header));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             nameScreen.setTextColor(getResources().getColor(R.color.accent, getTheme()));
         else
