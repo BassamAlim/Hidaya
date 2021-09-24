@@ -50,7 +50,6 @@ public class QuranView extends SwipeActivity {
     private int currentPage;
     private int textSize;
     private ArrayList<Ayah> arr;
-    private ScrollView scroll;
     private TextView target;
 
     @Override
@@ -64,7 +63,6 @@ public class QuranView extends SwipeActivity {
         setSupportActionBar(binding.infoBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        scroll = binding.scrollView;
         mainLinear = binding.mainLinear;
 
         Intent intent = getIntent();
@@ -241,8 +239,11 @@ public class QuranView extends SwipeActivity {
         binding.suraName.setText(surahNameText);
         binding.pageNumber.setText(pageNumberText);
 
-        long delay = 100; //delay to let finish with possible modifications to ScrollView
-        scroll.postDelayed(() -> scroll.smoothScrollTo(0, target.getTop()), delay);
+        if (action.equals("specific")) {
+            ScrollView scroll = binding.scrollView;
+            long delay = 100; //delay to let finish with possible modifications to ScrollView
+            scroll.postDelayed(() -> scroll.smoothScrollTo(0, target.getTop()), delay);
+        }
     }
 
     private void addHeader(int num, String name) {
