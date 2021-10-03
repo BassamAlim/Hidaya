@@ -22,7 +22,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Athkar">
-
+        <activity
+            android:name=".AlathkarList"
+            android:exported="true"
+            android:label="@string/title_activity_alathkar_list"
+            android:theme="@style/Theme.Athkar.NoActionBar" />
         <activity
             android:name=".Settings"
             android:exported="true"
@@ -96,7 +100,6 @@
         <meta-data
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
-
     </application>
 
 </manifest>

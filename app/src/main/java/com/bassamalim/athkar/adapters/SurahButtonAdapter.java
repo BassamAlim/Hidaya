@@ -31,7 +31,7 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
         public ViewHolder(View view) {
             super(view);
 
-            button = view.findViewById(R.id.model_button);
+            button = view.findViewById(R.id.surah_button_model);
         }
 
         public Button getButton() {

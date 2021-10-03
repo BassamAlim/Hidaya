@@ -11,8 +11,6 @@
     <!-- Buttons Titles -->
     <string name="contact">تواصل معي</string>
     <string name="title_activity_settings">الإعدادات</string>
-    <string name="prev_page">الصفحة السابقة</string>
-    <string name="next_page">الصفحة التالية</string>
     <string name="later">ليس الآن</string>
     <string name="update_now">حدِّث</string>
 
@@ -44,16 +42,15 @@
     <string name="update_alert">التحديث الجديد جاهز !</string>
 
     <!-- Buttons Text -->
-    <string name="morning_thikr">اذكار الصباح</string>
-    <string name="night_thikr">اذكار المساء</string>
-    <string name="wakeup_thikr">اذكار الاستيقاظ</string>
-    <string name="before_sleep_thikr">اذكار قبل النوم</string>
-    <string name="after_prayer_thikr">اذكار بعد الصلاة</string>
-    <string name="quran_conclude_thikr">دعاء ختم القرآن</string>
-    <string name="athan_thikr">اذكار الاذان</string>
-    <string name="wudu_thikr">اذكار الوضوء</string>
-    <string name="bathroom_thikr">اذكار الخلاء</string>
-    <string name="travel_thikr">دعاء السفر</string>
+    <string name="all_thikrs">جميع الأذكار</string>
+    <string name="day_and_night_thikrs">أذكار اليوم والليلة</string>
+    <string name="prayers_thikrs">أذكار الصلاة</string>
+    <string name="quran_thikrs">أذكار المصحف</string>
+    <string name="places_thikrs">أذكار التنقل</string>
+    <string name="emotion_thikrs">أذكار الحال</string>
+    <string name="actions_thikrs">أذكار الأفعال</string>
+    <string name="events_thikrs">أذكار الأحداث</string>
+    <string name="more_thikrs">المزيد</string>
     <string name="quran_and_sunnah_channels">قناة القرآن والسنة</string>
     <string name="settings">الإعدادات</string>
     <string name="update">تحديث</string>
@@ -63,12 +60,9 @@
     <!-- Descriptions -->
     <string name="qibla_view_description">this is the view that rotates depending on qibla</string>
     <string name="bingo_view_description">this is the view that shows when pointing towards qibla</string>
-    <string name="notification_with_sound">إشعار مسموع</string>
-    <string name="silent_notification">إشعار صامت</string>
     <string name="enable_notification">تفعيل الإشعار</string>
     <string name="mute_notification">إشعار صامت</string>
     <string name="disable_notification">إيقاف الإشعار</string>
-    <string name="tafseer">التفسير</string>
     <string name="adjust_prayer_notification_time">تعديل وقت إشعار الأذان</string>
     <string name="notification_image_description">shows current notification status</string>
     <string name="compass_calibration_gif_description">gif explaining how to calibrate inaccurate compass</string>
@@ -77,6 +71,7 @@
     <string name="low_accuracy_text">الدقة ضعيفة … يرجى معايرة الجهاز</string>
     <string name="medium_accuracy_text">الدقة متوسطة</string>
     <string name="high_accuracy_text">الدقة ممتازة</string>
-    <string name="calibration_info_description">image button for showing calibration instructions</string>
+    <string name="title_activity_alathkar_list">AlathkarList</string>
+    <!-- Strings used for fragments for navigation -->
 
 </resources>

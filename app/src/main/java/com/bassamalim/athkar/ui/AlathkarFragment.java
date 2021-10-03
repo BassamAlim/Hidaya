@@ -9,9 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.AlathkarList;
 import com.bassamalim.athkar.databinding.AlathkarFragmentBinding;
-import com.bassamalim.athkar.views.AlathkarView;
 
 public class AlathkarFragment extends Fragment {
 
@@ -29,23 +28,20 @@ public class AlathkarFragment extends Fragment {
     }
 
     private void setListeners() {
-        binding.morning.setOnClickListener(v -> showThikrs(R.array.morning, binding.morning.getText()));
-        binding.night.setOnClickListener(v -> showThikrs(R.array.night, binding.night.getText()));
-        binding.postPrayer.setOnClickListener(v -> showThikrs(R.array.post_prayer, binding.postPrayer.getText()));
-        binding.preSleep.setOnClickListener(v -> showThikrs(R.array.pre_sleep, binding.preSleep.getText()));
-        binding.wakeup.setOnClickListener(v -> showThikrs(R.array.wakeup, binding.wakeup.getText()));
-        binding.quranConclude.setOnClickListener(v -> showThikrs(R.array.quran_conclude, binding.quranConclude.getText()));
-        binding.athan.setOnClickListener(v -> showThikrs(R.array.athan, binding.athan.getText()));
-        binding.wudu.setOnClickListener(v -> showThikrs(R.array.ablution, binding.wudu.getText()));
-        binding.bathroom.setOnClickListener(v -> showThikrs(R.array.bathroom, binding.bathroom.getText()));
-        binding.travel.setOnClickListener(v -> showThikrs(R.array.travel, binding.travel.getText()));
+        binding.allThikrs.setOnClickListener(v -> showThikrs(0));
+        binding.dayAndNight.setOnClickListener(v -> showThikrs(1));
+        binding.prayers.setOnClickListener(v -> showThikrs(2));
+        binding.quran.setOnClickListener(v -> showThikrs(3));
+        binding.actions.setOnClickListener(v -> showThikrs(4));
+        binding.events.setOnClickListener(v -> showThikrs(5));
+        binding.emotions.setOnClickListener(v -> showThikrs(6));
+        binding.places.setOnClickListener(v -> showThikrs(7));
+        binding.more.setOnClickListener(v -> showThikrs(8));
     }
 
-    public void showThikrs(int givenThikrs, CharSequence title) {
-        String[] thikrs = getResources().getStringArray(givenThikrs);
-        Intent intent = new Intent(getContext(), AlathkarView.class);
-        intent.putExtra("thikrs", thikrs);
-        intent.putExtra("title", title);
+    public void showThikrs(int index) {
+        Intent intent = new Intent(getContext(), AlathkarList.class);
+        intent.putExtra("index", index);
         startActivity(intent);
     }
 

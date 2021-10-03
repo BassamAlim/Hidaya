@@ -51,6 +51,7 @@ public class QuranView extends SwipeActivity {
     private int textSize;
     private ArrayList<Ayah> arr;
     private TextView target;
+    private boolean scrolled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,10 +240,11 @@ public class QuranView extends SwipeActivity {
         binding.suraName.setText(surahNameText);
         binding.pageNumber.setText(pageNumberText);
 
-        if (action.equals("specific")) {
-            ScrollView scroll = binding.scrollView;
+        ScrollView scroll = binding.scrollView;
+        if (action.equals("specific") && !scrolled) {
             long delay = 100; //delay to let finish with possible modifications to ScrollView
             scroll.postDelayed(() -> scroll.smoothScrollTo(0, target.getTop()), delay);
+            scrolled = true;
         }
     }
 

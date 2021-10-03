@@ -170,12 +170,14 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         if (variable == 6) {
             intent = new Intent(context, AlathkarView.class);
-            intent.putExtra("thikrs", context.getResources().getStringArray(R.array.morning));
+            intent.putExtra("category", 0);
+            intent.putExtra("index", 0);
             intent.putExtra("title", "أذكار الصباح");
         }
         else if (variable == 7) {
             intent = new Intent(context, AlathkarView.class);
-            intent.putExtra("thikrs", context.getResources().getStringArray(R.array.night));
+            intent.putExtra("category", 0);
+            intent.putExtra("index", 1);
             intent.putExtra("title", "أذكار المساء");
         }
         else if (variable == 8) {

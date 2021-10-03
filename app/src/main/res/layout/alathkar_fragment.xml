@@ -25,39 +25,53 @@
             android:gravity="center"
             android:paddingBottom="75dp">
 
+            <Button
+                android:id="@+id/all_thikrs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="25dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@drawable/button_bg"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/all_thikrs"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/accent"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/my_linear_padding_top"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center">
 
                 <Button
-                    android:id="@+id/morning"
+                    android:id="@+id/day_and_night"
                     android:layout_width="@dimen/my_button_size"
                     android:layout_height="@dimen/my_button_size"
                     android:layout_marginEnd="@dimen/my_button_margin_end"
                     android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
-                    android:drawableTop="@drawable/ic_morning"
+                    android:drawableTop="@drawable/ic_day_and_night"
                     android:gravity="center|bottom"
-                    android:text="@string/morning_thikr"
+                    android:text="@string/day_and_night_thikrs"
                     android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
-                    android:id="@+id/night"
+                    android:id="@+id/prayers"
                     android:layout_width="@dimen/my_button_size"
                     android:layout_height="@dimen/my_button_size"
                     android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
                     android:gravity="bottom|center"
-                    android:text="@string/night_thikr"
+                    android:text="@string/prayers_thikrs"
                     android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
-                    android:drawableTop="@drawable/ic_night"
+                    android:drawableTop="@drawable/ic_praying"
                     style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
@@ -71,65 +85,28 @@
                 android:gravity="center">
 
                 <Button
-                    android:id="@+id/wakeup"
+                    android:id="@+id/quran"
                     android:layout_width="@dimen/my_button_size"
                     android:layout_height="@dimen/my_button_size"
                     android:layout_marginEnd="@dimen/my_button_margin_end"
                     android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
                     android:gravity="center|bottom"
-                    android:drawableTop="@drawable/ic_wakeup"
-                    android:text="@string/wakeup_thikr"
+                    android:drawableTop="@drawable/ic_closed_quran"
+                    android:text="@string/quran_thikrs"
                     android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
-                    android:id="@+id/pre_sleep"
+                    android:id="@+id/actions"
                     android:layout_width="@dimen/my_button_size"
                     android:layout_height="@dimen/my_button_size"
                     android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
-                    android:drawableTop="@drawable/ic_pre_sleep"
+                    android:drawableTop="@drawable/ic_actions"
                     android:gravity="center|bottom"
-                    android:text="@string/before_sleep_thikr"
-                    android:textColor="@color/accent"
-                    android:textSize="@dimen/my_button_text_size"
-                    style="?android:attr/buttonBarButtonStyle" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/my_linear_padding_top"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center">
-
-                <Button
-                    android:id="@+id/post_prayer"
-                    android:layout_width="@dimen/my_button_size"
-                    android:layout_height="@dimen/my_button_size"
-                    android:layout_marginEnd="@dimen/my_button_margin_end"
-                    android:padding="@dimen/my_button_padding"
-                    android:background="@drawable/rounded_corners"
-                    android:drawableTop="@drawable/ic_post_pray"
-                    android:gravity="center|bottom"
-                    android:text="@string/after_prayer_thikr"
-                    android:textColor="@color/accent"
-                    android:textSize="@dimen/my_button_text_size"
-                    style="?android:attr/buttonBarButtonStyle" />
-
-                <Button
-                    android:id="@+id/quran_conclude"
-                    android:layout_width="@dimen/my_button_size"
-                    android:layout_height="@dimen/my_button_size"
-                    android:padding="@dimen/my_button_padding"
-                    android:background="@drawable/rounded_corners"
-                    android:drawableTop="@drawable/ic_quran_conclude"
-                    android:gravity="center|bottom"
-                    android:text="@string/quran_conclude_thikr"
+                    android:text="@string/actions_thikrs"
                     android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
@@ -145,28 +122,28 @@
                 android:gravity="center">
 
                 <Button
-                    android:id="@+id/athan"
+                    android:id="@+id/events"
                     android:layout_width="@dimen/my_button_size"
                     android:layout_height="@dimen/my_button_size"
                     android:layout_marginEnd="@dimen/my_button_margin_end"
                     android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
-                    android:drawableTop="@drawable/ic_athan"
                     android:gravity="center|bottom"
-                    android:text="@string/athan_thikr"
+                    android:drawableTop="@drawable/ic_events"
+                    android:text="@string/events_thikrs"
                     android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
-                    android:id="@+id/wudu"
+                    android:id="@+id/emotions"
                     android:layout_width="@dimen/my_button_size"
                     android:layout_height="@dimen/my_button_size"
                     android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
-                    android:drawableTop="@drawable/ic_wudu"
+                    android:drawableTop="@drawable/ic_emotion"
                     android:gravity="center|bottom"
-                    android:text="@string/wudu_thikr"
+                    android:text="@string/emotion_thikrs"
                     android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
@@ -177,33 +154,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/my_linear_padding_top"
+                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:gravity="center">
 
                 <Button
-                    android:id="@+id/bathroom"
+                    android:id="@+id/places"
                     android:layout_width="@dimen/my_button_size"
                     android:layout_height="@dimen/my_button_size"
                     android:layout_marginEnd="@dimen/my_button_margin_end"
                     android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
-                    android:drawableTop="@drawable/ic_bathroom"
                     android:gravity="center|bottom"
-                    android:text="@string/bathroom_thikr"
+                    android:drawableTop="@drawable/ic_going_out"
+                    android:text="@string/places_thikrs"
                     android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
-                    android:id="@+id/travel"
+                    android:id="@+id/more"
                     android:layout_width="@dimen/my_button_size"
                     android:layout_height="@dimen/my_button_size"
                     android:padding="@dimen/my_button_padding"
                     android:background="@drawable/rounded_corners"
-                    android:drawableTop="@drawable/ic_travel"
+                    android:drawableTop="@drawable/ic_duaa_moon"
                     android:gravity="center|bottom"
-                    android:text="@string/travel_thikr"
+                    android:text="@string/more_thikrs"
                     android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />

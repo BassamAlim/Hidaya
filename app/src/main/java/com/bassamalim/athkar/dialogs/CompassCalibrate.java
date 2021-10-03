@@ -37,7 +37,7 @@ public class CompassCalibrate extends DialogFragment {
                 .setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Objects.requireNonNull(getDialog()).getWindow().setLayout(10, 10);
 
-        View view = getLayoutInflater().inflate(R.layout.compass_calibrate,
+        View view = getLayoutInflater().inflate(R.layout.compass_calibration_gif,
                 new LinearLayout(context));
         ImageView screen = view.findViewById(R.id.gif_screen);
         screen.setOnClickListener(v -> dismiss());
