@@ -3,6 +3,7 @@ package com.bassamalim.athkar;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -77,9 +78,16 @@ public class Splash extends AppCompatActivity {
 
                 if (location != null)
                     intent.putExtra("location", location);
-                else
-                    intent.putExtra("location", new Keeper(this).retrieveLocation());
-
+                else {
+                    Location storedLocation = new Keeper(this).retrieveLocation();
+                    if (storedLocation == null) {
+                        Toast.makeText(this, "No Location Available | الموقع غير متوفر",
+                                Toast.LENGTH_LONG).show();
+                        finishAffinity();
+                    }
+                    else
+                        intent.putExtra("location", new Keeper(this).retrieveLocation());
+                }
                 startActivity(intent);
             });
         }
