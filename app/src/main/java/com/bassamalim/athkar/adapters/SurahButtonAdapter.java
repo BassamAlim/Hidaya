@@ -52,7 +52,7 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
     @NonNull @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         context = viewGroup.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.button_row_item,
+        View view = LayoutInflater.from(context).inflate(R.layout.surah_button_row_item,
                 viewGroup, false);
 
         return new ViewHolder(view);

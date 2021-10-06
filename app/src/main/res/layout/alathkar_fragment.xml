@@ -37,8 +37,7 @@
                 android:padding="5dp"
                 android:text="@string/all_thikrs"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/accent"/>
+                android:textStyle="bold"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -57,7 +56,6 @@
                     android:drawableTop="@drawable/ic_day_and_night"
                     android:gravity="center|bottom"
                     android:text="@string/day_and_night_thikrs"
-                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -69,7 +67,6 @@
                     android:background="@drawable/rounded_corners"
                     android:gravity="bottom|center"
                     android:text="@string/prayers_thikrs"
-                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     android:drawableTop="@drawable/ic_praying"
                     style="?android:attr/buttonBarButtonStyle" />
@@ -94,7 +91,6 @@
                     android:gravity="center|bottom"
                     android:drawableTop="@drawable/ic_closed_quran"
                     android:text="@string/quran_thikrs"
-                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -107,7 +103,6 @@
                     android:drawableTop="@drawable/ic_actions"
                     android:gravity="center|bottom"
                     android:text="@string/actions_thikrs"
-                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -131,7 +126,6 @@
                     android:gravity="center|bottom"
                     android:drawableTop="@drawable/ic_events"
                     android:text="@string/events_thikrs"
-                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -144,7 +138,6 @@
                     android:drawableTop="@drawable/ic_emotion"
                     android:gravity="center|bottom"
                     android:text="@string/emotion_thikrs"
-                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -168,7 +161,6 @@
                     android:gravity="center|bottom"
                     android:drawableTop="@drawable/ic_going_out"
                     android:text="@string/places_thikrs"
-                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -181,7 +173,6 @@
                     android:drawableTop="@drawable/ic_duaa_moon"
                     android:gravity="center|bottom"
                     android:text="@string/more_thikrs"
-                    android:textColor="@color/accent"
                     android:textSize="@dimen/my_button_text_size"
                     style="?android:attr/buttonBarButtonStyle" />
 

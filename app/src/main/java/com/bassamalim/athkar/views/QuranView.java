@@ -280,10 +280,6 @@ public class QuranView extends SwipeActivity {
         nameScreen.setGravity(Gravity.CENTER);
         nameScreen.setBackground(AppCompatResources
                 .getDrawable(this, R.drawable.surah_header));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            nameScreen.setTextColor(getResources().getColor(R.color.accent, getTheme()));
-        else
-            nameScreen.setTextColor(getResources().getColor(R.color.accent));
         nameScreen.setTextSize(textSize+5);
         nameScreen.setTypeface(Typeface.DEFAULT_BOLD);
         nameScreen.setText(name);
@@ -300,6 +296,7 @@ public class QuranView extends SwipeActivity {
         nameScreen.setGravity(Gravity.CENTER);
         nameScreen.setTextSize(textSize);
         nameScreen.setTypeface(Typeface.DEFAULT_BOLD);
+        nameScreen.setTextColor(Color.WHITE);
         nameScreen.setText("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ");
 
         return nameScreen;
@@ -315,6 +312,7 @@ public class QuranView extends SwipeActivity {
         screen.setTextSize(textSize);
         Typeface typeface = Typeface.createFromAsset(getAssets(), "hafs_smart_08.ttf");
         screen.setTypeface(typeface);
+        screen.setTextColor(Color.WHITE);
         screen.setLinkTextColor(Color.WHITE);
 
         return screen;
