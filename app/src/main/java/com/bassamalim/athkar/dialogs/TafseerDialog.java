@@ -58,7 +58,6 @@ public class TafseerDialog extends DialogFragment {
         screen.setText(tafseer);
         screen.setTextSize(20);
         screen.setTextColor(getResources().getColor(R.color.accent));
-        screen.setOnClickListener(v -> dismiss());
 
         layout.addView(nameScreen);
         layout.addView(screen);

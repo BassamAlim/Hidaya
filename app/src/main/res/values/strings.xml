@@ -72,6 +72,9 @@
     <string name="medium_accuracy_text">الدقة متوسطة</string>
     <string name="high_accuracy_text">الدقة جيدة</string>
     <string name="title_activity_alathkar_list">AlathkarList</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

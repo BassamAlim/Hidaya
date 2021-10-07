@@ -1,0 +1,87 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.Athkar.AppWidget.Container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="rtl"
+    android:background="@drawable/prayers_widget_background"
+    android:theme="@style/Theme.Athkar.AppWidgetContainer">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/widget_fajr"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="5dp"
+            android:layout_marginEnd="5dp"
+            android:padding="6dp"
+            android:gravity="center"
+            android:background="@drawable/prayers_widget_inner_view_background"
+            android:textSize="20sp"
+            style="@style/Widget.Athkar.AppWidget.InnerView"/>
+
+        <TextView
+            android:id="@+id/widget_duhr"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="5dp"
+            android:layout_marginEnd="5dp"
+            android:padding="6dp"
+            android:gravity="center"
+            android:background="@drawable/prayers_widget_inner_view_background"
+            android:textSize="20sp"
+            style="@style/Widget.Athkar.AppWidget.InnerView"/>
+
+        <TextView
+            android:id="@+id/widget_asr"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="5dp"
+            android:layout_marginEnd="5dp"
+            android:padding="6dp"
+            android:gravity="center"
+            android:background="@drawable/prayers_widget_inner_view_background"
+            android:textSize="20sp"
+            style="@style/Widget.Athkar.AppWidget.InnerView"/>
+
+        <TextView
+            android:id="@+id/widget_maghrib"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="5dp"
+            android:layout_marginEnd="5dp"
+            android:padding="6dp"
+            android:gravity="center"
+            android:background="@drawable/prayers_widget_inner_view_background"
+            android:textSize="20sp"
+            style="@style/Widget.Athkar.AppWidget.InnerView"/>
+
+        <TextView
+            android:id="@+id/widget_ishaa"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="5dp"
+            android:padding="6dp"
+            android:gravity="center"
+            android:background="@drawable/prayers_widget_inner_view_background"
+            android:textSize="20sp"
+            style="@style/Widget.Athkar.AppWidget.InnerView"/>
+
+    </LinearLayout>
+
+    <!--<TextView
+        android:id="@+id/appwidget_text"
+        style="@style/Widget.Athkar.AppWidget.InnerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="8dp"
+        android:contentDescription="@string/appwidget_text"
+        android:text="@string/appwidget_text"
+        android:textSize="24sp"
+        android:textStyle="bold|italic" />-->
+</RelativeLayout>

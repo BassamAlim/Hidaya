@@ -22,6 +22,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Athkar">
+
         <activity
             android:name=".AlathkarList"
             android:exported="true"
@@ -83,19 +84,26 @@
         </activity>
 
         <receiver
-            android:name=".receivers.NotificationReceiver"
-            android:enabled="true" />
+            android:name=".receivers.NotificationReceiver" />
         <receiver
-            android:name=".receivers.DailyUpdateReceiver"
-            android:enabled="true" />
+            android:name=".receivers.DailyUpdateReceiver" />
         <receiver
             android:name=".receivers.DeviceBootReceiver"
-            android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <receiver
+        android:name=".PrayersWidget"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        </intent-filter>
+        <meta-data
+            android:name="android.appwidget.provider"
+            android:resource="@xml/prayers_widget_info" />
+    </receiver>
 
         <meta-data
             android:name="firebase_performance_logcat_enabled"
