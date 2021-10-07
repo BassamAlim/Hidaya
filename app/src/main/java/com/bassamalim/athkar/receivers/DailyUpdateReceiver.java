@@ -77,8 +77,6 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
 
             new Alarms(context, times);
 
-            updateWidget();
-
             updated();
         }
         else
@@ -96,10 +94,6 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
 
         return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
                 loc.getLongitude(), timezone);
-    }
-
-    private void updateWidget() {
-
     }
 
     private void updated() {

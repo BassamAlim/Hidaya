@@ -1,18 +1,19 @@
 package com.bassamalim.athkar.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,6 +72,9 @@ public class QuranFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        setupContinue();
+
         if (mBundleRecyclerViewState != null) {
             new Handler().postDelayed(() -> {
                 mListState = mBundleRecyclerViewState.getParcelable("recycler_state");
@@ -79,6 +83,24 @@ public class QuranFragment extends Fragment {
             }, 50);
         }
         recyclerView.setLayoutManager(gridLayoutManager);
+    }
+
+    private void setupContinue() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        int page = pref.getInt("bookmarked_page", -1);
+        String text = pref.getString("bookmarked_text", "");
+        if (page == -1)
+            text = "لا يوجد صفحة محفوظة";
+        else
+            text = "الصفحة المحفوظة:  " + text;
+        binding.continueReading.setText(text);
+
+        binding.continueReading.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), QuranView.class);
+            intent.setAction("bookmark");
+            intent.putExtra("page", page);
+            requireContext().startActivity(intent);
+        });
     }
 
     private void setSearchListeners() {

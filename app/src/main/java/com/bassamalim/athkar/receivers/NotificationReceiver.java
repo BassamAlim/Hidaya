@@ -194,13 +194,14 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             pendingIntent = PendingIntent.getActivity(context, variable, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         }
         else {
-            pendingIntent = PendingIntent.getActivity(context,
-                    variable, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            pendingIntent = PendingIntent.getActivity(context, variable, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
         return pendingIntent;

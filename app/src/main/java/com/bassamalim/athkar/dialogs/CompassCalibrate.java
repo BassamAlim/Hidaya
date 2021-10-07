@@ -17,6 +17,7 @@ import androidx.fragment.app.DialogFragment;
 import com.bassamalim.athkar.R;
 import com.bumptech.glide.Glide;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class CompassCalibrate extends DialogFragment {

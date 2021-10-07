@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -42,12 +41,15 @@ import java.util.Random;
 public class QuranView extends SwipeActivity {
 
     private QuranViewBinding binding;
+    private SharedPreferences pref;
     private String action;
     private LinearLayout mainLinear;
     private JSONArray jsonArray;
     private JSONArray tafseerArray;
     private int surahIndex;
     private int currentPage;
+    private String currentPageText;
+    private String currentSurah;
     private int textSize;
     private ArrayList<Ayah> arr;
     private TextView target;
@@ -66,21 +68,38 @@ public class QuranView extends SwipeActivity {
 
         mainLinear = binding.mainLinear;
 
+        initiate();
+
+        setupToolbar();
+
         Intent intent = getIntent();
         action = intent.getAction();
 
         setupJson();
 
-        textSize = getSize();
-
-        if (action.equals("specific")) {
-            surahIndex = intent.getIntExtra("surah_index", 0);
-            currentPage = getPage(surahIndex);
-        }
-        else if (action.equals("random"))
-            currentPage = new Random().nextInt(Constants.QURAN_PAGES-1);
+        action(intent);
 
         buildPage(currentPage);
+    }
+
+    private void initiate() {
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+        textSize = pref.getInt(getString(R.string.quran_text_size_key), 30);
+    }
+
+    private void action(Intent intent) {
+        switch (action) {
+            case "specific":
+                surahIndex = intent.getIntExtra("surah_index", 0);
+                currentPage = getPage(surahIndex);
+                break;
+            case "random":
+                currentPage = new Random().nextInt(Constants.QURAN_PAGES - 1);
+                break;
+            case "bookmark":
+                currentPage = intent.getIntExtra("page", 0);
+                break;
+        }
     }
 
     @Override
@@ -116,6 +135,16 @@ public class QuranView extends SwipeActivity {
             e.printStackTrace();
             Log.e("myself", "error in setup json");
         }
+    }
+
+    private void setupToolbar() {
+        binding.bookmarkButton.setOnClickListener(v -> {
+            SharedPreferences.Editor editor = pref.edit();
+            String text = currentPageText + ", " + currentSurah;
+            editor.putInt("bookmarked_page", currentPage);
+            editor.putString("bookmarked_text", text);
+            editor.apply();
+        });
     }
 
     private int getPage(int surahIndex) {
@@ -234,11 +263,11 @@ public class QuranView extends SwipeActivity {
 
     private void finalize(int juz, String name) {
         String juzText = "جزء " + juz;
-        String surahNameText = "سُورَة " + name;
-        String pageNumberText = "صفحة " + currentPage;
+        currentSurah = "سُورَة " + name;
+        currentPageText = "صفحة " + currentPage;
         binding.juzNumber.setText(juzText);
-        binding.suraName.setText(surahNameText);
-        binding.pageNumber.setText(pageNumberText);
+        binding.suraName.setText(currentSurah);
+        binding.pageNumber.setText(currentPageText);
 
         ScrollView scroll = binding.scrollView;
         if (action.equals("specific") && !scrolled) {
