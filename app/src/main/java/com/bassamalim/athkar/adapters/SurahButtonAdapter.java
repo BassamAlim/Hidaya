@@ -1,6 +1,7 @@
 package com.bassamalim.athkar.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,14 +64,15 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
         viewHolder.getButton().setText(surahButtons.get(position).getSurahName());
 
         String tanzeel = surahButtons.get(position).getTanzeel();
-        if (tanzeel.equals("Meccan")) {
-            viewHolder.getButton().setCompoundDrawables(null, null,
-                    AppCompatResources.getDrawable(context, R.drawable.ic_kaaba), null);
-        }
-        else {
-            viewHolder.getButton().setCompoundDrawables(null, null,
-                    AppCompatResources.getDrawable(context, R.drawable.ic_madina), null);
-        }
+
+        Drawable d = null;
+        if (tanzeel.equals("Meccan"))
+            d = AppCompatResources.getDrawable(context, R.drawable.ic_kaaba);
+        else if (tanzeel.equals("Medinan"))
+            d = AppCompatResources.getDrawable(context, R.drawable.ic_madina);
+
+        viewHolder.getButton().setCompoundDrawablesWithIntrinsicBounds(d,
+                null, null, null);
 
         viewHolder.getButton().setOnClickListener(surahButtons.get(position).getListener());
     }
