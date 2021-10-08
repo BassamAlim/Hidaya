@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.Alarms;
+import com.bassamalim.athkar.helpers.Alarms;
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
 

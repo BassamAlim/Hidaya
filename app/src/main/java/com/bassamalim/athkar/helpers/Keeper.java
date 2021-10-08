@@ -1,12 +1,12 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import com.bassamalim.athkar.helpers.PrayTimes;
 import com.bassamalim.athkar.models.MyLocation;
 import com.google.gson.Gson;
 
@@ -15,7 +15,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class Keeper extends AppCompatActivity {
+public class Keeper {
 
     private final Context context;
     private Gson gson;

@@ -24,16 +24,17 @@
         android:theme="@style/Theme.Athkar">
 
         <activity
-            android:name=".AlathkarList"
+            android:name=".activities.AlathkarList"
             android:exported="true"
             android:label="@string/title_activity_alathkar_list"
             android:theme="@style/Theme.Athkar.NoActionBar" />
         <activity
-            android:name=".Settings"
+            android:name=".activities.Settings"
             android:exported="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -41,7 +42,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".views.AlathkarView"
+            android:name=".activities.AlathkarActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.Athkar">
@@ -50,7 +51,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".views.QuranView"
+            android:name=".activities.QuranActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.Athkar">
@@ -59,7 +60,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".views.TvView"
+            android:name=".activities.TvActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.Athkar">
@@ -68,7 +69,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Splash"
+            android:name=".activities.Splash"
             android:exported="true"
             android:theme="@style/LaunchTheme">
             <intent-filter>
@@ -78,7 +79,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FSVideoActivity"
+            android:name=".activities.FSVideoActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.NoActionBar"> <!-- VERY IMPORTANT ... CRASHES WITHOUT IT -->
         </activity>
@@ -95,7 +96,7 @@
             </intent-filter>
         </receiver>
         <receiver
-        android:name=".PrayersWidget"
+        android:name=".widgets.PrayersWidget"
         android:exported="true">
         <intent-filter>
             <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

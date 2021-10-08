@@ -1,4 +1,4 @@
-package com.bassamalim.athkar.views;
+package com.bassamalim.athkar.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,11 +21,11 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.DoubleClickLMM;
-import com.bassamalim.athkar.DoubleClickableSpan;
+import com.bassamalim.athkar.other.DoubleClickLMM;
+import com.bassamalim.athkar.other.DoubleClickableSpan;
 import com.bassamalim.athkar.R;
-import com.bassamalim.athkar.SwipeActivity;
-import com.bassamalim.athkar.Utils;
+import com.bassamalim.athkar.other.SwipeActivity;
+import com.bassamalim.athkar.helpers.Utils;
 import com.bassamalim.athkar.databinding.QuranViewBinding;
 import com.bassamalim.athkar.dialogs.TafseerDialog;
 import com.bassamalim.athkar.models.Ayah;
@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
-public class QuranView extends SwipeActivity {
+public class QuranActivity extends SwipeActivity {
 
     private QuranViewBinding binding;
     private SharedPreferences pref;
@@ -345,12 +345,6 @@ public class QuranView extends SwipeActivity {
         screen.setLinkTextColor(Color.WHITE);
 
         return screen;
-    }
-
-    private int getSize() {
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(this);
-        return sharedPreferences.getInt(getString(R.string.quran_text_size_key), 30);
     }
 
     @Override

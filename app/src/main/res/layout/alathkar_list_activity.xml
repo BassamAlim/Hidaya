@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/primary"
     android:layout_gravity="center"
-    tools:context=".AlathkarList">
+    tools:context=".activities.AlathkarList">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/name_bar"

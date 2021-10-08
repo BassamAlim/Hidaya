@@ -1,4 +1,4 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.activities;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -14,7 +14,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
 
+import com.bassamalim.athkar.helpers.Alarms;
+import com.bassamalim.athkar.helpers.DailyUpdate;
+import com.bassamalim.athkar.helpers.Keeper;
+import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.ActivityMainBinding;
+import com.bassamalim.athkar.helpers.PrayTimes;
+import com.bassamalim.athkar.helpers.Update;
 import com.bassamalim.athkar.receivers.DeviceBootReceiver;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;

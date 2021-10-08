@@ -19,11 +19,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.Utils;
+import com.bassamalim.athkar.helpers.Utils;
 import com.bassamalim.athkar.adapters.SurahButtonAdapter;
 import com.bassamalim.athkar.databinding.QuranFragmentBinding;
 import com.bassamalim.athkar.models.SurahButton;
-import com.bassamalim.athkar.views.QuranView;
+import com.bassamalim.athkar.activities.QuranActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -96,7 +96,7 @@ public class QuranFragment extends Fragment {
         binding.continueReading.setText(text);
 
         binding.continueReading.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), QuranView.class);
+            Intent intent = new Intent(getContext(), QuranActivity.class);
             intent.setAction("bookmark");
             intent.putExtra("page", page);
             requireContext().startActivity(intent);
@@ -141,7 +141,7 @@ public class QuranFragment extends Fragment {
 
                 int finalI = i;
                 View.OnClickListener clickListener = v -> {
-                    Intent intent = new Intent(getContext(), QuranView.class);
+                    Intent intent = new Intent(getContext(), QuranActivity.class);
                     intent.setAction("specific");
                     intent.putExtra("surah_index", finalI);
                     requireContext().startActivity(intent);

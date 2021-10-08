@@ -18,8 +18,8 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.MainActivity;
-import com.bassamalim.athkar.PrayTimes;
+import com.bassamalim.athkar.activities.MainActivity;
+import com.bassamalim.athkar.helpers.PrayTimes;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.PrayersFragmentBinding;
 import com.bassamalim.athkar.dialogs.PrayerPopup;

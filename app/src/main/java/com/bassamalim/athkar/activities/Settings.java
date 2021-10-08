@@ -1,4 +1,4 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.activities;
 
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
@@ -10,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
+
+import com.bassamalim.athkar.helpers.Alarms;
+import com.bassamalim.athkar.R;
 
 import java.util.Calendar;
 import java.util.HashMap;

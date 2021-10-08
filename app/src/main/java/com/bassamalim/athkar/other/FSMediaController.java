@@ -1,4 +1,4 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.other;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,6 +7,9 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.MediaController;
+
+import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.activities.FSVideoActivity;
 
 public class FSMediaController extends MediaController {
 

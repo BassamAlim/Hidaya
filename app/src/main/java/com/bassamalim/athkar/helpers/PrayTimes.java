@@ -1,4 +1,4 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.helpers;
 
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -1,9 +1,12 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.widgets;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.widget.RemoteViews;
+
+import com.bassamalim.athkar.helpers.Keeper;
+import com.bassamalim.athkar.R;
 
 public class PrayersWidget extends AppWidgetProvider {
 

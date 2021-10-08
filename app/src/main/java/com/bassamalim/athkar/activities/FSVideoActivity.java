@@ -1,4 +1,4 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.activities;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -11,7 +11,8 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bassamalim.athkar.views.TvView;
+import com.bassamalim.athkar.other.FSMediaController;
+import com.bassamalim.athkar.R;
 
 public class FSVideoActivity extends AppCompatActivity {
 
@@ -30,11 +31,11 @@ public class FSVideoActivity extends AppCompatActivity {
         if ("y".equals(fullScreen))
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         else {
-            Intent intent = new Intent(getApplicationContext(), TvView.class);
+            Intent intent = new Intent(getApplicationContext(), TvActivity.class);
             startActivity(intent);
         }
 
-        Uri videoUri = TvView.getUri();
+        Uri videoUri = TvActivity.getUri();
         videoView.setVideoURI(videoUri);
 
         MediaController mediaController = new FSMediaController(this);

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.bassamalim.athkar.AlathkarList;
+import com.bassamalim.athkar.activities.AlathkarList;
 import com.bassamalim.athkar.databinding.AlathkarFragmentBinding;
 
 public class AlathkarFragment extends Fragment {

@@ -1,4 +1,4 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.other;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -8,6 +8,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.bassamalim.athkar.Constants;
 
 public class QiblaMaster implements SensorEventListener {
 

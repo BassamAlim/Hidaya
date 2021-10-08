@@ -1,4 +1,4 @@
-package com.bassamalim.athkar.views;
+package com.bassamalim.athkar.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,7 +17,7 @@ import androidx.cardview.widget.CardView;
 import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.R;
-import com.bassamalim.athkar.Utils;
+import com.bassamalim.athkar.helpers.Utils;
 import com.bassamalim.athkar.databinding.AlathkarViewBinding;
 import com.bassamalim.athkar.models.Thikr;
 
@@ -28,7 +28,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class AlathkarView extends AppCompatActivity {
+public class AlathkarActivity extends AppCompatActivity {
 
     private AlathkarViewBinding binding;
     private int textSize;
@@ -50,7 +50,7 @@ public class AlathkarView extends AppCompatActivity {
 
         Intent intent = getIntent();
         category = intent.getIntExtra("category", 0);
-        index = intent.getIntExtra("thikrs_index", 0);
+        index = intent.getIntExtra("index", 0);
 
         getThikrs();
 

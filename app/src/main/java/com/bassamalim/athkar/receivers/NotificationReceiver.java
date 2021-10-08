@@ -19,9 +19,9 @@ import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
-import com.bassamalim.athkar.Splash;
-import com.bassamalim.athkar.views.AlathkarView;
-import com.bassamalim.athkar.views.QuranView;
+import com.bassamalim.athkar.activities.Splash;
+import com.bassamalim.athkar.activities.AlathkarActivity;
+import com.bassamalim.athkar.activities.QuranActivity;
 
 public class NotificationReceiver extends BroadcastReceiver {
 
@@ -169,23 +169,23 @@ public class NotificationReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent;
 
         if (variable == 6) {
-            intent = new Intent(context, AlathkarView.class);
+            intent = new Intent(context, AlathkarActivity.class);
             intent.putExtra("category", 1);
             intent.putExtra("index", 0);
             intent.putExtra("title", "أذكار الصباح");
         }
         else if (variable == 7) {
-            intent = new Intent(context, AlathkarView.class);
+            intent = new Intent(context, AlathkarActivity.class);
             intent.putExtra("category", 1);
             intent.putExtra("index", 1);
             intent.putExtra("title", "أذكار المساء");
         }
         else if (variable == 8) {
-            intent = new Intent(context, QuranView.class);
+            intent = new Intent(context, QuranActivity.class);
             intent.setAction("random");
         }
         else if (variable == 9) {
-            intent = new Intent(context, QuranView.class);
+            intent = new Intent(context, QuranActivity.class);
             intent.setAction("specific");
             intent.putExtra("surah_index", 17);    // alkahf
         }

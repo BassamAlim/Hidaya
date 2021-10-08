@@ -1,4 +1,4 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.helpers;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -6,13 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.receivers.DailyUpdateReceiver;
 
 import java.util.Calendar;
 
-public class DailyUpdate extends AppCompatActivity {
+public class DailyUpdate {
 
     private final int hourOfTheDay = 0;
 

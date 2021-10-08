@@ -12,9 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.Settings;
+import com.bassamalim.athkar.activities.Settings;
 import com.bassamalim.athkar.databinding.OtherFragmentBinding;
-import com.bassamalim.athkar.views.TvView;
+import com.bassamalim.athkar.activities.TvActivity;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class OtherFragment extends Fragment {
@@ -36,7 +36,7 @@ public class OtherFragment extends Fragment {
 
     public void setListeners() {
         binding.channels.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), TvView.class);
+            Intent intent = new Intent(getContext(), TvActivity.class);
             startActivity(intent);
         });
         binding.settings.setOnClickListener(v -> {

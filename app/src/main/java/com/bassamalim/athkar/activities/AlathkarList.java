@@ -1,4 +1,4 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,10 +11,13 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.helpers.Utils;
 import com.bassamalim.athkar.adapters.AlathkarAdapter;
 import com.bassamalim.athkar.databinding.AlathkarListActivityBinding;
 import com.bassamalim.athkar.models.AlathkarButton;
-import com.bassamalim.athkar.views.AlathkarView;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,7 +92,7 @@ public class AlathkarList extends AppCompatActivity {
 
                 int finalI = i;
                 View.OnClickListener clickListener = v -> {
-                    Intent intent = new Intent(this, AlathkarView.class);
+                    Intent intent = new Intent(this, AlathkarActivity.class);
                     intent.putExtra("category", index);
                     intent.putExtra("thikrs_index", finalI);
                     startActivity(intent);
@@ -122,7 +125,7 @@ public class AlathkarList extends AppCompatActivity {
                     int finalI = i;
                     int finalJ = j;
                     View.OnClickListener clickListener = v -> {
-                        Intent intent = new Intent(this, AlathkarView.class);
+                        Intent intent = new Intent(this, AlathkarActivity.class);
                         intent.putExtra("category", finalI);
                         intent.putExtra("thikrs_index", finalJ);
                         startActivity(intent);

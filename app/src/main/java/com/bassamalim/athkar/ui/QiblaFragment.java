@@ -15,8 +15,8 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
 import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.MainActivity;
-import com.bassamalim.athkar.QiblaMaster;
+import com.bassamalim.athkar.activities.MainActivity;
+import com.bassamalim.athkar.other.QiblaMaster;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.QiblaFragmentBinding;
 import com.bassamalim.athkar.dialogs.CompassCalibrate;

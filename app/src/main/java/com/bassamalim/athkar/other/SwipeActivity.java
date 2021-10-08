@@ -1,4 +1,4 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.other;
 
 import android.os.Bundle;
 import android.view.GestureDetector;

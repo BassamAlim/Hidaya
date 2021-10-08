@@ -1,4 +1,4 @@
-package com.bassamalim.athkar.views;
+package com.bassamalim.athkar.activities;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,10 +8,10 @@ import android.widget.MediaController;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bassamalim.athkar.FSMediaController;
+import com.bassamalim.athkar.other.FSMediaController;
 import com.bassamalim.athkar.databinding.TvViewBinding;
 
-public class TvView extends AppCompatActivity {
+public class TvActivity extends AppCompatActivity {
 
     private TvViewBinding binding;
     private static Uri uri = Uri.parse("");

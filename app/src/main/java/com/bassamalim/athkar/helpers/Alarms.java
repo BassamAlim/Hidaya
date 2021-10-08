@@ -1,4 +1,4 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.helpers;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -9,16 +9,17 @@ import android.location.Location;
 import android.os.Build;
 import android.util.Log;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.receivers.NotificationReceiver;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class Alarms extends AppCompatActivity {
+public class Alarms {
 
     private final Context context;
     private Context appContext;
