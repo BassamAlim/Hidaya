@@ -171,13 +171,13 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (variable == 6) {
             intent = new Intent(context, AlathkarActivity.class);
             intent.putExtra("category", 1);
-            intent.putExtra("index", 0);
+            intent.putExtra("thikrs_index", 0);
             intent.putExtra("title", "أذكار الصباح");
         }
         else if (variable == 7) {
             intent = new Intent(context, AlathkarActivity.class);
             intent.putExtra("category", 1);
-            intent.putExtra("index", 1);
+            intent.putExtra("thikrs_index", 1);
             intent.putExtra("title", "أذكار المساء");
         }
         else if (variable == 8) {

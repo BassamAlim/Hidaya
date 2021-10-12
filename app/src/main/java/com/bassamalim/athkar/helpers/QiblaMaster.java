@@ -1,4 +1,4 @@
-package com.bassamalim.athkar.other;
+package com.bassamalim.athkar.helpers;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

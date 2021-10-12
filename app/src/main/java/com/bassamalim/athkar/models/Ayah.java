@@ -1,16 +1,26 @@
 package com.bassamalim.athkar.models;
 
+import android.text.SpannableString;
+import android.widget.TextView;
+
 public class Ayah {
 
     private final int juz;
+    private final int surah;
+    private final int ayah;
     private final String surahName;
     private String text;
     private final String tafseer;
     private int start;
     private int end;
+    private SpannableString ss;
+    private int index;
+    private TextView screen;
 
-    public Ayah(int gJuz, String gSurahName, String gText, String gTafseer) {
+    public Ayah(int gJuz, int gSurah, int gAyah, String gSurahName, String gText, String gTafseer) {
         juz = gJuz;
+        surah = gSurah;
+        ayah = gAyah;
         surahName = gSurahName;
         text = gText;
         tafseer = gTafseer;
@@ -18,6 +28,14 @@ public class Ayah {
 
     public int getJuz() {
         return juz;
+    }
+
+    public int getSurah() {
+        return surah;
+    }
+
+    public int getAyah() {
+        return ayah;
     }
 
     public String getSurahName() {
@@ -52,4 +70,27 @@ public class Ayah {
         this.end = end;
     }
 
+    public SpannableString getSS() {
+        return ss;
+    }
+
+    public void setSS(SpannableString ss) {
+        this.ss = ss;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public TextView getScreen() {
+        return screen;
+    }
+
+    public void setScreen(TextView screen) {
+        this.screen = screen;
+    }
 }

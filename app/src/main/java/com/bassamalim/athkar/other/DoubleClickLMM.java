@@ -2,7 +2,9 @@ package com.bassamalim.athkar.other;
 
 import android.text.Layout;
 import android.text.Spannable;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.BackgroundColorSpan;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -12,9 +14,61 @@ public class DoubleClickLMM extends LinkMovementMethod {
     private long lastClick;
     //variable for storing the last clicked span
     private DoubleClickableSpan lastSpan;
+    //variable for storing the last clicked string
+    private Spannable lastBuffer;
+    // the spanning configuration
+    private static Object what;
 
     @Override
     public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            DoubleClickableSpan[] arr = getSpan(widget, buffer, event);
+            if (arr.length > 0) {
+                DoubleClickableSpan pressedSpan = arr[0];
+
+                boolean same = false;
+                if (lastSpan == null)
+                    setSpan(buffer, pressedSpan);
+                else {
+                    if (pressedSpan == lastSpan)
+                        same = true;
+                    removeSpan();
+                    if (!same)
+                        setSpan(buffer, pressedSpan);
+                }
+
+                //constant for defining the time duration between the click that can be
+                // considered as double-tap
+                int MAX_DURATION = 1200;
+                if (System.currentTimeMillis() < lastClick + MAX_DURATION &&
+                        pressedSpan == lastSpan) {
+                    pressedSpan.onDoubleClick(widget);
+                    lastClick = 0;
+                }
+                else {
+                    pressedSpan.onClick(buffer, what);
+                    lastClick = System.currentTimeMillis();
+                }
+                lastSpan = pressedSpan;
+                lastBuffer = buffer;
+            }
+        }
+        return true;
+    }
+
+    private void setSpan(Spannable buffer, DoubleClickableSpan pressedSpan) {
+        buffer.setSpan(what, buffer.getSpanStart(
+                pressedSpan), buffer.getSpanEnd(pressedSpan),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    private void removeSpan() {
+        lastBuffer.removeSpan(what);
+        lastSpan = null;
+        lastBuffer = null;
+    }
+
+    private DoubleClickableSpan[] getSpan(TextView widget, Spannable buffer, MotionEvent event) {
         int x = (int) event.getX();
         int y = (int) event.getY();
         x -= widget.getTotalPaddingLeft();
@@ -24,30 +78,15 @@ public class DoubleClickLMM extends LinkMovementMethod {
         Layout layout = widget.getLayout();
         int line = layout.getLineForVertical(y);
         int off = layout.getOffsetForHorizontal(line, x);
-        DoubleClickableSpan[] links = buffer.getSpans(off, off, DoubleClickableSpan.class);
-
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            if (links.length != 0) {
-                //constant for defining the time duration between the click that can be considered as double-tap
-                int MAX_DURATION = 1200;
-                if (System.currentTimeMillis() < lastClick + MAX_DURATION && links[0] == lastSpan) {
-                    links[0].onDoubleClick(widget);
-                    lastClick = 0;
-                }
-                else
-                    lastClick = System.currentTimeMillis();
-                lastSpan = links[0];
-            }
-        }
-        return true;
+        return buffer.getSpans(off, off, DoubleClickableSpan.class);
     }
 
     private static DoubleClickLMM sInstance;
-    public static DoubleClickLMM getInstance() {
+    public static DoubleClickLMM getInstance(int color) {
+        what = new BackgroundColorSpan(color);
         if (sInstance == null)
             sInstance = new DoubleClickLMM();
 
         return sInstance;
     }
-
 }

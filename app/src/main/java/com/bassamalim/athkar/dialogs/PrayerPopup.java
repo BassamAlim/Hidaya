@@ -16,15 +16,14 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.helpers.Alarms;
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.helpers.Alarms;
 
-public class PrayerPopup extends AppCompatActivity {
+public class PrayerPopup {
 
     private final Context context;
     private PopupWindow popupWindow;
@@ -33,7 +32,6 @@ public class PrayerPopup extends AppCompatActivity {
     private final String name;
     private final SharedPreferences pref;
     private Button[] buttons;
-    private Spinner spinner;
     private ImageView[] images;
 
     public PrayerPopup(Context gContext, View v, int gId, String gName) {
@@ -75,8 +73,6 @@ public class PrayerPopup extends AppCompatActivity {
         buttons[1] = popupWindow.getContentView().findViewById(R.id.mute_button);
         buttons[2] = popupWindow.getContentView().findViewById(R.id.sound_button);
 
-        spinner = popupWindow.getContentView().findViewById(R.id.time_setting_spinner);
-
         setImages();
 
         int state = pref.getInt(id + "notification_type", 2);
@@ -87,8 +83,8 @@ public class PrayerPopup extends AppCompatActivity {
     }
 
     private void setListeners() {
-        SharedPreferences.Editor editor = pref.edit();
         buttons[2].setOnClickListener(v -> {
+            SharedPreferences.Editor editor = pref.edit();
             images[id].setImageDrawable(ResourcesCompat.getDrawable(context.getResources(),
                     R.drawable.ic_sound, context.getTheme()));
 
@@ -99,6 +95,7 @@ public class PrayerPopup extends AppCompatActivity {
             editor.apply();
         });
         buttons[1].setOnClickListener(v -> {
+            SharedPreferences.Editor editor = pref.edit();
             images[id].setImageDrawable(ResourcesCompat.getDrawable(context.getResources(),
                     R.drawable.ic_mute, context.getTheme()));
 
@@ -109,6 +106,7 @@ public class PrayerPopup extends AppCompatActivity {
             editor.apply();
         });
         buttons[0].setOnClickListener(v -> {
+            SharedPreferences.Editor editor = pref.edit();
             images[id].setImageDrawable(ResourcesCompat.getDrawable(context.getResources(),
                     R.drawable.ic_disabled, context.getTheme()));
 
@@ -121,23 +119,26 @@ public class PrayerPopup extends AppCompatActivity {
     }
 
     private void setupSpinner() {
-        SharedPreferences.Editor editor = pref.edit();
-
-        spinner = popupWindow.getContentView().findViewById(R.id.time_setting_spinner);
+        Spinner spinner = popupWindow.getContentView().findViewById(R.id.time_setting_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
                 R.array.time_settings, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        try {
+            spinner.setAdapter(adapter);
+        }
+        catch (Exception ignored){}
+
 
         int time = pref.getInt(id +"spinner_last", 4);
         spinner.setSelection(time);
 
-        AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long vId) {
+                SharedPreferences.Editor editor = pref.edit();
                 int min = Integer.parseInt(parent.getItemAtPosition(position).toString());
                 Log.i(Constants.TAG, "delay is set to: " + min);
 
@@ -152,8 +153,7 @@ public class PrayerPopup extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
-        };
-        spinner.setOnItemSelectedListener(listener);
+        });
     }
 
     private void selectedState(int choice) {

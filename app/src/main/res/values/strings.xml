@@ -75,6 +75,11 @@
     <string name="app_widget_description">This is an app widget description</string>
     <string name="continue_reading">اكمل القراءة</string>
     <string name="bookmark_page_button">button to bookmark page</string>
+    <string name="recitation_settings">إعدادات التلاوة</string>
+    <string name="whole_surah">السورة كاملة</string>
+    <string name="ayahs">آيات</string>
+    <string name="choose_reciter">اختر القارئ</string>
+    <string name="play_next_page">تشغيل الصفحة التالية</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

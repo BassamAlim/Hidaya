@@ -9,18 +9,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bassamalim.athkar.other.FSMediaController;
-import com.bassamalim.athkar.databinding.TvViewBinding;
+import com.bassamalim.athkar.databinding.TvActivityBinding;
 
 public class TvActivity extends AppCompatActivity {
 
-    private TvViewBinding binding;
+    private TvActivityBinding binding;
     private static Uri uri = Uri.parse("");
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = TvViewBinding.inflate(getLayoutInflater());
+        binding = TvActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

@@ -9,5 +9,6 @@
     <color name="light_secondary">#56738E</color>
     <color name="accent">#00ADB5</color>
     <color name="text">#BCC2C7</color>
+    <color name="track">#0E1214</color>
 
 </resources>

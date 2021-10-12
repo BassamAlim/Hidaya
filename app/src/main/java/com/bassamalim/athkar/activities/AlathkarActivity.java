@@ -18,7 +18,7 @@ import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.helpers.Utils;
-import com.bassamalim.athkar.databinding.AlathkarViewBinding;
+import com.bassamalim.athkar.databinding.AlathkarActivityBinding;
 import com.bassamalim.athkar.models.Thikr;
 
 import org.json.JSONArray;
@@ -30,7 +30,7 @@ import java.util.Objects;
 
 public class AlathkarActivity extends AppCompatActivity {
 
-    private AlathkarViewBinding binding;
+    private AlathkarActivityBinding binding;
     private int textSize;
     private ArrayList<Thikr> thikrsList;
     private LinearLayout linear;
@@ -41,7 +41,7 @@ public class AlathkarActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = AlathkarViewBinding.inflate(getLayoutInflater());
+        binding = AlathkarActivityBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 
@@ -50,7 +50,7 @@ public class AlathkarActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         category = intent.getIntExtra("category", 0);
-        index = intent.getIntExtra("index", 0);
+        index = intent.getIntExtra("thikrs_index", 0);
 
         getThikrs();
 

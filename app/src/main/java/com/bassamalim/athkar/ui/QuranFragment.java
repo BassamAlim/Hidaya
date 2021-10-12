@@ -41,7 +41,7 @@ public class QuranFragment extends Fragment {
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
     private GridLayoutManager gridLayoutManager;
-    private String tanzeelArr[];
+    private String[] tanzeelArr;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

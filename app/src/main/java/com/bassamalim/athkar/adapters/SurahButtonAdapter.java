@@ -67,9 +67,9 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
 
         Drawable d = null;
         if (tanzeel.equals("Meccan"))
-            d = AppCompatResources.getDrawable(context, R.drawable.ic_kaaba);
+            d = AppCompatResources.getDrawable(context, R.drawable.ic_kaaba_black);
         else if (tanzeel.equals("Medinan"))
-            d = AppCompatResources.getDrawable(context, R.drawable.ic_madina);
+            d = AppCompatResources.getDrawable(context, R.drawable.ic_madinah);
 
         viewHolder.getButton().setCompoundDrawablesWithIntrinsicBounds(d,
                 null, null, null);
