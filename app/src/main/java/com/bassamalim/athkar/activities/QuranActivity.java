@@ -70,6 +70,7 @@ public class QuranActivity extends SwipeActivity {
     private MediaPlayer mediaPlayer;
     private WifiManager.WifiLock wifiLock;
     private Ayah selected;
+    private Ayah lastPlayed;
     private Spannable selectedSpannable;
     private Ayah lastTracked;
     private Object selectionWhat;
@@ -161,6 +162,8 @@ public class QuranActivity extends SwipeActivity {
 
         binding.play.setOnClickListener(v -> {
             if (mediaPlayer.isPlaying()) {
+                if (lastPlayed != null)
+                    selected = lastPlayed;
                 mediaPlayer.stop();
                 binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
                         R.drawable.ic_play_blue, getTheme()));
@@ -168,8 +171,9 @@ public class QuranActivity extends SwipeActivity {
             else {
                 if (selected == null)
                     selected = allAyahs.get(0);
+                else
+                    selectedSpannable.removeSpan(selectionWhat);
                 setPlayer(selected);
-                selectedSpannable.removeSpan(selectionWhat);
                 binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
                         R.drawable.ic_stop, getTheme()));
                 selected = null;
@@ -366,7 +370,6 @@ public class QuranActivity extends SwipeActivity {
 
     private void play(Ayah ayah) {
         String text = getSource();
-        text += "/";
         text += format(ayah.getSurah());
         text += format(ayah.getAyah());
         text += ".mp3";
@@ -380,6 +383,7 @@ public class QuranActivity extends SwipeActivity {
             mediaPlayer.prepareAsync();
             mediaPlayer.setOnPreparedListener(mp -> {
                 track(ayah);
+                lastPlayed = ayah;
                 mediaPlayer.start();
             });
         }
