@@ -32,7 +32,7 @@ public class DoubleClickLMM extends LinkMovementMethod {
                 else {
                     if (pressedSpan == lastSpan)
                         same = true;
-                    removeSpan();
+                    lastBuffer.removeSpan(what);
                     if (!same)
                         setSpan(buffer, pressedSpan);
                 }
@@ -60,12 +60,6 @@ public class DoubleClickLMM extends LinkMovementMethod {
         buffer.setSpan(what, buffer.getSpanStart(
                 pressedSpan), buffer.getSpanEnd(pressedSpan),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-    }
-
-    private void removeSpan() {
-        lastBuffer.removeSpan(what);
-        lastSpan = null;
-        lastBuffer = null;
     }
 
     private DoubleClickableSpan[] getSpan(TextView widget, Spannable buffer, MotionEvent event) {
