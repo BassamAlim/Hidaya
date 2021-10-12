@@ -185,16 +185,16 @@ public class QuranActivity extends SwipeActivity {
 
     @Override
     protected void previous() {
-        if (currentPage < Constants.QURAN_PAGES) {
-            buildPage(++currentPage);
+        if (currentPage > 1) {
+            buildPage(--currentPage);
             binding.scrollView.scrollTo(0, 0);
         }
     }
 
     @Override
     protected void next() {
-        if (currentPage > 1) {
-            buildPage(--currentPage);
+        if (currentPage < Constants.QURAN_PAGES) {
+            buildPage(++currentPage);
             Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
             binding.scrollView.scrollTo(0, 0);
         }
@@ -397,7 +397,7 @@ public class QuranActivity extends SwipeActivity {
             catch (Exception e) {
                 boolean playNext = pref.getBoolean("play_next_page", true);
                 if (playNext) {
-                    previous();    // some kind of stupid mistake
+                    next();
                     play(allAyahs.get(0));
                 }
                 else {
