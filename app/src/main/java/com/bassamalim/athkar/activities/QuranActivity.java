@@ -51,6 +51,7 @@ import java.util.Random;
 
 public class QuranActivity extends SwipeActivity {
 
+    private final int QURAN_PAGES = 604;
     private QuranActivityBinding binding;
     private SharedPreferences pref;
     private String action;
@@ -120,7 +121,7 @@ public class QuranActivity extends SwipeActivity {
                 currentPage = getPage(surahIndex);
                 break;
             case "random":
-                currentPage = new Random().nextInt(Constants.QURAN_PAGES - 1);
+                currentPage = new Random().nextInt(QURAN_PAGES - 1);
                 break;
             case "bookmark":
                 currentPage = intent.getIntExtra("page", 0);
@@ -193,7 +194,7 @@ public class QuranActivity extends SwipeActivity {
 
     @Override
     protected void next() {
-        if (currentPage < Constants.QURAN_PAGES) {
+        if (currentPage < QURAN_PAGES) {
             buildPage(++currentPage);
             Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
             binding.scrollView.scrollTo(0, 0);

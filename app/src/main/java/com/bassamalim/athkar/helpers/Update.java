@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.dialogs.UpdateDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class Update {
 
+    private final String UPDATE_AVAILABLE = "update_available";
+    private final String LATEST_VERSION = "latest_app_version";
     private final Context context;
     private final String TAG = "Update";
     private final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
@@ -26,11 +27,11 @@ public class Update {
         remoteConfig.fetchAndActivate().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.i(TAG, "remote config is fetched.");
-                boolean available = remoteConfig.getBoolean(Constants.UPDATE_AVAILABLE);
+                boolean available = remoteConfig.getBoolean(UPDATE_AVAILABLE);
                 remoteConfig.fetchAndActivate();
                 if (available) {
                     Log.i(TAG, "Update available");
-                    String latestVersion = remoteConfig.getString(Constants.LATEST_VERSION);
+                    String latestVersion = remoteConfig.getString(LATEST_VERSION);
                     Log.i(TAG, "Latest: " + latestVersion);
                     Log.i(TAG, "current: " + currentVersion);
                     if (removePoint(currentVersion) < removePoint(latestVersion)) {

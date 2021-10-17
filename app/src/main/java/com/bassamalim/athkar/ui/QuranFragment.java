@@ -18,12 +18,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.helpers.Utils;
+import com.bassamalim.athkar.activities.QuranActivity;
 import com.bassamalim.athkar.adapters.SurahButtonAdapter;
 import com.bassamalim.athkar.databinding.QuranFragmentBinding;
+import com.bassamalim.athkar.helpers.Utils;
 import com.bassamalim.athkar.models.SurahButton;
-import com.bassamalim.athkar.activities.QuranActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -127,13 +126,14 @@ public class QuranFragment extends Fragment {
     }
 
     public ArrayList<SurahButton> makeSurahButtons() {
+        final int NUMBER_OF_SURAHS = 114;
         ArrayList<SurahButton> buttons = new ArrayList<>();
         String buttonJson = Utils.getJsonFromAssets(requireContext(), "surah_button.json");
-        tanzeelArr = new String[Constants.NUMBER_OF_SURAHS];
+        tanzeelArr = new String[NUMBER_OF_SURAHS];
         try {
             JSONArray array = new JSONArray(buttonJson);
 
-            for (int i=0; i<Constants.NUMBER_OF_SURAHS; i++) {
+            for (int i = 0; i< NUMBER_OF_SURAHS; i++) {
                 JSONObject obj = array.getJSONObject(i);
                 String name = obj.getString("name");
                 String searchName = obj.getString("search_name");

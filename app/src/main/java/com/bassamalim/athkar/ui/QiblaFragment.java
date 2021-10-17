@@ -14,17 +14,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
-import com.bassamalim.athkar.Constants;
-import com.bassamalim.athkar.activities.MainActivity;
-import com.bassamalim.athkar.helpers.QiblaMaster;
 import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.activities.MainActivity;
 import com.bassamalim.athkar.databinding.QiblaFragmentBinding;
 import com.bassamalim.athkar.dialogs.CompassCalibrate;
+import com.bassamalim.athkar.helpers.QiblaMaster;
 
 import java.util.HashMap;
 
 public class QiblaFragment extends Fragment {
 
+    private final double KAABA_LAT = 21.4224779;
+    private final double KAABA_LAT_IN_RAD  = Math.toRadians(KAABA_LAT);
+    private final double KAABA_LNG = 39.8251832;
     private QiblaFragmentBinding binding;
     private QiblaMaster compass;
     private Location location;
@@ -132,12 +134,13 @@ public class QiblaFragment extends Fragment {
     }
 
     public double getDistance() {
-        double dLon = Math.toRadians(Math.abs(location.getLatitude() - Constants.KAABA_LAT));
-        double dLat = Math.toRadians(Math.abs(location.getLongitude() - Constants.KAABA_LNG));
+        final double EARTH_RADIUS = 6371;
+        double dLon = Math.toRadians(Math.abs(location.getLatitude() - KAABA_LAT));
+        double dLat = Math.toRadians(Math.abs(location.getLongitude() - KAABA_LNG));
         double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(Math.toRadians(location.getLatitude()))
-                * Math.cos(Math.toRadians(Constants.KAABA_LAT)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+                * Math.cos(Math.toRadians(KAABA_LAT)) * Math.sin(dLon/2) * Math.sin(dLon/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        distance = Constants.EARTH_RADIUS * c;
+        distance = EARTH_RADIUS * c;
         distance = (int) (distance * 10) / 10.0;
 
         return distance;
@@ -146,10 +149,10 @@ public class QiblaFragment extends Fragment {
     private float calculateBearing() {
         float result;
         double myLatRad = Math.toRadians(location.getLatitude());
-        double lngDiff = Math.toRadians(Constants.KAABA_LNG - location.getLongitude());
-        double y = Math.sin(lngDiff) * Math.cos(Constants.KAABA_LAT_IN_RAD);
-        double x = Math.cos(myLatRad) * Math.sin(Constants.KAABA_LAT_IN_RAD) - Math.sin(myLatRad)
-                * Math.cos(Constants.KAABA_LAT_IN_RAD) * Math.cos(lngDiff);
+        double lngDiff = Math.toRadians(KAABA_LNG - location.getLongitude());
+        double y = Math.sin(lngDiff) * Math.cos(KAABA_LAT_IN_RAD);
+        double x = Math.cos(myLatRad) * Math.sin(KAABA_LAT_IN_RAD) - Math.sin(myLatRad)
+                * Math.cos(KAABA_LAT_IN_RAD) * Math.cos(lngDiff);
         result = (float) ((Math.toDegrees(Math.atan2(y, x)) + 360) % 360);
 
         return result;
