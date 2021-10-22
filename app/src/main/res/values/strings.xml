@@ -80,6 +80,7 @@
     <string name="ayahs">آيات</string>
     <string name="choose_reciter">اختر القارئ</string>
     <string name="play_next_page">تشغيل الصفحة التالية</string>
+    <string name="location_not_accessed">لا يمكن الوصول للموفع حاليا</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

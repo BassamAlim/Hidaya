@@ -28,6 +28,7 @@ public class QiblaFragment extends Fragment {
     private final double KAABA_LAT_IN_RAD  = Math.toRadians(KAABA_LAT);
     private final double KAABA_LNG = 39.8251832;
     private QiblaFragmentBinding binding;
+    private boolean located = true;
     private QiblaMaster compass;
     private Location location;
     private float currentAzimuth;
@@ -38,15 +39,19 @@ public class QiblaFragment extends Fragment {
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        location = MainActivity.location;
+        if (!MainActivity.located.equals("null")) {
+            location = MainActivity.location;
 
-        distance = getDistance();
-        bearing = calculateBearing();
+            distance = getDistance();
+            bearing = calculateBearing();
 
-        setupCompass();
+            setupCompass();
 
-        if (compass != null)
-            compass.start(requireContext());
+            if (compass != null)
+                compass.start(requireContext());
+        }
+        else
+            located = false;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -54,10 +59,15 @@ public class QiblaFragment extends Fragment {
         binding = QiblaFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        String text = "المسافة الى الكعبة: " + translateNumbers(String.valueOf(distance)) + " كم";
-        binding.distanceText.setText(text);
+        if (!located)
+            binding.distanceText.setText("يجب السماح بالوصول للموقع لحساب اتجاه القبلة");
+        else {
+            String text = "المسافة الى الكعبة: " +
+                    translateNumbers(String.valueOf(distance)) + " كم";
+            binding.distanceText.setText(text);
 
-        binding.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT);
+            binding.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT);
+        }
 
         inflater.inflate(R.layout.qibla_fragment, container, false);
         return root;
@@ -73,7 +83,7 @@ public class QiblaFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (compass != null)
+        if (located && compass != null)
             compass.start(requireContext());
     }
 
@@ -137,8 +147,9 @@ public class QiblaFragment extends Fragment {
         final double EARTH_RADIUS = 6371;
         double dLon = Math.toRadians(Math.abs(location.getLatitude() - KAABA_LAT));
         double dLat = Math.toRadians(Math.abs(location.getLongitude() - KAABA_LNG));
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(Math.toRadians(location.getLatitude()))
-                * Math.cos(Math.toRadians(KAABA_LAT)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(Math.toRadians(
+                location.getLatitude())) * Math.cos(Math.toRadians(KAABA_LAT))
+                * Math.sin(dLon/2) * Math.sin(dLon/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         distance = EARTH_RADIUS * c;
         distance = (int) (distance * 10) / 10.0;

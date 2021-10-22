@@ -67,7 +67,10 @@ public class Keeper {
     public Location retrieveLocation() {
         lJson = pref.getString("stored location", "");
         MyLocation myLocation = gson.fromJson(lJson, MyLocation.class);
-        return MyLocation.toLocation(myLocation);
+        if (myLocation == null)
+            return null;
+        else
+            return MyLocation.toLocation(myLocation);
     }
 
     public Calendar[] retrieveTimes() {

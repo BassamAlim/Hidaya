@@ -1,5 +1,6 @@
 package com.bassamalim.athkar.activities;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,25 +8,27 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
 
+import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.databinding.ActivityMainBinding;
 import com.bassamalim.athkar.helpers.Alarms;
 import com.bassamalim.athkar.helpers.DailyUpdate;
 import com.bassamalim.athkar.helpers.Keeper;
-import com.bassamalim.athkar.R;
-import com.bassamalim.athkar.databinding.ActivityMainBinding;
 import com.bassamalim.athkar.helpers.PrayTimes;
 import com.bassamalim.athkar.helpers.Update;
 import com.bassamalim.athkar.receivers.DeviceBootReceiver;
+import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
-import java.time.chrono.HijrahDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     public FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
     public static Location location;
     public static Calendar[] times;
+    public static String located;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,16 +65,25 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         location = intent.getParcelableExtra("location");
+        located = intent.getStringExtra("located");
 
-        if (location.getLatitude() != 0.0 || location.getLongitude() != 0.0)
+        if (located.equals("null"))
+            Toast.makeText(this, "لا يمكن الوصول للموقع حاليا", Toast.LENGTH_SHORT).show();
+        else if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)
+            Toast.makeText(this, "يرجى السماح بالموقع في الخلفية لإبقاء الموقع دقيق",
+                    Toast.LENGTH_SHORT).show();
+        else if (located.equals("retrieved"))
+            Toast.makeText(this, "لا يمكن الوصول للموقع حاليا تم استرجاع الموقع المحفوظ",
+                    Toast.LENGTH_SHORT).show();
+
+        if (!located.equals("null")) {
             new Keeper(this, location);
-        else
-            location = new Keeper(this).retrieveLocation();
-
-        times = getTimes(location);
-        //times = test();
-
-        new Alarms(this, times);
+            times = getTimes(location);
+            //times = test();
+            new Alarms(this, times);
+        }
 
         dailyUpdate();
         setupBootReceiver();
@@ -127,26 +140,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setHijri() {
-        String text = whichDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) + " ";
+        UmmalquraCalendar hijri = new UmmalquraCalendar();
+        String text = whichDay(hijri.get(Calendar.DAY_OF_WEEK)) + " ";
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Calendar cl = Calendar.getInstance();
-            Date date = new Date();
-            cl.setTime(date);
+        String year = " " + hijri.get(Calendar.YEAR);
+        String month = " " + whichMonth(hijri.get(Calendar.MONTH));
+        String day = String.valueOf(hijri.get(Calendar.DATE));
 
-            HijrahDate hijriDate = HijrahDate.now();
-            String hDate = hijriDate.toString();
-            hDate = hDate.substring(19);
+        year = translateNumbers(year);
+        day = translateNumbers(day);
 
-            String year = hDate.substring(0, 4);
-            String month = whichMonth(Integer.parseInt(hDate.substring(5, 7)));
-            String  day = hDate.substring(8, 10);
-
-            year = translateNumbers(year);
-            day = translateNumbers(day);
-
-            text += day + " " + month + " " + year;
-        }
+        text += day + month + year;
 
         binding.hijriView.setText(text);
     }
@@ -169,18 +173,18 @@ public class MainActivity extends AppCompatActivity {
     private String whichMonth(int num) {
         String result;
         HashMap<Integer, String> monthMap = new HashMap<>();
-        monthMap.put(1, "مُحَرَّم");
-        monthMap.put(2, "صَفَر");
-        monthMap.put(3, "ربيع الأول");
-        monthMap.put(4, "ربيع الثاني");
-        monthMap.put(5, "جُمادى الأول");
-        monthMap.put(6, "جُمادى الآخر");
-        monthMap.put(7, "رجب");
-        monthMap.put(8, "شعبان");
-        monthMap.put(9, "رَمَضان");
-        monthMap.put(10, "شَوَّال");
-        monthMap.put(11, "ذو القِعْدة");
-        monthMap.put(12, "ذو الحِجَّة");
+        monthMap.put(0, "مُحَرَّم");
+        monthMap.put(1, "صَفَر");
+        monthMap.put(2, "ربيع الأول");
+        monthMap.put(3, "ربيع الثاني");
+        monthMap.put(4, "جُمادى الأول");
+        monthMap.put(5, "جُمادى الآخر");
+        monthMap.put(6, "رجب");
+        monthMap.put(7, "شعبان");
+        monthMap.put(8, "رَمَضان");
+        monthMap.put(9, "شَوَّال");
+        monthMap.put(10, "ذو القِعْدة");
+        monthMap.put(11, "ذو الحِجَّة");
 
         result = monthMap.get(num);
         return result;

@@ -18,11 +18,12 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.activities.MainActivity;
-import com.bassamalim.athkar.helpers.PrayTimes;
 import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.activities.MainActivity;
 import com.bassamalim.athkar.databinding.PrayersFragmentBinding;
 import com.bassamalim.athkar.dialogs.PrayerPopup;
+import com.bassamalim.athkar.helpers.PrayTimes;
+import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,14 +38,17 @@ public class PrayersFragment extends Fragment {
     private Location location;
     private String[] prayerNames;
     private Calendar[] times;
-    private ArrayList<String> formattedTimes;
     private Calendar tomorrowFajr;
     private final CardView[] cards = new CardView[6];
     private final TextView[] screens = new TextView[6];
     private final TextView[] counters = new TextView[6];
-    public static final ImageView[] images = new ImageView[6];
+    private final ImageView[] images = new ImageView[6];
+    private TextView dayScreen;
     private CountDownTimer timer;
     private SharedPreferences pref;
+    private int currentChange = 0;
+    private Calendar selectedDay;
+    private int closest;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,45 +56,23 @@ public class PrayersFragment extends Fragment {
         binding = PrayersFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        if (!MainActivity.located.equals("null")) {
+            initiate();
 
-        location = MainActivity.location;
-        getTimes();
-        formatTimes();
+            goToToday();
 
-        setViews();
-        setInitialState();
-        show();
-
-        setupCountdown();
-
-        setListeners();
+            setInitialState();
+            setListeners();
+        }
 
         return root;
     }
 
-    private void getTimes() {
-        PrayTimes prayTimes = new PrayTimes();
+    private void initiate() {
+        pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
-        Calendar calendar = Calendar.getInstance();
-        Date date = new Date();
-        calendar.setTime(date);
+        location = MainActivity.location;
 
-        TimeZone timeZoneObj = TimeZone.getDefault();
-        long millis = timeZoneObj.getOffset(date.getTime());
-        double timezone = millis / 3600000.0;
-
-        times = prayTimes.getPrayerTimesArray(calendar, location.getLatitude(),
-                location.getLongitude(), timezone);
-
-        formattedTimes = prayTimes.getPrayerTimes(calendar, location.getLatitude(),
-                location.getLongitude(), timezone);
-
-        tomorrowFajr = prayTimes.getTomorrowFajr(calendar, location.getLatitude(),
-                location.getLongitude(), timezone);
-    }
-
-    private void formatTimes() {
         prayerNames = new String[6];
         prayerNames[0] = "الفجر";
         prayerNames[1] = "الشروق";
@@ -99,8 +81,7 @@ public class PrayersFragment extends Fragment {
         prayerNames[4] = "المغرب";
         prayerNames[5] = "العشاء";
 
-        for (int i = 0; i < prayerNames.length; i++)
-            formattedTimes.set(i, prayerNames[i] + ": " + formattedTimes.get(i));
+        setViews();
     }
 
     private void setViews() {
@@ -131,17 +112,56 @@ public class PrayersFragment extends Fragment {
         images[3] = binding.asrImage;
         images[4] = binding.maghribImage;
         images[5] = binding.ishaaImage;
+
+        dayScreen = binding.dayScreen;
+    }
+
+    private void goToToday() {
+        currentChange = 0;
+        getTimes(0);
+        updateDayScreen();
+        cancelTimer();
+        count();
+    }
+
+    private void getTimes(int change) {
+        PrayTimes prayTimes = new PrayTimes();
+
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date();
+        calendar.setTime(date);
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + change);
+
+        selectedDay = calendar;
+
+        TimeZone timeZoneObj = TimeZone.getDefault();
+        long millis = timeZoneObj.getOffset(date.getTime());
+        double timezone = millis / 3600000.0;
+
+        times = prayTimes.getPrayerTimesArray(calendar, location.getLatitude(),
+                location.getLongitude(), timezone);
+
+        ArrayList<String> formattedTimes = prayTimes.getPrayerTimes(calendar,
+                location.getLatitude(), location.getLongitude(), timezone);
+
+        tomorrowFajr = prayTimes.getTomorrowFajr(calendar, location.getLatitude(),
+                location.getLongitude(), timezone);
+
+        for (int i=0; i<formattedTimes.size(); i++) {
+            String text = prayerNames[i] + ": " + formattedTimes.get(i);
+            screens[i].setText(text);
+        }
     }
 
     private void setInitialState() {
         for (int i = 0; i < images.length; i++) {
             int state = pref.getInt(i + "notification_type", 2);
             if (state == 1)
-                images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext().getResources(),
-                        R.drawable.ic_mute, requireContext().getTheme()));
+                images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext()
+                        .getResources(), R.drawable.ic_mute, requireContext().getTheme()));
             else if (state == 0)
-                images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext().getResources(),
-                        R.drawable.ic_disabled, requireContext().getTheme()));
+                images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext()
+                        .getResources(), R.drawable.ic_disabled, requireContext().getTheme()));
         }
     }
 
@@ -151,39 +171,36 @@ public class PrayersFragment extends Fragment {
             cards[i].setOnClickListener(v -> new PrayerPopup(getContext(), v,
                     finalI, prayerNames[finalI]));
         }
+
+        binding.previousDayButton.setOnClickListener(v -> previousDay());
+        binding.nextDayButton.setOnClickListener(v -> nextDay());
+        binding.dayScreen.setOnClickListener(v -> goToToday());
     }
 
-    private void show() {
-        for (int i=0; i<formattedTimes.size(); i++)
-            screens[i].setText(formattedTimes.get(i));
-    }
+    private void count() {
+        closest = findClosest();
 
-    private void setupCountdown() {
-        int coming = findClosest();
-        count(coming);
-    }
-
-    private void count(int i) {
         boolean tomorrow = false;
-        if (i == -1) {
+        if (closest == -1) {
             tomorrow = true;
-            i = 0;
+            closest = 0;
         }
 
-        TextView screen = screens[i];
-        TextView counter = counters[i];
+        TextView screen = screens[closest];
+        TextView counter = counters[closest];
         counter.setVisibility(View.VISIBLE);
         FrameLayout.LayoutParams up = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         up.gravity = Gravity.TOP | Gravity.START;
         screen.setLayoutParams(up);
 
-        long till = times[i].getTimeInMillis();
+        long till = times[closest].getTimeInMillis();
         if (tomorrow)
             till = tomorrowFajr.getTimeInMillis();
 
-        int finalI = i;
-        timer = new CountDownTimer(till - System.currentTimeMillis(), 1000) {
+        int finalI = closest;
+        timer = new CountDownTimer(till - System.currentTimeMillis(),
+                1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 long hours = millisUntilFinished / (60 * 60 * 1000) % 24;
@@ -196,29 +213,79 @@ public class PrayersFragment extends Fragment {
             }
             @Override
             public void onFinish() {
-                up.gravity = Gravity.CENTER | Gravity.END;
+                up.gravity = Gravity.CENTER | Gravity.START;
                 screens[finalI].setLayoutParams(up);
-                counter.setVisibility(View.INVISIBLE);
+                counter.setVisibility(View.GONE);
             }
         }.start();
     }
 
     private int findClosest() {
-        int closest = -1;
         long currentMillis = System.currentTimeMillis();
         for (int i=0; i<times.length; i++) {
             long millis = times[i].getTimeInMillis();
-            if (millis > currentMillis) {
-                closest = i;
-                break;
-            }
+            if (millis > currentMillis)
+                return i;
         }
-        return closest;
+        return -1;
     }
 
-    private void cancelTimer() {
-        if (timer != null)
-            timer.cancel();
+    private void previousDay() {
+        getTimes(--currentChange);
+        updateDayScreen();
+        cancelTimer();
+        if (currentChange == 0)
+            count();
+    }
+
+    private void nextDay() {
+        getTimes(++currentChange);
+        updateDayScreen();
+        cancelTimer();
+        if (currentChange == 0)
+            count();
+    }
+
+    private void updateDayScreen() {
+        if (currentChange == 0)
+            dayScreen.setText("اليوم");
+        else {
+            String text = "";
+
+            Calendar hijri = new UmmalquraCalendar();
+            hijri.setTime(selectedDay.getTime());
+
+            String day = String.valueOf(hijri.get(Calendar.DATE));
+            String year = " " + hijri.get(Calendar.YEAR);
+            String month = " " + whichMonth(hijri.get(Calendar.MONTH));
+
+            day = translateNumbers(day);
+            year = translateNumbers(year);
+
+            text += day + " " + month + " " + year;
+
+            dayScreen.setText(translateNumbers(text));
+        }
+    }
+
+    private String whichMonth(int num) {
+        String result;
+        HashMap<Integer, String> monthMap = new HashMap<>();
+        monthMap.put(0, "مُحَرَّم");
+        monthMap.put(1, "صَفَر");
+        monthMap.put(2, "ربيع الأول");
+        monthMap.put(3, "ربيع الثاني");
+        monthMap.put(4, "جُمادى الأول");
+        monthMap.put(5, "جُمادى الآخر");
+        monthMap.put(6, "رجب");
+        monthMap.put(7, "شعبان");
+        monthMap.put(8, "رَمَضان");
+        monthMap.put(9, "شَوَّال");
+        monthMap.put(10, "ذو القِعْدة");
+        monthMap.put(11, "ذو الحِجَّة");
+
+        result = monthMap.get(num);
+        return result;
     }
 
     private String translateNumbers(String english) {
@@ -249,6 +316,17 @@ public class PrayersFragment extends Fragment {
             temp.append(t);
         }
         return temp.toString();
+    }
+
+    private void cancelTimer() {
+        if (timer != null) {
+            timer.cancel();
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            params.gravity = Gravity.CENTER | Gravity.START;
+            counters[closest].setVisibility(View.GONE);
+            screens[closest].setLayoutParams(params);
+        }
     }
 
     public void onDestroyView() {
