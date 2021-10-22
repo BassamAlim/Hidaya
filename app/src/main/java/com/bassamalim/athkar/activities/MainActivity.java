@@ -1,6 +1,5 @@
 package com.bassamalim.athkar.activities;
 
-import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +10,6 @@ import android.view.KeyEvent;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -40,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     public FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
     public static Location location;
     public static Calendar[] times;
-    public static String located;
+    public static boolean located;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,24 +63,18 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         location = intent.getParcelableExtra("location");
-        located = intent.getStringExtra("located");
+        located = intent.getBooleanExtra("located", false);
 
-        if (located.equals("null"))
-            Toast.makeText(this, "لا يمكن الوصول للموقع حاليا", Toast.LENGTH_SHORT).show();
-        else if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                != PackageManager.PERMISSION_GRANTED)
-            Toast.makeText(this, "يرجى السماح بالموقع في الخلفية لإبقاء الموقع دقيق",
-                    Toast.LENGTH_SHORT).show();
-        else if (located.equals("retrieved"))
-            Toast.makeText(this, "لا يمكن الوصول للموقع حاليا تم استرجاع الموقع المحفوظ",
-                    Toast.LENGTH_SHORT).show();
-
-        if (!located.equals("null")) {
+        if (located) {
             new Keeper(this, location);
             times = getTimes(location);
             //times = test();
             new Alarms(this, times);
+        }
+        else {
+            Toast.makeText(this,
+                    "لا يمكن الوصول للموقع، يرجى إعطاء أذن الوصول للموقع لحساب أوقات الصلاة والقبلة",
+                    Toast.LENGTH_SHORT).show();
         }
 
         dailyUpdate();

@@ -39,7 +39,7 @@ public class QiblaFragment extends Fragment {
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!MainActivity.located.equals("null")) {
+        if (MainActivity.located) {
             location = MainActivity.location;
 
             distance = getDistance();

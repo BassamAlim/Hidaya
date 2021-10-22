@@ -56,7 +56,7 @@ public class PrayersFragment extends Fragment {
         binding = PrayersFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        if (!MainActivity.located.equals("null")) {
+        if (MainActivity.located) {
             initiate();
 
             goToToday();

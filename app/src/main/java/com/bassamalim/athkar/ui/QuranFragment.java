@@ -40,7 +40,6 @@ public class QuranFragment extends Fragment {
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
     private GridLayoutManager gridLayoutManager;
-    private String[] tanzeelArr;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -95,10 +94,12 @@ public class QuranFragment extends Fragment {
         binding.continueReading.setText(text);
 
         binding.continueReading.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), QuranActivity.class);
-            intent.setAction("bookmark");
-            intent.putExtra("page", page);
-            requireContext().startActivity(intent);
+            if (page != -1) {
+                Intent intent = new Intent(getContext(), QuranActivity.class);
+                intent.setAction("bookmark");
+                intent.putExtra("page", page);
+                requireContext().startActivity(intent);
+            }
         });
     }
 
@@ -129,7 +130,7 @@ public class QuranFragment extends Fragment {
         final int NUMBER_OF_SURAHS = 114;
         ArrayList<SurahButton> buttons = new ArrayList<>();
         String buttonJson = Utils.getJsonFromAssets(requireContext(), "surah_button.json");
-        tanzeelArr = new String[NUMBER_OF_SURAHS];
+        String[] tanzeelArr = new String[NUMBER_OF_SURAHS];
         try {
             JSONArray array = new JSONArray(buttonJson);
 

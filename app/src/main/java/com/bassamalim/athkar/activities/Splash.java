@@ -70,14 +70,10 @@ public class Splash extends AppCompatActivity {
 
         if (location == null) {
             location = new Keeper(this).retrieveLocation();
-            if (location == null)
-                intent.putExtra("located", "null");
-            else
-                intent.putExtra("located", "retrieved");
+            intent.putExtra("located", location != null);
         }
-        else {
-            intent.putExtra("located", "located");
-        }
+        else
+            intent.putExtra("located", true);
 
         intent.putExtra("location", location);
         startActivity(intent);
