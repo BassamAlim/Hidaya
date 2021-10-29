@@ -19,9 +19,9 @@ import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.Constants;
 import com.bassamalim.athkar.R;
-import com.bassamalim.athkar.activities.Splash;
 import com.bassamalim.athkar.activities.AlathkarActivity;
 import com.bassamalim.athkar.activities.QuranActivity;
+import com.bassamalim.athkar.activities.Splash;
 
 public class NotificationReceiver extends BroadcastReceiver {
 
@@ -40,9 +40,14 @@ public class NotificationReceiver extends BroadcastReceiver {
         action = intent.getAction();
         time = intent.getLongExtra("time", 0);
 
-        if (PreferenceManager.getDefaultSharedPreferences(context).getInt(
-                id+"notification_type", 2) != 0) {
+        int defaultType = 2;
+        if (id == 1)
+            defaultType = 0;
 
+        type = PreferenceManager.getDefaultSharedPreferences(context)
+                .getInt(id+"notification_type", defaultType);
+
+        if (type != 0) {
             Log.i(Constants.TAG, "in notification receiver for " + id);
 
             publish();
@@ -58,8 +63,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         long max = time + 120000;
         if (System.currentTimeMillis() <= max) {
             isPrayer = action.equals("prayer");
-            type = PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt(id+"notification_type", 2);
 
             Log.i(Constants.TAG, "in notification service for " + id);
 
