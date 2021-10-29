@@ -123,7 +123,7 @@
                     android:background="@drawable/rounded_corners"
                     android:text="@string/about"
                     android:textSize="@dimen/buttony_text_size"
-                    android:drawableTop=""
+                    android:drawableTop="@drawable/ic_info"
                     style="?android:attr/buttonBarButtonStyle"/>
 
                 <Button
@@ -139,7 +139,7 @@
                     android:background="@drawable/rounded_corners"
                     android:text="@string/share_app"
                     android:textSize="@dimen/buttony_text_size"
-                    android:drawableTop=""
+                    android:drawableTop="@drawable/ic_share"
                     style="?android:attr/buttonBarButtonStyle"/>
 
             </LinearLayout>

@@ -57,8 +57,10 @@ public class PrayerPopup {
 
         popupWindow.setBackgroundDrawable(new BitmapDrawable(null, ""));
         popupWindow.setOutsideTouchable(true);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
         popupWindow.setElevation(10);
+        popupWindow.setAnimationStyle(R.style.MyPopupAnimation);
+
+        popupWindow.showAtLocation(view, Gravity.START, 0, getY());
 
         populate();
     }
@@ -172,6 +174,18 @@ public class PrayerPopup {
         images[3] = view.findViewById(R.id.asr_image);
         images[4] = view.findViewById(R.id.maghrib_image);
         images[5] = view.findViewById(R.id.ishaa_image);
+    }
+
+    private int getY() {
+        switch (id) {
+            case 0: return  -400;
+            case 1: return -350;
+            case 2: return -180;
+            case 3: return 100;
+            case 4: return 350;
+            case 5: return 520;
+        }
+        return 0;
     }
 
 }
