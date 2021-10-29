@@ -10,5 +10,6 @@
     <color name="accent">#00ADB5</color>
     <color name="text">#BCC2C7</color>
     <color name="track">#0E1214</color>
+    <color name="bg">#1A2027</color>
 
 </resources>

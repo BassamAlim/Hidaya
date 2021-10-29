@@ -130,7 +130,6 @@ public class QuranFragment extends Fragment {
         final int NUMBER_OF_SURAHS = 114;
         ArrayList<SurahButton> buttons = new ArrayList<>();
         String buttonJson = Utils.getJsonFromAssets(requireContext(), "surah_button.json");
-        String[] tanzeelArr = new String[NUMBER_OF_SURAHS];
         try {
             JSONArray array = new JSONArray(buttonJson);
 
@@ -147,7 +146,6 @@ public class QuranFragment extends Fragment {
                     intent.putExtra("surah_index", finalI);
                     requireContext().startActivity(intent);
                 };
-                tanzeelArr[i] = tanzeel;
                 SurahButton button = new SurahButton(i,"سُورَة " + name,
                         searchName, tanzeel ,clickListener);
                 buttons.add(button);

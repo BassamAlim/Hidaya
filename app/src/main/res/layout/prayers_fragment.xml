@@ -7,14 +7,14 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:layoutDirection="rtl"
-    android:background="@drawable/background"
+    android:background="@color/bg"
     tools:context=".ui.PrayersFragment">
 
     <LinearLayout
         android:id="@+id/prayers_cards"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="32dp"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
