@@ -20,21 +20,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="75dp"
             android:orientation="vertical"
             android:layout_gravity="top"
-            android:gravity="center"
-            android:paddingBottom="75dp">
+            android:gravity="center">
 
             <Button
                 android:id="@+id/all_thikrs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="25dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/button_bg"
+                android:layout_marginVertical="22dp"
+                android:layout_marginHorizontal="30dp"
+                android:padding="5dp"
+                android:elevation="15dp"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:padding="5dp"
+                android:background="@drawable/button_bg"
                 android:text="@string/all_thikrs"
                 android:textSize="20sp"
                 android:textStyle="bold"/>
@@ -48,26 +49,31 @@
 
                 <Button
                     android:id="@+id/day_and_night"
-                    android:layout_width="@dimen/my_button_size"
-                    android:layout_height="@dimen/my_button_size"
-                    android:layout_marginEnd="@dimen/my_button_margin_end"
-                    android:padding="@dimen/my_button_padding"
-                    android:background="@drawable/rounded_corners"
-                    android:drawableTop="@drawable/ic_day_and_night"
+                    android:layout_width="@dimen/buttony_size"
+                    android:layout_height="@dimen/buttony_size"
+                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
+                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
+                    android:padding="@dimen/buttony_padding"
+                    android:elevation="@dimen/buttony_elevation"
                     android:gravity="center|bottom"
+                    android:background="@drawable/rounded_corners"
                     android:text="@string/day_and_night_thikrs"
-                    android:textSize="@dimen/my_button_text_size"
+                    android:textSize="@dimen/buttony_text_size"
+                    android:drawableTop="@drawable/ic_day_and_night"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/prayers"
-                    android:layout_width="@dimen/my_button_size"
-                    android:layout_height="@dimen/my_button_size"
-                    android:padding="@dimen/my_button_padding"
-                    android:background="@drawable/rounded_corners"
+                    android:layout_width="@dimen/buttony_size"
+                    android:layout_height="@dimen/buttony_size"
+                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
+                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
+                    android:padding="@dimen/buttony_padding"
+                    android:elevation="@dimen/buttony_elevation"
                     android:gravity="bottom|center"
+                    android:background="@drawable/rounded_corners"
                     android:text="@string/prayers_thikrs"
-                    android:textSize="@dimen/my_button_text_size"
+                    android:textSize="@dimen/buttony_text_size"
                     android:drawableTop="@drawable/ic_praying"
                     style="?android:attr/buttonBarButtonStyle" />
 
@@ -76,34 +82,38 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/my_linear_padding_top"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/quran"
-                    android:layout_width="@dimen/my_button_size"
-                    android:layout_height="@dimen/my_button_size"
-                    android:layout_marginEnd="@dimen/my_button_margin_end"
-                    android:padding="@dimen/my_button_padding"
-                    android:background="@drawable/rounded_corners"
+                    android:layout_width="@dimen/buttony_size"
+                    android:layout_height="@dimen/buttony_size"
+                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
+                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
+                    android:padding="@dimen/buttony_padding"
+                    android:elevation="@dimen/buttony_elevation"
                     android:gravity="center|bottom"
-                    android:drawableTop="@drawable/ic_closed_quran"
+                    android:background="@drawable/rounded_corners"
                     android:text="@string/quran_thikrs"
-                    android:textSize="@dimen/my_button_text_size"
+                    android:textSize="@dimen/buttony_text_size"
+                    android:drawableTop="@drawable/ic_closed_quran"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/actions"
-                    android:layout_width="@dimen/my_button_size"
-                    android:layout_height="@dimen/my_button_size"
-                    android:padding="@dimen/my_button_padding"
-                    android:background="@drawable/rounded_corners"
-                    android:drawableTop="@drawable/ic_actions"
+                    android:layout_width="@dimen/buttony_size"
+                    android:layout_height="@dimen/buttony_size"
+                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
+                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
+                    android:padding="@dimen/buttony_padding"
+                    android:elevation="@dimen/buttony_elevation"
                     android:gravity="center|bottom"
+                    android:background="@drawable/rounded_corners"
                     android:text="@string/actions_thikrs"
-                    android:textSize="@dimen/my_button_text_size"
+                    android:textSize="@dimen/buttony_text_size"
+                    android:drawableTop="@drawable/ic_actions"
                     style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
@@ -111,34 +121,38 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/my_linear_padding_top"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/events"
-                    android:layout_width="@dimen/my_button_size"
-                    android:layout_height="@dimen/my_button_size"
-                    android:layout_marginEnd="@dimen/my_button_margin_end"
-                    android:padding="@dimen/my_button_padding"
-                    android:background="@drawable/rounded_corners"
+                    android:layout_width="@dimen/buttony_size"
+                    android:layout_height="@dimen/buttony_size"
+                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
+                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
+                    android:padding="@dimen/buttony_padding"
+                    android:elevation="@dimen/buttony_elevation"
                     android:gravity="center|bottom"
-                    android:drawableTop="@drawable/ic_events"
+                    android:background="@drawable/rounded_corners"
                     android:text="@string/events_thikrs"
-                    android:textSize="@dimen/my_button_text_size"
+                    android:textSize="@dimen/buttony_text_size"
+                    android:drawableTop="@drawable/ic_events"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/emotions"
-                    android:layout_width="@dimen/my_button_size"
-                    android:layout_height="@dimen/my_button_size"
-                    android:padding="@dimen/my_button_padding"
-                    android:background="@drawable/rounded_corners"
-                    android:drawableTop="@drawable/ic_emotion"
+                    android:layout_width="@dimen/buttony_size"
+                    android:layout_height="@dimen/buttony_size"
+                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
+                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
+                    android:padding="@dimen/buttony_padding"
+                    android:elevation="@dimen/buttony_elevation"
                     android:gravity="center|bottom"
+                    android:background="@drawable/rounded_corners"
                     android:text="@string/emotion_thikrs"
-                    android:textSize="@dimen/my_button_text_size"
+                    android:textSize="@dimen/buttony_text_size"
+                    android:drawableTop="@drawable/ic_emotion"
                     style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
@@ -146,34 +160,38 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/my_linear_padding_top"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/places"
-                    android:layout_width="@dimen/my_button_size"
-                    android:layout_height="@dimen/my_button_size"
-                    android:layout_marginEnd="@dimen/my_button_margin_end"
-                    android:padding="@dimen/my_button_padding"
-                    android:background="@drawable/rounded_corners"
+                    android:layout_width="@dimen/buttony_size"
+                    android:layout_height="@dimen/buttony_size"
+                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
+                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
+                    android:padding="@dimen/buttony_padding"
+                    android:elevation="@dimen/buttony_elevation"
                     android:gravity="center|bottom"
-                    android:drawableTop="@drawable/ic_going_out"
+                    android:background="@drawable/rounded_corners"
                     android:text="@string/places_thikrs"
-                    android:textSize="@dimen/my_button_text_size"
+                    android:textSize="@dimen/buttony_text_size"
+                    android:drawableTop="@drawable/ic_going_out"
                     style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/more"
-                    android:layout_width="@dimen/my_button_size"
-                    android:layout_height="@dimen/my_button_size"
-                    android:padding="@dimen/my_button_padding"
-                    android:background="@drawable/rounded_corners"
-                    android:drawableTop="@drawable/ic_duaa_moon"
+                    android:layout_width="@dimen/buttony_size"
+                    android:layout_height="@dimen/buttony_size"
+                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
+                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
+                    android:padding="@dimen/buttony_padding"
+                    android:elevation="@dimen/buttony_elevation"
                     android:gravity="center|bottom"
+                    android:background="@drawable/rounded_corners"
                     android:text="@string/more_thikrs"
-                    android:textSize="@dimen/my_button_text_size"
+                    android:textSize="@dimen/buttony_text_size"
+                    android:drawableTop="@drawable/ic_duaa_moon"
                     style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>

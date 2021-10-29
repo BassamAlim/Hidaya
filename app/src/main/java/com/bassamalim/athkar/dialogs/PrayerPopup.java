@@ -57,8 +57,8 @@ public class PrayerPopup {
 
         popupWindow.setBackgroundDrawable(new BitmapDrawable(null, ""));
         popupWindow.setOutsideTouchable(true);
-
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        popupWindow.setElevation(10);
 
         populate();
     }

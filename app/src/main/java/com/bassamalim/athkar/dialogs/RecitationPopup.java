@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -46,11 +47,14 @@ public class RecitationPopup {
 
         View popupView = inflater.inflate(R.layout.recitation_popup,
                 new LinearLayout(context), false);
+
         popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT, true);
+
         popupWindow.setBackgroundDrawable(new BitmapDrawable(null, ""));
         popupWindow.setOutsideTouchable(true);
-        popupWindow.showAtLocation(view, Gravity.CENTER|Gravity.BOTTOM, 0, 0);
+        popupWindow.showAtLocation(view, Gravity.CENTER|Gravity.BOTTOM, 0, 150);
+        popupWindow.setElevation(10);
 
         getReciters();
         setListeners();

@@ -256,8 +256,8 @@ public class PrayersFragment extends Fragment {
             hijri.setTime(selectedDay.getTime());
 
             String day = String.valueOf(hijri.get(Calendar.DATE));
-            String year = " " + hijri.get(Calendar.YEAR);
-            String month = " " + whichMonth(hijri.get(Calendar.MONTH));
+            String year = String.valueOf(hijri.get(Calendar.YEAR));
+            String month = whichMonth(hijri.get(Calendar.MONTH));
 
             day = translateNumbers(day);
             year = translateNumbers(year);

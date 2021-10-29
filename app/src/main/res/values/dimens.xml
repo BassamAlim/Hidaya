@@ -5,10 +5,12 @@
 
     <dimen name="prayer_card_height">80dp</dimen>
     <dimen name="prayer_card_margin">20dp</dimen>
-    <dimen name="my_button_size">150dp</dimen>
-    <dimen name="my_button_padding">5dp</dimen>
-    <dimen name="my_button_margin_end">40dp</dimen>
-    <dimen name="my_button_text_size">20sp</dimen>
-    <dimen name="my_linear_padding_top">20dp</dimen>
+    <dimen name="buttony_size">150dp</dimen>
+    <dimen name="buttony_padding">5dp</dimen>
+    <dimen name="buttony_margin_vertical">10dp</dimen>
+    <dimen name="buttony_margin_horizontal">20dp</dimen>
+    <dimen name="buttony_elevation">10dp</dimen>
+    <dimen name="buttony_text_size">20sp</dimen>
+    <dimen name="lineary_padding_top">20dp</dimen>
 
 </resources>
