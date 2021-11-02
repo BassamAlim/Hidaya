@@ -53,8 +53,10 @@ public class RecitationPopup {
 
         popupWindow.setBackgroundDrawable(new BitmapDrawable(null, ""));
         popupWindow.setOutsideTouchable(true);
-        popupWindow.showAtLocation(view, Gravity.CENTER|Gravity.BOTTOM, 0, 150);
         popupWindow.setElevation(10);
+        popupWindow.setAnimationStyle(R.style.RecitationPopupAnimation);
+
+        popupWindow.showAtLocation(view, Gravity.CENTER|Gravity.BOTTOM, 0, 150);
 
         getReciters();
         setListeners();

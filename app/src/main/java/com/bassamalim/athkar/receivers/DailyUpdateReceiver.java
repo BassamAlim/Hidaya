@@ -1,7 +1,9 @@
 package com.bassamalim.athkar.receivers;
 
 import android.Manifest;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,10 +14,11 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.helpers.Alarms;
 import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.helpers.Alarms;
 import com.bassamalim.athkar.helpers.Keeper;
 import com.bassamalim.athkar.helpers.PrayTimes;
+import com.bassamalim.athkar.widgets.PrayersWidget;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
@@ -70,17 +73,22 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
     }
 
     private void update(Location location) {
-        if (location != null) {
+        if (location == null) {
+            location = new Keeper(context).retrieveLocation();
+            if (location == null) {
+                Log.e(Constants.TAG, "No available location in DailyUpdate");
+                return;
+            }
+        }
             new Keeper(context, location);
 
             Calendar[] times = getTimes(location);
 
             new Alarms(context, times);
 
+            updateWidget();
+
             updated();
-        }
-        else
-            Log.e(Constants.TAG, "Location is null in DailyUpdateService");
     }
 
     private Calendar[] getTimes(Location loc) {
@@ -94,6 +102,11 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
 
         return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
                 loc.getLongitude(), timezone);
+    }
+
+    private void updateWidget() {
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        manager.getAppWidgetIds(new ComponentName(context, PrayersWidget.class));
     }
 
     private void updated() {

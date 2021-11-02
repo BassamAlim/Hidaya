@@ -8,7 +8,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -49,16 +48,16 @@ public class TafseerDialog extends DialogFragment {
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setGravity(Gravity.CENTER);
 
+        nameScreen.setPadding(0,0,0, 10);
         nameScreen.setGravity(Gravity.CENTER);
         nameScreen.setText("التفسير");
         nameScreen.setTextSize(20);
         nameScreen.setTypeface(Typeface.DEFAULT_BOLD);
-        nameScreen.setTextColor(Color.WHITE);
 
         screen.setGravity(Gravity.CENTER);
         screen.setText(tafseer);
         screen.setTextSize(20);
-        screen.setTextColor(getResources().getColor(R.color.accent));
+        screen.setTextColor(Color.WHITE);
 
         layout.addView(nameScreen);
         layout.addView(screen);

@@ -6,7 +6,6 @@ import android.location.Location;
 
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.helpers.PrayTimes;
 import com.bassamalim.athkar.models.MyLocation;
 import com.google.gson.Gson;
 
