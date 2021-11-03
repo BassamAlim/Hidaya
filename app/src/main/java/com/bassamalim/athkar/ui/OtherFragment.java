@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.activities.Settings;
 import com.bassamalim.athkar.databinding.OtherFragmentBinding;
 import com.bassamalim.athkar.activities.TvActivity;

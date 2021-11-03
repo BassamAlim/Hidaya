@@ -11,7 +11,7 @@ import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.receivers.NotificationReceiver;
 
@@ -143,8 +143,8 @@ public class Alarms {
         int hour;
         int minute;
 
-        if (id == 9) {
-            Location loc = new Keeper(appContext).retrieveLocation();
+        Location loc = new Keeper(appContext).retrieveLocation();
+        if (id == 9 && loc != null) {
             Calendar[] times = getTimes(loc);
             Calendar duhr = times[2];
             hour = duhr.get(Calendar.HOUR_OF_DAY)+1;
@@ -162,6 +162,9 @@ public class Alarms {
                     break;
                 case 8:
                     defHour = 21;
+                    break;
+                case 9:
+                    defHour = 13;
                     break;
             }
             hour = pref.getInt(id + "hour", defHour);

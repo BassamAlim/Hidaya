@@ -11,7 +11,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.helpers.Utils;
 import com.bassamalim.athkar.adapters.AlathkarAdapter;

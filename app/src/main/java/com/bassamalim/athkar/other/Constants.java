@@ -1,4 +1,4 @@
-package com.bassamalim.athkar;
+package com.bassamalim.athkar.other;
 
 public class Constants {
     public static final String TAG = "FromMeToMe";

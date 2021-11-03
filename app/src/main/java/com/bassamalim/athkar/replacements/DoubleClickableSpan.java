@@ -1,4 +1,4 @@
-package com.bassamalim.athkar.other;
+package com.bassamalim.athkar.replacements;
 
 import android.text.Spannable;
 import android.text.style.ClickableSpan;

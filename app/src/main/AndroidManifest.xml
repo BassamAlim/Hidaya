@@ -96,7 +96,7 @@
             </intent-filter>
         </receiver>
         <receiver
-        android:name=".widgets.PrayersWidget"
+        android:name=".other.PrayersWidget"
         android:exported="true">
         <intent-filter>
             <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

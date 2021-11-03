@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.receivers.DailyUpdateReceiver;
 
 import java.util.Calendar;

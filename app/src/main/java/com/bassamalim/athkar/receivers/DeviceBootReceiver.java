@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.other.Constants;
 
 public class DeviceBootReceiver extends BroadcastReceiver {
     @Override

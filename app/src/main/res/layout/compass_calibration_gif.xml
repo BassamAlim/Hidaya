@@ -4,14 +4,24 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:orientation="vertical"
     android:gravity="center">
 
     <ImageView
         android:id="@+id/gif_screen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:src="@drawable/compass_calibration"
         android:contentDescription="@string/compass_calibration_gif_description" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-150dp"
+        android:paddingHorizontal="35dp"
+        android:text="@string/qibla_warning"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_dark" />
 
 </LinearLayout>

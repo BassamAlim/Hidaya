@@ -17,7 +17,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.activities.AlathkarActivity;
 import com.bassamalim.athkar.activities.QuranActivity;

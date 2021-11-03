@@ -19,7 +19,7 @@ import android.widget.TextView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.helpers.Alarms;
 

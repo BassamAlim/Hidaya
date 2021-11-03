@@ -62,9 +62,12 @@ public class QiblaFragment extends Fragment {
         if (!located)
             binding.distanceText.setText("يجب السماح بالوصول للموقع لحساب اتجاه القبلة");
         else {
-            String text = "المسافة الى الكعبة: " +
+            String distanceText = "المسافة الى الكعبة: " +
                     translateNumbers(String.valueOf(distance)) + " كم";
-            binding.distanceText.setText(text);
+            binding.distanceText.setText(distanceText);
+
+            String bearingText = Math.round(bearing) + "°";
+            binding.degreesScreen.setText(bearingText);
 
             binding.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT);
         }
@@ -187,7 +190,7 @@ public class QiblaFragment extends Fragment {
             case 1:
                 binding.accuracyText.setText(R.string.low_accuracy_text);
                 binding.accuracyIndicator.setImageDrawable(AppCompatResources.getDrawable(
-                        requireContext(), R.drawable.ic_info));
+                        requireContext(), R.drawable.ic_warning));
                 binding.accuracyIndicator.setOnClickListener(v -> new CompassCalibrate(getContext())
                         .show(requireActivity().getSupportFragmentManager(), CompassCalibrate.TAG));
                 break;

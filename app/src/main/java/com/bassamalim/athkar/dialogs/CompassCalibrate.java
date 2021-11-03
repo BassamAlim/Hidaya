@@ -40,9 +40,9 @@ public class CompassCalibrate extends DialogFragment {
 
         View view = getLayoutInflater().inflate(R.layout.compass_calibration_gif,
                 new LinearLayout(context));
+
         ImageView screen = view.findViewById(R.id.gif_screen);
         screen.setOnClickListener(v -> dismiss());
-
         Glide.with(context).load(R.drawable.compass_calibration).into(screen);
 
         return view;

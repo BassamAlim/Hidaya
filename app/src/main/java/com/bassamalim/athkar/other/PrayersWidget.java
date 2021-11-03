@@ -1,4 +1,4 @@
-package com.bassamalim.athkar.widgets;
+package com.bassamalim.athkar.other;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;

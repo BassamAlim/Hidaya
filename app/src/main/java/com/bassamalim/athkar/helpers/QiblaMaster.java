@@ -9,7 +9,7 @@ import android.hardware.SensorManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.other.Constants;
 
 public class QiblaMaster implements SensorEventListener {
 
@@ -94,7 +94,7 @@ public class QiblaMaster implements SensorEventListener {
         listener = l;
     }
 
-    // used for something i don't know thus don't need
+    // used for something i don't know, thus don't need
     /*public void setAzimuthFix(float fix) {
         Log.i(Constants.TAG, "in qibla master setAzimuthFix");
         azimuthFix = fix;

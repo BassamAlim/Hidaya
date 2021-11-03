@@ -33,37 +33,47 @@ public class Settings extends AppCompatActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
+
+        boolean located = true;
+
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.preferences, rootKey);
 
-            setInitialTimes();
+            setInitialStates();
 
             setListeners();
         }
 
-        private void setInitialTimes() {
+        private void setInitialStates() {
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
             SwitchPreferenceCompat pSwitch;
 
             pSwitch = findPreference(keyGetter(6));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(6 + "text", "٥:٠٠ صباحاً"));
+            pSwitch.setSummary(pref.getString(6+"text", "٥:٠٠ صباحاً"));
 
             pSwitch = findPreference(keyGetter(7));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(7 + "text", "٤:٠٠ مساءاًً"));
+            pSwitch.setSummary(pref.getString(7+"text", "٤:٠٠ مساءاًً"));
 
             pSwitch = findPreference(keyGetter(8));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(8 + "text", "٩:٠٠ مساءاً"));
+            pSwitch.setSummary(pref.getString(8+"text", "٩:٠٠ مساءاً"));
+
+            if (!MainActivity.located) {
+                located = false;
+                pSwitch = findPreference(keyGetter(9));
+                assert pSwitch != null;
+                pSwitch.setSummary(pref.getString(9+"text", "١:٠٠ مساءاً"));
+            }
         }
 
         private void setListeners() {
             setSwitchListener(6, true);
             setSwitchListener(7, true);
             setSwitchListener(8, true);
-            setSwitchListener(9, false);
+            setSwitchListener(9, !located);
         }
 
         private void setSwitchListener(int id, boolean timed) {

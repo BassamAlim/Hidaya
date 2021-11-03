@@ -83,6 +83,7 @@
     <string name="location_not_accessed">لا يمكن الوصول للموفع حاليا</string>
     <string name="about">حول التطبيق</string>
     <string name="share_app">شارك التطبيق</string>
+    <string name="qibla_warning">أبعد جهازك عن الاجسام المعدنية</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

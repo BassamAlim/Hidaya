@@ -29,16 +29,16 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.QuranActivityBinding;
 import com.bassamalim.athkar.dialogs.RecitationPopup;
 import com.bassamalim.athkar.dialogs.TafseerDialog;
 import com.bassamalim.athkar.helpers.Utils;
 import com.bassamalim.athkar.models.Ayah;
-import com.bassamalim.athkar.other.DoubleClickLMM;
-import com.bassamalim.athkar.other.DoubleClickableSpan;
-import com.bassamalim.athkar.other.SwipeActivity;
+import com.bassamalim.athkar.replacements.DoubleClickLMM;
+import com.bassamalim.athkar.replacements.DoubleClickableSpan;
+import com.bassamalim.athkar.replacements.SwipeActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;

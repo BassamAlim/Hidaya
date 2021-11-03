@@ -1,4 +1,4 @@
-package com.bassamalim.athkar.other;
+package com.bassamalim.athkar.replacements;
 
 import android.text.Layout;
 import android.text.Spannable;

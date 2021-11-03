@@ -14,11 +14,11 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.Constants;
+import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.helpers.Alarms;
 import com.bassamalim.athkar.helpers.Keeper;
 import com.bassamalim.athkar.helpers.PrayTimes;
-import com.bassamalim.athkar.widgets.PrayersWidget;
+import com.bassamalim.athkar.other.PrayersWidget;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 

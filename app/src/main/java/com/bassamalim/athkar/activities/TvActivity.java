@@ -8,7 +8,7 @@ import android.widget.MediaController;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bassamalim.athkar.other.FSMediaController;
+import com.bassamalim.athkar.replacements.FSMediaController;
 import com.bassamalim.athkar.databinding.TvActivityBinding;
 
 public class TvActivity extends AppCompatActivity {
