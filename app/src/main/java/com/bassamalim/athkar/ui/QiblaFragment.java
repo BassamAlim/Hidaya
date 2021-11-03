@@ -66,9 +66,6 @@ public class QiblaFragment extends Fragment {
                     translateNumbers(String.valueOf(distance)) + " كم";
             binding.distanceText.setText(distanceText);
 
-            String bearingText = Math.round(bearing) + "°";
-            binding.degreesScreen.setText(bearingText);
-
             binding.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT);
         }
 

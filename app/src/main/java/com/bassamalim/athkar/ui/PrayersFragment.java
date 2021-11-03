@@ -198,7 +198,6 @@ public class PrayersFragment extends Fragment {
         if (tomorrow)
             till = tomorrowFajr.getTimeInMillis();
 
-        int finalI = closest;
         timer = new CountDownTimer(till - System.currentTimeMillis(),
                 1000) {
             @Override
@@ -214,7 +213,7 @@ public class PrayersFragment extends Fragment {
             @Override
             public void onFinish() {
                 up.gravity = Gravity.CENTER | Gravity.START;
-                screens[finalI].setLayoutParams(up);
+                screens[closest].setLayoutParams(up);
                 counter.setVisibility(View.GONE);
             }
         }.start();
