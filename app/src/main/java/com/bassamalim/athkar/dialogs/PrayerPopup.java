@@ -51,9 +51,11 @@ public class PrayerPopup {
 
         View popupView = inflater.inflate(R.layout.prayer_popup,
                 new LinearLayout(context), false);
+        if (id == 1)
+            popupView.findViewById(R.id.athan_speaker_button).setVisibility(View.GONE);
 
         popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT, true);
+            LinearLayout.LayoutParams.WRAP_CONTENT, true);
 
         popupWindow.setBackgroundDrawable(new BitmapDrawable(null, ""));
         popupWindow.setOutsideTouchable(true);
@@ -70,14 +72,15 @@ public class PrayerPopup {
         String temp = "إعدادات " + name;
         nameScreen.setText(temp);
 
-        buttons = new Button[3];
+        buttons = new Button[4];
         buttons[0] = popupWindow.getContentView().findViewById(R.id.disable_button);
         buttons[1] = popupWindow.getContentView().findViewById(R.id.mute_button);
         buttons[2] = popupWindow.getContentView().findViewById(R.id.sound_button);
+        buttons[3] = popupWindow.getContentView().findViewById(R.id.athan_speaker_button);
 
         setImages();
 
-        int state = pref.getInt(id + "notification_type", 2);
+        int state = pref.getInt(id+"notification_type", 2);
         selectedState(state);
 
         setListeners();
@@ -85,6 +88,17 @@ public class PrayerPopup {
     }
 
     private void setListeners() {
+        buttons[3].setOnClickListener(v -> {
+            SharedPreferences.Editor editor = pref.edit();
+            images[id].setImageDrawable(ResourcesCompat.getDrawable(context.getResources(),
+                    R.drawable.ic_speaker, context.getTheme()));
+
+            new Alarms(context, id);
+
+            editor.putInt(id+"notification_type", 3);
+            selectedState(3);
+            editor.apply();
+        });
         buttons[2].setOnClickListener(v -> {
             SharedPreferences.Editor editor = pref.edit();
             images[id].setImageDrawable(ResourcesCompat.getDrawable(context.getResources(),
@@ -92,7 +106,7 @@ public class PrayerPopup {
 
             new Alarms(context, id);
 
-            editor.putInt(id +"notification_type", 2);
+            editor.putInt(id+"notification_type", 2);
             selectedState(2);
             editor.apply();
         });
@@ -103,7 +117,7 @@ public class PrayerPopup {
 
             new Alarms(context, id);
 
-            editor.putInt(id +"notification_type", 1);
+            editor.putInt(id+"notification_type", 1);
             selectedState(1);
             editor.apply();
         });
@@ -114,7 +128,7 @@ public class PrayerPopup {
 
             Alarms.cancelAlarm(context, id);
 
-            editor.putInt(id +"notification_type", 0);
+            editor.putInt(id+"notification_type", 0);
             selectedState(0);
             editor.apply();
         });
@@ -128,11 +142,7 @@ public class PrayerPopup {
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        try {
-            spinner.setAdapter(adapter);
-        }
-        catch (Exception ignored){}
-
+        spinner.setAdapter(adapter);
 
         int time = pref.getInt(id +"spinner_last", 4);
         spinner.setSelection(time);
@@ -162,6 +172,7 @@ public class PrayerPopup {
         buttons[0].setTextColor(context.getResources().getColor(R.color.white));
         buttons[1].setTextColor(context.getResources().getColor(R.color.white));
         buttons[2].setTextColor(context.getResources().getColor(R.color.white));
+        buttons[3].setTextColor(context.getResources().getColor(R.color.white));
 
         buttons[choice].setTextColor(context.getResources().getColor(R.color.accent));
     }

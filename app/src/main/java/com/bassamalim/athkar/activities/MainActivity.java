@@ -87,8 +87,9 @@ public class MainActivity extends AppCompatActivity {
         Calendar[] tester = new Calendar[6];
 
         tester[0] = Calendar.getInstance();
-        tester[0].set(Calendar.HOUR_OF_DAY, 14);
-        tester[0].set(Calendar.MINUTE, 2);
+        tester[0].set(Calendar.HOUR_OF_DAY, 0);
+        tester[0].set(Calendar.MINUTE, 9);
+        tester[0].set(Calendar.SECOND, 0);
         tester[1] = Calendar.getInstance();
         tester[1].set(Calendar.HOUR_OF_DAY, 13);
         tester[1].set(Calendar.MINUTE, 48);

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bassamalim.athkar.activities.AboutActivity;
 import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.activities.Settings;
 import com.bassamalim.athkar.databinding.OtherFragmentBinding;
@@ -55,7 +56,18 @@ public class OtherFragment extends Fragment {
             i.setData(Uri.parse(url));
             startActivity(i);
         });
-
+        binding.about.setOnClickListener(v -> {
+            Intent about = new Intent(getContext(), AboutActivity.class);
+            startActivity(about);
+        });
+        binding.share.setOnClickListener(v -> {
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            String appLink = Constants.APP_URL;
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "App Share");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, appLink);
+            startActivity(Intent.createChooser(sharingIntent, "Share via"));
+        });
     }
 
     @Override

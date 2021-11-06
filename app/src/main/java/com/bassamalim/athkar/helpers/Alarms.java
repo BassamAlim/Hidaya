@@ -99,11 +99,12 @@ public class Alarms {
             intent.putExtra("id", id);
             intent.putExtra("time", adjusted);
             PendingIntent pendingIntent;
-            AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
+            AlarmManager myAlarm = (AlarmManager)
+                    appContext.getSystemService(Context.ALARM_SERVICE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                pendingIntent = PendingIntent.getBroadcast(appContext, id,
-                        intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                pendingIntent = PendingIntent.getBroadcast(appContext, id, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
                 myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
                         times[id].getTimeInMillis(), pendingIntent);

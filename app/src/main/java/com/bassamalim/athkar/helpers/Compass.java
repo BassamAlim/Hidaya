@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.bassamalim.athkar.other.Constants;
 
-public class QiblaMaster implements SensorEventListener {
+public class Compass implements SensorEventListener {
 
     public interface CompassListener {
         void onNewAzimuth(float azimuth);
@@ -28,7 +28,7 @@ public class QiblaMaster implements SensorEventListener {
     private final float[] myI = new float[9];
     private float azimuthFix;
 
-    public QiblaMaster(Context gContext) {
+    public Compass(Context gContext) {
         sensorManager = (SensorManager) gContext.getSystemService(Context.SENSOR_SERVICE);
         aSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);

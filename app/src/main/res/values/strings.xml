@@ -84,6 +84,10 @@
     <string name="about">حول التطبيق</string>
     <string name="share_app">شارك التطبيق</string>
     <string name="qibla_warning">أبعد جهازك عن الاجسام المعدنية</string>
+    <string name="athan_speaker">تفعيل الأذان المسموع</string>
+    <string name="thanks">شكرا لاستخدامكم تطبيق أذكار</string>
+    <string name="quran_source">المصحف: من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
+    <string name="tafseer_source">التفسير: التفسير الميسر من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

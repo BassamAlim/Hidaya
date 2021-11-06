@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.bassamalim.athkar.helpers.Keeper;
+import com.bassamalim.athkar.other.Constants;
+import com.bassamalim.athkar.services.AthanService;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.Collection;
@@ -28,6 +30,9 @@ public class Splash extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getIntent().getAction().equals(Constants.STOP_ATHAN))
+            stopService(new Intent(this, AthanService.class));
 
         if (granted()) {
             getLocation();

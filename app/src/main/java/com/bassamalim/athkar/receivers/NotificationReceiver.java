@@ -17,11 +17,12 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.activities.AlathkarActivity;
 import com.bassamalim.athkar.activities.QuranActivity;
 import com.bassamalim.athkar.activities.Splash;
+import com.bassamalim.athkar.other.Constants;
+import com.bassamalim.athkar.services.AthanService;
 
 public class NotificationReceiver extends BroadcastReceiver {
 
@@ -30,15 +31,17 @@ public class NotificationReceiver extends BroadcastReceiver {
     private boolean isPrayer;
     private String channelId = "";
     private int type;
-    private String action;
     private long time;
 
     @Override
     public void onReceive(Context gContext, Intent intent) {
         context = gContext;
         id = intent.getIntExtra("id", 10);
-        action = intent.getAction();
+        String action = intent.getAction();
         time = intent.getLongExtra("time", 0);
+        isPrayer = action.equals("prayer");
+
+        Log.i(Constants.TAG, "in notification receiver for " + id);
 
         int defaultType = 2;
         if (id == 1)
@@ -47,44 +50,49 @@ public class NotificationReceiver extends BroadcastReceiver {
         type = PreferenceManager.getDefaultSharedPreferences(context)
                 .getInt(id+"notification_type", defaultType);
 
-        if (type != 0) {
-            Log.i(Constants.TAG, "in notification receiver for " + id);
-
-            publish();
-
-            /*if (Build.VERSION.SDK_INT >= 26)
-                context.startForegroundService(intent1);
-            else
-                context.startService(intent1);*/
-        }
+        if (type != 0)
+            prepare();
     }
 
-    private void publish() {
+    private void prepare() {
         long max = time + 120000;
         if (System.currentTimeMillis() <= max) {
-            isPrayer = action.equals("prayer");
-
-            Log.i(Constants.TAG, "in notification service for " + id);
-
-            createNotificationChannel();
-            Notification notification = build();
-
-            if (isPrayer) {
-                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                // Request audio focus                                   // Request permanent focus.
-                am.requestAudioFocus(null, AudioManager.STREAM_MUSIC,
-                        AudioManager.AUDIOFOCUS_GAIN);
-            }
-
-            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
-            if (id == 7)    // so that night notification would replace morning notification
-                id--;
-            managerCompat.notify(id, notification);
-
-            //startForeground(NOTIFICATION_ID, notification);
+            if (type == 3 && isPrayer)
+                startService();
+            else
+                showNotification();
         }
         else
             Log.e(Constants.TAG, "Late intent walking");
+    }
+
+    private void showNotification() {
+        createNotificationChannel();
+        Notification notification = build();
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
+        if (id == 7)    // so that night notification would replace morning notification
+            id--;
+
+        if (isPrayer) {
+            AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            // Request audio focus                                   // Request permanent focus.
+            am.requestAudioFocus(null, AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN);
+        }
+
+        managerCompat.notify(id, notification);
+    }
+
+    private void startService() {
+        Intent intent1 = new Intent(context, AthanService.class);
+        intent1.setAction(Constants.PLAY_ATHAN);
+        intent1.putExtra("id", id);
+        intent1.putExtra("time", time);
+
+        if (Build.VERSION.SDK_INT >= 26)
+            context.startForegroundService(intent1);
+        else
+            context.startService(intent1);
     }
 
     private Notification build() {
@@ -159,11 +167,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (type==1)
             builder.setSilent(true);
 
-        //builder.setOngoing(true);
-        //builder.setDeleteIntent(contentPendingIntent)  // if needed
-
-        // NO_CLEAR makes the notification stay when the user performs a "delete all" command
-        //notification.flags = Notification.FLAG_NO_CLEAR;
         return builder.build();
     }
 
@@ -196,7 +199,6 @@ public class NotificationReceiver extends BroadcastReceiver {
             intent = new Intent(context, Splash.class);
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             pendingIntent = PendingIntent.getActivity(context, variable, intent,

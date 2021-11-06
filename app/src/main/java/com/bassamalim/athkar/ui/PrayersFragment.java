@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,6 @@ import com.bassamalim.athkar.activities.MainActivity;
 import com.bassamalim.athkar.databinding.PrayersFragmentBinding;
 import com.bassamalim.athkar.dialogs.PrayerPopup;
 import com.bassamalim.athkar.helpers.PrayTimes;
-import com.bassamalim.athkar.other.Constants;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 
 import java.util.ArrayList;
@@ -160,8 +158,11 @@ public class PrayersFragment extends Fragment {
 
     private void setInitialState() {
         for (int i = 0; i < images.length; i++) {
-            int state = pref.getInt(i + "notification_type", 2);
-            if (state == 1)
+            int state = pref.getInt(i+"notification_type", 2);
+            if (state == 3)
+                images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext()
+                        .getResources(), R.drawable.ic_speaker, requireContext().getTheme()));
+            else if (state == 1)
                 images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext()
                         .getResources(), R.drawable.ic_mute, requireContext().getTheme()));
             else if (state == 0)
@@ -202,13 +203,6 @@ public class PrayersFragment extends Fragment {
         long till = times[closest].getTimeInMillis();
         if (tomorrow)
             till = tomorrowFajr.getTimeInMillis();
-
-
-        Date date = new Date();
-        date.setTime(times[closest].getTimeInMillis());
-        Log.i(Constants.TAG, "now: "+System.currentTimeMillis());
-        Log.i(Constants.TAG, "then: " + times[closest].getTimeInMillis());
-        Log.i(Constants.TAG, "date: "+date.getTime());
 
         timer = new CountDownTimer(till - System.currentTimeMillis(),
                 1000) {

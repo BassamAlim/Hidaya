@@ -18,7 +18,7 @@ import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.activities.MainActivity;
 import com.bassamalim.athkar.databinding.QiblaFragmentBinding;
 import com.bassamalim.athkar.dialogs.CompassCalibrate;
-import com.bassamalim.athkar.helpers.QiblaMaster;
+import com.bassamalim.athkar.helpers.Compass;
 
 import java.util.HashMap;
 
@@ -29,7 +29,7 @@ public class QiblaFragment extends Fragment {
     private final double KAABA_LNG = 39.8251832;
     private QiblaFragmentBinding binding;
     private boolean located = true;
-    private QiblaMaster compass;
+    private Compass compass;
     private Location location;
     private float currentAzimuth;
     private double distance;
@@ -95,9 +95,9 @@ public class QiblaFragment extends Fragment {
     }
 
     private void setupCompass() {
-        compass = new QiblaMaster(requireContext());
+        compass = new Compass(requireContext());
 
-        QiblaMaster.CompassListener listener = new QiblaMaster.CompassListener() {
+        Compass.CompassListener listener = new Compass.CompassListener() {
             @Override
             public void onNewAzimuth(float azimuth) {
                 adjust(azimuth);

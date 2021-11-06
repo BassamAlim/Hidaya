@@ -43,7 +43,7 @@
         </activity>
         <activity
             android:name=".activities.AlathkarActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Athkar">
             <intent-filter>
@@ -52,7 +52,7 @@
         </activity>
         <activity
             android:name=".activities.QuranActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Athkar">
             <intent-filter>
@@ -61,7 +61,7 @@
         </activity>
         <activity
             android:name=".activities.TvActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Athkar">
             <intent-filter>
@@ -82,6 +82,11 @@
             android:name=".activities.FSVideoActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.NoActionBar"> <!-- VERY IMPORTANT ... CRASHES WITHOUT IT -->
+        </activity>
+        <activity
+            android:name=".activities.AboutActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
 
         <receiver
@@ -105,6 +110,13 @@
             android:name="android.appwidget.provider"
             android:resource="@xml/prayers_widget_info" />
     </receiver>
+
+        <service
+            android:name=".services.AthanService"
+            android:foregroundServiceType="mediaPlayback"
+            android:enabled="true"
+            android:excludeFromRecents="true"
+            android:stopWithTask="false"/>
 
         <meta-data
             android:name="firebase_performance_logcat_enabled"
