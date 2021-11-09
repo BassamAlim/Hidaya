@@ -70,7 +70,6 @@ public class QuranFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         setupContinue();
 
         if (mBundleRecyclerViewState != null) {
@@ -96,7 +95,7 @@ public class QuranFragment extends Fragment {
         binding.continueReading.setOnClickListener(v -> {
             if (page != -1) {
                 Intent intent = new Intent(getContext(), QuranActivity.class);
-                intent.setAction("bookmark");
+                intent.setAction("by_page");
                 intent.putExtra("page", page);
                 requireContext().startActivity(intent);
             }
@@ -107,12 +106,12 @@ public class QuranFragment extends Fragment {
         binding.searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                adapter.filter(query);
+                adapter.filterNumber(query);
                 return true;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.filter(newText);
+                adapter.filterName(newText);
                 return true;
             }
         });
@@ -133,7 +132,7 @@ public class QuranFragment extends Fragment {
         try {
             JSONArray array = new JSONArray(buttonJson);
 
-            for (int i = 0; i< NUMBER_OF_SURAHS; i++) {
+            for (int i = 0; i < NUMBER_OF_SURAHS; i++) {
                 JSONObject obj = array.getJSONObject(i);
                 String name = obj.getString("name");
                 String searchName = obj.getString("search_name");
@@ -142,7 +141,7 @@ public class QuranFragment extends Fragment {
                 int finalI = i;
                 View.OnClickListener clickListener = v -> {
                     Intent intent = new Intent(getContext(), QuranActivity.class);
-                    intent.setAction("specific");
+                    intent.setAction("by_surah");
                     intent.putExtra("surah_index", finalI);
                     requireContext().startActivity(intent);
                 };

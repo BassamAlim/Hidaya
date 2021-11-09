@@ -77,7 +77,6 @@ public class QuranActivity extends SwipeActivity {
     private Object selectionWhat;
     private Object what;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,15 +115,15 @@ public class QuranActivity extends SwipeActivity {
 
     private void action(Intent intent) {
         switch (action) {
-            case "specific":
+            case "by_surah":
                 surahIndex = intent.getIntExtra("surah_index", 0);
                 currentPage = getPage(surahIndex);
                 break;
+            case "by_page":
+                currentPage = intent.getIntExtra("page", 0);
+                break;
             case "random":
                 currentPage = new Random().nextInt(QURAN_PAGES - 1);
-                break;
-            case "bookmark":
-                currentPage = intent.getIntExtra("page", 0);
                 break;
         }
     }
@@ -336,7 +335,7 @@ public class QuranActivity extends SwipeActivity {
         binding.pageNumber.setText(currentPageText);
 
         ScrollView scroll = binding.scrollView;
-        if (action.equals("specific") && !scrolled) {
+        if (action.equals("by_surah") && !scrolled) {
             long delay = 100; //delay to let finish with possible modifications to ScrollView
             scroll.postDelayed(() -> scroll.smoothScrollTo(0, target.getTop()), delay);
             scrolled = true;
@@ -438,7 +437,7 @@ public class QuranActivity extends SwipeActivity {
             TextView basmalah = basmalah();
             mainLinear.addView(basmalah);
         }
-        if (action.equals("specific") && num == surahIndex+1)
+        if (action.equals("by_surah") && num == surahIndex+1)
             target = nameScreen;
     }
 
