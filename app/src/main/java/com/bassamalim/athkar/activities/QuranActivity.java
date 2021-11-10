@@ -142,8 +142,7 @@ public class QuranActivity extends SwipeActivity {
             tafseerArray = data.getJSONArray("surahs");
 
             assert recitationString != null;
-            JSONObject mainObj = new JSONObject(recitationString);
-            recitationsArr = mainObj.getJSONArray("by_verse");
+            recitationsArr = new JSONArray(recitationString);
         }
         catch (JSONException e) {
             e.printStackTrace();

@@ -89,5 +89,6 @@
     <string name="quran_source">المصحف: من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
     <string name="tafseer_source">التفسير: التفسير الميسر من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
     <string name="quran_query_hint">ادخل اسم السورة أو رقم الصفحة</string>
+    <string name="recitations">تلاوات</string>
 
 </resources>

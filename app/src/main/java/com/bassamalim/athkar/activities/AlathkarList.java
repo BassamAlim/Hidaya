@@ -41,7 +41,6 @@ public class AlathkarList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = AlathkarListActivityBinding.inflate(getLayoutInflater());
 
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);

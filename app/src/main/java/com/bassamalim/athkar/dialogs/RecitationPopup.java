@@ -6,7 +6,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -102,10 +101,9 @@ public class RecitationPopup {
         String json = Utils.getJsonFromAssets(context, "recitations.json");
         try {
             assert json != null;
-            JSONObject mainObj = new JSONObject(json);
-            JSONArray byVerse = mainObj.getJSONArray("by_verse");
-            for (int i = 0; i < byVerse.length(); i++) {
-                JSONObject reciter = byVerse.getJSONObject(i);
+            JSONArray arr = new JSONArray(json);
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject reciter = arr.getJSONObject(i);
                 String name = reciter.getString("name");
                 reciters.add(name);
             }

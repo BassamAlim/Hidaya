@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bassamalim.athkar.activities.AboutActivity;
+import com.bassamalim.athkar.activities.RadioActivity;
 import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.activities.Settings;
 import com.bassamalim.athkar.databinding.OtherFragmentBinding;
@@ -36,6 +37,10 @@ public class OtherFragment extends Fragment {
     }
 
     public void setListeners() {
+        binding.quranRadio.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), RadioActivity.class);
+            startActivity(intent);
+        });
         binding.channels.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), TvActivity.class);
             startActivity(intent);
