@@ -9,6 +9,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -45,6 +46,7 @@ public class RadioPlayer extends AppCompatActivity {
     private TextView progressScreen;
     private TextView durationScreen;
     private TextView surahNamescreen;
+    private ImageButton playPause;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,10 +107,11 @@ public class RadioPlayer extends AppCompatActivity {
         seekBar = binding.seekbar;
         durationScreen = binding.durationScreen;
         progressScreen = binding.progressScreen;
+        playPause = binding.playPause;
     }
 
     private void setListeners() {
-        binding.playPause.setOnClickListener(v -> {
+        playPause.setOnClickListener(v -> {
             if (player.isPlaying())
                 pause();
             else {
@@ -136,7 +139,7 @@ public class RadioPlayer extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (player != null && fromUser)
-                    player.seekTo(progress * 1000);
+                    player.seekTo(progress);
             }
         });
     }
@@ -225,12 +228,12 @@ public class RadioPlayer extends AppCompatActivity {
 
     private void updateButton(boolean playing) {
         if (playing) {
-            binding.playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+            playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
                     R.drawable.ic_player_pause, getTheme()));
             isPaused = false;
         }
         else {
-            binding.playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+            playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
                     R.drawable.ic_player_play, getTheme()));
             isPaused = true;
         }
@@ -248,34 +251,23 @@ public class RadioPlayer extends AppCompatActivity {
     }
 
     private String formatTime(boolean progress) {
-        if (progress) {
-            int time = player.getCurrentPosition();
-            int hours = time / (60 * 60 * 1000) % 24;
-            int minutes = time / (60 * 1000) % 60;
-            int seconds = time / 1000 % 60;
-            String hms = String.format(Locale.US, "%02d:%02d:%02d",
-                    hours, minutes, seconds);
-            if (hms.startsWith("0")) {
-                hms = hms.substring(1);
-                if (hms.startsWith("0"))
-                    hms = hms.substring(2);
-            }
-            return hms;
+        int time;
+        if (progress)
+            time = player.getCurrentPosition();
+        else
+            time = player.getDuration();
+
+        int hours = time / (60 * 60 * 1000) % 24;
+        int minutes = time / (60 * 1000) % 60;
+        int seconds = time / 1000 % 60;
+        String hms = String.format(Locale.US, "%02d:%02d:%02d",
+                hours, minutes, seconds);
+        if (hms.startsWith("0")) {
+            hms = hms.substring(1);
+            if (hms.startsWith("0"))
+                hms = hms.substring(2);
         }
-        else {
-            int time = player.getDuration();
-            int hours = time / (60 * 60 * 1000) % 24;
-            int minutes = time / (60 * 1000) % 60;
-            int seconds = time / 1000 % 60;
-            String hms = String.format(Locale.US, "%02d:%02d:%02d",
-                    hours, minutes, seconds);
-            if (hms.startsWith("0")) {
-                hms = hms.substring(1);
-                if (hms.startsWith("0"))
-                    hms = hms.substring(2);
-            }
-            return hms;
-        }
+        return hms;
     }
 
     @Override
