@@ -1,5 +1,6 @@
 package com.bassamalim.athkar.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,7 +35,7 @@ public class ReciterSurahsActivity extends AppCompatActivity {
     private int reciterIndex;
     private int version;
     private String availableSurahs;
-    private String[] surahNames;
+    private ArrayList<String> surahNames;
     private String[] searchNames;
 
     @Override
@@ -67,16 +68,16 @@ public class ReciterSurahsActivity extends AppCompatActivity {
             JSONArray arr = new JSONArray(RecitersJson);
             reciterObj = arr.getJSONObject(reciterIndex);
             JSONArray versions = reciterObj.getJSONArray("versions");
-            availableSurahs = versions.getString(0);
+            availableSurahs = versions.getString(version);
 
             assert surahsJson != null;
             JSONArray array = new JSONArray(surahsJson);
 
-            surahNames = new String[114];
+            surahNames = new ArrayList<>();
             searchNames = new String[114];
-            for (int i = 0; i < surahNames.length; i++) {
+            for (int i = 0; i < searchNames.length; i++) {
                 JSONObject obj = array.getJSONObject(i);
-                surahNames[i] = obj.getString("name");
+                surahNames.add(obj.getString("name"));
                 searchNames[i] = obj.getString("search_name");
             }
         }
@@ -89,12 +90,17 @@ public class ReciterSurahsActivity extends AppCompatActivity {
     private ArrayList<ReciterSurahCard> makeCards() {
         ArrayList<ReciterSurahCard> cards = new ArrayList<>();
         for (int i = 0; i < 114; i++) {
-            if (availableSurahs.contains(String.valueOf(i))) {
-                String name = surahNames[i];
+            if (availableSurahs.contains("," + (i+1) + ",")) {
+                String name = surahNames.get(i);
                 String searchName = searchNames[i];
+                int finalI = i;
                 View.OnClickListener listener = v -> {
-                    /*Intent intent = new Intent(v.getContext(), .class);
-                    startActivity(intent);*/
+                    Intent intent = new Intent(this, RadioPlayer.class);
+                    intent.putExtra("reciter", reciterIndex);
+                    intent.putExtra("version", version);
+                    intent.putExtra("surah", finalI);
+                    intent.putStringArrayListExtra("surah_names", surahNames);
+                    startActivity(intent);
                 };
                 cards.add(new ReciterSurahCard(i, name, searchName, listener));
             }

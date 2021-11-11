@@ -10,7 +10,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bassamalim.athkar.R;
-import com.bassamalim.athkar.models.ReciterCard;
 import com.bassamalim.athkar.models.ReciterSurahCard;
 
 import java.util.ArrayList;

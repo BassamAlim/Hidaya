@@ -10,5 +10,5 @@
         android:state_pressed="true"
         android:drawable="@drawable/lightened_button" />
 
-    <item android:drawable="@drawable/button_bg_color" />
+    <item android:drawable="@drawable/s_rounded_corners" />
 </selector>

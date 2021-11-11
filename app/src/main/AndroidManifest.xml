@@ -23,6 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Athkar">
         <activity
+            android:name=".activities.RadioPlayer"
+            android:exported="false" />
+        <activity
             android:name=".activities.ReciterSurahsActivity"
             android:exported="false" />
         <activity

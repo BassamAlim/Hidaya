@@ -15,11 +15,11 @@
             android:id="@+id/surah_namescreen"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingVertical="15dp"
+            android:paddingVertical="10dp"
             android:paddingHorizontal="40dp"
-            android:layout_gravity="start"
-            android:gravity="center_vertical|start"
-            android:textSize="18sp"/>
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="22sp"/>
 
     </androidx.cardview.widget.CardView>
 
