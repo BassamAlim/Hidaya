@@ -68,7 +68,7 @@ public class RadioService extends MediaBrowserServiceCompat {
     private final int id = 333;
     private Handler handler = new Handler(Looper.getMainLooper());
     private AudioManager.OnAudioFocusChangeListener afChangeListener;
-    private Notification myPlayerNotification;
+    private Notification notification;
     private MediaPlayer player;
     private AudioManager am;
     private AudioAttributes attrs;
@@ -91,12 +91,12 @@ public class RadioService extends MediaBrowserServiceCompat {
 
         initSession();
 
+        setActions();
         buildNotification();
 
         initPlayer();
 
-        setActions();
-        initReceivers();
+        registerReceiver(receiver, intentFilter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -127,8 +127,9 @@ public class RadioService extends MediaBrowserServiceCompat {
                 mediaSession.setActive(true);
 
                 // start the player (custom call)
-                if (controller.getPlaybackState().getState()
-                        == PlaybackStateCompat.STATE_PAUSED)
+                if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_PAUSED
+                        || controller.getPlaybackState().getState()
+                        == PlaybackStateCompat.STATE_PLAYING)
                     player.start();
                 else
                     play(surahIndex);
@@ -138,9 +139,9 @@ public class RadioService extends MediaBrowserServiceCompat {
                 refresh();
 
                 // Register BECOME_NOISY BroadcastReceiver
-                registerReceivers();
+                registerReceiver(receiver, intentFilter);
                 // Put the service in the foreground, post notification
-                startForeground(id, myPlayerNotification);
+                startForeground(id, notification);
             }
         }
 
@@ -152,7 +153,7 @@ public class RadioService extends MediaBrowserServiceCompat {
             // Abandon audio focus
             am.abandonAudioFocusRequest(audioFocusRequest);
 
-            unregisterReceivers();
+            unregisterReceiver(receiver);
             // stop the player (custom call)
             player.stop();
             // Stop the service
@@ -173,8 +174,6 @@ public class RadioService extends MediaBrowserServiceCompat {
             player.pause();
             updatePbState(PlaybackStateCompat.STATE_PAUSED);
 
-            // unregister BECOME_NOISY BroadcastReceiver
-            unregisterReceivers();
             // Take the service out of the foreground, retain the notification
             stopForeground(false);
         }
@@ -195,14 +194,12 @@ public class RadioService extends MediaBrowserServiceCompat {
         public void onSkipToNext() {
             super.onSkipToNext();
             playNext();
-            updateMetadata();
         }
 
         @Override
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
             playPrevious();
-            updateMetadata();
         }
 
         @Override
@@ -213,49 +210,47 @@ public class RadioService extends MediaBrowserServiceCompat {
         }
     };
 
-    private final BroadcastReceiver myNoisyAudioStreamReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(Constants.TAG, "in noisy receiver in RadioService");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                callback.onPause();
-            else
-                player.pause();
-        }
-    };
-
-    private final BroadcastReceiver buttonsReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
+            Log.i(Constants.TAG, "in receiver");
             switch (intent.getAction()) {
-                case ACTION_PLAY:
+                case ACTION_BECOMING_NOISY:
+                    Log.i(Constants.TAG, "in receiver in ACTION_BECOMING_NOISY RadioService");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                        callback.onPlay();
+                        callback.onPause();
                     else
-                        player.start();
+                        player.pause();
+                    break;
+                case ACTION_PLAY:
+                    Log.i(Constants.TAG, "in receiver in ACTION_PLAY RadioService");
+                    if (mediaSession.getController().getPlaybackState().getState()
+                            == PlaybackStateCompat.STATE_PLAYING) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                            callback.onPause();
+                        else
+                            player.pause();
+
+
+                    }
+                    else {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                            callback.onPlay();
+                        else
+                            player.start();
+                    }
                     break;
                 case ACTION_NEXT:
+                    Log.i(Constants.TAG, "in receiver in ACTION_NEXT RadioService");
                     playNext();
                     break;
                 case ACTION_PREV:
+                    Log.i(Constants.TAG, "in receiver in ACTION_PREV RadioService");
                     playPrevious();
                     break;
             }
         }
     };
-
-    private void initReceivers() {
-        // Handles headphones coming unplugged. cannot be done through a manifest receiver
-        registerReceiver(myNoisyAudioStreamReceiver, intentFilter);
-
-        // For notification buttons
-        registerReceiver(buttonsReceiver, intentFilter);
-    }
-
-    private void registerReceivers() {
-        registerReceiver(myNoisyAudioStreamReceiver, intentFilter);
-        registerReceiver(buttonsReceiver, intentFilter);
-    }
 
     private void initSession() {
         // Create a MediaSessionCompat
@@ -290,9 +285,6 @@ public class RadioService extends MediaBrowserServiceCompat {
 
         createNotificationChannel();
 
-        NotificationCompat.Action test = new NotificationCompat.Action.Builder(
-                R.drawable.ic_player_play, "play", null).build();
-
         // Create a NotificationCompat.Builder
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
 
@@ -314,11 +306,8 @@ public class RadioService extends MediaBrowserServiceCompat {
                 // Be careful about the color
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setColor(ContextCompat.getColor(context, R.color.accent))
-                // Add a pause button
-                .addAction(new NotificationCompat.Action(
-                        R.drawable.ic_player_play, "pause",
-                        MediaButtonReceiver.buildMediaButtonPendingIntent(context,
-                                PlaybackStateCompat.ACTION_PLAY_PAUSE))).addAction(test)
+                // Add buttons
+                .addAction(prevAction).addAction(playAction).addAction(nextAction)
                 // So there will be no notification tone
                 .setSilent(true)
                 // So the user wouldn't swipe it off
@@ -326,15 +315,15 @@ public class RadioService extends MediaBrowserServiceCompat {
                 // Take advantage of MediaStyle features
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSession.getSessionToken())
-                        .setShowActionsInCompactView(0)
+                        .setShowActionsInCompactView(1)
                         // Add a cancel button
                         .setShowCancelButton(true)
                         .setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(
                                 context, PlaybackStateCompat.ACTION_STOP)));
-        myPlayerNotification = builder.build();
+        notification = builder.build();
 
         // Display the notification and place the service in the foreground
-        startForeground(id, myPlayerNotification);
+        startForeground(id, notification);
     }
 
     private void initMediaSessionMetadata() {
@@ -521,7 +510,7 @@ public class RadioService extends MediaBrowserServiceCompat {
                 player.start();
                 updateMetadata();    // For the duration
             });
-            player.setOnCompletionListener(mp -> playNext());
+            //player.setOnCompletionListener(mp -> playNext());
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -529,21 +518,29 @@ public class RadioService extends MediaBrowserServiceCompat {
     }
 
     private void playNext() {
+        int temp = surahIndex;
         do {
-            surahIndex++;
-        } while(surahIndex < 114 && !version.getSuras().contains("," + (surahIndex +1) + ","));
+            temp++;
+        } while(temp < 114 && !version.getSuras().contains("," + (temp+1) + ","));
 
-        if (surahIndex < 114)
+        if (temp < 114) {
+            surahIndex = temp;
             play(surahIndex);
+            updateMetadata();
+        }
     }
 
     private void playPrevious() {
+        int temp = surahIndex;
         do {
-            surahIndex--;
-        } while(surahIndex >= 0 && !version.getSuras().contains("," + (surahIndex +1) + ","));
+            temp--;
+        } while(temp >= 0 && !version.getSuras().contains("," + (temp+1) + ","));
 
-        if (surahIndex >= 0)
+        if (temp >= 0) {
+            surahIndex = temp;
             play(surahIndex);
+            updateMetadata();
+        }
     }
 
     private void createNotificationChannel() {
@@ -608,8 +605,4 @@ public class RadioService extends MediaBrowserServiceCompat {
         return true;
     }
 
-    private void unregisterReceivers() {
-        unregisterReceiver(myNoisyAudioStreamReceiver);
-        unregisterReceiver(buttonsReceiver);
-    }
 }
