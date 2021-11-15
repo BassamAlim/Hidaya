@@ -3,6 +3,7 @@ package com.bassamalim.athkar.services;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -48,6 +49,16 @@ public class RadioService extends MediaBrowserServiceCompat {
 
     private static final String MY_MEDIA_ROOT_ID = "media_root_id";
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
+    private final int REQUEST_CODE = 333;
+    private static final String ACTION_BECOMING_NOISY = AudioManager.ACTION_AUDIO_BECOMING_NOISY;
+    private static final String ACTION_PLAY = "com.bassamalim.athkar.services.radioservice.play";
+    private static final String ACTION_PAUSE = "com.bassamalim.athkar.services.radioservice.pause";
+    private static final String ACTION_NEXT = "com.bassamalim.athkar.services.radioservice.next";
+    private static final String ACTION_PREV = "com.bassamalim.athkar.services.radioservice.prev";
+    private NotificationCompat.Action playAction;
+    private NotificationCompat.Action pauseAction;
+    private NotificationCompat.Action nextAction;
+    private NotificationCompat.Action prevAction;
     private MediaSessionCompat mediaSession;
     private MediaControllerCompat controller;
     private MediaMetadataCompat mediaMetadata;
@@ -62,8 +73,7 @@ public class RadioService extends MediaBrowserServiceCompat {
     private AudioManager am;
     private AudioAttributes attrs;
     private PlaybackStateCompat.Builder stateBuilder;
-    private final IntentFilter intentFilter =
-            new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+    private final IntentFilter intentFilter = new IntentFilter();
     private AudioFocusRequest audioFocusRequest;
     private int reciter;
     private ArrayList<String> surahNames;
@@ -71,8 +81,6 @@ public class RadioService extends MediaBrowserServiceCompat {
     private RecitationVersion version;
     private int surahIndex;
     private WifiManager.WifiLock wifiLock;
-
-
 
     @Override
     public void onCreate() {
@@ -87,7 +95,166 @@ public class RadioService extends MediaBrowserServiceCompat {
 
         initPlayer();
 
-        initNoisyReceiver();
+        setActions();
+        initReceivers();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
+        @Override
+        public void onPlayFromMediaId(String mediaId, Bundle extras) {
+            super.onPlayFromMediaId(mediaId, extras);
+
+            surahIndex = Integer.parseInt(mediaId);
+            Log.i(Constants.TAG, "id is " + surahIndex);
+            reciter = extras.getInt("reciter", 0);
+            version = (RecitationVersion) extras.getSerializable("version");
+            surahNames = extras.getStringArrayList("surah_names");
+            reciterName = extras.getString("reciter_name");
+            onPlay();
+            updateMetadata();
+        }
+        @Override
+        public void onPlay() {
+            Log.i(Constants.TAG, "in onPlay of callback in RadioService");
+
+            // Request audio focus for playback, this registers the afChangeListener
+            int result = am.requestAudioFocus(audioFocusRequest);
+            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                // Start the service
+                startService(new Intent(context, RadioService.class));
+                // Set the session active  (and update metadata and state)
+                mediaSession.setActive(true);
+
+                // start the player (custom call)
+                if (controller.getPlaybackState().getState()
+                        == PlaybackStateCompat.STATE_PAUSED)
+                    player.start();
+                else
+                    play(surahIndex);
+
+                updateMetadata();
+                updatePbState(PlaybackStateCompat.STATE_PLAYING);
+                refresh();
+
+                // Register BECOME_NOISY BroadcastReceiver
+                registerReceivers();
+                // Put the service in the foreground, post notification
+                startForeground(id, myPlayerNotification);
+            }
+        }
+
+        @Override
+        public void onStop() {
+            Log.i(Constants.TAG, "in onStop of callback in RadioService");
+
+            AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            // Abandon audio focus
+            am.abandonAudioFocusRequest(audioFocusRequest);
+
+            unregisterReceivers();
+            // stop the player (custom call)
+            player.stop();
+            // Stop the service
+            stopSelf();
+            // Set the session inactive  (and update metadata and state)
+            mediaSession.setActive(false);
+            updatePbState(PlaybackStateCompat.STATE_STOPPED);
+
+            // Take the service out of the foreground
+            stopForeground(false);
+        }
+
+        @Override
+        public void onPause() {
+            Log.i(Constants.TAG, "in onPause of callback in RadioService");
+            // Update metadata and state
+            // pause the player (custom call)
+            player.pause();
+            updatePbState(PlaybackStateCompat.STATE_PAUSED);
+
+            // unregister BECOME_NOISY BroadcastReceiver
+            unregisterReceivers();
+            // Take the service out of the foreground, retain the notification
+            stopForeground(false);
+        }
+
+        @Override
+        public void onFastForward() {
+            super.onFastForward();
+            player.seekTo(player.getCurrentPosition()+10000);
+        }
+
+        @Override
+        public void onRewind() {
+            super.onRewind();
+            player.seekTo(player.getCurrentPosition()-10000);
+        }
+
+        @Override
+        public void onSkipToNext() {
+            super.onSkipToNext();
+            playNext();
+            updateMetadata();
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            super.onSkipToPrevious();
+            playPrevious();
+            updateMetadata();
+        }
+
+        @Override
+        public void onSeekTo(long pos) {
+            Log.i(Constants.TAG, "in onSeekTo of callback in RadioService");
+            super.onSeekTo(pos);
+            player.seekTo((int) pos);
+        }
+    };
+
+    private final BroadcastReceiver myNoisyAudioStreamReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(Constants.TAG, "in noisy receiver in RadioService");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                callback.onPause();
+            else
+                player.pause();
+        }
+    };
+
+    private final BroadcastReceiver buttonsReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case ACTION_PLAY:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                        callback.onPlay();
+                    else
+                        player.start();
+                    break;
+                case ACTION_NEXT:
+                    playNext();
+                    break;
+                case ACTION_PREV:
+                    playPrevious();
+                    break;
+            }
+        }
+    };
+
+    private void initReceivers() {
+        // Handles headphones coming unplugged. cannot be done through a manifest receiver
+        registerReceiver(myNoisyAudioStreamReceiver, intentFilter);
+
+        // For notification buttons
+        registerReceiver(buttonsReceiver, intentFilter);
+    }
+
+    private void registerReceivers() {
+        registerReceiver(myNoisyAudioStreamReceiver, intentFilter);
+        registerReceiver(buttonsReceiver, intentFilter);
     }
 
     private void initSession() {
@@ -170,98 +337,6 @@ public class RadioService extends MediaBrowserServiceCompat {
         startForeground(id, myPlayerNotification);
     }
 
-    private void initPlayer() {
-        player = new MediaPlayer();
-        player.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        //mediaPlayer.setLooping(true);
-        wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
-                .createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock");
-        wifiLock.acquire();
-        player.setAudioAttributes(
-                new AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-        );
-        am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        attrs = new AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build();
-
-        setFocusListeners();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                    .setOnAudioFocusChangeListener(afChangeListener)
-                    .setAudioAttributes(attrs)
-                    .build();
-        }
-    }
-
-    private void setFocusListeners() {
-        afChangeListener = focusChange -> {
-            Log.i(Constants.TAG, "in focusChangeListener in RadioClient");
-            switch( focusChange ) {
-                case AudioManager.AUDIOFOCUS_LOSS: {
-                    Log.i(Constants.TAG, "in loss of focusChangeListener in RadioClient");
-                    if (player.isPlaying()) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                            callback.onStop();
-                        else
-                            player.stop();
-                    }
-                    break;
-                }
-                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT: {
-                    Log.i(Constants.TAG,
-                            "in lossTransient of focusChangeListener in RadioClient");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                        callback.onPause();
-                    else
-                        player.pause();
-                    break;
-                }
-                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK: {
-                    Log.i(Constants.TAG, "in canDuck of focusChangeListener in RadioClient");
-                    if (player != null)
-                        player.setVolume(0.3f, 0.3f);
-                    break;
-                }
-                case AudioManager.AUDIOFOCUS_GAIN: {
-                    Log.i(Constants.TAG, "in gain of focusChangeListener in RadioClient");
-                    if (player != null) {
-                        if (!player.isPlaying()) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                                callback.onPlay();
-                            else
-                                player.start();
-                        }
-                        player.setVolume(1.0f, 1.0f);
-                    }
-                    break;
-                }
-            }
-        };
-    }
-
-    private final BroadcastReceiver myNoisyAudioStreamReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.i(Constants.TAG, "in noisy receiver in RadioService");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                callback.onPause();
-            }
-            else
-                player.pause();
-        }
-    };
-
-    private void initNoisyReceiver() {
-        //Handles headphones coming unplugged. cannot be done through a manifest receiver
-        IntentFilter filter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-        registerReceiver(myNoisyAudioStreamReceiver, filter);
-
-    }
-
     private void initMediaSessionMetadata() {
         MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
         //Notification icon in card
@@ -320,120 +395,6 @@ public class RadioService extends MediaBrowserServiceCompat {
         mediaSession.setPlaybackState(stateBuilder.build());
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
-        @Override
-        public void onPlayFromMediaId(String mediaId, Bundle extras) {
-            super.onPlayFromMediaId(mediaId, extras);
-
-            surahIndex = Integer.parseInt(mediaId);
-            Log.i(Constants.TAG, "id is " + surahIndex);
-            reciter = extras.getInt("reciter", 0);
-            version = (RecitationVersion) extras.getSerializable("version");
-            surahNames = extras.getStringArrayList("surah_names");
-            reciterName = extras.getString("reciter_name");
-            onPlay();
-            updateMetadata();
-        }
-        @Override
-        public void onPlay() {
-            Log.i(Constants.TAG, "in onPlay of callback in RadioService");
-
-            // Request audio focus for playback, this registers the afChangeListener
-            int result = am.requestAudioFocus(audioFocusRequest);
-            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                // Start the service
-                startService(new Intent(context, RadioService.class));
-                // Set the session active  (and update metadata and state)
-                mediaSession.setActive(true);
-
-                // start the player (custom call)
-                if (controller.getPlaybackState().getState()
-                        == PlaybackStateCompat.STATE_PAUSED)
-                    player.start();
-                else
-                    play(surahIndex);
-
-                updateMetadata();
-                updatePbState(PlaybackStateCompat.STATE_PLAYING);
-                refresh();
-
-                // Register BECOME_NOISY BroadcastReceiver
-                registerReceiver(myNoisyAudioStreamReceiver, intentFilter);
-                // Put the service in the foreground, post notification
-                startForeground(id, myPlayerNotification);
-            }
-        }
-
-        @Override
-        public void onStop() {
-            Log.i(Constants.TAG, "in onStop of callback in RadioService");
-
-            AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            // Abandon audio focus
-            am.abandonAudioFocusRequest(audioFocusRequest);
-
-            unregisterReceiver(myNoisyAudioStreamReceiver);
-            // stop the player (custom call)
-            player.stop();
-            // Stop the service
-            stopSelf();
-            // Set the session inactive  (and update metadata and state)
-            mediaSession.setActive(false);
-            updatePbState(PlaybackStateCompat.STATE_STOPPED);
-
-            // Take the service out of the foreground
-            stopForeground(false);
-        }
-
-        @Override
-        public void onPause() {
-            Log.i(Constants.TAG, "in onPause of callback in RadioService");
-            // Update metadata and state
-            // pause the player (custom call)
-            player.pause();
-            updatePbState(PlaybackStateCompat.STATE_PAUSED);
-
-            // unregister BECOME_NOISY BroadcastReceiver
-            unregisterReceiver(myNoisyAudioStreamReceiver);
-            // Take the service out of the foreground, retain the notification
-            stopForeground(false);
-        }
-
-        @Override
-        public void onFastForward() {
-            super.onFastForward();
-            player.seekTo(player.getCurrentPosition()+10000);
-        }
-
-        @Override
-        public void onRewind() {
-            super.onRewind();
-            player.seekTo(player.getCurrentPosition()-10000);
-        }
-
-        @Override
-        public void onSkipToNext() {
-            super.onSkipToNext();
-            playNext();
-            updateMetadata();
-        }
-
-        @Override
-        public void onSkipToPrevious() {
-            super.onSkipToPrevious();
-            playPrevious();
-            updateMetadata();
-        }
-
-        @Override
-        public void onSeekTo(long pos) {
-            Log.i(Constants.TAG, "in onSeekTo of callback in RadioService");
-            super.onSeekTo(pos);
-            player.seekTo((int) pos);
-        }
-    };
-
     private final Runnable runnable = () -> {
         Log.i(Constants.TAG, "in the runnable");
         if (player != null && controller.getPlaybackState().getState()
@@ -448,20 +409,103 @@ public class RadioService extends MediaBrowserServiceCompat {
         handler.postDelayed(runnable, 1000);
     }
 
-    private void createNotificationChannel() {
+    private void initPlayer() {
+        player = new MediaPlayer();
+        player.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        //mediaPlayer.setLooping(true);
+        wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
+                .createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock");
+        wifiLock.acquire();
+        player.setAudioAttributes(
+                new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+        );
+        am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        attrs = new AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+
+        setFocusListeners();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name;
-            String description = "quran listening";
-            channelId = "Telawat";
-            name = "تلاوات";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel notificationChannel  = new NotificationChannel(
-                    channelId, name, importance);
-            notificationChannel.setDescription(description);
-            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(notificationChannel);
+            audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setOnAudioFocusChangeListener(afChangeListener)
+                    .setAudioAttributes(attrs)
+                    .build();
         }
+    }
+
+    private void setActions() {
+        intentFilter.addAction(ACTION_BECOMING_NOISY);
+        intentFilter.addAction(ACTION_PLAY);
+        intentFilter.addAction(ACTION_NEXT);
+        intentFilter.addAction(ACTION_PREV);
+
+        String pkg = getPackageName();
+        int flags;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            flags = PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+        }
+        else {
+            flags = PendingIntent.FLAG_CANCEL_CURRENT;
+        }
+
+        playAction = new NotificationCompat.Action(R.drawable.ic_play, "play",
+                PendingIntent.getBroadcast(context, REQUEST_CODE,
+                        new Intent(ACTION_PLAY).setPackage(pkg), flags));
+        nextAction = new NotificationCompat.Action(R.drawable.ic_player_next, "next",
+                PendingIntent.getBroadcast(context, REQUEST_CODE,
+                        new Intent(ACTION_NEXT).setPackage(pkg), flags));
+        prevAction = new NotificationCompat.Action(R.drawable.ic_player_previous, "previous",
+                PendingIntent.getBroadcast(context, REQUEST_CODE,
+                        new Intent(ACTION_PREV).setPackage(pkg), flags));
+    }
+
+    private void setFocusListeners() {
+        afChangeListener = focusChange -> {
+            Log.i(Constants.TAG, "in focusChangeListener in RadioClient");
+            switch( focusChange ) {
+                case AudioManager.AUDIOFOCUS_LOSS: {
+                    Log.i(Constants.TAG, "in loss of focusChangeListener in RadioClient");
+                    if (player.isPlaying()) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                            callback.onStop();
+                        else
+                            player.stop();
+                    }
+                    break;
+                }
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT: {
+                    Log.i(Constants.TAG,
+                            "in lossTransient of focusChangeListener in RadioClient");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                        callback.onPause();
+                    else
+                        player.pause();
+                    break;
+                }
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK: {
+                    Log.i(Constants.TAG, "in canDuck of focusChangeListener in RadioClient");
+                    if (player != null)
+                        player.setVolume(0.3f, 0.3f);
+                    break;
+                }
+                case AudioManager.AUDIOFOCUS_GAIN: {
+                    Log.i(Constants.TAG, "in gain of focusChangeListener in RadioClient");
+                    if (player != null) {
+                        if (!player.isPlaying()) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                                callback.onPlay();
+                            else
+                                player.start();
+                        }
+                        player.setVolume(1.0f, 1.0f);
+                    }
+                    break;
+                }
+            }
+        };
     }
 
     private void play(int surah) {
@@ -477,6 +521,7 @@ public class RadioService extends MediaBrowserServiceCompat {
                 player.start();
                 updateMetadata();    // For the duration
             });
+            player.setOnCompletionListener(mp -> playNext());
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -499,6 +544,22 @@ public class RadioService extends MediaBrowserServiceCompat {
 
         if (surahIndex >= 0)
             play(surahIndex);
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name;
+            String description = "quran listening";
+            channelId = "Telawat";
+            name = "تلاوات";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel notificationChannel  = new NotificationChannel(
+                    channelId, name, importance);
+            notificationChannel.setDescription(description);
+            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
     }
 
     @Nullable @Override
@@ -547,24 +608,8 @@ public class RadioService extends MediaBrowserServiceCompat {
         return true;
     }
 
-    private String formatTime(boolean progress) {
-        int time;
-        if (progress)
-            time = player.getCurrentPosition();
-        else
-            time = player.getDuration();
-
-        int hours = time / (60 * 60 * 1000) % 24;
-        int minutes = time / (60 * 1000) % 60;
-        int seconds = time / 1000 % 60;
-        String hms = String.format(Locale.US, "%02d:%02d:%02d",
-                hours, minutes, seconds);
-        if (hms.startsWith("0")) {
-            hms = hms.substring(1);
-            if (hms.startsWith("0"))
-                hms = hms.substring(2);
-        }
-        return hms;
+    private void unregisterReceivers() {
+        unregisterReceiver(myNoisyAudioStreamReceiver);
+        unregisterReceiver(buttonsReceiver);
     }
-
 }

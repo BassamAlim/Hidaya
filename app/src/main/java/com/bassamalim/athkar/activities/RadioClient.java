@@ -284,8 +284,7 @@ public class RadioClient extends AppCompatActivity {
         controller.registerCallback(controllerCallback);
     }
 
-    MediaControllerCompat.Callback controllerCallback =
-            new MediaControllerCompat.Callback() {
+    MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             Log.i(Constants.TAG, "in onMetadataChanged of controllerCallback in RadioClient");
