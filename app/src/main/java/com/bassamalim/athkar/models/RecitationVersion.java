@@ -2,20 +2,28 @@ package com.bassamalim.athkar.models;
 
 import android.view.View;
 
-public class RecitationVersion {
+import java.io.Serializable;
+
+public class RecitationVersion implements Serializable {
+    private final int index;
     private final String server;
     private final String rewaya;
     private final String count;
     private final String suras;
     private final View.OnClickListener listener;
 
-    public RecitationVersion(String gServer, String gRewaya, String gCount, String gSuras,
-                             View.OnClickListener gListener) {
-        server = gServer;
-        rewaya = gRewaya;
-        count = gCount;
-        suras = gSuras;
-        listener = gListener;
+    public RecitationVersion(int index, String server, String rewaya, String count,
+                             String suras, View.OnClickListener listener) {
+        this.index = index;
+        this.server = server;
+        this.rewaya = rewaya;
+        this.count = count;
+        this.suras = suras;
+        this.listener = listener;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public String getServer() {
@@ -26,8 +34,8 @@ public class RecitationVersion {
         return rewaya;
     }
 
-    public String getCount() {
-        return count;
+    public Integer getCount() {
+        return Integer.valueOf(count);
     }
 
     public String getSuras() {

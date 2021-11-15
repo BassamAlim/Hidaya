@@ -38,7 +38,7 @@ public class RadioPlayer extends AppCompatActivity {
     private ArrayList<String> surahNames;
     private String reciterName;
     private RecitationVersion version;
-    private int current;
+    private int surah;
     private MediaPlayer player;
     private WifiManager.WifiLock wifiLock;
     private boolean isPaused = false;
@@ -58,12 +58,12 @@ public class RadioPlayer extends AppCompatActivity {
         Intent intent = getIntent();
         reciter = intent.getIntExtra("reciter", 0);
         versionIndex = intent.getIntExtra("version", 0);
-        int surah = intent.getIntExtra("surah", 0);
+        int selectedSurah = intent.getIntExtra("surah", 0);
         surahNames = intent.getStringArrayListExtra("surah_names");
 
         setupJson();
 
-        current = surah;
+        surah = selectedSurah;
 
         initiate();
 
@@ -80,7 +80,7 @@ public class RadioPlayer extends AppCompatActivity {
             JSONArray versions = reciterObj.getJSONArray("versions");
             JSONObject v = versions.getJSONObject(versionIndex);
 
-            version = new RecitationVersion(v.getString("server"),
+            version = new RecitationVersion(versionIndex, v.getString("server"),
                     v.getString("rewaya"), v.getString("count"),
                     v.getString("suras"), null);
         }
@@ -93,7 +93,7 @@ public class RadioPlayer extends AppCompatActivity {
     private void initiate() {
         setViews();
 
-        surahNamescreen.setText(surahNames.get(current));
+        surahNamescreen.setText(surahNames.get(surah));
         binding.reciterNamescreen.setText(reciterName);
         binding.versionNamescreen.setText(version.getRewaya());
 
@@ -121,13 +121,13 @@ public class RadioPlayer extends AppCompatActivity {
                    play();
             }
         });
-        binding.next.setOnClickListener(v -> next());
-        binding.previous.setOnClickListener(v -> previous());
-        binding.forward.setOnClickListener(v -> {
+        binding.nextTrack.setOnClickListener(v -> next());
+        binding.previousTrack.setOnClickListener(v -> previous());
+        binding.fastForward.setOnClickListener(v -> {
             if (player.isPlaying())
                 player.seekTo(player.getCurrentPosition()+10000);
         });
-        binding.backward.setOnClickListener(v -> {
+        binding.rewind.setOnClickListener(v -> {
             if (player.isPlaying())
                 player.seekTo(player.getCurrentPosition()-10000);
         });
@@ -160,9 +160,10 @@ public class RadioPlayer extends AppCompatActivity {
     }
 
     private void play() {
-        surahNamescreen.setText(surahNames.get(current));
+        surahNamescreen.setText(surahNames.get(surah));
 
-        String text = version.getServer() + "/" + formatNum(current+1) + ".mp3";
+        String text = String.format(Locale.US, "%s/%03d.mp3",
+                version.getServer(), surah+1);
         Uri uri = Uri.parse(text);
 
         try {
@@ -196,20 +197,20 @@ public class RadioPlayer extends AppCompatActivity {
     private void next() {
         updateButton(false);
         do {
-            current++;
-        } while(current < 114 && !version.getSuras().contains("," + (current+1) + ","));
+            surah++;
+        } while(surah < 114 && !version.getSuras().contains("," + (surah +1) + ","));
 
-        if (current < 114)
+        if (surah < 114)
             play();
     }
 
     private void previous() {
         updateButton(false);
         do {
-            current--;
-        } while(current >= 0 && !version.getSuras().contains("," + (current+1) + ","));
+            surah--;
+        } while(surah >= 0 && !version.getSuras().contains("," + (surah +1) + ","));
 
-        if (current >= 0)
+        if (surah >= 0)
         play();
     }
 
@@ -237,17 +238,6 @@ public class RadioPlayer extends AppCompatActivity {
                     R.drawable.ic_player_play, getTheme()));
             isPaused = true;
         }
-    }
-
-    private String formatNum(int in) {
-        String strIn = String.valueOf(in);
-        String out = "";
-        if (strIn.length() == 1)
-            out += "00";
-        else if (strIn.length() == 2)
-            out += "0";
-        out += strIn;
-        return out;
     }
 
     private String formatTime(boolean progress) {

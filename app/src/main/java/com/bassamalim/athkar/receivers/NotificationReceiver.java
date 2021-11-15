@@ -192,7 +192,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
         else if (variable == 9) {
             intent = new Intent(context, QuranActivity.class);
-            intent.setAction("specific");
+            intent.setAction("by_surah");
             intent.putExtra("surah_index", 17);    // alkahf
         }
         else

@@ -1,6 +1,9 @@
 package com.bassamalim.athkar.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -18,10 +21,10 @@ import androidx.preference.PreferenceManager;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.ActivityMainBinding;
 import com.bassamalim.athkar.helpers.Alarms;
-import com.bassamalim.athkar.helpers.DailyUpdate;
 import com.bassamalim.athkar.helpers.Keeper;
 import com.bassamalim.athkar.helpers.PrayTimes;
 import com.bassamalim.athkar.helpers.Update;
+import com.bassamalim.athkar.receivers.DailyUpdateReceiver;
 import com.bassamalim.athkar.receivers.DeviceBootReceiver;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -114,9 +117,31 @@ public class MainActivity extends AppCompatActivity {
         int day = pref.getInt("last_day", 0);
 
         Calendar today = Calendar.getInstance();
+        if (day != today.get(Calendar.DAY_OF_MONTH)) {
+            int HOUR_FOR_DAILY_UPDATE = 0;
 
-        if (day != today.get(Calendar.DAY_OF_MONTH))
-            new DailyUpdate(this);
+            Calendar time = Calendar.getInstance();
+            time.set(Calendar.HOUR_OF_DAY, HOUR_FOR_DAILY_UPDATE);
+
+            Intent intent = new Intent(this, DailyUpdateReceiver.class);
+            intent.setAction("daily");
+            intent.putExtra("time", HOUR_FOR_DAILY_UPDATE);
+
+            PendingIntent pendIntent;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendIntent = PendingIntent.getBroadcast(this, 0, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            }
+            else {
+                pendIntent = PendingIntent.getBroadcast(this, 0, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+
+            AlarmManager myAlarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            myAlarm.setRepeating(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, pendIntent);
+        }
     }
 
     private Calendar[] getTimes(Location loc) {

@@ -420,6 +420,7 @@ public class PrayTimes {
         calendar.set(Calendar.DATE, day);
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, Integer.parseInt(str.substring(3, 5)));
+        calendar.set(Calendar.SECOND, 0);
 
         return calendar;
     }
@@ -442,6 +443,7 @@ public class PrayTimes {
             formattedTimes[i] = Calendar.getInstance();
             formattedTimes[i].set(Calendar.HOUR_OF_DAY, hour);
             formattedTimes[i].set(Calendar.MINUTE, Integer.parseInt(givenTimes.get(i).substring(3, 5)));
+            formattedTimes[i].set(Calendar.SECOND, 0);
         }
         return formattedTimes;
     }

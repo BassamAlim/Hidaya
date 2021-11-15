@@ -82,7 +82,7 @@ public class RadioActivity extends AppCompatActivity {
                         intent.putExtra("version", finalJ);
                         startActivity(intent);
                     };
-                    RecitationVersion obj = new RecitationVersion(ver.getString("server"),
+                    RecitationVersion obj = new RecitationVersion(j, ver.getString("server"),
                             ver.getString("rewaya"), ver.getString("count"),
                             ver.getString("suras"), listener);
                     versionsArr[j] = obj;

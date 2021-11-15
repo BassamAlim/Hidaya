@@ -126,7 +126,6 @@ public class Alarms {
         Log.i(Constants.TAG, "in set extra alarms");
 
         Calendar today = Calendar.getInstance();
-        today.setTimeInMillis(System.currentTimeMillis());
 
         if (pref.getBoolean(context.getString(R.string.morning_athkar_key), true))
             setExtraAlarm(6);

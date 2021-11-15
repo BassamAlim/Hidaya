@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activities.RadioPlayer"
+    tools:context=".activities.RadioClient"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/qibla_bg">
@@ -54,7 +54,7 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="20dp"
         android:padding="10dp"
-        android:background="@color/primary"
+        android:background="@color/primary50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/controls_space">
@@ -91,34 +91,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="130dp"
-        android:background="@color/primary"
+        android:background="@color/primary50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
-            android:id="@+id/previous"
+            android:id="@+id/previous_track"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:background="@drawable/p_button_bg"
+            android:background="?android:attr/selectableItemBackground"
             android:src="@drawable/ic_player_previous"
             android:contentDescription="@string/bookmark_page_button"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/backward"
+            app:layout_constraintEnd_toStartOf="@id/rewind"
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <ImageButton
-            android:id="@+id/backward"
+            android:id="@+id/rewind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:background="@drawable/p_button_bg"
+            android:background="?android:attr/selectableItemBackground"
             android:src="@drawable/ic_backward"
             android:contentDescription="@string/bookmark_page_button"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/previous"
+            app:layout_constraintStart_toEndOf="@id/previous_track"
             app:layout_constraintEnd_toStartOf="@id/play_pause"
             app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -127,37 +127,37 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:backgroundTint="@color/primary"
+            android:background="?android:attr/selectableItemBackground"
             android:src="@drawable/ic_player_play"
             android:contentDescription="@string/bookmark_page_button"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/backward"
-            app:layout_constraintEnd_toStartOf="@id/forward"
+            app:layout_constraintStart_toEndOf="@id/rewind"
+            app:layout_constraintEnd_toStartOf="@id/fast_forward"
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <ImageButton
-            android:id="@+id/forward"
+            android:id="@+id/fast_forward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:background="@drawable/p_button_bg"
+            android:background="?android:attr/selectableItemBackground"
             android:src="@drawable/ic_forward"
             android:contentDescription="@string/bookmark_page_button"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/play_pause"
-            app:layout_constraintEnd_toStartOf="@id/next"
+            app:layout_constraintEnd_toStartOf="@id/next_track"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <ImageButton
-            android:id="@+id/next"
+            android:id="@+id/next_track"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:background="@drawable/p_button_bg"
+            android:background="?android:attr/selectableItemBackground"
             android:src="@drawable/ic_player_next"
             android:contentDescription="@string/bookmark_page_button"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/forward"
+            app:layout_constraintStart_toEndOf="@id/fast_forward"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 

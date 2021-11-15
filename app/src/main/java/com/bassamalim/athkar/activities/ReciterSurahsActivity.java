@@ -95,10 +95,10 @@ public class ReciterSurahsActivity extends AppCompatActivity {
                 String searchName = searchNames[i];
                 int finalI = i;
                 View.OnClickListener listener = v -> {
-                    Intent intent = new Intent(this, RadioPlayer.class);
+                    Intent intent = new Intent(this, RadioClient.class);
                     intent.putExtra("reciter", reciterIndex);
                     intent.putExtra("version", version);
-                    intent.putExtra("surah", finalI);
+                    intent.putExtra("surah_index", finalI);
                     intent.putStringArrayListExtra("surah_names", surahNames);
                     startActivity(intent);
                 };

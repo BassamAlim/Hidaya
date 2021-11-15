@@ -5,12 +5,18 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="primary">#222831</color>
+    <color name="primary50">#80222831</color>
+
     <color name="secondary">#222D37</color>
     <color name="light_secondary">#56738E</color>
+
     <color name="accent">#00ADB5</color>
     <color name="dark_accent">#028288</color>
-    <color name="text">#BCC2C7</color>
-    <color name="track">#0E1214</color>
+
     <color name="bg">#1A2027</color>
+
+    <color name="text">#BCC2C7</color>
+
+    <color name="track">#0E1214</color>
 
 </resources>
