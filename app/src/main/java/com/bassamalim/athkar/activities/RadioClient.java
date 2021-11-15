@@ -4,8 +4,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.RemoteException;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -61,9 +59,8 @@ public class RadioClient extends AppCompatActivity {
     private int position;
     private int duration;
     private boolean isPlaying = false;
-    private MediaMetadataCompat cMetadata;
+    private MediaMetadataCompat mediaMetadata;
     private PlaybackStateCompat pbState;
-    Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,8 +144,6 @@ public class RadioClient extends AppCompatActivity {
         Log.i(Constants.TAG, "in onStart in RadioClient");
         super.onStart();
         mediaBrowser.connect();
-
-        updateButton(true);
     }
 
     @Override
@@ -156,8 +151,6 @@ public class RadioClient extends AppCompatActivity {
         Log.i(Constants.TAG, "in onResume in RadioClient");
         super.onResume();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
-        updateButton(true);
     }
 
     @Override
@@ -170,16 +163,12 @@ public class RadioClient extends AppCompatActivity {
                     .unregisterCallback(controllerCallback);
         }
         mediaBrowser.disconnect();
-
-        updateButton(false);
     }
 
     @Override
     protected void onPause() {
         Log.i(Constants.TAG, "in onPause in RadioClient");
         super.onPause();
-
-        updateButton(false);
     }
 
     private final MediaBrowserCompat.ConnectionCallback connectionCallbacks =
@@ -205,15 +194,20 @@ public class RadioClient extends AppCompatActivity {
             // Finish building the UI
             buildTransportControls();
 
-            // Pass media data
-            Bundle bundle = new Bundle();
-            bundle.putInt("reciter", reciter);
-            bundle.putSerializable("version", version);
-            bundle.putStringArrayList("surah_names", surahNames);
-            bundle.putString("reciter_name", reciterName);
+            // Check if its the first time
+            if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE) {
+                // Pass media data
+                Bundle bundle = new Bundle();
+                bundle.putInt("reciter", reciter);
+                bundle.putSerializable("version", version);
+                bundle.putStringArrayList("surah_names", surahNames);
+                bundle.putString("reciter_name", reciterName);
 
-            // Start Playback
-            controller.getTransportControls().playFromMediaId(String.valueOf(surahIndex), bundle);
+                // Start Playback
+                controller.getTransportControls()
+                        .playFromMediaId(String.valueOf(surahIndex), bundle);
+                Log.i(Constants.TAG, "the id was: " + surahIndex);
+            }
         }
 
         @Override
@@ -280,17 +274,14 @@ public class RadioClient extends AppCompatActivity {
         setListeners();
 
         // Display the initial state
-        cMetadata = controller.getMetadata();
+        mediaMetadata = controller.getMetadata();
         pbState = controller.getPlaybackState();
-
         updatePbState(pbState);
-
-        // initializing metadata
-        surahNamescreen.setText(surahNames.get((int) cMetadata.getLong("surah_index")));
+        if (mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER) != -1)
+            updateMetadata();
 
         // Register a Callback to stay in sync
         controller.registerCallback(controllerCallback);
-
     }
 
     MediaControllerCompat.Callback controllerCallback =
@@ -299,10 +290,9 @@ public class RadioClient extends AppCompatActivity {
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             Log.i(Constants.TAG, "in onMetadataChanged of controllerCallback in RadioClient");
 
-            cMetadata = metadata;
-            // to change the metadata inside the app when the user changes it
-            // from the notification (قدعنة)
-            updateMetadata(metadata);
+            mediaMetadata = metadata;
+            // To change the metadata inside the app when the user changes it from the notification
+            updateMetadata();
         }
 
         @Override
@@ -311,17 +301,17 @@ public class RadioClient extends AppCompatActivity {
                     "in onPlaybackStateChanged of controllerCallback in RadioClient");
 
             pbState = state;
-            // to change the playback state inside the app when the user changes it
-            // from the notification (قدعنة)
+            // To change the playback state inside the app when the user changes it
+            // from the notification
             updatePbState(state);
         }
     };
 
-    private void updateMetadata(MediaMetadataCompat metadata) {
-        surahIndex = (int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER);
+    private void updateMetadata() {
+        surahIndex = (int) mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER);
         surahNamescreen.setText(surahNames.get(surahIndex));
 
-        duration = (int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
+        duration = (int) mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
         durationScreen.setText(formatTime(duration));
         seekBar.setMax(duration);
     }
