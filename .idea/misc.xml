@@ -31,6 +31,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_alathkar_black_24dp.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_backward.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_bar_quran.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_baseline_pause.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_bookmark.xml" value="0.19166666666666668" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_check.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_day_and_night.xml" value="0.19583333333333333" />
@@ -55,6 +56,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_night.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_other_black_24dp.xml" value="0.1925925925925926" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_play.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_play_arrow.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_play_blue.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_player_next.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_player_pause.xml" value="0.19583333333333333" />
@@ -71,6 +73,8 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_search.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_settings.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_share.xml" value="0.1925925925925926" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_skip_next.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_skip_previous.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_sound.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_speaker.xml" value="0.19282051282051282" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Athkar/app/src/main/res/drawable/ic_stop.xml" value="0.19583333333333333" />

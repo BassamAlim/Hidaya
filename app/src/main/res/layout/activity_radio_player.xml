@@ -63,9 +63,9 @@
             android:id="@+id/seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:thumbTint="@color/accent"
-            android:progressTint="@color/dark_accent"
             android:backgroundTint="@color/secondary"
+            android:progressTint="@color/dark_accent"
+            android:thumbTint="@color/accent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

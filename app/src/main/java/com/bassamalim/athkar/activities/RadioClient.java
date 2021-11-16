@@ -82,63 +82,6 @@ public class RadioClient extends AppCompatActivity {
                 null); // optional Bundle
     }
 
-    private void getIntentData() {
-        Intent intent = getIntent();
-        reciter = intent.getIntExtra("reciter", 0);
-        versionIndex = intent.getIntExtra("version", 0);
-        surahIndex = intent.getIntExtra("surah_index", 0);
-        surahNames = intent.getStringArrayListExtra("surah_names");
-    }
-
-    private void setupJson() {
-        String json = Utils.getJsonFromAssets(this, "mp3quran.json");
-        try {
-            assert json != null;
-            JSONArray arr = new JSONArray(json);
-            JSONObject reciterObj = arr.getJSONObject(reciter);
-            reciterName = reciterObj.getString("name");
-            JSONArray versions = reciterObj.getJSONArray("versions");
-            JSONObject v = versions.getJSONObject(versionIndex);
-
-            version = new RecitationVersion(versionIndex, v.getString("server"),
-                    v.getString("rewaya"), v.getString("count"),
-                    v.getString("suras"), null);
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(Constants.TAG, "Problems in setupJson() in RadioActivity");
-        }
-    }
-
-    private void initViews() {
-        surahNamescreen = binding.surahNamescreen;
-        seekBar = binding.seekbar;
-        durationScreen = binding.durationScreen;
-        progressScreen = binding.progressScreen;
-        playPause = binding.playPause;
-        nextBtn = binding.nextTrack;
-        prevBtn = binding.previousTrack;
-        forwardBtn = binding.fastForward;
-        rewindBtn = binding.rewind;
-
-        surahNamescreen.setText(surahNames.get(surahIndex));
-        binding.reciterNamescreen.setText(reciterName);
-        binding.versionNamescreen.setText(version.getRewaya());
-    }
-
-    private void updateButton(boolean playing) {
-        if (playing) {
-            playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                    R.drawable.ic_player_pause, getTheme()));
-            isPlaying = true;
-        }
-        else {
-            playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                    R.drawable.ic_player_play, getTheme()));
-            isPlaying = false;
-        }
-    }
-
     @Override
     public void onStart() {
         Log.i(Constants.TAG, "in onStart in RadioClient");
@@ -223,6 +166,63 @@ public class RadioClient extends AppCompatActivity {
             // The Service has refused our connection
         }
     };
+
+    private void getIntentData() {
+        Intent intent = getIntent();
+        reciter = intent.getIntExtra("reciter", 0);
+        versionIndex = intent.getIntExtra("version", 0);
+        surahIndex = intent.getIntExtra("surah_index", 0);
+        surahNames = intent.getStringArrayListExtra("surah_names");
+    }
+
+    private void setupJson() {
+        String json = Utils.getJsonFromAssets(this, "mp3quran.json");
+        try {
+            assert json != null;
+            JSONArray arr = new JSONArray(json);
+            JSONObject reciterObj = arr.getJSONObject(reciter);
+            reciterName = reciterObj.getString("name");
+            JSONArray versions = reciterObj.getJSONArray("versions");
+            JSONObject v = versions.getJSONObject(versionIndex);
+
+            version = new RecitationVersion(versionIndex, v.getString("server"),
+                    v.getString("rewaya"), v.getString("count"),
+                    v.getString("suras"), null);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            Log.e(Constants.TAG, "Problems in setupJson() in RadioActivity");
+        }
+    }
+
+    private void initViews() {
+        surahNamescreen = binding.surahNamescreen;
+        seekBar = binding.seekbar;
+        durationScreen = binding.durationScreen;
+        progressScreen = binding.progressScreen;
+        playPause = binding.playPause;
+        nextBtn = binding.nextTrack;
+        prevBtn = binding.previousTrack;
+        forwardBtn = binding.fastForward;
+        rewindBtn = binding.rewind;
+
+        surahNamescreen.setText(surahNames.get(surahIndex));
+        binding.reciterNamescreen.setText(reciterName);
+        binding.versionNamescreen.setText(version.getRewaya());
+    }
+
+    private void updateButton(boolean playing) {
+        if (playing) {
+            playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_player_pause, getTheme()));
+            isPlaying = true;
+        }
+        else {
+            playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_player_play, getTheme()));
+            isPlaying = false;
+        }
+    }
 
     private void setListeners() {
         // Attach a listeners to the buttons
