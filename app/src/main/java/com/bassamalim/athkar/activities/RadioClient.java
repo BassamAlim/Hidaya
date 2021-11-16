@@ -10,7 +10,6 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -22,7 +21,6 @@ import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.ActivityRadioPlayerBinding;
 import com.bassamalim.athkar.helpers.Utils;
 import com.bassamalim.athkar.models.RecitationVersion;
-import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.services.RadioService;
 
 import org.json.JSONArray;
@@ -37,8 +35,8 @@ public class RadioClient extends AppCompatActivity {
     private ActivityRadioPlayerBinding binding;
     private MediaBrowserCompat mediaBrowser;
     private MediaControllerCompat controller;
-
-    // UI
+    private MediaMetadataCompat mediaMetadata;
+    private PlaybackStateCompat pbState;
     private TextView progressScreen;
     private TextView durationScreen;
     private TextView surahNamescreen;
@@ -48,23 +46,15 @@ public class RadioClient extends AppCompatActivity {
     private ImageButton forwardBtn;
     private ImageButton rewindBtn;
     private SeekBar seekBar;
-
     private int reciter;
     private int versionIndex;
     private ArrayList<String> surahNames;
     private String reciterName;
     private RecitationVersion version;
     private int surahIndex;
-    private int currentState;
-    private int position;
-    private int duration;
-    private boolean isPlaying = false;
-    private MediaMetadataCompat mediaMetadata;
-    private PlaybackStateCompat pbState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i(Constants.TAG, "in onCreate in RadioClient");
         super.onCreate(savedInstanceState);
 
         binding = ActivityRadioPlayerBinding.inflate(getLayoutInflater());
@@ -84,21 +74,18 @@ public class RadioClient extends AppCompatActivity {
 
     @Override
     public void onStart() {
-        Log.i(Constants.TAG, "in onStart in RadioClient");
         super.onStart();
         mediaBrowser.connect();
     }
 
     @Override
     public void onResume() {
-        Log.i(Constants.TAG, "in onResume in RadioClient");
         super.onResume();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
     @Override
     public void onStop() {
-        Log.i(Constants.TAG, "in onStop in RadioClient");
         super.onStop();
         // (see "stay in sync with the MediaSession")
         if (MediaControllerCompat.getMediaController(RadioClient.this) != null) {
@@ -110,7 +97,6 @@ public class RadioClient extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Log.i(Constants.TAG, "in onPause in RadioClient");
         super.onPause();
     }
 
@@ -118,7 +104,6 @@ public class RadioClient extends AppCompatActivity {
             new MediaBrowserCompat.ConnectionCallback() {
         @Override
         public void onConnected() {
-            Log.i(Constants.TAG, "in onConnected of connectionCallbacks in RadioClient");
             // Get the token for the MediaSession
             MediaSessionCompat.Token token = mediaBrowser.getSessionToken();
 
@@ -141,7 +126,6 @@ public class RadioClient extends AppCompatActivity {
             if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE) {
                 // Pass media data
                 Bundle bundle = new Bundle();
-                bundle.putInt("reciter", reciter);
                 bundle.putSerializable("version", version);
                 bundle.putStringArrayList("surah_names", surahNames);
                 bundle.putString("reciter_name", reciterName);
@@ -149,20 +133,17 @@ public class RadioClient extends AppCompatActivity {
                 // Start Playback
                 controller.getTransportControls()
                         .playFromMediaId(String.valueOf(surahIndex), bundle);
-                Log.i(Constants.TAG, "the id was: " + surahIndex);
             }
         }
 
         @Override
         public void onConnectionSuspended() {
-            Log.i(Constants.TAG, "in onConnectionSuspended in RadioClient");
             // The Service has crashed.
             // Disable transport controls until it automatically reconnects
         }
 
         @Override
         public void onConnectionFailed() {
-            Log.i(Constants.TAG, "in onConnectionFailed in RadioClient");
             // The Service has refused our connection
         }
     };
@@ -191,7 +172,6 @@ public class RadioClient extends AppCompatActivity {
         }
         catch (JSONException e) {
             e.printStackTrace();
-            Log.e(Constants.TAG, "Problems in setupJson() in RadioActivity");
         }
     }
 
@@ -212,22 +192,17 @@ public class RadioClient extends AppCompatActivity {
     }
 
     private void updateButton(boolean playing) {
-        if (playing) {
+        if (playing)
             playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
                     R.drawable.ic_player_pause, getTheme()));
-            isPlaying = true;
-        }
-        else {
+        else
             playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
                     R.drawable.ic_player_play, getTheme()));
-            isPlaying = false;
-        }
     }
 
     private void setListeners() {
         // Attach a listeners to the buttons
         playPause.setOnClickListener(v -> {
-            Log.i(Constants.TAG, "in playPause listener in RadioClient");
             // Since this is a play/pause button, you'll need to test the current state
             // and choose the action accordingly
             int pbState = controller.getPlaybackState().getState();
@@ -237,40 +212,24 @@ public class RadioClient extends AppCompatActivity {
             else
                 controller.getTransportControls().play();
         });
-        nextBtn.setOnClickListener(v -> {
-            Log.i(Constants.TAG, "in nextButton listener in RadioClient");
-            controller.getTransportControls().skipToNext();
-        });
-        prevBtn.setOnClickListener(v -> {
-            Log.i(Constants.TAG, "in prevButton listener in RadioClient");
-            controller.getTransportControls().skipToPrevious();
-        });
-        forwardBtn.setOnClickListener(v -> {
-            Log.i(Constants.TAG, "in forwardButton listener in RadioClient");
-            controller.getTransportControls().fastForward();
-        });
-        rewindBtn.setOnClickListener(v -> {
-            Log.i(Constants.TAG, "in backwardButton listener in RadioClient");
-            controller.getTransportControls().rewind();
-        });
+        nextBtn.setOnClickListener(v -> controller.getTransportControls().skipToNext());
+        prevBtn.setOnClickListener(v -> controller.getTransportControls().skipToPrevious());
+        forwardBtn.setOnClickListener(v -> controller.getTransportControls().fastForward());
+        rewindBtn.setOnClickListener(v -> controller.getTransportControls().rewind());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser)
                     controller.getTransportControls().seekTo(progress);
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
     }
 
     private void buildTransportControls() {
-        Log.i(Constants.TAG, "in buildTransportControls in RadioClient");
-
         setListeners();
 
         // Display the initial state
@@ -287,7 +246,6 @@ public class RadioClient extends AppCompatActivity {
     MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
-            Log.i(Constants.TAG, "in onMetadataChanged of controllerCallback in RadioClient");
 
             mediaMetadata = metadata;
             // To change the metadata inside the app when the user changes it from the notification
@@ -296,9 +254,6 @@ public class RadioClient extends AppCompatActivity {
 
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
-            Log.i(Constants.TAG,
-                    "in onPlaybackStateChanged of controllerCallback in RadioClient");
-
             pbState = state;
             // To change the playback state inside the app when the user changes it
             // from the notification
@@ -310,13 +265,12 @@ public class RadioClient extends AppCompatActivity {
         surahIndex = (int) mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER);
         surahNamescreen.setText(surahNames.get(surahIndex));
 
-        duration = (int) mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
+        int duration = (int) mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
         durationScreen.setText(formatTime(duration));
         seekBar.setMax(duration);
     }
 
     private void updatePbState(PlaybackStateCompat state) {
-        Log.i(Constants.TAG, "in updatePbState in RadioClient");
         seekBar.setProgress((int) state.getPosition());
         progressScreen.setText(formatTime((int) state.getPosition()));
 

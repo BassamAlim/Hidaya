@@ -26,7 +26,6 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,7 +37,6 @@ import androidx.media.session.MediaButtonReceiver;
 
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.models.RecitationVersion;
-import com.bassamalim.athkar.other.Constants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +59,6 @@ public class RadioService extends MediaBrowserServiceCompat {
     private MediaSessionCompat mediaSession;
     private MediaControllerCompat controller;
     private MediaMetadataCompat mediaMetadata;
-    private MediaDescriptionCompat description;
     private Context context;
     private String channelId = "channel ID";
     private final int id = 333;
@@ -73,11 +70,8 @@ public class RadioService extends MediaBrowserServiceCompat {
     private Notification notification;
     private MediaPlayer player;
     private AudioManager am;
-    private AudioAttributes attrs;
-    private PlaybackStateCompat.Builder stateBuilder;
     private final IntentFilter intentFilter = new IntentFilter();
     private AudioFocusRequest audioFocusRequest;
-    private int reciter;
     private ArrayList<String> surahNames;
     private String reciterName;
     private RecitationVersion version;
@@ -86,7 +80,6 @@ public class RadioService extends MediaBrowserServiceCompat {
 
     @Override
     public void onCreate() {
-        Log.i(Constants.TAG, "in onCreate in RadioService");
         super.onCreate();
 
         context = RadioService.this;
@@ -108,77 +101,25 @@ public class RadioService extends MediaBrowserServiceCompat {
             super.onPlayFromMediaId(mediaId, extras);
 
             surahIndex = Integer.parseInt(mediaId);
-            Log.i(Constants.TAG, "id is " + surahIndex);
-            reciter = extras.getInt("reciter", 0);
             version = (RecitationVersion) extras.getSerializable("version");
             surahNames = extras.getStringArrayList("surah_names");
             reciterName = extras.getString("reciter_name");
             onPlay();
         }
+
         @Override
         public void onPlay() {
-            Log.i(Constants.TAG, "in onPlay of callback in RadioService");
-
-            // Request audio focus for playback, this registers the afChangeListener
-            int result = am.requestAudioFocus(audioFocusRequest);
-            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                // Start the service
-                startService(new Intent(context, RadioService.class));
-                // Set the session active  (and update metadata and state)
-                mediaSession.setActive(true);
-
-                // start the player (custom call)
-                if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_PAUSED
-                        || controller.getPlaybackState().getState()
-                                == PlaybackStateCompat.STATE_PLAYING)
-                    player.start();
-                else
-                    play(surahIndex);
-
-                updateMetadata();
-                updatePbState(PlaybackStateCompat.STATE_PLAYING);
-                refresh();
-                updateNotification(true);
-
-                // Register BECOME_NOISY BroadcastReceiver
-                registerReceiver(receiver, intentFilter);
-                // Put the service in the foreground, post notification
-                startForeground(id, notification);
-            }
+            play();
         }
 
         @Override
         public void onStop() {
-            Log.i(Constants.TAG, "in onStop of callback in RadioService");
-
-            AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            // Abandon audio focus
-            am.abandonAudioFocusRequest(audioFocusRequest);
-
-            unregisterReceiver(receiver);
-            // stop the player (custom call)
-            player.stop();
-            // Stop the service
-            stopSelf();
-            // Set the session inactive  (and update metadata and state)
-            mediaSession.setActive(false);
-            updatePbState(PlaybackStateCompat.STATE_STOPPED);
-
-            // Take the service out of the foreground
-            stopForeground(false);
+            stop();
         }
 
         @Override
         public void onPause() {
-            Log.i(Constants.TAG, "in onPause of callback in RadioService");
-            // Update metadata and state
-            // pause the player (custom call)
-            player.pause();
-            updatePbState(PlaybackStateCompat.STATE_PAUSED);
-            updateNotification(false);
-
-            // Take the service out of the foreground, retain the notification
-            stopForeground(false);
+            pause();
         }
 
         @Override
@@ -196,61 +137,133 @@ public class RadioService extends MediaBrowserServiceCompat {
         @Override
         public void onSkipToNext() {
             super.onSkipToNext();
-            playNext();
+            skipToNext();
         }
 
         @Override
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
-            playPrevious();
+            skipToPrevious();
         }
 
         @Override
         public void onSeekTo(long pos) {
-            Log.i(Constants.TAG, "in onSeekTo of callback in RadioService");
             super.onSeekTo(pos);
             player.seekTo((int) pos);
         }
     };
 
+    private void play() {
+        // Request audio focus for playback, this registers the afChangeListener
+        int result = AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
+            result = am.requestAudioFocus(audioFocusRequest);
+
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            // Start the service
+            startService(new Intent(context, RadioService.class));
+            // Set the session active  (and update metadata and state)
+            mediaSession.setActive(true);
+
+            // start the player (custom call)
+            if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_PAUSED
+                    || controller.getPlaybackState().getState()
+                    == PlaybackStateCompat.STATE_PLAYING)
+                player.start();
+            else
+                startPlaying(surahIndex);
+
+            updateMetadata();
+            updateNotification(true);
+            updatePbState(PlaybackStateCompat.STATE_PLAYING);
+            refresh();
+
+            // Register BECOME_NOISY BroadcastReceiver
+            registerReceiver(receiver, intentFilter);
+            // Put the service in the foreground, post notification
+            startForeground(id, notification);
+        }
+    }
+
+    private void pause() {
+        // Update metadata and state
+        // pause the player (custom call)
+        player.pause();
+
+        updatePbState(PlaybackStateCompat.STATE_PAUSED);
+        updateNotification(false);
+
+        // Take the service out of the foreground, retain the notification
+        stopForeground(false);
+    }
+
+    private void stop() {
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        // Abandon audio focus
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            am.abandonAudioFocusRequest(audioFocusRequest);
+
+        cleanUp();
+        unregisterReceiver(receiver);
+        // stop the player (custom call)
+        player.stop();
+        // Stop the service
+        stopSelf();
+        // Set the session inactive  (and update metadata and state)
+        mediaSession.setActive(false);
+        updatePbState(PlaybackStateCompat.STATE_STOPPED);
+
+        // Take the service out of the foreground
+        stopForeground(false);
+    }
+
+    private void skipToNext() {
+        int temp = surahIndex;
+        do {
+            temp++;
+        } while(temp < 114 && !version.getSuras().contains("," + (temp+1) + ","));
+
+        if (temp < 114) {
+            surahIndex = temp;
+            startPlaying(surahIndex);
+            updateMetadata();
+            updatePbState(PlaybackStateCompat.STATE_PLAYING);
+        }
+    }
+
+    private void skipToPrevious() {
+        int temp = surahIndex;
+        do {
+            temp--;
+        } while(temp >= 0 && !version.getSuras().contains("," + (temp+1) + ","));
+
+        if (temp >= 0) {
+            surahIndex = temp;
+            startPlaying(surahIndex);
+            updateMetadata();
+            updatePbState(PlaybackStateCompat.STATE_PLAYING);
+        }
+    }
+
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(Constants.TAG, "in receiver");
             switch (intent.getAction()) {
                 case ACTION_BECOMING_NOISY:
-                    Log.i(Constants.TAG, "in receiver in ACTION_BECOMING_NOISY RadioService");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                        callback.onPause();
-                    else
-                        player.pause();
+                    pause();
                     break;
                 case ACTION_PLAY_PAUSE:
-                    Log.i(Constants.TAG, "in receiver in ACTION_PLAY RadioService");
-                    if (mediaSession.getController().getPlaybackState().getState()
-                            == PlaybackStateCompat.STATE_PLAYING) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                            callback.onPause();
-                        else
-                            player.pause();
-
-                        updateNotification(false);
-                    }
-                    else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                            callback.onPlay();
-                        else
-                            player.start();
-                        updateNotification(true);
-                    }
+                    if (controller.getPlaybackState().getState()
+                            == PlaybackStateCompat.STATE_PLAYING)
+                        pause();
+                    else
+                        play();
                     break;
                 case ACTION_NEXT:
-                    Log.i(Constants.TAG, "in receiver in ACTION_NEXT RadioService");
-                    playNext();
+                    skipToNext();
                     break;
                 case ACTION_PREV:
-                    Log.i(Constants.TAG, "in receiver in ACTION_PREV RadioService");
-                    playPrevious();
+                    skipToPrevious();
                     break;
             }
         }
@@ -265,7 +278,7 @@ public class RadioService extends MediaBrowserServiceCompat {
                 MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
         // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
-        stateBuilder = new PlaybackStateCompat.Builder().setActions(PlaybackStateCompat.ACTION_PLAY
+        PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder().setActions(PlaybackStateCompat.ACTION_PLAY
                 | PlaybackStateCompat.ACTION_PLAY_PAUSE);
         mediaSession.setPlaybackState(stateBuilder.build());
 
@@ -285,7 +298,7 @@ public class RadioService extends MediaBrowserServiceCompat {
         // Get the session's metadata
         controller = mediaSession.getController();
         mediaMetadata = controller.getMetadata();
-        description = mediaMetadata.getDescription();
+        MediaDescriptionCompat description = mediaMetadata.getDescription();
 
         createNotificationChannel();
 
@@ -355,7 +368,6 @@ public class RadioService extends MediaBrowserServiceCompat {
     }
 
     private void updateMetadata() {
-        Log.i(Constants.TAG, "in update metadata in RadioService");
         MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
 
         //Notification icon in card
@@ -383,7 +395,6 @@ public class RadioService extends MediaBrowserServiceCompat {
     }
 
     private void updatePbState(int state) {
-        Log.i(Constants.TAG, "in updatePbState in RadioService");
         PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder();
 
         stateBuilder.setState(state, player.getCurrentPosition(), 1)
@@ -435,7 +446,7 @@ public class RadioService extends MediaBrowserServiceCompat {
                         .build()
         );
         am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        attrs = new AudioAttributes.Builder()
+        AudioAttributes attrs = new AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build();
 
@@ -475,10 +486,8 @@ public class RadioService extends MediaBrowserServiceCompat {
 
     private void setFocusListeners() {
         afChangeListener = focusChange -> {
-            Log.i(Constants.TAG, "in focusChangeListener in RadioClient");
             switch( focusChange ) {
                 case AudioManager.AUDIOFOCUS_LOSS: {
-                    Log.i(Constants.TAG, "in loss of focusChangeListener in RadioClient");
                     if (player.isPlaying()) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                             callback.onStop();
@@ -488,8 +497,6 @@ public class RadioService extends MediaBrowserServiceCompat {
                     break;
                 }
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT: {
-                    Log.i(Constants.TAG,
-                            "in lossTransient of focusChangeListener in RadioClient");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                         callback.onPause();
                     else
@@ -497,13 +504,11 @@ public class RadioService extends MediaBrowserServiceCompat {
                     break;
                 }
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK: {
-                    Log.i(Constants.TAG, "in canDuck of focusChangeListener in RadioClient");
                     if (player != null)
                         player.setVolume(0.3f, 0.3f);
                     break;
                 }
                 case AudioManager.AUDIOFOCUS_GAIN: {
-                    Log.i(Constants.TAG, "in gain of focusChangeListener in RadioClient");
                     if (player != null) {
                         if (!player.isPlaying()) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -519,8 +524,7 @@ public class RadioService extends MediaBrowserServiceCompat {
         };
     }
 
-    private void play(int surah) {
-        Log.i(Constants.TAG, "in play in RadioService");
+    private void startPlaying(int surah) {
         String text = String.format(Locale.US, "%s/%03d.mp3",
                 version.getServer(), surah+1);
         Uri uri = Uri.parse(text);
@@ -538,34 +542,6 @@ public class RadioService extends MediaBrowserServiceCompat {
         }
         catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void playNext() {
-        int temp = surahIndex;
-        do {
-            temp++;
-        } while(temp < 114 && !version.getSuras().contains("," + (temp+1) + ","));
-
-        if (temp < 114) {
-            surahIndex = temp;
-            play(surahIndex);
-            updateMetadata();
-            updatePbState(PlaybackStateCompat.STATE_PLAYING);
-        }
-    }
-
-    private void playPrevious() {
-        int temp = surahIndex;
-        do {
-            temp--;
-        } while(temp >= 0 && !version.getSuras().contains("," + (temp+1) + ","));
-
-        if (temp >= 0) {
-            surahIndex = temp;
-            play(surahIndex);
-            updateMetadata();
-            updatePbState(PlaybackStateCompat.STATE_PLAYING);
         }
     }
 
@@ -588,7 +564,6 @@ public class RadioService extends MediaBrowserServiceCompat {
     @Nullable @Override
     public BrowserRoot onGetRoot(@NonNull String clientPackageName,
                                  int clientUid, @Nullable Bundle rootHints) {
-        Log.i(Constants.TAG, "in onGetRoot in RadioService");
 
         // (Optional) Control the level of access for the specified package name.
         if (allowBrowsing(clientPackageName, clientUid)) {
@@ -604,7 +579,6 @@ public class RadioService extends MediaBrowserServiceCompat {
     @Override
     public void onLoadChildren(@NonNull String parentId,
                                @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {
-        Log.i(Constants.TAG, "in onLoadChildren in RadioService");
 
         /*//  Browsing not allowed
         if (TextUtils.equals(MY_EMPTY_MEDIA_ROOT_ID, parentMediaId)) {
@@ -629,6 +603,15 @@ public class RadioService extends MediaBrowserServiceCompat {
 
     private boolean allowBrowsing(String clientPackageName, int clientUid) {
         return true;
+    }
+
+    private void cleanUp() {
+        if (wifiLock != null)
+            wifiLock.release();
+        if (player != null) {
+            player.release();
+            player = null;
+        }
     }
 
 }
