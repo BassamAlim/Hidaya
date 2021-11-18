@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.BitmapFactory;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -60,6 +59,7 @@ public class RadioService extends MediaBrowserServiceCompat {
     private MediaSessionCompat mediaSession;
     private MediaControllerCompat controller;
     private MediaMetadataCompat mediaMetadata;
+    private MediaDescriptionCompat description;
     private Context context;
     private String channelId = "channel ID";
     private final int id = 333;
@@ -144,12 +144,14 @@ public class RadioService extends MediaBrowserServiceCompat {
         public void onFastForward() {
             super.onFastForward();
             player.seekTo(player.getCurrentPosition()+10000);
+            updatePbState(controller.getPlaybackState().getState());
         }
 
         @Override
         public void onRewind() {
             super.onRewind();
             player.seekTo(player.getCurrentPosition()-10000);
+            updatePbState(controller.getPlaybackState().getState());
         }
 
         @Override
@@ -168,6 +170,7 @@ public class RadioService extends MediaBrowserServiceCompat {
         public void onSeekTo(long pos) {
             super.onSeekTo(pos);
             player.seekTo((int) pos);
+            updatePbState(controller.getPlaybackState().getState());
         }
     };
 
@@ -175,8 +178,7 @@ public class RadioService extends MediaBrowserServiceCompat {
         // start the player
         startPlaying(surahIndex);
 
-        // Update data
-        updateMetadata();
+        // Update state
         updatePbState(PlaybackStateCompat.STATE_PLAYING);
         updateNotification(true);
     }
@@ -199,7 +201,6 @@ public class RadioService extends MediaBrowserServiceCompat {
             else
                 startPlaying(surahIndex);
 
-            updateMetadata();
             updatePbState(PlaybackStateCompat.STATE_PLAYING);
             updateNotification(true);
             refresh();
@@ -252,7 +253,6 @@ public class RadioService extends MediaBrowserServiceCompat {
         if (temp < 114) {
             surahIndex = temp;
             startPlaying(surahIndex);
-            updateMetadata();
             updatePbState(PlaybackStateCompat.STATE_PLAYING);
         }
     }
@@ -266,7 +266,6 @@ public class RadioService extends MediaBrowserServiceCompat {
         if (temp >= 0) {
             surahIndex = temp;
             startPlaying(surahIndex);
-            updateMetadata();
             updatePbState(PlaybackStateCompat.STATE_PLAYING);
         }
     }
@@ -312,8 +311,8 @@ public class RadioService extends MediaBrowserServiceCompat {
                 MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
         // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
-        PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder().setActions(PlaybackStateCompat.ACTION_PLAY
-                | PlaybackStateCompat.ACTION_PLAY_PAUSE);
+        PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder().setActions(
+                PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PLAY_PAUSE);
         mediaSession.setPlaybackState(stateBuilder.build());
 
         // callback() has methods that handle callbacks from a media controller
@@ -332,7 +331,14 @@ public class RadioService extends MediaBrowserServiceCompat {
         // Get the session's metadata
         controller = mediaSession.getController();
         mediaMetadata = controller.getMetadata();
-        MediaDescriptionCompat description = mediaMetadata.getDescription();
+        description = mediaMetadata.getDescription();
+
+        /*Intent intent = new Intent(context, RadioClient.class).setAction("back").putExtra(
+                "reciter_index", reciterIndex).putExtra("version", version).putExtra(
+                        "surah_index", surahIndex).putExtra("surah_names", surahNames);
+        PendingIntent pi = PendingIntent.getActivity(context, 36,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        mediaSession.setSessionActivity(pi);*/
 
         createNotificationChannel();
 
@@ -344,8 +350,8 @@ public class RadioService extends MediaBrowserServiceCompat {
                 .setContentTitle(description.getTitle())
                 .setContentText(description.getSubtitle())
                 .setSubText(description.getDescription())
-                .setLargeIcon(BitmapFactory.decodeResource(
-                        getResources(), R.drawable.ic_launcher_foreground))
+                /*.setLargeIcon(BitmapFactory.decodeResource(
+                        getResources(), R.drawable.launcher_foreground))
                 // Enable launching the player by clicking the notification
                 .setContentIntent(controller.getSessionActivity())
                 // Stop the service when the notification is swiped away
@@ -356,6 +362,8 @@ public class RadioService extends MediaBrowserServiceCompat {
                 // Add an app icon and set its accent color
                 // Be careful about the color
                 .setSmallIcon(R.drawable.launcher_foreground)
+                /*.setColorized(true)
+                .setColor(getResources().getColor(R.color.accent))*/
                 // Add buttons
                 .addAction(prevAction).addAction(playPauseAction).addAction(nextAction)
                 // So there will be no notification tone
@@ -380,19 +388,18 @@ public class RadioService extends MediaBrowserServiceCompat {
         MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
 
         //Notification icon in card
-        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-                BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground));
+        /*metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
+                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-                BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground));
+                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
         //lock screen icon for pre lollipop
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
-                BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground));
+                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));*/
 
-        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "تلاوات");
-        metadataBuilder.putString(
-                MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "القارئ");
-        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION,
-                "القراءة");
+        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "اسم السورة");
+        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_TITLE, "اسم السورة");
+        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "اسم القارئ");
+        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, "نوع القراءة");
 
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 0);
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, 0);
@@ -404,15 +411,17 @@ public class RadioService extends MediaBrowserServiceCompat {
         MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
 
         //Notification icon in card
-        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-                BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground));
+        /*metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
+                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-                BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground));
+                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
         //lock screen icon for pre lollipop
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
-                BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground));
+                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));*/
 
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE,
+                surahNames.get(surahIndex));
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE,
                 surahNames.get(surahIndex));
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterName);
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName);
@@ -439,6 +448,7 @@ public class RadioService extends MediaBrowserServiceCompat {
     }
 
     private final Runnable runnable = () -> {
+        //Log.i(Constants.TAG, "in the runnable");
         if (player != null && controller.getPlaybackState().getState()
                 == PlaybackStateCompat.STATE_PLAYING)
             refresh();
@@ -501,12 +511,10 @@ public class RadioService extends MediaBrowserServiceCompat {
         intentFilter.addAction(ACTION_PREV);
 
         String pkg = getPackageName();
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
             flags = PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE;
-        }
-        else {
+        else
             flags = PendingIntent.FLAG_CANCEL_CURRENT;
-        }
 
         playPauseAction = new NotificationCompat.Action(R.drawable.ic_play_arrow, "play_pause",
                 PendingIntent.getBroadcast(context, REQUEST_CODE,
@@ -523,19 +531,12 @@ public class RadioService extends MediaBrowserServiceCompat {
         afChangeListener = focusChange -> {
             switch( focusChange ) {
                 case AudioManager.AUDIOFOCUS_LOSS: {
-                    if (player.isPlaying()) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                            callback.onStop();
-                        else
-                            player.stop();
-                    }
+                    if (player.isPlaying())
+                        stop();
                     break;
                 }
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT: {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                        callback.onPause();
-                    else
-                        player.pause();
+                    pause();
                     break;
                 }
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK: {
@@ -545,12 +546,8 @@ public class RadioService extends MediaBrowserServiceCompat {
                 }
                 case AudioManager.AUDIOFOCUS_GAIN: {
                     if (player != null) {
-                        if (!player.isPlaying()) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                                callback.onPlay();
-                            else
-                                player.start();
-                        }
+                        if (!player.isPlaying())
+                            play();
                         player.setVolume(1.0f, 1.0f);
                     }
                     break;
@@ -573,7 +570,11 @@ public class RadioService extends MediaBrowserServiceCompat {
                 updatePbState(PlaybackStateCompat.STATE_PLAYING);
                 updateNotification(true);
             });
-            //player.setOnCompletionListener(mp -> playNext());
+            player.setOnCompletionListener(mp -> skipToNext());
+            player.setOnErrorListener((mp, what, extra) -> {
+                Log.e(Constants.TAG, "Error in RadioService player: " + what);
+                return true;
+            });
         }
         catch (IOException e) {
             e.printStackTrace();

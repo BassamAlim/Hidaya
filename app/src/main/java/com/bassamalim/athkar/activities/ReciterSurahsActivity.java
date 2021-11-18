@@ -28,7 +28,6 @@ import java.util.Objects;
 public class ReciterSurahsActivity extends AppCompatActivity {
 
     private ActivityReciterSurahsBinding binding;
-    private JSONObject reciterObj;
     private RecyclerView recycler;
     private ReciterSurahsAdapter adapter;
     private ArrayList<ReciterSurahCard> cards;
@@ -66,7 +65,7 @@ public class ReciterSurahsActivity extends AppCompatActivity {
         try {
             assert RecitersJson != null;
             JSONArray arr = new JSONArray(RecitersJson);
-            reciterObj = arr.getJSONObject(reciterIndex);
+            JSONObject reciterObj = arr.getJSONObject(reciterIndex);
             JSONArray versions = reciterObj.getJSONArray("versions");
             availableSurahs = versions.getString(version);
 
@@ -97,7 +96,8 @@ public class ReciterSurahsActivity extends AppCompatActivity {
                 View.OnClickListener listener = v -> {
                     Intent intent = new Intent(this, RadioClient.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    intent.putExtra("reciter", reciterIndex);
+                    intent.setAction("start");
+                    intent.putExtra("reciter_index", reciterIndex);
                     intent.putExtra("version", version);
                     intent.putExtra("surah_index", finalI);
                     intent.putStringArrayListExtra("surah_names", surahNames);

@@ -48,6 +48,7 @@ public class RadioClient extends AppCompatActivity {
     private ImageButton forwardBtn;
     private ImageButton rewindBtn;
     private SeekBar seekBar;
+    private String action;
     private int reciter;
     private int versionIndex;
     private ArrayList<String> surahNames;
@@ -61,6 +62,8 @@ public class RadioClient extends AppCompatActivity {
 
         binding = ActivityRadioPlayerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        action = getIntent().getAction();
 
         getIntentData();
 
@@ -81,7 +84,6 @@ public class RadioClient extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        Log.i(Constants.TAG, "in on resume of the client");
         super.onResume();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
@@ -127,32 +129,38 @@ public class RadioClient extends AppCompatActivity {
 
             getIntentData();
 
-            // Pass media data
-            Bundle bundle = new Bundle();
-            bundle.putStringArrayList("surah_names", surahNames);
-            bundle.putSerializable("version", version);
-            bundle.putStringArrayList("surah_names", surahNames);
-            bundle.putString("reciter_name", reciterName);
-            // Start Playback
-            controller.getTransportControls()
-                    .playFromMediaId(String.valueOf(surahIndex), bundle);
+            if (action.equals("start")) {
+                // Pass media data
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("surah_names", surahNames);
+                bundle.putInt("reciter_index", reciter);
+                bundle.putString("reciter_name", reciterName);
+                bundle.putSerializable("version", version);
+
+                // Start Playback
+                controller.getTransportControls()
+                        .playFromMediaId(String.valueOf(surahIndex), bundle);
+            }
         }
 
         @Override
         public void onConnectionSuspended() {
+            Log.e(Constants.TAG, "Connection suspended in RadioClient");
             // The Service has crashed.
             // Disable transport controls until it automatically reconnects
+            disableControls();
         }
 
         @Override
         public void onConnectionFailed() {
+            Log.e(Constants.TAG, "Connection failed in RadioClient");
             // The Service has refused our connection
         }
     };
 
     private void getIntentData() {
         Intent intent = getIntent();
-        reciter = intent.getIntExtra("reciter", 0);
+        reciter = intent.getIntExtra("reciter_index", 0);
         versionIndex = intent.getIntExtra("version", 0);
         surahIndex = intent.getIntExtra("surah_index", 0);
         surahNames = intent.getStringArrayListExtra("surah_names");
@@ -202,7 +210,7 @@ public class RadioClient extends AppCompatActivity {
                     R.drawable.ic_player_play, getTheme()));
     }
 
-    private void setListeners() {
+    private void enableControls() {
         // Attach a listeners to the buttons
         playPause.setOnClickListener(v -> {
             // Since this is a play/pause button, you'll need to test the current state
@@ -231,15 +239,24 @@ public class RadioClient extends AppCompatActivity {
         });
     }
 
+    private void disableControls() {
+        // Attach a listeners to the buttons
+        playPause.setOnClickListener(null);
+        nextBtn.setOnClickListener(null);
+        prevBtn.setOnClickListener(null);
+        forwardBtn.setOnClickListener(null);
+        rewindBtn.setOnClickListener(null);
+        seekBar.setOnSeekBarChangeListener(null);
+    }
+
     private void buildTransportControls() {
-        setListeners();
+        enableControls();
 
         // Display the initial state
         mediaMetadata = controller.getMetadata();
         pbState = controller.getPlaybackState();
         updatePbState(pbState);
-        if (mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER) != -1)
-            updateMetadata();
+        updateMetadata();
 
         // Register a Callback to stay in sync
         controller.registerCallback(controllerCallback);
