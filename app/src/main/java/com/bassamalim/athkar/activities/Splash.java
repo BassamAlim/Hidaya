@@ -31,8 +31,7 @@ public class Splash extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getIntent().getAction().equals(Constants.STOP_ATHAN))
-            stopService(new Intent(this, AthanService.class));
+        stopService(new Intent(this, AthanService.class));
 
         if (granted()) {
             getLocation();

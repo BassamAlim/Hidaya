@@ -13,7 +13,7 @@
         android:id="@+id/continue_reading"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/s_button_bg"
+        android:background="@drawable/ripple_s"
         android:hint="@string/continue_reading"
         android:textColor="@color/accent"
         android:textSize="16sp"

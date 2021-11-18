@@ -10,6 +10,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.ActivityRadioPlayerBinding;
 import com.bassamalim.athkar.helpers.Utils;
 import com.bassamalim.athkar.models.RecitationVersion;
+import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.services.RadioService;
 
 import org.json.JSONArray;
@@ -67,9 +69,8 @@ public class RadioClient extends AppCompatActivity {
         initViews();
 
         // Create MediaBrowserServiceCompat
-        mediaBrowser = new MediaBrowserCompat(this,
-                new ComponentName(this, RadioService.class), connectionCallbacks,
-                null); // optional Bundle
+        mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this,
+                RadioService.class), connectionCallbacks, null); // optional Bundle
     }
 
     @Override
@@ -80,6 +81,7 @@ public class RadioClient extends AppCompatActivity {
 
     @Override
     public void onResume() {
+        Log.i(Constants.TAG, "in on resume of the client");
         super.onResume();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
@@ -87,6 +89,7 @@ public class RadioClient extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
+        Log.i(Constants.TAG, "in onStop of radio client");
         // (see "stay in sync with the MediaSession")
         if (MediaControllerCompat.getMediaController(RadioClient.this) != null) {
             MediaControllerCompat.getMediaController(RadioClient.this)
@@ -122,18 +125,17 @@ public class RadioClient extends AppCompatActivity {
             // Finish building the UI
             buildTransportControls();
 
-            // Check if its the first time
-            if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE) {
-                // Pass media data
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("version", version);
-                bundle.putStringArrayList("surah_names", surahNames);
-                bundle.putString("reciter_name", reciterName);
+            getIntentData();
 
-                // Start Playback
-                controller.getTransportControls()
-                        .playFromMediaId(String.valueOf(surahIndex), bundle);
-            }
+            // Pass media data
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList("surah_names", surahNames);
+            bundle.putSerializable("version", version);
+            bundle.putStringArrayList("surah_names", surahNames);
+            bundle.putString("reciter_name", reciterName);
+            // Start Playback
+            controller.getTransportControls()
+                    .playFromMediaId(String.valueOf(surahIndex), bundle);
         }
 
         @Override
@@ -311,4 +313,10 @@ public class RadioClient extends AppCompatActivity {
         return hms;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
+        mediaBrowser = null;
+    }
 }

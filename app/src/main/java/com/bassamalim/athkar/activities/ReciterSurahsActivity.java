@@ -96,6 +96,7 @@ public class ReciterSurahsActivity extends AppCompatActivity {
                 int finalI = i;
                 View.OnClickListener listener = v -> {
                     Intent intent = new Intent(this, RadioClient.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     intent.putExtra("reciter", reciterIndex);
                     intent.putExtra("version", version);
                     intent.putExtra("surah_index", finalI);

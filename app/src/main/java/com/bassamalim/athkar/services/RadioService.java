@@ -26,17 +26,18 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.models.RecitationVersion;
+import com.bassamalim.athkar.other.Constants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ public class RadioService extends MediaBrowserServiceCompat {
     private AudioFocusRequest audioFocusRequest;
     private ArrayList<String> surahNames;
     private String reciterName;
+    private int reciterIndex;
     private RecitationVersion version;
     private int surahIndex;
     private WifiManager.WifiLock wifiLock;
@@ -100,11 +102,27 @@ public class RadioService extends MediaBrowserServiceCompat {
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
             super.onPlayFromMediaId(mediaId, extras);
 
-            surahIndex = Integer.parseInt(mediaId);
-            version = (RecitationVersion) extras.getSerializable("version");
             surahNames = extras.getStringArrayList("surah_names");
-            reciterName = extras.getString("reciter_name");
-            onPlay();
+            int newReciter = extras.getInt("reciter_index", 0);
+            String newReciterName = extras.getString("reciter_name");
+            RecitationVersion newVersion = (RecitationVersion)
+                    extras.getSerializable("version");
+            int newSurah = Integer.parseInt(mediaId);
+
+            if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE ||
+                    newReciter != reciterIndex || newSurah != surahIndex ||
+                    newVersion.getIndex() != version.getIndex()) {
+
+                reciterIndex = newReciter;
+                reciterName = newReciterName;
+                version = newVersion;
+                surahIndex = newSurah;
+
+                if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE)
+                    onPlay();
+                else
+                    playNew();
+            }
         }
 
         @Override
@@ -153,6 +171,16 @@ public class RadioService extends MediaBrowserServiceCompat {
         }
     };
 
+    private void playNew() {
+        // start the player
+        startPlaying(surahIndex);
+
+        // Update data
+        updateMetadata();
+        updatePbState(PlaybackStateCompat.STATE_PLAYING);
+        updateNotification(true);
+    }
+
     private void play() {
         // Request audio focus for playback, this registers the afChangeListener
         int result = AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
@@ -166,19 +194,17 @@ public class RadioService extends MediaBrowserServiceCompat {
             mediaSession.setActive(true);
 
             // start the player (custom call)
-            if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_PAUSED
-                    || controller.getPlaybackState().getState()
-                    == PlaybackStateCompat.STATE_PLAYING)
+            if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_PAUSED)
                 player.start();
             else
                 startPlaying(surahIndex);
 
             updateMetadata();
-            updateNotification(true);
             updatePbState(PlaybackStateCompat.STATE_PLAYING);
+            updateNotification(true);
             refresh();
 
-            // Register BECOME_NOISY BroadcastReceiver
+            // Register Receiver
             registerReceiver(receiver, intentFilter);
             // Put the service in the foreground, post notification
             startForeground(id, notification);
@@ -250,19 +276,27 @@ public class RadioService extends MediaBrowserServiceCompat {
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case ACTION_BECOMING_NOISY:
+                    Log.i(Constants.TAG, "In ACTION_BECOMING_NOISY");
                     pause();
                     break;
                 case ACTION_PLAY_PAUSE:
                     if (controller.getPlaybackState().getState()
-                            == PlaybackStateCompat.STATE_PLAYING)
+                            == PlaybackStateCompat.STATE_PLAYING) {
+                        Log.i(Constants.TAG, "In ACTION_PAUSE");
                         pause();
-                    else
+                    }
+                    else if (controller.getPlaybackState().getState() ==
+                            PlaybackStateCompat.STATE_PAUSED) {
+                        Log.i(Constants.TAG, "In ACTION_PLAY");
                         play();
+                    }
                     break;
                 case ACTION_NEXT:
+                    Log.i(Constants.TAG, "In ACTION_NEXT");
                     skipToNext();
                     break;
                 case ACTION_PREV:
+                    Log.i(Constants.TAG, "In ACTION_PREV");
                     skipToPrevious();
                     break;
             }
@@ -321,8 +355,7 @@ public class RadioService extends MediaBrowserServiceCompat {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 // Add an app icon and set its accent color
                 // Be careful about the color
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setColor(ContextCompat.getColor(context, R.color.secondary))
+                .setSmallIcon(R.drawable.launcher_foreground)
                 // Add buttons
                 .addAction(prevAction).addAction(playPauseAction).addAction(nextAction)
                 // So there will be no notification tone
@@ -332,7 +365,7 @@ public class RadioService extends MediaBrowserServiceCompat {
                 // Take advantage of MediaStyle features
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSession.getSessionToken())
-                        .setShowActionsInCompactView(0,1,2)
+                        .setShowActionsInCompactView(0, 1, 2)
                         // Add a cancel button
                         .setShowCancelButton(true)
                         .setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(
@@ -361,7 +394,7 @@ public class RadioService extends MediaBrowserServiceCompat {
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION,
                 "القراءة");
 
-        metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, -1);
+        metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 0);
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, 0);
 
         mediaSession.setMetadata(metadataBuilder.build());
@@ -389,6 +422,8 @@ public class RadioService extends MediaBrowserServiceCompat {
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, surahIndex);
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version.getCount());
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, player.getDuration());
+        metadataBuilder.putLong("reciter_index", reciterIndex);
+        metadataBuilder.putLong("version_index", version.getIndex());
 
         mediaMetadata = metadataBuilder.build();
         mediaSession.setMetadata(mediaMetadata);
@@ -410,7 +445,7 @@ public class RadioService extends MediaBrowserServiceCompat {
     };
 
     private void refresh() {
-        updatePbState(mediaSession.getController().getPlaybackState().getState());
+        updatePbState(controller.getPlaybackState().getState());
         handler.postDelayed(runnable, 1000);
     }
 
@@ -425,11 +460,11 @@ public class RadioService extends MediaBrowserServiceCompat {
                     "play_pause", PendingIntent.getBroadcast(context, REQUEST_CODE,
                             new Intent(ACTION_PLAY_PAUSE).setPackage(getPackageName()), flags));
         }
-
         notificationBuilder.clearActions()
                 .addAction(prevAction).addAction(playPauseAction).addAction(nextAction);
 
-        notificationManager.notify(id, notificationBuilder.build());
+        notification = notificationBuilder.build();
+        notificationManager.notify(id, notification);
     }
 
     private void initPlayer() {
@@ -579,17 +614,13 @@ public class RadioService extends MediaBrowserServiceCompat {
     @Override
     public void onLoadChildren(@NonNull String parentId,
                                @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {
-
         /*//  Browsing not allowed
         if (TextUtils.equals(MY_EMPTY_MEDIA_ROOT_ID, parentMediaId)) {
             result.sendResult(null);
             return;
         }
-
         // Assume for example that the music catalog is already loaded/cached.
-
         List<MediaItem> mediaItems = new ArrayList<>();
-
         // Check if this is the root menu:
         if (MY_MEDIA_ROOT_ID.equals(parentMediaId)) {
             // Build the MediaItem objects for the top level,

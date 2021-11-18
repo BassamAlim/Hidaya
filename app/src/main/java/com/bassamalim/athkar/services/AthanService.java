@@ -35,22 +35,18 @@ public class AthanService extends Service {
         if (intent == null)
             return START_NOT_STICKY;
 
-        if (intent.getAction().equals(Constants.PLAY_ATHAN)) {
-            id = intent.getIntExtra("id", 10);
-            Log.i(Constants.TAG, "In athan service for " + id);
-            //int Notification_ID = (int) System.currentTimeMillis() % 10000;
+        id = intent.getIntExtra("id", 10);
+        Log.i(Constants.TAG, "In athan service for " + id);
+        //int Notification_ID = (int) System.currentTimeMillis() % 10000;
 
-            createNotificationChannel();
-            startForeground(id+1, build());
+        createNotificationChannel();
+        startForeground(id+1, build());
 
-            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            // Request audio focus                                   // Request permanent focus.
-            am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        // Request audio focus                                   // Request permanent focus.
+        am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
-            play();
-        }
-        else if (intent.getAction().equals(Constants.STOP_ATHAN))
-            stopMyService();
+        play();
 
         return START_NOT_STICKY;
     }
