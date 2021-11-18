@@ -44,7 +44,7 @@ public class AthanService extends Service {
 
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         // Request audio focus                                   // Request permanent focus.
-        am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        am.requestAudioFocus(null, AudioManager.STREAM_ALARM, AudioManager.AUDIOFOCUS_GAIN);
 
         play();
 
