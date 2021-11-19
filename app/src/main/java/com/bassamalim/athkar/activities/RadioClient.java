@@ -79,6 +79,10 @@ public class RadioClient extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+        if (surahNames == null)
+            getSurahNames();
+
         mediaBrowser.connect();
     }
 
@@ -179,6 +183,26 @@ public class RadioClient extends AppCompatActivity {
             version = new RecitationVersion(versionIndex, v.getString("server"),
                     v.getString("rewaya"), v.getString("count"),
                     v.getString("suras"), null);
+
+            if (surahNames == null)
+                getSurahNames();
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getSurahNames() {
+        String surahsJson = Utils.getJsonFromAssets(this, "surah_button.json");
+        try {
+            assert surahsJson != null;
+            JSONArray array = new JSONArray(surahsJson);
+
+            surahNames = new ArrayList<>();
+            for (int i = 0; i < 114; i++) {
+                JSONObject obj = array.getJSONObject(i);
+                surahNames.add(obj.getString("name"));
+            }
         }
         catch (JSONException e) {
             e.printStackTrace();

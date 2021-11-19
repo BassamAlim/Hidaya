@@ -35,6 +35,7 @@ import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 
 import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.activities.RadioClient;
 import com.bassamalim.athkar.models.RecitationVersion;
 import com.bassamalim.athkar.other.Constants;
 
@@ -195,7 +196,8 @@ public class RadioService extends MediaBrowserServiceCompat {
             mediaSession.setActive(true);
 
             // start the player (custom call)
-            if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_PAUSED)
+            if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_PAUSED ||
+                    controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_STOPPED)
                 player.start();
             else
                 startPlaying(surahIndex);
@@ -332,17 +334,14 @@ public class RadioService extends MediaBrowserServiceCompat {
         mediaMetadata = controller.getMetadata();
         MediaDescriptionCompat description = mediaMetadata.getDescription();
 
-        /*Intent intent = new Intent(context, RadioClient.class).setAction("back").putExtra(
-                "reciter_index", reciterIndex).putExtra("version", version).putExtra(
-                        "surah_index", surahIndex).putExtra("surah_names", surahNames);
-        PendingIntent pi = PendingIntent.getActivity(context, 36,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        mediaSession.setSessionActivity(pi);*/
+        mediaSession.setSessionActivity(getContentIntent());
 
         createNotificationChannel();
 
         // Create a NotificationCompat.Builder
         notificationBuilder = new NotificationCompat.Builder(context, channelId);
+
+        Log.i(Constants.TAG, controller.getSessionActivity().toString());
 
         notificationBuilder
                 // Add the metadata for the currently playing track
@@ -350,20 +349,20 @@ public class RadioService extends MediaBrowserServiceCompat {
                 .setContentText(description.getSubtitle())
                 .setSubText(description.getDescription())
                 /*.setLargeIcon(BitmapFactory.decodeResource(
-                        getResources(), R.drawable.launcher_foreground))
-                // Enable launching the player by clicking the notification
-                .setContentIntent(controller.getSessionActivity())
+                        getResources(), R.drawable.launcher_foreground))*/
                 // Stop the service when the notification is swiped away
-                .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(context,
-                        PlaybackStateCompat.ACTION_STOP))
+                /*.setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(context,
+                        PlaybackStateCompat.ACTION_STOP))*/
                 // Make the transport controls visible on the lockscreen
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 // Add an app icon and set its accent color
                 // Be careful about the color
                 .setSmallIcon(R.drawable.launcher_foreground)
-                /*.setColorized(true)
-                .setColor(getResources().getColor(R.color.accent))*/
+                .setColorized(true)
+                .setColor(getResources().getColor(R.color.accent))
                 // Add buttons
+                // Enable launching the player by clicking the notification
+                .setContentIntent(controller.getSessionActivity())
                 .addAction(prevAction).addAction(playPauseAction).addAction(nextAction)
                 // So there will be no notification tone
                 .setSilent(true)
@@ -594,6 +593,21 @@ public class RadioService extends MediaBrowserServiceCompat {
             notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(notificationChannel);
         }
+    }
+
+    private PendingIntent getContentIntent() {
+        Intent intent = new Intent(context, RadioClient.class).setAction("back").putExtra(
+                "reciter_index", reciterIndex).putExtra("version", version).putExtra(
+                "surah_index", surahIndex);
+
+        int flags;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
+            flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+        else
+            flags = PendingIntent.FLAG_UPDATE_CURRENT;
+
+        return PendingIntent.getActivity(context, 36,
+                intent, flags);
     }
 
     @Nullable @Override
