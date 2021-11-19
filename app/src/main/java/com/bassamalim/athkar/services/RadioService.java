@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -349,17 +350,17 @@ public class RadioService extends MediaBrowserServiceCompat {
                 .setContentText(description.getSubtitle())
                 .setSubText(description.getDescription())
                 /*.setLargeIcon(BitmapFactory.decodeResource(
-                        getResources(), R.drawable.launcher_foreground))*/
+                        getResources(), R.drawable.ic_sound))*/
                 // Stop the service when the notification is swiped away
-                /*.setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(context,
-                        PlaybackStateCompat.ACTION_STOP))*/
+                .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(context,
+                        PlaybackStateCompat.ACTION_STOP))
                 // Make the transport controls visible on the lockscreen
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 // Add an app icon and set its accent color
                 // Be careful about the color
                 .setSmallIcon(R.drawable.launcher_foreground)
                 .setColorized(true)
-                .setColor(getResources().getColor(R.color.accent))
+                .setColor(getResources().getColor(R.color.secondary))
                 // Add buttons
                 // Enable launching the player by clicking the notification
                 .setContentIntent(controller.getSessionActivity())
@@ -385,8 +386,8 @@ public class RadioService extends MediaBrowserServiceCompat {
     private void initMediaSessionMetadata() {
         MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
 
-        //Notification icon in card
-        /*metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
+        /*//Notification icon in card
+        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
                 BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
                 BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
@@ -409,13 +410,13 @@ public class RadioService extends MediaBrowserServiceCompat {
         MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
 
         //Notification icon in card
-        /*metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
+        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
+                BitmapFactory.decodeResource(getResources(), R.color.secondary));
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
+                BitmapFactory.decodeResource(getResources(), R.color.secondary));
         //lock screen icon for pre lollipop
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
-                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));*/
+                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
 
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE,
                 surahNames.get(surahIndex));
