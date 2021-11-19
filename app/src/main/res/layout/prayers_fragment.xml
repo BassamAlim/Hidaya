@@ -306,14 +306,15 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:backgroundTint="@color/secondary"
-            android:src="@drawable/ic_right_arrow"/>
+            android:src="@drawable/ic_right_arrow"
+            android:contentDescription="@string/previous_day_button_description"/>
 
         <TextView
             android:id="@+id/day_screen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="اليوم"
+            android:text="@string/today"
             android:textSize="25sp"/>
 
         <ImageButton
@@ -322,7 +323,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:backgroundTint="@color/secondary"
-            android:src="@drawable/ic_left_arrow"/>
+            android:src="@drawable/ic_left_arrow"
+            android:contentDescription="@string/next_day_button_description"/>
 
     </androidx.cardview.widget.CardView>
 

@@ -76,11 +76,8 @@
     <string name="continue_reading">اكمل القراءة</string>
     <string name="bookmark_page_button">button to bookmark page</string>
     <string name="recitation_settings">إعدادات التلاوة</string>
-    <string name="whole_surah">السورة كاملة</string>
-    <string name="ayahs">آيات</string>
     <string name="choose_reciter">اختر القارئ</string>
     <string name="play_next_page">تشغيل الصفحة التالية</string>
-    <string name="location_not_accessed">لا يمكن الوصول للموفع حاليا</string>
     <string name="about">حول التطبيق</string>
     <string name="share_app">شارك التطبيق</string>
     <string name="qibla_warning">أبعد جهازك عن الاجسام المعدنية</string>
@@ -90,5 +87,13 @@
     <string name="tafseer_source">التفسير: التفسير الميسر من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
     <string name="quran_query_hint">ادخل اسم السورة أو رقم الصفحة</string>
     <string name="recitations">تلاوات</string>
+    <string name="previous_day_button_description">arrow for moving to previous day</string>
+    <string name="today">اليوم</string>
+    <string name="next_day_button_description">arrow for moving to next day</string>
+    <string name="previous_track_btn_description">skip to previous track</string>
+    <string name="rewind_btn_description">rewind 10s of playback</string>
+    <string name="play_pause_btn_description">اوقف واكمل التشغيل</string>
+    <string name="fast_forward_btn_description">تقدم</string>
+    <string name="next_track_btn_description">انتقل الى السورة التالية</string>
 
 </resources>

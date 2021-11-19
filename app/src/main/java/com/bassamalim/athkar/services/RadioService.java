@@ -97,7 +97,7 @@ public class RadioService extends MediaBrowserServiceCompat {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
+    final MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
             super.onPlayFromMediaId(mediaId, extras);

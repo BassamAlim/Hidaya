@@ -2,7 +2,6 @@ package com.bassamalim.athkar.helpers;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.TimeZone;
