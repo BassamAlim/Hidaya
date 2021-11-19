@@ -49,7 +49,6 @@ public class RadioService extends MediaBrowserServiceCompat {
 
     private static final String MY_MEDIA_ROOT_ID = "media_root_id";
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
-    private final int REQUEST_CODE = 333;
     private static final String ACTION_BECOMING_NOISY = AudioManager.ACTION_AUDIO_BECOMING_NOISY;
     private static final String ACTION_PLAY_PAUSE =
             "com.bassamalim.athkar.services.radioservice.playpause";
@@ -386,14 +385,14 @@ public class RadioService extends MediaBrowserServiceCompat {
     private void initMediaSessionMetadata() {
         MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
 
-        /*//Notification icon in card
+        //Notification icon in card
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
+                BitmapFactory.decodeResource(getResources(), R.color.secondary));
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
+                BitmapFactory.decodeResource(getResources(), R.color.secondary));
         //lock screen icon for pre lollipop
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
-                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));*/
+                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
 
         metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "اسم السورة");
         metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_TITLE, "اسم السورة");
@@ -461,12 +460,12 @@ public class RadioService extends MediaBrowserServiceCompat {
     private void updateNotification(boolean playing) {
         if (playing) {
             playPauseAction = new NotificationCompat.Action(R.drawable.ic_baseline_pause,
-                    "play_pause", PendingIntent.getBroadcast(context, REQUEST_CODE,
+                    "play_pause", PendingIntent.getBroadcast(context, id,
                             new Intent(ACTION_PLAY_PAUSE).setPackage(getPackageName()), flags));
         }
         else {
             playPauseAction = new NotificationCompat.Action(R.drawable.ic_play_arrow,
-                    "play_pause", PendingIntent.getBroadcast(context, REQUEST_CODE,
+                    "play_pause", PendingIntent.getBroadcast(context, id,
                             new Intent(ACTION_PLAY_PAUSE).setPackage(getPackageName()), flags));
         }
         notificationBuilder.clearActions()
@@ -516,13 +515,13 @@ public class RadioService extends MediaBrowserServiceCompat {
             flags = PendingIntent.FLAG_CANCEL_CURRENT;
 
         playPauseAction = new NotificationCompat.Action(R.drawable.ic_play_arrow, "play_pause",
-                PendingIntent.getBroadcast(context, REQUEST_CODE,
+                PendingIntent.getBroadcast(context, id,
                         new Intent(ACTION_PLAY_PAUSE).setPackage(pkg), flags));
         nextAction = new NotificationCompat.Action(R.drawable.ic_skip_next, "next",
-                PendingIntent.getBroadcast(context, REQUEST_CODE,
+                PendingIntent.getBroadcast(context, id,
                         new Intent(ACTION_NEXT).setPackage(pkg), flags));
         prevAction = new NotificationCompat.Action(R.drawable.ic_skip_previous, "previous",
-                PendingIntent.getBroadcast(context, REQUEST_CODE,
+                PendingIntent.getBroadcast(context, id,
                         new Intent(ACTION_PREV).setPackage(pkg), flags));
     }
 
