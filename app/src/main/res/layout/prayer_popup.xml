@@ -26,7 +26,7 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/athan_speaker_button"
+            android:id="@+id/athan_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/primary"
@@ -37,7 +37,7 @@
             android:textSize="20sp" />
 
         <Button
-            android:id="@+id/sound_button"
+            android:id="@+id/notify_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/primary"

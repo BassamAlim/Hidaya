@@ -22,12 +22,13 @@ import com.bassamalim.athkar.activities.AlathkarActivity;
 import com.bassamalim.athkar.activities.QuranActivity;
 import com.bassamalim.athkar.activities.Splash;
 import com.bassamalim.athkar.other.Constants;
+import com.bassamalim.athkar.other.ID;
 import com.bassamalim.athkar.services.AthanService;
 
 public class NotificationReceiver extends BroadcastReceiver {
 
     private Context context;
-    private int id;
+    private ID id;
     private boolean isPrayer;
     private String channelId = "";
     private int type;
@@ -36,7 +37,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context gContext, Intent intent) {
         context = gContext;
-        id = intent.getIntExtra("id", 10);
+        id = (ID) intent.getSerializableExtra("id");
         String action = intent.getAction();
         time = intent.getLongExtra("time", 0);
         isPrayer = action.equals("prayer");
@@ -44,7 +45,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         Log.i(Constants.TAG, "in notification receiver for " + id);
 
         int defaultType = 2;
-        if (id == 1)
+        if (id == ID.SHOROUQ)
             defaultType = 0;
 
         type = PreferenceManager.getDefaultSharedPreferences(context)
@@ -70,8 +71,8 @@ public class NotificationReceiver extends BroadcastReceiver {
         createNotificationChannel();
         Notification notification = build();
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
-        if (id == 7)    // so that night notification would replace morning notification
-            id--;
+        if (id == ID.EVENING)    // so that night notification would replace morning notification
+            id = ID.MORNING;
 
         if (isPrayer) {
             AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -80,7 +81,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                     AudioManager.AUDIOFOCUS_GAIN);
         }
 
-        managerCompat.notify(id, notification);
+        managerCompat.notify(id.ordinal(), notification);
     }
 
     private void startService() {
@@ -103,52 +104,52 @@ public class NotificationReceiver extends BroadcastReceiver {
         builder.setTicker(context.getResources().getString(R.string.app_name));
 
         switch (id) {
-            case 0: {
+            case FAJR: {
                 builder.setContentTitle("صلاة الفجر");
                 builder.setContentText("حان موعد أذان الفجر");
                 break;
             }
-            case 1: {
+            case SHOROUQ: {
                 builder.setContentTitle("الشروق");
                 builder.setContentText("حان وقت الشروق");
                 break;
             }
-            case 2: {
+            case DUHR: {
                 builder.setContentTitle("صلاة الظهر");
                 builder.setContentText("حان موعد أذان الظهر");
                 break;
             }
-            case 3: {
+            case ASR: {
                 builder.setContentTitle("صلاة العصر");
                 builder.setContentText("حان موعد أذان العصر");
                 break;
             }
-            case 4: {
+            case MAGHRIB: {
                 builder.setContentTitle("صلاة المغرب");
                 builder.setContentText("حان موعد أذان المغرب");
                 break;
             }
-            case 5: {
+            case ISHAA: {
                 builder.setContentTitle("صلاة العشاء");
                 builder.setContentText("حان موعد أذان العشاء");
                 break;
             }
-            case 6: {
+            case MORNING: {
                 builder.setContentTitle("أذكار الصباح");
                 builder.setContentText("اضغط لقراءة أذكار الصباح");
                 break;
             }
-            case 7: {
+            case EVENING: {
                 builder.setContentTitle("أذكار المساء");
                 builder.setContentText("اضغط لقراءة أذكار المساء");
                 break;
             }
-            case 8: {
-                builder.setContentTitle("صفحة اليوم");
+            case DAILY_WERD: {
+                builder.setContentTitle("الوِرد اليومي");
                 builder.setContentText("اضغط لقراءة صفحة اليوم من المصحف");
                 break;
             }
-            case 9: {
+            case FRIDAY_KAHF: {
                 builder.setContentTitle("جمعة مباركة");
                 builder.setContentText("اضغط لقراءة سورة الكهف");
                 break;
@@ -170,42 +171,44 @@ public class NotificationReceiver extends BroadcastReceiver {
         return builder.build();
     }
 
-    private PendingIntent onClick(int variable) {
+    private PendingIntent onClick(ID id) {
         Intent intent;
         PendingIntent pendingIntent;
 
-        if (variable == 6) {
-            intent = new Intent(context, AlathkarActivity.class);
-            intent.putExtra("category", 1);
-            intent.putExtra("thikrs_index", 0);
-            intent.putExtra("title", "أذكار الصباح");
+        switch (id) {
+            case MORNING:
+                intent = new Intent(context, AlathkarActivity.class);
+                intent.putExtra("category", 1);
+                intent.putExtra("thikrs_index", 0);
+                intent.putExtra("title", "أذكار الصباح");
+                break;
+            case EVENING:
+                intent = new Intent(context, AlathkarActivity.class);
+                intent.putExtra("category", 1);
+                intent.putExtra("thikrs_index", 1);
+                intent.putExtra("title", "أذكار المساء");
+                break;
+            case DAILY_WERD:
+                intent = new Intent(context, QuranActivity.class);
+                intent.setAction("random");
+                break;
+            case FRIDAY_KAHF:
+                intent = new Intent(context, QuranActivity.class);
+                intent.setAction("by_surah");
+                intent.putExtra("surah_index", 17);    // alkahf
+                break;
+            default:
+                intent = new Intent(context, Splash.class);
         }
-        else if (variable == 7) {
-            intent = new Intent(context, AlathkarActivity.class);
-            intent.putExtra("category", 1);
-            intent.putExtra("thikrs_index", 1);
-            intent.putExtra("title", "أذكار المساء");
-        }
-        else if (variable == 8) {
-            intent = new Intent(context, QuranActivity.class);
-            intent.setAction("random");
-        }
-        else if (variable == 9) {
-            intent = new Intent(context, QuranActivity.class);
-            intent.setAction("by_surah");
-            intent.putExtra("surah_index", 17);    // alkahf
-        }
-        else
-            intent = new Intent(context, Splash.class);
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pendingIntent = PendingIntent.getActivity(context, variable, intent,
+            pendingIntent = PendingIntent.getActivity(context, id.ordinal(), intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         }
         else {
-            pendingIntent = PendingIntent.getActivity(context, variable, intent,
+            pendingIntent = PendingIntent.getActivity(context, id.ordinal(), intent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
@@ -220,28 +223,34 @@ public class NotificationReceiver extends BroadcastReceiver {
                 channelId = "Athan";
                 name = "إشعارات الصلوات";
             }
-            else if (id == 1) {
-                channelId = "sunrise";
-                name = "إشعار الشروق";
-            }
-            else if (id == 6 || id == 7) {
-                channelId = "morning and night";
-                name = "إشعارات أذكار الصباح والمساء";
-            }
-            else if (id == 8) {
-                channelId = "daily_page";
-                name = "إشعار صفحة اليوم";
-            }
-            else if (id == 9) {
-                channelId = "friday_kahf";
-                name = "إشعار سورة الكهف";
+            else {
+                switch (id) {
+                    case SHOROUQ:
+                        channelId = "sunrise";
+                        name = "إشعار الشروق";
+                        break;
+                    case MORNING:
+                    case EVENING:
+                        channelId = "morning and night";
+                        name = "إشعارات أذكار الصباح والمساء";
+                        break;
+                    case DAILY_WERD:
+                        channelId = "daily_page";
+                        name = "إشعار صفحة اليوم";
+                        break;
+                    case FRIDAY_KAHF:
+                        channelId = "friday_kahf";
+                        name = "إشعار سورة الكهف";
+                        break;
+                }
             }
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel notificationChannel  = new NotificationChannel(
                     channelId, name, importance);
             notificationChannel.setDescription(description);
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            NotificationManager notificationManager =
+                    context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(notificationChannel);
         }
     }

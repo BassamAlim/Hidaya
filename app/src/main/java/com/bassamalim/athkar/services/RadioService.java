@@ -59,7 +59,6 @@ public class RadioService extends MediaBrowserServiceCompat {
     private MediaSessionCompat mediaSession;
     private MediaControllerCompat controller;
     private MediaMetadataCompat mediaMetadata;
-    private MediaDescriptionCompat description;
     private Context context;
     private String channelId = "channel ID";
     private final int id = 333;
@@ -331,7 +330,7 @@ public class RadioService extends MediaBrowserServiceCompat {
         // Get the session's metadata
         controller = mediaSession.getController();
         mediaMetadata = controller.getMetadata();
-        description = mediaMetadata.getDescription();
+        MediaDescriptionCompat description = mediaMetadata.getDescription();
 
         /*Intent intent = new Intent(context, RadioClient.class).setAction("back").putExtra(
                 "reciter_index", reciterIndex).putExtra("version", version).putExtra(

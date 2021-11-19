@@ -13,6 +13,7 @@ import androidx.preference.PreferenceManager;
 
 import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.other.ID;
 import com.bassamalim.athkar.receivers.NotificationReceiver;
 
 import java.util.Calendar;
@@ -26,7 +27,7 @@ public class Alarms {
     private final Calendar[] times;
     private SharedPreferences pref;
     private String action;
-    private int num;
+    private ID id;
 
     public Alarms(Context gContext, Calendar[] gTimes) {
         context = gContext;
@@ -37,9 +38,9 @@ public class Alarms {
         recognize();
     }
 
-    public Alarms(Context gContext, int alarm) {
+    public Alarms(Context gContext, ID id) {
         context = gContext;
-        num = alarm;
+        this.id = id;
 
         times = new Keeper(context).retrieveTimes();
 
@@ -69,30 +70,32 @@ public class Alarms {
 
     private void setAlarm() {
         Log.i(Constants.TAG, "in set alarm");
-        if (num >= 0 && num < 6)
-            setPrayerAlarm(num);
-        else if (num >= 6 && num < 10)
-            setExtraAlarm(num);
+        if (id.ordinal() >= 0 && id.ordinal() < 6)
+            setPrayerAlarm(id);
+        else if (id.ordinal() >= 6 && id.ordinal() < 10)
+            setExtraAlarm(id);
     }
 
     private void setPrayerAlarms() {
         Log.i(Constants.TAG, "in set prayer alarms");
         for (int i = 0; i < times.length; i++) {
-            if (pref.getInt(i + "notification_type", 2) != 0)
-                setPrayerAlarm(i);
+            ID mappedId = mapID(i);
+            assert mappedId != null;
+            if (pref.getInt(mappedId + "notification_type", 2) != 0)
+                setPrayerAlarm(mappedId);
         }
     }
 
-    private void setPrayerAlarm(int id) {
+    private void setPrayerAlarm(ID id) {
         Log.i(Constants.TAG, "in set alarm for: " + id);
 
         // adjust the time with the delay
         long adjustment = pref.getLong(id + "time_adjustment", 0);
-        long adjusted = times[id].getTimeInMillis() + adjustment;
+        long adjusted = times[id.ordinal()].getTimeInMillis() + adjustment;
 
         if (System.currentTimeMillis() <= adjusted) {
             Intent intent = new Intent(appContext, NotificationReceiver.class);
-            if (id == 1)
+            if (id == ID.SHOROUQ)
                 intent.setAction("extra");
             else
                 intent.setAction("prayer");
@@ -103,18 +106,18 @@ public class Alarms {
                     appContext.getSystemService(Context.ALARM_SERVICE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                pendingIntent = PendingIntent.getBroadcast(appContext, id, intent,
+                pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(), intent,
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
                 myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                        times[id].getTimeInMillis(), pendingIntent);
+                        times[id.ordinal()].getTimeInMillis(), pendingIntent);
             }
             else {
-                pendingIntent = PendingIntent.getBroadcast(appContext, id,
+                pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
                         intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 myAlarm.setExact(AlarmManager.RTC_WAKEUP,
-                        times[id].getTimeInMillis(), pendingIntent);
+                        times[id.ordinal()].getTimeInMillis(), pendingIntent);
             }
             Log.i(Constants.TAG, "alarm " + id + " set");
         }
@@ -128,23 +131,23 @@ public class Alarms {
         Calendar today = Calendar.getInstance();
 
         if (pref.getBoolean(context.getString(R.string.morning_athkar_key), true))
-            setExtraAlarm(6);
-        if (pref.getBoolean(context.getString(R.string.night_athkar_key), true))
-            setExtraAlarm(7);
-        if (pref.getBoolean(context.getString(R.string.daily_page_key), true))
-            setExtraAlarm(8);
+            setExtraAlarm(ID.MORNING);
+        if (pref.getBoolean(context.getString(R.string.evening_athkar_key), true))
+            setExtraAlarm(ID.EVENING);
+        if (pref.getBoolean(context.getString(R.string.daily_werd_key), true))
+            setExtraAlarm(ID.DAILY_WERD);
         if (pref.getBoolean(context.getString(R.string.friday_kahf_key), true)
                 && today.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
-            setExtraAlarm(9);
+            setExtraAlarm(ID.FRIDAY_KAHF);
     }
 
-    private void setExtraAlarm(int id) {
+    private void setExtraAlarm(ID id) {
         Log.i(Constants.TAG, "in set extra alarm");
         int hour;
         int minute;
 
         Location loc = new Keeper(appContext).retrieveLocation();
-        if (id == 9 && loc != null) {
+        if (id == ID.FRIDAY_KAHF && loc != null) {
             Calendar[] times = getTimes(loc);
             Calendar duhr = times[2];
             hour = duhr.get(Calendar.HOUR_OF_DAY)+1;
@@ -154,16 +157,16 @@ public class Alarms {
             int defHour = 0;
             int defMinute = 0;
             switch (id) {
-                case 6:
+                case MORNING:
                     defHour = 5;
                     break;
-                case 7:
+                case EVENING:
                     defHour = 16;
                     break;
-                case 8:
+                case DAILY_WERD:
                     defHour = 21;
                     break;
-                case 9:
+                case FRIDAY_KAHF:
                     defHour = 13;
                     break;
             }
@@ -183,11 +186,11 @@ public class Alarms {
 
         PendingIntent pendIntent;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            pendIntent = PendingIntent.getBroadcast(appContext, id, intent,
+            pendIntent = PendingIntent.getBroadcast(appContext, id.ordinal(), intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         }
         else {
-            pendIntent = PendingIntent.getBroadcast(appContext, id, intent,
+            pendIntent = PendingIntent.getBroadcast(appContext, id.ordinal(), intent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
@@ -211,20 +214,32 @@ public class Alarms {
                 loc.getLongitude(), timezone);
     }
 
-    public static void cancelAlarm(Context gContext, int id) {
+    public static void cancelAlarm(Context gContext, ID id) {
         Log.i(Constants.TAG, "in cancel alarm");
         PendingIntent pendingIntent;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            pendingIntent = PendingIntent.getBroadcast(gContext, id, new Intent(),
+            pendingIntent = PendingIntent.getBroadcast(gContext, id.ordinal(), new Intent(),
                     PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         }
         else {
-            pendingIntent = PendingIntent.getBroadcast(gContext, id,
+            pendingIntent = PendingIntent.getBroadcast(gContext, id.ordinal(),
                     new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
         }
 
         AlarmManager am = (AlarmManager) gContext.getSystemService(Context.ALARM_SERVICE);
         am.cancel(pendingIntent);
+    }
+
+    private ID mapID(int num) {
+        switch (num) {
+            case 0: return ID.FAJR;
+            case 1: return ID.SHOROUQ;
+            case 2: return ID.DUHR;
+            case 3: return ID.ASR;
+            case 4: return ID.MAGHRIB;
+            case 5: return ID.ISHAA;
+            default: return null;
+        }
     }
 
 }

@@ -22,22 +22,26 @@ import androidx.preference.PreferenceManager;
 import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.helpers.Alarms;
+import com.bassamalim.athkar.other.ID;
 
 public class PrayerPopup {
 
     private final Context context;
     private PopupWindow popupWindow;
     private final View view;
-    private final int id;
+    private final ID id;
     private final String name;
     private final SharedPreferences pref;
-    private Button[] buttons;
+    private Button disableBtn;
+    private Button muteBtn;
+    private Button notifyBtn;
+    private Button athanBtn;
     private ImageView[] images;
 
-    public PrayerPopup(Context gContext, View v, int gId, String gName) {
+    public PrayerPopup(Context gContext, View v, ID id, String gName) {
         context = gContext;
         view = v;
-        id = gId;
+        this.id = id;
         name = gName;
 
         pref = PreferenceManager.getDefaultSharedPreferences(context);
@@ -51,8 +55,8 @@ public class PrayerPopup {
 
         View popupView = inflater.inflate(R.layout.prayer_popup,
                 new LinearLayout(context), false);
-        if (id == 1)
-            popupView.findViewById(R.id.athan_speaker_button).setVisibility(View.GONE);
+        if (id == ID.SHOROUQ)
+            popupView.findViewById(R.id.athan_button).setVisibility(View.GONE);
 
         popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT, true);
@@ -72,11 +76,10 @@ public class PrayerPopup {
         String temp = "إعدادات " + name;
         nameScreen.setText(temp);
 
-        buttons = new Button[4];
-        buttons[0] = popupWindow.getContentView().findViewById(R.id.disable_button);
-        buttons[1] = popupWindow.getContentView().findViewById(R.id.mute_button);
-        buttons[2] = popupWindow.getContentView().findViewById(R.id.sound_button);
-        buttons[3] = popupWindow.getContentView().findViewById(R.id.athan_speaker_button);
+        disableBtn = popupWindow.getContentView().findViewById(R.id.disable_button);
+        muteBtn = popupWindow.getContentView().findViewById(R.id.mute_button);
+        notifyBtn = popupWindow.getContentView().findViewById(R.id.notify_button);
+        athanBtn = popupWindow.getContentView().findViewById(R.id.athan_button);
 
         setImages();
 
@@ -88,10 +91,10 @@ public class PrayerPopup {
     }
 
     private void setListeners() {
-        buttons[3].setOnClickListener(v -> {
+        athanBtn.setOnClickListener(v -> {
             SharedPreferences.Editor editor = pref.edit();
-            images[id].setImageDrawable(ResourcesCompat.getDrawable(context.getResources(),
-                    R.drawable.ic_speaker, context.getTheme()));
+            images[id.ordinal()].setImageDrawable(ResourcesCompat.getDrawable(
+                    context.getResources(), R.drawable.ic_speaker, context.getTheme()));
 
             new Alarms(context, id);
 
@@ -99,10 +102,10 @@ public class PrayerPopup {
             selectedState(3);
             editor.apply();
         });
-        buttons[2].setOnClickListener(v -> {
+        notifyBtn.setOnClickListener(v -> {
             SharedPreferences.Editor editor = pref.edit();
-            images[id].setImageDrawable(ResourcesCompat.getDrawable(context.getResources(),
-                    R.drawable.ic_sound, context.getTheme()));
+            images[id.ordinal()].setImageDrawable(ResourcesCompat.getDrawable(
+                    context.getResources(), R.drawable.ic_sound, context.getTheme()));
 
             new Alarms(context, id);
 
@@ -110,10 +113,10 @@ public class PrayerPopup {
             selectedState(2);
             editor.apply();
         });
-        buttons[1].setOnClickListener(v -> {
+        muteBtn.setOnClickListener(v -> {
             SharedPreferences.Editor editor = pref.edit();
-            images[id].setImageDrawable(ResourcesCompat.getDrawable(context.getResources(),
-                    R.drawable.ic_mute, context.getTheme()));
+            images[id.ordinal()].setImageDrawable(ResourcesCompat.getDrawable(
+                    context.getResources(), R.drawable.ic_mute, context.getTheme()));
 
             new Alarms(context, id);
 
@@ -121,10 +124,10 @@ public class PrayerPopup {
             selectedState(1);
             editor.apply();
         });
-        buttons[0].setOnClickListener(v -> {
+        disableBtn.setOnClickListener(v -> {
             SharedPreferences.Editor editor = pref.edit();
-            images[id].setImageDrawable(ResourcesCompat.getDrawable(context.getResources(),
-                    R.drawable.ic_disabled, context.getTheme()));
+            images[id.ordinal()].setImageDrawable(ResourcesCompat.getDrawable(
+                    context.getResources(), R.drawable.ic_disabled, context.getTheme()));
 
             Alarms.cancelAlarm(context, id);
 
@@ -169,12 +172,24 @@ public class PrayerPopup {
     }
 
     private void selectedState(int choice) {
-        buttons[0].setTextColor(context.getResources().getColor(R.color.white));
-        buttons[1].setTextColor(context.getResources().getColor(R.color.white));
-        buttons[2].setTextColor(context.getResources().getColor(R.color.white));
-        buttons[3].setTextColor(context.getResources().getColor(R.color.white));
+        athanBtn.setTextColor(context.getResources().getColor(R.color.white));
+        notifyBtn.setTextColor(context.getResources().getColor(R.color.white));
+        muteBtn.setTextColor(context.getResources().getColor(R.color.white));
+        disableBtn.setTextColor(context.getResources().getColor(R.color.white));
 
-        buttons[choice].setTextColor(context.getResources().getColor(R.color.accent));
+        switch (choice) {
+            case 0:
+                disableBtn.setTextColor(context.getResources().getColor(R.color.accent));
+                break;
+            case 1:
+                muteBtn.setTextColor(context.getResources().getColor(R.color.accent));
+                break;
+            case 2:
+                notifyBtn.setTextColor(context.getResources().getColor(R.color.accent));
+                break;
+            case 3:
+                athanBtn.setTextColor(context.getResources().getColor(R.color.accent));
+        }
     }
 
     private void setImages() {
@@ -189,12 +204,12 @@ public class PrayerPopup {
 
     private int getY() {
         switch (id) {
-            case 0: return  -400;
-            case 1: return -350;
-            case 2: return -180;
-            case 3: return 100;
-            case 4: return 350;
-            case 5: return 520;
+            case FAJR: return  -400;
+            case SHOROUQ: return -350;
+            case DUHR: return -180;
+            case ASR: return 100;
+            case MAGHRIB: return 350;
+            case ISHAA: return 520;
         }
         return 0;
     }

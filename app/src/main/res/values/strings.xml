@@ -21,15 +21,15 @@
 
     <!-- Preference Keys -->
     <string name="morning_athkar_key">morning_athkar_key</string>
-    <string name="night_athkar_key">night_athkar_key</string>
-    <string name="daily_page_key">daily_page_enable_key</string>
+    <string name="evening_athkar_key">night_athkar_key</string>
+    <string name="daily_werd_key">daily_werd_enable_key</string>
     <string name="friday_kahf_key">friday_kahf_key</string>
     <string name="quran_text_size_key">quran_text_size_key</string>
     <string name="alathkar_text_size_key">alathkar_text_size_key</string>
 
     <!-- Preference Titles -->
     <string name="morning_athkar_title">إشعار أذكار الصباح</string>
-    <string name="night_athkar_title">إشعار أذكار المساء</string>
+    <string name="evening_athkar_title">إشعار أذكار المساء</string>
     <string name="daily_page_enable_title">إشعار صفحة اليوم</string>
     <string name="friday_kahf_title">إشعار سورة الكهف</string>
     <string name="text_size_title">حجم الخط</string>

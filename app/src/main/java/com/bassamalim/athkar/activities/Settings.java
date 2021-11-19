@@ -13,6 +13,7 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import com.bassamalim.athkar.helpers.Alarms;
 import com.bassamalim.athkar.R;
+import com.bassamalim.athkar.other.ID;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -46,37 +47,38 @@ public class Settings extends AppCompatActivity {
         }
 
         private void setInitialStates() {
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+            SharedPreferences pref = PreferenceManager
+                    .getDefaultSharedPreferences(requireContext());
             SwitchPreferenceCompat pSwitch;
 
-            pSwitch = findPreference(keyGetter(6));
+            pSwitch = findPreference(keyGetter(ID.MORNING));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(6+"text", "٥:٠٠ صباحاً"));
+            pSwitch.setSummary(pref.getString(ID.MORNING+"text", "٥:٠٠ صباحاً"));
 
-            pSwitch = findPreference(keyGetter(7));
+            pSwitch = findPreference(keyGetter(ID.EVENING));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(7+"text", "٤:٠٠ مساءاًً"));
+            pSwitch.setSummary(pref.getString(ID.EVENING+"text", "٤:٠٠ مساءاًً"));
 
-            pSwitch = findPreference(keyGetter(8));
+            pSwitch = findPreference(keyGetter(ID.DAILY_WERD));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(8+"text", "٩:٠٠ مساءاً"));
+            pSwitch.setSummary(pref.getString(ID.DAILY_WERD+"text", "٩:٠٠ مساءاً"));
 
             if (!MainActivity.located) {
                 located = false;
-                pSwitch = findPreference(keyGetter(9));
+                pSwitch = findPreference(keyGetter(ID.FRIDAY_KAHF));
                 assert pSwitch != null;
-                pSwitch.setSummary(pref.getString(9+"text", "١:٠٠ مساءاً"));
+                pSwitch.setSummary(pref.getString(ID.FRIDAY_KAHF+"text", "١:٠٠ مساءاً"));
             }
         }
 
         private void setListeners() {
-            setSwitchListener(6, true);
-            setSwitchListener(7, true);
-            setSwitchListener(8, true);
-            setSwitchListener(9, !located);
+            setSwitchListener(ID.MORNING, true);
+            setSwitchListener(ID.EVENING, true);
+            setSwitchListener(ID.DAILY_WERD, true);
+            setSwitchListener(ID.FRIDAY_KAHF, !located);
         }
 
-        private void setSwitchListener(int id, boolean timed) {
+        private void setSwitchListener(ID id, boolean timed) {
             String key = keyGetter(id);
             SwitchPreferenceCompat pSwitch = findPreference(key);
             assert pSwitch != null;
@@ -95,7 +97,7 @@ public class Settings extends AppCompatActivity {
             });
         }
 
-        private void showTimePicker(int id) {
+        private void showTimePicker(ID id) {
             String key = keyGetter(id);
             SwitchPreferenceCompat pSwitch = findPreference(key);
             assert pSwitch != null;
@@ -132,7 +134,7 @@ public class Settings extends AppCompatActivity {
             timePicker.show();
         }
 
-        private void cancelAlarm(int id) {
+        private void cancelAlarm(ID id) {
             Alarms.cancelAlarm(getContext(), id);
 
             String key = keyGetter(id);
@@ -143,23 +145,19 @@ public class Settings extends AppCompatActivity {
             }
         }
 
-        private String keyGetter(int id) {
-            String key = null;
+        private String keyGetter(ID id) {
             switch (id) {
-                case 6:
-                    key = getString(R.string.morning_athkar_key);
-                    break;
-                case 7:
-                    key = getString(R.string.night_athkar_key);
-                    break;
-                case 8:
-                    key = getString(R.string.daily_page_key);
-                    break;
-                case 9:
-                    key = getString(R.string.friday_kahf_key);
-                    break;
+                case MORNING:
+                    return getString(R.string.morning_athkar_key);
+                case EVENING:
+                    return getString(R.string.evening_athkar_key);
+                case DAILY_WERD:
+                    return getString(R.string.daily_werd_key);
+                case FRIDAY_KAHF:
+                    return getString(R.string.friday_kahf_key);
+                default:
+                    return "";
             }
-            return key;
         }
     }
 

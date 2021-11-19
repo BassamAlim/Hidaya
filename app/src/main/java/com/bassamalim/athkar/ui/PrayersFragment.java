@@ -23,6 +23,7 @@ import com.bassamalim.athkar.activities.MainActivity;
 import com.bassamalim.athkar.databinding.PrayersFragmentBinding;
 import com.bassamalim.athkar.dialogs.PrayerPopup;
 import com.bassamalim.athkar.helpers.PrayTimes;
+import com.bassamalim.athkar.other.ID;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 
 import java.util.ArrayList;
@@ -158,7 +159,7 @@ public class PrayersFragment extends Fragment {
 
     private void setInitialState() {
         for (int i = 0; i < images.length; i++) {
-            int state = pref.getInt(i+"notification_type", 2);
+            int state = pref.getInt(mapID(i)+"notification_type", 2);
             if (state == 3)
                 images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext()
                         .getResources(), R.drawable.ic_speaker, requireContext().getTheme()));
@@ -175,7 +176,7 @@ public class PrayersFragment extends Fragment {
         for (int i=0; i< cards.length; i++) {
             int finalI = i;
             cards[i].setOnClickListener(v -> new PrayerPopup(getContext(), v,
-                    finalI, prayerNames[finalI]));
+                    mapID(finalI), prayerNames[finalI]));
         }
 
         binding.previousDayButton.setOnClickListener(v -> previousDay());
@@ -331,6 +332,18 @@ public class PrayersFragment extends Fragment {
             params.gravity = Gravity.CENTER | Gravity.START;
             counters[closest].setVisibility(View.GONE);
             screens[closest].setLayoutParams(params);
+        }
+    }
+
+    private ID mapID(int num) {
+        switch (num) {
+            case 0: return ID.FAJR;
+            case 1: return ID.SHOROUQ;
+            case 2: return ID.DUHR;
+            case 3: return ID.ASR;
+            case 4: return ID.MAGHRIB;
+            case 5: return ID.ISHAA;
+            default: return null;
         }
     }
 

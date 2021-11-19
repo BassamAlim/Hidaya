@@ -23,10 +23,11 @@ import androidx.core.app.NotificationCompat;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.activities.Splash;
 import com.bassamalim.athkar.other.Constants;
+import com.bassamalim.athkar.other.ID;
 
 public class AthanService extends Service {
 
-    private int id;
+    private ID id;
     private String channelId = "";
     private MediaPlayer mediaPlayer;
 
@@ -35,12 +36,12 @@ public class AthanService extends Service {
         if (intent == null)
             return START_NOT_STICKY;
 
-        id = intent.getIntExtra("id", 10);
+        id = (ID) intent.getSerializableExtra("id");
         Log.i(Constants.TAG, "In athan service for " + id);
         //int Notification_ID = (int) System.currentTimeMillis() % 10000;
 
         createNotificationChannel();
-        startForeground(id+1, build());
+        startForeground(id.ordinal()+1, build());
 
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         // Request audio focus                                   // Request permanent focus.
@@ -58,27 +59,27 @@ public class AthanService extends Service {
         builder.setLargeIcon(icon);
         builder.setTicker(getResources().getString(R.string.app_name));
         switch (id) {
-            case 0: {
+            case FAJR: {
                 builder.setContentTitle("صلاة الفجر");
                 builder.setContentText("حان موعد أذان الفجر");
                 break;
             }
-            case 2: {
+            case DUHR: {
                 builder.setContentTitle("صلاة الظهر");
                 builder.setContentText("حان موعد أذان الظهر");
                 break;
             }
-            case 3: {
+            case ASR: {
                 builder.setContentTitle("صلاة العصر");
                 builder.setContentText("حان موعد أذان العصر");
                 break;
             }
-            case 4: {
+            case MAGHRIB: {
                 builder.setContentTitle("صلاة المغرب");
                 builder.setContentText("حان موعد أذان المغرب");
                 break;
             }
-            case 5: {
+            case ISHAA: {
                 builder.setContentTitle("صلاة العشاء");
                 builder.setContentText("حان موعد أذان العشاء");
                 break;
@@ -177,5 +178,4 @@ public class AthanService extends Service {
         super.onDestroy();
         stopMyService();
     }
-
 }
