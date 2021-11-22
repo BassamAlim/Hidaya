@@ -18,6 +18,8 @@ public class DoubleClickLMM extends LinkMovementMethod {
     private Spannable lastBuffer;
     // the spanning configuration
     private static Object what;
+    // stores to set span if no span is set even if its the last span
+    private boolean firstClick = false;
 
     @Override
     public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
@@ -27,11 +29,15 @@ public class DoubleClickLMM extends LinkMovementMethod {
                 DoubleClickableSpan pressedSpan = arr[0];
 
                 boolean same = false;
-                if (lastSpan == null)
+                if (lastSpan == null || firstClick) {
                     setSpan(buffer, pressedSpan);
+                    firstClick = false;
+                }
                 else {
-                    if (pressedSpan == lastSpan)
+                    if (pressedSpan == lastSpan) {
                         same = true;
+                        firstClick = true;
+                    }
                     lastBuffer.removeSpan(what);
                     if (!same)
                         setSpan(buffer, pressedSpan);

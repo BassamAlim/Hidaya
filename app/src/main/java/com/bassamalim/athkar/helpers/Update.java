@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.bassamalim.athkar.dialogs.UpdateDialog;
+import com.bassamalim.athkar.popups.UpdateDialog;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class Update {

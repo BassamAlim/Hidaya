@@ -30,7 +30,8 @@ public abstract class SwipeActivity extends AppCompatActivity {
             // Swipe from right to left.
             // The swipe needs to exceed a certain distance (SWIPE_MIN_DISTANCE)
             // and a certain velocity (SWIPE_THRESHOLD_VELOCITY).
-            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE &&
+                    Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                 previous();
                 return true;
             }
@@ -38,7 +39,8 @@ public abstract class SwipeActivity extends AppCompatActivity {
             // Swipe from left to right.
             // The swipe needs to exceed a certain distance (SWIPE_MIN_DISTANCE)
             // and a certain velocity (SWIPE_THRESHOLD_VELOCITY).
-            if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+            if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE &&
+                    Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                 next();
                 return true;
             }

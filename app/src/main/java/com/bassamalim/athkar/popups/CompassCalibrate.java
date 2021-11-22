@@ -1,4 +1,4 @@
-package com.bassamalim.athkar.dialogs;
+package com.bassamalim.athkar.popups;
 
 import android.content.Context;
 import android.graphics.Color;

@@ -62,7 +62,7 @@
     <string name="bingo_view_description">this is the view that shows when pointing towards qibla</string>
     <string name="enable_notification">تفعيل الإشعار</string>
     <string name="mute_notification">إشعار صامت</string>
-    <string name="disable_notification">إيقاف الإشعار</string>
+    <string name="disable_notification">إيقاف</string>
     <string name="adjust_prayer_notification_time">تعديل وقت إشعار الأذان</string>
     <string name="notification_image_description">shows current notification status</string>
     <string name="compass_calibration_gif_description">gif explaining how to calibrate inaccurate compass</string>
@@ -81,7 +81,7 @@
     <string name="about">حول التطبيق</string>
     <string name="share_app">شارك التطبيق</string>
     <string name="qibla_warning">أبعد جهازك عن الاجسام المعدنية</string>
-    <string name="athan_speaker">تفعيل الأذان المسموع</string>
+    <string name="athan_speaker">تفعيل الأذان</string>
     <string name="thanks">شكرا لاستخدامكم تطبيق أذكار</string>
     <string name="quran_source">المصحف: من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
     <string name="tafseer_source">التفسير: التفسير الميسر من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>

@@ -3,18 +3,17 @@
     android:id="@+id/parent"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:background="@drawable/dialog_bg"
+    android:minWidth="250dp"
     android:layoutDirection="rtl"
-    android:minWidth="280dp"
-    android:minHeight="350dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:background="@drawable/dialog_bg">
 
     <TextView
         android:id="@+id/popup_prayer_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_gravity="center"
         android:paddingBottom="15dp"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -22,7 +21,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="25dp"
         android:orientation="vertical">
 
         <Button
@@ -32,9 +31,15 @@
             android:background="@color/primary"
             android:drawableEnd="@drawable/ic_speaker"
             android:gravity="center|start"
-            android:paddingBottom="10dp"
+            android:paddingVertical="4dp"
+            android:paddingHorizontal="5dp"
             android:text="@string/athan_speaker"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:backgroundTint="@color/black"/>
 
         <Button
             android:id="@+id/notify_button"
@@ -43,9 +48,15 @@
             android:background="@color/primary"
             android:drawableEnd="@drawable/ic_sound"
             android:gravity="center|start"
-            android:paddingBottom="10dp"
+            android:paddingVertical="4dp"
+            android:paddingHorizontal="5dp"
             android:text="@string/enable_notification"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:backgroundTint="@color/black"/>
 
         <Button
             android:id="@+id/mute_button"
@@ -54,9 +65,15 @@
             android:background="@color/primary"
             android:drawableEnd="@drawable/ic_mute"
             android:gravity="center|start"
-            android:paddingBottom="10dp"
+            android:paddingVertical="4dp"
+            android:paddingHorizontal="5dp"
             android:text="@string/mute_notification"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:backgroundTint="@color/black"/>
 
         <Button
             android:id="@+id/disable_button"
@@ -65,9 +82,10 @@
             android:background="@color/primary"
             android:drawableEnd="@drawable/ic_disabled"
             android:gravity="center|start"
-            android:paddingBottom="10dp"
+            android:paddingVertical="4dp"
+            android:paddingHorizontal="5dp"
             android:text="@string/disable_notification"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 

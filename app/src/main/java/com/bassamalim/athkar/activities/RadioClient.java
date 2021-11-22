@@ -79,10 +79,6 @@ public class RadioClient extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
-        if (surahNames == null)
-            getSurahNames();
-
         mediaBrowser.connect();
     }
 
@@ -90,6 +86,8 @@ public class RadioClient extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        if (surahNames == null)
+            getSurahNames();
     }
 
     @Override

@@ -2,24 +2,34 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layoutDirection="rtl">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/surah_model_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="5dp"
-        android:backgroundTint="@color/secondary">
+        android:layout_height="60dp"
+        android:layout_marginVertical="3dp"
+        android:layout_marginHorizontal="7dp"
+        app:cardCornerRadius="10dp">
 
-        <TextView
-            android:id="@+id/surah_namescreen"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingVertical="10dp"
-            android:paddingHorizontal="40dp"
-            android:layout_gravity="center"
             android:gravity="center"
-            android:textSize="22sp"/>
+            android:background="@drawable/ripple_s">
+
+            <TextView
+                android:id="@+id/surah_namescreen"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="40dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="22sp"/>
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 

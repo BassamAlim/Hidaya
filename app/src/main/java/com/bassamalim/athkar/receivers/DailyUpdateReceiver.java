@@ -41,12 +41,12 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
         if (intent.getAction().equals("daily")) {
             time = intent.getIntExtra("time", 0);
             if (needed())
-                process();
+                locate();
             else
                 Log.i(Constants.TAG, "dead intent walking in daily update receiver");
         }
         else if (intent.getAction().equals("boot"))
-            process();
+            locate();
     }
 
     private boolean needed() {
@@ -60,7 +60,7 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
         return day != now.get(Calendar.DAY_OF_MONTH) && time >= now.get(Calendar.HOUR_OF_DAY);
     }
 
-    private void process() {
+    private void locate() {
         FusedLocationProviderClient fusedLocationClient =
                 LocationServices.getFusedLocationProviderClient(context);
 
@@ -80,15 +80,16 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
                 return;
             }
         }
-            new Keeper(context, location);
 
-            Calendar[] times = getTimes(location);
+        new Keeper(context, location);
 
-            new Alarms(context, times);
+        Calendar[] times = getTimes(location);
 
-            updateWidget();
+        new Alarms(context, times);
 
-            updated();
+        updateWidget();
+
+        updated();
     }
 
     private Calendar[] getTimes(Location loc) {
@@ -105,8 +106,12 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
     }
 
     private void updateWidget() {
-        AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        manager.getAppWidgetIds(new ComponentName(context, PrayersWidget.class));
+        Intent intent = new Intent(context, PrayersWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int[] ids = AppWidgetManager.getInstance(context.getApplicationContext()).getAppWidgetIds(
+                new ComponentName(context.getApplicationContext(), PrayersWidget.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        context.sendBroadcast(intent);
     }
 
     private void updated() {

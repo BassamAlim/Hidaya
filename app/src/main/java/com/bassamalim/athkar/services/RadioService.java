@@ -253,6 +253,8 @@ public class RadioService extends MediaBrowserServiceCompat {
 
         if (temp < 114) {
             surahIndex = temp;
+            updateMetadata(false);
+            updateNotification(true);
             startPlaying(surahIndex);
             updatePbState(PlaybackStateCompat.STATE_PLAYING);
         }
@@ -266,6 +268,8 @@ public class RadioService extends MediaBrowserServiceCompat {
 
         if (temp >= 0) {
             surahIndex = temp;
+            updateMetadata(false);
+            updateNotification(true);
             startPlaying(surahIndex);
             updatePbState(PlaybackStateCompat.STATE_PLAYING);
         }
@@ -341,8 +345,6 @@ public class RadioService extends MediaBrowserServiceCompat {
         // Create a NotificationCompat.Builder
         notificationBuilder = new NotificationCompat.Builder(context, channelId);
 
-        Log.i(Constants.TAG, controller.getSessionActivity().toString());
-
         notificationBuilder
                 // Add the metadata for the currently playing track
                 .setContentTitle(description.getTitle())
@@ -405,7 +407,7 @@ public class RadioService extends MediaBrowserServiceCompat {
         mediaSession.setMetadata(metadataBuilder.build());
     }
 
-    private void updateMetadata() {
+    private void updateMetadata(boolean duration) {
         MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
 
         //Notification icon in card
@@ -428,7 +430,8 @@ public class RadioService extends MediaBrowserServiceCompat {
 
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, surahIndex);
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version.getCount());
-        metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, player.getDuration());
+        metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
+                duration ? player.getDuration() : 0);
         metadataBuilder.putLong("reciter_index", reciterIndex);
         metadataBuilder.putLong("version_index", version.getIndex());
 
@@ -564,7 +567,7 @@ public class RadioService extends MediaBrowserServiceCompat {
             player.prepareAsync();
             player.setOnPreparedListener(mp -> {
                 player.start();
-                updateMetadata();    // For the duration
+                updateMetadata(true);    // For the duration
                 updatePbState(PlaybackStateCompat.STATE_PLAYING);
                 updateNotification(true);
             });
@@ -576,6 +579,7 @@ public class RadioService extends MediaBrowserServiceCompat {
         }
         catch (IOException e) {
             e.printStackTrace();
+            Log.e(Constants.TAG, "Problem in RadioService player");
         }
     }
 

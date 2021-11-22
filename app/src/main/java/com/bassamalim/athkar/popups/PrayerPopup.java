@@ -1,4 +1,4 @@
-package com.bassamalim.athkar.dialogs;
+package com.bassamalim.athkar.popups;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -66,7 +66,7 @@ public class PrayerPopup {
         popupWindow.setElevation(10);
         popupWindow.setAnimationStyle(R.style.PrayerPopupAnimation);
 
-        popupWindow.showAtLocation(view, Gravity.START, 0, getY());
+        popupWindow.showAtLocation(view, Gravity.START, 30, getY());
 
         populate();
     }
@@ -209,7 +209,7 @@ public class PrayerPopup {
             case DUHR: return -180;
             case ASR: return 100;
             case MAGHRIB: return 350;
-            case ISHAA: return 520;
+            case ISHAA: return 510;
         }
         return 0;
     }
