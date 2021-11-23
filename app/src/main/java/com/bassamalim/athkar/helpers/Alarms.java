@@ -99,7 +99,7 @@ public class Alarms {
                 intent.setAction("extra");
             else
                 intent.setAction("prayer");
-            intent.putExtra("id", id);
+            intent.putExtra("id", id.ordinal());
             intent.putExtra("time", adjusted);
             PendingIntent pendingIntent;
             AlarmManager myAlarm = (AlarmManager)

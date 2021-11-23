@@ -37,7 +37,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context gContext, Intent intent) {
         context = gContext;
-        id = (ID) intent.getSerializableExtra("id");
+        id = mapID(intent.getIntExtra("id", 0));
         String action = intent.getAction();
         time = intent.getLongExtra("time", 0);
         isPrayer = action.equals("prayer");
@@ -255,4 +255,15 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
     }
 
+    private ID mapID(int num) {
+        switch (num) {
+            case 0: return ID.FAJR;
+            case 1: return ID.SHOROUQ;
+            case 2: return ID.DUHR;
+            case 3: return ID.ASR;
+            case 4: return ID.MAGHRIB;
+            case 5: return ID.ISHAA;
+            default: return null;
+        }
+    }
 }

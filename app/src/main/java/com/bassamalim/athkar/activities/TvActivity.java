@@ -38,8 +38,8 @@ public class TvActivity extends AppCompatActivity {
                         "hls1/saudi_quran-avc1_600000=4-mp4a_97200=2.m3u8"));
 
         binding.sunnah.setOnClickListener(v -> show(
-                "https://cdnamd-hls-globecast.akamaized.net/live/ramdisk/saudi_sunnah/" +
-                        "hls1/saudi_sunnah-avc1_600000=5-mp4a_97200=2.m3u8"));
+                "https://cllive.itworkscdn.net/ksasunnalive/token=nva=1637600213~dirs=1~" +
+                        "hash=0cbd72108555fb448f6d7/ksasunna.smil/ksasunna_chunks.m3u8"));
     }
 
     public void show(String giverUri) {
@@ -51,7 +51,6 @@ public class TvActivity extends AppCompatActivity {
     public static Uri getUri() {
         return uri;
     }
-
 }
 
 /*
