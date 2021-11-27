@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -29,13 +28,13 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
-import com.bassamalim.athkar.other.Constants;
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.databinding.QuranActivityBinding;
-import com.bassamalim.athkar.popups.RecitationPopup;
-import com.bassamalim.athkar.popups.TafseerDialog;
 import com.bassamalim.athkar.helpers.Utils;
 import com.bassamalim.athkar.models.Ayah;
+import com.bassamalim.athkar.other.Constants;
+import com.bassamalim.athkar.popups.RecitationPopup;
+import com.bassamalim.athkar.popups.TafseerDialog;
 import com.bassamalim.athkar.replacements.DoubleClickLMM;
 import com.bassamalim.athkar.replacements.DoubleClickableSpan;
 import com.bassamalim.athkar.replacements.SwipeActivity;
@@ -67,15 +66,17 @@ public class QuranActivity extends SwipeActivity {
     private ArrayList<Ayah> allAyahs;
     private ArrayList<Ayah> arr;
     private TextView target;
-    private boolean scrolled = false;
-    private MediaPlayer mediaPlayer;
+    private boolean scrolled;
+    private MediaPlayer player1;
+    private MediaPlayer player2;
     private WifiManager.WifiLock wifiLock;
     private Ayah selected;
     private Ayah lastPlayed;
-    private Spannable selectedSpannable;
     private Ayah lastTracked;
-    private Object selectionWhat;
     private Object what;
+    private boolean surahEnding;
+    private boolean pageEnding;
+    private int chosenSurah;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +109,8 @@ public class QuranActivity extends SwipeActivity {
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         textSize = pref.getInt(getString(R.string.quran_text_size_key), 30);
 
-        mediaPlayer = new MediaPlayer();
+        player1 = new MediaPlayer();
+        player2 = new MediaPlayer();
 
         what = new BackgroundColorSpan(getResources().getColor(R.color.track));
     }
@@ -160,19 +162,17 @@ public class QuranActivity extends SwipeActivity {
         });
 
         binding.play.setOnClickListener(v -> {
-            if (mediaPlayer.isPlaying()) {
+            if (player1.isPlaying() || player2.isPlaying()) {
                 if (lastPlayed != null)
                     selected = lastPlayed;
-                mediaPlayer.stop();
-                binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_play_blue, getTheme()));
+
+                stopPlaying();
             }
             else {
                 if (selected == null)
                     selected = allAyahs.get(0);
-                else
-                    selectedSpannable.removeSpan(selectionWhat);
-                setPlayer(selected);
+                chosenSurah = selected.getSurah();
+                setPlayers(selected);
                 binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
                         R.drawable.ic_stop, getTheme()));
                 selected = null;
@@ -192,6 +192,7 @@ public class QuranActivity extends SwipeActivity {
 
     @Override
     protected void next() {
+        pageEnding = false;
         if (currentPage < QURAN_PAGES) {
             buildPage(++currentPage);
             Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
@@ -297,12 +298,8 @@ public class QuranActivity extends SwipeActivity {
                             getSupportFragmentManager(), TafseerDialog.TAG);
                 }
                 @Override
-                public void onClick(@NonNull View widget) {}
-                @Override
-                public void onClick(Spannable buffer, Object what) {
+                public void onClick(@NonNull View widget) {
                     selected = allAyahs.get(list.get(finalI).getIndex());
-                    selectedSpannable = buffer;
-                    selectionWhat = what;
                 }
                 @Override
                 public void updateDrawState(@NonNull TextPaint ds) {
@@ -352,62 +349,97 @@ public class QuranActivity extends SwipeActivity {
         lastTracked = subject;
     }
 
-    private void setPlayer(Ayah ayah) {
-        mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+    private void setPlayers(Ayah startAyah) {
+        player1.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        player2.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         //mediaPlayer.setLooping(true);
+
         wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock");
         wifiLock.acquire();
-        mediaPlayer.setAudioAttributes(
-                new AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-        );
-        play(ayah);
+
+        AudioAttributes attributes = new AudioAttributes.Builder().setContentType(AudioAttributes
+                .CONTENT_TYPE_MUSIC).setUsage(AudioAttributes.USAGE_MEDIA).build();
+        player1.setAudioAttributes(attributes);
+        player2.setAudioAttributes(attributes);
+
+        setPlayersListeners();
+
+        lastPlayed = startAyah;
+
+        preparePlayer(player1, startAyah);
     }
 
-    private void play(Ayah ayah) {
-        String text = getSource();
-        text += format(ayah.getSurah());
-        text += format(ayah.getAyah());
-        text += ".mp3";
+    private void setPlayersListeners() {
+        player1.setOnPreparedListener(mediaPlayer -> {
+            if (player2.isPlaying())
+                player2.setNextMediaPlayer(player1);
+            else {
+                player1.start();
+                track(lastPlayed);
+                if (allAyahs.size() > lastPlayed.getIndex()+1)
+                    preparePlayer(player2, allAyahs.get(lastPlayed.getIndex()+1));
+            }
+        });
+        player1.setOnCompletionListener(mediaPlayer -> {
+            if (allAyahs.size() > lastPlayed.getIndex()+2) {
+                Ayah newAyah = allAyahs.get(lastPlayed.getIndex()+1);
+                track(newAyah);
+                lastPlayed = newAyah;
+                preparePlayer(player1, allAyahs.get(newAyah.getIndex()+1));
+            }
+            else
+                ended();
+        });
+        player1.setOnErrorListener((mediaPlayer, i, i1) -> {
+            Log.e(Constants.TAG, "Problem in player1");
+            return true;
+        });
 
-        Log.i(Constants.TAG, text);
-        Uri uri = Uri.parse(text);
-        ayah.getSS().setSpan(what, ayah.getStart(), ayah.getEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        try {
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(getApplicationContext(), uri);
-            mediaPlayer.prepareAsync();
-            mediaPlayer.setOnPreparedListener(mp -> {
-                track(ayah);
-                lastPlayed = ayah;
-                mediaPlayer.start();
-            });
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        mediaPlayer.setOnCompletionListener(mp -> {
-            try {
-                play(allAyahs.get(ayah.getIndex()+1));
+        player2.setOnPreparedListener(mediaPlayer -> {
+            if (player1.isPlaying()) {
+                player1.setNextMediaPlayer(player2);
             }
-            catch (Exception e) {
-                boolean playNext = pref.getBoolean("play_next_page", true);
-                if (playNext) {
-                    next();
-                    play(allAyahs.get(0));
-                }
-                else {
-                    binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                            R.drawable.ic_play_blue, getTheme()));
-                }
+            else {
+                player2.start();
+                track(lastPlayed);
+                if (allAyahs.size() > lastPlayed.getIndex()+1)
+                    preparePlayer(player2, allAyahs.get(lastPlayed.getIndex()+1));
             }
+        });
+        player2.setOnCompletionListener(mediaPlayer -> {
+            if (allAyahs.size() > lastPlayed.getIndex()+2) {
+                Ayah newAyah = allAyahs.get(lastPlayed.getIndex()+1);
+                track(newAyah);
+                lastPlayed = newAyah;
+                preparePlayer(player2, allAyahs.get(newAyah.getIndex()+1));
+            }
+            else
+                ended();
+        });
+        player2.setOnErrorListener((mediaPlayer, i, i1) -> {
+            Log.e(Constants.TAG, "Problem in player2");
+            return true;
         });
     }
 
-    private String getSource() {
+    private void preparePlayer(MediaPlayer player, Ayah ayah) {
+        if (pref.getBoolean("stop_on_surah", false) && ayah.getSurah() != chosenSurah) {
+            if (surahEnding)
+                stopPlaying();
+            else
+                surahEnding = true;
+            return;
+        }
+
+        player.reset();
+        try {
+            player.setDataSource(getApplicationContext(), getUri(ayah));
+        } catch (IOException e) {e.printStackTrace();}
+        player.prepareAsync();
+    }
+
+    private Uri getUri(Ayah ayah) {
         String source = "https://www.everyayah.com/data/";
         int choice = pref.getInt("chosen_reciter", 13);
         try {
@@ -426,7 +458,36 @@ public class QuranActivity extends SwipeActivity {
             e.printStackTrace();
             Log.e(Constants.TAG, "Problems in getSource");
         }
-        return source;
+        source += format(ayah.getSurah()) + format(ayah.getAyah()) + ".mp3";
+        Log.i(Constants.TAG, source);
+        return Uri.parse(source);
+    }
+
+    private void stopPlaying() {
+        if (player1.isPlaying())
+            player1.stop();
+        if (player2.isPlaying())
+            player2.stop();
+
+        lastTracked.getSS().removeSpan(what);
+        lastTracked.getScreen().setText(lastTracked.getSS());
+        binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                R.drawable.ic_play_blue, getTheme()));
+    }
+
+    private void ended() {
+        if (pref.getBoolean("stop_on_page", false))
+            stopPlaying();
+        else {
+            if (pageEnding) {
+                if (currentPage < QURAN_PAGES) {
+                    next();
+                    setPlayers(allAyahs.get(0));
+                }
+            }
+            else
+                pageEnding = true;
+        }
     }
 
     private void addHeader(int num, String name) {
@@ -509,9 +570,13 @@ public class QuranActivity extends SwipeActivity {
     protected void onDestroy() {
         super.onDestroy();
         binding = null;
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
+        if (player1 != null) {
+            player1.release();
+            player1 = null;
+        }
+        if (player2 != null) {
+            player2.release();
+            player2 = null;
         }
         if (wifiLock != null)
             wifiLock.release();

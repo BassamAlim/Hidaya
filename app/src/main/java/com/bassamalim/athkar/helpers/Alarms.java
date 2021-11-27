@@ -181,7 +181,7 @@ public class Alarms {
 
         Intent intent = new Intent(appContext, NotificationReceiver.class);
         intent.setAction("extra");
-        intent.putExtra("id", id);
+        intent.putExtra("id", id.ordinal());
         intent.putExtra("time", time.getTimeInMillis());
 
         PendingIntent pendIntent;

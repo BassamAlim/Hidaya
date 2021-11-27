@@ -77,7 +77,6 @@
     <string name="bookmark_page_button">button to bookmark page</string>
     <string name="recitation_settings">إعدادات التلاوة</string>
     <string name="choose_reciter">اختر القارئ</string>
-    <string name="play_next_page">تشغيل الصفحة التالية</string>
     <string name="about">حول التطبيق</string>
     <string name="share_app">شارك التطبيق</string>
     <string name="qibla_warning">أبعد جهازك عن الاجسام المعدنية</string>
@@ -95,5 +94,7 @@
     <string name="play_pause_btn_description">اوقف واكمل التشغيل</string>
     <string name="fast_forward_btn_description">تقدم</string>
     <string name="next_track_btn_description">انتقل الى السورة التالية</string>
+    <string name="stop_on_surah_end">توقف عند نهاية السورة</string>
+    <string name="stop_on_page_end">توقف عند نهاية الصفحة</string>
 
 </resources>

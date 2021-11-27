@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parent"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -32,7 +33,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
             android:text="@string/choose_reciter"
             android:textSize="20sp"/>
 
@@ -46,10 +46,19 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/continue_playing"
+        android:id="@+id/stop_on_surah"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="@string/play_next_page"/>
+        android:checked="false"
+        android:text="@string/stop_on_surah_end"
+        app:switchPadding="30dp"/>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/stop_on_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="@string/stop_on_page_end"
+        app:switchPadding="27dp"/>
 
 </LinearLayout>

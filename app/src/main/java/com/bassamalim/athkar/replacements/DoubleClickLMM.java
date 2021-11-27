@@ -52,7 +52,7 @@ public class DoubleClickLMM extends LinkMovementMethod {
                     lastClick = 0;
                 }
                 else {
-                    pressedSpan.onClick(buffer, what);
+                    pressedSpan.onClick(widget);
                     lastClick = System.currentTimeMillis();
                 }
                 lastSpan = pressedSpan;

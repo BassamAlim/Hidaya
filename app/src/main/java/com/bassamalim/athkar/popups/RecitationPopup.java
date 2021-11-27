@@ -31,6 +31,9 @@ public class RecitationPopup {
     private final View view;
     private final SharedPreferences pref;
     private ArrayList<String> reciters;
+    private Spinner recitersSpinner;
+    private SwitchCompat surahSwitch;
+    private SwitchCompat pageSwitch;
 
     public RecitationPopup(Context gContext, View v) {
         context = gContext;
@@ -57,34 +60,50 @@ public class RecitationPopup {
 
         popupWindow.showAtLocation(view, Gravity.CENTER|Gravity.BOTTOM, 0, 150);
 
+        setViews();
+        setInitialState();
         getReciters();
         setListeners();
         setupSpinner();
     }
 
+    private void setViews() {
+        recitersSpinner = popupWindow.getContentView().findViewById(R.id.reciters_spinner);
+        surahSwitch = popupWindow.getContentView().findViewById(R.id.stop_on_surah);
+        pageSwitch = popupWindow.getContentView().findViewById(R.id.stop_on_page);
+    }
+
+    private void setInitialState() {
+        surahSwitch.setChecked(pref.getBoolean("stop_on_surah", false));
+        pageSwitch.setChecked(pref.getBoolean("stop_on_page", false));
+    }
+
     private void setListeners() {
-        SwitchCompat sw = popupWindow.getContentView().findViewById(R.id.continue_playing);
-        sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        surahSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = pref.edit();
-            editor.putBoolean("play_next_page", isChecked);
+            editor.putBoolean("stop_on_surah", isChecked);
+            editor.apply();
+        });
+        pageSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("stop_on_page", isChecked);
             editor.apply();
         });
     }
 
     private void setupSpinner() {
-        Spinner spinner = popupWindow.getContentView().findViewById(R.id.reciters_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context,
                 android.R.layout.simple_spinner_item, reciters);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        recitersSpinner.setAdapter(adapter);
 
         int lastChosen = pref.getInt("chosen_reciter", 13);
-        spinner.setSelection(lastChosen);
+        recitersSpinner.setSelection(lastChosen);
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        recitersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long vId) {
                 SharedPreferences.Editor editor = pref.edit();
