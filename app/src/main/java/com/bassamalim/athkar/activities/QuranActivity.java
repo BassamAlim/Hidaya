@@ -75,7 +75,6 @@ public class QuranActivity extends SwipeActivity {
     private Ayah lastTracked;
     private Object what;
     private boolean surahEnding;
-    private boolean pageEnding;
     private int chosenSurah;
 
     @Override
@@ -163,12 +162,14 @@ public class QuranActivity extends SwipeActivity {
 
         binding.play.setOnClickListener(v -> {
             if (player1.isPlaying() || player2.isPlaying()) {
+                Log.i(Constants.TAG, "one is playing");
                 if (lastPlayed != null)
                     selected = lastPlayed;
 
                 stopPlaying();
             }
             else {
+                Log.i(Constants.TAG, "no one is playing");
                 if (selected == null)
                     selected = allAyahs.get(0);
                 chosenSurah = selected.getSurah();
@@ -192,7 +193,6 @@ public class QuranActivity extends SwipeActivity {
 
     @Override
     protected void next() {
-        pageEnding = false;
         if (currentPage < QURAN_PAGES) {
             buildPage(++currentPage);
             Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
@@ -382,11 +382,12 @@ public class QuranActivity extends SwipeActivity {
             }
         });
         player1.setOnCompletionListener(mediaPlayer -> {
-            if (allAyahs.size() > lastPlayed.getIndex()+2) {
+            if (allAyahs.size() > lastPlayed.getIndex()+1) {
                 Ayah newAyah = allAyahs.get(lastPlayed.getIndex()+1);
                 track(newAyah);
+                if (allAyahs.size() > newAyah.getIndex()+1)
+                    preparePlayer(player1, allAyahs.get(newAyah.getIndex()+1));
                 lastPlayed = newAyah;
-                preparePlayer(player1, allAyahs.get(newAyah.getIndex()+1));
             }
             else
                 ended();
@@ -408,11 +409,12 @@ public class QuranActivity extends SwipeActivity {
             }
         });
         player2.setOnCompletionListener(mediaPlayer -> {
-            if (allAyahs.size() > lastPlayed.getIndex()+2) {
+            if (allAyahs.size() > lastPlayed.getIndex()+1) {
                 Ayah newAyah = allAyahs.get(lastPlayed.getIndex()+1);
                 track(newAyah);
+                if (allAyahs.size() > newAyah.getIndex()+1)
+                    preparePlayer(player2, allAyahs.get(newAyah.getIndex()+1));
                 lastPlayed = newAyah;
-                preparePlayer(player2, allAyahs.get(newAyah.getIndex()+1));
             }
             else
                 ended();
@@ -464,10 +466,8 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private void stopPlaying() {
-        if (player1.isPlaying())
-            player1.stop();
-        if (player2.isPlaying())
-            player2.stop();
+        player1.reset();
+        player2.reset();
 
         lastTracked.getSS().removeSpan(what);
         lastTracked.getScreen().setText(lastTracked.getSS());
@@ -476,17 +476,14 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private void ended() {
+        Log.i(Constants.TAG, "Ended");
+        Log.i(Constants.TAG, "last: " + lastPlayed.getIndex());
+        Log.i(Constants.TAG, "size: " + allAyahs.size());
         if (pref.getBoolean("stop_on_page", false))
             stopPlaying();
-        else {
-            if (pageEnding) {
-                if (currentPage < QURAN_PAGES) {
-                    next();
-                    setPlayers(allAyahs.get(0));
-                }
-            }
-            else
-                pageEnding = true;
+        else if (currentPage < QURAN_PAGES && lastPlayed.getIndex()+1 == allAyahs.size()) {
+            next();
+            setPlayers(allAyahs.get(0));
         }
     }
 

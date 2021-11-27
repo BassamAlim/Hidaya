@@ -17,7 +17,6 @@
         android:id="@+id/popup_prayer_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="15dp"
         android:gravity="center"
         android:text="@string/recitation_settings"
         android:textSize="25sp"
@@ -27,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginVertical="20dp">
+        android:layout_marginVertical="30dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -49,6 +48,7 @@
         android:id="@+id/stop_on_surah"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:checked="false"
         android:text="@string/stop_on_surah_end"
         app:switchPadding="30dp"/>
