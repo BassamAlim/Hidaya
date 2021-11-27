@@ -77,7 +77,7 @@ public class RadioActivity extends AppCompatActivity {
                     JSONObject ver = versions.getJSONObject(j);
                     int finalI = i, finalJ = j;
                     View.OnClickListener listener = v -> {
-                        Intent intent = new Intent(v.getContext(), ReciterSurahsActivity.class);
+                        Intent intent = new Intent(v.getContext(), SurahsActivity.class);
                         intent.putExtra("reciter", finalI);
                         intent.putExtra("version", finalJ);
                         startActivity(intent);

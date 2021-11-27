@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bassamalim.athkar.R;
 import com.bassamalim.athkar.adapters.ReciterSurahsAdapter;
-import com.bassamalim.athkar.databinding.ActivityReciterSurahsBinding;
+import com.bassamalim.athkar.databinding.ActivitySurahsBinding;
 import com.bassamalim.athkar.helpers.Utils;
 import com.bassamalim.athkar.models.ReciterSurahCard;
 import com.bassamalim.athkar.other.Constants;
@@ -25,9 +25,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ReciterSurahsActivity extends AppCompatActivity {
+public class SurahsActivity extends AppCompatActivity {
 
-    private ActivityReciterSurahsBinding binding;
+    private ActivitySurahsBinding binding;
     private RecyclerView recycler;
     private ReciterSurahsAdapter adapter;
     private ArrayList<ReciterSurahCard> cards;
@@ -40,7 +40,7 @@ public class ReciterSurahsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityReciterSurahsBinding.inflate(getLayoutInflater());
+        binding = ActivitySurahsBinding.inflate(getLayoutInflater());
 
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());

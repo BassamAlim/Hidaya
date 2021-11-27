@@ -24,7 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Athkar">
         <activity
-            android:name=".activities.ReciterSurahsActivity"
+            android:name=".activities.SurahsActivity"
             android:exported="false" />
         <activity
             android:name=".activities.RadioActivity"
