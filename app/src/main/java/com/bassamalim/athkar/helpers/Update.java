@@ -52,7 +52,7 @@ public class Update {
     }
 
     public void showUpdatePrompt() {
-        UpdateDialog updateDialog = new UpdateDialog(context);
+        UpdateDialog updateDialog = new UpdateDialog(context.getApplicationContext());
         updateDialog.show();
     }
 

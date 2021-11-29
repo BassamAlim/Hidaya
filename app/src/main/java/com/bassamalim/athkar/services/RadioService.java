@@ -45,7 +45,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class RadioService extends MediaBrowserServiceCompat {
+public class RadioService extends MediaBrowserServiceCompat implements
+        AudioManager.OnAudioFocusChangeListener {
 
     private static final String MY_MEDIA_ROOT_ID = "media_root_id";
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
@@ -65,7 +66,6 @@ public class RadioService extends MediaBrowserServiceCompat {
     private final int id = 333;
     private int flags;
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private AudioManager.OnAudioFocusChangeListener afChangeListener;
     private NotificationManager notificationManager;
     private NotificationCompat.Builder notificationBuilder;
     private Notification notification;
@@ -92,8 +92,6 @@ public class RadioService extends MediaBrowserServiceCompat {
         buildNotification();
 
         initPlayer();
-
-        registerReceiver(receiver, intentFilter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -191,7 +189,7 @@ public class RadioService extends MediaBrowserServiceCompat {
 
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             // Start the service
-            startService(new Intent(context, RadioService.class));
+            startService(new Intent(context.getApplicationContext(), RadioService.class));
             // Set the session active  (and update metadata and state)
             mediaSession.setActive(true);
 
@@ -217,6 +215,7 @@ public class RadioService extends MediaBrowserServiceCompat {
         // Update metadata and state
         // pause the player (custom call)
         player.pause();
+        handler.removeCallbacks(runnable);
 
         updatePbState(PlaybackStateCompat.STATE_PAUSED);
         updateNotification(false);
@@ -233,6 +232,7 @@ public class RadioService extends MediaBrowserServiceCompat {
 
         cleanUp();
         unregisterReceiver(receiver);
+        handler.removeCallbacks(runnable);
         // stop the player (custom call)
         player.stop();
         // Stop the service
@@ -272,6 +272,25 @@ public class RadioService extends MediaBrowserServiceCompat {
             updateNotification(true);
             startPlaying(surahIndex);
             updatePbState(PlaybackStateCompat.STATE_PLAYING);
+        }
+    }
+
+    @Override
+    public void onAudioFocusChange(int i) {
+        switch(i) {
+            case AudioManager.AUDIOFOCUS_GAIN:
+                if (player != null)
+                    player.setVolume(1.0f, 1.0f);
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                if (player != null && player.isPlaying())
+                    player.setVolume(0.3f, 0.3f);
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+            case AudioManager.AUDIOFOCUS_LOSS:
+                if (player != null && player.isPlaying())
+                    pause();
+                break;
         }
     }
 
@@ -496,10 +515,9 @@ public class RadioService extends MediaBrowserServiceCompat {
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build();
 
-        setFocusListeners();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                    .setOnAudioFocusChangeListener(afChangeListener)
+                    .setOnAudioFocusChangeListener(this)
                     .setAudioAttributes(attrs)
                     .build();
         }
@@ -526,35 +544,6 @@ public class RadioService extends MediaBrowserServiceCompat {
         prevAction = new NotificationCompat.Action(R.drawable.ic_skip_previous, "previous",
                 PendingIntent.getBroadcast(context, id,
                         new Intent(ACTION_PREV).setPackage(pkg), flags));
-    }
-
-    private void setFocusListeners() {
-        afChangeListener = focusChange -> {
-            switch( focusChange ) {
-                case AudioManager.AUDIOFOCUS_LOSS: {
-                    if (player.isPlaying())
-                        stop();
-                    break;
-                }
-                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT: {
-                    pause();
-                    break;
-                }
-                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK: {
-                    if (player != null)
-                        player.setVolume(0.3f, 0.3f);
-                    break;
-                }
-                case AudioManager.AUDIOFOCUS_GAIN: {
-                    if (player != null) {
-                        if (!player.isPlaying())
-                            play();
-                        player.setVolume(1.0f, 1.0f);
-                    }
-                    break;
-                }
-            }
-        };
     }
 
     private void startPlaying(int surah) {
@@ -662,5 +651,4 @@ public class RadioService extends MediaBrowserServiceCompat {
             player = null;
         }
     }
-
 }
