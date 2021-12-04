@@ -83,7 +83,8 @@ public class PrayerPopup {
 
         setImages();
 
-        int state = pref.getInt(id+"notification_type", 2);
+        int defaultState = id == ID.SHOROUQ ? 0 : 2;
+        int state = pref.getInt(id+"notification_type", defaultState);
         selectedState(state);
 
         setListeners();
