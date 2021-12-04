@@ -1,10 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Widget.Athkar.AppWidget.Container"
+    style="@style/Widget.Hidaya.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="rtl"
     android:background="@drawable/prayers_widget_bg"
-    android:theme="@style/Theme.Athkar.AppWidgetContainer">
+    android:theme="@style/Theme.Hidaya.AppWidgetContainer">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             android:gravity="center"
             android:background="@drawable/prayers_widget_inner_view_bg"
             android:textSize="20sp"
-            style="@style/Widget.Athkar.AppWidget.InnerView"/>
+            style="@style/Widget.Hidaya.AppWidget.InnerView"/>
 
         <TextView
             android:id="@+id/widget_duhr"
@@ -33,7 +33,7 @@
             android:gravity="center"
             android:background="@drawable/prayers_widget_inner_view_bg"
             android:textSize="20sp"
-            style="@style/Widget.Athkar.AppWidget.InnerView"/>
+            style="@style/Widget.Hidaya.AppWidget.InnerView"/>
 
         <TextView
             android:id="@+id/widget_asr"
@@ -45,7 +45,7 @@
             android:gravity="center"
             android:background="@drawable/prayers_widget_inner_view_bg"
             android:textSize="20sp"
-            style="@style/Widget.Athkar.AppWidget.InnerView"/>
+            style="@style/Widget.Hidaya.AppWidget.InnerView"/>
 
         <TextView
             android:id="@+id/widget_maghrib"
@@ -57,7 +57,7 @@
             android:gravity="center"
             android:background="@drawable/prayers_widget_inner_view_bg"
             android:textSize="20sp"
-            style="@style/Widget.Athkar.AppWidget.InnerView"/>
+            style="@style/Widget.Hidaya.AppWidget.InnerView"/>
 
         <TextView
             android:id="@+id/widget_ishaa"
@@ -68,13 +68,13 @@
             android:gravity="center"
             android:background="@drawable/prayers_widget_inner_view_bg"
             android:textSize="20sp"
-            style="@style/Widget.Athkar.AppWidget.InnerView"/>
+            style="@style/Widget.Hidaya.AppWidget.InnerView"/>
 
     </LinearLayout>
 
     <!--<TextView
         android:id="@+id/appwidget_text"
-        style="@style/Widget.Athkar.AppWidget.InnerView"
+        style="@style/Widget.Hidaya.AppWidget.InnerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

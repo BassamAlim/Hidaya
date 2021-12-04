@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1051054020889",
-    "project_id": "athkar-a186a",
-    "storage_bucket": "athkar-a186a.appspot.com"
+    "project_number": "541782048677",
+    "project_id": "hidaya-28bbf",
+    "storage_bucket": "hidaya-28bbf.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1051054020889:android:4b471a02747c3b49efcd88",
+        "mobilesdk_app_id": "1:541782048677:android:32e7289a8533f7d6d1f24c",
         "android_client_info": {
-          "package_name": "com.bassamalim.athkar"
+          "package_name": "com.bassamalim.hidaya"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1051054020889-q8kpiou7fich3bb49hagreqfitiu627l.apps.googleusercontent.com",
+          "client_id": "541782048677-7df8j6vivnli28c5694b0ar0r6l688q5.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBmLSIz7WJPvj5H43_8fSuuKnpCiAkJb4E"
+          "current_key": "AIzaSyDHPMh_Uj17GRu9E02iko8z-jVpba1W4og"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1051054020889-q8kpiou7fich3bb49hagreqfitiu627l.apps.googleusercontent.com",
+              "client_id": "541782048677-7df8j6vivnli28c5694b0ar0r6l688q5.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

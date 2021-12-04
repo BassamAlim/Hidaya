@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- START xml_defaults -->
+
 <defaultsMap>
 
     <entry>
@@ -9,7 +9,7 @@
 
     <entry>
         <key>latest_app_version</key>
-        <value>1.0.0</value>
+        <value>1.6.0</value>
     </entry>
 
     <entry>
@@ -18,5 +18,3 @@
     </entry>
 
 </defaultsMap>
-
-    <!-- END xml_defaults -->

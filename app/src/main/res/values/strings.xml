@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">أذكار</string>
+    <string name="app_name">هِداية</string>
 
     <!-- Tabs Titles -->
     <string name="title_prayers">أوقات الصلاة</string>
@@ -81,7 +81,7 @@
     <string name="share_app">شارك التطبيق</string>
     <string name="qibla_warning">أبعد جهازك عن الاجسام المعدنية</string>
     <string name="athan_speaker">تفعيل الأذان</string>
-    <string name="thanks">شكرا لاستخدامكم تطبيق أذكار</string>
+    <string name="thanks">شكرا لاستخدامكم تطبيق هِداية</string>
     <string name="quran_source">المصحف: من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
     <string name="tafseer_source">التفسير: التفسير الميسر من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
     <string name="quran_query_hint">ادخل اسم السورة أو رقم الصفحة</string>

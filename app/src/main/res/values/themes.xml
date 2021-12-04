@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Athkar" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.Hidaya" parent="Theme.AppCompat.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary</item>
@@ -19,17 +19,17 @@
         <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
-    <style name="Theme.Athkar.NoActionBar">
+    <style name="Theme.Hidaya.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.Athkar.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
+    <style name="Theme.Hidaya.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
         <item name="appWidgetRadius">8dp</item>
         <item name="appWidgetPadding">4dp</item>
         <item name="appWidgetInnerRadius">4dp</item>
     </style>
 
-    <style name="Theme.Athkar.AppWidgetContainer" parent="Theme.Athkar.AppWidgetContainerParent" />
+    <style name="Theme.Hidaya.AppWidgetContainer" parent="Theme.Hidaya.AppWidgetContainerParent" />
 
 </resources>

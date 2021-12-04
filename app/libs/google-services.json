@@ -1,15 +1,15 @@
 {
   "project_info": {
     "project_number": "1051054020889",
-    "project_id": "athkar-a186a",
-    "storage_bucket": "athkar-a186a.appspot.com"
+    "project_id": "hidaya-a186a",
+    "storage_bucket": "hidaya-a186a.appspot.com"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:1051054020889:android:4b471a02747c3b49efcd88",
         "android_client_info": {
-          "package_name": "com.bassamalim.athkar"
+          "package_name": "com.bassamalim.hidaya"
         }
       },
       "oauth_client": [

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bassamalim.athkar">
+    package="com.bassamalim.hidaya">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -22,25 +22,25 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Athkar">
+        android:theme="@style/Theme.Hidaya">
         <activity
-            android:name=".activities.SurahsActivity"
+            android:name="com.bassamalim.hidaya.activities.SurahsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.RadioActivity"
+            android:name="com.bassamalim.hidaya.activities.RadioActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.AlathkarList"
+            android:name="com.bassamalim.hidaya.activities.AlathkarList"
             android:exported="true"
             android:label="@string/title_activity_alathkar_list"
-            android:theme="@style/Theme.Athkar.NoActionBar" />
+            android:theme="@style/Theme.Hidaya.NoActionBar" />
         <activity
-            android:name=".activities.Settings"
+            android:name="com.bassamalim.hidaya.activities.Settings"
             android:exported="true"
             android:label="@string/title_activity_settings"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.bassamalim.hidaya.activities.MainActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -48,34 +48,34 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.AlathkarActivity"
+            android:name="com.bassamalim.hidaya.activities.AlathkarActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Athkar">
+            android:theme="@style/Theme.Hidaya">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.QuranActivity"
+            android:name="com.bassamalim.hidaya.activities.QuranActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Athkar">
+            android:theme="@style/Theme.Hidaya">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.TvActivity"
+            android:name="com.bassamalim.hidaya.activities.TvActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Athkar">
+            android:theme="@style/Theme.Hidaya">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.Splash"
+            android:name="com.bassamalim.hidaya.activities.Splash"
             android:exported="true"
             android:theme="@style/LaunchTheme">
             <intent-filter>
@@ -85,30 +85,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.FSVideoActivity"
+            android:name="com.bassamalim.hidaya.activities.FSVideoActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.NoActionBar"> <!-- VERY IMPORTANT ... CRASHES WITHOUT IT -->
+            android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
         <activity
-            android:name=".activities.AboutActivity"
+            android:name="com.bassamalim.hidaya.activities.AboutActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".activities.RadioClient"
+            android:name="com.bassamalim.hidaya.activities.RadioClient"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
-        <receiver android:name=".receivers.NotificationReceiver" />
-        <receiver android:name=".receivers.DailyUpdateReceiver" />
+        <receiver android:name="com.bassamalim.hidaya.receivers.NotificationReceiver" />
+        <receiver android:name="com.bassamalim.hidaya.receivers.DailyUpdateReceiver" />
         <receiver
-            android:name=".receivers.DeviceBootReceiver"
+            android:name="com.bassamalim.hidaya.receivers.DeviceBootReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".other.PrayersWidget"
+            android:name="com.bassamalim.hidaya.other.PrayersWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -120,13 +120,13 @@
         </receiver>
 
         <service
-            android:name=".services.AthanService"
+            android:name="com.bassamalim.hidaya.services.AthanService"
             android:enabled="true"
             android:excludeFromRecents="true"
             android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="false" />
         <service
-            android:name=".services.RadioService"
+            android:name="com.bassamalim.hidaya.services.RadioService"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
