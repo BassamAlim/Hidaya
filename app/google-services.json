@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "541782048677",
-    "project_id": "hidaya-28bbf",
-    "storage_bucket": "hidaya-28bbf.appspot.com"
+    "project_number": "8264855800",
+    "project_id": "hidaya-38e1f",
+    "storage_bucket": "hidaya-38e1f.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:541782048677:android:32e7289a8533f7d6d1f24c",
+        "mobilesdk_app_id": "1:8264855800:android:bdd60395e9391cfe8ccb0d",
         "android_client_info": {
-          "package_name": "com.bassamalim.hidaya"
+          "package_name": "bassamalim.hidaya"
         }
       },
       "oauth_client": [
         {
-          "client_id": "541782048677-7df8j6vivnli28c5694b0ar0r6l688q5.apps.googleusercontent.com",
+          "client_id": "8264855800-gj1rm7s0glqhor4rbjgi8hojr4kaibgn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDHPMh_Uj17GRu9E02iko8z-jVpba1W4og"
+          "current_key": "AIzaSyAl4P7SYxxlueWJDUEWC2Q8_mcioPze_3U"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "541782048677-7df8j6vivnli28c5694b0ar0r6l688q5.apps.googleusercontent.com",
+              "client_id": "8264855800-gj1rm7s0glqhor4rbjgi8hojr4kaibgn.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

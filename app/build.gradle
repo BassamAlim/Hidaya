@@ -8,27 +8,38 @@ plugins {
 android {
     signingConfigs {
         debug {
-            storeFile file('C:\\My Stuff\\Hidaya Stuff\\HidayaSigning.jks')
-            storePassword 'BA-@G9h#o0s@t7'
-            keyPassword 'BA-@G9h#o0s@t7'
-            keyAlias 'release'
+            storeFile file('C:\\My Stuff\\MySigning\\MySigning.jks')
+            storePassword 'BA-1G@h$o$s@t2@1!2'
+            keyAlias 'BassamAlim'
+            keyPassword 'BA-1G@h$o$s@t2@1!2'
+        }
+        release {
+            storeFile file('C:\\My Stuff\\MySigning\\MySigning.jks')
+            storePassword 'BA-1G@h$o$s@t2@1!2'
+            keyPassword 'BA-1G@h$o$s@t2@1!2'
+            keyAlias 'BassamAlim'
         }
     }
     compileSdkVersion 31
     buildToolsVersion '30.0.3'
 
     defaultConfig {
-        applicationId "com.bassamalim.hidaya"
+        applicationId "bassamalim.hidaya"
         minSdkVersion 22
         targetSdkVersion 31
-        versionCode 140
-        versionName '1.4.0'
+        versionCode 141
+        versionName '1.4.1'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
@@ -61,7 +72,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
     implementation 'com.google.code.gson:gson:2.8.8'
 
     implementation platform('com.google.firebase:firebase-bom:29.0.1')

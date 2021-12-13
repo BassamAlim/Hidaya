@@ -88,31 +88,6 @@
                     style="?android:attr/buttonBarButtonStyle"/>
 
                 <Button
-                    android:id="@+id/update"
-                    android:layout_width="@dimen/buttony_size"
-                    android:layout_height="@dimen/buttony_size"
-                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
-                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
-                    android:paddingVertical="@dimen/buttony_padding_vertical"
-                    android:paddingHorizontal="@dimen/buttony_padding_horizontal"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:gravity="center|bottom"
-                    android:background="@drawable/ripple_s"
-                    android:text="@string/update"
-                    android:textSize="@dimen/buttony_text_size"
-                    android:drawableTop="@drawable/ic_update"
-                    style="?android:attr/buttonBarButtonStyle"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center">
-
-                <Button
                     android:id="@+id/contact"
                     android:layout_width="@dimen/buttony_size"
                     android:layout_height="@dimen/buttony_size"
@@ -127,6 +102,15 @@
                     android:textSize="@dimen/buttony_text_size"
                     android:drawableTop="@drawable/ic_whatsapp"
                     style="?android:attr/buttonBarButtonStyle"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <Button
                     android:id="@+id/share"
@@ -143,15 +127,6 @@
                     android:textSize="@dimen/buttony_text_size"
                     android:drawableTop="@drawable/ic_share"
                     style="?android:attr/buttonBarButtonStyle"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center">
 
                 <Button
                     android:id="@+id/about"
@@ -172,7 +147,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
