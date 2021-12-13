@@ -2,6 +2,7 @@ package com.bassamalim.hidaya.activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -13,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.preference.PreferenceManager;
 
 import com.bassamalim.hidaya.helpers.Keeper;
 import com.bassamalim.hidaya.services.AthanService;
@@ -32,13 +34,15 @@ public class Splash extends AppCompatActivity {
 
         stopService(new Intent(this, AthanService.class));
 
+        newUser();
+
         if (granted()) {
             getLocation();
 
             if (build >= 29 && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED)
-            background();
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION) !=
+                    PackageManager.PERMISSION_GRANTED)
+                background();
         }
         else {
             if (new Keeper(this).retrieveLocation() == null)
@@ -46,6 +50,25 @@ public class Splash extends AppCompatActivity {
             else
                 launch(null);
         }
+    }
+
+    private void newUser() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean newUser = pref.getBoolean("new_user", true);
+
+        if (newUser) {
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("new_user", false);
+            editor.apply();
+
+            welcome();
+            finish();
+        }
+    }
+
+    private void welcome() {
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        startActivity(intent);
     }
 
     private boolean granted() {

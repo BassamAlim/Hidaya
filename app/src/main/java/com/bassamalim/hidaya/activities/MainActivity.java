@@ -65,10 +65,9 @@ public class MainActivity extends AppCompatActivity {
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
         Intent intent = getIntent();
-        location = intent.getParcelableExtra("location");
         located = intent.getBooleanExtra("located", false);
-
         if (located) {
+            location = intent.getParcelableExtra("location");
             new Keeper(this, location);
             times = getTimes(location);
             //times = test();
