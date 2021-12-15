@@ -45,6 +45,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Random;
 
@@ -195,7 +196,6 @@ public class QuranActivity extends SwipeActivity {
     protected void next() {
         if (currentPage < QURAN_PAGES) {
             buildPage(++currentPage);
-            Objects.requireNonNull(getSupportActionBar()).setTitle("رقم الصفحة " + currentPage);
             binding.scrollView.scrollTo(0, 0);
         }
     }
@@ -323,9 +323,9 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private void finalize(int juz, String name) {
-        String juzText = "جزء " + juz;
+        String juzText = "جزء " + translateNumbers(String.valueOf(juz));
         currentSurah = "سُورَة " + name;
-        currentPageText = "صفحة " + currentPage;
+        currentPageText = "صفحة " + translateNumbers(String.valueOf(currentPage));
         binding.juzNumber.setText(juzText);
         binding.suraName.setText(currentSurah);
         binding.pageNumber.setText(currentPageText);
@@ -561,6 +561,37 @@ public class QuranActivity extends SwipeActivity {
             out += "0";
         out += strIn;
         return out;
+    }
+
+    private String translateNumbers(String english) {
+        String result;
+        HashMap<Character, Character> map = new HashMap<>();
+        map.put('0', '٠');
+        map.put('1', '١');
+        map.put('2', '٢');
+        map.put('3', '٣');
+        map.put('4', '٤');
+        map.put('5', '٥');
+        map.put('6', '٦');
+        map.put('7', '٧');
+        map.put('8', '٨');
+        map.put('9', '٩');
+        map.put('A', 'ص');
+        map.put('P', 'م');
+
+        if (english.charAt(0) == '0')
+            english = english.replaceFirst("0", "");
+
+        StringBuilder temp = new StringBuilder();
+        for (int j = 0; j < english.length(); j++) {
+            char t = english.charAt(j);
+            if (map.containsKey(t))
+                t = map.get(t);
+            temp.append(t);
+        }
+        result = temp.toString();
+
+        return result;
     }
 
     @Override
