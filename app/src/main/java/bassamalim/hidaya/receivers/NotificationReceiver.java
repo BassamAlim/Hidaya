@@ -22,7 +22,7 @@ import bassamalim.hidaya.activities.AlathkarActivity;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.activities.Splash;
 import bassamalim.hidaya.other.Constants;
-import bassamalim.hidaya.other.ID;
+import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.services.AthanService;
 
 import java.util.Calendar;

@@ -22,7 +22,7 @@ import androidx.preference.PreferenceManager;
 import bassamalim.hidaya.other.Constants;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.helpers.Alarms;
-import bassamalim.hidaya.other.ID;
+import bassamalim.hidaya.enums.ID;
 
 public class PrayerPopup {
 

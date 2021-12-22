@@ -23,7 +23,7 @@ import bassamalim.hidaya.activities.MainActivity;
 import bassamalim.hidaya.databinding.PrayersFragmentBinding;
 import bassamalim.hidaya.popups.PrayerPopup;
 import bassamalim.hidaya.helpers.PrayTimes;
-import bassamalim.hidaya.other.ID;
+import bassamalim.hidaya.enums.ID;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 
 import java.util.ArrayList;

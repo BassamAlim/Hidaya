@@ -13,7 +13,7 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.other.ID;
+import bassamalim.hidaya.enums.ID;
 
 import java.util.Calendar;
 import java.util.HashMap;

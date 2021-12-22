@@ -78,9 +78,8 @@ public class Compass implements SensorEventListener {
                 float azimuth = (float) Math.toDegrees(orientation[0]); // orientation
                 azimuth = (azimuth + azimuthFix + 360) % 360;
 
-                if (listener != null) {
+                if (listener != null)
                     listener.onNewAzimuth(azimuth);
-                }
             }
         }
     }

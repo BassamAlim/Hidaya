@@ -1,4 +1,4 @@
-package bassamalim.hidaya.other;
+package bassamalim.hidaya.enums;
 
 public enum ID {
     FAJR,

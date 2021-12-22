@@ -23,7 +23,7 @@ import androidx.core.app.NotificationCompat;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.Splash;
 import bassamalim.hidaya.other.Constants;
-import bassamalim.hidaya.other.ID;
+import bassamalim.hidaya.enums.ID;
 
 import java.util.Calendar;
 

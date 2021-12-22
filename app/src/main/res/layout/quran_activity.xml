@@ -96,6 +96,34 @@
             android:contentDescription="@string/bookmark_page_button" />
 
         <ImageButton
+            android:id="@+id/next_ayah"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/ripple_b"
+            android:src="@drawable/ic_forward"
+            android:contentDescription="@string/bookmark_page_button" />
+
+        <ImageButton
+            android:id="@+id/play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="15dp"
+            android:background="@drawable/ripple_b"
+            android:src="@drawable/ic_play_blue"
+            android:contentDescription="@string/bookmark_page_button" />
+
+        <ImageButton
+            android:id="@+id/prev_ayah"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/ripple_b"
+            android:src="@drawable/ic_backward"
+            android:contentDescription="@string/bookmark_page_button" />
+
+        <ImageButton
             android:id="@+id/recitation_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -104,16 +132,6 @@
             android:padding="5dp"
             android:background="@drawable/ripple_b"
             android:src="@drawable/ic_preferences"
-            android:contentDescription="@string/bookmark_page_button" />
-
-        <ImageButton
-            android:id="@+id/play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginHorizontal="15dp"
-            android:background="@drawable/ripple_b"
-            android:src="@drawable/ic_play_blue"
             android:contentDescription="@string/bookmark_page_button" />
 
     </androidx.appcompat.widget.Toolbar>
