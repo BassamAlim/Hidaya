@@ -27,8 +27,8 @@ android {
         applicationId "bassamalim.hidaya"
         minSdkVersion 22
         targetSdkVersion 31
-        versionCode 144
-        versionName '1.4.4'
+        versionCode 145
+        versionName '1.4.5'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

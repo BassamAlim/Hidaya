@@ -35,7 +35,7 @@
         <activity
             android:name=".activities.AlathkarList"
             android:exported="true"
-            android:label="@string/title_activity_alathkar_list"
+            android:label="@string/title_alathkar"
             android:theme="@style/Theme.Hidaya.NoActionBar" />
         <activity
             android:name=".activities.Settings"

@@ -1,4 +1,4 @@
-package bassamalim.bassamalim.hidaya.Replacements;
+package bassamalim.hidaya.replacements;
 
 import android.text.style.ClickableSpan;
 import android.view.View;

@@ -35,9 +35,9 @@ import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.other.Constants;
 import bassamalim.hidaya.popups.RecitationPopup;
 import bassamalim.hidaya.popups.TafseerDialog;
-import bassamalim.bassamalim.hidaya.Replacements.DoubleClickLMM;
-import bassamalim.bassamalim.hidaya.Replacements.DoubleClickableSpan;
-import bassamalim.bassamalim.hidaya.Replacements.SwipeActivity;
+import bassamalim.hidaya.replacements.DoubleClickLMM;
+import bassamalim.hidaya.replacements.DoubleClickableSpan;
+import bassamalim.hidaya.replacements.SwipeActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;

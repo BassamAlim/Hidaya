@@ -18,14 +18,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
 
-import bassamalim.hidaya.R;
-import bassamalim.hidaya.databinding.ActivityMainBinding;
-import bassamalim.hidaya.helpers.Alarms;
-import bassamalim.hidaya.helpers.Keeper;
-import bassamalim.hidaya.helpers.PrayTimes;
-import bassamalim.hidaya.helpers.Update;
-import bassamalim.hidaya.receivers.DailyUpdateReceiver;
-import bassamalim.hidaya.receivers.DeviceBootReceiver;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -34,6 +26,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
+
+import bassamalim.hidaya.R;
+import bassamalim.hidaya.databinding.ActivityMainBinding;
+import bassamalim.hidaya.helpers.Alarms;
+import bassamalim.hidaya.helpers.Keeper;
+import bassamalim.hidaya.helpers.PrayTimes;
+import bassamalim.hidaya.receivers.DailyUpdateReceiver;
+import bassamalim.hidaya.receivers.DeviceBootReceiver;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
         dailyUpdate();
         setupBootReceiver();
-
-        new Update(this);
     }
 
     private Calendar[] test() {

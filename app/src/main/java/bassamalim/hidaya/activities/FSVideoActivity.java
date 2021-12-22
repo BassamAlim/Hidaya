@@ -11,7 +11,7 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import bassamalim.bassamalim.hidaya.Replacements.FSMediaController;
+import bassamalim.hidaya.replacements.FSMediaController;
 import bassamalim.hidaya.R;
 
 public class FSVideoActivity extends AppCompatActivity {

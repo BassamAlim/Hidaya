@@ -1,4 +1,4 @@
-package bassamalim.bassamalim.hidaya.Replacements;
+package bassamalim.hidaya.replacements;
 
 import android.os.Bundle;
 import android.view.GestureDetector;
