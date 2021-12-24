@@ -118,24 +118,12 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private void setupJson() {
-        long t1 = System.currentTimeMillis();
-        long temp = System.currentTimeMillis();
-        long now;
-
         String jsonString = Utils.getJsonFromAssets(this, "hafs_smart_v8.json");
         String tafseerString = Utils.getJsonFromAssets(this, "tafseer.json");
         Gson gson = new Gson();
 
-        now = System.currentTimeMillis();
-        Log.i(Constants.TAG, "t1: " + (now-temp));
-        temp = now;
-
         jAyah = gson.fromJson(jsonString, JAyah[].class);
         jTafseer = gson.fromJson(tafseerString, JTafseer.class);
-
-        now = System.currentTimeMillis();
-        Log.i(Constants.TAG, "t2: " + (now-temp));
-        Log.i(Constants.TAG, "Full Time: " + (System.currentTimeMillis()-t1));
     }
 
     private void setListeners() {
