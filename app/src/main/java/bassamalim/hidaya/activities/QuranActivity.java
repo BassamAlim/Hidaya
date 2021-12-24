@@ -21,6 +21,8 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +38,8 @@ import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.helpers.RecitationManager;
 import bassamalim.hidaya.helpers.Utils;
 import bassamalim.hidaya.models.Ayah;
+import bassamalim.hidaya.models.JAyah;
+import bassamalim.hidaya.models.JTafseer;
 import bassamalim.hidaya.other.Constants;
 import bassamalim.hidaya.popups.RecitationPopup;
 import bassamalim.hidaya.popups.TafseerDialog;
@@ -50,8 +54,6 @@ public class QuranActivity extends SwipeActivity {
     private SharedPreferences pref;
     private String action;
     private LinearLayout mainLinear;
-    private JSONArray jsonArray;
-    private JSONArray tafseerArray;
     private int surahIndex;
     private int currentPage;
     private String currentPageText;
@@ -63,6 +65,8 @@ public class QuranActivity extends SwipeActivity {
     private boolean scrolled;
     private Ayah selected;
     private RecitationManager rcMgr;
+    private JAyah[] jAyah;
+    private JTafseer jTafseer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,21 +118,24 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private void setupJson() {
+        long t1 = System.currentTimeMillis();
+        long temp = System.currentTimeMillis();
+        long now;
+
         String jsonString = Utils.getJsonFromAssets(this, "hafs_smart_v8.json");
         String tafseerString = Utils.getJsonFromAssets(this, "tafseer.json");
-        try {
-            assert jsonString != null;
-            jsonArray = new JSONArray(jsonString);
+        Gson gson = new Gson();
 
-            assert tafseerString != null;
-            JSONObject mainTafseerObject = new JSONObject(tafseerString);
-            JSONObject data = mainTafseerObject.getJSONObject("data");
-            tafseerArray = data.getJSONArray("surahs");
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.e("myself", "error in setup json in QuranActivity");
-        }
+        now = System.currentTimeMillis();
+        Log.i(Constants.TAG, "t1: " + (now-temp));
+        temp = now;
+
+        jAyah = gson.fromJson(jsonString, JAyah[].class);
+        jTafseer = gson.fromJson(tafseerString, JTafseer.class);
+
+        now = System.currentTimeMillis();
+        Log.i(Constants.TAG, "t2: " + (now-temp));
+        Log.i(Constants.TAG, "Full Time: " + (System.currentTimeMillis()-t1));
     }
 
     private void setListeners() {
@@ -139,9 +146,7 @@ public class QuranActivity extends SwipeActivity {
             editor.putString("bookmarked_text", text);
             editor.apply();
         });
-        binding.prevAyah.setOnClickListener(view -> {
-            rcMgr.prevAyah();
-        });
+        binding.prevAyah.setOnClickListener(view -> rcMgr.prevAyah());
         binding.play.setOnClickListener(view -> {
             if (rcMgr.getState() == States.Playing) {
                 if (rcMgr.getLastPlayed() != null)
@@ -165,9 +170,7 @@ public class QuranActivity extends SwipeActivity {
                 selected = null;
             }
         });
-        binding.nextAyah.setOnClickListener(view -> {
-            rcMgr.nextAyah();
-        });
+        binding.nextAyah.setOnClickListener(view -> rcMgr.nextAyah());
         binding.recitationSettings.setOnClickListener(v -> new RecitationPopup(this, v));
     }
 
@@ -227,17 +230,12 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private int getPageStart(int pageNumber) {
-        int start = 0;
-        try {
-            int counter = 0;
-            while (jsonArray.getJSONObject(counter).getInt("page") < pageNumber)
-                counter++;
-            start = counter;
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(Constants.TAG, "error in get page start");
-        }
+        int start;
+        int counter = 0;
+        while (jAyah[counter].getPage() < pageNumber)
+            counter++;
+        start = counter;
+
         return start;
     }
 
@@ -248,38 +246,32 @@ public class QuranActivity extends SwipeActivity {
         ArrayList<ArrayList<Ayah>> pageAyahs = new ArrayList<>();
 
         int counter = getPageStart(pageNumber);
-        try {
-            do {
-                JSONObject ayah = jsonArray.getJSONObject(counter);
-                int surahNum = ayah.getInt("sura_no");
-                int ayahNum = ayah.getInt("aya_no");
-                String ayahText = ayah.getString("aya_text");
+        do {
+            JAyah ayah = jAyah[counter];
+            int surahNum = ayah.getSura_no();
+            int ayahNum = ayah.getAya_no();
+            String ayahText = ayah.getAya_text();
 
-                JSONObject tafseerSurah = tafseerArray.getJSONObject(surahNum-1);
-                JSONArray tafseerAyahs = tafseerSurah.getJSONArray("ayahs");
-                JSONObject tafseerAyah = tafseerAyahs.getJSONObject(ayahNum-1);
-                String tafseer = tafseerAyah.getString("text");
+            JTafseer.Data.Surah tafseerSurah = jTafseer.getData().getSurahs()[surahNum-1];
+            JTafseer.Data.Surah.JTAyah[] tafseerAyahs = tafseerSurah.getAyahs();
+            JTafseer.Data.Surah.JTAyah tafseerAyah = tafseerAyahs[ayahNum-1];
 
-                Ayah ayahModel = new Ayah(ayah.getInt("jozz"), surahNum, ayahNum,
-                        ayah.getString("sura_name_ar"), ayahText + " ", tafseer);
+            String tafseer = tafseerAyah.getText();
 
-                if (ayahNum == 1) {
-                    if (arr.size() > 0) {
-                        pageAyahs.add(arr);
-                        publish(arr);
-                    }
+            Ayah ayahModel = new Ayah(ayah.getJozz(), surahNum, ayahNum,
+                    ayah.getSura_name_ar(), ayahText + " ", tafseer);
 
-                    addHeader(surahNum, ayah.getString("sura_name_ar"));
+            if (ayahNum == 1) {
+                if (arr.size() > 0) {
+                    pageAyahs.add(arr);
+                    publish(arr);
                 }
-                arr.add(ayahModel);
 
-            } while (++counter != 6236 && jsonArray.getJSONObject(counter)
-                    .getInt("page") == pageNumber);
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(Constants.TAG, "trouble in building page");
-        }
+                addHeader(surahNum, ayahModel.getSurahName());
+            }
+            arr.add(ayahModel);
+
+        } while (++counter != 6236 && jAyah[counter].getPage() == pageNumber);
 
         int juz = arr.get(0).getJuz();
 
