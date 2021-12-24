@@ -15,7 +15,6 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.RadioRecitersAdapter;
 import bassamalim.hidaya.databinding.ActivityRadioBinding;
 import bassamalim.hidaya.helpers.Utils;
-import bassamalim.hidaya.models.RecitationVersion;
 import bassamalim.hidaya.models.ReciterCard;
 import bassamalim.hidaya.other.Constants;
 
@@ -72,7 +71,8 @@ public class RadioActivity extends AppCompatActivity {
                 JSONObject reciter = arr.getJSONObject(i);
                 String name = reciter.getString("name");
                 JSONArray versions = reciter.getJSONArray("versions");
-                RecitationVersion[] versionsArr = new RecitationVersion[versions.length()];
+                ReciterCard.RecitationVersion[] versionsArr =
+                        new ReciterCard.RecitationVersion[versions.length()];
                 for (int j = 0; j < versions.length(); j++) {
                     JSONObject ver = versions.getJSONObject(j);
                     int finalI = i, finalJ = j;
@@ -82,9 +82,9 @@ public class RadioActivity extends AppCompatActivity {
                         intent.putExtra("version", finalJ);
                         startActivity(intent);
                     };
-                    RecitationVersion obj = new RecitationVersion(j, ver.getString("server"),
-                            ver.getString("rewaya"), ver.getString("count"),
-                            ver.getString("suras"), listener);
+                    ReciterCard.RecitationVersion obj = new ReciterCard.RecitationVersion(j,
+                            ver.getString("server"), ver.getString("rewaya"),
+                            ver.getString("count"), ver.getString("suras"), listener);
                     versionsArr[j] = obj;
                 }
                 cards.add(new ReciterCard(i, name, versionsArr));

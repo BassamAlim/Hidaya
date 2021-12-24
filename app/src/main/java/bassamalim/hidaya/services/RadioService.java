@@ -37,7 +37,7 @@ import androidx.media.session.MediaButtonReceiver;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.RadioClient;
-import bassamalim.hidaya.models.RecitationVersion;
+import bassamalim.hidaya.models.ReciterCard;
 import bassamalim.hidaya.other.Constants;
 
 import java.io.IOException;
@@ -76,7 +76,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
     private ArrayList<String> surahNames;
     private String reciterName;
     private int reciterIndex;
-    private RecitationVersion version;
+    private ReciterCard.RecitationVersion version;
     private int surahIndex;
     private WifiManager.WifiLock wifiLock;
 
@@ -103,7 +103,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
             surahNames = extras.getStringArrayList("surah_names");
             int newReciter = extras.getInt("reciter_index", 0);
             String newReciterName = extras.getString("reciter_name");
-            RecitationVersion newVersion = (RecitationVersion)
+            ReciterCard.RecitationVersion newVersion = (ReciterCard.RecitationVersion)
                     extras.getSerializable("version");
             int newSurah = Integer.parseInt(mediaId);
 

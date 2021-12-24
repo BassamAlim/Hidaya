@@ -21,7 +21,7 @@ import androidx.core.content.res.ResourcesCompat;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivityRadioPlayerBinding;
 import bassamalim.hidaya.helpers.Utils;
-import bassamalim.hidaya.models.RecitationVersion;
+import bassamalim.hidaya.models.ReciterCard;
 import bassamalim.hidaya.other.Constants;
 import bassamalim.hidaya.services.RadioService;
 
@@ -53,7 +53,7 @@ public class RadioClient extends AppCompatActivity {
     private int versionIndex;
     private ArrayList<String> surahNames;
     private String reciterName;
-    private RecitationVersion version;
+    private ReciterCard.RecitationVersion version;
     private int surahIndex;
 
     @Override
@@ -178,7 +178,7 @@ public class RadioClient extends AppCompatActivity {
             JSONArray versions = reciterObj.getJSONArray("versions");
             JSONObject v = versions.getJSONObject(versionIndex);
 
-            version = new RecitationVersion(versionIndex, v.getString("server"),
+            version = new ReciterCard.RecitationVersion(versionIndex, v.getString("server"),
                     v.getString("rewaya"), v.getString("count"),
                     v.getString("suras"), null);
 
