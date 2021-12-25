@@ -49,6 +49,7 @@
 
                 <Button
                     android:id="@+id/day_and_night"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/day_and_night_thikrs"
                     android:drawableTop="@drawable/ic_day_and_night"
@@ -56,6 +57,7 @@
 
                 <Button
                     android:id="@+id/prayers"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/prayers_thikrs"
                     android:drawableTop="@drawable/ic_praying"
@@ -72,6 +74,7 @@
 
                 <Button
                     android:id="@+id/quran"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/quran_thikrs"
                     android:drawableTop="@drawable/ic_closed_quran"
@@ -79,6 +82,7 @@
 
                 <Button
                     android:id="@+id/actions"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/actions_thikrs"
                     android:drawableTop="@drawable/ic_actions"
@@ -95,6 +99,7 @@
 
                 <Button
                     android:id="@+id/events"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/events_thikrs"
                     android:drawableTop="@drawable/ic_events"
@@ -102,6 +107,7 @@
 
                 <Button
                     android:id="@+id/emotions"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/emotion_thikrs"
                     android:drawableTop="@drawable/ic_emotion"
@@ -118,6 +124,7 @@
 
                 <Button
                     android:id="@+id/places"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/places_thikrs"
                     android:drawableTop="@drawable/ic_going_out"
@@ -125,6 +132,7 @@
 
                 <Button
                     android:id="@+id/more"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/more_thikrs"
                     android:drawableTop="@drawable/ic_duaa_moon"

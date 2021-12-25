@@ -33,6 +33,7 @@
 
                 <Button
                     android:id="@+id/quran_radio"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/recitations"
                     android:drawableTop="@drawable/ic_headset"
@@ -40,6 +41,7 @@
 
                 <Button
                     android:id="@+id/channels"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/quran_and_sunnah_channels"
                     android:drawableTop="@drawable/ic_television"
@@ -56,6 +58,7 @@
 
                 <Button
                     android:id="@+id/settings"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/settings"
                     android:drawableTop="@drawable/ic_settings"
@@ -63,7 +66,7 @@
 
                 <Button
                     android:id="@+id/features"
-                    android:paddingTop="2dp"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/features_guide"
                     android:drawableTop="@drawable/ic_features"
@@ -80,6 +83,7 @@
 
                 <Button
                     android:id="@+id/contact"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/contact"
                     android:drawableTop="@drawable/ic_whatsapp"
@@ -87,6 +91,7 @@
 
                 <Button
                     android:id="@+id/share"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/share_app"
                     android:drawableTop="@drawable/ic_share"
@@ -103,6 +108,7 @@
 
                 <Button
                     android:id="@+id/about"
+                    android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/about"
                     android:drawableTop="@drawable/ic_info"
