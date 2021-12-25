@@ -49,35 +49,17 @@
 
                 <Button
                     android:id="@+id/day_and_night"
-                    android:layout_width="@dimen/buttony_size"
-                    android:layout_height="@dimen/buttony_size"
-                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
-                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
-                    android:paddingVertical="@dimen/buttony_padding_vertical"
-                    android:paddingHorizontal="@dimen/buttony_padding_horizontal"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:gravity="center|bottom"
                     android:background="@drawable/ripple_s"
                     android:text="@string/day_and_night_thikrs"
-                    android:textSize="@dimen/buttony_text_size"
                     android:drawableTop="@drawable/ic_day_and_night"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    style="@style/Buttony" />
 
                 <Button
                     android:id="@+id/prayers"
-                    android:layout_width="@dimen/buttony_size"
-                    android:layout_height="@dimen/buttony_size"
-                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
-                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
-                    android:paddingVertical="@dimen/buttony_padding_vertical"
-                    android:paddingHorizontal="@dimen/buttony_padding_horizontal"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:gravity="bottom|center"
                     android:background="@drawable/ripple_s"
                     android:text="@string/prayers_thikrs"
-                    android:textSize="@dimen/buttony_text_size"
                     android:drawableTop="@drawable/ic_praying"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    style="@style/Buttony" />
 
             </LinearLayout>
 
@@ -90,35 +72,17 @@
 
                 <Button
                     android:id="@+id/quran"
-                    android:layout_width="@dimen/buttony_size"
-                    android:layout_height="@dimen/buttony_size"
-                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
-                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
-                    android:paddingVertical="@dimen/buttony_padding_vertical"
-                    android:paddingHorizontal="@dimen/buttony_padding_horizontal"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:gravity="center|bottom"
                     android:background="@drawable/ripple_s"
                     android:text="@string/quran_thikrs"
-                    android:textSize="@dimen/buttony_text_size"
                     android:drawableTop="@drawable/ic_closed_quran"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    style="@style/Buttony" />
 
                 <Button
                     android:id="@+id/actions"
-                    android:layout_width="@dimen/buttony_size"
-                    android:layout_height="@dimen/buttony_size"
-                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
-                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
-                    android:paddingVertical="@dimen/buttony_padding_vertical"
-                    android:paddingHorizontal="@dimen/buttony_padding_horizontal"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:gravity="center|bottom"
                     android:background="@drawable/ripple_s"
                     android:text="@string/actions_thikrs"
-                    android:textSize="@dimen/buttony_text_size"
                     android:drawableTop="@drawable/ic_actions"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    style="@style/Buttony" />
 
             </LinearLayout>
 
@@ -131,35 +95,17 @@
 
                 <Button
                     android:id="@+id/events"
-                    android:layout_width="@dimen/buttony_size"
-                    android:layout_height="@dimen/buttony_size"
-                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
-                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
-                    android:paddingVertical="@dimen/buttony_padding_vertical"
-                    android:paddingHorizontal="@dimen/buttony_padding_horizontal"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:gravity="center|bottom"
                     android:background="@drawable/ripple_s"
                     android:text="@string/events_thikrs"
-                    android:textSize="@dimen/buttony_text_size"
                     android:drawableTop="@drawable/ic_events"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    style="@style/Buttony" />
 
                 <Button
                     android:id="@+id/emotions"
-                    android:layout_width="@dimen/buttony_size"
-                    android:layout_height="@dimen/buttony_size"
-                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
-                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
-                    android:paddingVertical="@dimen/buttony_padding_vertical"
-                    android:paddingHorizontal="@dimen/buttony_padding_horizontal"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:gravity="center|bottom"
                     android:background="@drawable/ripple_s"
                     android:text="@string/emotion_thikrs"
-                    android:textSize="@dimen/buttony_text_size"
                     android:drawableTop="@drawable/ic_emotion"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    style="@style/Buttony" />
 
             </LinearLayout>
 
@@ -172,35 +118,17 @@
 
                 <Button
                     android:id="@+id/places"
-                    android:layout_width="@dimen/buttony_size"
-                    android:layout_height="@dimen/buttony_size"
-                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
-                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
-                    android:paddingVertical="@dimen/buttony_padding_vertical"
-                    android:paddingHorizontal="@dimen/buttony_padding_horizontal"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:gravity="center|bottom"
                     android:background="@drawable/ripple_s"
                     android:text="@string/places_thikrs"
-                    android:textSize="@dimen/buttony_text_size"
                     android:drawableTop="@drawable/ic_going_out"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    style="@style/Buttony" />
 
                 <Button
                     android:id="@+id/more"
-                    android:layout_width="@dimen/buttony_size"
-                    android:layout_height="@dimen/buttony_size"
-                    android:layout_marginVertical="@dimen/buttony_margin_vertical"
-                    android:layout_marginHorizontal="@dimen/buttony_margin_horizontal"
-                    android:paddingVertical="@dimen/buttony_padding_vertical"
-                    android:paddingHorizontal="@dimen/buttony_padding_horizontal"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:gravity="center|bottom"
                     android:background="@drawable/ripple_s"
                     android:text="@string/more_thikrs"
-                    android:textSize="@dimen/buttony_text_size"
                     android:drawableTop="@drawable/ic_duaa_moon"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    style="@style/Buttony" />
 
             </LinearLayout>
 

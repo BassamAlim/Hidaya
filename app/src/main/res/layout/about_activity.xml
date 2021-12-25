@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="bassamalim.hidaya.activities.AboutActivity"
-    android:background="@color/primary">
-
+    android:background="@color/primary"
+    tools:context="bassamalim.hidaya.activities.AboutActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,10 +49,10 @@
         android:id="@+id/drive_update"
         android:layout_width="300dp"
         android:layout_height="80dp"
-        android:elevation="@dimen/buttony_elevation"
+        android:elevation="10dp"
         android:background="@drawable/ripple_s"
         android:text="@string/quick_update"
-        android:textSize="@dimen/buttony_text_size"
+        android:textSize="20sp"
         android:textColor="@color/accent"
         app:layout_constraintTop_toBottomOf="@id/tafseer_source"
         app:layout_constraintStart_toStartOf="parent"

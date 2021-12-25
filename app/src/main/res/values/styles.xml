@@ -24,4 +24,20 @@
         <item name="android:windowExitAnimation">@anim/recitation_popup_hide</item>
     </style>
 
+    <style name="Buttony">
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">150dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:layout_marginEnd">20dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="paddingStart">5dp</item>
+        <item name="paddingEnd">5dp</item>
+        <item name="elevation">10dp</item>
+        <item name="android:gravity">center|bottom</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
 </resources>

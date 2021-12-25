@@ -24,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Hidaya">
         <activity
+            android:name=".activities.FeaturesGuide"
+            android:exported="false" />
+        <activity
             android:name=".activities.WelcomeActivity"
             android:exported="false" />
         <activity
