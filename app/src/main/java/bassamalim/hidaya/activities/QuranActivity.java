@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
+import androidx.room.Room;
 
 import com.google.gson.Gson;
 
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -37,6 +39,7 @@ import bassamalim.hidaya.databinding.QuranActivityBinding;
 import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.helpers.RecitationManager;
 import bassamalim.hidaya.helpers.Utils;
+import bassamalim.hidaya.models.AppDatabase;
 import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.models.JAyah;
 import bassamalim.hidaya.models.JTafseer;
@@ -65,7 +68,7 @@ public class QuranActivity extends SwipeActivity {
     private boolean scrolled;
     private Ayah selected;
     private RecitationManager rcMgr;
-    private JAyah[] jAyah;
+    private List<JAyah> jAyah;
     private JTafseer jTafseer;
 
     @Override
@@ -86,7 +89,12 @@ public class QuranActivity extends SwipeActivity {
         Intent intent = getIntent();
         action = intent.getAction();
 
+        long t1 = System.currentTimeMillis();
+        setupDB();
+        Log.i(Constants.TAG, "TIME: " + (System.currentTimeMillis()-t1));
+        t1 = System.currentTimeMillis();
         setupJson();
+        Log.i(Constants.TAG, "time: " + (System.currentTimeMillis()-t1));
 
         setupManager();
 
@@ -118,12 +126,15 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private void setupJson() {
-        String jsonString = Utils.getJsonFromAssets(this, "hafs_smart_v8.json");
         String tafseerString = Utils.getJsonFromAssets(this, "tafseer.json");
         Gson gson = new Gson();
-
-        jAyah = gson.fromJson(jsonString, JAyah[].class);
         jTafseer = gson.fromJson(tafseerString, JTafseer.class);
+    }
+
+    private void setupDB() {
+        jAyah = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
+                "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
+                .build().ayahDao().getAll();
     }
 
     private void setListeners() {
@@ -220,7 +231,7 @@ public class QuranActivity extends SwipeActivity {
     private int getPageStart(int pageNumber) {
         int start;
         int counter = 0;
-        while (jAyah[counter].getPage() < pageNumber)
+        while (jAyah.get(counter).getPage() < pageNumber)
             counter++;
         start = counter;
 
@@ -235,7 +246,7 @@ public class QuranActivity extends SwipeActivity {
 
         int counter = getPageStart(pageNumber);
         do {
-            JAyah ayah = jAyah[counter];
+            JAyah ayah = jAyah.get(counter);
             int surahNum = ayah.getSura_no();
             int ayahNum = ayah.getAya_no();
             String ayahText = ayah.getAya_text();
@@ -259,7 +270,7 @@ public class QuranActivity extends SwipeActivity {
             }
             arr.add(ayahModel);
 
-        } while (++counter != 6236 && jAyah[counter].getPage() == pageNumber);
+        } while (++counter != 6236 && jAyah.get(counter).getPage() == pageNumber);
 
         int juz = arr.get(0).getJuz();
 
