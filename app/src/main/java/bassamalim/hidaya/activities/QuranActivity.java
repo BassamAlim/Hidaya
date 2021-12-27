@@ -22,8 +22,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
-import com.google.gson.Gson;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +40,6 @@ import bassamalim.hidaya.helpers.Utils;
 import bassamalim.hidaya.models.AppDatabase;
 import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.models.JAyah;
-import bassamalim.hidaya.models.JTafseer;
 import bassamalim.hidaya.other.Constants;
 import bassamalim.hidaya.popups.RecitationPopup;
 import bassamalim.hidaya.popups.TafseerDialog;
@@ -69,7 +66,6 @@ public class QuranActivity extends SwipeActivity {
     private Ayah selected;
     private RecitationManager rcMgr;
     private List<JAyah> jAyah;
-    private JTafseer jTafseer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,11 +86,8 @@ public class QuranActivity extends SwipeActivity {
         action = intent.getAction();
 
         long t1 = System.currentTimeMillis();
-        setupDB();
+        query();
         Log.i(Constants.TAG, "TIME: " + (System.currentTimeMillis()-t1));
-        t1 = System.currentTimeMillis();
-        setupJson();
-        Log.i(Constants.TAG, "time: " + (System.currentTimeMillis()-t1));
 
         setupManager();
 
@@ -125,13 +118,7 @@ public class QuranActivity extends SwipeActivity {
         }
     }
 
-    private void setupJson() {
-        String tafseerString = Utils.getJsonFromAssets(this, "tafseer.json");
-        Gson gson = new Gson();
-        jTafseer = gson.fromJson(tafseerString, JTafseer.class);
-    }
-
-    private void setupDB() {
+    private void query() {
         jAyah = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
                 "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
                 .build().ayahDao().getAll();
@@ -250,12 +237,7 @@ public class QuranActivity extends SwipeActivity {
             int surahNum = ayah.getSura_no();
             int ayahNum = ayah.getAya_no();
             String ayahText = ayah.getAya_text();
-
-            JTafseer.Data.Surah tafseerSurah = jTafseer.getData().getSurahs()[surahNum-1];
-            JTafseer.Data.Surah.JTAyah[] tafseerAyahs = tafseerSurah.getAyahs();
-            JTafseer.Data.Surah.JTAyah tafseerAyah = tafseerAyahs[ayahNum-1];
-
-            String tafseer = tafseerAyah.getText();
+            String tafseer = ayah.getAya_tafseer();
 
             Ayah ayahModel = new Ayah(ayah.getJozz(), surahNum, ayahNum,
                     ayah.getSura_name_ar(), ayahText + " ", tafseer);

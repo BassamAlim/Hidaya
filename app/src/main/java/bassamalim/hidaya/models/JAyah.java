@@ -19,30 +19,27 @@ public class JAyah {
     private final String sura_name_ar;
     @ColumnInfo(name = "page")
     private final int page;
-    @ColumnInfo(name = "line_start")
-    private final int line_start;
-    @ColumnInfo(name = "line_end")
-    private final int line_end;
     @ColumnInfo(name = "aya_no")
     private final int aya_no;
     @ColumnInfo(name = "aya_text")
     private final String aya_text;
     @ColumnInfo(name = "aya_text_emlaey")
     private final String aya_text_emlaey;
+    @ColumnInfo(name = "aya_tafseer")
+    private final String aya_tafseer;
 
     public JAyah(int id, int jozz, int sura_no, String sura_name_en, String sura_name_ar, int page,
-                 int line_start, int line_end, int aya_no, String aya_text, String aya_text_emlaey){
+                 int aya_no, String aya_text, String aya_text_emlaey, String aya_tafseer) {
         this.id = id;
         this.jozz = jozz;
         this.sura_no = sura_no;
         this.sura_name_en = sura_name_en;
         this.sura_name_ar = sura_name_ar;
         this.page = page;
-        this.line_start = line_start;
-        this.line_end = line_end;
         this.aya_no = aya_no;
         this.aya_text = aya_text;
         this.aya_text_emlaey = aya_text_emlaey;
+        this.aya_tafseer = aya_tafseer;
     }
 
     public int getId() {
@@ -69,14 +66,6 @@ public class JAyah {
         return page;
     }
 
-    public int getLine_start() {
-        return line_start;
-    }
-
-    public int getLine_end() {
-        return line_end;
-    }
-
     public int getAya_no() {
         return aya_no;
     }
@@ -87,5 +76,9 @@ public class JAyah {
 
     public String getAya_text_emlaey() {
         return aya_text_emlaey;
+    }
+
+    public String getAya_tafseer() {
+        return aya_tafseer;
     }
 }

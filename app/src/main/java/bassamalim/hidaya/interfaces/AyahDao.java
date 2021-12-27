@@ -1,4 +1,4 @@
-package bassamalim.hidaya.models;
+package bassamalim.hidaya.interfaces;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,6 +6,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import java.util.List;
+
+import bassamalim.hidaya.models.JAyah;
 
 @Dao
 public interface AyahDao {
@@ -19,11 +21,11 @@ public interface AyahDao {
     @Query("SELECT * FROM user WHERE first_name LIKE :first AND " +
             "last_name LIKE :last LIMIT 1")
     JAyah findByName(String first, String last);
-*/
 
     @Insert
     void insertAll(JAyah... users);
 
     @Delete
     void delete(JAyah user);
+    */
 }
