@@ -2,7 +2,7 @@
 <project version="4">
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DataExportManager">
@@ -25,13 +25,13 @@
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
     <loaded-nodes>
-      <connection connection-id="d6de9e21-2f2b-4810-9909-37303c51f42e">
+      <connection connection-id="70f60152-9021-4f90-a2e7-fa8fadc8887b">
         <schema name="main" object-types="table, view, constraint, index, column, dataset trigger" />
       </connection>
     </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
-    <connection id="d6de9e21-2f2b-4810-9909-37303c51f42e">
+    <connection id="70f60152-9021-4f90-a2e7-fa8fadc8887b">
       <console name="HidayaDB" type="STANDARD" schema="main" session="Main" />
     </connection>
   </component>
@@ -39,7 +39,7 @@
     <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
-    <connection id="d6de9e21-2f2b-4810-9909-37303c51f42e" />
+    <connection id="70f60152-9021-4f90-a2e7-fa8fadc8887b" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
@@ -70,7 +70,7 @@
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="d6de9e21-2f2b-4810-9909-37303c51f42e" active="true">
+      <connection id="70f60152-9021-4f90-a2e7-fa8fadc8887b" active="true">
         <database>
           <name value="HidayaDB" />
           <description value="" />
@@ -85,7 +85,7 @@
           <port value="" />
           <database value="" />
           <files>
-            <file path="C:\Users\bassa\AndroidStudioProjects\Hidaya\app\src\main\assets\HidayaDB.db" schema="main" />
+            <file path="C:\Users\bassa\AndroidStudioProjects\Hidaya\app\src\main\assets\databases\HidayaDB.db" schema="main" />
           </files>
           <type value="NONE" />
           <user value="" />

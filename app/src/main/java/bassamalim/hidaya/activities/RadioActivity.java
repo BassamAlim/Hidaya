@@ -87,7 +87,7 @@ public class RadioActivity extends AppCompatActivity {
                             ver.getString("count"), ver.getString("suras"), listener);
                     versionsArr[j] = obj;
                 }
-                cards.add(new ReciterCard(i, name, versionsArr));
+                cards.add(new ReciterCard(name, versionsArr));
             }
         }
         catch (JSONException e) {

@@ -6,18 +6,12 @@ import java.io.Serializable;
 
 public class ReciterCard {
 
-    private final int num;
     private final String name;
     private final RecitationVersion[] versions;
 
-    public ReciterCard(int gNum, String gName, RecitationVersion[] gVersions) {
-        num = gNum;
+    public ReciterCard(String gName, RecitationVersion[] gVersions) {
         name = gName;
         versions = gVersions;
-    }
-
-    public int getNum() {
-        return num;
     }
 
     public String getName() {

@@ -85,9 +85,7 @@ public class QuranActivity extends SwipeActivity {
         Intent intent = getIntent();
         action = intent.getAction();
 
-        long t1 = System.currentTimeMillis();
         query();
-        Log.i(Constants.TAG, "TIME: " + (System.currentTimeMillis()-t1));
 
         setupManager();
 

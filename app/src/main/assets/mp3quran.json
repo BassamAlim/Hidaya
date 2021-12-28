@@ -1,7 +1,6 @@
 [
   {
     "name":"أحمد الحذيفي",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/ahmad_huth",
@@ -13,7 +12,6 @@
   },
   {
     "name":"أحمد الحواشي",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/hawashi",
@@ -25,7 +23,6 @@
   },
   {
     "name":"أحمد السويلم",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server14.mp3quran.net/swlim/Rewayat-Hafs-A-n-Assem/",
@@ -37,7 +34,6 @@
   },
   {
     "name":"أحمد الطرابلسي",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/trabulsi",
@@ -55,7 +51,6 @@
   },
   {
     "name":"أحمد النفيس",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/nufais/Rewayat-Hafs-A-n-Assem",
@@ -67,7 +62,6 @@
   },
   {
     "name":"أحمد بن علي العجمي",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/ajm/128",
@@ -79,7 +73,6 @@
   },
   {
     "name":"أحمد ديبان",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/deban/Rewayat-Hafs-A-n-Assem",
@@ -97,7 +90,6 @@
   },
   {
     "name":"أحمد سعود",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/saud",
@@ -109,7 +101,6 @@
   },
   {
     "name":"أحمد صابر",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/saber",
@@ -121,7 +112,6 @@
   },
   {
     "name":"أحمد طالب بن حميد",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/a_binhameed/Rewayat-Hafs-A-n-Assem",
@@ -133,7 +123,6 @@
   },
   {
     "name":"أحمد عامر",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/Aamer",
@@ -145,7 +134,6 @@
   },
   {
     "name":"أحمد نعينع",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/ahmad_nu",
@@ -157,7 +145,6 @@
   },
   {
     "name":"أخيل عبدالحي روا (من ماليزيا)",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/malaysia/akil",
@@ -169,7 +156,6 @@
   },
   {
     "name":"أكرم العلاقمي",
-    "letter":"أ",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/akrm",
@@ -181,7 +167,6 @@
   },
   {
     "name":"إبراهيم الأخضر",
-    "letter":"إ",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/akdr",
@@ -193,7 +178,6 @@
   },
   {
     "name":"إدريس أبكر",
-    "letter":"إ",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/abkr",
@@ -205,7 +189,6 @@
   },
   {
     "name":"إسلام صبحي",
-    "letter":"إ",
     "versions" : [
       {
         "server":"https://server14.mp3quran.net/islam/Rewayat-Hafs-A-n-Assem/",
@@ -217,7 +200,6 @@
   },
   {
     "name":"ابراهيم الجبرين",
-    "letter":"ا",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/jbreen",
@@ -229,7 +211,6 @@
   },
   {
     "name":"ابراهيم الجرمي",
-    "letter":"ا",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/jormy/Rewayat-Hafs-A-n-Assem/",
@@ -241,7 +222,6 @@
   },
   {
     "name":"ابراهيم الدوسري",
-    "letter":"ا",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/ibrahim_dosri_hafs",
@@ -259,7 +239,6 @@
   },
   {
     "name":"ابراهيم السعدان",
-    "letter":"ا",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/IbrahemSadan",
@@ -295,7 +274,6 @@
   },
   {
     "name":"الحسيني العزازي",
-    "letter":"ا",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/3zazi",
@@ -307,7 +285,6 @@
   },
   {
     "name":"الدوكالي محمد العالم",
-    "letter":"ا",
     "versions" : [
       {
         "server":"https://server7.mp3quran.net/dokali",
@@ -319,7 +296,6 @@
   },
   {
     "name":"الزين محمد أحمد",
-    "letter":"ا",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/alzain",
@@ -331,7 +307,6 @@
   },
   {
     "name":"العشري عمران",
-    "letter":"ا",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/omran",
@@ -343,7 +318,6 @@
   },
   {
     "name":"العيون الكوشي",
-    "letter":"ا",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/koshi",
@@ -355,7 +329,6 @@
   },
   {
     "name":"الفاتح محمد الزبير",
-    "letter":"ا",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/fateh",
@@ -367,7 +340,6 @@
   },
   {
     "name":"القارئ ياسين",
-    "letter":"ا",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/qari",
@@ -379,7 +351,6 @@
   },
   {
     "name":"بدر التركي",
-    "letter":"ب",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/bader/Rewayat-Hafs-A-n-Assem",
@@ -391,7 +362,6 @@
   },
   {
     "name":"بندر بليله",
-    "letter":"ب",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/balilah",
@@ -403,7 +373,6 @@
   },
   {
     "name":"بيشه وا قادر الكردي",
-    "letter":"ب",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/peshawa/Rewayat-Hafs-A-n-Assem",
@@ -415,7 +384,6 @@
   },
   {
     "name":"توفيق الصايغ",
-    "letter":"ت",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/twfeeq",
@@ -427,7 +395,6 @@
   },
   {
     "name":"جمال الدين الزيلعي",
-    "letter":"ج",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/zilaie/Rewayat-Hafs-A-n-Assem",
@@ -439,7 +406,6 @@
   },
   {
     "name":"جمال شاكر عبدالله",
-    "letter":"ج",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/jamal",
@@ -451,7 +417,6 @@
   },
   {
     "name":"جمعان العصيمي",
-    "letter":"ج",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/jaman",
@@ -463,7 +428,6 @@
   },
   {
     "name":"حاتم فريد الواعر",
-    "letter":"ح",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/hatem",
@@ -475,7 +439,6 @@
   },
   {
     "name":"حسين آل الشيخ",
-    "letter":"ح",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/alshaik",
@@ -487,7 +450,6 @@
   },
   {
     "name":"حمد الدغريري",
-    "letter":"ح",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/hamad",
@@ -499,7 +461,6 @@
   },
   {
     "name":"خالد الجليل",
-    "letter":"خ",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/jleel",
@@ -511,7 +472,6 @@
   },
   {
     "name":"خالد الشارخ",
-    "letter":"خ",
     "versions" : [
       {
         "server":"https://server14.mp3quran.net/sharekh",
@@ -523,7 +483,6 @@
   },
   {
     "name":"خالد الشريمي",
-    "letter":"خ",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/shoraimy",
@@ -535,7 +494,6 @@
   },
   {
     "name":"خالد الغامدي",
-    "letter":"خ",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/ghamdi",
@@ -547,7 +505,6 @@
   },
   {
     "name":"خالد القحطاني",
-    "letter":"خ",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/qht",
@@ -559,7 +516,6 @@
   },
   {
     "name":"خالد المهنا",
-    "letter":"خ",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/mohna",
@@ -571,7 +527,6 @@
   },
   {
     "name":"خالد الوهيبي",
-    "letter":"خ",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/whabi/Rewayat-Hafs-A-n-Assem",
@@ -583,7 +538,6 @@
   },
   {
     "name":"خالد عبدالكافي",
-    "letter":"خ",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/kafi",
@@ -595,7 +549,6 @@
   },
   {
     "name":"خليفة الطنيجي",
-    "letter":"خ",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/tnjy",
@@ -607,7 +560,6 @@
   },
   {
     "name":"داود حمزة",
-    "letter":"د",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/hamza",
@@ -619,7 +571,6 @@
   },
   {
     "name":"رامي الدعيس",
-    "letter":"ر",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/rami",
@@ -631,7 +582,6 @@
   },
   {
     "name":"رشيد إفراد",
-    "letter":"ر",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/ifrad",
@@ -643,7 +593,6 @@
   },
   {
     "name":"رشيد بلعالية",
-    "letter":"ر",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/bl3",
@@ -661,7 +610,6 @@
   },
   {
     "name":"رضية عبدالرحمن ( من ماليزيا )",
-    "letter":"ر",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/malaysia/rziah",
@@ -673,7 +621,6 @@
   },
   {
     "name":"رعد محمد الكردي",
-    "letter":"ر",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/kurdi",
@@ -685,7 +632,6 @@
   },
   {
     "name":"رقية سولونق ( من ماليزيا )",
-    "letter":"ر",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/malaysia/rogiah",
@@ -697,7 +643,6 @@
   },
   {
     "name":"رمضان شكور",
-    "letter":"ر",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/shakoor",
@@ -709,7 +654,6 @@
   },
   {
     "name":"زكريا حمامة",
-    "letter":"ز",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/zakariya",
@@ -721,7 +665,6 @@
   },
   {
     "name":"زكي داغستاني",
-    "letter":"ز",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/zaki",
@@ -733,7 +676,6 @@
   },
   {
     "name":"سابينة مامات ( من ماليزيا )",
-    "letter":"س",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/malaysia/mamat",
@@ -745,7 +687,6 @@
   },
   {
     "name":"سامي الحسن",
-    "letter":"س",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/sami_hsn",
@@ -757,7 +698,6 @@
   },
   {
     "name":"سامي الدوسري",
-    "letter":"س",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/sami_dosr",
@@ -769,7 +709,6 @@
   },
   {
     "name":"سعد الغامدي",
-    "letter":"س",
     "versions" : [
       {
         "server":"https://server7.mp3quran.net/s_gmd",
@@ -781,7 +720,6 @@
   },
   {
     "name":"سعد المقرن",
-    "letter":"س",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/saad/Rewayat-Hafs-A-n-Assem/",
@@ -793,7 +731,6 @@
   },
   {
     "name":"سعود الشريم",
-    "letter":"س",
     "versions" : [
       {
         "server":"https://server7.mp3quran.net/shur",
@@ -805,7 +742,6 @@
   },
   {
     "name":"سلمان العتيبي",
-    "letter":"س",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/salman",
@@ -817,7 +753,6 @@
   },
   {
     "name":"سهل ياسين",
-    "letter":"س",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/shl",
@@ -829,7 +764,6 @@
   },
   {
     "name":"سيد رمضان",
-    "letter":"س",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/sayed",
@@ -841,7 +775,6 @@
   },
   {
     "name":"سيدين عبدالرحمن ( من ماليزيا )",
-    "letter":"س",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/malaysia/sideen",
@@ -853,7 +786,6 @@
   },
   {
     "name":"شعبان الصياد",
-    "letter":"ش",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/shaban/Rewayat-Hafs-A-n-Assem",
@@ -865,7 +797,6 @@
   },
   {
     "name":"شيخ أبو بكر الشاطري",
-    "letter":"ش",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/shatri",
@@ -877,7 +808,6 @@
   },
   {
     "name":"شيرزاد عبدالرحمن طاهر",
-    "letter":"ش",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/taher",
@@ -889,7 +819,6 @@
   },
   {
     "name":"صابر عبدالحكم",
-    "letter":"ص",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/hkm",
@@ -901,7 +830,6 @@
   },
   {
     "name":"صالح آل طالب",
-    "letter":"ص",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/tlb",
@@ -913,7 +841,6 @@
   },
   {
     "name":"صالح الصاهود",
-    "letter":"ص",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/sahood",
@@ -925,7 +852,6 @@
   },
   {
     "name":"صالح الهبدان",
-    "letter":"ص",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/habdan",
@@ -937,7 +863,6 @@
   },
   {
     "name":"صلاح البدير",
-    "letter":"ص",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/s_bud",
@@ -949,7 +874,6 @@
   },
   {
     "name":"صلاح الهاشم",
-    "letter":"ص",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/salah_hashim",
@@ -961,7 +885,6 @@
   },
   {
     "name":"صلاح الهاشم",
-    "letter":"ص",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/salah_hashim_m",
@@ -973,7 +896,6 @@
   },
   {
     "name":"صلاح بو خاطر",
-    "letter":"ص",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/bu_khtr",
@@ -985,7 +907,6 @@
   },
   {
     "name":"صلاح مصلي",
-    "letter":"ص",
     "versions" : [
       {
         "server":"https://server14.mp3quran.net/musali",
@@ -997,7 +918,6 @@
   },
   {
     "name":"طارق عبدالغني دعوب",
-    "letter":"ط",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/tareq",
@@ -1009,7 +929,6 @@
   },
   {
     "name":"عادل الكلباني",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/a_klb",
@@ -1021,7 +940,6 @@
   },
   {
     "name":"عادل ريان",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/ryan",
@@ -1033,7 +951,6 @@
   },
   {
     "name":"عبدالإله بن عون",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/a_binaoun/Rewayat-Hafs-A-n-Assem",
@@ -1045,7 +962,6 @@
   },
   {
     "name":"عبدالبارئ الثبيتي",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/thubti",
@@ -1057,7 +973,6 @@
   },
   {
     "name":"عبدالبارئ محمد",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/bari",
@@ -1075,7 +990,6 @@
   },
   {
     "name":"عبدالباسط عبدالصمد",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server7.mp3quran.net/basit/Rewayat-Warsh-A-n-Nafi",
@@ -1099,7 +1013,6 @@
   },
   {
     "name":"عبدالرحمن السديس",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/sds",
@@ -1111,7 +1024,6 @@
   },
   {
     "name":"عبدالرحمن السويّد",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/a_swaiyd/Rewayat-Hafs-A-n-Assem",
@@ -1123,7 +1035,6 @@
   },
   {
     "name":"عبدالرحمن العوسي",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/aloosi",
@@ -1135,7 +1046,6 @@
   },
   {
     "name":"عبدالرحمن الماجد",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/a_majed",
@@ -1147,7 +1057,6 @@
   },
   {
     "name":"عبدالرشيد صوفي",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/soufi-hfs/Rewayat-Hafs-A-n-Assem",
@@ -1159,7 +1068,6 @@
   },
   {
     "name":"عبدالرشيد صوفي",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/soufi",
@@ -1177,7 +1085,6 @@
   },
   {
     "name":"عبدالعزيز الأحمد",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/a_ahmed",
@@ -1189,7 +1096,6 @@
   },
   {
     "name":"عبدالعزيز الزهراني",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/zahrani",
@@ -1201,7 +1107,6 @@
   },
   {
     "name":"عبدالعزيز العسيري",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/abdulazizasiri/Rewayat-Hafs-A-n-Assem",
@@ -1213,7 +1118,6 @@
   },
   {
     "name":"عبدالغني عبدالله ( من ماليزيا )",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/malaysia/abdulgani",
@@ -1225,7 +1129,6 @@
   },
   {
     "name":"عبدالله البريمي",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/brmi",
@@ -1237,7 +1140,6 @@
   },
   {
     "name":"عبدالله البعيجان",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/buajan",
@@ -1249,7 +1151,6 @@
   },
   {
     "name":"عبدالله الخلف",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server14.mp3quran.net/khalf",
@@ -1261,7 +1162,6 @@
   },
   {
     "name":"عبدالله الكندري",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/Abdullahk",
@@ -1273,7 +1173,6 @@
   },
   {
     "name":"عبدالله المطرود",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/mtrod",
@@ -1285,7 +1184,6 @@
   },
   {
     "name":"عبدالله الموسى",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server14.mp3quran.net/mousa/Rewayat-Hafs-A-n-Assem",
@@ -1297,7 +1195,6 @@
   },
   {
     "name":"عبدالله بصفر",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/bsfr",
@@ -1309,7 +1206,6 @@
   },
   {
     "name":"عبدالله خياط",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/kyat",
@@ -1321,7 +1217,6 @@
   },
   {
     "name":"عبدالله عواد الجهني",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server13.mp3quran.net/jhn",
@@ -1333,7 +1228,6 @@
   },
   {
     "name":"عبدالله غيلان",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/gulan",
@@ -1345,7 +1239,6 @@
   },
   {
     "name":"عبدالله فهمي ( من ماليزيا )",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/malaysia/fhmi",
@@ -1357,7 +1250,6 @@
   },
   {
     "name":"عبدالله كامل",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/kamel/Rewayat-Hafs-A-n-Assem",
@@ -1369,7 +1261,6 @@
   },
   {
     "name":"عبدالمجيد الأركاني",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server7.mp3quran.net/m_arkani",
@@ -1381,7 +1272,6 @@
   },
   {
     "name":"عبدالمحسن الحارثي",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/mohsin_harthi",
@@ -1393,7 +1283,6 @@
   },
   {
     "name":"عبدالمحسن العبيكان",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/obk",
@@ -1405,7 +1294,6 @@
   },
   {
     "name":"عبدالمحسن العسكر",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/askr",
@@ -1417,7 +1305,6 @@
   },
   {
     "name":"عبدالمحسن القاسم",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/qasm",
@@ -1429,7 +1316,6 @@
   },
   {
     "name":"عبدالهادي أحمد كناكري",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/kanakeri",
@@ -1441,7 +1327,6 @@
   },
   {
     "name":"عبدالودود حنيف",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/wdod",
@@ -1453,7 +1338,6 @@
   },
   {
     "name":"عبدالولي الأركاني",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/arkani",
@@ -1465,7 +1349,6 @@
   },
   {
     "name":"عثمان الأنصاري",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/Othmn",
@@ -1477,7 +1360,6 @@
   },
   {
     "name":"عكاشة كميني",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/okasha/Rewayat-AlDorai-A-n-Al-Kisa-ai",
@@ -1489,7 +1371,6 @@
   },
   {
     "name":"علي أبو هاشم",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/abo_hashim",
@@ -1501,7 +1382,6 @@
   },
   {
     "name":"علي الحذيفي",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/hthfi",
@@ -1519,7 +1399,6 @@
   },
   {
     "name":"علي جابر",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/a_jbr",
@@ -1531,7 +1410,6 @@
   },
   {
     "name":"علي حجاج السويسي",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/hajjaj",
@@ -1543,7 +1421,6 @@
   },
   {
     "name":"عماد زهير حافظ",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/hafz",
@@ -1555,7 +1432,6 @@
   },
   {
     "name":"عمر الدريويز",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/darweez/Rewayat-Hafs-A-n-Assem",
@@ -1567,7 +1443,6 @@
   },
   {
     "name":"عمر القزابري",
-    "letter":"ع",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/omar_warsh",
@@ -1579,7 +1454,6 @@
   },
   {
     "name":"فارس عباد",
-    "letter":"ف",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/frs_a",
@@ -1591,7 +1465,6 @@
   },
   {
     "name":"فهد العتيبي",
-    "letter":"ف",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/fahad_otibi",
@@ -1603,7 +1476,6 @@
   },
   {
     "name":"فهد الكندري",
-    "letter":"ف",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/kndri",
@@ -1615,7 +1487,6 @@
   },
   {
     "name":"فواز الكعبي",
-    "letter":"ف",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/fawaz",
@@ -1627,7 +1498,6 @@
   },
   {
     "name":"لافي العوني",
-    "letter":"ل",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/lafi",
@@ -1639,7 +1509,6 @@
   },
   {
     "name":"ماجد الزامل",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/zaml",
@@ -1651,7 +1520,6 @@
   },
   {
     "name":"ماجد العنزي",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/majd_onazi",
@@ -1663,7 +1531,6 @@
   },
   {
     "name":"مالك شيبة الحمد",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/shaibat",
@@ -1675,7 +1542,6 @@
   },
   {
     "name":"ماهر المعيقلي",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/maher/Almusshaf-Al-Mojawwad",
@@ -1699,7 +1565,6 @@
   },
   {
     "name":"ماهر شخاشيرو",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/shaksh",
@@ -1711,7 +1576,6 @@
   },
   {
     "name":"محمد أبو سنينة",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/sneineh/Rewayat-Qalon-A-n-Nafi",
@@ -1723,7 +1587,6 @@
   },
   {
     "name":"محمد أيوب",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/ayyub",
@@ -1735,7 +1598,6 @@
   },
   {
     "name":"محمد الأيراوي",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/earawi",
@@ -1747,7 +1609,6 @@
   },
   {
     "name":"محمد الامين قنيوه",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/qeniwa/Rewayat-Qalon-A-n-Nafi",
@@ -1759,7 +1620,6 @@
   },
   {
     "name":"محمد البخيت",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server14.mp3quran.net/bukheet",
@@ -1771,7 +1631,6 @@
   },
   {
     "name":"محمد البراك",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server13.mp3quran.net/braak",
@@ -1783,7 +1642,6 @@
   },
   {
     "name":"محمد الحافظ ( من ماليزيا )",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/malaysia/hafz",
@@ -1795,7 +1653,6 @@
   },
   {
     "name":"محمد الطبلاوي",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/tblawi",
@@ -1807,7 +1664,6 @@
   },
   {
     "name":"محمد اللحيدان",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/lhdan",
@@ -1819,7 +1675,6 @@
   },
   {
     "name":"محمد المحيسني",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/mhsny",
@@ -1831,7 +1686,6 @@
   },
   {
     "name":"محمد المنشد",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/monshed",
@@ -1843,7 +1697,6 @@
   },
   {
     "name":"محمد جبريل",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/jbrl",
@@ -1855,7 +1708,6 @@
   },
   {
     "name":"محمد حفص علي ( من ماليزيا )",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/malaysia/hfs",
@@ -1867,7 +1719,6 @@
   },
   {
     "name":"محمد خليل القارئ",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/m_qari",
@@ -1879,7 +1730,6 @@
   },
   {
     "name":"محمد خير النور (من ماليزيا)",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/malaysia/nor",
@@ -1891,7 +1741,6 @@
   },
   {
     "name":"محمد رشاد الشريف",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/rashad",
@@ -1903,7 +1752,6 @@
   },
   {
     "name":"محمد رفعت",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server14.mp3quran.net/refat",
@@ -1915,7 +1763,6 @@
   },
   {
     "name":"محمد سايد",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/m_sayed/Rewayat-Warsh-A-n-Nafi",
@@ -1927,7 +1774,6 @@
   },
   {
     "name":"محمد صالح عالم شاه",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/shah",
@@ -1939,7 +1785,6 @@
   },
   {
     "name":"محمد صديق المنشاوي",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/minsh/Almusshaf-Al-Mo-lim",
@@ -1963,7 +1808,6 @@
   },
   {
     "name":"محمد عبدالحكيم سعيد العبدالله",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/abdullah_dori",
@@ -1975,7 +1819,6 @@
   },
   {
     "name":"محمد عبدالحكيم سعيد العبدالله",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/abdullah",
@@ -1987,7 +1830,6 @@
   },
   {
     "name":"محمد عبدالكريم",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/m_krm",
@@ -2005,7 +1847,6 @@
   },
   {
     "name":"محمد عثمان خان (من الهند)",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/khan",
@@ -2017,7 +1858,6 @@
   },
   {
     "name":"محمود الرفاعي",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/mrifai",
@@ -2029,7 +1869,6 @@
   },
   {
     "name":"محمود الشيمي",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server10.mp3quran.net/sheimy",
@@ -2041,7 +1880,6 @@
   },
   {
     "name":"محمود خليل الحصري",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/husr_mjwd",
@@ -2077,7 +1915,6 @@
   },
   {
     "name":"محمود عبدالحكم",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/m_abdelhakam/Rewayat-Hafs-A-n-Assem",
@@ -2089,7 +1926,6 @@
   },
   {
     "name":"محمود علي البنا",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/bna/Almusshaf-Al-Mojawwad",
@@ -2107,7 +1943,6 @@
   },
   {
     "name":"مشاري العفاسي",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/afs/Rewayat-AlDorai-A-n-Al-Kisa-ai",
@@ -2125,7 +1960,6 @@
   },
   {
     "name":"مصطفى إسماعيل",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/mustafa",
@@ -2137,7 +1971,6 @@
   },
   {
     "name":"مصطفى اللاهوني",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/lahoni",
@@ -2149,7 +1982,6 @@
   },
   {
     "name":"مصطفى رعد العزاوي",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/ra3ad",
@@ -2161,7 +1993,6 @@
   },
   {
     "name":"معمر الأندونيسي",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/muamr",
@@ -2173,7 +2004,6 @@
   },
   {
     "name":"معيض الحارثي",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/harthi",
@@ -2185,7 +2015,6 @@
   },
   {
     "name":"مفتاح السلطني",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/muftah_shobah",
@@ -2221,7 +2050,6 @@
   },
   {
     "name":"منصور السالمي",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server14.mp3quran.net/mansor",
@@ -2233,7 +2061,6 @@
   },
   {
     "name":"موسى بلال",
-    "letter":"م",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/bilal",
@@ -2245,7 +2072,6 @@
   },
   {
     "name":"ناصر العبيد",
-    "letter":"ن",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/obaid",
@@ -2257,7 +2083,6 @@
   },
   {
     "name":"ناصر العصفور",
-    "letter":"ن",
     "versions" : [
       {
         "server":"https://server14.mp3quran.net/alosfor/Rewayat-Hafs-A-n-Assem",
@@ -2269,7 +2094,6 @@
   },
   {
     "name":"ناصر القطامي",
-    "letter":"ن",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/qtm",
@@ -2281,7 +2105,6 @@
   },
   {
     "name":"ناصر الماجد",
-    "letter":"ن",
     "versions" : [
       {
         "server":"https://server14.mp3quran.net/nasser_almajed",
@@ -2293,7 +2116,6 @@
   },
   {
     "name":"نبيل الرفاعي",
-    "letter":"ن",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/nabil",
@@ -2305,7 +2127,6 @@
   },
   {
     "name":"نذير المالكي",
-    "letter":"ن",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/nathier/Rewayat-Hafs-A-n-Assem",
@@ -2317,7 +2138,6 @@
   },
   {
     "name":"نعمة الحسان",
-    "letter":"ن",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/namh",
@@ -2329,7 +2149,6 @@
   },
   {
     "name":"نورين محمد صديق",
-    "letter":"ن",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/nourin_siddig/Rewayat-Aldori-A-n-Abi-Amr",
@@ -2341,7 +2160,6 @@
   },
   {
     "name":"هاني الرفاعي",
-    "letter":"ه",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/hani",
@@ -2353,7 +2171,6 @@
   },
   {
     "name":"هزاع البلوشي",
-    "letter":"ه",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/hazza",
@@ -2365,7 +2182,6 @@
   },
   {
     "name":"هيثم الجدعاني",
-    "letter":"ه",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/hitham/Rewayat-Hafs-A-n-Assem/",
@@ -2377,7 +2193,6 @@
   },
   {
     "name":"هيثم الدخين",
-    "letter":"ه",
     "versions" : [
       {
         "server":"https://server16.mp3quran.net/h_dukhain/Rewayat-Hafs-A-n-Assem",
@@ -2389,7 +2204,6 @@
   },
   {
     "name":"واصل المذن",
-    "letter":"و",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/wasel/Rewayat-Hafs-A-n-Assem",
@@ -2401,7 +2215,6 @@
   },
   {
     "name":"وديع اليمني",
-    "letter":"و",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/wdee3",
@@ -2413,7 +2226,6 @@
   },
   {
     "name":"وشيار حيدر اربيلي",
-    "letter":"و",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/wishear",
@@ -2425,7 +2237,6 @@
   },
   {
     "name":"وليد الدليمي",
-    "letter":"و",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/dlami",
@@ -2437,7 +2248,6 @@
   },
   {
     "name":"وليد النائحي",
-    "letter":"و",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/waleed",
@@ -2449,7 +2259,6 @@
   },
   {
     "name":"ياسر الدوسري",
-    "letter":"ي",
     "versions" : [
       {
         "server":"https://server11.mp3quran.net/yasser",
@@ -2461,7 +2270,6 @@
   },
   {
     "name":"ياسر الفيلكاوي",
-    "letter":"ي",
     "versions" : [
       {
         "server":"https://server6.mp3quran.net/fyl",
@@ -2473,7 +2281,6 @@
   },
   {
     "name":"ياسر القرشي",
-    "letter":"ي",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/qurashi",
@@ -2485,7 +2292,6 @@
   },
   {
     "name":"ياسر المزروعي",
-    "letter":"ي",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/mzroyee",
@@ -2497,7 +2303,6 @@
   },
   {
     "name":"ياسر سلامة",
-    "letter":"ي",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/salamah/Rewayat-Hafs-A-n-Assem/",
@@ -2509,7 +2314,6 @@
   },
   {
     "name":"يحيى حوا",
-    "letter":"ي",
     "versions" : [
       {
         "server":"https://server12.mp3quran.net/yahya",
@@ -2521,7 +2325,6 @@
   },
   {
     "name":"يوسف الدغوش (من المغرب)",
-    "letter":"ي",
     "versions" : [
       {
         "server":"https://server7.mp3quran.net/dgsh",
@@ -2533,7 +2336,6 @@
   },
   {
     "name":"يوسف الشويعي",
-    "letter":"ي",
     "versions" : [
       {
         "server":"https://server9.mp3quran.net/yousef",
@@ -2545,7 +2347,6 @@
   },
   {
     "name" : "يوسف بن نوح أحمد",
-    "letter":"ي",
     "versions" : [
       {
         "server":"https://server8.mp3quran.net/noah",
@@ -2557,7 +2358,6 @@
   },
   {
     "name":"يونس اسويلص",
-    "letter":"ي",
     "versions" : [
       {
         "server": "https://server16.mp3quran.net/souilass/Rewayat-Warsh-A-n-Nafi",
