@@ -2,6 +2,7 @@ package bassamalim.hidaya.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.models.SurahButton;
 import bassamalim.hidaya.other.AppDatabase;
+import bassamalim.hidaya.other.Constants;
 
 public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.ViewHolder> {
 
@@ -93,6 +95,8 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
                         surahButtons.get(position).setFavorite(0);
                     }
                     notifyItemChanged(position);
+
+                    Log.i(Constants.TAG, "changed:- position: " + position);
                 });
     }
 

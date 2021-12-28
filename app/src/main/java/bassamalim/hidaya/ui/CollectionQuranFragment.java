@@ -1,6 +1,7 @@
 package bassamalim.hidaya.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import bassamalim.hidaya.R;
+import bassamalim.hidaya.adapters.SurahButtonAdapter;
+import bassamalim.hidaya.other.Constants;
 
 public class CollectionQuranFragment extends Fragment {
     // When requested, this adapter returns a DemoObjectFragment,
