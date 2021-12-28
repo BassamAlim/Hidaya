@@ -2,22 +2,26 @@ package bassamalim.hidaya.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
+
+import java.util.ArrayList;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.models.SurahButton;
-
-import java.util.ArrayList;
+import bassamalim.hidaya.other.AppDatabase;
 
 public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.ViewHolder> {
 
@@ -25,12 +29,8 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
     private final ArrayList<SurahButton> surahButtons;
     private final ArrayList<SurahButton> surahButtonsCopy;
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final Button button;
+        private final CardView button;
 
         public ViewHolder(View view) {
             super(view);
@@ -38,16 +38,11 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
             button = view.findViewById(R.id.surah_button_model);
         }
 
-        public Button getButton() {
+        public CardView getButton() {
             return button;
         }
     }
 
-    /**
-     * Initialize the dataset of the Adapter.
-     *
-     * @param buttons containing the data to populate views to be used
-     */
     public SurahButtonAdapter(ArrayList<SurahButton> buttons) {
         surahButtons = new ArrayList<>(buttons);
         surahButtonsCopy = new ArrayList<>(buttons);
@@ -64,20 +59,41 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        viewHolder.getButton().setText(surahButtons.get(position).getSurahName());
+        ((TextView) viewHolder.getButton().findViewById(R.id.namescreen))
+                .setText(surahButtons.get(position).getSurahName());
 
-        String tanzeel = surahButtons.get(position).getTanzeel();
+        int tanzeel = surahButtons.get(position).getTanzeel();
+        if (tanzeel == 0) // Makkah
+            ((ImageView) viewHolder.getButton().findViewById(R.id.tanzeel_view)).setImageDrawable(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_kaaba_black));
+        else if (tanzeel == 1) // Madina
+            ((ImageView) viewHolder.getButton().findViewById(R.id.tanzeel_view)).setImageDrawable(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_madinah));
 
-        Drawable d = null;
-        if (tanzeel.equals("Meccan"))
-            d = AppCompatResources.getDrawable(context, R.drawable.ic_kaaba_black);
-        else if (tanzeel.equals("Medinan"))
-            d = AppCompatResources.getDrawable(context, R.drawable.ic_madinah);
+        int fav = surahButtons.get(position).getFavorite();
+        if (fav == 0)
+            ((ImageView) viewHolder.getButton().findViewById(R.id.fav_btn)).setImageDrawable(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_favorite));
+        else if (fav == 1)
+            ((ImageView) viewHolder.getButton().findViewById(R.id.fav_btn)).setImageDrawable(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_unfavorite));
 
-        viewHolder.getButton().setCompoundDrawablesWithIntrinsicBounds(d,
-                null, null, null);
-
-        viewHolder.getButton().setOnClickListener(surahButtons.get(position).getListener());
+        viewHolder.getButton().setOnClickListener(surahButtons.get(position).getCardListener());
+        ((ImageButton) viewHolder.getButton().findViewById(R.id.fav_btn)).setOnClickListener(
+                (View.OnClickListener) view -> {
+                    AppDatabase db = Room.databaseBuilder(
+                            context, AppDatabase.class, "HidayaDB").createFromAsset(
+                                    "databases/HidayaDB.db").allowMainThreadQueries().build();
+                    if (surahButtons.get(position).getFavorite() == 0) {
+                        db.suraDao().setFav(position, 1);
+                        surahButtons.get(position).setFavorite(1);
+                    }
+                    else if (surahButtons.get(position).getFavorite() == 1) {
+                        db.suraDao().setFav(position, 0);
+                        surahButtons.get(position).setFavorite(0);
+                    }
+                    notifyItemChanged(position);
+                });
     }
 
     @Override

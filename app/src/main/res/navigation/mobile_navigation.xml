@@ -18,9 +18,9 @@
 
     <fragment
         android:id="@+id/navigation_quran"
-        android:name="bassamalim.hidaya.ui.QuranFragment"
+        android:name="bassamalim.hidaya.ui.CollectionQuranFragment"
         android:label="@string/title_quran"
-        tools:layout="@layout/quran_fragment" />
+        tools:layout="@layout/fragment_collection_quran" />
 
     <fragment
         android:id="@+id/navigation_qibla"

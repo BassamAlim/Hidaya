@@ -18,12 +18,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
-import bassamalim.hidaya.R;
-import bassamalim.hidaya.activities.MainActivity;
-import bassamalim.hidaya.databinding.PrayersFragmentBinding;
-import bassamalim.hidaya.popups.PrayerPopup;
-import bassamalim.hidaya.helpers.PrayTimes;
-import bassamalim.hidaya.enums.ID;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 
 import java.util.ArrayList;
@@ -32,6 +26,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import bassamalim.hidaya.R;
+import bassamalim.hidaya.activities.MainActivity;
+import bassamalim.hidaya.databinding.PrayersFragmentBinding;
+import bassamalim.hidaya.enums.ID;
+import bassamalim.hidaya.helpers.PrayTimes;
+import bassamalim.hidaya.popups.PrayerPopup;
 
 public class PrayersFragment extends Fragment {
 

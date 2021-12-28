@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -22,10 +21,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,11 +31,9 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.QuranActivityBinding;
 import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.helpers.RecitationManager;
-import bassamalim.hidaya.helpers.Utils;
-import bassamalim.hidaya.models.AppDatabase;
 import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.models.JAyah;
-import bassamalim.hidaya.other.Constants;
+import bassamalim.hidaya.other.AppDatabase;
 import bassamalim.hidaya.popups.RecitationPopup;
 import bassamalim.hidaya.popups.TafseerDialog;
 import bassamalim.hidaya.replacements.DoubleClickLMM;
@@ -66,6 +59,7 @@ public class QuranActivity extends SwipeActivity {
     private Ayah selected;
     private RecitationManager rcMgr;
     private List<JAyah> jAyah;
+    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +93,9 @@ public class QuranActivity extends SwipeActivity {
 
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         textSize = pref.getInt(getString(R.string.quran_text_size_key), 30);
+
+        db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
+                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
     }
 
     private void action(Intent intent) {
@@ -199,18 +196,7 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private int getPage(int surahIndex) {
-        try {
-            String pagesString = Utils.getJsonFromAssets(this, "pages.json");
-            assert pagesString != null;
-            JSONArray pages = new JSONArray(pagesString);
-            JSONObject page = pages.getJSONObject(surahIndex);
-            return page.getInt("page");
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(Constants.TAG, "error in get page");
-        }
-        return 0;
+        return db.suraDao().getPage(surahIndex);
     }
 
     private int getPageStart(int pageNumber) {
@@ -234,18 +220,15 @@ public class QuranActivity extends SwipeActivity {
             JAyah ayah = jAyah.get(counter);
             int surahNum = ayah.getSura_no();
             int ayahNum = ayah.getAya_no();
-            String ayahText = ayah.getAya_text();
-            String tafseer = ayah.getAya_tafseer();
 
-            Ayah ayahModel = new Ayah(ayah.getJozz(), surahNum, ayahNum,
-                    ayah.getSura_name_ar(), ayahText + " ", tafseer);
+            Ayah ayahModel = new Ayah(ayah.getJozz(), surahNum, ayahNum, ayah.getSura_name_ar(),
+                    ayah.getAya_text() + " ", ayah.getAya_tafseer());
 
             if (ayahNum == 1) {
                 if (arr.size() > 0) {
                     pageAyahs.add(arr);
                     publish(arr);
                 }
-
                 addHeader(surahNum, ayahModel.getSurahName());
             }
             arr.add(ayahModel);

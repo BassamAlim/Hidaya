@@ -2,20 +2,24 @@ package bassamalim.hidaya.models;
 
 import android.view.View;
 
-public class SurahButton {
+import java.io.Serializable;
+
+public class SurahButton implements Serializable {
     private final int number;
     private final String surahName;
     private final String searchName;
-    private final String tanzeel;
-    private final View.OnClickListener listener;
+    private final int tanzeel;
+    private int favorite;
+    private final View.OnClickListener cardListener;
 
-    public SurahButton(int number, String surahName, String searchName, String tanzeel,
-                       View.OnClickListener listener) {
+    public SurahButton(int number, String surahName, String searchName, int tanzeel,
+                       int favorite, View.OnClickListener cardListener) {
         this.number = number;
         this.surahName = surahName;
         this.tanzeel = tanzeel;
         this.searchName = searchName;
-        this.listener = listener;
+        this.favorite = favorite;
+        this.cardListener = cardListener;
     }
 
     public int getNumber() {
@@ -30,12 +34,19 @@ public class SurahButton {
         return searchName;
     }
 
-    public String getTanzeel() {
+    public int getTanzeel() {
         return tanzeel;
     }
 
-    public View.OnClickListener getListener() {
-        return listener;
+    public int getFavorite() {
+        return favorite;
     }
 
+    public View.OnClickListener getCardListener() {
+        return cardListener;
+    }
+
+    public void setFavorite(int favorite) {
+        this.favorite = favorite;
+    }
 }

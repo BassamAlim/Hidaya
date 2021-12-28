@@ -10,12 +10,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.ReciterSurahsAdapter;
 import bassamalim.hidaya.databinding.ActivitySurahsBinding;
 import bassamalim.hidaya.helpers.Utils;
 import bassamalim.hidaya.models.ReciterSurahCard;
+import bassamalim.hidaya.models.SuraDB;
+import bassamalim.hidaya.other.AppDatabase;
 import bassamalim.hidaya.other.Constants;
 
 import org.json.JSONArray;
@@ -23,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class SurahsActivity extends AppCompatActivity {
@@ -50,7 +54,7 @@ public class SurahsActivity extends AppCompatActivity {
         reciterIndex = getIntent().getIntExtra("reciter", 0);
         version = getIntent().getIntExtra("version", 0);
 
-        setupJson();
+        getData();
 
         cards = makeCards();
 
@@ -59,26 +63,25 @@ public class SurahsActivity extends AppCompatActivity {
         setSearchListeners();
     }
 
-    private void setupJson() {
+    private void getData() {
+        AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
+                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
+        List<SuraDB> suras = db.suraDao().getAll();
+
+        surahNames = new ArrayList<>();
+        searchNames = new String[114];
+        for (int i = 0; i < 114; i++) {
+            surahNames.add(suras.get(i).getSura_name());
+            searchNames[i] = suras.get(i).getSearch_name();
+        }
+
         String RecitersJson = Utils.getJsonFromAssets(this, "mp3quran.json");
-        String surahsJson = Utils.getJsonFromAssets(this, "surah_button.json");
         try {
             assert RecitersJson != null;
             JSONArray arr = new JSONArray(RecitersJson);
             JSONObject reciterObj = arr.getJSONObject(reciterIndex);
             JSONArray versions = reciterObj.getJSONArray("versions");
             availableSurahs = versions.getString(version);
-
-            assert surahsJson != null;
-            JSONArray array = new JSONArray(surahsJson);
-
-            surahNames = new ArrayList<>();
-            searchNames = new String[114];
-            for (int i = 0; i < searchNames.length; i++) {
-                JSONObject obj = array.getJSONObject(i);
-                surahNames.add(obj.getString("name"));
-                searchNames[i] = obj.getString("search_name");
-            }
         }
         catch (JSONException e) {
             e.printStackTrace();
