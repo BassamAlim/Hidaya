@@ -16,8 +16,8 @@ import bassamalim.hidaya.models.SuraDB;
 import bassamalim.hidaya.models.ThikrsDB;
 
 @Database(entities = {JAyah.class, SuraDB.class, AthkarCategoryDB.class, AthkarDB.class,
-        ThikrsDB.class}, version = 1
-        /*, autoMigrations = {@AutoMigration(from = 1, to = 2)}*/)
+        ThikrsDB.class}, version = 2
+        , autoMigrations = {@AutoMigration(from = 1, to = 2)})
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract AyahDao ayahDao();

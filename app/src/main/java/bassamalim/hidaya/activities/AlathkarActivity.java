@@ -30,7 +30,6 @@ public class AlathkarActivity extends AppCompatActivity {
     private AlathkarActivityBinding binding;
     private int textSize;
     private List<ThikrsDB> thikrs;
-    private String action;
     private AppDatabase db;
 
     @Override
@@ -47,7 +46,6 @@ public class AlathkarActivity extends AppCompatActivity {
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
 
         Intent intent = getIntent();
-        action = intent.getAction();
         int category = intent.getIntExtra("category", 0);
         int index = intent.getIntExtra("thikrs_index", 0);
 
