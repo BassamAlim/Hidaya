@@ -36,7 +36,6 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
 
         public ViewHolder(View view) {
             super(view);
-
             button = view.findViewById(R.id.surah_button_model);
         }
 
@@ -53,10 +52,9 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
     @NonNull @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         context = viewGroup.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.surah_button_row_item,
-                viewGroup, false);
 
-        return new ViewHolder(view);
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.surah_button_row_item,
+                viewGroup, false));
     }
 
     @Override
@@ -75,10 +73,10 @@ public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.
         int fav = surahButtons.get(position).getFavorite();
         if (fav == 0)
             ((ImageView) viewHolder.getButton().findViewById(R.id.fav_btn)).setImageDrawable(
-                    AppCompatResources.getDrawable(context, R.drawable.ic_favorite));
+                    AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
         else if (fav == 1)
             ((ImageView) viewHolder.getButton().findViewById(R.id.fav_btn)).setImageDrawable(
-                    AppCompatResources.getDrawable(context, R.drawable.ic_unfavorite));
+                    AppCompatResources.getDrawable(context, R.drawable.ic_star));
 
         viewHolder.getButton().setOnClickListener(surahButtons.get(position).getCardListener());
         ((ImageButton) viewHolder.getButton().findViewById(R.id.fav_btn)).setOnClickListener(

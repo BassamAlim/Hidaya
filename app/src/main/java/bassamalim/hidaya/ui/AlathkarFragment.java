@@ -28,20 +28,25 @@ public class AlathkarFragment extends Fragment {
     }
 
     private void setListeners() {
-        binding.allThikrs.setOnClickListener(v -> showThikrs(0));
-        binding.dayAndNight.setOnClickListener(v -> showThikrs(1));
-        binding.prayers.setOnClickListener(v -> showThikrs(2));
-        binding.quran.setOnClickListener(v -> showThikrs(3));
-        binding.actions.setOnClickListener(v -> showThikrs(4));
-        binding.events.setOnClickListener(v -> showThikrs(5));
-        binding.emotions.setOnClickListener(v -> showThikrs(6));
-        binding.places.setOnClickListener(v -> showThikrs(7));
-        binding.more.setOnClickListener(v -> showThikrs(8));
+        binding.allThikrs.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), AlathkarList.class);
+            intent.setAction("all");
+            startActivity(intent);
+        });
+        binding.dayAndNight.setOnClickListener(v -> showThikrs(0));
+        binding.prayers.setOnClickListener(v -> showThikrs(1));
+        binding.quran.setOnClickListener(v -> showThikrs(2));
+        binding.actions.setOnClickListener(v -> showThikrs(3));
+        binding.events.setOnClickListener(v -> showThikrs(4));
+        binding.emotions.setOnClickListener(v -> showThikrs(5));
+        binding.places.setOnClickListener(v -> showThikrs(6));
+        binding.more.setOnClickListener(v -> showThikrs(7));
     }
 
-    public void showThikrs(int index) {
+    public void showThikrs(int category) {
         Intent intent = new Intent(getContext(), AlathkarList.class);
-        intent.putExtra("index", index);
+        intent.setAction("category");
+        intent.putExtra("category", category);
         startActivity(intent);
     }
 

@@ -15,29 +15,23 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.preference.PreferenceManager;
+import androidx.room.Room;
 
-import bassamalim.hidaya.helpers.Utils;
-import bassamalim.hidaya.models.Thikr;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.AlathkarActivityBinding;
+import bassamalim.hidaya.models.ThikrsDB;
+import bassamalim.hidaya.other.AppDatabase;
 
 public class AlathkarActivity extends AppCompatActivity {
 
     private AlathkarActivityBinding binding;
     private int textSize;
-    private ArrayList<Thikr> thikrsList;
-    private LinearLayout linear;
-    private int category;
-    private int index;
-    private String name;
+    private List<ThikrsDB> thikrs;
+    private String action;
+    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,58 +43,36 @@ public class AlathkarActivity extends AppCompatActivity {
         setSupportActionBar(binding.nameBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "HidayaDB")
+                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
+
         Intent intent = getIntent();
-        category = intent.getIntExtra("category", 0);
-        index = intent.getIntExtra("thikrs_index", 0);
+        action = intent.getAction();
+        int category = intent.getIntExtra("category", 0);
+        int index = intent.getIntExtra("thikrs_index", 0);
 
-        getThikrs();
+        thikrs = getThikrs(category, index);
 
-        binding.thikrName.setText(name);
-
-        linear = binding.linear;
+        binding.thikrName.setText(db.athkarDao().getName(category, index));
 
         textSize = getSize();
 
         insert();
     }
 
-    private void getThikrs() {
-        String json = Utils.getJsonFromAssets(this, "alathkar.json");
-
-        thikrsList = new ArrayList<>();
-
-        try {
-            JSONArray mainArray = new JSONArray(json);
-            JSONObject cat = mainArray.getJSONObject(category);
-            JSONArray alathkarArr = cat.getJSONArray("alathkar");
-            JSONObject alathkar = alathkarArr.getJSONObject(index);
-            JSONArray thikrsArr = alathkar.getJSONArray("thikrs");
-
-            name = alathkar.getString("name_ar");
-
-            for (int i = 0; i < thikrsArr.length(); i++) {
-                JSONObject t = thikrsArr.getJSONObject(i);
-
-                Thikr th = new Thikr(t.getString("title"), t.getString("thikr"),
-                        t.getString("repetition"), t.getString("fadl"),
-                        t.getString("reference"));
-
-                thikrsList.add(th);
-            }
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private List<ThikrsDB> getThikrs(int category, int index) {
+        return db.thikrsDao().getThikrs(category, index);
     }
 
     private void insert() {
-        for (int i = 0; i < thikrsList.size(); i++) {
-            CardView card = card(thikrsList.get(i));
-            linear.addView(card);
+        LinearLayout ll = binding.linear;
+        for (int i = 0; i < thikrs.size(); i++) {
+            CardView card = card(thikrs.get(i));
+            ll.addView(card);
         }
     }
 
-    private CardView card(Thikr model) {
+    private CardView card(ThikrsDB model) {
         CardView card = new CardView(this);
         FrameLayout.LayoutParams cardParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
@@ -118,7 +90,7 @@ public class AlathkarActivity extends AppCompatActivity {
         mainLL.setLayoutParams(mainLLParams);
         card.addView(mainLL);
 
-        if (model.getRepetition().length() > 0) {
+        if (!model.getRepetition().equals("1")) {
             LinearLayout repetitionLL = new LinearLayout(this);
             LinearLayout.LayoutParams horizontalLLParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);

@@ -10,33 +10,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
-import bassamalim.hidaya.other.Constants;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.helpers.Utils;
 import bassamalim.hidaya.adapters.AlathkarAdapter;
 import bassamalim.hidaya.databinding.AlathkarListActivityBinding;
 import bassamalim.hidaya.models.AlathkarButton;
-
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Objects;
+import bassamalim.hidaya.models.AthkarDB;
+import bassamalim.hidaya.other.AppDatabase;
+import bassamalim.hidaya.other.Constants;
 
 public class AlathkarList extends AppCompatActivity {
 
     private AlathkarListActivityBinding binding;
-    private boolean all;
     private RecyclerView recyclerView;
     private AlathkarAdapter adapter;
     private ArrayList<AlathkarButton> alathkarButtons;
-    private JSONArray mainArray;
-    private JSONObject category;
-    private int index;
-    private String name;
+    private int category;
+    private String action;
+    private AppDatabase db;
+    private List<AthkarDB> athkar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,96 +45,58 @@ public class AlathkarList extends AppCompatActivity {
         setSupportActionBar(binding.nameBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        index = getIntent().getIntExtra("index", 0);
-        if (index == 0)
-            all = true;
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
+                "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
+                .build();
 
-        setupJson();
+        action = getIntent().getAction();
+        if (action.equals("all"))
+            binding.categoryName.setText("جميع الاذكار");
+        else {
+            category = getIntent().getIntExtra("category", 0);
+            binding.categoryName.setText(db.athkarCategoryDao().getName(category));
+        }
 
-        binding.categoryName.setText(name);
+        athkar = getData();
 
-        if (all)
-            alathkarButtons = makeAllButtons();
-        else
-            alathkarButtons = makeAlathkarButtons();
+        alathkarButtons = makeButtons();
 
         setupRecycler();
 
         setSearchListeners();
     }
 
-    private void setupJson() {
-        String json = Utils.getJsonFromAssets(this, "alathkar.json");
-        try {
-            assert json != null;
-            mainArray = new JSONArray(json);
-            category = mainArray.getJSONObject(index);
-            name = category.getString("category_name_ar");
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private List<AthkarDB> getData() {
+        if (action.equals("all"))
+            return db.athkarDao().getAll();
+        else
+            return db.athkarDao().getList(category);
     }
 
-    public ArrayList<AlathkarButton> makeAlathkarButtons() {
+    private ArrayList<AlathkarButton> makeButtons() {
         ArrayList<AlathkarButton> buttons = new ArrayList<>();
+        for (int i = 0; i < athkar.size(); i++) {
 
-        try {
-            JSONArray array = category.getJSONArray("alathkar");
-
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject alathkar = array.getJSONObject(i);
-                String name = alathkar.getString("name_ar");
-
-                int finalI = i;
-                View.OnClickListener clickListener = v -> {
-                    Intent intent = new Intent(this, AlathkarActivity.class);
-                    intent.putExtra("category", index);
-                    intent.putExtra("thikrs_index", finalI);
-                    startActivity(intent);
-                };
-
-                AlathkarButton button = new AlathkarButton(finalI, name, clickListener);
-                buttons.add(button);
+            int cat = category;
+            int index = i;
+            if (action.equals("all")) {
+                cat = athkar.get(i).getCategory_id();
+                index = athkar.get(i).getAthkar_id();
             }
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(Constants.TAG, "Problems in making alathkar buttons");
-        }
-        return buttons;
-    }
 
-    private ArrayList<AlathkarButton> makeAllButtons() {
-        ArrayList<AlathkarButton> buttons = new ArrayList<>();
+            int finalCat = cat;
+            int finalIndex = index;
+            View.OnClickListener clickListener = v -> {
+                Intent intent = new Intent(this, AlathkarActivity.class);
+                intent.setAction(action);
 
-        try {
-            for (int i = 1; i < mainArray.length(); i++) {
-                JSONObject category = mainArray.getJSONObject(i);
+                Log.i(Constants.TAG, "its: " + category);
 
-                JSONArray array = category.getJSONArray("alathkar");
-
-                for (int j = 0; j < array.length(); j++) {
-                    JSONObject alathkar = array.getJSONObject(j);
-                    String name = alathkar.getString("name_ar");
-
-                    int finalI = i;
-                    int finalJ = j;
-                    View.OnClickListener clickListener = v -> {
-                        Intent intent = new Intent(this, AlathkarActivity.class);
-                        intent.putExtra("category", finalI);
-                        intent.putExtra("thikrs_index", finalJ);
-                        startActivity(intent);
-                    };
-
-                    AlathkarButton button = new AlathkarButton(finalJ, name, clickListener);
-                    buttons.add(button);
-                }
-            }
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(Constants.TAG, "Problems in making alathkar buttons");
+                intent.putExtra("category", finalCat);
+                intent.putExtra("thikrs_index", finalIndex);
+                startActivity(intent);
+            };
+            buttons.add(new AlathkarButton(i, athkar.get(i).getAthkar_name(), clickListener));
         }
         return buttons;
     }

@@ -186,13 +186,13 @@ public class NotificationReceiver extends BroadcastReceiver {
         switch (id) {
             case MORNING:
                 intent = new Intent(context, AlathkarActivity.class);
-                intent.putExtra("category", 1);
+                intent.putExtra("category", 0);
                 intent.putExtra("thikrs_index", 0);
                 intent.putExtra("title", "أذكار الصباح");
                 break;
             case EVENING:
                 intent = new Intent(context, AlathkarActivity.class);
-                intent.putExtra("category", 1);
+                intent.putExtra("category", 0);
                 intent.putExtra("thikrs_index", 1);
                 intent.putExtra("title", "أذكار المساء");
                 break;

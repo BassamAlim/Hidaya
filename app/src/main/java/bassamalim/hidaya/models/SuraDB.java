@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey;
 public class SuraDB {
 
     @PrimaryKey
+    @ColumnInfo(name = "sura_id")
     private final int sura_id;
     @ColumnInfo(name = "sura_name")
     private final String sura_name;

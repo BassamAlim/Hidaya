@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey;
 public class JAyah {
 
     @PrimaryKey
+    @ColumnInfo(name = "id")
     private final int id;
     @ColumnInfo(name = "jozz")
     private final int jozz;

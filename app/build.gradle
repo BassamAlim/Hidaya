@@ -27,10 +27,16 @@ android {
         applicationId "bassamalim.hidaya"
         minSdkVersion 22
         targetSdkVersion 31
-        versionCode 147
-        versionName '1.4.7'
+        versionCode 148
+        versionName '1.4.8'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {

@@ -1,0 +1,287 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "1f7976c968a7e03f2ba54ea2c684ac9c",
+    "entities": [
+      {
+        "tableName": "hafs_ayat",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `jozz` INTEGER NOT NULL, `sura_no` INTEGER NOT NULL, `sura_name_en` TEXT, `sura_name_ar` TEXT, `page` INTEGER NOT NULL, `aya_no` INTEGER NOT NULL, `aya_text` TEXT, `aya_text_emlaey` TEXT, `aya_tafseer` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "jozz",
+            "columnName": "jozz",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sura_no",
+            "columnName": "sura_no",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sura_name_en",
+            "columnName": "sura_name_en",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sura_name_ar",
+            "columnName": "sura_name_ar",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "page",
+            "columnName": "page",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aya_no",
+            "columnName": "aya_no",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aya_text",
+            "columnName": "aya_text",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "aya_text_emlaey",
+            "columnName": "aya_text_emlaey",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "aya_tafseer",
+            "columnName": "aya_tafseer",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "suar",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sura_id` INTEGER NOT NULL, `sura_name` TEXT, `search_name` TEXT, `tanzeel` INTEGER NOT NULL, `start_page` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, PRIMARY KEY(`sura_id`))",
+        "fields": [
+          {
+            "fieldPath": "sura_id",
+            "columnName": "sura_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sura_name",
+            "columnName": "sura_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "search_name",
+            "columnName": "search_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tanzeel",
+            "columnName": "tanzeel",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start_page",
+            "columnName": "start_page",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "favorite",
+            "columnName": "favorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "sura_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "athkar_categories",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`category_id` INTEGER NOT NULL, `category_name` TEXT, PRIMARY KEY(`category_id`))",
+        "fields": [
+          {
+            "fieldPath": "category_id",
+            "columnName": "category_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category_name",
+            "columnName": "category_name",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "category_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "athkar",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`athkar_id` INTEGER NOT NULL, `athkar_name` TEXT, `category_id` INTEGER NOT NULL, PRIMARY KEY(`athkar_id`, `category_id`), FOREIGN KEY(`category_id`) REFERENCES `athkar_categories`(`category_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "athkar_id",
+            "columnName": "athkar_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "athkar_name",
+            "columnName": "athkar_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "category_id",
+            "columnName": "category_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "athkar_id",
+            "category_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "athkar_categories",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "category_id"
+            ],
+            "referencedColumns": [
+              "category_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "thikrs",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`thikr_id` INTEGER NOT NULL, `title` TEXT, `text` TEXT, `repetition` TEXT, `fadl` TEXT, `reference` TEXT, `athkar_id` INTEGER NOT NULL, `category_id` INTEGER NOT NULL, PRIMARY KEY(`thikr_id`, `athkar_id`, `category_id`), FOREIGN KEY(`athkar_id`, `category_id`) REFERENCES `athkar`(`athkar_id`, `category_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "thikr_id",
+            "columnName": "thikr_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "repetition",
+            "columnName": "repetition",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fadl",
+            "columnName": "fadl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "reference",
+            "columnName": "reference",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "athkar_id",
+            "columnName": "athkar_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category_id",
+            "columnName": "category_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "thikr_id",
+            "athkar_id",
+            "category_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "athkar",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "athkar_id",
+              "category_id"
+            ],
+            "referencedColumns": [
+              "athkar_id",
+              "category_id"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1f7976c968a7e03f2ba54ea2c684ac9c')"
+    ]
+  }
+}
