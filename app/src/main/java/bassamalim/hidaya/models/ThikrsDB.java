@@ -3,7 +3,6 @@ package bassamalim.hidaya.models;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.PrimaryKey;
 
 @Entity(tableName = "thikrs", primaryKeys = {"thikr_id", "athkar_id", "category_id"},
         foreignKeys = @ForeignKey(entity = AthkarDB.class,

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1f7976c968a7e03f2ba54ea2c684ac9c",
+    "identityHash": "86dca13203cc175e3301d23c14cd1a43",
     "entities": [
       {
         "tableName": "hafs_ayat",
@@ -276,12 +276,83 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "ayat_reciters",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rec_id` INTEGER NOT NULL, `rec_name` TEXT, PRIMARY KEY(`rec_id`))",
+        "fields": [
+          {
+            "fieldPath": "rec_id",
+            "columnName": "rec_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rec_name",
+            "columnName": "rec_name",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "rec_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ayat_telawa",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rec_id` INTEGER NOT NULL, `rate` INTEGER NOT NULL, `source` TEXT, PRIMARY KEY(`rec_id`, `rate`), FOREIGN KEY(`rec_id`) REFERENCES `ayat_reciters`(`rec_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "rec_id",
+            "columnName": "rec_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rate",
+            "columnName": "rate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "source",
+            "columnName": "source",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "rec_id",
+            "rate"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "ayat_reciters",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rec_id"
+            ],
+            "referencedColumns": [
+              "rec_id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1f7976c968a7e03f2ba54ea2c684ac9c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '86dca13203cc175e3301d23c14cd1a43')"
     ]
   }
 }

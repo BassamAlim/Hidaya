@@ -12,16 +12,18 @@ import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
+import androidx.room.Room;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.models.Ayah;
+import bassamalim.hidaya.models.AyatTelawaDB;
+import bassamalim.hidaya.other.AppDatabase;
 import bassamalim.hidaya.other.Constants;
 
 public class RecitationManager {
@@ -42,6 +44,7 @@ public class RecitationManager {
     private States state;
     private int lastPlayer;
     private boolean paused;
+    private AppDatabase db;
 
     private Coordinator coordinator;
     public interface Coordinator {
@@ -62,24 +65,14 @@ public class RecitationManager {
     private void initiate() {
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        setupJson();
+        db = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class,
+                "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
+                .build();
 
         player1 = new MediaPlayer();
         player2 = new MediaPlayer();
 
         what = new BackgroundColorSpan(context.getResources().getColor(R.color.track));
-    }
-
-    private void setupJson() {
-        String recitationString = Utils.getJsonFromAssets(context, "recitations.json");
-        try {
-            assert recitationString != null;
-            recitationsArr = new JSONArray(recitationString);
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(Constants.TAG, "error in setup json in RecitationManager");
-        }
     }
 
     public void setPlayers(Ayah startAyah) {
@@ -315,26 +308,14 @@ public class RecitationManager {
     }
 
     private Uri getUri(Ayah ayah) {
-        String source = "https://www.everyayah.com/data/";
         int choice = pref.getInt("chosen_reciter", 13);
-        try {
-            JSONObject reciter = recitationsArr.getJSONObject(choice);
-            if (reciter.getString("128").length() != 0)
-                source += reciter.getString("128");
-            else if (reciter.getString("64").length() != 0)
-                source += reciter.getString("64");
-            else if (reciter.getString("192").length() != 0)
-                source += reciter.getString("192");
-            else if (reciter.getString("40").length() != 0)
-                source += reciter.getString("40");
-            else source += reciter.getString("30");
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(Constants.TAG, "Problems in getSource");
-        }
-        source += format(ayah.getSurah()) + format(ayah.getAyah()) + ".mp3";
-        return Uri.parse(source);
+        List<AyatTelawaDB> sources = db.ayatTelawaDao().getReciter(choice);
+
+        String url = "https://www.everyayah.com/data/";
+        url += sources.get(0).getSource();
+        url += format(ayah.getSurah()) + format(ayah.getAyah()) + ".mp3";
+
+        return Uri.parse(url);
     }
 
     private String format(int in) {

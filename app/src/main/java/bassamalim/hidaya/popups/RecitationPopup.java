@@ -14,15 +14,12 @@ import android.widget.Spinner;
 
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.preference.PreferenceManager;
+import androidx.room.Room;
+
+import java.util.List;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.helpers.Utils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import bassamalim.hidaya.other.AppDatabase;
 
 public class RecitationPopup {
 
@@ -30,7 +27,7 @@ public class RecitationPopup {
     private PopupWindow popupWindow;
     private final View view;
     private final SharedPreferences pref;
-    private ArrayList<String> reciters;
+    private List<String> reciters;
     private Spinner recitersSpinner;
     private SwitchCompat surahSwitch;
     private SwitchCompat pageSwitch;
@@ -62,7 +59,7 @@ public class RecitationPopup {
 
         setViews();
         setInitialState();
-        getReciters();
+        reciters = getReciterNames();
         setListeners();
         setupSpinner();
     }
@@ -115,21 +112,10 @@ public class RecitationPopup {
         });
     }
 
-    private void getReciters() {
-        reciters = new ArrayList<>();
-        String json = Utils.getJsonFromAssets(context, "recitations.json");
-        try {
-            assert json != null;
-            JSONArray arr = new JSONArray(json);
-            for (int i = 0; i < arr.length(); i++) {
-                JSONObject reciter = arr.getJSONObject(i);
-                String name = reciter.getString("name");
-                reciters.add(name);
-            }
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private List<String> getReciterNames() {
+        return Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class,
+                "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
+                .build().ayatRecitersDao().getNames();
     }
 
 }

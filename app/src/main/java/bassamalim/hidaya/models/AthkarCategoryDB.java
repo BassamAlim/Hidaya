@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey;
 public class AthkarCategoryDB {
 
     @PrimaryKey
+    @ColumnInfo(name = "category_id")
     private final int category_id;
     @ColumnInfo(name = "category_name")
     private final String category_name;
