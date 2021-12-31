@@ -19,7 +19,7 @@ import androidx.room.Room;
 import java.util.List;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.other.AppDatabase;
+import bassamalim.hidaya.database.AppDatabase;
 
 public class RecitationPopup {
 

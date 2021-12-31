@@ -20,8 +20,8 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.AlathkarAdapter;
 import bassamalim.hidaya.databinding.AlathkarListActivityBinding;
 import bassamalim.hidaya.models.AlathkarButton;
-import bassamalim.hidaya.models.AthkarDB;
-import bassamalim.hidaya.other.AppDatabase;
+import bassamalim.hidaya.database.AthkarDB;
+import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.other.Constants;
 
 public class AlathkarList extends AppCompatActivity {

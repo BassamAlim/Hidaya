@@ -17,20 +17,18 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
-
-import bassamalim.hidaya.R;
-import bassamalim.hidaya.databinding.ActivityRadioPlayerBinding;
-import bassamalim.hidaya.helpers.Utils;
-import bassamalim.hidaya.models.ReciterCard;
-import bassamalim.hidaya.other.Constants;
-import bassamalim.hidaya.services.RadioService;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import androidx.room.Room;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import bassamalim.hidaya.R;
+import bassamalim.hidaya.database.AppDatabase;
+import bassamalim.hidaya.database.TelawatVersionsDB;
+import bassamalim.hidaya.databinding.ActivityRadioPlayerBinding;
+import bassamalim.hidaya.models.ReciterCard;
+import bassamalim.hidaya.other.Constants;
+import bassamalim.hidaya.services.RadioService;
 
 public class RadioClient extends AppCompatActivity {
 
@@ -49,12 +47,13 @@ public class RadioClient extends AppCompatActivity {
     private ImageButton rewindBtn;
     private SeekBar seekBar;
     private String action;
-    private int reciter;
-    private int versionIndex;
+    private int reciterId;
+    private String rewaya;
     private ArrayList<String> surahNames;
     private String reciterName;
     private ReciterCard.RecitationVersion version;
-    private int surahIndex;
+    private int surahId;
+    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +62,15 @@ public class RadioClient extends AppCompatActivity {
         binding = ActivityRadioPlayerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
+                "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
+                .build();
+
         action = getIntent().getAction();
 
         getIntentData();
 
-        setupJson();
+        getData();
 
         initViews();
 
@@ -135,13 +138,13 @@ public class RadioClient extends AppCompatActivity {
                 // Pass media data
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("surah_names", surahNames);
-                bundle.putInt("reciter_index", reciter);
+                bundle.putInt("reciter_id", reciterId);
                 bundle.putString("reciter_name", reciterName);
                 bundle.putSerializable("version", version);
 
                 // Start Playback
                 controller.getTransportControls()
-                        .playFromMediaId(String.valueOf(surahIndex), bundle);
+                        .playFromMediaId(String.valueOf(surahId), bundle);
             }
         }
 
@@ -162,49 +165,26 @@ public class RadioClient extends AppCompatActivity {
 
     private void getIntentData() {
         Intent intent = getIntent();
-        reciter = intent.getIntExtra("reciter_index", 0);
-        versionIndex = intent.getIntExtra("version", 0);
-        surahIndex = intent.getIntExtra("surah_index", 0);
+        reciterId = intent.getIntExtra("reciter_id", 0);
+        rewaya = intent.getStringExtra("rewaya");
+        surahId = intent.getIntExtra("surah_id", 0);
         surahNames = intent.getStringArrayListExtra("surah_names");
     }
 
-    private void setupJson() {
-        String json = Utils.getJsonFromAssets(this, "mp3quran.json");
-        try {
-            assert json != null;
-            JSONArray arr = new JSONArray(json);
-            JSONObject reciterObj = arr.getJSONObject(reciter);
-            reciterName = reciterObj.getString("name");
-            JSONArray versions = reciterObj.getJSONArray("versions");
-            JSONObject v = versions.getJSONObject(versionIndex);
+    private void getData() {
+        reciterName = db.telawatRecitersDao().getNames().get(reciterId);
 
-            version = new ReciterCard.RecitationVersion(versionIndex, v.getString("server"),
-                    v.getString("rewaya"), v.getString("count"),
-                    v.getString("suras"), null);
+        TelawatVersionsDB telawa = db.telawatVersionsDao().getVersion(reciterId, rewaya);
+        version = new ReciterCard.RecitationVersion(telawa.getUrl(),
+                telawa.getRewaya(), telawa.getCount(),
+                telawa.getSuras(), null);
 
-            if (surahNames == null)
-                getSurahNames();
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
+        if (surahNames == null)
+            getSurahNames();
     }
 
     private void getSurahNames() {
-        String surahsJson = Utils.getJsonFromAssets(this, "surah_button.json");
-        try {
-            assert surahsJson != null;
-            JSONArray array = new JSONArray(surahsJson);
-
-            surahNames = new ArrayList<>();
-            for (int i = 0; i < 114; i++) {
-                JSONObject obj = array.getJSONObject(i);
-                surahNames.add(obj.getString("name"));
-            }
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
+        surahNames = (ArrayList<String>) db.suraDao().getNames();
     }
 
     private void initViews() {
@@ -218,7 +198,7 @@ public class RadioClient extends AppCompatActivity {
         forwardBtn = binding.fastForward;
         rewindBtn = binding.rewind;
 
-        surahNamescreen.setText(surahNames.get(surahIndex));
+        surahNamescreen.setText(surahNames.get(surahId));
         binding.reciterNamescreen.setText(reciterName);
         binding.versionNamescreen.setText(version.getRewaya());
     }
@@ -303,8 +283,8 @@ public class RadioClient extends AppCompatActivity {
     };
 
     private void updateMetadata() {
-        surahIndex = (int) mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER);
-        surahNamescreen.setText(surahNames.get(surahIndex));
+        surahId = (int) mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER);
+        surahNamescreen.setText(surahNames.get(surahId));
 
         int duration = (int) mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
         durationScreen.setText(formatTime(duration));

@@ -28,12 +28,12 @@ import java.util.Objects;
 import java.util.Random;
 
 import bassamalim.hidaya.R;
+import bassamalim.hidaya.database.AyatDB;
 import bassamalim.hidaya.databinding.QuranActivityBinding;
 import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.helpers.RecitationManager;
 import bassamalim.hidaya.models.Ayah;
-import bassamalim.hidaya.models.JAyah;
-import bassamalim.hidaya.other.AppDatabase;
+import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.popups.RecitationPopup;
 import bassamalim.hidaya.popups.TafseerDialog;
 import bassamalim.hidaya.replacements.DoubleClickLMM;
@@ -58,7 +58,7 @@ public class QuranActivity extends SwipeActivity {
     private boolean scrolled;
     private Ayah selected;
     private RecitationManager rcMgr;
-    private List<JAyah> jAyah;
+    private List<AyatDB> ayatDB;
     private AppDatabase db;
 
     @Override
@@ -114,7 +114,7 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private void query() {
-        jAyah = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
+        ayatDB = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
                 "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
                 .build().ayahDao().getAll();
     }
@@ -202,7 +202,7 @@ public class QuranActivity extends SwipeActivity {
     private int getPageStart(int pageNumber) {
         int start;
         int counter = 0;
-        while (jAyah.get(counter).getPage() < pageNumber)
+        while (ayatDB.get(counter).getPage() < pageNumber)
             counter++;
         start = counter;
 
@@ -217,7 +217,7 @@ public class QuranActivity extends SwipeActivity {
 
         int counter = getPageStart(pageNumber);
         do {
-            JAyah ayah = jAyah.get(counter);
+            AyatDB ayah = ayatDB.get(counter);
             int surahNum = ayah.getSura_no();
             int ayahNum = ayah.getAya_no();
 
@@ -233,7 +233,7 @@ public class QuranActivity extends SwipeActivity {
             }
             arr.add(ayahModel);
 
-        } while (++counter != 6236 && jAyah.get(counter).getPage() == pageNumber);
+        } while (++counter != 6236 && ayatDB.get(counter).getPage() == pageNumber);
 
         int juz = arr.get(0).getJuz();
 

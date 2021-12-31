@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
@@ -23,10 +22,6 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,8 +32,6 @@ import bassamalim.hidaya.databinding.ActivityMainBinding;
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.helpers.Keeper;
 import bassamalim.hidaya.helpers.PrayTimes;
-import bassamalim.hidaya.helpers.Utils;
-import bassamalim.hidaya.other.Constants;
 import bassamalim.hidaya.receivers.DailyUpdateReceiver;
 import bassamalim.hidaya.receivers.DeviceBootReceiver;
 
@@ -88,27 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
         dailyUpdate();
         setupBootReceiver();
-
-        //auto();
-    }
-
-    private void auto() {
-        String recitationString = Utils.getJsonFromAssets(this, ".json");
-        try {
-            assert recitationString != null;
-            JSONArray arr = new JSONArray(recitationString);
-
-            for (int i = 0; i < arr.length(); i++) {
-                JSONObject reciter = arr.getJSONObject(i);
-
-
-            }
-
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(Constants.TAG, "error in setup json in RecitationManager");
-        }
     }
 
     private Calendar[] test() {

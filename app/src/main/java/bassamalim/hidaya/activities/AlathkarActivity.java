@@ -22,8 +22,8 @@ import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.AlathkarActivityBinding;
-import bassamalim.hidaya.models.ThikrsDB;
-import bassamalim.hidaya.other.AppDatabase;
+import bassamalim.hidaya.database.ThikrsDB;
+import bassamalim.hidaya.database.AppDatabase;
 
 public class AlathkarActivity extends AppCompatActivity {
 

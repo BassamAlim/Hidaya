@@ -75,7 +75,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
     private AudioFocusRequest audioFocusRequest;
     private ArrayList<String> surahNames;
     private String reciterName;
-    private int reciterIndex;
+    private int reciterId;
     private ReciterCard.RecitationVersion version;
     private int surahIndex;
     private WifiManager.WifiLock wifiLock;
@@ -101,17 +101,17 @@ public class RadioService extends MediaBrowserServiceCompat implements
             super.onPlayFromMediaId(mediaId, extras);
 
             surahNames = extras.getStringArrayList("surah_names");
-            int newReciter = extras.getInt("reciter_index", 0);
+            int newReciter = extras.getInt("reciter_id", 0);
             String newReciterName = extras.getString("reciter_name");
             ReciterCard.RecitationVersion newVersion = (ReciterCard.RecitationVersion)
                     extras.getSerializable("version");
             int newSurah = Integer.parseInt(mediaId);
 
             if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE ||
-                    newReciter != reciterIndex || newSurah != surahIndex ||
-                    newVersion.getIndex() != version.getIndex()) {
+                    newReciter != reciterId || newSurah != surahIndex ||
+                    !newVersion.getRewaya().equals(version.getRewaya())) {
 
-                reciterIndex = newReciter;
+                reciterId = newReciter;
                 reciterName = newReciterName;
                 version = newVersion;
                 surahIndex = newSurah;
@@ -451,8 +451,6 @@ public class RadioService extends MediaBrowserServiceCompat implements
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version.getCount());
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
                 duration ? player.getDuration() : 0);
-        metadataBuilder.putLong("reciter_index", reciterIndex);
-        metadataBuilder.putLong("version_index", version.getIndex());
 
         mediaMetadata = metadataBuilder.build();
         mediaSession.setMetadata(mediaMetadata);
@@ -590,8 +588,8 @@ public class RadioService extends MediaBrowserServiceCompat implements
 
     private PendingIntent getContentIntent() {
         Intent intent = new Intent(context, RadioClient.class).setAction("back").putExtra(
-                "reciter_index", reciterIndex).putExtra("version", version).putExtra(
-                "surah_index", surahIndex);
+                "reciter_id", reciterId).putExtra("version", version).putExtra(
+                "surah_id", surahIndex);
 
         int flags;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)

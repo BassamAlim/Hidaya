@@ -24,9 +24,9 @@ import java.util.Objects;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.adapters.SurahButtonAdapter;
 import bassamalim.hidaya.databinding.FragmentSavedQuranBinding;
-import bassamalim.hidaya.models.SuraDB;
+import bassamalim.hidaya.database.SuraDB;
 import bassamalim.hidaya.models.SurahButton;
-import bassamalim.hidaya.other.AppDatabase;
+import bassamalim.hidaya.database.AppDatabase;
 
 public class SavedQuranFragment extends Fragment {
 

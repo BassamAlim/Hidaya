@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.models.SurahButton;
-import bassamalim.hidaya.other.AppDatabase;
+import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.other.Constants;
 
 public class SurahButtonAdapter extends RecyclerView.Adapter<SurahButtonAdapter.ViewHolder> {

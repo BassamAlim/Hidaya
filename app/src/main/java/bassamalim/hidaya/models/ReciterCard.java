@@ -23,25 +23,19 @@ public class ReciterCard {
     }
 
     public static class RecitationVersion implements Serializable {
-        private final int index;
         private final String server;
         private final String rewaya;
-        private final String count;
+        private final int count;
         private final String suras;
         private final View.OnClickListener listener;
 
-        public RecitationVersion(int index, String server, String rewaya, String count,
+        public RecitationVersion(String server, String rewaya, int count,
                                  String suras, View.OnClickListener listener) {
-            this.index = index;
             this.server = server;
             this.rewaya = rewaya;
             this.count = count;
             this.suras = suras;
             this.listener = listener;
-        }
-
-        public int getIndex() {
-            return index;
         }
 
         public String getServer() {
@@ -52,8 +46,8 @@ public class ReciterCard {
             return rewaya;
         }
 
-        public Integer getCount() {
-            return Integer.valueOf(count);
+        public int getCount() {
+            return count;
         }
 
         public String getSuras() {

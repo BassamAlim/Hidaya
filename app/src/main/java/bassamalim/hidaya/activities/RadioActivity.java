@@ -2,7 +2,6 @@ package bassamalim.hidaya.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
@@ -10,28 +9,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.RadioRecitersAdapter;
+import bassamalim.hidaya.database.AppDatabase;
+import bassamalim.hidaya.database.TelawatDB;
+import bassamalim.hidaya.database.TelawatRecitersDB;
 import bassamalim.hidaya.databinding.ActivityRadioBinding;
-import bassamalim.hidaya.helpers.Utils;
 import bassamalim.hidaya.models.ReciterCard;
-import bassamalim.hidaya.other.Constants;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 public class RadioActivity extends AppCompatActivity {
 
     private ActivityRadioBinding binding;
-    private JSONArray arr;
     private RecyclerView recycler;
     private RadioRecitersAdapter adapter;
     private ArrayList<ReciterCard> cards;
+    private List<TelawatDB> telawat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +41,6 @@ public class RadioActivity extends AppCompatActivity {
         setSupportActionBar(binding.nameBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        setupJson();
-
         cards = makeCards();
 
         setupRecycler();
@@ -52,49 +48,57 @@ public class RadioActivity extends AppCompatActivity {
         setSearchListeners();
     }
 
-    private void setupJson() {
-        String json = Utils.getJsonFromAssets(this, "mp3quran.json");
-        try {
-            assert json != null;
-            arr = new JSONArray(json);
+    private ArrayList<ReciterCard> makeCards() {
+        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
+                "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
+                .build();
+
+        List<TelawatRecitersDB> reciters = db.telawatRecitersDao().getAll();
+
+        telawat = db.telawatDao().getAll();
+
+        ArrayList<ReciterCard> cards = new ArrayList<>();
+        for (int i = 0; i < reciters.size(); i++) {
+            TelawatRecitersDB reciter = reciters.get(i);
+
+            String name = reciter.getReciter_name();
+
+            List<TelawatDB> versions = getVersions(reciter.getReciter_id());
+
+            ReciterCard.RecitationVersion[] versionsArr =
+                    new ReciterCard.RecitationVersion[versions.size()];
+
+            for (int j = 0; j < versions.size(); j++) {
+                TelawatDB telawa = versions.get(j);
+
+                View.OnClickListener listener = v -> {
+                    Intent intent = new Intent(v.getContext(), SurahsActivity.class);
+                    intent.putExtra("reciter_id", telawa.getReciter_id());
+                    intent.putExtra("rewaya", telawa.getRewaya());
+                    startActivity(intent);
+                };
+
+                versionsArr[j] = new ReciterCard.RecitationVersion(telawa.getUrl(),
+                        telawa.getRewaya(), telawa.getCount(), telawa.getSuras(), listener);
+            }
+            cards.add(new ReciterCard(name, versionsArr));
         }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(Constants.TAG, "Problems in setupJson() in RadioActivity");
-        }
+
+        return cards;
     }
 
-    private ArrayList<ReciterCard> makeCards() {
-        ArrayList<ReciterCard> cards = new ArrayList<>();
-        try {
-            for (int i = 0; i < arr.length(); i++) {
-                JSONObject reciter = arr.getJSONObject(i);
-                String name = reciter.getString("name");
-                JSONArray versions = reciter.getJSONArray("versions");
-                ReciterCard.RecitationVersion[] versionsArr =
-                        new ReciterCard.RecitationVersion[versions.length()];
-                for (int j = 0; j < versions.length(); j++) {
-                    JSONObject ver = versions.getJSONObject(j);
-                    int finalI = i, finalJ = j;
-                    View.OnClickListener listener = v -> {
-                        Intent intent = new Intent(v.getContext(), SurahsActivity.class);
-                        intent.putExtra("reciter", finalI);
-                        intent.putExtra("version", finalJ);
-                        startActivity(intent);
-                    };
-                    ReciterCard.RecitationVersion obj = new ReciterCard.RecitationVersion(j,
-                            ver.getString("server"), ver.getString("rewaya"),
-                            ver.getString("count"), ver.getString("suras"), listener);
-                    versionsArr[j] = obj;
-                }
-                cards.add(new ReciterCard(name, versionsArr));
-            }
+    private List<TelawatDB> getVersions(int id) {
+        List<TelawatDB> result = new ArrayList<>();
+
+        for (int i = 0; i < telawat.size(); i++) {
+            TelawatDB telawa = telawat.get(i);
+
+            if (telawa.getReciter_id() != id)
+                continue;
+
+            result.add(telawa);
         }
-        catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(Constants.TAG, "Problems in makeCards() in RadioActivity");
-        }
-        return cards;
+        return result;
     }
 
     private void setupRecycler() {
