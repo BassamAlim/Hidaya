@@ -11,8 +11,6 @@
     <!-- Buttons Titles -->
     <string name="contact">تواصل معي</string>
     <string name="title_activity_settings">الإعدادات</string>
-    <string name="later">ليس الآن</string>
-    <string name="update_now">حدِّث</string>
 
     <!-- Preference Categories -->
     <string name="notifications_header">الإشعارات الإضافية</string>
@@ -37,9 +35,6 @@
     <!-- TextViews Text -->
     <string name="coordinates">الإحداثيات</string>
     <string name="remaining">الوقت المتبقي: %1$s</string>
-
-    <!-- Dialogs Text -->
-    <string name="update_alert">التحديث الجديد جاهز !</string>
 
     <!-- Buttons Text -->
     <string name="all_thikrs">جميع الأذكار</string>
@@ -71,7 +66,6 @@
     <string name="low_accuracy_text">الدقة ضعيفة … يرجى معايرة الجهاز</string>
     <string name="medium_accuracy_text">الدقة متوسطة</string>
     <string name="high_accuracy_text">الدقة جيدة</string>
-    <string name="title_activity_alathkar_list">AlathkarList</string>
     <string name="app_widget_description">This is an app widget description</string>
     <string name="continue_reading">اكمل القراءة</string>
     <string name="bookmark_page_button">button to bookmark page</string>
@@ -106,5 +100,7 @@
     <string name="in_quran">في المصحف:</string>
     <string name="quran_tips">اضغط على الاية مرتين لاظهار تفسيرها\n\nاضغط على الاية ثم اضغط على زر التشغيل في الشريط السفلي لبدأ التشغيل من الاية المختارة\n\nيمكنك تغيير القارئ اثناء التلاوة</string>
     <string name="favorite_athkar">الأذكار المفضلة</string>
+    <string name="fav_btn_description">إضافة الى المفضلة</string>
+    <string name="tanzeel_view_description">مكان نزول السورة</string>
 
 </resources>

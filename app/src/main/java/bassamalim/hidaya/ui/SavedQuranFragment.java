@@ -101,7 +101,6 @@ public class SavedQuranFragment extends Fragment {
     }
 
     public ArrayList<SurahCard> makeSurahButtons() {
-        final int NUMBER_OF_SURAHS = 114;
         ArrayList<SurahCard> buttons = new ArrayList<>();
 
         AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
@@ -109,7 +108,7 @@ public class SavedQuranFragment extends Fragment {
 
         List<SuraDB> suras = db.suraDao().getFavorites();
 
-        for (int i = 0; i < NUMBER_OF_SURAHS; i++) {
+        for (int i = 0; i < suras.size(); i++) {
             String name = suras.get(i).getSura_name();
             String searchName = suras.get(i).getSearch_name();
             int tanzeel = suras.get(i).getTanzeel();

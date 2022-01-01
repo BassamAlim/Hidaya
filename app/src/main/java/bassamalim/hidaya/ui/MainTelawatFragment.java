@@ -39,10 +39,6 @@ public class MainTelawatFragment extends Fragment {
 
         binding = FragmentMainTelawatBinding.inflate(inflater, container, false);
 
-        /*requireActivity().getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        setSupportActionBar(binding.nameBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);*/
-
         cards = makeCards();
 
         setupRecycler();

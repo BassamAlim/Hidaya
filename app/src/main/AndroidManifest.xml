@@ -34,9 +34,6 @@
             android:name=".activities.SurahsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.RadioActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.AlathkarListActivity"
             android:exported="true"
             android:label="@string/title_alathkar"
