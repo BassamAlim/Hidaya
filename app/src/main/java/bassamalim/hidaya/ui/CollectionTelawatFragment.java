@@ -5,49 +5,56 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import bassamalim.hidaya.R;
 
-public class CollectionTelawatFragment extends Fragment {
+public class CollectionTelawatFragment extends FragmentActivity {
 
     // When requested, this adapter returns a DemoObjectFragment,
     // representing an object in the collection.
-    private TAdapter tAdapter;
+    private FragmentStateAdapter adapter;
     private ViewPager2 viewPager;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_collection_telawat, container, false);
-    }
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_collection_telawat);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        tAdapter = new TAdapter(this);
-        viewPager = view.findViewById(R.id.pager);
-        viewPager.setAdapter(tAdapter);
+        viewPager = findViewById(R.id.telawat_pager);
+        adapter = new TAdapter(this);
+        viewPager.setAdapter(adapter);
 
-        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
 
         String[] tabs = new String[] {"جميع القراء", "المفضلة"};
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> tab.setText(tabs[position])
         ).attach();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (viewPager.getCurrentItem() == 0) {
+            // If the user is currently looking at the first step, allow the system to handle the
+            // Back button. This calls finish() on this activity and pops the back stack.
+            super.onBackPressed();
+        } else {
+            // Otherwise, select the previous step.
+            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+        }
+    }
 }
 
 class TAdapter extends FragmentStateAdapter {
-    public TAdapter(Fragment fragment) {
+
+    public TAdapter(FragmentActivity fragment) {
         super(fragment);
     }
 

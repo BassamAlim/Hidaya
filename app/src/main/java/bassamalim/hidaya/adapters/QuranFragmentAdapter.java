@@ -85,11 +85,11 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
         viewHolder.getCard().findViewById(R.id.alathkar_fav_btn).setOnClickListener(
                 view -> {
                     if (card.getFavorite() == 0) {
-                        db.suraDao().setFav(position, 1);
+                        db.suraDao().setFav(card.getNumber(), 1);
                         card.setFavorite(1);
                     }
                     else if (card.getFavorite() == 1) {
-                        db.suraDao().setFav(position, 0);
+                        db.suraDao().setFav(card.getNumber(), 0);
                         card.setFavorite(0);
                     }
                     notifyItemChanged(position);

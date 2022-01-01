@@ -103,6 +103,10 @@
             android:name=".activities.RadioClient"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".ui.CollectionTelawatFragment"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <receiver android:name=".receivers.NotificationReceiver" />
         <receiver android:name=".receivers.DailyUpdateReceiver" />

@@ -4,9 +4,10 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 
-@Entity(tableName = "thikrs", primaryKeys = {"thikr_id", "athkar_id", "category_id"},
+@Entity(tableName = "thikrs", primaryKeys = {"thikr_id", "athkar_id"},
         foreignKeys = @ForeignKey(entity = AthkarDB.class,
-        parentColumns = {"athkar_id", "category_id"}, childColumns = {"athkar_id", "category_id"}))
+        parentColumns = "athkar_id", childColumns = "athkar_id",
+        onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.SET_DEFAULT))
 public class ThikrsDB {
 
     @ColumnInfo(name = "thikr_id")
@@ -23,11 +24,9 @@ public class ThikrsDB {
     private final String reference;
     @ColumnInfo(name = "athkar_id")
     private final int athkar_id;
-    @ColumnInfo(name = "category_id")
-    private final int category_id;
 
     public ThikrsDB(int thikr_id, String title, String text, String repetition, String fadl,
-                    String reference, int athkar_id, int category_id) {
+                    String reference, int athkar_id) {
 
         this.thikr_id = thikr_id;
         this.title = title;
@@ -36,7 +35,6 @@ public class ThikrsDB {
         this.fadl = fadl;
         this.reference = reference;
         this.athkar_id = athkar_id;
-        this.category_id = category_id;
     }
 
     public int getThikr_id() {
@@ -65,9 +63,5 @@ public class ThikrsDB {
 
     public int getAthkar_id() {
         return athkar_id;
-    }
-
-    public int getCategory_id() {
-        return category_id;
     }
 }

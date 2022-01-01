@@ -187,13 +187,13 @@ public class NotificationReceiver extends BroadcastReceiver {
             case MORNING:
                 intent = new Intent(context, AlathkarActivity.class);
                 intent.putExtra("category", 0);
-                intent.putExtra("thikrs_index", 0);
+                intent.putExtra("thikr_id", 0);
                 intent.putExtra("title", "أذكار الصباح");
                 break;
             case EVENING:
                 intent = new Intent(context, AlathkarActivity.class);
                 intent.putExtra("category", 0);
-                intent.putExtra("thikrs_index", 1);
+                intent.putExtra("thikr_id", 1);
                 intent.putExtra("title", "أذكار المساء");
                 break;
             case DAILY_WERD:
@@ -203,7 +203,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             case FRIDAY_KAHF:
                 intent = new Intent(context, QuranActivity.class);
                 intent.setAction("by_surah");
-                intent.putExtra("surah_index", 17);    // alkahf
+                intent.putExtra("surah_id", 17);    // alkahf
                 break;
             default:
                 intent = new Intent(context, Splash.class);

@@ -10,13 +10,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.AboutActivity;
 import bassamalim.hidaya.activities.FeaturesGuide;
-import bassamalim.hidaya.activities.RadioActivity;
 import bassamalim.hidaya.activities.Settings;
 import bassamalim.hidaya.activities.TvActivity;
 import bassamalim.hidaya.databinding.FragmentOtherBinding;
@@ -39,7 +35,7 @@ public class OtherFragment extends Fragment {
 
     public void setListeners() {
         binding.quranRadio.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), RadioActivity.class);
+            Intent intent = new Intent(getContext(), CollectionTelawatFragment.class);
             startActivity(intent);
         });
         binding.channels.setOnClickListener(v -> {

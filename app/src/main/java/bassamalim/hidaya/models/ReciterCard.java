@@ -6,14 +6,20 @@ import java.io.Serializable;
 
 public class ReciterCard {
 
+    private final int id;
     private final String name;
     private int favorite;
     private final RecitationVersion[] versions;
 
-    public ReciterCard(String name, int favorite, RecitationVersion[] versions) {
+    public ReciterCard(int id, String name, int favorite, RecitationVersion[] versions) {
+        this.id = id;
         this.name = name;
         this.favorite = favorite;
         this.versions = versions;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {

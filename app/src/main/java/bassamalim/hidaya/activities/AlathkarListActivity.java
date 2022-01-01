@@ -31,7 +31,6 @@ public class AlathkarListActivity extends AppCompatActivity {
     private int category;
     private String action;
     private AppDatabase db;
-    private List<AthkarDB> athkar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +56,7 @@ public class AlathkarListActivity extends AppCompatActivity {
             binding.categoryName.setText(db.athkarCategoryDao().getName(category));
         }
 
-        athkar = getData();
-
-        alathkarButtons = makeButtons();
+        alathkarButtons = makeButtons(getData());
 
         setupRecycler();
 
@@ -74,29 +71,26 @@ public class AlathkarListActivity extends AppCompatActivity {
         }
     }
 
-    private ArrayList<AlathkarButton> makeButtons() {
+    private ArrayList<AlathkarButton> makeButtons(List<AthkarDB> athkar) {
         ArrayList<AlathkarButton> buttons = new ArrayList<>();
 
         List<Integer> favs = db.athkarDao().getFavs();
 
         for (int i = 0; i < athkar.size(); i++) {
-            int cat = category, id = i;
-            if (action.equals("all") || action.equals("favorite")) {
-                cat = athkar.get(i).getCategory_id();
-                id = athkar.get(i).getAthkar_id();
-            }
+            AthkarDB thikr = athkar.get(i);
 
-            int finalCat = cat;
-            int finalId = id;
             View.OnClickListener clickListener = v -> {
                 Intent intent = new Intent(this, AlathkarActivity.class);
                 intent.setAction(action);
-                intent.putExtra("category", finalCat);
-                intent.putExtra("thikrs_index", finalId);
+                intent.putExtra("category", thikr.getCategory_id());
+                intent.putExtra("thikr_id", thikr.getAthkar_id());
                 startActivity(intent);
             };
-            buttons.add(new AlathkarButton(id, cat, athkar.get(i).getAthkar_name(),
-                    favs.get(i), clickListener));
+
+            int fav = action.equals("favorite") ? 1 : favs.get(thikr.getAthkar_id());
+
+            buttons.add(new AlathkarButton(thikr.getAthkar_id(), thikr.getCategory_id(),
+                    thikr.getAthkar_name(),fav, clickListener));
         }
         return buttons;
     }

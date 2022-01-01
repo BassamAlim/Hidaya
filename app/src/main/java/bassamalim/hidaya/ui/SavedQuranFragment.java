@@ -107,13 +107,9 @@ public class SavedQuranFragment extends Fragment {
         AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
 
-        List<Integer> favs = db.suraDao().getFav();
-        List<SuraDB> suras = db.suraDao().getAll();
+        List<SuraDB> suras = db.suraDao().getFavorites();
 
         for (int i = 0; i < NUMBER_OF_SURAHS; i++) {
-            if (favs.get(i) == 0)
-                continue;
-
             String name = suras.get(i).getSura_name();
             String searchName = suras.get(i).getSearch_name();
             int tanzeel = suras.get(i).getTanzeel();
@@ -127,7 +123,7 @@ public class SavedQuranFragment extends Fragment {
             };
 
             buttons.add(new SurahCard(i,"سُورَة " + name,
-                    searchName, tanzeel, favs.get(i), cardListener));
+                    searchName, tanzeel, 1, cardListener));
         }
         return buttons;
     }

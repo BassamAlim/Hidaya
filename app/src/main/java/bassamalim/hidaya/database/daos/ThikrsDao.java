@@ -10,8 +10,8 @@ import bassamalim.hidaya.database.dbs.ThikrsDB;
 @Dao
 public interface ThikrsDao {
 
-    @Query("SELECT * FROM thikrs WHERE category_id = :category AND athkar_id = :id")
-    List<ThikrsDB> getThikrs(int category, int id);
+    @Query("SELECT * FROM thikrs WHERE athkar_id = :id")
+    List<ThikrsDB> getThikrs(int id);
 
 /*
     @Query("SELECT * FROM hafs_ayat WHERE id IN (:userIds)")

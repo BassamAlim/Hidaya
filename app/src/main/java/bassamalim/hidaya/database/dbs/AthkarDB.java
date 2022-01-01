@@ -3,13 +3,14 @@ package bassamalim.hidaya.database.dbs;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.PrimaryKey;
 
-@Entity(tableName = "athkar", primaryKeys = {"athkar_id", "category_id"},
-        foreignKeys = @ForeignKey(entity = AthkarCategoryDB.class,
+@Entity(tableName = "athkar", foreignKeys = @ForeignKey(entity = AthkarCategoryDB.class,
         parentColumns = "category_id", childColumns = "category_id",
                 onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.SET_DEFAULT))
 public class AthkarDB {
 
+    @PrimaryKey
     @ColumnInfo(name = "athkar_id")
     private final int athkar_id;
     @ColumnInfo(name = "athkar_name")

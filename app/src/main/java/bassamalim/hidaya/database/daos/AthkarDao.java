@@ -19,11 +19,11 @@ public interface AthkarDao {
     @Query("SELECT * FROM athkar WHERE category_id = :category")
     List<AthkarDB> getList(int category);
 
-    @Query("SELECT athkar_name FROM athkar WHERE category_id = :category AND athkar_id = :id")
-    String getName(int category, int id);
+    @Query("SELECT athkar_name FROM athkar WHERE athkar_id = :id")
+    String getName(int id);
 
-    @Query("UPDATE athkar SET favorite = :val WHERE athkar_id = :id AND category_id = :category")
-    void setFav(int id, int category, int val);
+    @Query("UPDATE athkar SET favorite = :val WHERE athkar_id = :id")
+    void setFav(int id, int val);
 
     @Query("SELECT favorite FROM athkar")
     List<Integer> getFavs();

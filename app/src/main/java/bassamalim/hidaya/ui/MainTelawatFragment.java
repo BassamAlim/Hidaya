@@ -17,9 +17,8 @@ import androidx.room.Room;
 import java.util.ArrayList;
 import java.util.List;
 
-import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.SurahsActivity;
-import bassamalim.hidaya.adapters.RadioRecitersAdapter;
+import bassamalim.hidaya.adapters.TelawatAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatDB;
 import bassamalim.hidaya.database.dbs.TelawatRecitersDB;
@@ -30,7 +29,7 @@ public class MainTelawatFragment extends Fragment {
 
     private FragmentMainTelawatBinding binding;
     private RecyclerView recycler;
-    private RadioRecitersAdapter adapter;
+    private TelawatAdapter adapter;
     private ArrayList<ReciterCard> cards;
     private List<TelawatDB> telawat;
 
@@ -58,9 +57,9 @@ public class MainTelawatFragment extends Fragment {
                 AppDatabase.class, "HidayaDB").createFromAsset("databases/HidayaDB.db")
                 .allowMainThreadQueries().build();
 
+        telawat = db.telawatDao().getAll();
         List<TelawatRecitersDB> reciters = db.telawatRecitersDao().getAll();
         List<Integer> favs = db.telawatRecitersDao().getFavs();
-        telawat = db.telawatDao().getAll();
 
         ArrayList<ReciterCard> cards = new ArrayList<>();
         for (int i = 0; i < reciters.size(); i++) {
@@ -86,7 +85,7 @@ public class MainTelawatFragment extends Fragment {
                 versionsArr[j] = new ReciterCard.RecitationVersion(telawa.getUrl(),
                         telawa.getRewaya(), telawa.getCount(), telawa.getSuras(), listener);
             }
-            cards.add(new ReciterCard(name, favs.get(i), versionsArr));
+            cards.add(new ReciterCard(reciter.getReciter_id(), name, favs.get(i), versionsArr));
         }
 
         return cards;
@@ -107,10 +106,10 @@ public class MainTelawatFragment extends Fragment {
     }
 
     private void setupRecycler() {
-        recycler = requireActivity().findViewById(R.id.radio_reciters_recycler);
+        recycler = binding.telawatRecycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
         recycler.setLayoutManager(layoutManager);
-        adapter = new RadioRecitersAdapter(getContext(), cards);
+        adapter = new TelawatAdapter(getContext(), cards);
         recycler.setAdapter(adapter);
     }
 

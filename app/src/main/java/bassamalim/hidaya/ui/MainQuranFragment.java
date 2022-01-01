@@ -141,7 +141,7 @@ public class MainQuranFragment extends Fragment {
             View.OnClickListener cardListener = v -> {
                 Intent intent = new Intent(getContext(), QuranActivity.class);
                 intent.setAction("by_surah");
-                intent.putExtra("surah_index", finalI);
+                intent.putExtra("surah_id", finalI);
                 requireContext().startActivity(intent);
             };
 

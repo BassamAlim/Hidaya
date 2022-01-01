@@ -47,19 +47,19 @@ public class AlathkarActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         int category = intent.getIntExtra("category", 0);
-        int index = intent.getIntExtra("thikrs_index", 0);
+        int id = intent.getIntExtra("thikr_id", 0);
 
-        thikrs = getThikrs(category, index);
+        thikrs = getThikrs(category, id);
 
-        binding.thikrName.setText(db.athkarDao().getName(category, index));
+        binding.thikrName.setText(db.athkarDao().getName(id));
 
         textSize = getSize();
 
         insert();
     }
 
-    private List<ThikrsDB> getThikrs(int category, int index) {
-        return db.thikrsDao().getThikrs(category, index);
+    private List<ThikrsDB> getThikrs(int category, int id) {
+        return db.thikrsDao().getThikrs(id);
     }
 
     private void insert() {

@@ -101,7 +101,7 @@ public class QuranActivity extends SwipeActivity {
     private void action(Intent intent) {
         switch (action) {
             case "by_surah":
-                surahIndex = intent.getIntExtra("surah_index", 0);
+                surahIndex = intent.getIntExtra("surah_id", 0);
                 setCurrentPage(getPage(surahIndex));
                 break;
             case "by_page":

@@ -16,6 +16,9 @@ public interface SuraDao {
     @Query("SELECT sura_name FROM suar")
     List<String> getNames();
 
+    @Query("SELECT * FROM suar WHERE favorite = 1")
+    List<SuraDB> getFavorites();
+
     @Query("UPDATE suar SET favorite = :val WHERE sura_id = :index")
     void setFav(int index, int val);
 

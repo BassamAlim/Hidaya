@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -78,11 +77,11 @@ public class AlathkarAdapter extends RecyclerView.Adapter<AlathkarAdapter.ViewHo
         viewHolder.getCard().findViewById(R.id.athkar_fav_btn).setOnClickListener(
                 view -> {
                     if (card.getFavorite() == 0) {
-                        db.athkarDao().setFav(card.getCategory_id(), card.getId(), 1);
+                        db.athkarDao().setFav(card.getId(), 1);
                         card.setFavorite(1);
                     }
                     else if (card.getFavorite() == 1) {
-                        db.athkarDao().setFav(card.getCategory_id(), card.getId(), 0);
+                        db.athkarDao().setFav(card.getId(), 0);
                         card.setFavorite(0);
                     }
                     notifyItemChanged(position);

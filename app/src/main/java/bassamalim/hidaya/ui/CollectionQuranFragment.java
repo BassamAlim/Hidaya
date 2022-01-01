@@ -31,7 +31,7 @@ public class CollectionQuranFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         qAdapter = new QAdapter(this);
-        viewPager = view.findViewById(R.id.pager);
+        viewPager = view.findViewById(R.id.quran_pager);
         viewPager.setAdapter(qAdapter);
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);

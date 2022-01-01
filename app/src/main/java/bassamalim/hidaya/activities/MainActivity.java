@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
@@ -22,6 +23,10 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +37,7 @@ import bassamalim.hidaya.databinding.ActivityMainBinding;
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.helpers.Keeper;
 import bassamalim.hidaya.helpers.PrayTimes;
+import bassamalim.hidaya.helpers.Utils;
 import bassamalim.hidaya.receivers.DailyUpdateReceiver;
 import bassamalim.hidaya.receivers.DeviceBootReceiver;
 
@@ -81,6 +87,44 @@ public class MainActivity extends AppCompatActivity {
 
         dailyUpdate();
         setupBootReceiver();
+
+        auto();
+    }
+
+    private void auto() {
+        String str = Utils.getJsonFromAssets(this, "alathkar.json");
+
+        int count = 0;
+        try {
+            JSONArray mainArr = new JSONArray(str);
+            for (int i = 1; i < mainArr.length(); i++) {
+                JSONObject catObj = mainArr.getJSONObject(i);
+
+                JSONArray alathkar = catObj.getJSONArray("alathkar");
+                for (int j = 0; j < alathkar.length(); j++) {
+                    JSONObject athkar = alathkar.getJSONObject(j);
+
+                    JSONArray thikrs = athkar.getJSONArray("thikrs");
+                    for (int k = 0; k < thikrs.length(); k++) {
+                        JSONObject t = thikrs.getJSONObject(k);
+
+                        Log.i("MyAuto", "INSERT INTO thikrs (thikr_id, title, text, repetition, fadl, reference, athkar_id) VALUES ("
+                                + k + ", '" + t.getString("title") + "', '" +
+                                t.getString("thikr") + "', '" + t.getString("repetition") +
+                                "', '" + t.getString("fadl") + "', '" + t.getString("reference")
+                                + "', " + count + ");\n");
+                    }
+
+                    count++;
+
+                    /*Log.i("MyAuto", "INSERT INTO athkar (athkar_id, athkar_name, favorite, category_id) VALUES ("
+                    + count++ + ", '" + athkar.getString("name_ar") + "', 0, " + (i-1) + ");\n");*/
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private Calendar[] test() {
