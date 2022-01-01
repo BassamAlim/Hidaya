@@ -10,23 +10,26 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.AboutActivity;
 import bassamalim.hidaya.activities.FeaturesGuide;
 import bassamalim.hidaya.activities.RadioActivity;
 import bassamalim.hidaya.activities.Settings;
 import bassamalim.hidaya.activities.TvActivity;
-import bassamalim.hidaya.databinding.OtherFragmentBinding;
+import bassamalim.hidaya.databinding.FragmentOtherBinding;
 import bassamalim.hidaya.other.Constants;
 
 public class OtherFragment extends Fragment {
 
-    private OtherFragmentBinding binding;
+    private FragmentOtherBinding binding;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = OtherFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentOtherBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         setListeners();

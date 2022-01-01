@@ -7,15 +7,25 @@ import java.io.Serializable;
 public class ReciterCard {
 
     private final String name;
+    private int favorite;
     private final RecitationVersion[] versions;
 
-    public ReciterCard(String gName, RecitationVersion[] gVersions) {
-        name = gName;
-        versions = gVersions;
+    public ReciterCard(String name, int favorite, RecitationVersion[] versions) {
+        this.name = name;
+        this.favorite = favorite;
+        this.versions = versions;
     }
 
     public String getName() {
         return name;
+    }
+
+    public void setFavorite(int favorite) {
+        this.favorite = favorite;
+    }
+
+    public int getFavorite() {
+        return favorite;
     }
 
     public RecitationVersion[] getVersions() {

@@ -4,8 +4,8 @@
     android:minHeight="50dp"
     android:updatePeriodMillis="86400000"
     android:description="@string/app_widget_description"
-    android:initialKeyguardLayout="@layout/prayers_widget"
-    android:initialLayout="@layout/prayers_widget"
+    android:initialKeyguardLayout="@layout/widget_prayers"
+    android:initialLayout="@layout/widget_prayers"
     android:previewImage="@drawable/prayers_widget_preview"
     android:resizeMode="none"
     android:widgetCategory="home_screen" />

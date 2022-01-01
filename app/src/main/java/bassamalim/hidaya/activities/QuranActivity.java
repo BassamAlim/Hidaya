@@ -28,14 +28,14 @@ import java.util.Objects;
 import java.util.Random;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.database.AyatDB;
-import bassamalim.hidaya.databinding.QuranActivityBinding;
+import bassamalim.hidaya.database.AppDatabase;
+import bassamalim.hidaya.database.dbs.AyatDB;
+import bassamalim.hidaya.databinding.ActivityQuranBinding;
 import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.helpers.RecitationManager;
 import bassamalim.hidaya.models.Ayah;
-import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.popups.RecitationPopup;
-import bassamalim.hidaya.popups.TafseerDialog;
+import bassamalim.hidaya.popups.TafseerPopup;
 import bassamalim.hidaya.replacements.DoubleClickLMM;
 import bassamalim.hidaya.replacements.DoubleClickableSpan;
 import bassamalim.hidaya.replacements.SwipeActivity;
@@ -43,7 +43,7 @@ import bassamalim.hidaya.replacements.SwipeActivity;
 public class QuranActivity extends SwipeActivity {
 
     private final int QURAN_PAGES = 604;
-    private QuranActivityBinding binding;
+    private ActivityQuranBinding binding;
     private SharedPreferences pref;
     private String action;
     private LinearLayout mainLinear;
@@ -65,7 +65,7 @@ public class QuranActivity extends SwipeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = QuranActivityBinding.inflate(getLayoutInflater());
+        binding = ActivityQuranBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 
@@ -259,8 +259,8 @@ public class QuranActivity extends SwipeActivity {
             DoubleClickableSpan clickableSpan = new DoubleClickableSpan() {
                 @Override
                 public void onDoubleClick(View textView) {
-                    new TafseerDialog(list.get(finalI).getTafseer()).show(
-                            getSupportFragmentManager(), TafseerDialog.TAG);
+                    new TafseerPopup(list.get(finalI).getTafseer()).show(
+                            getSupportFragmentManager(), TafseerPopup.TAG);
                 }
                 @Override
                 public void onClick(@NonNull View widget) {

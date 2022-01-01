@@ -50,7 +50,7 @@ public class ReciterSurahsAdapter extends RecyclerView.Adapter<ReciterSurahsAdap
     @NonNull @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.reciter_surah_row_item, viewGroup, false);
+                .inflate(R.layout.item_reciter_surah, viewGroup, false);
 
         return new ViewHolder(view);
     }

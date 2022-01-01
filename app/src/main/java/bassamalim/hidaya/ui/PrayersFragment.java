@@ -29,14 +29,14 @@ import java.util.TimeZone;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.MainActivity;
-import bassamalim.hidaya.databinding.PrayersFragmentBinding;
+import bassamalim.hidaya.databinding.FragmentPrayersBinding;
 import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.helpers.PrayTimes;
 import bassamalim.hidaya.popups.PrayerPopup;
 
 public class PrayersFragment extends Fragment {
 
-    private PrayersFragmentBinding binding;
+    private FragmentPrayersBinding binding;
     private Location location;
     private String[] prayerNames;
     private Calendar[] times;
@@ -55,7 +55,7 @@ public class PrayersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = PrayersFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentPrayersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         if (MainActivity.located) {

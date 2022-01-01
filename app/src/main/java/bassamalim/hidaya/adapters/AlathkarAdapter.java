@@ -1,77 +1,107 @@
 package bassamalim.hidaya.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
-import bassamalim.hidaya.R;
-import bassamalim.hidaya.models.AlathkarButton;
+import androidx.room.Room;
 
 import java.util.ArrayList;
 
+import bassamalim.hidaya.R;
+import bassamalim.hidaya.database.AppDatabase;
+import bassamalim.hidaya.models.AlathkarButton;
+
 public class AlathkarAdapter extends RecyclerView.Adapter<AlathkarAdapter.ViewHolder> {
 
-    private final ArrayList<AlathkarButton> alathkarButtons;
-    private final ArrayList<AlathkarButton> alathkarButtonsCopy;
+    private Context context;
+    private final AppDatabase db;
+    private final ArrayList<AlathkarButton> alathkarCards;
+    private final ArrayList<AlathkarButton> alathkarCardsCopy;
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final Button button;
+        private final CardView card;
 
         public ViewHolder(View view) {
             super(view);
-            button = view.findViewById(R.id.alathkar_model_button);
+            card = view.findViewById(R.id.alathkar_model_card);
         }
 
-        public Button getButton() {
-            return button;
+        public CardView getCard() {
+            return card;
         }
     }
 
-    /**
-     * Initialize the dataset of the Adapter.
-     *
-     * @param buttons containing the data to populate views to be used
-     */
-    public AlathkarAdapter(ArrayList<AlathkarButton> buttons) {
-        alathkarButtons = new ArrayList<>(buttons);
-        alathkarButtonsCopy = new ArrayList<>(buttons);
+    public AlathkarAdapter(Context context, ArrayList<AlathkarButton> cards) {
+        alathkarCards = new ArrayList<>(cards);
+        alathkarCardsCopy = new ArrayList<>(cards);
+
+        this.context = context;
+
+        db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB").createFromAsset(
+                "databases/HidayaDB.db").allowMainThreadQueries().build();
     }
 
     @NonNull @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.alathkar_row_item,
-                viewGroup, false);
+        context = viewGroup.getContext();
 
-        return new ViewHolder(view);
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(
+                R.layout.item_alathkar, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        viewHolder.getButton().setText(alathkarButtons.get(position).getName());
-        viewHolder.getButton().setOnClickListener(alathkarButtons.get(position).getListener());
+        AlathkarButton card = alathkarCards.get(position);
+
+        ((TextView) viewHolder.getCard().findViewById(R.id.namescreen))
+                .setText(card.getName());
+        viewHolder.getCard().setOnClickListener(card.getListener());
+
+        int fav = card.getFavorite();
+        if (fav == 0)
+            ((ImageView) viewHolder.getCard().findViewById(R.id.athkar_fav_btn)).setImageDrawable(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
+        else if (fav == 1)
+            ((ImageView) viewHolder.getCard().findViewById(R.id.athkar_fav_btn)).setImageDrawable(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_star));
+
+        viewHolder.getCard().setOnClickListener(card.getListener());
+        viewHolder.getCard().findViewById(R.id.athkar_fav_btn).setOnClickListener(
+                view -> {
+                    if (card.getFavorite() == 0) {
+                        db.athkarDao().setFav(card.getCategory_id(), card.getId(), 1);
+                        card.setFavorite(1);
+                    }
+                    else if (card.getFavorite() == 1) {
+                        db.athkarDao().setFav(card.getCategory_id(), card.getId(), 0);
+                        card.setFavorite(0);
+                    }
+                    notifyItemChanged(position);
+                });
     }
 
     @Override
     public int getItemCount() {
-        return alathkarButtons.size();
+        return alathkarCards.size();
     }
 
     public void filter(String text) {
-        alathkarButtons.clear();
+        alathkarCards.clear();
         if (text.isEmpty())
-            alathkarButtons.addAll(alathkarButtonsCopy);
+            alathkarCards.addAll(alathkarCardsCopy);
         else {
-            for(AlathkarButton alathkarButton: alathkarButtonsCopy) {
+            for(AlathkarButton alathkarButton: alathkarCardsCopy) {
                 if(alathkarButton.getName().contains(text))
-                    alathkarButtons.add(alathkarButton);
+                    alathkarCards.add(alathkarButton);
             }
         }
         notifyDataSetChanged();

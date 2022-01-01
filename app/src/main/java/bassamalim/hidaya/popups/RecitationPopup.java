@@ -44,7 +44,7 @@ public class RecitationPopup {
         LayoutInflater inflater = (LayoutInflater) view.getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View popupView = inflater.inflate(R.layout.recitation_popup,
+        View popupView = inflater.inflate(R.layout.popup_recitation,
                 new LinearLayout(context), false);
 
         popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT,

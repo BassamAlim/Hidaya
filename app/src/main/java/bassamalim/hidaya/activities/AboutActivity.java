@@ -7,19 +7,19 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import bassamalim.hidaya.R;
-import bassamalim.hidaya.databinding.AboutActivityBinding;
-import bassamalim.hidaya.other.Constants;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+
+import bassamalim.hidaya.databinding.ActivityAboutBinding;
+import bassamalim.hidaya.other.Constants;
 
 public class AboutActivity extends AppCompatActivity {
 
-    AboutActivityBinding binding;
+    private ActivityAboutBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = AboutActivityBinding.inflate(getLayoutInflater());
+        binding = ActivityAboutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setListener();

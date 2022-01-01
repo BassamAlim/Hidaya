@@ -21,13 +21,13 @@ import java.util.List;
 import java.util.Objects;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.databinding.AlathkarActivityBinding;
-import bassamalim.hidaya.database.ThikrsDB;
 import bassamalim.hidaya.database.AppDatabase;
+import bassamalim.hidaya.database.dbs.ThikrsDB;
+import bassamalim.hidaya.databinding.ActivityAlathkarBinding;
 
 public class AlathkarActivity extends AppCompatActivity {
 
-    private AlathkarActivityBinding binding;
+    private ActivityAlathkarBinding binding;
     private int textSize;
     private List<ThikrsDB> thikrs;
     private AppDatabase db;
@@ -35,7 +35,7 @@ public class AlathkarActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = AlathkarActivityBinding.inflate(getLayoutInflater());
+        binding = ActivityAlathkarBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 

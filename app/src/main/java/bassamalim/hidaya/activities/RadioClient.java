@@ -24,7 +24,7 @@ import java.util.Locale;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
-import bassamalim.hidaya.database.TelawatVersionsDB;
+import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
 import bassamalim.hidaya.databinding.ActivityRadioPlayerBinding;
 import bassamalim.hidaya.models.ReciterCard;
 import bassamalim.hidaya.other.Constants;
@@ -134,7 +134,8 @@ public class RadioClient extends AppCompatActivity {
 
             getIntentData();
 
-            if (action.equals("start")) {
+            if (controller.getPlaybackState().getState() != PlaybackStateCompat.STATE_PLAYING
+                    && action.equals("start")) {
                 // Pass media data
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("surah_names", surahNames);

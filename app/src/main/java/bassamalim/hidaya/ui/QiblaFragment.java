@@ -14,20 +14,20 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
+import java.util.HashMap;
+
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.MainActivity;
-import bassamalim.hidaya.databinding.QiblaFragmentBinding;
-import bassamalim.hidaya.popups.CompassCalibrate;
+import bassamalim.hidaya.databinding.FragmentQiblaBinding;
 import bassamalim.hidaya.helpers.Compass;
-
-import java.util.HashMap;
+import bassamalim.hidaya.popups.CalibrationPopup;
 
 public class QiblaFragment extends Fragment {
 
     private final double KAABA_LAT = 21.4224779;
     private final double KAABA_LAT_IN_RAD  = Math.toRadians(KAABA_LAT);
     private final double KAABA_LNG = 39.8251832;
-    private QiblaFragmentBinding binding;
+    private FragmentQiblaBinding binding;
     private boolean located = true;
     private Compass compass;
     private Location location;
@@ -56,7 +56,7 @@ public class QiblaFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = QiblaFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentQiblaBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         if (!located)
@@ -69,7 +69,7 @@ public class QiblaFragment extends Fragment {
             binding.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT);
         }
 
-        inflater.inflate(R.layout.qibla_fragment, container, false);
+        inflater.inflate(R.layout.fragment_qibla, container, false);
         return root;
     }
 
@@ -188,8 +188,8 @@ public class QiblaFragment extends Fragment {
                 binding.accuracyText.setText(R.string.low_accuracy_text);
                 binding.accuracyIndicator.setImageDrawable(AppCompatResources.getDrawable(
                         requireContext(), R.drawable.ic_warning));
-                binding.accuracyIndicator.setOnClickListener(v -> new CompassCalibrate(getContext())
-                        .show(requireActivity().getSupportFragmentManager(), CompassCalibrate.TAG));
+                binding.accuracyIndicator.setOnClickListener(v -> new CalibrationPopup(getContext())
+                        .show(requireActivity().getSupportFragmentManager(), CalibrationPopup.TAG));
                 break;
         }
     }

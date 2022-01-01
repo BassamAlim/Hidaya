@@ -8,13 +8,13 @@
         android:id="@+id/navigation_prayers"
         android:name="bassamalim.hidaya.ui.PrayersFragment"
         android:label="@string/title_prayers"
-        tools:layout="@layout/prayers_fragment" />
+        tools:layout="@layout/fragment_prayers" />
 
     <fragment
         android:id="@+id/navigation_alathkar"
         android:name="bassamalim.hidaya.ui.AlathkarFragment"
         android:label="@string/title_alathkar"
-        tools:layout="@layout/alathkar_fragment" />
+        tools:layout="@layout/fragment_alathkar" />
 
     <fragment
         android:id="@+id/navigation_quran"
@@ -26,12 +26,12 @@
         android:id="@+id/navigation_qibla"
         android:name="bassamalim.hidaya.ui.QiblaFragment"
         android:label="@string/title_qibla"
-        tools:layout="@layout/qibla_fragment" />
+        tools:layout="@layout/fragment_qibla" />
 
     <fragment
         android:id="@+id/navigation_other"
         android:name="bassamalim.hidaya.ui.OtherFragment"
         android:label="@string/title_other"
-        tools:layout="@layout/qibla_fragment" />
+        tools:layout="@layout/fragment_qibla" />
 
 </navigation>

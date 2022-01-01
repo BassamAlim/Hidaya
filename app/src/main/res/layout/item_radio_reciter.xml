@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/reciter_model_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="-23dp"
+        app:cardCornerRadius="20dp"
+        app:cardPreventCornerOverlap="true"
+        android:backgroundTint="@color/secondary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:layout_marginHorizontal="-5dp"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="3dp"
+                android:layout_marginHorizontal="7dp">
+
+                <TextView
+                    android:id="@+id/reciter_namescreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingVertical="12dp"
+                    android:paddingHorizontal="40dp"
+                    android:gravity="center"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <ImageButton
+                    android:id="@+id/telawa_fav_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:padding="10dp"
+                    android:background="@drawable/ripple_s"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/version1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:paddingVertical="15dp"
+                android:background="@drawable/ripple_p"
+                android:textSize="18sp"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/version2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:paddingVertical="15dp"
+                android:background="@drawable/ripple_p"
+                android:textSize="18sp"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/version3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:paddingVertical="15dp"
+                android:background="@drawable/ripple_p"
+                android:textSize="18sp"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/version4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:paddingVertical="15dp"
+                android:background="@drawable/ripple_p"
+                android:textSize="18sp"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/version5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:paddingVertical="15dp"
+                android:background="@drawable/ripple_p"
+                android:textSize="18sp"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>

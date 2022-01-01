@@ -1,8 +1,27 @@
 package bassamalim.hidaya.database;
 
-import androidx.room.AutoMigration;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
+
+import bassamalim.hidaya.database.daos.AthkarCategoryDao;
+import bassamalim.hidaya.database.daos.AthkarDao;
+import bassamalim.hidaya.database.daos.AyatDao;
+import bassamalim.hidaya.database.daos.AyatRecitersDao;
+import bassamalim.hidaya.database.daos.AyatTelawaDao;
+import bassamalim.hidaya.database.daos.SuraDao;
+import bassamalim.hidaya.database.daos.TelawatDao;
+import bassamalim.hidaya.database.daos.TelawatRecitersDao;
+import bassamalim.hidaya.database.daos.TelawatVersionsDao;
+import bassamalim.hidaya.database.daos.ThikrsDao;
+import bassamalim.hidaya.database.dbs.AthkarCategoryDB;
+import bassamalim.hidaya.database.dbs.AthkarDB;
+import bassamalim.hidaya.database.dbs.AyatDB;
+import bassamalim.hidaya.database.dbs.AyatRecitersDB;
+import bassamalim.hidaya.database.dbs.AyatTelawaDB;
+import bassamalim.hidaya.database.dbs.SuraDB;
+import bassamalim.hidaya.database.dbs.TelawatRecitersDB;
+import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
+import bassamalim.hidaya.database.dbs.ThikrsDB;
 
 @Database(
         entities = {AyatDB.class, SuraDB.class, AthkarCategoryDB.class, AthkarDB.class,

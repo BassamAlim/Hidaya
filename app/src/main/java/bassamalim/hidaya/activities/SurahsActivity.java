@@ -18,7 +18,7 @@ import java.util.Objects;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.ReciterSurahsAdapter;
 import bassamalim.hidaya.database.AppDatabase;
-import bassamalim.hidaya.database.SuraDB;
+import bassamalim.hidaya.database.dbs.SuraDB;
 import bassamalim.hidaya.databinding.ActivitySurahsBinding;
 import bassamalim.hidaya.models.ReciterSurahCard;
 

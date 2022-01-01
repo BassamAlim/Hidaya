@@ -8,19 +8,19 @@ import android.widget.MediaController;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import bassamalim.hidaya.databinding.ActivityTvBinding;
 import bassamalim.hidaya.replacements.FSMediaController;
-import bassamalim.hidaya.databinding.TvActivityBinding;
 
 public class TvActivity extends AppCompatActivity {
 
-    private TvActivityBinding binding;
+    private ActivityTvBinding binding;
     private static Uri uri = Uri.parse("");
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = TvActivityBinding.inflate(getLayoutInflater());
+        binding = ActivityTvBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

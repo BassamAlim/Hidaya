@@ -18,8 +18,8 @@ import java.util.Objects;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.RadioRecitersAdapter;
 import bassamalim.hidaya.database.AppDatabase;
-import bassamalim.hidaya.database.TelawatDB;
-import bassamalim.hidaya.database.TelawatRecitersDB;
+import bassamalim.hidaya.database.dbs.TelawatDB;
+import bassamalim.hidaya.database.dbs.TelawatRecitersDB;
 import bassamalim.hidaya.databinding.ActivityRadioBinding;
 import bassamalim.hidaya.models.ReciterCard;
 
@@ -55,6 +55,8 @@ public class RadioActivity extends AppCompatActivity {
 
         List<TelawatRecitersDB> reciters = db.telawatRecitersDao().getAll();
 
+        List<Integer> favs = db.telawatRecitersDao().getFavs();
+
         telawat = db.telawatDao().getAll();
 
         ArrayList<ReciterCard> cards = new ArrayList<>();
@@ -81,7 +83,7 @@ public class RadioActivity extends AppCompatActivity {
                 versionsArr[j] = new ReciterCard.RecitationVersion(telawa.getUrl(),
                         telawa.getRewaya(), telawa.getCount(), telawa.getSuras(), listener);
             }
-            cards.add(new ReciterCard(name, versionsArr));
+            cards.add(new ReciterCard(name, favs.get(i), versionsArr));
         }
 
         return cards;
@@ -105,7 +107,7 @@ public class RadioActivity extends AppCompatActivity {
         recycler = findViewById(R.id.radio_reciters_recycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recycler.setLayoutManager(layoutManager);
-        adapter = new RadioRecitersAdapter(cards);
+        adapter = new RadioRecitersAdapter(this, cards);
         recycler.setAdapter(adapter);
     }
 

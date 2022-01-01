@@ -22,7 +22,7 @@ import java.util.List;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.models.Ayah;
-import bassamalim.hidaya.database.AyatTelawaDB;
+import bassamalim.hidaya.database.dbs.AyatTelawaDB;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.other.Constants;
 

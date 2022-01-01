@@ -53,7 +53,7 @@ public class PrayerPopup {
         LayoutInflater inflater = (LayoutInflater) view.getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View popupView = inflater.inflate(R.layout.prayer_popup,
+        View popupView = inflater.inflate(R.layout.popup_prayer,
                 new LinearLayout(context), false);
         if (id == ID.SHOROUQ)
             popupView.findViewById(R.id.athan_button).setVisibility(View.GONE);

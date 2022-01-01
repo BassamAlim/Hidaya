@@ -105,5 +105,8 @@
     <string name="prayers_tips">اضغط على الصلاة لعرض اعدادات كل صلاة\n\nواضغط على السهمين الايمن والايسر في اسفل الشاشة لاظهار اوقات صلاة الايام الاخرى .. ثم اضغط بين السهمين للعودة الى اليوم الحالي</string>
     <string name="in_quran">في المصحف:</string>
     <string name="quran_tips">اضغط على الاية مرتين لاظهار تفسيرها\n\nاضغط على الاية ثم اضغط على زر التشغيل في الشريط السفلي لبدأ التشغيل من الاية المختارة\n\nيمكنك تغيير القارئ اثناء التلاوة</string>
+    <string name="favorite_athkar">الأذكار المفضلة</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

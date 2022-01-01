@@ -1,0 +1,44 @@
+package bassamalim.hidaya.database.dbs;
+
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+
+@Entity(tableName = "athkar", primaryKeys = {"athkar_id", "category_id"},
+        foreignKeys = @ForeignKey(entity = AthkarCategoryDB.class,
+        parentColumns = "category_id", childColumns = "category_id",
+                onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.SET_DEFAULT))
+public class AthkarDB {
+
+    @ColumnInfo(name = "athkar_id")
+    private final int athkar_id;
+    @ColumnInfo(name = "athkar_name")
+    private final String athkar_name;
+    @ColumnInfo(name = "category_id")
+    private final int category_id;
+    @ColumnInfo(name = "favorite")
+    private final int favorite;
+
+    public AthkarDB(int athkar_id, String athkar_name, int category_id, int favorite) {
+        this.athkar_id = athkar_id;
+        this.athkar_name = athkar_name;
+        this.category_id = category_id;
+        this.favorite = favorite;
+    }
+
+    public int getAthkar_id() {
+        return athkar_id;
+    }
+
+    public String getAthkar_name() {
+        return athkar_name;
+    }
+
+    public int getCategory_id() {
+        return category_id;
+    }
+
+    public int getFavorite() {
+        return favorite;
+    }
+}

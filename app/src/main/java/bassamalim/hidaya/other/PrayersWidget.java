@@ -17,7 +17,7 @@ public class PrayersWidget extends AppWidgetProvider {
 
         if (timesList != null) {
             // Construct the RemoteViews object
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.prayers_widget);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_prayers);
 
             views.setTextViewText(R.id.widget_fajr, timesList[0]);
             views.setTextViewText(R.id.widget_duhr, timesList[1]);

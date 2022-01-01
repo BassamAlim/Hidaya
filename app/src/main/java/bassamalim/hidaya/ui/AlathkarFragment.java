@@ -9,17 +9,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import bassamalim.hidaya.activities.AlathkarList;
-import bassamalim.hidaya.databinding.AlathkarFragmentBinding;
+import bassamalim.hidaya.activities.AlathkarListActivity;
+import bassamalim.hidaya.databinding.FragmentAlathkarBinding;
 
 public class AlathkarFragment extends Fragment {
 
-    private AlathkarFragmentBinding binding;
+    private FragmentAlathkarBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
 
-        binding = AlathkarFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentAlathkarBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         setListeners();
@@ -29,8 +29,13 @@ public class AlathkarFragment extends Fragment {
 
     private void setListeners() {
         binding.allThikrs.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), AlathkarList.class);
+            Intent intent = new Intent(getContext(), AlathkarListActivity.class);
             intent.setAction("all");
+            startActivity(intent);
+        });
+        binding.favoriteAthkar.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), AlathkarListActivity.class);
+            intent.setAction("favorite");
             startActivity(intent);
         });
         binding.dayAndNight.setOnClickListener(v -> showThikrs(0));
@@ -44,7 +49,7 @@ public class AlathkarFragment extends Fragment {
     }
 
     public void showThikrs(int category) {
-        Intent intent = new Intent(getContext(), AlathkarList.class);
+        Intent intent = new Intent(getContext(), AlathkarListActivity.class);
         intent.setAction("category");
         intent.putExtra("category", category);
         startActivity(intent);
