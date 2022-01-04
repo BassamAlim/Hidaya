@@ -1,4 +1,4 @@
-package bassamalim.hidaya.ui;
+package bassamalim.hidaya.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,12 +22,12 @@ import bassamalim.hidaya.adapters.TelawatAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatDB;
 import bassamalim.hidaya.database.dbs.TelawatRecitersDB;
-import bassamalim.hidaya.databinding.FragmentFavoriteTelawatBinding;
+import bassamalim.hidaya.databinding.FragmentMainTelawatBinding;
 import bassamalim.hidaya.models.ReciterCard;
 
-public class FavoriteTelawatFragment extends Fragment {
+public class MainTelawatFragment extends Fragment {
 
-    private FragmentFavoriteTelawatBinding binding;
+    private FragmentMainTelawatBinding binding;
     private RecyclerView recycler;
     private TelawatAdapter adapter;
     private ArrayList<ReciterCard> cards;
@@ -37,7 +37,7 @@ public class FavoriteTelawatFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        binding = FragmentFavoriteTelawatBinding.inflate(inflater, container, false);
+        binding = FragmentMainTelawatBinding.inflate(inflater, container, false);
 
         cards = makeCards();
 
@@ -54,7 +54,8 @@ public class FavoriteTelawatFragment extends Fragment {
                 .allowMainThreadQueries().build();
 
         telawat = db.telawatDao().getAll();
-        List<TelawatRecitersDB> reciters = db.telawatRecitersDao().getFavorites();
+        List<TelawatRecitersDB> reciters = db.telawatRecitersDao().getAll();
+        List<Integer> favs = db.telawatRecitersDao().getFavs();
 
         ArrayList<ReciterCard> cards = new ArrayList<>();
         for (int i = 0; i < reciters.size(); i++) {
@@ -80,7 +81,7 @@ public class FavoriteTelawatFragment extends Fragment {
                 versionsArr[j] = new ReciterCard.RecitationVersion(telawa.getUrl(),
                         telawa.getRewaya(), telawa.getCount(), telawa.getSuras(), listener);
             }
-            cards.add(new ReciterCard(reciter.getReciter_id(), name, 1, versionsArr));
+            cards.add(new ReciterCard(reciter.getReciter_id(), name, favs.get(i), versionsArr));
         }
 
         return cards;
@@ -101,8 +102,8 @@ public class FavoriteTelawatFragment extends Fragment {
     }
 
     private void setupRecycler() {
-        recycler = binding.favoriteTelawatRecycler;
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recycler = binding.telawatRecycler;
+        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
         recycler.setLayoutManager(layoutManager);
         adapter = new TelawatAdapter(getContext(), cards);
         recycler.setAdapter(adapter);
@@ -129,5 +130,4 @@ public class FavoriteTelawatFragment extends Fragment {
         recycler.setAdapter(null);
         adapter = null;
     }
-
 }

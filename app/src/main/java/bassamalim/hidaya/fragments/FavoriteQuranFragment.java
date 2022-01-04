@@ -1,4 +1,4 @@
-package bassamalim.hidaya.ui;
+package bassamalim.hidaya.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,14 +23,14 @@ import java.util.Objects;
 
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.adapters.QuranFragmentAdapter;
-import bassamalim.hidaya.databinding.FragmentSavedQuranBinding;
-import bassamalim.hidaya.database.dbs.SuraDB;
-import bassamalim.hidaya.models.SurahCard;
 import bassamalim.hidaya.database.AppDatabase;
+import bassamalim.hidaya.database.dbs.SuraDB;
+import bassamalim.hidaya.databinding.FragmentFavoriteQuranBinding;
+import bassamalim.hidaya.models.SurahCard;
 
-public class SavedQuranFragment extends Fragment {
+public class FavoriteQuranFragment extends Fragment {
 
-    private FragmentSavedQuranBinding binding;
+    private FragmentFavoriteQuranBinding binding;
     private RecyclerView recyclerView;
     private QuranFragmentAdapter adapter;
     private ArrayList<SurahCard> surahCards;
@@ -44,7 +44,7 @@ public class SavedQuranFragment extends Fragment {
 
         gridLayoutManager = new GridLayoutManager(getContext(), 1);
 
-        binding = FragmentSavedQuranBinding.inflate(inflater, container, false);
+        binding = FragmentFavoriteQuranBinding.inflate(inflater, container, false);
 
         surahCards = makeSurahButtons();
 

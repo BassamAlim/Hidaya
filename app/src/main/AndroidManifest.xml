@@ -101,7 +101,7 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".ui.CollectionTelawatFragment"
+            android:name=".fragments.CollectionTelawatFragment"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 

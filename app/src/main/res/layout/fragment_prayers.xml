@@ -8,7 +8,7 @@
     android:layout_gravity="center"
     android:layoutDirection="rtl"
     android:background="@color/bg"
-    tools:context=".ui.PrayersFragment">
+    tools:context=".fragments.PrayersFragment">
 
     <LinearLayout
         android:id="@+id/prayers_cards"

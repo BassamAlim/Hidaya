@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/bg"
     android:layout_gravity="center"
-    tools:context=".ui.MainQuranFragment">
+    tools:context=".fragments.MainQuranFragment">
 
     <Button
         android:id="@+id/continue_reading"

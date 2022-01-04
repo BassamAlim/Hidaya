@@ -1,4 +1,4 @@
-package bassamalim.hidaya.ui;
+package bassamalim.hidaya.fragments;
 
 import android.content.SharedPreferences;
 import android.location.Location;

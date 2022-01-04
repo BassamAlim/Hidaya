@@ -6,31 +6,31 @@
 
     <fragment
         android:id="@+id/navigation_prayers"
-        android:name="bassamalim.hidaya.ui.PrayersFragment"
+        android:name="bassamalim.hidaya.fragments.PrayersFragment"
         android:label="@string/title_prayers"
         tools:layout="@layout/fragment_prayers" />
 
     <fragment
         android:id="@+id/navigation_alathkar"
-        android:name="bassamalim.hidaya.ui.AlathkarFragment"
+        android:name="bassamalim.hidaya.fragments.AlathkarFragment"
         android:label="@string/title_alathkar"
         tools:layout="@layout/fragment_alathkar" />
 
     <fragment
         android:id="@+id/navigation_quran"
-        android:name="bassamalim.hidaya.ui.CollectionQuranFragment"
+        android:name="bassamalim.hidaya.fragments.CollectionQuranFragment"
         android:label="@string/title_quran"
         tools:layout="@layout/fragment_collection_quran" />
 
     <fragment
         android:id="@+id/navigation_qibla"
-        android:name="bassamalim.hidaya.ui.QiblaFragment"
+        android:name="bassamalim.hidaya.fragments.QiblaFragment"
         android:label="@string/title_qibla"
         tools:layout="@layout/fragment_qibla" />
 
     <fragment
         android:id="@+id/navigation_other"
-        android:name="bassamalim.hidaya.ui.OtherFragment"
+        android:name="bassamalim.hidaya.fragments.OtherFragment"
         android:label="@string/title_other"
         tools:layout="@layout/fragment_qibla" />
 

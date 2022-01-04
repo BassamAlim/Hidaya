@@ -1,4 +1,4 @@
-package bassamalim.hidaya.ui;
+package bassamalim.hidaya.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -56,7 +56,7 @@ class QAdapter extends FragmentStateAdapter {
         if (position == 0)
             fragment = new MainQuranFragment();
         else
-            fragment = new SavedQuranFragment();
+            fragment = new FavoriteQuranFragment();
 
         //Fragment fragment = new DemoObjectFragment();
         //Bundle args = new Bundle();

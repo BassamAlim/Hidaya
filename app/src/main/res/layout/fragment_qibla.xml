@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layoutDirection="rtl"
     android:background="@drawable/background"
-    tools:context=".ui.QiblaFragment">
+    tools:context=".fragments.QiblaFragment">
 
     <ImageView
         android:id="@+id/compass"
