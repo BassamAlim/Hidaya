@@ -35,7 +35,7 @@ public class FSVideoActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-        Uri videoUri = TvActivity.getUri();
+        Uri videoUri = TvActivity.getUrl();
         videoView.setVideoURI(videoUri);
 
         MediaController mediaController = new FSMediaController(this);

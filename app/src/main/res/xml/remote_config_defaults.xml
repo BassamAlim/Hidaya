@@ -3,18 +3,18 @@
 <defaultsMap>
 
     <entry>
-        <key>update_available</key>
-        <value>false</value>
-    </entry>
-
-    <entry>
-        <key>latest_app_version</key>
-        <value>1.6.0</value>
-    </entry>
-
-    <entry>
         <key>update_url</key>
         <value>https://drive.google.com/file/d/1IlP4-9EBSUx7xya5YuSv3S_Xokbd8vey/view?usp=sharing</value>
+    </entry>
+
+    <entry>
+        <key>makkah_url</key>
+        <value>http://m.live.net.sa:1935/live/quran/playlist.m3u8</value>
+    </entry>
+
+    <entry>
+        <key>madina_url</key>
+        <value>https://cllive.itworkscdn.net/ksasunnalive/token=nva=1641173888~dirs=1~hash=03c0f4f87e595ce95c644/ksasunna.smil/playlist.m3u8</value>
     </entry>
 
 </defaultsMap>

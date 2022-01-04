@@ -91,7 +91,7 @@
     <string name="stop_on_surah_end">توقف عند نهاية السورة</string>
     <string name="stop_on_page_end">توقف عند نهاية الصفحة</string>
     <string name="welcome_message">أهلا بك في تطبيق هِداية</string>
-    <string name="disclaimer">تطبيق هِداية يستخدم موقعك لحساب أوقات الصلاة واتجاه القِبلة. \n ويستخدم الموقع في الخلفية لتحديث أوقات الصلاة يومياً.</string>
+    <string name="disclaimer">تطبيق هِداية يستخدم موقعك لحساب أوقات الصلاة واتجاه القِبلة. \n ويستخدم الموقع في الخلفية لتحديث أوقات الصلاة يومياً.\n مع العلم أن موقعك يسجل فقط على جهازك.</string>
     <string name="agreed">موافق</string>
     <string name="rejected">غير موافق, استخدام التطبيق بدون أوقات الصلاة والقِبلة</string>
     <string name="features_guide">دليل المميزات</string>
