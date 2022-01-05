@@ -1,7 +1,6 @@
 package bassamalim.hidaya.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,10 +45,9 @@ public class AlathkarActivity extends AppCompatActivity {
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
 
         Intent intent = getIntent();
-        int category = intent.getIntExtra("category", 0);
         int id = intent.getIntExtra("thikr_id", 0);
 
-        thikrs = getThikrs(category, id);
+        thikrs = getThikrs(id);
 
         binding.thikrName.setText(db.athkarDao().getName(id));
 
@@ -58,7 +56,7 @@ public class AlathkarActivity extends AppCompatActivity {
         insert();
     }
 
-    private List<ThikrsDB> getThikrs(int category, int id) {
+    private List<ThikrsDB> getThikrs(int id) {
         return db.thikrsDao().getThikrs(id);
     }
 
@@ -246,8 +244,8 @@ public class AlathkarActivity extends AppCompatActivity {
     }
 
     private int getSize() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPreferences.getInt(getString(R.string.alathkar_text_size_key), 25);
+        return PreferenceManager.getDefaultSharedPreferences(this)
+                .getInt(getString(R.string.alathkar_text_size_key), 25);
     }
 
 }

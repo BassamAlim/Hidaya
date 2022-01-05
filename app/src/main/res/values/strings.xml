@@ -102,5 +102,8 @@
     <string name="favorite_athkar">الأذكار المفضلة</string>
     <string name="fav_btn_description">إضافة الى المفضلة</string>
     <string name="tanzeel_view_description">مكان نزول السورة</string>
+    <string name="quiz_title">اختبر معلوماتك</string>
+    <string name="start_quiz">ابدأ الاختبار</string>
+    <string name="quiz_result">نتيجة الاختبار</string>
 
 </resources>

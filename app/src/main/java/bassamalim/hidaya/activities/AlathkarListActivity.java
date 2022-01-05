@@ -82,7 +82,6 @@ public class AlathkarListActivity extends AppCompatActivity {
             View.OnClickListener clickListener = v -> {
                 Intent intent = new Intent(this, AlathkarActivity.class);
                 intent.setAction(action);
-                intent.putExtra("category", thikr.getCategory_id());
                 intent.putExtra("thikr_id", thikr.getAthkar_id());
                 startActivity(intent);
             };

@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import bassamalim.hidaya.activities.AboutActivity;
 import bassamalim.hidaya.activities.FeaturesGuide;
+import bassamalim.hidaya.activities.QuizLobbyActivity;
 import bassamalim.hidaya.activities.Settings;
 import bassamalim.hidaya.activities.TvActivity;
 import bassamalim.hidaya.databinding.FragmentOtherBinding;
@@ -25,12 +26,12 @@ public class OtherFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         binding = FragmentOtherBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
         setListeners();
 
-        return root;
+        return binding.getRoot();
     }
 
     public void setListeners() {
@@ -38,24 +39,34 @@ public class OtherFragment extends Fragment {
             Intent intent = new Intent(getContext(), CollectionTelawatFragment.class);
             startActivity(intent);
         });
+
+        binding.quiz.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), QuizLobbyActivity.class);
+            startActivity(intent);
+        });
+
         binding.channels.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), TvActivity.class);
             startActivity(intent);
         });
+
         binding.settings.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), Settings.class);
             startActivity(intent);
         });
+
         binding.features.setOnClickListener(view -> {
             Intent intent = new Intent(getContext(), FeaturesGuide.class);
             startActivity(intent);
         });
+
         binding.contact.setOnClickListener(v -> {
             String url = "https://api.whatsapp.com/send?phone=" + Constants.MY_NUMBER;
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             startActivity(i);
         });
+
         binding.share.setOnClickListener(v -> {
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
@@ -64,6 +75,7 @@ public class OtherFragment extends Fragment {
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, appLink);
             startActivity(Intent.createChooser(sharingIntent, "Share via"));
         });
+
         binding.about.setOnClickListener(v -> {
             Intent about = new Intent(getContext(), AboutActivity.class);
             startActivity(about);

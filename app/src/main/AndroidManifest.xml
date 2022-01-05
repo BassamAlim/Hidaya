@@ -25,6 +25,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Hidaya">
         <activity
+            android:name=".activities.QuizResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.QuizLobbyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.QuizActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.FeaturesGuide"
             android:exported="false" />
         <activity

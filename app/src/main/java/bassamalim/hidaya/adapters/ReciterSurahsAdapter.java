@@ -19,21 +19,11 @@ public class ReciterSurahsAdapter extends RecyclerView.Adapter<ReciterSurahsAdap
     private final ArrayList<ReciterSurahCard> surahsCards;
     private final ArrayList<ReciterSurahCard> surahsCardsCopy;
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView card;
 
         public ViewHolder(View view) {
             super(view);
-
-            view.setOnClickListener(v -> {
-                /*Intent intent = new Intent(v.getContext(), .class);
-                v.getContext().startActivity(intent);*/
-            });
-
             card = view.findViewById(R.id.surah_model_card);
         }
 
