@@ -9,9 +9,11 @@ public class QuizResultQuestion {
     private final String answer1;
     private final String answer2;
     private final String answer3;
+    private final String answer4;
 
     public QuizResultQuestion(int questionNumber, String questionText, int correctAnswer,
-                              int chosenAnswer, String answer1, String answer2, String answer3) {
+                              int chosenAnswer, String answer1, String answer2, String answer3,
+                              String answer4) {
         this.questionNumber = questionNumber;
         this.questionText = questionText;
         this.correctAnswer = correctAnswer;
@@ -19,6 +21,7 @@ public class QuizResultQuestion {
         this.answer1 = answer1;
         this.answer2 = answer2;
         this.answer3 = answer3;
+        this.answer4 = answer4;
     }
 
     public int getQuestionNumber() {
@@ -47,5 +50,9 @@ public class QuizResultQuestion {
 
     public String getAnswer3() {
         return answer3;
+    }
+
+    public String getAnswer4() {
+        return answer4;
     }
 }

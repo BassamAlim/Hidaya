@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +32,7 @@ import bassamalim.hidaya.databinding.ActivityMainBinding;
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.helpers.Keeper;
 import bassamalim.hidaya.helpers.PrayTimes;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.receivers.DailyUpdateReceiver;
 import bassamalim.hidaya.receivers.DeviceBootReceiver;
 
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     public static Location location;
     public static Calendar[] times;
     public static boolean located;
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +55,37 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.myHijriBar);
 
+        initNavBar();
+
+        initFirebase();
+
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        setAlarms();
+
+        rebuildDb();
+
+        dailyUpdate();
+
+        setupBootReceiver();
+    }
+
+    private void initNavBar() {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment_activity_main);
         assert navHostFragment != null;
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(binding.navView, navController);
+    }
 
+    private void initFirebase() {
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                 .setMinimumFetchIntervalInSeconds(3600 * 24).build();
         remoteConfig.setConfigSettingsAsync(configSettings);
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
+    }
 
+    private void setAlarms() {
         Intent intent = getIntent();
         located = intent.getBooleanExtra("located", false);
         if (located) {
@@ -78,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
                     "لا يمكن الوصول للموقع، يرجى إعطاء أذن الوصول للموقع لحساب أوقات الصلاة والقبلة",
                     Toast.LENGTH_SHORT).show();
         }
-
-        dailyUpdate();
-        setupBootReceiver();
     }
 
     private Calendar[] test() {
@@ -109,8 +128,21 @@ public class MainActivity extends AppCompatActivity {
         return tester;
     }
 
+    private void rebuildDb() {
+        int lastVer = pref.getInt("last_db_version", 1);
+        int currentVer = Global.dbVer;
+        if (currentVer > lastVer) {
+            deleteDatabase("HidayaDB");
+
+            Log.i(Global.TAG, "Database Updated");
+
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putInt("last_db_version", currentVer);
+            editor.apply();
+        }
+    }
+
     private void dailyUpdate() {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         int day = pref.getInt("last_day", 0);
 
         Calendar today = Calendar.getInstance();
@@ -242,15 +274,6 @@ public class MainActivity extends AppCompatActivity {
 
         pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finishAffinity();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     @Override

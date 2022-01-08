@@ -124,7 +124,7 @@ public class MainQuranFragment extends Fragment {
     }
 
     public ArrayList<SurahCard> makeSurahButtons() {
-        final int NUMBER_OF_SURAHS = 114;
+        final int NUMBER_OF_SUAR = 114;
         ArrayList<SurahCard> buttons = new ArrayList<>();
 
         AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
@@ -132,21 +132,18 @@ public class MainQuranFragment extends Fragment {
         List<Integer> favs = db.suraDao().getFav();
         List<SuraDB> suras = db.suraDao().getAll();
 
-        for (int i = 0; i < NUMBER_OF_SURAHS; i++) {
-            String name = suras.get(i).getSura_name();
-            String searchName = suras.get(i).getSearch_name();
-            int tanzeel = suras.get(i).getTanzeel();
+        for (int i = 0; i < NUMBER_OF_SUAR; i++) {
+            SuraDB sura = suras.get(i);
 
-            int finalI = i;
             View.OnClickListener cardListener = v -> {
                 Intent intent = new Intent(getContext(), QuranActivity.class);
                 intent.setAction("by_surah");
-                intent.putExtra("surah_id", finalI);
+                intent.putExtra("surah_id", sura.getSura_id());
                 requireContext().startActivity(intent);
             };
 
-            buttons.add(new SurahCard(i,"سُورَة " + name, searchName, tanzeel,
-                    favs.get(i), cardListener));
+            buttons.add(new SurahCard(i,"سُورَة " + sura.getSura_name(),
+                    sura.getSearch_name(), sura.getTanzeel(), favs.get(i), cardListener));
         }
         return buttons;
     }

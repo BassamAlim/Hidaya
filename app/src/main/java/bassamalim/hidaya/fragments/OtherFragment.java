@@ -17,7 +17,7 @@ import bassamalim.hidaya.activities.QuizLobbyActivity;
 import bassamalim.hidaya.activities.Settings;
 import bassamalim.hidaya.activities.TvActivity;
 import bassamalim.hidaya.databinding.FragmentOtherBinding;
-import bassamalim.hidaya.other.Constants;
+import bassamalim.hidaya.other.Global;
 
 public class OtherFragment extends Fragment {
 
@@ -61,7 +61,7 @@ public class OtherFragment extends Fragment {
         });
 
         binding.contact.setOnClickListener(v -> {
-            String url = "https://api.whatsapp.com/send?phone=" + Constants.MY_NUMBER;
+            String url = "https://api.whatsapp.com/send?phone=" + Global.MY_NUMBER;
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             startActivity(i);
@@ -70,7 +70,7 @@ public class OtherFragment extends Fragment {
         binding.share.setOnClickListener(v -> {
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
-            String appLink = Constants.PLAY_STORE_URL;
+            String appLink = Global.PLAY_STORE_URL;
             sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "App Share");
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, appLink);
             startActivity(Intent.createChooser(sharingIntent, "Share via"));

@@ -24,7 +24,7 @@ import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.database.dbs.AyatTelawaDB;
 import bassamalim.hidaya.database.AppDatabase;
-import bassamalim.hidaya.other.Constants;
+import bassamalim.hidaya.other.Global;
 
 public class RecitationManager {
 
@@ -98,12 +98,12 @@ public class RecitationManager {
 
     private void setPlayersListeners() {
         MediaPlayer.OnErrorListener errorListener = (mediaPlayer, i, i1) -> {
-            Log.e(Constants.TAG, "Problem in players");
+            Log.e(Global.TAG, "Problem in players");
             return true;
         };
 
         player1.setOnPreparedListener(mediaPlayer -> {
-            Log.i(Constants.TAG, "in p1 onPrepared");
+            Log.i(Global.TAG, "in p1 onPrepared");
             if (player2.isPlaying())
                 player2.setNextMediaPlayer(player1);
             else if (state == States.Paused) {
@@ -119,7 +119,7 @@ public class RecitationManager {
             }
         });
         player1.setOnCompletionListener(mediaPlayer -> {
-            Log.i(Constants.TAG, "in p1 onCompletion");
+            Log.i(Global.TAG, "in p1 onCompletion");
             if (paused) {
                 paused = false;
                 if (allAyahsSize > lastPlayed.getIndex()) {
@@ -145,7 +145,7 @@ public class RecitationManager {
         player1.setOnErrorListener(errorListener);
 
         player2.setOnPreparedListener(mediaPlayer -> {
-            Log.i(Constants.TAG, "in p2 onPrepared");
+            Log.i(Global.TAG, "in p2 onPrepared");
             if (player1.isPlaying()) {
                 player1.setNextMediaPlayer(player2);
             }
@@ -162,7 +162,7 @@ public class RecitationManager {
             }
         });
         player2.setOnCompletionListener(mediaPlayer -> {
-            Log.i(Constants.TAG, "in p2 onCompletion");
+            Log.i(Global.TAG, "in p2 onCompletion");
             if (paused) {
                 if (allAyahsSize > lastPlayed.getIndex()) {
                     paused = false;
@@ -202,9 +202,9 @@ public class RecitationManager {
         try {
             Uri uri = getUri(ayah);
             if (player == player1)
-                Log.i(Constants.TAG, uri + "  On P1");
+                Log.i(Global.TAG, uri + "  On P1");
             else
-                Log.i(Constants.TAG, uri + "  On P2");
+                Log.i(Global.TAG, uri + "  On P2");
             player.setDataSource(context.getApplicationContext(), uri);
         } catch (IOException e) {e.printStackTrace();}
         player.prepareAsync();
@@ -253,14 +253,14 @@ public class RecitationManager {
 
     public void pause() {
         if (player1.isPlaying()) {
-            Log.i(Constants.TAG, "paused1");
+            Log.i(Global.TAG, "paused1");
             player1.pause();
             player2.reset();
             preparePlayer(player2, lastPlayed);
             lastPlayer = 1;
         }
         else if (player2.isPlaying()) {
-            Log.i(Constants.TAG, "paused2");
+            Log.i(Global.TAG, "paused2");
             player2.pause();
             player1.reset();
             preparePlayer(player1, lastPlayed);
@@ -273,11 +273,11 @@ public class RecitationManager {
 
     public void resume() {
         if (lastPlayer == 1) {
-            Log.i(Constants.TAG, "Resume P1");
+            Log.i(Global.TAG, "Resume P1");
             player1.start();
         }
         else {
-            Log.i(Constants.TAG, "Resume P2");
+            Log.i(Global.TAG, "Resume P2");
             player2.start();
         }
 

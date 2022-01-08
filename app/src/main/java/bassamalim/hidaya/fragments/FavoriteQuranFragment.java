@@ -109,20 +109,17 @@ public class FavoriteQuranFragment extends Fragment {
         List<SuraDB> suras = db.suraDao().getFavorites();
 
         for (int i = 0; i < suras.size(); i++) {
-            String name = suras.get(i).getSura_name();
-            String searchName = suras.get(i).getSearch_name();
-            int tanzeel = suras.get(i).getTanzeel();
+            SuraDB sura = suras.get(i);
 
-            int finalI = i;
             View.OnClickListener cardListener = v -> {
                 Intent intent = new Intent(getContext(), QuranActivity.class);
                 intent.setAction("by_surah");
-                intent.putExtra("surah_index", finalI);
+                intent.putExtra("surah_id", sura.getSura_id());
                 requireContext().startActivity(intent);
             };
 
-            buttons.add(new SurahCard(i,"سُورَة " + name,
-                    searchName, tanzeel, 1, cardListener));
+            buttons.add(new SurahCard(i,"سُورَة " + sura.getSura_name(),
+                    sura.getSearch_name(), sura.getTanzeel(), 1, cardListener));
         }
         return buttons;
     }

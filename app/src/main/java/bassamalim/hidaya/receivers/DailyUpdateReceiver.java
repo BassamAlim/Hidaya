@@ -14,7 +14,7 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
-import bassamalim.hidaya.other.Constants;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.helpers.Keeper;
 import bassamalim.hidaya.helpers.PrayTimes;
@@ -34,7 +34,7 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context gContext, Intent intent) {
-        Log.i(Constants.TAG, "in daily update receiver");
+        Log.i(Global.TAG, "in daily update receiver");
         context = gContext;
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -43,7 +43,7 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
             if (needed())
                 locate();
             else
-                Log.i(Constants.TAG, "dead intent walking in daily update receiver");
+                Log.i(Global.TAG, "dead intent walking in daily update receiver");
         }
         else if (intent.getAction().equals("boot"))
             locate();
@@ -76,7 +76,7 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
         if (location == null) {
             location = new Keeper(context).retrieveLocation();
             if (location == null) {
-                Log.e(Constants.TAG, "No available location in DailyUpdate");
+                Log.e(Global.TAG, "No available location in DailyUpdate");
                 return;
             }
         }

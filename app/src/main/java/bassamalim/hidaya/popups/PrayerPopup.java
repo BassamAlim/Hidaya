@@ -19,7 +19,7 @@ import android.widget.TextView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
-import bassamalim.hidaya.other.Constants;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.enums.ID;
@@ -156,7 +156,7 @@ public class PrayerPopup {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long vId) {
                 SharedPreferences.Editor editor = pref.edit();
                 int min = Integer.parseInt(parent.getItemAtPosition(position).toString());
-                Log.i(Constants.TAG, "delay is set to: " + min);
+                Log.i(Global.TAG, "delay is set to: " + min);
 
                 long millis = min * 60000L;
 

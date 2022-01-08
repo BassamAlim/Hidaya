@@ -69,6 +69,7 @@ public class Splash extends AppCompatActivity {
     private void welcome() {
         Intent intent = new Intent(this, WelcomeActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private boolean granted() {
@@ -103,6 +104,7 @@ public class Splash extends AppCompatActivity {
 
         intent.putExtra("location", location);
         startActivity(intent);
+        finish();
     }
 
     private final ActivityResultLauncher<String[]> requestMultiplePermissions =

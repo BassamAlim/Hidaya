@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import bassamalim.hidaya.databinding.ActivityAboutBinding;
-import bassamalim.hidaya.other.Constants;
+import bassamalim.hidaya.other.Global;
 
 public class AboutActivity extends AppCompatActivity {
 
@@ -27,7 +27,7 @@ public class AboutActivity extends AppCompatActivity {
 
     private void setListener() {
         binding.driveUpdate.setOnClickListener(v -> {
-            String url = FirebaseRemoteConfig.getInstance().getString(Constants.UPDATE_URL);
+            String url = FirebaseRemoteConfig.getInstance().getString(Global.UPDATE_URL);
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             startActivity(i);

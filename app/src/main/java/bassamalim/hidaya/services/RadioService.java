@@ -38,7 +38,7 @@ import androidx.media.session.MediaButtonReceiver;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.RadioClient;
 import bassamalim.hidaya.models.ReciterCard;
-import bassamalim.hidaya.other.Constants;
+import bassamalim.hidaya.other.Global;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -299,27 +299,27 @@ public class RadioService extends MediaBrowserServiceCompat implements
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case ACTION_BECOMING_NOISY:
-                    Log.i(Constants.TAG, "In ACTION_BECOMING_NOISY");
+                    Log.i(Global.TAG, "In ACTION_BECOMING_NOISY");
                     pause();
                     break;
                 case ACTION_PLAY_PAUSE:
                     if (controller.getPlaybackState().getState()
                             == PlaybackStateCompat.STATE_PLAYING) {
-                        Log.i(Constants.TAG, "In ACTION_PAUSE");
+                        Log.i(Global.TAG, "In ACTION_PAUSE");
                         pause();
                     }
                     else if (controller.getPlaybackState().getState() ==
                             PlaybackStateCompat.STATE_PAUSED) {
-                        Log.i(Constants.TAG, "In ACTION_PLAY");
+                        Log.i(Global.TAG, "In ACTION_PLAY");
                         play();
                     }
                     break;
                 case ACTION_NEXT:
-                    Log.i(Constants.TAG, "In ACTION_NEXT");
+                    Log.i(Global.TAG, "In ACTION_NEXT");
                     skipToNext();
                     break;
                 case ACTION_PREV:
-                    Log.i(Constants.TAG, "In ACTION_PREV");
+                    Log.i(Global.TAG, "In ACTION_PREV");
                     skipToPrevious();
                     break;
             }
@@ -560,13 +560,13 @@ public class RadioService extends MediaBrowserServiceCompat implements
             });
             player.setOnCompletionListener(mp -> skipToNext());
             player.setOnErrorListener((mp, what, extra) -> {
-                Log.e(Constants.TAG, "Error in RadioService player: " + what);
+                Log.e(Global.TAG, "Error in RadioService player: " + what);
                 return true;
             });
         }
         catch (IOException e) {
             e.printStackTrace();
-            Log.e(Constants.TAG, "Problem in RadioService player");
+            Log.e(Global.TAG, "Problem in RadioService player");
         }
     }
 

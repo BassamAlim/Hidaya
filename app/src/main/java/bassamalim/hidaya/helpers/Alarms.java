@@ -11,7 +11,7 @@ import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
-import bassamalim.hidaya.other.Constants;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.receivers.NotificationReceiver;
@@ -69,7 +69,7 @@ public class Alarms {
     }
 
     private void setAlarm() {
-        Log.i(Constants.TAG, "in set alarm");
+        Log.i(Global.TAG, "in set alarm");
         if (id.ordinal() >= 0 && id.ordinal() < 6)
             setPrayerAlarm(id);
         else if (id.ordinal() >= 6 && id.ordinal() < 10)
@@ -77,7 +77,7 @@ public class Alarms {
     }
 
     private void setPrayerAlarms() {
-        Log.i(Constants.TAG, "in set prayer alarms");
+        Log.i(Global.TAG, "in set prayer alarms");
         for (int i = 0; i < times.length; i++) {
             ID mappedId = mapID(i);
             assert mappedId != null;
@@ -87,7 +87,7 @@ public class Alarms {
     }
 
     private void setPrayerAlarm(ID id) {
-        Log.i(Constants.TAG, "in set alarm for: " + id);
+        Log.i(Global.TAG, "in set alarm for: " + id);
 
         // adjust the time with the delay
         long adjustment = pref.getLong(id + "time_adjustment", 0);
@@ -102,31 +102,29 @@ public class Alarms {
             intent.putExtra("id", id.ordinal());
             intent.putExtra("time", adjusted);
             PendingIntent pendingIntent;
-            AlarmManager myAlarm = (AlarmManager)
-                    appContext.getSystemService(Context.ALARM_SERVICE);
+            AlarmManager myAlarm =
+                    (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(), intent,
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-                myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                        times[id.ordinal()].getTimeInMillis(), pendingIntent);
+                myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, adjusted, pendingIntent);
             }
             else {
                 pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
                         intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                myAlarm.setExact(AlarmManager.RTC_WAKEUP,
-                        times[id.ordinal()].getTimeInMillis(), pendingIntent);
+                myAlarm.setExact(AlarmManager.RTC_WAKEUP, adjusted, pendingIntent);
             }
-            Log.i(Constants.TAG, "alarm " + id + " set");
+            Log.i(Global.TAG, "alarm " + id + " set");
         }
         else
-            Log.i(Constants.TAG, id + " Passed");
+            Log.i(Global.TAG, id + " Passed");
     }
 
     private void setExtraAlarms() {
-        Log.i(Constants.TAG, "in set extra alarms");
+        Log.i(Global.TAG, "in set extra alarms");
 
         Calendar today = Calendar.getInstance();
 
@@ -142,7 +140,7 @@ public class Alarms {
     }
 
     private void setExtraAlarm(ID id) {
-        Log.i(Constants.TAG, "in set extra alarm");
+        Log.i(Global.TAG, "in set extra alarm");
         int hour;
         int minute;
 
@@ -150,7 +148,7 @@ public class Alarms {
         if (id == ID.FRIDAY_KAHF && loc != null) {
             Calendar[] times = getTimes(loc);
             Calendar duhr = times[2];
-            hour = duhr.get(Calendar.HOUR_OF_DAY)+1;
+            hour = duhr.get(Calendar.HOUR_OF_DAY+1);
             minute = duhr.get(Calendar.MINUTE);
         }
         else {
@@ -199,7 +197,7 @@ public class Alarms {
         myAlarm.setRepeating(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pendIntent);
 
-        Log.i(Constants.TAG, "alarm " + id + " set");
+        Log.i(Global.TAG, "alarm " + id + " set");
     }
 
     private Calendar[] getTimes(Location loc) {
@@ -216,7 +214,7 @@ public class Alarms {
     }
 
     public static void cancelAlarm(Context gContext, ID id) {
-        Log.i(Constants.TAG, "in cancel alarm");
+        Log.i(Global.TAG, "in cancel alarm");
         PendingIntent pendingIntent;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             pendingIntent = PendingIntent.getBroadcast(gContext, id.ordinal(), new Intent(),

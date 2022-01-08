@@ -18,7 +18,7 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.QuizAnswersDB;
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB;
 import bassamalim.hidaya.databinding.ActivityQuizBinding;
-import bassamalim.hidaya.other.Constants;
+import bassamalim.hidaya.other.Global;
 
 public class QuizActivity extends AppCompatActivity {
 
@@ -55,7 +55,6 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void selectQuestions(List<QuizQuestionsDB> rawQuestions) {
-        Log.i(Constants.TAG, "its " + rawQuestions.size());
         Collections.shuffle(rawQuestions);
         questions = new ArrayList<>(rawQuestions.subList(0, 10));
     }
@@ -66,6 +65,7 @@ public class QuizActivity extends AppCompatActivity {
         binding.answer1.setOnClickListener(view -> answered(0));
         binding.answer2.setOnClickListener(view -> answered(1));
         binding.answer3.setOnClickListener(view -> answered(2));
+        binding.answer4.setOnClickListener(view -> answered(3));
     }
 
     private void answered(int a) {
@@ -99,6 +99,7 @@ public class QuizActivity extends AppCompatActivity {
         binding.answer1.setText(answers.get(0).getAnswer_text());
         binding.answer2.setText(answers.get(1).getAnswer_text());
         binding.answer3.setText(answers.get(2).getAnswer_text());
+        binding.answer4.setText(answers.get(3).getAnswer_text());
     }
 
     private List<QuizAnswersDB> getAnswers(int qId) {

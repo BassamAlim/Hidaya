@@ -24,6 +24,7 @@ public class WelcomeActivity extends AppCompatActivity {
         binding.agreed.setOnClickListener(view -> {
             Intent intent = new Intent(this, Splash.class);
             startActivity(intent);
+            finish();
         });
         binding.rejected.setOnClickListener(view -> launchAnyWay());
     }
@@ -32,5 +33,6 @@ public class WelcomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("located", false);
         startActivity(intent);
+        finish();
     }
 }

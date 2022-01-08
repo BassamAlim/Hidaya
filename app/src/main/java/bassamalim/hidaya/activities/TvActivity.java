@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import bassamalim.hidaya.databinding.ActivityTvBinding;
-import bassamalim.hidaya.other.Constants;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.replacements.FSMediaController;
 
 public class TvActivity extends AppCompatActivity {
@@ -46,15 +46,15 @@ public class TvActivity extends AppCompatActivity {
                         makkah_url = remoteConfig.getString("makkah_url");
                         madina_url = remoteConfig.getString("madina_url");
 
-                        Log.d(Constants.TAG, "Config params updated");
-                        Log.d(Constants.TAG, "Makkah URL: " + makkah_url);
-                        Log.d(Constants.TAG, "Madina URL: " + madina_url);
+                        Log.d(Global.TAG, "Config params updated");
+                        Log.d(Global.TAG, "Makkah URL: " + makkah_url);
+                        Log.d(Global.TAG, "Madina URL: " + madina_url);
 
                         setListeners();
                         enableButtons();
                     }
                     else
-                        Log.d(Constants.TAG, "Fetch failed");
+                        Log.d(Global.TAG, "Fetch failed");
                 });
     }
 

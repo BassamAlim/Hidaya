@@ -2,7 +2,6 @@ package bassamalim.hidaya.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -67,7 +66,7 @@ public class QuizResultActivity extends AppCompatActivity {
             QuizResultQuestion model = new QuizResultQuestion(i,
                     questions.get(i).getQuestion_text(), questions.get(i).getCorrect_answer_id(),
                     cAnswers[i], answers.get(0).getAnswer_text(), answers.get(1).getAnswer_text(),
-                    answers.get(2).getAnswer_text());
+                    answers.get(2).getAnswer_text(), answers.get(3).getAnswer_text());
 
             cards.add(model);
         }
@@ -90,8 +89,6 @@ public class QuizResultActivity extends AppCompatActivity {
     private void show() {
         String resultText = "نتيجتك هي " + (score * 10) + "%";
         binding.resultScreen.setText(resultText);
-
-
     }
 
     @Override

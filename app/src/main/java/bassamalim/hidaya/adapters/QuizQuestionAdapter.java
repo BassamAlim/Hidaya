@@ -65,9 +65,13 @@ public class QuizQuestionAdapter extends RecyclerView.Adapter<QuizQuestionAdapte
         ((TextView) (viewHolder.getCard().findViewById(R.id.answer3)))
                 .setText(questionsCards.get(position).getAnswer3());
 
+        ((TextView) (viewHolder.getCard().findViewById(R.id.answer4)))
+                .setText(questionsCards.get(position).getAnswer4());
+
         setImage(position, 0, viewHolder.getCard().findViewById(R.id.answer1_image));
         setImage(position, 1, viewHolder.getCard().findViewById(R.id.answer2_image));
         setImage(position, 2, viewHolder.getCard().findViewById(R.id.answer3_image));
+        setImage(position, 3, viewHolder.getCard().findViewById(R.id.answer4_image));
     }
 
     private void setImage(int position, int num, ImageView iv) {
@@ -78,12 +82,12 @@ public class QuizQuestionAdapter extends RecyclerView.Adapter<QuizQuestionAdapte
             iv.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_correct));
         else if (chosen != correct && num == chosen)
             iv.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_wrong));
-        else iv.setImageDrawable(null);
+        else
+            iv.setImageDrawable(null);
     }
 
     @Override
     public int getItemCount() {
         return questionsCards.size();
     }
-
 }

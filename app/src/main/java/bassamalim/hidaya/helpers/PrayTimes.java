@@ -433,16 +433,15 @@ public class PrayTimes {
         for (int i = 0; i < givenTimes.size(); i++) {
             char m = givenTimes.get(i).charAt(6);
             int hour = Integer.parseInt(givenTimes.get(i).substring(0, 2));
-            if (m == 'P')
+            if (m == 'P' && hour != 12)
                 hour += 12;
-
-            Calendar today = Calendar.getInstance();
-            today.setTimeInMillis(System.currentTimeMillis());
 
             formattedTimes[i] = Calendar.getInstance();
             formattedTimes[i].set(Calendar.HOUR_OF_DAY, hour);
-            formattedTimes[i].set(Calendar.MINUTE, Integer.parseInt(givenTimes.get(i).substring(3, 5)));
+            formattedTimes[i].set(Calendar.MINUTE, Integer
+                    .parseInt(givenTimes.get(i).substring(3, 5)));
             formattedTimes[i].set(Calendar.SECOND, 0);
+            formattedTimes[i].set(Calendar.MILLISECOND, 0);
         }
         return formattedTimes;
     }

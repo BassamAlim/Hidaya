@@ -27,7 +27,7 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
 import bassamalim.hidaya.databinding.ActivityRadioPlayerBinding;
 import bassamalim.hidaya.models.ReciterCard;
-import bassamalim.hidaya.other.Constants;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.services.RadioService;
 
 public class RadioClient extends AppCompatActivity {
@@ -96,7 +96,7 @@ public class RadioClient extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        Log.i(Constants.TAG, "in onStop of radio client");
+        Log.i(Global.TAG, "in onStop of radio client");
         // (see "stay in sync with the MediaSession")
         if (MediaControllerCompat.getMediaController(RadioClient.this) != null) {
             MediaControllerCompat.getMediaController(RadioClient.this)
@@ -151,7 +151,7 @@ public class RadioClient extends AppCompatActivity {
 
         @Override
         public void onConnectionSuspended() {
-            Log.e(Constants.TAG, "Connection suspended in RadioClient");
+            Log.e(Global.TAG, "Connection suspended in RadioClient");
             // The Service has crashed.
             // Disable transport controls until it automatically reconnects
             disableControls();
@@ -159,7 +159,7 @@ public class RadioClient extends AppCompatActivity {
 
         @Override
         public void onConnectionFailed() {
-            Log.e(Constants.TAG, "Connection failed in RadioClient");
+            Log.e(Global.TAG, "Connection failed in RadioClient");
             // The Service has refused our connection
         }
     };

@@ -134,7 +134,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/prayers_widget_info" />
         </receiver>
-
         <service
             android:name=".services.AthanService"
             android:enabled="true"
@@ -148,7 +147,6 @@
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
-
         <meta-data
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
