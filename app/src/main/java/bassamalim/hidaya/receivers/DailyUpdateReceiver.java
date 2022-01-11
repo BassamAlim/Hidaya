@@ -14,32 +14,35 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
-import bassamalim.hidaya.other.Global;
-import bassamalim.hidaya.helpers.Alarms;
-import bassamalim.hidaya.helpers.Keeper;
-import bassamalim.hidaya.helpers.PrayTimes;
-import bassamalim.hidaya.other.PrayersWidget;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
+
+import bassamalim.hidaya.helpers.Alarms;
+import bassamalim.hidaya.helpers.Keeper;
+import bassamalim.hidaya.helpers.PrayTimes;
+import bassamalim.hidaya.other.Global;
+import bassamalim.hidaya.other.PrayersWidget;
 
 public class DailyUpdateReceiver extends BroadcastReceiver {
 
     private Context context;
     private SharedPreferences pref;
     private int time;
+    private Calendar now;
 
     @Override
     public void onReceive(Context gContext, Intent intent) {
         Log.i(Global.TAG, "in daily update receiver");
         context = gContext;
         pref = PreferenceManager.getDefaultSharedPreferences(context);
+        now = Calendar.getInstance();
 
         if (intent.getAction().equals("daily")) {
             time = intent.getIntExtra("time", 0);
+
             if (needed())
                 locate();
             else
@@ -52,12 +55,10 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
     private boolean needed() {
         int day = pref.getInt("last_day", 0);
 
-        Calendar supposed = Calendar.getInstance();
-        supposed.set(Calendar.HOUR_OF_DAY, time);
+        int today = now.get(Calendar.DATE);
+        int hour = now.get(Calendar.HOUR_OF_DAY);
 
-        Calendar now = Calendar.getInstance();
-
-        return day != now.get(Calendar.DAY_OF_MONTH) && time >= now.get(Calendar.HOUR_OF_DAY);
+        return day != today && time <= hour;
     }
 
     private void locate() {
@@ -93,15 +94,11 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
     }
 
     private Calendar[] getTimes(Location loc) {
-        Calendar calendar = Calendar.getInstance();
-        Date date = new Date();
-        calendar.setTime(date);
-
         TimeZone timeZoneObj = TimeZone.getDefault();
-        long millis = timeZoneObj.getOffset(date.getTime());
+        long millis = timeZoneObj.getOffset(now.getTime().getTime());
         double timezone = millis / 3600000.0;
 
-        return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
+        return new PrayTimes().getPrayerTimesArray(now, loc.getLatitude(),
                 loc.getLongitude(), timezone);
     }
 
@@ -115,10 +112,8 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
     }
 
     private void updated() {
-        Calendar today = Calendar.getInstance();
-
         SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("last_day", today.get(Calendar.DAY_OF_MONTH));
+        editor.putInt("last_day", now.get(Calendar.DATE));
         editor.apply();
     }
 

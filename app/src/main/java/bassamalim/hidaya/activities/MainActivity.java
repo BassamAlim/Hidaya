@@ -147,14 +147,14 @@ public class MainActivity extends AppCompatActivity {
 
         Calendar today = Calendar.getInstance();
         if (day != today.get(Calendar.DAY_OF_MONTH)) {
-            int HOUR_FOR_DAILY_UPDATE = 0;
-
-            Calendar time = Calendar.getInstance();
-            time.set(Calendar.HOUR_OF_DAY, HOUR_FOR_DAILY_UPDATE);
+            final int DAILY_UPDATE_HOUR = 0;
 
             Intent intent = new Intent(this, DailyUpdateReceiver.class);
             intent.setAction("daily");
-            intent.putExtra("time", HOUR_FOR_DAILY_UPDATE);
+            intent.putExtra("time", DAILY_UPDATE_HOUR);
+
+            Calendar time = Calendar.getInstance();
+            time.set(Calendar.HOUR_OF_DAY, DAILY_UPDATE_HOUR);
 
             PendingIntent pendIntent;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -170,6 +170,8 @@ public class MainActivity extends AppCompatActivity {
 
             myAlarm.setRepeating(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, pendIntent);
+
+            startActivity(intent);
         }
     }
 
