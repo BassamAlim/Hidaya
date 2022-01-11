@@ -2,10 +2,12 @@ package bassamalim.hidaya.fragments;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,8 +38,13 @@ public class OtherFragment extends Fragment {
 
     public void setListeners() {
         binding.quranRadio.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), CollectionTelawatFragment.class);
-            startActivity(intent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Intent intent = new Intent(getContext(), CollectionTelawatFragment.class);
+                startActivity(intent);
+            }
+            else
+                Toast.makeText(getContext(), "نظام تشغيلك لا يدعم هذه الميزة",
+                        Toast.LENGTH_SHORT).show();
         });
 
         binding.quiz.setOnClickListener(view -> {

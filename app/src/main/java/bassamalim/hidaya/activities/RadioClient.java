@@ -74,7 +74,6 @@ public class RadioClient extends AppCompatActivity {
 
         initViews();
 
-        // Create MediaBrowserServiceCompat
         mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this,
                 RadioService.class), connectionCallbacks, null); // optional Bundle
     }
