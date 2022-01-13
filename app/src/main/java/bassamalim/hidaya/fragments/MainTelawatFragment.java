@@ -30,7 +30,6 @@ public class MainTelawatFragment extends Fragment {
     private FragmentMainTelawatBinding binding;
     private RecyclerView recycler;
     private TelawatAdapter adapter;
-    private ArrayList<ReciterCard> cards;
     private List<TelawatDB> telawat;
 
     @Override
@@ -38,8 +37,6 @@ public class MainTelawatFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         binding = FragmentMainTelawatBinding.inflate(inflater, container, false);
-
-        cards = makeCards();
 
         setupRecycler();
 
@@ -65,8 +62,7 @@ public class MainTelawatFragment extends Fragment {
 
             List<TelawatDB> versions = getVersions(reciter.getReciter_id());
 
-            ReciterCard.RecitationVersion[] versionsArr =
-                    new ReciterCard.RecitationVersion[versions.size()];
+            List<ReciterCard.RecitationVersion> versionsList = new ArrayList<>();
 
             for (int j = 0; j < versions.size(); j++) {
                 TelawatDB telawa = versions.get(j);
@@ -78,10 +74,10 @@ public class MainTelawatFragment extends Fragment {
                     startActivity(intent);
                 };
 
-                versionsArr[j] = new ReciterCard.RecitationVersion(telawa.getUrl(),
-                        telawa.getRewaya(), telawa.getCount(), telawa.getSuras(), listener);
+                versionsList.add(new ReciterCard.RecitationVersion(telawa.getUrl(),
+                        telawa.getRewaya(), telawa.getCount(), telawa.getSuras(), listener));
             }
-            cards.add(new ReciterCard(reciter.getReciter_id(), name, favs.get(i), versionsArr));
+            cards.add(new ReciterCard(reciter.getReciter_id(), name, favs.get(i), versionsList));
         }
 
         return cards;
@@ -105,7 +101,7 @@ public class MainTelawatFragment extends Fragment {
         recycler = binding.telawatRecycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
         recycler.setLayoutManager(layoutManager);
-        adapter = new TelawatAdapter(getContext(), cards);
+        adapter = new TelawatAdapter(getContext(), makeCards());
         recycler.setAdapter(adapter);
     }
 

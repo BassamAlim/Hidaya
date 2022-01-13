@@ -1,6 +1,8 @@
 <resources>
 
 <string-array name="time_settings">
+    <item>-30</item>
+    <item>-25</item>
     <item>-20</item>
     <item>-15</item>
     <item>-10</item>
@@ -10,6 +12,8 @@
     <item>+10</item>
     <item>+15</item>
     <item>+20</item>
+    <item>+25</item>
+    <item>+30</item>
 </string-array>
 
 </resources>

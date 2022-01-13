@@ -148,7 +148,7 @@ public class PrayerPopup {
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-        int time = pref.getInt(id +"spinner_last", 4);
+        int time = pref.getInt(id +"spinner_last", 6);
         spinner.setSelection(time);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

@@ -3,15 +3,16 @@ package bassamalim.hidaya.models;
 import android.view.View;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ReciterCard {
 
     private final int id;
     private final String name;
     private int favorite;
-    private final RecitationVersion[] versions;
+    private final List<RecitationVersion> versions;
 
-    public ReciterCard(int id, String name, int favorite, RecitationVersion[] versions) {
+    public ReciterCard(int id, String name, int favorite, List<RecitationVersion> versions) {
         this.id = id;
         this.name = name;
         this.favorite = favorite;
@@ -34,7 +35,7 @@ public class ReciterCard {
         return favorite;
     }
 
-    public RecitationVersion[] getVersions() {
+    public List<RecitationVersion> getVersions() {
         return versions;
     }
 

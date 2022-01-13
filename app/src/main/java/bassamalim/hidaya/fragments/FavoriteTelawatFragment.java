@@ -64,8 +64,7 @@ public class FavoriteTelawatFragment extends Fragment {
 
             List<TelawatDB> versions = getVersions(reciter.getReciter_id());
 
-            ReciterCard.RecitationVersion[] versionsArr =
-                    new ReciterCard.RecitationVersion[versions.size()];
+            List<ReciterCard.RecitationVersion> versionsList = new ArrayList<>();
 
             for (int j = 0; j < versions.size(); j++) {
                 TelawatDB telawa = versions.get(j);
@@ -77,10 +76,10 @@ public class FavoriteTelawatFragment extends Fragment {
                     startActivity(intent);
                 };
 
-                versionsArr[j] = new ReciterCard.RecitationVersion(telawa.getUrl(),
-                        telawa.getRewaya(), telawa.getCount(), telawa.getSuras(), listener);
+                versionsList.add(new ReciterCard.RecitationVersion(telawa.getUrl(),
+                        telawa.getRewaya(), telawa.getCount(), telawa.getSuras(), listener));
             }
-            cards.add(new ReciterCard(reciter.getReciter_id(), name, 1, versionsArr));
+            cards.add(new ReciterCard(reciter.getReciter_id(), name, 1, versionsList));
         }
 
         return cards;

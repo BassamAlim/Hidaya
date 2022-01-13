@@ -55,14 +55,14 @@
     <!-- Descriptions -->
     <string name="qibla_view_description">this is the view that rotates depending on qibla</string>
     <string name="bingo_view_description">this is the view that shows when pointing towards qibla</string>
+
     <string name="enable_notification">تفعيل الإشعار</string>
     <string name="mute_notification">إشعار صامت</string>
     <string name="disable_notification">إيقاف</string>
-    <string name="adjust_prayer_notification_time">تعديل وقت إشعار الأذان</string>
+    <string name="adjust_prayer_notification_time">تعديل وقت الإشعار</string>
     <string name="notification_image_description">shows current notification status</string>
     <string name="compass_calibration_gif_description">gif explaining how to calibrate inaccurate compass</string>
     <string name="accuracy_indicator_description">accuracy indicator for qibla compass</string>
-
     <string name="low_accuracy_text">الدقة ضعيفة … يرجى معايرة الجهاز</string>
     <string name="medium_accuracy_text">الدقة متوسطة</string>
     <string name="high_accuracy_text">الدقة جيدة</string>

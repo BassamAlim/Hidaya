@@ -56,55 +56,12 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Button
-                android:id="@+id/version1"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/versions_recycler"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="3dp"
-                android:paddingVertical="15dp"
-                android:background="@drawable/ripple_p"
-                android:textSize="18sp"
-                android:textColor="@color/white" />
+                android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/version2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="3dp"
-                android:paddingVertical="15dp"
-                android:background="@drawable/ripple_p"
-                android:textSize="18sp"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/version3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="3dp"
-                android:paddingVertical="15dp"
-                android:background="@drawable/ripple_p"
-                android:textSize="18sp"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/version4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="3dp"
-                android:paddingVertical="15dp"
-                android:background="@drawable/ripple_p"
-                android:textSize="18sp"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/version5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="3dp"
-                android:paddingVertical="15dp"
-                android:background="@drawable/ripple_p"
-                android:textSize="18sp"
-                android:textColor="@color/white" />
+            </androidx.recyclerview.widget.RecyclerView>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

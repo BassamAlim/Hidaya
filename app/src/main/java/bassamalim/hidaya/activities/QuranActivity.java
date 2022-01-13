@@ -14,6 +14,7 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -126,6 +127,7 @@ public class QuranActivity extends SwipeActivity {
             editor.putInt("bookmarked_page", currentPage);
             editor.putString("bookmarked_text", text);
             editor.apply();
+            Toast.makeText(this, "تم حفظ الصفحة", Toast.LENGTH_SHORT).show();
         });
         binding.prevAyah.setOnClickListener(view -> rcMgr.prevAyah());
         binding.play.setOnClickListener(view -> {

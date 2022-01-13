@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             myAlarm.setRepeating(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, pendIntent);
 
-            startActivity(intent);
+            sendBroadcast(intent);
         }
     }
 
