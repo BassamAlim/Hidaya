@@ -25,14 +25,14 @@ import java.util.Locale;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
-import bassamalim.hidaya.databinding.ActivityRadioPlayerBinding;
+import bassamalim.hidaya.databinding.ActivityTelawatPlayerBinding;
 import bassamalim.hidaya.models.ReciterCard;
 import bassamalim.hidaya.other.Global;
-import bassamalim.hidaya.services.RadioService;
+import bassamalim.hidaya.services.TelawatService;
 
-public class RadioClient extends AppCompatActivity {
+public class TelawatClient extends AppCompatActivity {
 
-    private ActivityRadioPlayerBinding binding;
+    private ActivityTelawatPlayerBinding binding;
     private MediaBrowserCompat mediaBrowser;
     private MediaControllerCompat controller;
     private MediaMetadataCompat mediaMetadata;
@@ -59,7 +59,7 @@ public class RadioClient extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityRadioPlayerBinding.inflate(getLayoutInflater());
+        binding = ActivityTelawatPlayerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
@@ -75,7 +75,7 @@ public class RadioClient extends AppCompatActivity {
         initViews();
 
         mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this,
-                RadioService.class), connectionCallbacks, null); // optional Bundle
+                TelawatService.class), connectionCallbacks, null); // optional Bundle
     }
 
     @Override
@@ -95,10 +95,10 @@ public class RadioClient extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        Log.i(Global.TAG, "in onStop of radio client");
+        Log.i(Global.TAG, "in onStop of TelawatClient");
         // (see "stay in sync with the MediaSession")
-        if (MediaControllerCompat.getMediaController(RadioClient.this) != null) {
-            MediaControllerCompat.getMediaController(RadioClient.this)
+        if (MediaControllerCompat.getMediaController(TelawatClient.this) != null) {
+            MediaControllerCompat.getMediaController(TelawatClient.this)
                     .unregisterCallback(controllerCallback);
         }
         mediaBrowser.disconnect();
@@ -119,14 +119,14 @@ public class RadioClient extends AppCompatActivity {
             // Create a MediaControllerCompat
             MediaControllerCompat mediaController = null;
             try {
-                mediaController = new MediaControllerCompat(RadioClient.this, token);
+                mediaController = new MediaControllerCompat(TelawatClient.this, token);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
 
             // Save the controller
-            MediaControllerCompat.setMediaController(RadioClient.this, mediaController);
-            controller = MediaControllerCompat.getMediaController(RadioClient.this);
+            MediaControllerCompat.setMediaController(TelawatClient.this, mediaController);
+            controller = MediaControllerCompat.getMediaController(TelawatClient.this);
 
             // Finish building the UI
             buildTransportControls();
@@ -143,14 +143,13 @@ public class RadioClient extends AppCompatActivity {
                 bundle.putSerializable("version", version);
 
                 // Start Playback
-                controller.getTransportControls()
-                        .playFromMediaId(String.valueOf(surahId), bundle);
+                controller.getTransportControls().playFromMediaId(String.valueOf(surahId), bundle);
             }
         }
 
         @Override
         public void onConnectionSuspended() {
-            Log.e(Global.TAG, "Connection suspended in RadioClient");
+            Log.e(Global.TAG, "Connection suspended in TelawatClient");
             // The Service has crashed.
             // Disable transport controls until it automatically reconnects
             disableControls();
@@ -158,7 +157,7 @@ public class RadioClient extends AppCompatActivity {
 
         @Override
         public void onConnectionFailed() {
-            Log.e(Global.TAG, "Connection failed in RadioClient");
+            Log.e(Global.TAG, "Connection failed in TelawatClient");
             // The Service has refused our connection
         }
     };
@@ -168,16 +167,19 @@ public class RadioClient extends AppCompatActivity {
         reciterId = intent.getIntExtra("reciter_id", 0);
         rewaya = intent.getStringExtra("rewaya");
         surahId = intent.getIntExtra("surah_id", 0);
-        surahNames = intent.getStringArrayListExtra("surah_names");
+        getSurahNames();
     }
 
     private void getData() {
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
+                "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
+                .build();
+
         reciterName = db.telawatRecitersDao().getNames().get(reciterId);
 
         TelawatVersionsDB telawa = db.telawatVersionsDao().getVersion(reciterId, rewaya);
-        version = new ReciterCard.RecitationVersion(telawa.getUrl(),
-                telawa.getRewaya(), telawa.getCount(),
-                telawa.getSuras(), null);
+        version = new ReciterCard.RecitationVersion(telawa.getUrl(), telawa.getRewaya(),
+                telawa.getCount(), telawa.getSuras(), null);
 
         if (surahNames == null)
             getSurahNames();

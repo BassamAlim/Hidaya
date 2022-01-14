@@ -37,6 +37,7 @@ public class TelawatVersionsDB {
         return reciter_id;
     }
 
+    @NonNull
     public String getRewaya() {
         return rewaya;
     }

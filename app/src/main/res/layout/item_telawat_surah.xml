@@ -13,7 +13,7 @@
         android:layout_marginHorizontal="7dp"
         app:cardCornerRadius="10dp">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -27,9 +27,26 @@
                 android:paddingHorizontal="40dp"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:textSize="22sp"/>
+                android:textSize="22sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-        </LinearLayout>
+            <ImageButton
+                android:id="@+id/download_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginEnd="-60dp"
+                android:background="@drawable/ripple_s"
+                android:src="@drawable/ic_download"
+                android:contentDescription="@string/fav_btn_description"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 

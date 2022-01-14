@@ -1,6 +1,11 @@
 package bassamalim.hidaya.adapters;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +20,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.models.ReciterCard;
+import bassamalim.hidaya.other.Global;
 
 public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHolder> {
 
@@ -31,13 +39,15 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
     private final ArrayList<ReciterCard> recitersCardsCopy;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final CardView card;
+        private final TextView reciterNamescreen;
+        private final ImageView favBtn;
         private final RecyclerView recyclerView;
 
         public ViewHolder(View view) {
             super(view);
 
-            card = view.findViewById(R.id.reciter_model_card);
+            reciterNamescreen = view.findViewById(R.id.reciter_namescreen);
+            favBtn = view.findViewById(R.id.telawa_fav_btn);
             recyclerView = view.findViewById(R.id.versions_recycler);
         }
     }
@@ -55,25 +65,24 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
     @NonNull @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_radio_reciter, viewGroup, false));
+                .inflate(R.layout.item_telawat_reciter, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         ReciterCard card = recitersCards.get(position);
-        View cardView = viewHolder.card;
 
-        ((TextView) cardView.findViewById(R.id.reciter_namescreen)).setText(card.getName());
+        viewHolder.reciterNamescreen.setText(card.getName());
 
         int fav = card.getFavorite();
         if (fav == 0)
-            ((ImageView) viewHolder.card.findViewById(R.id.telawa_fav_btn)).setImageDrawable(
+            viewHolder.favBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
         else if (fav == 1)
-            ((ImageView) viewHolder.card.findViewById(R.id.telawa_fav_btn)).setImageDrawable(
+            viewHolder.favBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_star));
 
-        viewHolder.card.findViewById(R.id.telawa_fav_btn).setOnClickListener(
+        viewHolder.favBtn.setOnClickListener(
                 view -> {
                     if (card.getFavorite() == 0) {
                         db.telawatRecitersDao().setFav(card.getId(), 1);
@@ -86,18 +95,10 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
                     notifyItemChanged(position);
                 });
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        layoutManager.setInitialPrefetchItemCount(card.getVersions().size());
-        TelawaVersionAdapter versionsAdapter = new TelawaVersionAdapter(card.getVersions());
-        viewHolder.recyclerView.setLayoutManager(layoutManager);
-        viewHolder.recyclerView.setAdapter(versionsAdapter);
-        viewHolder.recyclerView.setRecycledViewPool(viewPool);
+        setupVerRecycler(viewHolder, card);
     }
 
-    @Override
-    public int getItemCount() {
-        return recitersCards.size();
-    }
+
 
     public void filter(String text) {
         recitersCards.clear();
@@ -112,11 +113,26 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
         notifyDataSetChanged();
     }
 
+    private void setupVerRecycler(ViewHolder viewHolder, ReciterCard card) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager.setInitialPrefetchItemCount(card.getVersions().size());
+        TelawaVersionAdapter versionsAdapter =
+                new TelawaVersionAdapter(context, card.getVersions());
+        viewHolder.recyclerView.setLayoutManager(layoutManager);
+        viewHolder.recyclerView.setAdapter(versionsAdapter);
+        viewHolder.recyclerView.setRecycledViewPool(viewPool);
+    }
+
+    @Override
+    public int getItemCount() {
+        return recitersCards.size();
+    }
 }
 
 
 class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.ViewHolder> {
 
+    private final Context context;
     private final List<ReciterCard.RecitationVersion> versions;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -133,7 +149,8 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
         }
     }
 
-    public TelawaVersionAdapter(List<ReciterCard.RecitationVersion> versions) {
+    public TelawaVersionAdapter(Context context, List<ReciterCard.RecitationVersion> versions) {
+        this.context = context;
         this.versions = versions;
     }
 
@@ -150,6 +167,53 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
         viewHolder.tv.setText(ver.getRewaya());
 
         viewHolder.cardView.setOnClickListener(ver.getListener());
+
+        viewHolder.download_btn.setOnClickListener(v -> {
+            downloadVer(ver);
+
+            viewHolder.download_btn.setImageDrawable();
+        });
+    }
+
+    private void downloadVer(ReciterCard.RecitationVersion ver) {
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(
+                Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request;
+
+        for (int i = 0; i < 114; i++) {
+            if (ver.getSuras().contains("," + (i+1) + ",")) {
+                String link = String.format(Locale.US, "%s/%03d.mp3",
+                        ver.getServer(), i+1);
+
+                Uri uri = Uri.parse(link);
+                request = new DownloadManager.Request(uri);
+                request.setTitle("تحميل التلاوات");
+                request.setVisibleInDownloadsUi(true);
+                request.setDestinationInExternalFilesDir(context,
+                        createDir(ver.getReciter_id()), num + ".mp3");
+                request.setNotificationVisibility(
+                        DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                downloadManager.enqueue(request);
+            }
+        }
+
+        Log.d(Global.TAG, "Downloaded");
+    }
+
+    private String createDir(int reciterID) {
+        String text = "/Telawat Downloads/" + reciterID + "/" + rewaya;
+
+        File dir;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            dir = new File(context.getExternalFilesDir(null) + text);
+        else
+            dir = new File(Environment.getExternalStorageDirectory()
+                    .getAbsolutePath() + text);
+
+        if (!dir.exists())
+            dir.mkdirs();
+
+        return text;
     }
 
     @Override

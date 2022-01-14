@@ -17,7 +17,7 @@ import androidx.room.Room;
 import java.util.ArrayList;
 import java.util.List;
 
-import bassamalim.hidaya.activities.SurahsActivity;
+import bassamalim.hidaya.activities.TelawatSurahsActivity;
 import bassamalim.hidaya.adapters.TelawatAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatDB;
@@ -70,7 +70,7 @@ public class FavoriteTelawatFragment extends Fragment {
                 TelawatDB telawa = versions.get(j);
 
                 View.OnClickListener listener = v -> {
-                    Intent intent = new Intent(v.getContext(), SurahsActivity.class);
+                    Intent intent = new Intent(v.getContext(), TelawatSurahsActivity.class);
                     intent.putExtra("reciter_id", telawa.getReciter_id());
                     intent.putExtra("rewaya", telawa.getRewaya());
                     startActivity(intent);

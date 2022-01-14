@@ -37,7 +37,7 @@ public class OtherFragment extends Fragment {
     }
 
     public void setListeners() {
-        binding.quranRadio.setOnClickListener(v -> {
+        binding.telawat.setOnClickListener(v -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Intent intent = new Intent(getContext(), CollectionTelawatFragment.class);
                 startActivity(intent);

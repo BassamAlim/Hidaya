@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
@@ -35,26 +36,26 @@ import androidx.core.app.NotificationCompat;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 
-import bassamalim.hidaya.R;
-import bassamalim.hidaya.activities.RadioClient;
-import bassamalim.hidaya.models.ReciterCard;
-import bassamalim.hidaya.other.Global;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class RadioService extends MediaBrowserServiceCompat implements
+import bassamalim.hidaya.R;
+import bassamalim.hidaya.activities.TelawatClient;
+import bassamalim.hidaya.models.ReciterCard;
+import bassamalim.hidaya.other.Global;
+
+public class TelawatService extends MediaBrowserServiceCompat implements
         AudioManager.OnAudioFocusChangeListener {
 
     private static final String MY_MEDIA_ROOT_ID = "media_root_id";
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
     private static final String ACTION_BECOMING_NOISY = AudioManager.ACTION_AUDIO_BECOMING_NOISY;
     private static final String ACTION_PLAY_PAUSE =
-            "bassamalim.hidaya.services.radioservice.playpause";
-    private static final String ACTION_NEXT = "bassamalim.hidaya.services.radioservice.next";
-    private static final String ACTION_PREV = "bassamalim.hidaya.services.radioservice.prev";
+            "bassamalim.hidaya.services.TelawatService.playpause";
+    private static final String ACTION_NEXT = "bassamalim.hidaya.services.TelawatService.next";
+    private static final String ACTION_PREV = "bassamalim.hidaya.services.TelawatService.prev";
     private NotificationCompat.Action playPauseAction;
     private NotificationCompat.Action nextAction;
     private NotificationCompat.Action prevAction;
@@ -84,7 +85,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
     public void onCreate() {
         super.onCreate();
 
-        context = RadioService.this;
+        context = TelawatService.this;
 
         initSession();
 
@@ -189,7 +190,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
 
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             // Start the service
-            startService(new Intent(context.getApplicationContext(), RadioService.class));
+            startService(new Intent(context.getApplicationContext(), TelawatService.class));
             // Set the session active  (and update metadata and state)
             mediaSession.setActive(true);
 
@@ -328,7 +329,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
 
     private void initSession() {
         // Create a MediaSessionCompat
-        mediaSession = new MediaSessionCompat(context, "RadioService");
+        mediaSession = new MediaSessionCompat(context, "TelawatService");
 
         // Enable callbacks from MediaButtons and TransportControls
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
@@ -545,6 +546,9 @@ public class RadioService extends MediaBrowserServiceCompat implements
     }
 
     private void startPlaying(int surah) {
+        if (tryOffline(surah))
+            return;
+
         String text = String.format(Locale.US, "%s/%03d.mp3",
                 version.getServer(), surah+1);
         Uri uri = Uri.parse(text);
@@ -560,13 +564,49 @@ public class RadioService extends MediaBrowserServiceCompat implements
             });
             player.setOnCompletionListener(mp -> skipToNext());
             player.setOnErrorListener((mp, what, extra) -> {
-                Log.e(Global.TAG, "Error in RadioService player: " + what);
+                Log.e(Global.TAG, "Error in TelawatService player: " + what);
                 return true;
             });
         }
         catch (IOException e) {
             e.printStackTrace();
-            Log.e(Global.TAG, "Problem in RadioService player");
+            Log.e(Global.TAG, "Problem in TelawatService player");
+        }
+    }
+
+    private boolean tryOffline(int surah) {
+        String text = "/Telawat Downloads/" + reciterId + "/" + version.getRewaya()
+                + "/" + surah + ".mp3";
+
+        String path;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            path = context.getExternalFilesDir(null) + text;
+        else
+            path = Environment.getExternalStorageDirectory().getAbsolutePath() + text;
+
+        try {
+            player.reset();
+            player.setDataSource(path);
+            player.prepare();
+            player.setOnPreparedListener(mp -> {
+                player.start();
+                updateMetadata(true);    // For the duration
+                updatePbState(PlaybackStateCompat.STATE_PLAYING);
+                updateNotification(true);
+            });
+            player.setOnCompletionListener(mp -> skipToNext());
+            player.setOnErrorListener((mp, what, extra) -> {
+                Log.e(Global.TAG, "Error in TelawatService player: " + what);
+                return true;
+            });
+
+            Log.i(Global.TAG, "Playing Offline");
+            return true;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            Log.e(Global.TAG, "Problem in TelawatService player");
+            return false;
         }
     }
 
@@ -587,7 +627,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
     }
 
     private PendingIntent getContentIntent() {
-        Intent intent = new Intent(context, RadioClient.class).setAction("back").putExtra(
+        Intent intent = new Intent(context, TelawatClient.class).setAction("back").putExtra(
                 "reciter_id", reciterId).putExtra("version", version).putExtra(
                 "surah_id", surahIndex);
 

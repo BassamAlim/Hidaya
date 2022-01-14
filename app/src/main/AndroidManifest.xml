@@ -10,11 +10,11 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -40,7 +40,7 @@
             android:name=".activities.WelcomeActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SurahsActivity"
+            android:name=".activities.TelawatSurahsActivity"
             android:exported="false" />
         <activity
             android:name=".activities.AlathkarListActivity"
@@ -102,7 +102,7 @@
             android:name=".activities.AboutActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".activities.RadioClient"
+            android:name=".activities.TelawatClient"
             android:label="@string/app_name"/>
         <activity
             android:name=".fragments.CollectionTelawatFragment"
@@ -135,7 +135,7 @@
             android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="false" />
         <service
-            android:name=".services.RadioService"
+            android:name=".services.TelawatService"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />

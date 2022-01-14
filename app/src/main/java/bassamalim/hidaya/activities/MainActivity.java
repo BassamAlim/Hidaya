@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;

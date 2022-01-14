@@ -55,6 +55,10 @@
     <!-- Descriptions -->
     <string name="qibla_view_description">this is the view that rotates depending on qibla</string>
     <string name="bingo_view_description">this is the view that shows when pointing towards qibla</string>
+    <string name="first_answer_description">الاجابة الاولى</string>
+    <string name="second_answer_description">الاجابة الثانية</string>
+    <string name="third_answer_description">الاجابة الثالثة</string>
+    <string name="fourth_answer_description">الاجابة الرابعة</string>
 
     <string name="enable_notification">تفعيل الإشعار</string>
     <string name="mute_notification">إشعار صامت</string>

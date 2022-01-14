@@ -1,20 +1,15 @@
 package bassamalim.hidaya.models;
 
-import android.view.View;
-
 public class ReciterSurahCard {
 
     private final int num;
     private final String surahName;
     private final String searchName;
-    private final View.OnClickListener listener;
 
-    public ReciterSurahCard(int gNum, String gName, String gSearchName,
-                            View.OnClickListener gListener) {
+    public ReciterSurahCard(int gNum, String gName, String gSearchName) {
         num = gNum;
         surahName = gName;
         searchName = gSearchName;
-        listener = gListener;
     }
 
     public String getSurahName() {
@@ -27,9 +22,5 @@ public class ReciterSurahCard {
 
     public String getSearchName() {
         return searchName;
-    }
-
-    public View.OnClickListener getListener() {
-        return listener;
     }
 }

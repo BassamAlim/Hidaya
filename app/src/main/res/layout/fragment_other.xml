@@ -32,7 +32,7 @@
                 android:gravity="center">
 
                 <Button
-                    android:id="@+id/quran_radio"
+                    android:id="@+id/telawat"
                     android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/recitations"

@@ -148,7 +148,7 @@ public class Alarms {
         if (id == ID.FRIDAY_KAHF && loc != null) {
             Calendar[] times = getTimes(loc);
             Calendar duhr = times[2];
-            hour = duhr.get(Calendar.HOUR_OF_DAY+1);
+            hour = (duhr.get(Calendar.HOUR_OF_DAY)+1) % 24;
             minute = duhr.get(Calendar.MINUTE);
         }
         else {
