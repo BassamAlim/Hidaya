@@ -41,6 +41,7 @@ public class TelawatClient extends AppCompatActivity {
     private MediaControllerCompat controller;
     private MediaMetadataCompat mediaMetadata;
     private PlaybackStateCompat pbState;
+    private MediaControllerCompat.TransportControls tc;
     private TextView surahNamescreen;
     private SeekBar seekBar;
     private TextView progressScreen;
@@ -138,11 +139,10 @@ public class TelawatClient extends AppCompatActivity {
             // Save the controller
             MediaControllerCompat.setMediaController(TelawatClient.this, mediaController);
             controller = MediaControllerCompat.getMediaController(TelawatClient.this);
+            tc = controller.getTransportControls();
 
             // Finish building the UI
             buildTransportControls();
-
-            getIntentData();
 
             if (action.equals("start")) {
                 // Pass media data
@@ -156,7 +156,7 @@ public class TelawatClient extends AppCompatActivity {
                 String mediaId = "" + reciterId + versionId + surahIndex;
 
                 // Start Playback
-                controller.getTransportControls().playFromMediaId(mediaId, bundle);
+                tc.playFromMediaId(mediaId, bundle);
             }
         }
 
@@ -243,7 +243,7 @@ public class TelawatClient extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser)
-                    controller.getTransportControls().seekTo(progress);
+                    tc.seekTo(progress);
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -256,19 +256,18 @@ public class TelawatClient extends AppCompatActivity {
             int pbState = controller.getPlaybackState().getState();
 
             if (pbState == PlaybackStateCompat.STATE_PLAYING)
-                controller.getTransportControls().pause();
+                tc.pause();
             else
-                controller.getTransportControls().play();
+                tc.play();
         });
-        nextBtn.setOnClickListener(v -> controller.getTransportControls().skipToNext());
-        prevBtn.setOnClickListener(v -> controller.getTransportControls().skipToPrevious());
-        forwardBtn.setOnClickListener(v -> controller.getTransportControls().fastForward());
-        rewindBtn.setOnClickListener(v -> controller.getTransportControls().rewind());
+        nextBtn.setOnClickListener(v -> tc.skipToNext());
+        prevBtn.setOnClickListener(v -> tc.skipToPrevious());
+        forwardBtn.setOnClickListener(v -> tc.fastForward());
+        rewindBtn.setOnClickListener(v -> tc.rewind());
         repeatBtn.setOnClickListener(v -> {
             if (repeat == PlaybackStateCompat.REPEAT_MODE_NONE) {
                 repeat = PlaybackStateCompat.REPEAT_MODE_ONE;
-                controller.getTransportControls().setRepeatMode(
-                        PlaybackStateCompat.REPEAT_MODE_ONE);
+                tc.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE);
 
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putInt("telawat_repeat_mode", repeat);
@@ -279,8 +278,7 @@ public class TelawatClient extends AppCompatActivity {
             }
             else if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE) {
                 repeat = PlaybackStateCompat.REPEAT_MODE_NONE;
-                controller.getTransportControls().setRepeatMode(
-                        PlaybackStateCompat.REPEAT_MODE_NONE);
+                tc.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE);
 
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putInt("telawat_repeat_mode", repeat);
@@ -293,8 +291,7 @@ public class TelawatClient extends AppCompatActivity {
         shuffleBtn.setOnClickListener(v -> {
             if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_ALL;
-                controller.getTransportControls().setShuffleMode(
-                        PlaybackStateCompat.SHUFFLE_MODE_ALL);
+                tc.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL);
 
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putInt("telawat_shuffle_mode", shuffle);
@@ -305,8 +302,7 @@ public class TelawatClient extends AppCompatActivity {
             }
             else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL){
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_NONE;
-                controller.getTransportControls().setShuffleMode(
-                        PlaybackStateCompat.SHUFFLE_MODE_NONE);
+                tc.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
 
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putInt("telawat_shuffle_mode", shuffle);

@@ -1,24 +1,26 @@
 package bassamalim.hidaya.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.QuizAnswersDB;
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB;
 import bassamalim.hidaya.databinding.ActivityQuizBinding;
-import bassamalim.hidaya.other.Global;
 
 public class QuizActivity extends AppCompatActivity {
 
@@ -26,8 +28,10 @@ public class QuizActivity extends AppCompatActivity {
     private AppDatabase db;
     private List<QuizQuestionsDB> questions;
     private int current = 0;
-    private int[] cAnswers;
-    private int score = 0;
+    private final int[] cAnswers = new int[10];
+    private Button nextBtn;
+    private Button prevBtn;
+    private final Button[] answerBtns = new Button[4];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +49,13 @@ public class QuizActivity extends AppCompatActivity {
 
         selectQuestions(getQuestions());
 
+        Arrays.fill(cAnswers, -1);
+
+        initViews();
+
         setListeners();
 
-        ask(questions.get(current));
-    }
-
-    private List<QuizQuestionsDB> getQuestions() {
-        return db.quizQuestionDao().getAll();
+        ask(current);
     }
 
     private void selectQuestions(List<QuizQuestionsDB> rawQuestions) {
@@ -59,47 +63,121 @@ public class QuizActivity extends AppCompatActivity {
         questions = new ArrayList<>(rawQuestions.subList(0, 10));
     }
 
+    private void initViews() {
+        nextBtn = binding.nextQuestion;
+        prevBtn = binding.previousQuestion;
+
+        answerBtns[0] = binding.answer1;
+        answerBtns[1] = binding.answer2;
+        answerBtns[2] = binding.answer3;
+        answerBtns[3] = binding.answer4;
+    }
+
     private void setListeners() {
-        cAnswers = new int[10];
-
-        binding.answer1.setOnClickListener(view -> answered(0));
-        binding.answer2.setOnClickListener(view -> answered(1));
-        binding.answer3.setOnClickListener(view -> answered(2));
-        binding.answer4.setOnClickListener(view -> answered(3));
-    }
-
-    private void answered(int a) {
-        cAnswers[current] = a;
-
-        if (a == questions.get(current).getCorrect_answer_id())
-            score++;
-
-        current++;
-
-        if (current == 10) {
-            Intent intent = new Intent(this, QuizResultActivity.class);
-            intent.putExtra("cAnswers", cAnswers);
-            intent.putExtra("score", score);
-            intent.putExtra("questions", (Serializable) questions);
-            startActivity(intent);
-
-            finish();
+        for (int i = 0; i < answerBtns.length; i++) {
+            int finalI = i;
+            answerBtns[i].setOnClickListener(v -> answered(finalI));
         }
-        else
-            ask(questions.get(current));
+
+        prevBtn.setOnClickListener(v -> previousQ());
+        nextBtn.setOnClickListener(v -> nextQ());
     }
 
-    private void ask(QuizQuestionsDB q) {
+    private void ask(int num) {
+        QuizQuestionsDB q = questions.get(num);
+
         String qNum = "سؤال " + (current+1);
         binding.questionNumber.setText(qNum);
 
         binding.questionScreen.setText(questions.get(current).getQuestion_text());
 
         List<QuizAnswersDB> answers = getAnswers(q.getQuestion_id());
-        binding.answer1.setText(answers.get(0).getAnswer_text());
-        binding.answer2.setText(answers.get(1).getAnswer_text());
-        binding.answer3.setText(answers.get(2).getAnswer_text());
-        binding.answer4.setText(answers.get(3).getAnswer_text());
+        for (int i = 0; i < answerBtns.length; i++)
+            answerBtns[i].setText(answers.get(i).getAnswer_text());
+
+        adjustButtons();
+    }
+
+    private void adjustButtons() {
+        for (Button answerBtn : answerBtns)
+            answerBtn.setTextColor(getResources().getColor(R.color.text));
+
+        if (cAnswers[current] != -1)
+            answerBtns[cAnswers[current]].setTextColor(getResources().getColor(R.color.accent));
+
+        if (current == 0) {
+            prevBtn.setEnabled(false);
+            prevBtn.setTextColor(Color.BLACK);
+        }
+        else if (current == 9) {
+            if (allAnswered()) {
+                nextBtn.setText("إنهاء الإختبار");
+                nextBtn.setEnabled(true);
+                nextBtn.setTextColor(getResources().getColor(R.color.text));
+            }
+            else {
+                nextBtn.setText("أجب على جميع الاسئلة");
+                nextBtn.setEnabled(false);
+                nextBtn.setTextColor(Color.BLACK);
+            }
+        }
+        else {
+            prevBtn.setEnabled(true);
+            prevBtn.setTextColor(getResources().getColor(R.color.text));
+
+            nextBtn.setEnabled(true);
+            nextBtn.setText("السؤال التالي");
+            nextBtn.setTextColor(getResources().getColor(R.color.text));
+        }
+    }
+
+    private void answered(int a) {
+        cAnswers[current] = a;
+
+        adjustButtons();
+
+        if (current != 9)
+            nextQ();
+    }
+
+    private void nextQ() {
+        if (current == 9)
+            endQuiz();
+        else
+            ask(++current);
+    }
+
+    private void previousQ() {
+        if (current > 0)
+            ask(--current);
+    }
+
+    private boolean allAnswered() {
+        for (int cAnswer : cAnswers) {
+            if (cAnswer == -1)
+                return false;
+        }
+        return true;
+    }
+
+    private void endQuiz() {
+        int score = 0;
+        for (int i = 0; i < 10; i++) {
+            if (cAnswers[i] == questions.get(i).getCorrect_answer_id())
+                score++;
+        }
+
+        Intent intent = new Intent(this, QuizResultActivity.class);
+        intent.putExtra("cAnswers", cAnswers);
+        intent.putExtra("score", score);
+        intent.putExtra("questions", (Serializable) questions);
+        startActivity(intent);
+
+        finish();
+    }
+
+    private List<QuizQuestionsDB> getQuestions() {
+        return db.quizQuestionDao().getAll();
     }
 
     private List<QuizAnswersDB> getAnswers(int qId) {
