@@ -36,10 +36,12 @@ import androidx.core.app.NotificationCompat;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.TelawatClient;
@@ -75,11 +77,14 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     private final IntentFilter intentFilter = new IntentFilter();
     private AudioFocusRequest audioFocusRequest;
     private ArrayList<String> surahNames;
+    private String currentMediaId;
     private String reciterName;
     private int reciterId;
     private ReciterCard.RecitationVersion version;
     private int surahIndex;
     private WifiManager.WifiLock wifiLock;
+    private int repeat;
+    private int shuffle;
 
     @Override
     public void onCreate() {
@@ -101,21 +106,15 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
             super.onPlayFromMediaId(mediaId, extras);
 
-            surahNames = extras.getStringArrayList("surah_names");
-            int newReciter = extras.getInt("reciter_id", 0);
-            String newReciterName = extras.getString("reciter_name");
-            ReciterCard.RecitationVersion newVersion = (ReciterCard.RecitationVersion)
-                    extras.getSerializable("version");
-            int newSurah = Integer.parseInt(mediaId);
+            if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE
+                    || !mediaId.equals(currentMediaId)) {
 
-            if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE ||
-                    newReciter != reciterId || newSurah != surahIndex ||
-                    !newVersion.getRewaya().equals(version.getRewaya())) {
-
-                reciterId = newReciter;
-                reciterName = newReciterName;
-                version = newVersion;
-                surahIndex = newSurah;
+                currentMediaId = mediaId;
+                reciterId = extras.getInt("reciter_id", 0);
+                surahIndex = extras.getInt("surah_index");
+                reciterName = extras.getString("reciter_name");
+                version = (ReciterCard.RecitationVersion) extras.getSerializable("version");
+                surahNames = extras.getStringArrayList("surah_names");
 
                 if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE)
                     onPlay();
@@ -170,6 +169,18 @@ public class TelawatService extends MediaBrowserServiceCompat implements
             super.onSeekTo(pos);
             player.seekTo((int) pos);
             updatePbState(controller.getPlaybackState().getState());
+        }
+
+        @Override
+        public void onSetRepeatMode(int repeatMode) {
+            super.onSetRepeatMode(repeatMode);
+            repeat = repeatMode;
+        }
+
+        @Override
+        public void onSetShuffleMode(int shuffleMode) {
+            super.onSetShuffleMode(shuffleMode);
+            shuffle = shuffleMode;
         }
     };
 
@@ -248,9 +259,17 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
     private void skipToNext() {
         int temp = surahIndex;
-        do {
-            temp++;
-        } while(temp < 114 && !version.getSuras().contains("," + (temp+1) + ","));
+        if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
+            do {
+                temp++;
+            } while(temp < 114 && !version.getSuras().contains("," + (temp+1) + ","));
+        }
+        else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+            Random random = new Random();
+            do {
+                temp = random.nextInt(114);
+            } while(!version.getSuras().contains("," + (temp+1) + ","));
+        }
 
         if (temp < 114) {
             surahIndex = temp;
@@ -263,9 +282,17 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
     private void skipToPrevious() {
         int temp = surahIndex;
-        do {
-            temp--;
-        } while(temp >= 0 && !version.getSuras().contains("," + (temp+1) + ","));
+        if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
+            do {
+                temp--;
+            } while(temp >= 0 && !version.getSuras().contains("," + (temp+1) + ","));
+        }
+        else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+            Random random = new Random();
+            do {
+                temp = random.nextInt(114);
+            } while(!version.getSuras().contains("," + (temp+1) + ","));
+        }
 
         if (temp >= 0) {
             surahIndex = temp;
@@ -546,6 +573,21 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     }
 
     private void startPlaying(int surah) {
+        player.reset();
+
+        player.setOnPreparedListener(mp -> {
+            player.start();
+            player.setLooping(repeat == PlaybackStateCompat.REPEAT_MODE_ONE);
+            updateMetadata(true);    // For the duration
+            updatePbState(PlaybackStateCompat.STATE_PLAYING);
+            updateNotification(true);
+        });
+        player.setOnCompletionListener(mp -> skipToNext());
+        player.setOnErrorListener((mp, what, extra) -> {
+            Log.e(Global.TAG, "Error in TelawatService player: " + what);
+            return true;
+        });
+
         if (tryOffline(surah))
             return;
 
@@ -553,20 +595,8 @@ public class TelawatService extends MediaBrowserServiceCompat implements
                 version.getServer(), surah+1);
         Uri uri = Uri.parse(text);
         try {
-            player.reset();
             player.setDataSource(getApplicationContext(), uri);
             player.prepareAsync();
-            player.setOnPreparedListener(mp -> {
-                player.start();
-                updateMetadata(true);    // For the duration
-                updatePbState(PlaybackStateCompat.STATE_PLAYING);
-                updateNotification(true);
-            });
-            player.setOnCompletionListener(mp -> skipToNext());
-            player.setOnErrorListener((mp, what, extra) -> {
-                Log.e(Global.TAG, "Error in TelawatService player: " + what);
-                return true;
-            });
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -575,7 +605,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     }
 
     private boolean tryOffline(int surah) {
-        String text = "/Telawat Downloads/" + reciterId + "/" + version.getRewaya()
+        String text = "/Telawat Downloads/" + reciterId + "/" + version.getVersionId()
                 + "/" + surah + ".mp3";
 
         String path;
@@ -585,23 +615,14 @@ public class TelawatService extends MediaBrowserServiceCompat implements
             path = Environment.getExternalStorageDirectory().getAbsolutePath() + text;
 
         try {
-            player.reset();
             player.setDataSource(path);
             player.prepare();
-            player.setOnPreparedListener(mp -> {
-                player.start();
-                updateMetadata(true);    // For the duration
-                updatePbState(PlaybackStateCompat.STATE_PLAYING);
-                updateNotification(true);
-            });
-            player.setOnCompletionListener(mp -> skipToNext());
-            player.setOnErrorListener((mp, what, extra) -> {
-                Log.e(Global.TAG, "Error in TelawatService player: " + what);
-                return true;
-            });
-
             Log.i(Global.TAG, "Playing Offline");
             return true;
+        }
+        catch (FileNotFoundException f) {
+            Log.d(Global.TAG, "Not available offline");
+            return false;
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -637,8 +658,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         else
             flags = PendingIntent.FLAG_UPDATE_CURRENT;
 
-        return PendingIntent.getActivity(context, 36,
-                intent, flags);
+        return PendingIntent.getActivity(context, 36, intent, flags);
     }
 
     @Nullable @Override

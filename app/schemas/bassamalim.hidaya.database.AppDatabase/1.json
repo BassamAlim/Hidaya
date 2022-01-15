@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "de69ee549f5553abc19991f363195bea",
+    "identityHash": "45d6eb21788806800473c7efc8bf2bcd",
     "entities": [
       {
         "tableName": "hafs_ayat",
@@ -378,7 +378,7 @@
       },
       {
         "tableName": "telawat_versions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reciter_id` INTEGER NOT NULL, `rewaya` TEXT NOT NULL, `url` TEXT, `count` INTEGER NOT NULL, `suras` TEXT, PRIMARY KEY(`reciter_id`, `rewaya`), FOREIGN KEY(`reciter_id`) REFERENCES `telawat_reciters`(`reciter_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reciter_id` INTEGER NOT NULL, `version_id` INTEGER NOT NULL, `rewaya` TEXT, `url` TEXT, `count` INTEGER NOT NULL, `suras` TEXT, PRIMARY KEY(`reciter_id`, `version_id`), FOREIGN KEY(`reciter_id`) REFERENCES `telawat_reciters`(`reciter_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
         "fields": [
           {
             "fieldPath": "reciter_id",
@@ -387,10 +387,16 @@
             "notNull": true
           },
           {
+            "fieldPath": "version_id",
+            "columnName": "version_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "rewaya",
             "columnName": "rewaya",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "url",
@@ -414,7 +420,7 @@
         "primaryKey": {
           "columnNames": [
             "reciter_id",
-            "rewaya"
+            "version_id"
           ],
           "autoGenerate": false
         },
@@ -432,12 +438,89 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "quiz_questions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`question_id` INTEGER NOT NULL, `question_text` TEXT, `correct_answer_id` INTEGER NOT NULL, PRIMARY KEY(`question_id`))",
+        "fields": [
+          {
+            "fieldPath": "question_id",
+            "columnName": "question_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "question_text",
+            "columnName": "question_text",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "correct_answer_id",
+            "columnName": "correct_answer_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "question_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "quiz_answers",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`answer_id` INTEGER NOT NULL, `answer_text` TEXT, `question_id` INTEGER NOT NULL, PRIMARY KEY(`question_id`, `answer_id`), FOREIGN KEY(`question_id`) REFERENCES `quiz_questions`(`question_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
+        "fields": [
+          {
+            "fieldPath": "answer_id",
+            "columnName": "answer_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "answer_text",
+            "columnName": "answer_text",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "question_id",
+            "columnName": "question_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "question_id",
+            "answer_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "quiz_questions",
+            "onDelete": "SET DEFAULT",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "question_id"
+            ],
+            "referencedColumns": [
+              "question_id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'de69ee549f5553abc19991f363195bea')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '45d6eb21788806800473c7efc8bf2bcd')"
     ]
   }
 }

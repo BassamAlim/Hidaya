@@ -74,10 +74,12 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_quran_black_24dp.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_quran_conclude.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_recitation_settings.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_repeat.xml" value="0.19282051282051282" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_right_arrow.xml" value="0.19282051282051282" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_search.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_settings.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_share.xml" value="0.1925925925925926" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_shuffle.xml" value="0.19282051282051282" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_skip_next.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_skip_previous.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_sound.xml" value="0.19583333333333333" />
@@ -124,7 +126,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/about_activity.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_about.xml" value="0.1" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_alathkar.xml" value="0.15185185185185185" />
-        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_alathkar_list.xml" value="0.1425925925925926" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_alathkar_list.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_athkar_view.xml" value="0.1648148148148148" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_features_guide.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_main.xml" value="0.17222222222222222" />
@@ -136,7 +138,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_radio_player.xml" value="0.22376738305941846" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_reciter_surahs.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_screen_slide.xml" value="0.14907407407407408" />
-        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_telawat_player.xml" value="0.1" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_telawat_player.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_tv.xml" value="0.15462962962962962" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_welcome.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/alathkar_activity.xml" value="0.15185185185185185" />
@@ -172,7 +174,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/list_view_item.xml" value="0.15648148148148147" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/list_view_items.xml" value="0.1638888888888889" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/other_fragment.xml" value="0.22" />
-        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/popup_prayer.xml" value="0.22" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/popup_prayer.xml" value="0.4466666666666667" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/prayer_dialog.xml" value="0.16018518518518518" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/prayer_popup.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/prayer_settings_dialog.xml" value="0.1" />

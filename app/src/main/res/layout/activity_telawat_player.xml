@@ -55,7 +55,7 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="20dp"
         android:padding="10dp"
-        android:background="@color/primary50"
+        android:background="@color/primary70"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/controls_space">
@@ -92,7 +92,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="130dp"
-        android:background="@color/primary50"
+        android:background="@color/primary70"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -159,6 +159,53 @@
             android:contentDescription="@string/next_track_btn_description"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/fast_forward"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/actions_space"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:background="@color/primary70"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageButton
+            android:id="@+id/shuffle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:background="@drawable/ripple"
+            android:src="@drawable/ic_shuffle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/download"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <ImageButton
+            android:id="@+id/download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:background="@drawable/ripple"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/shuffle"
+            app:layout_constraintEnd_toStartOf="@id/repeat"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <ImageButton
+            android:id="@+id/repeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:background="@drawable/ripple"
+            android:src="@drawable/ic_repeat"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/download"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 

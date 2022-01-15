@@ -2,6 +2,7 @@ package bassamalim.hidaya.activities;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
 import java.util.ArrayList;
@@ -33,27 +35,32 @@ import bassamalim.hidaya.services.TelawatService;
 public class TelawatClient extends AppCompatActivity {
 
     private ActivityTelawatPlayerBinding binding;
+    private AppDatabase db;
+    private SharedPreferences pref;
     private MediaBrowserCompat mediaBrowser;
     private MediaControllerCompat controller;
     private MediaMetadataCompat mediaMetadata;
     private PlaybackStateCompat pbState;
+    private TextView surahNamescreen;
+    private SeekBar seekBar;
     private TextView progressScreen;
     private TextView durationScreen;
-    private TextView surahNamescreen;
     private ImageButton playPause;
     private ImageButton nextBtn;
     private ImageButton prevBtn;
     private ImageButton forwardBtn;
     private ImageButton rewindBtn;
-    private SeekBar seekBar;
+    private ImageButton repeatBtn;
+    private ImageButton shuffleBtn;
     private String action;
     private int reciterId;
-    private String rewaya;
-    private ArrayList<String> surahNames;
+    private int versionId;
+    private int surahIndex;
     private String reciterName;
     private ReciterCard.RecitationVersion version;
-    private int surahId;
-    private AppDatabase db;
+    private ArrayList<String> surahNames;
+    private int repeat;
+    private int shuffle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +73,15 @@ public class TelawatClient extends AppCompatActivity {
                 "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
                 .build();
 
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+
         action = getIntent().getAction();
 
         getIntentData();
 
         getData();
+
+        retrieveState();
 
         initViews();
 
@@ -133,17 +144,19 @@ public class TelawatClient extends AppCompatActivity {
 
             getIntentData();
 
-            if (controller.getPlaybackState().getState() != PlaybackStateCompat.STATE_PLAYING
-                    && action.equals("start")) {
+            if (action.equals("start")) {
                 // Pass media data
                 Bundle bundle = new Bundle();
-                bundle.putStringArrayList("surah_names", surahNames);
                 bundle.putInt("reciter_id", reciterId);
+                bundle.putInt("surah_index", surahIndex);
                 bundle.putString("reciter_name", reciterName);
                 bundle.putSerializable("version", version);
+                bundle.putStringArrayList("surah_names", surahNames);
+
+                String mediaId = "" + reciterId + versionId + surahIndex;
 
                 // Start Playback
-                controller.getTransportControls().playFromMediaId(String.valueOf(surahId), bundle);
+                controller.getTransportControls().playFromMediaId(mediaId, bundle);
             }
         }
 
@@ -165,20 +178,16 @@ public class TelawatClient extends AppCompatActivity {
     private void getIntentData() {
         Intent intent = getIntent();
         reciterId = intent.getIntExtra("reciter_id", 0);
-        rewaya = intent.getStringExtra("rewaya");
-        surahId = intent.getIntExtra("surah_id", 0);
+        versionId = intent.getIntExtra("version_id", 0);
+        surahIndex = intent.getIntExtra("surah_id", 0);
         getSurahNames();
     }
 
     private void getData() {
-        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
-                "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
-                .build();
-
         reciterName = db.telawatRecitersDao().getNames().get(reciterId);
 
-        TelawatVersionsDB telawa = db.telawatVersionsDao().getVersion(reciterId, rewaya);
-        version = new ReciterCard.RecitationVersion(telawa.getUrl(), telawa.getRewaya(),
+        TelawatVersionsDB telawa = db.telawatVersionsDao().getVersion(reciterId, versionId);
+        version = new ReciterCard.RecitationVersion(versionId, telawa.getUrl(), telawa.getRewaya(),
                 telawa.getCount(), telawa.getSuras(), null);
 
         if (surahNames == null)
@@ -187,6 +196,11 @@ public class TelawatClient extends AppCompatActivity {
 
     private void getSurahNames() {
         surahNames = (ArrayList<String>) db.suraDao().getNames();
+    }
+
+    private void retrieveState() {
+        repeat = pref.getInt("telawat_repeat_mode", 0);
+        shuffle = pref.getInt("telawat_shuffle_mode", 0);
     }
 
     private void initViews() {
@@ -199,10 +213,19 @@ public class TelawatClient extends AppCompatActivity {
         prevBtn = binding.previousTrack;
         forwardBtn = binding.fastForward;
         rewindBtn = binding.rewind;
+        repeatBtn = binding.repeat;
+        shuffleBtn = binding.shuffle;
 
-        surahNamescreen.setText(surahNames.get(surahId));
+        surahNamescreen.setText(surahNames.get(surahIndex));
         binding.reciterNamescreen.setText(reciterName);
         binding.versionNamescreen.setText(version.getRewaya());
+
+        if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE)
+            repeatBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ripple_s, getTheme()));
+        if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL)
+            shuffleBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ripple_s, getTheme()));
     }
 
     private void updateButton(boolean playing) {
@@ -216,6 +239,17 @@ public class TelawatClient extends AppCompatActivity {
 
     private void enableControls() {
         // Attach a listeners to the buttons
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser)
+                    controller.getTransportControls().seekTo(progress);
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
         playPause.setOnClickListener(v -> {
             // Since this is a play/pause button, you'll need to test the current state
             // and choose the action accordingly
@@ -230,27 +264,69 @@ public class TelawatClient extends AppCompatActivity {
         prevBtn.setOnClickListener(v -> controller.getTransportControls().skipToPrevious());
         forwardBtn.setOnClickListener(v -> controller.getTransportControls().fastForward());
         rewindBtn.setOnClickListener(v -> controller.getTransportControls().rewind());
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser)
-                    controller.getTransportControls().seekTo(progress);
+        repeatBtn.setOnClickListener(v -> {
+            if (repeat == PlaybackStateCompat.REPEAT_MODE_NONE) {
+                repeat = PlaybackStateCompat.REPEAT_MODE_ONE;
+                controller.getTransportControls().setRepeatMode(
+                        PlaybackStateCompat.REPEAT_MODE_ONE);
+
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt("telawat_repeat_mode", repeat);
+                editor.apply();
+
+                repeatBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ripple_s, getTheme()));
             }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            else if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE) {
+                repeat = PlaybackStateCompat.REPEAT_MODE_NONE;
+                controller.getTransportControls().setRepeatMode(
+                        PlaybackStateCompat.REPEAT_MODE_NONE);
+
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt("telawat_repeat_mode", repeat);
+                editor.apply();
+
+                repeatBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ripple, getTheme()));
+            }
+        });
+        shuffleBtn.setOnClickListener(v -> {
+            if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
+                shuffle = PlaybackStateCompat.SHUFFLE_MODE_ALL;
+                controller.getTransportControls().setShuffleMode(
+                        PlaybackStateCompat.SHUFFLE_MODE_ALL);
+
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt("telawat_shuffle_mode", shuffle);
+                editor.apply();
+
+                shuffleBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ripple_s, getTheme()));
+            }
+            else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL){
+                shuffle = PlaybackStateCompat.SHUFFLE_MODE_NONE;
+                controller.getTransportControls().setShuffleMode(
+                        PlaybackStateCompat.SHUFFLE_MODE_NONE);
+
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt("telawat_shuffle_mode", shuffle);
+                editor.apply();
+
+                shuffleBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ripple, getTheme()));
+            }
         });
     }
 
     private void disableControls() {
-        // Attach a listeners to the buttons
         playPause.setOnClickListener(null);
         nextBtn.setOnClickListener(null);
         prevBtn.setOnClickListener(null);
         forwardBtn.setOnClickListener(null);
         rewindBtn.setOnClickListener(null);
         seekBar.setOnSeekBarChangeListener(null);
+        repeatBtn.setOnClickListener(null);
+        shuffleBtn.setOnClickListener(null);
     }
 
     private void buildTransportControls() {
@@ -269,7 +345,6 @@ public class TelawatClient extends AppCompatActivity {
     MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
-
             mediaMetadata = metadata;
             // To change the metadata inside the app when the user changes it from the notification
             updateMetadata();
@@ -285,8 +360,8 @@ public class TelawatClient extends AppCompatActivity {
     };
 
     private void updateMetadata() {
-        surahId = (int) mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER);
-        surahNamescreen.setText(surahNames.get(surahId));
+        surahIndex = (int) mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER);
+        surahNamescreen.setText(surahNames.get(surahIndex));
 
         int duration = (int) mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
         durationScreen.setText(formatTime(duration));

@@ -1,6 +1,8 @@
 package bassamalim.hidaya.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,7 +29,7 @@ public class TelawatSurahsActivity extends AppCompatActivity {
     private TelawatSurahsAdapter adapter;
     private ArrayList<ReciterSurahCard> cards;
     private int reciterId;
-    private String rewaya;
+    private int versionId;
     private String availableSurahs;
     private ArrayList<String> surahNames;
     private String[] searchNames;
@@ -42,8 +44,9 @@ public class TelawatSurahsActivity extends AppCompatActivity {
         setSupportActionBar(binding.nameBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        reciterId = getIntent().getIntExtra("reciter_id", 0);
-        rewaya = getIntent().getStringExtra("rewaya");
+        Intent intent = getIntent();
+        reciterId = intent.getIntExtra("reciter_id", 0);
+        versionId = intent.getIntExtra("version_id", 0);
 
         getData();
 
@@ -66,7 +69,7 @@ public class TelawatSurahsActivity extends AppCompatActivity {
             searchNames[i] = suras.get(i).getSearch_name();
         }
 
-        availableSurahs = db.telawatVersionsDao().getSuras(reciterId, rewaya);
+        availableSurahs = db.telawatVersionsDao().getSuras(reciterId, versionId);
     }
 
     private ArrayList<ReciterSurahCard> makeCards() {
@@ -75,7 +78,19 @@ public class TelawatSurahsActivity extends AppCompatActivity {
             if (availableSurahs.contains("," + (i+1) + ",")) {
                 String name = surahNames.get(i);
                 String searchName = searchNames[i];
-                cards.add(new ReciterSurahCard(i, name, searchName));
+
+                int finalI = i;
+                View.OnClickListener listener = v -> {
+                    Intent intent = new Intent(this, TelawatClient.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intent.setAction("start");
+                    intent.putExtra("reciter_id", reciterId);
+                    intent.putExtra("version_id", versionId);
+                    intent.putExtra("surah_id", finalI);
+                    startActivity(intent);
+                };
+
+                cards.add(new ReciterSurahCard(i, name, searchName, listener));
             }
         }
         return cards;
@@ -85,7 +100,7 @@ public class TelawatSurahsActivity extends AppCompatActivity {
         recycler = findViewById(R.id.reciter_surahs_recycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recycler.setLayoutManager(layoutManager);
-        adapter = new TelawatSurahsAdapter(this, cards, reciterId, rewaya);
+        adapter = new TelawatSurahsAdapter(this, cards, reciterId, versionId);
         recycler.setAdapter(adapter);
     }
 

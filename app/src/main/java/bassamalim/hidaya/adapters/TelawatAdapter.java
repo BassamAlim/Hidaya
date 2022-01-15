@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
@@ -98,8 +99,6 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
         setupVerRecycler(viewHolder, card);
     }
 
-
-
     public void filter(String text) {
         recitersCards.clear();
         if (text.isEmpty())
@@ -116,8 +115,8 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
     private void setupVerRecycler(ViewHolder viewHolder, ReciterCard card) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setInitialPrefetchItemCount(card.getVersions().size());
-        TelawaVersionAdapter versionsAdapter =
-                new TelawaVersionAdapter(context, card.getVersions());
+        TelawaVersionAdapter versionsAdapter = new TelawaVersionAdapter(
+                context, card.getVersions(), card.getId(), db.suraDao().getNames());
         viewHolder.recyclerView.setLayoutManager(layoutManager);
         viewHolder.recyclerView.setAdapter(versionsAdapter);
         viewHolder.recyclerView.setRecycledViewPool(viewPool);
@@ -134,6 +133,10 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
 
     private final Context context;
     private final List<ReciterCard.RecitationVersion> versions;
+    private final int reciterId;
+    private boolean[] downloaded;
+    private final String prefix;
+    private final List<String> names;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView cardView;
@@ -149,9 +152,16 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
         }
     }
 
-    public TelawaVersionAdapter(Context context, List<ReciterCard.RecitationVersion> versions) {
+    public TelawaVersionAdapter(Context context, List<ReciterCard.RecitationVersion> versions,
+                                int reciterId, List<String> names) {
         this.context = context;
         this.versions = versions;
+        this.reciterId = reciterId;
+        this.names = names;
+
+        prefix = "/Telawat Downloads/" + reciterId;
+
+        checkDownloaded();
     }
 
     @NonNull @Override
@@ -162,17 +172,80 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+        int id = versions.get(position).getVersionId();
+
         ReciterCard.RecitationVersion ver = versions.get(position);
 
         viewHolder.tv.setText(ver.getRewaya());
 
         viewHolder.cardView.setOnClickListener(ver.getListener());
 
-        viewHolder.download_btn.setOnClickListener(v -> {
-            downloadVer(ver);
+        if (downloaded[id])
+            viewHolder.download_btn.setImageDrawable(AppCompatResources.getDrawable(
+                    context, R.drawable.ic_downloaded));
+        else
+            viewHolder.download_btn.setImageDrawable(AppCompatResources.getDrawable(
+                    context, R.drawable.ic_download));
 
-            viewHolder.download_btn.setImageDrawable();
+        viewHolder.download_btn.setOnClickListener(v -> {
+            if (downloaded[id]) {
+                delete(ver);
+
+                viewHolder.download_btn.setImageDrawable(AppCompatResources.getDrawable(
+                        context, R.drawable.ic_download));
+            }
+            else {
+                downloadVer(ver);
+
+                viewHolder.download_btn.setImageDrawable(AppCompatResources.getDrawable(
+                        context, R.drawable.ic_downloaded));
+            }
         });
+    }
+
+    private void checkDownloaded() {
+        downloaded = new boolean[versions.size()];
+
+        File dir;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            dir = new File(context.getExternalFilesDir(null) + prefix);
+        else
+            dir = new File(Environment.getExternalStorageDirectory()
+                    .getAbsolutePath() + prefix);
+
+        if (!dir.exists())
+            return;
+
+        File[] files = dir.listFiles();
+
+        if (files == null || files.length == 0)
+            return;
+
+        Log.d(Global.TAG, "Reciter " + reciterId + " Exists");
+
+        for (int i = 0; i < Objects.requireNonNull(files).length; i++) {
+            String name = files[i].getName();
+            try {
+                int num = Integer.parseInt(name);
+                downloaded[num] = true;
+            } catch (NumberFormatException ignored) {}
+        }
+    }
+
+    private String createDir(int verId) {
+        String text = prefix + "/" + verId;
+
+        File dir;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            dir = new File(context.getExternalFilesDir(null) + text);
+        else
+            dir = new File(Environment.getExternalStorageDirectory()
+                    .getAbsolutePath() + text);
+
+        if (!dir.exists())
+            dir.mkdirs();
+
+        return text;
     }
 
     private void downloadVer(ReciterCard.RecitationVersion ver) {
@@ -187,33 +260,38 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
 
                 Uri uri = Uri.parse(link);
                 request = new DownloadManager.Request(uri);
-                request.setTitle("تحميل التلاوات");
-                request.setVisibleInDownloadsUi(true);
+                request.setTitle(names.get(i));
+                if (i == 0)
+                    request.setVisibleInDownloadsUi(true);
                 request.setDestinationInExternalFilesDir(context,
-                        createDir(ver.getReciter_id()), num + ".mp3");
+                        createDir(ver.getVersionId()), i + ".mp3");
                 request.setNotificationVisibility(
                         DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
                 downloadManager.enqueue(request);
             }
         }
 
+        downloaded[ver.getVersionId()] = true;
+
         Log.d(Global.TAG, "Downloaded");
     }
 
-    private String createDir(int reciterID) {
-        String text = "/Telawat Downloads/" + reciterID + "/" + rewaya;
+    private void delete(ReciterCard.RecitationVersion ver) {
+        String text = prefix + "/" + ver.getVersionId();
 
-        File dir;
+        File file;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            dir = new File(context.getExternalFilesDir(null) + text);
+            file = new File(context.getExternalFilesDir(null) + text);
         else
-            dir = new File(Environment.getExternalStorageDirectory()
+            file = new File(Environment.getExternalStorageDirectory()
                     .getAbsolutePath() + text);
 
-        if (!dir.exists())
-            dir.mkdirs();
+        if (file.exists())
+            file.delete();
 
-        return text;
+        downloaded[ver.getVersionId()] = false;
+
+        Log.d(Global.TAG, "Deleted");
     }
 
     @Override

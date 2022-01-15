@@ -72,12 +72,13 @@ public class FavoriteTelawatFragment extends Fragment {
                 View.OnClickListener listener = v -> {
                     Intent intent = new Intent(v.getContext(), TelawatSurahsActivity.class);
                     intent.putExtra("reciter_id", telawa.getReciter_id());
-                    intent.putExtra("rewaya", telawa.getRewaya());
+                    intent.putExtra("version_id", telawa.getVersion_id());
                     startActivity(intent);
                 };
 
-                versionsList.add(new ReciterCard.RecitationVersion(telawa.getUrl(),
-                        telawa.getRewaya(), telawa.getCount(), telawa.getSuras(), listener));
+                versionsList.add(new ReciterCard.RecitationVersion(telawa.getVersion_id(),
+                        telawa.getUrl(), telawa.getRewaya(), telawa.getCount(),
+                        telawa.getSuras(), listener));
             }
             cards.add(new ReciterCard(reciter.getReciter_id(), name, 1, versionsList));
         }
@@ -87,14 +88,10 @@ public class FavoriteTelawatFragment extends Fragment {
 
     private List<TelawatDB> getVersions(int id) {
         List<TelawatDB> result = new ArrayList<>();
-
         for (int i = 0; i < telawat.size(); i++) {
             TelawatDB telawa = telawat.get(i);
-
-            if (telawa.getReciter_id() != id)
-                continue;
-
-            result.add(telawa);
+            if (telawa.getReciter_id() == id)
+                result.add(telawa);
         }
         return result;
     }

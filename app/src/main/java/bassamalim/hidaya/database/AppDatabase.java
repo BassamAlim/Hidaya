@@ -32,7 +32,7 @@ import bassamalim.hidaya.database.dbs.ThikrsDB;
         entities = {AyatDB.class, SuraDB.class, AthkarCategoryDB.class, AthkarDB.class,
                 ThikrsDB.class, AyatRecitersDB.class, AyatTelawaDB.class, TelawatRecitersDB.class,
                 TelawatVersionsDB.class, QuizQuestionsDB.class, QuizAnswersDB.class},
-        version = 2, autoMigrations = {@AutoMigration(from = 1, to = 2)}
+        version = 1/*, autoMigrations = {@AutoMigration(from = 1, to = 2)}*/
 )
 public abstract class AppDatabase extends RoomDatabase {
 

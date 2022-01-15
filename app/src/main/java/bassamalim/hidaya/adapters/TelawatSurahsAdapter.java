@@ -2,7 +2,6 @@ package bassamalim.hidaya.adapters;
 
 import android.app.DownloadManager;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -26,7 +25,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.activities.TelawatClient;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
 import bassamalim.hidaya.models.ReciterSurahCard;
@@ -37,9 +35,9 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
     private final Context context;
     private final List<ReciterSurahCard> surahsCards;
     private final List<ReciterSurahCard> surahsCardsCopy;
-    private final String rewaya;
+    private final int versionId;
     private final TelawatVersionsDB ver;
-    private boolean[] downloaded;
+    private final boolean[] downloaded = new boolean[114];
     private final String prefix;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -56,7 +54,7 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
     }
 
     public TelawatSurahsAdapter(Context context, ArrayList<ReciterSurahCard> cards,
-                                int reciterId, String rewaya) {
+                                int reciterId, int versionId) {
         this.context = context;
         AppDatabase db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
@@ -64,11 +62,11 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
         surahsCards = new ArrayList<>(cards);
         surahsCardsCopy = new ArrayList<>(cards);
 
-        this.rewaya = rewaya;
+        this.versionId = versionId;
 
-        ver = db.telawatVersionsDao().getVersion(reciterId, rewaya);
+        ver = db.telawatVersionsDao().getVersion(reciterId, versionId);
 
-        prefix = "/Telawat Downloads/" + ver.getReciter_id() + "/" + rewaya;
+        prefix = "/Telawat Downloads/" + ver.getReciter_id() + "/" + versionId;
 
         checkDownloaded();
     }
@@ -86,18 +84,7 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
         int surahNum = surahsCards.get(position).getNum();
 
         viewHolder.namescreen.setText(surahsCards.get(position).getSurahName());
-
-        // replace the listener with a new one that considers downloaded files
-        viewHolder.card.setOnClickListener(v -> {
-            Intent intent = new Intent(context, TelawatClient.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            intent.setAction("start");
-            intent.putExtra("reciter_id", ver.getReciter_id());
-            intent.putExtra("rewaya", rewaya);
-            intent.putExtra("surah_id", surahNum);
-            intent.putExtra("downloaded", downloaded);
-            context.startActivity(intent);
-        });
+        viewHolder.card.setOnClickListener(surahsCards.get(position).getListener());
 
         if (downloaded[surahNum])
             viewHolder.imageButton.setImageDrawable(AppCompatResources.getDrawable(
@@ -141,8 +128,6 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
     }
 
     private void checkDownloaded() {
-        downloaded = new boolean[114];
-
         File dir;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             dir = new File(context.getExternalFilesDir(null) + prefix);
@@ -171,7 +156,7 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
     }
 
     private String createDir(int reciterID) {
-        String text = "/Telawat Downloads/" + reciterID + "/" + rewaya;
+        String text = "/Telawat Downloads/" + reciterID + "/" + versionId;
 
         File dir;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)

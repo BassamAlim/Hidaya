@@ -13,10 +13,12 @@ public interface TelawatVersionsDao {
     @Query("SELECT * FROM telawat_versions")
     List<TelawatVersionsDB> getAll();
 
-    @Query("SELECT * FROM telawat_versions WHERE reciter_id = :id AND rewaya = :rewaya")
-    TelawatVersionsDB getVersion(int id, String rewaya);
+    @Query("SELECT * FROM telawat_versions " +
+            "WHERE reciter_id = :reciter_id AND version_id = :version_id")
+    TelawatVersionsDB getVersion(int reciter_id, int version_id);
 
-    @Query("SELECT suras FROM telawat_versions WHERE reciter_id = :id AND rewaya = :rewaya")
-    String getSuras(int id, String rewaya);
+    @Query("SELECT suras FROM telawat_versions " +
+            "WHERE reciter_id = :reciter_id AND version_id = :version_id")
+    String getSuras(int reciter_id, int version_id);
 
 }

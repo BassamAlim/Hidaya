@@ -5,7 +5,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="primary">#222831</color>
-    <color name="primary50">#80222831</color>
+    <color name="primary70">#B3222831</color> // # alpha in hex + color
 
     <color name="secondary">#222D37</color>
     <color name="light_secondary">#56738E</color>
