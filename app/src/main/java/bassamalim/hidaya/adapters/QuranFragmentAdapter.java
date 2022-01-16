@@ -2,6 +2,7 @@ package bassamalim.hidaya.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -93,6 +97,8 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
                         card.setFavorite(0);
                     }
                     notifyItemChanged(position);
+
+                    updateFavorites();
                 });
     }
 
@@ -138,6 +144,19 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
             }
         }
         notifyDataSetChanged();
+    }
+
+    private void updateFavorites() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        Object[] favSuras = db.suraDao().getFav().toArray();
+
+        Gson gson = new Gson();
+        String surasJson = gson.toJson(favSuras);
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("favorite_suras", surasJson);
+        editor.apply();
     }
 
 }

@@ -1,6 +1,7 @@
 package bassamalim.hidaya.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -21,7 +25,7 @@ import bassamalim.hidaya.models.AlathkarButton;
 
 public class AlathkarAdapter extends RecyclerView.Adapter<AlathkarAdapter.ViewHolder> {
 
-    private Context context;
+    private final Context context;
     private final AppDatabase db;
     private final ArrayList<AlathkarButton> alathkarCards;
     private final ArrayList<AlathkarButton> alathkarCardsCopy;
@@ -51,8 +55,6 @@ public class AlathkarAdapter extends RecyclerView.Adapter<AlathkarAdapter.ViewHo
 
     @NonNull @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        context = viewGroup.getContext();
-
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(
                 R.layout.item_alathkar, viewGroup, false));
     }
@@ -85,12 +87,9 @@ public class AlathkarAdapter extends RecyclerView.Adapter<AlathkarAdapter.ViewHo
                         card.setFavorite(0);
                     }
                     notifyItemChanged(position);
-                });
-    }
 
-    @Override
-    public int getItemCount() {
-        return alathkarCards.size();
+                    updateFavorites();
+                });
     }
 
     public void filter(String text) {
@@ -106,5 +105,22 @@ public class AlathkarAdapter extends RecyclerView.Adapter<AlathkarAdapter.ViewHo
         notifyDataSetChanged();
     }
 
+    private void updateFavorites() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        Integer[] favAthkar = (Integer[]) db.athkarDao().getFavs().toArray();
+
+        Gson gson = new Gson();
+        String athkarJson = gson.toJson(favAthkar);
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("favorite_athkar", athkarJson);
+        editor.apply();
+    }
+
+    @Override
+    public int getItemCount() {
+        return alathkarCards.size();
+    }
 }
 

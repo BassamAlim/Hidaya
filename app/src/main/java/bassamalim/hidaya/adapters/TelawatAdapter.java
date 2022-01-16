@@ -2,6 +2,7 @@ package bassamalim.hidaya.adapters;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -16,9 +17,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -94,6 +98,8 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
                         card.setFavorite(0);
                     }
                     notifyItemChanged(position);
+
+                    updateFavorites();
                 });
 
         setupVerRecycler(viewHolder, card);
@@ -120,6 +126,19 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
         viewHolder.recyclerView.setLayoutManager(layoutManager);
         viewHolder.recyclerView.setAdapter(versionsAdapter);
         viewHolder.recyclerView.setRecycledViewPool(viewPool);
+    }
+
+    private void updateFavorites() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        Integer[] favReciters = (Integer[]) db.telawatRecitersDao().getFavs().toArray();
+
+        Gson gson = new Gson();
+        String recitersJson = gson.toJson(favReciters);
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("favorite_reciters", recitersJson);
+        editor.apply();
     }
 
     @Override

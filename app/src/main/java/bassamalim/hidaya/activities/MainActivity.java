@@ -22,6 +22,7 @@ import androidx.room.Room;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.gson.Gson;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -136,21 +137,56 @@ public class MainActivity extends AppCompatActivity {
                     .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
             db.suraDao().getFav();
         } catch (Exception e) {
-            deleteDatabase("HidayaDB");
-            Log.i(Global.TAG, "Database Updated");
+            reviveDb();
         }
 
         int lastVer = pref.getInt("last_db_version", 1);
-        int currentVer = Global.dbVer;
-        if (currentVer > lastVer) {
-            deleteDatabase("HidayaDB");
 
-            Log.i(Global.TAG, "Database Updated");
+        if (Global.dbVer > lastVer)
+            reviveDb();
+    }
 
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putInt("last_db_version", currentVer);
-            editor.apply();
+    private void reviveDb() {
+        deleteDatabase("HidayaDB");
+
+        AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
+                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
+
+        String surasJson = pref.getString("favorite_suras", "");
+        String recitersJson = pref.getString("favorite_reciters", "");
+        String athkarJson = pref.getString("favorite_athkar", "");
+
+        Gson gson = new Gson();
+
+        if (surasJson.length() != 0) {
+            Object[] favSuras = gson.fromJson(surasJson, Object[].class);
+            for (int i = 0; i < favSuras.length; i++) {
+                Double d = (Double) favSuras[i];
+                db.suraDao().setFav(i, d.intValue());
+            }
         }
+
+        if (recitersJson.length() != 0) {
+            Object[] favReciters = gson.fromJson(recitersJson, Object[].class);
+            for (int i = 0; i < favReciters.length; i++) {
+                Double d = (Double) favReciters[i];
+                db.telawatRecitersDao().setFav(i, d.intValue());
+            }
+        }
+
+        if (athkarJson.length() != 0) {
+            Object[] favAthkar = gson.fromJson(athkarJson, Object[].class);
+            for (int i = 0; i < favAthkar.length; i++) {
+                Double d = (Double) favAthkar[i];
+                db.athkarDao().setFav(i, d.intValue());
+            }
+        }
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("last_db_version", Global.dbVer);
+        editor.apply();
+
+        Log.i(Global.TAG, "Database Revived");
     }
 
     private void dailyUpdate() {

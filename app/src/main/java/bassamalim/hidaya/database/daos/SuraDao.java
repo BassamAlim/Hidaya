@@ -28,11 +28,4 @@ public interface SuraDao {
     @Query("SELECT start_page FROM suar WHERE sura_id = :index")
     int getPage(int index);
 
-/*
-    @Insert
-    void insertAll(JAyah... users);
-
-    @Delete
-    void delete(JAyah user);
-*/
 }
