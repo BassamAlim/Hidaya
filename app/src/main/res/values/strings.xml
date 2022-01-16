@@ -111,5 +111,6 @@
     <string name="quiz_result">نتيجة الاختبار</string>
     <string name="previous_question">السؤال السابق</string>
     <string name="next_question">السؤال التالي</string>
+    <string name="rebuild_database">إعادة بناء قاعدة البيانات</string>
 
 </resources>

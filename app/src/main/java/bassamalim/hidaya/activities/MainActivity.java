@@ -8,9 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,18 +17,19 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
+import androidx.room.Room;
 
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
 
 import bassamalim.hidaya.R;
+import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.databinding.ActivityMainBinding;
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.helpers.Keeper;
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         setAlarms();
 
-        rebuildDb();
+        testDb();
 
         dailyUpdate();
 
@@ -131,7 +130,16 @@ public class MainActivity extends AppCompatActivity {
         return tester;
     }
 
-    private void rebuildDb() {
+    private void testDb() {
+        try {
+            AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
+                    .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
+            db.suraDao().getFav();
+        } catch (Exception e) {
+            deleteDatabase("HidayaDB");
+            Log.i(Global.TAG, "Database Updated");
+        }
+
         int lastVer = pref.getInt("last_db_version", 1);
         int currentVer = Global.dbVer;
         if (currentVer > lastVer) {
