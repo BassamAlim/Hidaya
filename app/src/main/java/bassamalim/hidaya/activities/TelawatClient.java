@@ -12,6 +12,7 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import androidx.room.Room;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
@@ -66,7 +68,10 @@ public class TelawatClient extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = ActivityTelawatPlayerBinding.inflate(getLayoutInflater());
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
+        setSupportActionBar(binding.topBar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
                 "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
@@ -211,10 +216,10 @@ public class TelawatClient extends AppCompatActivity {
 
         if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE)
             repeatBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                    R.drawable.ripple_s, getTheme()));
+                    R.drawable.ripple_b, getTheme()));
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL)
             shuffleBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                    R.drawable.ripple_s, getTheme()));
+                    R.drawable.ripple_b, getTheme()));
     }
 
     private void setListeners() {
@@ -229,7 +234,7 @@ public class TelawatClient extends AppCompatActivity {
                 editor.apply();
 
                 repeatBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ripple_s, getTheme()));
+                        R.drawable.ripple_b, getTheme()));
             }
             else if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE) {
                 repeat = PlaybackStateCompat.REPEAT_MODE_NONE;
@@ -253,7 +258,7 @@ public class TelawatClient extends AppCompatActivity {
                 editor.apply();
 
                 shuffleBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ripple_s, getTheme()));
+                        R.drawable.ripple_b, getTheme()));
             }
             else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL){
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_NONE;
