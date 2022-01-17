@@ -1,5 +1,7 @@
 package bassamalim.hidaya.fragments;
 
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Window;
 
@@ -16,7 +18,9 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.Objects;
 
 import bassamalim.hidaya.R;
+import bassamalim.hidaya.activities.MainActivity;
 import bassamalim.hidaya.databinding.FragmentCollectionTelawatBinding;
+import bassamalim.hidaya.helpers.Keeper;
 
 public class CollectionTelawatFragment extends FragmentActivity {
 
@@ -55,6 +59,15 @@ public class CollectionTelawatFragment extends FragmentActivity {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed();
+
+            if (isTaskRoot()) {
+                Intent intent = new Intent(this, MainActivity.class);
+                Location location = new Keeper(this).retrieveLocation();
+                intent.putExtra("located", location != null);
+                intent.putExtra("location", location);
+                startActivity(intent);
+                finish();
+            }
         }
         else {
             // Otherwise, select the previous step.

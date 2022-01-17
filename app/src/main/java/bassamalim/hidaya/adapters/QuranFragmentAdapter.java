@@ -30,6 +30,7 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
 
     private final Context context;
     private final AppDatabase db;
+    private final SharedPreferences pref;
     private final ArrayList<SurahCard> surahCards;
     private final ArrayList<SurahCard> surahCardsCopy;
 
@@ -47,13 +48,15 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
     }
 
     public QuranFragmentAdapter(Context context, ArrayList<SurahCard> buttons) {
-        surahCards = new ArrayList<>(buttons);
-        surahCardsCopy = new ArrayList<>(buttons);
-
         this.context = context;
 
         db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB").createFromAsset(
                 "databases/HidayaDB.db").allowMainThreadQueries().build();
+
+        pref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        surahCards = new ArrayList<>(buttons);
+        surahCardsCopy = new ArrayList<>(buttons);
     }
 
     @NonNull @Override
@@ -147,8 +150,6 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
     }
 
     private void updateFavorites() {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-
         Object[] favSuras = db.suraDao().getFav().toArray();
 
         Gson gson = new Gson();

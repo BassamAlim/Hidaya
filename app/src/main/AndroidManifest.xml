@@ -103,7 +103,7 @@
             android:label="@string/app_name" />
         <activity
             android:name=".activities.TelawatClient"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTop"
             android:label="@string/app_name"/>
         <activity
             android:name=".fragments.CollectionTelawatFragment"

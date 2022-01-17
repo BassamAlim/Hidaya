@@ -39,6 +39,7 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
 
     private final Context context;
     private final AppDatabase db;
+    private final SharedPreferences pref;
     private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
     private final ArrayList<ReciterCard> recitersCards;
     private final ArrayList<ReciterCard> recitersCardsCopy;
@@ -62,6 +63,8 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
 
         db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB").createFromAsset(
                 "databases/HidayaDB.db").allowMainThreadQueries().build();
+
+        pref = PreferenceManager.getDefaultSharedPreferences(context);
 
         recitersCards = new ArrayList<>(cards);
         recitersCardsCopy = new ArrayList<>(cards);
@@ -129,9 +132,7 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
     }
 
     private void updateFavorites() {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-
-        Integer[] favReciters = (Integer[]) db.telawatRecitersDao().getFavs().toArray();
+        Object[] favReciters = db.telawatRecitersDao().getFavs().toArray();
 
         Gson gson = new Gson();
         String recitersJson = gson.toJson(favReciters);

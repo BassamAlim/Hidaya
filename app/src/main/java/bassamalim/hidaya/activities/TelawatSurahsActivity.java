@@ -20,6 +20,7 @@ import bassamalim.hidaya.adapters.TelawatSurahsAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.SuraDB;
 import bassamalim.hidaya.databinding.ActivitySurahsBinding;
+import bassamalim.hidaya.fragments.CollectionTelawatFragment;
 import bassamalim.hidaya.models.ReciterSurahCard;
 
 public class TelawatSurahsActivity extends AppCompatActivity {
@@ -86,7 +87,7 @@ public class TelawatSurahsActivity extends AppCompatActivity {
                     intent.setAction("start");
                     intent.putExtra("reciter_id", reciterId);
                     intent.putExtra("version_id", versionId);
-                    intent.putExtra("surah_id", finalI);
+                    intent.putExtra("surah_index", finalI);
                     startActivity(intent);
                 };
 
@@ -117,6 +118,16 @@ public class TelawatSurahsActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if (isTaskRoot()) {
+            Intent intent = new Intent(this, CollectionTelawatFragment.class);
+            startActivity(intent);
+        }
     }
 
     public void onDestroy() {

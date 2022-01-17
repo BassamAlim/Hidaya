@@ -27,6 +27,7 @@ public class AlathkarAdapter extends RecyclerView.Adapter<AlathkarAdapter.ViewHo
 
     private final Context context;
     private final AppDatabase db;
+    private final SharedPreferences pref;
     private final ArrayList<AlathkarButton> alathkarCards;
     private final ArrayList<AlathkarButton> alathkarCardsCopy;
 
@@ -44,13 +45,15 @@ public class AlathkarAdapter extends RecyclerView.Adapter<AlathkarAdapter.ViewHo
     }
 
     public AlathkarAdapter(Context context, ArrayList<AlathkarButton> cards) {
-        alathkarCards = new ArrayList<>(cards);
-        alathkarCardsCopy = new ArrayList<>(cards);
-
         this.context = context;
 
         db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB").createFromAsset(
                 "databases/HidayaDB.db").allowMainThreadQueries().build();
+
+        pref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        alathkarCards = new ArrayList<>(cards);
+        alathkarCardsCopy = new ArrayList<>(cards);
     }
 
     @NonNull @Override
@@ -106,9 +109,7 @@ public class AlathkarAdapter extends RecyclerView.Adapter<AlathkarAdapter.ViewHo
     }
 
     private void updateFavorites() {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-
-        Integer[] favAthkar = (Integer[]) db.athkarDao().getFavs().toArray();
+        Object[] favAthkar = db.athkarDao().getFavs().toArray();
 
         Gson gson = new Gson();
         String athkarJson = gson.toJson(favAthkar);
