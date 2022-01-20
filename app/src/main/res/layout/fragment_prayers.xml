@@ -10,294 +10,290 @@
     android:background="@color/bg"
     tools:context=".fragments.PrayersFragment">
 
-    <LinearLayout
-        android:id="@+id/prayers_cards"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/fajr_card"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="32dp"
-        android:orientation="vertical"
+        android:layout_height="@dimen/prayer_card_height"
+        android:layout_marginTop="5dp"
+        android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        app:cardBackgroundColor="@color/secondary"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/shorouq_card">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/fajr_card"
+        <TextView
+            android:id="@+id/fajr_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="30dp"
+            android:layout_gravity="start|center"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/fajr_counter"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/prayer_card_height"
-            android:layout_marginHorizontal="@dimen/prayer_card_margin"
-            android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="@color/secondary"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="10dp"
-            app:cardMaxElevation="12dp"
-            app:cardPreventCornerOverlap="true">
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:background="@color/black"
+            android:textColor="@color/accent"
+            android:textSize="18sp"
+            android:visibility="invisible"/>
 
-            <TextView
-                android:id="@+id/fajr_screen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="30dp"
-                android:layout_gravity="start|center"
-                android:gravity="center"
-                android:textSize="30sp"
-                android:textStyle="bold"/>
+        <ImageView
+            android:id="@+id/fajr_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="15dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_sound"
+            android:contentDescription="@string/notification_image_description" />
 
-            <TextView
-                android:id="@+id/fajr_counter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_horizontal"
-                android:background="@color/black"
-                android:textColor="@color/accent"
-                android:textSize="18sp"
-                android:visibility="invisible"/>
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/fajr_image"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="15dp"
-                android:layout_gravity="center|end"
-                android:src="@drawable/ic_sound"
-                android:contentDescription="@string/notification_image_description" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/shorouq_card"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/prayer_card_height"
+        android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        android:orientation="horizontal"
+        app:cardBackgroundColor="@color/secondary"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintTop_toBottomOf="@id/fajr_card"
+        app:layout_constraintBottom_toTopOf="@id/duhr_card">
 
-        </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/shorouq_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="30dp"
+            android:layout_gravity="center|start"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/shorouq_card"
+        <TextView
+            android:id="@+id/shorouq_counter"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/prayer_card_height"
-            android:layout_marginHorizontal="@dimen/prayer_card_margin"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal"
-            app:cardBackgroundColor="@color/secondary"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="10dp"
-            app:cardMaxElevation="12dp"
-            app:cardPreventCornerOverlap="true">
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:background="@color/black"
+            android:textColor="@color/accent"
+            android:textSize="18sp"
+            android:visibility="invisible"/>
 
-            <TextView
-                android:id="@+id/shorouq_screen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="30dp"
-                android:layout_gravity="center|start"
-                android:gravity="center"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/shorouq_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="15dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_disabled"
+            android:contentDescription="@string/notification_image_description" />
 
-            <TextView
-                android:id="@+id/shorouq_counter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_horizontal"
-                android:background="@color/black"
-                android:textColor="@color/accent"
-                android:textSize="18sp"
-                android:visibility="invisible"/>
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/shorouq_image"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="15dp"
-                android:layout_gravity="center|end"
-                android:src="@drawable/ic_disabled"
-                android:contentDescription="@string/notification_image_description" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/duhr_card"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/prayer_card_height"
+        android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        app:cardBackgroundColor="@color/secondary"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintTop_toBottomOf="@id/shorouq_card"
+        app:layout_constraintBottom_toTopOf="@id/asr_card">
 
-        </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/duhr_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="30dp"
+            android:layout_gravity="center|start"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/dhuhr_card"
+        <TextView
+            android:id="@+id/duhr_counter"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/prayer_card_height"
-            android:layout_marginHorizontal="@dimen/prayer_card_margin"
-            android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="@color/secondary"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="10dp"
-            app:cardMaxElevation="12dp"
-            app:cardPreventCornerOverlap="true">
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:background="@color/black"
+            android:textColor="@color/accent"
+            android:textSize="18sp"
+            android:visibility="invisible"/>
 
-            <TextView
-                android:id="@+id/duhr_screen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="30dp"
-                android:layout_gravity="center|start"
-                android:gravity="center"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/duhr_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="15dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_sound"
+            android:contentDescription="@string/notification_image_description" />
 
-            <TextView
-                android:id="@+id/duhr_counter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_horizontal"
-                android:background="@color/black"
-                android:textColor="@color/accent"
-                android:textSize="18sp"
-                android:visibility="invisible"/>
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/duhr_image"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="15dp"
-                android:layout_gravity="center|end"
-                android:src="@drawable/ic_sound"
-                android:contentDescription="@string/notification_image_description" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/asr_card"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/prayer_card_height"
+        android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        app:cardBackgroundColor="@color/secondary"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintTop_toBottomOf="@id/duhr_card"
+        app:layout_constraintBottom_toTopOf="@id/maghrib_card">
 
-        </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/asr_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="30dp"
+            android:layout_gravity="center|start"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/asr_card"
+        <TextView
+            android:id="@+id/asr_counter"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/prayer_card_height"
-            android:layout_marginHorizontal="@dimen/prayer_card_margin"
-            android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="@color/secondary"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="10dp"
-            app:cardMaxElevation="12dp"
-            app:cardPreventCornerOverlap="true">
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:background="@color/black"
+            android:textColor="@color/accent"
+            android:textSize="18sp"
+            android:visibility="invisible"/>
 
-            <TextView
-                android:id="@+id/asr_screen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="30dp"
-                android:layout_gravity="center|start"
-                android:gravity="center"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/asr_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="15dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_sound"
+            android:contentDescription="@string/notification_image_description" />
 
-            <TextView
-                android:id="@+id/asr_counter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_horizontal"
-                android:background="@color/black"
-                android:textColor="@color/accent"
-                android:textSize="18sp"
-                android:visibility="invisible"/>
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/asr_image"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="15dp"
-                android:layout_gravity="center|end"
-                android:src="@drawable/ic_sound"
-                android:contentDescription="@string/notification_image_description" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/maghrib_card"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/prayer_card_height"
+        android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        app:cardBackgroundColor="@color/secondary"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintTop_toBottomOf="@id/asr_card"
+        app:layout_constraintBottom_toTopOf="@id/ishaa_card">
 
-        </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/maghrib_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="30dp"
+            android:layout_gravity="center|start"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/maghrib_card"
+        <TextView
+            android:id="@+id/maghrib_counter"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/prayer_card_height"
-            android:layout_marginHorizontal="@dimen/prayer_card_margin"
-            android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="@color/secondary"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="10dp"
-            app:cardMaxElevation="12dp"
-            app:cardPreventCornerOverlap="true">
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:background="@color/black"
+            android:textColor="@color/accent"
+            android:textSize="18sp"
+            android:visibility="invisible"/>
 
-            <TextView
-                android:id="@+id/maghrib_screen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="30dp"
-                android:layout_gravity="center|start"
-                android:gravity="center"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/maghrib_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="15dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_sound"
+            android:contentDescription="@string/notification_image_description" />
 
-            <TextView
-                android:id="@+id/maghrib_counter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_horizontal"
-                android:background="@color/black"
-                android:textColor="@color/accent"
-                android:textSize="18sp"
-                android:visibility="invisible"/>
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/maghrib_image"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="15dp"
-                android:layout_gravity="center|end"
-                android:src="@drawable/ic_sound"
-                android:contentDescription="@string/notification_image_description" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ishaa_card"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/prayer_card_height"
+        android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        app:cardBackgroundColor="@color/secondary"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:layout_constraintTop_toBottomOf="@id/maghrib_card"
+        app:layout_constraintBottom_toTopOf="@id/day_selector">
 
-        </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/ishaa_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="30dp"
+            android:layout_gravity="center|start"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/ishaa_card"
+        <TextView
+            android:id="@+id/ishaa_counter"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/prayer_card_height"
-            android:layout_marginHorizontal="@dimen/prayer_card_margin"
-            app:cardBackgroundColor="@color/secondary"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="10dp"
-            app:cardMaxElevation="12dp"
-            app:cardPreventCornerOverlap="true">
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:background="@color/black"
+            android:textColor="@color/accent"
+            android:textSize="18sp"
+            android:visibility="invisible"/>
 
-            <TextView
-                android:id="@+id/ishaa_screen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="30dp"
-                android:layout_gravity="center|start"
-                android:gravity="center"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/ishaa_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="15dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_sound"
+            android:contentDescription="@string/notification_image_description" />
 
-            <TextView
-                android:id="@+id/ishaa_counter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_horizontal"
-                android:background="@color/black"
-                android:textColor="@color/accent"
-                android:textSize="18sp"
-                android:visibility="invisible"/>
-
-            <ImageView
-                android:id="@+id/ishaa_image"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="15dp"
-                android:layout_gravity="center|end"
-                android:src="@drawable/ic_sound"
-                android:contentDescription="@string/notification_image_description" />
-
-        </androidx.cardview.widget.CardView>
-
-    </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/day_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginHorizontal="15dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
-        android:layout_marginHorizontal="15dp"
         android:backgroundTint="@color/secondary"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ishaa_card"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton

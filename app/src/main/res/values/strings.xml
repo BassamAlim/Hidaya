@@ -40,11 +40,11 @@
     <string name="all_thikrs">جميع الأذكار</string>
     <string name="day_and_night_thikrs">أذكار اليوم والليلة</string>
     <string name="prayers_thikrs">أذكار الصلاة</string>
-    <string name="quran_thikrs">أذكار المصحف</string>
+    <string name="quran_thikrs">أدعية المصحف</string>
     <string name="places_thikrs">أذكار المكان</string>
     <string name="emotion_thikrs">أذكار الحال</string>
     <string name="actions_thikrs">أذكار الأفعال</string>
-    <string name="events_thikrs">أذكار الأحداث</string>
+    <string name="events_thikrs">أدعية الأحداث</string>
     <string name="more_thikrs">المزيد</string>
     <string name="quran_and_sunnah_channels">قناة القرآن والسنة</string>
     <string name="settings">الإعدادات</string>
@@ -59,18 +59,29 @@
     <string name="second_answer_description">الاجابة الثانية</string>
     <string name="third_answer_description">الاجابة الثالثة</string>
     <string name="fourth_answer_description">الاجابة الرابعة</string>
+    <string name="back_description">العودة</string>
+    <string name="shuffle_description">تشغيل عشوائي</string>
+    <string name="download_description">تحميل</string>
+    <string name="repeat_description">تكرار</string>
+    <string name="notification_image_description">shows current notification status</string>
+    <string name="compass_calibration_gif_description">gif explaining how to calibrate inaccurate compass</string>
+    <string name="accuracy_indicator_description">accuracy indicator for qibla compass</string>
+    <string name="app_widget_description">This is an app widget description</string>
+    <string name="previous_day_button_description">arrow for moving to previous day</string>
+    <string name="next_day_button_description">arrow for moving to next day</string>
+    <string name="previous_track_btn_description">skip to previous track</string>
+    <string name="rewind_btn_description">rewind 10s of playback</string>
+    <string name="play_pause_btn_description">اوقف واكمل التشغيل</string>
+    <string name="fast_forward_btn_description">تقدم</string>
+    <string name="next_track_btn_description">انتقل الى السورة التالية</string>
 
     <string name="enable_notification">تفعيل الإشعار</string>
     <string name="mute_notification">إشعار صامت</string>
     <string name="disable_notification">إيقاف</string>
     <string name="adjust_prayer_notification_time">تعديل وقت الإشعار</string>
-    <string name="notification_image_description">shows current notification status</string>
-    <string name="compass_calibration_gif_description">gif explaining how to calibrate inaccurate compass</string>
-    <string name="accuracy_indicator_description">accuracy indicator for qibla compass</string>
     <string name="low_accuracy_text">الدقة ضعيفة … يرجى معايرة الجهاز</string>
     <string name="medium_accuracy_text">الدقة متوسطة</string>
     <string name="high_accuracy_text">الدقة جيدة</string>
-    <string name="app_widget_description">This is an app widget description</string>
     <string name="continue_reading">اكمل القراءة</string>
     <string name="bookmark_page_button">button to bookmark page</string>
     <string name="recitation_settings">إعدادات التلاوة</string>
@@ -82,16 +93,9 @@
     <string name="thanks">شكرا لاستخدامكم تطبيق هِداية</string>
     <string name="quran_source">المصحف: من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
     <string name="tafseer_source">التفسير: التفسير الميسر من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
-    <string name="quran_query_hint">ادخل اسم السورة أو رقم الصفحة</string>
+    <string name="quran_query_hint">ابحث عن اسم السورة أو رقم الصفحة</string>
     <string name="recitations">تلاوات</string>
-    <string name="previous_day_button_description">arrow for moving to previous day</string>
     <string name="today">اليوم</string>
-    <string name="next_day_button_description">arrow for moving to next day</string>
-    <string name="previous_track_btn_description">skip to previous track</string>
-    <string name="rewind_btn_description">rewind 10s of playback</string>
-    <string name="play_pause_btn_description">اوقف واكمل التشغيل</string>
-    <string name="fast_forward_btn_description">تقدم</string>
-    <string name="next_track_btn_description">انتقل الى السورة التالية</string>
     <string name="stop_on_surah_end">توقف عند نهاية السورة</string>
     <string name="stop_on_page_end">توقف عند نهاية الصفحة</string>
     <string name="welcome_message">أهلا بك في تطبيق هِداية</string>
@@ -112,6 +116,5 @@
     <string name="previous_question">السؤال السابق</string>
     <string name="next_question">السؤال التالي</string>
     <string name="rebuild_database">إعادة بناء قاعدة البيانات</string>
-    <string name="back_description">العودة</string>
 
 </resources>

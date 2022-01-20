@@ -89,7 +89,7 @@ public class PrayersFragment extends Fragment {
     private void setViews() {
         cards[0] = binding.fajrCard;
         cards[1] = binding.shorouqCard;
-        cards[2] = binding.dhuhrCard;
+        cards[2] = binding.duhrCard;
         cards[3] = binding.asrCard;
         cards[4] = binding.maghribCard;
         cards[5] = binding.ishaaCard;
