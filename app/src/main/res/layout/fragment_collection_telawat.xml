@@ -27,6 +27,16 @@
 
     </Toolbar>
 
+    <Button
+        android:id="@+id/continue_listening"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/ripple_s"
+        android:hint="@string/continue_listening"
+        android:textColor="@color/accent"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"

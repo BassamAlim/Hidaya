@@ -5,7 +5,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,6 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
 import bassamalim.hidaya.models.ReciterSurahCard;
-import bassamalim.hidaya.other.Global;
 
 public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdapter.ViewHolder> {
 
@@ -138,8 +136,6 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
         if (!dir.exists())
             return;
 
-        Log.d(Global.TAG, "Exists");
-
         File[] files = dir.listFiles();
 
         for (int i = 0; i < Objects.requireNonNull(files).length; i++) {
@@ -175,8 +171,6 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
         String server = ver.getUrl();
         String link = String.format(Locale.US, "%s/%03d.mp3", server, num+1);
 
-        Log.d(Global.TAG, link);
-
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(
                 Context.DOWNLOAD_SERVICE);
         Uri uri = Uri.parse(link);
@@ -190,8 +184,6 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
         downloadManager.enqueue(request);
 
         downloaded[num] = true;
-
-        Log.d(Global.TAG, "Downloaded");
     }
 
     private void delete(int num) {
@@ -208,8 +200,6 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
             file.delete();
 
         downloaded[num] = false;
-
-        Log.d(Global.TAG, "Deleted");
     }
 
 }

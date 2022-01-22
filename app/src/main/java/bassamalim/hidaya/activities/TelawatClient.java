@@ -54,6 +54,7 @@ public class TelawatClient extends AppCompatActivity {
     private ImageButton repeatBtn;
     private ImageButton shuffleBtn;
     private String action;
+    private String mediaId;
     private int reciterId;
     private int versionId;
     private int surahIndex;
@@ -79,23 +80,22 @@ public class TelawatClient extends AppCompatActivity {
 
         pref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        action = getIntent().getAction();
-
         getData();
 
         retrieveState();
 
+        mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this,
+                TelawatService.class), connectionCallbacks, null); // optional Bundle
+
         initViews();
 
         setListeners();
-
-        mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this,
-                TelawatService.class), connectionCallbacks, null); // optional Bundle
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        Log.d(Global.TAG, "In OnNewIntent");
 
         getData();
 
@@ -117,8 +117,6 @@ public class TelawatClient extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        Log.i(Global.TAG, "in onStop of TelawatClient");
-        // (see "stay in sync with the MediaSession")
         if (MediaControllerCompat.getMediaController(TelawatClient.this) != null) {
             MediaControllerCompat.getMediaController(TelawatClient.this)
                     .unregisterCallback(controllerCallback);
@@ -142,6 +140,7 @@ public class TelawatClient extends AppCompatActivity {
             MediaControllerCompat mediaController = null;
             try {
                 mediaController = new MediaControllerCompat(TelawatClient.this, token);
+
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -156,7 +155,7 @@ public class TelawatClient extends AppCompatActivity {
 
             getData();
 
-            if (action.equals("start"))
+            if (!action.equals("back"))
                 sendPlayRequest();
         }
 
@@ -179,9 +178,15 @@ public class TelawatClient extends AppCompatActivity {
     private void getData() {
         Intent intent = getIntent();
         action = intent.getAction();
-        reciterId = intent.getIntExtra("reciter_id", 0);
-        versionId = intent.getIntExtra("version_id", 0);
-        surahIndex = intent.getIntExtra("surah_index", 0);
+
+        if (action.equals("continue"))
+            mediaId = pref.getString("last_played_media_id", "");
+        else
+            mediaId = intent.getStringExtra("media_id");
+
+        reciterId = Integer.parseInt(mediaId.substring(0, 3));
+        versionId = Integer.parseInt(mediaId.substring(3, 5));
+        surahIndex = Integer.parseInt(mediaId.substring(5));
 
         reciterName = db.telawatRecitersDao().getNames().get(reciterId);
 
@@ -277,14 +282,10 @@ public class TelawatClient extends AppCompatActivity {
     private void sendPlayRequest() {
         // Pass media data
         Bundle bundle = new Bundle();
-        bundle.putInt("reciter_id", reciterId);
-        bundle.putInt("version_id", versionId);
-        bundle.putInt("surah_index", surahIndex);
+        bundle.putString("play_type", action);
         bundle.putString("reciter_name", reciterName);
         bundle.putSerializable("version", version);
         bundle.putStringArrayList("surah_names", surahNames);
-
-        String mediaId = "" + reciterId + versionId + surahIndex;
 
         // Start Playback
         tc.playFromMediaId(mediaId, bundle);

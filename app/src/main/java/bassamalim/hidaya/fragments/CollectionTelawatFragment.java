@@ -1,6 +1,7 @@
 package bassamalim.hidaya.fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Window;
@@ -9,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -19,6 +21,7 @@ import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.MainActivity;
+import bassamalim.hidaya.activities.TelawatClient;
 import bassamalim.hidaya.databinding.FragmentCollectionTelawatBinding;
 import bassamalim.hidaya.helpers.Keeper;
 
@@ -46,10 +49,16 @@ public class CollectionTelawatFragment extends FragmentActivity {
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
-        String[] tabs = new String[] {"جميع القراء", "المفضلة"};
+        String[] tabs = new String[] {"الكل", "المفضلة"};
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> tab.setText(tabs[position])
         ).attach();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupContinue();
     }
 
     @Override
@@ -73,6 +82,29 @@ public class CollectionTelawatFragment extends FragmentActivity {
             // Otherwise, select the previous step.
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
         }
+    }
+
+    private void setupContinue() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        String mediaId = pref.getString("last_played_media_id", "");
+        String text = pref.getString("last_played_text", "");
+
+        if (text.length() == 0)
+            text = "لم يتم تشغيل أي تلاوة بعد";
+        else {
+            text = "آخر ما تم تشغيله: " + text;
+
+            binding.continueListening.setOnClickListener(v -> {
+                Intent intent = new Intent(this, TelawatClient.class);
+                intent.setAction("continue");
+
+
+
+                startActivity(intent);
+            });
+        }
+
+        binding.continueListening.setText(text);
     }
 }
 

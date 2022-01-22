@@ -158,7 +158,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 break;
             }
             case FRIDAY_KAHF: {
-                builder.setContentTitle("جمعة مباركة");
+                builder.setContentTitle("سورة الكهف نور ما بين الجمعتين");
                 builder.setContentText("اضغط لقراءة سورة الكهف");
                 break;
             }

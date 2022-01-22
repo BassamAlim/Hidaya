@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,6 @@ import java.util.Objects;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.models.ReciterCard;
-import bassamalim.hidaya.other.Global;
 
 public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHolder> {
 
@@ -241,8 +239,6 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
         if (files == null || files.length == 0)
             return;
 
-        Log.d(Global.TAG, "Reciter " + reciterId + " Exists");
-
         for (int i = 0; i < Objects.requireNonNull(files).length; i++) {
             String name = files[i].getName();
             try {
@@ -292,8 +288,6 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
         }
 
         downloaded[ver.getVersionId()] = true;
-
-        Log.d(Global.TAG, "Downloaded");
     }
 
     private void delete(ReciterCard.RecitationVersion ver) {
@@ -310,8 +304,6 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
             file.delete();
 
         downloaded[ver.getVersionId()] = false;
-
-        Log.d(Global.TAG, "Deleted");
     }
 
     @Override

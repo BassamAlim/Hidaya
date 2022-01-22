@@ -1,7 +1,6 @@
 package bassamalim.hidaya.fragments;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -13,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,10 +23,10 @@ import java.util.Objects;
 
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.adapters.QuranFragmentAdapter;
-import bassamalim.hidaya.databinding.FragmentMainQuranBinding;
-import bassamalim.hidaya.database.dbs.SuraDB;
-import bassamalim.hidaya.models.SurahCard;
 import bassamalim.hidaya.database.AppDatabase;
+import bassamalim.hidaya.database.dbs.SuraDB;
+import bassamalim.hidaya.databinding.FragmentMainQuranBinding;
+import bassamalim.hidaya.models.SurahCard;
 
 public class MainQuranFragment extends Fragment {
 
@@ -68,7 +66,6 @@ public class MainQuranFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        setupContinue();
 
         if (mBundleRecyclerViewState != null) {
             new Handler().postDelayed(() -> {
@@ -78,26 +75,6 @@ public class MainQuranFragment extends Fragment {
             }, 50);
         }
         recyclerView.setLayoutManager(gridLayoutManager);
-    }
-
-    private void setupContinue() {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        int page = pref.getInt("bookmarked_page", -1);
-        String text = pref.getString("bookmarked_text", "");
-        if (page == -1)
-            text = "لا يوجد صفحة محفوظة";
-        else
-            text = "الصفحة المحفوظة:  " + text;
-        binding.continueReading.setText(text);
-
-        binding.continueReading.setOnClickListener(v -> {
-            if (page != -1) {
-                Intent intent = new Intent(getContext(), QuranActivity.class);
-                intent.setAction("by_page");
-                intent.putExtra("page", page);
-                requireContext().startActivity(intent);
-            }
-        });
     }
 
     private void setSearchListeners() {

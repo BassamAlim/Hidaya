@@ -35,7 +35,8 @@
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:defaultQueryHint="ادخل اسم السورة"/>
+            app:iconifiedByDefault="false"
+            app:defaultQueryHint="ابحث عن السورة"/>
 
     </androidx.appcompat.widget.Toolbar>
 

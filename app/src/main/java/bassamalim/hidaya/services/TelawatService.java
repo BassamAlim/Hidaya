@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
@@ -35,6 +36,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
+import androidx.preference.PreferenceManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -53,11 +55,11 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
     private static final String MY_MEDIA_ROOT_ID = "media_root_id";
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
-    private static final String ACTION_BECOMING_NOISY = AudioManager.ACTION_AUDIO_BECOMING_NOISY;
     private static final String ACTION_PLAY_PAUSE =
             "bassamalim.hidaya.services.TelawatService.playpause";
     private static final String ACTION_NEXT = "bassamalim.hidaya.services.TelawatService.next";
     private static final String ACTION_PREV = "bassamalim.hidaya.services.TelawatService.prev";
+    private static final String ACTION_STOP = "bassamalim.hidaya.services.TelawatService.stop";
     private NotificationCompat.Action playPauseAction;
     private NotificationCompat.Action nextAction;
     private NotificationCompat.Action prevAction;
@@ -73,21 +75,26 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     private Notification notification;
     private MediaPlayer player;
     private AudioManager am;
+    private SharedPreferences pref;
     private final IntentFilter intentFilter = new IntentFilter();
     private AudioFocusRequest audioFocusRequest;
     private ArrayList<String> surahNames;
-    private String currentMediaId;
+    private String mediaId;
     private String reciterName;
+    private String playType;
     private int reciterId;
     private int versionId;
     private int surahIndex;
     private ReciterCard.RecitationVersion version;
     private WifiManager.WifiLock wifiLock;
     private int shuffle;
+    private boolean playedInitial = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         initSession();
 
@@ -97,23 +104,32 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         initPlayer();
     }
 
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        MediaButtonReceiver.handleIntent(mediaSession, intent);
+        return super.onStartCommand(intent, flags, startId);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     final MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
         @Override
-        public void onPlayFromMediaId(String mediaId, Bundle extras) {
-            super.onPlayFromMediaId(mediaId, extras);
+        public void onPlayFromMediaId(String givenMediaId, Bundle extras) {
+            super.onPlayFromMediaId(givenMediaId, extras);
 
-            if (!mediaId.equals(currentMediaId)) {
-                currentMediaId = mediaId;
-                reciterId = extras.getInt("reciter_id", 0);
-                versionId = extras.getInt("version_id", 0);
-                surahIndex = extras.getInt("surah_index", 0);
+            if (!givenMediaId.equals(mediaId)) {
+                playType = extras.getString("play_type");
+                mediaId = givenMediaId;
+
+                mediaSession.setSessionActivity(getContentIntent());
+
+                reciterId = Integer.parseInt(givenMediaId.substring(0, 3));
+                versionId = Integer.parseInt(givenMediaId.substring(3, 5));
+                surahIndex = Integer.parseInt(givenMediaId.substring(5));
                 reciterName = extras.getString("reciter_name");
                 version = (ReciterCard.RecitationVersion) extras.getSerializable("version");
                 surahNames = extras.getStringArrayList("surah_names");
 
                 if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE)
-                    onPlay();
+                    play();
                 else
                     playNew();
             }
@@ -126,6 +142,8 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
         @Override
         public void onStop() {
+            super.onStop();
+            Log.d(Global.TAG, "In onStop of Telawat");
             stop();
         }
 
@@ -181,6 +199,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     };
 
     private void playNew() {
+        mediaSession.setActive(true);
         // start the player
         startPlaying(surahIndex);
 
@@ -216,12 +235,15 @@ public class TelawatService extends MediaBrowserServiceCompat implements
             registerReceiver(receiver, intentFilter);
             // Put the service in the foreground, post notification
             startForeground(id, notification);
+
+            playedInitial = true;
         }
     }
 
     private void pause() {
         // Update metadata and state
         // pause the player (custom call)
+        mediaSession.setActive(false);
         player.pause();
         handler.removeCallbacks(runnable);
 
@@ -233,7 +255,6 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     }
 
     private void stop() {
-        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         // Abandon audio focus
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             am.abandonAudioFocusRequest(audioFocusRequest);
@@ -251,6 +272,8 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
         // Take the service out of the foreground
         stopForeground(false);
+
+        onDestroy();
     }
 
     private void skipToNext() {
@@ -322,29 +345,33 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         @Override
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
-                case ACTION_BECOMING_NOISY:
-                    Log.i(Global.TAG, "In ACTION_BECOMING_NOISY");
+                case AudioManager.ACTION_AUDIO_BECOMING_NOISY:
+                    Log.d(Global.TAG, "In ACTION_BECOMING_NOISY");
                     pause();
                     break;
                 case ACTION_PLAY_PAUSE:
                     if (controller.getPlaybackState().getState()
                             == PlaybackStateCompat.STATE_PLAYING) {
-                        Log.i(Global.TAG, "In ACTION_PAUSE");
+                        Log.d(Global.TAG, "In ACTION_PAUSE");
                         pause();
                     }
                     else if (controller.getPlaybackState().getState() ==
                             PlaybackStateCompat.STATE_PAUSED) {
-                        Log.i(Global.TAG, "In ACTION_PLAY");
+                        Log.d(Global.TAG, "In ACTION_PLAY");
                         play();
                     }
                     break;
                 case ACTION_NEXT:
-                    Log.i(Global.TAG, "In ACTION_NEXT");
+                    Log.d(Global.TAG, "In ACTION_NEXT");
                     skipToNext();
                     break;
                 case ACTION_PREV:
-                    Log.i(Global.TAG, "In ACTION_PREV");
+                    Log.d(Global.TAG, "In ACTION_PREV");
                     skipToPrevious();
+                    break;
+                case ACTION_STOP:
+                    Log.d(Global.TAG, "In ACTION_STOP");
+                    onDestroy();
                     break;
             }
         }
@@ -462,6 +489,8 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(getResources(), R.drawable.low_quality_foreground));
 
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId);
+
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE,
                 surahNames.get(surahIndex));
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE,
@@ -521,10 +550,11 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     private void initPlayer() {
         player = new MediaPlayer();
         player.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        //mediaPlayer.setLooping(true);
+
         wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock");
         wifiLock.acquire();
+
         player.setAudioAttributes(
                 new AudioAttributes.Builder()
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -544,10 +574,15 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         }
 
         player.setOnPreparedListener(mp -> {
+            if (playType.equals("continue") && !playedInitial)
+                player.seekTo(pref.getInt("last_telawa_progress", 0));
+
             player.start();
             updateMetadata(true);    // For the duration
             updatePbState(PlaybackStateCompat.STATE_PLAYING);
             updateNotification(true);
+
+            saveForLater(0);
         });
         player.setOnCompletionListener(mp -> skipToNext());
         player.setOnErrorListener((mp, what, extra) -> {
@@ -557,10 +592,11 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     }
 
     private void setActions() {
-        intentFilter.addAction(ACTION_BECOMING_NOISY);
+        intentFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
         intentFilter.addAction(ACTION_PLAY_PAUSE);
         intentFilter.addAction(ACTION_NEXT);
         intentFilter.addAction(ACTION_PREV);
+        intentFilter.addAction(ACTION_STOP);
 
         String pkg = getPackageName();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
@@ -642,8 +678,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
     private PendingIntent getContentIntent() {
         Intent intent = new Intent(this, TelawatClient.class).setAction("back")
-                .putExtra("reciter_id", reciterId).putExtra("version_id", versionId)
-                .putExtra("surah_index", surahIndex);
+                .putExtra("media_id", mediaId);
 
         int flags;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
@@ -657,7 +692,6 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     @Nullable @Override
     public BrowserRoot onGetRoot(@NonNull String clientPackageName,
                                  int clientUid, @Nullable Bundle rootHints) {
-
         // (Optional) Control the level of access for the specified package name.
         if (allowBrowsing(clientPackageName, clientUid)) {
             // Returns a root ID that clients can use with onLoadChildren() to retrieve
@@ -694,6 +728,17 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         return true;
     }
 
+    private void saveForLater(int progress) {
+        String text = "سورة " + surahNames.get(surahIndex) + " للقارئ " + reciterName + " برواية " +
+                version.getRewaya();
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("last_played_media_id", mediaId);
+        editor.putString("last_played_text", text);
+        editor.putInt("last_telawa_progress", progress);
+        editor.apply();
+    }
+
     private void cleanUp() {
         if (wifiLock != null)
             wifiLock.release();
@@ -701,5 +746,13 @@ public class TelawatService extends MediaBrowserServiceCompat implements
             player.release();
             player = null;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(Global.TAG, "In OnDestroy of TelawatService");
+        saveForLater(player.getCurrentPosition());
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }

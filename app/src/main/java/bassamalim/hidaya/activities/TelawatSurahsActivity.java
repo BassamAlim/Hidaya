@@ -13,6 +13,7 @@ import androidx.room.Room;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import bassamalim.hidaya.R;
@@ -83,11 +84,16 @@ public class TelawatSurahsActivity extends AppCompatActivity {
                 int finalI = i;
                 View.OnClickListener listener = v -> {
                     Intent intent = new Intent(this, TelawatClient.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     intent.setAction("start");
-                    intent.putExtra("reciter_id", reciterId);
-                    intent.putExtra("version_id", versionId);
-                    intent.putExtra("surah_index", finalI);
+
+                    String rId = String.format(Locale.US, "%03d", reciterId);
+                    String vId = String.format(Locale.US, "%02d", versionId);
+                    String sId = String.format(Locale.US, "%03d", finalI);
+
+                    String mediaId = rId + vId + sId;
+
+                    intent.putExtra("media_id", mediaId);
+
                     startActivity(intent);
                 };
 
