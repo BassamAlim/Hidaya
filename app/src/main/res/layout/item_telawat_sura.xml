@@ -20,16 +20,15 @@
             android:background="@drawable/ripple_s">
 
             <ImageButton
-                android:id="@+id/download_btn"
+                android:id="@+id/sura_fav_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="-60dp"
                 android:padding="10dp"
-                android:layout_marginStart="-60dp"
                 android:background="@drawable/ripple_s"
-                android:src="@drawable/ic_download"
                 android:contentDescription="@string/fav_btn_description"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
@@ -47,15 +46,16 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageButton
-                android:id="@+id/sura_fav_btn"
+                android:id="@+id/download_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="-45dp"
                 android:padding="10dp"
+                android:layout_marginStart="-60dp"
                 android:background="@drawable/ripple_s"
+                android:src="@drawable/ic_download"
                 android:contentDescription="@string/fav_btn_description"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
