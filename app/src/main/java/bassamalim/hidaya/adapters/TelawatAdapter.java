@@ -58,7 +58,6 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
 
     public TelawatAdapter(Context context, ArrayList<ReciterCard> cards) {
         this.context = context;
-
         db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB").createFromAsset(
                 "databases/HidayaDB.db").allowMainThreadQueries().build();
 
@@ -79,6 +78,27 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
         ReciterCard card = recitersCards.get(position);
 
         viewHolder.reciterNamescreen.setText(card.getName());
+
+        doFavorite(viewHolder, position);
+
+        setupVerRecycler(viewHolder, card);
+    }
+
+    public void filter(String text) {
+        recitersCards.clear();
+        if (text.isEmpty())
+            recitersCards.addAll(recitersCardsCopy);
+        else {
+            for(ReciterCard reciterCard: recitersCardsCopy) {
+                if (reciterCard.getName().contains(text))
+                    recitersCards.add(reciterCard);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    private void doFavorite(ViewHolder viewHolder, int position) {
+        ReciterCard card = recitersCards.get(position);
 
         int fav = card.getFavorite();
         if (fav == 0)
@@ -102,21 +122,6 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
 
                     updateFavorites();
                 });
-
-        setupVerRecycler(viewHolder, card);
-    }
-
-    public void filter(String text) {
-        recitersCards.clear();
-        if (text.isEmpty())
-            recitersCards.addAll(recitersCardsCopy);
-        else {
-            for(ReciterCard reciterCard: recitersCardsCopy) {
-                if (reciterCard.getName().contains(text))
-                    recitersCards.add(reciterCard);
-            }
-        }
-        notifyDataSetChanged();
     }
 
     private void setupVerRecycler(ViewHolder viewHolder, ReciterCard card) {
@@ -190,15 +195,21 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        int id = versions.get(position).getVersionId();
-
         ReciterCard.RecitationVersion ver = versions.get(position);
 
         viewHolder.tv.setText(ver.getRewaya());
 
         viewHolder.cardView.setOnClickListener(ver.getListener());
 
-        if (downloaded[id])
+        doDownloaded(viewHolder, position, ver);
+    }
+
+    private void doDownloaded(ViewHolder viewHolder, int position,
+                              ReciterCard.RecitationVersion ver) {
+
+        int verId = versions.get(position).getVersionId();
+
+        if (downloaded[verId])
             viewHolder.download_btn.setImageDrawable(AppCompatResources.getDrawable(
                     context, R.drawable.ic_downloaded));
         else
@@ -206,7 +217,7 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
                     context, R.drawable.ic_download));
 
         viewHolder.download_btn.setOnClickListener(v -> {
-            if (downloaded[id]) {
+            if (downloaded[verId]) {
                 delete(ver);
 
                 viewHolder.download_btn.setImageDrawable(AppCompatResources.getDrawable(

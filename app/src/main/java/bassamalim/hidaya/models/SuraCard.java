@@ -4,18 +4,18 @@ import android.view.View;
 
 import java.io.Serializable;
 
-public class SurahCard implements Serializable {
+public class SuraCard implements Serializable {
     private final int number;
-    private final String surahName;
+    private final String suraName;
     private final String searchName;
     private final int tanzeel;
     private int favorite;
     private final View.OnClickListener cardListener;
 
-    public SurahCard(int number, String surahName, String searchName, int tanzeel,
-                     int favorite, View.OnClickListener cardListener) {
+    public SuraCard(int number, String suraName, String searchName, int tanzeel,
+                    int favorite, View.OnClickListener cardListener) {
         this.number = number;
-        this.surahName = surahName;
+        this.suraName = suraName;
         this.tanzeel = tanzeel;
         this.searchName = searchName;
         this.favorite = favorite;
@@ -26,8 +26,8 @@ public class SurahCard implements Serializable {
         return number;
     }
 
-    public String getSurahName() {
-        return surahName;
+    public String getSuraName() {
+        return suraName;
     }
 
     public String getSearchName() {

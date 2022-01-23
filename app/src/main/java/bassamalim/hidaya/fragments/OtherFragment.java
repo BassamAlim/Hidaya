@@ -17,6 +17,7 @@ import bassamalim.hidaya.activities.AboutActivity;
 import bassamalim.hidaya.activities.FeaturesGuide;
 import bassamalim.hidaya.activities.QuizLobbyActivity;
 import bassamalim.hidaya.activities.Settings;
+import bassamalim.hidaya.activities.TelawatCollectionActivity;
 import bassamalim.hidaya.activities.TvActivity;
 import bassamalim.hidaya.databinding.FragmentOtherBinding;
 import bassamalim.hidaya.other.Global;
@@ -39,7 +40,7 @@ public class OtherFragment extends Fragment {
     public void setListeners() {
         binding.telawat.setOnClickListener(v -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Intent intent = new Intent(getContext(), CollectionTelawatFragment.class);
+                Intent intent = new Intent(getContext(), TelawatCollectionActivity.class);
                 startActivity(intent);
             }
             else

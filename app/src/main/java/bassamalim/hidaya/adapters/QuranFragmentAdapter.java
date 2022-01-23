@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,30 +25,32 @@ import java.util.ArrayList;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.database.AppDatabase;
-import bassamalim.hidaya.models.SurahCard;
+import bassamalim.hidaya.models.SuraCard;
 
 public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdapter.ViewHolder> {
 
     private final Context context;
     private final AppDatabase db;
     private final SharedPreferences pref;
-    private final ArrayList<SurahCard> surahCards;
-    private final ArrayList<SurahCard> surahCardsCopy;
+    private final ArrayList<SuraCard> suraCards;
+    private final ArrayList<SuraCard> suraCardsCopy;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView card;
+        private final TextView namescreen;
+        private final ImageView tanzeelView;
+        private final ImageButton favBtn;
 
         public ViewHolder(View view) {
             super(view);
             card = view.findViewById(R.id.surah_button_model);
-        }
-
-        public CardView getCard() {
-            return card;
+            namescreen = view.findViewById(R.id.namescreen);
+            tanzeelView = view.findViewById(R.id.tanzeel_view);
+            favBtn = view.findViewById(R.id.sura_fav_btn);
         }
     }
 
-    public QuranFragmentAdapter(Context context, ArrayList<SurahCard> buttons) {
+    public QuranFragmentAdapter(Context context, ArrayList<SuraCard> buttons) {
         this.context = context;
 
         db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB").createFromAsset(
@@ -55,8 +58,8 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
 
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        surahCards = new ArrayList<>(buttons);
-        surahCardsCopy = new ArrayList<>(buttons);
+        suraCards = new ArrayList<>(buttons);
+        suraCardsCopy = new ArrayList<>(buttons);
     }
 
     @NonNull @Override
@@ -67,66 +70,64 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        SurahCard card = surahCards.get(position);
+        SuraCard card = suraCards.get(position);
 
-        ((TextView) viewHolder.getCard().findViewById(R.id.namescreen))
-                .setText(card.getSurahName());
+        viewHolder.namescreen.setText(card.getSuraName());
 
         int tanzeel = card.getTanzeel();
         if (tanzeel == 0) // Makkah
-            ((ImageView) viewHolder.getCard().findViewById(R.id.tanzeel_view)).setImageDrawable(
+            viewHolder.tanzeelView.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_kaaba_black));
         else if (tanzeel == 1) // Madina
-            ((ImageView) viewHolder.getCard().findViewById(R.id.tanzeel_view)).setImageDrawable(
+            viewHolder.tanzeelView.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_madinah));
 
         int fav = card.getFavorite();
         if (fav == 0)
-            ((ImageView) viewHolder.getCard().findViewById(R.id.alathkar_fav_btn)).setImageDrawable(
+            viewHolder.favBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
         else if (fav == 1)
-            ((ImageView) viewHolder.getCard().findViewById(R.id.alathkar_fav_btn)).setImageDrawable(
+            viewHolder.favBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_star));
 
-        viewHolder.getCard().setOnClickListener(card.getCardListener());
-        viewHolder.getCard().findViewById(R.id.alathkar_fav_btn).setOnClickListener(
-                view -> {
-                    if (card.getFavorite() == 0) {
-                        db.suraDao().setFav(card.getNumber(), 1);
-                        card.setFavorite(1);
-                    }
-                    else if (card.getFavorite() == 1) {
-                        db.suraDao().setFav(card.getNumber(), 0);
-                        card.setFavorite(0);
-                    }
-                    notifyItemChanged(position);
+        viewHolder.card.setOnClickListener(card.getCardListener());
+        viewHolder.favBtn.setOnClickListener(view -> {
+            if (card.getFavorite() == 0) {
+                db.suraDao().setFav(card.getNumber(), 1);
+                card.setFavorite(1);
+            }
+            else if (card.getFavorite() == 1) {
+                db.suraDao().setFav(card.getNumber(), 0);
+                card.setFavorite(0);
+            }
+            notifyItemChanged(position);
 
-                    updateFavorites();
-                });
+            updateFavorites();
+        });
     }
 
     @Override
     public int getItemCount() {
-        return surahCards.size();
+        return suraCards.size();
     }
 
     public void filterName(String text) {
-        surahCards.clear();
+        suraCards.clear();
         if (text.isEmpty())
-            surahCards.addAll(surahCardsCopy);
+            suraCards.addAll(suraCardsCopy);
         else {
-            for(SurahCard surahCard : surahCardsCopy) {
-                if(surahCard.getSearchName().contains(text))
-                    surahCards.add(surahCard);
+            for(SuraCard suraCard : suraCardsCopy) {
+                if(suraCard.getSearchName().contains(text))
+                    suraCards.add(suraCard);
             }
         }
         notifyDataSetChanged();
     }
 
     public void filterNumber(String text) {
-        surahCards.clear();
+        suraCards.clear();
         if (text.isEmpty())
-            surahCards.addAll(surahCardsCopy);
+            suraCards.addAll(suraCardsCopy);
         else {
             try {
                 int num = Integer.parseInt(text);
@@ -140,9 +141,9 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
                     Toast.makeText(context, "لا توجد صفحة بهذا الرقم", Toast.LENGTH_SHORT).show();
             }
             catch (NumberFormatException e) {
-                for(SurahCard surahCard : surahCardsCopy) {
-                    if(surahCard.getSearchName().contains(text))
-                        surahCards.add(surahCard);
+                for(SuraCard suraCard : suraCardsCopy) {
+                    if(suraCard.getSearchName().contains(text))
+                        suraCards.add(suraCard);
                 }
             }
         }
@@ -159,5 +160,4 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
         editor.putString("favorite_suras", surasJson);
         editor.apply();
     }
-
 }

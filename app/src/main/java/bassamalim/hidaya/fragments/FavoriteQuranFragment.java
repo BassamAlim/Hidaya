@@ -26,14 +26,14 @@ import bassamalim.hidaya.adapters.QuranFragmentAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.SuraDB;
 import bassamalim.hidaya.databinding.FragmentFavoriteQuranBinding;
-import bassamalim.hidaya.models.SurahCard;
+import bassamalim.hidaya.models.SuraCard;
 
 public class FavoriteQuranFragment extends Fragment {
 
     private FragmentFavoriteQuranBinding binding;
     private RecyclerView recyclerView;
     private QuranFragmentAdapter adapter;
-    private ArrayList<SurahCard> surahCards;
+    private ArrayList<SuraCard> suraCards;
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
     private GridLayoutManager gridLayoutManager;
@@ -46,7 +46,7 @@ public class FavoriteQuranFragment extends Fragment {
 
         binding = FragmentFavoriteQuranBinding.inflate(inflater, container, false);
 
-        surahCards = makeSurahButtons();
+        suraCards = makeSurahButtons();
 
         setupRecycler();
 
@@ -96,12 +96,12 @@ public class FavoriteQuranFragment extends Fragment {
         recyclerView = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new QuranFragmentAdapter(getContext(), surahCards);
+        adapter = new QuranFragmentAdapter(getContext(), suraCards);
         recyclerView.setAdapter(adapter);
     }
 
-    public ArrayList<SurahCard> makeSurahButtons() {
-        ArrayList<SurahCard> buttons = new ArrayList<>();
+    public ArrayList<SuraCard> makeSurahButtons() {
+        ArrayList<SuraCard> buttons = new ArrayList<>();
 
         AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
@@ -118,7 +118,7 @@ public class FavoriteQuranFragment extends Fragment {
                 requireContext().startActivity(intent);
             };
 
-            buttons.add(new SurahCard(i,"سُورَة " + sura.getSura_name(),
+            buttons.add(new SuraCard(i,"سُورَة " + sura.getSura_name(),
                     sura.getSearch_name(), sura.getTanzeel(), 1, cardListener));
         }
         return buttons;

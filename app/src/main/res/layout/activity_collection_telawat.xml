@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg"
+    tools:context=".activities.TelawatCollectionActivity">
+
+    <Toolbar
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/primary"
+        android:elevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/bar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_gravity="start"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </Toolbar>
+
+    <Button
+        android:id="@+id/continue_listening"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/ripple_s"
+        android:hint="@string/continue_listening"
+        android:textColor="@color/accent"
+        android:textSize="16sp"/>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/telawat_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

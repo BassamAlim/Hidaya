@@ -1,12 +1,14 @@
-package bassamalim.hidaya.activities;
+package bassamalim.hidaya.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
+import android.view.ViewGroup;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -14,53 +16,46 @@ import androidx.room.Room;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
-import bassamalim.hidaya.R;
-import bassamalim.hidaya.adapters.TelawatSurahsAdapter;
+import bassamalim.hidaya.activities.TelawatClient;
+import bassamalim.hidaya.adapters.TelawatSuarAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.SuraDB;
-import bassamalim.hidaya.databinding.ActivitySurahsBinding;
-import bassamalim.hidaya.fragments.CollectionTelawatFragment;
-import bassamalim.hidaya.models.ReciterSurahCard;
+import bassamalim.hidaya.databinding.FragmentAllTelawatSuarBinding;
+import bassamalim.hidaya.models.ReciterSuraCard;
 
-public class TelawatSurahsActivity extends AppCompatActivity {
+public class AllTelawatSuarFragment extends Fragment {
 
-    private ActivitySurahsBinding binding;
+    private FragmentAllTelawatSuarBinding binding;
     private RecyclerView recycler;
-    private TelawatSurahsAdapter adapter;
-    private ArrayList<ReciterSurahCard> cards;
-    private int reciterId;
-    private int versionId;
+    private TelawatSuarAdapter adapter;
+    private final int reciterId;
+    private final int versionId;
     private String availableSurahs;
     private ArrayList<String> surahNames;
     private String[] searchNames;
+    private List<Integer> favorites;
+
+    public AllTelawatSuarFragment(int reciterId, int versionId) {
+        this.reciterId = reciterId;
+        this.versionId = versionId;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivitySurahsBinding.inflate(getLayoutInflater());
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        setContentView(binding.getRoot());
-        setSupportActionBar(binding.nameBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
-
-        Intent intent = getIntent();
-        reciterId = intent.getIntExtra("reciter_id", 0);
-        versionId = intent.getIntExtra("version_id", 0);
-
-        getData();
-
-        cards = makeCards();
+        binding = FragmentAllTelawatSuarBinding.inflate(inflater, container, false);
 
         setupRecycler();
 
         setSearchListeners();
+
+        return binding.getRoot();
     }
 
     private void getData() {
-        AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
+        AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
         List<SuraDB> suras = db.suraDao().getAll();
 
@@ -72,10 +67,14 @@ public class TelawatSurahsActivity extends AppCompatActivity {
         }
 
         availableSurahs = db.telawatVersionsDao().getSuras(reciterId, versionId);
+
+        favorites = db.suraDao().getFav();
     }
 
-    private ArrayList<ReciterSurahCard> makeCards() {
-        ArrayList<ReciterSurahCard> cards = new ArrayList<>();
+    private ArrayList<ReciterSuraCard> makeCards() {
+        getData();
+
+        ArrayList<ReciterSuraCard> cards = new ArrayList<>();
         for (int i = 0; i < 114; i++) {
             if (availableSurahs.contains("," + (i+1) + ",")) {
                 String name = surahNames.get(i);
@@ -83,7 +82,7 @@ public class TelawatSurahsActivity extends AppCompatActivity {
 
                 int finalI = i;
                 View.OnClickListener listener = v -> {
-                    Intent intent = new Intent(this, TelawatClient.class);
+                    Intent intent = new Intent(getContext(), TelawatClient.class);
                     intent.setAction("start");
 
                     String rId = String.format(Locale.US, "%03d", reciterId);
@@ -97,17 +96,17 @@ public class TelawatSurahsActivity extends AppCompatActivity {
                     startActivity(intent);
                 };
 
-                cards.add(new ReciterSurahCard(i, name, searchName, listener));
+                cards.add(new ReciterSuraCard(i, name, searchName, favorites.get(i), listener));
             }
         }
         return cards;
     }
 
     private void setupRecycler() {
-        recycler = findViewById(R.id.reciter_surahs_recycler);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recycler = binding.reciterSurahsRecycler;
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(layoutManager);
-        adapter = new TelawatSurahsAdapter(this, cards, reciterId, versionId);
+        adapter = new TelawatSuarAdapter(getContext(), makeCards(), reciterId, versionId);
         recycler.setAdapter(adapter);
     }
 
@@ -124,16 +123,6 @@ public class TelawatSurahsActivity extends AppCompatActivity {
                 return true;
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-        if (isTaskRoot()) {
-            Intent intent = new Intent(this, CollectionTelawatFragment.class);
-            startActivity(intent);
-        }
     }
 
     public void onDestroy() {

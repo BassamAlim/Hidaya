@@ -6,7 +6,7 @@
     android:layoutDirection="rtl">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/surah_model_card"
+        android:id="@+id/sura_model_card"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginVertical="3dp"
@@ -19,8 +19,21 @@
             android:gravity="center"
             android:background="@drawable/ripple_s">
 
+            <ImageButton
+                android:id="@+id/download_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginStart="-60dp"
+                android:background="@drawable/ripple_s"
+                android:src="@drawable/ic_download"
+                android:contentDescription="@string/fav_btn_description"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
             <TextView
-                android:id="@+id/surah_namescreen"
+                android:id="@+id/sura_namescreen"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingVertical="10dp"
@@ -34,13 +47,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageButton
-                android:id="@+id/download_btn"
+                android:id="@+id/sura_fav_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="-45dp"
                 android:padding="10dp"
-                android:layout_marginEnd="-60dp"
                 android:background="@drawable/ripple_s"
-                android:src="@drawable/ic_download"
                 android:contentDescription="@string/fav_btn_description"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="parent"

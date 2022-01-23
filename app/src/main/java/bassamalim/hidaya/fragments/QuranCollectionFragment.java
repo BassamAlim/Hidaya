@@ -21,7 +21,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.databinding.FragmentCollectionQuranBinding;
 
-public class CollectionQuranFragment extends Fragment {
+public class QuranCollectionFragment extends Fragment {
 
     private FragmentCollectionQuranBinding binding;
     // When requested, this adapter returns a DemoObjectFragment,
@@ -90,7 +90,7 @@ class QAdapter extends FragmentStateAdapter {
         Fragment fragment;
 
         if (position == 0)
-            fragment = new MainQuranFragment();
+            fragment = new AllQuranFragment();
         else
             fragment = new FavoriteQuranFragment();
 

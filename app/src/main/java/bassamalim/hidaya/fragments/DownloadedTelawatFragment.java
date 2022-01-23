@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import bassamalim.hidaya.activities.TelawatSurahsActivity;
 import bassamalim.hidaya.adapters.TelawatAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatDB;
 import bassamalim.hidaya.database.dbs.TelawatRecitersDB;
+import bassamalim.hidaya.databinding.ActivityTelawatSuarCollectionBinding;
 import bassamalim.hidaya.databinding.FragmentDownloadedTelawatBinding;
 import bassamalim.hidaya.models.ReciterCard;
 
@@ -110,8 +110,10 @@ public class DownloadedTelawatFragment extends Fragment {
                     TelawatDB telawa = versions.get(j);
 
                     View.OnClickListener listener = v -> {
-                        Intent intent = new Intent(v.getContext(), TelawatSurahsActivity.class);
+                        Intent intent = new Intent(v.getContext(),
+                                ActivityTelawatSuarCollectionBinding.class);
                         intent.putExtra("reciter_id", telawa.getReciter_id());
+                        intent.putExtra("reciter_name", telawa.getReciter_name());
                         intent.putExtra("version_id", telawa.getVersion_id());
                         startActivity(intent);
                     };

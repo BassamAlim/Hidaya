@@ -25,15 +25,15 @@ import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.adapters.QuranFragmentAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.SuraDB;
-import bassamalim.hidaya.databinding.FragmentMainQuranBinding;
-import bassamalim.hidaya.models.SurahCard;
+import bassamalim.hidaya.databinding.FragmentAllQuranBinding;
+import bassamalim.hidaya.models.SuraCard;
 
-public class MainQuranFragment extends Fragment {
+public class AllQuranFragment extends Fragment {
 
-    private FragmentMainQuranBinding binding;
+    private FragmentAllQuranBinding binding;
     private RecyclerView recyclerView;
     private QuranFragmentAdapter adapter;
-    private ArrayList<SurahCard> surahCards;
+    private ArrayList<SuraCard> suraCards;
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
     private GridLayoutManager gridLayoutManager;
@@ -44,9 +44,9 @@ public class MainQuranFragment extends Fragment {
 
         gridLayoutManager = new GridLayoutManager(getContext(), 1);
 
-        binding = FragmentMainQuranBinding.inflate(inflater, container, false);
+        binding = FragmentAllQuranBinding.inflate(inflater, container, false);
 
-        surahCards = makeSurahButtons();
+        suraCards = makeSurahButtons();
 
         setupRecycler();
 
@@ -96,13 +96,13 @@ public class MainQuranFragment extends Fragment {
         recyclerView = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new QuranFragmentAdapter(getContext(), surahCards);
+        adapter = new QuranFragmentAdapter(getContext(), suraCards);
         recyclerView.setAdapter(adapter);
     }
 
-    public ArrayList<SurahCard> makeSurahButtons() {
+    public ArrayList<SuraCard> makeSurahButtons() {
         final int NUMBER_OF_SUAR = 114;
-        ArrayList<SurahCard> buttons = new ArrayList<>();
+        ArrayList<SuraCard> buttons = new ArrayList<>();
 
         AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
@@ -119,7 +119,7 @@ public class MainQuranFragment extends Fragment {
                 requireContext().startActivity(intent);
             };
 
-            buttons.add(new SurahCard(i,"سُورَة " + sura.getSura_name(),
+            buttons.add(new SuraCard(i,"سُورَة " + sura.getSura_name(),
                     sura.getSearch_name(), sura.getTanzeel(), favs.get(i), cardListener));
         }
         return buttons;

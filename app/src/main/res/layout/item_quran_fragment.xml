@@ -37,11 +37,11 @@
                 android:textSize="20sp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tanzeel_view"
-                app:layout_constraintEnd_toStartOf="@id/alathkar_fav_btn"
+                app:layout_constraintEnd_toStartOf="@id/sura_fav_btn"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageButton
-                android:id="@+id/alathkar_fav_btn"
+                android:id="@+id/sura_fav_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"

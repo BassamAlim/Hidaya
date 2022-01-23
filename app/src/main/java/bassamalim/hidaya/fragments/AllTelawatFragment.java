@@ -17,17 +17,17 @@ import androidx.room.Room;
 import java.util.ArrayList;
 import java.util.List;
 
-import bassamalim.hidaya.activities.TelawatSurahsActivity;
+import bassamalim.hidaya.activities.TelawatSuarCollectionActivity;
 import bassamalim.hidaya.adapters.TelawatAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatDB;
 import bassamalim.hidaya.database.dbs.TelawatRecitersDB;
-import bassamalim.hidaya.databinding.FragmentMainTelawatBinding;
+import bassamalim.hidaya.databinding.FragmentAllTelawatBinding;
 import bassamalim.hidaya.models.ReciterCard;
 
-public class MainTelawatFragment extends Fragment {
+public class AllTelawatFragment extends Fragment {
 
-    private FragmentMainTelawatBinding binding;
+    private FragmentAllTelawatBinding binding;
     private RecyclerView recycler;
     private TelawatAdapter adapter;
     private List<TelawatDB> telawat;
@@ -36,7 +36,7 @@ public class MainTelawatFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        binding = FragmentMainTelawatBinding.inflate(inflater, container, false);
+        binding = FragmentAllTelawatBinding.inflate(inflater, container, false);
 
         setupRecycler();
 
@@ -68,8 +68,9 @@ public class MainTelawatFragment extends Fragment {
                 TelawatDB telawa = versions.get(j);
 
                 View.OnClickListener listener = v -> {
-                    Intent intent = new Intent(v.getContext(), TelawatSurahsActivity.class);
+                    Intent intent = new Intent(v.getContext(), TelawatSuarCollectionActivity.class);
                     intent.putExtra("reciter_id", telawa.getReciter_id());
+                    intent.putExtra("reciter_name", telawa.getReciter_name());
                     intent.putExtra("version_id", telawa.getVersion_id());
                     startActivity(intent);
                 };

@@ -2,6 +2,7 @@ package bassamalim.hidaya.adapters;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -14,8 +15,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,13 +30,15 @@ import java.util.Objects;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
-import bassamalim.hidaya.models.ReciterSurahCard;
+import bassamalim.hidaya.models.ReciterSuraCard;
 
-public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdapter.ViewHolder> {
+public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.ViewHolder> {
 
     private final Context context;
-    private final List<ReciterSurahCard> surahsCards;
-    private final List<ReciterSurahCard> surahsCardsCopy;
+    private final AppDatabase db;
+    private final SharedPreferences pref;
+    private final List<ReciterSuraCard> suarCards;
+    private final List<ReciterSuraCard> suarCardsCopy;
     private final int versionId;
     private final TelawatVersionsDB ver;
     private final boolean[] downloaded = new boolean[114];
@@ -41,24 +47,29 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView card;
         private final TextView namescreen;
-        private final ImageButton imageButton;
+        private final ImageButton favBtn;
+        private final ImageButton downloadBtn;
 
         public ViewHolder(View view) {
             super(view);
-            card = view.findViewById(R.id.surah_model_card);
-            namescreen = view.findViewById(R.id.surah_namescreen);
-            imageButton = view.findViewById(R.id.download_btn);
+            card = view.findViewById(R.id.sura_model_card);
+            namescreen = view.findViewById(R.id.sura_namescreen);
+            favBtn = view.findViewById(R.id.sura_fav_btn);
+            downloadBtn = view.findViewById(R.id.download_btn);
         }
     }
 
-    public TelawatSurahsAdapter(Context context, ArrayList<ReciterSurahCard> cards,
-                                int reciterId, int versionId) {
+    public TelawatSuarAdapter(Context context, ArrayList<ReciterSuraCard> cards,
+                              int reciterId, int versionId) {
         this.context = context;
-        AppDatabase db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB")
+
+        db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
 
-        surahsCards = new ArrayList<>(cards);
-        surahsCardsCopy = new ArrayList<>(cards);
+        pref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        suarCards = new ArrayList<>(cards);
+        suarCardsCopy = new ArrayList<>(cards);
 
         this.versionId = versionId;
 
@@ -72,57 +83,89 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
     @NonNull @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_telawat_surah, viewGroup, false);
+                .inflate(R.layout.item_telawat_sura, viewGroup, false);
 
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
-        int surahNum = surahsCards.get(position).getNum();
+        viewHolder.namescreen.setText(suarCards.get(position).getSurahName());
+        viewHolder.card.setOnClickListener(suarCards.get(position).getListener());
 
-        viewHolder.namescreen.setText(surahsCards.get(position).getSurahName());
-        viewHolder.card.setOnClickListener(surahsCards.get(position).getListener());
+        doFavorite(viewHolder, position);
 
-        if (downloaded[surahNum])
-            viewHolder.imageButton.setImageDrawable(AppCompatResources.getDrawable(
-                    context, R.drawable.ic_downloaded));
-        else
-            viewHolder.imageButton.setImageDrawable(AppCompatResources.getDrawable(
-                    context, R.drawable.ic_download));
-
-        viewHolder.imageButton.setOnClickListener(v -> {
-            if (downloaded[surahsCards.get(position).getNum()]) {
-                delete(surahsCards.get(position).getNum());
-
-                viewHolder.imageButton.setImageDrawable(AppCompatResources.getDrawable(
-                        context, R.drawable.ic_download));
-            }
-            else {
-                download(surahsCards.get(position).getNum());
-
-                viewHolder.imageButton.setImageDrawable(AppCompatResources.getDrawable(
-                        context, R.drawable.ic_downloaded));
-            }
-        });
+        doDownloaded(viewHolder, position);
     }
 
     @Override
     public int getItemCount() {
-        return surahsCards.size();
+        return suarCards.size();
     }
 
     public void filter(String text) {
-        surahsCards.clear();
+        suarCards.clear();
         if (text.isEmpty())
-            surahsCards.addAll(surahsCardsCopy);
+            suarCards.addAll(suarCardsCopy);
         else {
-            for(ReciterSurahCard reciterCard: surahsCardsCopy) {
+            for(ReciterSuraCard reciterCard: suarCardsCopy) {
                 if (reciterCard.getSearchName().contains(text))
-                    surahsCards.add(reciterCard);
+                    suarCards.add(reciterCard);
             }
         }
         notifyDataSetChanged();
+    }
+
+    private void doFavorite(ViewHolder viewHolder, int position) {
+        ReciterSuraCard card = suarCards.get(position);
+
+        int fav = card.getFavorite();
+        if (fav == 0)
+            viewHolder.favBtn.setImageDrawable(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
+        else if (fav == 1)
+            viewHolder.favBtn.setImageDrawable(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_star));
+
+        viewHolder.favBtn.setOnClickListener(view -> {
+            if (card.getFavorite() == 0) {
+                db.suraDao().setFav(card.getNum(), 1);
+                card.setFavorite(1);
+            }
+            else if (card.getFavorite() == 1) {
+                db.suraDao().setFav(card.getNum(), 0);
+                card.setFavorite(0);
+            }
+            notifyItemChanged(position);
+
+            updateFavorites();
+        });
+    }
+
+    private void doDownloaded(ViewHolder viewHolder, int position) {
+        int suraNum = suarCards.get(position).getNum();
+
+        if (downloaded[suraNum])
+            viewHolder.downloadBtn.setImageDrawable(AppCompatResources.getDrawable(
+                    context, R.drawable.ic_downloaded));
+        else
+            viewHolder.downloadBtn.setImageDrawable(AppCompatResources.getDrawable(
+                    context, R.drawable.ic_download));
+
+        viewHolder.downloadBtn.setOnClickListener(v -> {
+            if (downloaded[suarCards.get(position).getNum()]) {
+                delete(suarCards.get(position).getNum());
+
+                viewHolder.downloadBtn.setImageDrawable(AppCompatResources.getDrawable(
+                        context, R.drawable.ic_download));
+            }
+            else {
+                download(suarCards.get(position).getNum());
+
+                viewHolder.downloadBtn.setImageDrawable(AppCompatResources.getDrawable(
+                        context, R.drawable.ic_downloaded));
+            }
+        });
     }
 
     private void checkDownloaded() {
@@ -202,4 +245,14 @@ public class TelawatSurahsAdapter extends RecyclerView.Adapter<TelawatSurahsAdap
         downloaded[num] = false;
     }
 
+    private void updateFavorites() {
+        Object[] favSuras = db.suraDao().getFav().toArray();
+
+        Gson gson = new Gson();
+        String surasJson = gson.toJson(favSuras);
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("favorite_suras", surasJson);
+        editor.apply();
+    }
 }

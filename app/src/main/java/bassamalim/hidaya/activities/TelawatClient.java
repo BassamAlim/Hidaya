@@ -199,7 +199,7 @@ public class TelawatClient extends AppCompatActivity {
     }
 
     private void initViews() {
-        surahNamescreen = binding.surahNamescreen;
+        surahNamescreen = binding.suraNamescreen;
         seekBar = binding.seekbar;
         durationScreen = binding.durationScreen;
         progressScreen = binding.progressScreen;
@@ -415,7 +415,7 @@ public class TelawatClient extends AppCompatActivity {
         super.onBackPressed();
 
         if (isTaskRoot()) {
-            Intent intent = new Intent(this, TelawatSurahsActivity.class);
+            Intent intent = new Intent(this, TelawatSuarCollectionActivity.class);
             intent.putExtra("reciter_id", reciterId);
             intent.putExtra("version_id", versionId);
             startActivity(intent);

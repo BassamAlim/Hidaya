@@ -1,4 +1,4 @@
-package bassamalim.hidaya.fragments;
+package bassamalim.hidaya.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,14 +20,15 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.Objects;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.activities.MainActivity;
-import bassamalim.hidaya.activities.TelawatClient;
-import bassamalim.hidaya.databinding.FragmentCollectionTelawatBinding;
+import bassamalim.hidaya.databinding.ActivityCollectionTelawatBinding;
+import bassamalim.hidaya.fragments.DownloadedTelawatFragment;
+import bassamalim.hidaya.fragments.FavoriteTelawatFragment;
+import bassamalim.hidaya.fragments.AllTelawatFragment;
 import bassamalim.hidaya.helpers.Keeper;
 
-public class CollectionTelawatFragment extends FragmentActivity {
+public class TelawatCollectionActivity extends FragmentActivity {
 
-    private FragmentCollectionTelawatBinding binding;
+    private ActivityCollectionTelawatBinding binding;
     private FragmentStateAdapter adapter;
     private ViewPager2 viewPager;
 
@@ -35,7 +36,7 @@ public class CollectionTelawatFragment extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = FragmentCollectionTelawatBinding.inflate(getLayoutInflater());
+        binding = ActivityCollectionTelawatBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 
@@ -115,11 +116,10 @@ class TAdapter extends FragmentStateAdapter {
 
     @NonNull @Override
     public Fragment createFragment(int position) {
-        // Return a NEW fragment instance in createFragment(int)
         Fragment fragment;
 
         if (position == 0)
-            fragment = new MainTelawatFragment();
+            fragment = new AllTelawatFragment();
         else if (position == 1)
             fragment = new FavoriteTelawatFragment();
         else
