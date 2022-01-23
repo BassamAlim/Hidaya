@@ -49,7 +49,7 @@ public class CollectionTelawatFragment extends FragmentActivity {
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
-        String[] tabs = new String[] {"الكل", "المفضلة"};
+        String[] tabs = new String[] {"الكل", "المفضلة", "المحملة"};
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> tab.setText(tabs[position])
         ).attach();
@@ -86,7 +86,6 @@ public class CollectionTelawatFragment extends FragmentActivity {
 
     private void setupContinue() {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        String mediaId = pref.getString("last_played_media_id", "");
         String text = pref.getString("last_played_text", "");
 
         if (text.length() == 0)
@@ -95,11 +94,11 @@ public class CollectionTelawatFragment extends FragmentActivity {
             text = "آخر ما تم تشغيله: " + text;
 
             binding.continueListening.setOnClickListener(v -> {
+                String lastMediaId = pref.getString("last_played_media_id", "");
+
                 Intent intent = new Intent(this, TelawatClient.class);
                 intent.setAction("continue");
-
-
-
+                intent.putExtra("media_id", lastMediaId);
                 startActivity(intent);
             });
         }
@@ -121,14 +120,16 @@ class TAdapter extends FragmentStateAdapter {
 
         if (position == 0)
             fragment = new MainTelawatFragment();
-        else
+        else if (position == 1)
             fragment = new FavoriteTelawatFragment();
+        else
+            fragment = new DownloadedTelawatFragment();
 
         return fragment;
     }
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 3;
     }
 }

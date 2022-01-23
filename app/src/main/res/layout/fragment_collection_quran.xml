@@ -2,17 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/bg">
 
     <Button
         android:id="@+id/continue_reading"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_margin="5dp"
         android:background="@drawable/ripple_s"
         android:hint="@string/continue_reading"
         android:textColor="@color/accent"
-        android:textSize="16sp"
-        android:textStyle="bold"/>
+        android:textSize="16sp"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"

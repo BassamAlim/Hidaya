@@ -178,11 +178,7 @@ public class TelawatClient extends AppCompatActivity {
     private void getData() {
         Intent intent = getIntent();
         action = intent.getAction();
-
-        if (action.equals("continue"))
-            mediaId = pref.getString("last_played_media_id", "");
-        else
-            mediaId = intent.getStringExtra("media_id");
+        mediaId = intent.getStringExtra("media_id");
 
         reciterId = Integer.parseInt(mediaId.substring(0, 3));
         versionId = Integer.parseInt(mediaId.substring(3, 5));

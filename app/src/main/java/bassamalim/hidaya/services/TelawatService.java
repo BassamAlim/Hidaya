@@ -137,6 +137,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
         @Override
         public void onPlay() {
+            super.onPlay();
             play();
         }
 
@@ -149,6 +150,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
         @Override
         public void onPause() {
+            super.onPause();
             pause();
         }
 
