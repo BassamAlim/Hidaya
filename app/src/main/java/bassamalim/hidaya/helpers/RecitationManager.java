@@ -14,31 +14,27 @@ import android.util.Log;
 import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
-import org.json.JSONArray;
-
 import java.io.IOException;
 import java.util.List;
 
 import bassamalim.hidaya.R;
+import bassamalim.hidaya.database.AppDatabase;
+import bassamalim.hidaya.database.dbs.AyatTelawaDB;
 import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.models.Ayah;
-import bassamalim.hidaya.database.dbs.AyatTelawaDB;
-import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.other.Global;
 
 public class RecitationManager {
 
     private final Context context;
     private SharedPreferences pref;
-    private MediaPlayer player1;
-    private MediaPlayer player2;
+    private MediaPlayer[] players;
     private WifiManager.WifiLock wifiLock;
     private Ayah lastPlayed;
     private Ayah lastTracked;
     private boolean surahEnding;
     private Object what;
     private int allAyahsSize;
-    private JSONArray recitationsArr;
     private int currentPage;
     private int chosenSurah;
     private States state;
@@ -60,6 +56,7 @@ public class RecitationManager {
         this.context = context;
 
         initiate();
+        initPlayers();
     }
 
     private void initiate() {
@@ -69,31 +66,26 @@ public class RecitationManager {
                 "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
                 .build();
 
-        player1 = new MediaPlayer();
-        player2 = new MediaPlayer();
-
         what = new BackgroundColorSpan(context.getResources().getColor(R.color.track));
     }
 
-    public void setPlayers(Ayah startAyah) {
-        player1.setWakeMode(context.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        player2.setWakeMode(context.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        //mediaPlayer.setLooping(true);
+    private void initPlayers() {
+        players = new MediaPlayer[]{new MediaPlayer(), new MediaPlayer()};
 
-        wifiLock = ((WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE))
-                .createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock");
+        players[0].setWakeMode(context.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        players[1].setWakeMode(context.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+
+        wifiLock = ((WifiManager) context.getApplicationContext().getSystemService(
+                Context.WIFI_SERVICE)).createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock");
         wifiLock.acquire();
 
         AudioAttributes attributes = new AudioAttributes.Builder().setContentType(AudioAttributes
                 .CONTENT_TYPE_MUSIC).setUsage(AudioAttributes.USAGE_MEDIA).build();
-        player1.setAudioAttributes(attributes);
-        player2.setAudioAttributes(attributes);
+
+        players[0].setAudioAttributes(attributes);
+        players[1].setAudioAttributes(attributes);
 
         setPlayersListeners();
-
-        lastPlayed = startAyah;
-
-        preparePlayer(player1, startAyah);
     }
 
     private void setPlayersListeners() {
@@ -102,91 +94,58 @@ public class RecitationManager {
             return true;
         };
 
-        player1.setOnPreparedListener(mediaPlayer -> {
-            Log.i(Global.TAG, "in p1 onPrepared");
-            if (player2.isPlaying())
-                player2.setNextMediaPlayer(player1);
-            else if (state == States.Paused) {
-                if (allAyahsSize > lastPlayed.getIndex())
-                    lastPlayed = coordinator.getAyah(lastPlayed.getIndex());
-            }
-            else {
-                player1.start();
-                state = States.Playing;
-                track(lastPlayed);
-                if (allAyahsSize > lastPlayed.getIndex()+1)
-                    preparePlayer(player2, coordinator.getAyah(lastPlayed.getIndex()+1));
-            }
-        });
-        player1.setOnCompletionListener(mediaPlayer -> {
-            Log.i(Global.TAG, "in p1 onCompletion");
-            if (paused) {
-                paused = false;
-                if (allAyahsSize > lastPlayed.getIndex()) {
+        for (int i = 0; i < 2; i++) {
+            int finalI = i;
+            players[i].setOnPreparedListener(mediaPlayer -> {
+                Log.i(Global.TAG, "in p1 onPrepared");
+                if (players[n(finalI)].isPlaying())
+                    players[n(finalI)].setNextMediaPlayer(players[finalI]);
+                else if (state == States.Paused) {
+                    if (allAyahsSize > lastPlayed.getIndex())
+                        lastPlayed = coordinator.getAyah(lastPlayed.getIndex());
+                }
+                else {
+                    players[finalI].start();
+                    state = States.Playing;
+                    track(lastPlayed);
+                    if (allAyahsSize > lastPlayed.getIndex()+1)
+                        preparePlayer(players[n(finalI)],
+                                coordinator.getAyah(lastPlayed.getIndex()+1));
+                }
+            });
+            players[i].setOnCompletionListener(mediaPlayer -> {
+                Log.i(Global.TAG, "in p1 onCompletion");
+                if (paused) {
+                    paused = false;
+                    if (allAyahsSize > lastPlayed.getIndex()) {
+                        Ayah newAyah = coordinator.getAyah(lastPlayed.getIndex()+1);
+                        track(newAyah);
+                        if (allAyahsSize > newAyah.getIndex())
+                            preparePlayer(players[finalI], coordinator.getAyah(newAyah.getIndex()));
+                        lastPlayed = newAyah;
+                    }
+                    else
+                        ended();
+                }
+                else if (allAyahsSize > lastPlayed.getIndex()+1) {
                     Ayah newAyah = coordinator.getAyah(lastPlayed.getIndex()+1);
                     track(newAyah);
-                    if (allAyahsSize > newAyah.getIndex())
-                        preparePlayer(player1, coordinator.getAyah(newAyah.getIndex()));
+                    if (allAyahsSize > newAyah.getIndex()+1)
+                        preparePlayer(players[finalI],
+                                coordinator.getAyah(newAyah.getIndex()+1));
                     lastPlayed = newAyah;
                 }
                 else
                     ended();
-            }
-            else if (allAyahsSize > lastPlayed.getIndex()+1) {
-                Ayah newAyah = coordinator.getAyah(lastPlayed.getIndex()+1);
-                track(newAyah);
-                if (allAyahsSize > newAyah.getIndex()+1)
-                    preparePlayer(player1, coordinator.getAyah(newAyah.getIndex()+1));
-                lastPlayed = newAyah;
-            }
-            else
-                ended();
-        });
-        player1.setOnErrorListener(errorListener);
+            });
+            players[finalI].setOnErrorListener(errorListener);
+        }
+    }
 
-        player2.setOnPreparedListener(mediaPlayer -> {
-            Log.i(Global.TAG, "in p2 onPrepared");
-            if (player1.isPlaying()) {
-                player1.setNextMediaPlayer(player2);
-            }
-            else if (state == States.Paused) {
-                if (allAyahsSize > lastPlayed.getIndex())
-                    lastPlayed = coordinator.getAyah(lastPlayed.getIndex());
-            }
-            else {
-                player2.start();
-                state = States.Playing;
-                track(lastPlayed);
-                if (allAyahsSize > lastPlayed.getIndex()+1)
-                    preparePlayer(player1, coordinator.getAyah(lastPlayed.getIndex() + 1));
-            }
-        });
-        player2.setOnCompletionListener(mediaPlayer -> {
-            Log.i(Global.TAG, "in p2 onCompletion");
-            if (paused) {
-                if (allAyahsSize > lastPlayed.getIndex()) {
-                    paused = false;
-                    Ayah newAyah = coordinator.getAyah(lastPlayed.getIndex());
-                    track(newAyah);
-                    if (allAyahsSize > newAyah.getIndex())
-                        preparePlayer(player2, coordinator.getAyah(newAyah.getIndex()));
-                    lastPlayed = newAyah;
-                }
-                else
-                    ended();
-            }
-            else if (allAyahsSize > lastPlayed.getIndex()+1) {
-                Ayah newAyah = coordinator.getAyah(lastPlayed.getIndex()+1);
-                track(newAyah);
-                if (allAyahsSize > newAyah.getIndex()+1)
-                    preparePlayer(player2, coordinator.getAyah(newAyah.getIndex()+1));
-                lastPlayed = newAyah;
-            }
-            else
-                ended();
-
-        });
-        player2.setOnErrorListener(errorListener);
+    public void requestPlay(Ayah startAyah) {
+        lastPlayed = startAyah;
+        state = States.Stopped;
+        preparePlayer(players[0], startAyah);
     }
 
     private void preparePlayer(MediaPlayer player, Ayah ayah) {
@@ -201,11 +160,12 @@ public class RecitationManager {
         player.reset();
         try {
             Uri uri = getUri(ayah);
-            if (player == player1)
-                Log.i(Global.TAG, uri + "  On P1");
-            else
-                Log.i(Global.TAG, uri + "  On P2");
             player.setDataSource(context.getApplicationContext(), uri);
+
+            for (int i = 0; i < 2; i++) {
+                if (player == players[i])
+                    Log.d(Global.TAG, uri + "  On P" + i);
+            }
         } catch (IOException e) {e.printStackTrace();}
         player.prepareAsync();
     }
@@ -222,17 +182,16 @@ public class RecitationManager {
     }
 
     public void nextAyah() {
-        if (state != States.Playing || lastPlayed.getIndex()+1 > allAyahsSize)
+        if (state != States.Playing || lastPlayed.getIndex()+2 > allAyahsSize)
             return;
 
         lastPlayed = coordinator.getAyah(lastPlayed.getIndex()+1);
-        if (player1.isPlaying()) {
-            preparePlayer(player1, lastPlayed);
-            player2.reset();
-        }
-        else  {
-            preparePlayer(player2, lastPlayed);
-            player1.reset();
+        for (int i = 0; i < 2; i++) {
+            if (players[i].isPlaying()) {
+                preparePlayer(players[i], lastPlayed);
+                players[n(i)].reset();
+                break;
+            }
         }
     }
 
@@ -241,46 +200,32 @@ public class RecitationManager {
             return;
 
         lastPlayed = coordinator.getAyah(lastPlayed.getIndex()-1);
-        if (player1.isPlaying()) {
-            preparePlayer(player1, lastPlayed);
-            player2.reset();
-        }
-        else  {
-            preparePlayer(player2, lastPlayed);
-            player1.reset();
+        for (int i = 0; i < 2; i++) {
+            if (players[i].isPlaying()) {
+                preparePlayer(players[i], lastPlayed);
+                players[n(i)].reset();
+                break;
+            }
         }
     }
 
     public void pause() {
-        if (player1.isPlaying()) {
-            Log.i(Global.TAG, "paused1");
-            player1.pause();
-            player2.reset();
-            preparePlayer(player2, lastPlayed);
-            lastPlayer = 1;
+        for (int i = 0; i < 2; i++) {
+            if (players[i].isPlaying()) {
+                Log.d(Global.TAG, "Paused " + i);
+                players[i].pause();
+                players[n(i)].reset();
+                preparePlayer(players[n(i)], lastPlayed);
+                lastPlayer = i;
+            }
         }
-        else if (player2.isPlaying()) {
-            Log.i(Global.TAG, "paused2");
-            player2.pause();
-            player1.reset();
-            preparePlayer(player1, lastPlayed);
-            lastPlayer = 2;
-        }
-
         paused = true;
         state = States.Paused;
     }
 
     public void resume() {
-        if (lastPlayer == 1) {
-            Log.i(Global.TAG, "Resume P1");
-            player1.start();
-        }
-        else {
-            Log.i(Global.TAG, "Resume P2");
-            player2.start();
-        }
-
+        Log.d(Global.TAG, "Resume P" + (lastPlayer));
+        players[lastPlayer].start();
         state = States.Playing;
     }
 
@@ -290,19 +235,19 @@ public class RecitationManager {
             stopPlaying();
         else if (currentPage < QURAN_PAGES && lastPlayed.getIndex()+1 == allAyahsSize) {
             coordinator.nextPage();
-            setPlayers(coordinator.getAyah(0));
+            requestPlay(coordinator.getAyah(0));
         }
     }
 
     public void stopPlaying() {
-        player1.reset();
-        player2.reset();
+        for (int i = 0; i < 2; i++) {
+            players[i].reset();
+            players[i].release();
+        }
 
         lastTracked.getSS().removeSpan(what);
         lastTracked.getScreen().setText(lastTracked.getSS());
 
-        player1.release();
-        player2.release();
         state = States.Stopped;
         coordinator.onUiUpdate(States.Paused);
     }
@@ -349,15 +294,18 @@ public class RecitationManager {
         this.chosenSurah = chosenSurah;
     }
 
+    private int n(int i) {
+        return (i + 1) % 2;
+    }
+
     public void end() {
-        if (player1 != null) {
-            player1.release();
-            player1 = null;
+        for (int i = 0; i < 2; i++) {
+            if (players[i] != null) {
+                players[i].release();
+                players[i] = null;
+            }
         }
-        if (player2 != null) {
-            player2.release();
-            player2 = null;
-        }
+
         if (wifiLock != null)
             wifiLock.release();
     }

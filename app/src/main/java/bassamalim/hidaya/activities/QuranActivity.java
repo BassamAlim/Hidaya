@@ -139,7 +139,12 @@ public class QuranActivity extends SwipeActivity {
                 updateUi(States.Paused);
             }
             else if (rcMgr.getState() == States.Paused) {
-                rcMgr.resume();
+                if (selected == null)
+                    rcMgr.resume();
+                else {
+                    rcMgr.setChosenSurah(selected.getSurah());
+                    rcMgr.requestPlay(selected);
+                }
                 updateUi(States.Playing);
             }
             else {
@@ -147,11 +152,11 @@ public class QuranActivity extends SwipeActivity {
                     selected = allAyahs.get(0);
 
                 rcMgr.setChosenSurah(selected.getSurah());
-                rcMgr.setPlayers(selected);
+                rcMgr.requestPlay(selected);
 
                 updateUi(States.Playing);
-                selected = null;
             }
+            selected = null;
         });
         binding.nextAyah.setOnClickListener(view -> rcMgr.nextAyah());
         binding.recitationSettings.setOnClickListener(v -> new RecitationPopup(this, v));
@@ -311,7 +316,7 @@ public class QuranActivity extends SwipeActivity {
         switch (state) {
             case Playing:
                 binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_stop, getTheme()));
+                        R.drawable.ic_pause, getTheme()));
                 break;
             case Paused:
                 binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
