@@ -25,7 +25,6 @@ import bassamalim.hidaya.adapters.TelawatAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatDB;
 import bassamalim.hidaya.database.dbs.TelawatRecitersDB;
-import bassamalim.hidaya.databinding.ActivityTelawatSuarCollectionBinding;
 import bassamalim.hidaya.databinding.FragmentDownloadedTelawatBinding;
 import bassamalim.hidaya.models.ReciterCard;
 

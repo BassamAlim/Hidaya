@@ -43,9 +43,6 @@
             android:name=".activities.WelcomeActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.TelawatSuarActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.AlathkarListActivity"
             android:exported="true"
             android:label="@string/title_alathkar" />
