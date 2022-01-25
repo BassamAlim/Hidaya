@@ -16,4 +16,7 @@ public interface AyatTelawaDao {
     @Query("SELECT * FROM ayat_telawa WHERE rec_id = :reciter")
     List<AyatTelawaDB> getReciter(int reciter);
 
+    @Query("SELECT COUNT(*) FROM ayat_telawa")
+    int getSize();
+
 }

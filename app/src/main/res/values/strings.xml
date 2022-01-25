@@ -117,5 +117,10 @@
     <string name="next_question">السؤال التالي</string>
     <string name="rebuild_database">إعادة بناء قاعدة البيانات</string>
     <string name="continue_listening">تابع الاستماع</string>
+    <string name="aya_repeat">تكرار الآية</string>
+    <string name="no_repeat">بدون تكرار</string>
+    <string name="two_times">مرتين</string>
+    <string name="three_times">ثلاث مرات</string>
+    <string name="no_stop">بدون توقف</string>
 
 </resources>

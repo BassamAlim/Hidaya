@@ -7,10 +7,11 @@
     android:minWidth="350dp"
     android:minHeight="250dp"
     android:layoutDirection="rtl"
+    android:elevation="10dp"
     android:orientation="vertical"
     android:layout_gravity="center|bottom"
     android:gravity="center"
-    android:backgroundTint="@color/secondary"
+    android:backgroundTint="@color/bg"
     android:background="@drawable/dialog_bg">
 
     <TextView
@@ -43,6 +44,70 @@
             android:gravity="center" />
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/aya_repeat"
+        android:textSize="20sp"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginHorizontal="45dp">
+
+        <Button
+            android:id="@+id/repeat_once"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginVertical="10dp"
+            android:layout_marginEnd="-100dp"
+            android:background="@drawable/ripple_s"
+            android:text="@string/no_repeat"
+            android:textSize="16sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/repeat_forever"/>
+
+        <Button
+            android:id="@+id/repeat_twice"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginVertical="10dp"
+            android:layout_marginStart="-100dp"
+            android:background="@drawable/ripple_s"
+            android:text="@string/two_times"
+            android:textSize="16sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="parent"/>
+
+        <Button
+            android:id="@+id/repeat_three"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginVertical="10dp"
+            android:layout_marginEnd="-100dp"
+            android:background="@drawable/ripple_s"
+            android:text="@string/three_times"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"/>
+
+        <Button
+            android:id="@+id/repeat_forever"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginVertical="10dp"
+            android:layout_marginStart="-100dp"
+            android:background="@drawable/ripple_s"
+            android:text="@string/no_stop"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/stop_on_surah"

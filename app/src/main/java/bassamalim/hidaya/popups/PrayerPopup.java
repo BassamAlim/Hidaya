@@ -63,7 +63,6 @@ public class PrayerPopup {
 
         popupWindow.setBackgroundDrawable(new BitmapDrawable(null, ""));
         popupWindow.setOutsideTouchable(true);
-        popupWindow.setElevation(10);
         popupWindow.setAnimationStyle(R.style.PrayerPopupAnimation);
 
         popupWindow.showAtLocation(view, Gravity.START, 30, getY());

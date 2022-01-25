@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:minWidth="250dp"
     android:layoutDirection="rtl"
+    android:elevation="15dp"
     android:orientation="vertical"
     android:layout_gravity="center"
     android:background="@drawable/dialog_bg">

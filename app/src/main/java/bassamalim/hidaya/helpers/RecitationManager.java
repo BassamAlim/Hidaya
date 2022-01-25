@@ -27,6 +27,7 @@ import bassamalim.hidaya.other.Global;
 public class RecitationManager {
 
     private final Context context;
+    private AppDatabase db;
     private SharedPreferences pref;
     private MediaPlayer[] players;
     private WifiManager.WifiLock wifiLock;
@@ -40,7 +41,7 @@ public class RecitationManager {
     private States state;
     private int lastPlayer;
     private boolean paused;
-    private AppDatabase db;
+    private int repeated = 0;
 
     private Coordinator coordinator;
     public interface Coordinator {
@@ -89,13 +90,9 @@ public class RecitationManager {
     }
 
     private void setPlayersListeners() {
-        MediaPlayer.OnErrorListener errorListener = (mediaPlayer, i, i1) -> {
-            Log.e(Global.TAG, "Problem in players");
-            return true;
-        };
-
         for (int i = 0; i < 2; i++) {
             int finalI = i;
+
             players[i].setOnPreparedListener(mediaPlayer -> {
                 Log.i(Global.TAG, "in p1 onPrepared");
                 if (players[n(finalI)].isPlaying())
@@ -113,32 +110,48 @@ public class RecitationManager {
                                 coordinator.getAyah(lastPlayed.getIndex()+1));
                 }
             });
+
             players[i].setOnCompletionListener(mediaPlayer -> {
                 Log.i(Global.TAG, "in p1 onCompletion");
-                if (paused) {
-                    paused = false;
-                    if (allAyahsSize > lastPlayed.getIndex()) {
+
+                int repeat = pref.getInt("aya_repeat_mode", 0);
+                if ((repeat == 1 || repeat == 2) && repeated < repeat) {
+                    preparePlayer(players[finalI], lastPlayed);
+                    players[n(finalI)].reset();
+                    repeated++;
+                }
+                else if (repeat == 3) {
+                    preparePlayer(players[finalI], lastPlayed);
+                    players[n(finalI)].reset();
+                }
+                else {
+                    repeated = 0;
+
+                    if (paused) {
+                        paused = false;
+                        if (allAyahsSize > lastPlayed.getIndex()) {
+                            Ayah newAyah = coordinator.getAyah(lastPlayed.getIndex()+1);
+                            track(newAyah);
+                            if (allAyahsSize > newAyah.getIndex())
+                                preparePlayer(players[finalI],
+                                        coordinator.getAyah(newAyah.getIndex()));
+                            lastPlayed = newAyah;
+                        }
+                        else
+                            ended();
+                    }
+                    else if (allAyahsSize > lastPlayed.getIndex()+1) {
                         Ayah newAyah = coordinator.getAyah(lastPlayed.getIndex()+1);
                         track(newAyah);
-                        if (allAyahsSize > newAyah.getIndex())
-                            preparePlayer(players[finalI], coordinator.getAyah(newAyah.getIndex()));
+                        if (allAyahsSize > newAyah.getIndex()+1)
+                            preparePlayer(players[finalI],
+                                    coordinator.getAyah(newAyah.getIndex()+1));
                         lastPlayed = newAyah;
                     }
                     else
                         ended();
                 }
-                else if (allAyahsSize > lastPlayed.getIndex()+1) {
-                    Ayah newAyah = coordinator.getAyah(lastPlayed.getIndex()+1);
-                    track(newAyah);
-                    if (allAyahsSize > newAyah.getIndex()+1)
-                        preparePlayer(players[finalI],
-                                coordinator.getAyah(newAyah.getIndex()+1));
-                    lastPlayed = newAyah;
-                }
-                else
-                    ended();
             });
-            players[finalI].setOnErrorListener(errorListener);
         }
     }
 
@@ -158,15 +171,26 @@ public class RecitationManager {
         }
 
         player.reset();
-        try {
-            Uri uri = getUri(ayah);
-            player.setDataSource(context.getApplicationContext(), uri);
 
-            for (int i = 0; i < 2; i++) {
-                if (player == players[i])
-                    Log.d(Global.TAG, uri + "  On P" + i);
+        Uri uri = null;
+        boolean found = false;
+        int change = 0;
+        while (!found) {
+            try {
+                uri = getUri(ayah, change);
+                player.setDataSource(context.getApplicationContext(), uri);
+                found = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                change++;
+                Log.e(Global.TAG, "Reciter not found in ayat telawa");
             }
-        } catch (IOException e) {e.printStackTrace();}
+        }
+
+        for (int i = 0; i < 2; i++) {
+            if (player == players[i])
+                Log.d(Global.TAG, uri + "  On P" + i);
+        }
         player.prepareAsync();
     }
 
@@ -252,9 +276,11 @@ public class RecitationManager {
         coordinator.onUiUpdate(States.Paused);
     }
 
-    private Uri getUri(Ayah ayah) {
+    private Uri getUri(Ayah ayah, int change) {
+        int size = db.ayatTelawaDao().getSize();
+
         int choice = pref.getInt("chosen_reciter", 13);
-        List<AyatTelawaDB> sources = db.ayatTelawaDao().getReciter(choice);
+        List<AyatTelawaDB> sources = db.ayatTelawaDao().getReciter((choice + change) % (size-1));
 
         String url = "https://www.everyayah.com/data/";
         url += sources.get(0).getSource();
@@ -305,9 +331,7 @@ public class RecitationManager {
                 players[i] = null;
             }
         }
-
         if (wifiLock != null)
             wifiLock.release();
     }
-
 }
