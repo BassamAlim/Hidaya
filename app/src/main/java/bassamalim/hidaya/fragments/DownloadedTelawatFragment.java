@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import bassamalim.hidaya.activities.TelawatSuarCollectionActivity;
 import bassamalim.hidaya.adapters.TelawatAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatDB;
@@ -111,7 +112,7 @@ public class DownloadedTelawatFragment extends Fragment {
 
                     View.OnClickListener listener = v -> {
                         Intent intent = new Intent(v.getContext(),
-                                ActivityTelawatSuarCollectionBinding.class);
+                                TelawatSuarCollectionActivity.class);
                         intent.putExtra("reciter_id", telawa.getReciter_id());
                         intent.putExtra("reciter_name", telawa.getReciter_name());
                         intent.putExtra("version_id", telawa.getVersion_id());
