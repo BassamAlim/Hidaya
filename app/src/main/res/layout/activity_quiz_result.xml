@@ -30,8 +30,9 @@
             android:layout_gravity="center"
             android:text="@string/quiz_result"
             android:textColor="@color/accent"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="21dp"
+            android:textStyle="bold"
+            tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
 

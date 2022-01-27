@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Widget.Hidaya.AppWidget.Container" parent="android:Widget">
         <item name="android:id">@android:id/background</item>
@@ -36,7 +36,7 @@
         <item name="paddingStart">5dp</item>
         <item name="paddingEnd">5dp</item>
         <item name="android:gravity">center|bottom</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize" tools:ignore="SpUsage">23dp</item>
     </style>
 
 </resources>

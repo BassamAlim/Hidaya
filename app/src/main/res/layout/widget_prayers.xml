@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Hidaya.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,7 +21,8 @@
             android:padding="6dp"
             android:gravity="center"
             android:background="@drawable/prayers_widget_inner_view_bg"
-            android:textSize="20sp"
+            android:textSize="20dp"
+            tools:ignore="SpUsage"
             style="@style/Widget.Hidaya.AppWidget.InnerView"/>
 
         <TextView
@@ -32,7 +34,8 @@
             android:padding="6dp"
             android:gravity="center"
             android:background="@drawable/prayers_widget_inner_view_bg"
-            android:textSize="20sp"
+            android:textSize="20dp"
+            tools:ignore="SpUsage"
             style="@style/Widget.Hidaya.AppWidget.InnerView"/>
 
         <TextView
@@ -44,7 +47,8 @@
             android:padding="6dp"
             android:gravity="center"
             android:background="@drawable/prayers_widget_inner_view_bg"
-            android:textSize="20sp"
+            android:textSize="20dp"
+            tools:ignore="SpUsage"
             style="@style/Widget.Hidaya.AppWidget.InnerView"/>
 
         <TextView
@@ -56,7 +60,8 @@
             android:padding="6dp"
             android:gravity="center"
             android:background="@drawable/prayers_widget_inner_view_bg"
-            android:textSize="20sp"
+            android:textSize="20dp"
+            tools:ignore="SpUsage"
             style="@style/Widget.Hidaya.AppWidget.InnerView"/>
 
         <TextView
@@ -67,21 +72,10 @@
             android:padding="6dp"
             android:gravity="center"
             android:background="@drawable/prayers_widget_inner_view_bg"
-            android:textSize="20sp"
+            android:textSize="20dp"
+            tools:ignore="SpUsage"
             style="@style/Widget.Hidaya.AppWidget.InnerView"/>
 
     </LinearLayout>
 
-    <!--<TextView
-        android:id="@+id/appwidget_text"
-        style="@style/Widget.Hidaya.AppWidget.InnerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />-->
 </RelativeLayout>

@@ -30,15 +30,16 @@
             android:contentDescription="@string/back_description"/>
 
         <TextView
-            android:id="@+id/thikr_name"
+            android:id="@+id/telawa_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="15dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:textColor="@color/accent"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18dp"
+            android:textStyle="bold"
+            tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
 

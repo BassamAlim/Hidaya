@@ -26,8 +26,9 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
             android:layout_gravity="start"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="21dp"
+            android:textStyle="bold"
+            tools:ignore="SpUsage" />
 
     </Toolbar>
 
@@ -39,7 +40,8 @@
         android:background="@drawable/ripple_s"
         android:hint="@string/continue_listening"
         android:textColor="@color/accent"
-        android:textSize="16sp"/>
+        android:textSize="19dp"
+        tools:ignore="SpUsage"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"

@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initFirebase() {
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(3600 * 24).build();
+                .setMinimumFetchIntervalInSeconds(3600 * 6).build(); // update at most every six hours
         remoteConfig.setConfigSettingsAsync(configSettings);
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
     }

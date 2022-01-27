@@ -74,13 +74,12 @@
         android:id="@+id/distance_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/coordinates"
-        android:textSize="30sp"
-        android:textStyle="bold"
         android:layout_marginBottom="100dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:text="@string/distance_to_kaaba"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        tools:ignore="SpUsage"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <ImageView

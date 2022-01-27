@@ -17,14 +17,14 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.Objects;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.databinding.ActivityTelawatSuarCollectionBinding;
+import bassamalim.hidaya.databinding.ActivityCollectionTelawatSuarBinding;
 import bassamalim.hidaya.fragments.AllTelawatSuarFragment;
 import bassamalim.hidaya.fragments.DownloadedTelawatSuarFragment;
 import bassamalim.hidaya.fragments.FavoriteTelawatSuarFragment;
 
 public class TelawatSuarCollectionActivity extends FragmentActivity {
 
-    private ActivityTelawatSuarCollectionBinding binding;
+    private ActivityCollectionTelawatSuarBinding binding;
     private FragmentStateAdapter adapter;
     private ViewPager2 viewPager;
 
@@ -32,7 +32,7 @@ public class TelawatSuarCollectionActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityTelawatSuarCollectionBinding.inflate(getLayoutInflater());
+        binding = ActivityCollectionTelawatSuarBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 

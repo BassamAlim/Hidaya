@@ -33,7 +33,6 @@
     <string name="text_size_title">حجم الخط</string>
 
     <!-- TextViews Text -->
-    <string name="coordinates">الإحداثيات</string>
     <string name="remaining">الوقت المتبقي: %1$s</string>
 
     <!-- Buttons Text -->
@@ -122,5 +121,6 @@
     <string name="two_times">مرتين</string>
     <string name="three_times">ثلاث مرات</string>
     <string name="no_stop">بدون توقف</string>
+    <string name="distance_to_kaaba">المسافة الى الكعبة</string>
 
 </resources>
