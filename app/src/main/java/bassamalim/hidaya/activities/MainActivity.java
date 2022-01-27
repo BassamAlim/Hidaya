@@ -53,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setHijri();
+        setTodayScreen();
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.myHijriBar);
+        setSupportActionBar(binding.topBar);
 
         initNavBar();
 
@@ -235,12 +235,12 @@ public class MainActivity extends AppCompatActivity {
                 loc.getLongitude(), timezone);
     }
 
-    private void setHijri() {
+    private void setTodayScreen() {
         UmmalquraCalendar hijri = new UmmalquraCalendar();
         String text = whichDay(hijri.get(Calendar.DAY_OF_WEEK)) + " ";
 
         String year = " " + hijri.get(Calendar.YEAR);
-        String month = " " + whichMonth(hijri.get(Calendar.MONTH));
+        String month = " " + whichHijriMonth(hijri.get(Calendar.MONTH));
         String day = String.valueOf(hijri.get(Calendar.DATE));
 
         year = translateNumbers(year);
@@ -249,6 +249,11 @@ public class MainActivity extends AppCompatActivity {
         text += day + month + year;
 
         binding.hijriView.setText(text);
+
+        Calendar meladi = Calendar.getInstance();
+        String meladiStr = translateNumbers(String.valueOf(meladi.get(Calendar.DATE))) + " " +
+                whichMeladiMonth(meladi.get(Calendar.MONTH)) + " " + meladi.get(Calendar.YEAR);
+        binding.meladiView.setText(translateNumbers(meladiStr));
     }
 
     private String whichDay(int day) {
@@ -266,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
-    private String whichMonth(int num) {
+    private String whichHijriMonth(int num) {
         String result;
         HashMap<Integer, String> monthMap = new HashMap<>();
         monthMap.put(0, "مُحَرَّم");
@@ -281,6 +286,26 @@ public class MainActivity extends AppCompatActivity {
         monthMap.put(9, "شَوَّال");
         monthMap.put(10, "ذو القِعْدة");
         monthMap.put(11, "ذو الحِجَّة");
+
+        result = monthMap.get(num);
+        return result;
+    }
+
+    private String whichMeladiMonth(int num) {
+        String result;
+        HashMap<Integer, String> monthMap = new HashMap<>();
+        monthMap.put(0, "يناير");
+        monthMap.put(1, "فبرابر");
+        monthMap.put(2, "مارس");
+        monthMap.put(3, "أبريل");
+        monthMap.put(4, "مايو");
+        monthMap.put(5, "يونيو");
+        monthMap.put(6, "يوليو");
+        monthMap.put(7, "أغسطس");
+        monthMap.put(8, "سبتمبر");
+        monthMap.put(9, "أكتوبر");
+        monthMap.put(10, "نوفمبر");
+        monthMap.put(11, "ديسمبر");
 
         result = monthMap.get(num);
         return result;
