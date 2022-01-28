@@ -135,13 +135,12 @@ public class MainActivity extends AppCompatActivity {
         try {
             AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
                     .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
-            db.suraDao().getFav();
+            db.suraDao().getFav();    // if there is a problem in the db it will cause an error
         } catch (Exception e) {
             reviveDb();
         }
 
         int lastVer = pref.getInt("last_db_version", 1);
-
         if (Global.dbVer > lastVer)
             reviveDb();
     }

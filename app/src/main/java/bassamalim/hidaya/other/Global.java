@@ -13,5 +13,5 @@ public class Global {
     public static final String PLAY_ATHAN = "play athan";
     public static final String STOP_ATHAN = "stop athan";
 
-    public static int dbVer = 1;
+    public static int dbVer = 2;
 }
