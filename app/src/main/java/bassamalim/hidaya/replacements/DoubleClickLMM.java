@@ -4,7 +4,7 @@ import android.text.Layout;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -83,10 +83,12 @@ public class DoubleClickLMM extends LinkMovementMethod {
 
     private static DoubleClickLMM sInstance;
     public static DoubleClickLMM getInstance(int color) {
-        what = new BackgroundColorSpan(color);
+        // background span has a problem (covers part of the text)
+        //what = new BackgroundColorSpan(Color.Black);
+
+        what = new ForegroundColorSpan(color);
         if (sInstance == null)
             sInstance = new DoubleClickLMM();
-
         return sInstance;
     }
 }

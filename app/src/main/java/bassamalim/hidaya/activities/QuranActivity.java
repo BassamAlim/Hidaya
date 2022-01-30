@@ -261,7 +261,7 @@ public class QuranActivity extends SwipeActivity {
         }
 
         SpannableString ss = new SpannableString(text);
-        for (int i=0; i<list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             int finalI = i;
             DoubleClickableSpan clickableSpan = new DoubleClickableSpan() {
                 @Override
@@ -290,8 +290,8 @@ public class QuranActivity extends SwipeActivity {
         rcMgr.setAllAyahsSize(allAyahs.size());
 
         screen.setText(ss);
-        screen.setMovementMethod(DoubleClickLMM.getInstance(getResources().getColor(
-                R.color.light_secondary)));
+        screen.setMovementMethod(DoubleClickLMM.getInstance(
+                getResources().getColor(R.color.accent)));
         mainLinear.addView(screen);
         arr = new ArrayList<>();
     }
