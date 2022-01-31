@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,20 +21,17 @@ import androidx.room.Room;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.google.gson.Gson;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.TimeZone;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.databinding.ActivityMainBinding;
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.helpers.Keeper;
-import bassamalim.hidaya.helpers.PrayTimes;
-import bassamalim.hidaya.other.Global;
+import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Util;
 import bassamalim.hidaya.receivers.DailyUpdateReceiver;
 import bassamalim.hidaya.receivers.DeviceBootReceiver;
 
@@ -94,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         if (located) {
             location = intent.getParcelableExtra("location");
             new Keeper(this, location);
-            times = getTimes(location);
+            times = Util.getTimes(location);
             //times = test();
             new Alarms(this, times);
         }
@@ -137,55 +133,12 @@ public class MainActivity extends AppCompatActivity {
                     .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
             db.suraDao().getFav();    // if there is a problem in the db it will cause an error
         } catch (Exception e) {
-            reviveDb();
+            Util.reviveDb(this);
         }
 
         int lastVer = pref.getInt("last_db_version", 1);
-        if (Global.dbVer > lastVer)
-            reviveDb();
-    }
-
-    private void reviveDb() {
-        deleteDatabase("HidayaDB");
-
-        AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
-                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
-
-        String surasJson = pref.getString("favorite_suras", "");
-        String recitersJson = pref.getString("favorite_reciters", "");
-        String athkarJson = pref.getString("favorite_athkar", "");
-
-        Gson gson = new Gson();
-
-        if (surasJson.length() != 0) {
-            Object[] favSuras = gson.fromJson(surasJson, Object[].class);
-            for (int i = 0; i < favSuras.length; i++) {
-                Double d = (Double) favSuras[i];
-                db.suraDao().setFav(i, d.intValue());
-            }
-        }
-
-        if (recitersJson.length() != 0) {
-            Object[] favReciters = gson.fromJson(recitersJson, Object[].class);
-            for (int i = 0; i < favReciters.length; i++) {
-                Double d = (Double) favReciters[i];
-                db.telawatRecitersDao().setFav(i, d.intValue());
-            }
-        }
-
-        if (athkarJson.length() != 0) {
-            Object[] favAthkar = gson.fromJson(athkarJson, Object[].class);
-            for (int i = 0; i < favAthkar.length; i++) {
-                Double d = (Double) favAthkar[i];
-                db.athkarDao().setFav(i, d.intValue());
-            }
-        }
-
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("last_db_version", Global.dbVer);
-        editor.apply();
-
-        Log.i(Global.TAG, "Database Revived");
+        if (Const.dbVer > lastVer)
+            Util.reviveDb(this);
     }
 
     private void dailyUpdate() {
@@ -221,38 +174,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private Calendar[] getTimes(Location loc) {
-        Calendar calendar = Calendar.getInstance();
-        Date date = new Date();
-        calendar.setTime(date);
-
-        TimeZone timeZoneObj = TimeZone.getDefault();
-        long millis = timeZoneObj.getOffset(date.getTime());
-        double timezone = millis / 3600000.0;
-
-        return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
-                loc.getLongitude(), timezone);
-    }
-
     private void setTodayScreen() {
         UmmalquraCalendar hijri = new UmmalquraCalendar();
-        String text = whichDay(hijri.get(Calendar.DAY_OF_WEEK)) + " ";
-
-        String year = " " + hijri.get(Calendar.YEAR);
-        String month = " " + whichHijriMonth(hijri.get(Calendar.MONTH));
-        String day = String.valueOf(hijri.get(Calendar.DATE));
-
-        year = translateNumbers(year);
-        day = translateNumbers(day);
-
-        text += day + month + year;
-
-        binding.hijriView.setText(text);
+        String hYear = " " + hijri.get(Calendar.YEAR);
+        String hMonth = " " + Util.whichHijriMonth(hijri.get(Calendar.MONTH));
+        String hDay = "" + hijri.get(Calendar.DATE);
+        String hijriStr = whichDay(hijri.get(Calendar.DAY_OF_WEEK)) + " ";
+        hijriStr += Util.translateNumbers(hDay) + hMonth + Util.translateNumbers(hYear);
+        binding.hijriView.setText(hijriStr);
 
         Calendar meladi = Calendar.getInstance();
-        String meladiStr = translateNumbers(String.valueOf(meladi.get(Calendar.DATE))) + " " +
-                whichMeladiMonth(meladi.get(Calendar.MONTH)) + " " + meladi.get(Calendar.YEAR);
-        binding.meladiView.setText(translateNumbers(meladiStr));
+        String mYear = " " + meladi.get(Calendar.YEAR);
+        String mMonth = " " + whichMeladiMonth(meladi.get(Calendar.MONTH));
+        String mDay = "" + meladi.get(Calendar.DATE);
+        String meladiStr = Util.translateNumbers(mDay) + mMonth + Util.translateNumbers(mYear);
+        binding.meladiView.setText(meladiStr);
     }
 
     private String whichDay(int day) {
@@ -267,26 +203,6 @@ public class MainActivity extends AppCompatActivity {
         weekMap.put(Calendar.SATURDAY, "السبت");
 
         result = weekMap.get(day);
-        return result;
-    }
-
-    private String whichHijriMonth(int num) {
-        String result;
-        HashMap<Integer, String> monthMap = new HashMap<>();
-        monthMap.put(0, "مُحَرَّم");
-        monthMap.put(1, "صَفَر");
-        monthMap.put(2, "ربيع الأول");
-        monthMap.put(3, "ربيع الثاني");
-        monthMap.put(4, "جُمادى الأول");
-        monthMap.put(5, "جُمادى الآخر");
-        monthMap.put(6, "رجب");
-        monthMap.put(7, "شعبان");
-        monthMap.put(8, "رَمَضان");
-        monthMap.put(9, "شَوَّال");
-        monthMap.put(10, "ذو القِعْدة");
-        monthMap.put(11, "ذو الحِجَّة");
-
-        result = monthMap.get(num);
         return result;
     }
 
@@ -307,37 +223,6 @@ public class MainActivity extends AppCompatActivity {
         monthMap.put(11, "ديسمبر");
 
         result = monthMap.get(num);
-        return result;
-    }
-
-    private String translateNumbers(String english) {
-        String result;
-        HashMap<Character, Character> map = new HashMap<>();
-        map.put('0', '٠');
-        map.put('1', '١');
-        map.put('2', '٢');
-        map.put('3', '٣');
-        map.put('4', '٤');
-        map.put('5', '٥');
-        map.put('6', '٦');
-        map.put('7', '٧');
-        map.put('8', '٨');
-        map.put('9', '٩');
-        map.put('A', 'ص');
-        map.put('P', 'م');
-
-            if (english.charAt(0) == '0')
-                english = english.replaceFirst("0", "");
-
-            StringBuilder temp = new StringBuilder();
-            for (int j = 0; j < english.length(); j++) {
-                char t = english.charAt(j);
-                if (map.containsKey(t))
-                    t = map.get(t);
-                temp.append(t);
-            }
-            result = temp.toString();
-
         return result;
     }
 

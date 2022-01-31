@@ -1,6 +1,6 @@
 package bassamalim.hidaya.other;
 
-public class Global {
+public class Const {
     public static final String TAG = "FromMeToMe";
 
     public static final String UPDATE_URL = "update_url";

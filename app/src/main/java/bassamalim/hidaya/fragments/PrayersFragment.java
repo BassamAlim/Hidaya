@@ -23,15 +23,14 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.MainActivity;
 import bassamalim.hidaya.databinding.FragmentPrayersBinding;
-import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.helpers.PrayTimes;
+import bassamalim.hidaya.other.Util;
 import bassamalim.hidaya.popups.PrayerPopup;
 
 public class PrayersFragment extends Fragment {
@@ -160,7 +159,7 @@ public class PrayersFragment extends Fragment {
 
     private void setInitialState() {
         for (int i = 0; i < images.length; i++) {
-            int state = pref.getInt(mapID(i)+"notification_type", 2);
+            int state = pref.getInt(Util.mapID(i)+"notification_type", 2);
             if (state == 3)
                 images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext()
                         .getResources(), R.drawable.ic_speaker, requireContext().getTheme()));
@@ -177,7 +176,7 @@ public class PrayersFragment extends Fragment {
         for (int i=0; i< cards.length; i++) {
             int finalI = i;
             cards[i].setOnClickListener(v -> new PrayerPopup(getContext(), v,
-                    mapID(finalI), prayerNames[finalI]));
+                    Util.mapID(finalI), prayerNames[finalI]));
         }
 
         binding.previousDayButton.setOnClickListener(v -> previousDay());
@@ -216,7 +215,7 @@ public class PrayersFragment extends Fragment {
 
                 String hms = String.format(Locale.US, "%02d:%02d:%02d",
                         hours, minutes, seconds);
-                counter.setText(String.format(getString(R.string.remaining), translateNumbers(hms)));
+                counter.setText(String.format(getString(R.string.remaining), Util.translateNumbers(hms)));
             }
             @Override
             public void onFinish() {
@@ -262,67 +261,14 @@ public class PrayersFragment extends Fragment {
             Calendar hijri = new UmmalquraCalendar();
             hijri.setTime(selectedDay.getTime());
 
-            String day = String.valueOf(hijri.get(Calendar.DATE));
-            String year = String.valueOf(hijri.get(Calendar.YEAR));
-            String month = whichMonth(hijri.get(Calendar.MONTH));
+            String year = " " + hijri.get(Calendar.YEAR);
+            String month = " " + Util.whichHijriMonth(hijri.get(Calendar.MONTH));
+            String day = "" + hijri.get(Calendar.DATE);
 
-            day = translateNumbers(day);
-            year = translateNumbers(year);
+            text += Util.translateNumbers(day) + month + Util.translateNumbers(year);
 
-            text += day + " " + month + " " + year;
-
-            dayScreen.setText(translateNumbers(text));
+            dayScreen.setText(text);
         }
-    }
-
-    private String whichMonth(int num) {
-        String result;
-        HashMap<Integer, String> monthMap = new HashMap<>();
-        monthMap.put(0, "مُحَرَّم");
-        monthMap.put(1, "صَفَر");
-        monthMap.put(2, "ربيع الأول");
-        monthMap.put(3, "ربيع الثاني");
-        monthMap.put(4, "جُمادى الأول");
-        monthMap.put(5, "جُمادى الآخر");
-        monthMap.put(6, "رجب");
-        monthMap.put(7, "شعبان");
-        monthMap.put(8, "رَمَضان");
-        monthMap.put(9, "شَوَّال");
-        monthMap.put(10, "ذو القِعْدة");
-        monthMap.put(11, "ذو الحِجَّة");
-
-        result = monthMap.get(num);
-        return result;
-    }
-
-    private String translateNumbers(String english) {
-        HashMap<Character, Character> map = new HashMap<>();
-        map.put('0', '٠');
-        map.put('1', '١');
-        map.put('2', '٢');
-        map.put('3', '٣');
-        map.put('4', '٤');
-        map.put('5', '٥');
-        map.put('6', '٦');
-        map.put('7', '٧');
-        map.put('8', '٨');
-        map.put('9', '٩');
-        map.put('A', 'ص');
-        map.put('P', 'م');
-
-        if (english.charAt(0) == '0') {
-            english = english.replaceFirst("0", "");
-            if (english.charAt(0) == '0')
-                english = english.replaceFirst("0:", "");
-        }
-        StringBuilder temp = new StringBuilder();
-        for (int j = 0; j < english.length(); j++) {
-            char t = english.charAt(j);
-            if (map.containsKey(t))
-                t = map.get(t);
-            temp.append(t);
-        }
-        return temp.toString();
     }
 
     private void cancelTimer() {
@@ -333,18 +279,6 @@ public class PrayersFragment extends Fragment {
             params.gravity = Gravity.CENTER | Gravity.START;
             counters[closest].setVisibility(View.GONE);
             screens[closest].setLayoutParams(params);
-        }
-    }
-
-    private ID mapID(int num) {
-        switch (num) {
-            case 0: return ID.FAJR;
-            case 1: return ID.SHOROUQ;
-            case 2: return ID.DUHR;
-            case 3: return ID.ASR;
-            case 4: return ID.MAGHRIB;
-            case 5: return ID.ISHAA;
-            default: return null;
         }
     }
 

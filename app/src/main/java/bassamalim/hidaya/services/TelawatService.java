@@ -48,7 +48,7 @@ import java.util.Random;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.TelawatClient;
 import bassamalim.hidaya.models.ReciterCard;
-import bassamalim.hidaya.other.Global;
+import bassamalim.hidaya.other.Const;
 
 public class TelawatService extends MediaBrowserServiceCompat implements
         AudioManager.OnAudioFocusChangeListener {
@@ -144,7 +144,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         @Override
         public void onStop() {
             super.onStop();
-            Log.d(Global.TAG, "In onStop of Telawat");
+            Log.d(Const.TAG, "In onStop of Telawat");
             stop();
         }
 
@@ -348,31 +348,31 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case AudioManager.ACTION_AUDIO_BECOMING_NOISY:
-                    Log.d(Global.TAG, "In ACTION_BECOMING_NOISY");
+                    Log.d(Const.TAG, "In ACTION_BECOMING_NOISY");
                     pause();
                     break;
                 case ACTION_PLAY_PAUSE:
                     if (controller.getPlaybackState().getState()
                             == PlaybackStateCompat.STATE_PLAYING) {
-                        Log.d(Global.TAG, "In ACTION_PAUSE");
+                        Log.d(Const.TAG, "In ACTION_PAUSE");
                         pause();
                     }
                     else if (controller.getPlaybackState().getState() ==
                             PlaybackStateCompat.STATE_PAUSED) {
-                        Log.d(Global.TAG, "In ACTION_PLAY");
+                        Log.d(Const.TAG, "In ACTION_PLAY");
                         play();
                     }
                     break;
                 case ACTION_NEXT:
-                    Log.d(Global.TAG, "In ACTION_NEXT");
+                    Log.d(Const.TAG, "In ACTION_NEXT");
                     skipToNext();
                     break;
                 case ACTION_PREV:
-                    Log.d(Global.TAG, "In ACTION_PREV");
+                    Log.d(Const.TAG, "In ACTION_PREV");
                     skipToPrevious();
                     break;
                 case ACTION_STOP:
-                    Log.d(Global.TAG, "In ACTION_STOP");
+                    Log.d(Const.TAG, "In ACTION_STOP");
                     onDestroy();
                     break;
             }
@@ -588,7 +588,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         });
         player.setOnCompletionListener(mp -> skipToNext());
         player.setOnErrorListener((mp, what, extra) -> {
-            Log.e(Global.TAG, "Error in TelawatService player: " + what);
+            Log.e(Const.TAG, "Error in TelawatService player: " + what);
             return true;
         });
     }
@@ -631,7 +631,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         }
         catch (IOException e) {
             e.printStackTrace();
-            Log.e(Global.TAG, "Problem in TelawatService player");
+            Log.e(Const.TAG, "Problem in TelawatService player");
         }
     }
 
@@ -648,16 +648,16 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         try {
             player.setDataSource(path);
             player.prepare();
-            Log.i(Global.TAG, "Playing Offline");
+            Log.i(Const.TAG, "Playing Offline");
             return true;
         }
         catch (FileNotFoundException f) {
-            Log.d(Global.TAG, "Not available offline");
+            Log.d(Const.TAG, "Not available offline");
             return false;
         }
         catch (IOException e) {
             e.printStackTrace();
-            Log.e(Global.TAG, "Problem in TelawatService player");
+            Log.e(Const.TAG, "Problem in TelawatService player");
             return false;
         }
     }
@@ -752,7 +752,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
     @Override
     public void onDestroy() {
-        Log.d(Global.TAG, "In OnDestroy of TelawatService");
+        Log.d(Const.TAG, "In OnDestroy of TelawatService");
         saveForLater(player.getCurrentPosition());
         super.onDestroy();
         unregisterReceiver(receiver);

@@ -11,14 +11,13 @@ import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
-import bassamalim.hidaya.other.Global;
+import java.util.Calendar;
+
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.enums.ID;
+import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Util;
 import bassamalim.hidaya.receivers.NotificationReceiver;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 public class Alarms {
 
@@ -69,7 +68,7 @@ public class Alarms {
     }
 
     private void setAlarm() {
-        Log.i(Global.TAG, "in set alarm");
+        Log.i(Const.TAG, "in set alarm");
         if (id.ordinal() >= 0 && id.ordinal() < 6)
             setPrayerAlarm(id);
         else if (id.ordinal() >= 6 && id.ordinal() < 10)
@@ -77,9 +76,9 @@ public class Alarms {
     }
 
     private void setPrayerAlarms() {
-        Log.i(Global.TAG, "in set prayer alarms");
+        Log.i(Const.TAG, "in set prayer alarms");
         for (int i = 0; i < times.length; i++) {
-            ID mappedId = mapID(i);
+            ID mappedId = Util.mapID(i);
             assert mappedId != null;
             if (pref.getInt(mappedId + "notification_type", 2) != 0)
                 setPrayerAlarm(mappedId);
@@ -87,7 +86,7 @@ public class Alarms {
     }
 
     private void setPrayerAlarm(ID id) {
-        Log.i(Global.TAG, "in set alarm for: " + id);
+        Log.i(Const.TAG, "in set alarm for: " + id);
 
         // adjust the time with the delay
         long adjustment = pref.getLong(id + "time_adjustment", 0);
@@ -117,14 +116,14 @@ public class Alarms {
 
                 myAlarm.setExact(AlarmManager.RTC_WAKEUP, adjusted, pendingIntent);
             }
-            Log.i(Global.TAG, "alarm " + id + " set");
+            Log.i(Const.TAG, "alarm " + id + " set");
         }
         else
-            Log.i(Global.TAG, id + " Passed");
+            Log.i(Const.TAG, id + " Passed");
     }
 
     private void setExtraAlarms() {
-        Log.i(Global.TAG, "in set extra alarms");
+        Log.i(Const.TAG, "in set extra alarms");
 
         Calendar today = Calendar.getInstance();
 
@@ -140,13 +139,13 @@ public class Alarms {
     }
 
     private void setExtraAlarm(ID id) {
-        Log.i(Global.TAG, "in set extra alarm");
+        Log.i(Const.TAG, "in set extra alarm");
         int hour;
         int minute;
 
         Location loc = new Keeper(appContext).retrieveLocation();
         if (id == ID.FRIDAY_KAHF && loc != null) {
-            Calendar[] times = getTimes(loc);
+            Calendar[] times = Util.getTimes(loc);
             Calendar duhr = times[2];
             hour = (duhr.get(Calendar.HOUR_OF_DAY)+1) % 24;
             minute = duhr.get(Calendar.MINUTE);
@@ -197,48 +196,7 @@ public class Alarms {
         myAlarm.setRepeating(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pendIntent);
 
-        Log.i(Global.TAG, "alarm " + id + " set");
-    }
-
-    private Calendar[] getTimes(Location loc) {
-        Date date = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-
-        TimeZone timeZoneObj = TimeZone.getDefault();
-        long millis = timeZoneObj.getOffset(date.getTime());
-        double timezone = millis / 3600000.0;
-
-        return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
-                loc.getLongitude(), timezone);
-    }
-
-    public static void cancelAlarm(Context gContext, ID id) {
-        Log.i(Global.TAG, "in cancel alarm");
-        PendingIntent pendingIntent;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            pendingIntent = PendingIntent.getBroadcast(gContext, id.ordinal(), new Intent(),
-                    PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        }
-        else {
-            pendingIntent = PendingIntent.getBroadcast(gContext, id.ordinal(),
-                    new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
-        }
-
-        AlarmManager am = (AlarmManager) gContext.getSystemService(Context.ALARM_SERVICE);
-        am.cancel(pendingIntent);
-    }
-
-    private ID mapID(int num) {
-        switch (num) {
-            case 0: return ID.FAJR;
-            case 1: return ID.SHOROUQ;
-            case 2: return ID.DUHR;
-            case 3: return ID.ASR;
-            case 4: return ID.MAGHRIB;
-            case 5: return ID.ISHAA;
-            default: return null;
-        }
+        Log.i(Const.TAG, "alarm " + id + " set");
     }
 
 }

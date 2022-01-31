@@ -31,6 +31,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
 import bassamalim.hidaya.models.ReciterSuraCard;
+import bassamalim.hidaya.other.Util;
 
 public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.ViewHolder> {
 
@@ -154,8 +155,11 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
 
         viewHolder.downloadBtn.setOnClickListener(v -> {
             if (downloaded[suarCards.get(position).getNum()]) {
-                delete(suarCards.get(position).getNum());
+                int num = suarCards.get(position).getNum();
+                String postfix = prefix + "/" + num + ".mp3";
+                Util.deleteFile(context, postfix);
 
+                downloaded[num] = false;
                 viewHolder.downloadBtn.setImageDrawable(AppCompatResources.getDrawable(
                         context, R.drawable.ic_download));
             }
@@ -194,22 +198,6 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
         }
     }
 
-    private String createDir(int reciterID) {
-        String text = "/Telawat Downloads/" + reciterID + "/" + versionId;
-
-        File dir;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            dir = new File(context.getExternalFilesDir(null) + text);
-        else
-            dir = new File(Environment.getExternalStorageDirectory()
-                    .getAbsolutePath() + text);
-
-        if (!dir.exists())
-            dir.mkdirs();
-
-        return text;
-    }
-
     private void download(int num) {
         String server = ver.getUrl();
         String link = String.format(Locale.US, "%s/%03d.mp3", server, num+1);
@@ -220,29 +208,14 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setTitle("تحميل التلاوة");
         request.setVisibleInDownloadsUi(true);
-        request.setDestinationInExternalFilesDir(
-                context, createDir(ver.getReciter_id()), num + ".mp3");
+        String postfix = "/Telawat Downloads/" + ver.getReciter_id() + "/" + versionId;
+        Util.createDir(context, postfix);
+        request.setDestinationInExternalFilesDir(context, postfix, num + ".mp3");
         request.setNotificationVisibility(
                 DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         downloadManager.enqueue(request);
 
         downloaded[num] = true;
-    }
-
-    private void delete(int num) {
-        String text = prefix + "/" + num + ".mp3";
-
-        File file;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            file = new File(context.getExternalFilesDir(null) + text);
-        else
-            file = new File(Environment.getExternalStorageDirectory()
-                    .getAbsolutePath() + text);
-
-        if (file.exists())
-            file.delete();
-
-        downloaded[num] = false;
     }
 
     private void updateFavorites() {

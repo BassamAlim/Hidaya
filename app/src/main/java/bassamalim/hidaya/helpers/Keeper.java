@@ -7,6 +7,8 @@ import android.location.Location;
 import androidx.preference.PreferenceManager;
 
 import bassamalim.hidaya.models.MyLocation;
+import bassamalim.hidaya.other.Util;
+
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ public class Keeper {
         context = gContext;
         setUp();
         storeLocation(gLocation);
-        storeTimes(getTimes(gLocation));
+        storeTimes(Util.getTimes(gLocation));
         storeStrTimes(getStrTimes(gLocation));
     }
 
@@ -80,19 +82,6 @@ public class Keeper {
     public String[] retrieveStrTimes() {
         tJson = pref.getString("stored string times", "");
         return gson.fromJson(tJson, String[].class);
-    }
-
-    private Calendar[] getTimes(Location loc) {
-        Calendar calendar = Calendar.getInstance();
-        Date date = new Date();
-        calendar.setTime(date);
-
-        TimeZone timeZoneObj = TimeZone.getDefault();
-        long millis = timeZoneObj.getOffset(date.getTime());
-        double timezone = millis / 3600000.0;
-
-        return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
-                loc.getLongitude(), timezone);
     }
 
     private String[] getStrTimes(Location loc) {

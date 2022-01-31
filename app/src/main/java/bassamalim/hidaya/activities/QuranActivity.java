@@ -23,7 +23,6 @@ import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -35,6 +34,7 @@ import bassamalim.hidaya.databinding.ActivityQuranBinding;
 import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.helpers.RecitationManager;
 import bassamalim.hidaya.models.Ayah;
+import bassamalim.hidaya.other.Util;
 import bassamalim.hidaya.popups.RecitationPopup;
 import bassamalim.hidaya.popups.TafseerPopup;
 import bassamalim.hidaya.replacements.DoubleClickLMM;
@@ -225,7 +225,7 @@ public class QuranActivity extends SwipeActivity {
         int counter = getPageStart(pageNumber);
         do {
             AyatDB ayah = ayatDB.get(counter);
-            int surahNum = ayah.getSura_no();
+            int surahNum = ayah.getSura_no();    // starts from 1
             int ayahNum = ayah.getAya_no();
 
             Ayah ayahModel = new Ayah(ayah.getJozz(), surahNum, ayahNum, ayah.getSura_name_ar(),
@@ -297,9 +297,9 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private void finalize(int juz, String name) {
-        String juzText = "جزء " + translateNumbers(String.valueOf(juz));
+        String juzText = "جزء " + Util.translateNumbers(String.valueOf(juz));
         currentSurah = "سُورَة " + name;
-        currentPageText = "صفحة " + translateNumbers(String.valueOf(currentPage));
+        currentPageText = "صفحة " + Util.translateNumbers(String.valueOf(currentPage));
         binding.juzNumber.setText(juzText);
         binding.suraName.setText(currentSurah);
         binding.pageNumber.setText(currentPageText);
@@ -330,14 +330,14 @@ public class QuranActivity extends SwipeActivity {
         rcMgr.setCurrentPage(num);
     }
 
-    private void addHeader(int num, String name) {
+    private void addHeader(int suraNum, String name) {
         TextView nameScreen = surahName(name);
         mainLinear.addView(nameScreen);
-        if (num != 0 && num != 9) {    // surat al-fatiha and At-Taubah
+        if (suraNum != 1 && suraNum != 9) {    // surat al-fatiha and At-Taubah
             TextView basmalah = basmalah();
             mainLinear.addView(basmalah);
         }
-        if (action.equals("by_surah") && num == surahIndex+1)
+        if (action.equals("by_surah") && suraNum == surahIndex+1)
             target = nameScreen;
     }
 
@@ -393,37 +393,6 @@ public class QuranActivity extends SwipeActivity {
         screen.setTextColor(Color.WHITE);
         screen.setLinkTextColor(Color.WHITE);
         return screen;
-    }
-
-    private String translateNumbers(String english) {
-        String result;
-        HashMap<Character, Character> map = new HashMap<>();
-        map.put('0', '٠');
-        map.put('1', '١');
-        map.put('2', '٢');
-        map.put('3', '٣');
-        map.put('4', '٤');
-        map.put('5', '٥');
-        map.put('6', '٦');
-        map.put('7', '٧');
-        map.put('8', '٨');
-        map.put('9', '٩');
-        map.put('A', 'ص');
-        map.put('P', 'م');
-
-        if (english.charAt(0) == '0')
-            english = english.replaceFirst("0", "");
-
-        StringBuilder temp = new StringBuilder();
-        for (int j = 0; j < english.length(); j++) {
-            char t = english.charAt(j);
-            if (map.containsKey(t))
-                t = map.get(t);
-            temp.append(t);
-        }
-        result = temp.toString();
-
-        return result;
     }
 
     @Override

@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.PowerManager;
 import android.text.Spanned;
-import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
@@ -16,13 +16,14 @@ import androidx.room.Room;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.AyatTelawaDB;
 import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.models.Ayah;
-import bassamalim.hidaya.other.Global;
+import bassamalim.hidaya.other.Const;
 
 public class RecitationManager {
 
@@ -67,7 +68,7 @@ public class RecitationManager {
                 "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
                 .build();
 
-        what = new BackgroundColorSpan(context.getResources().getColor(R.color.track));
+        what = new ForegroundColorSpan(context.getResources().getColor(R.color.track));
     }
 
     private void initPlayers() {
@@ -94,7 +95,7 @@ public class RecitationManager {
             int finalI = i;
 
             players[i].setOnPreparedListener(mediaPlayer -> {
-                Log.i(Global.TAG, "in p1 onPrepared");
+                Log.i(Const.TAG, "in p1 onPrepared");
                 if (players[n(finalI)].isPlaying())
                     players[n(finalI)].setNextMediaPlayer(players[finalI]);
                 else if (state == States.Paused) {
@@ -112,7 +113,7 @@ public class RecitationManager {
             });
 
             players[i].setOnCompletionListener(mediaPlayer -> {
-                Log.i(Global.TAG, "in p1 onCompletion");
+                Log.i(Const.TAG, "in p1 onCompletion");
 
                 int repeat = pref.getInt("aya_repeat_mode", 0);
                 if ((repeat == 1 || repeat == 2) && repeated < repeat) {
@@ -183,13 +184,13 @@ public class RecitationManager {
             } catch (IOException e) {
                 e.printStackTrace();
                 change++;
-                Log.e(Global.TAG, "Reciter not found in ayat telawa");
+                Log.e(Const.TAG, "Reciter not found in ayat telawa");
             }
         }
 
         for (int i = 0; i < 2; i++) {
             if (player == players[i])
-                Log.d(Global.TAG, uri + "  On P" + i);
+                Log.d(Const.TAG, uri + "  On P" + i);
         }
         player.prepareAsync();
     }
@@ -236,7 +237,7 @@ public class RecitationManager {
     public void pause() {
         for (int i = 0; i < 2; i++) {
             if (players[i].isPlaying()) {
-                Log.d(Global.TAG, "Paused " + i);
+                Log.d(Const.TAG, "Paused " + i);
                 players[i].pause();
                 players[n(i)].reset();
                 preparePlayer(players[n(i)], lastPlayed);
@@ -248,7 +249,7 @@ public class RecitationManager {
     }
 
     public void resume() {
-        Log.d(Global.TAG, "Resume P" + (lastPlayer));
+        Log.d(Const.TAG, "Resume P" + (lastPlayer));
         players[lastPlayer].start();
         state = States.Playing;
     }
@@ -282,22 +283,11 @@ public class RecitationManager {
         int choice = pref.getInt("chosen_reciter", 13);
         List<AyatTelawaDB> sources = db.ayatTelawaDao().getReciter((choice + change) % (size-1));
 
-        String url = "https://www.everyayah.com/data/";
-        url += sources.get(0).getSource();
-        url += format(ayah.getSurah()) + format(ayah.getAyah()) + ".mp3";
+        String uri = "https://www.everyayah.com/data/";
+        uri += sources.get(0).getSource();
+        uri += String.format(Locale.US, "%03d%03d.mp3", ayah.getSurah(), ayah.getAyah());
 
-        return Uri.parse(url);
-    }
-
-    private String format(int in) {
-        String strIn = String.valueOf(in);
-        String out = "";
-        if (strIn.length() == 1)
-            out += "00";
-        else if (strIn.length() == 2)
-            out += "0";
-        out += strIn;
-        return out;
+        return Uri.parse(uri);
     }
 
     public Ayah getLastPlayed() {

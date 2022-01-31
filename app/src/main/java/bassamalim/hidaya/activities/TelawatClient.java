@@ -31,7 +31,7 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
 import bassamalim.hidaya.databinding.ActivityTelawatPlayerBinding;
 import bassamalim.hidaya.models.ReciterCard;
-import bassamalim.hidaya.other.Global;
+import bassamalim.hidaya.other.Const;
 import bassamalim.hidaya.services.TelawatService;
 
 public class TelawatClient extends AppCompatActivity {
@@ -95,7 +95,7 @@ public class TelawatClient extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d(Global.TAG, "In OnNewIntent");
+        Log.d(Const.TAG, "In OnNewIntent");
 
         getData();
 
@@ -161,7 +161,7 @@ public class TelawatClient extends AppCompatActivity {
 
         @Override
         public void onConnectionSuspended() {
-            Log.e(Global.TAG, "Connection suspended in TelawatClient");
+            Log.e(Const.TAG, "Connection suspended in TelawatClient");
             // The Service has crashed.
             // Disable transport controls until it automatically reconnects
             disableControls();
@@ -169,7 +169,7 @@ public class TelawatClient extends AppCompatActivity {
 
         @Override
         public void onConnectionFailed() {
-            Log.e(Global.TAG, "Connection failed in TelawatClient");
+            Log.e(Const.TAG, "Connection failed in TelawatClient");
             // The Service has refused our connection
             disableControls();
         }

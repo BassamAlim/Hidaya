@@ -18,13 +18,12 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.Calendar;
-import java.util.TimeZone;
 
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.helpers.Keeper;
-import bassamalim.hidaya.helpers.PrayTimes;
-import bassamalim.hidaya.other.Global;
+import bassamalim.hidaya.other.Const;
 import bassamalim.hidaya.other.PrayersWidget;
+import bassamalim.hidaya.other.Util;
 
 public class DailyUpdateReceiver extends BroadcastReceiver {
 
@@ -35,7 +34,7 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context gContext, Intent intent) {
-        Log.i(Global.TAG, "in daily update receiver");
+        Log.i(Const.TAG, "in daily update receiver");
         context = gContext;
         pref = PreferenceManager.getDefaultSharedPreferences(context);
         now = Calendar.getInstance();
@@ -46,7 +45,7 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
             if (needed())
                 locate();
             else
-                Log.i(Global.TAG, "dead intent walking in daily update receiver");
+                Log.i(Const.TAG, "dead intent walking in daily update receiver");
         }
         else if (intent.getAction().equals("boot"))
             locate();
@@ -77,29 +76,20 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
         if (location == null) {
             location = new Keeper(context).retrieveLocation();
             if (location == null) {
-                Log.e(Global.TAG, "No available location in DailyUpdate");
+                Log.e(Const.TAG, "No available location in DailyUpdate");
                 return;
             }
         }
 
         new Keeper(context, location);
 
-        Calendar[] times = getTimes(location);
+        Calendar[] times = Util.getTimes(location);
 
         new Alarms(context, times);
 
         updateWidget();
 
         updated();
-    }
-
-    private Calendar[] getTimes(Location loc) {
-        TimeZone timeZoneObj = TimeZone.getDefault();
-        long millis = timeZoneObj.getOffset(now.getTime().getTime());
-        double timezone = millis / 3600000.0;
-
-        return new PrayTimes().getPrayerTimesArray(now, loc.getLatitude(),
-                loc.getLongitude(), timezone);
     }
 
     private void updateWidget() {
@@ -116,5 +106,4 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
         editor.putInt("last_day", now.get(Calendar.DATE));
         editor.apply();
     }
-
 }

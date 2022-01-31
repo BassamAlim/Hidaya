@@ -32,6 +32,7 @@ import java.util.Objects;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.models.ReciterCard;
+import bassamalim.hidaya.other.Util;
 
 public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHolder> {
 
@@ -218,8 +219,10 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
 
         viewHolder.download_btn.setOnClickListener(v -> {
             if (downloaded[verId]) {
-                delete(ver);
+                String postfix = prefix + "/" + ver.getVersionId();
+                Util.deleteFile(context, postfix);
 
+                downloaded[ver.getVersionId()] = false;
                 viewHolder.download_btn.setImageDrawable(AppCompatResources.getDrawable(
                         context, R.drawable.ic_download));
             }
@@ -259,22 +262,6 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
         }
     }
 
-    private String createDir(int verId) {
-        String text = prefix + "/" + verId;
-
-        File dir;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            dir = new File(context.getExternalFilesDir(null) + text);
-        else
-            dir = new File(Environment.getExternalStorageDirectory()
-                    .getAbsolutePath() + text);
-
-        if (!dir.exists())
-            dir.mkdirs();
-
-        return text;
-    }
-
     private void downloadVer(ReciterCard.RecitationVersion ver) {
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(
                 Context.DOWNLOAD_SERVICE);
@@ -288,10 +275,9 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
                 Uri uri = Uri.parse(link);
                 request = new DownloadManager.Request(uri);
                 request.setTitle(names.get(i));
-                if (i == 0)
-                    request.setVisibleInDownloadsUi(true);
-                request.setDestinationInExternalFilesDir(context,
-                        createDir(ver.getVersionId()), i + ".mp3");
+                String postfix = prefix + "/" + ver.getVersionId();
+                Util.createDir(context, postfix);
+                request.setDestinationInExternalFilesDir(context, postfix, i + ".mp3");
                 request.setNotificationVisibility(
                         DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
                 downloadManager.enqueue(request);
@@ -299,22 +285,6 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
         }
 
         downloaded[ver.getVersionId()] = true;
-    }
-
-    private void delete(ReciterCard.RecitationVersion ver) {
-        String text = prefix + "/" + ver.getVersionId();
-
-        File file;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            file = new File(context.getExternalFilesDir(null) + text);
-        else
-            file = new File(Environment.getExternalStorageDirectory()
-                    .getAbsolutePath() + text);
-
-        if (file.exists())
-            file.delete();
-
-        downloaded[ver.getVersionId()] = false;
     }
 
     @Override

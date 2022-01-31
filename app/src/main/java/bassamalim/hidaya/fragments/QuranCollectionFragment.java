@@ -24,8 +24,6 @@ import bassamalim.hidaya.databinding.FragmentCollectionQuranBinding;
 public class QuranCollectionFragment extends Fragment {
 
     private FragmentCollectionQuranBinding binding;
-    // When requested, this adapter returns a DemoObjectFragment,
-    // representing an object in the collection.
     private QAdapter qAdapter;
     private ViewPager2 viewPager;
 
@@ -86,19 +84,12 @@ class QAdapter extends FragmentStateAdapter {
 
     @NonNull @Override
     public Fragment createFragment(int position) {
-        // Return a NEW fragment instance in createFragment(int)
         Fragment fragment;
 
         if (position == 0)
             fragment = new AllQuranFragment();
         else
             fragment = new FavoriteQuranFragment();
-
-        //Fragment fragment = new DemoObjectFragment();
-        //Bundle args = new Bundle();
-        // Our object is just an integer :-P
-        //args.putInt(DemoObjectFragment.ARG_OBJECT, position + 1);
-        //fragment.setArguments(args);
 
         return fragment;
     }

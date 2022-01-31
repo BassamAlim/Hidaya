@@ -14,6 +14,7 @@ import androidx.preference.SwitchPreferenceCompat;
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.enums.ID;
+import bassamalim.hidaya.other.Util;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -135,10 +136,8 @@ public class Settings extends AppCompatActivity {
         }
 
         private void cancelAlarm(ID id) {
-            Alarms.cancelAlarm(getContext(), id);
-
+            Util.cancelAlarm(getContext(), id);
             String key = keyGetter(id);
-            // its not a prayer
             SwitchPreferenceCompat pSwitch = findPreference(key);
             assert pSwitch != null;
             pSwitch.setSummary("");

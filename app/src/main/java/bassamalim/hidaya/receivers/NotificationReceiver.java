@@ -21,8 +21,9 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.AlathkarActivity;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.activities.Splash;
-import bassamalim.hidaya.other.Global;
+import bassamalim.hidaya.other.Const;
 import bassamalim.hidaya.enums.ID;
+import bassamalim.hidaya.other.Util;
 import bassamalim.hidaya.services.AthanService;
 
 import java.util.Calendar;
@@ -39,12 +40,12 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context gContext, Intent intent) {
         context = gContext;
-        id = mapID(intent.getIntExtra("id", 0));
+        id = Util.mapID(intent.getIntExtra("id", 0));
         String action = intent.getAction();
         time = intent.getLongExtra("time", 0);
         isPrayer = action.equals("prayer");
 
-        Log.i(Global.TAG, "in notification receiver for " + id);
+        Log.i(Const.TAG, "in notification receiver for " + id);
 
         int defaultType = 2;
         if (id == ID.SHOROUQ)
@@ -66,7 +67,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 showNotification();
         }
         else
-            Log.e(Global.TAG, "Late intent walking");
+            Log.e(Const.TAG, "Late intent walking");
     }
 
     private void showNotification() {
@@ -88,7 +89,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private void startService() {
         Intent intent1 = new Intent(context, AthanService.class);
-        intent1.setAction(Global.PLAY_ATHAN);
+        intent1.setAction(Const.PLAY_ATHAN);
         intent1.putExtra("id", id);
         intent1.putExtra("time", time);
 
@@ -263,19 +264,4 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
     }
 
-    private ID mapID(int num) {
-        switch (num) {
-            case 0: return ID.FAJR;
-            case 1: return ID.SHOROUQ;
-            case 2: return ID.DUHR;
-            case 3: return ID.ASR;
-            case 4: return ID.MAGHRIB;
-            case 5: return ID.ISHAA;
-            case 6: return ID.MORNING;
-            case 7: return ID.EVENING;
-            case 8: return ID.DAILY_WERD;
-            case 9: return ID.FRIDAY_KAHF;
-            default: return null;
-        }
-    }
 }

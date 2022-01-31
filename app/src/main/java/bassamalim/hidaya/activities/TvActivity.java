@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import bassamalim.hidaya.databinding.ActivityTvBinding;
-import bassamalim.hidaya.other.Global;
+import bassamalim.hidaya.other.Const;
 import bassamalim.hidaya.replacements.FSMediaController;
 
 public class TvActivity extends AppCompatActivity {
@@ -46,15 +46,15 @@ public class TvActivity extends AppCompatActivity {
                         makkah_url = remoteConfig.getString("makkah_url");
                         madina_url = remoteConfig.getString("madina_url");
 
-                        Log.d(Global.TAG, "Config params updated");
-                        Log.d(Global.TAG, "Makkah URL: " + makkah_url);
-                        Log.d(Global.TAG, "Madina URL: " + madina_url);
+                        Log.d(Const.TAG, "Config params updated");
+                        Log.d(Const.TAG, "Makkah URL: " + makkah_url);
+                        Log.d(Const.TAG, "Madina URL: " + madina_url);
 
                         setListeners();
                         enableButtons();
                     }
                     else
-                        Log.d(Global.TAG, "Fetch failed");
+                        Log.d(Const.TAG, "Fetch failed");
                 });
     }
 
@@ -78,16 +78,3 @@ public class TvActivity extends AppCompatActivity {
         return uri;
     }
 }
-
-/*
-Other Links:-
-quran:
-uri = Uri.parse("https://youtu.be/jbUI2d6RwE8");
-            viewIntent = new Intent("android.intent.action.VIEW", uri);
-            startActivity(viewIntent);
-
-sunnah:
-uri = Uri.parse("https://www.youtube.com/watch?v=DhlO2YyVSng");
-            viewIntent = new Intent("android.intent.action.VIEW", uri);
-            startActivity(viewIntent);
- */
