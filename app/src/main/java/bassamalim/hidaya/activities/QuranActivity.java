@@ -333,7 +333,7 @@ public class QuranActivity extends SwipeActivity {
     private void addHeader(int num, String name) {
         TextView nameScreen = surahName(name);
         mainLinear.addView(nameScreen);
-        if (num != 9) {    // surat At-Taubah has no basmalah
+        if (num != 0 && num != 9) {    // surat al-fatiha and At-Taubah
             TextView basmalah = basmalah();
             mainLinear.addView(basmalah);
         }
