@@ -195,39 +195,6 @@ public class QiblaFragment extends Fragment {
         }
     }
 
-    /*private String translateNumbers(String english) {
-        HashMap<Character, Character> map = new HashMap<>();
-        map.put('0', '٠');
-        map.put('1', '١');
-        map.put('2', '٢');
-        map.put('3', '٣');
-        map.put('4', '٤');
-        map.put('5', '٥');
-        map.put('6', '٦');
-        map.put('7', '٧');
-        map.put('8', '٨');
-        map.put('9', '٩');
-        map.put('A', 'ص');
-        map.put('P', 'م');
-
-        if (english.charAt(0) == '0') {
-            english = english.replaceFirst("0", "");
-            if (english.charAt(0) == '0')
-                english = english.replaceFirst("0:", "");
-        }
-        english = english.replaceAll(":0", ":");
-
-        StringBuilder temp = new StringBuilder();
-        for (int j = 0; j < english.length(); j++) {
-            char t = english.charAt(j);
-            if (map.containsKey(t))
-                t = map.get(t);
-            temp.append(t);
-        }
-
-        return temp.toString();
-    }*/
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();

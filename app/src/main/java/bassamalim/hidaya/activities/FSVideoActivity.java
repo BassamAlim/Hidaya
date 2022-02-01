@@ -29,7 +29,8 @@ public class FSVideoActivity extends AppCompatActivity {
 
         String fullScreen =  getIntent().getStringExtra("fullScreenInd");
         if ("y".equals(fullScreen))
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
         else {
             Intent intent = new Intent(getApplicationContext(), TvActivity.class);
             startActivity(intent);
@@ -44,4 +45,5 @@ public class FSVideoActivity extends AppCompatActivity {
         videoView.setMediaController(mediaController);
         videoView.start();
     }
+
 }

@@ -126,5 +126,4 @@ public class FavoriteTelawatFragment extends Fragment {
         recycler.setAdapter(null);
         adapter = null;
     }
-
 }
