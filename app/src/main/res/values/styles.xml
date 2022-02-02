@@ -39,4 +39,8 @@
         <item name="android:textSize" tools:ignore="SpUsage">23dp</item>
     </style>
 
+    <style name="RoundedPopup" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@drawable/rounded_popup</item>
+    </style>
+
 </resources>

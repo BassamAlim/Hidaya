@@ -1,19 +1,53 @@
 <resources>
+    
+    <string-array name="time_settings">
+        <item>-30</item>
+        <item>-25</item>
+        <item>-20</item>
+        <item>-15</item>
+        <item>-10</item>
+        <item>-5</item>
+        <item>0</item>
+        <item>+5</item>
+        <item>+10</item>
+        <item>+15</item>
+        <item>+20</item>
+        <item>+25</item>
+        <item>+30</item>
+    </string-array>
 
-<string-array name="time_settings">
-    <item>-30</item>
-    <item>-25</item>
-    <item>-20</item>
-    <item>-15</item>
-    <item>-10</item>
-    <item>-5</item>
-    <item>0</item>
-    <item>+5</item>
-    <item>+10</item>
-    <item>+15</item>
-    <item>+20</item>
-    <item>+25</item>
-    <item>+30</item>
-</string-array>
+    <string-array name="quran_themes">
+        <item>الغامق</item>
+        <item>الفاتح</item>
+    </string-array>
+
+    <string-array name="quran_theme_values">
+        <item>dark_theme</item>
+        <item>light_theme</item>
+    </string-array>
+
+    <string-array name="reciters_placeholder">
+        <item>reciter</item>
+        <item>reciter</item>
+    </string-array>
+
+    <string-array name="reciter_values_placeholder">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    
+    <string-array name="repeat_modes">
+        <item>بدون تكرار</item>
+        <item>مرتين</item>
+        <item>ثلاث مرات</item>
+        <item>بدون توقف</item>
+    </string-array>
+
+    <string-array name="repeat_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 
 </resources>

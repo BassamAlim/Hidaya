@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="rtl"
-    android:background="@color/bg">
+    android:background="@color/dark_bg">
 
     <FrameLayout
         android:id="@+id/settings"

@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="@string/notifications_header">
@@ -22,19 +23,6 @@
             app:key="@string/friday_kahf_key"
             app:title="@string/friday_kahf_title"
             app:defaultValue="true" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/quran_header">
-
-        <SeekBarPreference
-            app:key="@string/quran_text_size_key"
-            app:title="@string/text_size_title"
-            app:showSeekBarValue="true"
-            app:min="20"
-            android:max="50"
-            app:defaultValue="30"
-            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

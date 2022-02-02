@@ -103,7 +103,7 @@ public class QuizActivity extends AppCompatActivity {
             answerBtn.setTextColor(getResources().getColor(R.color.text));
 
         if (cAnswers[current] != -1)
-            answerBtns[cAnswers[current]].setTextColor(getResources().getColor(R.color.accent));
+            answerBtns[cAnswers[current]].setTextColor(getResources().getColor(R.color.dark_accent));
 
         if (current == 0) {
             prevBtn.setEnabled(false);

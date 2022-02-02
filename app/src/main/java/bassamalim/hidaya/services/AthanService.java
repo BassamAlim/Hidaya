@@ -100,9 +100,9 @@ public class AthanService extends Service {
         builder.setAutoCancel(true);
         builder.setOnlyAlertOnce(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            builder.setColor(getColor(R.color.secondary));
+            builder.setColor(getColor(R.color.dark_secondary));
         else
-            builder.setColor(getResources().getColor(R.color.secondary));
+            builder.setColor(getResources().getColor(R.color.dark_secondary));
 
         return builder.build();
     }

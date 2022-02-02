@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:key="quran_settings_screen_key">
+
+    <PreferenceCategory android:title="إعدادات الصفحة">
+
+        <SeekBarPreference
+            android:key="@string/quran_text_size_key"
+            android:title="@string/text_size_title"
+            app:showSeekBarValue="true"
+            app:min="20"
+            android:max="50"
+            android:defaultValue="30"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:key="@string/quran_theme_key"
+            android:title="النسق"
+            android:entries="@array/quran_themes"
+            android:entryValues="@array/quran_theme_values"
+            app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="إعدادات التلاوة">
+
+        <DropDownPreference
+            android:key="@string/aya_reciter_key"
+            android:title="القارئ"
+            android:entries="@array/reciters_placeholder"
+            android:entryValues="@array/reciter_values_placeholder"
+            app:useSimpleSummaryProvider="true" />
+
+        <DropDownPreference
+            android:key="@string/aya_repeat_mode_key"
+            android:title="تكرار الآية"
+            android:entries="@array/repeat_modes"
+            android:entryValues="@array/repeat_values"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreference
+            android:key="@string/stop_on_sura_key"
+            android:title="@string/stop_on_sura_end"
+            android:defaultValue="false" />
+
+        <SwitchPreference
+            android:key="@string/stop_on_page_key"
+            android:title="@string/stop_on_page_end"
+            android:defaultValue="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

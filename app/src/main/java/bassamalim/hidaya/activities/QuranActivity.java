@@ -1,5 +1,6 @@
 package bassamalim.hidaya.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -16,6 +17,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.res.ResourcesCompat;
@@ -45,6 +48,7 @@ public class QuranActivity extends SwipeActivity {
 
     private final int QURAN_PAGES = 604;
     private ActivityQuranBinding binding;
+    private AppDatabase db;
     private SharedPreferences pref;
     private String action;
     private LinearLayout mainLinear;
@@ -60,7 +64,7 @@ public class QuranActivity extends SwipeActivity {
     private Ayah selected;
     private RecitationManager rcMgr;
     private List<AyatDB> ayatDB;
-    private AppDatabase db;
+    private String theme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +98,7 @@ public class QuranActivity extends SwipeActivity {
 
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         textSize = pref.getInt(getString(R.string.quran_text_size_key), 30);
+        theme = pref.getString(getString(R.string.quran_theme_key), "");
 
         db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
@@ -159,8 +164,32 @@ public class QuranActivity extends SwipeActivity {
             selected = null;
         });
         binding.nextAyah.setOnClickListener(view -> rcMgr.nextAyah());
-        binding.recitationSettings.setOnClickListener(v -> new RecitationPopup(this, v));
+        binding.recitationSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(this, RecitationPopup.class);
+            settingsPopup.launch(intent);
+        });
     }
+
+    ActivityResultLauncher<Intent> settingsPopup = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    assert data != null;
+
+                    int newTextSize = data.getIntExtra("text_size", -1);
+                    if (newTextSize != -1) {
+                        textSize = newTextSize;
+                        buildPage(currentPage);
+                    }
+
+                    String newTheme = data.getStringExtra("theme");
+                    if (!theme.equals(newTheme)) {
+                        //refreshUi;
+                        theme = newTheme;
+                    }
+                }
+            });
 
     private void setupManager() {
         rcMgr = new RecitationManager(this);
@@ -291,7 +320,7 @@ public class QuranActivity extends SwipeActivity {
 
         screen.setText(ss);
         screen.setMovementMethod(DoubleClickLMM.getInstance(
-                getResources().getColor(R.color.accent)));
+                getResources().getColor(R.color.dark_accent)));
         mainLinear.addView(screen);
         arr = new ArrayList<>();
     }
@@ -333,10 +362,8 @@ public class QuranActivity extends SwipeActivity {
     private void addHeader(int suraNum, String name) {
         TextView nameScreen = surahName(name);
         mainLinear.addView(nameScreen);
-        if (suraNum != 1 && suraNum != 9) {    // surat al-fatiha and At-Taubah
-            TextView basmalah = basmalah();
-            mainLinear.addView(basmalah);
-        }
+        if (suraNum != 1 && suraNum != 9)    // surat al-fatiha and At-Taubah
+            mainLinear.addView(basmalah());
         if (action.equals("by_surah") && suraNum == surahIndex+1)
             target = nameScreen;
     }
@@ -381,18 +408,18 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private TextView screen() {
-        TextView screen = new TextView(this);
+        TextView tv = new TextView(this);
         LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        screen.setLayoutParams(screenParams);
-        screen.setPadding(0, 0, 0, 30);
-        screen.setGravity(Gravity.CENTER);
-        screen.setTextSize(textSize);
+        tv.setLayoutParams(screenParams);
+        tv.setPadding(10, 0, 10, 30);
+        tv.setGravity(Gravity.CENTER);
+        tv.setTextSize(textSize);
         Typeface typeface = Typeface.createFromAsset(getAssets(), "hafs_smart_08.ttf");
-        screen.setTypeface(typeface);
-        screen.setTextColor(Color.WHITE);
-        screen.setLinkTextColor(Color.WHITE);
-        return screen;
+        tv.setTypeface(typeface);
+        tv.setTextColor(Color.WHITE);
+        tv.setLinkTextColor(Color.WHITE);
+        return tv;
     }
 
     @Override

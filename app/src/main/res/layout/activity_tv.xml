@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg">
+    android:background="@color/dark_bg">
 
     <VideoView
         android:id="@+id/screen"
@@ -20,7 +20,7 @@
         android:layout_width="350dp"
         android:layout_height="90dp"
         android:background="@drawable/ripple_s"
-        android:backgroundTint="@color/secondary"
+        android:backgroundTint="@color/dark_secondary"
         android:gravity="center_horizontal|center"
         android:text="@string/quran_channel"
         android:textSize="25sp"
@@ -37,7 +37,7 @@
         android:layout_height="90dp"
         android:layout_marginTop="15dp"
         android:background="@drawable/ripple_s"
-        android:backgroundTint="@color/secondary"
+        android:backgroundTint="@color/dark_secondary"
         android:gravity="center_horizontal|center"
         android:text="@string/sunnah_channel"
         android:textSize="25sp"

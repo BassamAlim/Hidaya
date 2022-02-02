@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="rtl"
-    android:background="@color/bg">
+    android:background="@color/dark_bg">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_bar"

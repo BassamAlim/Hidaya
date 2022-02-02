@@ -60,7 +60,7 @@
             android:paddingHorizontal="20dp"
             android:gravity="center"
             android:textSize="20sp"
-            android:textColor="@color/accent"/>
+            android:textColor="@color/dark_accent"/>
 
         <ImageButton
             android:id="@+id/accuracy_indicator"

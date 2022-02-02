@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
+    android:background="@color/dark_primary"
     tools:context="bassamalim.hidaya.activities.AboutActivity">
 
     <TextView
@@ -57,7 +57,7 @@
         android:background="@drawable/ripple_s"
         android:text="@string/rebuild_database"
         android:textSize="20dp"
-        android:textColor="@color/accent"
+        android:textColor="@color/dark_accent"
         tools:ignore="SpUsage"
         app:layout_constraintTop_toBottomOf="@id/tafseer_source"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +74,7 @@
         android:background="@drawable/ripple_s"
         android:text="@string/quick_update"
         android:textSize="20dp"
-        android:textColor="@color/accent"
+        android:textColor="@color/dark_accent"
         tools:ignore="SpUsage"
         app:layout_constraintTop_toBottomOf="@id/rebuild_db"
         app:layout_constraintStart_toStartOf="parent"

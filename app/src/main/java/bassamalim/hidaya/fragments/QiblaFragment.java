@@ -14,8 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
-import java.util.HashMap;
-
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.MainActivity;
 import bassamalim.hidaya.databinding.FragmentQiblaBinding;
@@ -97,7 +95,6 @@ public class QiblaFragment extends Fragment {
 
     private void setupCompass() {
         compass = new Compass(requireContext());
-
         Compass.CompassListener listener = new Compass.CompassListener() {
             @Override
             public void onNewAzimuth(float azimuth) {
@@ -110,7 +107,6 @@ public class QiblaFragment extends Fragment {
                 updateAccuracy(accuracy);
             }
         };
-
         compass.setListener(listener);
     }
 

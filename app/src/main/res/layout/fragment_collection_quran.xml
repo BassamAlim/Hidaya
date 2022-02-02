@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="@color/bg">
+    android:background="@color/dark_bg">
 
     <Button
         android:id="@+id/continue_reading"
@@ -13,7 +13,7 @@
         android:layout_margin="5dp"
         android:background="@drawable/ripple_s"
         android:hint="@string/continue_reading"
-        android:textColor="@color/accent"
+        android:textColor="@color/dark_accent"
         android:textSize="19dp"
         tools:ignore="SpUsage"/>
 
@@ -21,7 +21,7 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary"/>
+        android:background="@color/dark_primary"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/quran_pager"

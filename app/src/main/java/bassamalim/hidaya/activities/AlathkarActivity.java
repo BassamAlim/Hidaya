@@ -75,7 +75,7 @@ public class AlathkarActivity extends AppCompatActivity {
         cardParams.setMargins(20, 10, 20, 10);
         cardParams.gravity = Gravity.CENTER;
         card.setLayoutParams(cardParams);
-        card.setCardBackgroundColor(getResources().getColor(R.color.secondary));
+        card.setCardBackgroundColor(getResources().getColor(R.color.dark_secondary));
         card.setRadius(40);
         card.setElevation(40);
         card.setPreventCornerOverlap(true);
@@ -178,9 +178,9 @@ public class AlathkarActivity extends AppCompatActivity {
         screenParams.gravity = Gravity.CENTER;
         screen.setLayoutParams(screenParams);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            screen.setTextColor(getResources().getColor(R.color.accent, getTheme()));
+            screen.setTextColor(getResources().getColor(R.color.dark_accent, getTheme()));
         else
-            screen.setTextColor(getResources().getColor(R.color.accent));
+            screen.setTextColor(getResources().getColor(R.color.dark_accent));
         screen.setPadding(15, 0, 15, 0);
         screen.setMaxWidth(300);
         screen.setGravity(Gravity.CENTER);
@@ -197,9 +197,9 @@ public class AlathkarActivity extends AppCompatActivity {
         screenParams.gravity = Gravity.CENTER;
         screen.setLayoutParams(screenParams);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            screen.setTextColor(getResources().getColor(R.color.accent, getTheme()));
+            screen.setTextColor(getResources().getColor(R.color.dark_accent, getTheme()));
         else
-            screen.setTextColor(getResources().getColor(R.color.accent));
+            screen.setTextColor(getResources().getColor(R.color.dark_accent));
         screen.setPadding(10, 0, 10, 0);
         screen.setGravity(Gravity.CENTER);
         screen.setTextSize(textSize-8);
@@ -228,7 +228,7 @@ public class AlathkarActivity extends AppCompatActivity {
 
     private View separator(boolean horizontal, int size) {
         View separator = new View(this);
-        separator.setBackgroundColor(getResources().getColor(R.color.primary));
+        separator.setBackgroundColor(getResources().getColor(R.color.dark_primary));
         LinearLayout.LayoutParams params;
         if (horizontal) {
             params = new LinearLayout.LayoutParams(

@@ -95,7 +95,6 @@ public class RecitationManager {
             int finalI = i;
 
             players[i].setOnPreparedListener(mediaPlayer -> {
-                Log.i(Const.TAG, "in p1 onPrepared");
                 if (players[n(finalI)].isPlaying())
                     players[n(finalI)].setNextMediaPlayer(players[finalI]);
                 else if (state == States.Paused) {
@@ -113,9 +112,8 @@ public class RecitationManager {
             });
 
             players[i].setOnCompletionListener(mediaPlayer -> {
-                Log.i(Const.TAG, "in p1 onCompletion");
-
-                int repeat = pref.getInt("aya_repeat_mode", 0);
+                int repeat = Integer.parseInt(pref.getString(context.getString(
+                        R.string.aya_repeat_mode_key), ""));
                 if ((repeat == 1 || repeat == 2) && repeated < repeat) {
                     preparePlayer(players[finalI], lastPlayed);
                     players[n(finalI)].reset();
@@ -163,7 +161,8 @@ public class RecitationManager {
     }
 
     private void preparePlayer(MediaPlayer player, Ayah ayah) {
-        if (pref.getBoolean("stop_on_surah", false) && ayah.getSurah() != chosenSurah) {
+        if (pref.getBoolean(context.getString(R.string.stop_on_sura_key), false)
+                && ayah.getSurah() != chosenSurah) {
             if (surahEnding)
                 stopPlaying();
             else
@@ -211,6 +210,8 @@ public class RecitationManager {
             return;
 
         lastPlayed = coordinator.getAyah(lastPlayed.getIndex()+1);
+        track(lastPlayed);
+
         for (int i = 0; i < 2; i++) {
             if (players[i].isPlaying()) {
                 preparePlayer(players[i], lastPlayed);
@@ -225,6 +226,8 @@ public class RecitationManager {
             return;
 
         lastPlayed = coordinator.getAyah(lastPlayed.getIndex()-1);
+        track(lastPlayed);
+
         for (int i = 0; i < 2; i++) {
             if (players[i].isPlaying()) {
                 preparePlayer(players[i], lastPlayed);
@@ -256,7 +259,7 @@ public class RecitationManager {
 
     private void ended() {
         int QURAN_PAGES = 604;
-        if (pref.getBoolean("stop_on_page", false))
+        if (pref.getBoolean(context.getString(R.string.stop_on_page_key), false))
             stopPlaying();
         else if (currentPage < QURAN_PAGES && lastPlayed.getIndex()+1 == allAyahsSize) {
             coordinator.nextPage();
@@ -280,7 +283,8 @@ public class RecitationManager {
     private Uri getUri(Ayah ayah, int change) {
         int size = db.ayatTelawaDao().getSize();
 
-        int choice = pref.getInt("chosen_reciter", 13);
+        int choice = Integer.parseInt(pref.getString(
+                context.getString(R.string.aya_reciter_key), ""));
         List<AyatTelawaDB> sources = db.ayatTelawaDao().getReciter((choice + change) % (size-1));
 
         String uri = "https://www.everyayah.com/data/";

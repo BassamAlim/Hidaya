@@ -18,7 +18,6 @@
 
     <application
         android:allowBackup="true"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -52,8 +51,7 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".activities.MainActivity"
-            android:exported="true"
-            android:label="@string/app_name">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -61,7 +59,6 @@
         <activity
             android:name=".activities.AlathkarActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Hidaya">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -69,9 +66,7 @@
         </activity>
         <activity
             android:name=".activities.QuranActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Hidaya">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -79,7 +74,6 @@
         <activity
             android:name=".activities.TvActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Hidaya">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -96,18 +90,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.FSVideoActivity"
-            android:label="@string/app_name" />
+            android:name=".activities.FSVideoActivity" />
         <activity
-            android:name=".activities.AboutActivity"
-            android:label="@string/app_name" />
+            android:name=".activities.AboutActivity" />
         <activity
             android:name=".activities.TelawatClient"
-            android:label="@string/app_name"
             android:launchMode="singleTop" />
         <activity
             android:name=".activities.TelawatCollectionActivity"
             android:label="تلاوات" />
+        <activity android:name=".popups.RecitationPopup"
+            android:theme="@style/RoundedPopup"/>
 
         <receiver android:name=".receivers.NotificationReceiver" />
         <receiver android:name=".receivers.DailyUpdateReceiver" />

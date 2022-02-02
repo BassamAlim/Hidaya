@@ -24,6 +24,11 @@
     <string name="friday_kahf_key">friday_kahf_key</string>
     <string name="quran_text_size_key">quran_text_size_key</string>
     <string name="alathkar_text_size_key">alathkar_text_size_key</string>
+    <string name="quran_theme_key">quran_theme_key</string>
+    <string name="aya_reciter_key">aya_reciter_key</string>
+    <string name="aya_repeat_mode_key">aya_repeat_mode_key</string>
+    <string name="stop_on_sura_key">stop_on_sura_key</string>
+    <string name="stop_on_page_key">stop_on_page_key</string>
 
     <!-- Preference Titles -->
     <string name="morning_athkar_title">إشعار أذكار الصباح</string>
@@ -95,7 +100,7 @@
     <string name="quran_query_hint">ابحث عن اسم السورة أو رقم الصفحة</string>
     <string name="recitations">تلاوات</string>
     <string name="today">اليوم</string>
-    <string name="stop_on_surah_end">توقف عند نهاية السورة</string>
+    <string name="stop_on_sura_end">توقف عند نهاية السورة</string>
     <string name="stop_on_page_end">توقف عند نهاية الصفحة</string>
     <string name="welcome_message">أهلا بك في تطبيق هِداية</string>
     <string name="disclaimer">تطبيق هِداية يستخدم موقعك لحساب أوقات الصلاة واتجاه القِبلة. \n ويستخدم الموقع في الخلفية لتحديث أوقات الصلاة يومياً.\n مع العلم أن موقعك يسجل فقط على جهازك.</string>
@@ -122,5 +127,8 @@
     <string name="three_times">ثلاث مرات</string>
     <string name="no_stop">بدون توقف</string>
     <string name="distance_to_kaaba">المسافة الى الكعبة</string>
+    <string name="page_preferences">إعدادات الصفحة</string>
+    <string name="execute">تنفيذ</string>
+    <string name="cancel">إلغاء</string>
 
 </resources>
