@@ -100,10 +100,10 @@ public class QuizActivity extends AppCompatActivity {
 
     private void adjustButtons() {
         for (Button answerBtn : answerBtns)
-            answerBtn.setTextColor(getResources().getColor(R.color.text));
+            answerBtn.setTextColor(getResources().getColor(R.color.text_dark));
 
         if (cAnswers[current] != -1)
-            answerBtns[cAnswers[current]].setTextColor(getResources().getColor(R.color.dark_accent));
+            answerBtns[cAnswers[current]].setTextColor(getResources().getColor(R.color.accent_dark));
 
         if (current == 0) {
             prevBtn.setEnabled(false);
@@ -113,7 +113,7 @@ public class QuizActivity extends AppCompatActivity {
             if (allAnswered()) {
                 nextBtn.setText("إنهاء الإختبار");
                 nextBtn.setEnabled(true);
-                nextBtn.setTextColor(getResources().getColor(R.color.text));
+                nextBtn.setTextColor(getResources().getColor(R.color.text_dark));
             }
             else {
                 nextBtn.setText("أجب على جميع الاسئلة");
@@ -123,11 +123,11 @@ public class QuizActivity extends AppCompatActivity {
         }
         else {
             prevBtn.setEnabled(true);
-            prevBtn.setTextColor(getResources().getColor(R.color.text));
+            prevBtn.setTextColor(getResources().getColor(R.color.text_dark));
 
             nextBtn.setEnabled(true);
             nextBtn.setText("السؤال التالي");
-            nextBtn.setTextColor(getResources().getColor(R.color.text));
+            nextBtn.setTextColor(getResources().getColor(R.color.text_dark));
         }
     }
 

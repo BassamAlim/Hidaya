@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:minHeight="?attr/actionBarSize"
-        android:background="@color/dark_primary"
+        android:background="@color/primary_dark"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -25,7 +25,7 @@
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/dark_primary"
+            android:backgroundTint="@color/primary_dark"
             android:src="@drawable/ic_back"
             android:contentDescription="@string/back_description"/>
 
@@ -36,7 +36,7 @@
             android:layout_marginEnd="15dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:textColor="@color/dark_accent"
+            android:textColor="@color/accent_dark"
             android:textSize="18dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
@@ -89,16 +89,16 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="20dp"
         android:padding="10dp"
-        android:background="@color/dark_primary70"
+        android:background="@color/primary70_dark"
         app:layout_constraintBottom_toTopOf="@id/controls_space">
 
         <SeekBar
             android:id="@+id/seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/dark_secondary"
-            android:progressTint="@color/dark_darker_accent"
-            android:thumbTint="@color/dark_accent"
+            android:backgroundTint="@color/secondary_dark"
+            android:progressTint="@color/other_accent_dark"
+            android:thumbTint="@color/accent_dark"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
@@ -122,7 +122,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="130dp"
-        android:background="@color/dark_primary70"
+        android:background="@color/primary70_dark"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
@@ -197,7 +197,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:minHeight="?attr/actionBarSize"
-        android:background="@color/dark_primary"
+        android:background="@color/primary_dark"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"

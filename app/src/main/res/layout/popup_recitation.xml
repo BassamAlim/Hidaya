@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/base_view"
     android:layout_width="350dp"
     android:layout_height="290dp"
     android:layoutDirection="rtl"
     android:elevation="10dp"
     android:orientation="vertical"
     android:layout_gravity="center|bottom"
-    android:gravity="center"
-    android:backgroundTint="@color/dark_bg"
-    android:background="@drawable/dialog_bg">
+    android:gravity="center">
 
     <FrameLayout
         android:id="@+id/quran_settings"

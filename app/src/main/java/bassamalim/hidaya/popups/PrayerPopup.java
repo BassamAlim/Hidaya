@@ -180,16 +180,16 @@ public class PrayerPopup {
 
         switch (choice) {
             case 0:
-                disableBtn.setTextColor(context.getResources().getColor(R.color.dark_accent));
+                disableBtn.setTextColor(context.getResources().getColor(R.color.accent_dark));
                 break;
             case 1:
-                muteBtn.setTextColor(context.getResources().getColor(R.color.dark_accent));
+                muteBtn.setTextColor(context.getResources().getColor(R.color.accent_dark));
                 break;
             case 2:
-                notifyBtn.setTextColor(context.getResources().getColor(R.color.dark_accent));
+                notifyBtn.setTextColor(context.getResources().getColor(R.color.accent_dark));
                 break;
             case 3:
-                athanBtn.setTextColor(context.getResources().getColor(R.color.dark_accent));
+                athanBtn.setTextColor(context.getResources().getColor(R.color.accent_dark));
         }
     }
 

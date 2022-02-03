@@ -17,7 +17,7 @@
 
         <ListPreference
             android:key="@string/quran_theme_key"
-            android:title="النسق"
+            android:title="السمة"
             android:entries="@array/quran_themes"
             android:entryValues="@array/quran_theme_values"
             app:useSimpleSummaryProvider="true"/>

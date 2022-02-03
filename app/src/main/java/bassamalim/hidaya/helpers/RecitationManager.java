@@ -2,6 +2,7 @@ package bassamalim.hidaya.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -68,7 +69,13 @@ public class RecitationManager {
                 "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
                 .build();
 
-        what = new ForegroundColorSpan(context.getResources().getColor(R.color.track));
+        String theme = pref.getString(context.getString( R.string.quran_theme_key),
+                "DarkTheme");
+
+        if (theme.equals("DarkTheme"))
+            what = new ForegroundColorSpan(context.getResources().getColor(R.color.track));
+        else
+            what = new ForegroundColorSpan(Color.GREEN);
     }
 
     private void initPlayers() {

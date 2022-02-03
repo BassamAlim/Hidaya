@@ -22,8 +22,8 @@
     </string-array>
 
     <string-array name="quran_theme_values">
-        <item>dark_theme</item>
-        <item>light_theme</item>
+        <item>DarkTheme</item>
+        <item>LightTheme</item>
     </string-array>
 
     <string-array name="reciters_placeholder">

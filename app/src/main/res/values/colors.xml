@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     // Global
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="text">#BCC2C7</color>
     <color name="track">#48C986</color>
 
     // Dark Theme
-    <color name="dark_bg">#1A2027</color>
-    <color name="dark_primary">#222831</color>
-    <color name="dark_primary70">#B3222831</color> // # alpha in hex + color
-    <color name="dark_secondary">#222D37</color>
-    <color name="dark_lighter_secondary">#56738E</color>
-    <color name="dark_accent">#00ADB5</color>
-    <color name="dark_darker_accent">#028288</color>
+    <color name="bg_dark">#1A2027</color>
+    <color name="primary_dark">#222831</color>
+    <color name="primary70_dark">#B3222831</color> // # alpha in hex + color
+    <color name="secondary_dark">#222D37</color>
+    <color name="lighter_secondary_dark">#56738E</color>
+    <color name="accent_dark">#00ADB5</color>
+    <color name="other_accent_dark">#028288</color>
+    <color name="text_dark">#BCC2C7</color>
 
     // Light Theme
-    <color name="light_bg">#1A2027</color>
-    <color name="light_primary">#222831</color>
-    <color name="light_primary70">#B3222831</color> // # alpha in hex + color
-    <color name="light_secondary">#222D37</color>
-    <color name="light_lighter_secondary">#56738E</color>
-    <color name="light_accent">#00ADB5</color>
-    <color name="light_darker_accent">#028288</color>
-
-
-
-
+    <color name="bg_light">#0A6161</color>
+    <color name="primary_light">#8EB5B5</color>
+    <color name="primary70_light">#B38EB5B5</color> // # alpha in hex + color
+    <color name="secondary_light">#A8ADB1</color>
+    <color name="lighter_secondary_light">#56738E</color>
+    <color name="accent_light">#022425</color>
+    <color name="other_accent_light">#033E40</color>
+    <color name="text_light">#FF000000</color>
+    <color name="highlight_light">#01849C</color>
 
 </resources>

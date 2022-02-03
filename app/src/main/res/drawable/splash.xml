@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:drawable="@color/dark_bg"/>
+        android:drawable="@color/bg_dark"/>
 
     <item
         android:drawable="@drawable/icon"

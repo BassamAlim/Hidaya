@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
 
 import bassamalim.hidaya.R;
 
@@ -42,8 +43,19 @@ public class TafseerPopup extends DialogFragment {
         TextView nameScreen = new TextView(requireContext());
         TextView screen = new TextView(requireContext());
 
-        scrollView.setBackground(ResourcesCompat.getDrawable(getResources(),
-                R.drawable.dialog_bg, requireContext().getTheme()));
+        String theme = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                .getString(getString(R.string.quran_theme_key), "DarkTheme");
+
+        if (theme.equals("DarkTheme")) {
+            scrollView.setBackground(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.dialog_bg, requireContext().getTheme()));
+            screen.setTextColor(Color.WHITE);
+        }
+        else {
+            scrollView.setBackground(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.dialog_bg_light, requireContext().getTheme()));
+            screen.setTextColor(Color.BLACK);
+        }
 
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setGravity(Gravity.CENTER);
@@ -57,7 +69,6 @@ public class TafseerPopup extends DialogFragment {
         screen.setGravity(Gravity.CENTER);
         screen.setText(tafseer);
         screen.setTextSize(20);
-        screen.setTextColor(Color.WHITE);
 
         layout.addView(nameScreen);
         layout.addView(screen);

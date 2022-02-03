@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="rtl"
-    android:background="@color/dark_bg"
+    android:background="@color/bg_dark"
     tools:context=".activities.WelcomeActivity">
 
     <TextView
@@ -26,7 +26,7 @@
         android:padding="10dp"
         android:orientation="vertical"
         android:gravity="center"
-        android:background="@color/dark_primary"
+        android:background="@color/primary_dark"
         app:layout_constraintTop_toBottomOf="@id/welcome"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,16 +45,16 @@
             android:id="@+id/agreed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/dark_accent"
+            android:backgroundTint="@color/accent_dark"
             android:text="@string/agreed"
             android:textSize="22sp"
-            android:textColor="@color/dark_bg"/>
+            android:textColor="@color/bg_dark"/>
 
         <Button
             android:id="@+id/rejected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/dark_secondary"
+            android:backgroundTint="@color/secondary_dark"
             android:text="@string/rejected"
             android:textSize="22sp"/>
 

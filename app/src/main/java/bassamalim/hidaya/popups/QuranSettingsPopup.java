@@ -1,6 +1,7 @@
 package bassamalim.hidaya.popups;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Window;
 
@@ -8,7 +9,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.DropDownPreference;
 import androidx.preference.ListPreference;
+import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreference;
@@ -20,26 +23,63 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.databinding.PopupRecitationBinding;
 
-public class RecitationPopup extends AppCompatActivity {
+public class QuranSettingsPopup extends AppCompatActivity {
 
     private PopupRecitationBinding binding;
-    private RecitationPopup.SettingsFragment settingsFragment;
+    private QuranSettingsPopup.SettingsFragment settingsFragment;
     private boolean change = false;
+    private String theme;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        themeifyBefore();
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         binding = PopupRecitationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        themeifyAfter();
+
         binding.executeBtn.setOnClickListener(v -> execute());
 
         settingsFragment = new SettingsFragment();
-
         if (savedInstanceState == null)
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.quran_settings, settingsFragment).commit();
+    }
+
+    private void themeifyBefore() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        theme = pref.getString(getString(R.string.quran_theme_key), "DarkTheme");
+
+        switch (theme) {
+            case "DarkTheme":
+                setTheme(R.style.RoundedPopupDark);
+                break;
+            case "LightTheme":
+                setTheme(R.style.RoundedPopupLight);
+                break;
+        }
+    }
+
+    private void themeifyAfter() {
+        switch (theme) {
+            case "DarkTheme":
+                /*binding.baseView.setBackground(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.dialog_bg, getTheme()));*/
+                //binding.baseView.setBackgroundResource(R.color.bg_dark);
+                //binding.baseView.setBackgroundColor(getResources().getColor(R.color.bg_dark));
+                /*binding.executeBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ripple_s, getTheme()));*/
+                break;
+            case "LightTheme":
+                /*binding.baseView.setBackground(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.dialog_bg_light, getTheme()));*/
+                //binding.quranSettings.setBackgroundResource(R.color.secondary_light);
+                /*binding.executeBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ripple, getTheme()));*/
+                break;
+        }
     }
 
     private void execute() {
@@ -91,8 +131,6 @@ public class RecitationPopup extends AppCompatActivity {
             setupReciters();
 
             setInitial();
-
-            setListeners();
         }
 
         private void setInitial() {
@@ -135,17 +173,6 @@ public class RecitationPopup extends AppCompatActivity {
                 ids[i] = String.valueOf(i);
             recitersDropdown.setEntries(reciterNames);
             recitersDropdown.setEntryValues(ids);
-        }
-
-        private void setListeners() {
-            textSizeSeekbar.setOnPreferenceChangeListener((preference, newValue) -> {
-
-                return true;
-            });
-            themesList.setOnPreferenceChangeListener((preference, newValue) -> {
-
-                return true;
-            });
         }
 
         private List<String> getReciterNames() {

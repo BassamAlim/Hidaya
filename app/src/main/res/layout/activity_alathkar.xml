@@ -7,14 +7,14 @@
     android:layout_height="match_parent"
     android:layoutDirection="ltr"
     tools:context=".activities.AlathkarActivity"
-    android:background="@color/dark_bg">
+    android:background="@color/bg_dark">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/name_bar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:minHeight="?attr/actionBarSize"
-        android:background="@color/dark_primary"
+        android:background="@color/primary_dark"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -29,7 +29,7 @@
             android:layout_marginEnd="15dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:textColor="@color/dark_accent"
+            android:textColor="@color/accent_dark"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />

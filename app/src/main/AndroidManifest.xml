@@ -99,8 +99,8 @@
         <activity
             android:name=".activities.TelawatCollectionActivity"
             android:label="تلاوات" />
-        <activity android:name=".popups.RecitationPopup"
-            android:theme="@style/RoundedPopup"/>
+        <activity android:name=".popups.QuranSettingsPopup"
+            android:theme="@style/Theme.AppCompat.Dialog"/>
 
         <receiver android:name=".receivers.NotificationReceiver" />
         <receiver android:name=".receivers.DailyUpdateReceiver" />

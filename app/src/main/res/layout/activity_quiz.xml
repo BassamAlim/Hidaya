@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="rtl"
-    android:background="@color/dark_bg"
+    android:background="@color/bg_dark"
     tools:context=".activities.QuizActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -29,7 +29,7 @@
             android:layout_marginEnd="15dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:textColor="@color/dark_accent"
+            android:textColor="@color/accent_dark"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
@@ -44,7 +44,7 @@
         android:paddingVertical="15dp"
         android:paddingHorizontal="20dp"
         android:elevation="10dp"
-        android:background="@color/dark_primary"
+        android:background="@color/primary_dark"
         android:textSize="35dp"
         tools:ignore="SpUsage"
         app:layout_constraintTop_toBottomOf="@id/top_bar"

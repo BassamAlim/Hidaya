@@ -17,7 +17,7 @@
             android:orientation="vertical"
             android:paddingHorizontal="10dp"
             android:gravity="center"
-            android:background="@color/dark_secondary">
+            android:background="@color/secondary_dark">
 
             <TextView
                 android:id="@+id/question_number"
