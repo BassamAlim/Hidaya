@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.Build;
 import android.util.Log;
 
@@ -140,36 +139,26 @@ public class Alarms {
 
     private void setExtraAlarm(ID id) {
         Log.i(Const.TAG, "in set extra alarm");
-        int hour;
-        int minute;
 
-        Location loc = new Keeper(appContext).retrieveLocation();
-        if (id == ID.FRIDAY_KAHF && loc != null) {
-            Calendar[] times = Util.getTimes(loc);
-            Calendar duhr = times[2];
-            hour = (duhr.get(Calendar.HOUR_OF_DAY)+1) % 24;
-            minute = duhr.get(Calendar.MINUTE);
+        int defaultH = 0;
+        int defaultM = 0;
+        switch (id) {
+            case MORNING:
+                defaultH = 5;
+                break;
+            case EVENING:
+                defaultH = 16;
+                break;
+            case DAILY_WERD:
+                defaultH = 21;
+                break;
+            case FRIDAY_KAHF:
+                defaultH = 13;
+                break;
         }
-        else {
-            int defHour = 0;
-            int defMinute = 0;
-            switch (id) {
-                case MORNING:
-                    defHour = 5;
-                    break;
-                case EVENING:
-                    defHour = 16;
-                    break;
-                case DAILY_WERD:
-                    defHour = 21;
-                    break;
-                case FRIDAY_KAHF:
-                    defHour = 13;
-                    break;
-            }
-            hour = pref.getInt(id + "hour", defHour);
-            minute = pref.getInt(id + "minute", defMinute);
-        }
+
+        int hour = pref.getInt(id + "hour", defaultH);
+        int minute = pref.getInt(id + "minute", defaultM);
 
         Calendar time = Calendar.getInstance();
         time.set(Calendar.HOUR_OF_DAY, hour);

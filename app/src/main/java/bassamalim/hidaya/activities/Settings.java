@@ -36,8 +36,6 @@ public class Settings extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
 
-        boolean located = true;
-
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.preferences, rootKey);
@@ -64,34 +62,27 @@ public class Settings extends AppCompatActivity {
             assert pSwitch != null;
             pSwitch.setSummary(pref.getString(ID.DAILY_WERD+"text", "٩:٠٠ مساءاً"));
 
-            if (!MainActivity.located) {
-                located = false;
-                pSwitch = findPreference(keyGetter(ID.FRIDAY_KAHF));
-                assert pSwitch != null;
-                pSwitch.setSummary(pref.getString(ID.FRIDAY_KAHF+"text", "١:٠٠ مساءاً"));
-            }
+            pSwitch = findPreference(keyGetter(ID.FRIDAY_KAHF));
+            assert pSwitch != null;
+            pSwitch.setSummary(pref.getString(ID.FRIDAY_KAHF+"text", "١:٠٠ مساءاً"));
         }
 
         private void setListeners() {
-            setSwitchListener(ID.MORNING, true);
-            setSwitchListener(ID.EVENING, true);
-            setSwitchListener(ID.DAILY_WERD, true);
-            setSwitchListener(ID.FRIDAY_KAHF, !located);
+            setSwitchListener(ID.MORNING);
+            setSwitchListener(ID.EVENING);
+            setSwitchListener(ID.DAILY_WERD);
+            setSwitchListener(ID.FRIDAY_KAHF);
         }
 
-        private void setSwitchListener(ID id, boolean timed) {
+        private void setSwitchListener(ID id) {
             String key = keyGetter(id);
             SwitchPreferenceCompat pSwitch = findPreference(key);
             assert pSwitch != null;
 
             pSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean on = (Boolean) newValue;
-                if (on) {
-                    if (timed)
-                        showTimePicker(id);
-                    else
-                        new Alarms(getContext(), id);
-                }
+                if (on)
+                    showTimePicker(id);
                 else
                     cancelAlarm(id);
                 return true;
@@ -111,7 +102,7 @@ public class Settings extends AppCompatActivity {
                     (view, hourOfDay, minute) -> {
 
                 int[] nums = {hourOfDay, minute};
-                String fixed = fixText(nums);
+                String fixed = formatText(nums);
 
                 pSwitch.setSummary(fixed);
 
@@ -159,7 +150,7 @@ public class Settings extends AppCompatActivity {
         }
     }
 
-    private static String fixText(int[] nums) {
+    private static String formatText(int[] nums) {
         String result;
         HashMap<Character, Character> map = new HashMap<>();
         map.put('0', '٠');
