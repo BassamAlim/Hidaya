@@ -1,32 +1,41 @@
 <PreferenceScreen
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:iconSpaceReserved="false">
 
-    <PreferenceCategory app:title="@string/notifications_header">
+    <PreferenceCategory
+        app:title="@string/notifications_header"
+        app:iconSpaceReserved="false">
 
         <SwitchPreferenceCompat
             app:key="@string/morning_athkar_key"
             app:title="@string/morning_athkar_title"
-            app:defaultValue="true" />
+            app:defaultValue="true"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreferenceCompat
             app:key="@string/evening_athkar_key"
             app:title="@string/evening_athkar_title"
-            app:defaultValue="true" />
+            app:defaultValue="true"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreferenceCompat
             app:key="@string/daily_werd_key"
             app:title="@string/daily_page_enable_title"
-            app:defaultValue="true" />
+            app:defaultValue="true"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreferenceCompat
             app:key="@string/friday_kahf_key"
             app:title="@string/friday_kahf_title"
-            app:defaultValue="true" />
+            app:defaultValue="true"
+            app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/alathkar_header">
+    <PreferenceCategory
+        app:title="@string/alathkar_header"
+        app:iconSpaceReserved="false">
 
         <SeekBarPreference
             app:key="@string/alathkar_text_size_key"
@@ -35,7 +44,8 @@
             app:min="20"
             android:max="50"
             app:defaultValue="27"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true"
+            app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 

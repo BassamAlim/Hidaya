@@ -234,7 +234,6 @@ public class QuranActivity extends SwipeActivity {
                         restart.setAction("by_page");
                         restart.putExtra("page", currentPage);
                         startActivity(restart);
-
                     }
                 }
             });
