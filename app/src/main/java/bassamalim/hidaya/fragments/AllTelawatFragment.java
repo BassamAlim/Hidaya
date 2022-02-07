@@ -22,12 +22,12 @@ import bassamalim.hidaya.adapters.TelawatAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatDB;
 import bassamalim.hidaya.database.dbs.TelawatRecitersDB;
-import bassamalim.hidaya.databinding.FragmentAllTelawatBinding;
+import bassamalim.hidaya.databinding.FragmentTelawatBinding;
 import bassamalim.hidaya.models.ReciterCard;
 
 public class AllTelawatFragment extends Fragment {
 
-    private FragmentAllTelawatBinding binding;
+    private FragmentTelawatBinding binding;
     private RecyclerView recycler;
     private TelawatAdapter adapter;
     private List<TelawatDB> telawat;
@@ -36,7 +36,7 @@ public class AllTelawatFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        binding = FragmentAllTelawatBinding.inflate(inflater, container, false);
+        binding = FragmentTelawatBinding.inflate(inflater, container, false);
 
         setupRecycler();
 

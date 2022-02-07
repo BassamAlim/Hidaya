@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragments.DownloadedTelawatFragment"
+    tools:context=".fragments.AllTelawatFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="rtl"
@@ -17,16 +17,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/downloaded_telawat_recycler"/>
+        app:layout_constraintBottom_toTopOf="@id/telawat_recycler"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/downloaded_telawat_recycler"
+        android:id="@+id/telawat_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="?actionBarSize"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/search_bar">
 
     </androidx.recyclerview.widget.RecyclerView>
 

@@ -21,12 +21,12 @@ import bassamalim.hidaya.activities.TelawatClient;
 import bassamalim.hidaya.adapters.TelawatSuarAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.SuraDB;
-import bassamalim.hidaya.databinding.FragmentFavoriteTelawatSuarBinding;
+import bassamalim.hidaya.databinding.FragmentTelawatSuarBinding;
 import bassamalim.hidaya.models.ReciterSuraCard;
 
 public class FavoriteTelawatSuarFragment extends Fragment {
 
-    private FragmentFavoriteTelawatSuarBinding binding;
+    private FragmentTelawatSuarBinding binding;
     private RecyclerView recycler;
     private TelawatSuarAdapter adapter;
     private final int reciterId;
@@ -45,8 +45,7 @@ public class FavoriteTelawatSuarFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = FragmentFavoriteTelawatSuarBinding.inflate(
-                inflater, container, false);
+        binding = FragmentTelawatSuarBinding.inflate(inflater, container, false);
 
         setupRecycler();
 

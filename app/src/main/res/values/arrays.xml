@@ -50,4 +50,10 @@
         <item>3</item>
     </string-array>
 
+    <string-array name="searcher_matcher">
+        <item>10</item>
+        <item>30</item>
+        <item>100</item>
+    </string-array>
+
 </resources>

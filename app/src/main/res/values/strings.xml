@@ -39,6 +39,7 @@
 
     <!-- TextViews Text -->
     <string name="remaining">الوقت المتبقي: %1$s</string>
+    <string name="distance_to_kaaba">المسافة الى الكعبة</string>
 
     <!-- Buttons Text -->
     <string name="all_thikrs">جميع الأذكار</string>
@@ -50,11 +51,17 @@
     <string name="actions_thikrs">أذكار الأفعال</string>
     <string name="events_thikrs">أدعية الأحداث</string>
     <string name="more_thikrs">المزيد</string>
-    <string name="quran_and_sunnah_channels">قناة القرآن والسنة</string>
+    <string name="quran_and_sunnah_channels">بث مباشر</string>
     <string name="settings">الإعدادات</string>
     <string name="quick_update">تحديث سريع\n (في حال واجهت مشكلة وتم حلها)</string>
     <string name="quran_channel">القرآن الكريم</string>
     <string name="sunnah_channel">السنة النبوية</string>
+    <string name="search_in_quran">بحث المصحف</string>
+    <string name="previous_question">السؤال السابق</string>
+    <string name="next_question">السؤال التالي</string>
+    <string name="rebuild_database">إعادة بناء قاعدة البيانات</string>
+    <string name="about">حول التطبيق</string>
+    <string name="share_app">شارك التطبيق</string>
 
     <!-- Descriptions -->
     <string name="qibla_view_description">this is the view that rotates depending on qibla</string>
@@ -78,6 +85,8 @@
     <string name="play_pause_btn_description">اوقف واكمل التشغيل</string>
     <string name="fast_forward_btn_description">تقدم</string>
     <string name="next_track_btn_description">انتقل الى السورة التالية</string>
+    <string name="fav_btn_description">إضافة الى المفضلة</string>
+    <string name="tanzeel_view_description">مكان نزول السورة</string>
 
     <string name="enable_notification">تفعيل الإشعار</string>
     <string name="mute_notification">إشعار صامت</string>
@@ -90,8 +99,6 @@
     <string name="bookmark_page_button">button to bookmark page</string>
     <string name="recitation_settings">إعدادات التلاوة</string>
     <string name="choose_reciter">اختر القارئ</string>
-    <string name="about">حول التطبيق</string>
-    <string name="share_app">شارك التطبيق</string>
     <string name="qibla_warning">أبعد جهازك عن الاجسام المعدنية</string>
     <string name="athan_speaker">تفعيل الأذان</string>
     <string name="thanks">شكرا لاستخدامكم تطبيق هِداية</string>
@@ -112,23 +119,22 @@
     <string name="in_quran">في المصحف:</string>
     <string name="quran_tips">اضغط على الاية مرتين لاظهار تفسيرها\n\nاضغط على الاية ثم اضغط على زر التشغيل في الشريط السفلي لبدأ التشغيل من الاية المختارة\n\nيمكنك تغيير القارئ اثناء التلاوة</string>
     <string name="favorite_athkar">الأذكار المفضلة</string>
-    <string name="fav_btn_description">إضافة الى المفضلة</string>
-    <string name="tanzeel_view_description">مكان نزول السورة</string>
     <string name="quiz_title">اختبر معلوماتك</string>
     <string name="start_quiz">ابدأ الاختبار</string>
     <string name="quiz_result">نتيجة الاختبار</string>
-    <string name="previous_question">السؤال السابق</string>
-    <string name="next_question">السؤال التالي</string>
-    <string name="rebuild_database">إعادة بناء قاعدة البيانات</string>
     <string name="continue_listening">تابع الاستماع</string>
     <string name="aya_repeat">تكرار الآية</string>
     <string name="no_repeat">بدون تكرار</string>
     <string name="two_times">مرتين</string>
     <string name="three_times">ثلاث مرات</string>
     <string name="no_stop">بدون توقف</string>
-    <string name="distance_to_kaaba">المسافة الى الكعبة</string>
     <string name="page_preferences">إعدادات الصفحة</string>
     <string name="execute">تنفيذ</string>
     <string name="cancel">إلغاء</string>
+    <string name="search_for_quran_text">ابحث عن نص في المصحف</string>
+    <string name="text">النص</string>
+    <string name="search">ابحث</string>
+    <string name="go_to_page">الانتقال إلى الصفحة</string>
+    <string name="max_num_of_marches">اقصى عدد من النتائج</string>
 
 </resources>

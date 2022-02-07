@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import bassamalim.hidaya.activities.AboutActivity;
 import bassamalim.hidaya.activities.FeaturesGuide;
 import bassamalim.hidaya.activities.QuizLobbyActivity;
+import bassamalim.hidaya.activities.QuranSearcherActivity;
 import bassamalim.hidaya.activities.Settings;
 import bassamalim.hidaya.activities.TelawatCollectionActivity;
 import bassamalim.hidaya.activities.TvActivity;
@@ -50,6 +51,11 @@ public class OtherFragment extends Fragment {
 
         binding.quiz.setOnClickListener(view -> {
             Intent intent = new Intent(getContext(), QuizLobbyActivity.class);
+            startActivity(intent);
+        });
+
+        binding.quranSearcher.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), QuranSearcherActivity.class);
             startActivity(intent);
         });
 

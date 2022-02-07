@@ -24,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Hidaya">
         <activity
+            android:name=".activities.QuranSearcherActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.TelawatSuarCollectionActivity"
             android:exported="false" />
         <activity
@@ -89,18 +92,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.FSVideoActivity" />
-        <activity
-            android:name=".activities.AboutActivity" />
+        <activity android:name=".activities.FSVideoActivity" />
+        <activity android:name=".activities.AboutActivity" />
         <activity
             android:name=".activities.TelawatClient"
             android:launchMode="singleTop" />
         <activity
             android:name=".activities.TelawatCollectionActivity"
             android:label="تلاوات" />
-        <activity android:name=".popups.QuranSettingsPopup"
-            android:theme="@style/Theme.AppCompat.Dialog"/>
+        <activity
+            android:name=".popups.QuranSettingsPopup"
+            android:theme="@style/Theme.AppCompat.Dialog" />
 
         <receiver android:name=".receivers.NotificationReceiver" />
         <receiver android:name=".receivers.DailyUpdateReceiver" />

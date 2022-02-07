@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.OtherFragment">
 
     <ScrollView
@@ -20,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:paddingBottom="?actionBarSize"
             android:orientation="vertical"
             android:layout_gravity="top"
             android:gravity="center">
@@ -57,12 +59,29 @@
                 android:gravity="center">
 
                 <Button
+                    android:id="@+id/quran_searcher"
+                    android:elevation="@dimen/buttony_elevation"
+                    android:background="@drawable/ripple_s"
+                    android:text="@string/search_in_quran"
+                    android:drawableTop="@drawable/ic_quran_search"
+                    style="@style/Buttony"/>
+
+                <Button
                     android:id="@+id/channels"
                     android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/quran_and_sunnah_channels"
                     android:drawableTop="@drawable/ic_television"
                     style="@style/Buttony"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <Button
                     android:id="@+id/settings"
@@ -72,6 +91,14 @@
                     android:drawableTop="@drawable/ic_settings"
                     style="@style/Buttony"/>
 
+                <Button
+                    android:id="@+id/features"
+                    android:elevation="@dimen/buttony_elevation"
+                    android:background="@drawable/ripple_s"
+                    android:text="@string/features_guide"
+                    android:drawableTop="@drawable/ic_features"
+                    style="@style/Buttony"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -80,14 +107,6 @@
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center">
-
-                <Button
-                    android:id="@+id/features"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:background="@drawable/ripple_s"
-                    android:text="@string/features_guide"
-                    android:drawableTop="@drawable/ic_features"
-                    style="@style/Buttony"/>
 
                 <Button
                     android:id="@+id/contact"
@@ -97,15 +116,6 @@
                     android:drawableTop="@drawable/ic_whatsapp"
                     style="@style/Buttony"/>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center">
-
                 <Button
                     android:id="@+id/share"
                     android:elevation="@dimen/buttony_elevation"
@@ -113,6 +123,16 @@
                     android:text="@string/share_app"
                     android:drawableTop="@drawable/ic_share"
                     style="@style/Buttony"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="15dp"
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <Button
                     android:id="@+id/about"

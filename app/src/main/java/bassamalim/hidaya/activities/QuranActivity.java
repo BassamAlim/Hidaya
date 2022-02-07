@@ -84,8 +84,6 @@ public class QuranActivity extends SwipeActivity {
         Intent intent = getIntent();
         action = intent.getAction();
 
-        query();
-
         setupManager();
 
         action(intent);
@@ -145,6 +143,7 @@ public class QuranActivity extends SwipeActivity {
 
         db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
+        ayatDB = db.ayahDao().getAll();
     }
 
     private void action(Intent intent) {
@@ -160,12 +159,6 @@ public class QuranActivity extends SwipeActivity {
                 setCurrentPage(new Random().nextInt(QURAN_PAGES - 1));
                 break;
         }
-    }
-
-    private void query() {
-        ayatDB = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
-                "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
-                .build().ayahDao().getAll();
     }
 
     private void setListeners() {

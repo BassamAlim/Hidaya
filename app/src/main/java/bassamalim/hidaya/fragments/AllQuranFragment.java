@@ -25,12 +25,12 @@ import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.adapters.QuranFragmentAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.SuraDB;
-import bassamalim.hidaya.databinding.FragmentAllQuranBinding;
+import bassamalim.hidaya.databinding.FragmentQuranBinding;
 import bassamalim.hidaya.models.SuraCard;
 
 public class AllQuranFragment extends Fragment {
 
-    private FragmentAllQuranBinding binding;
+    private FragmentQuranBinding binding;
     private RecyclerView recyclerView;
     private QuranFragmentAdapter adapter;
     private ArrayList<SuraCard> suraCards;
@@ -44,7 +44,7 @@ public class AllQuranFragment extends Fragment {
 
         gridLayoutManager = new GridLayoutManager(getContext(), 1);
 
-        binding = FragmentAllQuranBinding.inflate(inflater, container, false);
+        binding = FragmentQuranBinding.inflate(inflater, container, false);
 
         suraCards = makeSurahButtons();
 

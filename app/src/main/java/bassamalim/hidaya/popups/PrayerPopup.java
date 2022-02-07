@@ -141,12 +141,12 @@ public class PrayerPopup {
     private void setupSpinner() {
         Spinner spinner = popupWindow.getContentView().findViewById(R.id.time_setting_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
+        /*ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
                 R.array.time_settings, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        spinner.setAdapter(adapter);*/
 
         int time = pref.getInt(id +"spinner_last", 6);
         spinner.setSelection(time);
@@ -214,5 +214,4 @@ public class PrayerPopup {
         }
         return 0;
     }
-
 }

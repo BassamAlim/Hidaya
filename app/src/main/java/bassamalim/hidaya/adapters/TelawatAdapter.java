@@ -170,7 +170,7 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
         public ViewHolder(View view) {
             super(view);
 
-            cardView = view.findViewById(R.id.telawa_version_model_card);
+            cardView = view.findViewById(R.id.main_card);
             tv = view.findViewById(R.id.version_namescreen);
             download_btn = view.findViewById(R.id.download_btn);
         }

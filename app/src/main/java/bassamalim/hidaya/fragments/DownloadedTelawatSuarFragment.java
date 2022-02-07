@@ -25,12 +25,12 @@ import bassamalim.hidaya.activities.TelawatClient;
 import bassamalim.hidaya.adapters.TelawatSuarAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.SuraDB;
-import bassamalim.hidaya.databinding.FragmentDownloadedTelawatSuarBinding;
+import bassamalim.hidaya.databinding.FragmentTelawatSuarBinding;
 import bassamalim.hidaya.models.ReciterSuraCard;
 
 public class DownloadedTelawatSuarFragment extends Fragment {
 
-    private FragmentDownloadedTelawatSuarBinding binding;
+    private FragmentTelawatSuarBinding binding;
     private RecyclerView recycler;
     private TelawatSuarAdapter adapter;
     private final int reciterId;
@@ -50,7 +50,7 @@ public class DownloadedTelawatSuarFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = FragmentDownloadedTelawatSuarBinding.inflate(
+        binding = FragmentTelawatSuarBinding.inflate(
                 inflater, container, false);
 
         checkDownloaded();
