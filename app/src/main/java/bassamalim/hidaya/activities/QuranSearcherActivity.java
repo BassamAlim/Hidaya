@@ -51,12 +51,16 @@ public class QuranSearcherActivity extends AppCompatActivity {
         pref = PreferenceManager.getDefaultSharedPreferences(this);
 
         allAyat = db.ayahDao().getAll();
+
+        matches = new ArrayList<>();
     }
 
     private void initRecycler() {
         recyclerView = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+        adapter = new QuranSearcherAdapter(matches);
+        recyclerView.setAdapter(adapter);
     }
 
     private void setListeners() {
@@ -65,11 +69,22 @@ public class QuranSearcherActivity extends AppCompatActivity {
 
     private void perform() {
         search(binding.editText.getText().toString());
-        recycle();
+
+        if (matches.isEmpty()) {
+            binding.notFoundTv.setVisibility(View.VISIBLE);
+            binding.recycler.setVisibility(View.INVISIBLE);
+        }
+        else {
+            binding.notFoundTv.setVisibility(View.INVISIBLE);
+            binding.recycler.setVisibility(View.VISIBLE);
+
+            if (adapter != null)
+                adapter.notifyDataSetChanged();
+        }
     }
 
     private void search(String text) {
-        matches = new ArrayList<>();
+        matches.clear();
 
         int counter = 0;
         for (int i = 0; i < allAyat.size(); i++) {
@@ -80,14 +95,6 @@ public class QuranSearcherActivity extends AppCompatActivity {
             if (counter == maxMatches)
                 break;
         }
-
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
-    }
-
-    private void recycle() {
-        adapter = new QuranSearcherAdapter(matches);
-        recyclerView.setAdapter(adapter);
     }
 
     private void initSpinner() {

@@ -12,7 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import bassamalim.hidaya.R;
@@ -49,8 +48,8 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
         }
     }
 
-    public QuranSearcherAdapter(List<AyatDB> buttons) {
-        suraCards = new ArrayList<>(buttons);
+    public QuranSearcherAdapter(List<AyatDB> results) {
+        suraCards = results;
     }
 
     @NonNull @Override
