@@ -291,7 +291,7 @@ public class RecitationManager {
         int size = db.ayatTelawaDao().getSize();
 
         int choice = Integer.parseInt(pref.getString(
-                context.getString(R.string.aya_reciter_key), ""));
+                context.getString(R.string.aya_reciter_key), "13"));
         List<AyatTelawaDB> sources = db.ayatTelawaDao().getReciter((choice + change) % (size-1));
 
         String uri = "https://www.everyayah.com/data/";

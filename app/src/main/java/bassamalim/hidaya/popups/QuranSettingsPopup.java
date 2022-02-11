@@ -20,24 +20,21 @@ import java.util.List;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
-import bassamalim.hidaya.databinding.PopupRecitationBinding;
+import bassamalim.hidaya.databinding.PopupQuranSettingsBinding;
 
 public class QuranSettingsPopup extends AppCompatActivity {
 
-    private PopupRecitationBinding binding;
+    private PopupQuranSettingsBinding binding;
     private QuranSettingsPopup.SettingsFragment settingsFragment;
     private boolean change = false;
-    private String theme;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        themeifyBefore();
+        themeify();
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        binding = PopupRecitationBinding.inflate(getLayoutInflater());
+        binding = PopupQuranSettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        themeifyAfter();
 
         binding.executeBtn.setOnClickListener(v -> execute());
 
@@ -47,9 +44,9 @@ public class QuranSettingsPopup extends AppCompatActivity {
                     .replace(R.id.quran_settings, settingsFragment).commit();
     }
 
-    private void themeifyBefore() {
+    private void themeify() {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        theme = pref.getString(getString(R.string.quran_theme_key), "DarkTheme");
+        String theme = pref.getString(getString(R.string.quran_theme_key), "DarkTheme");
 
         switch (theme) {
             case "DarkTheme":
@@ -57,26 +54,6 @@ public class QuranSettingsPopup extends AppCompatActivity {
                 break;
             case "LightTheme":
                 setTheme(R.style.RoundedPopupLight);
-                break;
-        }
-    }
-
-    private void themeifyAfter() {
-        switch (theme) {
-            case "DarkTheme":
-                /*binding.baseView.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.dialog_bg, getTheme()));*/
-                //binding.baseView.setBackgroundResource(R.color.bg_dark);
-                //binding.baseView.setBackgroundColor(getResources().getColor(R.color.bg_dark));
-                /*binding.executeBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ripple_s, getTheme()));*/
-                break;
-            case "LightTheme":
-                /*binding.baseView.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.dialog_bg_light, getTheme()));*/
-                //binding.quranSettings.setBackgroundResource(R.color.secondary_light);
-                /*binding.executeBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ripple, getTheme()));*/
                 break;
         }
     }

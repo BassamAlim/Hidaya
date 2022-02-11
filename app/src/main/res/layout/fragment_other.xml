@@ -113,7 +113,7 @@
                     android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_s"
                     android:text="@string/contact"
-                    android:drawableTop="@drawable/ic_whatsapp"
+                    android:drawableTop="@drawable/ic_mail"
                     style="@style/Buttony"/>
 
                 <Button

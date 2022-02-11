@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
@@ -137,13 +136,8 @@ public class TelawatClient extends AppCompatActivity {
             MediaSessionCompat.Token token = mediaBrowser.getSessionToken();
 
             // Create a MediaControllerCompat
-            MediaControllerCompat mediaController = null;
-            try {
-                mediaController = new MediaControllerCompat(TelawatClient.this, token);
-
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            MediaControllerCompat mediaController = new MediaControllerCompat(
+                    TelawatClient.this, token);
 
             // Save the controller
             MediaControllerCompat.setMediaController(TelawatClient.this, mediaController);

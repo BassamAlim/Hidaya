@@ -383,10 +383,6 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         // Create a MediaSessionCompat
         mediaSession = new MediaSessionCompat(this, "TelawatService");
 
-        // Enable callbacks from MediaButtons and TransportControls
-        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
-                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-
         // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
         PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder().setActions(
                 PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PLAY_PAUSE);

@@ -75,10 +75,10 @@ public class OtherFragment extends Fragment {
         });
 
         binding.contact.setOnClickListener(v -> {
-            String url = "https://api.whatsapp.com/send?phone=" + Const.MY_NUMBER;
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url));
-            startActivity(i);
+            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto",Const.CONTACT_EMAIL, null));
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Hidaya");
+            startActivity(Intent.createChooser(intent, "Choose an Email client :"));
         });
 
         binding.share.setOnClickListener(v -> {
