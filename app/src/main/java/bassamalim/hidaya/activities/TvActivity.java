@@ -1,27 +1,23 @@
 package bassamalim.hidaya.activities;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.WindowManager;
-import android.widget.MediaController;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
 
 import bassamalim.hidaya.databinding.ActivityTvBinding;
-import bassamalim.hidaya.other.Const;
-import bassamalim.hidaya.replacements.FSMediaController;
 
-public class TvActivity extends AppCompatActivity {
+public class TvActivity extends YouTubeBaseActivity {
 
     private ActivityTvBinding binding;
-    private static Uri uri = Uri.parse("");
-    private FirebaseRemoteConfig remoteConfig;
-    private String makkah_url;
-    private String madina_url;
+    private final String makkah_url = "ca-8pgBoa-s";
+    private final String madina_url = "gUC3TjCrwRw";
+    private final String apiKey = "AIzaSyBndJVjigZ7MOmj1005ONLUsfFW7BfxZt0";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,50 +27,36 @@ public class TvActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(binding.getRoot());
 
-        getLinks();
-
-        MediaController controller = new FSMediaController(this);
-        controller.setAnchorView(binding.screen);
-        binding.screen.setMediaController(controller);
+        initYtPlayer();
     }
 
-    private void getLinks() {
-        remoteConfig = FirebaseRemoteConfig.getInstance();
-        remoteConfig.fetchAndActivate()
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        makkah_url = remoteConfig.getString("makkah_url");
-                        madina_url = remoteConfig.getString("madina_url");
+    private void initYtPlayer() {
+        binding.ytPlayer.initialize(apiKey, new YouTubePlayer.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider,
+                                                YouTubePlayer youTubePlayer, boolean b) {
+                setListeners(youTubePlayer);
+            }
 
-                        Log.d(Const.TAG, "Config params updated");
-                        Log.d(Const.TAG, "Makkah URL: " + makkah_url);
-                        Log.d(Const.TAG, "Madina URL: " + madina_url);
-
-                        setListeners();
-                        enableButtons();
-                    }
-                    else
-                        Log.d(Const.TAG, "Fetch failed");
-                });
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider,
+                                                YouTubeInitializationResult
+                                                        youTubeInitializationResult) {
+                Toast.makeText(getApplicationContext(), "فشل التشغيل",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void setListeners() {
-        binding.quran.setOnClickListener(v -> show(makkah_url));
-        binding.sunnah.setOnClickListener(v -> show(madina_url));
+    private void setListeners(YouTubePlayer ytPlayer) {
+        binding.quranBtn.setOnClickListener(v -> {
+            ytPlayer.loadVideo(makkah_url);
+            ytPlayer.play();
+        });
+        binding.sunnahBtn.setOnClickListener(v -> {
+            ytPlayer.loadVideo(madina_url);
+            ytPlayer.play();
+        });
     }
 
-    private void enableButtons() {
-        binding.quran.setEnabled(true);
-        binding.sunnah.setEnabled(true);
-    }
-
-    public void show(String giverUri) {
-        uri = Uri.parse(giverUri);
-        binding.screen.setVideoURI(uri);
-        binding.screen.start();
-    }
-
-    public static Uri getUrl() {
-        return uri;
-    }
 }

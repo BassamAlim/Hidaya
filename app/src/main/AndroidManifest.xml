@@ -23,6 +23,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Hidaya">
+
         <activity
             android:name=".activities.QuranSearcherActivity"
             android:exported="false" />
@@ -92,7 +93,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.FSVideoActivity" />
         <activity android:name=".activities.AboutActivity" />
         <activity
             android:name=".activities.TelawatClient"
@@ -151,5 +151,11 @@
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
     </application>
+
+    <queries>
+        <intent>
+            <action android:name="com.google.android.youtube.api.service.START" />
+        </intent>
+    </queries>      <!--important for youtube player to work-->
 
 </manifest>
