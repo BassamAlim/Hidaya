@@ -4,7 +4,6 @@
     // Global
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="track">#48C986</color>
 
     // Dark Theme
     <color name="bg_dark">#1A2027</color>
@@ -15,10 +14,13 @@
     <color name="accent_dark">#00ADB5</color>
     <color name="other_accent_dark">#028288</color>
     <color name="text_dark">#BCC2C7</color>
+    <color name="track_dark">#48C986</color>
 
     // Light Theme
-    <color name="bg_light">#0A6161</color>
-    <color name="primary_light">#8EB5B5</color>
+    <!--<color name="bg_light">#0A6161</color>-->
+    <color name="bg_light">#326496</color>
+    <!--<color name="primary_light">#8EB5B5</color>-->
+    <color name="primary_light">#96BADD</color>
     <color name="primary70_light">#B38EB5B5</color> // # alpha in hex + color
     <color name="secondary_light">#A8ADB1</color>
     <color name="lighter_secondary_light">#56738E</color>
@@ -26,5 +28,6 @@
     <color name="other_accent_light">#033E40</color>
     <color name="text_light">#FF000000</color>
     <color name="highlight_light">#01849C</color>
+    <color name="track_light">#113297</color>
 
 </resources>

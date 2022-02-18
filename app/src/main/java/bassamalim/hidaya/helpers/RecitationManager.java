@@ -2,7 +2,6 @@ package bassamalim.hidaya.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -11,11 +10,11 @@ import android.os.PowerManager;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,9 +72,9 @@ public class RecitationManager {
                 "DarkTheme");
 
         if (theme.equals("DarkTheme"))
-            what = new ForegroundColorSpan(context.getResources().getColor(R.color.track));
+            what = new ForegroundColorSpan(context.getResources().getColor(R.color.track_dark));
         else
-            what = new ForegroundColorSpan(Color.GREEN);
+            what = new ForegroundColorSpan(context.getResources().getColor(R.color.track_light));
     }
 
     private void initPlayers() {
@@ -120,7 +119,7 @@ public class RecitationManager {
 
             players[i].setOnCompletionListener(mediaPlayer -> {
                 int repeat = Integer.parseInt(pref.getString(context.getString(
-                        R.string.aya_repeat_mode_key), ""));
+                        R.string.aya_repeat_mode_key), "1"));
                 if ((repeat == 1 || repeat == 2) && repeated < repeat) {
                     preparePlayer(players[finalI], lastPlayed);
                     players[n(finalI)].reset();
@@ -132,7 +131,6 @@ public class RecitationManager {
                 }
                 else {
                     repeated = 0;
-
                     if (paused) {
                         paused = false;
                         if (allAyahsSize > lastPlayed.getIndex()) {
@@ -158,6 +156,11 @@ public class RecitationManager {
                         ended();
                 }
             });
+
+            players[i].setOnErrorListener((mp, what1, extra) -> {
+                notFound();
+                return true;
+            });
         }
     }
 
@@ -179,26 +182,15 @@ public class RecitationManager {
 
         player.reset();
 
-        Uri uri = null;
-        boolean found = false;
-        int change = 0;
-        while (!found) {
-            try {
-                uri = getUri(ayah, change);
-                player.setDataSource(context.getApplicationContext(), uri);
-                found = true;
-            } catch (IOException e) {
-                e.printStackTrace();
-                change++;
-                Log.e(Const.TAG, "Reciter not found in ayat telawa");
-            }
+        Uri uri;
+        try {
+            uri = getUri(ayah, 0);
+            player.setDataSource(context.getApplicationContext(), uri);
+            player.prepareAsync();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(Const.TAG, "Reciter not found in ayat telawa");
         }
-
-        for (int i = 0; i < 2; i++) {
-            if (player == players[i])
-                Log.d(Const.TAG, uri + "  On P" + i);
-        }
-        player.prepareAsync();
     }
 
     private void track(Ayah subject) {
@@ -280,8 +272,10 @@ public class RecitationManager {
             players[i].release();
         }
 
-        lastTracked.getSS().removeSpan(what);
-        lastTracked.getScreen().setText(lastTracked.getSS());
+        if (lastTracked != null) {
+            lastTracked.getSS().removeSpan(what);
+            lastTracked.getScreen().setText(lastTracked.getSS());
+        }
 
         state = States.Stopped;
         coordinator.onUiUpdate(States.Paused);
@@ -299,6 +293,23 @@ public class RecitationManager {
         uri += String.format(Locale.US, "%03d%03d.mp3", ayah.getSurah(), ayah.getAyah());
 
         return Uri.parse(uri);
+    }
+
+    private void notFound() {
+        Toast.makeText(context, "لا يتوفر تسجيل الآية لهذا القارئ", Toast.LENGTH_SHORT).show();
+
+        for (int i = 0; i < 2; i++)
+            players[i].reset();
+
+        if (lastTracked != null) {
+            lastTracked.getSS().removeSpan(what);
+            lastTracked.getScreen().setText(lastTracked.getSS());
+        }
+
+        state = States.Stopped;
+        coordinator.onUiUpdate(States.Paused);
+
+        getUri(lastPlayed, 1);
     }
 
     public Ayah getLastPlayed() {

@@ -169,12 +169,14 @@ public class Settings extends AppCompatActivity {
         int h = nums[0];
         String m = String.valueOf(nums[1]);
         String section =  "صباحاً";
-        if (h > 12) {
-            h -= 12;
-            section = "مساءاً";
-        }
-        else if (h == 0)
+        if (h == 0)
             h = 12;
+        else if (h >= 12) {
+            section = "مساءاً";
+            if (h > 12)
+                h -= 12;
+        }
+
         if (m.length() == 1) {
             if (m.charAt(0) == '0')
                 m += '0';
