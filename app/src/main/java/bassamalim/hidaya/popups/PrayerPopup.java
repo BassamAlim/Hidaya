@@ -2,13 +2,14 @@ package bassamalim.hidaya.popups;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,16 +20,16 @@ import android.widget.TextView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
-import bassamalim.hidaya.other.Const;
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.enums.ID;
+import bassamalim.hidaya.helpers.Alarms;
+import bassamalim.hidaya.other.Const;
 import bassamalim.hidaya.other.Util;
 
 public class PrayerPopup {
 
     private final Context context;
-    private PopupWindow popupWindow;
+    private PopupWindow popup;
     private final View view;
     private final ID id;
     private final String name;
@@ -56,32 +57,35 @@ public class PrayerPopup {
 
         View popupView = inflater.inflate(R.layout.popup_prayer,
                 new LinearLayout(context), false);
-        if (id == ID.SHOROUQ)
-            popupView.findViewById(R.id.athan_button).setVisibility(View.GONE);
 
-        popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
+        if (id == ID.SHOROUQ) {
+            popupView.findViewById(R.id.athan_button).setVisibility(View.GONE);
+            popupView.findViewById(R.id.first_separator).setVisibility(View.GONE);
+        }
+
+        popup = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT, true);
 
-        popupWindow.setBackgroundDrawable(new BitmapDrawable(null, ""));
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setAnimationStyle(R.style.PrayerPopupAnimation);
+        popup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popup.setOutsideTouchable(true);
+        popup.setAnimationStyle(R.style.PrayerPopupAnimation);
 
-        popupWindow.showAtLocation(view, Gravity.START, 30, getY());
+        popup.showAtLocation(view, Gravity.START, 30, getY());
 
         populate();
     }
 
     private void populate() {
-        TextView nameScreen = popupWindow.getContentView().findViewById(R.id.popup_prayer_name);
+        TextView nameScreen = popup.getContentView().findViewById(R.id.popup_prayer_name);
         String temp = "إعدادات " + name;
         nameScreen.setText(temp);
 
-        disableBtn = popupWindow.getContentView().findViewById(R.id.disable_button);
-        muteBtn = popupWindow.getContentView().findViewById(R.id.mute_button);
-        notifyBtn = popupWindow.getContentView().findViewById(R.id.notify_button);
-        athanBtn = popupWindow.getContentView().findViewById(R.id.athan_button);
+        disableBtn = popup.getContentView().findViewById(R.id.disable_button);
+        muteBtn = popup.getContentView().findViewById(R.id.mute_button);
+        notifyBtn = popup.getContentView().findViewById(R.id.notify_button);
+        athanBtn = popup.getContentView().findViewById(R.id.athan_button);
 
-        setImages();
+        setViews();
 
         int defaultState = id == ID.SHOROUQ ? 0 : 2;
         int state = pref.getInt(id+"notification_type", defaultState);
@@ -139,14 +143,7 @@ public class PrayerPopup {
     }
 
     private void setupSpinner() {
-        Spinner spinner = popupWindow.getContentView().findViewById(R.id.time_setting_spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        /*ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
-                R.array.time_settings, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);*/
+        Spinner spinner = popup.getContentView().findViewById(R.id.time_setting_spinner);
 
         int time = pref.getInt(id +"spinner_last", 6);
         spinner.setSelection(time);
@@ -173,27 +170,30 @@ public class PrayerPopup {
     }
 
     private void selectedState(int choice) {
-        athanBtn.setTextColor(context.getResources().getColor(R.color.white));
-        notifyBtn.setTextColor(context.getResources().getColor(R.color.white));
-        muteBtn.setTextColor(context.getResources().getColor(R.color.white));
-        disableBtn.setTextColor(context.getResources().getColor(R.color.white));
+        TypedValue value = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.myText, value, true);
+
+        athanBtn.setTextColor(value.data);
+        notifyBtn.setTextColor(value.data);
+        muteBtn.setTextColor(value.data);
+        disableBtn.setTextColor(value.data);
 
         switch (choice) {
             case 0:
-                disableBtn.setTextColor(context.getResources().getColor(R.color.accent_dark));
+                disableBtn.setTextColor(context.getResources().getColor(R.color.white));
                 break;
             case 1:
-                muteBtn.setTextColor(context.getResources().getColor(R.color.accent_dark));
+                muteBtn.setTextColor(context.getResources().getColor(R.color.white));
                 break;
             case 2:
-                notifyBtn.setTextColor(context.getResources().getColor(R.color.accent_dark));
+                notifyBtn.setTextColor(context.getResources().getColor(R.color.white));
                 break;
             case 3:
-                athanBtn.setTextColor(context.getResources().getColor(R.color.accent_dark));
+                athanBtn.setTextColor(context.getResources().getColor(R.color.white));
         }
     }
 
-    private void setImages() {
+    private void setViews() {
         images = new ImageView[6];
         images[0] = view.findViewById(R.id.fajr_image);
         images[1] = view.findViewById(R.id.shorouq_image);

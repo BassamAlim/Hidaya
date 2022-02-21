@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/bg_dark"
+    android:background="?myMainBg"
     tools:context=".activities.TvActivity">
 
     <com.google.android.youtube.player.YouTubePlayerView
@@ -17,8 +17,8 @@
         android:id="@+id/quran_btn"
         android:layout_width="350dp"
         android:layout_height="90dp"
-        android:background="@drawable/ripple_s"
-        android:backgroundTint="@color/secondary_dark"
+        android:background="@drawable/ripple_click"
+        android:backgroundTint="?myClick"
         android:gravity="center_horizontal|center"
         android:text="@string/quran_channel"
         android:textSize="25sp"
@@ -33,8 +33,8 @@
         android:layout_width="350dp"
         android:layout_height="90dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/ripple_s"
-        android:backgroundTint="@color/secondary_dark"
+        android:background="@drawable/ripple_click"
+        android:backgroundTint="?myClick"
         android:gravity="center_horizontal|center"
         android:text="@string/sunnah_channel"
         android:textSize="25sp"

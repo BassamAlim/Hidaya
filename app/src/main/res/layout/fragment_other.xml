@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/bg_dark"
+        android:background="?myMainBg"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +36,7 @@
                 <Button
                     android:id="@+id/telawat"
                     android:elevation="@dimen/buttony_elevation"
-                    android:background="@drawable/ripple_s"
+                    android:background="@drawable/ripple_click"
                     android:text="@string/recitations"
                     android:drawableTop="@drawable/ic_headset"
                     style="@style/Buttony"/>
@@ -44,7 +44,7 @@
                 <Button
                     android:id="@+id/quiz"
                     android:elevation="@dimen/buttony_elevation"
-                    android:background="@drawable/ripple_s"
+                    android:background="@drawable/ripple_click"
                     android:text="@string/quiz_title"
                     android:drawableTop="@drawable/ic_quiz"
                     style="@style/Buttony"/>
@@ -61,7 +61,7 @@
                 <Button
                     android:id="@+id/quran_searcher"
                     android:elevation="@dimen/buttony_elevation"
-                    android:background="@drawable/ripple_s"
+                    android:background="@drawable/ripple_click"
                     android:text="@string/search_in_quran"
                     android:drawableTop="@drawable/ic_quran_search"
                     style="@style/Buttony"/>
@@ -69,7 +69,7 @@
                 <Button
                     android:id="@+id/channels"
                     android:elevation="@dimen/buttony_elevation"
-                    android:background="@drawable/ripple_s"
+                    android:background="@drawable/ripple_click"
                     android:text="@string/quran_and_sunnah_channels"
                     android:drawableTop="@drawable/ic_television"
                     style="@style/Buttony"/>
@@ -86,7 +86,7 @@
                 <Button
                     android:id="@+id/settings"
                     android:elevation="@dimen/buttony_elevation"
-                    android:background="@drawable/ripple_s"
+                    android:background="@drawable/ripple_click"
                     android:text="@string/settings"
                     android:drawableTop="@drawable/ic_settings"
                     style="@style/Buttony"/>
@@ -94,7 +94,7 @@
                 <Button
                     android:id="@+id/features"
                     android:elevation="@dimen/buttony_elevation"
-                    android:background="@drawable/ripple_s"
+                    android:background="@drawable/ripple_click"
                     android:text="@string/features_guide"
                     android:drawableTop="@drawable/ic_features"
                     style="@style/Buttony"/>
@@ -111,7 +111,7 @@
                 <Button
                     android:id="@+id/contact"
                     android:elevation="@dimen/buttony_elevation"
-                    android:background="@drawable/ripple_s"
+                    android:background="@drawable/ripple_click"
                     android:text="@string/contact"
                     android:drawableTop="@drawable/ic_mail"
                     style="@style/Buttony"/>
@@ -119,7 +119,7 @@
                 <Button
                     android:id="@+id/share"
                     android:elevation="@dimen/buttony_elevation"
-                    android:background="@drawable/ripple_s"
+                    android:background="@drawable/ripple_click"
                     android:text="@string/share_app"
                     android:drawableTop="@drawable/ic_share"
                     style="@style/Buttony"/>
@@ -137,7 +137,7 @@
                 <Button
                     android:id="@+id/about"
                     android:elevation="@dimen/buttony_elevation"
-                    android:background="@drawable/ripple_s"
+                    android:background="@drawable/ripple_click"
                     android:text="@string/about"
                     android:drawableTop="@drawable/ic_info"
                     style="@style/Buttony"/>

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark"
+    android:background="?myMainBg"
     tools:context=".activities.QuranSearcherActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,7 +14,6 @@
         android:layout_height="215dp"
         android:padding="10dp"
         android:elevation="20dp"
-        android:background="@color/bg_dark"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -55,8 +54,8 @@
             android:text="@string/search"
             android:textSize="20dp"
             android:textStyle="bold"
-            android:textColor="@color/accent_dark"
-            android:background="@drawable/ripple_s"
+            android:textColor="?myAccent"
+            android:background="@drawable/ripple_click"
             app:layout_constraintTop_toBottomOf="@id/edit_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -98,7 +97,7 @@
         android:text="@string/no_results"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="@color/accent_dark"
+        android:textColor="?myAccent"
         app:layout_constraintTop_toBottomOf="@id/spec_space"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -107,8 +106,10 @@
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="215dp"
-        app:layout_constraintTop_toBottomOf="@id/spec_space">
+        app:layout_constrainedHeight="true"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@id/spec_space"
+        app:layout_constraintBottom_toBottomOf="parent">
 
     </androidx.recyclerview.widget.RecyclerView>
 

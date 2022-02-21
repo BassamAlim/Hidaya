@@ -34,6 +34,20 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        app:title="المظهر"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:key="@string/theme_key"
+            android:title="السمة"
+            android:entries="@array/themes"
+            android:entryValues="@array/theme_values"
+            android:defaultValue="ThemeM"
+            app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         app:title="@string/alathkar_header"
         app:iconSpaceReserved="false">
 

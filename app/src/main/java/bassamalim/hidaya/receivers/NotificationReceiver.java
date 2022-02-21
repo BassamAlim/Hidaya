@@ -169,9 +169,9 @@ public class NotificationReceiver extends BroadcastReceiver {
         builder.setAutoCancel(true);
         builder.setOnlyAlertOnce(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            builder.setColor(context.getColor(R.color.secondary_dark));
+            builder.setColor(context.getColor(R.color.click_M));
         else
-            builder.setColor(context.getResources().getColor(R.color.secondary_dark));
+            builder.setColor(context.getResources().getColor(R.color.click_M));
         builder.setContentIntent(onClick(id));
 
         if (type==1)

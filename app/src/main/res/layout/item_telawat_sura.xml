@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layoutDirection="rtl">
 
     <androidx.cardview.widget.CardView
@@ -17,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:background="@drawable/ripple_s">
+            android:background="@drawable/ripple_click">
 
             <ImageButton
                 android:id="@+id/sura_fav_btn"
@@ -25,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="-60dp"
                 android:padding="10dp"
-                android:background="@drawable/ripple_s"
+                android:background="@drawable/ripple_click"
                 android:contentDescription="@string/fav_btn_description"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="parent"
@@ -51,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:layout_marginStart="-60dp"
-                android:background="@drawable/ripple_s"
+                android:background="@drawable/ripple_click"
                 android:src="@drawable/ic_download"
                 android:contentDescription="@string/fav_btn_description"
                 app:layout_constraintTop_toTopOf="parent"

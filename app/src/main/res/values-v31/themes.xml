@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.HidayaM" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowSplashScreenBackground">@color/bg_M</item>
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/bars_M</item>
+        <item name="colorPrimaryVariant">@color/bars_M</item>
+        <item name="colorOnPrimary">@color/bars_M</item>
+        <!-- Secondary brand color. -->
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/bg_M</item>
+        <!-- Customize your theme here. -->
+        <item name="android:textColorPrimary">@color/text_M</item>
+        <item name="android:textColor">@color/text_M</item>
+        <item name="colorAccent">@color/accent_M</item>
+        <item name="titleTextColor">@color/white</item>
+        <item name="spinnerDropDownItemStyle">@style/MySpinnerItem</item>
+        <!-- My Special Theme -->
+        <item name="myMainBg">@color/bg_M</item>
+        <item name="myBars">@color/bars_M</item>
+        <item name="myWeakBars">@color/weak_bars_M</item>
+        <item name="myClick">@color/click_M</item>
+        <item name="myLightClick">@color/ripple_M</item>
+        <item name="myAccent">@color/accent_M</item>
+        <item name="myOtherAccent">@color/other_accent_M</item>
+        <item name="myText">@color/text_M</item>
+        <item name="myBarsText">@color/text_M</item>
+        <item name="myCounter">@color/black</item>
+        <item name="myActiveBar">@color/accent_M</item>
+        <item name="myOtherActiveBar">@color/other_accent_M</item>
+        <item name="myPopupsBg">@color/bars_M</item>
+        <item name="mySeparator">@color/grey</item>
+        <item name="myNavBar">@drawable/nav_bar_item_bg_m</item>
+    </style>
+
+    <style name="Theme.HidayaL" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowSplashScreenBackground">@color/bg_L</item>
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/bars_L</item>
+        <item name="colorPrimaryVariant">@color/bars_L</item>
+        <item name="colorOnPrimary">@color/bars_L</item>
+        <!-- Secondary brand color. -->
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/bars_L</item>
+        <!-- Customize your theme here. -->
+        <item name="android:textColorPrimary">@color/text_L</item>
+        <item name="android:textColor">@color/text_L</item>
+        <item name="colorAccent">@color/accent_L</item>
+        <item name="titleTextColor">@color/text_M</item>
+        <item name="spinnerDropDownItemStyle">@style/MySpinnerItem</item>
+        <!-- My Special Theme -->
+        <item name="myMainBg">@color/bg_L</item>
+        <item name="myBars">@color/bars_L</item>
+        <item name="myWeakBars">@color/weak_bars_L</item>
+        <item name="myClick">@color/click_L</item>
+        <item name="myLightClick">@color/ripple_L</item>
+        <item name="myAccent">@color/accent_L</item>
+        <item name="myOtherAccent">@color/other_accent_L</item>
+        <item name="myText">@color/text_L</item>
+        <item name="myBarsText">@color/text_M</item>
+        <item name="myCounter">@color/ripple_L</item>
+        <item name="myActiveBar">@color/active_bar_L</item>
+        <item name="myOtherActiveBar">@color/other_active_bar_L</item>
+        <item name="myPopupsBg">@color/ripple_L</item>
+        <item name="mySeparator">@color/black</item>
+        <item name="myNavBar">@drawable/nav_bar_item_bg_l</item>
+    </style>
+</resources>

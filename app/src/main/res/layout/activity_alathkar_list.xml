@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark"
+    android:background="?myMainBg"
     android:layout_gravity="center"
     tools:context=".activities.AlathkarListActivity">
 
@@ -14,13 +14,11 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:minHeight="?attr/actionBarSize"
-        android:background="@color/primary_dark"
+        android:background="?myBars"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/category_name"
@@ -29,7 +27,7 @@
             android:layout_marginEnd="15dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:textColor="@color/accent_dark"
+            android:textColor="?myBarsText"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage"/>
@@ -42,18 +40,16 @@
         android:layout_height="wrap_content"
         app:iconifiedByDefault="false"
         app:queryHint="ابحث عن الذِكر"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name_bar"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/alathkar_recycler"
+        android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="105dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_bar">
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        app:layout_constraintBottom_toBottomOf="parent">
 
     </androidx.recyclerview.widget.RecyclerView>
 

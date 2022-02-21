@@ -19,6 +19,7 @@ import bassamalim.hidaya.adapters.QuranSearcherAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.AyatDB;
 import bassamalim.hidaya.databinding.ActivityQuranSearcherBinding;
+import bassamalim.hidaya.other.Util;
 
 public class QuranSearcherActivity extends AppCompatActivity {
 
@@ -33,6 +34,7 @@ public class QuranSearcherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Util.onActivityCreateSetTheme(this);
         binding = ActivityQuranSearcherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

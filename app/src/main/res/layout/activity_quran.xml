@@ -6,7 +6,8 @@
     android:id="@+id/base_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="rtl">
+    android:layoutDirection="rtl"
+    android:background="?myQBg">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/info_bar"
@@ -14,6 +15,7 @@
         android:layout_height="?actionBarSize"
         android:minHeight="?attr/actionBarSize"
         android:elevation="4dp"
+        android:background="?myQBars"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -23,6 +25,7 @@
             android:layout_gravity="center"
             android:textSize="21dp"
             android:textStyle="bold"
+            android:textColor="?myBarsText"
             tools:ignore="SpUsage" />
 
         <TextView
@@ -32,6 +35,7 @@
             android:layout_gravity="start"
             android:textSize="21dp"
             android:textStyle="bold"
+            android:textColor="?myBarsText"
             tools:ignore="SpUsage" />
 
         <TextView
@@ -42,6 +46,7 @@
             android:layout_gravity="end"
             android:textSize="21dp"
             android:textStyle="bold"
+            android:textColor="?myBarsText"
             tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -72,6 +77,7 @@
         android:layout_height="?actionBarSize"
         android:minHeight="?attr/actionBarSize"
         android:elevation="4dp"
+        android:background="?myQBars"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
@@ -91,7 +97,7 @@
             android:padding="5dp"
             android:layout_gravity="center"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_forward"
+            android:src="@drawable/ic_aya_forward"
             android:contentDescription="@string/bookmark_page_button" />
 
         <ImageButton
@@ -113,7 +119,7 @@
             android:padding="5dp"
             android:layout_gravity="center"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_backward"
+            android:src="@drawable/ic_aya_backward"
             android:contentDescription="@string/bookmark_page_button" />
 
         <ImageButton

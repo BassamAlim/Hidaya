@@ -3,11 +3,11 @@
 
     <corners android:radius="10dp" />
 
-    <solid android:color="@color/bg_dark" />
+    <solid android:color="?myMainBg" />
 
     <stroke
         android:width="3dp"
-        android:color="@color/accent_dark" />
+        android:color="?myAccent" />
 
     <padding
         android:bottom="6dp"

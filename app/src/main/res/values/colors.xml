@@ -4,30 +4,35 @@
     // Global
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="grey">#484849</color>
 
-    // Dark Theme
-    <color name="bg_dark">#1A2027</color>
-    <color name="primary_dark">#222831</color>
-    <color name="primary70_dark">#B3222831</color> // # alpha in hex + color
-    <color name="secondary_dark">#222D37</color>
-    <color name="lighter_secondary_dark">#56738E</color>
-    <color name="accent_dark">#00ADB5</color>
-    <color name="other_accent_dark">#028288</color>
-    <color name="text_dark">#BCC2C7</color>
-    <color name="track_dark">#48C986</color>
+    // Theme M (Dark)
+    <color name="bg_M">#1A2027</color>
+    <color name="bars_M">#222831</color>
+    <color name="weak_bars_M">#B3222831</color>    // # alpha in hex + color
+    <color name="click_M">#222D37</color>
+    <color name="ripple_M">#384F63</color>
+    <color name="accent_M">#00ADB5</color>
+    <color name="other_accent_M">#028288</color>
+    <color name="text_M">#BCC2C7</color>
+    <color name="bars_text_M">#FF000000</color>
+    <color name="highlight_M">#00ADB5</color>
+    <color name="track_M">#48C986</color>
 
-    // Light Theme
-    <!--<color name="bg_light">#0A6161</color>-->
-    <color name="bg_light">#326496</color>
-    <!--<color name="primary_light">#8EB5B5</color>-->
-    <color name="primary_light">#96BADD</color>
-    <color name="primary70_light">#B38EB5B5</color> // # alpha in hex + color
-    <color name="secondary_light">#A8ADB1</color>
-    <color name="lighter_secondary_light">#56738E</color>
-    <color name="accent_light">#022425</color>
-    <color name="other_accent_light">#033E40</color>
-    <color name="text_light">#FF000000</color>
-    <color name="highlight_light">#01849C</color>
-    <color name="track_light">#113297</color>
+    // Theme L (Light)
+    <color name="bg_L">#8D99AE</color>
+    <color name="bars_L">#293241</color>
+    <color name="weak_bars_L">#B3293241</color>    // # alpha in hex + color
+    <color name="click_L">#7E899C</color>
+    <color name="ripple_L">#99A5BC</color>
+    <color name="accent_L">#14213d</color>
+    <color name="other_accent_L">#1C2E55</color>
+    <color name="text_L">#FF000000</color>
+    <color name="bars_text_L">#BCC2C7</color>
+    <color name="highlight_L">#01849C</color>
+    <color name="track_L">#113297</color>
+    <color name="q_bg_L">#9FBBD8</color>
+    <color name="active_bar_L">#D18E21</color>
+    <color name="other_active_bar_L">#AA7113</color>
 
 </resources>

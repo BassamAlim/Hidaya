@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:minWidth="250dp"
     android:layoutDirection="rtl"
-    android:elevation="15dp"
+    android:elevation="2dp"
     android:orientation="vertical"
     android:layout_gravity="center"
     android:background="@drawable/dialog_bg">
@@ -31,65 +32,66 @@
             android:id="@+id/athan_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary_dark"
-            android:drawableEnd="@drawable/ic_speaker"
-            android:gravity="center|start"
             android:paddingVertical="4dp"
             android:paddingHorizontal="5dp"
+            android:gravity="center|start"
+            android:background="?myPopupsBg"
+            android:drawableEnd="@drawable/ic_speaker"
             android:text="@string/athan_speaker"
             android:textSize="21dp"
             tools:ignore="SpUsage" />
 
         <View
+            android:id="@+id/first_separator"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:backgroundTint="@color/black"/>
+            android:layout_height="0.5dp"
+            android:background="@color/black"/>
 
         <Button
             android:id="@+id/notify_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary_dark"
-            android:drawableEnd="@drawable/ic_sound"
-            android:gravity="center|start"
             android:paddingVertical="4dp"
             android:paddingHorizontal="5dp"
+            android:gravity="center|start"
+            android:background="?myPopupsBg"
+            android:drawableEnd="@drawable/ic_sound"
             android:text="@string/enable_notification"
             android:textSize="21dp"
             tools:ignore="SpUsage" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:backgroundTint="@color/black"/>
+            android:layout_height="0.5dp"
+            android:background="@color/black"/>
 
         <Button
             android:id="@+id/mute_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary_dark"
-            android:drawableEnd="@drawable/ic_mute"
-            android:gravity="center|start"
             android:paddingVertical="4dp"
             android:paddingHorizontal="5dp"
+            android:gravity="center|start"
+            android:background="?myPopupsBg"
+            android:drawableEnd="@drawable/ic_mute"
             android:text="@string/mute_notification"
             android:textSize="21dp"
             tools:ignore="SpUsage" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:backgroundTint="@color/black"/>
+            android:layout_height="0.5dp"
+            android:background="@color/black"/>
 
         <Button
             android:id="@+id/disable_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary_dark"
-            android:drawableEnd="@drawable/ic_disabled"
-            android:gravity="center|start"
             android:paddingVertical="4dp"
             android:paddingHorizontal="5dp"
+            android:gravity="center|start"
+            android:background="?myPopupsBg"
+            android:drawableEnd="@drawable/ic_disabled"
             android:text="@string/disable_notification"
             android:textSize="21dp"
             tools:ignore="SpUsage" />
@@ -111,8 +113,7 @@
             android:id="@+id/time_setting_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/time_settings"
-            android:layout_gravity="center" />
+            android:entries="@array/time_settings" />
 
     </LinearLayout>
 

@@ -2,8 +2,8 @@ package bassamalim.hidaya.activities;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -23,6 +23,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.ThikrsDB;
 import bassamalim.hidaya.databinding.ActivityAlathkarBinding;
+import bassamalim.hidaya.other.Util;
 
 public class AlathkarActivity extends AppCompatActivity {
 
@@ -34,6 +35,7 @@ public class AlathkarActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Util.onActivityCreateSetTheme(this);
         binding = ActivityAlathkarBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
@@ -72,12 +74,14 @@ public class AlathkarActivity extends AppCompatActivity {
         CardView card = new CardView(this);
         FrameLayout.LayoutParams cardParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        cardParams.setMargins(20, 10, 20, 10);
+        cardParams.setMargins(20, 15, 20, 15);
         cardParams.gravity = Gravity.CENTER;
         card.setLayoutParams(cardParams);
-        card.setCardBackgroundColor(getResources().getColor(R.color.secondary_dark));
+        TypedValue value = new TypedValue();
+        getTheme().resolveAttribute(R.attr.myClick, value, true);
+        card.setCardBackgroundColor(value.data);
         card.setRadius(40);
-        card.setElevation(40);
+        card.setElevation(15);
         card.setPreventCornerOverlap(true);
 
         LinearLayout mainLL = new LinearLayout(this);
@@ -97,7 +101,7 @@ public class AlathkarActivity extends AppCompatActivity {
             TextView repetition = repetitionScreen(model.getRepetition());
             repetitionLL.addView(repetition);
 
-            mainLL.addView(separator(false, 10));
+            mainLL.addView(separator(false));
         }
 
         LinearLayout verticalLL = new LinearLayout(this);
@@ -119,13 +123,13 @@ public class AlathkarActivity extends AppCompatActivity {
             verticalLL.addView(text);
         }
         if (model.getFadl().length() > 0) {
-            verticalLL.addView(separator(true, 7));
+            verticalLL.addView(separator(true));
 
             TextView fadl = fadlScreen(model.getFadl());
             verticalLL.addView(fadl);
         }
         if (model.getReference().length() > 0) {
-            verticalLL.addView(separator(true, 7));
+            verticalLL.addView(separator(true));
 
             TextView reference = referenceScreen(model.getReference());
             verticalLL.addView(reference);
@@ -140,14 +144,13 @@ public class AlathkarActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screenParams.gravity = Gravity.CENTER;
         screen.setLayoutParams(screenParams);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            screen.setTextColor(getResources().getColor(R.color.white, getTheme()));
-        else
-            screen.setTextColor(getResources().getColor(R.color.white));
         screen.setPadding(10, 0, 10, 0);
         screen.setGravity(Gravity.CENTER);
         screen.setTextSize(textSize);
         screen.setTypeface(Typeface.DEFAULT_BOLD);
+        TypedValue value = new TypedValue();
+        getTheme().resolveAttribute(R.attr.myText, value, true);
+        screen.setTextColor(value.data);
 
         screen.setText(title);
         return screen;
@@ -159,13 +162,12 @@ public class AlathkarActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screenParams.gravity = Gravity.CENTER;
         screen.setLayoutParams(screenParams);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            screen.setTextColor(getResources().getColor(R.color.white, getTheme()));
-        else
-            screen.setTextColor(getResources().getColor(R.color.white));
         screen.setPadding(10, 10, 10, 20);
         screen.setGravity(Gravity.CENTER);
         screen.setTextSize(textSize);
+        TypedValue value = new TypedValue();
+        getTheme().resolveAttribute(R.attr.myText, value, true);
+        screen.setTextColor(value.data);
 
         screen.setText(text);
         return screen;
@@ -177,10 +179,9 @@ public class AlathkarActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screenParams.gravity = Gravity.CENTER;
         screen.setLayoutParams(screenParams);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            screen.setTextColor(getResources().getColor(R.color.accent_dark, getTheme()));
-        else
-            screen.setTextColor(getResources().getColor(R.color.accent_dark));
+        TypedValue value = new TypedValue();
+        getTheme().resolveAttribute(R.attr.myOtherAccent, value, true);
+        screen.setTextColor(value.data);
         screen.setPadding(15, 0, 15, 0);
         screen.setMaxWidth(300);
         screen.setGravity(Gravity.CENTER);
@@ -196,10 +197,9 @@ public class AlathkarActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screenParams.gravity = Gravity.CENTER;
         screen.setLayoutParams(screenParams);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            screen.setTextColor(getResources().getColor(R.color.accent_dark, getTheme()));
-        else
-            screen.setTextColor(getResources().getColor(R.color.accent_dark));
+        TypedValue value = new TypedValue();
+        getTheme().resolveAttribute(R.attr.myOtherAccent, value, true);
+        screen.setTextColor(value.data);
         screen.setPadding(10, 0, 10, 0);
         screen.setGravity(Gravity.CENTER);
         screen.setTextSize(textSize-8);
@@ -214,10 +214,7 @@ public class AlathkarActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         screenParams.gravity = Gravity.CENTER;
         screen.setLayoutParams(screenParams);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            screen.setTextColor(getResources().getColor(R.color.black, getTheme()));
-        else
-            screen.setTextColor(getResources().getColor(R.color.black));
+        screen.setTextColor(getResources().getColor(R.color.black));
         screen.setPadding(10, 0, 10, 0);
         screen.setGravity(Gravity.CENTER);
         screen.setTextSize(textSize-8);
@@ -226,19 +223,20 @@ public class AlathkarActivity extends AppCompatActivity {
         return screen;
     }
 
-    private View separator(boolean horizontal, int size) {
+    private View separator(boolean horizontal) {
         View separator = new View(this);
-        separator.setBackgroundColor(getResources().getColor(R.color.primary_dark));
+
         LinearLayout.LayoutParams params;
-        if (horizontal) {
-            params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, size);
-        }
-        else {
-            params = new LinearLayout.LayoutParams(
-                    size, LinearLayout.LayoutParams.MATCH_PARENT);
-        }
+        if (horizontal)
+            params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 3);
+        else
+            params = new LinearLayout.LayoutParams(3, LinearLayout.LayoutParams.MATCH_PARENT);
         params.setMargins(0, 10, 0, 10);
+
+        TypedValue value = new TypedValue();
+        getTheme().resolveAttribute(R.attr.mySeparator, value, true);
+        separator.setBackgroundColor(value.data);
+
         separator.setLayoutParams(params);
         return separator;
     }
@@ -247,5 +245,4 @@ public class AlathkarActivity extends AppCompatActivity {
         return PreferenceManager.getDefaultSharedPreferences(this)
                 .getInt(getString(R.string.alathkar_text_size_key), 25);
     }
-
 }

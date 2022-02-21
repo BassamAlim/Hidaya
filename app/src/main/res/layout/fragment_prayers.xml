@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="rtl"
-    android:background="@color/bg_dark"
+    android:background="?myMainBg"
     tools:context=".fragments.PrayersFragment">
 
     <androidx.cardview.widget.CardView
@@ -15,7 +15,7 @@
         android:layout_height="@dimen/prayer_card_height"
         android:layout_marginTop="5dp"
         android:layout_marginHorizontal="@dimen/prayer_card_margin"
-        app:cardBackgroundColor="@color/secondary_dark"
+        app:cardBackgroundColor="?myClick"
         app:cardCornerRadius="20dp"
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
@@ -40,8 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:gravity="center_horizontal"
-            android:background="@color/black"
-            android:textColor="@color/accent_dark"
+            android:background="?myCounter"
+            android:textColor="?myAccent"
             android:textSize="20dp"
             android:visibility="invisible"
             tools:ignore="SpUsage" />
@@ -63,7 +63,7 @@
         android:layout_height="@dimen/prayer_card_height"
         android:layout_marginHorizontal="@dimen/prayer_card_margin"
         android:orientation="horizontal"
-        app:cardBackgroundColor="@color/secondary_dark"
+        app:cardBackgroundColor="?myClick"
         app:cardCornerRadius="20dp"
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
@@ -88,8 +88,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:gravity="center_horizontal"
-            android:background="@color/black"
-            android:textColor="@color/accent_dark"
+            android:background="?myCounter"
+            android:textColor="?myAccent"
             android:textSize="20dp"
             android:visibility="invisible"
             tools:ignore="SpUsage" />
@@ -110,7 +110,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/prayer_card_height"
         android:layout_marginHorizontal="@dimen/prayer_card_margin"
-        app:cardBackgroundColor="@color/secondary_dark"
+        app:cardBackgroundColor="?myClick"
         app:cardCornerRadius="20dp"
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
@@ -135,8 +135,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:gravity="center_horizontal"
-            android:background="@color/black"
-            android:textColor="@color/accent_dark"
+            android:background="?myCounter"
+            android:textColor="?myAccent"
             android:textSize="20dp"
             android:visibility="invisible"
             tools:ignore="SpUsage" />
@@ -157,7 +157,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/prayer_card_height"
         android:layout_marginHorizontal="@dimen/prayer_card_margin"
-        app:cardBackgroundColor="@color/secondary_dark"
+        app:cardBackgroundColor="?myClick"
         app:cardCornerRadius="20dp"
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
@@ -182,8 +182,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:gravity="center_horizontal"
-            android:background="@color/black"
-            android:textColor="@color/accent_dark"
+            android:background="?myCounter"
+            android:textColor="?myAccent"
             android:textSize="20dp"
             android:visibility="invisible"
             tools:ignore="SpUsage" />
@@ -204,7 +204,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/prayer_card_height"
         android:layout_marginHorizontal="@dimen/prayer_card_margin"
-        app:cardBackgroundColor="@color/secondary_dark"
+        app:cardBackgroundColor="?myClick"
         app:cardCornerRadius="20dp"
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
@@ -229,8 +229,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:gravity="center_horizontal"
-            android:background="@color/black"
-            android:textColor="@color/accent_dark"
+            android:background="?myCounter"
+            android:textColor="?myAccent"
             android:textSize="20dp"
             android:visibility="invisible"
             tools:ignore="SpUsage" />
@@ -251,7 +251,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/prayer_card_height"
         android:layout_marginHorizontal="@dimen/prayer_card_margin"
-        app:cardBackgroundColor="@color/secondary_dark"
+        app:cardBackgroundColor="?myClick"
         app:cardCornerRadius="20dp"
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
@@ -276,8 +276,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:gravity="center_horizontal"
-            android:background="@color/black"
-            android:textColor="@color/accent_dark"
+            android:background="?myCounter"
+            android:textColor="?myAccent"
             android:textSize="20dp"
             android:visibility="invisible"
             tools:ignore="SpUsage" />
@@ -303,7 +303,7 @@
         app:cardCornerRadius="10dp"
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
-        android:backgroundTint="@color/secondary_dark"
+        android:backgroundTint="?myClick"
         app:layout_constraintTop_toBottomOf="@id/ishaa_card"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -312,7 +312,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:backgroundTint="@color/secondary_dark"
+            android:backgroundTint="?myClick"
             android:src="@drawable/ic_right_arrow"
             android:contentDescription="@string/previous_day_button_description"/>
 
@@ -330,7 +330,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:backgroundTint="@color/secondary_dark"
+            android:backgroundTint="?myClick"
             android:src="@drawable/ic_left_arrow"
             android:contentDescription="@string/next_day_button_description"/>
 

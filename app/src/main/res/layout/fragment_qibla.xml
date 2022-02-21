@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="rtl"
-    android:background="@drawable/background"
+    android:background="?myMainBg"
     tools:context=".fragments.QiblaFragment">
 
     <ImageView
@@ -60,7 +60,7 @@
             android:paddingHorizontal="20dp"
             android:gravity="center"
             android:textSize="20sp"
-            android:textColor="@color/accent_dark"/>
+            android:textColor="?myAccent"/>
 
         <ImageButton
             android:id="@+id/accuracy_indicator"

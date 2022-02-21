@@ -1,8 +1,8 @@
 package bassamalim.hidaya.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Window;
 import android.widget.Button;
 
@@ -21,6 +21,7 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.QuizAnswersDB;
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB;
 import bassamalim.hidaya.databinding.ActivityQuizBinding;
+import bassamalim.hidaya.other.Util;
 
 public class QuizActivity extends AppCompatActivity {
 
@@ -36,7 +37,7 @@ public class QuizActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Util.onActivityCreateSetTheme(this);
         binding = ActivityQuizBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
@@ -99,35 +100,41 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void adjustButtons() {
+        TypedValue text = new TypedValue();
+        getTheme().resolveAttribute(R.attr.myText, text, true);
+
+        TypedValue accent = new TypedValue();
+        getTheme().resolveAttribute(R.attr.myActiveBar, accent, true);
+
         for (Button answerBtn : answerBtns)
-            answerBtn.setTextColor(getResources().getColor(R.color.text_dark));
+            answerBtn.setTextColor(text.data);
 
         if (cAnswers[current] != -1)
-            answerBtns[cAnswers[current]].setTextColor(getResources().getColor(R.color.accent_dark));
+            answerBtns[cAnswers[current]].setTextColor(accent.data);
 
         if (current == 0) {
             prevBtn.setEnabled(false);
-            prevBtn.setTextColor(Color.BLACK);
+            prevBtn.setTextColor(getResources().getColor(R.color.grey));
         }
         else if (current == 9) {
             if (allAnswered()) {
                 nextBtn.setText("إنهاء الإختبار");
                 nextBtn.setEnabled(true);
-                nextBtn.setTextColor(getResources().getColor(R.color.text_dark));
+                nextBtn.setTextColor(text.data);
             }
             else {
                 nextBtn.setText("أجب على جميع الاسئلة");
                 nextBtn.setEnabled(false);
-                nextBtn.setTextColor(Color.BLACK);
+                nextBtn.setTextColor(getResources().getColor(R.color.grey));
             }
         }
         else {
             prevBtn.setEnabled(true);
-            prevBtn.setTextColor(getResources().getColor(R.color.text_dark));
+            prevBtn.setTextColor(text.data);
 
             nextBtn.setEnabled(true);
             nextBtn.setText("السؤال التالي");
-            nextBtn.setTextColor(getResources().getColor(R.color.text_dark));
+            nextBtn.setTextColor(text.data);
         }
     }
 

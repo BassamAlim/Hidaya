@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark"
+    android:background="?myMainBg"
     tools:context=".activities.QuizResultActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -13,13 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:minHeight="?attr/actionBarSize"
-        android:background="@color/black"
+        android:background="?myBars"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/top_bar_title"
@@ -29,7 +27,7 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:text="@string/quiz_result"
-            android:textColor="@color/accent_dark"
+            android:textColor="?myBarsText"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
@@ -43,19 +41,17 @@
         android:padding="20dp"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/top_bar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/top_bar" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="153dp"
-        android:background="@color/primary_dark"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/result_screen">
+        android:background="?myBars"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@id/result_screen"
+        app:layout_constraintBottom_toBottomOf="parent">
 
     </androidx.recyclerview.widget.RecyclerView>
 

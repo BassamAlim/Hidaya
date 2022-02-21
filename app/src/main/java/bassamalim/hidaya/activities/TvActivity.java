@@ -1,6 +1,7 @@
 package bassamalim.hidaya.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -9,25 +10,48 @@ import androidx.annotation.Nullable;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import bassamalim.hidaya.databinding.ActivityTvBinding;
+import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Util;
 
 public class TvActivity extends YouTubeBaseActivity {
 
     private ActivityTvBinding binding;
-    private final String makkah_url = "ca-8pgBoa-s";
-    private final String madina_url = "gUC3TjCrwRw";
+    private FirebaseRemoteConfig remoteConfig;
+    private String makkah_url;
+    private String madina_url;
     private final String apiKey = "AIzaSyBndJVjigZ7MOmj1005ONLUsfFW7BfxZt0";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Util.onActivityCreateSetTheme(this);
         binding = ActivityTvBinding.inflate(getLayoutInflater());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(binding.getRoot());
 
+        getLinks();
+
         initYtPlayer();
+    }
+
+    private void getLinks() {
+        remoteConfig = FirebaseRemoteConfig.getInstance();
+        remoteConfig.fetchAndActivate()
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        makkah_url = remoteConfig.getString("makkah_url");
+                        madina_url = remoteConfig.getString("madina_url");
+
+                        Log.d(Const.TAG, "Config params updated");
+                        Log.d(Const.TAG, "Makkah URL: " + makkah_url);
+                        Log.d(Const.TAG, "Madina URL: " + madina_url);
+                    }
+                    else
+                        Log.d(Const.TAG, "Fetch failed");
+                });
     }
 
     private void initYtPlayer() {

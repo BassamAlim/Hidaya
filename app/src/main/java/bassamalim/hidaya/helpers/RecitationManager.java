@@ -68,13 +68,13 @@ public class RecitationManager {
                 "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
                 .build();
 
-        String theme = pref.getString(context.getString( R.string.quran_theme_key),
-                "DarkTheme");
+        String theme = pref.getString(context.getString( R.string.theme_key),
+                "ThemeM");
 
-        if (theme.equals("DarkTheme"))
-            what = new ForegroundColorSpan(context.getResources().getColor(R.color.track_dark));
+        if (theme.equals("ThemeM"))
+            what = new ForegroundColorSpan(context.getResources().getColor(R.color.track_M));
         else
-            what = new ForegroundColorSpan(context.getResources().getColor(R.color.track_light));
+            what = new ForegroundColorSpan(context.getResources().getColor(R.color.track_L));
     }
 
     private void initPlayers() {

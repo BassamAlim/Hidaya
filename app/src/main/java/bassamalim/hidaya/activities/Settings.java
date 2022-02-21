@@ -1,29 +1,32 @@
 package bassamalim.hidaya.activities;
 
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 
-import bassamalim.hidaya.helpers.Alarms;
-import bassamalim.hidaya.R;
-import bassamalim.hidaya.enums.ID;
-import bassamalim.hidaya.other.Util;
-
 import java.util.Calendar;
 import java.util.HashMap;
+
+import bassamalim.hidaya.R;
+import bassamalim.hidaya.enums.ID;
+import bassamalim.hidaya.helpers.Alarms;
+import bassamalim.hidaya.other.Util;
 
 public class Settings extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Util.onActivityCreateSetTheme(this);
         setContentView(R.layout.activity_settings);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -72,6 +75,25 @@ public class Settings extends AppCompatActivity {
             setSwitchListener(ID.EVENING);
             setSwitchListener(ID.DAILY_WERD);
             setSwitchListener(ID.FRIDAY_KAHF);
+
+            ListPreference themes = findPreference(getString(R.string.theme_key));
+            assert themes != null;
+            themes.setOnPreferenceChangeListener((preference, newValue) -> {
+                String theme = PreferenceManager.getDefaultSharedPreferences(
+                        requireContext()).getString(requireContext().getString(R.string.theme_key), "ThemeM");
+                if (!newValue.equals(theme)) {
+                    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(
+                            requireContext());
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString(getString(R.string.theme_key), (String) newValue);
+                    editor.apply();
+
+                    Intent refresh= new Intent(getActivity(), Splash.class);
+                    startActivity(refresh);
+                    requireActivity().finish();
+                }
+                return true;
+            });
         }
 
         private void setSwitchListener(ID id) {

@@ -98,7 +98,7 @@ public class FavoriteTelawatFragment extends Fragment {
     }
 
     private void setupRecycler() {
-        recycler = binding.telawatRecycler;
+        recycler = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(layoutManager);
         adapter = new TelawatAdapter(getContext(), cards);

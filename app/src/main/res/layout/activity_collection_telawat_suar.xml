@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_dark"
+    android:background="?myMainBg"
     tools:context=".activities.TelawatSuarCollectionActivity">
 
     <Toolbar
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:minHeight="?attr/actionBarSize"
-        android:background="@color/primary_dark"
+        android:background="?myBars"
         android:elevation="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,6 +28,7 @@
             android:layout_gravity="start"
             android:textSize="18dp"
             android:textStyle="bold"
+            android:textColor="?myBarsText"
             tools:ignore="SpUsage" />
 
     </Toolbar>
@@ -36,7 +37,10 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary_dark"/>
+        android:background="?myBars"
+        app:tabTextColor="@color/text_M"
+        app:tabSelectedTextColor="?myActiveBar"
+        app:tabIndicatorColor="?myActiveBar" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/telawat_pager"

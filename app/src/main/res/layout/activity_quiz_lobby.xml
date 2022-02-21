@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark"
+    android:background="?myMainBg"
     tools:context=".activities.QuizLobbyActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:minHeight="?attr/actionBarSize"
-        android:background="@color/primary_dark"
+        android:background="?myBars"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -28,7 +28,7 @@
             android:layout_marginEnd="15dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:textColor="@color/accent_dark"
+            android:textColor="?myAccent"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
@@ -43,11 +43,11 @@
         android:paddingHorizontal="30dp"
         android:elevation="15dp"
         android:gravity="center"
-        android:background="@drawable/ripple_s"
+        android:background="@drawable/ripple_click"
         android:text="@string/start_quiz"
         android:textSize="28dp"
         android:textStyle="bold"
-        android:textColor="@color/accent_dark"
+        android:textColor="?myAccent"
         tools:ignore="SpUsage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

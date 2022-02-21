@@ -1,12 +1,12 @@
 <resources>
     
     <string-array name="time_settings">
-        <item>-30</item>
-        <item>-25</item>
-        <item>-20</item>
-        <item>-15</item>
-        <item>-10</item>
-        <item>-5</item>
+        <item>30-</item>
+        <item>25-</item>
+        <item>20-</item>
+        <item>15-</item>
+        <item>10-</item>
+        <item>5-</item>
         <item>0</item>
         <item>+5</item>
         <item>+10</item>
@@ -16,14 +16,14 @@
         <item>+30</item>
     </string-array>
 
-    <string-array name="quran_themes">
+    <string-array name="themes">
         <item>الغامق</item>
         <item>الفاتح</item>
     </string-array>
 
-    <string-array name="quran_theme_values">
-        <item>DarkTheme</item>
-        <item>LightTheme</item>
+    <string-array name="theme_values">
+        <item>ThemeM</item>
+        <item>ThemeL</item>
     </string-array>
 
     <string-array name="reciters_placeholder">

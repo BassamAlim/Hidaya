@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:paddingHorizontal="10dp"
             android:gravity="start|center_vertical"
-            android:background="@drawable/ripple_s">
+            android:background="@drawable/ripple_click">
 
             <TextView
                 android:id="@+id/namescreen"
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:padding="10dp"
-                android:background="@drawable/ripple_s"
+                android:background="@drawable/ripple_click"
                 android:contentDescription="@string/fav_btn_description"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

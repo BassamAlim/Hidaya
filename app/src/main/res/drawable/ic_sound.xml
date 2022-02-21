@@ -1,21 +1,9 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="30dp"
     android:height="30dp"
     android:viewportWidth="512"
     android:viewportHeight="512">
   <path
-      android:pathData="m496,395.982c-33.084,0 -60,-26.916 -60,-60v-120c0,-92.492 -70.126,-168.901 -160,-178.883v-37.081h-40v37.081c-89.874,9.982 -160,86.391 -160,178.883v120c0,33.084 -26.916,60 -60,60h-16v40h196v16c0,33.084 26.916,60 60,60s60,-26.916 60,-60v-16h196v-40zM276,451.982c0,11.028 -8.972,20 -20,20s-20,-8.972 -20,-20v-16h40zM95.949,395.982c12.583,-16.725 20.051,-37.506 20.051,-60v-120c0,-77.196 62.804,-140 140,-140s140,62.804 140,140v120c0,22.494 7.468,43.275 20.051,60z">
-    <aapt:attr name="android:fillColor">
-      <gradient 
-          android:startY="511.982"
-          android:startX="256"
-          android:endY="0.018"
-          android:endX="256"
-          android:type="linear">
-        <item android:offset="0" android:color="#FF009EFD"/>
-        <item android:offset="1" android:color="#FF2AF598"/>
-      </gradient>
-    </aapt:attr>
-  </path>
+      android:fillColor="?myAccent"
+      android:pathData="m496,395.982c-33.084,0 -60,-26.916 -60,-60v-120c0,-92.492 -70.126,-168.901 -160,-178.883v-37.081h-40v37.081c-89.874,9.982 -160,86.391 -160,178.883v120c0,33.084 -26.916,60 -60,60h-16v40h196v16c0,33.084 26.916,60 60,60s60,-26.916 60,-60v-16h196v-40zM276,451.982c0,11.028 -8.972,20 -20,20s-20,-8.972 -20,-20v-16h40zM95.949,395.982c12.583,-16.725 20.051,-37.506 20.051,-60v-120c0,-77.196 62.804,-140 140,-140s140,62.804 140,140v120c0,22.494 7.468,43.275 20.051,60z" />
 </vector>

@@ -13,14 +13,8 @@
             app:min="20"
             android:max="50"
             android:defaultValue="30"
-            app:useSimpleSummaryProvider="true" />
-
-        <ListPreference
-            android:key="@string/quran_theme_key"
-            android:title="السمة"
-            android:entries="@array/quran_themes"
-            android:entryValues="@array/quran_theme_values"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true"
+            app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 
@@ -31,24 +25,27 @@
             android:title="القارئ"
             android:entries="@array/reciters_placeholder"
             android:entryValues="@array/reciter_values_placeholder"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true"
+            app:iconSpaceReserved="false" />
 
         <DropDownPreference
             android:key="@string/aya_repeat_mode_key"
             android:title="تكرار الآية"
             android:entries="@array/repeat_modes"
             android:entryValues="@array/repeat_values"
-            app:useSimpleSummaryProvider="true" />
+            app:iconSpaceReserved="false" />
 
         <SwitchPreference
             android:key="@string/stop_on_sura_key"
             android:title="@string/stop_on_sura_end"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreference
             android:key="@string/stop_on_page_key"
             android:title="@string/stop_on_page_end"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 

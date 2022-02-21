@@ -24,7 +24,7 @@
     <string name="friday_kahf_key">friday_kahf_key</string>
     <string name="quran_text_size_key">quran_text_size_key</string>
     <string name="alathkar_text_size_key">alathkar_text_size_key</string>
-    <string name="quran_theme_key">quran_theme_key</string>
+    <string name="theme_key">theme_key</string>
     <string name="aya_reciter_key">aya_reciter_key</string>
     <string name="aya_repeat_mode_key">aya_repeat_mode_key</string>
     <string name="stop_on_sura_key">stop_on_sura_key</string>

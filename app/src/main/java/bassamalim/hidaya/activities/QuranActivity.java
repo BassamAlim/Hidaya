@@ -68,10 +68,9 @@ public class QuranActivity extends SwipeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityQuranBinding.inflate(getLayoutInflater());
-
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         themeify();
+        binding = ActivityQuranBinding.inflate(getLayoutInflater());
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.infoBar);
@@ -94,46 +93,14 @@ public class QuranActivity extends SwipeActivity {
     private void themeify() {
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         textSize = pref.getInt(getString(R.string.quran_text_size_key), 30);
-        theme = pref.getString(getString(R.string.quran_theme_key), "DarkTheme");
+        theme = pref.getString(getString(R.string.theme_key), "ThemeM");
 
         switch (theme) {
-            case "DarkTheme":
-                setTheme(R.style.QuranDarkTheme);
-                binding.baseView.setBackgroundColor(getResources().getColor(R.color.primary_dark));
-                binding.infoBar.setBackgroundColor(getResources().getColor(R.color.bg_dark));
-                binding.quranToolsBar.setBackgroundColor(getResources().getColor(R.color.bg_dark));
-                binding.pageNumber.setTextColor(getResources().getColor(R.color.accent_dark));
-                binding.juzNumber.setTextColor(getResources().getColor(R.color.accent_dark));
-                binding.suraName.setTextColor(getResources().getColor(R.color.accent_dark));
-                binding.bookmarkButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_bookmark, getTheme()));
-                binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_play_aya, getTheme()));
-                binding.nextAyah.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_forward, getTheme()));
-                binding.prevAyah.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_backward, getTheme()));
-                binding.recitationSettings.setImageDrawable(ResourcesCompat.getDrawable(
-                        getResources(), R.drawable.ic_preferences, getTheme()));
+            case "ThemeM":
+                setTheme(R.style.QuranM);
                 break;
-            case "LightTheme":
-                setTheme(R.style.QuranLightTheme);
-                binding.baseView.setBackgroundColor(getResources().getColor(R.color.primary_light));
-                binding.infoBar.setBackgroundColor(getResources().getColor(R.color.bg_light));
-                binding.quranToolsBar.setBackgroundColor(getResources().getColor(R.color.bg_light));
-                binding.pageNumber.setTextColor(getResources().getColor(R.color.accent_light));
-                binding.juzNumber.setTextColor(getResources().getColor(R.color.accent_light));
-                binding.suraName.setTextColor(getResources().getColor(R.color.accent_light));
-                binding.bookmarkButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_bookmark_light, getTheme()));
-                binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_play_aya_light, getTheme()));
-                binding.nextAyah.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_forward_light, getTheme()));
-                binding.prevAyah.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_backward_light, getTheme()));
-                binding.recitationSettings.setImageDrawable(ResourcesCompat.getDrawable(
-                        getResources(), R.drawable.ic_preferences_light, getTheme()));
+            case "ThemeL":
+                setTheme(R.style.QuranL);
                 break;
         }
     }
@@ -212,22 +179,8 @@ public class QuranActivity extends SwipeActivity {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
                     assert data != null;
-
-                    int newTextSize = data.getIntExtra("text_size", -1);
-                    if (newTextSize != -1) {
-                        textSize = newTextSize;
-                        buildPage(currentPage);
-                    }
-
-                    String newTheme = data.getStringExtra("theme");
-                    if (!theme.equals(newTheme)) {
-                        theme = newTheme;
-                        finish();
-                        Intent restart = new Intent(this, QuranActivity.class);
-                        restart.setAction("by_page");
-                        restart.putExtra("page", currentPage);
-                        startActivity(restart);
-                    }
+                    textSize = data.getIntExtra("text_size", 30);
+                    buildPage(currentPage);
                 }
             });
 
@@ -359,12 +312,12 @@ public class QuranActivity extends SwipeActivity {
         rcMgr.setAllAyahsSize(allAyahs.size());
 
         screen.setText(ss);
-        if (theme.equals("DarkTheme"))
+        if (theme.equals("ThemeM"))
             screen.setMovementMethod(DoubleClickLMM.getInstance(
-                    getResources().getColor(R.color.accent_dark)));
+                    getResources().getColor(R.color.highlight_M)));
         else
             screen.setMovementMethod(DoubleClickLMM.getInstance(
-                    getResources().getColor(R.color.highlight_light)));
+                    getResources().getColor(R.color.highlight_L)));
         mainLinear.addView(screen);
         arr = new ArrayList<>();
     }
@@ -388,20 +341,12 @@ public class QuranActivity extends SwipeActivity {
     private void updateUi(States state) {
         switch (state) {
             case Playing:
-                if (theme.equals("DarkTheme"))
-                    binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                            R.drawable.ic_pause, getTheme()));
-                else
-                    binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                            R.drawable.ic_pause_light, getTheme()));
+                binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ic_pause, getTheme()));
                 break;
             case Paused:
-                if (theme.equals("DarkTheme"))
-                    binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                            R.drawable.ic_play_aya, getTheme()));
-                else
-                    binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                            R.drawable.ic_play_aya_light, getTheme()));
+                binding.play.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ic_play_aya, getTheme()));
                 break;
         }
     }
@@ -439,7 +384,7 @@ public class QuranActivity extends SwipeActivity {
         nameTv.setGravity(Gravity.CENTER);
         nameTv.setBackgroundColor(Color.TRANSPARENT);
         nameTv.setTextSize(textSize+5);
-        if (theme.equals("DarkTheme"))
+        if (theme.equals("ThemeM"))
             nameTv.setBackgroundResource(R.drawable.surah_header);
         else
             nameTv.setBackgroundResource(R.drawable.surah_header_light);
@@ -460,6 +405,14 @@ public class QuranActivity extends SwipeActivity {
         nameScreen.setTextSize(textSize);
         nameScreen.setTypeface(Typeface.DEFAULT_BOLD);
         nameScreen.setText("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ");
+        if (theme.equals("ThemeM")) {
+            nameScreen.setTextColor(Color.WHITE);
+            nameScreen.setLinkTextColor(Color.WHITE);
+        }
+        else {
+            nameScreen.setTextColor(Color.BLACK);
+            nameScreen.setLinkTextColor(Color.BLACK);
+        }
         return nameScreen;
     }
 
@@ -471,6 +424,14 @@ public class QuranActivity extends SwipeActivity {
         tv.setPadding(10, 0, 10, 30);
         tv.setGravity(Gravity.CENTER);
         tv.setTextSize(textSize);
+        if (theme.equals("ThemeM")) {
+            tv.setTextColor(Color.WHITE);
+            tv.setLinkTextColor(Color.WHITE);
+        }
+        else {
+            tv.setTextColor(Color.BLACK);
+            tv.setLinkTextColor(Color.BLACK);
+        }
         Typeface typeface = Typeface.createFromAsset(getAssets(), "hafs_smart_08.ttf");
         tv.setTypeface(typeface);
         return tv;

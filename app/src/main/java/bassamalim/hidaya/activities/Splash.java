@@ -16,11 +16,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
-import bassamalim.hidaya.helpers.Keeper;
-import bassamalim.hidaya.services.AthanService;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.Collection;
+
+import bassamalim.hidaya.R;
+import bassamalim.hidaya.helpers.Keeper;
+import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.services.AthanService;
 
 public class Splash extends AppCompatActivity {
 
@@ -31,6 +34,10 @@ public class Splash extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Util.onActivityCreateSetTheme(this);
+
+        //if (build >= Build.VERSION_CODES.)
+        setContentView(R.layout.activity_splash);
 
         stopService(new Intent(this, AthanService.class));
 
@@ -50,6 +57,25 @@ public class Splash extends AppCompatActivity {
             else
                 launch(null);
         }
+    }
+
+    private void da() {
+        /*final View content = findViewById(android.R.id.content);
+        content.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        // Check if the initial data is ready.
+                        if (mViewModel.isReady()) {
+                            // The content is ready; start drawing.
+                            content.getViewTreeObserver().removeOnPreDrawListener(this);
+                            return true;
+                        } else {
+                            // The content is not ready; suspend.
+                            return false;
+                        }
+                    }
+                });*/
     }
 
     private void newUser() {

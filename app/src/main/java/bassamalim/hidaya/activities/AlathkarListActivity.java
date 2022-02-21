@@ -21,6 +21,7 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.AthkarDB;
 import bassamalim.hidaya.databinding.ActivityAlathkarListBinding;
 import bassamalim.hidaya.models.AlathkarButton;
+import bassamalim.hidaya.other.Util;
 
 public class AlathkarListActivity extends AppCompatActivity {
 
@@ -35,6 +36,7 @@ public class AlathkarListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Util.onActivityCreateSetTheme(this);
         binding = ActivityAlathkarListBinding.inflate(getLayoutInflater());
 
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
@@ -95,7 +97,7 @@ public class AlathkarListActivity extends AppCompatActivity {
     }
 
     private void setupRecycler() {
-        recyclerView = findViewById(R.id.alathkar_recycler);
+        recyclerView = findViewById(R.id.recycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new AlathkarAdapter(this, alathkarButtons);

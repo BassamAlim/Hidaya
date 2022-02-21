@@ -96,7 +96,7 @@ public class AllTelawatFragment extends Fragment {
     }
 
     private void setupRecycler() {
-        recycler = binding.telawatRecycler;
+        recycler = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
         recycler.setLayoutManager(layoutManager);
         adapter = new TelawatAdapter(getContext(), makeCards());

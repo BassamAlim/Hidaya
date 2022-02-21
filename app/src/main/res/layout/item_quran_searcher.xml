@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="18dp"
             android:paddingHorizontal="20dp"
-            android:background="@drawable/ripple_p">
+            android:background="?myClick">
 
             <TextView
                 android:id="@+id/sura_num_tv"
@@ -28,6 +28,7 @@
                 android:layout_margin="6dp"
                 android:gravity="center"
                 android:textSize="18sp"
+                android:textColor="?myText"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@id/sura_name_tv"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -40,6 +41,7 @@
                 android:layout_margin="6dp"
                 android:gravity="center"
                 android:textSize="18sp"
+                android:textColor="?myText"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/sura_num_tv"
@@ -52,6 +54,7 @@
                 android:layout_margin="6dp"
                 android:gravity="center"
                 android:textSize="18sp"
+                android:textColor="?myText"
                 app:layout_constraintTop_toBottomOf="@id/sura_num_tv"
                 app:layout_constraintStart_toEndOf="@id/aya_num_tv"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -64,6 +67,7 @@
                 android:layout_margin="6dp"
                 android:gravity="center"
                 android:textSize="18sp"
+                android:textColor="?myText"
                 app:layout_constraintTop_toBottomOf="@id/sura_name_tv"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/page_num_tv"
@@ -76,6 +80,7 @@
                 android:layout_margin="6dp"
                 android:gravity="center"
                 android:textSize="22sp"
+                android:textColor="?myText"
                 app:layout_constraintTop_toBottomOf="@id/aya_num_tv"
                 app:layout_constraintBottom_toTopOf="@id/aya_tafseer_tv" />
 
@@ -86,6 +91,7 @@
                 android:layout_margin="6dp"
                 android:gravity="center"
                 android:textSize="18sp"
+                android:textColor="?myText"
                 app:layout_constraintTop_toBottomOf="@id/aya_text_tv"
                 app:layout_constraintBottom_toTopOf="@id/goto_page" />
 
@@ -100,10 +106,10 @@
                 android:paddingHorizontal="20dp"
                 android:elevation="10dp"
                 android:gravity="center"
-                android:background="@drawable/ripple_s"
+                android:background="@drawable/ripple_bar"
                 android:text="@string/go_to_page"
                 android:textSize="20sp"
-                android:textColor="@color/accent_dark"
+                android:textColor="?myBarsText"
                 app:layout_constraintTop_toBottomOf="@id/aya_tafseer_tv"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

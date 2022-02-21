@@ -2,18 +2,18 @@
     android:viewportWidth="24" android:width="30dp" xmlns:android="http://schemas.android.com/apk/res/android">
     <path android:fillColor="#00000000"
         android:pathData="M17,1l4,4l-4,4"
-        android:strokeColor="#00ADB5" android:strokeLineCap="round"
+        android:strokeColor="?myActiveBar" android:strokeLineCap="round"
         android:strokeLineJoin="round" android:strokeWidth="2"/>
     <path android:fillColor="#00000000"
         android:pathData="M3,11V9a4,4 0,0 1,4 -4h14"
-        android:strokeColor="#00ADB5" android:strokeLineCap="round"
+        android:strokeColor="?myActiveBar" android:strokeLineCap="round"
         android:strokeLineJoin="round" android:strokeWidth="2"/>
     <path android:fillColor="#00000000"
         android:pathData="M7,23l-4,-4l4,-4"
-        android:strokeColor="#00ADB5" android:strokeLineCap="round"
+        android:strokeColor="?myActiveBar" android:strokeLineCap="round"
         android:strokeLineJoin="round" android:strokeWidth="2"/>
     <path android:fillColor="#00000000"
         android:pathData="M21,13v2a4,4 0,0 1,-4 4H3"
-        android:strokeColor="#00ADB5" android:strokeLineCap="round"
+        android:strokeColor="?myActiveBar" android:strokeLineCap="round"
         android:strokeLineJoin="round" android:strokeWidth="2"/>
 </vector>

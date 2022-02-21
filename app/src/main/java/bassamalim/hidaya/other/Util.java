@@ -1,5 +1,6 @@
 package bassamalim.hidaya.other;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -23,11 +24,24 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.TimeZone;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.helpers.PrayTimes;
 
 public class Util {
+
+    public static void onActivityCreateSetTheme(Activity activity) {
+        String theme = PreferenceManager.getDefaultSharedPreferences(activity).getString(
+                activity.getString(R.string.theme_key), "ThemeM");
+        if (theme.equals("ThemeL"))
+            activity.setTheme(R.style.Theme_HidayaL);
+    }
+
+    public static void changeToTheme(Activity activity) {
+        activity.finish();
+        activity.startActivity(new Intent(activity, activity.getClass()));
+    }
 
     public static String translateNumbers(String english) {
         HashMap<Character, Character> map = new HashMap<>();

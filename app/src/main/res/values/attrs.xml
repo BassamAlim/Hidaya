@@ -1,8 +1,43 @@
 <resources>
+
     <declare-styleable name="AppWidgetAttrs">
         <attr name="appWidgetPadding" format="dimension" />
         <attr name="appWidgetInnerRadius" format="dimension" />
         <attr name="appWidgetRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="MainTheme">
+        <!--  Colors  -->
+        <attr name="myMainBg" format="color|reference" />
+        <attr name="myBars" format="color|reference" />
+        <attr name="myWeakBars" format="color|reference" />
+        <attr name="myClick" format="color|reference" />
+        <attr name="myLightClick" format="color|reference" />
+        <attr name="myAccent" format="color|reference" />
+        <attr name="myOtherAccent" format="color|reference" />
+        <attr name="myText" format="color|reference" />
+        <attr name="myBarsText" format="color|reference" />
+        <attr name="myActiveBar" format="color|reference" />
+        <attr name="myOtherActiveBar" format="color|reference" />
+        <attr name="myCounter" format="color|reference" />
+        <attr name="myPopupsBg" format="color|reference" />
+        <attr name="mySeparator" format="color|reference" />
+
+        <!--  Drawables  -->
+        <attr name="myNavBar" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="QuranTheme">
+        <attr name="myQBg" format="color|reference" />
+        <attr name="myQBars" format="color|reference" />
+        <attr name="myQWeakBars" format="color|reference" />
+        <attr name="myQClick" format="color|reference" />
+        <attr name="myQLightClick" format="color|reference" />
+        <attr name="myQAccent" format="color|reference" />
+        <attr name="myQOtherAccent" format="color|reference" />
+        <attr name="myQText" format="color|reference" />
+        <attr name="myQHighlight" format="color|reference" />
+        <attr name="myQTrack" format="color|reference" />
     </declare-styleable>
 
 </resources>

@@ -31,6 +31,7 @@ import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
 import bassamalim.hidaya.databinding.ActivityTelawatPlayerBinding;
 import bassamalim.hidaya.models.ReciterCard;
 import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Util;
 import bassamalim.hidaya.services.TelawatService;
 
 public class TelawatClient extends AppCompatActivity {
@@ -62,11 +63,12 @@ public class TelawatClient extends AppCompatActivity {
     private ArrayList<String> surahNames;
     private int repeat;
     private int shuffle;
+    private String theme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Util.onActivityCreateSetTheme(this);
         binding = ActivityTelawatPlayerBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
@@ -188,6 +190,7 @@ public class TelawatClient extends AppCompatActivity {
     }
 
     private void retrieveState() {
+        theme = pref.getString(getString(R.string.theme_key), "ThemeM");
         repeat = pref.getInt("telawat_repeat_mode", 0);
         shuffle = pref.getInt("telawat_shuffle_mode", 0);
     }
@@ -211,10 +214,10 @@ public class TelawatClient extends AppCompatActivity {
 
         if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE)
             repeatBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                    R.drawable.ripple_b, getTheme()));
+                    R.drawable.ripple_bg, getTheme()));
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL)
             shuffleBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                    R.drawable.ripple_b, getTheme()));
+                    R.drawable.ripple_bg, getTheme()));
     }
 
     private void setListeners() {
@@ -229,7 +232,7 @@ public class TelawatClient extends AppCompatActivity {
                 editor.apply();
 
                 repeatBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ripple_b, getTheme()));
+                        R.drawable.ripple_bg, getTheme()));
             }
             else if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE) {
                 repeat = PlaybackStateCompat.REPEAT_MODE_NONE;
@@ -253,7 +256,7 @@ public class TelawatClient extends AppCompatActivity {
                 editor.apply();
 
                 shuffleBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ripple_b, getTheme()));
+                        R.drawable.ripple_bg, getTheme()));
             }
             else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL){
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_NONE;
@@ -282,12 +285,22 @@ public class TelawatClient extends AppCompatActivity {
     }
 
     private void updateButton(boolean playing) {
-        if (playing)
-            playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                    R.drawable.ic_player_pause, getTheme()));
-        else
-            playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                    R.drawable.ic_player_play, getTheme()));
+        if (theme.equals("ThemeM")) {
+            if (playing)
+                playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ic_player_pause, getTheme()));
+            else
+                playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ic_player_play, getTheme()));
+        }
+        else {
+            if (playing)
+                playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ic_player_pause_l, getTheme()));
+            else
+                playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ic_player_play_l, getTheme()));
+        }
     }
 
     private void enableControls() {

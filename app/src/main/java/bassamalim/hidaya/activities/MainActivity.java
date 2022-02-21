@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Util.onActivityCreateSetTheme(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setTodayScreen();
         setContentView(binding.getRoot());

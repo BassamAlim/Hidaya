@@ -429,7 +429,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
                 // Be careful about the color
                 .setSmallIcon(R.drawable.launcher_foreground)
                 .setColorized(true)
-                .setColor(getResources().getColor(R.color.secondary_dark))
+                .setColor(getResources().getColor(R.color.click_M))
                 // Add buttons
                 // Enable launching the player by clicking the notification
                 .setContentIntent(controller.getSessionActivity())
@@ -457,9 +457,9 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
         //Notification icon in card
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-                BitmapFactory.decodeResource(getResources(), R.color.secondary_dark));
+                BitmapFactory.decodeResource(getResources(), R.color.click_M));
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-                BitmapFactory.decodeResource(getResources(), R.color.secondary_dark));
+                BitmapFactory.decodeResource(getResources(), R.color.click_M));
         //lock screen icon for pre lollipop
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(getResources(), R.drawable.low_quality_foreground));
@@ -480,9 +480,9 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
         //Notification icon in card
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-                BitmapFactory.decodeResource(getResources(), R.color.secondary_dark));
+                BitmapFactory.decodeResource(getResources(), R.color.click_M));
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-                BitmapFactory.decodeResource(getResources(), R.color.secondary_dark));
+                BitmapFactory.decodeResource(getResources(), R.color.click_M));
         //lock screen icon for pre lollipop
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(getResources(), R.drawable.low_quality_foreground));
