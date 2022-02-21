@@ -14,15 +14,14 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.location.LocationServices;
 
 import java.util.Collection;
 
-import bassamalim.hidaya.R;
 import bassamalim.hidaya.helpers.Keeper;
-import bassamalim.hidaya.other.Util;
 import bassamalim.hidaya.services.AthanService;
 
 public class Splash extends AppCompatActivity {
@@ -33,11 +32,11 @@ public class Splash extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Util.onActivityCreateSetTheme(this);
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+        // Keep the splash screen visible for this Activity
+        splashScreen.setKeepOnScreenCondition(() -> true );
 
-        //if (build >= Build.VERSION_CODES.)
-        setContentView(R.layout.activity_splash);
+        super.onCreate(savedInstanceState);
 
         stopService(new Intent(this, AthanService.class));
 
@@ -57,25 +56,6 @@ public class Splash extends AppCompatActivity {
             else
                 launch(null);
         }
-    }
-
-    private void da() {
-        /*final View content = findViewById(android.R.id.content);
-        content.getViewTreeObserver().addOnPreDrawListener(
-                new ViewTreeObserver.OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-                        // Check if the initial data is ready.
-                        if (mViewModel.isReady()) {
-                            // The content is ready; start drawing.
-                            content.getViewTreeObserver().removeOnPreDrawListener(this);
-                            return true;
-                        } else {
-                            // The content is not ready; suspend.
-                            return false;
-                        }
-                    }
-                });*/
     }
 
     private void newUser() {
