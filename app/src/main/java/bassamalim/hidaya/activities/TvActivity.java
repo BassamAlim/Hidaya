@@ -22,7 +22,6 @@ public class TvActivity extends YouTubeBaseActivity {
     private FirebaseRemoteConfig remoteConfig;
     private String makkah_url;
     private String madina_url;
-    private final String apiKey = "AIzaSyBndJVjigZ7MOmj1005ONLUsfFW7BfxZt0";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +54,7 @@ public class TvActivity extends YouTubeBaseActivity {
     }
 
     private void initYtPlayer() {
+        String apiKey = "AIzaSyBndJVjigZ7MOmj1005ONLUsfFW7BfxZt0";
         binding.ytPlayer.initialize(apiKey, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider,

@@ -6,8 +6,7 @@
     android:id="@+id/base_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="rtl"
-    android:background="?myQBg">
+    android:layoutDirection="rtl">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/info_bar"
@@ -56,6 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginVertical="?actionBarSize"
+        android:background="?myQBg"
         app:layout_constraintTop_toBottomOf="@id/info_bar"
         app:layout_constraintEnd_toEndOf="parent">
 
