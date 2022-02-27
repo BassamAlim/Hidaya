@@ -4,8 +4,6 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -173,12 +171,7 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
     }
 
     private void checkDownloaded() {
-        File dir;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            dir = new File(context.getExternalFilesDir(null) + prefix);
-        else
-            dir = new File(Environment.getExternalStorageDirectory()
-                    .getAbsolutePath() + prefix);
+        File dir = new File(context.getExternalFilesDir(null) + prefix);
 
         if (!dir.exists())
             return;

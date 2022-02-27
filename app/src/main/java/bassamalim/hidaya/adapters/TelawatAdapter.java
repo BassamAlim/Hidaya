@@ -4,8 +4,6 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -238,12 +236,7 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
     private void checkDownloaded() {
         downloaded = new boolean[versions.size()];
 
-        File dir;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            dir = new File(context.getExternalFilesDir(null) + prefix);
-        else
-            dir = new File(Environment.getExternalStorageDirectory()
-                    .getAbsolutePath() + prefix);
+        File dir = new File(context.getExternalFilesDir(null) + prefix);
 
         if (!dir.exists())
             return;
@@ -257,7 +250,10 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
             String name = files[i].getName();
             try {
                 int num = Integer.parseInt(name);
-                downloaded[num] = true;
+                if (Objects.requireNonNull(files[i].listFiles()).length == 0)
+                    cleanup(dir.getAbsolutePath(), name);
+                else
+                    downloaded[num] = true;
             } catch (NumberFormatException ignored) {}
         }
     }
@@ -285,6 +281,16 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
         }
 
         downloaded[ver.getVersionId()] = true;
+    }
+
+    private void cleanup(String path, String name) {
+        File dir = new File(path + "/" + name);
+        if (Objects.requireNonNull(dir.listFiles()).length == 0)
+            dir.delete();
+
+        dir = new File(path);
+        if (Objects.requireNonNull(dir.listFiles()).length == 0)
+            dir.delete();
     }
 
     @Override

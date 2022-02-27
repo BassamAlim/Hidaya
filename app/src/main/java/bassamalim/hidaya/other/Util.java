@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.os.Build;
-import android.os.Environment;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
@@ -132,12 +130,7 @@ public class Util {
     }
 
     public static boolean createDir(Context context, String postfix) {
-        File dir;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            dir = new File(context.getExternalFilesDir(null) + postfix);
-        else
-            dir = new File(Environment.getExternalStorageDirectory()
-                    .getAbsolutePath() + postfix);
+        File dir = new File(context.getExternalFilesDir(null) + postfix);
 
         if (!dir.exists())
             return dir.mkdirs();
@@ -146,12 +139,7 @@ public class Util {
     }
 
     public static boolean deleteFile(Context context, String postfix) {
-        File file;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            file = new File(context.getExternalFilesDir(null) + postfix);
-        else
-            file = new File(Environment.getExternalStorageDirectory()
-                    .getAbsolutePath() + postfix);
+        File file = new File(context.getExternalFilesDir(null) + postfix);
 
         if (file.exists())
             return file.delete();

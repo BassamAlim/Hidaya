@@ -99,18 +99,19 @@ public class Alarms {
                 intent.setAction("prayer");
             intent.putExtra("id", id.ordinal());
             intent.putExtra("time", adjusted);
-            PendingIntent pendingIntent;
+
             AlarmManager myAlarm =
                     (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(), intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
+                        intent, PendingIntent.FLAG_UPDATE_CURRENT |
+                                PendingIntent.FLAG_IMMUTABLE);
 
                 myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, adjusted, pendingIntent);
             }
             else {
-                pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
                         intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 myAlarm.setExact(AlarmManager.RTC_WAKEUP, adjusted, pendingIntent);
@@ -171,19 +172,21 @@ public class Alarms {
         intent.putExtra("id", id.ordinal());
         intent.putExtra("time", time.getTimeInMillis());
 
-        PendingIntent pendIntent;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            pendIntent = PendingIntent.getBroadcast(appContext, id.ordinal(), intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
+                    pendingIntent);
         }
         else {
-            pendIntent = PendingIntent.getBroadcast(appContext, id.ordinal(), intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-        }
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
-        myAlarm.setRepeating(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, pendIntent);
+            myAlarm.setExact(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pendingIntent);
+        }
 
         Log.i(Const.TAG, "alarm " + id + " set");
     }

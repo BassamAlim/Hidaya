@@ -1,9 +1,7 @@
 package bassamalim.hidaya.fragments;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -138,12 +136,7 @@ public class DownloadedTelawatSuarFragment extends Fragment {
 
         String prefix = "/Telawat Downloads/" + reciterId + "/" + versionId;
 
-        File dir;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            dir = new File(requireContext().getExternalFilesDir(null) + prefix);
-        else
-            dir = new File(Environment.getExternalStorageDirectory()
-                    .getAbsolutePath() + prefix);
+        File dir = new File(requireContext().getExternalFilesDir(null) + prefix);
 
         if (!dir.exists())
             return;

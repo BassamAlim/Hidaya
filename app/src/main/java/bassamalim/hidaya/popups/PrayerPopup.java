@@ -171,25 +171,32 @@ public class PrayerPopup {
 
     private void selectedState(int choice) {
         TypedValue value = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.myText, value, true);
 
+        context.getTheme().resolveAttribute(R.attr.myText, value, true);
         athanBtn.setTextColor(value.data);
         notifyBtn.setTextColor(value.data);
         muteBtn.setTextColor(value.data);
         disableBtn.setTextColor(value.data);
 
+        context.getTheme().resolveAttribute(R.attr.myAccent, value, true);
+        int color = value.data;
+
+        if (pref.getString(context.getString(R.string.theme_key), "ThemeM")
+                .equals("ThemeL"))
+            color = Color.WHITE;
+
         switch (choice) {
             case 0:
-                disableBtn.setTextColor(context.getResources().getColor(R.color.white));
+                disableBtn.setTextColor(color);
                 break;
             case 1:
-                muteBtn.setTextColor(context.getResources().getColor(R.color.white));
+                muteBtn.setTextColor(color);
                 break;
             case 2:
-                notifyBtn.setTextColor(context.getResources().getColor(R.color.white));
+                notifyBtn.setTextColor(color);
                 break;
             case 3:
-                athanBtn.setTextColor(context.getResources().getColor(R.color.white));
+                athanBtn.setTextColor(color);
         }
     }
 
