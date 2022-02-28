@@ -63,8 +63,8 @@ public class QuranSettingsPopup extends AppCompatActivity {
             Intent intent = new Intent();
             intent.putExtra("text_size", settingsFragment.textSizeSB.getValue());
             setResult(RESULT_OK, intent);
-            finish();
         }
+        finish();
     }
 
     @Override

@@ -5,6 +5,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#484849</color>
+    <color name="fav">#134563</color>
 
     // Theme M (Dark)
     <color name="bg_M">#1A2027</color>

@@ -152,7 +152,8 @@ public class PrayerPopup {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long vId) {
                 SharedPreferences.Editor editor = pref.edit();
-                int min = Integer.parseInt(parent.getItemAtPosition(position).toString());
+                int min = Integer.parseInt(context.getResources().getStringArray(
+                        R.array.time_settings_values)[parent.getSelectedItemPosition()]);
                 Log.i(Const.TAG, "delay is set to: " + min);
 
                 long millis = min * 60000L;

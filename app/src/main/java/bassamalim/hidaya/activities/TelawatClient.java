@@ -64,6 +64,7 @@ public class TelawatClient extends AppCompatActivity {
     private int repeat;
     private int shuffle;
     private String theme;
+    private int continueFrom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

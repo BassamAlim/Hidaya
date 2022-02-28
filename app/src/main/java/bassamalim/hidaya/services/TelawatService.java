@@ -87,7 +87,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     private ReciterCard.RecitationVersion version;
     private WifiManager.WifiLock wifiLock;
     private int shuffle;
-    private boolean playedInitial = false;
+    private int continueFrom;
 
     @Override
     public void onCreate() {
@@ -114,8 +114,8 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         public void onPlayFromMediaId(String givenMediaId, Bundle extras) {
             super.onPlayFromMediaId(givenMediaId, extras);
 
-            if (!givenMediaId.equals(mediaId)) {
-                playType = extras.getString("play_type");
+            playType = extras.getString("play_type");
+            if (!givenMediaId.equals(mediaId) || playType.equals("continue")) {
                 mediaId = givenMediaId;
 
                 mediaSession.setSessionActivity(getContentIntent());
@@ -126,6 +126,9 @@ public class TelawatService extends MediaBrowserServiceCompat implements
                 reciterName = extras.getString("reciter_name");
                 version = (ReciterCard.RecitationVersion) extras.getSerializable("version");
                 surahNames = extras.getStringArrayList("surah_names");
+
+                if (playType.equals("continue"))
+                    continueFrom = pref.getInt("last_telawa_progress", 0);
 
                 if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE)
                     play();
@@ -236,8 +239,6 @@ public class TelawatService extends MediaBrowserServiceCompat implements
             registerReceiver(receiver, intentFilter);
             // Put the service in the foreground, post notification
             startForeground(id, notification);
-
-            playedInitial = true;
         }
     }
 
@@ -571,10 +572,11 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         }
 
         player.setOnPreparedListener(mp -> {
-            if (playType.equals("continue") && !playedInitial)
-                player.seekTo(pref.getInt("last_telawa_progress", 0));
+            if (playType.equals("continue"))
+                player.seekTo(continueFrom);
 
             player.start();
+
             updateMetadata(true);    // For the duration
             updatePbState(PlaybackStateCompat.STATE_PLAYING);
             updateNotification(true);
@@ -640,7 +642,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
             return true;
         }
         catch (FileNotFoundException f) {
-            Log.d(Const.TAG, "Not available offline");
+            Log.i(Const.TAG, "Not available offline");
             return false;
         }
         catch (IOException e) {
@@ -739,10 +741,9 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     }
 
     @Override
-    public void onDestroy() {
-        Log.d(Const.TAG, "In OnDestroy of TelawatService");
+    public boolean onUnbind(Intent intent) {
+        Log.d(Const.TAG, "In onUnbind of TelawatService");
         saveForLater(player.getCurrentPosition());
-        super.onDestroy();
-        unregisterReceiver(receiver);
+        return super.onUnbind(intent);
     }
 }
