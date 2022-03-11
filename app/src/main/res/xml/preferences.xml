@@ -43,7 +43,8 @@
             android:entries="@array/themes"
             android:entryValues="@array/theme_values"
             android:defaultValue="ThemeM"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true"
+            app:iconSpaceReserved="false"/>
 
     </PreferenceCategory>
 

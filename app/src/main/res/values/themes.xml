@@ -44,6 +44,8 @@
         <item name="myPopupsBg">@color/bars_M</item>
         <item name="mySeparator">@color/grey</item>
         <item name="myNavBar">@drawable/nav_bar_item_bg_m</item>
+
+        <item name="fontFamily">@font/tajawal_regular</item>
     </style>
 
     <style name="Theme.HidayaL" parent="Theme.AppCompat.NoActionBar">
@@ -77,6 +79,8 @@
         <item name="myPopupsBg">@color/ripple_L</item>
         <item name="mySeparator">@color/black</item>
         <item name="myNavBar">@drawable/nav_bar_item_bg_l</item>
+
+        <item name="fontFamily">@font/tajawal_regular</item>
     </style>
 
     <style name="QuranM" parent="Theme.HidayaM">

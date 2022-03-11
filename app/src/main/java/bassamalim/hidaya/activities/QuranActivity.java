@@ -449,8 +449,7 @@ public class QuranActivity extends SwipeActivity {
             tv.setTextColor(Color.BLACK);
             tv.setLinkTextColor(Color.BLACK);
         }
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "hafs_smart_08.ttf");
-        tv.setTypeface(typeface);
+        tv.setTypeface(ResourcesCompat.getFont(this, R.font.hafs_smart_08));
         return tv;
     }
 

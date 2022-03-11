@@ -2,7 +2,6 @@ package bassamalim.hidaya.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -40,9 +40,8 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
             pageNumTv = view.findViewById(R.id.page_num_tv);
             ayaNumTv = view.findViewById(R.id.aya_num_tv);
             ayaTextTv = view.findViewById(R.id.aya_text_tv);
-            Typeface typeface = Typeface.createFromAsset(
-                    view.getContext().getAssets(), "hafs_smart_08.ttf");
-            ayaTextTv.setTypeface(typeface);
+            ayaTextTv.setTypeface(ResourcesCompat.getFont(ayaTextTv.getContext(),
+                    R.font.hafs_smart_08));
             ayaTafseerTv = view.findViewById(R.id.aya_tafseer_tv);
             gotoPageBtn = view.findViewById(R.id.goto_page);
         }
