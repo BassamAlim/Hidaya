@@ -580,8 +580,6 @@ public class TelawatService extends MediaBrowserServiceCompat implements
             updateMetadata(true);    // For the duration
             updatePbState(PlaybackStateCompat.STATE_PLAYING);
             updateNotification(true);
-
-            saveForLater(0);
         });
         player.setOnCompletionListener(mp -> skipToNext());
         player.setOnErrorListener((mp, what, extra) -> {

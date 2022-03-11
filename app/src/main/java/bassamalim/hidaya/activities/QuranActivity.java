@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -50,7 +51,9 @@ public class QuranActivity extends SwipeActivity {
     private AppDatabase db;
     private SharedPreferences pref;
     private String action;
-    private LinearLayout mainLinear;
+    private ViewFlipper flipper;
+    private LinearLayout[] lls;
+    private int currentLinear;
     private int surahIndex;
     private int currentPage;
     private String currentPageText;
@@ -106,7 +109,9 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private void initiate() {
-        mainLinear = binding.mainLinear;
+        flipper = binding.flipper;
+        flipper.setMeasureAllChildren(false);
+        lls = new LinearLayout[]{binding.linear1, binding.linear2};
 
         db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
@@ -209,8 +214,12 @@ public class QuranActivity extends SwipeActivity {
     @Override
     protected void previous() {
         if (currentPage > 1) {
+            flipper.setInAnimation(this, R.anim.slide_in_right);
+            flipper.setOutAnimation(this, R.anim.slide_out_left);
+            currentLinear = (currentLinear + 1) % 2;
             setCurrentPage(--currentPage);
             buildPage(currentPage);
+            flipper.showPrevious();
             binding.scrollView.scrollTo(0, 0);
         }
     }
@@ -218,8 +227,12 @@ public class QuranActivity extends SwipeActivity {
     @Override
     protected void next() {
         if (currentPage < QURAN_PAGES) {
+            flipper.setInAnimation(this, R.anim.slide_in_left);
+            flipper.setOutAnimation(this, R.anim.slide_out_right);
+            currentLinear = (currentLinear + 1) % 2;
             setCurrentPage(++currentPage);
             buildPage(currentPage);
+            flipper.showNext();
             binding.scrollView.scrollTo(0, 0);
         }
     }
@@ -239,7 +252,7 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private void buildPage(int pageNumber) {
-        mainLinear.removeAllViews();
+        lls[currentLinear].removeAllViews();
         allAyahs = new ArrayList<>();
         arr = new ArrayList<>();
         ArrayList<ArrayList<Ayah>> pageAyahs = new ArrayList<>();
@@ -318,7 +331,9 @@ public class QuranActivity extends SwipeActivity {
         else
             screen.setMovementMethod(DoubleClickLMM.getInstance(
                     getResources().getColor(R.color.highlight_L)));
-        mainLinear.addView(screen);
+
+        lls[currentLinear].addView(screen);
+
         arr = new ArrayList<>();
     }
 
@@ -330,9 +345,9 @@ public class QuranActivity extends SwipeActivity {
         binding.suraName.setText(currentSurah);
         binding.pageNumber.setText(currentPageText);
 
-        ScrollView scroll = binding.scrollView;
         if (action.equals("by_surah") && !scrolled) {
             long delay = 100; //delay to let finish with possible modifications to ScrollView
+            ScrollView scroll = binding.scrollView;
             scroll.postDelayed(() -> scroll.smoothScrollTo(0, target.getTop()), delay);
             scrolled = true;
         }
@@ -358,9 +373,11 @@ public class QuranActivity extends SwipeActivity {
 
     private void addHeader(int suraNum, String name) {
         TextView nameScreen = surahName(name);
-        mainLinear.addView(nameScreen);
+
+        lls[currentLinear].addView(nameScreen);
         if (suraNum != 1 && suraNum != 9)    // surat al-fatiha and At-Taubah
-            mainLinear.addView(basmalah());
+            lls[currentLinear].addView(basmalah());
+
         if (action.equals("by_surah") && suraNum == surahIndex+1)
             target = nameScreen;
     }
@@ -421,7 +438,7 @@ public class QuranActivity extends SwipeActivity {
         LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         tv.setLayoutParams(screenParams);
-        tv.setPadding(10, 0, 10, 30);
+        tv.setPadding(5, 0, 5, 30);
         tv.setGravity(Gravity.CENTER);
         tv.setTextSize(textSize);
         if (theme.equals("ThemeM")) {

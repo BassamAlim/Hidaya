@@ -59,15 +59,34 @@
         app:layout_constraintTop_toBottomOf="@id/info_bar"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
-            android:id="@+id/mainLinear"
+        <ViewFlipper
+            android:id="@+id/flipper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="10dp"
             android:orientation="vertical"
             android:layout_gravity="top|center">
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linear1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:orientation="vertical"
+                android:layout_gravity="top|center">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:orientation="vertical"
+                android:layout_gravity="top|center">
+
+            </LinearLayout>
+
+        </ViewFlipper>
 
     </ScrollView>
 
