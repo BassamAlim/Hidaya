@@ -15,7 +15,7 @@ import java.util.Calendar;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.other.Const;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.receivers.NotificationReceiver;
 
 public class Alarms {
@@ -77,7 +77,7 @@ public class Alarms {
     private void setPrayerAlarms() {
         Log.i(Const.TAG, "in set prayer alarms");
         for (int i = 0; i < times.length; i++) {
-            ID mappedId = Util.mapID(i);
+            ID mappedId = Utils.mapID(i);
             assert mappedId != null;
             if (pref.getInt(mappedId + "notification_type", 2) != 0)
                 setPrayerAlarm(mappedId);

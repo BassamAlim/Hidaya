@@ -13,7 +13,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import bassamalim.hidaya.databinding.ActivityAboutBinding;
 import bassamalim.hidaya.other.Const;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 
 public class AboutActivity extends AppCompatActivity {
 
@@ -22,7 +22,7 @@ public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.onActivityCreateSetTheme(this);
+        Utils.onActivityCreateSetTheme(this);
         binding = ActivityAboutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -35,7 +35,7 @@ public class AboutActivity extends AppCompatActivity {
 
             Log.i(Const.TAG, "Database Rebuilt");
 
-            Util.reviveDb(this);
+            Utils.reviveDb(this);
 
             Toast.makeText(this, "تمت إعادة بناء قاعدة البيانات",
                     Toast.LENGTH_SHORT).show();

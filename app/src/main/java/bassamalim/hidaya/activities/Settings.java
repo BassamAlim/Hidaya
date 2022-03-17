@@ -19,14 +19,14 @@ import java.util.HashMap;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.helpers.Alarms;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 
 public class Settings extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.onActivityCreateSetTheme(this);
+        Utils.onActivityCreateSetTheme(this);
         setContentView(R.layout.activity_settings);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -149,7 +149,7 @@ public class Settings extends AppCompatActivity {
         }
 
         private void cancelAlarm(ID id) {
-            Util.cancelAlarm(getContext(), id);
+            Utils.cancelAlarm(getContext(), id);
             String key = keyGetter(id);
             SwitchPreferenceCompat pSwitch = findPreference(key);
             assert pSwitch != null;

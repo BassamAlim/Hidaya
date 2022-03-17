@@ -25,7 +25,7 @@ import bassamalim.hidaya.fragments.DownloadedTelawatFragment;
 import bassamalim.hidaya.fragments.FavoriteTelawatFragment;
 import bassamalim.hidaya.fragments.AllTelawatFragment;
 import bassamalim.hidaya.helpers.Keeper;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 
 public class TelawatCollectionActivity extends FragmentActivity {
 
@@ -36,7 +36,7 @@ public class TelawatCollectionActivity extends FragmentActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.onActivityCreateSetTheme(this);
+        Utils.onActivityCreateSetTheme(this);
         binding = ActivityCollectionTelawatBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());

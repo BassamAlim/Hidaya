@@ -24,7 +24,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.other.Const;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 
 public class PrayerPopup {
 
@@ -134,7 +134,7 @@ public class PrayerPopup {
             images[id.ordinal()].setImageDrawable(ResourcesCompat.getDrawable(
                     context.getResources(), R.drawable.ic_disabled, context.getTheme()));
 
-            Util.cancelAlarm(context, id);
+            Utils.cancelAlarm(context, id);
 
             editor.putInt(id+"notification_type", 0);
             selectedState(0);

@@ -37,7 +37,7 @@ import bassamalim.hidaya.databinding.ActivityQuranBinding;
 import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.helpers.RecitationManager;
 import bassamalim.hidaya.models.Ayah;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.popups.QuranSettingsPopup;
 import bassamalim.hidaya.popups.TafseerPopup;
 import bassamalim.hidaya.replacements.DoubleClickLMM;
@@ -338,9 +338,9 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private void finalize(int juz, String name) {
-        String juzText = "جزء " + Util.translateNumbers(String.valueOf(juz));
+        String juzText = "جزء " + Utils.translateNumbers(String.valueOf(juz));
         currentSurah = "سُورَة " + name;
-        currentPageText = "صفحة " + Util.translateNumbers(String.valueOf(currentPage));
+        currentPageText = "صفحة " + Utils.translateNumbers(String.valueOf(currentPage));
         binding.juzNumber.setText(juzText);
         binding.suraName.setText(currentSurah);
         binding.pageNumber.setText(currentPageText);

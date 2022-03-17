@@ -27,7 +27,7 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.helpers.PrayTimes;
 
-public class Util {
+public class Utils {
 
     public static void onActivityCreateSetTheme(Activity activity) {
         String theme = PreferenceManager.getDefaultSharedPreferences(activity).getString(

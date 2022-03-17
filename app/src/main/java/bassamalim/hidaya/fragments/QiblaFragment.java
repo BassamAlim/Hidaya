@@ -18,7 +18,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.MainActivity;
 import bassamalim.hidaya.databinding.FragmentQiblaBinding;
 import bassamalim.hidaya.helpers.Compass;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.popups.CalibrationPopup;
 
 public class QiblaFragment extends Fragment {
@@ -62,7 +62,7 @@ public class QiblaFragment extends Fragment {
             binding.distanceText.setText("يجب السماح بالوصول للموقع لحساب اتجاه القبلة");
         else {
             String distanceText = "المسافة الى الكعبة: " +
-                    Util.translateNumbers(String.valueOf(distance)) + " كم";
+                    Utils.translateNumbers(String.valueOf(distance)) + " كم";
             binding.distanceText.setText(distanceText);
 
             binding.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT);

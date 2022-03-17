@@ -23,7 +23,7 @@ import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.helpers.Keeper;
 import bassamalim.hidaya.other.Const;
 import bassamalim.hidaya.other.PrayersWidget;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 
 public class DailyUpdateReceiver extends BroadcastReceiver {
 
@@ -83,7 +83,7 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
 
         new Keeper(context, location);
 
-        Calendar[] times = Util.getTimes(location);
+        Calendar[] times = Utils.getTimes(location);
 
         new Alarms(context, times);
 

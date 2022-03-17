@@ -23,7 +23,7 @@ import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.activities.Splash;
 import bassamalim.hidaya.other.Const;
 import bassamalim.hidaya.enums.ID;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.services.AthanService;
 
 import java.util.Calendar;
@@ -40,7 +40,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context gContext, Intent intent) {
         context = gContext;
-        id = Util.mapID(intent.getIntExtra("id", 0));
+        id = Utils.mapID(intent.getIntExtra("id", 0));
         String action = intent.getAction();
         time = intent.getLongExtra("time", 0);
         isPrayer = action.equals("prayer");

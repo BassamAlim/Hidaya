@@ -19,7 +19,7 @@ import bassamalim.hidaya.database.dbs.QuizAnswersDB;
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB;
 import bassamalim.hidaya.databinding.ActivityQuizResultBinding;
 import bassamalim.hidaya.models.QuizResultQuestion;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 
 public class QuizResultActivity extends AppCompatActivity {
 
@@ -35,7 +35,7 @@ public class QuizResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.onActivityCreateSetTheme(this);
+        Utils.onActivityCreateSetTheme(this);
         binding = ActivityQuizResultBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());

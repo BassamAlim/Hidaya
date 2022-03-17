@@ -31,7 +31,7 @@ import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
 import bassamalim.hidaya.databinding.ActivityTelawatPlayerBinding;
 import bassamalim.hidaya.models.ReciterCard;
 import bassamalim.hidaya.other.Const;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.services.TelawatService;
 
 public class TelawatClient extends AppCompatActivity {
@@ -69,7 +69,7 @@ public class TelawatClient extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.onActivityCreateSetTheme(this);
+        Utils.onActivityCreateSetTheme(this);
         binding = ActivityTelawatPlayerBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());

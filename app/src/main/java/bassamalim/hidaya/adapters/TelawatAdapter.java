@@ -30,7 +30,7 @@ import java.util.Objects;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.models.ReciterCard;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 
 public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHolder> {
 
@@ -218,7 +218,7 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
         viewHolder.download_btn.setOnClickListener(v -> {
             if (downloaded[verId]) {
                 String postfix = prefix + "/" + ver.getVersionId();
-                Util.deleteFile(context, postfix);
+                Utils.deleteFile(context, postfix);
 
                 downloaded[ver.getVersionId()] = false;
                 viewHolder.download_btn.setImageDrawable(AppCompatResources.getDrawable(
@@ -272,7 +272,7 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
                 request = new DownloadManager.Request(uri);
                 request.setTitle(names.get(i));
                 String postfix = prefix + "/" + ver.getVersionId();
-                Util.createDir(context, postfix);
+                Utils.createDir(context, postfix);
                 request.setDestinationInExternalFilesDir(context, postfix, i + ".mp3");
                 request.setNotificationVisibility(
                         DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);

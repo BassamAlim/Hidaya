@@ -29,7 +29,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
 import bassamalim.hidaya.models.ReciterSuraCard;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 
 public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.ViewHolder> {
 
@@ -155,7 +155,7 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
             if (downloaded[suarCards.get(position).getNum()]) {
                 int num = suarCards.get(position).getNum();
                 String postfix = prefix + "/" + num + ".mp3";
-                Util.deleteFile(context, postfix);
+                Utils.deleteFile(context, postfix);
 
                 downloaded[num] = false;
                 viewHolder.downloadBtn.setImageDrawable(AppCompatResources.getDrawable(
@@ -202,7 +202,7 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
         request.setTitle("تحميل التلاوة");
         request.setVisibleInDownloadsUi(true);
         String postfix = "/Telawat Downloads/" + ver.getReciter_id() + "/" + versionId;
-        Util.createDir(context, postfix);
+        Utils.createDir(context, postfix);
         request.setDestinationInExternalFilesDir(context, postfix, num + ".mp3");
         request.setNotificationVisibility(
                 DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);

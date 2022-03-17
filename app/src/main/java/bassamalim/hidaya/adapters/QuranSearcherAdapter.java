@@ -17,7 +17,7 @@ import java.util.List;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.database.dbs.AyatDB;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 
 public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdapter.ViewHolder> {
 
@@ -65,16 +65,16 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
     public void onBindViewHolder(QuranSearcherAdapter.ViewHolder viewHolder, final int position) {
         AyatDB card = suraCards.get(position);
 
-        String suraNumStr = "سورة رقم " + Util.translateNumbers(String.valueOf(card.getSura_no()));
+        String suraNumStr = "سورة رقم " + Utils.translateNumbers(String.valueOf(card.getSura_no()));
         viewHolder.suraNumTv.setText(suraNumStr);
 
         String suraNameStr = "سورة " + card.getSura_name_ar();
         viewHolder.suraNameTv.setText(suraNameStr);
 
-        String pageNumStr = "صفحة رقم " + Util.translateNumbers(String.valueOf(card.getPage()));
+        String pageNumStr = "صفحة رقم " + Utils.translateNumbers(String.valueOf(card.getPage()));
         viewHolder.pageNumTv.setText(pageNumStr);
 
-        String ayaNumStr = "آية رقم " + Util.translateNumbers(String.valueOf(card.getAya_no()));
+        String ayaNumStr = "آية رقم " + Utils.translateNumbers(String.valueOf(card.getAya_no()));
         viewHolder.ayaNumTv.setText(ayaNumStr);
 
         viewHolder.ayaTextTv.setText(card.getAya_text());

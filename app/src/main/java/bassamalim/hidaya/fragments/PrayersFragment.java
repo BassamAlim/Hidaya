@@ -30,7 +30,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.MainActivity;
 import bassamalim.hidaya.databinding.FragmentPrayersBinding;
 import bassamalim.hidaya.helpers.PrayTimes;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.popups.PrayerPopup;
 
 public class PrayersFragment extends Fragment {
@@ -159,7 +159,7 @@ public class PrayersFragment extends Fragment {
 
     private void setInitialState() {
         for (int i = 0; i < images.length; i++) {
-            int state = pref.getInt(Util.mapID(i)+"notification_type", 2);
+            int state = pref.getInt(Utils.mapID(i)+"notification_type", 2);
             if (state == 3)
                 images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext()
                         .getResources(), R.drawable.ic_speaker, requireContext().getTheme()));
@@ -176,7 +176,7 @@ public class PrayersFragment extends Fragment {
         for (int i=0; i< cards.length; i++) {
             int finalI = i;
             cards[i].setOnClickListener(v -> new PrayerPopup(getContext(), v,
-                    Util.mapID(finalI), prayerNames[finalI]));
+                    Utils.mapID(finalI), prayerNames[finalI]));
         }
 
         binding.previousDayButton.setOnClickListener(v -> previousDay());
@@ -215,7 +215,7 @@ public class PrayersFragment extends Fragment {
 
                 String hms = String.format(Locale.US, "%02d:%02d:%02d",
                         hours, minutes, seconds);
-                counter.setText(String.format(getString(R.string.remaining), Util.translateNumbers(hms)));
+                counter.setText(String.format(getString(R.string.remaining), Utils.translateNumbers(hms)));
             }
             @Override
             public void onFinish() {
@@ -262,10 +262,10 @@ public class PrayersFragment extends Fragment {
             hijri.setTime(selectedDay.getTime());
 
             String year = " " + hijri.get(Calendar.YEAR);
-            String month = " " + Util.whichHijriMonth(hijri.get(Calendar.MONTH));
+            String month = " " + Utils.whichHijriMonth(hijri.get(Calendar.MONTH));
             String day = "" + hijri.get(Calendar.DATE);
 
-            text += Util.translateNumbers(day) + month + Util.translateNumbers(year);
+            text += Utils.translateNumbers(day) + month + Utils.translateNumbers(year);
 
             dayScreen.setText(text);
         }

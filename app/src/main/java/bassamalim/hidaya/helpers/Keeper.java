@@ -7,7 +7,7 @@ import android.location.Location;
 import androidx.preference.PreferenceManager;
 
 import bassamalim.hidaya.models.MyLocation;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 
 import com.google.gson.Gson;
 
@@ -33,7 +33,7 @@ public class Keeper {
         context = gContext;
         setUp();
         storeLocation(gLocation);
-        storeTimes(Util.getTimes(gLocation));
+        storeTimes(Utils.getTimes(gLocation));
         storeStrTimes(getStrTimes(gLocation));
     }
 

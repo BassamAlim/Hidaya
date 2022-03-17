@@ -31,7 +31,7 @@ import bassamalim.hidaya.databinding.ActivityMainBinding;
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.helpers.Keeper;
 import bassamalim.hidaya.other.Const;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.receivers.DailyUpdateReceiver;
 import bassamalim.hidaya.receivers.DeviceBootReceiver;
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.onActivityCreateSetTheme(this);
+        Utils.onActivityCreateSetTheme(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setTodayScreen();
         setContentView(binding.getRoot());
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         if (located) {
             location = intent.getParcelableExtra("location");
             new Keeper(this, location);
-            times = Util.getTimes(location);
+            times = Utils.getTimes(location);
             //times = test();
             new Alarms(this, times);
         }
@@ -133,12 +133,12 @@ public class MainActivity extends AppCompatActivity {
                     .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
             db.suraDao().getFav();    // if there is a problem in the db it will cause an error
         } catch (Exception e) {
-            Util.reviveDb(this);
+            Utils.reviveDb(this);
         }
 
         int lastVer = pref.getInt("last_db_version", 1);
         if (Const.dbVer > lastVer)
-            Util.reviveDb(this);
+            Utils.reviveDb(this);
     }
 
     private void dailyUpdate() {
@@ -177,17 +177,17 @@ public class MainActivity extends AppCompatActivity {
     private void setTodayScreen() {
         UmmalquraCalendar hijri = new UmmalquraCalendar();
         String hYear = " " + hijri.get(Calendar.YEAR);
-        String hMonth = " " + Util.whichHijriMonth(hijri.get(Calendar.MONTH));
+        String hMonth = " " + Utils.whichHijriMonth(hijri.get(Calendar.MONTH));
         String hDay = "" + hijri.get(Calendar.DATE);
         String hijriStr = whichDay(hijri.get(Calendar.DAY_OF_WEEK)) + " ";
-        hijriStr += Util.translateNumbers(hDay) + hMonth + Util.translateNumbers(hYear);
+        hijriStr += Utils.translateNumbers(hDay) + hMonth + Utils.translateNumbers(hYear);
         binding.hijriView.setText(hijriStr);
 
         Calendar meladi = Calendar.getInstance();
         String mYear = " " + meladi.get(Calendar.YEAR);
         String mMonth = " " + whichMeladiMonth(meladi.get(Calendar.MONTH));
         String mDay = "" + meladi.get(Calendar.DATE);
-        String meladiStr = Util.translateNumbers(mDay) + mMonth + Util.translateNumbers(mYear);
+        String meladiStr = Utils.translateNumbers(mDay) + mMonth + Utils.translateNumbers(mYear);
         binding.meladiView.setText(meladiStr);
     }
 

@@ -21,7 +21,7 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.AthkarDB;
 import bassamalim.hidaya.databinding.ActivityAlathkarListBinding;
 import bassamalim.hidaya.models.AlathkarButton;
-import bassamalim.hidaya.other.Util;
+import bassamalim.hidaya.other.Utils;
 
 public class AlathkarListActivity extends AppCompatActivity {
 
@@ -36,7 +36,7 @@ public class AlathkarListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.onActivityCreateSetTheme(this);
+        Utils.onActivityCreateSetTheme(this);
         binding = ActivityAlathkarListBinding.inflate(getLayoutInflater());
 
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
