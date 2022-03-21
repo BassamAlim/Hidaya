@@ -29,6 +29,7 @@
             android:textSize="18dp"
             android:textStyle="bold"
             android:textColor="?myBarsText"
+            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </Toolbar>
@@ -38,6 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?myBars"
+        app:tabTextAppearance="@style/TajwalTab"
         app:tabTextColor="@color/text_M"
         app:tabSelectedTextColor="?myActiveBar"
         app:tabIndicatorColor="?myActiveBar" />

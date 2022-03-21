@@ -39,6 +39,7 @@
         <item name="paddingEnd">5dp</item>
         <item name="android:gravity">center|bottom</item>
         <item name="android:textSize" tools:ignore="SpUsage">23dp</item>
+        <item name="fontFamily">@font/tajawal_regular</item>
     </style>
 
     <style name="RoundedPopupM" parent="Theme.AppCompat.Dialog">
@@ -62,8 +63,23 @@
     </style>
 
     <style name="MySpinnerItem" parent="TextAppearance.AppCompat.Widget.DropDownItem">
-        <item name="android:textColor">@color/text_M</item>
         <item name="android:gravity">center</item>
+        <item name="android:textSize">18sp</item>
+        <item name="fontFamily">@font/tajawal_regular</item>
+        <item name="android:textColor">@color/text_M</item>
+    </style>
+
+    <style name="TajwalFontTv" parent="Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/tajawal_regular</item>
+    </style>
+
+    <style name="ActionBarTajwal" parent="Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/tajawal_regular</item>
+        <item name="android:textSize" tools:ignore="SpUsage">20dp</item>
+    </style>
+
+    <style name="TajwalTab" parent="TextAppearance.Design.Tab">
+        <item name="fontFamily">@font/tajawal_regular</item>
     </style>
 
 </resources>

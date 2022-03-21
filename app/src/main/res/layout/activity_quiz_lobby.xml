@@ -31,6 +31,7 @@
             android:textColor="?myAccent"
             android:textSize="21dp"
             android:textStyle="bold"
+            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -48,6 +49,7 @@
         android:textSize="28dp"
         android:textStyle="bold"
         android:textColor="?myAccent"
+        android:fontFamily="@font/tajawal_regular"
         tools:ignore="SpUsage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

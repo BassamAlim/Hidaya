@@ -41,6 +41,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textSize="22sp"
+                android:fontFamily="@font/tajawal_regular"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

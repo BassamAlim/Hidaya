@@ -16,6 +16,7 @@
         android:hint="@string/continue_reading"
         android:textColor="?myAccent"
         android:textSize="19dp"
+        android:fontFamily="@font/tajawal_regular"
         tools:ignore="SpUsage"/>
 
     <com.google.android.material.tabs.TabLayout
@@ -23,14 +24,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?myBars"
+        app:tabTextAppearance="@style/TajwalTab"
         app:tabTextColor="@color/text_M"
         app:tabSelectedTextColor="?myActiveBar"
-        app:tabIndicatorColor="?myActiveBar" />
+        app:tabIndicatorColor="?myActiveBar"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/quran_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"/>
 
 </LinearLayout>

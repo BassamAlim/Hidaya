@@ -14,6 +14,7 @@
         android:minHeight="?attr/actionBarSize"
         android:elevation="4dp"
         android:background="?myBars"
+        app:titleTextAppearance="@style/ActionBarTajwal"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
         app:layout_constraintTop_toTopOf="parent">
@@ -32,6 +33,7 @@
                 android:textColor="?myBarsText"
                 android:textSize="20dp"
                 android:textStyle="bold"
+                android:fontFamily="@font/tajawal_regular"
                 tools:ignore="SpUsage"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -44,6 +46,7 @@
                 android:layout_marginBottom="3dp"
                 android:textColor="?myBarsText"
                 android:textSize="20dp"
+                android:fontFamily="@font/tajawal_regular"
                 tools:ignore="SpUsage"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -72,6 +75,8 @@
         app:itemBackground="?myNavBar"
         app:itemIconTint="@drawable/nav_bar_icon_color"
         app:itemTextColor="@drawable/nav_bar_icon_color"
+        app:itemTextAppearanceActive="@style/TajwalFontTv"
+        app:itemTextAppearanceInactive="@style/TajwalFontTv"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

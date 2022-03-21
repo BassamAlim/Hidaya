@@ -99,10 +99,6 @@
         <item name="myQTrack">@color/track_L</item>
     </style>
 
-    <!--<style name="LaunchTheme" parent="Theme.HidayaM">
-        <item name="android:windowBackground">@drawable/splash</item>
-    </style>-->
-
     <style name="Theme.Hidaya.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
         <item name="appWidgetRadius">8dp</item>
         <item name="appWidgetPadding">4dp</item>

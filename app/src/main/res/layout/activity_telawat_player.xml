@@ -39,6 +39,7 @@
             android:textColor="?myAccent"
             android:textSize="18dp"
             android:textStyle="bold"
+            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -60,7 +61,8 @@
             android:gravity="center"
             android:textSize="30sp"
             android:textColor="@color/white"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:fontFamily="@font/tajawal_regular"/>
 
         <TextView
             android:id="@+id/version_namescreen"
@@ -70,7 +72,8 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="30sp"
-            android:textColor="@color/text_M" />
+            android:textColor="@color/text_M"
+            android:fontFamily="@font/tajawal_regular"/>
 
         <TextView
             android:id="@+id/reciter_namescreen"
@@ -80,7 +83,8 @@
             android:gravity="center"
             android:textSize="30sp"
             android:textStyle="bold"
-            android:textColor="@color/text_M" />
+            android:textColor="@color/text_M"
+            android:fontFamily="@font/tajawal_regular"/>
 
     </LinearLayout>
 
@@ -108,6 +112,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_M"
+            android:fontFamily="@font/tajawal_regular"
             app:layout_constraintTop_toBottomOf="@id/seekbar"
             app:layout_constraintStart_toStartOf="parent"/>
 
@@ -116,6 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_M"
+            android:fontFamily="@font/tajawal_regular"
             app:layout_constraintTop_toBottomOf="@id/seekbar"
             app:layout_constraintEnd_toEndOf="parent"/>
 

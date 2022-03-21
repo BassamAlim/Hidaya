@@ -29,6 +29,7 @@
             android:textColor="?myAccent"
             android:textSize="21dp"
             android:textStyle="bold"
+            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -56,6 +57,7 @@
                 android:layout_height="wrap_content"
                 android:text="صحيح البخاري"
                 android:textSize="20dp"
+                android:fontFamily="@font/tajawal_regular"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

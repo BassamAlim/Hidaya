@@ -40,6 +40,7 @@
                 android:text="@string/all_thikrs"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/tajawal_regular"
                 style="@style/Widget.AppCompat.Button.Borderless"/>
 
             <Button
@@ -57,6 +58,7 @@
                 android:text="@string/favorite_athkar"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/tajawal_regular"
                 style="@style/Widget.AppCompat.Button.Borderless"/>
 
             <LinearLayout

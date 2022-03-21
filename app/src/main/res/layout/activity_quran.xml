@@ -25,6 +25,7 @@
             android:textSize="21dp"
             android:textStyle="bold"
             android:textColor="?myBarsText"
+            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <TextView
@@ -35,6 +36,7 @@
             android:textSize="21dp"
             android:textStyle="bold"
             android:textColor="?myBarsText"
+            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <TextView
@@ -46,6 +48,7 @@
             android:textSize="21dp"
             android:textStyle="bold"
             android:textColor="?myBarsText"
+            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>

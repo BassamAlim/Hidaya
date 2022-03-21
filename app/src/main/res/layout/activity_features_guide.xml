@@ -31,6 +31,7 @@
                 android:text="@string/features_guide"
                 android:textSize="30sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/tajawal_regular"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -47,6 +48,7 @@
                 android:text="@string/in_prayers_screen"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/tajawal_regular"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/title" />
@@ -59,6 +61,7 @@
                 android:padding="16dp"
                 android:text="@string/prayers_tips"
                 android:textSize="20sp"
+                android:fontFamily="@font/tajawal_regular"
                 app:layout_constraintTop_toBottomOf="@id/prayers"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -73,6 +76,7 @@
                 android:text="@string/in_quran"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/tajawal_regular"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/prayers_text" />
@@ -85,6 +89,7 @@
                 android:padding="16dp"
                 android:text="@string/quran_tips"
                 android:textSize="20sp"
+                android:fontFamily="@font/tajawal_regular"
                 app:layout_constraintTop_toBottomOf="@id/quran"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

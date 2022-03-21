@@ -20,6 +20,7 @@
         android:paddingBottom="15dp"
         android:textSize="23dp"
         android:textStyle="bold"
+        android:fontFamily="@font/tajawal_regular"
         tools:ignore="SpUsage" />
 
     <LinearLayout
@@ -39,6 +40,7 @@
             android:drawableEnd="@drawable/ic_speaker"
             android:text="@string/athan_speaker"
             android:textSize="21dp"
+            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <View
@@ -58,6 +60,7 @@
             android:drawableEnd="@drawable/ic_sound"
             android:text="@string/enable_notification"
             android:textSize="21dp"
+            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <View
@@ -76,6 +79,7 @@
             android:drawableEnd="@drawable/ic_mute"
             android:text="@string/mute_notification"
             android:textSize="21dp"
+            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <View
@@ -94,6 +98,7 @@
             android:drawableEnd="@drawable/ic_disabled"
             android:text="@string/disable_notification"
             android:textSize="21dp"
+            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </LinearLayout>
@@ -107,13 +112,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|start"
-            android:text="@string/adjust_prayer_notification_time" />
+            android:text="@string/adjust_prayer_notification_time"
+            android:fontFamily="@font/tajawal_regular"/>
 
         <Spinner
             android:id="@+id/time_setting_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/time_settings" />
+            android:popupBackground="?myBars"
+            android:entries="@array/time_settings"/>
 
     </LinearLayout>
 

@@ -1,19 +1,19 @@
 <resources>
     
     <string-array name="time_settings">
-        <item>30-</item>
-        <item>25-</item>
-        <item>20-</item>
-        <item>15-</item>
-        <item>10-</item>
-        <item>5-</item>
-        <item>0</item>
-        <item>+5</item>
-        <item>+10</item>
-        <item>+15</item>
-        <item>+20</item>
-        <item>+25</item>
-        <item>+30</item>
+        <item>-٣٠</item>
+        <item>-٢٥</item>
+        <item>-٢٠</item>
+        <item>-١٥</item>
+        <item>-١٠</item>
+        <item>-٥</item>
+        <item>٠</item>
+        <item>+٥</item>
+        <item>+١٠</item>
+        <item>+١٥</item>
+        <item>+٢٠</item>
+        <item>+٢٥</item>
+        <item>+٣٠</item>
     </string-array>
 
     <string-array name="time_settings_values">

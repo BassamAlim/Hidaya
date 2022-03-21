@@ -15,6 +15,7 @@
         android:layout_marginTop="80dp"
         android:text="@string/welcome_message"
         android:textSize="30sp"
+        android:fontFamily="@font/tajawal_regular"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -39,7 +40,8 @@
             android:paddingBottom="10dp"
             android:gravity="center"
             android:text="@string/disclaimer"
-            android:textSize="25sp"/>
+            android:textSize="25sp"
+            android:fontFamily="@font/tajawal_regular"/>
 
         <Button
             android:id="@+id/agreed"
@@ -48,7 +50,8 @@
             android:backgroundTint="?myAccent"
             android:text="@string/agreed"
             android:textSize="22sp"
-            android:textColor="?myMainBg"/>
+            android:textColor="?myMainBg"
+            android:fontFamily="@font/tajawal_regular"/>
 
         <Button
             android:id="@+id/rejected"
@@ -56,7 +59,8 @@
             android:layout_height="wrap_content"
             android:backgroundTint="?myClick"
             android:text="@string/rejected"
-            android:textSize="22sp"/>
+            android:textSize="22sp"
+            android:fontFamily="@font/tajawal_regular"/>
 
     </LinearLayout>
 

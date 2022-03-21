@@ -60,7 +60,8 @@
             android:paddingHorizontal="20dp"
             android:gravity="center"
             android:textSize="20sp"
-            android:textColor="?myAccent"/>
+            android:textColor="?myAccent"
+            android:fontFamily="@font/tajawal_regular"/>
 
         <ImageButton
             android:id="@+id/accuracy_indicator"
@@ -79,6 +80,7 @@
         android:text="@string/distance_to_kaaba"
         android:textSize="30dp"
         android:textStyle="bold"
+        android:fontFamily="@font/tajawal_regular"
         tools:ignore="SpUsage"
         app:layout_constraintBottom_toBottomOf="parent" />
 
