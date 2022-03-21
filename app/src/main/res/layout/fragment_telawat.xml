@@ -9,7 +9,7 @@
     android:background="?myMainBg">
 
     <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_bar"
+        android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:defaultQueryHint="ابحث عن القارئ"
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         app:layout_constrainedHeight="true"
         app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        app:layout_constraintTop_toBottomOf="@id/search_view"
         app:layout_constraintBottom_toBottomOf="parent">
 
     </androidx.recyclerview.widget.RecyclerView>

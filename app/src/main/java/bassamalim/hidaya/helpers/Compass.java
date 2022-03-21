@@ -34,6 +34,11 @@ public class Compass implements SensorEventListener {
         mSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
     }
 
+    /**
+     * Register the listeners for the accelerometer and magnetometer sensors
+     *
+     * @param context The context of the calling class.
+     */
     public void start(Context context) {
         sensorManager.registerListener(this, aSensor,
                 SensorManager.SENSOR_DELAY_GAME);
@@ -56,6 +61,7 @@ public class Compass implements SensorEventListener {
     }
 
     @Override
+    // It's a way to make sure that the code is executed in a synchronized way.
     public void onSensorChanged(SensorEvent event) {
         synchronized (this) {
             float alpha = 0.97f;

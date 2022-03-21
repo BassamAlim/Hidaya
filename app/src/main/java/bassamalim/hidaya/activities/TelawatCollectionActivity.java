@@ -21,9 +21,8 @@ import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivityCollectionTelawatBinding;
-import bassamalim.hidaya.fragments.DownloadedTelawatFragment;
-import bassamalim.hidaya.fragments.FavoriteTelawatFragment;
-import bassamalim.hidaya.fragments.AllTelawatFragment;
+import bassamalim.hidaya.enums.ListType;
+import bassamalim.hidaya.fragments.TelawatFragment;
 import bassamalim.hidaya.helpers.Keeper;
 import bassamalim.hidaya.other.Utils;
 
@@ -117,16 +116,16 @@ class TAdapter extends FragmentStateAdapter {
 
     @NonNull @Override
     public Fragment createFragment(int position) {
-        Fragment fragment;
+        ListType type;
 
         if (position == 0)
-            fragment = new AllTelawatFragment();
+            type = ListType.All;
         else if (position == 1)
-            fragment = new FavoriteTelawatFragment();
+            type = ListType.Favorite;
         else
-            fragment = new DownloadedTelawatFragment();
+            type = ListType.Downloaded;
 
-        return fragment;
+        return new TelawatFragment(type);
     }
 
     @Override

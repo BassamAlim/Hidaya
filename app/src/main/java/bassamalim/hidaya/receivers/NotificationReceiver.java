@@ -18,7 +18,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.activities.AlathkarActivity;
+import bassamalim.hidaya.activities.AthkarViewer;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.activities.Splash;
 import bassamalim.hidaya.other.Const;
@@ -186,13 +186,13 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         switch (id) {
             case MORNING:
-                intent = new Intent(context, AlathkarActivity.class);
+                intent = new Intent(context, AthkarViewer.class);
                 intent.putExtra("category", 0);
                 intent.putExtra("thikr_id", 0);
                 intent.putExtra("title", "أذكار الصباح");
                 break;
             case EVENING:
-                intent = new Intent(context, AlathkarActivity.class);
+                intent = new Intent(context, AthkarViewer.class);
                 intent.putExtra("category", 0);
                 intent.putExtra("thikr_id", 1);
                 intent.putExtra("title", "أذكار المساء");

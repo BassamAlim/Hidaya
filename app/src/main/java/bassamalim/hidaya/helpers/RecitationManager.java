@@ -77,6 +77,9 @@ public class RecitationManager {
             what = new ForegroundColorSpan(context.getResources().getColor(R.color.track_L));
     }
 
+    /**
+     * Initialize the two media players and the wifi lock
+     */
     private void initPlayers() {
         players = new MediaPlayer[]{new MediaPlayer(), new MediaPlayer()};
 
@@ -96,6 +99,14 @@ public class RecitationManager {
         setPlayersListeners();
     }
 
+    /**
+     * The function is responsible for setting the listeners for the two media players.
+     * The first listener is responsible for preparing the next media player when the current one is
+     * done playing.
+     * The second listener is responsible for resetting the current media player when the next one
+     * is prepared.
+     * The third listener is responsible for handling errors.
+     */
     private void setPlayersListeners() {
         for (int i = 0; i < 2; i++) {
             int finalI = i;
@@ -164,15 +175,33 @@ public class RecitationManager {
         }
     }
 
+    /**
+     * The function name is `requestPlay` and it takes one parameter, `startAyah`.
+     * The function's purpose is to prepare the first player to play the given `startAyah`.
+     *
+     * @param startAyah The ayah to start playing from.
+     */
     public void requestPlay(Ayah startAyah) {
         lastPlayed = startAyah;
         state = States.Stopped;
         preparePlayer(players[0], startAyah);
     }
 
+    /**
+     * It checks if the user wants the player to stop on the end of the sura and the given aya is
+     * from a new sura, meaning the sura is ending
+     *  if so it checks the flag that says that there is no more ayas to prepare
+     *      if so it stops playing
+     *  if not it sets the flag to no more ayas
+     *
+     * if not it prepares the player by resetting it and setting the data source and calling
+     * MediaPlayer's prepare()
+     *
+     * @param player The MediaPlayer object that will be used to play the audio.
+     * @param ayah the ayah to play
+     */
     private void preparePlayer(MediaPlayer player, Ayah ayah) {
-        if (pref.getBoolean(context.getString(R.string.stop_on_sura_key), false)
-                && ayah.getSurah() != chosenSurah) {
+        if (pref.getBoolean(context.getString(R.string.stop_on_sura_key), false) && ayah.getSurah() != chosenSurah) {
             if (surahEnding)
                 stopPlaying();
             else
@@ -193,17 +222,27 @@ public class RecitationManager {
         }
     }
 
-    private void track(Ayah subject) {
+    /**
+     * It takes an aya, and
+     * tracks it by applying a span to it
+     *
+     * @param ayah the Ayah object that is being tracked
+     */
+    private void track(Ayah ayah) {
         if (lastTracked != null) {
             lastTracked.getSS().removeSpan(what);
             lastTracked.getScreen().setText(lastTracked.getSS());
         }
-        subject.getSS().setSpan(what, subject.getStart(), subject.getEnd(),
+        ayah.getSS().setSpan(what, ayah.getStart(), ayah.getEnd(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        subject.getScreen().setText(subject.getSS());    // heavy, but the only working way
-        lastTracked = subject;
+        ayah.getScreen().setText(ayah.getSS());    // heavy, but the only working way
+        lastTracked = ayah;
     }
 
+    /**
+     * If the player is playing and there is a next ayah
+     * prepare the next ayah and reset the other player
+     */
     public void nextAyah() {
         if (state != States.Playing || lastPlayed.getIndex()+2 > allAyahsSize)
             return;
@@ -220,6 +259,10 @@ public class RecitationManager {
         }
     }
 
+    /**
+     * If the player is playing and there is a previous ayah
+     * prepare the next ayah and reset the other player
+     */
     public void prevAyah() {
         if (state != States.Playing || lastPlayed.getIndex()-1 < 0)
             return;
@@ -236,6 +279,9 @@ public class RecitationManager {
         }
     }
 
+    /**
+     * Pause the two players
+     */
     public void pause() {
         for (int i = 0; i < 2; i++) {
             if (players[i].isPlaying()) {

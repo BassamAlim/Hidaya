@@ -37,11 +37,19 @@ public class Keeper {
         storeStrTimes(getStrTimes(gLocation));
     }
 
+    /**
+     * It sets up the shared preferences and the gson object.
+     */
     private void setUp() {
         pref = PreferenceManager.getDefaultSharedPreferences(context);
         gson = new Gson();
     }
 
+    /**
+     * Store the location in the shared preferences
+     *
+     * @param gLocation The Location object that you want to store.
+     */
     public void storeLocation(Location gLocation) {
         MyLocation loc = new MyLocation(gLocation);
         SharedPreferences.Editor editor = pref.edit();
@@ -51,6 +59,11 @@ public class Keeper {
         editor.apply();
     }
 
+    /**
+     * Stores the times in the array times in the shared preferences
+     *
+     * @param times The array of Calendar objects that you want to store.
+     */
     public void storeTimes(Calendar[] times) {
         SharedPreferences.Editor editor = pref.edit();
         tJson = gson.toJson(times);
@@ -58,6 +71,11 @@ public class Keeper {
         editor.apply();
     }
 
+    /**
+     * It stores the times in the shared preferences.
+     *
+     * @param times The array of times to store.
+     */
     public void storeStrTimes(String[] times) {
         SharedPreferences.Editor editor = pref.edit();
         tJson = gson.toJson(times);
@@ -65,6 +83,11 @@ public class Keeper {
         editor.apply();
     }
 
+    /**
+     * Retrieve the stored location from the shared preferences
+     *
+     * @return The location object.
+     */
     public Location retrieveLocation() {
         lJson = pref.getString("stored location", "");
         MyLocation myLocation = gson.fromJson(lJson, MyLocation.class);
@@ -74,16 +97,33 @@ public class Keeper {
             return MyLocation.toLocation(myLocation);
     }
 
+    /**
+     * Retrieves the stored times from the shared preferences
+     *
+     * @return An array of Calendar objects.
+     */
     public Calendar[] retrieveTimes() {
         tJson = pref.getString("stored times", "");
         return gson.fromJson(tJson, Calendar[].class);
     }
 
+    /**
+     * Retrieves the stored string times from the shared preferences
+     *
+     * @return An array of strings.
+     */
     public String[] retrieveStrTimes() {
         tJson = pref.getString("stored string times", "");
         return gson.fromJson(tJson, String[].class);
     }
 
+    /**
+     * This function takes a Location object and returns an array of strings representing the prayer
+     * times for that location
+     *
+     * @param loc Location object
+     * @return An array of strings.
+     */
     private String[] getStrTimes(Location loc) {
         Calendar calendar = Calendar.getInstance();
         Date date = new Date();
@@ -97,6 +137,13 @@ public class Keeper {
                 loc.getLongitude(), timezone));
     }
 
+    /**
+     * Given a list of strings, reformat the strings into a list of strings, where each string is a
+     * time
+     *
+     * @param givenTimes an ArrayList of the times in the given prayer times
+     * @return An array of strings.
+     */
     private String[] reformatTimes(ArrayList<String> givenTimes) {
         String[] arr = new String[givenTimes.size()-1];
 

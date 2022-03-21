@@ -46,11 +46,18 @@ public class Alarms {
         setAlarm();
     }
 
+    /**
+     * Creates a new instance of the application context and a new instance of the SharedPreferences
+     * object
+     */
     private void setUp() {
         appContext = context.getApplicationContext();
         pref = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
+    /**
+     * Finds out if the desired function and executes it
+     */
     private void recognize() {
         switch (action) {
             case "all":
@@ -66,6 +73,9 @@ public class Alarms {
         }
     }
 
+    /**
+     * It sets the alarm, using the proper method
+     */
     private void setAlarm() {
         Log.i(Const.TAG, "in set alarm");
         if (id.ordinal() >= 0 && id.ordinal() < 6)
@@ -84,6 +94,11 @@ public class Alarms {
         }
     }
 
+    /**
+     * Set an alarm for the given prayer time
+     *
+     * @param id the ID of the prayer
+     */
     private void setPrayerAlarm(ID id) {
         Log.i(Const.TAG, "in set alarm for: " + id);
 
@@ -122,6 +137,9 @@ public class Alarms {
             Log.i(Const.TAG, id + " Passed");
     }
 
+    /**
+     * Set the extra alarms based on the user preferences
+     */
     private void setExtraAlarms() {
         Log.i(Const.TAG, "in set extra alarms");
 
@@ -138,6 +156,11 @@ public class Alarms {
             setExtraAlarm(ID.FRIDAY_KAHF);
     }
 
+    /**
+     * Set an alarm for a specific time
+     *
+     * @param id The ID of the alarm.
+     */
     private void setExtraAlarm(ID id) {
         Log.i(Const.TAG, "in set extra alarm");
 

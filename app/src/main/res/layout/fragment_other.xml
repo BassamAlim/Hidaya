@@ -59,12 +59,29 @@
                 android:gravity="center">
 
                 <Button
+                    android:id="@+id/sunnah_books"
+                    android:elevation="@dimen/buttony_elevation"
+                    android:background="@drawable/ripple_click"
+                    android:text="@string/sunnah_books"
+                    android:drawableTop="@drawable/ic_books"
+                    style="@style/Buttony"/>
+
+                <Button
                     android:id="@+id/quran_searcher"
                     android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_click"
                     android:text="@string/search_in_quran"
                     android:drawableTop="@drawable/ic_quran_search"
                     style="@style/Buttony"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center">
 
                 <Button
                     android:id="@+id/channels"
@@ -74,6 +91,14 @@
                     android:drawableTop="@drawable/ic_television"
                     style="@style/Buttony"/>
 
+                <Button
+                    android:id="@+id/settings"
+                    android:elevation="@dimen/buttony_elevation"
+                    android:background="@drawable/ripple_click"
+                    android:text="@string/settings"
+                    android:drawableTop="@drawable/ic_settings"
+                    style="@style/Buttony"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -82,14 +107,6 @@
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center">
-
-                <Button
-                    android:id="@+id/settings"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:background="@drawable/ripple_click"
-                    android:text="@string/settings"
-                    android:drawableTop="@drawable/ic_settings"
-                    style="@style/Buttony"/>
 
                 <Button
                     android:id="@+id/features"
@@ -99,29 +116,12 @@
                     android:drawableTop="@drawable/ic_features"
                     style="@style/Buttony"/>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center">
-
                 <Button
                     android:id="@+id/contact"
                     android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_click"
                     android:text="@string/contact"
                     android:drawableTop="@drawable/ic_mail"
-                    style="@style/Buttony"/>
-
-                <Button
-                    android:id="@+id/share"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:background="@drawable/ripple_click"
-                    android:text="@string/share_app"
-                    android:drawableTop="@drawable/ic_share"
                     style="@style/Buttony"/>
 
             </LinearLayout>
@@ -133,6 +133,14 @@
                 android:paddingBottom="15dp"
                 android:layout_gravity="center"
                 android:gravity="center">
+
+                <Button
+                    android:id="@+id/share"
+                    android:elevation="@dimen/buttony_elevation"
+                    android:background="@drawable/ripple_click"
+                    android:text="@string/share_app"
+                    android:drawableTop="@drawable/ic_share"
+                    style="@style/Buttony"/>
 
                 <Button
                     android:id="@+id/about"

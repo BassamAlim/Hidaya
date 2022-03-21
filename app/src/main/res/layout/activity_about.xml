@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,6 +17,7 @@
         android:text="@string/thanks"
         android:textSize="25sp"
         android:textStyle="bold"
+        android:fontFamily="@font/tajawal_regular"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -28,6 +30,7 @@
         android:padding="20dp"
         android:text="@string/quran_source"
         android:textSize="25sp"
+        android:fontFamily="@font/tajawal_regular"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,6 +44,7 @@
         android:padding="20dp"
         android:text="@string/tafseer_source"
         android:textSize="25sp"
+        android:fontFamily="@font/tajawal_regular"
         app:layout_constraintTop_toBottomOf="@id/quran_source"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -58,6 +62,7 @@
         android:text="@string/rebuild_database"
         android:textSize="20dp"
         android:textColor="?myAccent"
+        android:fontFamily="@font/tajawal_regular"
         tools:ignore="SpUsage"
         app:layout_constraintTop_toBottomOf="@id/tafseer_source"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,6 +80,7 @@
         android:text="@string/quick_update"
         android:textSize="20dp"
         android:textColor="?myAccent"
+        android:fontFamily="@font/tajawal_regular"
         tools:ignore="SpUsage"
         app:layout_constraintTop_toBottomOf="@id/rebuild_db"
         app:layout_constraintStart_toStartOf="parent"

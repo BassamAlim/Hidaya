@@ -41,7 +41,7 @@ public class AlathkarListActivity extends AppCompatActivity {
 
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
-        setSupportActionBar(binding.nameBar);
+        setSupportActionBar(binding.topBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
@@ -50,12 +50,12 @@ public class AlathkarListActivity extends AppCompatActivity {
 
         action = getIntent().getAction();
         if (action.equals("all"))
-            binding.categoryName.setText("جميع الاذكار");
+            binding.topBarTitle.setText("جميع الاذكار");
         else if (action.equals("favorite"))
-            binding.categoryName.setText("الأذكار المفضلة");
+            binding.topBarTitle.setText("الأذكار المفضلة");
         else {
             category = getIntent().getIntExtra("category", 0);
-            binding.categoryName.setText(db.athkarCategoryDao().getName(category));
+            binding.topBarTitle.setText(db.athkarCategoryDao().getName(category));
         }
 
         alathkarButtons = makeButtons(getData());
@@ -82,7 +82,7 @@ public class AlathkarListActivity extends AppCompatActivity {
             AthkarDB thikr = athkar.get(i);
 
             View.OnClickListener clickListener = v -> {
-                Intent intent = new Intent(this, AlathkarActivity.class);
+                Intent intent = new Intent(this, AthkarViewer.class);
                 intent.setAction(action);
                 intent.putExtra("thikr_id", thikr.getAthkar_id());
                 startActivity(intent);
@@ -105,7 +105,7 @@ public class AlathkarListActivity extends AppCompatActivity {
     }
 
     private void setSearchListeners() {
-        binding.searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 adapter.filter(query);

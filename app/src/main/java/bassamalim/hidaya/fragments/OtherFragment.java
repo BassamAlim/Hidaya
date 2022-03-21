@@ -18,6 +18,7 @@ import bassamalim.hidaya.activities.FeaturesGuide;
 import bassamalim.hidaya.activities.QuizLobbyActivity;
 import bassamalim.hidaya.activities.QuranSearcherActivity;
 import bassamalim.hidaya.activities.Settings;
+import bassamalim.hidaya.activities.SunnahLobby;
 import bassamalim.hidaya.activities.TelawatCollectionActivity;
 import bassamalim.hidaya.activities.TvActivity;
 import bassamalim.hidaya.databinding.FragmentOtherBinding;
@@ -49,8 +50,13 @@ public class OtherFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
         });
 
-        binding.quiz.setOnClickListener(view -> {
+        binding.quiz.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), QuizLobbyActivity.class);
+            startActivity(intent);
+        });
+
+        binding.sunnahBooks.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), SunnahLobby.class);
             startActivity(intent);
         });
 

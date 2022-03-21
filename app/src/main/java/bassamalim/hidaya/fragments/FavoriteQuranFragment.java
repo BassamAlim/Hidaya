@@ -33,7 +33,6 @@ public class FavoriteQuranFragment extends Fragment {
     private FragmentQuranBinding binding;
     private RecyclerView recyclerView;
     private QuranFragmentAdapter adapter;
-    private ArrayList<SuraCard> suraCards;
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
     private GridLayoutManager gridLayoutManager;
@@ -45,8 +44,6 @@ public class FavoriteQuranFragment extends Fragment {
         gridLayoutManager = new GridLayoutManager(getContext(), 1);
 
         binding = FragmentQuranBinding.inflate(inflater, container, false);
-
-        suraCards = makeSurahButtons();
 
         setupRecycler();
 
@@ -78,7 +75,7 @@ public class FavoriteQuranFragment extends Fragment {
     }
 
     private void setSearchListeners() {
-        binding.searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 adapter.filterNumber(query);
@@ -96,11 +93,11 @@ public class FavoriteQuranFragment extends Fragment {
         recyclerView = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new QuranFragmentAdapter(getContext(), suraCards);
+        adapter = new QuranFragmentAdapter(getContext(), makeCards());
         recyclerView.setAdapter(adapter);
     }
 
-    public ArrayList<SuraCard> makeSurahButtons() {
+    public ArrayList<SuraCard> makeCards() {
         ArrayList<SuraCard> buttons = new ArrayList<>();
 
         AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")

@@ -33,10 +33,10 @@ public class AllQuranFragment extends Fragment {
     private FragmentQuranBinding binding;
     private RecyclerView recyclerView;
     private QuranFragmentAdapter adapter;
-    private ArrayList<SuraCard> suraCards;
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
     private GridLayoutManager gridLayoutManager;
+    private List<Integer> favs;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -45,8 +45,6 @@ public class AllQuranFragment extends Fragment {
         gridLayoutManager = new GridLayoutManager(getContext(), 1);
 
         binding = FragmentQuranBinding.inflate(inflater, container, false);
-
-        suraCards = makeSurahButtons();
 
         setupRecycler();
 
@@ -66,7 +64,6 @@ public class AllQuranFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         if (mBundleRecyclerViewState != null) {
             new Handler().postDelayed(() -> {
                 mListState = mBundleRecyclerViewState.getParcelable("recycler_state");
@@ -78,7 +75,7 @@ public class AllQuranFragment extends Fragment {
     }
 
     private void setSearchListeners() {
-        binding.searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 adapter.filterNumber(query);
@@ -92,24 +89,29 @@ public class AllQuranFragment extends Fragment {
         });
     }
 
+    private List<SuraDB> getData() {
+        AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
+            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
+
+        favs = db.suraDao().getFav();
+
+        return db.suraDao().getAll();
+    }
+
     private void setupRecycler() {
         recyclerView = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new QuranFragmentAdapter(getContext(), suraCards);
+        adapter = new QuranFragmentAdapter(getContext(), makeCards());
         recyclerView.setAdapter(adapter);
     }
 
-    public ArrayList<SuraCard> makeSurahButtons() {
-        final int NUMBER_OF_SUAR = 114;
-        ArrayList<SuraCard> buttons = new ArrayList<>();
+    public ArrayList<SuraCard> makeCards() {
+        ArrayList<SuraCard> cards = new ArrayList<>();
 
-        AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
-                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
-        List<Integer> favs = db.suraDao().getFav();
-        List<SuraDB> suras = db.suraDao().getAll();
+        List<SuraDB> suras = getData();
 
-        for (int i = 0; i < NUMBER_OF_SUAR; i++) {
+        for (int i = 0; i < suras.size(); i++) {
             SuraDB sura = suras.get(i);
 
             View.OnClickListener cardListener = v -> {
@@ -119,10 +121,10 @@ public class AllQuranFragment extends Fragment {
                 requireContext().startActivity(intent);
             };
 
-            buttons.add(new SuraCard(i,"سُورَة " + sura.getSura_name(),
-                    sura.getSearch_name(), sura.getTanzeel(), favs.get(i), cardListener));
+            cards.add(new SuraCard(i,"سُورَة " + sura.getSura_name(), sura.getSearch_name(),
+                    sura.getTanzeel(), favs.get(sura.getFavorite()), cardListener));
         }
-        return buttons;
+        return cards;
     }
 
     @Override

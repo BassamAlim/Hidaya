@@ -18,9 +18,8 @@ import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivityCollectionTelawatSuarBinding;
-import bassamalim.hidaya.fragments.AllTelawatSuarFragment;
-import bassamalim.hidaya.fragments.DownloadedTelawatSuarFragment;
-import bassamalim.hidaya.fragments.FavoriteTelawatSuarFragment;
+import bassamalim.hidaya.enums.ListType;
+import bassamalim.hidaya.fragments.TelawatSuarFragment;
 import bassamalim.hidaya.other.Utils;
 
 public class TelawatSuarCollectionActivity extends FragmentActivity {
@@ -90,16 +89,16 @@ class TSAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        Fragment fragment;
+        ListType type;
 
         if (position == 0)
-            fragment = new AllTelawatSuarFragment(reciterId, versionId);
+            type = ListType.All;
         else if (position == 1)
-            fragment = new FavoriteTelawatSuarFragment(reciterId, versionId);
+            type = ListType.Favorite;
         else
-            fragment = new DownloadedTelawatSuarFragment(reciterId, versionId);
+            type = ListType.Downloaded;
 
-        return fragment;
+        return new TelawatSuarFragment(type, reciterId, versionId);
     }
 
     @Override
