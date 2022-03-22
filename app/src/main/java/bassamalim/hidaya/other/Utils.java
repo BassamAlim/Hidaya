@@ -15,8 +15,12 @@ import androidx.room.Room;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -219,4 +223,31 @@ public class Utils {
 
         return jsonString;
     }
+
+    public static String getJsonFromDownloads(String path) {
+        String jsonStr = "";
+
+        FileInputStream fin = null;
+        try {
+            File file = new File(path);
+            fin = new FileInputStream(file);
+
+            FileChannel fc = fin.getChannel();
+            MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+
+            jsonStr = Charset.defaultCharset().decode(bb).toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fin.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return jsonStr;
+    }
+
 }

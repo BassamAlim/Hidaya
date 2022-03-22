@@ -52,12 +52,8 @@ public class SunnahViewer extends AppCompatActivity {
     }
 
     private void getData() {
-        String jsonStr = "";
-        switch (bookId) {
-            case 0:
-                jsonStr = Utils.getJsonFromAssets(this, "sahih_albokhari.json");
-                break;
-        }
+        String path = getExternalFilesDir(null) + "/Sunnah Downloads/" + bookId  + ".json";
+        String jsonStr = Utils.getJsonFromDownloads(path);
         Gson gson = new Gson();
         SunnahBook book = gson.fromJson(jsonStr, SunnahBook.class);
         doors = book.getChapters()[chapterId].getDoors();

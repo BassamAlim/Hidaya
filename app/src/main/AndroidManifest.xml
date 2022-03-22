@@ -34,7 +34,7 @@
             android:name=".activities.SunnahViewer"
             android:exported="false" />
         <activity
-            android:name=".activities.SunnahLobby"
+            android:name=".activities.SunnahBooks"
             android:exported="false" />
         <activity
             android:name=".activities.Splash"

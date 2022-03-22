@@ -55,12 +55,9 @@ public class SunnahChaptersFragment extends Fragment {
     }
 
     private void getData() {
-        String jsonStr = "";
-        switch (bookId) {
-            case 0:
-                jsonStr = Utils.getJsonFromAssets(requireContext(), "sahih_albokhari.json");
-                break;
-        }
+        String path = requireContext().getExternalFilesDir(null) + "/Sunnah Downloads/" +
+                bookId  + ".json";
+        String jsonStr = Utils.getJsonFromDownloads(path);
         Gson gson = new Gson();
         book = gson.fromJson(jsonStr, SunnahBook.class);
 

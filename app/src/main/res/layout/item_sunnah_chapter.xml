@@ -17,7 +17,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:background="@drawable/ripple_click">
 
             <ImageButton
@@ -38,8 +37,6 @@
                 android:layout_height="match_parent"
                 android:paddingVertical="10dp"
                 android:paddingHorizontal="40dp"
-                android:layout_gravity="center"
-                android:gravity="center"
                 android:textSize="22sp"
                 android:fontFamily="@font/tajawal_regular"
                 app:layout_constraintTop_toTopOf="parent"
