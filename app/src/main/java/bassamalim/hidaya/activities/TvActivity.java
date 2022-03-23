@@ -38,19 +38,18 @@ public class TvActivity extends YouTubeBaseActivity {
 
     private void getLinks() {
         remoteConfig = FirebaseRemoteConfig.getInstance();
-        remoteConfig.fetchAndActivate()
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        makkah_url = remoteConfig.getString("makkah_url");
-                        madina_url = remoteConfig.getString("madina_url");
+        remoteConfig.fetchAndActivate().addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                makkah_url = remoteConfig.getString("makkah_url");
+                madina_url = remoteConfig.getString("madina_url");
 
-                        Log.d(Const.TAG, "Config params updated");
-                        Log.d(Const.TAG, "Makkah URL: " + makkah_url);
-                        Log.d(Const.TAG, "Madina URL: " + madina_url);
-                    }
-                    else
-                        Log.d(Const.TAG, "Fetch failed");
-                });
+                Log.d(Const.TAG, "Config params updated");
+                Log.d(Const.TAG, "Makkah URL: " + makkah_url);
+                Log.d(Const.TAG, "Madina URL: " + madina_url);
+            }
+            else
+                Log.d(Const.TAG, "Fetch failed");
+        });
     }
 
     private void initYtPlayer() {

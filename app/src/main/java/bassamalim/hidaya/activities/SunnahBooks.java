@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import java.io.File;
 import java.util.Objects;
@@ -55,11 +58,17 @@ public class SunnahBooks extends AppCompatActivity {
                 startActivity(intent);
             }
             else
-                download(0);
+                getLinkAndRequestDownload(0);
         });
         binding.bokhariDownloadBtn.setOnClickListener(v -> {
-            if (!downloaded(0))
-                download(0);
+            if (downloaded(0)) {
+                Utils.deleteFile(this, prefix + "0.json");
+                updateUI(0, false);
+            }
+            else {
+                getLinkAndRequestDownload(0);
+                updateUI(0, true);
+            }
         });
     }
 
@@ -104,13 +113,27 @@ public class SunnahBooks extends AppCompatActivity {
                     this, R.drawable.ic_download));
     }
 
-    private void download(int id) {
-        String link = "";
-        switch (id) {
-            case 0:
-                link = Const.SAHIH_ALBOKHARI_URL;
-                break;
-        }
+    private void getLinkAndRequestDownload(int id) {
+        String[] links = new String[1];
+        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+        Log.d(Const.TAG, "Here");
+        remoteConfig.fetchAndActivate().addOnCompleteListener(this, task -> {
+            Log.d(Const.TAG, "There");
+            if (task.isSuccessful()) {
+                links[0] = remoteConfig.getString("sahih_albokhari_url");
+
+                Log.d(Const.TAG, "Config params updated");
+                Log.d(Const.TAG, "Sahih alBokhari URL: " + links[0]);
+
+                download(id, links[id]);
+            }
+            else
+                Log.d(Const.TAG, "Fetch failed");
+        });
+    }
+
+    private void download(int id, String link) {
+        Log.d(Const.TAG, link);
 
         DownloadManager downloadManager = (DownloadManager)
                 getSystemService(Context.DOWNLOAD_SERVICE);
