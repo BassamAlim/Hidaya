@@ -32,12 +32,10 @@ public class TvActivity extends YouTubeBaseActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(binding.getRoot());
 
-        getLinks();
-
-        initYtPlayer();
+        getLinksAndInit();
     }
 
-    private void getLinks() {
+    private void getLinksAndInit() {
         remoteConfig = FirebaseRemoteConfig.getInstance();
         remoteConfig.fetchAndActivate().addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
@@ -48,6 +46,8 @@ public class TvActivity extends YouTubeBaseActivity {
                 Log.d(Const.TAG, "Config params updated");
                 Log.d(Const.TAG, "Makkah URL: " + makkah_url);
                 Log.d(Const.TAG, "Madina URL: " + madina_url);
+
+                initYtPlayer();
             }
             else
                 Log.d(Const.TAG, "Fetch failed");
