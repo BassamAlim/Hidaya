@@ -20,6 +20,7 @@ public class TvActivity extends YouTubeBaseActivity {
 
     private ActivityTvBinding binding;
     private FirebaseRemoteConfig remoteConfig;
+    private String apiKey;
     private String makkah_url;
     private String madina_url;
 
@@ -40,6 +41,7 @@ public class TvActivity extends YouTubeBaseActivity {
         remoteConfig = FirebaseRemoteConfig.getInstance();
         remoteConfig.fetchAndActivate().addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
+                apiKey = remoteConfig.getString("yt_api_key");
                 makkah_url = remoteConfig.getString("makkah_url");
                 madina_url = remoteConfig.getString("madina_url");
 
@@ -53,7 +55,6 @@ public class TvActivity extends YouTubeBaseActivity {
     }
 
     private void initYtPlayer() {
-        String apiKey = "AIzaSyBndJVjigZ7MOmj1005ONLUsfFW7BfxZt0";
         binding.ytPlayer.initialize(apiKey, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider,
