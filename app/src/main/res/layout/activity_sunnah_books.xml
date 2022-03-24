@@ -53,9 +53,10 @@
             android:background="@drawable/ripple_click">
 
             <TextView
+                android:id="@+id/bokhari_title_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="صحيح البخاري"
+                android:text="@string/sahih_albokhari"
                 android:textSize="20dp"
                 android:fontFamily="@font/tajawal_regular"
                 app:layout_constraintTop_toTopOf="parent"
@@ -66,6 +67,52 @@
 
             <ImageButton
                 android:id="@+id/bokhari_download_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="@drawable/ripple_click"
+                android:src="@drawable/ic_download"
+                android:contentDescription="@string/fav_btn_description"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/muslim_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="5dp"
+        android:layout_marginHorizontal="10dp"
+        android:padding="10dp"
+        android:elevation="15dp"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintTop_toBottomOf="@id/bokhari_card">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:paddingHorizontal="20dp"
+            android:background="@drawable/ripple_click">
+
+            <TextView
+                android:id="@+id/muslim_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sahih_muslim"
+                android:textSize="20dp"
+                android:fontFamily="@font/tajawal_regular"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="SpUsage" />
+
+            <ImageButton
+                android:id="@+id/muslim_download_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"

@@ -45,7 +45,7 @@ public class SunnahChaptersCollectionActivity extends FragmentActivity {
         binding.barTitle.setText(bookTitle);
 
         viewPager = findViewById(R.id.pager);
-        adapter = new SCAdapter(this, bookId, bookTitle);
+        adapter = new SCAdapter(this, bookId);
         viewPager.setAdapter(adapter);
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
@@ -72,12 +72,10 @@ public class SunnahChaptersCollectionActivity extends FragmentActivity {
 class SCAdapter extends FragmentStateAdapter {
 
     private final int bookId;
-    private final String bookTitle;
 
-    public SCAdapter(FragmentActivity fragment, int bookId, String bookTitle) {
+    public SCAdapter(FragmentActivity fragment, int bookId) {
         super(fragment);
         this.bookId = bookId;
-        this.bookTitle = bookTitle;
     }
 
     @NonNull

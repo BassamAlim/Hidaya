@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -18,6 +19,7 @@ import bassamalim.hidaya.other.Utils;
 public class AboutActivity extends AppCompatActivity {
 
     private ActivityAboutBinding binding;
+    private int counter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,6 +32,12 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     private void setListener() {
+        binding.title.setOnClickListener(v -> {
+            counter++;
+            if (counter == 5)
+                voala();
+        });
+
         binding.rebuildDb.setOnClickListener(v -> {
             deleteDatabase("HidayaDB");
 
@@ -46,6 +54,12 @@ public class AboutActivity extends AppCompatActivity {
             i.setData(Uri.parse(url));
             startActivity(i);
         });
+    }
+
+    private void voala() {
+        Toast.makeText(this, "مرحبا بك في قسم الشخصيات المهمة", Toast.LENGTH_SHORT).show();
+        binding.driveUpdate.setVisibility(View.VISIBLE);
+        binding.rebuildDb.setVisibility(View.VISIBLE);
     }
 
 }

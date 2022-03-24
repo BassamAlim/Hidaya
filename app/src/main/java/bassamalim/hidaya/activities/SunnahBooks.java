@@ -8,24 +8,34 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.cardview.widget.CardView;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivitySunnahBooksBinding;
+import bassamalim.hidaya.models.SunnahBook;
 import bassamalim.hidaya.other.Const;
 import bassamalim.hidaya.other.Utils;
 
 public class SunnahBooks extends AppCompatActivity {
 
     private ActivitySunnahBooksBinding binding;
+    private final int NUM_OF_BOOKS = 2;
+    private final String[] names = new String[] {"صحيح البخاري", "صحيح مسلم"};
     private final String prefix = "/Sunnah Downloads/";
+    private final boolean[] downloaded = new boolean[NUM_OF_BOOKS];
+    private CardView[] cards;
+    private ImageButton[] favBtns;
+    private SunnahBook.BookInfo[] infos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,38 +48,92 @@ public class SunnahBooks extends AppCompatActivity {
         setSupportActionBar(binding.topBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
+        checkDownloaded();
+
+        getInfos();
+
         initViews();
 
         setListeners();
     }
 
+    private void checkDownloaded() {
+        File dir = new File(getExternalFilesDir(null) + prefix);
+
+        if (!dir.exists())
+            return;
+
+        File[] files = dir.listFiles();
+
+        for (int i = 0; i < Objects.requireNonNull(files).length; i++) {
+            File file = files[i];
+
+            String name = file.getName();
+            String n = name.substring(0, name.length()-5);
+            try {
+                int num = Integer.parseInt(n);
+                downloaded[num] = true;
+            }
+            catch (NumberFormatException ignored) {}
+        }
+    }
+
+    private void getInfos() {
+        infos = new SunnahBook.BookInfo[NUM_OF_BOOKS];
+        for (int i = 0; i < NUM_OF_BOOKS; i++) {
+            if (downloaded[i]) {
+                String path = getExternalFilesDir(null) + "/Sunnah Downloads/" + i + ".json";
+                String jsonStr = Utils.getJsonFromDownloads(path);
+                Gson gson = new Gson();
+                SunnahBook book = gson.fromJson(jsonStr, SunnahBook.class);
+                infos[i] = book.getBookInfo();
+            }
+        }
+    }
+
     private void initViews() {
-        for (int i = 0; i < 1; i++)
-            updateUI(i, downloaded(i));
+        cards = new CardView[]{binding.bokhariCard, binding.muslimCard};
+        TextView[] titleTvs = new TextView[]{binding.bokhariTitleTv, binding.muslimTitleTv};
+        favBtns = new ImageButton[]{binding.bokhariDownloadBtn, binding.muslimDownloadBtn};
+
+        for (int i = 0; i < NUM_OF_BOOKS; i++) {
+            if (downloaded[i]) {
+                titleTvs[i].setText(infos[i].getBookTitle());
+                // ... other info
+            }
+        }
+
+        for (int i = 0; i < NUM_OF_BOOKS; i++)
+            updateUI(i, downloaded[i]);
     }
 
     private void setListeners() {
-        binding.bokhariCard.setOnClickListener(v -> {
-            if (downloaded(0)) {
-                Intent intent = new Intent(this,
-                        SunnahChaptersCollectionActivity.class);
-                intent.putExtra("book_id", 0);
-                intent.putExtra("book_title", "صحيح البخاري");
-                startActivity(intent);
-            }
-            else
-                getLinkAndRequestDownload(0);
-        });
-        binding.bokhariDownloadBtn.setOnClickListener(v -> {
-            if (downloaded(0)) {
-                Utils.deleteFile(this, prefix + "0.json");
-                updateUI(0, false);
-            }
-            else {
-                getLinkAndRequestDownload(0);
-                updateUI(0, true);
-            }
-        });
+        for (int i = 0; i < NUM_OF_BOOKS; i++) {
+            int finalI = i;
+            cards[i].setOnClickListener(v -> {
+                if (downloaded(finalI)) {
+                    Intent intent = new Intent(this,
+                            SunnahChaptersCollectionActivity.class);
+                    intent.putExtra("book_id", finalI);
+                    intent.putExtra("book_title", names[finalI]);
+                    startActivity(intent);
+                }
+                else {
+                    getLinkAndRequestDownload(finalI);
+                    updateUI(finalI, true);
+                }
+            });
+            favBtns[i].setOnClickListener(v -> {
+                if (downloaded(finalI)) {
+                    Utils.deleteFile(this, prefix + finalI + ".json");
+                    updateUI(finalI, false);
+                }
+                else {
+                    getLinkAndRequestDownload(finalI);
+                    updateUI(finalI, true);
+                }
+            });
+        }
     }
 
     private boolean downloaded(int id) {
@@ -96,34 +160,25 @@ public class SunnahBooks extends AppCompatActivity {
     }
 
     private void updateUI(int id, boolean downloaded) {
-        ImageButton ib = null;
-
-        switch (id) {
-            case 0:
-                ib = binding.bokhariDownloadBtn;
-                break;
-        }
-
-        assert ib != null;
         if (downloaded)
-            ib.setImageDrawable(AppCompatResources.getDrawable(
+            favBtns[id].setImageDrawable(AppCompatResources.getDrawable(
                     this, R.drawable.ic_downloaded));
         else
-            ib.setImageDrawable(AppCompatResources.getDrawable(
+            favBtns[id].setImageDrawable(AppCompatResources.getDrawable(
                     this, R.drawable.ic_download));
     }
 
     private void getLinkAndRequestDownload(int id) {
-        String[] links = new String[1];
+        String[] links = new String[2];
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-        Log.d(Const.TAG, "Here");
         remoteConfig.fetchAndActivate().addOnCompleteListener(this, task -> {
-            Log.d(Const.TAG, "There");
             if (task.isSuccessful()) {
                 links[0] = remoteConfig.getString("sahih_albokhari_url");
+                links[1] = remoteConfig.getString("sahih_muslim_url");
 
                 Log.d(Const.TAG, "Config params updated");
-                Log.d(Const.TAG, "Sahih alBokhari URL: " + links[0]);
+                Log.d(Const.TAG, "Sahih Albokhari URL: " + links[0]);
+                Log.d(Const.TAG, "Sahih Muslim URL: " + links[1]);
 
                 download(id, links[id]);
             }
