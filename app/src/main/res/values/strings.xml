@@ -51,11 +51,11 @@
     <string name="actions_thikrs">أذكار الأفعال</string>
     <string name="events_thikrs">أدعية الأحداث</string>
     <string name="more_thikrs">المزيد</string>
-    <string name="quran_and_sunnah_channels">بث مباشر</string>
+    <string name="quran_and_hadeeth_channels">بث مباشر</string>
     <string name="settings">الإعدادات</string>
     <string name="quick_update">تحديث سريع</string>
     <string name="quran_channel">القرآن الكريم</string>
-    <string name="sunnah_channel">السنة النبوية</string>
+    <string name="hadeeth_channel">السنة النبوية</string>
     <string name="search_in_quran">بحث المصحف</string>
     <string name="previous_question">السؤال السابق</string>
     <string name="next_question">السؤال التالي</string>
@@ -137,9 +137,9 @@
     <string name="go_to_page">الانتقال إلى الصفحة</string>
     <string name="max_num_of_marches">اقصى عدد من النتائج</string>
     <string name="no_results">لا توجد نتائج</string>
-    <string name="sunnah_books">كتب السُنَّة</string>
+    <string name="hadeeth_books">كتب الحديث</string>
     <string name="sahih_albokhari">صحيح البخاري</string>
     <string name="sahih_muslim">صحيح مسلم</string>
-    <string name="sunnah_source">كتب السُنَّة: من موقع أم الكتاب وموقع الدرر السنية.</string>
+    <string name="hadeeth_source">كتب الحديث: من موقع أم الكتاب وموقع الدرر السنية.</string>
 
 </resources>

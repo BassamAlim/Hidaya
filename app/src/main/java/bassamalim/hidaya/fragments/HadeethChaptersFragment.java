@@ -18,25 +18,25 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-import bassamalim.hidaya.activities.SunnahViewer;
-import bassamalim.hidaya.adapters.SunnahChapterAdapter;
-import bassamalim.hidaya.databinding.FragmentSunnahChaptersBinding;
+import bassamalim.hidaya.activities.HadeethViewer;
+import bassamalim.hidaya.adapters.HadeethChapterAdapter;
+import bassamalim.hidaya.databinding.FragmentHadeethChaptersBinding;
 import bassamalim.hidaya.enums.ListType;
-import bassamalim.hidaya.models.SunnahBook;
-import bassamalim.hidaya.models.SunnahChapterCard;
+import bassamalim.hidaya.models.HadeethBook;
+import bassamalim.hidaya.models.HadeethChapterCard;
 import bassamalim.hidaya.other.Utils;
 
-public class SunnahChaptersFragment extends Fragment {
+public class HadeethChaptersFragment extends Fragment {
 
-    private FragmentSunnahChaptersBinding binding;
+    private FragmentHadeethChaptersBinding binding;
     private RecyclerView recycler;
-    private SunnahChapterAdapter adapter;
+    private HadeethChapterAdapter adapter;
     private final ListType type;
     private final int bookId;
-    private SunnahBook book;
+    private HadeethBook book;
     private boolean[] favs;
 
-    public SunnahChaptersFragment(ListType type, int bookId) {
+    public HadeethChaptersFragment(ListType type, int bookId) {
         this.type = type;
         this.bookId = bookId;
     }
@@ -45,7 +45,7 @@ public class SunnahChaptersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = FragmentSunnahChaptersBinding.inflate(inflater, container, false);
+        binding = FragmentHadeethChaptersBinding.inflate(inflater, container, false);
 
         setupRecycler();
 
@@ -55,11 +55,11 @@ public class SunnahChaptersFragment extends Fragment {
     }
 
     private void getData() {
-        String path = requireContext().getExternalFilesDir(null) + "/Sunnah Downloads/" +
+        String path = requireContext().getExternalFilesDir(null) + "/Hadeeth Downloads/" +
                 bookId  + ".json";
         String jsonStr = Utils.getJsonFromDownloads(path);
         Gson gson = new Gson();
-        book = gson.fromJson(jsonStr, SunnahBook.class);
+        book = gson.fromJson(jsonStr, HadeethBook.class);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         String favsStr = pref.getString("book" + bookId + "_favs", "");
@@ -69,24 +69,24 @@ public class SunnahChaptersFragment extends Fragment {
             favs = gson.fromJson(favsStr, boolean[].class);
     }
 
-    private ArrayList<SunnahChapterCard> makeCards() {
+    private ArrayList<HadeethChapterCard> makeCards() {
         getData();
 
-        ArrayList<SunnahChapterCard> cards = new ArrayList<>();
+        ArrayList<HadeethChapterCard> cards = new ArrayList<>();
         for (int i = 0; i < book.getChapters().length; i++) {
             if (type == ListType.All || (type == ListType.Favorite && favs[i])) {
                 String chapterTitle = book.getChapters()[i].getChapterTitle();
 
                 int finalI = i;
                 View.OnClickListener listener = v -> {
-                    Intent intent = new Intent(getContext(), SunnahViewer.class);
+                    Intent intent = new Intent(getContext(), HadeethViewer.class);
                     intent.putExtra("book_id", bookId);
                     intent.putExtra("book_title", chapterTitle);
                     intent.putExtra("chapter_id", finalI);
                     startActivity(intent);
                 };
 
-                cards.add(new SunnahChapterCard(i, chapterTitle, favs[i], listener));
+                cards.add(new HadeethChapterCard(i, chapterTitle, favs[i], listener));
             }
         }
         return cards;
@@ -96,7 +96,7 @@ public class SunnahChaptersFragment extends Fragment {
         recycler = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(layoutManager);
-        adapter = new SunnahChapterAdapter(getContext(), makeCards(), bookId);
+        adapter = new HadeethChapterAdapter(getContext(), makeCards(), bookId);
         recycler.setAdapter(adapter);
     }
 

@@ -21,27 +21,27 @@ import java.io.File;
 import java.util.Objects;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.databinding.ActivitySunnahBooksBinding;
-import bassamalim.hidaya.models.SunnahBook;
+import bassamalim.hidaya.databinding.ActivityHadeethBooksBinding;
+import bassamalim.hidaya.models.HadeethBook;
 import bassamalim.hidaya.other.Const;
 import bassamalim.hidaya.other.Utils;
 
-public class SunnahBooks extends AppCompatActivity {
+public class HadeethBooks extends AppCompatActivity {
 
-    private ActivitySunnahBooksBinding binding;
+    private ActivityHadeethBooksBinding binding;
     private final int NUM_OF_BOOKS = 2;
     private final String[] names = new String[] {"صحيح البخاري", "صحيح مسلم"};
-    private final String prefix = "/Sunnah Downloads/";
+    private final String prefix = "/Hadeeth Downloads/";
     private final boolean[] downloaded = new boolean[NUM_OF_BOOKS];
     private CardView[] cards;
     private ImageButton[] favBtns;
-    private SunnahBook.BookInfo[] infos;
+    private HadeethBook.BookInfo[] infos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
-        binding = ActivitySunnahBooksBinding.inflate(getLayoutInflater());
+        binding = ActivityHadeethBooksBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 
@@ -79,13 +79,13 @@ public class SunnahBooks extends AppCompatActivity {
     }
 
     private void getInfos() {
-        infos = new SunnahBook.BookInfo[NUM_OF_BOOKS];
+        infos = new HadeethBook.BookInfo[NUM_OF_BOOKS];
         for (int i = 0; i < NUM_OF_BOOKS; i++) {
             if (downloaded[i]) {
-                String path = getExternalFilesDir(null) + "/Sunnah Downloads/" + i + ".json";
+                String path = getExternalFilesDir(null) + "/Hadeeth Downloads/" + i + ".json";
                 String jsonStr = Utils.getJsonFromDownloads(path);
                 Gson gson = new Gson();
-                SunnahBook book = gson.fromJson(jsonStr, SunnahBook.class);
+                HadeethBook book = gson.fromJson(jsonStr, HadeethBook.class);
                 infos[i] = book.getBookInfo();
             }
         }
@@ -113,7 +113,7 @@ public class SunnahBooks extends AppCompatActivity {
             cards[i].setOnClickListener(v -> {
                 if (downloaded(finalI)) {
                     Intent intent = new Intent(this,
-                            SunnahChaptersCollectionActivity.class);
+                            HadeethChaptersCollectionActivity.class);
                     intent.putExtra("book_id", finalI);
                     intent.putExtra("book_title", names[finalI]);
                     startActivity(intent);

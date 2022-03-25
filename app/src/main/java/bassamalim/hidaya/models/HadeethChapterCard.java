@@ -2,14 +2,14 @@ package bassamalim.hidaya.models;
 
 import android.view.View;
 
-public class SunnahChapterCard {
+public class HadeethChapterCard {
 
     private final int chapterId;
     private final String chapterTitle;
     private boolean favorite;
     private final View.OnClickListener listener;
 
-    public SunnahChapterCard(int chapterId, String chapterTitle, boolean favorite,
+    public HadeethChapterCard(int chapterId, String chapterTitle, boolean favorite,
                              View.OnClickListener listener) {
 
         this.chapterId = chapterId;

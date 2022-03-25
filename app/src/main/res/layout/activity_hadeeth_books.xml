@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?myMainBg"
-    tools:context=".activities.SunnahBooks">
+    tools:context=".activities.HadeethBooks">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
@@ -26,7 +26,7 @@
             android:layout_marginEnd="15dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:text="@string/sunnah_books"
+            android:text="@string/hadeeth_books"
             android:textColor="?myAccent"
             android:textSize="21dp"
             android:textStyle="bold"

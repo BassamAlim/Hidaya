@@ -27,17 +27,17 @@
         app:layout_constraintTop_toBottomOf="@id/ytPlayer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/sunnah_btn"/>
+        app:layout_constraintBottom_toTopOf="@id/hadeeth_btn"/>
 
     <Button
-        android:id="@+id/sunnah_btn"
+        android:id="@+id/hadeeth_btn"
         android:layout_width="350dp"
         android:layout_height="90dp"
         android:layout_marginTop="15dp"
         android:background="@drawable/ripple_click"
         android:backgroundTint="?myClick"
         android:gravity="center_horizontal|center"
-        android:text="@string/sunnah_channel"
+        android:text="@string/hadeeth_channel"
         android:textSize="25sp"
         android:fontFamily="@font/tajawal_regular"
         android:drawableStart="@mipmap/ic_sunnah_channel"

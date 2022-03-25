@@ -28,13 +28,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HidayaM">
         <activity
-            android:name=".activities.SunnahChaptersCollectionActivity"
+            android:name=".activities.HadeethChaptersCollectionActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SunnahViewer"
+            android:name=".activities.HadeethViewer"
             android:exported="false" />
         <activity
-            android:name=".activities.SunnahBooks"
+            android:name=".activities.HadeethBooks"
             android:exported="false" />
         <activity
             android:name=".activities.Splash"

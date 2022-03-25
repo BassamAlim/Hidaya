@@ -1,11 +1,11 @@
 package bassamalim.hidaya.models;
 
-public class SunnahBook {
+public class HadeethBook {
 
     private final BookInfo bookInfo;
     private final BookChapter[] chapters;
 
-    public SunnahBook(BookInfo bookInfo, BookChapter[] chapters) {
+    public HadeethBook(BookInfo bookInfo, BookChapter[] chapters) {
         this.bookInfo = bookInfo;
         this.chapters = chapters;
     }

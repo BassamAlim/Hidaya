@@ -59,10 +59,10 @@
                 android:gravity="center">
 
                 <Button
-                    android:id="@+id/sunnah_books"
+                    android:id="@+id/hadeeth_books"
                     android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_click"
-                    android:text="@string/sunnah_books"
+                    android:text="@string/hadeeth_books"
                     android:drawableTop="@drawable/ic_books"
                     style="@style/Buttony"/>
 
@@ -87,7 +87,7 @@
                     android:id="@+id/channels"
                     android:elevation="@dimen/buttony_elevation"
                     android:background="@drawable/ripple_click"
-                    android:text="@string/quran_and_sunnah_channels"
+                    android:text="@string/quran_and_hadeeth_channels"
                     android:drawableTop="@drawable/ic_television"
                     style="@style/Buttony"/>
 

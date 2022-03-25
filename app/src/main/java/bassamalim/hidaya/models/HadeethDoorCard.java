@@ -1,13 +1,13 @@
 package bassamalim.hidaya.models;
 
-public class SunnahDoorCard {
+public class HadeethDoorCard {
 
     private final int doorId;
     private final String doorTitle;
     private final String text;
     private boolean fav;
 
-    public SunnahDoorCard(int doorId, String doorTitle, String text, boolean fav) {
+    public HadeethDoorCard(int doorId, String doorTitle, String text, boolean fav) {
         this.doorId = doorId;
         this.doorTitle = doorTitle;
         this.text = text;

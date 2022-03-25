@@ -17,14 +17,14 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.Objects;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.databinding.ActivityCollectionSunnahChaptersBinding;
+import bassamalim.hidaya.databinding.ActivityCollectionHadeethChaptersBinding;
 import bassamalim.hidaya.enums.ListType;
-import bassamalim.hidaya.fragments.SunnahChaptersFragment;
+import bassamalim.hidaya.fragments.HadeethChaptersFragment;
 import bassamalim.hidaya.other.Utils;
 
-public class SunnahChaptersCollectionActivity extends FragmentActivity {
+public class HadeethChaptersCollectionActivity extends FragmentActivity {
 
-    private ActivityCollectionSunnahChaptersBinding binding;
+    private ActivityCollectionHadeethChaptersBinding binding;
     private FragmentStateAdapter adapter;
     private ViewPager2 viewPager;
 
@@ -32,7 +32,7 @@ public class SunnahChaptersCollectionActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
-        binding = ActivityCollectionSunnahChaptersBinding.inflate(getLayoutInflater());
+        binding = ActivityCollectionHadeethChaptersBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 
@@ -88,7 +88,7 @@ class SCAdapter extends FragmentStateAdapter {
         else
             type = ListType.Favorite;
 
-        return new SunnahChaptersFragment(type, bookId);
+        return new HadeethChaptersFragment(type, bookId);
     }
 
     @Override

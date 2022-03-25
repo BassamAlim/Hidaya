@@ -19,81 +19,66 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.models.SunnahDoorCard;
+import bassamalim.hidaya.models.HadeethChapterCard;
 
-public class SunnahViewerAdapter extends RecyclerView.Adapter<SunnahViewerAdapter.ViewHolder> {
+public class HadeethChapterAdapter extends RecyclerView.Adapter<HadeethChapterAdapter.ViewHolder> {
 
     private final Context context;
     private final SharedPreferences pref;
     private final Gson gson;
     private final int bookId;
-    private final int chapterId;
-    private final ArrayList<SunnahDoorCard> doorCards;
+    private final ArrayList<HadeethChapterCard> hadeethChaptersCards;
+    private final ArrayList<HadeethChapterCard> hadeethChapterCardsCopy;
     private boolean[] favs;
-    private final int textSize;
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView card;
-        private final TextView titleTv;
-        private final TextView textTv;
+        private final TextView tv;
         private final ImageButton favBtn;
 
         public ViewHolder(View view) {
             super(view);
-            card = view.findViewById(R.id.sunnah_door_model_card);
-            titleTv = view.findViewById(R.id.title_tv);
-            textTv = view.findViewById(R.id.text_tv);
+            card = view.findViewById(R.id.hadeeth_chapter_model_card);
+            tv = view.findViewById(R.id.chapter_tv);
             favBtn = view.findViewById(R.id.fav_btn);
         }
     }
 
-    public SunnahViewerAdapter(Context context, ArrayList<SunnahDoorCard> cards,
-                               int bookId, int chapterId) {
+    public HadeethChapterAdapter(Context context, ArrayList<HadeethChapterCard> cards, int bookId) {
         this.context = context;
         pref = PreferenceManager.getDefaultSharedPreferences(context);
         gson = new Gson();
 
         this.bookId = bookId;
-        this.chapterId = chapterId;
 
-        doorCards = cards;
-
-        textSize = pref.getInt(context.getString(R.string.alathkar_text_size_key), 25);
+        hadeethChaptersCards = new ArrayList<>(cards);
+        hadeethChapterCardsCopy = new ArrayList<>(cards);
 
         getFavs();
     }
 
     private void getFavs() {
-        String favsStr = pref.getString("book" + bookId +
-                "_chapter" + chapterId + "_favs", "");
+        String favsStr = pref.getString("book" + bookId + "_favs", "");
         if (favsStr.length() == 0)
-            favs = new boolean[doorCards.size()];
+            favs = new boolean[hadeethChaptersCards.size()];
         else
             favs = gson.fromJson(favsStr, boolean[].class);
     }
 
-    @NonNull
-    @Override
-    public SunnahViewerAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        SunnahViewerAdapter.ViewHolder viewHolder = new SunnahViewerAdapter.ViewHolder(
-                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_sunnah_door,
-                        viewGroup, false));
-
-        viewHolder.titleTv.setTextSize(textSize);
-        viewHolder.textTv.setTextSize(textSize);
-
-        return viewHolder;
+    @NonNull @Override
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(
+                R.layout.item_hadeeth_chapter, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        SunnahDoorCard card = doorCards.get(position);
+        HadeethChapterCard card = hadeethChaptersCards.get(position);
 
-        viewHolder.titleTv.setText(doorCards.get(position).getDoorTitle());
+        viewHolder.tv.setText(hadeethChaptersCards.get(position).getChapterTitle());
 
-        viewHolder.textTv.setText(doorCards.get(position).getText());
-
-        boolean fav = card.isFav();
+        boolean fav = card.getFavorite();
         if (fav)
             viewHolder.favBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_star));
@@ -101,29 +86,45 @@ public class SunnahViewerAdapter extends RecyclerView.Adapter<SunnahViewerAdapte
             viewHolder.favBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
 
+
+        viewHolder.card.setOnClickListener(card.getListener());
+
         viewHolder.favBtn.setOnClickListener(view -> {
-            if (card.isFav()) {
-                favs[doorCards.get(position).getDoorId()] = false;
-                card.setFav(false);
+            if (card.getFavorite()) {
+                favs[hadeethChaptersCards.get(position).getChapterId()] = false;
+                card.setFavorite(false);
             }
             else {
-                favs[doorCards.get(position).getDoorId()] = true;
-                card.setFav(true);
+                favs[hadeethChaptersCards.get(position).getChapterId()] = true;
+                card.setFavorite(true);
             }
             notifyItemChanged(position);
             updateFavorites();
         });
     }
 
+    public void filter(String text) {
+        hadeethChaptersCards.clear();
+        if (text.isEmpty())
+            hadeethChaptersCards.addAll(hadeethChapterCardsCopy);
+        else {
+            for(HadeethChapterCard chapterCard: hadeethChapterCardsCopy) {
+                if (chapterCard.getChapterTitle().contains(text))
+                    hadeethChaptersCards.add(chapterCard);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     private void updateFavorites() {
         String favStr = gson.toJson(favs);
         SharedPreferences.Editor editor = pref.edit();
-        editor.putString("book" + bookId + "_chapter" + chapterId + "_favs", favStr);
+        editor.putString("book" + bookId + "_favs", favStr);
         editor.apply();
     }
 
     @Override
     public int getItemCount() {
-        return doorCards.size();
+        return hadeethChaptersCards.size();
     }
 }

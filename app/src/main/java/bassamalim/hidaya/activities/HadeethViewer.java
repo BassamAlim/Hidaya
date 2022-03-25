@@ -14,27 +14,27 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import bassamalim.hidaya.adapters.SunnahViewerAdapter;
-import bassamalim.hidaya.databinding.ActivitySunnahViewerBinding;
-import bassamalim.hidaya.models.SunnahBook;
-import bassamalim.hidaya.models.SunnahDoorCard;
+import bassamalim.hidaya.adapters.HadeethViewerAdapter;
+import bassamalim.hidaya.databinding.ActivityHadeethViewerBinding;
+import bassamalim.hidaya.models.HadeethBook;
+import bassamalim.hidaya.models.HadeethDoorCard;
 import bassamalim.hidaya.other.Utils;
 
-public class SunnahViewer extends AppCompatActivity {
+public class HadeethViewer extends AppCompatActivity {
 
-    private ActivitySunnahViewerBinding binding;
+    private ActivityHadeethViewerBinding binding;
     private int bookId;
     private int chapterId;
-    private SunnahBook.BookChapter.BookDoor[] doors;
+    private HadeethBook.BookChapter.BookDoor[] doors;
     private boolean[] favs;
     private RecyclerView recycler;
-    private SunnahViewerAdapter adapter;
+    private HadeethViewerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
-        binding = ActivitySunnahViewerBinding.inflate(getLayoutInflater());
+        binding = ActivityHadeethViewerBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 
@@ -52,10 +52,10 @@ public class SunnahViewer extends AppCompatActivity {
     }
 
     private void getData() {
-        String path = getExternalFilesDir(null) + "/Sunnah Downloads/" + bookId  + ".json";
+        String path = getExternalFilesDir(null) + "/Hadeeth Downloads/" + bookId  + ".json";
         String jsonStr = Utils.getJsonFromDownloads(path);
         Gson gson = new Gson();
-        SunnahBook book = gson.fromJson(jsonStr, SunnahBook.class);
+        HadeethBook book = gson.fromJson(jsonStr, HadeethBook.class);
         doors = book.getChapters()[chapterId].getDoors();
 
         String favsStr = PreferenceManager.getDefaultSharedPreferences(this)
@@ -66,11 +66,11 @@ public class SunnahViewer extends AppCompatActivity {
             favs = gson.fromJson(favsStr, boolean[].class);
     }
 
-    private ArrayList<SunnahDoorCard> makeCards() {
-        ArrayList<SunnahDoorCard> cards = new ArrayList<>();
+    private ArrayList<HadeethDoorCard> makeCards() {
+        ArrayList<HadeethDoorCard> cards = new ArrayList<>();
         for (int i = 0; i < doors.length; i++) {
-            SunnahBook.BookChapter.BookDoor door = doors[i];
-            cards.add(new SunnahDoorCard(door.getDoorId(), door.getDoorTitle(),
+            HadeethBook.BookChapter.BookDoor door = doors[i];
+            cards.add(new HadeethDoorCard(door.getDoorId(), door.getDoorTitle(),
                     door.getText(), favs[i]));
         }
         return cards;
@@ -80,7 +80,7 @@ public class SunnahViewer extends AppCompatActivity {
         recycler = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recycler.setLayoutManager(layoutManager);
-        adapter = new SunnahViewerAdapter(this, makeCards(), bookId, chapterId);
+        adapter = new HadeethViewerAdapter(this, makeCards(), bookId, chapterId);
         recycler.setAdapter(adapter);
     }
 

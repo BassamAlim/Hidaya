@@ -47,15 +47,15 @@
         app:layout_constraintTop_toBottomOf="@id/quran_source"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/sunnah_source" />
+        app:layout_constraintBottom_toTopOf="@id/hadeeth_source" />
 
     <TextView
-        android:id="@+id/sunnah_source"
+        android:id="@+id/hadeeth_source"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:padding="20dp"
-        android:text="@string/sunnah_source"
+        android:text="@string/hadeeth_source"
         android:textSize="25sp"
         android:fontFamily="@font/tajawal_regular"
         app:layout_constraintTop_toBottomOf="@id/tafseer_source"
@@ -78,7 +78,7 @@
         android:textColor="?myAccent"
         android:fontFamily="@font/tajawal_regular"
         tools:ignore="SpUsage"
-        app:layout_constraintTop_toBottomOf="@id/sunnah_source"
+        app:layout_constraintTop_toBottomOf="@id/hadeeth_source"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/drive_update"/>
