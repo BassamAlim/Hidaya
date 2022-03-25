@@ -26,7 +26,7 @@ android {
 
     defaultConfig {
         applicationId "bassamalim.hidaya"
-        minSdkVersion 22
+        minSdkVersion 23
         targetSdkVersion 31
         versionCode 173
         versionName '1.7.3'

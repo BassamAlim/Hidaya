@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
@@ -118,19 +117,12 @@ public class Alarms {
             AlarmManager myAlarm =
                     (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
-                        intent, PendingIntent.FLAG_UPDATE_CURRENT |
-                                PendingIntent.FLAG_IMMUTABLE);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT |
+                            PendingIntent.FLAG_IMMUTABLE);
 
-                myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, adjusted, pendingIntent);
-            }
-            else {
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
-                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, adjusted, pendingIntent);
 
-                myAlarm.setExact(AlarmManager.RTC_WAKEUP, adjusted, pendingIntent);
-            }
             Log.i(Const.TAG, "alarm " + id + " set");
         }
         else
@@ -197,19 +189,11 @@ public class Alarms {
 
         AlarmManager myAlarm = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
-                    intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
+                intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-            myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
-                    pendingIntent);
-        }
-        else {
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, id.ordinal(),
-                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            myAlarm.setExact(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pendingIntent);
-        }
+        myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
+                pendingIntent);
 
         Log.i(Const.TAG, "alarm " + id + " set");
     }

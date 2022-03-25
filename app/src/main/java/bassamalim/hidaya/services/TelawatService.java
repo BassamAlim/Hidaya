@@ -429,7 +429,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
                 // Be careful about the color
                 .setSmallIcon(R.drawable.launcher_foreground)
                 .setColorized(true)
-                .setColor(getResources().getColor(R.color.click_M))
+                .setColor(getResources().getColor(R.color.click_M, getTheme()))
                 // Add buttons
                 // Enable launching the player by clicking the notification
                 .setContentIntent(controller.getSessionActivity())
@@ -596,10 +596,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         intentFilter.addAction(ACTION_STOP);
 
         String pkg = getPackageName();
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
-            flags = PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE;
-        else
-            flags = PendingIntent.FLAG_CANCEL_CURRENT;
+        flags = PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE;
 
         playPauseAction = new NotificationCompat.Action(R.drawable.ic_play_arrow, "play_pause",
                 PendingIntent.getBroadcast(this, id,
@@ -670,11 +667,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         Intent intent = new Intent(this, TelawatClient.class).setAction("back")
                 .putExtra("media_id", mediaId);
 
-        int flags;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
-            flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
-        else
-            flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
 
         return PendingIntent.getActivity(this, 36, intent, flags);
     }
@@ -693,6 +686,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
             return new BrowserRoot(MY_EMPTY_MEDIA_ROOT_ID, null);
         }
     }
+
     @Override
     public void onLoadChildren(@NonNull String parentId,
                                @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {

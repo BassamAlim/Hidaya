@@ -172,15 +172,9 @@ public class Utils {
     }
 
     public static void cancelAlarm(Context gContext, ID id) {
-        PendingIntent pendingIntent;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            pendingIntent = PendingIntent.getBroadcast(gContext, id.ordinal(), new Intent(),
-                    PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        }
-        else {
-            pendingIntent = PendingIntent.getBroadcast(gContext, id.ordinal(),
-                    new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
-        }
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(gContext, id.ordinal(),
+                new Intent(), PendingIntent.FLAG_CANCEL_CURRENT |
+                        PendingIntent.FLAG_IMMUTABLE);
 
         AlarmManager am = (AlarmManager) gContext.getSystemService(Context.ALARM_SERVICE);
         am.cancel(pendingIntent);

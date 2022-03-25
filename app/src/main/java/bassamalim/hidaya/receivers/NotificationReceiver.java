@@ -168,10 +168,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
         builder.setAutoCancel(true);
         builder.setOnlyAlertOnce(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            builder.setColor(context.getColor(R.color.click_M));
-        else
-            builder.setColor(context.getResources().getColor(R.color.click_M));
+        builder.setColor(context.getColor(R.color.click_M));
         builder.setContentIntent(onClick(id));
 
         if (type==1)
@@ -182,7 +179,6 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private PendingIntent onClick(ID id) {
         Intent intent;
-        PendingIntent pendingIntent;
 
         switch (id) {
             case MORNING:
@@ -212,16 +208,8 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pendingIntent = PendingIntent.getActivity(context, id.ordinal(), intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        }
-        else {
-            pendingIntent = PendingIntent.getActivity(context, id.ordinal(), intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-        }
-
-        return pendingIntent;
+        return PendingIntent.getActivity(context, id.ordinal(), intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     private void createNotificationChannel() {

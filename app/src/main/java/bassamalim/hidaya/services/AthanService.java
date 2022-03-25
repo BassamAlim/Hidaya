@@ -99,42 +99,23 @@ public class AthanService extends Service {
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
         builder.setAutoCancel(true);
         builder.setOnlyAlertOnce(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            builder.setColor(getColor(R.color.click_M));
-        else
-            builder.setColor(getResources().getColor(R.color.click_M));
+        builder.setColor(getColor(R.color.click_M));
 
         return builder.build();
     }
 
     private PendingIntent getStopIntent() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getService(this, 11, new Intent(
-                            this, AthanService.class).setAction(Const.STOP_ATHAN)
-                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK),
-                    PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        }
-        else {
-            return PendingIntent.getActivity(this, 11, new Intent(
-                            this, AthanService.class).setAction(Const.STOP_ATHAN)
-                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK),
-                    PendingIntent.FLAG_CANCEL_CURRENT);
-        }
+        return PendingIntent.getService(this, 11, new Intent(
+                        this, AthanService.class).setAction(Const.STOP_ATHAN)
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK),
+                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     private PendingIntent getStopAndOpenIntent() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getActivity(this, 12, new Intent(
-                            this, Splash.class).setAction(Const.STOP_ATHAN),
-                    PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        }
-        else {
-            return PendingIntent.getActivity(this, 12, new Intent(
-                            this, Splash.class).setAction(Const.STOP_ATHAN),
-                    PendingIntent.FLAG_CANCEL_CURRENT);
-        }
+        return PendingIntent.getActivity(this, 12, new Intent(
+                        this, Splash.class).setAction(Const.STOP_ATHAN),
+                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     private void createNotificationChannel() {

@@ -155,15 +155,8 @@ public class MainActivity extends AppCompatActivity {
             Calendar time = Calendar.getInstance();
             time.set(Calendar.HOUR_OF_DAY, DAILY_UPDATE_HOUR);
 
-            PendingIntent pendIntent;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                pendIntent = PendingIntent.getBroadcast(this, 0, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-            }
-            else {
-                pendIntent = PendingIntent.getBroadcast(this, 0, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-            }
+            PendingIntent pendIntent = PendingIntent.getBroadcast(this, 0, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
             AlarmManager myAlarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
