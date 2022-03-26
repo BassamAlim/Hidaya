@@ -1,66 +1,59 @@
-<PreferenceScreen
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     app:iconSpaceReserved="false">
 
     <PreferenceCategory
-        app:title="@string/notifications_header"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:title="@string/notifications_header">
 
         <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
             app:key="@string/morning_athkar_key"
-            app:title="@string/morning_athkar_title"
-            app:defaultValue="true"
-            app:iconSpaceReserved="false" />
+            app:title="@string/morning_athkar_title" />
 
         <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
             app:key="@string/evening_athkar_key"
-            app:title="@string/evening_athkar_title"
-            app:defaultValue="true"
-            app:iconSpaceReserved="false" />
+            app:title="@string/evening_athkar_title" />
 
         <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
             app:key="@string/daily_werd_key"
-            app:title="@string/daily_page_enable_title"
-            app:defaultValue="true"
-            app:iconSpaceReserved="false" />
+            app:title="@string/daily_page_enable_title" />
 
         <SwitchPreferenceCompat
-            app:key="@string/friday_kahf_key"
-            app:title="@string/friday_kahf_title"
             app:defaultValue="true"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false"
+            app:key="@string/friday_kahf_key"
+            app:title="@string/friday_kahf_title" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="المظهر"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:title="المظهر">
 
         <ListPreference
-            android:key="@string/theme_key"
-            android:title="السمة"
+            android:defaultValue="ThemeM"
             android:entries="@array/themes"
             android:entryValues="@array/theme_values"
-            android:defaultValue="ThemeM"
-            app:useSimpleSummaryProvider="true"
-            app:iconSpaceReserved="false"/>
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        app:title="@string/alathkar_header"
-        app:iconSpaceReserved="false">
+            android:key="@string/theme_key"
+            android:title="السمة"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
 
         <SeekBarPreference
-            app:key="@string/alathkar_text_size_key"
-            app:title="@string/text_size_title"
-            app:showSeekBarValue="true"
-            app:min="20"
             android:max="50"
             app:defaultValue="27"
-            app:useSimpleSummaryProvider="true"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false"
+            app:key="@string/alathkar_text_size_key"
+            app:min="20"
+            app:showSeekBarValue="true"
+            app:title="@string/text_size_title"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

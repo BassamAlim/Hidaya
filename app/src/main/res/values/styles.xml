@@ -1,17 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Widget.Hidaya.AppWidget.Container" parent="android:Widget">
-        <item name="android:id">@android:id/background</item>
-        <item name="android:padding">?attr/appWidgetPadding</item>
-        <item name="android:background">?android:attr/colorBackground</item>
-    </style>
-
-    <style name="Widget.Hidaya.AppWidget.InnerView" parent="android:Widget">
-        <item name="android:padding">?attr/appWidgetPadding</item>
-        <item name="android:background">?android:attr/colorBackground</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-    </style>
-
     <style name="PrayerPopupAnimation">
         <item name="android:windowEnterAnimation">@anim/prayer_popup_show</item>
         <item name="android:windowExitAnimation">@anim/prayer_popup_hide</item>

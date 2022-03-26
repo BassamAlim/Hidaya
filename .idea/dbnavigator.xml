@@ -70,7 +70,7 @@
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="70f60152-9021-4f90-a2e7-fa8fadc8887b" active="true">
+      <connection id="70f60152-9021-4f90-a2e7-fa8fadc8887b" active="true" signed="true">
         <database>
           <name value="HidayaDB" />
           <description value="" />

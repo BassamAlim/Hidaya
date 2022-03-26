@@ -35,7 +35,7 @@
     <string name="evening_athkar_title">إشعار أذكار المساء</string>
     <string name="daily_page_enable_title">إشعار صفحة اليوم</string>
     <string name="friday_kahf_title">إشعار سورة الكهف</string>
-    <string name="text_size_title">حجم الخط</string>
+    <string name="text_size_title">حجم الخط للأذكار وكتب الحديث</string>
 
     <!-- TextViews Text -->
     <string name="remaining">الوقت المتبقي: %1$s</string>

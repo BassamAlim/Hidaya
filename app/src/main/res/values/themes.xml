@@ -105,6 +105,4 @@
         <item name="appWidgetInnerRadius">4dp</item>
     </style>
 
-    <style name="Theme.Hidaya.AppWidgetContainer" parent="Theme.Hidaya.AppWidgetContainerParent" />
-
 </resources>

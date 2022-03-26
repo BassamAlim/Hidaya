@@ -1,81 +1,69 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Widget.Hidaya.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/prayers_widget_bg"
-    android:layoutDirection="rtl"
-    android:theme="@style/Theme.Hidaya.AppWidgetContainer">
+    android:gravity="center"
+    android:layoutDirection="rtl">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/widget_fajr"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:layout_weight="1"
+        android:layout_marginEnd=".5dp"
+        android:background="@color/click_M"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="23dp"
+        tools:ignore="SpUsage" />
 
-        <TextView
-            android:id="@+id/widget_fajr"
-            style="@style/Widget.Hidaya.AppWidget.InnerView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/prayers_widget_inner_view_bg"
-            android:gravity="center"
-            android:padding="6dp"
-            android:textSize="23dp"
-            tools:ignore="SpUsage" />
+    <TextView
+        android:id="@+id/widget_duhr"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginHorizontal=".5dp"
+        android:background="@color/click_M"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="23dp"
+        tools:ignore="SpUsage" />
 
-        <TextView
-            android:id="@+id/widget_duhr"
-            style="@style/Widget.Hidaya.AppWidget.InnerView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/prayers_widget_inner_view_bg"
-            android:gravity="center"
-            android:padding="6dp"
-            android:textSize="23dp"
-            tools:ignore="SpUsage" />
+    <TextView
+        android:id="@+id/widget_asr"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginHorizontal=".5dp"
+        android:background="@color/click_M"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="23dp"
+        tools:ignore="SpUsage" />
 
-        <TextView
-            android:id="@+id/widget_asr"
-            style="@style/Widget.Hidaya.AppWidget.InnerView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/prayers_widget_inner_view_bg"
-            android:gravity="center"
-            android:padding="6dp"
-            android:textSize="23dp"
-            tools:ignore="SpUsage" />
+    <TextView
+        android:id="@+id/widget_maghrib"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginHorizontal=".5dp"
+        android:background="@color/click_M"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="23dp"
+        tools:ignore="SpUsage" />
 
-        <TextView
-            android:id="@+id/widget_maghrib"
-            style="@style/Widget.Hidaya.AppWidget.InnerView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/prayers_widget_inner_view_bg"
-            android:gravity="center"
-            android:padding="6dp"
-            android:textSize="23dp"
-            tools:ignore="SpUsage" />
+    <TextView
+        android:id="@+id/widget_ishaa"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginStart=".5dp"
+        android:background="@color/click_M"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="23dp"
+        tools:ignore="SpUsage" />
 
-        <TextView
-            android:id="@+id/widget_ishaa"
-            style="@style/Widget.Hidaya.AppWidget.InnerView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="5dp"
-            android:background="@drawable/prayers_widget_inner_view_bg"
-            android:gravity="center"
-            android:padding="6dp"
-            android:textSize="23dp"
-            tools:ignore="SpUsage" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>
