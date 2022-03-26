@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,26 +11,26 @@
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:minHeight="?attr/actionBarSize"
         android:background="?myBars"
         android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <TextView
             android:id="@+id/top_bar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
+            android:layout_marginEnd="15dp"
+            android:fontFamily="@font/tajawal_regular"
             android:textColor="?myAccent"
             android:textSize="21dp"
             android:textStyle="bold"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -40,20 +39,20 @@
         android:id="@+id/start_quiz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="15dp"
-        android:paddingHorizontal="30dp"
-        android:elevation="15dp"
-        android:gravity="center"
         android:background="@drawable/ripple_click"
+        android:elevation="15dp"
+        android:fontFamily="@font/tajawal_regular"
+        android:gravity="center"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="15dp"
         android:text="@string/start_quiz"
+        android:textColor="?myAccent"
         android:textSize="28dp"
         android:textStyle="bold"
-        android:textColor="?myAccent"
-        android:fontFamily="@font/tajawal_regular"
-        tools:ignore="SpUsage"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpUsage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

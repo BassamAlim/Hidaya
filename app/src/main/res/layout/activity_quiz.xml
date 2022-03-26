@@ -1,38 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="rtl"
     android:background="?myMainBg"
+    android:layoutDirection="rtl"
     tools:context=".activities.QuizActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:minHeight="?attr/actionBarSize"
         android:background="?myBars"
         android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <TextView
             android:id="@+id/question_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
+            android:layout_marginEnd="15dp"
+            android:fontFamily="@font/tajawal_regular"
+            android:textColor="?myBarsText"
             android:textSize="21dp"
             android:textStyle="bold"
-            android:textColor="?myBarsText"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -42,40 +41,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:paddingVertical="15dp"
-        android:paddingHorizontal="20dp"
-        android:elevation="10dp"
         android:background="?myBars"
-        android:textSize="35dp"
-        android:textColor="?myBarsText"
+        android:elevation="10dp"
         android:fontFamily="@font/tajawal_regular"
-        tools:ignore="SpUsage"
-        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="15dp"
+        android:textColor="?myBarsText"
+        android:textSize="35dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        tools:ignore="SpUsage" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/question_screen"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/question_navigator"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/question_navigator">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/question_screen">
 
         <Button
             android:id="@+id/answer1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:padding="15dp"
-            android:elevation="15dp"
-            android:gravity="center"
             android:background="@drawable/ripple_click"
-            android:textSize="23dp"
-            android:textColor="?myText"
+            android:elevation="15dp"
             android:fontFamily="@font/tajawal_regular"
+            android:gravity="center"
+            android:padding="15dp"
+            android:textColor="?myText"
+            android:textSize="23dp"
             tools:ignore="SpUsage" />
 
         <Button
@@ -83,13 +82,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:padding="15dp"
-            android:elevation="15dp"
-            android:gravity="center"
             android:background="@drawable/ripple_click"
-            android:textSize="23dp"
-            android:textColor="?myText"
+            android:elevation="15dp"
             android:fontFamily="@font/tajawal_regular"
+            android:gravity="center"
+            android:padding="15dp"
+            android:textColor="?myText"
+            android:textSize="23dp"
             tools:ignore="SpUsage" />
 
         <Button
@@ -97,13 +96,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:padding="15dp"
-            android:elevation="18dp"
-            android:gravity="center"
             android:background="@drawable/ripple_click"
-            android:textSize="23dp"
-            android:textColor="?myText"
+            android:elevation="18dp"
             android:fontFamily="@font/tajawal_regular"
+            android:gravity="center"
+            android:padding="15dp"
+            android:textColor="?myText"
+            android:textSize="23dp"
             tools:ignore="SpUsage" />
 
         <Button
@@ -111,13 +110,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:padding="15dp"
-            android:elevation="18dp"
-            android:gravity="center"
             android:background="@drawable/ripple_click"
-            android:textSize="23dp"
-            android:textColor="?myText"
+            android:elevation="18dp"
             android:fontFamily="@font/tajawal_regular"
+            android:gravity="center"
+            android:padding="15dp"
+            android:textColor="?myText"
+            android:textSize="23dp"
             tools:ignore="SpUsage" />
 
     </LinearLayout>
@@ -127,43 +126,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:orientation="horizontal"
         android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/previous_question"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:paddingVertical="10dp"
-            android:paddingHorizontal="25dp"
-            android:elevation="3dp"
-            android:gravity="center"
             android:background="@drawable/ripple_click"
+            android:elevation="3dp"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center"
+            android:paddingHorizontal="25dp"
+            android:paddingVertical="10dp"
             android:text="@string/previous_question"
             android:textSize="23dp"
-            android:fontFamily="@font/tajawal_regular"
-            tools:ignore="SpUsage"
-            style="?android:attr/buttonBarButtonStyle" />
+            tools:ignore="SpUsage" />
 
         <Button
             android:id="@+id/next_question"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:paddingVertical="10dp"
-            android:paddingHorizontal="25dp"
-            android:elevation="3dp"
-            android:gravity="center"
             android:background="@drawable/ripple_click"
+            android:elevation="3dp"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center"
+            android:paddingHorizontal="25dp"
+            android:paddingVertical="10dp"
             android:text="@string/next_question"
             android:textSize="23dp"
-            android:fontFamily="@font/tajawal_regular"
-            tools:ignore="SpUsage"
-            style="?android:attr/buttonBarButtonStyle" />
+            tools:ignore="SpUsage" />
 
     </LinearLayout>
 

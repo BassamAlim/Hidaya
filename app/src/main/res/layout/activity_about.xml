@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,93 +12,93 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:fontFamily="@font/tajawal_regular"
         android:gravity="center"
         android:text="@string/thanks"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:fontFamily="@font/tajawal_regular"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/quran_source"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:fontFamily="@font/tajawal_regular"
         android:padding="20dp"
         android:text="@string/quran_source"
         android:textSize="25sp"
-        android:fontFamily="@font/tajawal_regular"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tafseer_source"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tafseer_source" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title" />
 
     <TextView
         android:id="@+id/tafseer_source"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/tajawal_regular"
         android:padding="20dp"
         android:text="@string/tafseer_source"
         android:textSize="25sp"
-        android:fontFamily="@font/tajawal_regular"
-        app:layout_constraintTop_toBottomOf="@id/quran_source"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/hadeeth_source"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/hadeeth_source" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/quran_source" />
 
     <TextView
         android:id="@+id/hadeeth_source"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
+        android:fontFamily="@font/tajawal_regular"
         android:padding="20dp"
         android:text="@string/hadeeth_source"
         android:textSize="25sp"
-        android:fontFamily="@font/tajawal_regular"
-        app:layout_constraintTop_toBottomOf="@id/tafseer_source"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rebuild_db"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/rebuild_db" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tafseer_source" />
 
     <Button
         android:id="@+id/rebuild_db"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="-20dp"
         android:layout_marginHorizontal="40dp"
-        android:paddingVertical="15dp"
-        android:elevation="10dp"
-        android:visibility="gone"
+        android:layout_marginBottom="-20dp"
         android:background="@drawable/ripple_click"
-        android:text="@string/rebuild_database"
-        android:textSize="20dp"
-        android:textColor="?myAccent"
+        android:elevation="10dp"
         android:fontFamily="@font/tajawal_regular"
-        tools:ignore="SpUsage"
-        app:layout_constraintTop_toBottomOf="@id/hadeeth_source"
-        app:layout_constraintStart_toStartOf="parent"
+        android:paddingVertical="15dp"
+        android:text="@string/rebuild_database"
+        android:textColor="?myAccent"
+        android:textSize="20dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/drive_update"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/drive_update"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hadeeth_source"
+        tools:ignore="SpUsage" />
 
     <Button
         android:id="@+id/drive_update"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="40dp"
-        android:paddingVertical="15dp"
-        android:elevation="10dp"
-        android:visibility="gone"
         android:background="@drawable/ripple_click"
-        android:text="@string/quick_update"
-        android:textSize="20dp"
-        android:textColor="?myAccent"
+        android:elevation="10dp"
         android:fontFamily="@font/tajawal_regular"
-        tools:ignore="SpUsage"
-        app:layout_constraintTop_toBottomOf="@id/rebuild_db"
-        app:layout_constraintStart_toStartOf="parent"
+        android:paddingVertical="15dp"
+        android:text="@string/quick_update"
+        android:textColor="?myAccent"
+        android:textSize="20dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rebuild_db"
+        tools:ignore="SpUsage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

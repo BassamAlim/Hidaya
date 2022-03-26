@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragments.TelawatFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?myMainBg"
     android:layoutDirection="rtl"
-    android:background="?myMainBg">
+    tools:context=".fragments.TelawatFragment">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
@@ -14,16 +14,16 @@
         android:layout_height="wrap_content"
         app:defaultQueryHint="ابحث عن القارئ"
         app:iconifiedByDefault="false"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constrainedHeight="true"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_view"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintVertical_bias="0.0">
 
     </androidx.recyclerview.widget.RecyclerView>
 

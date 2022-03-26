@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.OtherFragment">
@@ -10,145 +9,145 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="?myMainBg"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:paddingBottom="?actionBarSize"
-            android:orientation="vertical"
             android:layout_gravity="top"
-            android:gravity="center">
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="?actionBarSize">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/telawat"
-                    android:elevation="@dimen/buttony_elevation"
+                    style="@style/Buttony"
                     android:background="@drawable/ripple_click"
-                    android:text="@string/recitations"
                     android:drawableTop="@drawable/ic_headset"
-                    style="@style/Buttony"/>
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/recitations" />
 
                 <Button
                     android:id="@+id/quiz"
-                    android:elevation="@dimen/buttony_elevation"
+                    style="@style/Buttony"
                     android:background="@drawable/ripple_click"
-                    android:text="@string/quiz_title"
                     android:drawableTop="@drawable/ic_quiz"
-                    style="@style/Buttony"/>
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/quiz_title" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/hadeeth_books"
-                    android:elevation="@dimen/buttony_elevation"
+                    style="@style/Buttony"
                     android:background="@drawable/ripple_click"
-                    android:text="@string/hadeeth_books"
                     android:drawableTop="@drawable/ic_books"
-                    style="@style/Buttony"/>
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/hadeeth_books" />
 
                 <Button
                     android:id="@+id/quran_searcher"
-                    android:elevation="@dimen/buttony_elevation"
+                    style="@style/Buttony"
                     android:background="@drawable/ripple_click"
-                    android:text="@string/search_in_quran"
                     android:drawableTop="@drawable/ic_quran_search"
-                    style="@style/Buttony"/>
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/search_in_quran" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/channels"
-                    android:elevation="@dimen/buttony_elevation"
+                    style="@style/Buttony"
                     android:background="@drawable/ripple_click"
-                    android:text="@string/quran_and_hadeeth_channels"
                     android:drawableTop="@drawable/ic_television"
-                    style="@style/Buttony"/>
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/quran_and_hadeeth_channels" />
 
                 <Button
                     android:id="@+id/settings"
-                    android:elevation="@dimen/buttony_elevation"
+                    style="@style/Buttony"
                     android:background="@drawable/ripple_click"
-                    android:text="@string/settings"
                     android:drawableTop="@drawable/ic_settings"
-                    style="@style/Buttony"/>
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/settings" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/features"
-                    android:elevation="@dimen/buttony_elevation"
+                    style="@style/Buttony"
                     android:background="@drawable/ripple_click"
-                    android:text="@string/features_guide"
                     android:drawableTop="@drawable/ic_features"
-                    style="@style/Buttony"/>
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/features_guide" />
 
                 <Button
                     android:id="@+id/contact"
-                    android:elevation="@dimen/buttony_elevation"
+                    style="@style/Buttony"
                     android:background="@drawable/ripple_click"
-                    android:text="@string/contact"
                     android:drawableTop="@drawable/ic_mail"
-                    style="@style/Buttony"/>
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/contact" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="15dp"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingBottom="15dp">
 
                 <Button
                     android:id="@+id/share"
-                    android:elevation="@dimen/buttony_elevation"
+                    style="@style/Buttony"
                     android:background="@drawable/ripple_click"
-                    android:text="@string/share_app"
                     android:drawableTop="@drawable/ic_share"
-                    style="@style/Buttony"/>
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/share_app" />
 
                 <Button
                     android:id="@+id/about"
-                    android:elevation="@dimen/buttony_elevation"
+                    style="@style/Buttony"
                     android:background="@drawable/ripple_click"
-                    android:text="@string/about"
                     android:drawableTop="@drawable/ic_info"
-                    style="@style/Buttony"/>
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/about" />
 
             </LinearLayout>
 

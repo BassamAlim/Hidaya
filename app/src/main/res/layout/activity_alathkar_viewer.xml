@@ -1,38 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="ltr"
     android:background="?myMainBg"
+    android:layoutDirection="ltr"
     tools:context=".activities.AthkarViewer">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:minHeight="?attr/actionBarSize"
         android:background="?myBars"
         android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <TextView
             android:id="@+id/top_bar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
+            android:layout_marginEnd="15dp"
+            android:fontFamily="@font/tajawal_regular"
             android:textColor="?myBarsText"
             android:textSize="21dp"
             android:textStyle="bold"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -42,9 +41,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constrainedHeight="true"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_bar"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintVertical_bias="0.0">
 
     </androidx.recyclerview.widget.RecyclerView>
 

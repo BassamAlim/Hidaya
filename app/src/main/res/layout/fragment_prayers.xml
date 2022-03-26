@@ -1,38 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="rtl"
     android:background="?myMainBg"
+    android:layoutDirection="rtl"
     tools:context=".fragments.PrayersFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/fajr_card"
         android:layout_width="match_parent"
         android:layout_height="@dimen/prayer_card_height"
-        android:layout_marginTop="5dp"
         android:layout_marginHorizontal="@dimen/prayer_card_margin"
+        android:layout_marginTop="5dp"
         app:cardBackgroundColor="?myClick"
         app:cardCornerRadius="20dp"
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
         app:cardPreventCornerOverlap="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/shorouq_card">
+        app:layout_constraintBottom_toTopOf="@id/shorouq_card"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/fajr_screen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="30dp"
             android:layout_gravity="start|center"
+            android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
+            android:paddingHorizontal="30dp"
             android:textSize="35dp"
             android:textStyle="bold"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <TextView
@@ -40,11 +39,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:gravity="center_horizontal"
             android:background="?myCounter"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center_horizontal"
             android:textColor="?myAccent"
             android:textSize="20dp"
-            android:fontFamily="@font/tajawal_regular"
             android:visibility="invisible"
             tools:ignore="SpUsage" />
 
@@ -52,10 +51,10 @@
             android:id="@+id/fajr_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_margin="15dp"
             android:layout_gravity="center|end"
-            android:src="@drawable/ic_sound"
-            android:contentDescription="@string/notification_image_description" />
+            android:layout_margin="15dp"
+            android:contentDescription="@string/notification_image_description"
+            android:src="@drawable/ic_sound" />
 
     </androidx.cardview.widget.CardView>
 
@@ -70,19 +69,19 @@
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
         app:cardPreventCornerOverlap="true"
-        app:layout_constraintTop_toBottomOf="@id/fajr_card"
-        app:layout_constraintBottom_toTopOf="@id/duhr_card">
+        app:layout_constraintBottom_toTopOf="@id/duhr_card"
+        app:layout_constraintTop_toBottomOf="@id/fajr_card">
 
         <TextView
             android:id="@+id/shorouq_screen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="30dp"
             android:layout_gravity="center|start"
+            android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
+            android:paddingHorizontal="30dp"
             android:textSize="35dp"
             android:textStyle="bold"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <TextView
@@ -90,11 +89,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:gravity="center_horizontal"
             android:background="?myCounter"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center_horizontal"
             android:textColor="?myAccent"
             android:textSize="20dp"
-            android:fontFamily="@font/tajawal_regular"
             android:visibility="invisible"
             tools:ignore="SpUsage" />
 
@@ -102,10 +101,10 @@
             android:id="@+id/shorouq_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_margin="15dp"
             android:layout_gravity="center|end"
-            android:src="@drawable/ic_disabled"
-            android:contentDescription="@string/notification_image_description" />
+            android:layout_margin="15dp"
+            android:contentDescription="@string/notification_image_description"
+            android:src="@drawable/ic_disabled" />
 
     </androidx.cardview.widget.CardView>
 
@@ -119,19 +118,19 @@
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
         app:cardPreventCornerOverlap="true"
-        app:layout_constraintTop_toBottomOf="@id/shorouq_card"
-        app:layout_constraintBottom_toTopOf="@id/asr_card">
+        app:layout_constraintBottom_toTopOf="@id/asr_card"
+        app:layout_constraintTop_toBottomOf="@id/shorouq_card">
 
         <TextView
             android:id="@+id/duhr_screen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="30dp"
             android:layout_gravity="center|start"
+            android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
+            android:paddingHorizontal="30dp"
             android:textSize="35dp"
             android:textStyle="bold"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <TextView
@@ -139,11 +138,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:gravity="center_horizontal"
             android:background="?myCounter"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center_horizontal"
             android:textColor="?myAccent"
             android:textSize="20dp"
-            android:fontFamily="@font/tajawal_regular"
             android:visibility="invisible"
             tools:ignore="SpUsage" />
 
@@ -151,10 +150,10 @@
             android:id="@+id/duhr_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_margin="15dp"
             android:layout_gravity="center|end"
-            android:src="@drawable/ic_sound"
-            android:contentDescription="@string/notification_image_description" />
+            android:layout_margin="15dp"
+            android:contentDescription="@string/notification_image_description"
+            android:src="@drawable/ic_sound" />
 
     </androidx.cardview.widget.CardView>
 
@@ -168,19 +167,19 @@
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
         app:cardPreventCornerOverlap="true"
-        app:layout_constraintTop_toBottomOf="@id/duhr_card"
-        app:layout_constraintBottom_toTopOf="@id/maghrib_card">
+        app:layout_constraintBottom_toTopOf="@id/maghrib_card"
+        app:layout_constraintTop_toBottomOf="@id/duhr_card">
 
         <TextView
             android:id="@+id/asr_screen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="30dp"
             android:layout_gravity="center|start"
+            android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
+            android:paddingHorizontal="30dp"
             android:textSize="35dp"
             android:textStyle="bold"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <TextView
@@ -188,11 +187,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:gravity="center_horizontal"
             android:background="?myCounter"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center_horizontal"
             android:textColor="?myAccent"
             android:textSize="20dp"
-            android:fontFamily="@font/tajawal_regular"
             android:visibility="invisible"
             tools:ignore="SpUsage" />
 
@@ -200,10 +199,10 @@
             android:id="@+id/asr_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_margin="15dp"
             android:layout_gravity="center|end"
-            android:src="@drawable/ic_sound"
-            android:contentDescription="@string/notification_image_description" />
+            android:layout_margin="15dp"
+            android:contentDescription="@string/notification_image_description"
+            android:src="@drawable/ic_sound" />
 
     </androidx.cardview.widget.CardView>
 
@@ -217,19 +216,19 @@
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
         app:cardPreventCornerOverlap="true"
-        app:layout_constraintTop_toBottomOf="@id/asr_card"
-        app:layout_constraintBottom_toTopOf="@id/ishaa_card">
+        app:layout_constraintBottom_toTopOf="@id/ishaa_card"
+        app:layout_constraintTop_toBottomOf="@id/asr_card">
 
         <TextView
             android:id="@+id/maghrib_screen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="30dp"
             android:layout_gravity="center|start"
+            android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
+            android:paddingHorizontal="30dp"
             android:textSize="35dp"
             android:textStyle="bold"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <TextView
@@ -237,11 +236,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:gravity="center_horizontal"
             android:background="?myCounter"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center_horizontal"
             android:textColor="?myAccent"
             android:textSize="20dp"
-            android:fontFamily="@font/tajawal_regular"
             android:visibility="invisible"
             tools:ignore="SpUsage" />
 
@@ -249,10 +248,10 @@
             android:id="@+id/maghrib_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_margin="15dp"
             android:layout_gravity="center|end"
-            android:src="@drawable/ic_sound"
-            android:contentDescription="@string/notification_image_description" />
+            android:layout_margin="15dp"
+            android:contentDescription="@string/notification_image_description"
+            android:src="@drawable/ic_sound" />
 
     </androidx.cardview.widget.CardView>
 
@@ -266,19 +265,19 @@
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
         app:cardPreventCornerOverlap="true"
-        app:layout_constraintTop_toBottomOf="@id/maghrib_card"
-        app:layout_constraintBottom_toTopOf="@id/day_selector">
+        app:layout_constraintBottom_toTopOf="@id/day_selector"
+        app:layout_constraintTop_toBottomOf="@id/maghrib_card">
 
         <TextView
             android:id="@+id/ishaa_screen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="30dp"
             android:layout_gravity="center|start"
+            android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
+            android:paddingHorizontal="30dp"
             android:textSize="35dp"
             android:textStyle="bold"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <TextView
@@ -286,11 +285,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:gravity="center_horizontal"
             android:background="?myCounter"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center_horizontal"
             android:textColor="?myAccent"
             android:textSize="20dp"
-            android:fontFamily="@font/tajawal_regular"
             android:visibility="invisible"
             tools:ignore="SpUsage" />
 
@@ -298,10 +297,10 @@
             android:id="@+id/ishaa_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_margin="15dp"
             android:layout_gravity="center|end"
-            android:src="@drawable/ic_sound"
-            android:contentDescription="@string/notification_image_description" />
+            android:layout_margin="15dp"
+            android:contentDescription="@string/notification_image_description"
+            android:src="@drawable/ic_sound" />
 
     </androidx.cardview.widget.CardView>
 
@@ -309,15 +308,15 @@
         android:id="@+id/day_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="60dp"
-        android:layout_marginHorizontal="15dp"
+        android:backgroundTint="?myClick"
         app:cardCornerRadius="10dp"
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
-        android:backgroundTint="?myClick"
-        app:layout_constraintTop_toBottomOf="@id/ishaa_card"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ishaa_card">
 
         <ImageButton
             android:id="@+id/previous_day_button"
@@ -325,17 +324,17 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:backgroundTint="?myClick"
-            android:src="@drawable/ic_right_arrow"
-            android:contentDescription="@string/previous_day_button_description"/>
+            android:contentDescription="@string/previous_day_button_description"
+            android:src="@drawable/ic_right_arrow" />
 
         <TextView
             android:id="@+id/day_screen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@font/tajawal_regular"
             android:text="@string/today"
             android:textSize="28dp"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <ImageButton
@@ -344,8 +343,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:backgroundTint="?myClick"
-            android:src="@drawable/ic_left_arrow"
-            android:contentDescription="@string/next_day_button_description"/>
+            android:contentDescription="@string/next_day_button_description"
+            android:src="@drawable/ic_left_arrow" />
 
     </androidx.cardview.widget.CardView>
 

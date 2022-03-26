@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="rtl"
     android:background="?myMainBg"
+    android:layoutDirection="rtl"
     tools:context=".fragments.QiblaFragment">
 
     <ImageView
@@ -14,11 +13,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
+        android:contentDescription="@string/qibla_view_description"
         android:paddingHorizontal="10dp"
         android:src="@drawable/compass"
-        android:contentDescription="@string/qibla_view_description"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -26,42 +25,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="26dp"
-        android:src="@drawable/qibla_pointer"
         android:contentDescription="@string/qibla_view_description"
-        app:layout_constraintStart_toStartOf="@id/compass"
+        android:src="@drawable/qibla_pointer"
+        app:layout_constraintBottom_toBottomOf="@id/compass"
         app:layout_constraintEnd_toEndOf="@id/compass"
-        app:layout_constraintTop_toTopOf="@id/compass"
-        app:layout_constraintBottom_toBottomOf="@id/compass"/>
+        app:layout_constraintStart_toStartOf="@id/compass"
+        app:layout_constraintTop_toTopOf="@id/compass" />
 
     <ImageView
         android:id="@+id/kaaba"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_qibla_kaaba"
         android:contentDescription="@string/qibla_view_description"
-        app:layout_constraintStart_toStartOf="@id/compass"
+        android:src="@drawable/ic_qibla_kaaba"
+        app:layout_constraintBottom_toBottomOf="@id/compass"
         app:layout_constraintEnd_toEndOf="@id/compass"
-        app:layout_constraintTop_toTopOf="@id/compass"
-        app:layout_constraintBottom_toBottomOf="@id/compass"/>
+        app:layout_constraintStart_toStartOf="@id/compass"
+        app:layout_constraintTop_toTopOf="@id/compass" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/compass">
 
         <TextView
             android:id="@+id/accuracy_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="20dp"
+            android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
-            android:textSize="20sp"
+            android:paddingHorizontal="20dp"
             android:textColor="?myAccent"
-            android:fontFamily="@font/tajawal_regular"/>
+            android:textSize="20sp" />
 
         <ImageButton
             android:id="@+id/accuracy_indicator"
@@ -76,24 +75,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
+        android:fontFamily="@font/tajawal_regular"
         android:gravity="center"
         android:text="@string/distance_to_kaaba"
         android:textSize="30dp"
         android:textStyle="bold"
-        android:fontFamily="@font/tajawal_regular"
-        tools:ignore="SpUsage"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:ignore="SpUsage" />
 
     <ImageView
         android:id="@+id/bingo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_check"
         android:contentDescription="@string/bingo_view_description"
+        android:src="@drawable/ic_check"
         android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/compass"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/compass"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

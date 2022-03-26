@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="rtl"
     android:background="?myMainBg"
+    android:layoutDirection="rtl"
     tools:context=".activities.WelcomeActivity">
 
     <TextView
@@ -13,54 +13,54 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
+        android:fontFamily="@font/tajawal_regular"
         android:text="@string/welcome_message"
         android:textSize="30sp"
-        android:fontFamily="@font/tajawal_regular"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="35dp"
-        android:padding="10dp"
-        android:orientation="vertical"
-        android:gravity="center"
         android:background="?myClick"
-        app:layout_constraintTop_toBottomOf="@id/welcome"
-        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcome">
 
         <TextView
             android:id="@+id/disclaimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
+            android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
+            android:paddingBottom="10dp"
             android:text="@string/disclaimer"
-            android:textSize="25sp"
-            android:fontFamily="@font/tajawal_regular"/>
+            android:textSize="25sp" />
 
         <Button
             android:id="@+id/agreed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="?myAccent"
+            android:fontFamily="@font/tajawal_regular"
             android:text="@string/agreed"
-            android:textSize="22sp"
             android:textColor="?myMainBg"
-            android:fontFamily="@font/tajawal_regular"/>
+            android:textSize="22sp" />
 
         <Button
             android:id="@+id/rejected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="?myClick"
+            android:fontFamily="@font/tajawal_regular"
             android:text="@string/rejected"
-            android:textSize="22sp"
-            android:fontFamily="@font/tajawal_regular"/>
+            android:textSize="22sp" />
 
     </LinearLayout>
 

@@ -2,44 +2,44 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activities.TelawatClient"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     android:layoutDirection="ltr"
-    android:background="@drawable/background">
+    tools:context=".activities.TelawatClient">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:minHeight="?attr/actionBarSize"
         android:background="?myBars"
         android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <ImageButton
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="?myBars"
-            android:src="@drawable/ic_back"
-            android:contentDescription="@string/back_description"/>
+            android:contentDescription="@string/back_description"
+            android:src="@drawable/ic_back" />
 
         <TextView
             android:id="@+id/telawa_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
+            android:layout_marginEnd="15dp"
+            android:fontFamily="@font/tajawal_regular"
             android:textColor="?myAccent"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -49,8 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="180dp"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -58,33 +58,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
-            android:textSize="30sp"
             android:textColor="@color/white"
-            android:textStyle="bold"
-            android:fontFamily="@font/tajawal_regular"/>
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/version_namescreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="20dp"
             android:layout_gravity="center"
+            android:layout_marginVertical="20dp"
+            android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
-            android:textSize="30sp"
             android:textColor="@color/text_M"
-            android:fontFamily="@font/tajawal_regular"/>
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/reciter_namescreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
-            android:textSize="30sp"
-            android:textStyle="bold"
             android:textColor="@color/text_M"
-            android:fontFamily="@font/tajawal_regular"/>
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -94,8 +94,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="20dp"
-        android:padding="10dp"
         android:background="?myWeakBars"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@id/controls_space">
 
         <SeekBar
@@ -105,25 +105,25 @@
             android:backgroundTint="?myClick"
             android:progressTint="?myOtherAccent"
             android:thumbTint="?myAccent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/progress_screen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_M"
             android:fontFamily="@font/tajawal_regular"
-            app:layout_constraintTop_toBottomOf="@id/seekbar"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:textColor="@color/text_M"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/seekbar" />
 
         <TextView
             android:id="@+id/duration_screen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_M"
             android:fontFamily="@font/tajawal_regular"
-            app:layout_constraintTop_toBottomOf="@id/seekbar"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:textColor="@color/text_M"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/seekbar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -139,66 +139,66 @@
             android:id="@+id/previous_track"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_player_previous"
             android:contentDescription="@string/previous_track_btn_description"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:padding="10dp"
+            android:src="@drawable/ic_player_previous"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/rewind"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/rewind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_backward"
             android:contentDescription="@string/rewind_btn_description"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/previous_track"
+            android:padding="10dp"
+            android:src="@drawable/ic_backward"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/play_pause"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/previous_track"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/play_pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_player_play"
             android:contentDescription="@string/play_pause_btn_description"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/rewind"
+            android:padding="10dp"
+            android:src="@drawable/ic_player_play"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/fast_forward"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/rewind"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/fast_forward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_forward"
             android:contentDescription="@string/fast_forward_btn_description"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/play_pause"
+            android:padding="10dp"
+            android:src="@drawable/ic_forward"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/next_track"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toEndOf="@id/play_pause"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/next_track"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_player_next"
             android:contentDescription="@string/next_track_btn_description"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/fast_forward"
+            android:padding="10dp"
+            android:src="@drawable/ic_player_next"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toEndOf="@id/fast_forward"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -206,55 +206,55 @@
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:minHeight="?attr/actionBarSize"
         android:background="?myBars"
         android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <ImageButton
             android:id="@+id/shuffle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:padding="10dp"
             android:layout_gravity="start"
+            android:layout_marginStart="40dp"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_shuffle"
             android:contentDescription="@string/shuffle_description"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:padding="10dp"
+            android:src="@drawable/ic_shuffle"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/download"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/download"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:layout_gravity="center"
             android:background="@drawable/ripple"
             android:contentDescription="@string/download_description"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/shuffle"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/repeat"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/shuffle"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/repeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="40dp"
-            android:padding="10dp"
             android:layout_gravity="end"
+            android:layout_marginEnd="40dp"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_repeat"
             android:contentDescription="@string/repeat_description"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/download"
+            android:padding="10dp"
+            android:src="@drawable/ic_repeat"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toEndOf="@id/download"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.appcompat.widget.Toolbar>
 

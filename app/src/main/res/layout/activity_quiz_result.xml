@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,25 +11,25 @@
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:minHeight="?attr/actionBarSize"
         android:background="?myBars"
         android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <TextView
             android:id="@+id/top_bar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
+            android:layout_marginEnd="15dp"
+            android:fontFamily="@font/tajawal_regular"
             android:text="@string/quiz_result"
             android:textColor="?myBarsText"
             android:textSize="21dp"
             android:textStyle="bold"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -39,10 +38,10 @@
         android:id="@+id/result_screen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/tajawal_regular"
         android:padding="20dp"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:fontFamily="@font/tajawal_regular"
         app:layout_constraintTop_toBottomOf="@id/top_bar" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -51,9 +50,9 @@
         android:layout_height="wrap_content"
         android:background="?myBars"
         app:layout_constrainedHeight="true"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/result_screen"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintVertical_bias="0.0">
 
     </androidx.recyclerview.widget.RecyclerView>
 

@@ -12,26 +12,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:orientation="vertical">
+            android:paddingBottom="5dp">
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:fontFamily="@font/tajawal_regular"
                 android:text="@string/features_guide"
                 android:textSize="30sp"
                 android:textStyle="bold"
-                android:fontFamily="@font/tajawal_regular"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -42,13 +42,13 @@
                 android:id="@+id/prayers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:layout_marginTop="48dp"
                 android:layout_marginEnd="30dp"
-                android:layout_gravity="end"
+                android:fontFamily="@font/tajawal_regular"
                 android:text="@string/in_prayers_screen"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:fontFamily="@font/tajawal_regular"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/title" />
@@ -58,25 +58,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
+                android:fontFamily="@font/tajawal_regular"
                 android:padding="16dp"
                 android:text="@string/prayers_tips"
                 android:textSize="20sp"
-                android:fontFamily="@font/tajawal_regular"
-                app:layout_constraintTop_toBottomOf="@id/prayers"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/prayers" />
 
             <TextView
                 android:id="@+id/quran"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="30dp"
-                android:layout_gravity="end"
+                android:fontFamily="@font/tajawal_regular"
                 android:text="@string/in_quran"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:fontFamily="@font/tajawal_regular"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/prayers_text" />
@@ -86,13 +86,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
+                android:fontFamily="@font/tajawal_regular"
                 android:padding="16dp"
                 android:text="@string/quran_tips"
                 android:textSize="20sp"
-                android:fontFamily="@font/tajawal_regular"
-                app:layout_constraintTop_toBottomOf="@id/quran"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/quran" />
 
         </LinearLayout>
 

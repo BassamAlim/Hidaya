@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:minWidth="250dp"
-    android:layoutDirection="rtl"
-    android:elevation="2dp"
-    android:orientation="vertical"
     android:layout_gravity="center"
-    android:background="@drawable/dialog_bg">
+    android:background="@drawable/dialog_bg"
+    android:elevation="2dp"
+    android:layoutDirection="rtl"
+    android:minWidth="250dp"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/popup_prayer_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:fontFamily="@font/tajawal_regular"
         android:paddingBottom="15dp"
         android:textSize="23dp"
         android:textStyle="bold"
-        android:fontFamily="@font/tajawal_regular"
         tools:ignore="SpUsage" />
 
     <LinearLayout
@@ -33,72 +32,72 @@
             android:id="@+id/athan_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="4dp"
-            android:paddingHorizontal="5dp"
-            android:gravity="center|start"
             android:background="?myPopupsBg"
             android:drawableEnd="@drawable/ic_speaker"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center|start"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="4dp"
             android:text="@string/athan_speaker"
             android:textSize="21dp"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <View
             android:id="@+id/first_separator"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/black"/>
+            android:background="@color/black" />
 
         <Button
             android:id="@+id/notify_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="4dp"
-            android:paddingHorizontal="5dp"
-            android:gravity="center|start"
             android:background="?myPopupsBg"
             android:drawableEnd="@drawable/ic_sound"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center|start"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="4dp"
             android:text="@string/enable_notification"
             android:textSize="21dp"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/black"/>
+            android:background="@color/black" />
 
         <Button
             android:id="@+id/mute_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="4dp"
-            android:paddingHorizontal="5dp"
-            android:gravity="center|start"
             android:background="?myPopupsBg"
             android:drawableEnd="@drawable/ic_mute"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center|start"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="4dp"
             android:text="@string/mute_notification"
             android:textSize="21dp"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/black"/>
+            android:background="@color/black" />
 
         <Button
             android:id="@+id/disable_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="4dp"
-            android:paddingHorizontal="5dp"
-            android:gravity="center|start"
             android:background="?myPopupsBg"
             android:drawableEnd="@drawable/ic_disabled"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center|start"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="4dp"
             android:text="@string/disable_notification"
             android:textSize="21dp"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </LinearLayout>
@@ -112,15 +111,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|start"
-            android:text="@string/adjust_prayer_notification_time"
-            android:fontFamily="@font/tajawal_regular"/>
+            android:fontFamily="@font/tajawal_regular"
+            android:text="@string/adjust_prayer_notification_time" />
 
         <Spinner
             android:id="@+id/time_setting_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:popupBackground="?myBars"
-            android:entries="@array/time_settings"/>
+            android:entries="@array/time_settings"
+            android:popupBackground="?myBars" />
 
     </LinearLayout>
 

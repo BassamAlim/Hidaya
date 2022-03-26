@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_view"
@@ -12,9 +11,9 @@
         android:id="@+id/info_bar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:minHeight="?attr/actionBarSize"
-        android:elevation="4dp"
         android:background="?myQBars"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -22,10 +21,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@font/tajawal_regular"
+            android:textColor="?myBarsText"
             android:textSize="21dp"
             android:textStyle="bold"
-            android:textColor="?myBarsText"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <TextView
@@ -33,22 +32,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:fontFamily="@font/tajawal_regular"
+            android:textColor="?myBarsText"
             android:textSize="21dp"
             android:textStyle="bold"
-            android:textColor="?myBarsText"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
         <TextView
             android:id="@+id/juz_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="10dp"
             android:layout_gravity="end"
+            android:fontFamily="@font/tajawal_regular"
+            android:paddingHorizontal="10dp"
+            android:textColor="?myBarsText"
             android:textSize="21dp"
             android:textStyle="bold"
-            android:textColor="?myBarsText"
-            android:fontFamily="@font/tajawal_regular"
             tools:ignore="SpUsage" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -59,23 +58,23 @@
         android:layout_height="match_parent"
         android:layout_marginVertical="?actionBarSize"
         android:background="?myQBg"
-        app:layout_constraintTop_toBottomOf="@id/info_bar"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/info_bar">
 
         <ViewFlipper
             android:id="@+id/flipper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="top|center">
+            android:layout_gravity="top|center"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/linear1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="5dp"
+                android:layout_gravity="top|center"
                 android:orientation="vertical"
-                android:layout_gravity="top|center">
+                android:paddingHorizontal="5dp">
 
             </LinearLayout>
 
@@ -83,9 +82,9 @@
                 android:id="@+id/linear2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="5dp"
+                android:layout_gravity="top|center"
                 android:orientation="vertical"
-                android:layout_gravity="top|center">
+                android:paddingHorizontal="5dp">
 
             </LinearLayout>
 
@@ -97,9 +96,9 @@
         android:id="@+id/quran_tools_bar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:minHeight="?attr/actionBarSize"
-        android:elevation="4dp"
         android:background="?myQBars"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
@@ -107,42 +106,42 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:padding="5dp"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_bookmark"
-            android:contentDescription="@string/bookmark_page_button" />
+            android:contentDescription="@string/bookmark_page_button"
+            android:padding="5dp"
+            android:src="@drawable/ic_bookmark" />
 
         <ImageButton
             android:id="@+id/next_ayah"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             android:layout_gravity="center"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_aya_forward"
-            android:contentDescription="@string/bookmark_page_button" />
+            android:contentDescription="@string/bookmark_page_button"
+            android:padding="5dp"
+            android:src="@drawable/ic_aya_forward" />
 
         <ImageButton
             android:id="@+id/play"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="15dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="6dp"
-            android:layout_marginHorizontal="15dp"
-            android:layout_gravity="center"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_play_aya"
-            android:contentDescription="@string/bookmark_page_button" />
+            android:contentDescription="@string/bookmark_page_button"
+            android:src="@drawable/ic_play_aya" />
 
         <ImageButton
             android:id="@+id/prev_ayah"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             android:layout_gravity="center"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_aya_backward"
-            android:contentDescription="@string/bookmark_page_button" />
+            android:contentDescription="@string/bookmark_page_button"
+            android:padding="5dp"
+            android:src="@drawable/ic_aya_backward" />
 
         <ImageButton
             android:id="@+id/recitation_settings"
@@ -150,10 +149,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:padding="5dp"
             android:background="@drawable/ripple"
-            android:src="@drawable/ic_preferences"
-            android:contentDescription="@string/bookmark_page_button" />
+            android:contentDescription="@string/bookmark_page_button"
+            android:padding="5dp"
+            android:src="@drawable/ic_preferences" />
 
     </androidx.appcompat.widget.Toolbar>
 

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="?myMainBg"
     tools:context=".activities.TvActivity">
 
     <com.google.android.youtube.player.YouTubePlayerView
+        android:id="@+id/ytPlayer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/ytPlayer"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/quran_btn"
@@ -19,15 +19,15 @@
         android:layout_height="90dp"
         android:background="@drawable/ripple_click"
         android:backgroundTint="?myClick"
+        android:drawableStart="@mipmap/ic_quran_channel"
+        android:fontFamily="@font/tajawal_regular"
         android:gravity="center_horizontal|center"
         android:text="@string/quran_channel"
         android:textSize="25sp"
-        android:fontFamily="@font/tajawal_regular"
-        android:drawableStart="@mipmap/ic_quran_channel"
-        app:layout_constraintTop_toBottomOf="@id/ytPlayer"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/hadeeth_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/hadeeth_btn"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ytPlayer" />
 
     <Button
         android:id="@+id/hadeeth_btn"
@@ -36,14 +36,14 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/ripple_click"
         android:backgroundTint="?myClick"
+        android:drawableStart="@mipmap/ic_sunnah_channel"
+        android:fontFamily="@font/tajawal_regular"
         android:gravity="center_horizontal|center"
         android:text="@string/hadeeth_channel"
         android:textSize="25sp"
-        android:fontFamily="@font/tajawal_regular"
-        android:drawableStart="@mipmap/ic_sunnah_channel"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/quran_btn"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/quran_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
