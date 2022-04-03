@@ -66,12 +66,12 @@
                     android:text="@string/hadeeth_books" />
 
                 <Button
-                    android:id="@+id/quran_searcher"
+                    android:id="@+id/channels"
                     style="@style/Buttony"
                     android:background="@drawable/ripple_click"
-                    android:drawableTop="@drawable/ic_quran_search"
+                    android:drawableTop="@drawable/ic_television"
                     android:elevation="@dimen/buttony_elevation"
-                    android:text="@string/search_in_quran" />
+                    android:text="@string/quran_and_hadeeth_channels" />
 
             </LinearLayout>
 
@@ -81,14 +81,6 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/channels"
-                    style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
-                    android:drawableTop="@drawable/ic_television"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:text="@string/quran_and_hadeeth_channels" />
 
                 <Button
                     android:id="@+id/settings"
@@ -98,6 +90,14 @@
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/settings" />
 
+                <Button
+                    android:id="@+id/features"
+                    style="@style/Buttony"
+                    android:background="@drawable/ripple_click"
+                    android:drawableTop="@drawable/ic_features"
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/features_guide" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -108,20 +108,20 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/features"
-                    style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
-                    android:drawableTop="@drawable/ic_features"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:text="@string/features_guide" />
-
-                <Button
                     android:id="@+id/contact"
                     style="@style/Buttony"
                     android:background="@drawable/ripple_click"
                     android:drawableTop="@drawable/ic_mail"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/contact" />
+
+                <Button
+                    android:id="@+id/share"
+                    style="@style/Buttony"
+                    android:background="@drawable/ripple_click"
+                    android:drawableTop="@drawable/ic_share"
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/share_app" />
 
             </LinearLayout>
 
@@ -132,14 +132,6 @@
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingBottom="15dp">
-
-                <Button
-                    android:id="@+id/share"
-                    style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
-                    android:drawableTop="@drawable/ic_share"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:text="@string/share_app" />
 
                 <Button
                     android:id="@+id/about"

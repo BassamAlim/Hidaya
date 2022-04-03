@@ -141,5 +141,7 @@
     <string name="sahih_albokhari">صحيح البخاري</string>
     <string name="sahih_muslim">صحيح مسلم</string>
     <string name="hadeeth_source">كتب الحديث: من موقع أم الكتاب وموقع الدرر السنية.</string>
+    <string name="search_in_hadeeth">ابحث عن نص في كتب الحديث</string>
+    <string name="hadeeth_search_title">ابحث عن نص في كتب الحديث</string>
 
 </resources>

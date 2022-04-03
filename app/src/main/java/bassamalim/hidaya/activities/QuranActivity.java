@@ -327,10 +327,10 @@ public class QuranActivity extends SwipeActivity {
         screen.setText(ss);
         if (theme.equals("ThemeM"))
             screen.setMovementMethod(DoubleClickLMM.getInstance(
-                    getResources().getColor(R.color.highlight_M)));
+                    getResources().getColor(R.color.highlight_M, getTheme())));
         else
             screen.setMovementMethod(DoubleClickLMM.getInstance(
-                    getResources().getColor(R.color.highlight_L)));
+                    getResources().getColor(R.color.highlight_L, getTheme())));
 
         lls[currentLinear].addView(screen);
 

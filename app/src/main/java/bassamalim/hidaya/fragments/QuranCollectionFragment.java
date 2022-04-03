@@ -19,13 +19,12 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.QuranActivity;
+import bassamalim.hidaya.activities.QuranSearcherActivity;
 import bassamalim.hidaya.databinding.FragmentCollectionQuranBinding;
 
 public class QuranCollectionFragment extends Fragment {
 
     private FragmentCollectionQuranBinding binding;
-    private QAdapter qAdapter;
-    private ViewPager2 viewPager;
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -37,8 +36,8 @@ public class QuranCollectionFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        qAdapter = new QAdapter(this);
-        viewPager = view.findViewById(R.id.quran_pager);
+        QAdapter qAdapter = new QAdapter(this);
+        ViewPager2 viewPager = view.findViewById(R.id.quran_pager);
         viewPager.setAdapter(qAdapter);
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
@@ -47,12 +46,21 @@ public class QuranCollectionFragment extends Fragment {
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> tab.setText(tabs[position])
         ).attach();
+
+        setListeners();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         setupContinue();
+    }
+
+    private void setListeners() {
+        binding.fab.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), QuranSearcherActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void setupContinue() {

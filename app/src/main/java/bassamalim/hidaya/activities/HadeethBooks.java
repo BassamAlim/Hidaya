@@ -134,6 +134,11 @@ public class HadeethBooks extends AppCompatActivity {
                 }
             });
         }
+
+        binding.fab.setOnClickListener(v -> {
+            Intent intent = new Intent(this, HadeethSearcher.class);
+            startActivity(intent);
+        });
     }
 
     private boolean downloaded(int id) {

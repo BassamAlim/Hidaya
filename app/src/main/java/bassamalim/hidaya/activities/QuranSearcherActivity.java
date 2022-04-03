@@ -29,7 +29,7 @@ public class QuranSearcherActivity extends AppCompatActivity {
     private QuranSearcherAdapter adapter;
     private List<AyatDB> allAyat;
     private List<AyatDB> matches;
-    private int maxMatches = 30;
+    private int maxMatches;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +55,8 @@ public class QuranSearcherActivity extends AppCompatActivity {
         allAyat = db.ayahDao().getAll();
 
         matches = new ArrayList<>();
+
+        maxMatches = pref.getInt("quran_searcher_matches_last_position", 1);
     }
 
     private void initRecycler() {
@@ -102,7 +104,7 @@ public class QuranSearcherActivity extends AppCompatActivity {
     private void initSpinner() {
         Spinner spinner = binding.sizeSpinner;
 
-        int last = pref.getInt("searcher_matches_last_position", 0);
+        int last = pref.getInt("quran_searcher_matches_last_position", 0);
         spinner.setSelection(last);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -111,7 +113,7 @@ public class QuranSearcherActivity extends AppCompatActivity {
                 maxMatches = Integer.parseInt(spinner.getItemAtPosition(position).toString());
 
                 SharedPreferences.Editor editor = pref.edit();
-                editor.putInt("searcher_matches_last_position", position);
+                editor.putInt("quran_searcher_matches_last_position", position);
                 editor.apply();
             }
             @Override

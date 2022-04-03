@@ -28,6 +28,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HidayaM">
         <activity
+            android:name=".activities.HadeethSearcher"
+            android:exported="false" />
+        <activity
             android:name=".activities.HadeethChaptersCollectionActivity"
             android:exported="false" />
         <activity
