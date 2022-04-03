@@ -27,7 +27,7 @@
             android:layout_marginEnd="15dp"
             android:fontFamily="@font/tajawal_regular"
             android:text="@string/hadeeth_books"
-            android:textColor="?myAccent"
+            android:textColor="?myBarsText"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
@@ -132,7 +132,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="?myBars"
         android:contentDescription="@string/search_in_hadeeth"
         android:src="@drawable/ic_quran_search"
         app:layout_constraintBottom_toBottomOf="parent"

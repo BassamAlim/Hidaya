@@ -36,6 +36,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 import androidx.preference.PreferenceManager;
+import androidx.room.Room;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -46,6 +47,7 @@ import java.util.Random;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.TelawatClient;
+import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.models.ReciterCard;
 import bassamalim.hidaya.other.Const;
 
@@ -68,13 +70,14 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     private String channelId = "channel ID";
     private final int id = 333;
     private int flags;
+    private SharedPreferences pref;
+    private AppDatabase db;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private NotificationManager notificationManager;
     private NotificationCompat.Builder notificationBuilder;
     private Notification notification;
     private MediaPlayer player;
     private AudioManager am;
-    private SharedPreferences pref;
     private final IntentFilter intentFilter = new IntentFilter();
     private AudioFocusRequest audioFocusRequest;
     private ArrayList<String> surahNames;
@@ -95,12 +98,17 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
+                "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
+                .build();
+
+        getSuraNames();
+
         initSession();
 
         setActions();
-        buildNotification();
 
-        initPlayer();
+        initMediaSessionMetadata();
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -125,10 +133,13 @@ public class TelawatService extends MediaBrowserServiceCompat implements
                 surahIndex = Integer.parseInt(givenMediaId.substring(5));
                 reciterName = extras.getString("reciter_name");
                 version = (ReciterCard.RecitationVersion) extras.getSerializable("version");
-                surahNames = extras.getStringArrayList("surah_names");
 
                 if (playType.equals("continue"))
                     continueFrom = pref.getInt("last_telawa_progress", 0);
+
+
+                buildNotification();
+                initPlayer();
 
                 if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE)
                     play();
@@ -399,8 +410,6 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     private void buildNotification() {
         // Given a media session and its context (usually the component containing the session)
 
-        initMediaSessionMetadata();
-
         // Get the session's metadata
         controller = mediaSession.getController();
         mediaMetadata = controller.getMetadata();
@@ -661,6 +670,10 @@ public class TelawatService extends MediaBrowserServiceCompat implements
             notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(notificationChannel);
         }
+    }
+
+    private void getSuraNames() {
+        surahNames = (ArrayList<String>) db.suraDao().getNames();
     }
 
     private PendingIntent getContentIntent() {

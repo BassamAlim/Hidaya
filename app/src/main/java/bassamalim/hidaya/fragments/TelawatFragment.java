@@ -35,7 +35,9 @@ public class TelawatFragment extends Fragment {
     private List<TelawatDB> telawat;
     private List<TelawatRecitersDB> reciters;
     private boolean[] downloaded;
-    private final ListType type;
+    private ListType type;
+
+    public TelawatFragment() {}
 
     public TelawatFragment(ListType type) {
         this.type = type;

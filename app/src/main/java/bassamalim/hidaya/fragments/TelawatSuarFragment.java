@@ -32,14 +32,16 @@ public class TelawatSuarFragment extends Fragment {
     private FragmentTelawatSuarBinding binding;
     private RecyclerView recycler;
     private TelawatSuarAdapter adapter;
-    private final int reciterId;
-    private final int versionId;
-    private final ListType type;
+    private int reciterId;
+    private int versionId;
+    private ListType type;
     private String availableSurahs;
     private ArrayList<String> surahNames;
     private String[] searchNames;
     private List<Integer> favs;
     private boolean[] downloaded;
+
+    public TelawatSuarFragment() {}
 
     public TelawatSuarFragment(ListType type, int reciterId, int versionId) {
         this.type = type;

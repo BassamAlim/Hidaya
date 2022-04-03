@@ -64,7 +64,6 @@ public class TelawatClient extends AppCompatActivity {
     private int repeat;
     private int shuffle;
     private String theme;
-    private int continueFrom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -279,7 +278,6 @@ public class TelawatClient extends AppCompatActivity {
         bundle.putString("play_type", action);
         bundle.putString("reciter_name", reciterName);
         bundle.putSerializable("version", version);
-        bundle.putStringArrayList("surah_names", surahNames);
 
         // Start Playback
         tc.playFromMediaId(mediaId, bundle);
