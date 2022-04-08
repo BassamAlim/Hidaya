@@ -89,6 +89,12 @@ public class FavoriteQuranFragment extends Fragment {
         });
     }
 
+    private List<SuraDB> getSuras() {
+        return Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
+                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+                .suraDao().getFavorites();
+    }
+
     private void setupRecycler() {
         recyclerView = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -98,12 +104,8 @@ public class FavoriteQuranFragment extends Fragment {
     }
 
     public ArrayList<SuraCard> makeCards() {
-        ArrayList<SuraCard> buttons = new ArrayList<>();
-
-        AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
-                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
-
-        List<SuraDB> suras = db.suraDao().getFavorites();
+        ArrayList<SuraCard> cards = new ArrayList<>();
+        List<SuraDB> suras = getSuras();
 
         for (int i = 0; i < suras.size(); i++) {
             SuraDB sura = suras.get(i);
@@ -115,10 +117,10 @@ public class FavoriteQuranFragment extends Fragment {
                 requireContext().startActivity(intent);
             };
 
-            buttons.add(new SuraCard(i,"سُورَة " + sura.getSura_name(),
+            cards.add(new SuraCard(sura.getSura_id(),"سُورَة " + sura.getSura_name(),
                     sura.getSearch_name(), sura.getTanzeel(), 1, cardListener));
         }
-        return buttons;
+        return cards;
     }
 
     @Override

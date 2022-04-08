@@ -89,7 +89,7 @@ public class AllQuranFragment extends Fragment {
         });
     }
 
-    private List<SuraDB> getData() {
+    private List<SuraDB> getSuras() {
         AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
             .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
 
@@ -108,8 +108,7 @@ public class AllQuranFragment extends Fragment {
 
     public ArrayList<SuraCard> makeCards() {
         ArrayList<SuraCard> cards = new ArrayList<>();
-
-        List<SuraDB> suras = getData();
+        List<SuraDB> suras = getSuras();
 
         for (int i = 0; i < suras.size(); i++) {
             SuraDB sura = suras.get(i);
@@ -121,8 +120,9 @@ public class AllQuranFragment extends Fragment {
                 requireContext().startActivity(intent);
             };
 
-            cards.add(new SuraCard(i,"سُورَة " + sura.getSura_name(), sura.getSearch_name(),
-                    sura.getTanzeel(), favs.get(sura.getFavorite()), cardListener));
+            cards.add(new SuraCard(sura.getSura_id(),"سُورَة " + sura.getSura_name(),
+                    sura.getSearch_name(), sura.getTanzeel(),
+                    favs.get(sura.getFavorite()), cardListener));
         }
         return cards;
     }

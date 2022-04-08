@@ -53,8 +53,8 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
     public QuranFragmentAdapter(Context context, ArrayList<SuraCard> buttons) {
         this.context = context;
 
-        db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB").createFromAsset(
-                "databases/HidayaDB.db").allowMainThreadQueries().build();
+        db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB")
+                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
 
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 

@@ -24,10 +24,24 @@ public class QuizQuestionAdapter extends RecyclerView.Adapter<QuizQuestionAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView card;
+        private final TextView qNumTv;
+        private final TextView qTextTv;
+        private final TextView a1Tv, a2Tv, a3Tv, a4Tv;
+        private final ImageView a1iv, a2iv, a3iv, a4iv;
 
         public ViewHolder(View view) {
             super(view);
             card = view.findViewById(R.id.question_result_model);
+            qNumTv = view.findViewById(R.id.question_number);
+            qTextTv = view.findViewById(R.id.question_text);
+            a1Tv = view.findViewById(R.id.answer1);
+            a2Tv = view.findViewById(R.id.answer2);
+            a3Tv = view.findViewById(R.id.answer3);
+            a4Tv = view.findViewById(R.id.answer4);
+            a1iv = view.findViewById(R.id.answer1_image);
+            a2iv = view.findViewById(R.id.answer2_image);
+            a3iv = view.findViewById(R.id.answer3_image);
+            a4iv = view.findViewById(R.id.answer4_image);
         }
 
         public CardView getCard() {
@@ -42,36 +56,25 @@ public class QuizQuestionAdapter extends RecyclerView.Adapter<QuizQuestionAdapte
 
     @NonNull @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_quiz_question, viewGroup, false);
-
-        return new ViewHolder(view);
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.item_quiz_question, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         String qNum = "سؤال " + (questionsCards.get(position).getQuestionNumber() + 1);
-        ((TextView) viewHolder.getCard().findViewById(R.id.question_number)).setText(qNum);
+        viewHolder.qNumTv.setText(qNum);
+        viewHolder.qTextTv.setText(questionsCards.get(position).getQuestionText());
 
-        ((TextView) viewHolder.getCard().findViewById(R.id.question_text))
-                .setText(questionsCards.get(position).getQuestionText());
+        viewHolder.a1Tv.setText(questionsCards.get(position).getAnswer1());
+        viewHolder.a2Tv.setText(questionsCards.get(position).getAnswer2());
+        viewHolder.a3Tv.setText(questionsCards.get(position).getAnswer3());
+        viewHolder.a4Tv.setText(questionsCards.get(position).getAnswer4());
 
-        ((TextView) (viewHolder.getCard().findViewById(R.id.answer1)))
-                .setText(questionsCards.get(position).getAnswer1());
-
-        ((TextView) (viewHolder.getCard().findViewById(R.id.answer2)))
-                .setText(questionsCards.get(position).getAnswer2());
-
-        ((TextView) (viewHolder.getCard().findViewById(R.id.answer3)))
-                .setText(questionsCards.get(position).getAnswer3());
-
-        ((TextView) (viewHolder.getCard().findViewById(R.id.answer4)))
-                .setText(questionsCards.get(position).getAnswer4());
-
-        setImage(position, 0, viewHolder.getCard().findViewById(R.id.answer1_image));
-        setImage(position, 1, viewHolder.getCard().findViewById(R.id.answer2_image));
-        setImage(position, 2, viewHolder.getCard().findViewById(R.id.answer3_image));
-        setImage(position, 3, viewHolder.getCard().findViewById(R.id.answer4_image));
+        setImage(position, 0, viewHolder.a1iv);
+        setImage(position, 1, viewHolder.a2iv);
+        setImage(position, 2, viewHolder.a3iv);
+        setImage(position, 3, viewHolder.a4iv);
     }
 
     private void setImage(int position, int num, ImageView iv) {

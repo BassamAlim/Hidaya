@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,10 +33,14 @@ public class AlathkarAdapter extends RecyclerView.Adapter<AlathkarAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView card;
+        private final TextView nameTv;
+        private final ImageButton favBtn;
 
         public ViewHolder(View view) {
             super(view);
             card = view.findViewById(R.id.alathkar_model_card);
+            nameTv = view.findViewById(R.id.namescreen);
+            favBtn = view.findViewById(R.id.athkar_fav_btn);
         }
 
         public CardView getCard() {
@@ -66,20 +70,18 @@ public class AlathkarAdapter extends RecyclerView.Adapter<AlathkarAdapter.ViewHo
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         AlathkarButton card = alathkarCards.get(position);
 
-        ((TextView) viewHolder.getCard().findViewById(R.id.namescreen))
-                .setText(card.getName());
-        viewHolder.getCard().setOnClickListener(card.getListener());
+        viewHolder.nameTv.setText(card.getName());
 
         int fav = card.getFavorite();
         if (fav == 0)
-            ((ImageView) viewHolder.getCard().findViewById(R.id.athkar_fav_btn)).setImageDrawable(
+            viewHolder.favBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
         else if (fav == 1)
-            ((ImageView) viewHolder.getCard().findViewById(R.id.athkar_fav_btn)).setImageDrawable(
+            viewHolder.favBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_star));
 
         viewHolder.getCard().setOnClickListener(card.getListener());
-        viewHolder.getCard().findViewById(R.id.athkar_fav_btn).setOnClickListener(
+        viewHolder.favBtn.setOnClickListener(
                 view -> {
                     if (card.getFavorite() == 0) {
                         db.athkarDao().setFav(card.getId(), 1);
