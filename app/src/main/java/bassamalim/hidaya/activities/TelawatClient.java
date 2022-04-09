@@ -28,7 +28,7 @@ import java.util.Objects;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
-import bassamalim.hidaya.databinding.ActivityTelawatPlayerBinding;
+import bassamalim.hidaya.databinding.ActivityTelawatClientBinding;
 import bassamalim.hidaya.models.ReciterCard;
 import bassamalim.hidaya.other.Const;
 import bassamalim.hidaya.other.Utils;
@@ -36,7 +36,7 @@ import bassamalim.hidaya.services.TelawatService;
 
 public class TelawatClient extends AppCompatActivity {
 
-    private ActivityTelawatPlayerBinding binding;
+    private ActivityTelawatClientBinding binding;
     private AppDatabase db;
     private SharedPreferences pref;
     private MediaBrowserCompat mediaBrowser;
@@ -69,7 +69,7 @@ public class TelawatClient extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
-        binding = ActivityTelawatPlayerBinding.inflate(getLayoutInflater());
+        binding = ActivityTelawatClientBinding.inflate(getLayoutInflater());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
         setSupportActionBar(binding.topBar);
@@ -123,11 +123,6 @@ public class TelawatClient extends AppCompatActivity {
                     .unregisterCallback(controllerCallback);
         }
         mediaBrowser.disconnect();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     private final MediaBrowserCompat.ConnectionCallback connectionCallbacks =
@@ -391,7 +386,7 @@ public class TelawatClient extends AppCompatActivity {
             case PlaybackStateCompat.STATE_PAUSED: {}
             case PlaybackStateCompat.STATE_FAST_FORWARDING: {}
             case PlaybackStateCompat.STATE_REWINDING: {}
-            case PlaybackStateCompat.STATE_BUFFERING: {}
+            case PlaybackStateCompat.STATE_BUFFERING: {} // idea: put buffering state animation
             case PlaybackStateCompat.STATE_ERROR: {}
             case PlaybackStateCompat.STATE_CONNECTING: {}
             case PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS: {}

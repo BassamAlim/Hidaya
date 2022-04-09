@@ -28,18 +28,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HidayaM">
         <activity
-            android:name=".activities.HadeethSearcher"
-            android:exported="false" />
-        <activity
-            android:name=".activities.HadeethChaptersCollectionActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.HadeethViewer"
-            android:exported="false" />
-        <activity
-            android:name=".activities.HadeethBooks"
-            android:exported="false" />
-        <activity
             android:name=".activities.Splash"
             android:exported="true"
             android:theme="@style/SplashTheme">
@@ -117,6 +105,21 @@
         <activity
             android:name=".popups.QuranSettingsPopup"
             android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity
+            android:name=".activities.RadioClient"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".activities.HadeethSearcher"
+            android:exported="false" />
+        <activity
+            android:name=".activities.HadeethChaptersCollectionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.HadeethViewer"
+            android:exported="false" />
+        <activity
+            android:name=".activities.HadeethBooks"
+            android:exported="false" />
 
         <receiver android:name=".receivers.NotificationReceiver" />
         <receiver android:name=".receivers.DailyUpdateReceiver" />
@@ -154,6 +157,14 @@
             android:stopWithTask="false" />
         <service
             android:name=".services.TelawatService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".services.RadioService"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />

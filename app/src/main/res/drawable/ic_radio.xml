@@ -1,0 +1,9 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp"
+    android:height="80dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <path android:fillColor="?myAccent" android:pathData="M448.7,187.7H63.3C51,187.7 41,197.7 41,210v238.7C41,461 51,471 63.3,471h385.3c12.3,0 22.3,-10 22.3,-22.3V210C471,197.7 461,187.7 448.7,187.7zM427,253v47.7H167.5V253H427zM376.7,345.1v28.7H348v-28.7H376.7zM320.7,345.1v28.7H292v-28.7H320.7zM264.7,345.1v28.7H236v-28.7H264.7zM85,253h56v47.7H85V253zM141,449.3c-34.1,0 -61.7,-27.6 -61.7,-61.7c0,-34.1 27.6,-61.7 61.7,-61.7s61.7,27.6 61.7,61.7C202.7,421.7 175.1,449.3 141,449.3zM432.7,430.3H236v-33.8h196.7V430.3zM432.7,373.8H404v-28.7h28.7V373.8z"/>
+    <path android:fillColor="?myAccent" android:pathData="M141,364.5c-12.8,0 -23.2,10.4 -23.2,23.2c0,12.8 10.4,23.2 23.2,23.2s23.2,-10.4 23.2,-23.2C164.2,374.9 153.8,364.5 141,364.5z"/>
+    <path android:fillColor="?myAccent" android:pathData="M398,53.5l-11,-12.5l-260.4,136.7l87.7,0z"/>
+</vector>

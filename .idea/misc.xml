@@ -94,6 +94,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_quran_black_24dp.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_quran_conclude.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_quran_search.xml" value="0.1045" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_radio.xml" value="0.107" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_recitation_settings.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_repeat.xml" value="0.19282051282051282" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_right_arrow.xml" value="0.19282051282051282" />
@@ -169,6 +170,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_quran.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_quran_searcher.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_radio.xml" value="0.22" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_radio_client.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_radio_player.xml" value="0.22376738305941846" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_reciter_surahs.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_screen_slide.xml" value="0.14907407407407408" />

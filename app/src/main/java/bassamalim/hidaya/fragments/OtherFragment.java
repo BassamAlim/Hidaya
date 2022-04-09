@@ -22,6 +22,7 @@ import bassamalim.hidaya.activities.TelawatCollectionActivity;
 import bassamalim.hidaya.activities.TvActivity;
 import bassamalim.hidaya.databinding.FragmentOtherBinding;
 import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.activities.RadioClient;
 
 public class OtherFragment extends Fragment {
 
@@ -61,6 +62,11 @@ public class OtherFragment extends Fragment {
 
         binding.channels.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), TvActivity.class);
+            startActivity(intent);
+        });
+
+        binding.radio.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), RadioClient.class);
             startActivity(intent);
         });
 
