@@ -37,7 +37,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="40dp"
                     android:paddingVertical="12dp"
-                    android:textColor="?myBarsText"
+                    android:textColor="?attr/myOnBars"
                     android:textSize="25dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"

@@ -22,6 +22,7 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
+import java.time.chrono.HijrahDate;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -176,12 +177,12 @@ public class MainActivity extends AppCompatActivity {
         hijriStr += Utils.translateNumbers(hDay) + hMonth + Utils.translateNumbers(hYear);
         binding.hijriView.setText(hijriStr);
 
-        Calendar meladi = Calendar.getInstance();
-        String mYear = " " + meladi.get(Calendar.YEAR);
-        String mMonth = " " + whichMeladiMonth(meladi.get(Calendar.MONTH));
-        String mDay = "" + meladi.get(Calendar.DATE);
-        String meladiStr = Utils.translateNumbers(mDay) + mMonth + Utils.translateNumbers(mYear);
-        binding.meladiView.setText(meladiStr);
+        Calendar gregorian = Calendar.getInstance();
+        String mYear = " " + gregorian.get(Calendar.YEAR);
+        String mMonth = " " + whichGregorianMonth(gregorian.get(Calendar.MONTH));
+        String mDay = "" + gregorian.get(Calendar.DATE);
+        String gregorianStr = Utils.translateNumbers(mDay) + mMonth + Utils.translateNumbers(mYear);
+        binding.gregorianView.setText(gregorianStr);
     }
 
     private String whichDay(int day) {
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
-    private String whichMeladiMonth(int num) {
+    private String whichGregorianMonth(int num) {
         String result;
         HashMap<Integer, String> monthMap = new HashMap<>();
         monthMap.put(0, "يناير");

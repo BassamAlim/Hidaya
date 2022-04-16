@@ -6,14 +6,14 @@
     <path
         android:fillColor="#00000000"
         android:pathData="m3.02858,1.05835 l2.11667,1.85209 -2.11667,2.11666"
-        android:strokeColor="?myActiveBar"
+        android:strokeColor="?attr/myActiveOnBar"
         android:strokeLineCap="butt"
         android:strokeLineJoin="round"
         android:strokeWidth="1"/>
     <path android:fillColor="#00000000"
         android:pathData="M0.64733,1.05835 L2.76399,2.91043l-2.11667,2.11666"
         android:strokeAlpha="0.5214724"
-        android:strokeColor="?myOtherActiveBar"
+        android:strokeColor="?attr/myOtherActiveOnBar"
         android:strokeLineCap="butt"
         android:strokeLineJoin="round"
         android:strokeWidth="1"/>

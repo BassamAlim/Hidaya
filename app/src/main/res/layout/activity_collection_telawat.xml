@@ -26,7 +26,7 @@
             android:layout_gravity="start"
             android:layout_marginHorizontal="15dp"
             android:fontFamily="@font/tajawal_regular"
-            android:textColor="?myBarsText"
+            android:textColor="?attr/myOnBars"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="5dp"
-        android:background="@drawable/ripple_click"
+        android:background="@drawable/ripple_surface"
         android:fontFamily="@font/tajawal_regular"
         android:hint="@string/continue_listening"
         android:paddingHorizontal="4dp"
@@ -52,8 +52,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?myBars"
-        app:tabIndicatorColor="?myActiveBar"
-        app:tabSelectedTextColor="?myActiveBar"
+        app:tabIndicatorColor="?attr/myActiveOnBar"
+        app:tabSelectedTextColor="?attr/myActiveOnBar"
         app:tabTextAppearance="@style/TajwalTab"
         app:tabTextColor="@color/text_M" />
 

@@ -99,7 +99,7 @@ public class AthanService extends Service {
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
         builder.setAutoCancel(true);
         builder.setOnlyAlertOnce(true);
-        builder.setColor(getColor(R.color.click_M));
+        builder.setColor(getColor(R.color.surface_M));
 
         return builder.build();
     }

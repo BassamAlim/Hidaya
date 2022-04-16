@@ -28,8 +28,8 @@ android {
         applicationId "bassamalim.hidaya"
         minSdkVersion 23
         targetSdkVersion 31
-        versionCode 173
-        versionName '1.7.3'
+        versionCode 174
+        versionName '1.7.4'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -71,8 +71,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
-    implementation 'androidx.navigation:navigation-fragment:2.4.1'
-    implementation 'androidx.navigation:navigation-ui:2.4.1'
+    implementation 'androidx.navigation:navigation-fragment:2.4.2'
+    implementation 'androidx.navigation:navigation-ui:2.4.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'androidx.viewpager:viewpager:1.1.0-alpha01'
@@ -102,6 +102,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
 
     implementation 'com.github.msarhan:ummalqura-calendar:2.0.2'
+    //implementation 'net.alhazmy13.hijridatepicker:library:3.0.0'
+    //implementation 'com.github.alhazmy13:hijridatepicker:3.0.0'
 
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

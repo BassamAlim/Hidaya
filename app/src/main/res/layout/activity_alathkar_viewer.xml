@@ -29,7 +29,7 @@
             android:layout_gravity="center"
             android:layout_marginEnd="15dp"
             android:fontFamily="@font/tajawal_regular"
-            android:textColor="?myBarsText"
+            android:textColor="?attr/myOnBars"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />

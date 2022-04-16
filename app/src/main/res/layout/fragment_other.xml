@@ -35,7 +35,7 @@
                 <Button
                     android:id="@+id/telawat"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_headset"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/recitations" />
@@ -43,7 +43,7 @@
                 <Button
                     android:id="@+id/quiz"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_quiz"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/quiz_title" />
@@ -60,7 +60,7 @@
                 <Button
                     android:id="@+id/hadeeth_books"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_books"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/hadeeth_books" />
@@ -68,7 +68,7 @@
                 <Button
                     android:id="@+id/channels"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_television"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/quran_and_hadeeth_channels" />
@@ -85,18 +85,18 @@
                 <Button
                     android:id="@+id/radio"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_radio"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/quran_radio" />
 
                 <Button
-                    android:id="@+id/settings"
+                    android:id="@+id/date_converter"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
-                    android:drawableTop="@drawable/ic_settings"
+                    android:background="@drawable/ripple_surface"
+                    android:drawableTop="@drawable/ic_calendar"
                     android:elevation="@dimen/buttony_elevation"
-                    android:text="@string/settings" />
+                    android:text="@string/date_converter" />
 
             </LinearLayout>
 
@@ -108,20 +108,45 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/settings"
+                    style="@style/Buttony"
+                    android:background="@drawable/ripple_surface"
+                    android:drawableTop="@drawable/ic_settings"
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/settings" />
+
+                <Button
                     android:id="@+id/features"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_features"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/features_guide" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
                 <Button
                     android:id="@+id/contact"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_mail"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/contact" />
+
+                <Button
+                    android:id="@+id/share"
+                    style="@style/Buttony"
+                    android:background="@drawable/ripple_surface"
+                    android:drawableTop="@drawable/ic_share"
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/share_app" />
 
             </LinearLayout>
 
@@ -134,17 +159,9 @@
                 android:paddingBottom="15dp">
 
                 <Button
-                    android:id="@+id/share"
-                    style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
-                    android:drawableTop="@drawable/ic_share"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:text="@string/share_app" />
-
-                <Button
                     android:id="@+id/about"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_info"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/about" />

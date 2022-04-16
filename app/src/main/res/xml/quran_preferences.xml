@@ -32,7 +32,8 @@
             android:entryValues="@array/repeat_values"
             android:key="@string/aya_repeat_mode_key"
             android:title="تكرار الآية"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
 
         <SwitchPreference
             android:defaultValue="false"

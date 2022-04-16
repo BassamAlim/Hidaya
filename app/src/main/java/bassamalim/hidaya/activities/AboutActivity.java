@@ -61,5 +61,4 @@ public class AboutActivity extends AppCompatActivity {
         binding.driveUpdate.setVisibility(View.VISIBLE);
         binding.rebuildDb.setVisibility(View.VISIBLE);
     }
-
 }

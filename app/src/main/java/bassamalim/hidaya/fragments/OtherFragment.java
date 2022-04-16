@@ -14,15 +14,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import bassamalim.hidaya.activities.AboutActivity;
+import bassamalim.hidaya.activities.DateConverter;
 import bassamalim.hidaya.activities.FeaturesGuide;
 import bassamalim.hidaya.activities.HadeethBooks;
 import bassamalim.hidaya.activities.QuizLobbyActivity;
+import bassamalim.hidaya.activities.RadioClient;
 import bassamalim.hidaya.activities.Settings;
 import bassamalim.hidaya.activities.TelawatCollectionActivity;
 import bassamalim.hidaya.activities.TvActivity;
 import bassamalim.hidaya.databinding.FragmentOtherBinding;
 import bassamalim.hidaya.other.Const;
-import bassamalim.hidaya.activities.RadioClient;
 
 public class OtherFragment extends Fragment {
 
@@ -46,7 +47,7 @@ public class OtherFragment extends Fragment {
                 startActivity(intent);
             }
             else
-                Toast.makeText(getContext(), "نظام تشغيلك لا يدعم هذه الميزة",
+                Toast.makeText(getContext(), "جهازك لا يدعم هذه الميزة",
                         Toast.LENGTH_SHORT).show();
         });
 
@@ -70,6 +71,11 @@ public class OtherFragment extends Fragment {
             startActivity(intent);
         });
 
+        binding.dateConverter.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), DateConverter.class);
+            startActivity(intent);
+        });
+
         binding.settings.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), Settings.class);
             startActivity(intent);
@@ -90,9 +96,8 @@ public class OtherFragment extends Fragment {
         binding.share.setOnClickListener(v -> {
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
-            String appLink = Const.PLAY_STORE_URL;
             sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "App Share");
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, appLink);
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, Const.PLAY_STORE_URL);
             startActivity(Intent.createChooser(sharingIntent, "Share via"));
         });
 

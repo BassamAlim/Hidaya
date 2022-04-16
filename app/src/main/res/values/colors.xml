@@ -11,12 +11,12 @@
     <color name="bg_M">#1A2027</color>
     <color name="bars_M">#222831</color>
     <color name="weak_bars_M">#B3222831</color>    // # alpha in hex + color
-    <color name="click_M">#222D37</color>
+    <color name="surface_M">#222D37</color>
     <color name="ripple_M">#384F63</color>
     <color name="accent_M">#00ADB5</color>
     <color name="other_accent_M">#028288</color>
     <color name="text_M">#BCC2C7</color>
-    <color name="bars_text_M">#FF000000</color>
+    <color name="on_bars_M">#FF000000</color>
     <color name="highlight_M">#00ADB5</color>
     <color name="track_M">#48C986</color>
 
@@ -24,16 +24,16 @@
     <color name="bg_L">#8D99AE</color>
     <color name="bars_L">#293241</color>
     <color name="weak_bars_L">#B3293241</color>    // # alpha in hex + color
-    <color name="click_L">#7E899C</color>
+    <color name="surface_L">#7E899C</color>
     <color name="ripple_L">#99A5BC</color>
     <color name="accent_L">#14213d</color>
     <color name="other_accent_L">#1C2E55</color>
     <color name="text_L">#FF000000</color>
-    <color name="bars_text_L">#BCC2C7</color>
+    <color name="on_bars_L">#BCC2C7</color>
     <color name="highlight_L">#01849C</color>
     <color name="track_L">#113297</color>
     <color name="q_bg_L">#BACDE1</color>
-    <color name="active_bar_L">#D18E21</color>
-    <color name="other_active_bar_L">#AA7113</color>
+    <color name="active_on_bar_L">#D18E21</color>
+    <color name="other_active_on_bar_L">#AA7113</color>
 
 </resources>

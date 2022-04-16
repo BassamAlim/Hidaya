@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -441,14 +442,10 @@ public class QuranActivity extends SwipeActivity {
         tv.setPadding(5, 0, 5, 30);
         tv.setGravity(Gravity.CENTER);
         tv.setTextSize(textSize);
-        if (theme.equals("ThemeM")) {
-            tv.setTextColor(Color.WHITE);
-            tv.setLinkTextColor(Color.WHITE);
-        }
-        else {
-            tv.setTextColor(Color.BLACK);
-            tv.setLinkTextColor(Color.BLACK);
-        }
+        TypedValue specialTextColor = new TypedValue();
+        getTheme().resolveAttribute(R.attr.mySpecialText, specialTextColor, true);
+        tv.setTextColor(specialTextColor.data);
+        tv.setLinkTextColor(specialTextColor.data);
         tv.setTypeface(ResourcesCompat.getFont(this, R.font.hafs_smart_08));
         return tv;
     }

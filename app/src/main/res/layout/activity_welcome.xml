@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="35dp"
-        android:background="?myClick"
+        android:background="?attr/mySurface"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="10dp"
@@ -57,7 +57,7 @@
             android:id="@+id/rejected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="?myClick"
+            android:backgroundTint="?attr/mySurface"
             android:fontFamily="@font/tajawal_regular"
             android:text="@string/rejected"
             android:textSize="22sp" />

@@ -27,7 +27,7 @@
             android:layout_marginEnd="15dp"
             android:fontFamily="@font/tajawal_regular"
             android:text="@string/hadeeth_books"
-            android:textColor="?myBarsText"
+            android:textColor="?attr/myOnBars"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
@@ -48,7 +48,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="@drawable/ripple_click"
+            android:background="@drawable/ripple_surface"
             android:paddingHorizontal="20dp">
 
             <TextView
@@ -68,7 +68,7 @@
                 android:id="@+id/bokhari_download_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ripple_click"
+                android:background="@drawable/ripple_surface"
                 android:contentDescription="@string/fav_btn_description"
                 android:padding="10dp"
                 android:src="@drawable/ic_download"
@@ -94,7 +94,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="@drawable/ripple_click"
+            android:background="@drawable/ripple_surface"
             android:paddingHorizontal="20dp">
 
             <TextView
@@ -114,7 +114,7 @@
                 android:id="@+id/muslim_download_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ripple_click"
+                android:background="@drawable/ripple_surface"
                 android:contentDescription="@string/fav_btn_description"
                 android:padding="10dp"
                 android:src="@drawable/ic_download"

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?myMainBg"
+    tools:context=".activities.DateConverter">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="?myBars"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        <TextView
+            android:id="@+id/question_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_marginEnd="15dp"
+            android:fontFamily="@font/tajawal_regular"
+            android:text="@string/date_converter"
+            android:textColor="?attr/myOnBars"
+            android:textSize="21dp"
+            android:textStyle="bold"
+            tools:ignore="SpUsage" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <Button
+        android:id="@+id/gregorian_to_hijri_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/ripple_surface"
+        android:elevation="8dp"
+        android:fontFamily="@font/tajawal_regular"
+        android:padding="15dp"
+        android:text="@string/pick_gregorian_date"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toTopOf="@id/hijri_to_gregorian_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        tools:ignore="SpUsage" />
+
+    <Button
+        android:id="@+id/hijri_to_gregorian_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/ripple_surface"
+        android:elevation="8dp"
+        android:fontFamily="@font/tajawal_regular"
+        android:padding="15dp"
+        android:text="@string/pick_hijri_date"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toTopOf="@id/hijri_result_space"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gregorian_to_hijri_btn"
+        tools:ignore="SpUsage" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/hijri_result_space"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/rounded_popup"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/gregorian_result_space"
+        app:layout_constraintTop_toBottomOf="@id/hijri_to_gregorian_btn">
+
+        <TextView
+            android:id="@+id/hijri_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp"
+            android:text="@string/hijri_date"
+            android:textSize="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SpUsage" />
+
+        <TextView
+            android:id="@+id/hijri_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/year"
+            android:gravity="center"
+            android:textSize="20dp"
+            tools:ignore="SpUsage"
+            app:layout_constraintTop_toBottomOf="@id/hijri_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/hijri_month"/>
+
+        <TextView
+            android:id="@+id/hijri_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/month"
+            android:textSize="20dp"
+            tools:ignore="SpUsage"
+            app:layout_constraintTop_toBottomOf="@id/hijri_title"
+            app:layout_constraintStart_toEndOf="@id/hijri_year"
+            app:layout_constraintEnd_toStartOf="@id/hijri_day"/>
+
+        <TextView
+            android:id="@+id/hijri_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/day"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/hijri_month"
+            app:layout_constraintTop_toBottomOf="@id/hijri_title"
+            tools:ignore="SpUsage" />
+
+        <TextView
+            android:id="@+id/hijri_year_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="20dp"
+            android:gravity="center"
+            tools:ignore="SpUsage"
+            app:layout_constraintStart_toStartOf="@id/hijri_year"
+            app:layout_constraintEnd_toEndOf="@id/hijri_year"
+            app:layout_constraintTop_toBottomOf="@id/hijri_year" />
+
+        <TextView
+            android:id="@+id/hijri_month_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="@id/hijri_month"
+            app:layout_constraintStart_toStartOf="@id/hijri_month"
+            app:layout_constraintTop_toBottomOf="@id/hijri_month"
+            tools:ignore="SpUsage" />
+
+        <TextView
+            android:id="@+id/hijri_day_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="@id/hijri_day"
+            app:layout_constraintStart_toStartOf="@id/hijri_day"
+            app:layout_constraintTop_toBottomOf="@id/hijri_day"
+            tools:ignore="SpUsage" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/gregorian_result_space"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/rounded_popup"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hijri_result_space">
+
+        <TextView
+            android:id="@+id/gregorian_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp"
+            android:text="@string/gregorian_date"
+            android:textSize="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SpUsage" />
+
+        <TextView
+            android:id="@+id/gregorian_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/year"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toStartOf="@id/gregorian_month"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gregorian_title"
+            tools:ignore="SpUsage" />
+
+        <TextView
+            android:id="@+id/gregorian_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/month"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toStartOf="@id/gregorian_day"
+            app:layout_constraintStart_toEndOf="@id/gregorian_year"
+            app:layout_constraintTop_toBottomOf="@id/gregorian_title"
+            tools:ignore="SpUsage" />
+
+        <TextView
+            android:id="@+id/gregorian_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/day"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/gregorian_month"
+            app:layout_constraintTop_toBottomOf="@id/gregorian_title"
+            tools:ignore="SpUsage" />
+
+        <TextView
+            android:id="@+id/gregorian_year_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="@id/gregorian_year"
+            app:layout_constraintStart_toStartOf="@id/gregorian_year"
+            app:layout_constraintTop_toBottomOf="@id/gregorian_year"
+            tools:ignore="SpUsage" />
+
+        <TextView
+            android:id="@+id/gregorian_month_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="@id/gregorian_month"
+            app:layout_constraintStart_toStartOf="@id/gregorian_month"
+            app:layout_constraintTop_toBottomOf="@id/gregorian_month"
+            tools:ignore="SpUsage" />
+
+        <TextView
+            android:id="@+id/gregorian_day_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="@id/gregorian_day"
+            app:layout_constraintStart_toStartOf="@id/gregorian_day"
+            app:layout_constraintTop_toBottomOf="@id/gregorian_day"
+            tools:ignore="SpUsage" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

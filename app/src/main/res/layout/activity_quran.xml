@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/tajawal_regular"
-            android:textColor="?myBarsText"
+            android:textColor="?attr/myOnBars"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:fontFamily="@font/tajawal_regular"
-            android:textColor="?myBarsText"
+            android:textColor="?attr/myOnBars"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
@@ -45,7 +45,7 @@
             android:layout_gravity="end"
             android:fontFamily="@font/tajawal_regular"
             android:paddingHorizontal="10dp"
-            android:textColor="?myBarsText"
+            android:textColor="?attr/myOnBars"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />

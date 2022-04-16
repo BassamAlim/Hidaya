@@ -11,14 +11,15 @@
         <attr name="myMainBg" format="color|reference" />
         <attr name="myBars" format="color|reference" />
         <attr name="myWeakBars" format="color|reference" />
-        <attr name="myClick" format="color|reference" />
-        <attr name="myLightClick" format="color|reference" />
+        <attr name="mySurface" format="color|reference" />
+        <attr name="myLightSurface" format="color|reference" />
         <attr name="myAccent" format="color|reference" />
         <attr name="myOtherAccent" format="color|reference" />
         <attr name="myText" format="color|reference" />
-        <attr name="myBarsText" format="color|reference" />
-        <attr name="myActiveBar" format="color|reference" />
-        <attr name="myOtherActiveBar" format="color|reference" />
+        <attr name="mySpecialText" format="color|reference" />
+        <attr name="myOnBars" format="color|reference" />
+        <attr name="myActiveOnBar" format="color|reference" />
+        <attr name="myOtherActiveOnBar" format="color|reference" />
         <attr name="myCounter" format="color|reference" />
         <attr name="myPopupsBg" format="color|reference" />
         <attr name="mySeparator" format="color|reference" />

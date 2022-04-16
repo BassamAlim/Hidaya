@@ -28,6 +28,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HidayaM">
         <activity
+            android:name=".activities.DateConverter"
+            android:exported="false" />
+        <activity
             android:name=".activities.Splash"
             android:exported="true"
             android:theme="@style/SplashTheme">

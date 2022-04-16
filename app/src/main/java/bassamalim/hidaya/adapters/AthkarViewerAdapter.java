@@ -81,13 +81,13 @@ public class AthkarViewerAdapter extends RecyclerView.Adapter<AthkarViewerAdapte
             viewHolder.repetitionTv.setVisibility(View.GONE);
             viewHolder.repetitionDiv.setVisibility(View.GONE);
         }
-        if (card.getTitle().length() == 0)
+        if (card.getTitle() == null || card.getTitle().length() == 0)
             viewHolder.titleTv.setVisibility(View.GONE);
-        if (card.getFadl().length() == 0) {
+        if (card.getFadl() == null || card.getFadl().length() == 0) {
             viewHolder.fadlTv.setVisibility(View.GONE);
             viewHolder.fadlDiv.setVisibility(View.GONE);
         }
-        if (card.getReference().length() == 0) {
+        if (card.getReference() == null || card.getReference().length() == 0) {
             viewHolder.referenceTv.setVisibility(View.GONE);
             viewHolder.referenceDiv.setVisibility(View.GONE);
         }

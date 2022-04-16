@@ -35,7 +35,8 @@
     <string name="evening_athkar_title">إشعار أذكار المساء</string>
     <string name="daily_page_enable_title">إشعار صفحة اليوم</string>
     <string name="friday_kahf_title">إشعار سورة الكهف</string>
-    <string name="text_size_title">حجم الخط للأذكار وكتب الحديث</string>
+    <string name="text_size_title">حجم الخط</string>
+    <string name="quran_and_hadeeth_text_size_title">حجم الخط للأذكار وكتب الحديث</string>
 
     <!-- TextViews Text -->
     <string name="remaining">الوقت المتبقي: %1$s</string>
@@ -145,5 +146,13 @@
     <string name="hadeeth_search_title">ابحث عن نص في كتب الحديث</string>
     <string name="quran_radio">إذاعة القرآن</string>
     <string name="holy_quran_radio">إذاعة القرآن الكريم</string>
+    <string name="date_converter">تحويل التاريخ</string>
+    <string name="pick_hijri_date">اختر التاريخ الهجري</string>
+    <string name="pick_gregorian_date">اختر التاريخ الميلادي</string>
+    <string name="year">السنة</string>
+    <string name="hijri_date">التاريخ الهجري</string>
+    <string name="month">الشهر</string>
+    <string name="day">اليوم</string>
+    <string name="gregorian_date">التاريخ الميلادي</string>
 
 </resources>

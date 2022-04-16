@@ -104,7 +104,7 @@ public class QuizActivity extends AppCompatActivity {
         getTheme().resolveAttribute(R.attr.myText, text, true);
 
         TypedValue accent = new TypedValue();
-        getTheme().resolveAttribute(R.attr.myActiveBar, accent, true);
+        getTheme().resolveAttribute(R.attr.myActiveOnBar, accent, true);
 
         for (Button answerBtn : answerBtns)
             answerBtn.setTextColor(text.data);

@@ -102,7 +102,7 @@
             android:id="@+id/seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="?myClick"
+            android:backgroundTint="?attr/mySurface"
             android:progressTint="?myOtherAccent"
             android:thumbTint="?myAccent"
             app:layout_constraintTop_toTopOf="parent" />

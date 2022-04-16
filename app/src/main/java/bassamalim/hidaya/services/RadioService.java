@@ -74,9 +74,6 @@ public class RadioService extends MediaBrowserServiceCompat implements
 
         setActions();
         initMediaSessionMetadata();
-
-        buildNotification();
-        initPlayer();
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -91,6 +88,8 @@ public class RadioService extends MediaBrowserServiceCompat implements
             Log.d(Const.TAG, "In onPlayFromMediaId of RadioClient");
             super.onPlayFromMediaId(mediaId, extras);
             link = mediaId;
+            buildNotification();
+            initPlayer();
             play();
         }
 
@@ -265,7 +264,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
                 // Be careful about the color
                 .setSmallIcon(R.drawable.launcher_foreground)
                 .setColorized(true)
-                .setColor(getResources().getColor(R.color.click_M, getTheme()))
+                .setColor(getResources().getColor(R.color.surface_M, getTheme()))
                 // Add buttons
                 // Enable launching the player by clicking the notification
                 .setContentIntent(controller.getSessionActivity())
@@ -293,9 +292,9 @@ public class RadioService extends MediaBrowserServiceCompat implements
 
         //Notification icon in card
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-                BitmapFactory.decodeResource(getResources(), R.color.click_M));
+                BitmapFactory.decodeResource(getResources(), R.color.surface_M));
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-                BitmapFactory.decodeResource(getResources(), R.color.click_M));
+                BitmapFactory.decodeResource(getResources(), R.color.surface_M));
         //lock screen icon for pre lollipop
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(getResources(), R.drawable.low_quality_foreground));
@@ -389,6 +388,10 @@ public class RadioService extends MediaBrowserServiceCompat implements
         thread.start();
     }
 
+    // Other Links:
+    // https://www.aloula.sa/83c0bda5-18e7-4c80-9c0a-21e764537d47
+    // https://m.live.net.sa:1935/live/quransa/playlist.m3u8
+
     Thread thread = new Thread(() -> {
         try {    // A mechanism to handle redirects and get the final dynamic link
             Log.d(Const.TAG, "There");
@@ -397,12 +400,10 @@ public class RadioService extends MediaBrowserServiceCompat implements
             connection.setInstanceFollowRedirects(false);
             URL secondURL = new URL(connection.getHeaderField("Location"));
             link = secondURL.toString();
-            link = link.replaceFirst("http", "https");
+            link = link.replaceFirst("http:", "https:");
             Log.i(Const.TAG, "Dynamic Quran Radio URL: " + link);
-
             player.setDataSource(getApplicationContext(), Uri.parse(link));
             player.prepareAsync();
-
         } catch (IOException e) {
             Log.e(Const.TAG, "Problem in RadioService player");
             e.printStackTrace();

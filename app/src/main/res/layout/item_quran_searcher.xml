@@ -16,7 +16,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?myClick"
+            android:background="?attr/mySurface"
             android:paddingHorizontal="20dp"
             android:paddingTop="18dp">
 
@@ -113,7 +113,7 @@
                 android:paddingHorizontal="20dp"
                 android:paddingBottom="12dp"
                 android:text="@string/go_to_page"
-                android:textColor="?myBarsText"
+                android:textColor="?attr/myOnBars"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

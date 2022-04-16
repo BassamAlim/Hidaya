@@ -33,7 +33,7 @@
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="22dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/ripple_click"
+                android:background="@drawable/ripple_surface"
                 android:elevation="10dp"
                 android:fontFamily="@font/tajawal_regular"
                 android:gravity="center"
@@ -51,7 +51,7 @@
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/ripple_click"
+                android:background="@drawable/ripple_surface"
                 android:elevation="10dp"
                 android:fontFamily="@font/tajawal_regular"
                 android:gravity="center"
@@ -70,7 +70,7 @@
                 <Button
                     android:id="@+id/day_and_night"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_day_and_night"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/day_and_night_thikrs" />
@@ -78,7 +78,7 @@
                 <Button
                     android:id="@+id/prayers"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_praying"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/prayers_thikrs" />
@@ -95,7 +95,7 @@
                 <Button
                     android:id="@+id/quran"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_closed_quran"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/quran_thikrs" />
@@ -103,7 +103,7 @@
                 <Button
                     android:id="@+id/actions"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_actions"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/actions_thikrs" />
@@ -120,7 +120,7 @@
                 <Button
                     android:id="@+id/events"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_events"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/events_thikrs" />
@@ -128,7 +128,7 @@
                 <Button
                     android:id="@+id/emotions"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_emotion"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/emotion_thikrs" />
@@ -145,7 +145,7 @@
                 <Button
                     android:id="@+id/places"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_going_out"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/places_thikrs" />
@@ -153,7 +153,7 @@
                 <Button
                     android:id="@+id/more"
                     style="@style/Buttony"
-                    android:background="@drawable/ripple_click"
+                    android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_duaa_moon"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/more_thikrs" />
