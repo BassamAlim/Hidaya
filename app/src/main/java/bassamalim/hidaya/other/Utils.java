@@ -160,7 +160,7 @@ public class Utils {
         monthMap.put(3, "ربيع الثاني");
         monthMap.put(4, "جُمادى الأول");
         monthMap.put(5, "جُمادى الآخر");
-        monthMap.put(6, "رجب");
+        monthMap.put(6, "رَجَب");
         monthMap.put(7, "شعبان");
         monthMap.put(8, "رَمَضان");
         monthMap.put(9, "شَوَّال");

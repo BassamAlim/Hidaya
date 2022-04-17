@@ -67,8 +67,13 @@ public class OtherFragment extends Fragment {
         });
 
         binding.radio.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), RadioClient.class);
-            startActivity(intent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Intent intent = new Intent(getContext(), RadioClient.class);
+                startActivity(intent);
+            }
+            else
+                Toast.makeText(getContext(), "جهازك لا يدعم هذه الميزة",
+                        Toast.LENGTH_SHORT).show();
         });
 
         binding.dateConverter.setOnClickListener(v -> {

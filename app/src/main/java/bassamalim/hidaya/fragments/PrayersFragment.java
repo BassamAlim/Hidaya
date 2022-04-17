@@ -4,16 +4,16 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -41,15 +41,18 @@ public class PrayersFragment extends Fragment {
     private Calendar[] times;
     private Calendar tomorrowFajr;
     private final CardView[] cards = new CardView[6];
+    private final ConstraintLayout[] cls = new ConstraintLayout[6];
     private final TextView[] screens = new TextView[6];
     private final TextView[] counters = new TextView[6];
     private final ImageView[] images = new ImageView[6];
+    private final TextView[] delayTvs = new TextView[6];
     private TextView dayScreen;
     private CountDownTimer timer;
     private SharedPreferences pref;
     private int currentChange = 0;
     private Calendar selectedDay;
     private int closest;
+    private final ConstraintSet constraintSet = new ConstraintSet();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -93,6 +96,13 @@ public class PrayersFragment extends Fragment {
         cards[4] = binding.maghribCard;
         cards[5] = binding.ishaaCard;
 
+        cls[0] = binding.fajrCl;
+        cls[1] = binding.shorouqCl;
+        cls[2] = binding.duhrCl;
+        cls[3] = binding.asrCl;
+        cls[4] = binding.maghribCl;
+        cls[5] = binding.ishaaCl;
+
         screens[0] = binding.fajrScreen;
         screens[1] = binding.shorouqScreen;
         screens[2] = binding.duhrScreen;
@@ -113,6 +123,13 @@ public class PrayersFragment extends Fragment {
         images[3] = binding.asrImage;
         images[4] = binding.maghribImage;
         images[5] = binding.ishaaImage;
+
+        delayTvs[0] = binding.fajrDelayTv;
+        delayTvs[1] = binding.shorouqDelayTv;
+        delayTvs[2] = binding.duhrDelayTv;
+        delayTvs[3] = binding.asrDelayTv;
+        delayTvs[4] = binding.maghribDelayTv;
+        delayTvs[5] = binding.ishaaDelayTv;
 
         dayScreen = binding.dayScreen;
     }
@@ -158,8 +175,8 @@ public class PrayersFragment extends Fragment {
     }
 
     private void setInitialState() {
-        for (int i = 0; i < images.length; i++) {
-            int state = pref.getInt(Utils.mapID(i)+"notification_type", 2);
+        for (int i = 0; i < cards.length; i++) {
+            int state = pref.getInt(Utils.mapID(i) + "notification_type", 2);
             if (state == 3)
                 images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext()
                         .getResources(), R.drawable.ic_speaker, requireContext().getTheme()));
@@ -169,6 +186,18 @@ public class PrayersFragment extends Fragment {
             else if (state == 0)
                 images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext()
                         .getResources(), R.drawable.ic_disabled, requireContext().getTheme()));
+
+            int delayPosition = pref.getInt(Utils.mapID(i) + "spinner_last", 6);
+            int min = Integer.parseInt(getResources().getStringArray(
+                    R.array.time_settings_values)[delayPosition]);
+            if (min > 0) {
+                String positive = Utils.translateNumbers("+" + min);
+                delayTvs[i].setText(positive);
+            }
+            else if (min < 0)
+                delayTvs[i].setText(Utils.translateNumbers(String.valueOf(min)));
+            else
+                delayTvs[i].setText("");
         }
     }
 
@@ -196,10 +225,9 @@ public class PrayersFragment extends Fragment {
         TextView screen = screens[closest];
         TextView counter = counters[closest];
         counter.setVisibility(View.VISIBLE);
-        FrameLayout.LayoutParams up = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        up.gravity = Gravity.TOP | Gravity.START;
-        screen.setLayoutParams(up);
+        constraintSet.clone(cls[closest]);
+        constraintSet.clear(R.id.shorouq_screen, ConstraintSet.BOTTOM);
+        constraintSet.applyTo(cls[closest]);
 
         long till = times[closest].getTimeInMillis();
         if (tomorrow)
@@ -219,8 +247,7 @@ public class PrayersFragment extends Fragment {
             }
             @Override
             public void onFinish() {
-                up.gravity = Gravity.CENTER | Gravity.START;
-                screens[closest].setLayoutParams(up);
+                constraintSet.clear(screen.getId(), ConstraintSet.BOTTOM);
                 counter.setVisibility(View.GONE);
             }
         }.start();
@@ -274,11 +301,8 @@ public class PrayersFragment extends Fragment {
     private void cancelTimer() {
         if (timer != null) {
             timer.cancel();
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-            params.gravity = Gravity.CENTER | Gravity.START;
+            constraintSet.clear(screens[closest].getId(), ConstraintSet.BOTTOM);
             counters[closest].setVisibility(View.GONE);
-            screens[closest].setLayoutParams(params);
         }
     }
 

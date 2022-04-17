@@ -2,6 +2,7 @@ package bassamalim.hidaya.activities;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,15 +10,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Objects;
 
 import bassamalim.hidaya.databinding.ActivityDateConverterBinding;
+import bassamalim.hidaya.other.Const;
 import bassamalim.hidaya.other.Utils;
+import bassamalim.hidaya.replacements.HijriDatePicker;
 
 public class DateConverter extends AppCompatActivity {
 
     private ActivityDateConverterBinding binding;
+    private final String[] hijriMonths = new String[] {"(١) مُحَرَّم", "(٢) صَفَر", "(٣) ربيع الأول",
+            "(٤) ربيع الثاني", "(٥) جُمادى الأول", "(٦) جُمادى الآخر", "(٧) رَجَب", "(٨) شعبان",
+            "(٩) رَمَضان", "(١٠) شَوَّال", "(١١) ذو القِعْدة", "(١٢) ذو الحِجَّة"};
+    private final String[] gregorianMonths = new String[] {"(١) يناير", "(٢) فبرابر", "(٣) مارس",
+            "(٤) أبريل", "(٥) مايو", "(٦) يونيو", "(٧) يوليو", "(٨) أغسطس", "(٩) سبتمبر", "(١٠) أكتوبر",
+            "(١١) نوفمبر", "(١٢) ديسمبر"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +62,24 @@ public class DateConverter extends AppCompatActivity {
     }
 
     private void pickHijri() {
-        Calendar now = new UmmalquraCalendar();
+        HijriDatePicker hijriPicker = new HijriDatePicker();
 
+        hijriPicker.setListener((view, year, month, day) -> {
+            Log.d(Const.TAG, "Here");
+            Calendar choice = new UmmalquraCalendar();
+            choice.set(Calendar.YEAR, year);
+            choice.set(Calendar.MONTH, month-1);    // starts from 0
+            choice.set(Calendar.DATE, day);
+
+            show(choice, hijriToGregorian(choice));
+        });
+
+        hijriPicker.show(getSupportFragmentManager(), "HijriDatePicker");
     }
 
     private Calendar gregorianToHijri(Calendar gregorian) {
-        Calendar gCal = new GregorianCalendar(gregorian.get(Calendar.YEAR),
-                gregorian.get(Calendar.MONTH), gregorian.get(Calendar.DATE));
-
         Calendar hijri = new UmmalquraCalendar();
-        hijri.setTime(gCal.getTime());
+        hijri.setTime(gregorian.getTime());
         return hijri;
     }
 
@@ -74,13 +90,17 @@ public class DateConverter extends AppCompatActivity {
     }
 
     private void show(Calendar hijri, Calendar gregorian) {
-        binding.hijriYearTv.setText(String.valueOf(hijri.get(Calendar.YEAR)));
-        binding.hijriMonthTv.setText(String.valueOf(hijri.get(Calendar.MONTH)+1));
-        binding.hijriDayTv.setText(String.valueOf(hijri.get(Calendar.DATE)));
+        binding.hijriYearTv.setText(Utils.translateNumbers(
+                String.valueOf(hijri.get(Calendar.YEAR))));
+        binding.hijriMonthTv.setText(hijriMonths[hijri.get(Calendar.MONTH)]);
+        binding.hijriDayTv.setText(Utils.translateNumbers(
+                String.valueOf(hijri.get(Calendar.DATE))));
 
-        binding.gregorianYearTv.setText(String.valueOf(gregorian.get(Calendar.YEAR)));
-        binding.gregorianMonthTv.setText(String.valueOf(gregorian.get(Calendar.MONTH)+1));
-        binding.gregorianDayTv.setText(String.valueOf(gregorian.get(Calendar.DATE)));
+        binding.gregorianYearTv.setText(Utils.translateNumbers(
+                String.valueOf(gregorian.get(Calendar.YEAR))));
+        binding.gregorianMonthTv.setText(gregorianMonths[gregorian.get(Calendar.MONTH)]);
+        binding.gregorianDayTv.setText(Utils.translateNumbers(
+                String.valueOf(gregorian.get(Calendar.DATE))));
     }
 
     @Override

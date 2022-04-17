@@ -39,6 +39,7 @@ public class PrayerPopup {
     private Button notifyBtn;
     private Button athanBtn;
     private ImageView[] images;
+    private TextView[] delayTvs;
 
     public PrayerPopup(Context gContext, View v, ID id, String gName) {
         context = gContext;
@@ -156,11 +157,19 @@ public class PrayerPopup {
                         R.array.time_settings_values)[parent.getSelectedItemPosition()]);
                 Log.i(Const.TAG, "delay is set to: " + min);
 
-                long millis = min * 60000L;
+                if (min > 0) {
+                    String positive = Utils.translateNumbers("+" + min);
+                    delayTvs[id.ordinal()].setText(positive);
+                }
+                else if (min < 0)
+                    delayTvs[id.ordinal()].setText(Utils.translateNumbers(String.valueOf(min)));
+                else
+                    delayTvs[id.ordinal()].setText("");
 
                 new Alarms(context, id);
 
-                editor.putLong(id +"time_adjustment", millis);
+                long millis = min * 60000L;
+                editor.putLong(id + "time_adjustment", millis);
                 editor.putInt(id + "spinner_last", position);
                 editor.apply();
             }
@@ -209,6 +218,14 @@ public class PrayerPopup {
         images[3] = view.findViewById(R.id.asr_image);
         images[4] = view.findViewById(R.id.maghrib_image);
         images[5] = view.findViewById(R.id.ishaa_image);
+
+        delayTvs = new TextView[6];
+        delayTvs[0] = view.findViewById(R.id.fajr_delay_tv);
+        delayTvs[1] = view.findViewById(R.id.shorouq_delay_tv);
+        delayTvs[2] = view.findViewById(R.id.duhr_delay_tv);
+        delayTvs[3] = view.findViewById(R.id.asr_delay_tv);
+        delayTvs[4] = view.findViewById(R.id.maghrib_delay_tv);
+        delayTvs[5] = view.findViewById(R.id.ishaa_delay_tv);
     }
 
     private int getY() {
