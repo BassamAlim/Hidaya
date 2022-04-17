@@ -1,8 +1,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?myMainBg"
     android:layoutDirection="rtl">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        style="@style/MyTopBar">
+
+        <TextView
+            android:id="@+id/top_bar_title"
+            android:text="@string/settings"
+            style="@style/MyTopBarTv" />
+
+    </androidx.appcompat.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/settings"

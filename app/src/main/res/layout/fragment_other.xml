@@ -71,7 +71,7 @@
                     android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_television"
                     android:elevation="@dimen/buttony_elevation"
-                    android:text="@string/quran_and_hadeeth_channels" />
+                    android:text="@string/tv_channels" />
 
             </LinearLayout>
 

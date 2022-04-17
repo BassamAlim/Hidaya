@@ -11,26 +11,12 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:background="?myBars"
-        android:elevation="4dp"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        style="@style/MyTopBar">
 
         <TextView
             android:id="@+id/top_bar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:layout_marginEnd="15dp"
-            android:fontFamily="@font/tajawal_regular"
-            android:textColor="?attr/myOnBars"
-            android:textSize="21dp"
-            android:textStyle="bold"
-            tools:ignore="SpUsage" />
+            style="@style/MyTopBarTv" />
 
     </androidx.appcompat.widget.Toolbar>
 

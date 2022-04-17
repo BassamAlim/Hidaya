@@ -41,9 +41,7 @@ public class TelawatSuarCollectionActivity extends FragmentActivity {
         String reciterName = intent.getStringExtra("reciter_name");
         int versionId = intent.getIntExtra("version_id", 0);
 
-        setActionBar(binding.topBar);
-        Objects.requireNonNull(getActionBar()).setDisplayShowTitleEnabled(false);
-        binding.barTitle.setText(reciterName);
+        binding.topBarTitle.setText(reciterName);
 
         viewPager = findViewById(R.id.telawat_pager);
         adapter = new TSAdapter(this, reciterId, versionId);

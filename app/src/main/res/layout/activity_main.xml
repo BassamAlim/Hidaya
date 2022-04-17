@@ -9,14 +9,9 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:background="?myBars"
-        android:elevation="4dp"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
-        app:titleTextAppearance="@style/ActionBarTajwal">
+        app:titleTextAppearance="@style/ActionBarTajwal"
+        style="@style/MyTopBar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"

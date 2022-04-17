@@ -37,14 +37,9 @@
 
             <TextView
                 android:id="@+id/fajr_delay_tv"
-                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textSize="25dp"
-                android:textColor="?myAccent"
-                android:padding="5dp"
-                android:gravity="center"
-                app:layout_constraintStart_toEndOf="@id/fajr_image"
-                tools:ignore="SpUsage" />
+                style="@style/PrayerDelayTv"
+                app:layout_constraintStart_toEndOf="@id/fajr_image" />
 
             <ImageView
                 android:id="@+id/fajr_image"
@@ -87,14 +82,9 @@
 
             <TextView
                 android:id="@+id/shorouq_delay_tv"
-                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textSize="25dp"
-                android:textColor="?myAccent"
-                android:padding="5dp"
-                android:gravity="center"
-                app:layout_constraintStart_toEndOf="@id/shorouq_image"
-                tools:ignore="SpUsage" />
+                style="@style/PrayerDelayTv"
+                app:layout_constraintStart_toEndOf="@id/shorouq_image" />
 
             <ImageView
                 android:id="@+id/shorouq_image"
@@ -137,14 +127,9 @@
 
             <TextView
                 android:id="@+id/duhr_delay_tv"
-                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textSize="25dp"
-                android:textColor="?myAccent"
-                android:padding="5dp"
-                android:gravity="center"
-                app:layout_constraintStart_toEndOf="@id/duhr_image"
-                tools:ignore="SpUsage" />
+                style="@style/PrayerDelayTv"
+                app:layout_constraintStart_toEndOf="@id/duhr_image" />
 
             <ImageView
                 android:id="@+id/duhr_image"
@@ -187,14 +172,9 @@
 
             <TextView
                 android:id="@+id/asr_delay_tv"
-                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textSize="25dp"
-                android:textColor="?myAccent"
-                android:padding="5dp"
-                android:gravity="center"
-                app:layout_constraintStart_toEndOf="@id/asr_image"
-                tools:ignore="SpUsage" />
+                style="@style/PrayerDelayTv"
+                app:layout_constraintStart_toEndOf="@id/asr_image" />
 
             <ImageView
                 android:id="@+id/asr_image"
@@ -237,14 +217,9 @@
 
             <TextView
                 android:id="@+id/maghrib_delay_tv"
-                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textSize="25dp"
-                android:textColor="?myAccent"
-                android:padding="5dp"
-                android:gravity="center"
-                app:layout_constraintStart_toEndOf="@id/maghrib_image"
-                tools:ignore="SpUsage" />
+                style="@style/PrayerDelayTv"
+                app:layout_constraintStart_toEndOf="@id/maghrib_image" />
 
             <ImageView
                 android:id="@+id/maghrib_image"
@@ -287,14 +262,9 @@
 
             <TextView
                 android:id="@+id/ishaa_delay_tv"
-                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textSize="25dp"
-                android:textColor="?myAccent"
-                android:padding="5dp"
-                android:gravity="center"
-                app:layout_constraintStart_toEndOf="@id/ishaa_image"
-                tools:ignore="SpUsage" />
+                style="@style/PrayerDelayTv"
+                app:layout_constraintStart_toEndOf="@id/ishaa_image" />
 
             <ImageView
                 android:id="@+id/ishaa_image"

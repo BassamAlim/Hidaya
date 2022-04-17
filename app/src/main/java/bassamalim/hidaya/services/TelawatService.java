@@ -737,8 +737,10 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     }
 
     private void cleanUp() {
-        if (wifiLock != null)
+        if (wifiLock != null) {
             wifiLock.release();
+            wifiLock = null;
+        }
         if (player != null) {
             player.release();
             player = null;

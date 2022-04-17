@@ -40,9 +40,7 @@ public class HadeethChaptersCollectionActivity extends FragmentActivity {
         int bookId = intent.getIntExtra("book_id", 0);
         String bookTitle = intent.getStringExtra("book_title");
 
-        setActionBar(binding.topBar);
-        Objects.requireNonNull(getActionBar()).setDisplayShowTitleEnabled(false);
-        binding.barTitle.setText(bookTitle);
+        binding.topBarTitle.setText(bookTitle);
 
         viewPager = findViewById(R.id.pager);
         adapter = new SCAdapter(this, bookId);

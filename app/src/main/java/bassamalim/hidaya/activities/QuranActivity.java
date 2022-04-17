@@ -36,7 +36,7 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.AyatDB;
 import bassamalim.hidaya.databinding.ActivityQuranBinding;
 import bassamalim.hidaya.enums.States;
-import bassamalim.hidaya.helpers.RecitationManager;
+import bassamalim.hidaya.helpers.AyahPlayer;
 import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.popups.QuranSettingsPopup;
@@ -65,7 +65,7 @@ public class QuranActivity extends SwipeActivity {
     private TextView target;
     private boolean scrolled;
     private Ayah selected;
-    private RecitationManager rcMgr;
+    private AyahPlayer ayahPlayer;
     private List<AyatDB> ayatDB;
     private String theme;
 
@@ -87,7 +87,7 @@ public class QuranActivity extends SwipeActivity {
         Intent intent = getIntent();
         action = intent.getAction();
 
-        setupManager();
+        setupPlayer();
 
         action(intent);
 
@@ -143,21 +143,21 @@ public class QuranActivity extends SwipeActivity {
             editor.apply();
             Toast.makeText(this, "تم حفظ الصفحة", Toast.LENGTH_SHORT).show();
         });
-        binding.prevAyah.setOnClickListener(view -> rcMgr.prevAyah());
+        binding.prevAyah.setOnClickListener(view -> ayahPlayer.prevAyah());
         binding.play.setOnClickListener(view -> {
-            if (rcMgr.getState() == States.Playing) {
-                if (rcMgr.getLastPlayed() != null)
-                    selected = rcMgr.getLastPlayed();
+            if (ayahPlayer.getState() == States.Playing) {
+                if (ayahPlayer.getLastPlayed() != null)
+                    selected = ayahPlayer.getLastPlayed();
 
-                rcMgr.pause();
+                ayahPlayer.pause();
                 updateUi(States.Paused);
             }
-            else if (rcMgr.getState() == States.Paused) {
+            else if (ayahPlayer.getState() == States.Paused) {
                 if (selected == null)
-                    rcMgr.resume();
+                    ayahPlayer.resume();
                 else {
-                    rcMgr.setChosenSurah(selected.getSurah());
-                    rcMgr.requestPlay(selected);
+                    ayahPlayer.setChosenSurah(selected.getSurah());
+                    ayahPlayer.requestPlay(selected);
                 }
                 updateUi(States.Playing);
             }
@@ -165,14 +165,14 @@ public class QuranActivity extends SwipeActivity {
                 if (selected == null)
                     selected = allAyahs.get(0);
 
-                rcMgr.setChosenSurah(selected.getSurah());
-                rcMgr.requestPlay(selected);
+                ayahPlayer.setChosenSurah(selected.getSurah());
+                ayahPlayer.requestPlay(selected);
 
                 updateUi(States.Playing);
             }
             selected = null;
         });
-        binding.nextAyah.setOnClickListener(view -> rcMgr.nextAyah());
+        binding.nextAyah.setOnClickListener(view -> ayahPlayer.nextAyah());
         binding.recitationSettings.setOnClickListener(v -> {
             Intent intent = new Intent(this, QuranSettingsPopup.class);
             settingsPopup.launch(intent);
@@ -190,10 +190,10 @@ public class QuranActivity extends SwipeActivity {
                 }
             });
 
-    private void setupManager() {
-        rcMgr = new RecitationManager(this);
+    private void setupPlayer() {
+        ayahPlayer = new AyahPlayer(this);
 
-        RecitationManager.Coordinator uiListener = new RecitationManager.Coordinator() {
+        AyahPlayer.Coordinator uiListener = new AyahPlayer.Coordinator() {
             @Override
             public void onUiUpdate(States state) {
                 updateUi(state);
@@ -209,7 +209,7 @@ public class QuranActivity extends SwipeActivity {
                 next();
             }
         };
-        rcMgr.setCoordinator(uiListener);
+        ayahPlayer.setCoordinator(uiListener);
     }
 
     @Override
@@ -323,7 +323,7 @@ public class QuranActivity extends SwipeActivity {
             list.get(finalI).setScreen(screen);
             allAyahs.add(list.get(finalI));
         }
-        rcMgr.setAllAyahsSize(allAyahs.size());
+        ayahPlayer.setAllAyahsSize(allAyahs.size());
 
         screen.setText(ss);
         if (theme.equals("ThemeM"))
@@ -369,7 +369,7 @@ public class QuranActivity extends SwipeActivity {
 
     private void setCurrentPage(int num) {
         currentPage = num;
-        rcMgr.setCurrentPage(num);
+        ayahPlayer.setCurrentPage(num);
     }
 
     private void addHeader(int suraNum, String name) {
@@ -454,7 +454,7 @@ public class QuranActivity extends SwipeActivity {
     protected void onDestroy() {
         super.onDestroy();
         binding = null;
-        rcMgr.end();
-        rcMgr = null;
+        ayahPlayer.end();
+        ayahPlayer = null;
     }
 }

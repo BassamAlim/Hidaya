@@ -7,6 +7,19 @@
     android:background="?myMainBg"
     tools:context=".activities.FeaturesGuide">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/MyTopBar">
+
+        <TextView
+            android:id="@+id/top_bar_title"
+            android:text="@string/features_guide"
+            style="@style/MyTopBarTv" />
+
+    </androidx.appcompat.widget.Toolbar>
+
     <ScrollView
         android:id="@+id/scroll"
         android:layout_width="match_parent"

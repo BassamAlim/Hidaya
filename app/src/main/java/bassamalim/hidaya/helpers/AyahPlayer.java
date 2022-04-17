@@ -25,7 +25,7 @@ import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.other.Const;
 
-public class RecitationManager {
+public class AyahPlayer {
 
     private final Context context;
     private AppDatabase db;
@@ -54,7 +54,7 @@ public class RecitationManager {
         coordinator = listener;
     }
 
-    public RecitationManager(Context context) {
+    public AyahPlayer(Context context) {
         this.context = context;
 
         initiate();
@@ -68,13 +68,14 @@ public class RecitationManager {
                 "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
                 .build();
 
-        String theme = pref.getString(context.getString( R.string.theme_key),
-                "ThemeM");
+        String theme = pref.getString(context.getString( R.string.theme_key), "ThemeM");
 
         if (theme.equals("ThemeM"))
-            what = new ForegroundColorSpan(context.getResources().getColor(R.color.track_M));
+            what = new ForegroundColorSpan(context.getResources().getColor(
+                    R.color.track_M, context.getTheme()));
         else
-            what = new ForegroundColorSpan(context.getResources().getColor(R.color.track_L));
+            what = new ForegroundColorSpan(context.getResources().getColor(
+                    R.color.track_L, context.getTheme()));
     }
 
     /**
@@ -176,7 +177,6 @@ public class RecitationManager {
     }
 
     /**
-     * The function name is `requestPlay` and it takes one parameter, `startAyah`.
      * The function's purpose is to prepare the first player to play the given `startAyah`.
      *
      * @param startAyah The ayah to start playing from.
@@ -283,6 +283,8 @@ public class RecitationManager {
      * Pause the two players
      */
     public void pause() {
+        paused = true;
+        state = States.Paused;
         for (int i = 0; i < 2; i++) {
             if (players[i].isPlaying()) {
                 Log.d(Const.TAG, "Paused " + i);
@@ -292,14 +294,12 @@ public class RecitationManager {
                 lastPlayer = i;
             }
         }
-        paused = true;
-        state = States.Paused;
     }
 
     public void resume() {
         Log.d(Const.TAG, "Resume P" + (lastPlayer));
-        players[lastPlayer].start();
         state = States.Playing;
+        players[lastPlayer].start();
     }
 
     private void ended() {
@@ -313,6 +313,9 @@ public class RecitationManager {
     }
 
     public void stopPlaying() {
+        state = States.Stopped;
+        coordinator.onUiUpdate(States.Paused);
+
         for (int i = 0; i < 2; i++) {
             players[i].reset();
             players[i].release();
@@ -322,9 +325,6 @@ public class RecitationManager {
             lastTracked.getSS().removeSpan(what);
             lastTracked.getScreen().setText(lastTracked.getSS());
         }
-
-        state = States.Stopped;
-        coordinator.onUiUpdate(States.Paused);
     }
 
     private Uri getUri(Ayah ayah, int change) {
@@ -344,6 +344,9 @@ public class RecitationManager {
     private void notFound() {
         Toast.makeText(context, "لا يتوفر تسجيل الآية لهذا القارئ", Toast.LENGTH_SHORT).show();
 
+        state = States.Stopped;
+        coordinator.onUiUpdate(States.Paused);
+
         for (int i = 0; i < 2; i++)
             players[i].reset();
 
@@ -351,9 +354,6 @@ public class RecitationManager {
             lastTracked.getSS().removeSpan(what);
             lastTracked.getScreen().setText(lastTracked.getSS());
         }
-
-        state = States.Stopped;
-        coordinator.onUiUpdate(States.Paused);
 
         getUri(lastPlayed, 1);
     }
@@ -389,7 +389,9 @@ public class RecitationManager {
                 players[i] = null;
             }
         }
-        if (wifiLock != null)
+        if (wifiLock != null) {
             wifiLock.release();
+            wifiLock = null;
+        }
     }
 }

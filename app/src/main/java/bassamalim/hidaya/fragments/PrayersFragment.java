@@ -51,7 +51,7 @@ public class PrayersFragment extends Fragment {
     private SharedPreferences pref;
     private int currentChange = 0;
     private Calendar selectedDay;
-    private int closest;
+    private int upcoming;
     private final ConstraintSet constraintSet = new ConstraintSet();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -138,10 +138,15 @@ public class PrayersFragment extends Fragment {
         currentChange = 0;
         getTimes(0);
         updateDayScreen();
-        cancelTimer();
         count();
     }
 
+    /**
+     * It gets the prayer times for the current day and the next day, and sets the text of the
+     * prayer time screens to the prayer times
+     *
+     * @param change The number of days to add to the current date.
+     */
     private void getTimes(int change) {
         PrayTimes prayTimes = new PrayTimes();
 
@@ -214,22 +219,20 @@ public class PrayersFragment extends Fragment {
     }
 
     private void count() {
-        closest = findClosest();
+        upcoming = findUpcoming();
 
         boolean tomorrow = false;
-        if (closest == -1) {
+        if (upcoming == -1) {
             tomorrow = true;
-            closest = 0;
+            upcoming = 0;
         }
 
-        TextView screen = screens[closest];
-        TextView counter = counters[closest];
-        counter.setVisibility(View.VISIBLE);
-        constraintSet.clone(cls[closest]);
-        constraintSet.clear(R.id.shorouq_screen, ConstraintSet.BOTTOM);
-        constraintSet.applyTo(cls[closest]);
+        counters[upcoming].setVisibility(View.VISIBLE);
+        constraintSet.clone(cls[upcoming]);
+        constraintSet.clear(screens[upcoming].getId(), ConstraintSet.BOTTOM);
+        constraintSet.applyTo(cls[upcoming]);
 
-        long till = times[closest].getTimeInMillis();
+        long till = times[upcoming].getTimeInMillis();
         if (tomorrow)
             till = tomorrowFajr.getTimeInMillis();
 
@@ -243,17 +246,20 @@ public class PrayersFragment extends Fragment {
 
                 String hms = String.format(Locale.US, "%02d:%02d:%02d",
                         hours, minutes, seconds);
-                counter.setText(String.format(getString(R.string.remaining), Utils.translateNumbers(hms)));
+                counters[upcoming].setText(String.format(getString(R.string.remaining),
+                        Utils.translateNumbers(hms)));
             }
             @Override
             public void onFinish() {
-                constraintSet.clear(screen.getId(), ConstraintSet.BOTTOM);
-                counter.setVisibility(View.GONE);
+                constraintSet.connect(screens[upcoming].getId(), ConstraintSet.BOTTOM,
+                        cls[upcoming].getId(), ConstraintSet.BOTTOM);
+                constraintSet.applyTo(cls[upcoming]);
+                counters[upcoming].setVisibility(View.GONE);
             }
         }.start();
     }
 
-    private int findClosest() {
+    private int findUpcoming() {
         long currentMillis = System.currentTimeMillis();
         for (int i=0; i<times.length; i++) {
             long millis = times[i].getTimeInMillis();
@@ -301,8 +307,10 @@ public class PrayersFragment extends Fragment {
     private void cancelTimer() {
         if (timer != null) {
             timer.cancel();
-            constraintSet.clear(screens[closest].getId(), ConstraintSet.BOTTOM);
-            counters[closest].setVisibility(View.GONE);
+            constraintSet.connect(screens[upcoming].getId(), ConstraintSet.BOTTOM,
+                    cls[upcoming].getId(), ConstraintSet.BOTTOM);
+            constraintSet.applyTo(cls[upcoming]);
+            counters[upcoming].setVisibility(View.GONE);
         }
     }
 

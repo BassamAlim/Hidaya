@@ -40,10 +40,6 @@ public class TelawatCollectionActivity extends FragmentActivity {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
 
-        setActionBar(binding.topBar);
-        Objects.requireNonNull(getActionBar()).setDisplayShowTitleEnabled(false);
-        binding.barTitle.setText("تلاوات");
-
         viewPager = findViewById(R.id.telawat_pager);
         adapter = new TAdapter(this);
         viewPager.setAdapter(adapter);
@@ -92,7 +88,7 @@ public class TelawatCollectionActivity extends FragmentActivity {
         if (text.length() == 0)
             text = "لم يتم تشغيل أي تلاوة بعد";
         else {
-            text = "آخر ما تم تشغيله: " + text;
+            text = "آخر تشغيل: " + text;
 
             binding.continueListening.setOnClickListener(v -> {
                 String lastMediaId = pref.getString("last_played_media_id", "");

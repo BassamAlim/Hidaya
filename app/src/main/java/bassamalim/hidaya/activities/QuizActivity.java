@@ -88,7 +88,7 @@ public class QuizActivity extends AppCompatActivity {
         QuizQuestionsDB q = questions.get(num);
 
         String qNum = "سؤال " + (current+1);
-        binding.questionNumber.setText(qNum);
+        binding.topBarTitle.setText(qNum);
 
         binding.questionScreen.setText(questions.get(current).getQuestion_text());
 

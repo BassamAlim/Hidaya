@@ -7,13 +7,26 @@
     android:background="?myMainBg"
     tools:context=".activities.QuranSearcherActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/MyTopBar">
+
+        <TextView
+            android:id="@+id/top_bar_title"
+            android:text="@string/quran_searcher"
+            style="@style/MyTopBarTv" />
+
+    </androidx.appcompat.widget.Toolbar>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/spec_space"
         android:layout_width="match_parent"
         android:layout_height="215dp"
         android:elevation="20dp"
         android:padding="10dp"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/top_bar">
 
         <TextView
             android:id="@+id/search_title"

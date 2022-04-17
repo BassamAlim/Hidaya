@@ -76,11 +76,6 @@ public class RadioService extends MediaBrowserServiceCompat implements
         initMediaSessionMetadata();
     }
 
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        MediaButtonReceiver.handleIntent(mediaSession, intent);
-        return super.onStartCommand(intent, flags, startId);
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     final MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
         @Override

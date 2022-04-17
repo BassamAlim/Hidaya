@@ -52,7 +52,7 @@
     <string name="actions_thikrs">أذكار الأفعال</string>
     <string name="events_thikrs">أدعية الأحداث</string>
     <string name="more_thikrs">المزيد</string>
-    <string name="quran_and_hadeeth_channels">بث مباشر</string>
+    <string name="tv_channels">بث مباشر</string>
     <string name="settings">الإعدادات</string>
     <string name="quick_update">تحديث سريع</string>
     <string name="quran_channel">القرآن الكريم</string>
@@ -65,8 +65,8 @@
     <string name="share_app">شارك التطبيق</string>
 
     <!-- Descriptions -->
-    <string name="qibla_view_description">this is the view that rotates depending on qibla</string>
-    <string name="bingo_view_description">this is the view that shows when pointing towards qibla</string>
+    <string name="qibla_view_description">اتجاه القبلة</string>
+    <string name="bingo_view_description">اتجاه صحيح</string>
     <string name="first_answer_description">الاجابة الاولى</string>
     <string name="second_answer_description">الاجابة الثانية</string>
     <string name="third_answer_description">الاجابة الثالثة</string>
@@ -75,14 +75,14 @@
     <string name="shuffle_description">تشغيل عشوائي</string>
     <string name="download_description">تحميل</string>
     <string name="repeat_description">تكرار</string>
-    <string name="notification_image_description">shows current notification status</string>
-    <string name="compass_calibration_gif_description">gif explaining how to calibrate inaccurate compass</string>
-    <string name="accuracy_indicator_description">accuracy indicator for qibla compass</string>
-    <string name="app_widget_description">This is an app widget description</string>
-    <string name="previous_day_button_description">arrow for moving to previous day</string>
-    <string name="next_day_button_description">arrow for moving to next day</string>
-    <string name="previous_track_btn_description">skip to previous track</string>
-    <string name="rewind_btn_description">rewind 10s of playback</string>
+    <string name="notification_image_description">الحالة الحالية لتنبيه الأذان</string>
+    <string name="compass_calibration_gif_description">معايرة اتجاه القبلة</string>
+    <string name="accuracy_indicator_description">دقة القياس</string>
+    <string name="app_widget_description">تطبيق مصغر</string>
+    <string name="previous_day_button_description">اليوم السابق</string>
+    <string name="next_day_button_description">اليوم التالي</string>
+    <string name="previous_track_btn_description">السابق</string>
+    <string name="rewind_btn_description">عودة</string>
     <string name="play_pause_btn_description">اوقف واكمل التشغيل</string>
     <string name="fast_forward_btn_description">تقدم</string>
     <string name="next_track_btn_description">انتقل الى السورة التالية</string>
@@ -97,7 +97,7 @@
     <string name="medium_accuracy_text">الدقة متوسطة</string>
     <string name="high_accuracy_text">الدقة جيدة</string>
     <string name="continue_reading">اكمل القراءة</string>
-    <string name="bookmark_page_button">button to bookmark page</string>
+    <string name="bookmark_page_button">حفظ الصفحة</string>
     <string name="recitation_settings">إعدادات التلاوة</string>
     <string name="choose_reciter">اختر القارئ</string>
     <string name="qibla_warning">أبعد جهازك عن الاجسام المعدنية</string>
@@ -143,7 +143,8 @@
     <string name="sahih_muslim">صحيح مسلم</string>
     <string name="hadeeth_source">كتب الحديث: من موقع أم الكتاب وموقع الدرر السنية.</string>
     <string name="search_in_hadeeth">ابحث عن نص في كتب الحديث</string>
-    <string name="hadeeth_search_title">ابحث عن نص في كتب الحديث</string>
+    <string name="hadeeth_searcher">الباحث الحديثي</string>
+    <string name="quran_searcher">الباحث القرآني</string>
     <string name="quran_radio">إذاعة القرآن</string>
     <string name="holy_quran_radio">إذاعة القرآن الكريم</string>
     <string name="date_converter">تحويل التاريخ</string>
