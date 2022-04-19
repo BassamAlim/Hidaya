@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layoutDirection="ltr">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -12,34 +13,33 @@
         app:cardCornerRadius="10dp"
         app:cardElevation="10dp">
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/mySurface"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="?mySurface">
 
             <TextView
                 android:id="@+id/repetition_tv"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:maxWidth="100dp"
-                android:layout_gravity="center"
+                android:paddingHorizontal="5dp"
                 android:gravity="center"
-                android:padding="5dp"
-                android:textColor="?myOtherAccent" />
+                android:textColor="?myOtherAccent"/>
 
             <View
                 android:id="@+id/repetition_div"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:layout_marginVertical="10dp"
-                android:background="?mySeparator" />
+                android:background="?mySeparator"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingHorizontal="10dp">
+                android:paddingHorizontal="5dp">
 
                 <TextView
                     android:id="@+id/title_tv"
@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="?myText"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/text_tv"
@@ -55,14 +55,14 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingVertical="10dp"
-                    android:textColor="?mySpecialText" />
+                    android:textColor="?mySpecialText"/>
 
                 <View
                     android:id="@+id/fadl_div"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginHorizontal="10dp"
-                    android:background="?mySeparator" />
+                    android:background="?mySeparator"/>
 
                 <TextView
                     android:id="@+id/fadl_tv"
@@ -70,26 +70,27 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingVertical="10dp"
-                    android:textColor="?myOtherAccent" />
+                    android:textColor="?myOtherAccent"/>
 
                 <View
                     android:id="@+id/reference_div"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginHorizontal="10dp"
-                    android:background="?mySeparator" />
+                    android:background="?mySeparator"/>
 
-                <TextView
-                    android:id="@+id/reference_tv"
+                <ImageButton
+                    android:id="@+id/reference_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:paddingVertical="10dp"
-                    android:textColor="@color/black" />
+                    android:background="@drawable/ripple_surface"
+                    android:src="@drawable/ic_help"
+                    android:contentDescription="@string/source_btn_description" />
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.cardview.widget.CardView>
 

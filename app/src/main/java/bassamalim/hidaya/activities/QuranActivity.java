@@ -40,7 +40,7 @@ import bassamalim.hidaya.helpers.AyahPlayer;
 import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.popups.QuranSettingsPopup;
-import bassamalim.hidaya.popups.TafseerPopup;
+import bassamalim.hidaya.popups.InfoDialog;
 import bassamalim.hidaya.replacements.DoubleClickLMM;
 import bassamalim.hidaya.replacements.DoubleClickableSpan;
 import bassamalim.hidaya.replacements.SwipeActivity;
@@ -302,8 +302,8 @@ public class QuranActivity extends SwipeActivity {
             DoubleClickableSpan clickableSpan = new DoubleClickableSpan() {
                 @Override
                 public void onDoubleClick(View textView) {
-                    new TafseerPopup(list.get(finalI).getTafseer()).show(
-                            getSupportFragmentManager(), TafseerPopup.TAG);
+                    new InfoDialog(getString(R.string.tafseer), list.get(finalI).getTafseer()).show(
+                            getSupportFragmentManager(), InfoDialog.TAG);
                 }
                 @Override
                 public void onClick(@NonNull View widget) {

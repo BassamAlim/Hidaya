@@ -10,7 +10,7 @@ import bassamalim.hidaya.database.dbs.ThikrsDB;
 @Dao
 public interface ThikrsDao {
 
-    @Query("SELECT * FROM thikrs WHERE athkar_id = :id")
+    @Query("SELECT * FROM thikrs WHERE athkar_id = :id Order By thikr_id")
     List<ThikrsDB> getThikrs(int id);
 
 }

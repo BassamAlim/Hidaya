@@ -307,7 +307,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/tajawal_regular"
-            android:text="@string/today"
+            android:text="@string/day"
             android:textSize="28dp"
             tools:ignore="SpUsage" />
 

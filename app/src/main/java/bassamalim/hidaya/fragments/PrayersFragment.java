@@ -62,9 +62,7 @@ public class PrayersFragment extends Fragment {
 
         if (MainActivity.located) {
             initiate();
-
             goToToday();
-
             setInitialState();
             setListeners();
         }
@@ -74,17 +72,8 @@ public class PrayersFragment extends Fragment {
 
     private void initiate() {
         pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
-
         location = MainActivity.location;
-
-        prayerNames = new String[6];
-        prayerNames[0] = "الفجر";
-        prayerNames[1] = "الشروق";
-        prayerNames[2] = "الظهر";
-        prayerNames[3] = "العصر";
-        prayerNames[4] = "المغرب";
-        prayerNames[5] = "العشاء";
-
+        prayerNames = getResources().getStringArray(R.array.prayer_names);
         setViews();
     }
 
@@ -287,7 +276,7 @@ public class PrayersFragment extends Fragment {
 
     private void updateDayScreen() {
         if (currentChange == 0)
-            dayScreen.setText("اليوم");
+            dayScreen.setText(getString(R.string.day));
         else {
             String text = "";
 

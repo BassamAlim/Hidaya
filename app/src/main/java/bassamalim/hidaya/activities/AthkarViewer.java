@@ -13,12 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.AthkarViewerAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.ThikrsDB;
 import bassamalim.hidaya.databinding.ActivityAlathkarViewerBinding;
 import bassamalim.hidaya.models.ThikrCard;
 import bassamalim.hidaya.other.Utils;
+import bassamalim.hidaya.popups.InfoDialog;
 
 public class AthkarViewer extends AppCompatActivity {
 
@@ -60,7 +62,9 @@ public class AthkarViewer extends AppCompatActivity {
         for (int i = 0; i < thikrs.size(); i++) {
             ThikrsDB t = thikrs.get(i);
             cards.add(new ThikrCard(t.getThikr_id(), t.getTitle(), t.getText(), t.getFadl(),
-                    t.getReference(), t.getRepetition()));
+                    t.getReference(), t.getRepetition(), v ->
+                    new InfoDialog(getString(R.string.reference), t.getReference()).show(
+                            getSupportFragmentManager(), InfoDialog.TAG)));
         }
         return cards;
     }
