@@ -60,7 +60,7 @@
         <item>0</item>
         <item>1</item>
     </string-array>
-    
+
     <string-array name="repeat_modes">
         <item>بدون تكرار</item>
         <item>مرتين</item>

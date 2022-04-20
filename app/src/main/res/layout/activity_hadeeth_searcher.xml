@@ -9,14 +9,14 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
+        style="@style/MyTopBar"
         android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/MyTopBar">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/top_bar_title"
-            android:text="@string/hadeeth_searcher"
-            style="@style/MyTopBarTv" />
+            style="@style/MyTopBarTv"
+            android:text="@string/hadeeth_searcher" />
 
     </androidx.appcompat.widget.Toolbar>
 

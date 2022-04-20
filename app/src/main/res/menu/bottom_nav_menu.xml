@@ -4,26 +4,26 @@
     <item
         android:id="@+id/navigation_prayers"
         android:icon="@drawable/ic_prayers_black_24dp"
-        android:title="@string/title_prayers"/>
+        android:title="@string/title_prayers" />
 
     <item
         android:id="@+id/navigation_alathkar"
         android:icon="@drawable/ic_duaa"
-        android:title="@string/title_alathkar"/>
+        android:title="@string/title_alathkar" />
 
     <item
         android:id="@+id/navigation_quran"
         android:icon="@drawable/ic_bar_quran"
-        android:title="@string/title_quran"/>
+        android:title="@string/title_quran" />
 
     <item
         android:id="@+id/navigation_qibla"
         android:icon="@drawable/ic_qibla_compass"
-        android:title="@string/title_qibla"/>
+        android:title="@string/title_qibla" />
 
     <item
         android:id="@+id/navigation_other"
         android:icon="@drawable/ic_more"
-        android:title="@string/title_other"/>
+        android:title="@string/title_other" />
 
 </menu>

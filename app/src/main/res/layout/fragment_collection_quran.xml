@@ -17,29 +17,29 @@
         android:hint="@string/continue_reading"
         android:textColor="?myAccent"
         android:textSize="19dp"
-        tools:ignore="SpUsage"
+        app:layout_constraintBottom_toTopOf="@id/tab_layout"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tab_layout"/>
+        tools:ignore="SpUsage" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?myBars"
+        app:layout_constraintBottom_toTopOf="@id/quran_pager"
+        app:layout_constraintTop_toBottomOf="@id/continue_reading"
         app:tabIndicatorColor="?attr/myActiveOnBar"
         app:tabSelectedTextColor="?attr/myActiveOnBar"
         app:tabTextAppearance="@style/TajwalTab"
-        app:tabTextColor="@color/text_M"
-        app:layout_constraintTop_toBottomOf="@id/continue_reading"
-        app:layout_constraintBottom_toTopOf="@id/quran_pager"/>
+        app:tabTextColor="@color/text_M" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/quran_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:layout_constraintTop_toBottomOf="@id/tab_layout"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

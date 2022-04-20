@@ -9,14 +9,14 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
+        style="@style/MyTopBar"
         android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/MyTopBar">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/top_bar_title"
-            android:text="@string/quiz_result"
-            style="@style/MyTopBarTv" />
+            style="@style/MyTopBarTv"
+            android:text="@string/quiz_result" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -24,12 +24,12 @@
         android:id="@+id/result_screen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?myBars"
         android:fontFamily="@font/tajawal_regular"
         android:padding="20dp"
-        android:textSize="30sp"
         android:textColor="?myOnBars"
+        android:textSize="30sp"
         android:textStyle="bold"
-        android:background="?myBars"
         app:layout_constraintTop_toBottomOf="@id/top_bar" />
 
     <androidx.recyclerview.widget.RecyclerView

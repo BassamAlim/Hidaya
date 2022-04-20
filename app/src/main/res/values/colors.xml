@@ -10,7 +10,8 @@
     // Theme M (Dark)
     <color name="bg_M">#1A2027</color>
     <color name="bars_M">#222831</color>
-    <color name="weak_bars_M">#B3222831</color>    // # alpha in hex + color
+    <color name="weak_bars_M">#B3222831</color>
+    // # alpha in hex + color
     <color name="surface_M">#222D37</color>
     <color name="ripple_M">#384F63</color>
     <color name="accent_M">#00ADB5</color>
@@ -23,7 +24,8 @@
     // Theme L (Light)
     <color name="bg_L">#8D99AE</color>
     <color name="bars_L">#293241</color>
-    <color name="weak_bars_L">#B3293241</color>    // # alpha in hex + color
+    <color name="weak_bars_L">#B3293241</color>
+    // # alpha in hex + color
     <color name="surface_L">#7E899C</color>
     <color name="ripple_L">#99A5BC</color>
     <color name="accent_L">#14213d</color>
