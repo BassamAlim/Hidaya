@@ -13,7 +13,7 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import bassamalim.hidaya.databinding.ActivityDateConverterBinding;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.replacements.HijriDatePicker;
 
@@ -65,7 +65,7 @@ public class DateConverter extends AppCompatActivity {
         HijriDatePicker hijriPicker = new HijriDatePicker();
 
         hijriPicker.setListener((view, year, month, day) -> {
-            Log.d(Const.TAG, "Here");
+            Log.d(Global.TAG, "Here");
             Calendar choice = new UmmalquraCalendar();
             choice.set(Calendar.YEAR, year);
             choice.set(Calendar.MONTH, month-1);    // starts from 0

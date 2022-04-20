@@ -23,7 +23,7 @@ import androidx.preference.PreferenceManager;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.helpers.Alarms;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 
 public class PrayerPopup {
@@ -155,7 +155,7 @@ public class PrayerPopup {
                 SharedPreferences.Editor editor = pref.edit();
                 int min = Integer.parseInt(context.getResources().getStringArray(
                         R.array.time_settings_values)[parent.getSelectedItemPosition()]);
-                Log.i(Const.TAG, "delay is set to: " + min);
+                Log.i(Global.TAG, "delay is set to: " + min);
 
                 if (min > 0) {
                     String positive = Utils.translateNumbers("+" + min);

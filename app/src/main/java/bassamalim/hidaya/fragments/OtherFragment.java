@@ -23,7 +23,7 @@ import bassamalim.hidaya.activities.Settings;
 import bassamalim.hidaya.activities.TelawatCollectionActivity;
 import bassamalim.hidaya.activities.TvActivity;
 import bassamalim.hidaya.databinding.FragmentOtherBinding;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 
 public class OtherFragment extends Fragment {
 
@@ -93,7 +93,7 @@ public class OtherFragment extends Fragment {
 
         binding.contact.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                    "mailto",Const.CONTACT_EMAIL, null));
+                    "mailto", Global.CONTACT_EMAIL, null));
             intent.putExtra(Intent.EXTRA_SUBJECT, "Hidaya");
             startActivity(Intent.createChooser(intent, "Choose an Email client :"));
         });
@@ -102,7 +102,7 @@ public class OtherFragment extends Fragment {
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "App Share");
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, Const.PLAY_STORE_URL);
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, Global.PLAY_STORE_URL);
             startActivity(Intent.createChooser(sharingIntent, "Share via"));
         });
 

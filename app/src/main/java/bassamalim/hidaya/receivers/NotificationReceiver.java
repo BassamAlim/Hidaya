@@ -21,7 +21,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.AthkarViewer;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.activities.Splash;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.services.AthanService;
@@ -45,7 +45,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         time = intent.getLongExtra("time", 0);
         isPrayer = action.equals("prayer");
 
-        Log.i(Const.TAG, "in notification receiver for " + id);
+        Log.i(Global.TAG, "in notification receiver for " + id);
 
         int defaultType = 2;
         if (id == ID.SHOROUQ)
@@ -67,7 +67,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 showNotification();
         }
         else
-            Log.e(Const.TAG, "Late intent walking");
+            Log.e(Global.TAG, "Late intent walking");
     }
 
     private void showNotification() {
@@ -89,7 +89,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private void startService() {
         Intent intent1 = new Intent(context, AthanService.class);
-        intent1.setAction(Const.PLAY_ATHAN);
+        intent1.setAction(Global.PLAY_ATHAN);
         intent1.putExtra("id", id);
         intent1.putExtra("time", time);
 

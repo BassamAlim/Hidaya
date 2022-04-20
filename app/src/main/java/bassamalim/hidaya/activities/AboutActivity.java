@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import bassamalim.hidaya.databinding.ActivityAboutBinding;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 
 public class AboutActivity extends AppCompatActivity {
@@ -41,7 +41,7 @@ public class AboutActivity extends AppCompatActivity {
         binding.rebuildDb.setOnClickListener(v -> {
             deleteDatabase("HidayaDB");
 
-            Log.i(Const.TAG, "Database Rebuilt");
+            Log.i(Global.TAG, "Database Rebuilt");
 
             Utils.reviveDb(this);
 
@@ -49,7 +49,7 @@ public class AboutActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
         });
         binding.driveUpdate.setOnClickListener(v -> {
-            String url = FirebaseRemoteConfig.getInstance().getString(Const.UPDATE_URL);
+            String url = FirebaseRemoteConfig.getInstance().getString(Global.UPDATE_URL);
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             startActivity(i);

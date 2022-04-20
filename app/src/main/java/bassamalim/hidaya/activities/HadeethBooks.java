@@ -23,7 +23,7 @@ import java.util.Objects;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivityHadeethBooksBinding;
 import bassamalim.hidaya.models.HadeethBook;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 
 public class HadeethBooks extends AppCompatActivity {
@@ -181,19 +181,19 @@ public class HadeethBooks extends AppCompatActivity {
                 links[0] = remoteConfig.getString("sahih_albokhari_url");
                 links[1] = remoteConfig.getString("sahih_muslim_url");
 
-                Log.d(Const.TAG, "Config params updated");
-                Log.d(Const.TAG, "Sahih Albokhari URL: " + links[0]);
-                Log.d(Const.TAG, "Sahih Muslim URL: " + links[1]);
+                Log.d(Global.TAG, "Config params updated");
+                Log.d(Global.TAG, "Sahih Albokhari URL: " + links[0]);
+                Log.d(Global.TAG, "Sahih Muslim URL: " + links[1]);
 
                 download(id, links[id]);
             }
             else
-                Log.d(Const.TAG, "Fetch failed");
+                Log.d(Global.TAG, "Fetch failed");
         });
     }
 
     private void download(int id, String link) {
-        Log.d(Const.TAG, link);
+        Log.d(Global.TAG, link);
 
         DownloadManager downloadManager = (DownloadManager)
                 getSystemService(Context.DOWNLOAD_SERVICE);

@@ -21,7 +21,7 @@ import java.util.Calendar;
 
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.helpers.Keeper;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.PrayersWidget;
 import bassamalim.hidaya.other.Utils;
 
@@ -34,7 +34,7 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context gContext, Intent intent) {
-        Log.i(Const.TAG, "in daily update receiver");
+        Log.i(Global.TAG, "in daily update receiver");
         context = gContext;
         pref = PreferenceManager.getDefaultSharedPreferences(context);
         now = Calendar.getInstance();
@@ -45,7 +45,7 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
             if (needed())
                 locate();
             else
-                Log.i(Const.TAG, "dead intent walking in daily update receiver");
+                Log.i(Global.TAG, "dead intent walking in daily update receiver");
         }
         else if (intent.getAction().equals("boot"))
             locate();
@@ -76,7 +76,7 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
         if (location == null) {
             location = new Keeper(context).retrieveLocation();
             if (location == null) {
-                Log.e(Const.TAG, "No available location in DailyUpdate");
+                Log.e(Global.TAG, "No available location in DailyUpdate");
                 return;
             }
         }

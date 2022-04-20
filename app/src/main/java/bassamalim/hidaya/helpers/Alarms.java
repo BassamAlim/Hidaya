@@ -13,7 +13,7 @@ import java.util.Calendar;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.enums.ID;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.receivers.NotificationReceiver;
 
@@ -76,7 +76,7 @@ public class Alarms {
      * It sets the alarm, using the proper method
      */
     private void setAlarm() {
-        Log.i(Const.TAG, "in set alarm");
+        Log.i(Global.TAG, "in set alarm");
         if (id.ordinal() >= 0 && id.ordinal() < 6)
             setPrayerAlarm(id);
         else if (id.ordinal() >= 6 && id.ordinal() < 10)
@@ -84,7 +84,7 @@ public class Alarms {
     }
 
     private void setPrayerAlarms() {
-        Log.i(Const.TAG, "in set prayer alarms");
+        Log.i(Global.TAG, "in set prayer alarms");
         for (int i = 0; i < times.length; i++) {
             ID mappedId = Utils.mapID(i);
             assert mappedId != null;
@@ -99,7 +99,7 @@ public class Alarms {
      * @param id the ID of the prayer
      */
     private void setPrayerAlarm(ID id) {
-        Log.i(Const.TAG, "in set alarm for: " + id);
+        Log.i(Global.TAG, "in set alarm for: " + id);
 
         // adjust the time with the delay
         long adjustment = pref.getLong(id + "time_adjustment", 0);
@@ -123,17 +123,17 @@ public class Alarms {
 
             myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, adjusted, pendingIntent);
 
-            Log.i(Const.TAG, "alarm " + id + " set");
+            Log.i(Global.TAG, "alarm " + id + " set");
         }
         else
-            Log.i(Const.TAG, id + " Passed");
+            Log.i(Global.TAG, id + " Passed");
     }
 
     /**
      * Set the extra alarms based on the user preferences
      */
     private void setExtraAlarms() {
-        Log.i(Const.TAG, "in set extra alarms");
+        Log.i(Global.TAG, "in set extra alarms");
 
         Calendar today = Calendar.getInstance();
 
@@ -154,7 +154,7 @@ public class Alarms {
      * @param id The ID of the alarm.
      */
     private void setExtraAlarm(ID id) {
-        Log.i(Const.TAG, "in set extra alarm");
+        Log.i(Global.TAG, "in set extra alarm");
 
         int defaultH = 0;
         int defaultM = 0;
@@ -195,7 +195,7 @@ public class Alarms {
         myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(),
                 pendingIntent);
 
-        Log.i(Const.TAG, "alarm " + id + " set");
+        Log.i(Global.TAG, "alarm " + id + " set");
     }
 
 }

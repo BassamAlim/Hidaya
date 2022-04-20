@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivityRadioClientBinding;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.services.RadioService;
 
@@ -93,13 +93,13 @@ public class RadioClient extends AppCompatActivity {
             if (task.isSuccessful()) {
                 link = remoteConfig.getString("quran_radio_url");
 
-                Log.d(Const.TAG, "Config params updated");
-                Log.d(Const.TAG, "Quran Radio URL: " + link);
+                Log.d(Global.TAG, "Config params updated");
+                Log.d(Global.TAG, "Quran Radio URL: " + link);
 
                 enableControls();
             }
             else
-                Log.d(Const.TAG, "Fetch failed");
+                Log.d(Global.TAG, "Fetch failed");
         });
     }
 
@@ -125,7 +125,7 @@ public class RadioClient extends AppCompatActivity {
 
         @Override
         public void onConnectionSuspended() {
-            Log.e(Const.TAG, "Connection suspended in RadioClient");
+            Log.e(Global.TAG, "Connection suspended in RadioClient");
             // The Service has crashed.
             // Disable transport controls until it automatically reconnects
             disableControls();
@@ -133,7 +133,7 @@ public class RadioClient extends AppCompatActivity {
 
         @Override
         public void onConnectionFailed() {
-            Log.e(Const.TAG, "Connection failed in RadioClient");
+            Log.e(Global.TAG, "Connection failed in RadioClient");
             // The Service has refused our connection
             disableControls();
         }

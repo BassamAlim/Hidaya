@@ -127,10 +127,10 @@ public class Utils {
         }
 
         SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("last_db_version", Const.dbVer);
+        editor.putInt("last_db_version", Global.dbVer);
         editor.apply();
 
-        Log.i(Const.TAG, "Database Revived");
+        Log.i(Global.TAG, "Database Revived");
     }
 
     public static boolean createDir(Context context, String postfix) {
@@ -179,7 +179,7 @@ public class Utils {
         AlarmManager am = (AlarmManager) gContext.getSystemService(Context.ALARM_SERVICE);
         am.cancel(pendingIntent);
 
-        Log.i(Const.TAG, "Canceled Alarm " + id);
+        Log.i(Global.TAG, "Canceled Alarm " + id);
     }
 
     public static ID mapID(int num) {

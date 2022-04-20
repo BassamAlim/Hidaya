@@ -13,7 +13,7 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import bassamalim.hidaya.databinding.ActivityTvBinding;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 
 public class TvActivity extends YouTubeBaseActivity {
@@ -43,14 +43,14 @@ public class TvActivity extends YouTubeBaseActivity {
                 makkah_url = remoteConfig.getString("makkah_url");
                 madina_url = remoteConfig.getString("madina_url");
 
-                Log.d(Const.TAG, "Config params updated");
-                Log.d(Const.TAG, "Makkah URL: " + makkah_url);
-                Log.d(Const.TAG, "Madina URL: " + madina_url);
+                Log.d(Global.TAG, "Config params updated");
+                Log.d(Global.TAG, "Makkah URL: " + makkah_url);
+                Log.d(Global.TAG, "Madina URL: " + madina_url);
 
                 initYtPlayer();
             }
             else
-                Log.d(Const.TAG, "Fetch failed");
+                Log.d(Global.TAG, "Fetch failed");
         });
     }
 

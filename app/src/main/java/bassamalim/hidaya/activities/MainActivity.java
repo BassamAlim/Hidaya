@@ -22,7 +22,6 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
-import java.time.chrono.HijrahDate;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -31,7 +30,7 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.databinding.ActivityMainBinding;
 import bassamalim.hidaya.helpers.Alarms;
 import bassamalim.hidaya.helpers.Keeper;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.receivers.DailyUpdateReceiver;
 import bassamalim.hidaya.receivers.DeviceBootReceiver;
@@ -138,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         int lastVer = pref.getInt("last_db_version", 1);
-        if (Const.dbVer > lastVer)
+        if (Global.dbVer > lastVer)
             Utils.reviveDb(this);
     }
 

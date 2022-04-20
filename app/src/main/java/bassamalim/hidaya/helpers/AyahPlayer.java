@@ -23,7 +23,7 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.AyatTelawaDB;
 import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.models.Ayah;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 
 public class AyahPlayer {
 
@@ -218,7 +218,7 @@ public class AyahPlayer {
             player.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(Const.TAG, "Reciter not found in ayat telawa");
+            Log.e(Global.TAG, "Reciter not found in ayat telawa");
         }
     }
 
@@ -287,7 +287,7 @@ public class AyahPlayer {
         state = States.Paused;
         for (int i = 0; i < 2; i++) {
             if (players[i].isPlaying()) {
-                Log.d(Const.TAG, "Paused " + i);
+                Log.d(Global.TAG, "Paused " + i);
                 players[i].pause();
                 players[n(i)].reset();
                 preparePlayer(players[n(i)], lastPlayed);
@@ -297,7 +297,7 @@ public class AyahPlayer {
     }
 
     public void resume() {
-        Log.d(Const.TAG, "Resume P" + (lastPlayer));
+        Log.d(Global.TAG, "Resume P" + (lastPlayer));
         state = States.Playing;
         players[lastPlayer].start();
     }

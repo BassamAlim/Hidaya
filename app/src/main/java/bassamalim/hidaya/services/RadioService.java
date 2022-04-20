@@ -40,7 +40,7 @@ import java.util.List;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.RadioClient;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 
 public class RadioService extends MediaBrowserServiceCompat implements
         AudioManager.OnAudioFocusChangeListener {
@@ -80,7 +80,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
     final MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
-            Log.d(Const.TAG, "In onPlayFromMediaId of RadioClient");
+            Log.d(Global.TAG, "In onPlayFromMediaId of RadioClient");
             super.onPlayFromMediaId(mediaId, extras);
             link = mediaId;
             buildNotification();
@@ -90,7 +90,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
 
         @Override
         public void onStop() {
-            Log.d(Const.TAG, "In onStop of RadioClient");
+            Log.d(Global.TAG, "In onStop of RadioClient");
             super.onStop();
             stop();
         }
@@ -98,7 +98,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
         @Override
         public void onPause() {
             super.onPause();
-            Log.d(Const.TAG, "In onPause of RadioClient");
+            Log.d(Global.TAG, "In onPause of RadioClient");
             pause();
         }
     };
@@ -133,7 +133,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
     }
 
     private void pause() {
-        Log.d(Const.TAG, "in pause of RadioService");
+        Log.d(Global.TAG, "in pause of RadioService");
         // Update metadata and state
         // pause the player (custom call)
         mediaSession.setActive(false);
@@ -147,7 +147,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
     }
 
     private void stop() {
-        Log.d(Const.TAG, "in stop of RadioService");
+        Log.d(Global.TAG, "in stop of RadioService");
         // Abandon audio focus
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             am.abandonAudioFocusRequest(audioFocusRequest);
@@ -192,23 +192,23 @@ public class RadioService extends MediaBrowserServiceCompat implements
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case AudioManager.ACTION_AUDIO_BECOMING_NOISY:
-                    Log.d(Const.TAG, "In ACTION_BECOMING_NOISY of RadioService");
+                    Log.d(Global.TAG, "In ACTION_BECOMING_NOISY of RadioService");
                     pause();
                     break;
                 case ACTION_PLAY_PAUSE:
                     if (controller.getPlaybackState().getState()
                             == PlaybackStateCompat.STATE_PLAYING) {
-                        Log.d(Const.TAG, "In ACTION_PAUSE of RadioService");
+                        Log.d(Global.TAG, "In ACTION_PAUSE of RadioService");
                         pause();
                     }
                     else if (controller.getPlaybackState().getState() ==
                             PlaybackStateCompat.STATE_PAUSED) {
-                        Log.d(Const.TAG, "In ACTION_PLAY of RadioService");
+                        Log.d(Global.TAG, "In ACTION_PLAY of RadioService");
                         play();
                     }
                     break;
                 case ACTION_STOP:
-                    Log.d(Const.TAG, "In ACTION_STOP of RadioService");
+                    Log.d(Global.TAG, "In ACTION_STOP of RadioService");
                     stop();
                     break;
             }
@@ -359,7 +359,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
         });
         player.setOnCompletionListener(mp -> stop());
         player.setOnErrorListener((mp, what, extra) -> {
-            Log.e(Const.TAG, "Error in RadioService player: " + what);
+            Log.e(Global.TAG, "Error in RadioService player: " + what);
             return true;
         });
     }
@@ -389,18 +389,18 @@ public class RadioService extends MediaBrowserServiceCompat implements
 
     Thread thread = new Thread(() -> {
         try {    // A mechanism to handle redirects and get the final dynamic link
-            Log.d(Const.TAG, "There");
+            Log.d(Global.TAG, "There");
             URL url = new URL(link);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setInstanceFollowRedirects(false);
             URL secondURL = new URL(connection.getHeaderField("Location"));
             link = secondURL.toString();
             link = link.replaceFirst("http:", "https:");
-            Log.i(Const.TAG, "Dynamic Quran Radio URL: " + link);
+            Log.i(Global.TAG, "Dynamic Quran Radio URL: " + link);
             player.setDataSource(getApplicationContext(), Uri.parse(link));
             player.prepareAsync();
         } catch (IOException e) {
-            Log.e(Const.TAG, "Problem in RadioService player");
+            Log.e(Global.TAG, "Problem in RadioService player");
             e.printStackTrace();
         }
     });
@@ -481,7 +481,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.d(Const.TAG, "In onUnbind of RadioService");
+        Log.d(Global.TAG, "In onUnbind of RadioService");
         return super.onUnbind(intent);
     }
 }

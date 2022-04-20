@@ -22,7 +22,7 @@ import androidx.core.app.NotificationCompat;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.Splash;
-import bassamalim.hidaya.other.Const;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.enums.ID;
 
 import java.util.Calendar;
@@ -39,7 +39,7 @@ public class AthanService extends Service {
             return START_NOT_STICKY;
 
         id = (ID) intent.getSerializableExtra("id");
-        Log.i(Const.TAG, "In athan service for " + id);
+        Log.i(Global.TAG, "In athan service for " + id);
         //int Notification_ID = (int) System.currentTimeMillis() % 10000;
 
         createNotificationChannel();
@@ -106,7 +106,7 @@ public class AthanService extends Service {
 
     private PendingIntent getStopIntent() {
         return PendingIntent.getService(this, 11, new Intent(
-                        this, AthanService.class).setAction(Const.STOP_ATHAN)
+                        this, AthanService.class).setAction(Global.STOP_ATHAN)
                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK),
                 PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -114,7 +114,7 @@ public class AthanService extends Service {
 
     private PendingIntent getStopAndOpenIntent() {
         return PendingIntent.getActivity(this, 12, new Intent(
-                        this, Splash.class).setAction(Const.STOP_ATHAN),
+                        this, Splash.class).setAction(Global.STOP_ATHAN),
                 PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
@@ -137,7 +137,7 @@ public class AthanService extends Service {
     }
 
     private void play() {
-        Log.i(Const.TAG, "Playing Athan");
+        Log.i(Global.TAG, "Playing Athan");
         mediaPlayer = MediaPlayer.create(this, R.raw.athan1);
         mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mediaPlayer.setAudioAttributes(
