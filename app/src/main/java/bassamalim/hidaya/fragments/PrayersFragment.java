@@ -244,6 +244,8 @@ public class PrayersFragment extends Fragment {
                         cls[upcoming].getId(), ConstraintSet.BOTTOM);
                 constraintSet.applyTo(cls[upcoming]);
                 counters[upcoming].setVisibility(View.GONE);
+
+                count();
             }
         }.start();
     }

@@ -2,7 +2,6 @@ package bassamalim.hidaya.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,8 +12,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-
-import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivityCollectionTelawatSuarBinding;
@@ -33,8 +30,8 @@ public class TelawatSuarCollectionActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
         binding = ActivityCollectionTelawatSuarBinding.inflate(getLayoutInflater());
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
+        binding.home.setOnClickListener(v -> finish());
 
         Intent intent = getIntent();
         int reciterId = intent.getIntExtra("reciter_id", 0);

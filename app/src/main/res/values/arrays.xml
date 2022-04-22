@@ -81,4 +81,35 @@
         <item>100</item>
     </string-array>
 
+
+    <string-array name="hijri_months">
+        <item>(١) مُحَرَّم</item>
+        <item>(٢) صَفَر</item>
+        <item>(٣) ربيع الأول</item>
+        <item>(٤) ربيع الثاني</item>
+        <item>(٥) جُمادى الأول</item>
+        <item>(٦) جُمادى الآخر</item>
+        <item>(٧) رَجَب</item>
+        <item>(٨) شعبان</item>
+        <item>(٩) رَمَضان</item>
+        <item>(١٠) شَوَّال</item>
+        <item>(١١) ذو القِعْدة</item>
+        <item>(١٢) ذو الحِجَّة</item>
+    </string-array>
+
+    <string-array name="gregorian_months">
+        <item>(١) يناير</item>
+        <item>(٢) فبرابر</item>
+        <item>(٣) مارس</item>
+        <item>(٤) أبريل</item>
+        <item>(٥) مايو</item>
+        <item>(٦) يونيو</item>
+        <item>(٧) يوليو</item>
+        <item>(٨) أغسطس</item>
+        <item>(٩) سبتمبر</item>
+        <item>(١٠) أكتوبر</item>
+        <item>(١١) نوفمبر</item>
+        <item>(١٢) ديسمبر</item>
+    </string-array>
+
 </resources>

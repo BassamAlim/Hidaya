@@ -2,7 +2,6 @@ package bassamalim.hidaya.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,7 +10,6 @@ import androidx.room.Room;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import bassamalim.hidaya.adapters.QuizQuestionAdapter;
 import bassamalim.hidaya.database.AppDatabase;
@@ -37,11 +35,8 @@ public class QuizResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
         binding = ActivityQuizResultBinding.inflate(getLayoutInflater());
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
-
-        setSupportActionBar(binding.topBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        binding.home.setOnClickListener(v -> onBackPressed());
 
         db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();

@@ -12,7 +12,6 @@ import android.text.TextPaint;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -28,7 +27,6 @@ import androidx.room.Room;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 import bassamalim.hidaya.R;
@@ -39,8 +37,8 @@ import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.helpers.AyahPlayer;
 import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.other.Utils;
-import bassamalim.hidaya.popups.QuranSettingsPopup;
 import bassamalim.hidaya.popups.InfoDialog;
+import bassamalim.hidaya.popups.QuranSettingsPopup;
 import bassamalim.hidaya.replacements.DoubleClickLMM;
 import bassamalim.hidaya.replacements.DoubleClickableSpan;
 import bassamalim.hidaya.replacements.SwipeActivity;
@@ -74,11 +72,7 @@ public class QuranActivity extends SwipeActivity {
         super.onCreate(savedInstanceState);
         themeify();
         binding = ActivityQuranBinding.inflate(getLayoutInflater());
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
-
-        setSupportActionBar(binding.infoBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         initiate();
 

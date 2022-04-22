@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?myMainBg"
-    android:layoutDirection="rtl"
+    android:layoutDirection="ltr"
     tools:context=".activities.QuizActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -17,6 +17,12 @@
         <TextView
             android:id="@+id/top_bar_title"
             style="@style/MyTopBarTv" />
+
+        <ImageButton
+            android:id="@android:id/home"
+            style="@style/MyBackBtn"
+            android:contentDescription="@string/back_description" />
+
     </androidx.appcompat.widget.Toolbar>
 
     <TextView
@@ -116,6 +122,23 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
+            android:id="@+id/next_question"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="200dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/ripple_surface"
+            android:elevation="3dp"
+            android:fontFamily="@font/tajawal_regular"
+            android:gravity="center"
+            android:paddingHorizontal="25dp"
+            android:paddingVertical="10dp"
+            android:text="@string/next_question"
+            android:textSize="23dp"
+            tools:ignore="SpUsage" />
+
+        <Button
             android:id="@+id/previous_question"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
@@ -128,22 +151,6 @@
             android:paddingHorizontal="25dp"
             android:paddingVertical="10dp"
             android:text="@string/previous_question"
-            android:textSize="23dp"
-            tools:ignore="SpUsage" />
-
-        <Button
-            android:id="@+id/next_question"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/ripple_surface"
-            android:elevation="3dp"
-            android:fontFamily="@font/tajawal_regular"
-            android:gravity="center"
-            android:paddingHorizontal="25dp"
-            android:paddingVertical="10dp"
-            android:text="@string/next_question"
             android:textSize="23dp"
             tools:ignore="SpUsage" />
 

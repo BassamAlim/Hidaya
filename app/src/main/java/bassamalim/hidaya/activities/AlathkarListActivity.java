@@ -3,7 +3,6 @@ package bassamalim.hidaya.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -13,7 +12,6 @@ import androidx.room.Room;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.AlathkarAdapter;
@@ -38,11 +36,8 @@ public class AlathkarListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
         binding = ActivityAlathkarListBinding.inflate(getLayoutInflater());
-
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
-        setSupportActionBar(binding.topBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        binding.home.setOnClickListener(v -> onBackPressed());
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
                 "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()

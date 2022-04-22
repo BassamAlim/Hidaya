@@ -18,6 +18,11 @@
             style="@style/MyTopBarTv"
             android:text="@string/about" />
 
+        <ImageButton
+            android:id="@android:id/home"
+            style="@style/MyBackBtn"
+            android:contentDescription="@string/back_description" />
+
     </androidx.appcompat.widget.Toolbar>
 
     <TextView

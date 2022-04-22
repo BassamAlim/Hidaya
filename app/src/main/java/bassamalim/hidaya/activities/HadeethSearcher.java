@@ -44,6 +44,7 @@ public class HadeethSearcher extends AppCompatActivity {
         Utils.onActivityCreateSetTheme(this);
         binding = ActivityHadeethSearcherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.home.setOnClickListener(v -> onBackPressed());
 
         initiate();
 

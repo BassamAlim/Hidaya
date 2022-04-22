@@ -37,6 +37,7 @@ public class QuranSearcherActivity extends AppCompatActivity {
         Utils.onActivityCreateSetTheme(this);
         binding = ActivityQuranSearcherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.home.setOnClickListener(v -> onBackPressed());
 
         initiate();
 

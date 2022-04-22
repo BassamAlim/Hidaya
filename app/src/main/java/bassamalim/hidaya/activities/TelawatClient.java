@@ -11,7 +11,6 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
-import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -23,7 +22,6 @@ import androidx.room.Room;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
@@ -70,10 +68,8 @@ public class TelawatClient extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
         binding = ActivityTelawatClientBinding.inflate(getLayoutInflater());
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
-        setSupportActionBar(binding.topBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        binding.home.setOnClickListener(v -> onBackPressed());
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
                 "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
@@ -216,7 +212,7 @@ public class TelawatClient extends AppCompatActivity {
     }
 
     private void setListeners() {
-        binding.back.setOnClickListener(v -> onBackPressed());
+        binding.home.setOnClickListener(v -> onBackPressed());
         repeatBtn.setOnClickListener(v -> {
             if (repeat == PlaybackStateCompat.REPEAT_MODE_NONE) {
                 repeat = PlaybackStateCompat.REPEAT_MODE_ONE;

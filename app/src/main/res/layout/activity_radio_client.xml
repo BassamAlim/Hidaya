@@ -14,18 +14,15 @@
         android:layout_width="match_parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="?myBars"
-            android:contentDescription="@string/back_description"
-            android:src="@drawable/ic_back" />
-
         <TextView
             android:id="@+id/top_bar_title"
             style="@style/MyTopBarTv"
             android:text="@string/quran_radio" />
+
+        <ImageButton
+            android:id="@android:id/home"
+            style="@style/MyBackBtn"
+            android:contentDescription="@string/back_description" />
 
     </androidx.appcompat.widget.Toolbar>
 

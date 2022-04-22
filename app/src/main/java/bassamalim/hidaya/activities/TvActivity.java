@@ -31,6 +31,7 @@ public class TvActivity extends YouTubeBaseActivity {
         binding = ActivityTvBinding.inflate(getLayoutInflater());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(binding.getRoot());
+        binding.home.setOnClickListener(v -> onBackPressed());
 
         getLinksAndInit();
     }

@@ -2,7 +2,6 @@ package bassamalim.hidaya.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import bassamalim.hidaya.adapters.HadeethViewerAdapter;
 import bassamalim.hidaya.databinding.ActivityHadeethViewerBinding;
@@ -35,11 +33,9 @@ public class HadeethViewer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
         binding = ActivityHadeethViewerBinding.inflate(getLayoutInflater());
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(binding.getRoot());
+        binding.home.setOnClickListener(v -> onBackPressed());
 
-        setSupportActionBar(binding.topBar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         Intent intent = getIntent();
         bookId = intent.getIntExtra("book_id", 0);

@@ -11,20 +11,19 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         style="@style/MyTopBar"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="?myBars"
-            android:contentDescription="@string/back_description"
-            android:src="@drawable/ic_back" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent">
 
         <TextView
             android:id="@+id/top_bar_title"
-            style="@style/MyTopBarTv" />
+            style="@style/MyTopBarTv"
+            android:text="@string/recitations" />
+
+        <ImageButton
+            android:id="@android:id/home"
+            android:layout_gravity="end"
+            style="@style/MyBackBtn"
+            android:contentDescription="@string/back_description" />
 
     </androidx.appcompat.widget.Toolbar>
 

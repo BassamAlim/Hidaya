@@ -27,6 +27,7 @@ public class AboutActivity extends AppCompatActivity {
         Utils.onActivityCreateSetTheme(this);
         binding = ActivityAboutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.home.setOnClickListener(v -> onBackPressed());
 
         setListener();
     }

@@ -18,6 +18,11 @@
             style="@style/MyTopBarTv"
             android:text="@string/hadeeth_books" />
 
+        <ImageButton
+            android:id="@android:id/home"
+            style="@style/MyBackBtn"
+            android:contentDescription="@string/back_description" />
+
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.cardview.widget.CardView

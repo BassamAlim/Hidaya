@@ -18,6 +18,11 @@
             android:id="@+id/top_bar_title"
             style="@style/MyTopBarTv" />
 
+        <ImageButton
+            android:id="@android:id/home"
+            style="@style/MyBackBtn"
+            android:contentDescription="@string/back_description" />
+
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.tabs.TabLayout
