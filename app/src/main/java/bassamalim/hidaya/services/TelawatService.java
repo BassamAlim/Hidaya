@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 import androidx.preference.PreferenceManager;
@@ -51,25 +52,27 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.models.ReciterCard;
 import bassamalim.hidaya.other.Global;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class TelawatService extends MediaBrowserServiceCompat implements
         AudioManager.OnAudioFocusChangeListener {
 
     private static final String MY_MEDIA_ROOT_ID = "media_root_id";
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
-    private static final String ACTION_PLAY_PAUSE =
-            "bassamalim.hidaya.services.TelawatService.playpause";
+    private static final String ACTION_PLAY = "bassamalim.hidaya.services.TelawatService.play";
+    private static final String ACTION_PAUSE = "bassamalim.hidaya.services.TelawatService.pause";
     private static final String ACTION_NEXT = "bassamalim.hidaya.services.TelawatService.next";
     private static final String ACTION_PREV = "bassamalim.hidaya.services.TelawatService.prev";
     private static final String ACTION_STOP = "bassamalim.hidaya.services.TelawatService.stop";
-    private NotificationCompat.Action playPauseAction;
+    private NotificationCompat.Action playAction;
+    private NotificationCompat.Action pauseAction;
     private NotificationCompat.Action nextAction;
     private NotificationCompat.Action prevAction;
     private MediaSessionCompat mediaSession;
+    private PlaybackStateCompat.Builder stateBuilder;
     private MediaControllerCompat controller;
     private MediaMetadataCompat mediaMetadata;
     private String channelId = "channel ID";
     private final int id = 333;
-    private int flags;
     private SharedPreferences pref;
     private AppDatabase db;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -98,15 +101,14 @@ public class TelawatService extends MediaBrowserServiceCompat implements
 
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class,
-                "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
-                .build();
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "HidayaDB")
+                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
 
         getSuraNames();
 
         initSession();
 
-        setActions();
+        setupActions();
 
         initMediaSessionMetadata();
     }
@@ -116,14 +118,16 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         return super.onStartCommand(intent, flags, startId);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     final MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
         @Override
         public void onPlayFromMediaId(String givenMediaId, Bundle extras) {
-            super.onPlayFromMediaId(givenMediaId, extras);
+            Log.d(Global.TAG, "In onPlayFromMediaId of TelawatService");
 
             playType = extras.getString("play_type");
             if (!givenMediaId.equals(mediaId) || playType.equals("continue")) {
+                Log.d(Global.TAG, "Old mediaID: " + mediaId +
+                        ", New mediaId: " + givenMediaId);
+
                 mediaId = givenMediaId;
 
                 mediaSession.setSessionActivity(getContentIntent());
@@ -137,34 +141,87 @@ public class TelawatService extends MediaBrowserServiceCompat implements
                 if (playType.equals("continue"))
                     continueFrom = pref.getInt("last_telawa_progress", 0);
 
-
                 buildNotification();
                 initPlayer();
 
                 if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE)
-                    play();
+                    onPlay();
                 else
-                    playNew();
+                    playOther();
             }
         }
 
         @Override
         public void onPlay() {
-            super.onPlay();
-            play();
+            Log.d(Global.TAG, "In onPlay of TelawatService");
+
+            // Request audio focus for playback, this registers the afChangeListener
+            int result = am.requestAudioFocus(audioFocusRequest);
+
+            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                // Start the service
+                startService(new Intent(getApplicationContext(), TelawatService.class));
+                // Set the session active  (and update metadata and state)
+                mediaSession.setActive(true);
+
+                // start the player (custom call)
+                if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_PAUSED ||
+                        controller.getPlaybackState().getState() ==
+                                PlaybackStateCompat.STATE_STOPPED)
+                    player.start();
+                else
+                    startPlaying(surahIndex);
+
+                updatePbState(PlaybackStateCompat.STATE_PLAYING);
+                updateNotification(true);
+                refresh();
+
+                // Register Receiver
+                registerReceiver(receiver, intentFilter);
+                // Put the service in the foreground, post notification
+                startForeground(id, notification);
+            }
         }
 
         @Override
         public void onStop() {
-            super.onStop();
-            Log.d(Global.TAG, "In onStop of Telawat");
-            stop();
+            Log.d(Global.TAG, "In onStop of TelawatService");
+
+            // Abandon audio focus
+            am.abandonAudioFocusRequest(audioFocusRequest);
+
+            cleanUp();
+            unregisterReceiver(receiver);
+            handler.removeCallbacks(runnable);
+            saveForLater(player.getCurrentPosition());
+            // stop the player (custom call)
+            player.stop();
+            // Stop the service
+            stopSelf();
+            // Set the session inactive  (and update metadata and state)
+            mediaSession.setActive(false);
+            updatePbState(PlaybackStateCompat.STATE_STOPPED);
+
+            // Take the service out of the foreground
+            stopForeground(false);
         }
 
         @Override
         public void onPause() {
-            super.onPause();
-            pause();
+            Log.d(Global.TAG, "In onPause of TelawatService");
+
+            // Update metadata and state
+            updatePbState(PlaybackStateCompat.STATE_PAUSED);
+            updateNotification(false);
+
+            saveForLater(player.getCurrentPosition());
+
+            // pause the player
+            player.pause();
+            handler.removeCallbacks(runnable);
+
+            // Take the service out of the foreground, retain the notification
+            stopForeground(false);
         }
 
         @Override
@@ -213,7 +270,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         }
     };
 
-    private void playNew() {
+    private void playOther() {
         mediaSession.setActive(true);
         // start the player
         startPlaying(surahIndex);
@@ -221,72 +278,6 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         // Update state
         updatePbState(PlaybackStateCompat.STATE_PLAYING);
         updateNotification(true);
-    }
-
-    private void play() {
-        // Request audio focus for playback, this registers the afChangeListener
-        int result = AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
-            result = am.requestAudioFocus(audioFocusRequest);
-
-        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            // Start the service
-            startService(new Intent(getApplicationContext(), TelawatService.class));
-            // Set the session active  (and update metadata and state)
-            mediaSession.setActive(true);
-
-            // start the player (custom call)
-            if (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_PAUSED ||
-                    controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_STOPPED)
-                player.start();
-            else
-                startPlaying(surahIndex);
-
-            updatePbState(PlaybackStateCompat.STATE_PLAYING);
-            updateNotification(true);
-            refresh();
-
-            // Register Receiver
-            registerReceiver(receiver, intentFilter);
-            // Put the service in the foreground, post notification
-            startForeground(id, notification);
-        }
-    }
-
-    private void pause() {
-        // Update metadata and state
-        // pause the player (custom call)
-        mediaSession.setActive(false);
-        player.pause();
-        handler.removeCallbacks(runnable);
-
-        updatePbState(PlaybackStateCompat.STATE_PAUSED);
-        updateNotification(false);
-
-        // Take the service out of the foreground, retain the notification
-        stopForeground(false);
-    }
-
-    private void stop() {
-        // Abandon audio focus
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            am.abandonAudioFocusRequest(audioFocusRequest);
-
-        cleanUp();
-        unregisterReceiver(receiver);
-        handler.removeCallbacks(runnable);
-        // stop the player (custom call)
-        player.stop();
-        // Stop the service
-        stopSelf();
-        // Set the session inactive  (and update metadata and state)
-        mediaSession.setActive(false);
-        updatePbState(PlaybackStateCompat.STATE_STOPPED);
-
-        // Take the service out of the foreground
-        stopForeground(false);
-
-        onDestroy();
     }
 
     private void skipToNext() {
@@ -349,7 +340,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
             case AudioManager.AUDIOFOCUS_LOSS:
                 if (player != null && player.isPlaying())
-                    pause();
+                    callback.onPause();
                 break;
         }
     }
@@ -360,19 +351,15 @@ public class TelawatService extends MediaBrowserServiceCompat implements
             switch (intent.getAction()) {
                 case AudioManager.ACTION_AUDIO_BECOMING_NOISY:
                     Log.d(Global.TAG, "In ACTION_BECOMING_NOISY");
-                    pause();
+                    callback.onPause();
                     break;
-                case ACTION_PLAY_PAUSE:
-                    if (controller.getPlaybackState().getState()
-                            == PlaybackStateCompat.STATE_PLAYING) {
-                        Log.d(Global.TAG, "In ACTION_PAUSE");
-                        pause();
-                    }
-                    else if (controller.getPlaybackState().getState() ==
-                            PlaybackStateCompat.STATE_PAUSED) {
-                        Log.d(Global.TAG, "In ACTION_PLAY");
-                        play();
-                    }
+                case ACTION_PLAY:
+                    Log.d(Global.TAG, "In ACTION_PLAY");
+                    callback.onPlay();
+                    break;
+                case ACTION_PAUSE:
+                    Log.d(Global.TAG, "In ACTION_PAUSE");
+                    callback.onPause();
                     break;
                 case ACTION_NEXT:
                     Log.d(Global.TAG, "In ACTION_NEXT");
@@ -384,7 +371,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
                     break;
                 case ACTION_STOP:
                     Log.d(Global.TAG, "In ACTION_STOP");
-                    onDestroy();
+                    callback.onStop();
                     break;
             }
         }
@@ -395,21 +382,46 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         mediaSession = new MediaSessionCompat(this, "TelawatService");
 
         // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
-        PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder().setActions(
+        stateBuilder = new PlaybackStateCompat.Builder().setActions(
                 PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PLAY_PAUSE);
         mediaSession.setPlaybackState(stateBuilder.build());
 
         // callback() has methods that handle callbacks from a media controller
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            mediaSession.setCallback(callback);
+        mediaSession.setCallback(callback);
 
         // Set the session's token so that client activities can communicate with it.
         setSessionToken(mediaSession.getSessionToken());
     }
 
-    private void buildNotification() {
-        // Given a media session and its context (usually the component containing the session)
+    private void setupActions() {
+        intentFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+        intentFilter.addAction(ACTION_PLAY);
+        intentFilter.addAction(ACTION_PAUSE);
+        intentFilter.addAction(ACTION_NEXT);
+        intentFilter.addAction(ACTION_PREV);
+        intentFilter.addAction(ACTION_STOP);
 
+        String pkg = getPackageName();
+        int flags = PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+
+        playAction = new NotificationCompat.Action(R.drawable.ic_play_arrow, "Play",
+                PendingIntent.getBroadcast(this, id,
+                        new Intent(ACTION_PLAY).setPackage(pkg), flags));
+
+        pauseAction = new NotificationCompat.Action(R.drawable.ic_baseline_pause, "Pause",
+                PendingIntent.getBroadcast(this, id,
+                        new Intent(ACTION_PAUSE).setPackage(pkg), flags));
+
+        nextAction = new NotificationCompat.Action(R.drawable.ic_skip_next, "next",
+                PendingIntent.getBroadcast(this, id,
+                        new Intent(ACTION_NEXT).setPackage(pkg), flags));
+
+        prevAction = new NotificationCompat.Action(R.drawable.ic_skip_previous, "previous",
+                PendingIntent.getBroadcast(this, id,
+                        new Intent(ACTION_PREV).setPackage(pkg), flags));
+    }
+
+    private void buildNotification() {
         // Get the session's metadata
         controller = mediaSession.getController();
         mediaMetadata = controller.getMetadata();
@@ -427,22 +439,19 @@ public class TelawatService extends MediaBrowserServiceCompat implements
                 .setContentTitle(description.getTitle())
                 .setContentText(description.getSubtitle())
                 .setSubText(description.getDescription())
-                /*.setLargeIcon(BitmapFactory.decodeResource(
-                        getResources(), R.drawable.ic_sound))*/
+                .setLargeIcon(description.getIconBitmap())
+                // Enable launching the player by clicking the notification
+                .setContentIntent(controller.getSessionActivity())
                 // Stop the service when the notification is swiped away
                 .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this,
                         PlaybackStateCompat.ACTION_STOP))
                 // Make the transport controls visible on the lockscreen
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                // Add an app icon and set its accent color
-                // Be careful about the color
+                // Add an app icon and set its accent color (Be careful about the color)
                 .setSmallIcon(R.drawable.launcher_foreground)
-                .setColorized(true)
-                .setColor(getResources().getColor(R.color.surface_M, getTheme()))
+                .setColor(ContextCompat.getColor(this, R.color.surface_M))
                 // Add buttons
-                // Enable launching the player by clicking the notification
-                .setContentIntent(controller.getSessionActivity())
-                .addAction(prevAction).addAction(playPauseAction).addAction(nextAction)
+                .addAction(prevAction).addAction(pauseAction).addAction(nextAction)
                 // So there will be no notification tone
                 .setSilent(true)
                 // So the user wouldn't swipe it off
@@ -473,13 +482,15 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(getResources(), R.drawable.low_quality_foreground));
 
-        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "اسم السورة");
-        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_TITLE, "اسم السورة");
-        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "اسم القارئ");
-        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, "نوع القراءة");
+        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "");
+        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_TITLE, "");
+        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "");
+        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, "");
 
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 0);
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, 0);
+
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId);
 
         mediaSession.setMetadata(metadataBuilder.build());
     }
@@ -512,13 +523,13 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
                 duration ? player.getDuration() : 0);
 
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId);
+
         mediaMetadata = metadataBuilder.build();
         mediaSession.setMetadata(mediaMetadata);
     }
 
     private void updatePbState(int state) {
-        PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder();
-
         stateBuilder.setState(state, player.getCurrentPosition(), 1)
                 .setActions(PlaybackStateCompat.ACTION_SEEK_TO);
 
@@ -537,18 +548,12 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     }
 
     private void updateNotification(boolean playing) {
-        if (playing) {
-            playPauseAction = new NotificationCompat.Action(R.drawable.ic_baseline_pause,
-                    "play_pause", PendingIntent.getBroadcast(this, id,
-                            new Intent(ACTION_PLAY_PAUSE).setPackage(getPackageName()), flags));
-        }
-        else {
-            playPauseAction = new NotificationCompat.Action(R.drawable.ic_play_arrow,
-                    "play_pause", PendingIntent.getBroadcast(this, id,
-                            new Intent(ACTION_PLAY_PAUSE).setPackage(getPackageName()), flags));
-        }
-        notificationBuilder.clearActions()
-                .addAction(prevAction).addAction(playPauseAction).addAction(nextAction);
+        if (playing)
+            notificationBuilder.clearActions()
+                    .addAction(prevAction).addAction(pauseAction).addAction(nextAction);
+        else
+            notificationBuilder.clearActions()
+                    .addAction(prevAction).addAction(playAction).addAction(nextAction);
 
         notification = notificationBuilder.build();
         notificationManager.notify(id, notification);
@@ -573,12 +578,10 @@ public class TelawatService extends MediaBrowserServiceCompat implements
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                    .setOnAudioFocusChangeListener(this)
-                    .setAudioAttributes(attrs)
-                    .build();
-        }
+        audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setOnAudioFocusChangeListener(this)
+                .setAudioAttributes(attrs)
+                .build();
 
         player.setOnPreparedListener(mp -> {
             if (playType.equals("continue"))
@@ -595,27 +598,6 @@ public class TelawatService extends MediaBrowserServiceCompat implements
             Log.e(Global.TAG, "Error in TelawatService player: " + what);
             return true;
         });
-    }
-
-    private void setActions() {
-        intentFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-        intentFilter.addAction(ACTION_PLAY_PAUSE);
-        intentFilter.addAction(ACTION_NEXT);
-        intentFilter.addAction(ACTION_PREV);
-        intentFilter.addAction(ACTION_STOP);
-
-        String pkg = getPackageName();
-        flags = PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE;
-
-        playPauseAction = new NotificationCompat.Action(R.drawable.ic_play_arrow, "play_pause",
-                PendingIntent.getBroadcast(this, id,
-                        new Intent(ACTION_PLAY_PAUSE).setPackage(pkg), flags));
-        nextAction = new NotificationCompat.Action(R.drawable.ic_skip_next, "next",
-                PendingIntent.getBroadcast(this, id,
-                        new Intent(ACTION_NEXT).setPackage(pkg), flags));
-        prevAction = new NotificationCompat.Action(R.drawable.ic_skip_previous, "previous",
-                PendingIntent.getBroadcast(this, id,
-                        new Intent(ACTION_PREV).setPackage(pkg), flags));
     }
 
     private void startPlaying(int surah) {
@@ -657,19 +639,17 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     }
 
     private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name;
-            String description = "quran listening";
-            channelId = "Telawat";
-            name = "تلاوات";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel notificationChannel  = new NotificationChannel(
-                    channelId, name, importance);
-            notificationChannel.setDescription(description);
-            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
+        CharSequence name;
+        String description = "quran listening";
+        channelId = "Telawat";
+        name = "تلاوات";
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel notificationChannel  = new NotificationChannel(
+                channelId, name, importance);
+        notificationChannel.setDescription(description);
+        notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(notificationChannel);
     }
 
     private void getSuraNames() {
@@ -752,5 +732,11 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         Log.d(Global.TAG, "In onUnbind of TelawatService");
         saveForLater(player.getCurrentPosition());
         return super.onUnbind(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cleanUp();
     }
 }

@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -15,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
@@ -32,6 +34,7 @@ import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.services.TelawatService;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class TelawatClient extends AppCompatActivity {
 
     private ActivityTelawatClientBinding binding;
@@ -96,7 +99,7 @@ public class TelawatClient extends AppCompatActivity {
 
         getData();
 
-        sendPlayRequest();
+        sendPlayRequest();    // Maybe this causes the problem of restarting when device unlocked
     }
 
     @Override
@@ -134,15 +137,16 @@ public class TelawatClient extends AppCompatActivity {
 
             // Save the controller
             MediaControllerCompat.setMediaController(TelawatClient.this, mediaController);
-            controller = MediaControllerCompat.getMediaController(TelawatClient.this);
-            tc = controller.getTransportControls();
 
             // Finish building the UI
             buildTransportControls();
 
             getData();
 
-            if (!action.equals("back"))
+            if (!action.equals("back") &&
+                    (controller.getPlaybackState().getState() == PlaybackStateCompat.STATE_NONE ||
+                    !mediaId.equals(controller.getMetadata().getString(
+                            MediaMetadataCompat.METADATA_KEY_MEDIA_ID))))
                 sendPlayRequest();
         }
 
@@ -334,9 +338,12 @@ public class TelawatClient extends AppCompatActivity {
     private void buildTransportControls() {
         enableControls();
 
+        controller = MediaControllerCompat.getMediaController(TelawatClient.this);
+        tc = controller.getTransportControls();
+
         // Display the initial state
-        updatePbState(controller.getPlaybackState());
         updateMetadata(controller.getMetadata());
+        updatePbState(controller.getPlaybackState());
 
         // Register a Callback to stay in sync
         controller.registerCallback(controllerCallback);
@@ -354,6 +361,11 @@ public class TelawatClient extends AppCompatActivity {
             // To change the playback state inside the app when the user changes it
             // from the notification
             updatePbState(state);
+        }
+
+        @Override
+        public void onSessionDestroyed() {
+            mediaBrowser.disconnect();
         }
     };
 
