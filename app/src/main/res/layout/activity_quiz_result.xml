@@ -29,10 +29,10 @@
         android:id="@+id/result_screen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?myBars"
+        android:background="?attr/myPrimary"
         android:fontFamily="@font/tajawal_regular"
         android:padding="20dp"
-        android:textColor="?myOnBars"
+        android:textColor="?attr/myOnPrimary"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/top_bar" />

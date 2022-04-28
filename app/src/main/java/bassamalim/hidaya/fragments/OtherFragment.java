@@ -14,9 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import bassamalim.hidaya.activities.AboutActivity;
+import bassamalim.hidaya.activities.BooksActivity;
 import bassamalim.hidaya.activities.DateConverter;
-import bassamalim.hidaya.activities.FeaturesGuide;
-import bassamalim.hidaya.activities.HadeethBooks;
 import bassamalim.hidaya.activities.QuizLobbyActivity;
 import bassamalim.hidaya.activities.RadioClient;
 import bassamalim.hidaya.activities.Settings;
@@ -40,6 +39,7 @@ public class OtherFragment extends Fragment {
         return binding.getRoot();
     }
 
+
     public void setListeners() {
         binding.telawat.setOnClickListener(v -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -56,8 +56,8 @@ public class OtherFragment extends Fragment {
             startActivity(intent);
         });
 
-        binding.hadeethBooks.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), HadeethBooks.class);
+        binding.books.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), BooksActivity.class);
             startActivity(intent);
         });
 
@@ -83,11 +83,6 @@ public class OtherFragment extends Fragment {
 
         binding.settings.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), Settings.class);
-            startActivity(intent);
-        });
-
-        binding.features.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), FeaturesGuide.class);
             startActivity(intent);
         });
 

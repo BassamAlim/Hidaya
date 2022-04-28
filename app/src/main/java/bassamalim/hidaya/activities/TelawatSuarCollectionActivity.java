@@ -1,10 +1,12 @@
 package bassamalim.hidaya.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -19,6 +21,7 @@ import bassamalim.hidaya.enums.ListType;
 import bassamalim.hidaya.fragments.TelawatSuarFragment;
 import bassamalim.hidaya.other.Utils;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class TelawatSuarCollectionActivity extends FragmentActivity {
 
     private ActivityCollectionTelawatSuarBinding binding;
@@ -70,6 +73,7 @@ public class TelawatSuarCollectionActivity extends FragmentActivity {
     }
 }
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 class TSAdapter extends FragmentStateAdapter {
 
     private final int reciterId;
@@ -81,8 +85,7 @@ class TSAdapter extends FragmentStateAdapter {
         this.versionId = versionId;
     }
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public Fragment createFragment(int position) {
         ListType type;
 

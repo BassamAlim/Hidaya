@@ -619,7 +619,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     }
 
     private boolean tryOffline(int surah) {
-        String path = getExternalFilesDir(null) + "/Telawat Downloads/" + reciterId + "/"
+        String path = getExternalFilesDir(null) + "/Telawat/" + reciterId + "/"
                 + version.getVersionId() + "/" + surah + ".mp3";
         try {
             player.setDataSource(path);

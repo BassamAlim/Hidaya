@@ -19,7 +19,7 @@ import bassamalim.hidaya.activities.MainActivity;
 import bassamalim.hidaya.databinding.FragmentQiblaBinding;
 import bassamalim.hidaya.helpers.Compass;
 import bassamalim.hidaya.other.Utils;
-import bassamalim.hidaya.popups.CalibrationPopup;
+import bassamalim.hidaya.dialogs.CalibrationDialog;
 
 public class QiblaFragment extends Fragment {
 
@@ -185,8 +185,8 @@ public class QiblaFragment extends Fragment {
                 binding.accuracyText.setText(R.string.low_accuracy_text);
                 binding.accuracyIndicator.setImageDrawable(AppCompatResources.getDrawable(
                         requireContext(), R.drawable.ic_warning));
-                binding.accuracyIndicator.setOnClickListener(v -> new CalibrationPopup(getContext())
-                        .show(requireActivity().getSupportFragmentManager(), CalibrationPopup.TAG));
+                binding.accuracyIndicator.setOnClickListener(v -> new CalibrationDialog(getContext())
+                        .show(requireActivity().getSupportFragmentManager(), CalibrationDialog.TAG));
                 break;
         }
     }

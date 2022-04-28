@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/tajawal_regular"
-            android:textColor="?attr/myOnBars"
+            android:textColor="?attr/myOnPrimary"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:fontFamily="@font/tajawal_regular"
-            android:textColor="?attr/myOnBars"
+            android:textColor="?attr/myOnPrimary"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
@@ -45,7 +45,7 @@
             android:layout_gravity="end"
             android:fontFamily="@font/tajawal_regular"
             android:paddingHorizontal="10dp"
-            android:textColor="?attr/myOnBars"
+            android:textColor="?attr/myOnPrimary"
             android:textSize="21dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
@@ -106,7 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/bookmark_page_button"
             android:padding="5dp"
             android:src="@drawable/ic_bookmark" />
@@ -116,7 +116,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/bookmark_page_button"
             android:padding="5dp"
             android:src="@drawable/ic_aya_forward" />
@@ -129,7 +129,7 @@
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="6dp"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/bookmark_page_button"
             android:src="@drawable/ic_play_aya" />
 
@@ -138,7 +138,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/bookmark_page_button"
             android:padding="5dp"
             android:src="@drawable/ic_aya_backward" />
@@ -149,7 +149,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/bookmark_page_button"
             android:padding="5dp"
             android:src="@drawable/ic_preferences" />

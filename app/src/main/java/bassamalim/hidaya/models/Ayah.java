@@ -5,10 +5,11 @@ import android.widget.TextView;
 
 public class Ayah {
 
-    private final int juz;
+    private int juz;
     private final int surah;
     private final int ayah;
     private final String surahName;
+    private int pageNum;
     private String text;
     private final String tafseer;
     private int start;
@@ -17,13 +18,23 @@ public class Ayah {
     private int index;
     private TextView screen;
 
-    public Ayah(int gJuz, int gSurah, int gAyah, String gSurahName, String gText, String gTafseer) {
-        juz = gJuz;
-        surah = gSurah;
-        ayah = gAyah;
-        surahName = gSurahName;
-        text = gText;
-        tafseer = gTafseer;
+    public Ayah(int juz, int surah, int ayah, String surahName, String text, String tafseer) {
+        this.juz = juz;
+        this.surah = surah;
+        this.ayah = ayah;
+        this.surahName = surahName;
+        this.text = text;
+        this.tafseer = tafseer;
+    }
+
+    public Ayah(int surah, String surahName, int pageNum, int ayah,
+                String tafseer, SpannableString ss) {
+        this.surah = surah;
+        this.ayah = ayah;
+        this.pageNum = pageNum;
+        this.surahName = surahName;
+        this.tafseer = tafseer;
+        this.ss = ss;
     }
 
     public int getJuz() {
@@ -40,6 +51,10 @@ public class Ayah {
 
     public String getSurahName() {
         return surahName;
+    }
+
+    public int getPageNum() {
+        return pageNum;
     }
 
     public void setText(String text) {

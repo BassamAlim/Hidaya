@@ -46,7 +46,6 @@
         android:background="@drawable/ripple_bg"
         android:contentDescription="@string/play_pause_btn_description"
         android:padding="10dp"
-        android:src="@drawable/ic_player_play"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

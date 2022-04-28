@@ -74,7 +74,7 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
 
         ver = db.telawatVersionsDao().getVersion(reciterId, versionId);
 
-        prefix = "/Telawat Downloads/" + ver.getReciter_id() + "/" + versionId;
+        prefix = "/Telawat/" + ver.getReciter_id() + "/" + versionId;
 
         checkDownloaded();
     }
@@ -201,7 +201,7 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setTitle("تحميل التلاوة");
         request.setVisibleInDownloadsUi(true);
-        String postfix = "/Telawat Downloads/" + ver.getReciter_id() + "/" + versionId;
+        String postfix = "/Telawat/" + ver.getReciter_id() + "/" + versionId;
         Utils.createDir(context, postfix);
         request.setDestinationInExternalFilesDir(context, postfix, num + ".mp3");
         request.setNotificationVisibility(

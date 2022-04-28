@@ -1,12 +1,14 @@
 package bassamalim.hidaya.fragments;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +29,7 @@ import bassamalim.hidaya.databinding.FragmentTelawatSuarBinding;
 import bassamalim.hidaya.enums.ListType;
 import bassamalim.hidaya.models.ReciterSuraCard;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class TelawatSuarFragment extends Fragment {
 
     private FragmentTelawatSuarBinding binding;
@@ -142,7 +145,7 @@ public class TelawatSuarFragment extends Fragment {
     private void checkDownloaded() {
         downloaded = new boolean[114];
 
-        String prefix = "/Telawat Downloads/" + reciterId + "/" + versionId;
+        String prefix = "/Telawat/" + reciterId + "/" + versionId;
 
         File dir = new File(requireContext().getExternalFilesDir(null) + prefix);
 

@@ -78,7 +78,7 @@ public class TvActivity extends YouTubeBaseActivity {
             ytPlayer.loadVideo(makkah_url);
             ytPlayer.play();
         });
-        binding.hadeethBtn.setOnClickListener(v -> {
+        binding.sunnahBtn.setOnClickListener(v -> {
             ytPlayer.loadVideo(madina_url);
             ytPlayer.play();
         });

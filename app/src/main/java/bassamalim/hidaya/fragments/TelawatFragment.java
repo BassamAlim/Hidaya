@@ -1,23 +1,32 @@
 package bassamalim.hidaya.fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.TelawatSuarCollectionActivity;
 import bassamalim.hidaya.adapters.TelawatAdapter;
 import bassamalim.hidaya.database.AppDatabase;
@@ -26,15 +35,21 @@ import bassamalim.hidaya.database.dbs.TelawatRecitersDB;
 import bassamalim.hidaya.databinding.FragmentTelawatBinding;
 import bassamalim.hidaya.enums.ListType;
 import bassamalim.hidaya.models.ReciterCard;
+import bassamalim.hidaya.dialogs.FilterDialog;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class TelawatFragment extends Fragment {
 
     private FragmentTelawatBinding binding;
+    private SharedPreferences pref;
+    private Gson gson;
+    private String[] rewayat;
     private RecyclerView recycler;
     private TelawatAdapter adapter;
     private List<TelawatDB> telawat;
     private List<TelawatRecitersDB> reciters;
     private boolean[] downloaded;
+    private boolean[] selectedRewayat;
     private ListType type;
 
     public TelawatFragment() {}
@@ -49,14 +64,19 @@ public class TelawatFragment extends Fragment {
 
         binding = FragmentTelawatBinding.inflate(inflater, container, false);
 
+        pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        gson = new Gson();
+        rewayat = getResources().getStringArray(R.array.rewayat);
+
         reciters = getData();
 
         if (type == ListType.Downloaded)
             checkDownloaded();
 
         setupRecycler();
+        filter();
 
-        setSearchListeners();
+        setListeners();
 
         return binding.getRoot();
     }
@@ -76,7 +96,7 @@ public class TelawatFragment extends Fragment {
     private void checkDownloaded() {
         downloaded = new boolean[telawat.size()];
 
-        String prefix = "/Telawat Downloads/";
+        String prefix = "/Telawat/";
 
         File dir = new File(requireContext().getExternalFilesDir(null) + prefix);
 
@@ -150,19 +170,43 @@ public class TelawatFragment extends Fragment {
         recycler.setAdapter(adapter);
     }
 
-    private void setSearchListeners() {
+    private void filter() {
+        selectedRewayat = getSelectedRewayat();
+        adapter.filter(null, selectedRewayat);
+        for (Boolean aBoolean : selectedRewayat) {
+            if (!aBoolean) {
+                binding.filterIb.setImageDrawable(AppCompatResources.getDrawable(
+                        requireContext(), R.drawable.ic_filtered));
+                break;
+            }
+        }
+    }
+
+    private void setListeners() {
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                adapter.filter(query);
+                adapter.filter(query, null);
                 return true;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.filter(newText);
+                adapter.filter(newText, null);
                 return true;
             }
         });
+
+        binding.filterIb.setOnClickListener(v ->
+                new FilterDialog<>(getContext(), v, "اختر القراءات", rewayat, selectedRewayat,
+                        adapter, binding.filterIb, "selected_rewayat"));
+    }
+
+    private boolean[] getSelectedRewayat() {
+        boolean[] defArr = new boolean[rewayat.length];
+        Arrays.fill(defArr, true);
+        String defStr = gson.toJson(defArr);
+
+        return gson.fromJson(pref.getString("selected_rewayat", defStr), boolean[].class);
     }
 
     public void onDestroy() {

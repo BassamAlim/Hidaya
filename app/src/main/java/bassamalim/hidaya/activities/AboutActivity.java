@@ -33,7 +33,7 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     private void setListener() {
-        binding.title.setOnClickListener(v -> {
+        binding.titleTv.setOnClickListener(v -> {
             counter++;
             if (counter == 5)
                 voala();

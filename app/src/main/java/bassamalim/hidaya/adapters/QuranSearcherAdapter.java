@@ -15,13 +15,13 @@ import java.util.List;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.QuranActivity;
-import bassamalim.hidaya.database.dbs.AyatDB;
+import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.other.Utils;
 
 public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdapter.ViewHolder> {
 
     private Context context;
-    private final List<AyatDB> suraCards;
+    private final List<Ayah> suraCards;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView suraNumTv;
@@ -44,7 +44,7 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
         }
     }
 
-    public QuranSearcherAdapter(List<AyatDB> results) {
+    public QuranSearcherAdapter(List<Ayah> results) {
         suraCards = results;
     }
 
@@ -60,29 +60,29 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
 
     @Override
     public void onBindViewHolder(QuranSearcherAdapter.ViewHolder viewHolder, final int position) {
-        AyatDB card = suraCards.get(position);
+        Ayah card = suraCards.get(position);
 
-        String suraNumStr = "سورة رقم " + Utils.translateNumbers(String.valueOf(card.getSura_no()));
+        String suraNumStr = "سورة رقم " + Utils.translateNumbers(String.valueOf(card.getSurah()));
         viewHolder.suraNumTv.setText(suraNumStr);
 
-        String suraNameStr = "سورة " + card.getSura_name_ar();
+        String suraNameStr = "سورة " + card.getSurahName();
         viewHolder.suraNameTv.setText(suraNameStr);
 
-        String pageNumStr = "صفحة رقم " + Utils.translateNumbers(String.valueOf(card.getPage()));
+        String pageNumStr = "صفحة رقم " + Utils.translateNumbers(String.valueOf(card.getPageNum()));
         viewHolder.pageNumTv.setText(pageNumStr);
 
-        String ayaNumStr = "آية رقم " + Utils.translateNumbers(String.valueOf(card.getAya_no()));
+        String ayaNumStr = "آية رقم " + Utils.translateNumbers(String.valueOf(card.getAyah()));
         viewHolder.ayaNumTv.setText(ayaNumStr);
 
-        viewHolder.ayaTextTv.setText(card.getAya_text());
+        viewHolder.ayaTextTv.setText(card.getSS());
 
-        String ayaTafseerStr = "التفسير: " + card.getAya_tafseer();
+        String ayaTafseerStr = "التفسير: " + card.getTafseer();
         viewHolder.ayaTafseerTv.setText(ayaTafseerStr);
 
         viewHolder.gotoPageBtn.setOnClickListener(v -> {
             Intent intent = new Intent(context, QuranActivity.class);
             intent.setAction("by_page");
-            intent.putExtra("page", card.getPage());
+            intent.putExtra("page", card.getPageNum());
             context.startActivity(intent);
         });
     }

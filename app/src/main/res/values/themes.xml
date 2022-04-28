@@ -18,9 +18,9 @@
     <!-- Base application theme. -->
     <style name="Theme.HidayaM" parent="Theme.AppCompat.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/bars_M</item>
-        <item name="colorPrimaryVariant">@color/bars_M</item>
-        <item name="colorOnPrimary">@color/bars_M</item>
+        <item name="colorPrimary">@color/primary_M</item>
+        <item name="colorPrimaryVariant">@color/primary_M</item>
+        <item name="colorOnPrimary">@color/primary_M</item>
         <!-- Secondary brand color. -->
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
@@ -31,55 +31,64 @@
         <item name="colorAccent">@color/accent_M</item>
         <item name="titleTextColor">@color/white</item>
         <item name="spinnerDropDownItemStyle">@style/MySpinnerItem</item>
+        <item name="alertDialogTheme">@style/MyAlertDialogTheme</item>
+        <item name="android:datePickerDialogTheme">@style/MyDatePickerDialogTheme</item>
+        <item name="android:timePickerDialogTheme">@style/MyTimePicker</item>
+        <item name="android:timePickerStyle">@style/MyTimePicker</item>
+        <item name="materialTimePickerStyle">@style/MyTimePicker</item>
+        <item name="materialTimePickerTheme">@style/MyTimePicker</item>
         <!-- My Special Theme -->
         <item name="myMainBg">@color/bg_M</item>
-        <item name="myBars">@color/bars_M</item>
-        <item name="myWeakBars">@color/weak_bars_M</item>
+        <item name="myPrimary">@color/primary_M</item>
+        <item name="myPrimaryDark">@color/primary_weak_M</item>
         <item name="mySurface">@color/surface_M</item>
-        <item name="myLightSurface">@color/ripple_M</item>
+        <item name="mySurfaceDark">@color/ripple_M</item>
         <item name="myAccent">@color/accent_M</item>
-        <item name="myOtherAccent">@color/other_accent_M</item>
+        <item name="myAccentDark">@color/accent_dark_M</item>
         <item name="myText">@color/text_M</item>
         <item name="mySpecialText">@color/white</item>
-        <item name="myOnBars">@color/text_M</item>
+        <item name="myOnPrimary">@color/text_M</item>
         <item name="myCounter">@color/black</item>
-        <item name="myActiveOnBar">@color/accent_M</item>
-        <item name="myOtherActiveOnBar">@color/other_accent_M</item>
-        <item name="myPopupsBg">@color/bars_M</item>
+        <item name="myActiveOnPrimary">@color/accent_M</item>
+        <item name="myActiveOnPrimaryDark">@color/accent_dark_M</item>
+        <item name="myDialogBg">@color/primary_M</item>
         <item name="mySeparator">@color/grey</item>
         <item name="myNavBar">@drawable/nav_bar_item_bg_m</item>
     </style>
 
     <style name="Theme.HidayaL" parent="Theme.AppCompat.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/bars_L</item>
-        <item name="colorPrimaryVariant">@color/bars_L</item>
-        <item name="colorOnPrimary">@color/bars_L</item>
+        <item name="colorPrimary">@color/primary_L</item>
+        <item name="colorPrimaryVariant">@color/primary_L</item>
+        <item name="colorOnPrimary">@color/primary_L</item>
         <!-- Secondary brand color. -->
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/bars_L</item>
+        <item name="android:statusBarColor">@color/primary_L</item>
         <!-- Customize your theme here. -->
         <item name="android:textColorPrimary">@color/text_L</item>
         <item name="android:textColor">@color/text_L</item>
         <item name="colorAccent">@color/accent_L</item>
         <item name="titleTextColor">@color/text_M</item>
         <item name="spinnerDropDownItemStyle">@style/MySpinnerItem</item>
+        <item name="alertDialogTheme">@style/MyAlertDialogTheme</item>
+        <item name="android:datePickerDialogTheme">@style/MyDatePickerDialogTheme</item>
+        <item name="android:timePickerDialogTheme">@style/MyTimePicker</item>
         <!-- My Special Theme -->
         <item name="myMainBg">@color/bg_L</item>
-        <item name="myBars">@color/bars_L</item>
-        <item name="myWeakBars">@color/weak_bars_L</item>
+        <item name="myPrimary">@color/primary_L</item>
+        <item name="myPrimaryDark">@color/primary_weak_L</item>
         <item name="mySurface">@color/surface_L</item>
-        <item name="myLightSurface">@color/ripple_L</item>
+        <item name="mySurfaceDark">@color/ripple_L</item>
         <item name="myAccent">@color/accent_L</item>
-        <item name="myOtherAccent">@color/other_accent_L</item>
+        <item name="myAccentDark">@color/accent_dark_L</item>
         <item name="myText">@color/text_L</item>
         <item name="mySpecialText">@color/black</item>
-        <item name="myOnBars">@color/text_M</item>
+        <item name="myOnPrimary">@color/text_M</item>
         <item name="myCounter">@color/ripple_L</item>
-        <item name="myActiveOnBar">@color/active_on_bar_L</item>
-        <item name="myOtherActiveOnBar">@color/other_active_on_bar_L</item>
-        <item name="myPopupsBg">@color/ripple_L</item>
+        <item name="myActiveOnPrimary">@color/active_on_primary_L</item>
+        <item name="myActiveOnPrimaryDark">@color/active_on_primary_dark_L</item>
+        <item name="myDialogBg">@color/ripple_L</item>
         <item name="mySeparator">@color/black</item>
         <item name="myNavBar">@drawable/nav_bar_item_bg_l</item>
     </style>
@@ -87,9 +96,9 @@
     <style name="QuranM" parent="Theme.HidayaM">
         <item name="android:textColor">@color/white</item>
         <item name="android:textColorLink">@color/white</item>
-        <item name="myQBg">@color/bars_M</item>
+        <item name="myQBg">@color/primary_M</item>
         <item name="myQBars">@color/bg_M</item>
-        <item name="myLightSurface">@color/ripple_M</item>
+        <item name="mySurfaceDark">@color/ripple_M</item>
         <item name="myQHighlight">@color/highlight_M</item>
         <item name="myQTrack">@color/track_M</item>
     </style>
@@ -98,8 +107,8 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:textColorLink">@color/black</item>
         <item name="myQBg">@color/q_bg_L</item>
-        <item name="myQBars">@color/bars_L</item>
-        <item name="myLightSurface">@color/ripple_L</item>
+        <item name="myQBars">@color/primary_L</item>
+        <item name="mySurfaceDark">@color/ripple_L</item>
         <item name="myQHighlight">@color/highlight_L</item>
         <item name="myQTrack">@color/track_L</item>
     </style>

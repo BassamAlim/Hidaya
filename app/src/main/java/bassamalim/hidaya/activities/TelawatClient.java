@@ -238,7 +238,7 @@ public class TelawatClient extends AppCompatActivity {
                 editor.apply();
 
                 repeatBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ripple, getTheme()));
+                        R.drawable.ripple_circle, getTheme()));
             }
         });
         shuffleBtn.setOnClickListener(v -> {
@@ -262,7 +262,7 @@ public class TelawatClient extends AppCompatActivity {
                 editor.apply();
 
                 shuffleBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ripple, getTheme()));
+                        R.drawable.ripple_circle, getTheme()));
             }
         });
     }

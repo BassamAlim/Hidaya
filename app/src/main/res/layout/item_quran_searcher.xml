@@ -113,7 +113,7 @@
                 android:paddingHorizontal="20dp"
                 android:paddingBottom="12dp"
                 android:text="@string/go_to_page"
-                android:textColor="?attr/myOnBars"
+                android:textColor="?attr/myOnPrimary"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

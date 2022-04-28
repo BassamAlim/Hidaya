@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/base_view"
+    android:layout_width="350dp"
+    android:layout_height="290dp"
+    android:layout_gravity="center"
+    android:background="?myMainBg"
+    android:elevation="10dp"
+    android:gravity="center"
+    android:layoutDirection="rtl"
+    android:orientation="vertical"
+    tools:context=".dialogs.QuranSettingsDialog">
+
+    <FrameLayout
+        android:id="@+id/quran_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/execute_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/ripple_surface"
+        android:fontFamily="@font/tajawal_regular"
+        android:paddingVertical="16dp"
+        android:text="@string/execute"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        tools:ignore="SpUsage" />
+
+</LinearLayout>

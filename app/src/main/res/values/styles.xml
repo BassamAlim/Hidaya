@@ -3,7 +3,7 @@
     <style name="MyTopBar" parent="Widget.AppCompat.Toolbar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?actionBarSize</item>
-        <item name="android:background">?myBars</item>
+        <item name="android:background">?attr/myPrimary</item>
         <item name="android:elevation">4dp</item>
         <item name="android:minHeight">?attr/actionBarSize</item>
         <item name="android:theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
@@ -16,7 +16,7 @@
         <item name="android:layout_centerInParent">true</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:fontFamily">@font/tajawal_regular</item>
-        <item name="android:textColor">?myOnBars</item>
+        <item name="android:textColor">?attr/myOnPrimary</item>
         <item name="android:textSize" tools:ignore="SpUsage">21dp</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -32,18 +32,18 @@
         <item name="android:layout_gravity">end</item>
     </style>
 
-    <style name="PrayerPopupAnimation">
-        <item name="android:windowEnterAnimation">@anim/prayer_popup_show</item>
-        <item name="android:windowExitAnimation">@anim/prayer_popup_hide</item>
+    <style name="PrayerDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/prayer_dialog_show</item>
+        <item name="android:windowExitAnimation">@anim/prayer_dialog_hide</item>
     </style>
 
-    <style name="QuranSettingsPopupAnimation" parent="@android:style/Animation.Activity">
-        <item name="android:windowEnterAnimation">@anim/quran_settings_popup_show</item>
-        <item name="android:windowExitAnimation">@anim/quran_settings_popup_hide</item>
-        <item name="android:activityOpenEnterAnimation">@anim/quran_settings_popup_show</item>
-        <item name="android:activityOpenExitAnimation">@anim/quran_settings_popup_hide</item>
-        <item name="android:activityCloseEnterAnimation">@anim/quran_settings_popup_show</item>
-        <item name="android:activityCloseExitAnimation">@anim/quran_settings_popup_hide</item>
+    <style name="QuranSettingsDialogAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/quran_settings_dialog_show</item>
+        <item name="android:windowExitAnimation">@anim/quran_settings_dialog_hide</item>
+        <item name="android:activityOpenEnterAnimation">@anim/quran_settings_dialog_show</item>
+        <item name="android:activityOpenExitAnimation">@anim/quran_settings_dialog_hide</item>
+        <item name="android:activityCloseEnterAnimation">@anim/quran_settings_dialog_show</item>
+        <item name="android:activityCloseExitAnimation">@anim/quran_settings_dialog_hide</item>
     </style>
 
     <style name="Buttony" parent="Widget.AppCompat.Button.Borderless">
@@ -62,23 +62,23 @@
         <item name="fontFamily">@font/tajawal_regular</item>
     </style>
 
-    <style name="RoundedPopupM" parent="Theme.AppCompat.Dialog">
-        <item name="android:windowBackground">@drawable/rounded_popup</item>
+    <style name="RoundedDialogM" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@drawable/rounded_dialog</item>
         <item name="myMainBg">@color/bg_M</item>
         <item name="mySurface">@color/surface_M</item>
-        <item name="myLightSurface">@color/ripple_M</item>
+        <item name="mySurfaceDark">@color/ripple_M</item>
         <item name="myAccent">@color/accent_M</item>
     </style>
 
-    <style name="RoundedPopupL" parent="Theme.AppCompat.Dialog">
-        <item name="android:windowBackground">@drawable/rounded_popup</item>
+    <style name="RoundedDialogL" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@drawable/rounded_dialog</item>
         <item name="android:textColorSecondary">?myAccent</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textColorHint">?myAccent</item>
         <item name="colorAccent">?myAccent</item>
         <item name="myMainBg">@color/bg_L</item>
         <item name="mySurface">@color/surface_L</item>
-        <item name="myLightSurface">@color/ripple_L</item>
+        <item name="mySurfaceDark">@color/ripple_L</item>
         <item name="myAccent">@color/accent_L</item>
     </style>
 
@@ -142,6 +142,75 @@
 
     <style name="TajwalTab" parent="TextAppearance.Design.Tab">
         <item name="fontFamily">@font/tajawal_regular</item>
+    </style>
+
+    <style name="MyAlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:layoutDirection">rtl</item>
+        <item name="android:colorBackground">?myMainBg</item>
+        <item name="android:textColorSecondary">?myAccent</item>
+        <item name="android:colorControlActivated">?myAccent</item>
+        <item name="android:textColor">?myText</item>
+        <item name="textColorAlertDialogListItem">?myText</item>
+    </style>
+
+    <style name="MyDatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">?myMainBg</item>
+        <item name="android:colorAccent">?attr/myPrimary</item>
+        <item name="colorAccent">?myAccent</item>
+        <item name="android:textColorPrimary">?myText</item>
+        <item name="android:textColor">?myText</item>
+        <item name="android:textColorSecondary">@color/grey</item>
+    </style>
+
+    <!--parent="Theme.AppCompat.Light.Dialog"-->    <!--x2-->    <!--dialog..white clock-->
+    <!--parent="Theme.AppCompat.Dialog"-->    <!-- dialog-->
+    <!--parent="Theme.AppCompat.Light.Dialog.Alert"-->    <!--width-filled dialog..white clock-->
+    <!--parent="@style/ThemeOverlay.MaterialComponents.Dialog"-->    <!--dialog-->
+    <!--parent="@android:style/Widget.Material.Light.TimePicker"-->    <!--page-->
+    <!--parent="@android:style/Widget.Material.TimePicker"-->    <!--page-->
+    <!--parent="android:Widget.Material.Light.TimePicker"-->    <!--page-->
+    <style name="MyTimePicker" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">?myMainBg</item>
+        <item name="android:colorAccent">?attr/myPrimary</item>
+        <item name="colorAccent">?myAccent</item>
+        <item name="android:textColorPrimary">?mySpecialText</item>
+        <item name="android:textColor">?myText</item>
+        <item name="android:textColorSecondary">?myText</item>
+        <item name="android:colorControlNormal">?myText</item>
+        <item name="android:textColorPrimaryInverse">@color/black</item>
+
+        <!--<item name="background">@color/red</item>
+        <item name="colorOnContainer">@color/red</item>
+        <item name="colorOnSecondary">@color/red</item>
+        <item name="colorOnPrimaryContainer">@color/red</item>
+        <item name="colorOnBackground">@color/red</item>
+        <item name="colorOnPrimarySurface">@color/red</item>
+        <item name="colorOnSecondaryContainer">@color/red</item>
+        <item name="colorOnSurfaceInverse">@color/red</item>
+        <item name="colorOnSurfaceVariant">@color/red</item>
+        <item name="colorOnTertiary">@color/red</item>
+        <item name="colorOnTertiaryContainer">@color/red</item>
+        <item name="colorContainer">@color/red</item>
+        <item name="android:colorBackground">@color/red</item>
+        <item name="backgroundTint">@color/red</item>
+        <item name="colorControlNormal">@color/red</item>
+        <item name="colorSurface">@color/red</item>
+        <item name="android:textColorSecondaryInverse">@color/red</item>
+        <item name="clockFaceBackgroundColor">@color/red</item>
+        <item name="clockHandColor">@color/red</item>
+        <item name="clockIcon">@color/red</item>
+        <item name="clockNumberTextColor">@color/red</item>
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorOnPrimary">@color/red</item>
+        <item name="colorOnSurface">@color/red</item>
+        <item name="android:headerBackground">@color/red</item>
+        <item name="android:hand_hour">@color/red</item>
+        <item name="android:hand_minute">@color/red</item>
+        <item name="android:numbersInnerTextColor">@color/red</item>
+        <item name="android:amPmTextColor">@color/red</item>
+        <item name="android:numbersTextColor">@color/red</item>
+        <item name="android:numbersBackgroundColor">@color/red</item>
+        <item name="android:numbersSelectorColor">@color/red</item>-->
     </style>
 
 </resources>

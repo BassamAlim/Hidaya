@@ -7,25 +7,19 @@ import java.io.Serializable;
 
 public class MyLocation implements Serializable {
 
-    private float accuracy;
-    private long time;
-    private double altitude;
-    private float bearing;
+    private final float accuracy;
+    private final long time;
+    private final double altitude;
+    private final float bearing;
     private float bearingAccuracyDegrees;
-    private long elapsedRealtimeNanos;
+    private final long elapsedRealtimeNanos;
     private double elapsedRealtimeUncertaintyNanos;
-    //private Bundle extras;
-    private double latitude;
-    private double longitude;
+    private final double latitude;
+    private final double longitude;
     private final String provider;
-    private float speed;
+    private final float speed;
     private float speedAccuracyMetersPerSecond;
     private float verticalAccuracyMeters;
-
-
-    public MyLocation(String provider) {
-        this.provider = provider;
-    }
 
     public MyLocation(Location loc) {
         accuracy = loc.getAccuracy();
@@ -33,7 +27,6 @@ public class MyLocation implements Serializable {
         altitude = loc.getAltitude();
         bearing = loc.getBearing();
         elapsedRealtimeNanos = loc.getElapsedRealtimeNanos();
-        //extras = loc.getExtras();
         latitude = loc.getLatitude();
         longitude = loc.getLongitude();
         provider = loc.getProvider();
@@ -75,10 +68,6 @@ public class MyLocation implements Serializable {
     public double getElapsedRealtimeUncertaintyNanos() {
         return elapsedRealtimeUncertaintyNanos;
     }
-
-    /*public Bundle getExtras() {
-        return extras;
-    }*/
 
     public double getLatitude() {
         return latitude;

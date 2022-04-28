@@ -12,7 +12,7 @@
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="-23dp"
-        android:backgroundTint="?myBars"
+        android:backgroundTint="?attr/myPrimary"
         app:cardCornerRadius="20dp"
         app:cardPreventCornerOverlap="true">
 
@@ -37,7 +37,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="40dp"
                     android:paddingVertical="12dp"
-                    android:textColor="?attr/myOnBars"
+                    android:textColor="?attr/myOnPrimary"
                     android:textSize="25dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"

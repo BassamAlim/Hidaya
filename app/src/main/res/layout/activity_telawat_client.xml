@@ -11,8 +11,8 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         style="@style/MyTopBar"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/top_bar_title"
@@ -21,8 +21,8 @@
 
         <ImageButton
             android:id="@android:id/home"
-            android:layout_gravity="end"
             style="@style/MyBackBtn"
+            android:layout_gravity="end"
             android:contentDescription="@string/back_description" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -77,7 +77,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="20dp"
-        android:background="?myWeakBars"
+        android:background="?attr/myPrimaryDark"
         android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@id/controls_space">
 
@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="?attr/mySurface"
-            android:progressTint="?myOtherAccent"
+            android:progressTint="?attr/myAccentDark"
             android:thumbTint="?myAccent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -115,14 +115,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="130dp"
-        android:background="?myWeakBars"
+        android:background="?attr/myPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
             android:id="@+id/previous_track"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/previous_track_btn_description"
             android:padding="10dp"
             android:src="@drawable/ic_player_previous"
@@ -135,7 +135,7 @@
             android:id="@+id/rewind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/rewind_btn_description"
             android:padding="10dp"
             android:src="@drawable/ic_backward"
@@ -148,7 +148,7 @@
             android:id="@+id/play_pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/play_pause_btn_description"
             android:padding="10dp"
             android:src="@drawable/ic_player_play"
@@ -161,7 +161,7 @@
             android:id="@+id/fast_forward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/fast_forward_btn_description"
             android:padding="10dp"
             android:src="@drawable/ic_forward"
@@ -174,7 +174,7 @@
             android:id="@+id/next_track"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/next_track_btn_description"
             android:padding="10dp"
             android:src="@drawable/ic_player_next"
@@ -189,7 +189,7 @@
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:background="?myBars"
+        android:background="?attr/myPrimary"
         android:elevation="4dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
@@ -202,7 +202,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginStart="40dp"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/shuffle_description"
             android:padding="10dp"
             android:src="@drawable/ic_shuffle"
@@ -216,7 +216,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/download_description"
             android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -230,7 +230,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="40dp"
-            android:background="@drawable/ripple"
+            android:background="@drawable/ripple_circle"
             android:contentDescription="@string/repeat_description"
             android:padding="10dp"
             android:src="@drawable/ic_repeat"

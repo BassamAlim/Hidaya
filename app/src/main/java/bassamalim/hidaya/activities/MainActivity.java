@@ -43,11 +43,12 @@ public class MainActivity extends AppCompatActivity {
     public static Calendar[] times;
     public static boolean located;
     private SharedPreferences pref;
+    private String theme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.onActivityCreateSetTheme(this);
+        theme = Utils.onActivityCreateSetTheme(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setTodayScreen();
         setContentView(binding.getRoot());
@@ -67,6 +68,15 @@ public class MainActivity extends AppCompatActivity {
         dailyUpdate();
 
         setupBootReceiver();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        if (!PreferenceManager.getDefaultSharedPreferences(this).getString(
+                getString(R.string.theme_key), "ThemeM").equals(theme))
+            Utils.refresh(this);
     }
 
     private void initNavBar() {

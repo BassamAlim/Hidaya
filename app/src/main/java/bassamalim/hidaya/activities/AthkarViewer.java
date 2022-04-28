@@ -18,7 +18,7 @@ import bassamalim.hidaya.database.dbs.ThikrsDB;
 import bassamalim.hidaya.databinding.ActivityAlathkarViewerBinding;
 import bassamalim.hidaya.models.ThikrCard;
 import bassamalim.hidaya.other.Utils;
-import bassamalim.hidaya.popups.InfoDialog;
+import bassamalim.hidaya.dialogs.InfoDialog;
 
 public class AthkarViewer extends AppCompatActivity {
 

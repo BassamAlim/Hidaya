@@ -25,11 +25,11 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?myBars"
+        android:background="?attr/myPrimary"
         app:layout_constraintBottom_toTopOf="@id/quran_pager"
         app:layout_constraintTop_toBottomOf="@id/continue_reading"
-        app:tabIndicatorColor="?attr/myActiveOnBar"
-        app:tabSelectedTextColor="?attr/myActiveOnBar"
+        app:tabIndicatorColor="?attr/myActiveOnPrimary"
+        app:tabSelectedTextColor="?attr/myActiveOnPrimary"
         app:tabTextAppearance="@style/TajwalTab"
         app:tabTextColor="@color/text_M" />
 
@@ -40,18 +40,5 @@
         android:layout_weight="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tab_layout" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="65dp"
-        android:backgroundTint="?myBars"
-        android:contentDescription="@string/search_in_quran"
-        android:src="@drawable/ic_quran_search"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

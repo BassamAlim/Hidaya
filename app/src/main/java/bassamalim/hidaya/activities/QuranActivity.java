@@ -37,8 +37,9 @@ import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.helpers.AyahPlayer;
 import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.other.Utils;
-import bassamalim.hidaya.popups.InfoDialog;
-import bassamalim.hidaya.popups.QuranSettingsPopup;
+import bassamalim.hidaya.dialogs.InfoDialog;
+import bassamalim.hidaya.dialogs.QuranSettingsDialog;
+import bassamalim.hidaya.dialogs.TutorialDialog;
 import bassamalim.hidaya.replacements.DoubleClickLMM;
 import bassamalim.hidaya.replacements.DoubleClickableSpan;
 import bassamalim.hidaya.replacements.SwipeActivity;
@@ -76,6 +77,8 @@ public class QuranActivity extends SwipeActivity {
 
         initiate();
 
+        checkFirstTime();
+
         setListeners();
 
         Intent intent = getIntent();
@@ -111,6 +114,13 @@ public class QuranActivity extends SwipeActivity {
         db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
         ayatDB = db.ayahDao().getAll();
+    }
+
+    private void checkFirstTime() {
+        if (pref.getBoolean("is_first_time_in_quran", true))
+            new TutorialDialog(this, getString(R.string.quran_tips),
+                    "is_first_time_in_quran").show(getSupportFragmentManager(),
+                    TutorialDialog.TAG);
     }
 
     private void action(Intent intent) {
@@ -168,12 +178,12 @@ public class QuranActivity extends SwipeActivity {
         });
         binding.nextAyah.setOnClickListener(view -> ayahPlayer.nextAyah());
         binding.recitationSettings.setOnClickListener(v -> {
-            Intent intent = new Intent(this, QuranSettingsPopup.class);
-            settingsPopup.launch(intent);
+            Intent intent = new Intent(this, QuranSettingsDialog.class);
+            settingsDialog.launch(intent);
         });
     }
 
-    ActivityResultLauncher<Intent> settingsPopup = registerForActivityResult(
+    ActivityResultLauncher<Intent> settingsDialog = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {

@@ -33,16 +33,21 @@ import bassamalim.hidaya.helpers.PrayTimes;
 
 public class Utils {
 
-    public static void onActivityCreateSetTheme(Activity activity) {
+    public static String onActivityCreateSetTheme(Activity activity) {
         String theme = PreferenceManager.getDefaultSharedPreferences(activity).getString(
                 activity.getString(R.string.theme_key), "ThemeM");
         if (theme.equals("ThemeL"))
             activity.setTheme(R.style.Theme_HidayaL);
+        return theme;
     }
 
-    public static void changeToTheme(Activity activity) {
+    public static void refresh(Activity activity) {
+        Intent intent = activity.getIntent();
         activity.finish();
-        activity.startActivity(new Intent(activity, activity.getClass()));
+        activity.startActivity(intent);
+
+        //activity.finish();
+        //activity.startActivity(new Intent(activity, activity.getClass()));
     }
 
     public static String translateNumbers(String english) {

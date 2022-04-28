@@ -19,7 +19,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.QuranActivity;
-import bassamalim.hidaya.activities.QuranSearcherActivity;
 import bassamalim.hidaya.databinding.FragmentCollectionQuranBinding;
 
 public class QuranCollectionFragment extends Fragment {
@@ -46,21 +45,12 @@ public class QuranCollectionFragment extends Fragment {
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> tab.setText(tabs[position])
         ).attach();
-
-        setListeners();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         setupContinue();
-    }
-
-    private void setListeners() {
-        binding.fab.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), QuranSearcherActivity.class);
-            startActivity(intent);
-        });
     }
 
     private void setupContinue() {

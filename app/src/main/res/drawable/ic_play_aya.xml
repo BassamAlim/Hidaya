@@ -4,7 +4,7 @@
     android:viewportWidth="100"
     android:viewportHeight="100">
     <path
-        android:fillColor="?attr/myActiveOnBar"
+        android:fillColor="?attr/myActiveOnPrimary"
         android:pathData="M31.856,25.677l38.625,22.3c1.557,0.899 1.557,3.147 0,4.046l-38.625,22.3c-1.557,0.899 -3.504,-0.225 -3.504,-2.023V27.7C28.352,25.902 30.298,24.778 31.856,25.677z" />
     <path
         android:fillAlpha="0.6"

@@ -32,14 +32,16 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.models.ReciterCard;
 import bassamalim.hidaya.other.Utils;
 
-public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHolder> {
+public class TelawatAdapter extends FilteredRecyclerAdapter<TelawatAdapter.ViewHolder> {
 
     private final Context context;
     private final AppDatabase db;
     private final SharedPreferences pref;
+    private final String[] rewayat;
     private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
     private final ArrayList<ReciterCard> recitersCards;
     private final ArrayList<ReciterCard> recitersCardsCopy;
+    private boolean[] selected;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView reciterNamescreen;
@@ -62,6 +64,8 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
 
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 
+        rewayat = context.getResources().getStringArray(R.array.rewayat);
+
         recitersCards = new ArrayList<>(cards);
         recitersCardsCopy = new ArrayList<>(cards);
     }
@@ -83,17 +87,39 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
         setupVerRecycler(viewHolder, card);
     }
 
-    public void filter(String text) {
+    @Override
+    public void filter(String text, boolean[] selected) {
+        this.selected = selected;
+
         recitersCards.clear();
-        if (text.isEmpty())
-            recitersCards.addAll(recitersCardsCopy);
-        else {
+        if (text == null) {
             for(ReciterCard reciterCard: recitersCardsCopy) {
-                if (reciterCard.getName().contains(text))
+                if (hasSelectedVersion(reciterCard.getVersions(), selected))
                     recitersCards.add(reciterCard);
             }
         }
+        else {
+            if (text.isEmpty())
+                recitersCards.addAll(recitersCardsCopy);
+            else {
+                for(ReciterCard reciterCard: recitersCardsCopy) {
+                    if (reciterCard.getName().contains(text))
+                        recitersCards.add(reciterCard);
+                }
+            }
+        }
         notifyDataSetChanged();
+    }
+
+    private boolean hasSelectedVersion(List<ReciterCard.RecitationVersion> versions,
+                                       boolean[] selected) {
+        for (int i = 0; i < versions.size(); i++) {
+            for (int j = 0; j < rewayat.length; j++) {
+                if (selected[j] && versions.get(i).getRewaya().startsWith(rewayat[j]))
+                    return true;
+            }
+        }
+        return false;
     }
 
     private void doFavorite(ViewHolder viewHolder, int position) {
@@ -127,10 +153,29 @@ public class TelawatAdapter extends RecyclerView.Adapter<TelawatAdapter.ViewHold
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setInitialPrefetchItemCount(card.getVersions().size());
         TelawaVersionAdapter versionsAdapter = new TelawaVersionAdapter(
-                context, card.getVersions(), card.getId(), db.suraDao().getNames());
+                context, getSelectedVersions(card.getVersions()), card.getVersions().size(),
+                card.getId(), db.suraDao().getNames());
         viewHolder.recyclerView.setLayoutManager(layoutManager);
         viewHolder.recyclerView.setAdapter(versionsAdapter);
         viewHolder.recyclerView.setRecycledViewPool(viewPool);
+    }
+
+    private List<ReciterCard.RecitationVersion> getSelectedVersions(
+            List<ReciterCard.RecitationVersion> versions) {
+
+        if (selected == null)
+            return versions;
+
+        List<ReciterCard.RecitationVersion> selectedVersions = new ArrayList<>();
+        for (int i = 0; i < versions.size(); i++) {
+            for (int j = 0; j < rewayat.length; j++) {
+                if (selected[j] && versions.get(i).getRewaya().startsWith(rewayat[j])) {
+                    selectedVersions.add(versions.get(i));
+                    break;
+                }
+            }
+        }
+        return selectedVersions;
     }
 
     private void updateFavorites() {
@@ -155,6 +200,7 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
 
     private final Context context;
     private final List<ReciterCard.RecitationVersion> versions;
+    private final int fullSize;
     private final int reciterId;
     private boolean[] downloaded;
     private final String prefix;
@@ -175,13 +221,16 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
     }
 
     public TelawaVersionAdapter(Context context, List<ReciterCard.RecitationVersion> versions,
-                                int reciterId, List<String> names) {
+                                int fullSize, int reciterId, List<String> names) {
         this.context = context;
         this.versions = versions;
+        this.fullSize = fullSize;
+        // we need the full size of the unfiltered list of versions so that
+        // the downloaded wont get mixed up because of the ids change
         this.reciterId = reciterId;
         this.names = names;
 
-        prefix = "/Telawat Downloads/" + reciterId;
+        prefix = "/Telawat/" + reciterId;
 
         checkDownloaded();
     }
@@ -234,7 +283,7 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
     }
 
     private void checkDownloaded() {
-        downloaded = new boolean[versions.size()];
+        downloaded = new boolean[fullSize];
 
         File dir = new File(context.getExternalFilesDir(null) + prefix);
 

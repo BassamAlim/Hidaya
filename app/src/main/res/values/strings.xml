@@ -36,10 +36,10 @@
     <string name="daily_page_enable_title">إشعار صفحة اليوم</string>
     <string name="friday_kahf_title">إشعار سورة الكهف</string>
     <string name="text_size_title">حجم الخط</string>
-    <string name="quran_and_hadeeth_text_size_title">حجم الخط للأذكار وكتب الحديث</string>
+    <string name="quran_and_books_text_size_title">حجم الخط للأذكار وكتب الحديث</string>
 
     <!-- TextViews Text -->
-    <string name="remaining">الوقت المتبقي: %1$s</string>
+    <string name="remaining">متبقي: %1$s</string>
     <string name="distance_to_kaaba">المسافة الى الكعبة</string>
 
     <!-- Buttons Text -->
@@ -56,7 +56,7 @@
     <string name="settings">الإعدادات</string>
     <string name="quick_update">تحديث سريع</string>
     <string name="quran_channel">القرآن الكريم</string>
-    <string name="hadeeth_channel">السنة النبوية</string>
+    <string name="sunnah_channel">السنة النبوية</string>
     <string name="search_in_quran">بحث المصحف</string>
     <string name="previous_question">السؤال السابق</string>
     <string name="next_question">السؤال التالي</string>
@@ -90,9 +90,9 @@
     <string name="tanzeel_view_description">مكان نزول السورة</string>
 
     <string name="enable_notification">تفعيل الإشعار</string>
-    <string name="mute_notification">إشعار صامت</string>
+    <string name="silent_notification">إشعار صامت</string>
     <string name="disable_notification">إيقاف</string>
-    <string name="adjust_prayer_notification_time">تعديل وقت الإشعار</string>
+    <string name="adjust_prayer_notification_time">تعديل وقت التنبيه</string>
     <string name="low_accuracy_text">الدقة ضعيفة … يرجى معايرة الجهاز</string>
     <string name="medium_accuracy_text">الدقة متوسطة</string>
     <string name="high_accuracy_text">الدقة جيدة</string>
@@ -113,11 +113,10 @@
     <string name="disclaimer">تطبيق هِداية يستخدم موقعك لحساب أوقات الصلاة واتجاه القِبلة. \n ويستخدم الموقع في الخلفية لتحديث أوقات الصلاة يومياً.\n مع العلم أن موقعك يسجل فقط على جهازك.</string>
     <string name="agreed">موافق</string>
     <string name="rejected">غير موافق, استخدام التطبيق بدون أوقات الصلاة والقِبلة</string>
-    <string name="features_guide">دليل المميزات</string>
     <string name="in_prayers_screen">في شاشة الصلوات:</string>
-    <string name="prayers_tips">اضغط على الصلاة لعرض اعدادات كل صلاة\n\nواضغط على السهمين الايمن والايسر في اسفل الشاشة لاظهار اوقات صلاة الايام الاخرى .. ثم اضغط بين السهمين للعودة الى اليوم الحالي</string>
+    <string name="prayers_tips">اضغط على اسم الصلاة لعرض اعدادات كل صلاة.\n\nاضغط على السهمين الايمن والايسر في اسفل الشاشة لاظهار اوقات صلاة الايام الاخرى .. ثم اضغط على النص بين السهمين للعودة الى اليوم الحالي.</string>
     <string name="in_quran">في المصحف:</string>
-    <string name="quran_tips">اضغط على الاية مرتين لاظهار تفسيرها\n\nاضغط على الاية ثم اضغط على زر التشغيل في الشريط السفلي لبدأ التشغيل من الاية المختارة\n\nيمكنك تغيير القارئ اثناء التلاوة</string>
+    <string name="quran_tips">اضغط على الاية مرتين لاظهار تفسيرها.\n\nاضغط على الاية ثم اضغط على زر التشغيل في الشريط السفلي لبدأ التشغيل من الاية المختارة.\n\nيمكنك تغيير القارئ اثناء التلاوة.</string>
     <string name="favorite_athkar">الأذكار المفضلة</string>
     <string name="quiz_title">اختبر معلوماتك</string>
     <string name="start_quiz">ابدأ الاختبار</string>
@@ -141,8 +140,8 @@
     <string name="sahih_albokhari">صحيح البخاري</string>
     <string name="sahih_muslim">صحيح مسلم</string>
     <string name="hadeeth_source">كتب الحديث: من موقع أم الكتاب وموقع الدرر السنية.</string>
-    <string name="search_in_hadeeth">ابحث عن نص في كتب الحديث</string>
-    <string name="hadeeth_searcher">الباحث الحديثي</string>
+    <string name="search_in_books">ابحث عن نص في كتب الحديث</string>
+    <string name="books_searcher">الباحث الحديثي</string>
     <string name="quran_searcher">الباحث القرآني</string>
     <string name="quran_radio">إذاعة القرآن</string>
     <string name="holy_quran_radio">إذاعة القرآن الكريم</string>
@@ -157,5 +156,16 @@
     <string name="source_btn_description">إظهار المرجع</string>
     <string name="tafseer">التفسير</string>
     <string name="reference">المرجع</string>
+    <string name="choose_books">اختر الكتب</string>
+    <string name="selected_books">الكتب المشمولة</string>
+    <string name="filter_search">تصفية البحث</string>
+    <string name="choose_rewaya">اختر القراءات</string>
+    <string name="save">حفظ</string>
+    <string name="finish">إنهاء</string>
+    <string name="select_all">تحديد الكل</string>
+    <string name="unselect_all">إلغاء تحديد الكل</string>
+    <string name="quiz_source">اسئلة الإختبار: من موقع فولدرات.</string>
+    <string name="athkar_source">الأذكار والأدعية: من موقع https://timesprayer.today</string>
+    <string name="do_not_show_again">لا تظهر مرة اخرى</string>
 
 </resources>

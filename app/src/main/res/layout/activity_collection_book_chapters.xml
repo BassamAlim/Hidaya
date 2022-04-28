@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?myMainBg"
+    android:orientation="vertical"
+    tools:context=".activities.BooksChaptersCollectionActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/top_bar"
+        style="@style/MyTopBar"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/top_bar_title"
+            style="@style/MyTopBarTv" />
+
+        <ImageButton
+            android:id="@android:id/home"
+            style="@style/MyBackBtn"
+            android:contentDescription="@string/back_description" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/myPrimary"
+        app:tabIndicatorColor="?attr/myActiveOnPrimary"
+        app:tabSelectedTextColor="?attr/myActiveOnPrimary"
+        app:tabTextAppearance="@style/TajwalTab"
+        app:tabTextColor="@color/text_M" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

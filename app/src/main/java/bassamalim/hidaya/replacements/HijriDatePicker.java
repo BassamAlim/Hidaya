@@ -33,6 +33,11 @@ public class HijriDatePicker extends DialogFragment {
     public void onStart() {
         super.onStart();
         Objects.requireNonNull(getDialog()).getWindow().setBackgroundDrawableResource(R.color.bg_M);
+
+        ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
+                getResources().getColor(R.color.text_M, requireContext().getTheme()));
+        ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
+                getResources().getColor(R.color.text_M, requireContext().getTheme()));
     }
 
     public void setListener(DatePickerDialog.OnDateSetListener listener) {
@@ -41,7 +46,8 @@ public class HijriDatePicker extends DialogFragment {
 
     @NonNull @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        View dialog = requireActivity().getLayoutInflater().inflate(R.layout.date_picker, null);
+        View dialog = requireActivity().getLayoutInflater()
+                .inflate(R.layout.date_picker, null);
         yearPicker = dialog.findViewById(R.id.picker_year);
         monthPicker = dialog.findViewById(R.id.picker_month);
         dayPicker = dialog.findViewById(R.id.picker_day);

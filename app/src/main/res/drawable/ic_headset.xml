@@ -4,7 +4,7 @@
     android:viewportWidth="512"
     android:viewportHeight="512">
     <path
-        android:fillColor="?myOtherAccent"
+        android:fillColor="?attr/myAccentDark"
         android:pathData="M256,256m-256,0a256,256 0,1 1,512 0a256,256 0,1 1,-512 0" />
     <path
         android:fillColor="?myAccent"

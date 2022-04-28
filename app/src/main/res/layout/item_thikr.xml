@@ -26,7 +26,7 @@
                 android:gravity="center"
                 android:maxWidth="100dp"
                 android:paddingHorizontal="5dp"
-                android:textColor="?myOtherAccent" />
+                android:textColor="?attr/myAccentDark" />
 
             <View
                 android:id="@+id/repetition_div"
@@ -70,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:paddingVertical="10dp"
-                    android:textColor="?myOtherAccent" />
+                    android:textColor="?attr/myAccentDark" />
 
                 <View
                     android:id="@+id/reference_div"

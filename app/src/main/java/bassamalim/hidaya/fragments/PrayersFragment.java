@@ -31,7 +31,8 @@ import bassamalim.hidaya.activities.MainActivity;
 import bassamalim.hidaya.databinding.FragmentPrayersBinding;
 import bassamalim.hidaya.helpers.PrayTimes;
 import bassamalim.hidaya.other.Utils;
-import bassamalim.hidaya.popups.PrayerPopup;
+import bassamalim.hidaya.dialogs.PrayerDialog;
+import bassamalim.hidaya.dialogs.TutorialDialog;
 
 public class PrayersFragment extends Fragment {
 
@@ -66,6 +67,8 @@ public class PrayersFragment extends Fragment {
             setInitialState();
             setListeners();
         }
+
+        checkFirstTime();
 
         return root;
     }
@@ -176,7 +179,7 @@ public class PrayersFragment extends Fragment {
                         .getResources(), R.drawable.ic_speaker, requireContext().getTheme()));
             else if (state == 1)
                 images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext()
-                        .getResources(), R.drawable.ic_mute, requireContext().getTheme()));
+                        .getResources(), R.drawable.ic_silent, requireContext().getTheme()));
             else if (state == 0)
                 images[i].setImageDrawable(ResourcesCompat.getDrawable(requireContext()
                         .getResources(), R.drawable.ic_disabled, requireContext().getTheme()));
@@ -198,13 +201,20 @@ public class PrayersFragment extends Fragment {
     private void setListeners() {
         for (int i=0; i< cards.length; i++) {
             int finalI = i;
-            cards[i].setOnClickListener(v -> new PrayerPopup(getContext(), v,
+            cards[i].setOnClickListener(v -> new PrayerDialog(getContext(), v,
                     Utils.mapID(finalI), prayerNames[finalI]));
         }
 
         binding.previousDayButton.setOnClickListener(v -> previousDay());
         binding.nextDayButton.setOnClickListener(v -> nextDay());
         binding.dayScreen.setOnClickListener(v -> goToToday());
+    }
+
+    private void checkFirstTime() {
+        if (pref.getBoolean("is_first_time_in_prayers", true))
+            new TutorialDialog(getContext(), getString(R.string.prayers_tips),
+                    "is_first_time_in_prayers").show(requireActivity()
+                    .getSupportFragmentManager(), TutorialDialog.TAG);
     }
 
     private void count() {

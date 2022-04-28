@@ -42,7 +42,7 @@ public class AyahPlayer {
     private States state;
     private int lastPlayer;
     private boolean paused;
-    private int repeated = 0;
+    private int repeated = 1;
 
     private Coordinator coordinator;
     public interface Coordinator {
@@ -132,17 +132,19 @@ public class AyahPlayer {
             players[i].setOnCompletionListener(mediaPlayer -> {
                 int repeat = Integer.parseInt(pref.getString(context.getString(
                         R.string.aya_repeat_mode_key), "1"));
-                if ((repeat == 1 || repeat == 2) && repeated < repeat) {
+                if ((repeat == 2 || repeat == 3 || repeat == 5 || repeat == 10)
+                        && repeated < repeat) {
                     preparePlayer(players[finalI], lastPlayed);
                     players[n(finalI)].reset();
                     repeated++;
                 }
-                else if (repeat == 3) {
+                else if (repeat == 0) {
+                    repeated = 0;
                     preparePlayer(players[finalI], lastPlayed);
                     players[n(finalI)].reset();
                 }
                 else {
-                    repeated = 0;
+                    repeated = 1;
                     if (paused) {
                         paused = false;
                         if (allAyahsSize > lastPlayed.getIndex()) {
@@ -182,6 +184,7 @@ public class AyahPlayer {
      * @param startAyah The ayah to start playing from.
      */
     public void requestPlay(Ayah startAyah) {
+        repeated = 1;
         lastPlayed = startAyah;
         state = States.Stopped;
         preparePlayer(players[0], startAyah);

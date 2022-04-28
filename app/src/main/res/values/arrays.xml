@@ -65,14 +65,18 @@
         <item>بدون تكرار</item>
         <item>مرتين</item>
         <item>ثلاث مرات</item>
+        <item>خمس مرات</item>
+        <item>عشر مرات</item>
         <item>بدون توقف</item>
     </string-array>
 
     <string-array name="repeat_values">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
+        <item>5</item>
+        <item>10</item>
+        <item>0</item>
     </string-array>
 
     <string-array name="searcher_matcher">
@@ -110,6 +114,27 @@
         <item>(١٠) أكتوبر</item>
         <item>(١١) نوفمبر</item>
         <item>(١٢) ديسمبر</item>
+    </string-array>
+
+    <string-array name="books_titles">
+        <item>صحيح البخاري</item>
+        <item>صحيح مسلم</item>
+    </string-array>
+
+    <string-array name="rewayat">
+        <item>حفص عن عاصم</item>
+        <item>قالون عن نافع</item>
+        <item>شعبة عن عاصم</item>
+        <item>ورش عن نافع</item>
+        <item>المصحف المعلم</item>
+        <item>الدوري عن أبي عمرو</item>
+        <item>المصحف المجود</item>
+        <item>السوسي عن أبي عمرو</item>
+        <item>خلف عن حمزة</item>
+        <item>الدوري عن الكسائي</item>
+        <item>البزي وقنبل عن ابن كثير</item>
+        <item>قراءة يعقوب الحضرمي بروايتي رويس وروح</item>
+        <item>ابن ذكوان عن ابن عامر</item>
     </string-array>
 
 </resources>

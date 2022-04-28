@@ -58,7 +58,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/hadeeth_books"
+                    android:id="@+id/books"
                     style="@style/Buttony"
                     android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_books"
@@ -116,37 +116,12 @@
                     android:text="@string/settings" />
 
                 <Button
-                    android:id="@+id/features"
-                    style="@style/Buttony"
-                    android:background="@drawable/ripple_surface"
-                    android:drawableTop="@drawable/ic_features"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:text="@string/features_guide" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <Button
                     android:id="@+id/contact"
                     style="@style/Buttony"
                     android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_mail"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/contact" />
-
-                <Button
-                    android:id="@+id/share"
-                    style="@style/Buttony"
-                    android:background="@drawable/ripple_surface"
-                    android:drawableTop="@drawable/ic_share"
-                    android:elevation="@dimen/buttony_elevation"
-                    android:text="@string/share_app" />
 
             </LinearLayout>
 
@@ -157,6 +132,14 @@
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingBottom="15dp">
+
+                <Button
+                    android:id="@+id/share"
+                    style="@style/Buttony"
+                    android:background="@drawable/ripple_surface"
+                    android:drawableTop="@drawable/ic_share"
+                    android:elevation="@dimen/buttony_elevation"
+                    android:text="@string/share_app" />
 
                 <Button
                     android:id="@+id/about"

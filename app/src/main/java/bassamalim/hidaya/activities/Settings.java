@@ -1,10 +1,10 @@
 package bassamalim.hidaya.activities;
 
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.KeyEvent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.ListPreference;
@@ -33,6 +33,8 @@ public class Settings extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.settings, new SettingsFragment()).commit();
         }
+
+
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
@@ -86,9 +88,7 @@ public class Settings extends AppCompatActivity {
                     editor.putString(getString(R.string.theme_key), (String) newValue);
                     editor.apply();
 
-                    Intent refresh= new Intent(getActivity(), Splash.class);
-                    startActivity(refresh);
-                    requireActivity().finish();
+                    Utils.refresh(requireActivity());
                 }
                 return true;
             });
@@ -135,8 +135,10 @@ public class Settings extends AppCompatActivity {
                 editor.apply();
 
                 new Alarms(getContext(), id);
+            }, cHour, cMinute, false);
 
-                }, cHour, cMinute, false);
+            timePicker.setOnCancelListener(dialog -> setInitialStates());
+            timePicker.setOnDismissListener(dialog -> setInitialStates());
 
             timePicker.setTitle("اختر وقت الإشعار");
             timePicker.setButton(TimePickerDialog.BUTTON_POSITIVE, "حفظ", (Message) null);

@@ -13,11 +13,4 @@ public interface AyatDao {
     @Query("SELECT * FROM hafs_ayat")
     List<AyatDB> getAll();
 
-/*
-    @Insert
-    void insertAll(JAyah... users);
-
-    @Delete
-    void delete(JAyah user);
-*/
 }

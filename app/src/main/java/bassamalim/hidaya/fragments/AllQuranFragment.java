@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 import bassamalim.hidaya.activities.QuranActivity;
+import bassamalim.hidaya.activities.QuranSearcherActivity;
 import bassamalim.hidaya.adapters.QuranFragmentAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.SuraDB;
@@ -45,6 +46,8 @@ public class AllQuranFragment extends Fragment {
         gridLayoutManager = new GridLayoutManager(getContext(), 1);
 
         binding = FragmentQuranBinding.inflate(inflater, container, false);
+
+        setListeners();
 
         setupRecycler();
 
@@ -74,28 +77,27 @@ public class AllQuranFragment extends Fragment {
         recyclerView.setLayoutManager(gridLayoutManager);
     }
 
-    private void setSearchListeners() {
-        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+    private void setListeners() {
+        binding.fab.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), QuranSearcherActivity.class);
+            startActivity(intent);
+        });
+
+        binding.recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                adapter.filterNumber(query);
-                return true;
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && binding.fab.isShown())
+                    binding.fab.hide();
             }
+
             @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.filterName(newText);
-                return true;
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE &&
+                        recyclerView.canScrollVertically(1))
+                    binding.fab.show();
+                super.onScrollStateChanged(recyclerView, newState);
             }
         });
-    }
-
-    private List<SuraDB> getSuras() {
-        AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
-            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
-
-        favs = db.suraDao().getFav();
-
-        return db.suraDao().getAll();
     }
 
     private void setupRecycler() {
@@ -125,6 +127,30 @@ public class AllQuranFragment extends Fragment {
                     favs.get(sura.getFavorite()), cardListener));
         }
         return cards;
+    }
+
+    private List<SuraDB> getSuras() {
+        AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
+                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
+
+        favs = db.suraDao().getFav();
+
+        return db.suraDao().getAll();
+    }
+
+    private void setSearchListeners() {
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filterNumber(query);
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filterName(newText);
+                return true;
+            }
+        });
     }
 
     @Override

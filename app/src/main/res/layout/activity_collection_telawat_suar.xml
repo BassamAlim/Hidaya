@@ -29,9 +29,9 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?myBars"
-        app:tabIndicatorColor="?attr/myActiveOnBar"
-        app:tabSelectedTextColor="?attr/myActiveOnBar"
+        android:background="?attr/myPrimary"
+        app:tabIndicatorColor="?attr/myActiveOnPrimary"
+        app:tabSelectedTextColor="?attr/myActiveOnPrimary"
         app:tabTextAppearance="@style/TajwalTab"
         app:tabTextColor="@color/text_M" />
 

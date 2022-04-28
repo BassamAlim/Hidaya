@@ -26,10 +26,12 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/compass.xml" value="0.1" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/dialog_bg.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/dialog_bg_light.xml" value="0.1045" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/dialog_primary.xml" value="0.107" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/green_dot.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/highlight_card.xml" value="0.19166666666666668" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_actions.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_alathkar_black_24dp.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_athan.xml" value="0.107" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_aya_backward.xml" value="0.1035" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_aya_forward.xml" value="0.1035" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_back.xml" value="0.107" />
@@ -52,6 +54,8 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_events.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_favorite.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_features.xml" value="0.14666666666666667" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_filter.xml" value="0.107" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_filtered.xml" value="0.107" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_forward.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_forward_light.xml" value="0.1045" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ic_fullscreen.xml" value="0.1" />
@@ -135,17 +139,27 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/prayers_widget_bg.xml" value="0.19282051282051282" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/prayers_widget_inner_view_bg.xml" value="0.19282051282051282" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/qibla_pointer.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/radio_regular.xml" value="0.107" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/radio_selected.xml" value="0.107" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/radio_selector.xml" value="0.107" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/radio_shape.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/radio_text_selector.xml" value="0.107" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/red_dot.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ripple.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ripple_b.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ripple_bg.xml" value="0.107" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ripple_p.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ripple_rectangle.xml" value="0.107" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ripple_s.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/ripple_surface.xml" value="0.107" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/rounded_button.xml" value="0.107" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/rounded_corners.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/rounded_dialog_primary.xml" value="0.107" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/rounded_layout.xml" value="0.19282051282051282" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/rounded_popup.xml" value="0.1045" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/rounded_popup_light.xml" value="0.1045" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/rounded_popup_m.xml" value="0.1035" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/rounded_popup_primary.xml" value="0.107" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/s_button_bg.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/s_rounded_corners.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/drawable/splash.xml" value="0.19282051282051282" />
@@ -161,6 +175,8 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_alathkar_list.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_alathkar_viewer.xml" value="0.1574074074074074" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_athkar_view.xml" value="0.1648148148148148" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_book_searcher.xml" value="0.1" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_books.xml" value="0.15555555555555556" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_collection_hadeeth_chapters.xml" value="0.15555555555555556" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_collection_sunnah_chapters.xml" value="0.1574074074074074" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_collection_telawat.xml" value="0.22" />
@@ -168,7 +184,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_date_converter.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_features_guide.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_hadeeth_books.xml" value="0.22" />
-        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_hadeeth_searcher.xml" value="0.15555555555555556" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_hadeeth_searcher.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_hadeeth_viewer.xml" value="0.15555555555555556" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_quiz.xml" value="0.22" />
@@ -200,12 +216,16 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/alathkar_row_item.xml" value="0.16944444444444445" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/alathkar_view.xml" value="0.16296296296296298" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/bar.xml" value="0.1648148148148148" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/book_list_popup.xml" value="0.15555555555555556" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/button_raw_item.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/button_row_item.xml" value="0.14074074074074075" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/button_view.xml" value="0.14074074074074075" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/compass_calibrate.xml" value="0.1685185185185185" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/compass_calibration_gif.xml" value="0.16111111111111112" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/date_picker.xml" value="0.15555555555555556" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/dialog_filter.xml" value="0.15555555555555556" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/dialog_prayer.xml" value="0.15555555555555556" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/dialog_quran_settings.xml" value="0.15555555555555556" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/fragment_alathkar.xml" value="0.16944444444444445" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/fragment_all_quran.xml" value="0.14814814814814814" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/fragment_all_telawat.xml" value="0.14814814814814814" />
@@ -227,7 +247,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/fragment_screen_slide_page.xml" value="0.14907407407407408" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/fragment_sunnah.xml" value="0.1574074074074074" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/fragment_sunnah_chapters.xml" value="0.1574074074074074" />
-        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/fragment_telawat.xml" value="0.15092592592592594" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/fragment_telawat.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/fragment_telawat_all_suar.xml" value="0.14814814814814814" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/fragment_telawat_favorite_suar.xml" value="0.14814814814814814" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/fragment_telawat_suar.xml" value="0.14907407407407408" />
@@ -235,7 +255,12 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/hdp_mdtp_date_picker_dialog.xml" value="0.1" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/hdp_mdtp_year_label_text_view.xml" value="0.15555555555555556" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/hijri_date_picker.xml" value="0.15555555555555556" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/info_dialog.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_alathkar.xml" value="0.22" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_book_chapter.xml" value="0.15555555555555556" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_book_door.xml" value="0.15555555555555556" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_books_spinner.xml" value="0.15555555555555556" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_checkbox_list.xml" value="0.15555555555555556" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_hadeeth_chapter.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_hadeeth_searcher.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_quiz_question.xml" value="0.22" />
@@ -253,9 +278,11 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/list_view_item.xml" value="0.15648148148148147" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/list_view_items.xml" value="0.1638888888888889" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/other_fragment.xml" value="0.22" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/popup_filter.xml" value="0.15555555555555556" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/popup_prayer.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/popup_quran_settings.xml" value="0.14907407407407408" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/popup_recitation.xml" value="0.22" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/popup_telawat_filter.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/prayer_dialog.xml" value="0.16018518518518518" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/prayer_popup.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/prayer_settings_dialog.xml" value="0.1" />
@@ -279,6 +306,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/tafseer_dialog.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/tafseer_layout.xml" value="0.14722222222222223" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/time_picker_fragment.xml" value="0.1574074074074074" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/tutorial_dialog.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/tv_activity.xml" value="0.15833333333333333" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/tv_view.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/update_dialog.xml" value="0.22" />

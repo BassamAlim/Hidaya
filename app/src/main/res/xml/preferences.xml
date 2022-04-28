@@ -52,7 +52,7 @@
             app:key="@string/alathkar_text_size_key"
             app:min="20"
             app:showSeekBarValue="true"
-            app:title="@string/quran_and_hadeeth_text_size_title"
+            app:title="@string/quran_and_books_text_size_title"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

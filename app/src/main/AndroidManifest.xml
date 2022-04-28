@@ -63,9 +63,6 @@
             android:name=".activities.QuizActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.FeaturesGuide"
-            android:exported="false" />
-        <activity
             android:name=".activities.WelcomeActivity"
             android:exported="false" />
         <activity
@@ -106,22 +103,22 @@
             android:name=".activities.TelawatCollectionActivity"
             android:label="تلاوات" />
         <activity
-            android:name=".popups.QuranSettingsPopup"
+            android:name=".dialogs.QuranSettingsDialog"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".activities.RadioClient"
             android:launchMode="singleTop" />
         <activity
-            android:name=".activities.HadeethSearcher"
+            android:name=".activities.BookSearcher"
             android:exported="false" />
         <activity
-            android:name=".activities.HadeethChaptersCollectionActivity"
+            android:name=".activities.BooksChaptersCollectionActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.HadeethViewer"
+            android:name=".activities.BookViewer"
             android:exported="false" />
         <activity
-            android:name=".activities.HadeethBooks"
+            android:name=".activities.BooksActivity"
             android:exported="false" />
 
         <receiver android:name=".receivers.NotificationReceiver" />
