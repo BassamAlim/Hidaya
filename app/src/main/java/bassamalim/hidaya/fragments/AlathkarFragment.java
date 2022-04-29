@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import bassamalim.hidaya.activities.AlathkarListActivity;
+import bassamalim.hidaya.activities.AthkarListActivity;
 import bassamalim.hidaya.databinding.FragmentAlathkarBinding;
 
 public class AlathkarFragment extends Fragment {
@@ -29,12 +29,12 @@ public class AlathkarFragment extends Fragment {
 
     private void setListeners() {
         binding.allThikrs.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), AlathkarListActivity.class);
+            Intent intent = new Intent(getContext(), AthkarListActivity.class);
             intent.setAction("all");
             startActivity(intent);
         });
         binding.favoriteAthkar.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), AlathkarListActivity.class);
+            Intent intent = new Intent(getContext(), AthkarListActivity.class);
             intent.setAction("favorite");
             startActivity(intent);
         });
@@ -49,7 +49,7 @@ public class AlathkarFragment extends Fragment {
     }
 
     public void showThikrs(int category) {
-        Intent intent = new Intent(getContext(), AlathkarListActivity.class);
+        Intent intent = new Intent(getContext(), AthkarListActivity.class);
         intent.setAction("category");
         intent.putExtra("category", category);
         startActivity(intent);

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:background="?myMainBg"
-    tools:context=".activities.AlathkarListActivity">
+    tools:context=".activities.AthkarListActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"

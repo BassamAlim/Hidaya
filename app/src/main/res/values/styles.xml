@@ -3,9 +3,9 @@
     <style name="MyTopBar" parent="Widget.AppCompat.Toolbar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?actionBarSize</item>
-        <item name="android:background">?attr/myPrimary</item>
+        <item name="android:background">?myPrimary</item>
         <item name="android:elevation">4dp</item>
-        <item name="android:minHeight">?attr/actionBarSize</item>
+        <item name="android:minHeight">?actionBarSize</item>
         <item name="android:theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat</item>
     </style>
@@ -16,7 +16,7 @@
         <item name="android:layout_centerInParent">true</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:fontFamily">@font/tajawal_regular</item>
-        <item name="android:textColor">?attr/myOnPrimary</item>
+        <item name="android:textColor">?myOnPrimary</item>
         <item name="android:textSize" tools:ignore="SpUsage">21dp</item>
         <item name="android:textStyle">bold</item>
     </style>

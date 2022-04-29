@@ -23,6 +23,7 @@ import bassamalim.hidaya.models.BookDoorCard;
 
 public class BookViewerAdapter extends RecyclerView.Adapter<BookViewerAdapter.ViewHolder> {
 
+    private final int MARGIN = 15;
     private final Context context;
     private final SharedPreferences pref;
     private final Gson gson;
@@ -30,7 +31,7 @@ public class BookViewerAdapter extends RecyclerView.Adapter<BookViewerAdapter.Vi
     private final int chapterId;
     private final ArrayList<BookDoorCard> doorCards;
     private boolean[] favs;
-    private final int textSize;
+    private int textSize;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView card;
@@ -58,7 +59,7 @@ public class BookViewerAdapter extends RecyclerView.Adapter<BookViewerAdapter.Vi
 
         doorCards = cards;
 
-        textSize = pref.getInt(context.getString(R.string.alathkar_text_size_key), 25);
+        textSize = pref.getInt(context.getString(R.string.books_text_size_key), 15) + MARGIN;
 
         getFavs();
     }
@@ -120,6 +121,10 @@ public class BookViewerAdapter extends RecyclerView.Adapter<BookViewerAdapter.Vi
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("book" + bookId + "_chapter" + chapterId + "_favs", favStr);
         editor.apply();
+    }
+
+    public void setTextSize(int textSize) {
+        this.textSize = textSize + MARGIN;
     }
 
     @Override

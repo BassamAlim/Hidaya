@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?myMainBg"
     android:layoutDirection="ltr"
-    tools:context=".activities.BookViewer">
+    tools:context=".activities.AthkarViewer">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"

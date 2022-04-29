@@ -45,16 +45,6 @@
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 
-        <SeekBarPreference
-            android:max="50"
-            app:defaultValue="27"
-            app:iconSpaceReserved="false"
-            app:key="@string/alathkar_text_size_key"
-            app:min="20"
-            app:showSeekBarValue="true"
-            app:title="@string/quran_and_books_text_size_title"
-            app:useSimpleSummaryProvider="true" />
-
     </PreferenceCategory>
 
 </PreferenceScreen>

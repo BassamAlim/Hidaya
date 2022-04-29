@@ -1,7 +1,10 @@
 package bassamalim.hidaya.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
@@ -12,6 +15,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.BookViewerAdapter;
 import bassamalim.hidaya.databinding.ActivityBookViewerBinding;
 import bassamalim.hidaya.models.Book;
@@ -21,11 +25,13 @@ import bassamalim.hidaya.other.Utils;
 public class BookViewer extends AppCompatActivity {
 
     private ActivityBookViewerBinding binding;
+    private SharedPreferences pref;
     private int bookId;
     private int chapterId;
     private Book.BookChapter.BookDoor[] doors;
     private boolean[] favs;
     private RecyclerView recycler;
+    private SeekBar textSizeSb;
     private BookViewerAdapter adapter;
 
     @Override
@@ -36,6 +42,7 @@ public class BookViewer extends AppCompatActivity {
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
 
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
 
         Intent intent = getIntent();
         bookId = intent.getIntExtra("book_id", 0);
@@ -45,6 +52,8 @@ public class BookViewer extends AppCompatActivity {
         getData();
 
         setupRecycler();
+
+        setupListeners();
     }
 
     private void getData() {
@@ -78,6 +87,38 @@ public class BookViewer extends AppCompatActivity {
         recycler.setLayoutManager(layoutManager);
         adapter = new BookViewerAdapter(this, makeCards(), bookId, chapterId);
         recycler.setAdapter(adapter);
+    }
+
+    private void setupListeners() {
+        textSizeSb = binding.textSizeSb;
+
+        textSizeSb.setProgress(pref.getInt(getString(R.string.books_text_size_key), 15));
+
+        binding.textSizeIb.setOnClickListener(v -> {
+            if (textSizeSb.getVisibility() == View.GONE)
+                textSizeSb.setVisibility(View.VISIBLE);
+            else
+                textSizeSb.setVisibility(View.GONE);
+        });
+
+        textSizeSb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt(getString(R.string.books_text_size_key), seekBar.getProgress());
+                editor.apply();
+
+                adapter.setTextSize(seekBar.getProgress());
+                recycler.setAdapter(null);
+                recycler.setAdapter(adapter);
+            }
+        });
     }
 
     public void onDestroy() {

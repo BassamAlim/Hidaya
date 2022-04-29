@@ -14,18 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.adapters.AlathkarAdapter;
+import bassamalim.hidaya.adapters.AthkarAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.AthkarDB;
-import bassamalim.hidaya.databinding.ActivityAlathkarListBinding;
+import bassamalim.hidaya.databinding.ActivityAthkarListBinding;
 import bassamalim.hidaya.models.AlathkarButton;
 import bassamalim.hidaya.other.Utils;
 
-public class AlathkarListActivity extends AppCompatActivity {
+public class AthkarListActivity extends AppCompatActivity {
 
-    private ActivityAlathkarListBinding binding;
+    private ActivityAthkarListBinding binding;
     private RecyclerView recyclerView;
-    private AlathkarAdapter adapter;
+    private AthkarAdapter adapter;
     private ArrayList<AlathkarButton> alathkarButtons;
     private int category;
     private String action;
@@ -35,7 +35,7 @@ public class AlathkarListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
-        binding = ActivityAlathkarListBinding.inflate(getLayoutInflater());
+        binding = ActivityAthkarListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
 
@@ -95,7 +95,7 @@ public class AlathkarListActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new AlathkarAdapter(this, alathkarButtons);
+        adapter = new AthkarAdapter(this, alathkarButtons);
         recyclerView.setAdapter(adapter);
     }
 

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
+import androidx.preference.PreferenceManager;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
@@ -21,6 +22,7 @@ import java.util.Objects;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivityBooksBinding;
+import bassamalim.hidaya.dialogs.TutorialDialog;
 import bassamalim.hidaya.models.Book;
 import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
@@ -33,7 +35,7 @@ public class BooksActivity extends AppCompatActivity {
     private boolean[] downloaded;
     private CardView[] cards;
     private ImageButton[] favBtns;
-    private Book.BookInfo[] infos;
+    private Book.BookInfo[] infoArr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +48,23 @@ public class BooksActivity extends AppCompatActivity {
         numOfBooks = getResources().getStringArray(R.array.books_titles).length;
         downloaded = new boolean[numOfBooks];
 
+        checkFirstTime();
+
         checkDownloaded();
 
-        getInfos();
+        getInfoArr();
 
         initViews();
 
         setListeners();
+    }
+
+    private void checkFirstTime() {
+        String key = "is_first_time_in_books_activity";
+        if (PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(key, true))
+            new TutorialDialog(this, getString(R.string.books_activity_tips), key).show(
+                    this.getSupportFragmentManager(), TutorialDialog.TAG);
     }
 
     private void checkDownloaded() {
@@ -76,15 +88,15 @@ public class BooksActivity extends AppCompatActivity {
         }
     }
 
-    private void getInfos() {
-        infos = new Book.BookInfo[numOfBooks];
+    private void getInfoArr() {
+        infoArr = new Book.BookInfo[numOfBooks];
         for (int i = 0; i < numOfBooks; i++) {
             if (downloaded[i]) {
                 String path = getExternalFilesDir(null) + "/Books/" + i + ".json";
                 String jsonStr = Utils.getJsonFromDownloads(path);
                 Gson gson = new Gson();
                 Book book = gson.fromJson(jsonStr, Book.class);
-                infos[i] = book.getBookInfo();
+                infoArr[i] = book.getBookInfo();
             }
         }
     }
@@ -96,7 +108,7 @@ public class BooksActivity extends AppCompatActivity {
 
         for (int i = 0; i < numOfBooks; i++) {
             if (downloaded[i]) {
-                titleTvs[i].setText(infos[i].getBookTitle());
+                titleTvs[i].setText(infoArr[i].getBookTitle());
                 // ... other info
             }
         }

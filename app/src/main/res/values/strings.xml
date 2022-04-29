@@ -24,6 +24,7 @@
     <string name="friday_kahf_key">friday_kahf_key</string>
     <string name="quran_text_size_key">quran_text_size_key</string>
     <string name="alathkar_text_size_key">alathkar_text_size_key</string>
+    <string name="books_text_size_key">books_text_size_key</string>
     <string name="theme_key">theme_key</string>
     <string name="aya_reciter_key">aya_reciter_key</string>
     <string name="aya_repeat_mode_key">aya_repeat_mode_key</string>
@@ -89,6 +90,12 @@
     <string name="fav_btn_description">إضافة الى المفضلة</string>
     <string name="tanzeel_view_description">مكان نزول السورة</string>
 
+    <!-- Tips -->
+    <string name="prayers_tips">اضغط على اسم الصلاة لعرض اعدادات كل صلاة.\n\nاضغط على السهمين الايمن والايسر في اسفل الشاشة لاظهار اوقات صلاة الايام الاخرى .. ثم اضغط على النص بين السهمين للعودة الى اليوم الحالي.</string>
+    <string name="quran_tips">اضغط على الاية مرتين لاظهار تفسيرها.\n\nاضغط على الاية ثم اضغط على زر التشغيل في الشريط السفلي لبدأ التشغيل من الاية المختارة.\n\nيمكنك تغيير القارئ اثناء التلاوة.</string>
+    <string name="quran_fragment_tips">يمكنك الضغط عل الزر في الزاوية السفلية من الشاشة للبحث عن نص في المصحف.</string>
+    <string name="books_activity_tips">يمكنك الضغط على الزر في الزاوية السفلية من الشاشة للبحث عن نص في الكتب.</string>
+
     <string name="enable_notification">تفعيل الإشعار</string>
     <string name="silent_notification">إشعار صامت</string>
     <string name="disable_notification">إيقاف</string>
@@ -114,9 +121,7 @@
     <string name="agreed">موافق</string>
     <string name="rejected">غير موافق, استخدام التطبيق بدون أوقات الصلاة والقِبلة</string>
     <string name="in_prayers_screen">في شاشة الصلوات:</string>
-    <string name="prayers_tips">اضغط على اسم الصلاة لعرض اعدادات كل صلاة.\n\nاضغط على السهمين الايمن والايسر في اسفل الشاشة لاظهار اوقات صلاة الايام الاخرى .. ثم اضغط على النص بين السهمين للعودة الى اليوم الحالي.</string>
     <string name="in_quran">في المصحف:</string>
-    <string name="quran_tips">اضغط على الاية مرتين لاظهار تفسيرها.\n\nاضغط على الاية ثم اضغط على زر التشغيل في الشريط السفلي لبدأ التشغيل من الاية المختارة.\n\nيمكنك تغيير القارئ اثناء التلاوة.</string>
     <string name="favorite_athkar">الأذكار المفضلة</string>
     <string name="quiz_title">اختبر معلوماتك</string>
     <string name="start_quiz">ابدأ الاختبار</string>

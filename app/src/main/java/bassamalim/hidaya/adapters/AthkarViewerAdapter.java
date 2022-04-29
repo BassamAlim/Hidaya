@@ -18,8 +18,9 @@ import bassamalim.hidaya.models.ThikrCard;
 
 public class AthkarViewerAdapter extends RecyclerView.Adapter<AthkarViewerAdapter.ViewHolder> {
 
+    private final int MARGIN = 15;
     private final ArrayList<ThikrCard> thikrCards;
-    private final int textSize;
+    private int textSize;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView titleTv;
@@ -49,7 +50,7 @@ public class AthkarViewerAdapter extends RecyclerView.Adapter<AthkarViewerAdapte
         thikrCards = cards;
 
         textSize = PreferenceManager.getDefaultSharedPreferences(context).getInt(
-                context.getString(R.string.alathkar_text_size_key), 25);
+                context.getString(R.string.alathkar_text_size_key), 15) + MARGIN;
     }
 
     @NonNull @Override
@@ -92,6 +93,10 @@ public class AthkarViewerAdapter extends RecyclerView.Adapter<AthkarViewerAdapte
         }
 
         viewHolder.referenceBtn.setOnClickListener(card.getReferenceListener());
+    }
+
+    public void setTextSize(int textSize) {
+        this.textSize = textSize + MARGIN;
     }
 
     @Override

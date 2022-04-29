@@ -20,6 +20,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.databinding.FragmentCollectionQuranBinding;
+import bassamalim.hidaya.dialogs.TutorialDialog;
 
 public class QuranCollectionFragment extends Fragment {
 
@@ -30,6 +31,9 @@ public class QuranCollectionFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         binding = FragmentCollectionQuranBinding.inflate(getLayoutInflater());
+
+        checkFirstTime();
+
         return binding.getRoot();
     }
 
@@ -72,6 +76,14 @@ public class QuranCollectionFragment extends Fragment {
         }
 
         binding.continueReading.setText(text);
+    }
+
+    private void checkFirstTime() {
+        String key = "is_first_time_in_quran_fragment";
+        if (PreferenceManager.getDefaultSharedPreferences(requireContext())
+                .getBoolean(key, true))
+            new TutorialDialog(getContext(), getString(R.string.quran_fragment_tips), key).show(
+                    requireActivity().getSupportFragmentManager(), TutorialDialog.TAG);
     }
 }
 
