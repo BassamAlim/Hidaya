@@ -106,7 +106,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="18dp"
-                android:background="@drawable/ripple_bar"
+                android:background="@drawable/ripple_primary"
                 android:elevation="10dp"
                 android:fontFamily="@font/tajawal_regular"
                 android:gravity="center"

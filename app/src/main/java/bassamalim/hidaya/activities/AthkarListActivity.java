@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.adapters.AthkarAdapter;
+import bassamalim.hidaya.adapters.AthkarListAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.AthkarDB;
 import bassamalim.hidaya.databinding.ActivityAthkarListBinding;
@@ -25,7 +25,7 @@ public class AthkarListActivity extends AppCompatActivity {
 
     private ActivityAthkarListBinding binding;
     private RecyclerView recyclerView;
-    private AthkarAdapter adapter;
+    private AthkarListAdapter adapter;
     private ArrayList<AlathkarButton> alathkarButtons;
     private int category;
     private String action;
@@ -95,7 +95,7 @@ public class AthkarListActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new AthkarAdapter(this, alathkarButtons);
+        adapter = new AthkarListAdapter(this, alathkarButtons);
         recyclerView.setAdapter(adapter);
     }
 

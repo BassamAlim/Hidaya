@@ -7,7 +7,7 @@
         android:fillColor="#00000000"
         android:pathData="m3.02858,1.05835 l2.11667,1.85209 -2.11667,2.11666"
         android:strokeWidth="1"
-        android:strokeColor="?attr/myActiveOnPrimary"
+        android:strokeColor="?myAccent"
         android:strokeLineCap="butt"
         android:strokeLineJoin="round" />
     <path
@@ -15,7 +15,7 @@
         android:pathData="M0.64733,1.05835 L2.76399,2.91043l-2.11667,2.11666"
         android:strokeWidth="1"
         android:strokeAlpha="0.5214724"
-        android:strokeColor="?attr/myActiveOnPrimaryDark"
+        android:strokeColor="?myAccentDark"
         android:strokeLineCap="butt"
         android:strokeLineJoin="round" />
 </vector>

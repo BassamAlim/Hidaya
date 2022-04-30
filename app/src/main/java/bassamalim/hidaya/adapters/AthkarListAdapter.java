@@ -23,7 +23,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.models.AlathkarButton;
 
-public class AthkarAdapter extends RecyclerView.Adapter<AthkarAdapter.ViewHolder> {
+public class AthkarListAdapter extends RecyclerView.Adapter<AthkarListAdapter.ViewHolder> {
 
     private final Context context;
     private final AppDatabase db;
@@ -48,7 +48,7 @@ public class AthkarAdapter extends RecyclerView.Adapter<AthkarAdapter.ViewHolder
         }
     }
 
-    public AthkarAdapter(Context context, ArrayList<AlathkarButton> cards) {
+    public AthkarListAdapter(Context context, ArrayList<AlathkarButton> cards) {
         this.context = context;
 
         db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB").createFromAsset(

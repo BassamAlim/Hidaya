@@ -209,14 +209,13 @@ public class TelawatClient extends AppCompatActivity {
 
         if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE)
             repeatBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                    R.drawable.ripple_bg, getTheme()));
+                    R.drawable.rounded_dialog, getTheme()));
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL)
             shuffleBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                    R.drawable.ripple_bg, getTheme()));
+                    R.drawable.rounded_dialog, getTheme()));
     }
 
     private void setListeners() {
-        binding.home.setOnClickListener(v -> onBackPressed());
         repeatBtn.setOnClickListener(v -> {
             if (repeat == PlaybackStateCompat.REPEAT_MODE_NONE) {
                 repeat = PlaybackStateCompat.REPEAT_MODE_ONE;
@@ -227,7 +226,7 @@ public class TelawatClient extends AppCompatActivity {
                 editor.apply();
 
                 repeatBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ripple_bg, getTheme()));
+                        R.drawable.rounded_dialog, getTheme()));
             }
             else if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE) {
                 repeat = PlaybackStateCompat.REPEAT_MODE_NONE;
@@ -251,7 +250,7 @@ public class TelawatClient extends AppCompatActivity {
                 editor.apply();
 
                 shuffleBtn.setBackground(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ripple_bg, getTheme()));
+                        R.drawable.rounded_dialog, getTheme()));
             }
             else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL){
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_NONE;

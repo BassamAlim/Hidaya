@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
-                    android:background="@drawable/ripple_bar"
+                    android:background="@drawable/ripple_primary"
                     android:contentDescription="@string/fav_btn_description"
                     android:padding="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"

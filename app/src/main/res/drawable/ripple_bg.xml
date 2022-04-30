@@ -9,4 +9,11 @@
         </shape>
     </item>
 
+    <item>
+        <shape>
+            <corners android:radius="10dp" />
+            <solid android:color="?myMainBg" />
+        </shape>
+    </item>
+
 </ripple>

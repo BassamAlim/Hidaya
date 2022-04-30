@@ -24,7 +24,7 @@
     <style name="MyBackBtn" parent="Widget.AppCompat.ImageButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/ripple_bar</item>
+        <item name="android:background">@drawable/ripple_primary</item>
         <item name="android:contentDescription">@string/back_description</item>
         <item name="android:src">@drawable/ic_back</item>
         <item name="android:layout_marginEnd">15dp</item>
