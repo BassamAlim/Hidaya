@@ -480,7 +480,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
                 BitmapFactory.decodeResource(getResources(), R.color.surface_M));
         //lock screen icon for pre lollipop
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
-                BitmapFactory.decodeResource(getResources(), R.drawable.low_quality_foreground));
+                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
 
         metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "");
         metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_TITLE, "");
@@ -505,7 +505,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
                 BitmapFactory.decodeResource(getResources(), R.color.surface_M));
         //lock screen icon for pre lollipop
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
-                BitmapFactory.decodeResource(getResources(), R.drawable.low_quality_foreground));
+                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
 
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId);
 

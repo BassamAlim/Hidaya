@@ -292,7 +292,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
                 BitmapFactory.decodeResource(getResources(), R.color.surface_M));
         //lock screen icon for pre lollipop
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
-                BitmapFactory.decodeResource(getResources(), R.drawable.low_quality_foreground));
+                BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
 
         metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "إذاعة القرآن");
         metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_TITLE, "إذاعة القرآن");
