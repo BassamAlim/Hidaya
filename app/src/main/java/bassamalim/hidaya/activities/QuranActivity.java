@@ -458,7 +458,7 @@ public class QuranActivity extends SwipeActivity {
     protected void onDestroy() {
         super.onDestroy();
         binding = null;
-        ayahPlayer.end();
+        ayahPlayer.finish();
         ayahPlayer = null;
     }
 }

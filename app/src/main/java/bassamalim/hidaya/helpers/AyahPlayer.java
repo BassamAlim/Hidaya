@@ -43,6 +43,7 @@ public class AyahPlayer {
     private int lastPlayer;
     private boolean paused;
     private int repeated = 1;
+    private boolean on;
 
     private Coordinator coordinator;
     public interface Coordinator {
@@ -58,7 +59,6 @@ public class AyahPlayer {
         this.context = context;
 
         initiate();
-        initPlayers();
     }
 
     private void initiate() {
@@ -76,6 +76,21 @@ public class AyahPlayer {
         else
             what = new ForegroundColorSpan(context.getResources().getColor(
                     R.color.track_L, context.getTheme()));
+    }
+
+    /**
+     * The function's purpose is to prepare the first player to play the given `startAyah`.
+     *
+     * @param startAyah The ayah to start playing from.
+     */
+    public void requestPlay(Ayah startAyah) {
+        if (!on)
+            initPlayers();
+
+        repeated = 1;
+        lastPlayed = startAyah;
+        state = States.Stopped;
+        preparePlayer(players[0], startAyah);
     }
 
     /**
@@ -98,6 +113,8 @@ public class AyahPlayer {
         players[1].setAudioAttributes(attributes);
 
         setPlayersListeners();
+
+        on = true;
     }
 
     /**
@@ -179,24 +196,11 @@ public class AyahPlayer {
     }
 
     /**
-     * The function's purpose is to prepare the first player to play the given `startAyah`.
-     *
-     * @param startAyah The ayah to start playing from.
-     */
-    public void requestPlay(Ayah startAyah) {
-        repeated = 1;
-        lastPlayed = startAyah;
-        state = States.Stopped;
-        preparePlayer(players[0], startAyah);
-    }
-
-    /**
      * It checks if the user wants the player to stop on the end of the sura and the given aya is
      * from a new sura, meaning the sura is ending
      *  if so it checks the flag that says that there is no more ayas to prepare
      *      if so it stops playing
      *  if not it sets the flag to no more ayas
-     *
      * if not it prepares the player by resetting it and setting the data source and calling
      * MediaPlayer's prepare()
      *
@@ -299,6 +303,9 @@ public class AyahPlayer {
         }
     }
 
+    /**
+     * Resume the last player that was playing.
+     */
     public void resume() {
         Log.d(Global.TAG, "Resume P" + (lastPlayer));
         state = States.Playing;
@@ -323,6 +330,8 @@ public class AyahPlayer {
             players[i].reset();
             players[i].release();
         }
+
+        on = false;
 
         if (lastTracked != null) {
             lastTracked.getSS().removeSpan(what);
@@ -385,7 +394,7 @@ public class AyahPlayer {
         return (i + 1) % 2;
     }
 
-    public void end() {
+    public void finish() {
         for (int i = 0; i < 2; i++) {
             if (players[i] != null) {
                 players[i].release();
