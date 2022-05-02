@@ -61,6 +61,8 @@ public class PrayersFragment extends Fragment {
         binding = FragmentPrayersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+
         if (MainActivity.located) {
             initiate();
             goToToday();
@@ -74,7 +76,6 @@ public class PrayersFragment extends Fragment {
     }
 
     private void initiate() {
-        pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         location = MainActivity.location;
         prayerNames = getResources().getStringArray(R.array.prayer_names);
         setViews();
@@ -212,7 +213,8 @@ public class PrayersFragment extends Fragment {
 
     private void checkFirstTime() {
         if (pref.getBoolean("is_first_time_in_prayers", true))
-            new TutorialDialog(getContext(), getString(R.string.prayers_tips),
+            new TutorialDialog(getContext(),
+                    getString(R.string.prayers_tips),
                     "is_first_time_in_prayers").show(requireActivity()
                     .getSupportFragmentManager(), TutorialDialog.TAG);
     }
@@ -296,7 +298,8 @@ public class PrayersFragment extends Fragment {
             hijri.setTime(selectedDay.getTime());
 
             String year = " " + hijri.get(Calendar.YEAR);
-            String month = " " + Utils.whichHijriMonth(hijri.get(Calendar.MONTH));
+            String month = " " +
+                    getResources().getStringArray(R.array.hijri_months)[Calendar.MONTH];
             String day = "" + hijri.get(Calendar.DATE);
 
             text += Utils.translateNumbers(day) + month + Utils.translateNumbers(year);

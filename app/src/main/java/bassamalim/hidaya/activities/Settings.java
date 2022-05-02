@@ -4,7 +4,6 @@ import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
-import android.view.KeyEvent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.ListPreference;
@@ -80,7 +79,7 @@ public class Settings extends AppCompatActivity {
             assert themes != null;
             themes.setOnPreferenceChangeListener((preference, newValue) -> {
                 String theme = PreferenceManager.getDefaultSharedPreferences(
-                        requireContext()).getString(requireContext().getString(R.string.theme_key), "ThemeM");
+                        requireContext()).getString(requireContext().getString(R.string.theme_key), getString(R.string.default_theme));
                 if (!newValue.equals(theme)) {
                     SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(
                             requireContext());

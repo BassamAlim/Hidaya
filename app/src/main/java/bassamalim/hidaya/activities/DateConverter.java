@@ -84,14 +84,14 @@ public class DateConverter extends AppCompatActivity {
         binding.hijriYearTv.setText(Utils.translateNumbers(
                 String.valueOf(hijri.get(Calendar.YEAR))));
         binding.hijriMonthTv.setText(getResources().getStringArray(
-                R.array.hijri_months)[hijri.get(Calendar.MONTH)]);
+                R.array.numbered_hijri_months)[hijri.get(Calendar.MONTH)]);
         binding.hijriDayTv.setText(Utils.translateNumbers(
                 String.valueOf(hijri.get(Calendar.DATE))));
 
         binding.gregorianYearTv.setText(Utils.translateNumbers(
                 String.valueOf(gregorian.get(Calendar.YEAR))));
         binding.gregorianMonthTv.setText(getResources().getStringArray(
-                R.array.gregorian_months)[gregorian.get(Calendar.MONTH)]);
+                R.array.numbered_gregorian_months)[gregorian.get(Calendar.MONTH)]);
         binding.gregorianDayTv.setText(Utils.translateNumbers(
                 String.valueOf(gregorian.get(Calendar.DATE))));
     }

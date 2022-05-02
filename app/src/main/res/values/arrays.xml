@@ -42,13 +42,13 @@
     </string-array>
 
     <string-array name="themes">
-        <item>الغامق</item>
         <item>الفاتح</item>
+        <item>الغامق</item>
     </string-array>
 
     <string-array name="theme_values">
-        <item>ThemeM</item>
         <item>ThemeL</item>
+        <item>ThemeM</item>
     </string-array>
 
     <string-array name="reciters_placeholder">
@@ -85,8 +85,22 @@
         <item>100</item>
     </string-array>
 
-
     <string-array name="hijri_months">
+        <item>مُحَرَّم</item>
+        <item>صَفَر</item>
+        <item>ربيع الأول</item>
+        <item>ربيع الثاني</item>
+        <item>جُمادى الأول</item>
+        <item>جُمادى الآخر</item>
+        <item>رَجَب</item>
+        <item>شعبان</item>
+        <item>رَمَضان</item>
+        <item>شَوَّال</item>
+        <item>ذو القِعْدة</item>
+        <item>ذو الحِجَّة</item>
+    </string-array>
+
+    <string-array name="numbered_hijri_months">
         <item>(١) مُحَرَّم</item>
         <item>(٢) صَفَر</item>
         <item>(٣) ربيع الأول</item>
@@ -101,7 +115,7 @@
         <item>(١٢) ذو الحِجَّة</item>
     </string-array>
 
-    <string-array name="gregorian_months">
+    <string-array name="numbered_gregorian_months">
         <item>(١) يناير</item>
         <item>(٢) فبرابر</item>
         <item>(٣) مارس</item>

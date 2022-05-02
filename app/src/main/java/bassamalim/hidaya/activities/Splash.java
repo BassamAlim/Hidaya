@@ -33,7 +33,6 @@ public class Splash extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
-        // Keep the splash screen visible for this Activity
         splashScreen.setKeepOnScreenCondition(() -> true );
 
         super.onCreate(savedInstanceState);

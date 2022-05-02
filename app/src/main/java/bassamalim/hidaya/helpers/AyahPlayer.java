@@ -68,14 +68,15 @@ public class AyahPlayer {
                 "HidayaDB").createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
                 .build();
 
-        String theme = pref.getString(context.getString( R.string.theme_key), "ThemeM");
+        String theme = pref.getString(context.getString( R.string.theme_key),
+                context.getString(R.string.default_theme));
 
-        if (theme.equals("ThemeM"))
-            what = new ForegroundColorSpan(context.getResources().getColor(
-                    R.color.track_M, context.getTheme()));
-        else
+        if (theme.equals("ThemeL"))
             what = new ForegroundColorSpan(context.getResources().getColor(
                     R.color.track_L, context.getTheme()));
+        else
+            what = new ForegroundColorSpan(context.getResources().getColor(
+                    R.color.track_M, context.getTheme()));
     }
 
     /**
@@ -395,15 +396,17 @@ public class AyahPlayer {
     }
 
     public void finish() {
-        for (int i = 0; i < 2; i++) {
-            if (players[i] != null) {
-                players[i].release();
-                players[i] = null;
+        if (players != null) {
+            for (int i = 0; i < 2; i++) {
+                if (players[i] != null) {
+                    players[i].release();
+                    players[i] = null;
+                }
             }
-        }
-        if (wifiLock != null) {
-            wifiLock.release();
-            wifiLock = null;
+            if (wifiLock != null) {
+                wifiLock.release();
+                wifiLock = null;
+            }
         }
     }
 }

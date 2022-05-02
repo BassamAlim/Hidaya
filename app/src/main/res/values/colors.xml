@@ -11,12 +11,13 @@
     <color name="bg_M">#1A2027</color>
     <color name="primary_M">#222831</color>
     <color name="primary_weak_M">#B3222831</color>    // # alpha in hex + color
+    <color name="on_primary_M">#FF000000</color>
     <color name="surface_M">#222D37</color>
+    <color name="on_surface_M">#959A9E</color>
     <color name="ripple_M">#384F63</color>
     <color name="accent_M">#00ADB5</color>
     <color name="accent_dark_M">#028288</color>
     <color name="text_M">#BCC2C7</color>
-    <color name="on_primary_M">#FF000000</color>
     <color name="highlight_M">#00ADB5</color>
     <color name="track_M">#48C986</color>
 
@@ -35,7 +36,5 @@
     <color name="q_bg_L">#BACDE1</color>
     <color name="active_on_primary_L">#D18E21</color>
     <color name="active_on_primary_dark_L">#AA7113</color>
-
-    <color name="red">#d50000</color>
 
 </resources>

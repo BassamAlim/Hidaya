@@ -6,6 +6,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
@@ -32,6 +33,7 @@ import bassamalim.hidaya.adapters.BookSearcherAdapter;
 import bassamalim.hidaya.databinding.ActivityBookSearcherBinding;
 import bassamalim.hidaya.models.Book;
 import bassamalim.hidaya.models.BookSearcherMatch;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.dialogs.FilterDialog;
 
@@ -155,7 +157,16 @@ public class BookSearcher extends AppCompatActivity {
 
             String jsonStr = Utils.getJsonFromDownloads(getExternalFilesDir(null) +
                     prefix + i + ".json");
-            Book book = gson.fromJson(jsonStr, Book.class);
+
+            Book book;
+            try {
+                book = gson.fromJson(jsonStr, Book.class);
+            }
+            catch (Exception e) {
+                Log.e(Global.TAG, "Error in json read in BookSearcher");
+                e.printStackTrace();
+                continue;
+            }
 
             for (int j = 0; j < book.getChapters().length; j++) {
                 Book.BookChapter chapter = book.getChapters()[j];

@@ -14,7 +14,7 @@
         android:id="@+id/navigation_alathkar"
         android:name="bassamalim.hidaya.fragments.AlathkarFragment"
         android:label="@string/title_alathkar"
-        tools:layout="@layout/fragment_alathkar" />
+        tools:layout="@layout/fragment_athkar" />
 
     <fragment
         android:id="@+id/navigation_quran"

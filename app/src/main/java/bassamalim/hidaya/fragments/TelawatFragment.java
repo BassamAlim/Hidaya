@@ -94,6 +94,8 @@ public class TelawatFragment extends Fragment {
     }
 
     private void checkDownloaded() {
+        cleanup();
+
         downloaded = new boolean[telawat.size()];
 
         String prefix = "/Telawat/";
@@ -207,6 +209,37 @@ public class TelawatFragment extends Fragment {
         String defStr = gson.toJson(defArr);
 
         return gson.fromJson(pref.getString("selected_rewayat", defStr), boolean[].class);
+    }
+
+    private void cleanup() {
+        String path = requireContext().getExternalFilesDir(null) + "/Telawat/";
+        File file = new File(path);
+
+        File[] rFiles = file.listFiles();
+        if (rFiles == null)
+            return;
+
+        for (File rFile : rFiles) {
+            String rfName = rFile.getName();
+            try {
+                Integer.parseInt(rfName);
+                File[] vFiles = rFile.listFiles();
+                if (vFiles == null)
+                    continue;
+
+                for (File vFile : vFiles) {
+                    if (Objects.requireNonNull(vFile.listFiles()).length == 0)
+                        vFile.delete();
+                }
+
+                vFiles = rFile.listFiles();
+                if (vFiles == null)
+                    continue;
+
+                if (vFiles.length == 0)
+                    rFile.delete();
+            } catch (NumberFormatException ignored) {}
+        }
     }
 
     public void onDestroy() {

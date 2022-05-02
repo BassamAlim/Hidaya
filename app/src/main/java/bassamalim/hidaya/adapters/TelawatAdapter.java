@@ -225,7 +225,7 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
         this.context = context;
         this.versions = versions;
         this.fullSize = fullSize;
-        // we need the full size of the unfiltered list of versions so that
+        // We need the full size of the unfiltered list of versions so that
         // the downloaded wont get mixed up because of the ids change
         this.reciterId = reciterId;
         this.names = names;
@@ -238,7 +238,7 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
     @NonNull @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_telawa_version, viewGroup, false));
+                .inflate(R.layout.item_telawat_version, viewGroup, false));
     }
 
     @Override
@@ -299,10 +299,7 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
             String name = files[i].getName();
             try {
                 int num = Integer.parseInt(name);
-                if (Objects.requireNonNull(files[i].listFiles()).length == 0)
-                    cleanup(dir.getAbsolutePath(), name);
-                else
-                    downloaded[num] = true;
+                downloaded[num] = true;
             } catch (NumberFormatException ignored) {}
         }
     }
@@ -330,16 +327,6 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
         }
 
         downloaded[ver.getVersionId()] = true;
-    }
-
-    private void cleanup(String path, String name) {
-        File dir = new File(path + "/" + name);
-        if (Objects.requireNonNull(dir.listFiles()).length == 0)
-            dir.delete();
-
-        dir = new File(path);
-        if (Objects.requireNonNull(dir.listFiles()).length == 0)
-            dir.delete();
     }
 
     @Override

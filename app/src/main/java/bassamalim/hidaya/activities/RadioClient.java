@@ -1,7 +1,6 @@
 package bassamalim.hidaya.activities;
 
 import android.content.ComponentName;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.media.MediaBrowserCompat;
@@ -14,7 +13,6 @@ import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.preference.PreferenceManager;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
@@ -27,13 +25,11 @@ import bassamalim.hidaya.services.RadioService;
 public class RadioClient extends AppCompatActivity {
 
     private ActivityRadioClientBinding binding;
-    private SharedPreferences pref;
     private FirebaseRemoteConfig remoteConfig;
     private MediaBrowserCompat mediaBrowser;
     private MediaControllerCompat controller;
     private MediaControllerCompat.TransportControls tc;
-    private ImageButton ppBtn;    // play/pause button
-    private String theme;
+    private ImageButton playBtn;    // play/pause button
     private String link;
 
     @Override
@@ -44,9 +40,7 @@ public class RadioClient extends AppCompatActivity {
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
 
-        pref = PreferenceManager.getDefaultSharedPreferences(this);
-
-        initViews();
+        playBtn = binding.radioPpBtn;
 
         mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this,
                 RadioService.class), connectionCallbacks, null); // optional Bundle
@@ -74,12 +68,6 @@ public class RadioClient extends AppCompatActivity {
                     .unregisterCallback(controllerCallback);
         }
         mediaBrowser.disconnect();
-    }
-
-    private void initViews() {
-        theme = pref.getString(getString(R.string.theme_key), "ThemeM");
-
-        ppBtn = binding.radioPpBtn;
     }
 
     private void getLinkAndEnable() {
@@ -165,27 +153,17 @@ public class RadioClient extends AppCompatActivity {
     }
 
     private void updateButton(boolean playing) {
-        if (theme.equals("ThemeM")) {
-            if (playing)
-                ppBtn.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_player_pause, getTheme()));
-            else
-                ppBtn.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_player_play, getTheme()));
-        }
-        else {
-            if (playing)
-                ppBtn.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_player_pause_l, getTheme()));
-            else
-                ppBtn.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_player_play_l, getTheme()));
-        }
+        if (playing)
+            playBtn.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_player_pause, getTheme()));
+        else
+            playBtn.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_player_play, getTheme()));
     }
 
     private void enableControls() {
         // Attach a listeners to the buttons
-        ppBtn.setOnClickListener(v -> {
+        playBtn.setOnClickListener(v -> {
             // Since this is a play/pause button, you'll need to test the current state
             // and choose the action accordingly
             int pbState = controller.getPlaybackState().getState();
@@ -198,7 +176,7 @@ public class RadioClient extends AppCompatActivity {
     }
 
     private void disableControls() {
-        ppBtn.setOnClickListener(null);
+        playBtn.setOnClickListener(null);
     }
 
     @Override

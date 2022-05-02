@@ -46,7 +46,8 @@ public class QuranSettingsDialog extends AppCompatActivity {
 
     private void themeify() {
         pref = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = pref.getString(getString(R.string.theme_key), "ThemeM");
+        String theme = pref.getString(getString(R.string.theme_key),
+                getString(R.string.default_theme));
 
         switch (theme) {
             case "ThemeM":

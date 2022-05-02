@@ -83,25 +83,24 @@ public class QuranActivity extends SwipeActivity {
 
         Intent intent = getIntent();
         action = intent.getAction();
-
-        setupPlayer();
-
         action(intent);
 
         buildPage(currentPage);
+
+        setupPlayer();
     }
 
     private void themeify() {
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         textSize = pref.getInt(getString(R.string.quran_text_size_key), 30);
-        theme = pref.getString(getString(R.string.theme_key), "ThemeM");
+        theme = pref.getString(getString(R.string.theme_key), getString(R.string.default_theme));
 
         switch (theme) {
-            case "ThemeM":
-                setTheme(R.style.QuranM);
-                break;
             case "ThemeL":
                 setTheme(R.style.QuranL);
+                break;
+            case "ThemeM":
+                setTheme(R.style.QuranM);
                 break;
         }
     }
@@ -196,6 +195,7 @@ public class QuranActivity extends SwipeActivity {
 
     private void setupPlayer() {
         ayahPlayer = new AyahPlayer(this);
+        ayahPlayer.setCurrentPage(currentPage);
 
         AyahPlayer.Coordinator uiListener = new AyahPlayer.Coordinator() {
             @Override
@@ -327,15 +327,18 @@ public class QuranActivity extends SwipeActivity {
             list.get(finalI).setScreen(screen);
             allAyahs.add(list.get(finalI));
         }
-        ayahPlayer.setAllAyahsSize(allAyahs.size());
+
+        if (ayahPlayer != null)
+            ayahPlayer.setAllAyahsSize(allAyahs.size());
 
         screen.setText(ss);
-        if (theme.equals("ThemeM"))
+        if (theme.equals("ThemeL"))
             screen.setMovementMethod(DoubleClickLMM.getInstance(
-                    getResources().getColor(R.color.highlight_M, getTheme())));
+                getResources().getColor(R.color.highlight_L, getTheme())));
         else
             screen.setMovementMethod(DoubleClickLMM.getInstance(
-                    getResources().getColor(R.color.highlight_L, getTheme())));
+                    getResources().getColor(R.color.highlight_M, getTheme())));
+
 
         lls[currentLinear].addView(screen);
 
@@ -373,7 +376,8 @@ public class QuranActivity extends SwipeActivity {
 
     private void setCurrentPage(int num) {
         currentPage = num;
-        ayahPlayer.setCurrentPage(num);
+        if (ayahPlayer != null)
+            ayahPlayer.setCurrentPage(num);
     }
 
     private void addHeader(int suraNum, String name) {
@@ -406,10 +410,10 @@ public class QuranActivity extends SwipeActivity {
         nameTv.setGravity(Gravity.CENTER);
         nameTv.setBackgroundColor(Color.TRANSPARENT);
         nameTv.setTextSize(textSize+5);
-        if (theme.equals("ThemeM"))
-            nameTv.setBackgroundResource(R.drawable.surah_header);
-        else
+        if (theme.equals("ThemeL"))
             nameTv.setBackgroundResource(R.drawable.surah_header_light);
+        else
+            nameTv.setBackgroundResource(R.drawable.surah_header);
 
         nameTv.setTypeface(Typeface.DEFAULT_BOLD);
 
@@ -427,13 +431,13 @@ public class QuranActivity extends SwipeActivity {
         nameScreen.setTextSize(textSize);
         nameScreen.setTypeface(Typeface.DEFAULT_BOLD);
         nameScreen.setText("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ");
-        if (theme.equals("ThemeM")) {
-            nameScreen.setTextColor(Color.WHITE);
-            nameScreen.setLinkTextColor(Color.WHITE);
-        }
-        else {
+        if (theme.equals("ThemeL")) {
             nameScreen.setTextColor(Color.BLACK);
             nameScreen.setLinkTextColor(Color.BLACK);
+        }
+        else {
+            nameScreen.setTextColor(Color.WHITE);
+            nameScreen.setLinkTextColor(Color.WHITE);
         }
         return nameScreen;
     }

@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import bassamalim.hidaya.R;
@@ -35,9 +36,9 @@ public class Utils {
 
     public static String onActivityCreateSetTheme(Activity activity) {
         String theme = PreferenceManager.getDefaultSharedPreferences(activity).getString(
-                activity.getString(R.string.theme_key), "ThemeM");
-        if (theme.equals("ThemeL"))
-            activity.setTheme(R.style.Theme_HidayaL);
+                activity.getString(R.string.theme_key), activity.getString(R.string.default_theme));
+        if (theme.equals("ThemeM"))
+            activity.setTheme(R.style.Theme_HidayaM);
         return theme;
     }
 
@@ -45,9 +46,6 @@ public class Utils {
         Intent intent = activity.getIntent();
         activity.finish();
         activity.startActivity(intent);
-
-        //activity.finish();
-        //activity.startActivity(new Intent(activity, activity.getClass()));
     }
 
     public static String translateNumbers(String english) {
@@ -144,36 +142,22 @@ public class Utils {
         if (!dir.exists())
             return dir.mkdirs();
         else
-            return true;
+            return false;
     }
 
     public static boolean deleteFile(Context context, String postfix) {
         File file = new File(context.getExternalFilesDir(null) + postfix);
 
-        if (file.exists())
+        if (file.exists()) {
+            if (Objects.requireNonNull(file.listFiles()).length > 0) {
+                for (File f : Objects.requireNonNull(file.listFiles()))
+                    f.delete();
+            }
+
             return file.delete();
+        }
         else
-            return true;
-    }
-
-    public static String whichHijriMonth(int num) {
-        String result;
-        HashMap<Integer, String> monthMap = new HashMap<>();
-        monthMap.put(0, "مُحَرَّم");
-        monthMap.put(1, "صَفَر");
-        monthMap.put(2, "ربيع الأول");
-        monthMap.put(3, "ربيع الثاني");
-        monthMap.put(4, "جُمادى الأول");
-        monthMap.put(5, "جُمادى الآخر");
-        monthMap.put(6, "رَجَب");
-        monthMap.put(7, "شعبان");
-        monthMap.put(8, "رَمَضان");
-        monthMap.put(9, "شَوَّال");
-        monthMap.put(10, "ذو القِعْدة");
-        monthMap.put(11, "ذو الحِجَّة");
-
-        result = monthMap.get(num);
-        return result;
+            return false;
     }
 
     public static void cancelAlarm(Context gContext, ID id) {

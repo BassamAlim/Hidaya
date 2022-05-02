@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
 
         if (!PreferenceManager.getDefaultSharedPreferences(this).getString(
-                getString(R.string.theme_key), "ThemeM").equals(theme))
+                getString(R.string.theme_key), getString(R.string.default_theme)).equals(theme))
             Utils.refresh(this);
     }
 
@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
     private void setTodayScreen() {
         UmmalquraCalendar hijri = new UmmalquraCalendar();
         String hYear = " " + hijri.get(Calendar.YEAR);
-        String hMonth = " " + Utils.whichHijriMonth(hijri.get(Calendar.MONTH));
+        String hMonth = " " + getResources().getStringArray(R.array.hijri_months)[Calendar.MONTH];
         String hDay = "" + hijri.get(Calendar.DATE);
         String hijriStr = whichDay(hijri.get(Calendar.DAY_OF_WEEK)) + " ";
         hijriStr += Utils.translateNumbers(hDay) + hMonth + Utils.translateNumbers(hYear);

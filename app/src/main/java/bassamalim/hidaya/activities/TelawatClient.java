@@ -64,7 +64,6 @@ public class TelawatClient extends AppCompatActivity {
     private ArrayList<String> surahNames;
     private int repeat;
     private int shuffle;
-    private String theme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,7 +184,6 @@ public class TelawatClient extends AppCompatActivity {
     }
 
     private void retrieveState() {
-        theme = pref.getString(getString(R.string.theme_key), "ThemeM");
         repeat = pref.getInt("telawat_repeat_mode", 0);
         shuffle = pref.getInt("telawat_shuffle_mode", 0);
     }
@@ -278,22 +276,12 @@ public class TelawatClient extends AppCompatActivity {
     }
 
     private void updateButton(boolean playing) {
-        if (theme.equals("ThemeM")) {
-            if (playing)
-                playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_player_pause, getTheme()));
-            else
-                playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_player_play, getTheme()));
-        }
-        else {
-            if (playing)
-                playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_player_pause_l, getTheme()));
-            else
-                playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_player_play_l, getTheme()));
-        }
+        if (playing)
+            playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_player_pause, getTheme()));
+        else
+            playPause.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_player_play, getTheme()));
     }
 
     private void enableControls() {

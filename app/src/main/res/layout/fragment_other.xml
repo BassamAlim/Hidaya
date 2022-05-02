@@ -36,7 +36,7 @@
                     android:id="@+id/telawat"
                     style="@style/Buttony"
                     android:background="@drawable/ripple_surface"
-                    android:drawableTop="@drawable/ic_headset"
+                    android:drawableTop="@drawable/ic_headphone"
                     android:elevation="@dimen/buttony_elevation"
                     android:text="@string/recitations" />
 

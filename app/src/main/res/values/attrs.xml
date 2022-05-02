@@ -11,13 +11,14 @@
         <attr name="myMainBg" format="color|reference" />
         <attr name="myPrimary" format="color|reference" />
         <attr name="myPrimaryDark" format="color|reference" />
+        <attr name="myOnPrimary" format="color|reference" />
         <attr name="mySurface" format="color|reference" />
         <attr name="mySurfaceDark" format="color|reference" />
+        <attr name="myOnSurface" format="color|reference" />
         <attr name="myAccent" format="color|reference" />
         <attr name="myAccentDark" format="color|reference" />
         <attr name="myText" format="color|reference" />
         <attr name="mySpecialText" format="color|reference" />
-        <attr name="myOnPrimary" format="color|reference" />
         <attr name="myActiveOnPrimary" format="color|reference" />
         <attr name="myActiveOnPrimaryDark" format="color|reference" />
         <attr name="myCounter" format="color|reference" />

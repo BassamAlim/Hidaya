@@ -10,16 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import bassamalim.hidaya.activities.AthkarListActivity;
-import bassamalim.hidaya.databinding.FragmentAlathkarBinding;
+import bassamalim.hidaya.databinding.FragmentAthkarBinding;
 
 public class AlathkarFragment extends Fragment {
 
-    private FragmentAlathkarBinding binding;
+    private FragmentAthkarBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentAlathkarBinding.inflate(inflater, container, false);
+        binding = FragmentAthkarBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         setListeners();
