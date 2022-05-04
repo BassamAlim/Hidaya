@@ -7,7 +7,6 @@
     android:layout_marginTop="20dp"
     android:background="@drawable/rounded_dialog"
     android:elevation="10dp"
-    android:layoutDirection="ltr"
     android:minWidth="300dp"
     android:orientation="vertical">
 

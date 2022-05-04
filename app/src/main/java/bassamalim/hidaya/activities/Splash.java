@@ -63,20 +63,10 @@ public class Splash extends AppCompatActivity {
         boolean newUser = pref.getBoolean("new_user", true);
 
         if (newUser) {
-            welcome();
-
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putBoolean("new_user", false);
-            editor.apply();
-
+            Intent intent = new Intent(this, WelcomeActivity.class);
+            startActivity(intent);
             finish();
         }
-    }
-
-    private void welcome() {
-        Intent intent = new Intent(this, WelcomeActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     private boolean granted() {
@@ -133,7 +123,7 @@ public class Splash extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void background() {
         Toast.makeText(this, getString(R.string.choose_allow_all_the_time),
-                Toast.LENGTH_SHORT).show();
+                Toast.LENGTH_LONG).show();
         requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                 0);
     }

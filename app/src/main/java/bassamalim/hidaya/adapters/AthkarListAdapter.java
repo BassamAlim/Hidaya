@@ -63,7 +63,7 @@ public class AthkarListAdapter extends RecyclerView.Adapter<AthkarListAdapter.Vi
     @NonNull @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(
-                R.layout.item_alathkar, viewGroup, false));
+                R.layout.item_athkar, viewGroup, false));
     }
 
     @Override

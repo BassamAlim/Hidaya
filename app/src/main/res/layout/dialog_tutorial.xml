@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_tv" />
 
     <TextView
@@ -33,13 +33,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
         android:fontFamily="@font/tajawal_regular"
         android:text="@string/do_not_show_again"
         android:textColor="?myAccent"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/do_not_show_again_cb"
+        app:layout_constraintStart_toEndOf="@id/do_not_show_again_cb"
         app:layout_constraintTop_toBottomOf="@id/text_tv"
         tools:ignore="SpUsage" />
 

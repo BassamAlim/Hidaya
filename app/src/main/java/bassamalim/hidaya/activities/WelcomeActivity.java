@@ -1,10 +1,12 @@
 package bassamalim.hidaya.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivityWelcomeBinding;
@@ -18,7 +20,7 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
-        Utils.setLocale(this, null);
+        Utils.onActivityCreateSetLocale(this, null);
         binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -34,6 +36,11 @@ public class WelcomeActivity extends AppCompatActivity {
             binding.settings.setVisibility(View.GONE);
             binding.saveBtn.setVisibility(View.GONE);
             binding.disclaimerSpace.setVisibility(View.VISIBLE);
+
+            SharedPreferences.Editor editor = PreferenceManager
+                    .getDefaultSharedPreferences(this).edit();
+            editor.putBoolean("new_user", false);
+            editor.apply();
         });
 
         binding.agreed.setOnClickListener(view -> {

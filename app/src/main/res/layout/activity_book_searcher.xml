@@ -67,8 +67,8 @@
             android:text="@string/selected_books"
             android:textSize="16dp"
             app:layout_constraintBottom_toTopOf="@id/size_spinner_tv"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/size_spinner"
+            app:layout_constraintEnd_toStartOf="@id/filter_ib"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_view"
             tools:ignore="SpUsage" />
 
@@ -81,8 +81,8 @@
             android:padding="10dp"
             android:src="@drawable/ic_filter"
             app:layout_constraintBottom_toTopOf="@id/size_spinner"
-            app:layout_constraintEnd_toStartOf="@id/filter_dialog_tv"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/filter_dialog_tv"
             app:layout_constraintTop_toBottomOf="@id/search_view" />
 
         <TextView
@@ -94,8 +94,8 @@
             android:text="@string/max_num_of_marches"
             android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/size_spinner"
+            app:layout_constraintEnd_toStartOf="@id/size_spinner"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/filter_dialog_tv"
             tools:ignore="SpUsage" />
 
@@ -107,8 +107,8 @@
             android:entries="@array/searcher_matches"
             android:popupBackground="?attr/myPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/size_spinner_tv"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/size_spinner_tv"
             app:layout_constraintTop_toBottomOf="@id/filter_ib" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

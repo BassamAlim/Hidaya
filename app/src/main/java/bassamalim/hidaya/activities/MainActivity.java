@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         theme = Utils.onActivityCreateSetTheme(this);
-        locale = Utils.setLocale(this, null);
+        locale = Utils.onActivityCreateSetLocale(this, null);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setTodayScreen();
         setContentView(binding.getRoot());
@@ -93,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void initFirebase() {
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(3600 * 6).build(); // update at most every six hours
+                .setMinimumFetchIntervalInSeconds(3600 * 6).build();
+                                         // update at most every six hours
         remoteConfig.setConfigSettingsAsync(configSettings);
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
     }

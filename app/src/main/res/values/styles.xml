@@ -145,7 +145,6 @@
     </style>
 
     <style name="MyAlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:layoutDirection">rtl</item>
         <item name="android:colorBackground">?myMainBg</item>
         <item name="android:textColorSecondary">?myAccent</item>
         <item name="android:colorControlActivated">?myAccent</item>

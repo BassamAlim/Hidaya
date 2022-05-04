@@ -26,8 +26,8 @@
                 android:maxWidth="320dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/text_tv"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/fav_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/fav_btn"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/ripple_surface"
                 android:contentDescription="@string/fav_btn_description"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

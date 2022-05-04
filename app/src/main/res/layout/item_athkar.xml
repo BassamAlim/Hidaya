@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:layoutDirection="ltr">
+    android:gravity="center_vertical">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/alathkar_model_card"
@@ -34,8 +33,8 @@
                 android:paddingVertical="15dp"
                 android:textSize="24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/athkar_fav_btn"
+                app:layout_constraintEnd_toStartOf="@id/athkar_fav_btn"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="SpUsage" />
 
@@ -43,12 +42,12 @@
                 android:id="@+id/athkar_fav_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/ripple_surface"
                 android:contentDescription="@string/fav_btn_description"
                 android:padding="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

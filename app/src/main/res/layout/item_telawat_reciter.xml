@@ -40,10 +40,8 @@
                     android:textColor="?attr/myOnPrimary"
                     android:textSize="25dp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="SpUsage" />
 
                 <ImageButton
@@ -55,7 +53,7 @@
                     android:contentDescription="@string/fav_btn_description"
                     android:padding="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

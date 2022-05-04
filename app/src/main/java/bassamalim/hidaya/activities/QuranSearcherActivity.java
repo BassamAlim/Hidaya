@@ -149,7 +149,7 @@ public class QuranSearcherActivity extends AppCompatActivity {
         recyclerView = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new QuranSearcherAdapter(matches);
+        adapter = new QuranSearcherAdapter(this, matches);
         recyclerView.setAdapter(adapter);
     }
 

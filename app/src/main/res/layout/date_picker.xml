@@ -4,10 +4,11 @@
     android:layout_height="match_parent"
     android:background="?myMainBg"
     android:gravity="center"
+    android:layoutDirection="ltr"
     android:orientation="horizontal">
 
     <NumberPicker
-        android:id="@+id/picker_year"
+        android:id="@+id/picker_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp" />
@@ -19,7 +20,7 @@
         android:layout_marginEnd="20dp" />
 
     <NumberPicker
-        android:id="@+id/picker_day"
+        android:id="@+id/picker_year"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

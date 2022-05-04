@@ -108,7 +108,7 @@
     <string name="question">Question</string>
 
     <!-- Formats -->
-    <string name="remaining">remaining: %1$s</string>
+    <string name="remaining">Remaining: %1$s</string>
     <string name="settings_of">%s Settings</string>
     <string name="book_downloading">%s downloading</string>
 

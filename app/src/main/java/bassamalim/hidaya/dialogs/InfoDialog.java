@@ -31,7 +31,7 @@ public class InfoDialog extends DialogFragment {
                              @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(R.layout.info_dialog,container,false);
+        View view = inflater.inflate(R.layout.dialog_info,container,false);
 
         if (getDialog() != null && getDialog().getWindow() != null) {
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

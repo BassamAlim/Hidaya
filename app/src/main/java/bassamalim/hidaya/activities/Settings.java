@@ -92,7 +92,7 @@ public class Settings extends AppCompatActivity {
                 if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
                         .getString(requireContext().getString(R.string.language_key), getString(R.string.default_language)))) {
 
-                    Utils.setLocale(requireContext(), (String) newValue);
+                    Utils.onActivityCreateSetLocale(requireContext(), (String) newValue);
                     Utils.refresh(requireActivity());
                 }
                 return true;

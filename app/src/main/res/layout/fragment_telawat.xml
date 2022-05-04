@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?myMainBg"
-    android:layoutDirection="ltr"
     tools:context=".fragments.TelawatFragment">
 
     <androidx.appcompat.widget.SearchView
@@ -14,8 +13,8 @@
         android:layout_height="wrap_content"
         app:defaultQueryHint="@string/reciters_hint"
         app:iconifiedByDefault="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/filter_ib"
+        app:layout_constraintEnd_toStartOf="@id/filter_ib"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
@@ -27,8 +26,8 @@
         android:padding="10dp"
         android:src="@drawable/ic_filter"
         app:layout_constraintBottom_toTopOf="@id/recycler"
-        app:layout_constraintEnd_toStartOf="@id/search_view"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/search_view"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -50,7 +50,7 @@ public class Utils {
         activity.startActivity(intent);
     }
 
-    public static String setLocale(Context context, String language) {
+    public static String onActivityCreateSetLocale(Context context, String language) {
         if (language == null)
             language = PreferenceManager.getDefaultSharedPreferences(context)
                     .getString(context.getString(R.string.language_key), "ar");

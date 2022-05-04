@@ -29,6 +29,7 @@ public class BooksChaptersCollectionActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
+        Utils.onActivityCreateSetLocale(this, null);
         binding = ActivityCollectionBookChaptersBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> finish());
