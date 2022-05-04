@@ -26,6 +26,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.Splash;
 import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.other.Global;
+import bassamalim.hidaya.other.Utils;
 
 public class AthanService extends Service {
 
@@ -41,6 +42,8 @@ public class AthanService extends Service {
         id = (ID) intent.getSerializableExtra("id");
         Log.i(Global.TAG, "In athan service for " + id);
         //int Notification_ID = (int) System.currentTimeMillis() % 10000;
+
+        Utils.onActivityCreateSetLocale(this, null);
 
         createNotificationChannel();
         startForeground(id.ordinal()+1, build());

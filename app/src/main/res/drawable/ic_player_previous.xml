@@ -2,7 +2,8 @@
     android:width="40dp"
     android:height="40dp"
     android:viewportWidth="487.91"
-    android:viewportHeight="487.91">
+    android:viewportHeight="487.91"
+    android:autoMirrored="true">
     <path
         android:fillColor="?myAccentDark"
         android:pathData="M464.923,19.725c12.696,0 22.987,10.29 22.987,22.985v402.253c0,12.694 -10.291,22.987 -22.987,22.987L91.403,261.075c0,0 -17.239,-17.238 0,-34.477C108.642,209.358 464.923,19.725 464.923,19.725z" />

@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.helpers.Keeper;
+import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.services.AthanService;
 
 public class Splash extends AppCompatActivity {
@@ -37,6 +38,8 @@ public class Splash extends AppCompatActivity {
         splashScreen.setKeepOnScreenCondition(() -> true );
 
         super.onCreate(savedInstanceState);
+
+        Utils.onActivityCreateSetLocale(this, null);
 
         stopService(new Intent(this, AthanService.class));
 

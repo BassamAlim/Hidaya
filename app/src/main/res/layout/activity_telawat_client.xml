@@ -21,7 +21,6 @@
         <ImageButton
             android:id="@android:id/home"
             style="@style/MyBackBtn"
-            android:layout_gravity="end"
             android:contentDescription="@string/back_description" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -82,6 +81,7 @@
         android:layout_marginHorizontal="20dp"
         android:background="@drawable/rounded_corners_surface"
         android:padding="10dp"
+        android:layoutDirection="ltr"
         app:layout_constraintBottom_toTopOf="@id/controls_space"
         app:layout_constraintTop_toBottomOf="@id/info_space">
 
@@ -197,6 +197,7 @@
         android:background="?myPrimary"
         android:elevation="4dp"
         android:minHeight="?actionBarSize"
+        android:layoutDirection="ltr"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">

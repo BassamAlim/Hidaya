@@ -38,12 +38,14 @@ public class NotificationReceiver extends BroadcastReceiver {
     private long time;
 
     @Override
-    public void onReceive(Context gContext, Intent intent) {
-        context = gContext;
+    public void onReceive(Context context, Intent intent) {
+        this.context = context;
         id = Utils.mapID(intent.getIntExtra("id", 0));
         String action = intent.getAction();
         time = intent.getLongExtra("time", 0);
         isPrayer = action.equals("prayer");
+
+        Utils.onActivityCreateSetLocale(context, null);
 
         Log.i(Global.TAG, "in notification receiver for " + id);
 
@@ -161,7 +163,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "";
+            CharSequence name;
             String description = "";
 
             channelId = context.getResources().getStringArray(R.array.channel_ids)[id.ordinal()];
