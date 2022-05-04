@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
@@ -30,7 +32,9 @@ public class QuizActivity extends AppCompatActivity {
     private final int[] cAnswers = new int[10];
     private Button nextBtn;
     private Button prevBtn;
-    private final Button[] answerBtns = new Button[4];
+    private RadioGroup radioGroup;
+    private final RadioButton[] answerBtns = new RadioButton[4];
+    private TypedValue colorText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,9 @@ public class QuizActivity extends AppCompatActivity {
 
         db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
+
+        colorText = new TypedValue();
+        getTheme().resolveAttribute(R.attr.myText, colorText, true);
 
         selectQuestions(getQuestions());
 
@@ -62,6 +69,8 @@ public class QuizActivity extends AppCompatActivity {
     private void initViews() {
         nextBtn = binding.nextQuestion;
         prevBtn = binding.previousQuestion;
+
+        radioGroup = binding.answersRadioGroup;
 
         answerBtns[0] = binding.answer1;
         answerBtns[1] = binding.answer2;
@@ -95,41 +104,33 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void adjustButtons() {
-        TypedValue text = new TypedValue();
-        getTheme().resolveAttribute(R.attr.myText, text, true);
-
-        TypedValue accent = new TypedValue();
-        getTheme().resolveAttribute(R.attr.myActiveOnPrimary, accent, true);
-
-        for (Button answerBtn : answerBtns)
-            answerBtn.setTextColor(text.data);
-
+        radioGroup.clearCheck();
         if (cAnswers[current] != -1)
-            answerBtns[cAnswers[current]].setTextColor(accent.data);
+            radioGroup.check(answerBtns[cAnswers[current]].getId());
 
         if (current == 0) {
             prevBtn.setEnabled(false);
-            prevBtn.setTextColor(getResources().getColor(R.color.grey));
+            prevBtn.setTextColor(getResources().getColor(R.color.grey, getTheme()));
         }
         else if (current == 9) {
             if (allAnswered()) {
                 nextBtn.setText(getString(R.string.finish_quiz));
                 nextBtn.setEnabled(true);
-                nextBtn.setTextColor(text.data);
+                nextBtn.setTextColor(colorText.data);
             }
             else {
                 nextBtn.setText(getString(R.string.answer_all_questions));
                 nextBtn.setEnabled(false);
-                nextBtn.setTextColor(getResources().getColor(R.color.grey));
+                nextBtn.setTextColor(getResources().getColor(R.color.grey, getTheme()));
             }
         }
         else {
             prevBtn.setEnabled(true);
-            prevBtn.setTextColor(text.data);
+            prevBtn.setTextColor(colorText.data);
 
             nextBtn.setEnabled(true);
             nextBtn.setText(getString(R.string.next_question));
-            nextBtn.setTextColor(text.data);
+            nextBtn.setTextColor(colorText.data);
         }
     }
 

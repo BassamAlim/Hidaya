@@ -41,73 +41,79 @@
         app:layout_constraintTop_toBottomOf="@id/top_bar"
         tools:ignore="SpUsage" />
 
-    <LinearLayout
+
+
+    <RadioGroup
+        android:id="@+id/answers_radio_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/question_navigator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/question_screen">
 
-        <Button
+        <RadioButton
             android:id="@+id/answer1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:background="@drawable/ripple_surface"
-            android:elevation="15dp"
-            android:fontFamily="@font/tajawal_regular"
-            android:gravity="center"
             android:padding="15dp"
-            android:textColor="?myText"
+            android:elevation="15dp"
+            android:gravity="center"
+            android:background="@drawable/radio_selector"
+            android:button="@android:color/transparent"
             android:textSize="23dp"
+            android:fontFamily="@font/tajawal_regular"
+            android:textColor="@drawable/radio_text_selector"
             tools:ignore="SpUsage" />
 
-        <Button
+        <RadioButton
             android:id="@+id/answer2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:background="@drawable/ripple_surface"
-            android:elevation="15dp"
-            android:fontFamily="@font/tajawal_regular"
-            android:gravity="center"
             android:padding="15dp"
-            android:textColor="?myText"
+            android:elevation="15dp"
+            android:gravity="center"
+            android:background="@drawable/radio_selector"
+            android:button="@android:color/transparent"
             android:textSize="23dp"
+            android:fontFamily="@font/tajawal_regular"
+            android:textColor="@drawable/radio_text_selector"
             tools:ignore="SpUsage" />
 
-        <Button
+        <RadioButton
             android:id="@+id/answer3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:background="@drawable/ripple_surface"
-            android:elevation="18dp"
-            android:fontFamily="@font/tajawal_regular"
-            android:gravity="center"
             android:padding="15dp"
-            android:textColor="?myText"
+            android:gravity="center"
+            android:elevation="15dp"
+            android:background="@drawable/radio_selector"
+            android:button="@android:color/transparent"
             android:textSize="23dp"
+            android:fontFamily="@font/tajawal_regular"
+            android:textColor="@drawable/radio_text_selector"
             tools:ignore="SpUsage" />
 
-        <Button
+        <RadioButton
             android:id="@+id/answer4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:background="@drawable/ripple_surface"
-            android:elevation="18dp"
-            android:fontFamily="@font/tajawal_regular"
-            android:gravity="center"
             android:padding="15dp"
-            android:textColor="?myText"
+            android:elevation="15dp"
+            android:gravity="center"
+            android:background="@drawable/radio_selector"
+            android:button="@android:color/transparent"
             android:textSize="23dp"
+            android:fontFamily="@font/tajawal_regular"
+            android:textColor="@drawable/radio_text_selector"
             tools:ignore="SpUsage" />
 
-    </LinearLayout>
+    </RadioGroup>
 
     <LinearLayout
         android:id="@+id/question_navigator"
