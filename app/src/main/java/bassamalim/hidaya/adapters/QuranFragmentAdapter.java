@@ -138,7 +138,8 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
                     context.startActivity(openPage);
                 }
                 else
-                    Toast.makeText(context, "لا توجد صفحة بهذا الرقم", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.page_does_not_exist),
+                            Toast.LENGTH_SHORT).show();
             }
             catch (NumberFormatException e) {
                 for(SuraCard suraCard : suraCardsCopy) {

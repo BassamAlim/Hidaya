@@ -294,8 +294,10 @@ public class RadioService extends MediaBrowserServiceCompat implements
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(getResources(), R.drawable.launcher_foreground));
 
-        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "إذاعة القرآن");
-        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_TITLE, "إذاعة القرآن");
+        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE,
+                getString(R.string.quran_radio));
+        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_TITLE,
+                getString(R.string.quran_radio));
 
         mediaSession.setMetadata(metadataBuilder.build());
     }
@@ -410,7 +412,7 @@ public class RadioService extends MediaBrowserServiceCompat implements
             CharSequence name;
             String description = "quran radio";
             channelId = "QuranRadio";
-            name = "إذاعة القرآن";
+            name = getString(R.string.quran_radio);
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel notificationChannel  = new NotificationChannel(
                     channelId, name, importance);

@@ -36,8 +36,8 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
     private final Context context;
     private final AppDatabase db;
     private final SharedPreferences pref;
-    private final List<ReciterSuraCard> suarCards;
-    private final List<ReciterSuraCard> suarCardsCopy;
+    private final List<ReciterSuraCard> items;
+    private final List<ReciterSuraCard> itemsCopy;
     private final int versionId;
     private final TelawatVersionsDB ver;
     private final boolean[] downloaded = new boolean[114];
@@ -67,8 +67,8 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
 
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        suarCards = new ArrayList<>(cards);
-        suarCardsCopy = new ArrayList<>(cards);
+        items = new ArrayList<>(cards);
+        itemsCopy = new ArrayList<>(cards);
 
         this.versionId = versionId;
 
@@ -89,8 +89,8 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
-        viewHolder.namescreen.setText(suarCards.get(position).getSurahName());
-        viewHolder.card.setOnClickListener(suarCards.get(position).getListener());
+        viewHolder.namescreen.setText(items.get(position).getSurahName());
+        viewHolder.card.setOnClickListener(items.get(position).getListener());
 
         doFavorite(viewHolder, position);
 
@@ -99,24 +99,24 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
 
     @Override
     public int getItemCount() {
-        return suarCards.size();
+        return items.size();
     }
 
     public void filter(String text) {
-        suarCards.clear();
+        items.clear();
         if (text.isEmpty())
-            suarCards.addAll(suarCardsCopy);
+            items.addAll(itemsCopy);
         else {
-            for(ReciterSuraCard reciterCard: suarCardsCopy) {
+            for(ReciterSuraCard reciterCard: itemsCopy) {
                 if (reciterCard.getSearchName().contains(text))
-                    suarCards.add(reciterCard);
+                    items.add(reciterCard);
             }
         }
         notifyDataSetChanged();
     }
 
     private void doFavorite(ViewHolder viewHolder, int position) {
-        ReciterSuraCard card = suarCards.get(position);
+        ReciterSuraCard card = items.get(position);
 
         int fav = card.getFavorite();
         if (fav == 0)
@@ -142,7 +142,7 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
     }
 
     private void doDownloaded(ViewHolder viewHolder, int position) {
-        int suraNum = suarCards.get(position).getNum();
+        int suraNum = items.get(position).getNum();
 
         if (downloaded[suraNum])
             viewHolder.downloadBtn.setImageDrawable(AppCompatResources.getDrawable(
@@ -152,8 +152,8 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
                     context, R.drawable.ic_download));
 
         viewHolder.downloadBtn.setOnClickListener(v -> {
-            if (downloaded[suarCards.get(position).getNum()]) {
-                int num = suarCards.get(position).getNum();
+            if (downloaded[items.get(position).getNum()]) {
+                int num = items.get(position).getNum();
                 String postfix = prefix + "/" + num + ".mp3";
                 Utils.deleteFile(context, postfix);
 
@@ -162,7 +162,7 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
                         context, R.drawable.ic_download));
             }
             else {
-                download(suarCards.get(position).getNum());
+                download(items.get(position).getNum());
 
                 viewHolder.downloadBtn.setImageDrawable(AppCompatResources.getDrawable(
                         context, R.drawable.ic_downloaded));
@@ -199,7 +199,9 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
                 Context.DOWNLOAD_SERVICE);
         Uri uri = Uri.parse(link);
         DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setTitle("تحميل التلاوة");
+        String title = context.getString(R.string.downloading) + " " +
+                items.get(num).getSearchName();
+        request.setTitle(title);
         request.setVisibleInDownloadsUi(true);
         String postfix = "/Telawat/" + ver.getReciter_id() + "/" + versionId;
         Utils.createDir(context, postfix);

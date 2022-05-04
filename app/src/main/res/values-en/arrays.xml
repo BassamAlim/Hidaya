@@ -9,6 +9,47 @@
         <item>Ishaa</item>
     </string-array>
 
+    <string-array name="prayer_titles">
+        <item>Fajr prayer</item>
+        <item>Shorouq</item>
+        <item>Duhr prayer</item>
+        <item>Asr prayer</item>
+        <item>Maghrib prayer</item>
+        <item>Ishaa prayer</item>
+        <item>Morning athkar</item>
+        <item>Evening athkar</item>
+        <item>Daily werd</item>
+        <item>Surat al-Kahf lights up between two fridays</item>
+        <item>Friday prayer</item>
+    </string-array>
+
+    <string-array name="prayer_subtitles">
+        <item>It\'s Fajr athan time</item>
+        <item>It\'s Shorouq time</item>
+        <item>It\'s Duhr athan time</item>
+        <item>It\'s Asr athan time</item>
+        <item>It\'s Maghrib athan time</item>
+        <item>It\'s Ishaa athan time</item>
+        <item>Click to read morning athkar</item>
+        <item>Click to read evening athkar</item>
+        <item>Click to read today\'s quran page</item>
+        <item>Click to read surat al-Kahf</item>
+        <item>It\'s friday prayer second athan time</item>
+    </string-array>
+
+    <string-array name="reminders">
+        <item>Prayer alerts</item>
+        <item>Shorouq reminder</item>
+        <item>Prayer alerts</item>
+        <item>Prayer alerts</item>
+        <item>Prayer alerts</item>
+        <item>Prayer alerts</item>
+        <item>Morning and evening athkar reminders</item>
+        <item>Morning and evening athkar reminders</item>
+        <item>Daily werd reminder</item>
+        <item>Surat al-Kahf reminder</item>
+    </string-array>
+
     <string-array name="time_settings_entries">
         <item>-30</item>
         <item>-25</item>

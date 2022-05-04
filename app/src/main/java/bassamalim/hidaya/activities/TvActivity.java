@@ -12,6 +12,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivityTvBinding;
 import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
@@ -68,7 +69,7 @@ public class TvActivity extends YouTubeBaseActivity {
             public void onInitializationFailure(YouTubePlayer.Provider provider,
                                                 YouTubeInitializationResult
                                                         youTubeInitializationResult) {
-                Toast.makeText(getApplicationContext(), "فشل التشغيل",
+                Toast.makeText(getApplicationContext(), getString(R.string.playback_failed),
                         Toast.LENGTH_SHORT).show();
             }
         });

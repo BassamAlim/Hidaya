@@ -20,12 +20,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import java.util.Calendar;
+
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.Splash;
-import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.enums.ID;
-
-import java.util.Calendar;
+import bassamalim.hidaya.other.Global;
 
 public class AthanService extends Service {
 
@@ -60,40 +60,14 @@ public class AthanService extends Service {
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_athan);
         builder.setLargeIcon(icon);
         builder.setTicker(getResources().getString(R.string.app_name));
-        switch (id) {
-            case FAJR: {
-                builder.setContentTitle("صلاة الفجر");
-                builder.setContentText("حان موعد أذان الفجر");
-                break;
-            }
-            case DUHR: {
-                if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
-                    builder.setContentTitle("صلاة الجمعة");
-                    builder.setContentText("حان موعد الأذان الثاني لصلاة الجمعة");
-                }
-                else {
-                    builder.setContentTitle("صلاة الظهر");
-                    builder.setContentText("حان موعد أذان الظهر");
-                }
-                break;
-            }
-            case ASR: {
-                builder.setContentTitle("صلاة العصر");
-                builder.setContentText("حان موعد أذان العصر");
-                break;
-            }
-            case MAGHRIB: {
-                builder.setContentTitle("صلاة المغرب");
-                builder.setContentText("حان موعد أذان المغرب");
-                break;
-            }
-            case ISHAA: {
-                builder.setContentTitle("صلاة العشاء");
-                builder.setContentText("حان موعد أذان العشاء");
-                break;
-            }
-        }
-        builder.addAction(0, "إيقاف الأذان", getStopIntent());
+
+        int i = id.ordinal();
+        if (id == ID.DUHR && Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+            i = 10;
+        builder.setContentTitle(getResources().getStringArray(R.array.prayer_titles)[i]);
+        builder.setContentText(getResources().getStringArray(R.array.prayer_subtitles)[i]);
+
+        builder.addAction(0, getString(R.string.stop_athan), getStopIntent());
         builder.setContentIntent(getStopAndOpenIntent());
         builder.setDeleteIntent(getStopIntent());
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
@@ -124,7 +98,7 @@ public class AthanService extends Service {
             String description = "";
 
             channelId = "Athan";
-            name = "إشعارات الصلوات";
+            name = getString(R.string.prayer_alerts);
 
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel notificationChannel  = new NotificationChannel(

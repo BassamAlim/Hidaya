@@ -355,7 +355,8 @@ public class AyahPlayer {
     }
 
     private void notFound() {
-        Toast.makeText(context, "لا يتوفر تسجيل الآية لهذا القارئ", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getString(R.string.recitation_not_available),
+                Toast.LENGTH_SHORT).show();
 
         state = States.Stopped;
         coordinator.onUiUpdate(States.Paused);

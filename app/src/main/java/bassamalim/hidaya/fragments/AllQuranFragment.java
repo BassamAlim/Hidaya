@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.activities.QuranSearcherActivity;
 import bassamalim.hidaya.adapters.QuranFragmentAdapter;
@@ -112,6 +113,7 @@ public class AllQuranFragment extends Fragment {
         ArrayList<SuraCard> cards = new ArrayList<>();
         List<SuraDB> suras = getSuras();
 
+        String surat = getString(R.string.sura);
         for (int i = 0; i < suras.size(); i++) {
             SuraDB sura = suras.get(i);
 
@@ -122,7 +124,7 @@ public class AllQuranFragment extends Fragment {
                 requireContext().startActivity(intent);
             };
 
-            cards.add(new SuraCard(sura.getSura_id(),"سُورَة " + sura.getSura_name(),
+            cards.add(new SuraCard(sura.getSura_id(), surat + " " + sura.getSura_name(),
                     sura.getSearch_name(), sura.getTanzeel(),
                     favs.get(sura.getFavorite()), cardListener));
         }

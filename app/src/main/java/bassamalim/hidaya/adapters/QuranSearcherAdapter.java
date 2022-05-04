@@ -22,6 +22,11 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
 
     private Context context;
     private final List<Ayah> suraCards;
+    private final String suraStr;
+    private final String tafseerString;
+    private final String suraNumString;
+    private final String pageNumString;
+    private final String ayaNumString;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView suraNumTv;
@@ -46,6 +51,11 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
 
     public QuranSearcherAdapter(List<Ayah> results) {
         suraCards = results;
+        suraStr = context.getString(R.string.sura);
+        suraNumString = context.getString(R.string.sura_number);
+        pageNumString = context.getString(R.string.page_number);
+        ayaNumString = context.getString(R.string.aya_number);
+        tafseerString = context.getString(R.string.tafseer);
     }
 
     @NonNull @Override
@@ -62,24 +72,24 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
     public void onBindViewHolder(QuranSearcherAdapter.ViewHolder viewHolder, final int position) {
         Ayah card = suraCards.get(position);
 
-        String suraNumStr = "سورة رقم " + Utils.translateNumbers(
+        String suraNumStr = suraNumString + " " + Utils.translateNumbers(
                 context, String.valueOf(card.getSurah()));
         viewHolder.suraNumTv.setText(suraNumStr);
 
-        String suraNameStr = "سورة " + card.getSurahName();
+        String suraNameStr = suraStr +  " " + card.getSurahName();
         viewHolder.suraNameTv.setText(suraNameStr);
 
-        String pageNumStr = "صفحة رقم " + Utils.translateNumbers(
+        String pageNumStr = pageNumString + " " + Utils.translateNumbers(
                 context, String.valueOf(card.getPageNum()));
         viewHolder.pageNumTv.setText(pageNumStr);
 
-        String ayaNumStr = "آية رقم " + Utils.translateNumbers(
+        String ayaNumStr = ayaNumString + " " + Utils.translateNumbers(
                 context, String.valueOf(card.getAyah()));
         viewHolder.ayaNumTv.setText(ayaNumStr);
 
         viewHolder.ayaTextTv.setText(card.getSS());
 
-        String ayaTafseerStr = "التفسير: " + card.getTafseer();
+        String ayaTafseerStr = tafseerString + ": " + card.getTafseer();
         viewHolder.ayaTafseerTv.setText(ayaTafseerStr);
 
         viewHolder.gotoPageBtn.setOnClickListener(v -> {

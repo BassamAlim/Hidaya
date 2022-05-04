@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.other.Global;
 
 public class Compass implements SensorEventListener {
@@ -51,7 +52,8 @@ public class Compass implements SensorEventListener {
         if (!haveAS || !haveCS) {
             sensorManager.unregisterListener(this, aSensor);
             sensorManager.unregisterListener(this, mSensor);
-            Toast.makeText(context, "لايوجد حساسات كافية لحساب القبلة", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.feature_not_supported),
+                    Toast.LENGTH_SHORT).show();
             Log.e(Global.TAG, "Device don't have enough sensors");
         }
     }

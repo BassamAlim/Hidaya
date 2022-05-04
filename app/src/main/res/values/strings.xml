@@ -105,6 +105,7 @@
     <string name="quran_query_hint">ابحث عن اسم السورة أو رقم الصفحة</string>
     <string name="athkar_hint">ابحث عن الذِكر</string>
     <string name="reciters_hint">ابحث عن القارئ</string>
+    <string name="suar_hint">ابحث عن السورة</string>
 
     <!-- Summaries -->
     <string name="default_morning_summary">٥:٠٠ صباحاً</string>
@@ -142,6 +143,11 @@
     <string name="vip_welcome">مرحبا بك في قسم الشخصيات المهمة</string>
     <string name="database_rebuilt">تمت إعادة بناء قاعدة البيانات</string>
     <string name="wait_for_download">انتظر حتى يكتمل التحميل</string>
+    <string name="feature_not_supported">جهازك لا يدعم هذه الميزة</string>
+    <string name="page_does_not_exist">لا توجد صفحة بهذا الرقم</string>
+    <string name="playback_failed">فشل التشغيل</string>
+    <string name="choose_allow_all_the_time">اختر \"السماح طوال الوقت\" لإبقاء أوقات الصلاة وإتجاه القبلة دقيقة</string>
+    <string name="recitation_not_available">لا يتوفر تسجيل الآية لهذا القارئ</string>
 
     <string name="athan_speaker">أذان</string>
     <string name="enable_notification">إشعار مسموع</string>
@@ -219,5 +225,13 @@
     <string name="your_score_is">نتيجتك هي</string>
     <string name="no_last_play">لم يتم تشغيل أي تلاوة بعد</string>
     <string name="last_play">آخر تشغيل</string>
+    <string name="prayer_alerts">إشعارات الصلوات</string>
+    <string name="stop_athan">إيقاف الأذان</string>
+    <string name="for_reciter">للقارئ</string>
+    <string name="in_rewaya_of">برواية</string>
+    <string name="downloading">جاري تحميل</string>
+    <string name="sura_number">سورة رقم</string>
+    <string name="page_number">صفحة رقم</string>
+    <string name="aya_number">آية رقم</string>
 
 </resources>

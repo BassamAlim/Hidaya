@@ -21,6 +21,7 @@ import com.google.android.gms.location.LocationServices;
 
 import java.util.Collection;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.helpers.Keeper;
 import bassamalim.hidaya.services.AthanService;
 
@@ -131,7 +132,7 @@ public class Splash extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void background() {
-        Toast.makeText(this, "اختر السماح طوال الوقت لإبقاء الموقع دقيق",
+        Toast.makeText(this, getString(R.string.choose_allow_all_the_time),
                 Toast.LENGTH_SHORT).show();
         requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                 0);

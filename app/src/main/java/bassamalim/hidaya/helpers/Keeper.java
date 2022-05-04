@@ -6,6 +6,7 @@ import android.location.Location;
 
 import androidx.preference.PreferenceManager;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.models.MyLocation;
 import bassamalim.hidaya.other.Utils;
 
@@ -146,12 +147,15 @@ public class Keeper {
      */
     private String[] reformatTimes(ArrayList<String> givenTimes) {
         String[] arr = new String[givenTimes.size()-1];
+        String[] prayerNames = context.getResources().getStringArray(R.array.prayer_names);
 
-        arr[0] = "الفجر\n" + givenTimes.get(0);
-        arr[1] = "الظهر\n" + givenTimes.get(2);
-        arr[2] = "العصر\n" + givenTimes.get(3);
-        arr[3] = "المغرب\n" + givenTimes.get(4);
-        arr[4] = "العشاء\n" + givenTimes.get(5);
+        int index = 0;
+        for (int i = 0; i < 5; i++) {
+            arr[i] = prayerNames[index] + "\n" + givenTimes.get(index);
+
+            if (index++ == 1)
+                index = 2;
+        }
 
         return arr;
     }

@@ -100,8 +100,7 @@
             android:name=".activities.TelawatClient"
             android:launchMode="singleTop" />
         <activity
-            android:name=".activities.TelawatCollectionActivity"
-            android:label="تلاوات" />
+            android:name=".activities.TelawatCollectionActivity" />
         <activity
             android:name=".dialogs.QuranSettingsDialog"
             android:theme="@style/Theme.AppCompat.Dialog" />

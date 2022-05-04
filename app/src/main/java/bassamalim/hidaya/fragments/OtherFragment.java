@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.AboutActivity;
 import bassamalim.hidaya.activities.BooksActivity;
 import bassamalim.hidaya.activities.DateConverter;
@@ -47,7 +48,7 @@ public class OtherFragment extends Fragment {
                 startActivity(intent);
             }
             else
-                Toast.makeText(getContext(), "جهازك لا يدعم هذه الميزة",
+                Toast.makeText(getContext(), getString(R.string.feature_not_supported),
                         Toast.LENGTH_SHORT).show();
         });
 
@@ -72,7 +73,7 @@ public class OtherFragment extends Fragment {
                 startActivity(intent);
             }
             else
-                Toast.makeText(getContext(), "جهازك لا يدعم هذه الميزة",
+                Toast.makeText(getContext(), getString(R.string.feature_not_supported),
                         Toast.LENGTH_SHORT).show();
         });
 

@@ -12,7 +12,7 @@
         android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:defaultQueryHint="ابحث عن السورة"
+        app:defaultQueryHint="@string/suar_hint"
         app:iconifiedByDefault="false"
         app:layout_constraintTop_toTopOf="parent" />
 

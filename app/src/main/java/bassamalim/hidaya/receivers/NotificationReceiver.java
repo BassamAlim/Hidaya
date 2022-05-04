@@ -17,16 +17,16 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
+import java.util.Calendar;
+
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.AthkarViewer;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.activities.Splash;
-import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.enums.ID;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.services.AthanService;
-
-import java.util.Calendar;
 
 public class NotificationReceiver extends BroadcastReceiver {
 
@@ -106,64 +106,11 @@ public class NotificationReceiver extends BroadcastReceiver {
         builder.setLargeIcon(icon);
         builder.setTicker(context.getResources().getString(R.string.app_name));
 
-        switch (id) {
-            case FAJR: {
-                builder.setContentTitle("صلاة الفجر");
-                builder.setContentText("حان موعد أذان الفجر");
-                break;
-            }
-            case SHOROUQ: {
-                builder.setContentTitle("الشروق");
-                builder.setContentText("حان وقت الشروق");
-                break;
-            }
-            case DUHR: {
-                if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
-                    builder.setContentTitle("صلاة الجمعة");
-                    builder.setContentText("حان موعد الأذان الثاني لصلاة الجمعة");
-                }
-                else {
-                    builder.setContentTitle("صلاة الظهر");
-                    builder.setContentText("حان موعد أذان الظهر");
-                }
-                break;
-            }
-            case ASR: {
-                builder.setContentTitle("صلاة العصر");
-                builder.setContentText("حان موعد أذان العصر");
-                break;
-            }
-            case MAGHRIB: {
-                builder.setContentTitle("صلاة المغرب");
-                builder.setContentText("حان موعد أذان المغرب");
-                break;
-            }
-            case ISHAA: {
-                builder.setContentTitle("صلاة العشاء");
-                builder.setContentText("حان موعد أذان العشاء");
-                break;
-            }
-            case MORNING: {
-                builder.setContentTitle("أذكار الصباح");
-                builder.setContentText("اضغط لقراءة أذكار الصباح");
-                break;
-            }
-            case EVENING: {
-                builder.setContentTitle("أذكار المساء");
-                builder.setContentText("اضغط لقراءة أذكار المساء");
-                break;
-            }
-            case DAILY_WERD: {
-                builder.setContentTitle("الوِرد اليومي");
-                builder.setContentText("اضغط لقراءة صفحة اليوم من المصحف");
-                break;
-            }
-            case FRIDAY_KAHF: {
-                builder.setContentTitle("سورة الكهف نور ما بين الجمعتين");
-                builder.setContentText("اضغط لقراءة سورة الكهف");
-                break;
-            }
-        }
+        int i = id.ordinal();
+        if (id == ID.DUHR && Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+            i = 10;
+        builder.setContentTitle(context.getResources().getStringArray(R.array.prayer_titles)[i]);
+        builder.setContentText(context.getResources().getStringArray(R.array.prayer_subtitles)[i]);
 
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
         builder.setAutoCancel(true);
@@ -216,31 +163,10 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "";
             String description = "";
-            if (isPrayer) {
-                channelId = "Athan";
-                name = "إشعارات الصلوات";
-            }
-            else {
-                switch (id) {
-                    case SHOROUQ:
-                        channelId = "sunrise";
-                        name = "إشعار الشروق";
-                        break;
-                    case MORNING:
-                    case EVENING:
-                        channelId = "morning and night";
-                        name = "إشعارات أذكار الصباح والمساء";
-                        break;
-                    case DAILY_WERD:
-                        channelId = "daily_page";
-                        name = "إشعار صفحة اليوم";
-                        break;
-                    case FRIDAY_KAHF:
-                        channelId = "friday_kahf";
-                        name = "إشعار سورة الكهف";
-                        break;
-                }
-            }
+
+            channelId = context.getResources().getStringArray(R.array.channel_ids)[id.ordinal()];
+            name = context.getResources().getStringArray(R.array.reminders)[id.ordinal()];
+
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel notificationChannel  = new NotificationChannel(
                     channelId, name, importance);

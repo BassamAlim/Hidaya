@@ -642,7 +642,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
         CharSequence name;
         String description = "quran listening";
         channelId = "Telawat";
-        name = "تلاوات";
+        name = getString(R.string.recitations);
         int importance = NotificationManager.IMPORTANCE_DEFAULT;
         NotificationChannel notificationChannel  = new NotificationChannel(
                 channelId, name, importance);
@@ -706,8 +706,9 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     }
 
     private void saveForLater(int progress) {
-        String text = "سورة " + surahNames.get(surahIndex) + " للقارئ " + reciterName + " برواية " +
-                version.getRewaya();
+        String text = getString(R.string.sura) +  " " + surahNames.get(surahIndex) + " " +
+                getString(R.string.for_reciter) + " " + reciterName + " " +
+                getString(R.string.in_rewaya_of) + " " + version.getRewaya();
 
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("last_played_media_id", mediaId);
