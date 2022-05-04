@@ -288,7 +288,6 @@
         app:cardCornerRadius="10dp"
         app:cardElevation="10dp"
         app:cardMaxElevation="12dp"
-        android:layoutDirection="ltr"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ishaa_card">
 
@@ -296,10 +295,10 @@
             android:id="@+id/previous_day_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
+            android:layout_gravity="start"
             android:backgroundTint="?attr/mySurface"
             android:contentDescription="@string/previous_day_button_description"
-            android:src="@drawable/ic_right_arrow" />
+            android:src="@drawable/ic_left_arrow" />
 
         <TextView
             android:id="@+id/day_screen"
@@ -315,10 +314,10 @@
             android:id="@+id/next_day_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
+            android:layout_gravity="end"
             android:backgroundTint="?attr/mySurface"
             android:contentDescription="@string/next_day_button_description"
-            android:src="@drawable/ic_left_arrow" />
+            android:src="@drawable/ic_right_arrow" />
 
     </androidx.cardview.widget.CardView>
 

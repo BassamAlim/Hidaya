@@ -42,7 +42,6 @@
         tools:ignore="SpUsage" />
 
 
-
     <RadioGroup
         android:id="@+id/answers_radio_group"
         android:layout_width="match_parent"
@@ -58,14 +57,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:padding="15dp"
-            android:elevation="15dp"
-            android:gravity="center"
             android:background="@drawable/radio_selector"
             android:button="@android:color/transparent"
-            android:textSize="23dp"
+            android:elevation="15dp"
             android:fontFamily="@font/tajawal_regular"
+            android:gravity="center"
+            android:padding="15dp"
             android:textColor="@drawable/radio_text_selector"
+            android:textSize="23dp"
             tools:ignore="SpUsage" />
 
         <RadioButton
@@ -73,14 +72,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:padding="15dp"
-            android:elevation="15dp"
-            android:gravity="center"
             android:background="@drawable/radio_selector"
             android:button="@android:color/transparent"
-            android:textSize="23dp"
+            android:elevation="15dp"
             android:fontFamily="@font/tajawal_regular"
+            android:gravity="center"
+            android:padding="15dp"
             android:textColor="@drawable/radio_text_selector"
+            android:textSize="23dp"
             tools:ignore="SpUsage" />
 
         <RadioButton
@@ -88,14 +87,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:padding="15dp"
-            android:gravity="center"
-            android:elevation="15dp"
             android:background="@drawable/radio_selector"
             android:button="@android:color/transparent"
-            android:textSize="23dp"
+            android:elevation="15dp"
             android:fontFamily="@font/tajawal_regular"
+            android:gravity="center"
+            android:padding="15dp"
             android:textColor="@drawable/radio_text_selector"
+            android:textSize="23dp"
             tools:ignore="SpUsage" />
 
         <RadioButton
@@ -103,14 +102,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:padding="15dp"
-            android:elevation="15dp"
-            android:gravity="center"
             android:background="@drawable/radio_selector"
             android:button="@android:color/transparent"
-            android:textSize="23dp"
+            android:elevation="15dp"
             android:fontFamily="@font/tajawal_regular"
+            android:gravity="center"
+            android:padding="15dp"
             android:textColor="@drawable/radio_text_selector"
+            android:textSize="23dp"
             tools:ignore="SpUsage" />
 
     </RadioGroup>

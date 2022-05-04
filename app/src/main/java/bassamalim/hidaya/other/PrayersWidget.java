@@ -10,8 +10,8 @@ import bassamalim.hidaya.R;
 
 public class PrayersWidget extends AppWidgetProvider {
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    static void updateAppWidget(Context context,
+                                AppWidgetManager appWidgetManager, int appWidgetId) {
 
         String[] timesList = new Keeper(context).retrieveStrTimes();
 

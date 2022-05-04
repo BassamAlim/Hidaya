@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/prayers_widget_bg"
+    android:layoutDirection="rtl"
     android:gravity="center">
 
     <TextView
@@ -10,11 +11,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginEnd=".5dp"
+        android:paddingHorizontal="5dp"
         android:layout_weight="1"
         android:background="@color/surface_M"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="23dp"
+        android:textSize="17dp"
         tools:ignore="SpUsage" />
 
     <TextView
@@ -22,11 +24,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginHorizontal=".5dp"
+        android:paddingHorizontal="5dp"
         android:layout_weight="1"
         android:background="@color/surface_M"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="23dp"
+        android:textSize="17dp"
         tools:ignore="SpUsage" />
 
     <TextView
@@ -34,11 +37,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginHorizontal=".5dp"
+        android:paddingHorizontal="5dp"
         android:layout_weight="1"
         android:background="@color/surface_M"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="23dp"
+        android:textSize="17dp"
         tools:ignore="SpUsage" />
 
     <TextView
@@ -46,11 +50,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginHorizontal=".5dp"
+        android:paddingHorizontal="5dp"
         android:layout_weight="1"
         android:background="@color/surface_M"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="23dp"
+        android:textSize="17dp"
         tools:ignore="SpUsage" />
 
     <TextView
@@ -58,11 +63,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginStart=".5dp"
+        android:paddingHorizontal="5dp"
         android:layout_weight="1"
         android:background="@color/surface_M"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="23dp"
+        android:textSize="17dp"
         tools:ignore="SpUsage" />
 
 </LinearLayout>

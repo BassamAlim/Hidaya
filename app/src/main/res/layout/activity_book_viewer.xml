@@ -48,12 +48,12 @@
             android:id="@+id/text_size_ib"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:layout_gravity="center"
             android:layout_marginHorizontal="15dp"
             android:layout_marginVertical="5dp"
             android:background="@drawable/ripple_circle"
             android:contentDescription="@string/bookmark_page_button_description"
+            android:padding="10dp"
             android:src="@drawable/ic_text_size" />
 
         <SeekBar
@@ -62,9 +62,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:backgroundTint="?attr/mySurface"
+            android:max="40"
             android:progressTint="?attr/myAccentDark"
             android:thumbTint="?myAccent"
-            android:max="40"
             android:visibility="gone" />
 
     </androidx.appcompat.widget.Toolbar>

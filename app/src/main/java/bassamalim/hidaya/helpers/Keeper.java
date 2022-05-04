@@ -153,7 +153,7 @@ public class Keeper {
         for (int i = 0; i < 5; i++) {
             arr[i] = prayerNames[index] + "\n" + givenTimes.get(index);
 
-            if (index++ == 1)
+            if (++index == 1)
                 index = 2;
         }
 

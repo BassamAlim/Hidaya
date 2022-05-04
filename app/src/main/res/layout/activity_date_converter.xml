@@ -66,9 +66,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
-        android:layoutDirection="ltr"
         android:layout_marginTop="30dp"
         android:background="@drawable/rounded_dialog"
+        android:layoutDirection="ltr"
         android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@id/gregorian_result_space"
         app:layout_constraintTop_toBottomOf="@id/gregorian_to_hijri_btn">
@@ -171,10 +171,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
-        android:layoutDirection="ltr"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="50dp"
         android:background="@drawable/rounded_dialog"
+        android:layoutDirection="ltr"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hijri_result_space">
