@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
+import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivityAboutBinding;
 import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
@@ -46,7 +47,7 @@ public class AboutActivity extends AppCompatActivity {
 
             Utils.reviveDb(this);
 
-            Toast.makeText(this, "تمت إعادة بناء قاعدة البيانات",
+            Toast.makeText(this, getString(R.string.database_rebuilt),
                     Toast.LENGTH_SHORT).show();
         });
         binding.driveUpdate.setOnClickListener(v -> {
@@ -58,7 +59,7 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     private void voala() {
-        Toast.makeText(this, "مرحبا بك في قسم الشخصيات المهمة", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.vip_welcome), Toast.LENGTH_SHORT).show();
         binding.driveUpdate.setVisibility(View.VISIBLE);
         binding.rebuildDb.setVisibility(View.VISIBLE);
     }

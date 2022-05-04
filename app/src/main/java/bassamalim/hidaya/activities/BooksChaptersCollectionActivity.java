@@ -45,7 +45,7 @@ public class BooksChaptersCollectionActivity extends FragmentActivity {
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
-        String[] tabs = new String[] {"الكل", "المفضلة"};
+        String[] tabs = new String[] {getString(R.string.all), getString(R.string.favorite)};
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> tab.setText(tabs[position])
         ).attach();

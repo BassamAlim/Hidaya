@@ -1,5 +1,16 @@
 <resources>
 
+    <style name="MainAppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="textAllCaps">false</item>
+        <item name="spinnerDropDownItemStyle">@style/MySpinnerItem</item>
+        <item name="alertDialogTheme">@style/MyAlertDialogTheme</item>
+        <item name="android:datePickerDialogTheme">@style/MyDatePickerDialogTheme</item>
+        <item name="android:timePickerDialogTheme">@style/MyTimePicker</item>
+        <item name="android:timePickerStyle">@style/MyTimePicker</item>
+        <item name="materialTimePickerStyle">@style/MyTimePicker</item>
+        <item name="materialTimePickerTheme">@style/MyTimePicker</item>
+    </style>
+
     <style name="SplashTheme" parent="Theme.SplashScreen">
         // Set the splash screen background, animated icon, and animation duration.
         <item name="windowSplashScreenBackground">@color/bg_M</item>
@@ -16,7 +27,7 @@
     </style>
 
     <!-- Base application theme. -->
-    <style name="Theme.HidayaM" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.HidayaM" parent="MainAppTheme">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary_M</item>
         <item name="colorPrimaryVariant">@color/primary_M</item>
@@ -30,13 +41,6 @@
         <item name="android:textColor">@color/text_M</item>
         <item name="colorAccent">@color/accent_M</item>
         <item name="titleTextColor">@color/white</item>
-        <item name="spinnerDropDownItemStyle">@style/MySpinnerItem</item>
-        <item name="alertDialogTheme">@style/MyAlertDialogTheme</item>
-        <item name="android:datePickerDialogTheme">@style/MyDatePickerDialogTheme</item>
-        <item name="android:timePickerDialogTheme">@style/MyTimePicker</item>
-        <item name="android:timePickerStyle">@style/MyTimePicker</item>
-        <item name="materialTimePickerStyle">@style/MyTimePicker</item>
-        <item name="materialTimePickerTheme">@style/MyTimePicker</item>
         <!-- My Special Theme -->
         <item name="myMainBg">@color/bg_M</item>
         <item name="myPrimary">@color/primary_M</item>
@@ -57,7 +61,7 @@
         <item name="myNavBar">@drawable/nav_bar_item_bg_m</item>
     </style>
 
-    <style name="Theme.HidayaL" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.HidayaL" parent="MainAppTheme">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary_L</item>
         <item name="colorPrimaryVariant">@color/primary_L</item>
@@ -71,10 +75,6 @@
         <item name="android:textColor">@color/text_L</item>
         <item name="colorAccent">@color/accent_L</item>
         <item name="titleTextColor">@color/text_M</item>
-        <item name="spinnerDropDownItemStyle">@style/MySpinnerItem</item>
-        <item name="alertDialogTheme">@style/MyAlertDialogTheme</item>
-        <item name="android:datePickerDialogTheme">@style/MyDatePickerDialogTheme</item>
-        <item name="android:timePickerDialogTheme">@style/MyTimePicker</item>
         <!-- My Special Theme -->
         <item name="myMainBg">@color/bg_L</item>
         <item name="myPrimary">@color/primary_L</item>

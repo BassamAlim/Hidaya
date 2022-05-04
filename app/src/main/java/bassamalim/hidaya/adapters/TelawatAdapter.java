@@ -89,6 +89,9 @@ public class TelawatAdapter extends FilteredRecyclerAdapter<TelawatAdapter.ViewH
 
     @Override
     public void filter(String text, boolean[] selected) {
+        if (!context.getString(R.string.language_key).equals("ar"))    // Support english filter
+            return;
+
         this.selected = selected;
 
         recitersCards.clear();

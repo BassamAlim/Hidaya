@@ -25,9 +25,6 @@ public class HijriDatePicker extends DialogFragment {
     private NumberPicker yearPicker;
     private NumberPicker dayPicker;
     private final UmmalquraCalendar cal = new UmmalquraCalendar();
-    private final String[] hijriMonths = new String[] {"(١) مُحَرَّم", "(٢) صَفَر", "(٣) ربيع الأول",
-            "(٤) ربيع الثاني", "(٥) جُمادى الأول", "(٦) جُمادى الآخر", "(٧) رَجَب", "(٨) شعبان",
-            "(٩) رَمَضان", "(١٠) شَوَّال", "(١١) ذو القِعْدة", "(١٢) ذو الحِجَّة"};
 
     @Override
     public void onStart() {
@@ -55,7 +52,7 @@ public class HijriDatePicker extends DialogFragment {
         int MAX_YEAR = 2000;
         String[] tempArray = new String[MAX_YEAR];
         for (int i = 0; i < MAX_YEAR; i++)
-            tempArray[i] = Utils.translateNumbers(String.valueOf(i+1));
+            tempArray[i] = Utils.translateNumbers(getContext(), String.valueOf(i+1));
 
         yearPicker.setMinValue(1);
         yearPicker.setMaxValue(MAX_YEAR);
@@ -69,7 +66,8 @@ public class HijriDatePicker extends DialogFragment {
         monthPicker.setMinValue(1);
         monthPicker.setMaxValue(12);
         monthPicker.setValue(cal.get(Calendar.MONTH)+1);
-        monthPicker.setDisplayedValues(hijriMonths);
+        monthPicker.setDisplayedValues(getResources()
+                .getStringArray(R.array.numbered_hijri_months));
         monthPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
             cal.set(Calendar.MONTH, newVal-1);
             dayPicker.setMaxValue(cal.lengthOfMonth());
@@ -77,7 +75,7 @@ public class HijriDatePicker extends DialogFragment {
 
         String[] daysNums = new String[30];
         for (int i = 0; i < daysNums.length; i++)
-            daysNums[i] = Utils.translateNumbers(String.valueOf(i+1));
+            daysNums[i] = Utils.translateNumbers(getContext(), String.valueOf(i+1));
 
         dayPicker.setMinValue(1);
         dayPicker.setMaxValue(cal.lengthOfMonth());

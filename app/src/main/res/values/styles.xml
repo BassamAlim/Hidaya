@@ -27,9 +27,9 @@
         <item name="android:background">@drawable/ripple_primary</item>
         <item name="android:contentDescription">@string/back_description</item>
         <item name="android:src">@drawable/ic_back</item>
-        <item name="android:layout_marginEnd">15dp</item>
+        <item name="android:layout_marginStart">15dp</item>
         <item name="android:padding">10dp</item>
-        <item name="android:layout_gravity">end</item>
+        <item name="android:layout_gravity">start</item>
     </style>
 
     <style name="PrayerDialogAnimation">
@@ -57,7 +57,7 @@
         <item name="android:paddingBottom">10dp</item>
         <item name="paddingStart">5dp</item>
         <item name="paddingEnd">5dp</item>
-        <item name="android:gravity">center|bottom</item>
+        <item name="android:gravity">center</item>
         <item name="android:textSize" tools:ignore="SpUsage">23dp</item>
         <item name="fontFamily">@font/tajawal_regular</item>
     </style>
@@ -107,7 +107,7 @@
     <style name="PrayerCounter" parent="Widget.AppCompat.TextView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingEnd">40dp</item>
+        <item name="android:paddingStart">40dp</item>
         <item name="android:background">?myCounter</item>
         <item name="android:gravity">start</item>
         <item name="android:textColor">?myAccent</item>

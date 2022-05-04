@@ -140,11 +140,12 @@ public class QuranActivity extends SwipeActivity {
     private void setListeners() {
         binding.bookmarkButton.setOnClickListener(v -> {
             SharedPreferences.Editor editor = pref.edit();
-            String text = currentPageText + ", " + currentSurah;
             editor.putInt("bookmarked_page", currentPage);
-            editor.putString("bookmarked_text", text);
+            editor.putString("bookmarked_text", currentPageText + ", " + currentSurah);
             editor.apply();
-            Toast.makeText(this, "تم حفظ الصفحة", Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(this, getString(R.string.page_bookmarked),
+                    Toast.LENGTH_SHORT).show();
         });
         binding.prevAyah.setOnClickListener(view -> ayahPlayer.prevAyah());
         binding.play.setOnClickListener(view -> {
@@ -346,9 +347,11 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private void finalize(int juz, String name) {
-        String juzText = "جزء " + Utils.translateNumbers(String.valueOf(juz));
-        currentSurah = "سُورَة " + name;
-        currentPageText = "صفحة " + Utils.translateNumbers(String.valueOf(currentPage));
+        String juzText = getString(R.string.juz) + " " + Utils.translateNumbers(
+                this, String.valueOf(juz));
+        currentSurah = getString(R.string.sura) + " " + name;
+        currentPageText = getString(R.string.page) + " " + Utils.translateNumbers(
+                this, String.valueOf(currentPage));
         binding.juzNumber.setText(juzText);
         binding.suraName.setText(currentSurah);
         binding.pageNumber.setText(currentPageText);

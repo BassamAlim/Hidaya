@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -30,11 +31,12 @@ import bassamalim.hidaya.other.Utils;
 public class BooksActivity extends AppCompatActivity {
 
     private ActivityBooksBinding binding;
+    private Gson gson;
     private int numOfBooks;
     private final String prefix = "/Books/";
     private boolean[] downloaded;
     private CardView[] cards;
-    private ImageButton[] favBtns;
+    private ImageButton[] downloadBtns;
     private Book.BookInfo[] infoArr;
 
     @Override
@@ -44,6 +46,8 @@ public class BooksActivity extends AppCompatActivity {
         binding = ActivityBooksBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
+
+        gson = new Gson();
 
         numOfBooks = getResources().getStringArray(R.array.books_titles).length;
         downloaded = new boolean[numOfBooks];
@@ -63,8 +67,9 @@ public class BooksActivity extends AppCompatActivity {
         String key = "is_first_time_in_books_activity";
         if (PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(key, true))
-            new TutorialDialog(this, getString(R.string.books_activity_tips), key).show(
-                    this.getSupportFragmentManager(), TutorialDialog.TAG);
+            new TutorialDialog(this,
+                    getString(R.string.books_activity_tips), key)
+                    .show(this.getSupportFragmentManager(), TutorialDialog.TAG);
     }
 
     private void checkDownloaded() {
@@ -90,13 +95,14 @@ public class BooksActivity extends AppCompatActivity {
 
     private void getInfoArr() {
         infoArr = new Book.BookInfo[numOfBooks];
+        String[] bookTitles = getResources().getStringArray(R.array.books_titles);
+        String[] bookAuthors = getResources().getStringArray(R.array.books_authors);
         for (int i = 0; i < numOfBooks; i++) {
             if (downloaded[i]) {
                 String path = getExternalFilesDir(null) + "/Books/" + i + ".json";
                 String jsonStr = Utils.getJsonFromDownloads(path);
-                Gson gson = new Gson();
                 Book book = gson.fromJson(jsonStr, Book.class);
-                infoArr[i] = book.getBookInfo();
+                infoArr[i] = new Book.BookInfo(i, bookTitles[i], bookAuthors[i]);
             }
         }
     }
@@ -104,13 +110,11 @@ public class BooksActivity extends AppCompatActivity {
     private void initViews() {
         cards = new CardView[]{binding.bokhariCard, binding.muslimCard};
         TextView[] titleTvs = new TextView[]{binding.bokhariTitleTv, binding.muslimTitleTv};
-        favBtns = new ImageButton[]{binding.bokhariDownloadBtn, binding.muslimDownloadBtn};
+        downloadBtns = new ImageButton[]{binding.bokhariDownloadBtn, binding.muslimDownloadBtn};
 
         for (int i = 0; i < numOfBooks; i++) {
-            if (downloaded[i]) {
+            if (downloaded[i])
                 titleTvs[i].setText(infoArr[i].getBookTitle());
-                // ... other info
-            }
         }
 
         for (int i = 0; i < numOfBooks; i++)
@@ -122,22 +126,32 @@ public class BooksActivity extends AppCompatActivity {
             int finalI = i;
             cards[i].setOnClickListener(v -> {
                 if (downloaded(finalI)) {
-                    Intent intent = new Intent(this,
-                            BooksChaptersCollectionActivity.class);
-                    intent.putExtra("book_id", finalI);
-                    intent.putExtra("book_title",
-                            getResources().getStringArray(R.array.books_titles)[finalI]);
-                    startActivity(intent);
+                    if (downloading(finalI))
+                        Toast.makeText(this, getString(R.string.wait_for_download),
+                                Toast.LENGTH_SHORT).show();
+                    else {
+                        Intent intent = new Intent(this,
+                                BooksChaptersCollectionActivity.class);
+                        intent.putExtra("book_id", finalI);
+                        intent.putExtra("book_title",
+                                getResources().getStringArray(R.array.books_titles)[finalI]);
+                        startActivity(intent);
+                    }
                 }
                 else {
                     getLinkAndRequestDownload(finalI);
                     updateUI(finalI, true);
                 }
             });
-            favBtns[i].setOnClickListener(v -> {
+            downloadBtns[i].setOnClickListener(v -> {
                 if (downloaded(finalI)) {
-                    Utils.deleteFile(this, prefix + finalI + ".json");
-                    updateUI(finalI, false);
+                    if (downloading(finalI))
+                        Toast.makeText(this, getString(R.string.wait_for_download),
+                                Toast.LENGTH_SHORT).show();
+                    else {
+                        Utils.deleteFile(this, prefix + finalI + ".json");
+                        updateUI(finalI, false);
+                    }
                 }
                 else {
                     getLinkAndRequestDownload(finalI);
@@ -175,12 +189,24 @@ public class BooksActivity extends AppCompatActivity {
         return false;
     }
 
+    private boolean downloading(int id) {
+        Log.d(Global.TAG, "here");
+        String path = getExternalFilesDir(null) + "/Books/" + id  + ".json";
+        String jsonStr = Utils.getJsonFromDownloads(path);
+        try {
+            gson.fromJson(jsonStr, Book.class);
+            return false;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
     private void updateUI(int id, boolean downloaded) {
         if (downloaded)
-            favBtns[id].setImageDrawable(AppCompatResources.getDrawable(
+            downloadBtns[id].setImageDrawable(AppCompatResources.getDrawable(
                     this, R.drawable.ic_downloaded));
         else
-            favBtns[id].setImageDrawable(AppCompatResources.getDrawable(
+            downloadBtns[id].setImageDrawable(AppCompatResources.getDrawable(
                     this, R.drawable.ic_download));
     }
 
@@ -210,7 +236,9 @@ public class BooksActivity extends AppCompatActivity {
                 getSystemService(Context.DOWNLOAD_SERVICE);
         Uri uri = Uri.parse(link);
         DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setTitle("تحميل الكتاب");
+         String title = String.format(getString(R.string.book_downloading),
+                getResources().getStringArray(R.array.books_titles)[id]);
+        request.setTitle(title);
         request.setVisibleInDownloadsUi(true);
         Utils.createDir(this, prefix);
         request.setDestinationInExternalFilesDir(this, prefix, id + ".json");

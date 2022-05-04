@@ -33,7 +33,7 @@ public class Keeper {
         context = gContext;
         setUp();
         storeLocation(gLocation);
-        storeTimes(Utils.getTimes(gLocation));
+        storeTimes(Utils.getTimes(context, gLocation));
         storeStrTimes(getStrTimes(gLocation));
     }
 
@@ -133,7 +133,7 @@ public class Keeper {
         long millis = timeZoneObj.getOffset(date.getTime());
         double timezone = millis / 3600000.0;
 
-        return reformatTimes(new PrayTimes().getPrayerTimes(calendar, loc.getLatitude(),
+        return reformatTimes(new PrayTimes(context).getPrayerTimes(calendar, loc.getLatitude(),
                 loc.getLongitude(), timezone));
     }
 

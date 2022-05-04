@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.location.Location;
 import android.util.Log;
 
@@ -24,7 +26,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import bassamalim.hidaya.R;
@@ -48,7 +50,31 @@ public class Utils {
         activity.startActivity(intent);
     }
 
-    public static String translateNumbers(String english) {
+    public static String setLocale(Context context, String language) {
+        if (language == null)
+            language = PreferenceManager.getDefaultSharedPreferences(context)
+                    .getString(context.getString(R.string.language_key), "ar");
+
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+
+        Resources resources = context.getResources();
+
+        Configuration configuration = resources.getConfiguration();
+        configuration.locale = locale;
+        configuration.setLayoutDirection(locale);
+
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+
+        return language;
+    }
+
+    public static String translateNumbers(Context context, String english) {
+        if (!PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(
+                R.string.language_key), context.getString(R.string.default_language)).equals("ar"))
+            return english;
+
         HashMap<Character, Character> map = new HashMap<>();
         map.put('0', '٠');
         map.put('1', '١');
@@ -80,14 +106,14 @@ public class Utils {
         return temp.toString();
     }
 
-    public static Calendar[] getTimes(Location loc) {
+    public static Calendar[] getTimes(Context context, Location loc) {
         Calendar calendar = Calendar.getInstance();
 
         TimeZone timeZoneObj = TimeZone.getDefault();
         long millis = timeZoneObj.getOffset(calendar.getTime().getTime());
         double timezone = millis / 3600000.0;
 
-        return new PrayTimes().getPrayerTimesArray(calendar, loc.getLatitude(),
+        return new PrayTimes(context).getPrayerTimesArray(calendar, loc.getLatitude(),
                 loc.getLongitude(), timezone);
     }
 
@@ -148,14 +174,8 @@ public class Utils {
     public static boolean deleteFile(Context context, String postfix) {
         File file = new File(context.getExternalFilesDir(null) + postfix);
 
-        if (file.exists()) {
-            if (Objects.requireNonNull(file.listFiles()).length > 0) {
-                for (File f : Objects.requireNonNull(file.listFiles()))
-                    f.delete();
-            }
-
+        if (file.exists())
             return file.delete();
-        }
         else
             return false;
     }

@@ -36,6 +36,7 @@ public class TelawatCollectionActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
+        Utils.setLocale(this, null);
         binding = ActivityCollectionTelawatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> finish());
@@ -46,7 +47,8 @@ public class TelawatCollectionActivity extends FragmentActivity {
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
-        String[] tabs = new String[] {"الكل", "المفضلة", "المحملة"};
+        String[] tabs = new String[] {getString(R.string.all),
+                getString(R.string.favorite), getString(R.string.downloaded)};
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> tab.setText(tabs[position])
         ).attach();
@@ -86,9 +88,9 @@ public class TelawatCollectionActivity extends FragmentActivity {
         String text = pref.getString("last_played_text", "");
 
         if (text.length() == 0)
-            text = "لم يتم تشغيل أي تلاوة بعد";
+            text = getString(R.string.no_last_play);
         else {
-            text = "آخر تشغيل: " + text;
+            text = getString(R.string.last_play) + ": " + text;
 
             binding.continueListening.setOnClickListener(v -> {
                 String lastMediaId = pref.getString("last_played_media_id", "");
@@ -104,6 +106,7 @@ public class TelawatCollectionActivity extends FragmentActivity {
     }
 }
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 class TAdapter extends FragmentStateAdapter {
 
     public TAdapter(FragmentActivity fragment) {

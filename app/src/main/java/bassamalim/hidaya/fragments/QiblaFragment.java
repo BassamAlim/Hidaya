@@ -59,10 +59,11 @@ public class QiblaFragment extends Fragment {
         View root = binding.getRoot();
 
         if (!located)
-            binding.distanceText.setText("يجب السماح بالوصول للموقع لحساب اتجاه القبلة");
+            binding.distanceText.setText(getString(R.string.location_permission_for_qibla));
         else {
-            String distanceText = "المسافة الى الكعبة: " +
-                    Utils.translateNumbers(String.valueOf(distance)) + " كم";
+            String distanceText = getString(R.string.distance_to_kaaba) + ": " +
+                    Utils.translateNumbers(getContext(), String.valueOf(distance))
+                    + " " + getString(R.string.distance_unit);
             binding.distanceText.setText(distanceText);
 
             binding.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT);

@@ -31,7 +31,7 @@
     <fragment
         android:id="@+id/navigation_other"
         android:name="bassamalim.hidaya.fragments.OtherFragment"
-        android:label="@string/title_other"
+        android:label="@string/more"
         tools:layout="@layout/fragment_qibla" />
 
 </navigation>

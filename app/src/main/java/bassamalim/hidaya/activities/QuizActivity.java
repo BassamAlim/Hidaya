@@ -82,7 +82,7 @@ public class QuizActivity extends AppCompatActivity {
     private void ask(int num) {
         QuizQuestionsDB q = questions.get(num);
 
-        String qNum = "سؤال " + (current+1);
+        String qNum = getString(R.string.question) + " " + (current+1);
         binding.topBarTitle.setText(qNum);
 
         binding.questionScreen.setText(questions.get(current).getQuestion_text());
@@ -113,12 +113,12 @@ public class QuizActivity extends AppCompatActivity {
         }
         else if (current == 9) {
             if (allAnswered()) {
-                nextBtn.setText("إنهاء الإختبار");
+                nextBtn.setText(getString(R.string.finish_quiz));
                 nextBtn.setEnabled(true);
                 nextBtn.setTextColor(text.data);
             }
             else {
-                nextBtn.setText("أجب على جميع الاسئلة");
+                nextBtn.setText(getString(R.string.answer_all_questions));
                 nextBtn.setEnabled(false);
                 nextBtn.setTextColor(getResources().getColor(R.color.grey));
             }
@@ -128,7 +128,7 @@ public class QuizActivity extends AppCompatActivity {
             prevBtn.setTextColor(text.data);
 
             nextBtn.setEnabled(true);
-            nextBtn.setText("السؤال التالي");
+            nextBtn.setText(getString(R.string.next_question));
             nextBtn.setTextColor(text.data);
         }
     }

@@ -1,13 +1,20 @@
 package bassamalim.hidaya.helpers;
 
+import android.content.Context;
+
+import androidx.preference.PreferenceManager;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import bassamalim.hidaya.R;
+
 public class PrayTimes {
 
+    private final Context context;
     // ---------------------- Global Variables --------------------
     private int calcMethod; // calculation method
     private int asrJuristic; // Juristic method for Asr
@@ -61,9 +68,10 @@ public class PrayTimes {
     private double[] prayerTimesCurrent;
     private final int[] offsets;
 
-    public PrayTimes() {
-        // Initialize vars
+    public PrayTimes(Context context) {
+        this.context = context;
 
+        // Initialize vars
         this.setCalcMethod(4);
         this.setAsrJuristic(0);
         this.setDhuhrMinutes(0);
@@ -447,23 +455,35 @@ public class PrayTimes {
     }
 
     private ArrayList<String> translateNumbers(ArrayList<String> subject) {
+        boolean arabic = PreferenceManager.getDefaultSharedPreferences(context).getString(
+                context.getString(R.string.language_key), context.getString(
+                        R.string.default_language)).equals("ar");
+
         HashMap<Character, Character> map = new HashMap<>();
-        map.put('0', '٠');
-        map.put('1', '١');
-        map.put('2', '٢');
-        map.put('3', '٣');
-        map.put('4', '٤');
-        map.put('5', '٥');
-        map.put('6', '٦');
-        map.put('7', '٧');
-        map.put('8', '٨');
-        map.put('9', '٩');
-        map.put('A', 'ص');
-        map.put('P', 'م');
+
+        if (!arabic) {
+            map.put('A', 'a');
+            map.put('P', 'p');
+            map.put('M', 'm');
+        }
+        else {
+            map.put('0', '٠');
+            map.put('1', '١');
+            map.put('2', '٢');
+            map.put('3', '٣');
+            map.put('4', '٤');
+            map.put('5', '٥');
+            map.put('6', '٦');
+            map.put('7', '٧');
+            map.put('8', '٨');
+            map.put('9', '٩');
+            map.put('A', 'ص');
+            map.put('P', 'م');
+        }
 
         for (int i = 0; i < subject.size(); i++) {
             StringBuilder sb = new StringBuilder(subject.get(i));
-            if (sb.charAt(sb.length()-1) == 'M')
+            if (arabic && sb.charAt(sb.length()-1) == 'M')
                 sb.deleteCharAt(sb.length()-1);
 
             subject.set(i, sb.toString());

@@ -17,10 +17,11 @@ import java.util.ArrayList;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.models.QuizResultQuestion;
 
-public class QuizQuestionAdapter extends RecyclerView.Adapter<QuizQuestionAdapter.ViewHolder> {
+public class QuizResultQuestionAdapter extends RecyclerView.Adapter<QuizResultQuestionAdapter.ViewHolder> {
 
     private final Context context;
     private final ArrayList<QuizResultQuestion> questionsCards;
+    private final String question;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView card;
@@ -49,9 +50,10 @@ public class QuizQuestionAdapter extends RecyclerView.Adapter<QuizQuestionAdapte
         }
     }
 
-    public QuizQuestionAdapter(Context context, ArrayList<QuizResultQuestion> cards) {
+    public QuizResultQuestionAdapter(Context context, ArrayList<QuizResultQuestion> cards) {
         this.context = context;
         questionsCards = new ArrayList<>(cards);
+        question = context.getString(R.string.question);
     }
 
     @NonNull @Override
@@ -62,7 +64,7 @@ public class QuizQuestionAdapter extends RecyclerView.Adapter<QuizQuestionAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        String qNum = "سؤال " + (questionsCards.get(position).getQuestionNumber() + 1);
+        String qNum = question + " " + (questionsCards.get(position).getQuestionNumber() + 1);
         viewHolder.qNumTv.setText(qNum);
         viewHolder.qTextTv.setText(questionsCards.get(position).getQuestionText());
 

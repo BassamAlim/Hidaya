@@ -4,6 +4,30 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
+        app:title="@string/appearance">
+
+        <ListPreference
+            android:defaultValue="ar"
+            android:entries="@array/language_entries"
+            android:entryValues="@array/languages_values"
+            android:key="@string/language_key"
+            android:title="@string/language"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:defaultValue="ThemeL"
+            android:entries="@array/themes_entries"
+            android:entryValues="@array/theme_values"
+            android:key="@string/theme_key"
+            android:title="@string/theme"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
         app:title="@string/notifications_header">
 
         <SwitchPreferenceCompat
@@ -29,21 +53,6 @@
             app:iconSpaceReserved="false"
             app:key="@string/friday_kahf_key"
             app:title="@string/friday_kahf_title" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        app:title="المظهر">
-
-        <ListPreference
-            android:defaultValue="ThemeL"
-            android:entries="@array/themes"
-            android:entryValues="@array/theme_values"
-            android:key="@string/theme_key"
-            android:title="السمة"
-            app:iconSpaceReserved="false"
-            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

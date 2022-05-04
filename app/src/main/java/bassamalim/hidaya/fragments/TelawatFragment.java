@@ -33,9 +33,9 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatDB;
 import bassamalim.hidaya.database.dbs.TelawatRecitersDB;
 import bassamalim.hidaya.databinding.FragmentTelawatBinding;
+import bassamalim.hidaya.dialogs.FilterDialog;
 import bassamalim.hidaya.enums.ListType;
 import bassamalim.hidaya.models.ReciterCard;
-import bassamalim.hidaya.dialogs.FilterDialog;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class TelawatFragment extends Fragment {
@@ -199,7 +199,8 @@ public class TelawatFragment extends Fragment {
         });
 
         binding.filterIb.setOnClickListener(v ->
-                new FilterDialog<>(getContext(), v, "اختر القراءات", rewayat, selectedRewayat,
+                new FilterDialog<>(getContext(), v,
+                        getResources().getString(R.string.choose_rewaya), rewayat, selectedRewayat,
                         adapter, binding.filterIb, "selected_rewayat"));
     }
 

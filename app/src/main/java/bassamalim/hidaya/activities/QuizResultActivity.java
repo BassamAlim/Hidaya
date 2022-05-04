@@ -11,7 +11,8 @@ import androidx.room.Room;
 import java.util.ArrayList;
 import java.util.List;
 
-import bassamalim.hidaya.adapters.QuizQuestionAdapter;
+import bassamalim.hidaya.R;
+import bassamalim.hidaya.adapters.QuizResultQuestionAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.QuizAnswersDB;
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB;
@@ -27,7 +28,7 @@ public class QuizResultActivity extends AppCompatActivity {
     private int[] cAnswers;
     private List<QuizQuestionsDB> questions;
     private RecyclerView recyclerView;
-    private QuizQuestionAdapter adapter;
+    private QuizResultQuestionAdapter adapter;
     private ArrayList<QuizResultQuestion> questionCards;
 
     @Override
@@ -78,12 +79,12 @@ public class QuizResultActivity extends AppCompatActivity {
         recyclerView = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new QuizQuestionAdapter(this, questionCards);
+        adapter = new QuizResultQuestionAdapter(this, questionCards);
         recyclerView.setAdapter(adapter);
     }
 
     private void show() {
-        String resultText = "نتيجتك هي " + (score * 10) + "%";
+        String resultText = getString(R.string.your_score_is) + " " + (score * 10) + "%";
         binding.resultScreen.setText(resultText);
     }
 

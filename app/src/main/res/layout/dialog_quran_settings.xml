@@ -8,7 +8,6 @@
     android:background="?myMainBg"
     android:elevation="10dp"
     android:gravity="center"
-    android:layoutDirection="rtl"
     android:orientation="vertical"
     tools:context=".dialogs.QuranSettingsDialog">
 

@@ -62,16 +62,19 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
     public void onBindViewHolder(QuranSearcherAdapter.ViewHolder viewHolder, final int position) {
         Ayah card = suraCards.get(position);
 
-        String suraNumStr = "سورة رقم " + Utils.translateNumbers(String.valueOf(card.getSurah()));
+        String suraNumStr = "سورة رقم " + Utils.translateNumbers(
+                context, String.valueOf(card.getSurah()));
         viewHolder.suraNumTv.setText(suraNumStr);
 
         String suraNameStr = "سورة " + card.getSurahName();
         viewHolder.suraNameTv.setText(suraNameStr);
 
-        String pageNumStr = "صفحة رقم " + Utils.translateNumbers(String.valueOf(card.getPageNum()));
+        String pageNumStr = "صفحة رقم " + Utils.translateNumbers(
+                context, String.valueOf(card.getPageNum()));
         viewHolder.pageNumTv.setText(pageNumStr);
 
-        String ayaNumStr = "آية رقم " + Utils.translateNumbers(String.valueOf(card.getAyah()));
+        String ayaNumStr = "آية رقم " + Utils.translateNumbers(
+                context, String.valueOf(card.getAyah()));
         viewHolder.ayaNumTv.setText(ayaNumStr);
 
         viewHolder.ayaTextTv.setText(card.getSS());

@@ -23,7 +23,6 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.util.Calendar;
-import java.util.HashMap;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
@@ -39,21 +38,26 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     public FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+    private SharedPreferences pref;
     public static Location location;
     public static Calendar[] times;
     public static boolean located;
-    private SharedPreferences pref;
     private String theme;
+    private String locale;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         theme = Utils.onActivityCreateSetTheme(this);
+        locale = Utils.setLocale(this, null);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setTodayScreen();
         setContentView(binding.getRoot());
 
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+
         setSupportActionBar(binding.topBar);
+        setTitle(R.string.app_name);
 
         initNavBar();
 
@@ -74,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
 
-        if (!PreferenceManager.getDefaultSharedPreferences(this).getString(
-                getString(R.string.theme_key), getString(R.string.default_theme)).equals(theme))
+        if (!pref.getString(getString(R.string.theme_key), getString(R.string.default_theme)).equals(theme) ||
+                !pref.getString(getString(R.string.language_key), getString(R.string.default_language)).equals(locale))
             Utils.refresh(this);
     }
 
@@ -100,13 +104,12 @@ public class MainActivity extends AppCompatActivity {
         if (located) {
             location = intent.getParcelableExtra("location");
             new Keeper(this, location);
-            times = Utils.getTimes(location);
+            times = Utils.getTimes(this, location);
             //times = test();
             new Alarms(this, times);
         }
         else {
-            Toast.makeText(this,
-                    "لا يمكن الوصول للموقع، يرجى إعطاء أذن الوصول للموقع لحساب أوقات الصلاة والقبلة",
+            Toast.makeText(this, getString(R.string.give_location_permission_toast),
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -182,51 +185,20 @@ public class MainActivity extends AppCompatActivity {
         String hYear = " " + hijri.get(Calendar.YEAR);
         String hMonth = " " + getResources().getStringArray(R.array.hijri_months)[Calendar.MONTH];
         String hDay = "" + hijri.get(Calendar.DATE);
-        String hijriStr = whichDay(hijri.get(Calendar.DAY_OF_WEEK)) + " ";
-        hijriStr += Utils.translateNumbers(hDay) + hMonth + Utils.translateNumbers(hYear);
+        String hijriStr = getResources()
+                .getStringArray(R.array.week_days)[hijri.get(Calendar.DAY_OF_WEEK)] + " ";
+        hijriStr += Utils.translateNumbers(this, hDay) + hMonth +
+                Utils.translateNumbers(this, hYear);
         binding.hijriView.setText(hijriStr);
 
         Calendar gregorian = Calendar.getInstance();
         String mYear = " " + gregorian.get(Calendar.YEAR);
-        String mMonth = " " + whichGregorianMonth(gregorian.get(Calendar.MONTH));
+        String mMonth = " " + getResources()
+                .getStringArray(R.array.gregorian_months)[gregorian.get(Calendar.MONTH)];
         String mDay = "" + gregorian.get(Calendar.DATE);
-        String gregorianStr = Utils.translateNumbers(mDay) + mMonth + Utils.translateNumbers(mYear);
+        String gregorianStr = Utils.translateNumbers(this, mDay)
+                + mMonth + Utils.translateNumbers(this, mYear);
         binding.gregorianView.setText(gregorianStr);
-    }
-
-    private String whichDay(int day) {
-        String result;
-        HashMap<Integer, String> weekMap = new HashMap<>();
-        weekMap.put(Calendar.SUNDAY, "الأحد");
-        weekMap.put(Calendar.MONDAY, "الأثنين");
-        weekMap.put(Calendar.TUESDAY, "الثلاثاء");
-        weekMap.put(Calendar.WEDNESDAY, "الأربعاء");
-        weekMap.put(Calendar.THURSDAY, "الخميس");
-        weekMap.put(Calendar.FRIDAY, "الجمعة");
-        weekMap.put(Calendar.SATURDAY, "السبت");
-
-        result = weekMap.get(day);
-        return result;
-    }
-
-    private String whichGregorianMonth(int num) {
-        String result;
-        HashMap<Integer, String> monthMap = new HashMap<>();
-        monthMap.put(0, "يناير");
-        monthMap.put(1, "فبرابر");
-        monthMap.put(2, "مارس");
-        monthMap.put(3, "أبريل");
-        monthMap.put(4, "مايو");
-        monthMap.put(5, "يونيو");
-        monthMap.put(6, "يوليو");
-        monthMap.put(7, "أغسطس");
-        monthMap.put(8, "سبتمبر");
-        monthMap.put(9, "أكتوبر");
-        monthMap.put(10, "نوفمبر");
-        monthMap.put(11, "ديسمبر");
-
-        result = monthMap.get(num);
-        return result;
     }
 
     private void setupBootReceiver() {

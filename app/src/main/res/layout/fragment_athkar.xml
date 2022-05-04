@@ -156,7 +156,7 @@
                     android:background="@drawable/ripple_surface"
                     android:drawableTop="@drawable/ic_duaa_moon"
                     android:elevation="@dimen/buttony_elevation"
-                    android:text="@string/more_thikrs" />
+                    android:text="@string/more" />
 
             </LinearLayout>
 

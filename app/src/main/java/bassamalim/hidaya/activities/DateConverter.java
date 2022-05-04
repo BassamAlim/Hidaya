@@ -81,18 +81,18 @@ public class DateConverter extends AppCompatActivity {
     }
 
     private void show(Calendar hijri, Calendar gregorian) {
-        binding.hijriYearTv.setText(Utils.translateNumbers(
+        binding.hijriYearTv.setText(Utils.translateNumbers(this,
                 String.valueOf(hijri.get(Calendar.YEAR))));
         binding.hijriMonthTv.setText(getResources().getStringArray(
                 R.array.numbered_hijri_months)[hijri.get(Calendar.MONTH)]);
-        binding.hijriDayTv.setText(Utils.translateNumbers(
+        binding.hijriDayTv.setText(Utils.translateNumbers(this,
                 String.valueOf(hijri.get(Calendar.DATE))));
 
-        binding.gregorianYearTv.setText(Utils.translateNumbers(
+        binding.gregorianYearTv.setText(Utils.translateNumbers(this,
                 String.valueOf(gregorian.get(Calendar.YEAR))));
         binding.gregorianMonthTv.setText(getResources().getStringArray(
                 R.array.numbered_gregorian_months)[gregorian.get(Calendar.MONTH)]);
-        binding.gregorianDayTv.setText(Utils.translateNumbers(
+        binding.gregorianDayTv.setText(Utils.translateNumbers(this,
                 String.valueOf(gregorian.get(Calendar.DATE))));
     }
 

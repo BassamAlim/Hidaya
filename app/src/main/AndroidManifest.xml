@@ -72,7 +72,7 @@
         <activity
             android:name=".activities.Settings"
             android:exported="true"
-            android:label="@string/title_activity_settings" />
+            android:label="@string/settings" />
         <activity
             android:name=".activities.AthkarViewer"
             android:exported="true">

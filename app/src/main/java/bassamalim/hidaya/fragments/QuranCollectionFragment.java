@@ -45,7 +45,7 @@ public class QuranCollectionFragment extends Fragment {
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
 
-        String[] tabs = new String[] {"الكل", "المفضلة"};
+        String[] tabs = new String[] {getString(R.string.all), getString(R.string.favorite)};
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> tab.setText(tabs[position])
         ).attach();
@@ -63,9 +63,9 @@ public class QuranCollectionFragment extends Fragment {
         String text = pref.getString("bookmarked_text", "");
 
         if (page == -1)
-            text = "لا يوجد صفحة محفوظة";
+            text = getString(R.string.no_bookmarked_page);
         else {
-            text = "الصفحة المحفوظة:  " + text;
+            text = getString(R.string.bookmarked_page) + text;
 
             binding.continueReading.setOnClickListener(v -> {
                 Intent intent = new Intent(getContext(), QuranActivity.class);
@@ -82,7 +82,8 @@ public class QuranCollectionFragment extends Fragment {
         String key = "is_first_time_in_quran_fragment";
         if (PreferenceManager.getDefaultSharedPreferences(requireContext())
                 .getBoolean(key, true))
-            new TutorialDialog(getContext(), getString(R.string.quran_fragment_tips), key).show(
+            new TutorialDialog(getContext(),
+                    getString(R.string.quran_fragment_tips), key).show(
                     requireActivity().getSupportFragmentManager(), TutorialDialog.TAG);
     }
 }

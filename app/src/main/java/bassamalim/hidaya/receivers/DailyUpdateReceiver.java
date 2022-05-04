@@ -83,7 +83,7 @@ public class DailyUpdateReceiver extends BroadcastReceiver {
 
         new Keeper(context, location);
 
-        Calendar[] times = Utils.getTimes(location);
+        Calendar[] times = Utils.getTimes(context, location);
 
         new Alarms(context, times);
 

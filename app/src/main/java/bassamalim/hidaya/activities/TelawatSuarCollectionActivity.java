@@ -49,7 +49,8 @@ public class TelawatSuarCollectionActivity extends FragmentActivity {
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
-        String[] tabs = new String[] {"الكل", "المفضلة", "المحملة"};
+        String[] tabs = new String[] {getString(R.string.all),
+                getString(R.string.favorite), getString(R.string.downloaded)};
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> tab.setText(tabs[position])
         ).attach();

@@ -1,5 +1,6 @@
 package bassamalim.hidaya.dialogs;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -32,7 +33,6 @@ public class PrayerDialog {
     private PopupWindow popup;
     private final View view;
     private final ID id;
-    private final String title;
     private final SharedPreferences pref;
     private RadioGroup radioGroup;
     private RadioButton[] rButtons;
@@ -44,13 +44,12 @@ public class PrayerDialog {
         this.context = context;
         this.view = view;
         this.id = id;
-        this.title = title;
 
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 
         showPopup();
 
-        populate();
+        populate(title);
     }
 
     private void showPopup() {
@@ -74,10 +73,10 @@ public class PrayerDialog {
         popup.showAtLocation(view, Gravity.START, 30, getY());
     }
 
-    private void populate() {
+    @SuppressLint("StringFormatInvalid")
+    private void populate(String title) {
         TextView nameScreen = popup.getContentView().findViewById(R.id.prayer_name_tv);
-        String str = "إعدادات " + title;
-        nameScreen.setText(str);
+        nameScreen.setText(String.format(context.getString(R.string.settings_of), title));
 
         setViews();
 
@@ -138,11 +137,12 @@ public class PrayerDialog {
                 Log.i(Global.TAG, "delay is set to: " + min);
 
                 if (min > 0) {
-                    String positive = Utils.translateNumbers("+" + min);
+                    String positive = Utils.translateNumbers(context, "+" + min);
                     delayTvs[id.ordinal()].setText(positive);
                 }
                 else if (min < 0)
-                    delayTvs[id.ordinal()].setText(Utils.translateNumbers(String.valueOf(min)));
+                    delayTvs[id.ordinal()].setText(Utils.translateNumbers(
+                            context, String.valueOf(min)));
                 else
                     delayTvs[id.ordinal()].setText("");
 
@@ -154,8 +154,7 @@ public class PrayerDialog {
                 editor.apply();
             }
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 

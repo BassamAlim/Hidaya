@@ -2,7 +2,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?myMainBg"
-    android:layoutDirection="ltr"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -26,8 +25,7 @@
         android:id="@+id/settings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="20dp"
-        android:layoutDirection="rtl">
+        android:layout_marginHorizontal="20dp">
 
     </FrameLayout>
 

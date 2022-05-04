@@ -6,7 +6,6 @@
     android:layout_gravity="center"
     android:background="@drawable/rounded_dialog_primary"
     android:elevation="10dp"
-    android:layoutDirection="rtl"
     android:minWidth="250dp"
     android:orientation="vertical">
 
@@ -16,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:fontFamily="@font/tajawal_regular"
-        android:paddingBottom="15dp"
+        android:layout_marginBottom="15dp"
         android:textSize="23dp"
         android:textStyle="bold"
         tools:ignore="SpUsage" />
@@ -25,15 +24,16 @@
         android:id="@+id/prayer_alert_rg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="255dp"
+        android:gravity="center"
         android:layout_marginBottom="25dp"
-        android:checkedButton="@id/notify_rb"
-        android:gravity="center">
+        android:checkedButton="@id/notify_rb">
 
         <RadioButton
             android:id="@+id/athan_rb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
+            android:layout_marginVertical="3dp"
             android:layout_marginHorizontal="15dp"
             android:padding="10dp"
             android:gravity="center|start"
@@ -50,7 +50,7 @@
             android:id="@+id/notify_rb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
+            android:layout_marginVertical="3dp"
             android:layout_marginHorizontal="15dp"
             android:padding="10dp"
             android:gravity="center|start"
@@ -67,7 +67,7 @@
             android:id="@+id/silent_rb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
+            android:layout_marginVertical="3dp"
             android:layout_marginHorizontal="15dp"
             android:padding="10dp"
             android:gravity="center|start"
@@ -84,7 +84,7 @@
             android:id="@+id/disable_rb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
+            android:layout_marginTop="3dp"
             android:layout_marginHorizontal="15dp"
             android:padding="10dp"
             android:gravity="center|start"
@@ -115,7 +115,7 @@
             android:id="@+id/time_setting_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/time_settings"
+            android:entries="@array/time_settings_entries"
             android:popupBackground="?attr/myPrimary" />
 
     </LinearLayout>

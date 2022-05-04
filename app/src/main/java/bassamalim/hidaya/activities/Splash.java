@@ -62,11 +62,12 @@ public class Splash extends AppCompatActivity {
         boolean newUser = pref.getBoolean("new_user", true);
 
         if (newUser) {
+            welcome();
+
             SharedPreferences.Editor editor = pref.edit();
             editor.putBoolean("new_user", false);
             editor.apply();
 
-            welcome();
             finish();
         }
     }

@@ -1,6 +1,7 @@
 package bassamalim.hidaya.activities;
 
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
@@ -28,12 +29,9 @@ public class Settings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         findViewById(android.R.id.home).setOnClickListener(v -> onBackPressed());
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null)
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.settings, new SettingsFragment()).commit();
-        }
-
-
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
@@ -54,19 +52,23 @@ public class Settings extends AppCompatActivity {
 
             pSwitch = findPreference(keyGetter(ID.MORNING));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(ID.MORNING+"text", "٥:٠٠ صباحاً"));
+            pSwitch.setSummary(pref.getString(ID.MORNING+"text",
+                    getString(R.string.default_morning_summary)));
 
             pSwitch = findPreference(keyGetter(ID.EVENING));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(ID.EVENING+"text", "٤:٠٠ مساءاًً"));
+            pSwitch.setSummary(pref.getString(ID.EVENING+"text",
+                    getString(R.string.default_evening_summary)));
 
             pSwitch = findPreference(keyGetter(ID.DAILY_WERD));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(ID.DAILY_WERD+"text", "٩:٠٠ مساءاً"));
+            pSwitch.setSummary(pref.getString(ID.DAILY_WERD+"text",
+                    getString(R.string.default_werd_summary)));
 
             pSwitch = findPreference(keyGetter(ID.FRIDAY_KAHF));
             assert pSwitch != null;
-            pSwitch.setSummary(pref.getString(ID.FRIDAY_KAHF+"text", "١:٠٠ مساءاً"));
+            pSwitch.setSummary(pref.getString(ID.FRIDAY_KAHF + "text",
+                            getString(R.string.default_kahf_summary)));
         }
 
         private void setListeners() {
@@ -78,15 +80,19 @@ public class Settings extends AppCompatActivity {
             ListPreference themes = findPreference(getString(R.string.theme_key));
             assert themes != null;
             themes.setOnPreferenceChangeListener((preference, newValue) -> {
-                String theme = PreferenceManager.getDefaultSharedPreferences(
-                        requireContext()).getString(requireContext().getString(R.string.theme_key), getString(R.string.default_theme));
-                if (!newValue.equals(theme)) {
-                    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(
-                            requireContext());
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putString(getString(R.string.theme_key), (String) newValue);
-                    editor.apply();
+                if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
+                        .getString(requireContext().getString(R.string.theme_key), getString(R.string.default_theme))))
+                    Utils.refresh(requireActivity());
+                return true;
+            });
 
+            ListPreference languages = findPreference(getString(R.string.language_key));
+            assert languages != null;
+            languages.setOnPreferenceChangeListener((preference, newValue) -> {
+                if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
+                        .getString(requireContext().getString(R.string.language_key), getString(R.string.default_language)))) {
+
+                    Utils.setLocale(requireContext(), (String) newValue);
                     Utils.refresh(requireActivity());
                 }
                 return true;
@@ -121,7 +127,7 @@ public class Settings extends AppCompatActivity {
                     (view, hourOfDay, minute) -> {
 
                 int[] nums = {hourOfDay, minute};
-                String fixed = formatText(nums);
+                String fixed = formatText(getContext(), nums);
 
                 pSwitch.setSummary(fixed);
 
@@ -139,9 +145,11 @@ public class Settings extends AppCompatActivity {
             timePicker.setOnCancelListener(dialog -> setInitialStates());
             timePicker.setOnDismissListener(dialog -> setInitialStates());
 
-            timePicker.setTitle("اختر وقت الإشعار");
-            timePicker.setButton(TimePickerDialog.BUTTON_POSITIVE, "حفظ", (Message) null);
-            timePicker.setButton(TimePickerDialog.BUTTON_NEGATIVE, "إلغاء", (Message) null);
+            timePicker.setTitle(getString(R.string.time_picker_title));
+            timePicker.setButton(TimePickerDialog.BUTTON_POSITIVE,
+                    getString(R.string.save), (Message) null);
+            timePicker.setButton(TimePickerDialog.BUTTON_NEGATIVE,
+                    getString(R.string.cancel), (Message) null);
             timePicker.setCancelable(true);
 
             timePicker.show();
@@ -171,7 +179,11 @@ public class Settings extends AppCompatActivity {
         }
     }
 
-    private static String formatText(int[] nums) {
+    private static String formatText(Context context, int[] nums) {
+        String locale = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.language_key),
+                        context.getString(R.string.default_language));
+
         String result;
         HashMap<Character, Character> map = new HashMap<>();
         map.put('0', '٠');
@@ -189,11 +201,11 @@ public class Settings extends AppCompatActivity {
 
         int h = nums[0];
         String m = String.valueOf(nums[1]);
-        String section =  "صباحاً";
+        String section = context.getString(R.string.at_morning);
         if (h == 0)
             h = 12;
         else if (h >= 12) {
-            section = "مساءاً";
+            section = context.getString(R.string.at_evening);
             if (h > 12)
                 h -= 12;
         }
@@ -209,8 +221,12 @@ public class Settings extends AppCompatActivity {
         StringBuilder translated = new StringBuilder();
         for (int i = 0; i<result.length(); i++) {
             char c = result.charAt(i);
-            if (map.containsKey(c))
-                translated.append(map.get(c));
+            if (map.containsKey(c)) {
+                if (locale.equals("ar"))
+                    translated.append(map.get(c));
+                else
+                    translated.append(c);
+            }
             else
                 translated.append(c);
         }

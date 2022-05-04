@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Hidaya</string>
+
+    <!-- Tabs Titles -->
+    <string name="title_prayers">Prayer times</string>
+    <string name="title_alathkar">Athkar</string>
+    <string name="title_qibla">Qibla</string>
+    <string name="title_quran">Quran</string>
+
+    <!-- Preference Categories -->
+    <string name="notifications_header">Extra reminders</string>
+    <string name="page_preferences">Page preferences</string>
+    <string name="recitation_preferences">Recitation preferences</string>
+    <string name="appearance">Appearance</string>
+    <string name="theme">Theme</string>
+
+    <!-- Preference Titles -->
+    <string name="morning_athkar_title">Morning athkar reminder</string>
+    <string name="evening_athkar_title">Evening athkar reminder</string>
+    <string name="daily_page_enable_title">Daily werd reminder</string>
+    <string name="friday_kahf_title">Surat al-kahf reminder</string>
+    <string name="text_size_title">Text size</string>
+    <string name="reciter">Reciter</string>
+    <string name="aya_repeat">Aya repetition</string>
+
+    <!-- TextViews Text -->
+    <string name="distance_to_kaaba">Distance to kaaba</string>
+
+    <!-- Buttons Text -->
+    <string name="contact">Contact me</string>
+    <string name="all_thikrs">All athkar</string>
+    <string name="day_and_night_thikrs">Day and knight athkar</string>
+    <string name="prayers_thikrs">Prayers athkar</string>
+    <string name="quran_thikrs">Quran Duas</string>
+    <string name="places_thikrs">Places athkar</string>
+    <string name="emotion_thikrs">Status athkar</string>
+    <string name="actions_thikrs">Actions athkar</string>
+    <string name="events_thikrs">Events duas</string>
+    <string name="tv_channels">Live tv</string>
+    <string name="quick_update">Quick update</string>
+    <string name="quran_channel">Quran channel</string>
+    <string name="sunnah_channel">Sunnah channel</string>
+    <string name="search_in_quran">Quran searcher</string>
+    <string name="previous_question">Previous question</string>
+    <string name="next_question">Next question</string>
+    <string name="rebuild_database">Rebuild database</string>
+    <string name="about">About</string>
+    <string name="share_app">Share</string>
+
+    <!-- Descriptions -->
+    <string name="qibla_view_description">Qibla direction</string>
+    <string name="bingo_view_description">Correct direction</string>
+    <string name="first_answer_description">First answer</string>
+    <string name="second_answer_description">Second answer</string>
+    <string name="third_answer_description">Third answer</string>
+    <string name="fourth_answer_description">Fourth answer</string>
+    <string name="back_description">Back</string>
+    <string name="shuffle_description">Shuffle</string>
+    <string name="download_description">Download</string>
+    <string name="repeat_description">Repeat</string>
+    <string name="notification_image_description">Current alert type</string>
+    <string name="compass_calibration_gif_description">Recalibrate compass</string>
+    <string name="accuracy_indicator_description">Accuracy</string>
+    <string name="app_widget_description">App widget</string>
+    <string name="previous_day_button_description">Previous day</string>
+    <string name="next_day_button_description">Next day</string>
+    <string name="previous_track_btn_description">Previous track</string>
+    <string name="next_track_btn_description">Next track</string>
+    <string name="rewind_btn_description">Rewind</string>
+    <string name="play_pause_btn_description">Play/Pause</string>
+    <string name="fast_forward_btn_description">Fast forward</string>
+    <string name="fav_btn_description">Add to favorites</string>
+    <string name="tanzeel_view_description">Sura nuzool location</string>
+    <string name="bookmark_page_button_description">Save Page</string>
+    <string name="filter_search_description">Filter search</string>
+    <string name="source_btn_description">Show reference</string>
+
+    <!-- Tips -->
+    <string name="prayers_tips">Click on the prayer name to edit prayer preferences.\n\n Click on the right and left arrows in the bottom of the screen to view other days prayer times .. Then click on the text between the arrows to return to the current day.</string>
+    <string name="quran_tips">Double click the aya to view its tafseer.\n\n Click on an aya then click on the play button in the bottom bar to start playing from that aya.\n\n You can change the reciter while recitation is playing.</string>
+    <string name="quran_fragment_tips">You can click on the button in the bottom corner of the screen to search in the quran.</string>
+    <string name="books_activity_tips">You can click on the button in the bottom corner of the screen to search in the books.</string>
+
+    <!-- Hints -->
+    <string name="quran_query_hint">Search for sura name or page number</string>
+    <string name="athkar_hint">Search for thikr</string>
+    <string name="reciters_hint">Search for reciter</string>
+
+    <!-- Summaries -->
+    <string name="default_morning_summary">5:00 am</string>
+    <string name="default_evening_summary">4:00 pm</string>
+    <string name="default_werd_summary">9:00 pm</string>
+    <string name="default_kahf_summary">1:00 pm</string>
+
+    <!-- Words -->
+    <string name="more">More</string>
+    <string name="settings">Settings</string>
+    <string name="all">All</string>
+    <string name="favorite">Favorites</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="page">Page</string>
+    <string name="sura">Sura</string>
+    <string name="juz">Juz</string>
+    <string name="search">Search</string>
+    <string name="question">Question</string>
+
+    <!-- Formats -->
+    <string name="remaining">remaining: %1$s</string>
+    <string name="settings_of">%s Settings</string>
+    <string name="book_downloading">%s downloading</string>
+
+    <!-- Sources -->
+    <string name="quran_source">Quran: from King Fahd Glorious Quran Printing Complex.</string>
+    <string name="tafseer_source">Tafseer: tafseer moyassar from King Fahd Glorious Quran Printing Complex.</string>
+    <string name="quiz_source">Quiz questions: from folderat site.</string>
+    <string name="athkar_source">Athkar and duas: from https://timesprayer.today</string>
+
+    <!-- Toasts -->
+    <string name="give_location_permission_toast">Location can not be accessed, give the app location permission to calculate prayer times and qibla</string>
+    <string name="page_bookmarked">Page bookmarked</string>
+    <string name="location_permission_for_qibla">Location permission is needed to calculate qibla direction</string>
+    <string name="vip_welcome">Welcome to the VIP section</string>
+    <string name="database_rebuilt">Database rebuilt</string>
+    <string name="wait_for_download">Wait for the download to finish</string>
+
+    <string name="athan_speaker">Athan</string>
+    <string name="enable_notification">Sound notification</string>
+    <string name="silent_notification">Silent notification</string>
+    <string name="disable_notification">Disable</string>
+    <string name="adjust_prayer_notification_time">Edit alert time</string>
+    <string name="low_accuracy_text">Accuracy is low .. Please re-calibrate the device</string>
+    <string name="medium_accuracy_text">Accuracy is moderate</string>
+    <string name="high_accuracy_text">Accuracy is good</string>
+    <string name="continue_reading">Continue reading</string>
+    <string name="recitation_settings">Recitation preferences</string>
+    <string name="choose_reciter">Choose the reciter</string>
+    <string name="qibla_warning">Move your device away from metal objects</string>
+    <string name="thanks">Thank you for using Hidaya</string>
+    <string name="recitations">Recitations</string>
+    <string name="stop_on_sura_end">Stop at sura end</string>
+    <string name="stop_on_page_end">Stop at page end</string>
+    <string name="disclaimer">Hidaya app uses your location to calculate prayer times and qibla direction. \n And uses background location to daily update prayer times.\n Note that your location is stored only on your device.</string>
+    <string name="agreed">Accept</string>
+    <string name="rejected">Decline. Use the app without prayer times and qibla direction</string>
+    <string name="quiz_title">Religious quiz</string>
+    <string name="start_quiz">Start the quiz</string>
+    <string name="quiz_result">Quiz result</string>
+    <string name="continue_listening">Continue listening</string>
+    <string name="no_repeat">No repeat</string>
+    <string name="two_times">Twice</string>
+    <string name="three_times">3 times</string>
+    <string name="no_stop">Non-stop</string>
+    <string name="execute">Done</string>
+    <string name="cancel">Cancel</string>
+    <string name="search_for_quran_text">Search for text in quran</string>
+    <string name="text">Text</string>
+    <string name="go_to_page">Go to page</string>
+    <string name="max_num_of_marches">Maximum number of matches</string>
+    <string name="no_results">No matches found. Make sure you downloaded the books</string>
+    <string name="hadeeth_books">Hadeeth books</string>
+    <string name="sahih_albokhari">Saheeh al-bokhari</string>
+    <string name="sahih_muslim">Saheeh moslim</string>
+    <string name="hadeeth_source">Hadeeth books: from omo-alkitab site and al-dorar al sunniya site.</string>
+    <string name="search_in_books">Search for text in books</string>
+    <string name="books_searcher">Hadeeth searcher</string>
+    <string name="quran_searcher">Quran searcher</string>
+    <string name="quran_radio">Quran radio</string>
+    <string name="holy_quran_radio">Holy Quran radio</string>
+    <string name="date_converter">Date converter</string>
+    <string name="pick_hijri_date">Pick Hijri date</string>
+    <string name="pick_gregorian_date">Pick Gregorian date</string>
+    <string name="hijri_date">Hijri date</string>
+    <string name="gregorian_date">Gregorian date</string>
+    <string name="year">Year</string>
+    <string name="month">Month</string>
+    <string name="day">Day</string>
+    <string name="tafseer">Tafseer</string>
+    <string name="reference">Reference</string>
+    <string name="choose_books">Choose the books</string>
+    <string name="selected_books">Selected books</string>
+    <string name="choose_rewaya">Choose rewaya\'s</string>
+    <string name="save">Save</string>
+    <string name="finish">Done</string>
+    <string name="select_all">Select all</string>
+    <string name="unselect_all">Unselect all</string>
+    <string name="do_not_show_again">Do not show again</string>
+    <string name="all_athkar">All athkar</string>
+    <string name="favorite_athkar">Favorite athkar</string>
+    <string name="no_bookmarked_page">No bookmarked page</string>
+    <string name="bookmarked_page">Bookmarked page:  </string>
+    <string name="distance_unit">km</string>
+    <string name="time_picker_title">Pick reminder time</string>
+    <string name="at_morning">am</string>
+    <string name="at_evening">pm</string>
+    <string name="finish_quiz">Finish quiz</string>
+    <string name="answer_all_questions">Answer all questions</string>
+    <string name="your_score_is">Your score is</string>
+    <string name="no_last_play">You have not played any telawa</string>
+    <string name="last_play">Last played</string>
+
+</resources>

@@ -141,7 +141,7 @@ public class PrayersFragment extends Fragment {
      * @param change The number of days to add to the current date.
      */
     private void getTimes(int change) {
-        PrayTimes prayTimes = new PrayTimes();
+        PrayTimes prayTimes = new PrayTimes(getContext());
 
         Calendar calendar = Calendar.getInstance();
         Date date = new Date();
@@ -164,7 +164,7 @@ public class PrayersFragment extends Fragment {
                 location.getLongitude(), timezone);
         tomorrowFajr.set(Calendar.SECOND, 0);
 
-        for (int i=0; i<formattedTimes.size(); i++) {
+        for (int i = 0; i < formattedTimes.size(); i++) {
             String text = prayerNames[i] + ": " + formattedTimes.get(i);
             screens[i].setText(text);
 
@@ -189,11 +189,11 @@ public class PrayersFragment extends Fragment {
             int min = Integer.parseInt(getResources().getStringArray(
                     R.array.time_settings_values)[delayPosition]);
             if (min > 0) {
-                String positive = Utils.translateNumbers("+" + min);
+                String positive = Utils.translateNumbers(getContext(), "+" + min);
                 delayTvs[i].setText(positive);
             }
             else if (min < 0)
-                delayTvs[i].setText(Utils.translateNumbers(String.valueOf(min)));
+                delayTvs[i].setText(Utils.translateNumbers(getContext(), String.valueOf(min)));
             else
                 delayTvs[i].setText("");
         }
@@ -248,7 +248,7 @@ public class PrayersFragment extends Fragment {
                 String hms = String.format(Locale.US, "%02d:%02d:%02d",
                         hours, minutes, seconds);
                 counters[upcoming].setText(String.format(getString(R.string.remaining),
-                        Utils.translateNumbers(hms)));
+                        Utils.translateNumbers(getContext(), hms)));
             }
             @Override
             public void onFinish() {
@@ -302,7 +302,8 @@ public class PrayersFragment extends Fragment {
                     getResources().getStringArray(R.array.hijri_months)[Calendar.MONTH];
             String day = "" + hijri.get(Calendar.DATE);
 
-            text += Utils.translateNumbers(day) + month + Utils.translateNumbers(year);
+            text += Utils.translateNumbers(getContext(), day) + month +
+                    Utils.translateNumbers(getContext(), year);
 
             dayScreen.setText(text);
         }

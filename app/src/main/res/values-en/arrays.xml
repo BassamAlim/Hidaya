@@ -1,0 +1,144 @@
+<resources>
+
+    <string-array name="prayer_names">
+        <item>Fajr</item>
+        <item>Shorouq</item>
+        <item>Duhr</item>
+        <item>Asr</item>
+        <item>Maghrib</item>
+        <item>Ishaa</item>
+    </string-array>
+
+    <string-array name="time_settings_entries">
+        <item>-30</item>
+        <item>-25</item>
+        <item>-20</item>
+        <item>-15</item>
+        <item>-10</item>
+        <item>-5</item>
+        <item>0</item>
+        <item>+5</item>
+        <item>+10</item>
+        <item>+15</item>
+        <item>+20</item>
+        <item>+25</item>
+        <item>+30</item>
+    </string-array>
+
+    <string-array name="themes_entries">
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+
+    <string-array name="repeat_mode_entries">
+        <item>No repeat</item>
+        <item>Twice</item>
+        <item>3 Times</item>
+        <item>5 Times</item>
+        <item>10 Times</item>
+        <item>Non-stop</item>
+    </string-array>
+
+    <string-array name="searcher_matches">
+        <item>10</item>
+        <item>30</item>
+        <item>100</item>
+    </string-array>
+
+    <string-array name="hijri_months">
+        <item>Muharram</item>
+        <item>Safar</item>
+        <item>Rabi al-awwal</item>
+        <item>Rabi al-Thani</item>
+        <item>Jumada al-awwal</item>
+        <item>Jumada al-Thani</item>
+        <item>Rajab</item>
+        <item>Sha`ban</item>
+        <item>Ramadan</item>
+        <item>Shawwal</item>
+        <item>Dhul Qa\'dah</item>
+        <item>Dhul Hijjah</item>
+    </string-array>
+
+    <string-array name="numbered_hijri_months">
+        <item>Muharram (1)</item>
+        <item>Safar (2)</item>
+        <item>Rabi al-awwal (3)</item>
+        <item>Rabi al-Thani (4)</item>
+        <item>Jumada al-awwal (5)</item>
+        <item>Jumada al-Thani (6)</item>
+        <item>Rajab (7)</item>
+        <item>Sha`ban (8)</item>
+        <item>Ramadan (9)</item>
+        <item>Shawwal (10)</item>
+        <item>Dhul Qa\'dah (11)</item>
+        <item>Dhul Hijjah (12)</item>
+    </string-array>
+
+    <string-array name="gregorian_months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+
+    <string-array name="numbered_gregorian_months">
+        <item>January (1)</item>
+        <item>February (2)</item>
+        <item>March (3)</item>
+        <item>April (4)</item>
+        <item>May (5)</item>
+        <item>June (6)</item>
+        <item>July (7)</item>
+        <item>August (8)</item>
+        <item>September (9)</item>
+        <item>October (10)</item>
+        <item>November (11)</item>
+        <item>December (12)</item>
+    </string-array>
+
+    <string-array name="books_titles">
+        <item>Saheeh al-Bokhari</item>
+        <item>Saheeh Moslim</item>
+    </string-array>
+
+    <string-array name="books_authors">
+        <item>imam al-Bokhari</item>
+        <item>imam Moslim</item>
+    </string-array>
+
+    <string-array name="rewayat">
+        <item>hafs from Aasim</item>
+        <item>Qaloon from Nafi\'</item>
+        <item>Shouba form Assim</item>
+        <item>Warsh from Nafi\'</item>
+        <item>Teacher quran</item>
+        <item>Aldawri from abi-Amro</item>
+        <item>Mujawwad quran</item>
+        <item>Alsousi from abi-Amro</item>
+        <item>Khalaf from Hamza</item>
+        <item>Aldawri from al-Kissai</item>
+        <item>Albzi and Qunbol from abn-Katheer</item>
+        <item>The reading of Yaqoub al-Hadrami in Roais and Roah</item>
+        <item>ibn-Thakwan from ibn-Aamir</item>
+    </string-array>
+
+    <string-array name="week_days">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+
+</resources>

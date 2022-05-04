@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:key="quran_settings_screen_key">
 
-    <PreferenceCategory android:title="إعدادات الصفحة">
+    <PreferenceCategory android:title="@string/page_preferences">
 
         <SeekBarPreference
             android:defaultValue="30"
@@ -17,21 +17,19 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="إعدادات التلاوة">
+    <PreferenceCategory android:title="@string/recitation_preferences">
 
         <DropDownPreference
-            android:entries="@array/reciters_placeholder"
-            android:entryValues="@array/reciter_values_placeholder"
             android:key="@string/aya_reciter_key"
-            android:title="القارئ"
+            android:title="@string/reciter"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 
         <DropDownPreference
-            android:entries="@array/repeat_modes"
-            android:entryValues="@array/repeat_values"
+            android:entries="@array/repeat_mode_entries"
+            android:entryValues="@array/repeat_mode_values"
             android:key="@string/aya_repeat_mode_key"
-            android:title="تكرار الآية"
+            android:title="@string/aya_repeat"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 

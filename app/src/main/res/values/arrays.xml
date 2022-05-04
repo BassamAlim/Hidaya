@@ -1,15 +1,15 @@
 <resources>
 
     <string-array name="prayer_names">
-        <item>"الفجر"</item>
-        <item>"الشروق"</item>
-        <item>"الظهر"</item>
-        <item>"العصر"</item>
-        <item>"المغرب"</item>
-        <item>"العشاء"</item>
+        <item>الفجر</item>
+        <item>الشروق</item>
+        <item>الظهر</item>
+        <item>العصر</item>
+        <item>المغرب</item>
+        <item>العشاء</item>
     </string-array>
 
-    <string-array name="time_settings">
+    <string-array name="time_settings_entries">
         <item>-٣٠</item>
         <item>-٢٥</item>
         <item>-٢٠</item>
@@ -25,7 +25,7 @@
         <item>+٣٠</item>
     </string-array>
 
-    <string-array name="time_settings_values">
+    <string-array name="time_settings_values" translatable="false">
         <item>-30</item>
         <item>-25</item>
         <item>-20</item>
@@ -41,27 +41,17 @@
         <item>+30</item>
     </string-array>
 
-    <string-array name="themes">
+    <string-array name="themes_entries">
         <item>الفاتح</item>
         <item>الغامق</item>
     </string-array>
 
-    <string-array name="theme_values">
+    <string-array name="theme_values" translatable="false">
         <item>ThemeL</item>
         <item>ThemeM</item>
     </string-array>
 
-    <string-array name="reciters_placeholder">
-        <item>reciter</item>
-        <item>reciter</item>
-    </string-array>
-
-    <string-array name="reciter_values_placeholder">
-        <item>0</item>
-        <item>1</item>
-    </string-array>
-
-    <string-array name="repeat_modes">
+    <string-array name="repeat_mode_entries">
         <item>بدون تكرار</item>
         <item>مرتين</item>
         <item>ثلاث مرات</item>
@@ -70,7 +60,7 @@
         <item>بدون توقف</item>
     </string-array>
 
-    <string-array name="repeat_values">
+    <string-array name="repeat_mode_values" translatable="false">
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -79,7 +69,7 @@
         <item>0</item>
     </string-array>
 
-    <string-array name="searcher_matcher">
+    <string-array name="searcher_matches">
         <item>10</item>
         <item>30</item>
         <item>100</item>
@@ -115,6 +105,21 @@
         <item>(١٢) ذو الحِجَّة</item>
     </string-array>
 
+    <string-array name="gregorian_months">
+        <item>يناير</item>
+        <item>فبرابر</item>
+        <item>مارس</item>
+        <item>أبريل</item>
+        <item>مايو</item>
+        <item>يونيو</item>
+        <item>يوليو</item>
+        <item>أغسطس</item>
+        <item>سبتمبر</item>
+        <item>أكتوبر</item>
+        <item>نوفمبر</item>
+        <item>ديسمبر</item>
+    </string-array>
+
     <string-array name="numbered_gregorian_months">
         <item>(١) يناير</item>
         <item>(٢) فبرابر</item>
@@ -135,6 +140,11 @@
         <item>صحيح مسلم</item>
     </string-array>
 
+    <string-array name="books_authors">
+        <item>الإمام البخاري</item>
+        <item>الإمام مسلم</item>
+    </string-array>
+
     <string-array name="rewayat">
         <item>حفص عن عاصم</item>
         <item>قالون عن نافع</item>
@@ -149,6 +159,26 @@
         <item>البزي وقنبل عن ابن كثير</item>
         <item>قراءة يعقوب الحضرمي بروايتي رويس وروح</item>
         <item>ابن ذكوان عن ابن عامر</item>
+    </string-array>
+    
+    <string-array name="language_entries" translatable="false">
+        <item>العربية</item>
+        <item>English</item>
+    </string-array>
+
+    <string-array name="languages_values" translatable="false">
+        <item>ar</item>
+        <item>en</item>
+    </string-array>
+
+    <string-array name="week_days">
+        <item>الأحد</item>
+        <item>الأثنين</item>
+        <item>الثلاثاء</item>
+        <item>الأربعاء</item>
+        <item>الخميس</item>
+        <item>الجمعة</item>
+        <item>السبت</item>
     </string-array>
 
 </resources>

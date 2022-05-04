@@ -45,9 +45,9 @@ public class AthkarListActivity extends AppCompatActivity {
 
         action = getIntent().getAction();
         if (action.equals("all"))
-            binding.topBarTitle.setText("جميع الاذكار");
+            binding.topBarTitle.setText(getString(R.string.all_athkar));
         else if (action.equals("favorite"))
-            binding.topBarTitle.setText("الأذكار المفضلة");
+            binding.topBarTitle.setText(getString(R.string.favorite_athkar));
         else {
             category = getIntent().getIntExtra("category", 0);
             binding.topBarTitle.setText(db.athkarCategoryDao().getName(category));
