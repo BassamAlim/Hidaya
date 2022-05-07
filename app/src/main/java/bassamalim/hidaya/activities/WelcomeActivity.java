@@ -10,7 +10,6 @@ import androidx.preference.PreferenceManager;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivityWelcomeBinding;
-import bassamalim.hidaya.other.Utils;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -19,14 +18,12 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.onActivityCreateSetTheme(this);
-        Utils.onActivityCreateSetLocale(this, null);
         binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         if (savedInstanceState == null)
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.settings, new Settings.SettingsFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.settings,
+                    new Settings.SettingsFragment("initial")).commit();
 
         setListeners();
     }

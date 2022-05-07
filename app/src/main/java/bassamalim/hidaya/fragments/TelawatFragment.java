@@ -81,6 +81,16 @@ public class TelawatFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+
+        if (menuVisible) {
+            adapter = new TelawatAdapter(getContext(), makeCards());
+            recycler.setAdapter(adapter);
+        }
+    }
+
     private List<TelawatRecitersDB> getData() {
         AppDatabase db = Room.databaseBuilder(requireContext().getApplicationContext(),
                 AppDatabase.class, "HidayaDB").createFromAsset("databases/HidayaDB.db")
@@ -199,8 +209,7 @@ public class TelawatFragment extends Fragment {
         });
 
         binding.filterIb.setOnClickListener(v ->
-                new FilterDialog<>(getContext(), v,
-                        getResources().getString(R.string.choose_rewaya), rewayat, selectedRewayat,
+                new FilterDialog<>(getContext(), v, getResources().getString(R.string.choose_rewaya), rewayat, selectedRewayat,
                         adapter, binding.filterIb, "selected_rewayat"));
     }
 

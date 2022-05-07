@@ -28,9 +28,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HidayaL">
         <activity
-            android:name=".activities.DateConverter"
-            android:exported="false" />
-        <activity
             android:name=".activities.Splash"
             android:exported="true"
             android:theme="@style/SplashTheme">
@@ -70,10 +67,6 @@
             android:exported="true"
             android:label="@string/title_alathkar" />
         <activity
-            android:name=".activities.Settings"
-            android:exported="true"
-            android:label="@string/settings" />
-        <activity
             android:name=".activities.AthkarViewer"
             android:exported="true">
             <intent-filter>
@@ -89,14 +82,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.TvActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".activities.AboutActivity" />
-        <activity
             android:name=".activities.TelawatClient"
             android:launchMode="singleTop" />
         <activity
@@ -104,9 +89,6 @@
         <activity
             android:name=".dialogs.QuranSettingsDialog"
             android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity
-            android:name=".activities.RadioClient"
-            android:launchMode="singleTop" />
         <activity
             android:name=".activities.BookSearcher"
             android:exported="false" />
@@ -119,6 +101,24 @@
         <activity
             android:name=".activities.BooksActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.TvActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.youtube.api.service.START" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.RadioClient"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".activities.DateConverter"
+            android:exported="false" />
+        <activity
+            android:name=".activities.Settings"
+            android:exported="true"
+            android:label="@string/settings" />
+        <activity android:name=".activities.AboutActivity" />
 
         <receiver android:name=".receivers.NotificationReceiver" />
         <receiver android:name=".receivers.DailyUpdateReceiver" />

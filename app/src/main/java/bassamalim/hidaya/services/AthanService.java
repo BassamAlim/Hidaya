@@ -43,7 +43,7 @@ public class AthanService extends Service {
         Log.i(Global.TAG, "In athan service for " + id);
         //int Notification_ID = (int) System.currentTimeMillis() % 10000;
 
-        Utils.onActivityCreateSetLocale(this, null);
+        Utils.onActivityCreateSetLocale(this);
 
         createNotificationChannel();
         startForeground(id.ordinal()+1, build());

@@ -54,6 +54,16 @@ public class BookChaptersFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+
+        if (menuVisible) {
+            adapter = new BookChapterAdapter(getContext(), makeCards(), bookId);
+            recycler.setAdapter(adapter);
+        }
+    }
+
     private void getData() {
         String path = requireContext().getExternalFilesDir(null) + "/Books/" +
                 bookId  + ".json";

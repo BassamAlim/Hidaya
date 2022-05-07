@@ -45,7 +45,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         time = intent.getLongExtra("time", 0);
         isPrayer = action.equals("prayer");
 
-        Utils.onActivityCreateSetLocale(context, null);
+        Utils.onActivityCreateSetLocale(context);
 
         Log.i(Global.TAG, "in notification receiver for " + id);
 

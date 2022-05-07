@@ -2,7 +2,6 @@ package bassamalim.hidaya.activities;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -39,11 +38,13 @@ public class Splash extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        Utils.onActivityCreateSetLocale(this, null);
-
         stopService(new Intent(this, AthanService.class));
 
-        newUser();
+        if (PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("new_user", true))
+            welcome();
+        else
+            Utils.onActivityCreateSetLocale(this);
 
         if (granted()) {
             getLocation();
@@ -61,15 +62,10 @@ public class Splash extends AppCompatActivity {
         }
     }
 
-    private void newUser() {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean newUser = pref.getBoolean("new_user", true);
-
-        if (newUser) {
-            Intent intent = new Intent(this, WelcomeActivity.class);
-            startActivity(intent);
-            finish();
-        }
+    private void welcome() {
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private boolean granted() {

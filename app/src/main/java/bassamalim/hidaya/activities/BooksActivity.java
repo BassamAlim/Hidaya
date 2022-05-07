@@ -98,7 +98,7 @@ public class BooksActivity extends AppCompatActivity {
         String[] bookTitles = getResources().getStringArray(R.array.books_titles);
         String[] bookAuthors = getResources().getStringArray(R.array.books_authors);
         for (int i = 0; i < numOfBooks; i++) {
-            if (downloaded[i]) {
+            if (downloaded[i] && !downloading(i)) {
                 String path = getExternalFilesDir(null) + "/Books/" + i + ".json";
                 String jsonStr = Utils.getJsonFromDownloads(path);
                 Book book = gson.fromJson(jsonStr, Book.class);

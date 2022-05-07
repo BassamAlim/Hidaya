@@ -39,7 +39,7 @@ public class AthkarViewer extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.onActivityCreateSetTheme(this);
+        Utils.myOnActivityCreated(this, this);
         binding = ActivityAthkarViewerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());

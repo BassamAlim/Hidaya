@@ -23,10 +23,12 @@ import bassamalim.hidaya.R;
 public class TutorialDialog extends DialogFragment {
 
     public static String TAG = "TutorialDialog";
-    private final SharedPreferences pref;
+    private SharedPreferences pref;
     private View view;
-    private final String text;
-    private final String prefKey;
+    private String text;
+    private String prefKey;
+
+    public TutorialDialog() {}
 
     public TutorialDialog(Context context, String text, String prefKey) {
         this.text = text;

@@ -3,6 +3,8 @@ package bassamalim.hidaya.activities;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Message;
 
@@ -14,6 +16,7 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.enums.ID;
@@ -31,10 +34,16 @@ public class Settings extends AppCompatActivity {
 
         if (savedInstanceState == null)
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.settings, new SettingsFragment()).commit();
+                    .replace(R.id.settings, new SettingsFragment("normal")).commit();
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
+
+        private final String action;
+
+        public SettingsFragment(String action) {
+            this.action = action;
+        }
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -77,24 +86,27 @@ public class Settings extends AppCompatActivity {
             setSwitchListener(ID.DAILY_WERD);
             setSwitchListener(ID.FRIDAY_KAHF);
 
-            ListPreference themes = findPreference(getString(R.string.theme_key));
-            assert themes != null;
-            themes.setOnPreferenceChangeListener((preference, newValue) -> {
-                if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
-                        .getString(requireContext().getString(R.string.theme_key), getString(R.string.default_theme))))
-                    Utils.refresh(requireActivity());
-                return true;
-            });
-
             ListPreference languages = findPreference(getString(R.string.language_key));
             assert languages != null;
             languages.setOnPreferenceChangeListener((preference, newValue) -> {
                 if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
                         .getString(requireContext().getString(R.string.language_key), getString(R.string.default_language)))) {
 
-                    Utils.onActivityCreateSetLocale(requireContext(), (String) newValue);
+                    setLocale((String) newValue);
                     Utils.refresh(requireActivity());
                 }
+                return true;
+            });
+
+            if (action.equals("initial"))
+                languages.setSummaryProvider(null);
+
+            ListPreference themes = findPreference(getString(R.string.theme_key));
+            assert themes != null;
+            themes.setOnPreferenceChangeListener((preference, newValue) -> {
+                if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
+                        .getString(requireContext().getString(R.string.theme_key), getString(R.string.default_theme))))
+                    Utils.refresh(requireActivity());
                 return true;
             });
         }
@@ -153,6 +165,19 @@ public class Settings extends AppCompatActivity {
             timePicker.setCancelable(true);
 
             timePicker.show();
+        }
+
+        private void setLocale(String language) {
+            Locale locale = new Locale(language);
+            Locale.setDefault(locale);
+
+            Resources resources = getResources();
+
+            Configuration configuration = resources.getConfiguration();
+            configuration.locale = locale;
+            configuration.setLayoutDirection(locale);
+
+            resources.updateConfiguration(configuration, resources.getDisplayMetrics());
         }
 
         private void cancelAlarm(ID id) {

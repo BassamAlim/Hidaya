@@ -35,8 +35,7 @@ public class TelawatCollectionActivity extends FragmentActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.onActivityCreateSetTheme(this);
-        Utils.onActivityCreateSetLocale(this, null);
+        Utils.myOnActivityCreated(this, this);
         binding = ActivityCollectionTelawatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> finish());

@@ -3,7 +3,12 @@ package bassamalim.hidaya.adapters;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +69,7 @@ public class TelawatAdapter extends FilteredRecyclerAdapter<TelawatAdapter.ViewH
 
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        rewayat = context.getResources().getStringArray(R.array.rewayat);
+        rewayat = getRewayat();
 
         recitersCards = new ArrayList<>(cards);
         recitersCardsCopy = new ArrayList<>(cards);
@@ -89,12 +94,9 @@ public class TelawatAdapter extends FilteredRecyclerAdapter<TelawatAdapter.ViewH
 
     @Override
     public void filter(String text, boolean[] selected) {
-        if (!context.getString(R.string.language_key).equals("ar"))    // Support english filter
-            return;
-
         this.selected = selected;
-
         recitersCards.clear();
+
         if (text == null) {
             for(ReciterCard reciterCard: recitersCardsCopy) {
                 if (hasSelectedVersion(reciterCard.getVersions(), selected))
@@ -111,6 +113,7 @@ public class TelawatAdapter extends FilteredRecyclerAdapter<TelawatAdapter.ViewH
                 }
             }
         }
+
         notifyDataSetChanged();
     }
 
@@ -178,6 +181,7 @@ public class TelawatAdapter extends FilteredRecyclerAdapter<TelawatAdapter.ViewH
                 }
             }
         }
+
         return selectedVersions;
     }
 
@@ -190,6 +194,16 @@ public class TelawatAdapter extends FilteredRecyclerAdapter<TelawatAdapter.ViewH
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("favorite_reciters", recitersJson);
         editor.apply();
+    }
+
+    private String[] getRewayat() {
+        Resources standardResources = context.getResources();
+        AssetManager assets = standardResources.getAssets();
+        DisplayMetrics metrics = standardResources.getDisplayMetrics();
+        Configuration config = new Configuration(standardResources.getConfiguration());
+        config.locale = Locale.forLanguageTag("ar");
+        Resources arabicResources = new Resources(assets, metrics, config);
+        return arabicResources.getStringArray(R.array.rewayat);
     }
 
     @Override
@@ -277,7 +291,8 @@ class TelawaVersionAdapter extends RecyclerView.Adapter<TelawaVersionAdapter.Vie
                         context, R.drawable.ic_download));
             }
             else {
-                downloadVer(ver);
+                Runnable runnable =() -> downloadVer(ver);    // run download on a background thread
+                AsyncTask.execute(runnable);
 
                 viewHolder.download_btn.setImageDrawable(AppCompatResources.getDrawable(
                         context, R.drawable.ic_downloaded));

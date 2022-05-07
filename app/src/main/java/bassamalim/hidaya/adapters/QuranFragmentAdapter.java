@@ -32,8 +32,8 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
     private final Context context;
     private final AppDatabase db;
     private final SharedPreferences pref;
-    private final ArrayList<SuraCard> suraCards;
-    private final ArrayList<SuraCard> suraCardsCopy;
+    private final ArrayList<SuraCard> items;
+    private final ArrayList<SuraCard> itemsCopy;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView card;
@@ -58,8 +58,8 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
 
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        suraCards = new ArrayList<>(buttons);
-        suraCardsCopy = new ArrayList<>(buttons);
+        items = new ArrayList<>(buttons);
+        itemsCopy = new ArrayList<>(buttons);
     }
 
     @NonNull @Override
@@ -70,28 +70,36 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        SuraCard card = suraCards.get(position);
+        SuraCard card = items.get(position);
 
         viewHolder.namescreen.setText(card.getSuraName());
 
+        setTanzeel(viewHolder, card);
+
+        doFavorites(viewHolder, card, position);
+    }
+
+    private void setTanzeel(ViewHolder vh, SuraCard card) {
         int tanzeel = card.getTanzeel();
         if (tanzeel == 0) // Makkah
-            viewHolder.tanzeelView.setImageDrawable(
+            vh.tanzeelView.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_kaaba_black));
         else if (tanzeel == 1) // Madina
-            viewHolder.tanzeelView.setImageDrawable(
+            vh.tanzeelView.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_madinah));
+    }
 
+    private void doFavorites(ViewHolder vh, SuraCard card, int position) {
         int fav = card.getFavorite();
         if (fav == 0)
-            viewHolder.favBtn.setImageDrawable(
+            vh.favBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_star_outline));
         else if (fav == 1)
-            viewHolder.favBtn.setImageDrawable(
+            vh.favBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_star));
 
-        viewHolder.card.setOnClickListener(card.getCardListener());
-        viewHolder.favBtn.setOnClickListener(view -> {
+        vh.card.setOnClickListener(card.getCardListener());
+        vh.favBtn.setOnClickListener(view -> {
             if (card.getFavorite() == 0) {
                 db.suraDao().setFav(card.getNumber(), 1);
                 card.setFavorite(1);
@@ -108,26 +116,26 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
 
     @Override
     public int getItemCount() {
-        return suraCards.size();
+        return items.size();
     }
 
     public void filterName(String text) {
-        suraCards.clear();
+        items.clear();
         if (text.isEmpty())
-            suraCards.addAll(suraCardsCopy);
+            items.addAll(itemsCopy);
         else {
-            for(SuraCard suraCard : suraCardsCopy) {
+            for(SuraCard suraCard : itemsCopy) {
                 if(suraCard.getSearchName().contains(text))
-                    suraCards.add(suraCard);
+                    items.add(suraCard);
             }
         }
         notifyDataSetChanged();
     }
 
     public void filterNumber(String text) {
-        suraCards.clear();
+        items.clear();
         if (text.isEmpty())
-            suraCards.addAll(suraCardsCopy);
+            items.addAll(itemsCopy);
         else {
             try {
                 int num = Integer.parseInt(text);
@@ -142,9 +150,9 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
                             Toast.LENGTH_SHORT).show();
             }
             catch (NumberFormatException e) {
-                for(SuraCard suraCard : suraCardsCopy) {
+                for(SuraCard suraCard : itemsCopy) {
                     if(suraCard.getSearchName().contains(text))
-                        suraCards.add(suraCard);
+                        items.add(suraCard);
                 }
             }
         }

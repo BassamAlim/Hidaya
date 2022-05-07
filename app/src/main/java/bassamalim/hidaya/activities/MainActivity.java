@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         theme = Utils.onActivityCreateSetTheme(this);
-        locale = Utils.onActivityCreateSetLocale(this, null);
+        locale = Utils.onActivityCreateSetLocale(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setTodayScreen();
         setContentView(binding.getRoot());
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         String hMonth = " " + getResources().getStringArray(R.array.hijri_months)[Calendar.MONTH];
         String hDay = "" + hijri.get(Calendar.DATE);
         String hijriStr = getResources()
-                .getStringArray(R.array.week_days)[hijri.get(Calendar.DAY_OF_WEEK)] + " ";
+                .getStringArray(R.array.week_days)[hijri.get(Calendar.DAY_OF_WEEK)-1] + " ";
         hijriStr += Utils.translateNumbers(this, hDay) + hMonth +
                 Utils.translateNumbers(this, hYear);
         binding.hijriView.setText(hijriStr);

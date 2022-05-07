@@ -36,6 +36,11 @@ import bassamalim.hidaya.helpers.PrayTimes;
 
 public class Utils {
 
+    public static void myOnActivityCreated(Context context, Activity activity) {
+        onActivityCreateSetTheme(activity);
+        onActivityCreateSetLocale(context);
+    }
+
     public static String onActivityCreateSetTheme(Activity activity) {
         String theme = PreferenceManager.getDefaultSharedPreferences(activity).getString(
                 activity.getString(R.string.theme_key), activity.getString(R.string.default_theme));
@@ -44,15 +49,8 @@ public class Utils {
         return theme;
     }
 
-    public static void refresh(Activity activity) {
-        Intent intent = activity.getIntent();
-        activity.finish();
-        activity.startActivity(intent);
-    }
-
-    public static String onActivityCreateSetLocale(Context context, String language) {
-        if (language == null)
-            language = PreferenceManager.getDefaultSharedPreferences(context)
+    public static String onActivityCreateSetLocale(Context context) {
+        String language = PreferenceManager.getDefaultSharedPreferences(context)
                     .getString(context.getString(R.string.language_key), "ar");
 
         Locale locale = new Locale(language);
@@ -67,6 +65,12 @@ public class Utils {
         resources.updateConfiguration(configuration, resources.getDisplayMetrics());
 
         return language;
+    }
+
+    public static void refresh(Activity activity) {
+        Intent intent = activity.getIntent();
+        activity.finish();
+        activity.startActivity(intent);
     }
 
     public static String translateNumbers(Context context, String english) {

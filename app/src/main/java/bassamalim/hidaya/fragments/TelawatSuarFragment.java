@@ -69,6 +69,16 @@ public class TelawatSuarFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+
+        if (menuVisible) {
+            adapter = new TelawatSuarAdapter(getContext(), makeCards(), reciterId, versionId);
+            recycler.setAdapter(adapter);
+        }
+    }
+
     private void getData() {
         AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();

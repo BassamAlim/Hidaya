@@ -78,6 +78,16 @@ public class FavoriteQuranFragment extends Fragment {
         recyclerView.setLayoutManager(gridLayoutManager);
     }
 
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+
+        if (menuVisible) {
+            adapter = new QuranFragmentAdapter(getContext(), makeCards());
+            recyclerView.setAdapter(adapter);
+        }
+    }
+
     private void setListeners() {
         binding.fab.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), QuranSearcherActivity.class);

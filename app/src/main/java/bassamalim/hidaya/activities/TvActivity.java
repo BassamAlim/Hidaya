@@ -28,8 +28,7 @@ public class TvActivity extends YouTubeBaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.onActivityCreateSetTheme(this);
-        Utils.onActivityCreateSetLocale(this, null);
+        Utils.myOnActivityCreated(this, this);
         binding = ActivityTvBinding.inflate(getLayoutInflater());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(binding.getRoot());
@@ -69,6 +68,7 @@ public class TvActivity extends YouTubeBaseActivity {
             public void onInitializationFailure(YouTubePlayer.Provider provider,
                                                 YouTubeInitializationResult
                                                         youTubeInitializationResult) {
+                Log.e(Global.TAG, String.valueOf(youTubeInitializationResult));
                 Toast.makeText(getApplicationContext(), getString(R.string.playback_failed),
                         Toast.LENGTH_SHORT).show();
             }

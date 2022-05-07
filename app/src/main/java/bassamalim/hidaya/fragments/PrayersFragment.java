@@ -248,7 +248,7 @@ public class PrayersFragment extends Fragment {
                 String hms = String.format(Locale.US, "%02d:%02d:%02d",
                         hours, minutes, seconds);
                 counters[upcoming].setText(String.format(getString(R.string.remaining),
-                        Utils.translateNumbers(getContext(), hms)));
+                        Utils.translateNumbers(requireContext(), hms)));
             }
             @Override
             public void onFinish() {

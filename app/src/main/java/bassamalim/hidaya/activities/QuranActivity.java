@@ -33,13 +33,13 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.AyatDB;
 import bassamalim.hidaya.databinding.ActivityQuranBinding;
+import bassamalim.hidaya.dialogs.InfoDialog;
+import bassamalim.hidaya.dialogs.QuranSettingsDialog;
+import bassamalim.hidaya.dialogs.TutorialDialog;
 import bassamalim.hidaya.enums.States;
 import bassamalim.hidaya.helpers.AyahPlayer;
 import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.other.Utils;
-import bassamalim.hidaya.dialogs.InfoDialog;
-import bassamalim.hidaya.dialogs.QuranSettingsDialog;
-import bassamalim.hidaya.dialogs.TutorialDialog;
 import bassamalim.hidaya.replacements.DoubleClickLMM;
 import bassamalim.hidaya.replacements.DoubleClickableSpan;
 import bassamalim.hidaya.replacements.SwipeActivity;
@@ -72,6 +72,7 @@ public class QuranActivity extends SwipeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         themeify();
+        Utils.onActivityCreateSetLocale(this);
         binding = ActivityQuranBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
