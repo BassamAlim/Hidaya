@@ -31,7 +31,7 @@ public class TelawatSuarCollectionActivity extends FragmentActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.onActivityCreateSetTheme(this);
+        Utils.myOnActivityCreated(this);
         binding = ActivityCollectionTelawatSuarBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> finish());

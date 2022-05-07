@@ -1,4 +1,4 @@
-package bassamalim.hidaya.adapters;
+package bassamalim.hidaya.replacements;
 
 import androidx.recyclerview.widget.RecyclerView;
 

@@ -21,7 +21,7 @@ import bassamalim.hidaya.other.Utils;
 public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdapter.ViewHolder> {
 
     private final Context context;
-    private final List<Ayah> suraCards;
+    private final List<Ayah> items;
     private final String suraStr;
     private final String tafseerString;
     private final String suraNumString;
@@ -52,7 +52,7 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
     public QuranSearcherAdapter(Context context, List<Ayah> results) {
         this.context = context;
 
-        suraCards = results;
+        items = results;
         suraStr = context.getString(R.string.sura);
         suraNumString = context.getString(R.string.sura_number);
         pageNumString = context.getString(R.string.page_number);
@@ -69,7 +69,7 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
 
     @Override
     public void onBindViewHolder(QuranSearcherAdapter.ViewHolder viewHolder, final int position) {
-        Ayah card = suraCards.get(position);
+        Ayah card = items.get(position);
 
         String suraNumStr = suraNumString + " " + Utils.translateNumbers(
                 context, String.valueOf(card.getSurah()));
@@ -101,6 +101,6 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
 
     @Override
     public int getItemCount() {
-        return suraCards.size();
+        return items.size();
     }
 }

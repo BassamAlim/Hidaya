@@ -13,6 +13,8 @@ public class PrayersWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context,
                                 AppWidgetManager appWidgetManager, int appWidgetId) {
 
+        Utils.onActivityCreateSetLocale(context);
+
         String[] timesList = new Keeper(context).retrieveStrTimes();
 
         if (timesList != null) {

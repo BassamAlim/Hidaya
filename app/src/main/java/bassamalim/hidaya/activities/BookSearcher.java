@@ -24,18 +24,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.BookSearcherAdapter;
 import bassamalim.hidaya.databinding.ActivityBookSearcherBinding;
+import bassamalim.hidaya.dialogs.FilterDialog;
 import bassamalim.hidaya.models.Book;
 import bassamalim.hidaya.models.BookSearcherMatch;
 import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
-import bassamalim.hidaya.dialogs.FilterDialog;
 
 public class BookSearcher extends AppCompatActivity {
 
@@ -53,7 +52,7 @@ public class BookSearcher extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.onActivityCreateSetTheme(this);
+        Utils.myOnActivityCreated(this);
         binding = ActivityBookSearcherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
@@ -149,9 +148,7 @@ public class BookSearcher extends AppCompatActivity {
         if (!dir.exists())
             return;
 
-        File[] files = dir.listFiles();
-
-        for (int i = 0; i < Objects.requireNonNull(files).length; i++) {
+        for (int i = 0; i < bookTitles.length; i++) {
             if (!selectedBooks[i])
                 continue;
 

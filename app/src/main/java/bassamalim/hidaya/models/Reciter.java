@@ -5,14 +5,14 @@ import android.view.View;
 import java.io.Serializable;
 import java.util.List;
 
-public class ReciterCard {
+public class Reciter {
 
     private final int id;
     private final String name;
     private int favorite;
     private final List<RecitationVersion> versions;
 
-    public ReciterCard(int id, String name, int favorite, List<RecitationVersion> versions) {
+    public Reciter(int id, String name, int favorite, List<RecitationVersion> versions) {
         this.id = id;
         this.name = name;
         this.favorite = favorite;

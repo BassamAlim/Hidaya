@@ -17,10 +17,11 @@ import java.util.ArrayList;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.models.QuizResultQuestion;
 
-public class QuizResultQuestionAdapter extends RecyclerView.Adapter<QuizResultQuestionAdapter.ViewHolder> {
+public class QuizResultQuestionAdapter
+        extends RecyclerView.Adapter<QuizResultQuestionAdapter.ViewHolder> {
 
     private final Context context;
-    private final ArrayList<QuizResultQuestion> questionsCards;
+    private final ArrayList<QuizResultQuestion> items;
     private final String question;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -52,7 +53,7 @@ public class QuizResultQuestionAdapter extends RecyclerView.Adapter<QuizResultQu
 
     public QuizResultQuestionAdapter(Context context, ArrayList<QuizResultQuestion> cards) {
         this.context = context;
-        questionsCards = new ArrayList<>(cards);
+        items = new ArrayList<>(cards);
         question = context.getString(R.string.question);
     }
 
@@ -64,14 +65,14 @@ public class QuizResultQuestionAdapter extends RecyclerView.Adapter<QuizResultQu
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        String qNum = question + " " + (questionsCards.get(position).getQuestionNumber() + 1);
+        String qNum = question + " " + (items.get(position).getQuestionNumber() + 1);
         viewHolder.qNumTv.setText(qNum);
-        viewHolder.qTextTv.setText(questionsCards.get(position).getQuestionText());
+        viewHolder.qTextTv.setText(items.get(position).getQuestionText());
 
-        viewHolder.a1Tv.setText(questionsCards.get(position).getAnswer1());
-        viewHolder.a2Tv.setText(questionsCards.get(position).getAnswer2());
-        viewHolder.a3Tv.setText(questionsCards.get(position).getAnswer3());
-        viewHolder.a4Tv.setText(questionsCards.get(position).getAnswer4());
+        viewHolder.a1Tv.setText(items.get(position).getAnswer1());
+        viewHolder.a2Tv.setText(items.get(position).getAnswer2());
+        viewHolder.a3Tv.setText(items.get(position).getAnswer3());
+        viewHolder.a4Tv.setText(items.get(position).getAnswer4());
 
         setImage(position, 0, viewHolder.a1iv);
         setImage(position, 1, viewHolder.a2iv);
@@ -80,8 +81,8 @@ public class QuizResultQuestionAdapter extends RecyclerView.Adapter<QuizResultQu
     }
 
     private void setImage(int position, int num, ImageView iv) {
-        int chosen = questionsCards.get(position).getChosenAnswer();
-        int correct = questionsCards.get(position).getCorrectAnswer();
+        int chosen = items.get(position).getChosenAnswer();
+        int correct = items.get(position).getCorrectAnswer();
 
         if (num == correct)
             iv.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_correct));
@@ -93,6 +94,6 @@ public class QuizResultQuestionAdapter extends RecyclerView.Adapter<QuizResultQu
 
     @Override
     public int getItemCount() {
-        return questionsCards.size();
+        return items.size();
     }
 }

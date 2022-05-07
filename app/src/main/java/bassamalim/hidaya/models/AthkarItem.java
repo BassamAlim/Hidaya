@@ -2,7 +2,7 @@ package bassamalim.hidaya.models;
 
 import android.view.View;
 
-public class AlathkarButton {
+public class AthkarItem {
 
     private final int id;
     private final int category_id;
@@ -10,8 +10,8 @@ public class AlathkarButton {
     private int favorite;
     private final View.OnClickListener listener;
 
-    public AlathkarButton(int id, int category_id, String name, int favorite,
-                          View.OnClickListener listener) {
+    public AthkarItem(int id, int category_id, String name, int favorite,
+                      View.OnClickListener listener) {
         this.id = id;
         this.category_id = category_id;
         this.name = name;

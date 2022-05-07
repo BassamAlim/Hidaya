@@ -4,7 +4,7 @@ import android.view.View;
 
 import java.io.Serializable;
 
-public class SuraCard implements Serializable {
+public class Sura implements Serializable {
     private final int number;
     private final String suraName;
     private final String searchName;
@@ -12,8 +12,8 @@ public class SuraCard implements Serializable {
     private int favorite;
     private final View.OnClickListener cardListener;
 
-    public SuraCard(int number, String suraName, String searchName, int tanzeel,
-                    int favorite, View.OnClickListener cardListener) {
+    public Sura(int number, String suraName, String searchName, int tanzeel,
+                int favorite, View.OnClickListener cardListener) {
         this.number = number;
         this.suraName = suraName;
         this.tanzeel = tanzeel;

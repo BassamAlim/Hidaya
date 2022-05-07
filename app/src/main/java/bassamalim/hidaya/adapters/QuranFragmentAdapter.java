@@ -25,15 +25,15 @@ import java.util.ArrayList;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.database.AppDatabase;
-import bassamalim.hidaya.models.SuraCard;
+import bassamalim.hidaya.models.Sura;
 
 public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdapter.ViewHolder> {
 
     private final Context context;
     private final AppDatabase db;
     private final SharedPreferences pref;
-    private final ArrayList<SuraCard> items;
-    private final ArrayList<SuraCard> itemsCopy;
+    private final ArrayList<Sura> items;
+    private final ArrayList<Sura> itemsCopy;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView card;
@@ -50,7 +50,7 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
         }
     }
 
-    public QuranFragmentAdapter(Context context, ArrayList<SuraCard> buttons) {
+    public QuranFragmentAdapter(Context context, ArrayList<Sura> buttons) {
         this.context = context;
 
         db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB")
@@ -70,7 +70,7 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        SuraCard card = items.get(position);
+        Sura card = items.get(position);
 
         viewHolder.namescreen.setText(card.getSuraName());
 
@@ -79,7 +79,7 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
         doFavorites(viewHolder, card, position);
     }
 
-    private void setTanzeel(ViewHolder vh, SuraCard card) {
+    private void setTanzeel(ViewHolder vh, Sura card) {
         int tanzeel = card.getTanzeel();
         if (tanzeel == 0) // Makkah
             vh.tanzeelView.setImageDrawable(
@@ -89,7 +89,7 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
                     AppCompatResources.getDrawable(context, R.drawable.ic_madinah));
     }
 
-    private void doFavorites(ViewHolder vh, SuraCard card, int position) {
+    private void doFavorites(ViewHolder vh, Sura card, int position) {
         int fav = card.getFavorite();
         if (fav == 0)
             vh.favBtn.setImageDrawable(
@@ -124,7 +124,7 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
         if (text.isEmpty())
             items.addAll(itemsCopy);
         else {
-            for(SuraCard suraCard : itemsCopy) {
+            for(Sura suraCard : itemsCopy) {
                 if(suraCard.getSearchName().contains(text))
                     items.add(suraCard);
             }
@@ -150,7 +150,7 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
                             Toast.LENGTH_SHORT).show();
             }
             catch (NumberFormatException e) {
-                for(SuraCard suraCard : itemsCopy) {
+                for(Sura suraCard : itemsCopy) {
                     if(suraCard.getSearchName().contains(text))
                         items.add(suraCard);
                 }

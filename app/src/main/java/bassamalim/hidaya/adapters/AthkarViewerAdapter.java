@@ -14,12 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.models.ThikrCard;
+import bassamalim.hidaya.models.Thikr;
 
 public class AthkarViewerAdapter extends RecyclerView.Adapter<AthkarViewerAdapter.ViewHolder> {
 
     private final int MARGIN = 15;
-    private final ArrayList<ThikrCard> thikrCards;
+    private final ArrayList<Thikr> items;
     private int textSize;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -46,8 +46,8 @@ public class AthkarViewerAdapter extends RecyclerView.Adapter<AthkarViewerAdapte
         }
     }
 
-    public AthkarViewerAdapter(Context context, ArrayList<ThikrCard> cards) {
-        thikrCards = cards;
+    public AthkarViewerAdapter(Context context, ArrayList<Thikr> cards) {
+        items = cards;
 
         textSize = PreferenceManager.getDefaultSharedPreferences(context).getInt(
                 context.getString(R.string.alathkar_text_size_key), 15) + MARGIN;
@@ -70,7 +70,7 @@ public class AthkarViewerAdapter extends RecyclerView.Adapter<AthkarViewerAdapte
     @Override
     public void onBindViewHolder(@NonNull AthkarViewerAdapter.ViewHolder viewHolder,
                                  final int position) {
-        ThikrCard card = thikrCards.get(position);
+        Thikr card = items.get(position);
 
         viewHolder.titleTv.setText(card.getTitle());
         viewHolder.textTv.setText(card.getText());
@@ -101,6 +101,6 @@ public class AthkarViewerAdapter extends RecyclerView.Adapter<AthkarViewerAdapte
 
     @Override
     public int getItemCount() {
-        return thikrCards.size();
+        return items.size();
     }
 }

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.replacements;
+package bassamalim.hidaya.dialogs;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -18,7 +18,7 @@ import java.util.Objects;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.other.Utils;
 
-public class HijriDatePicker extends DialogFragment {
+public class HijriDatePickerDialog extends DialogFragment {
 
     private DatePickerDialog.OnDateSetListener listener;
     private NumberPicker monthPicker;
@@ -91,6 +91,6 @@ public class HijriDatePicker extends DialogFragment {
                             monthPicker.getValue(), dayPicker.getValue());
                 })
                 .setNegativeButton(R.string.cancel, (dialog12, id) -> Objects.requireNonNull(
-                        HijriDatePicker.this.getDialog()).cancel()).create();
+                        HijriDatePickerDialog.this.getDialog()).cancel()).create();
     }
 }

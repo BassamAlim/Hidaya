@@ -23,7 +23,7 @@ import bassamalim.hidaya.adapters.BookChapterAdapter;
 import bassamalim.hidaya.databinding.FragmentBookChaptersBinding;
 import bassamalim.hidaya.enums.ListType;
 import bassamalim.hidaya.models.Book;
-import bassamalim.hidaya.models.BookChapterCard;
+import bassamalim.hidaya.models.BookChapter;
 import bassamalim.hidaya.other.Utils;
 
 public class BookChaptersFragment extends Fragment {
@@ -79,10 +79,10 @@ public class BookChaptersFragment extends Fragment {
             favs = gson.fromJson(favsStr, boolean[].class);
     }
 
-    private ArrayList<BookChapterCard> makeCards() {
+    private ArrayList<BookChapter> makeCards() {
         getData();
 
-        ArrayList<BookChapterCard> cards = new ArrayList<>();
+        ArrayList<BookChapter> cards = new ArrayList<>();
         for (int i = 0; i < book.getChapters().length; i++) {
             if (type == ListType.All || (type == ListType.Favorite && favs[i])) {
                 String chapterTitle = book.getChapters()[i].getChapterTitle();
@@ -96,7 +96,7 @@ public class BookChaptersFragment extends Fragment {
                     startActivity(intent);
                 };
 
-                cards.add(new BookChapterCard(i, chapterTitle, favs[i], listener));
+                cards.add(new BookChapter(i, chapterTitle, favs[i], listener));
             }
         }
         return cards;

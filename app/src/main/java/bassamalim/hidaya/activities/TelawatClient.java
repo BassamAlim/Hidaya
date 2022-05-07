@@ -29,7 +29,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
 import bassamalim.hidaya.databinding.ActivityTelawatClientBinding;
-import bassamalim.hidaya.models.ReciterCard;
+import bassamalim.hidaya.models.Reciter;
 import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.services.TelawatService;
@@ -60,7 +60,7 @@ public class TelawatClient extends AppCompatActivity {
     private int versionId;
     private int surahIndex;
     private String reciterName;
-    private ReciterCard.RecitationVersion version;
+    private Reciter.RecitationVersion version;
     private ArrayList<String> surahNames;
     private int repeat;
     private int shuffle;
@@ -68,7 +68,7 @@ public class TelawatClient extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.onActivityCreateSetTheme(this);
+        Utils.myOnActivityCreated(this);
         binding = ActivityTelawatClientBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
@@ -177,7 +177,7 @@ public class TelawatClient extends AppCompatActivity {
         reciterName = db.telawatRecitersDao().getNames().get(reciterId);
 
         TelawatVersionsDB telawa = db.telawatVersionsDao().getVersion(reciterId, versionId);
-        version = new ReciterCard.RecitationVersion(versionId, telawa.getUrl(), telawa.getRewaya(),
+        version = new Reciter.RecitationVersion(versionId, telawa.getUrl(), telawa.getRewaya(),
                 telawa.getCount(), telawa.getSuras(), null);
 
         surahNames = (ArrayList<String>) db.suraDao().getNames();

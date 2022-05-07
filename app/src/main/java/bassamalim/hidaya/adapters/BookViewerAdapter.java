@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.models.BookDoorCard;
+import bassamalim.hidaya.models.BookDoor;
 
 public class BookViewerAdapter extends RecyclerView.Adapter<BookViewerAdapter.ViewHolder> {
 
@@ -29,7 +29,7 @@ public class BookViewerAdapter extends RecyclerView.Adapter<BookViewerAdapter.Vi
     private final Gson gson;
     private final int bookId;
     private final int chapterId;
-    private final ArrayList<BookDoorCard> doorCards;
+    private final ArrayList<BookDoor> items;
     private boolean[] favs;
     private int textSize;
 
@@ -48,7 +48,7 @@ public class BookViewerAdapter extends RecyclerView.Adapter<BookViewerAdapter.Vi
         }
     }
 
-    public BookViewerAdapter(Context context, ArrayList<BookDoorCard> cards,
+    public BookViewerAdapter(Context context, ArrayList<BookDoor> cards,
                              int bookId, int chapterId) {
         this.context = context;
         pref = PreferenceManager.getDefaultSharedPreferences(context);
@@ -57,7 +57,7 @@ public class BookViewerAdapter extends RecyclerView.Adapter<BookViewerAdapter.Vi
         this.bookId = bookId;
         this.chapterId = chapterId;
 
-        doorCards = cards;
+        items = cards;
 
         textSize = pref.getInt(context.getString(R.string.books_text_size_key), 15) + MARGIN;
 
@@ -68,7 +68,7 @@ public class BookViewerAdapter extends RecyclerView.Adapter<BookViewerAdapter.Vi
         String favsStr = pref.getString("book" + bookId +
                 "_chapter" + chapterId + "_favs", "");
         if (favsStr.length() == 0)
-            favs = new boolean[doorCards.size()];
+            favs = new boolean[items.size()];
         else
             favs = gson.fromJson(favsStr, boolean[].class);
     }
@@ -88,11 +88,11 @@ public class BookViewerAdapter extends RecyclerView.Adapter<BookViewerAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        BookDoorCard card = doorCards.get(position);
+        BookDoor card = items.get(position);
 
-        viewHolder.titleTv.setText(doorCards.get(position).getDoorTitle());
+        viewHolder.titleTv.setText(items.get(position).getDoorTitle());
 
-        viewHolder.textTv.setText(doorCards.get(position).getText());
+        viewHolder.textTv.setText(items.get(position).getText());
 
         boolean fav = card.isFav();
         if (fav)
@@ -104,11 +104,11 @@ public class BookViewerAdapter extends RecyclerView.Adapter<BookViewerAdapter.Vi
 
         viewHolder.favBtn.setOnClickListener(view -> {
             if (card.isFav()) {
-                favs[doorCards.get(position).getDoorId()] = false;
+                favs[items.get(position).getDoorId()] = false;
                 card.setFav(false);
             }
             else {
-                favs[doorCards.get(position).getDoorId()] = true;
+                favs[items.get(position).getDoorId()] = true;
                 card.setFav(true);
             }
             notifyItemChanged(position);
@@ -129,6 +129,6 @@ public class BookViewerAdapter extends RecyclerView.Adapter<BookViewerAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return doorCards.size();
+        return items.size();
     }
 }

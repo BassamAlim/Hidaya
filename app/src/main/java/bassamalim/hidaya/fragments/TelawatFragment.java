@@ -35,7 +35,7 @@ import bassamalim.hidaya.database.dbs.TelawatRecitersDB;
 import bassamalim.hidaya.databinding.FragmentTelawatBinding;
 import bassamalim.hidaya.dialogs.FilterDialog;
 import bassamalim.hidaya.enums.ListType;
-import bassamalim.hidaya.models.ReciterCard;
+import bassamalim.hidaya.models.Reciter;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class TelawatFragment extends Fragment {
@@ -129,8 +129,8 @@ public class TelawatFragment extends Fragment {
         }
     }
 
-    private ArrayList<ReciterCard> makeCards() {
-        ArrayList<ReciterCard> cards = new ArrayList<>();
+    private ArrayList<Reciter> makeCards() {
+        ArrayList<Reciter> cards = new ArrayList<>();
         for (int i = 0; i < reciters.size(); i++) {
             if (type == ListType.Downloaded && !downloaded[i])
                 continue;
@@ -139,7 +139,7 @@ public class TelawatFragment extends Fragment {
 
             List<TelawatDB> versions = getVersions(reciter.getReciter_id());
 
-            List<ReciterCard.RecitationVersion> versionsList = new ArrayList<>();
+            List<Reciter.RecitationVersion> versionsList = new ArrayList<>();
 
             for (int j = 0; j < versions.size(); j++) {
                 TelawatDB telawa = versions.get(j);
@@ -153,11 +153,11 @@ public class TelawatFragment extends Fragment {
                     startActivity(intent);
                 };
 
-                versionsList.add(new ReciterCard.RecitationVersion(telawa.getVersion_id(),
+                versionsList.add(new Reciter.RecitationVersion(telawa.getVersion_id(),
                         telawa.getUrl(), telawa.getRewaya(), telawa.getCount(),
                         telawa.getSuras(), listener));
             }
-            cards.add(new ReciterCard(reciter.getReciter_id(), reciter.getReciter_name(),
+            cards.add(new Reciter(reciter.getReciter_id(), reciter.getReciter_name(),
                     reciter.getFavorite(), versionsList));
         }
 

@@ -28,7 +28,7 @@ public class TvActivity extends YouTubeBaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.myOnActivityCreated(this, this);
+        Utils.myOnActivityCreated(this);
         binding = ActivityTvBinding.inflate(getLayoutInflater());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(binding.getRoot());

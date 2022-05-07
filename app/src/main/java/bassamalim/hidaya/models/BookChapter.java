@@ -2,15 +2,15 @@ package bassamalim.hidaya.models;
 
 import android.view.View;
 
-public class BookChapterCard {
+public class BookChapter {
 
     private final int chapterId;
     private final String chapterTitle;
     private boolean favorite;
     private final View.OnClickListener listener;
 
-    public BookChapterCard(int chapterId, String chapterTitle, boolean favorite,
-                           View.OnClickListener listener) {
+    public BookChapter(int chapterId, String chapterTitle, boolean favorite,
+                       View.OnClickListener listener) {
 
         this.chapterId = chapterId;
         this.chapterTitle = chapterTitle;

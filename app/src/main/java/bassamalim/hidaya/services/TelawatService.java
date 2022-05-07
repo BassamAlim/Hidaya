@@ -49,8 +49,9 @@ import java.util.Random;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.TelawatClient;
 import bassamalim.hidaya.database.AppDatabase;
-import bassamalim.hidaya.models.ReciterCard;
+import bassamalim.hidaya.models.Reciter;
 import bassamalim.hidaya.other.Global;
+import bassamalim.hidaya.other.Utils;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class TelawatService extends MediaBrowserServiceCompat implements
@@ -91,13 +92,15 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     private int reciterId;
     private int versionId;
     private int surahIndex;
-    private ReciterCard.RecitationVersion version;
+    private Reciter.RecitationVersion version;
     private int shuffle;
     private int continueFrom;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Utils.onActivityCreateSetLocale(this);
 
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
@@ -136,7 +139,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
                 versionId = Integer.parseInt(givenMediaId.substring(3, 5));
                 surahIndex = Integer.parseInt(givenMediaId.substring(5));
                 reciterName = extras.getString("reciter_name");
-                version = (ReciterCard.RecitationVersion) extras.getSerializable("version");
+                version = (Reciter.RecitationVersion) extras.getSerializable("version");
 
                 if (playType.equals("continue"))
                     continueFrom = pref.getInt("last_telawa_progress", 0);

@@ -25,7 +25,7 @@ import java.util.List;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.CheckboxListviewAdapter;
-import bassamalim.hidaya.adapters.FilteredRecyclerAdapter;
+import bassamalim.hidaya.replacements.FilteredRecyclerAdapter;
 import bassamalim.hidaya.models.CheckboxListItem;
 
 public class FilterDialog<VH extends RecyclerView.ViewHolder> {

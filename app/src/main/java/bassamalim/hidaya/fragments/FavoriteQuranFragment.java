@@ -28,7 +28,7 @@ import bassamalim.hidaya.adapters.QuranFragmentAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.SuraDB;
 import bassamalim.hidaya.databinding.FragmentQuranBinding;
-import bassamalim.hidaya.models.SuraCard;
+import bassamalim.hidaya.models.Sura;
 
 public class FavoriteQuranFragment extends Fragment {
 
@@ -119,8 +119,8 @@ public class FavoriteQuranFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    public ArrayList<SuraCard> makeCards() {
-        ArrayList<SuraCard> cards = new ArrayList<>();
+    public ArrayList<Sura> makeCards() {
+        ArrayList<Sura> cards = new ArrayList<>();
         List<SuraDB> suras = getSuras();
 
         String surat = getString(R.string.sura);
@@ -134,7 +134,7 @@ public class FavoriteQuranFragment extends Fragment {
                 requireContext().startActivity(intent);
             };
 
-            cards.add(new SuraCard(sura.getSura_id(), surat + " " + sura.getSura_name(),
+            cards.add(new Sura(sura.getSura_id(), surat + " " + sura.getSura_name(),
                     sura.getSearch_name(), sura.getTanzeel(), 1, cardListener));
         }
         return cards;

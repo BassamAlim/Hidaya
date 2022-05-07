@@ -28,7 +28,7 @@ import java.util.Objects;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
-import bassamalim.hidaya.models.ReciterSuraCard;
+import bassamalim.hidaya.models.ReciterSura;
 import bassamalim.hidaya.other.Utils;
 
 public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.ViewHolder> {
@@ -36,8 +36,8 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
     private final Context context;
     private final AppDatabase db;
     private final SharedPreferences pref;
-    private final List<ReciterSuraCard> items;
-    private final List<ReciterSuraCard> itemsCopy;
+    private final List<ReciterSura> items;
+    private final List<ReciterSura> itemsCopy;
     private final int versionId;
     private final TelawatVersionsDB ver;
     private final boolean[] downloaded = new boolean[114];
@@ -58,7 +58,7 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
         }
     }
 
-    public TelawatSuarAdapter(Context context, ArrayList<ReciterSuraCard> cards,
+    public TelawatSuarAdapter(Context context, ArrayList<ReciterSura> cards,
                               int reciterId, int versionId) {
         this.context = context;
 
@@ -107,7 +107,7 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
         if (text.isEmpty())
             items.addAll(itemsCopy);
         else {
-            for(ReciterSuraCard reciterCard: itemsCopy) {
+            for(ReciterSura reciterCard: itemsCopy) {
                 if (reciterCard.getSearchName().contains(text))
                     items.add(reciterCard);
             }
@@ -116,7 +116,7 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
     }
 
     private void doFavorite(ViewHolder viewHolder, int position) {
-        ReciterSuraCard card = items.get(position);
+        ReciterSura card = items.get(position);
 
         int fav = card.getFavorite();
         if (fav == 0)

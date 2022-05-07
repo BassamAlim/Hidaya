@@ -13,6 +13,7 @@ import java.util.List;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.models.BookSearcherMatch;
+import bassamalim.hidaya.replacements.FilteredRecyclerAdapter;
 
 public class BookSearcherAdapter
         extends FilteredRecyclerAdapter<BookSearcherAdapter.ViewHolder> {

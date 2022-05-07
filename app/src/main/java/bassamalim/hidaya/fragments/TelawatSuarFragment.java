@@ -27,7 +27,7 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.SuraDB;
 import bassamalim.hidaya.databinding.FragmentTelawatSuarBinding;
 import bassamalim.hidaya.enums.ListType;
-import bassamalim.hidaya.models.ReciterSuraCard;
+import bassamalim.hidaya.models.ReciterSura;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class TelawatSuarFragment extends Fragment {
@@ -97,10 +97,10 @@ public class TelawatSuarFragment extends Fragment {
         favs = db.suraDao().getFav();
     }
 
-    private ArrayList<ReciterSuraCard> makeCards() {
+    private ArrayList<ReciterSura> makeCards() {
         getData();
 
-        ArrayList<ReciterSuraCard> cards = new ArrayList<>();
+        ArrayList<ReciterSura> cards = new ArrayList<>();
         for (int i = 0; i < 114; i++) {
             if (!availableSurahs.contains("," + (i+1) + ",")  ||
                     (type == ListType.Favorite && favs.get(i) == 0) ||
@@ -124,7 +124,7 @@ public class TelawatSuarFragment extends Fragment {
                 startActivity(intent);
             };
 
-            cards.add(new ReciterSuraCard(i, name, searchName, favs.get(i), listener));
+            cards.add(new ReciterSura(i, name, searchName, favs.get(i), listener));
         }
         return cards;
     }

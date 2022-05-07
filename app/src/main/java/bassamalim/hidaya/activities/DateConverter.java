@@ -14,7 +14,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.databinding.ActivityDateConverterBinding;
 import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
-import bassamalim.hidaya.replacements.HijriDatePicker;
+import bassamalim.hidaya.dialogs.HijriDatePickerDialog;
 
 public class DateConverter extends AppCompatActivity {
 
@@ -23,7 +23,7 @@ public class DateConverter extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.onActivityCreateSetTheme(this);
+        Utils.myOnActivityCreated(this);
         binding = ActivityDateConverterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
@@ -55,7 +55,7 @@ public class DateConverter extends AppCompatActivity {
     }
 
     private void pickHijri() {
-        HijriDatePicker hijriPicker = new HijriDatePicker();
+        HijriDatePickerDialog hijriPicker = new HijriDatePickerDialog();
 
         hijriPicker.setListener((view, year, month, day) -> {
             Log.d(Global.TAG, "Here");

@@ -41,6 +41,7 @@ import java.util.List;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.RadioClient;
 import bassamalim.hidaya.other.Global;
+import bassamalim.hidaya.other.Utils;
 
 public class RadioService extends MediaBrowserServiceCompat implements
         AudioManager.OnAudioFocusChangeListener {
@@ -69,6 +70,8 @@ public class RadioService extends MediaBrowserServiceCompat implements
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Utils.onActivityCreateSetLocale(this);
 
         initSession();
 

@@ -19,7 +19,7 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.BookViewerAdapter;
 import bassamalim.hidaya.databinding.ActivityBookViewerBinding;
 import bassamalim.hidaya.models.Book;
-import bassamalim.hidaya.models.BookDoorCard;
+import bassamalim.hidaya.models.BookDoor;
 import bassamalim.hidaya.other.Utils;
 
 public class BookViewer extends AppCompatActivity {
@@ -37,7 +37,7 @@ public class BookViewer extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.onActivityCreateSetTheme(this);
+        Utils.myOnActivityCreated(this);
         binding = ActivityBookViewerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
@@ -71,11 +71,11 @@ public class BookViewer extends AppCompatActivity {
             favs = gson.fromJson(favsStr, boolean[].class);
     }
 
-    private ArrayList<BookDoorCard> makeCards() {
-        ArrayList<BookDoorCard> cards = new ArrayList<>();
+    private ArrayList<BookDoor> makeCards() {
+        ArrayList<BookDoor> cards = new ArrayList<>();
         for (int i = 0; i < doors.length; i++) {
             Book.BookChapter.BookDoor door = doors[i];
-            cards.add(new BookDoorCard(door.getDoorId(), door.getDoorTitle(),
+            cards.add(new BookDoor(door.getDoorId(), door.getDoorTitle(),
                     door.getText(), favs[i]));
         }
         return cards;

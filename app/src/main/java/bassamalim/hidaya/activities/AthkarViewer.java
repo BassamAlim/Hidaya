@@ -22,7 +22,7 @@ import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.ThikrsDB;
 import bassamalim.hidaya.databinding.ActivityAthkarViewerBinding;
 import bassamalim.hidaya.dialogs.InfoDialog;
-import bassamalim.hidaya.models.ThikrCard;
+import bassamalim.hidaya.models.Thikr;
 import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 
@@ -39,7 +39,7 @@ public class AthkarViewer extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.myOnActivityCreated(this, this);
+        Utils.myOnActivityCreated(this);
         binding = ActivityAthkarViewerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
@@ -64,11 +64,11 @@ public class AthkarViewer extends AppCompatActivity {
         return db.thikrsDao().getThikrs(id);
     }
 
-    private ArrayList<ThikrCard> makeCards() {
-        ArrayList<ThikrCard> cards = new ArrayList<>();
+    private ArrayList<Thikr> makeCards() {
+        ArrayList<Thikr> cards = new ArrayList<>();
         for (int i = 0; i < thikrs.size(); i++) {
             ThikrsDB t = thikrs.get(i);
-            cards.add(new ThikrCard(t.getThikr_id(), t.getTitle(), t.getText(), t.getFadl(),
+            cards.add(new Thikr(t.getThikr_id(), t.getTitle(), t.getText(), t.getFadl(),
                     t.getReference(), t.getRepetition(), v ->
                     new InfoDialog(getString(R.string.reference), t.getReference()).show(
                             getSupportFragmentManager(), InfoDialog.TAG)));

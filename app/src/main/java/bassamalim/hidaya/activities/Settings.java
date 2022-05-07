@@ -28,7 +28,7 @@ public class Settings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.onActivityCreateSetTheme(this);
+        Utils.myOnActivityCreated(this);
         setContentView(R.layout.activity_settings);
         findViewById(android.R.id.home).setOnClickListener(v -> onBackPressed());
 

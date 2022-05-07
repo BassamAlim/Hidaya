@@ -18,7 +18,7 @@ import bassamalim.hidaya.adapters.AthkarListAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.AthkarDB;
 import bassamalim.hidaya.databinding.ActivityAthkarListBinding;
-import bassamalim.hidaya.models.AlathkarButton;
+import bassamalim.hidaya.models.AthkarItem;
 import bassamalim.hidaya.other.Utils;
 
 public class AthkarListActivity extends AppCompatActivity {
@@ -26,7 +26,7 @@ public class AthkarListActivity extends AppCompatActivity {
     private ActivityAthkarListBinding binding;
     private RecyclerView recyclerView;
     private AthkarListAdapter adapter;
-    private ArrayList<AlathkarButton> alathkarButtons;
+    private ArrayList<AthkarItem> athkarItems;
     private int category;
     private String action;
     private AppDatabase db;
@@ -34,7 +34,7 @@ public class AthkarListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.onActivityCreateSetTheme(this);
+        Utils.myOnActivityCreated(this);
         binding = ActivityAthkarListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
@@ -53,7 +53,7 @@ public class AthkarListActivity extends AppCompatActivity {
             binding.topBarTitle.setText(db.athkarCategoryDao().getName(category));
         }
 
-        alathkarButtons = makeButtons(getData());
+        athkarItems = makeButtons(getData());
 
         setupRecycler();
 
@@ -68,8 +68,8 @@ public class AthkarListActivity extends AppCompatActivity {
         }
     }
 
-    private ArrayList<AlathkarButton> makeButtons(List<AthkarDB> athkar) {
-        ArrayList<AlathkarButton> buttons = new ArrayList<>();
+    private ArrayList<AthkarItem> makeButtons(List<AthkarDB> athkar) {
+        ArrayList<AthkarItem> buttons = new ArrayList<>();
 
         List<Integer> favs = db.athkarDao().getFavs();
 
@@ -85,7 +85,7 @@ public class AthkarListActivity extends AppCompatActivity {
 
             int fav = action.equals("favorite") ? 1 : favs.get(thikr.getAthkar_id());
 
-            buttons.add(new AlathkarButton(thikr.getAthkar_id(), thikr.getCategory_id(),
+            buttons.add(new AthkarItem(thikr.getAthkar_id(), thikr.getCategory_id(),
                     thikr.getAthkar_name(),fav, clickListener));
         }
         return buttons;
@@ -95,7 +95,7 @@ public class AthkarListActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new AthkarListAdapter(this, alathkarButtons);
+        adapter = new AthkarListAdapter(this, athkarItems);
         recyclerView.setAdapter(adapter);
     }
 

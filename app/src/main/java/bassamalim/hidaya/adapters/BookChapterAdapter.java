@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.models.BookChapterCard;
+import bassamalim.hidaya.models.BookChapter;
 
 public class BookChapterAdapter extends RecyclerView.Adapter<BookChapterAdapter.ViewHolder> {
 
@@ -27,8 +27,8 @@ public class BookChapterAdapter extends RecyclerView.Adapter<BookChapterAdapter.
     private final SharedPreferences pref;
     private final Gson gson;
     private final int bookId;
-    private final ArrayList<BookChapterCard> items;
-    private final ArrayList<BookChapterCard> itemsCopy;
+    private final ArrayList<BookChapter> items;
+    private final ArrayList<BookChapter> itemsCopy;
     private boolean[] favs;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -44,7 +44,7 @@ public class BookChapterAdapter extends RecyclerView.Adapter<BookChapterAdapter.
         }
     }
 
-    public BookChapterAdapter(Context context, ArrayList<BookChapterCard> cards, int bookId) {
+    public BookChapterAdapter(Context context, ArrayList<BookChapter> cards, int bookId) {
         this.context = context;
         pref = PreferenceManager.getDefaultSharedPreferences(context);
         gson = new Gson();
@@ -73,7 +73,7 @@ public class BookChapterAdapter extends RecyclerView.Adapter<BookChapterAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        BookChapterCard card = items.get(position);
+        BookChapter card = items.get(position);
 
         viewHolder.tv.setText(items.get(position).getChapterTitle());
 
@@ -107,7 +107,7 @@ public class BookChapterAdapter extends RecyclerView.Adapter<BookChapterAdapter.
         if (text.isEmpty())
             items.addAll(itemsCopy);
         else {
-            for(BookChapterCard chapterCard: itemsCopy) {
+            for(BookChapter chapterCard: itemsCopy) {
                 if (chapterCard.getChapterTitle().contains(text))
                     items.add(chapterCard);
             }

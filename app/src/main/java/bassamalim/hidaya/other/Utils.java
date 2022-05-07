@@ -36,9 +36,9 @@ import bassamalim.hidaya.helpers.PrayTimes;
 
 public class Utils {
 
-    public static void myOnActivityCreated(Context context, Activity activity) {
+    public static void myOnActivityCreated(Activity activity) {
         onActivityCreateSetTheme(activity);
-        onActivityCreateSetLocale(context);
+        onActivityCreateSetLocale(activity);
     }
 
     public static String onActivityCreateSetTheme(Activity activity) {

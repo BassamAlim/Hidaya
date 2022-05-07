@@ -2,7 +2,7 @@ package bassamalim.hidaya.models;
 
 import android.view.View;
 
-public class ReciterSuraCard {
+public class ReciterSura {
 
     private final int num;
     private final String surahName;
@@ -10,8 +10,8 @@ public class ReciterSuraCard {
     private int favorite;
     private final View.OnClickListener listener;
 
-    public ReciterSuraCard(int num, String name, String searchName, int favorite,
-                           View.OnClickListener listener) {
+    public ReciterSura(int num, String name, String searchName, int favorite,
+                       View.OnClickListener listener) {
         this.num = num;
         this.surahName = name;
         this.searchName = searchName;

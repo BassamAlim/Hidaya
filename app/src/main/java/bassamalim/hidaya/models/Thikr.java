@@ -2,7 +2,7 @@ package bassamalim.hidaya.models;
 
 import android.view.View;
 
-public class ThikrCard {
+public class Thikr {
 
     private final int id;
     private final String title;
@@ -12,8 +12,8 @@ public class ThikrCard {
     private final String repetition;
     private final View.OnClickListener referenceListener;
 
-    public ThikrCard(int id, String title, String text, String fadl,
-                     String reference, String repetition, View.OnClickListener referenceListener) {
+    public Thikr(int id, String title, String text, String fadl,
+                 String reference, String repetition, View.OnClickListener referenceListener) {
         this.id = id;
         this.title = title;
         this.text = text;

@@ -21,15 +21,15 @@ import java.util.ArrayList;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
-import bassamalim.hidaya.models.AlathkarButton;
+import bassamalim.hidaya.models.AthkarItem;
 
 public class AthkarListAdapter extends RecyclerView.Adapter<AthkarListAdapter.ViewHolder> {
 
     private final Context context;
     private final AppDatabase db;
     private final SharedPreferences pref;
-    private final ArrayList<AlathkarButton> alathkarCards;
-    private final ArrayList<AlathkarButton> alathkarCardsCopy;
+    private final ArrayList<AthkarItem> items;
+    private final ArrayList<AthkarItem> itemsCopy;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView card;
@@ -48,7 +48,7 @@ public class AthkarListAdapter extends RecyclerView.Adapter<AthkarListAdapter.Vi
         }
     }
 
-    public AthkarListAdapter(Context context, ArrayList<AlathkarButton> cards) {
+    public AthkarListAdapter(Context context, ArrayList<AthkarItem> cards) {
         this.context = context;
 
         db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB").createFromAsset(
@@ -56,8 +56,8 @@ public class AthkarListAdapter extends RecyclerView.Adapter<AthkarListAdapter.Vi
 
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        alathkarCards = new ArrayList<>(cards);
-        alathkarCardsCopy = new ArrayList<>(cards);
+        items = new ArrayList<>(cards);
+        itemsCopy = new ArrayList<>(cards);
     }
 
     @NonNull @Override
@@ -68,7 +68,7 @@ public class AthkarListAdapter extends RecyclerView.Adapter<AthkarListAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        AlathkarButton card = alathkarCards.get(position);
+        AthkarItem card = items.get(position);
 
         viewHolder.nameTv.setText(card.getName());
 
@@ -98,13 +98,13 @@ public class AthkarListAdapter extends RecyclerView.Adapter<AthkarListAdapter.Vi
     }
 
     public void filter(String text) {
-        alathkarCards.clear();
+        items.clear();
         if (text.isEmpty())
-            alathkarCards.addAll(alathkarCardsCopy);
+            items.addAll(itemsCopy);
         else {
-            for(AlathkarButton alathkarButton: alathkarCardsCopy) {
-                if(alathkarButton.getName().contains(text))
-                    alathkarCards.add(alathkarButton);
+            for(AthkarItem athkarItem : itemsCopy) {
+                if(athkarItem.getName().contains(text))
+                    items.add(athkarItem);
             }
         }
         notifyDataSetChanged();
@@ -123,7 +123,7 @@ public class AthkarListAdapter extends RecyclerView.Adapter<AthkarListAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return alathkarCards.size();
+        return items.size();
     }
 }
 

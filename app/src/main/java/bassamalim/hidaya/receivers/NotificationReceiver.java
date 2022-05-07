@@ -40,18 +40,16 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
+
         id = Utils.mapID(intent.getIntExtra("id", 0));
-        String action = intent.getAction();
         time = intent.getLongExtra("time", 0);
-        isPrayer = action.equals("prayer");
+        isPrayer = intent.getAction().equals("prayer");
 
         Utils.onActivityCreateSetLocale(context);
 
         Log.i(Global.TAG, "in notification receiver for " + id);
 
-        int defaultType = 2;
-        if (id == ID.SHOROUQ)
-            defaultType = 0;
+        int defaultType = id == ID.SHOROUQ ? 0 : 2;
 
         type = PreferenceManager.getDefaultSharedPreferences(context)
                 .getInt(id+"notification_type", defaultType);
@@ -63,19 +61,18 @@ public class NotificationReceiver extends BroadcastReceiver {
     private void prepare() {
         long max = time + 120000;
         if (System.currentTimeMillis() <= max) {
-            if (type == 3 && isPrayer)
+            if (type == 3)
                 startService();
             else
                 showNotification();
         }
         else
-            Log.e(Global.TAG, "Late intent walking");
+            Log.i(Global.TAG, id + " Passed");
     }
 
     private void showNotification() {
         createNotificationChannel();
-        Notification notification = build();
-        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
+
         if (id == ID.EVENING)    // so that night notification would replace morning notification
             id = ID.MORNING;
 
@@ -86,7 +83,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                     AudioManager.AUDIOFOCUS_GAIN);
         }
 
-        managerCompat.notify(id.ordinal(), notification);
+        NotificationManagerCompat.from(context).notify(id.ordinal(), build());
     }
 
     private void startService() {
@@ -120,7 +117,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         builder.setColor(context.getColor(R.color.surface_M));
         builder.setContentIntent(onClick(id));
 
-        if (type==1)
+        if (type == 1)
             builder.setSilent(true);
 
         return builder.build();
