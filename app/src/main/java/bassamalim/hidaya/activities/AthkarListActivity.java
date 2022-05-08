@@ -2,6 +2,7 @@ package bassamalim.hidaya.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,8 +18,10 @@ import bassamalim.hidaya.R;
 import bassamalim.hidaya.adapters.AthkarListAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.AthkarDB;
+import bassamalim.hidaya.database.dbs.ThikrsDB;
 import bassamalim.hidaya.databinding.ActivityAthkarListBinding;
 import bassamalim.hidaya.models.AthkarItem;
+import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.other.Utils;
 
 public class AthkarListActivity extends AppCompatActivity {
@@ -26,15 +29,17 @@ public class AthkarListActivity extends AppCompatActivity {
     private ActivityAthkarListBinding binding;
     private RecyclerView recyclerView;
     private AthkarListAdapter adapter;
-    private ArrayList<AthkarItem> athkarItems;
     private int category;
     private String action;
     private AppDatabase db;
+    private String language;
+    private List<String> names;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.myOnActivityCreated(this);
+        Utils.onActivityCreateSetTheme(this);
+        language = Utils.onActivityCreateSetLocale(this);
         binding = ActivityAthkarListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
@@ -50,10 +55,11 @@ public class AthkarListActivity extends AppCompatActivity {
             binding.topBarTitle.setText(getString(R.string.favorite_athkar));
         else {
             category = getIntent().getIntExtra("category", 0);
-            binding.topBarTitle.setText(db.athkarCategoryDao().getName(category));
-        }
 
-        athkarItems = makeButtons(getData());
+            String topBarTitle = language.equals("en") ? db.athkarCategoryDao()
+                    .getNameEn(category) : db.athkarCategoryDao().getName(category);
+            binding.topBarTitle.setText(topBarTitle);
+        }
 
         setupRecycler();
 
@@ -61,6 +67,8 @@ public class AthkarListActivity extends AppCompatActivity {
     }
 
     private List<AthkarDB> getData() {
+        names = language.equals("en") ? db.athkarDao().getNamesEn() : db.athkarDao().getNames();
+
         switch (action) {
             case "all": return db.athkarDao().getAll();
             case "favorite": return db.athkarDao().getFavorites();
@@ -68,13 +76,17 @@ public class AthkarListActivity extends AppCompatActivity {
         }
     }
 
-    private ArrayList<AthkarItem> makeButtons(List<AthkarDB> athkar) {
-        ArrayList<AthkarItem> buttons = new ArrayList<>();
+    private List<AthkarItem> makeButtons(List<AthkarDB> athkar) {
+        Log.d(Global.TAG, "SIZE: " + athkar.size());
+        List<AthkarItem> buttons = new ArrayList<>();
 
         List<Integer> favs = db.athkarDao().getFavs();
 
         for (int i = 0; i < athkar.size(); i++) {
             AthkarDB thikr = athkar.get(i);
+
+            if (language.equals("en") && !hasEn(thikr))
+                continue;
 
             View.OnClickListener clickListener = v -> {
                 Intent intent = new Intent(this, AthkarViewer.class);
@@ -86,16 +98,26 @@ public class AthkarListActivity extends AppCompatActivity {
             int fav = action.equals("favorite") ? 1 : favs.get(thikr.getAthkar_id());
 
             buttons.add(new AthkarItem(thikr.getAthkar_id(), thikr.getCategory_id(),
-                    thikr.getAthkar_name(),fav, clickListener));
+                    names.get(thikr.getAthkar_id()), fav, clickListener));
         }
         return buttons;
+    }
+
+    private boolean hasEn(AthkarDB thikr) {
+        List<ThikrsDB> ts = db.thikrsDao().getThikrs(thikr.getAthkar_id());
+        for (int i = 0; i < ts.size(); i++) {
+            ThikrsDB t = ts.get(i);
+            if (t.getText_en() != null && t.getText_en().length() > 1)
+                return true;
+        }
+        return false;
     }
 
     private void setupRecycler() {
         recyclerView = findViewById(R.id.recycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new AthkarListAdapter(this, athkarItems);
+        adapter = new AthkarListAdapter(this, makeButtons(getData()));
         recyclerView.setAdapter(adapter);
     }
 

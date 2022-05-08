@@ -59,8 +59,9 @@ public class QuranActivity extends SwipeActivity {
     private String currentPageText;
     private String currentSurah;
     private int textSize;
-    private ArrayList<Ayah> allAyahs;
-    private ArrayList<Ayah> arr;
+    private List<Ayah> allAyahs;
+    private List<String> names;
+    private List<Ayah> arr;
     private TextView target;
     private boolean scrolled;
     private Ayah selected;
@@ -72,11 +73,11 @@ public class QuranActivity extends SwipeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         themeify();
-        Utils.onActivityCreateSetLocale(this);
+        String language = Utils.onActivityCreateSetLocale(this);
         binding = ActivityQuranBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        initiate();
+        initiate(language);
 
         checkFirstTime();
 
@@ -106,14 +107,19 @@ public class QuranActivity extends SwipeActivity {
         }
     }
 
-    private void initiate() {
+    private void initiate(String language) {
         flipper = binding.flipper;
         flipper.setMeasureAllChildren(false);
         lls = new LinearLayout[]{binding.linear1, binding.linear2};
 
         db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
+
         ayatDB = db.ayahDao().getAll();
+        if (language.equals("en"))
+            names = db.ayahDao().getNamesEn();
+        else
+            names = db.ayahDao().getNames();
     }
 
     private void checkFirstTime() {
@@ -245,7 +251,7 @@ public class QuranActivity extends SwipeActivity {
     }
 
     private int getPage(int surahIndex) {
-        return db.suraDao().getPage(surahIndex);
+        return db.suarDao().getPage(surahIndex);
     }
 
     private int getPageStart(int pageNumber) {
@@ -262,7 +268,7 @@ public class QuranActivity extends SwipeActivity {
         lls[currentLinear].removeAllViews();
         allAyahs = new ArrayList<>();
         arr = new ArrayList<>();
-        ArrayList<ArrayList<Ayah>> pageAyahs = new ArrayList<>();
+        List<List<Ayah>> pageAyahs = new ArrayList<>();
 
         int counter = getPageStart(pageNumber);
         do {
@@ -270,7 +276,7 @@ public class QuranActivity extends SwipeActivity {
             int surahNum = ayah.getSura_no();    // starts from 1
             int ayahNum = ayah.getAya_no();
 
-            Ayah ayahModel = new Ayah(ayah.getJozz(), surahNum, ayahNum, ayah.getSura_name_ar(),
+            Ayah ayahModel = new Ayah(ayah.getJozz(), surahNum, ayahNum, names.get(counter),
                     ayah.getAya_text() + " ", ayah.getAya_tafseer());
 
             if (ayahNum == 1) {
@@ -292,7 +298,7 @@ public class QuranActivity extends SwipeActivity {
         finalize(juz, pageAyahs.get(findMainSurah(pageAyahs)).get(0).getSurahName());
     }
 
-    private void publish(ArrayList<Ayah> list) {
+    private void publish(List<Ayah> list) {
         TextView screen = screen();
         StringBuilder text = new StringBuilder();
 
@@ -395,7 +401,7 @@ public class QuranActivity extends SwipeActivity {
             target = nameScreen;
     }
 
-    private int findMainSurah(ArrayList<ArrayList<Ayah>> surahs) {
+    private int findMainSurah(List<List<Ayah>> surahs) {
         int largest = 0;
         for (int i = 1; i < surahs.size(); i++) {
             if (surahs.get(i).size() > surahs.get(largest).size())

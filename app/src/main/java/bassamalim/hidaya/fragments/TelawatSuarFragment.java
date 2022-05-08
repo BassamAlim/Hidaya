@@ -24,7 +24,7 @@ import java.util.Objects;
 import bassamalim.hidaya.activities.TelawatClient;
 import bassamalim.hidaya.adapters.TelawatSuarAdapter;
 import bassamalim.hidaya.database.AppDatabase;
-import bassamalim.hidaya.database.dbs.SuraDB;
+import bassamalim.hidaya.database.dbs.SuarDB;
 import bassamalim.hidaya.databinding.FragmentTelawatSuarBinding;
 import bassamalim.hidaya.enums.ListType;
 import bassamalim.hidaya.models.ReciterSura;
@@ -83,7 +83,7 @@ public class TelawatSuarFragment extends Fragment {
         AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
 
-        List<SuraDB> suras = db.suraDao().getAll();
+        List<SuarDB> suras = db.suarDao().getAll();
 
         surahNames = new ArrayList<>();
         searchNames = new String[114];
@@ -94,7 +94,7 @@ public class TelawatSuarFragment extends Fragment {
 
         availableSurahs = db.telawatVersionsDao().getSuras(reciterId, versionId);
 
-        favs = db.suraDao().getFav();
+        favs = db.suarDao().getFav();
     }
 
     private ArrayList<ReciterSura> makeCards() {

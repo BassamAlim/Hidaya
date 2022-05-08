@@ -128,11 +128,11 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
 
         viewHolder.favBtn.setOnClickListener(view -> {
             if (card.getFavorite() == 0) {
-                db.suraDao().setFav(card.getNum(), 1);
+                db.suarDao().setFav(card.getNum(), 1);
                 card.setFavorite(1);
             }
             else if (card.getFavorite() == 1) {
-                db.suraDao().setFav(card.getNum(), 0);
+                db.suarDao().setFav(card.getNum(), 0);
                 card.setFavorite(0);
             }
             notifyItemChanged(position);
@@ -214,7 +214,7 @@ public class TelawatSuarAdapter extends RecyclerView.Adapter<TelawatSuarAdapter.
     }
 
     private void updateFavorites() {
-        Object[] favSuras = db.suraDao().getFav().toArray();
+        Object[] favSuras = db.suarDao().getFav().toArray();
 
         Gson gson = new Gson();
         String surasJson = gson.toJson(favSuras);

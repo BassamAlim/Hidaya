@@ -18,6 +18,7 @@ import androidx.room.Room;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.database.AppDatabase;
@@ -28,8 +29,8 @@ public class AthkarListAdapter extends RecyclerView.Adapter<AthkarListAdapter.Vi
     private final Context context;
     private final AppDatabase db;
     private final SharedPreferences pref;
-    private final ArrayList<AthkarItem> items;
-    private final ArrayList<AthkarItem> itemsCopy;
+    private final List<AthkarItem> items;
+    private final List<AthkarItem> itemsCopy;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView card;
@@ -48,7 +49,7 @@ public class AthkarListAdapter extends RecyclerView.Adapter<AthkarListAdapter.Vi
         }
     }
 
-    public AthkarListAdapter(Context context, ArrayList<AthkarItem> cards) {
+    public AthkarListAdapter(Context context, List<AthkarItem> cards) {
         this.context = context;
 
         db = Room.databaseBuilder(context, AppDatabase.class, "HidayaDB").createFromAsset(

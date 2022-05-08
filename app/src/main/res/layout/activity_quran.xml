@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/base_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,10 +15,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/page_number"
+            android:id="@+id/sura_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="start"
+            android:paddingHorizontal="5dp"
             android:fontFamily="@font/tajawal_regular"
             android:textColor="?attr/myOnPrimary"
             android:textSize="21dp"
@@ -27,10 +27,11 @@
             tools:ignore="SpUsage" />
 
         <TextView
-            android:id="@+id/sura_name"
+            android:id="@+id/page_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            android:layout_gravity="center"
+            android:paddingHorizontal="5dp"
             android:fontFamily="@font/tajawal_regular"
             android:textColor="?attr/myOnPrimary"
             android:textSize="21dp"
@@ -42,8 +43,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:paddingStart="5dp"
+            android:paddingEnd="15dp"
             android:fontFamily="@font/tajawal_regular"
-            android:paddingHorizontal="10dp"
             android:textColor="?attr/myOnPrimary"
             android:textSize="21dp"
             android:textStyle="bold"
@@ -110,44 +112,52 @@
             android:padding="5dp"
             android:src="@drawable/ic_bookmark" />
 
-        <ImageButton
-            android:id="@+id/next_ayah"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="@drawable/ripple_circle"
-            android:contentDescription="@string/bookmark_page_button_description"
-            android:padding="5dp"
-            android:src="@drawable/ic_aya_forward" />
+            android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/play"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="6dp"
-            android:background="@drawable/ripple_circle"
-            android:contentDescription="@string/bookmark_page_button_description"
-            android:src="@drawable/ic_play_aya" />
+            <ImageButton
+                android:id="@+id/prev_ayah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ripple_circle"
+                android:contentDescription="@string/bookmark_page_button_description"
+                android:padding="5dp"
+                android:src="@drawable/ic_aya_backward" />
 
-        <ImageButton
-            android:id="@+id/prev_ayah"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/ripple_circle"
-            android:contentDescription="@string/bookmark_page_button_description"
-            android:padding="5dp"
-            android:src="@drawable/ic_aya_backward" />
+            <ImageButton
+                android:id="@+id/play"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/ripple_circle"
+                android:contentDescription="@string/bookmark_page_button_description"
+                android:src="@drawable/ic_play_aya" />
+
+            <ImageButton
+                android:id="@+id/next_ayah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ripple_circle"
+                android:contentDescription="@string/bookmark_page_button_description"
+                android:padding="5dp"
+                android:src="@drawable/ic_aya_forward" />
+
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/recitation_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="15dp"
             android:background="@drawable/ripple_circle"
             android:contentDescription="@string/bookmark_page_button_description"
             android:padding="5dp"

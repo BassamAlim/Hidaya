@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import bassamalim.hidaya.activities.AthkarListActivity;
 import bassamalim.hidaya.databinding.FragmentAthkarBinding;
 
-public class AlathkarFragment extends Fragment {
+public class AthkarFragment extends Fragment {
 
     private FragmentAthkarBinding binding;
 

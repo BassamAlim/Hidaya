@@ -31,15 +31,16 @@ public class AthkarViewer extends AppCompatActivity {
     private ActivityAthkarViewerBinding binding;
     private SharedPreferences pref;
     private AppDatabase db;
-    private List<ThikrsDB> thikrs;
     private RecyclerView recycler;
     private SeekBar textSizeSb;
     private AthkarViewerAdapter adapter;
+    private String language;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.myOnActivityCreated(this);
+        Utils.onActivityCreateSetTheme(this);
+        language = Utils.onActivityCreateSetLocale(this);
         binding = ActivityAthkarViewerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
@@ -51,11 +52,12 @@ public class AthkarViewer extends AppCompatActivity {
 
         Intent intent = getIntent();
         int id = intent.getIntExtra("thikr_id", 0);
-        binding.topBarTitle.setText(db.athkarDao().getName(id));
 
-        thikrs = getThikrs(id);
+        String topBarTitle = language.equals("en") ? db.athkarDao().getNameEn(id) :
+                db.athkarDao().getName(id);
+        binding.topBarTitle.setText(topBarTitle);
 
-        setupRecycler();
+        setupRecycler(id);
 
         setupListeners();
     }
@@ -64,23 +66,33 @@ public class AthkarViewer extends AppCompatActivity {
         return db.thikrsDao().getThikrs(id);
     }
 
-    private ArrayList<Thikr> makeCards() {
+    private ArrayList<Thikr> makeCards(List<ThikrsDB> thikrs) {
         ArrayList<Thikr> cards = new ArrayList<>();
         for (int i = 0; i < thikrs.size(); i++) {
             ThikrsDB t = thikrs.get(i);
-            cards.add(new Thikr(t.getThikr_id(), t.getTitle(), t.getText(), t.getFadl(),
-                    t.getReference(), t.getRepetition(), v ->
-                    new InfoDialog(getString(R.string.reference), t.getReference()).show(
-                            getSupportFragmentManager(), InfoDialog.TAG)));
+
+            if (language.equals("en") && (t.getText_en() == null || t.getText_en().length() < 1))
+                continue;
+
+            if (language.equals("en"))
+                cards.add(new Thikr(t.getThikr_id(), t.getTitle_en(), t.getText_en(),
+                    t.getFadl_en(), t.getReference_en(), t.getRepetition_en(), v ->
+                    new InfoDialog(getString(R.string.reference), t.getReference_en())
+                            .show(getSupportFragmentManager(), InfoDialog.TAG)));
+            else
+                cards.add(new Thikr(t.getThikr_id(), t.getTitle(), t.getText(), t.getFadl(),
+                        t.getReference(), t.getRepetition(), v ->
+                        new InfoDialog(getString(R.string.reference), t.getReference())
+                                .show(getSupportFragmentManager(), InfoDialog.TAG)));
         }
         return cards;
     }
 
-    private void setupRecycler() {
+    private void setupRecycler(int id) {
         recycler = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recycler.setLayoutManager(layoutManager);
-        adapter = new AthkarViewerAdapter(this, makeCards());
+        adapter = new AthkarViewerAdapter(this, makeCards(getThikrs(id)));
         recycler.setAdapter(adapter);
     }
 

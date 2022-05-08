@@ -101,11 +101,11 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
         vh.card.setOnClickListener(card.getCardListener());
         vh.favBtn.setOnClickListener(view -> {
             if (card.getFavorite() == 0) {
-                db.suraDao().setFav(card.getNumber(), 1);
+                db.suarDao().setFav(card.getNumber(), 1);
                 card.setFavorite(1);
             }
             else if (card.getFavorite() == 1) {
-                db.suraDao().setFav(card.getNumber(), 0);
+                db.suarDao().setFav(card.getNumber(), 0);
                 card.setFavorite(0);
             }
             notifyItemChanged(position);
@@ -160,7 +160,7 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
     }
 
     private void updateFavorites() {
-        Object[] favSuras = db.suraDao().getFav().toArray();
+        Object[] favSuras = db.suarDao().getFav().toArray();
 
         Gson gson = new Gson();
         String surasJson = gson.toJson(favSuras);

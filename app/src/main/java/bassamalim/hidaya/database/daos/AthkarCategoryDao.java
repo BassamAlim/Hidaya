@@ -16,4 +16,7 @@ public interface AthkarCategoryDao {
     @Query("SELECT category_name FROM athkar_categories WHERE category_id = :id")
     String getName(int id);
 
+    @Query("SELECT category_name_en FROM athkar_categories WHERE category_id = :id")
+    String getNameEn(int id);
+
 }

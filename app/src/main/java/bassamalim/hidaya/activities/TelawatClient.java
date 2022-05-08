@@ -180,7 +180,7 @@ public class TelawatClient extends AppCompatActivity {
         version = new Reciter.RecitationVersion(versionId, telawa.getUrl(), telawa.getRewaya(),
                 telawa.getCount(), telawa.getSuras(), null);
 
-        surahNames = (ArrayList<String>) db.suraDao().getNames();
+        surahNames = (ArrayList<String>) db.suarDao().getNames();
     }
 
     private void retrieveState() {

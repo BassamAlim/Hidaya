@@ -10,7 +10,7 @@ import bassamalim.hidaya.database.daos.AyatRecitersDao;
 import bassamalim.hidaya.database.daos.AyatTelawaDao;
 import bassamalim.hidaya.database.daos.QuizAnswersDao;
 import bassamalim.hidaya.database.daos.QuizQuestionsDao;
-import bassamalim.hidaya.database.daos.SuraDao;
+import bassamalim.hidaya.database.daos.SuarDao;
 import bassamalim.hidaya.database.daos.TelawatDao;
 import bassamalim.hidaya.database.daos.TelawatRecitersDao;
 import bassamalim.hidaya.database.daos.TelawatVersionsDao;
@@ -22,13 +22,13 @@ import bassamalim.hidaya.database.dbs.AyatRecitersDB;
 import bassamalim.hidaya.database.dbs.AyatTelawaDB;
 import bassamalim.hidaya.database.dbs.QuizAnswersDB;
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB;
-import bassamalim.hidaya.database.dbs.SuraDB;
+import bassamalim.hidaya.database.dbs.SuarDB;
 import bassamalim.hidaya.database.dbs.TelawatRecitersDB;
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB;
 import bassamalim.hidaya.database.dbs.ThikrsDB;
 
 @Database(
-        entities = {AyatDB.class, SuraDB.class, AthkarCategoryDB.class, AthkarDB.class,
+        entities = {AyatDB.class, SuarDB.class, AthkarCategoryDB.class, AthkarDB.class,
                 ThikrsDB.class, AyatRecitersDB.class, AyatTelawaDB.class, TelawatRecitersDB.class,
                 TelawatVersionsDB.class, QuizQuestionsDB.class, QuizAnswersDB.class},
         version = 1/*, autoMigrations = {@AutoMigration(from = 1, to = 2)}*/
@@ -37,7 +37,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract AyatDao ayahDao();
 
-    public abstract SuraDao suraDao();
+    public abstract SuarDao suarDao();
 
     public abstract AthkarCategoryDao athkarCategoryDao();
 

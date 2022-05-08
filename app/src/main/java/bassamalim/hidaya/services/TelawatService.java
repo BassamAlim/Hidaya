@@ -656,7 +656,7 @@ public class TelawatService extends MediaBrowserServiceCompat implements
     }
 
     private void getSuraNames() {
-        surahNames = (ArrayList<String>) db.suraDao().getNames();
+        surahNames = (ArrayList<String>) db.suarDao().getNames();
     }
 
     private PendingIntent getContentIntent() {

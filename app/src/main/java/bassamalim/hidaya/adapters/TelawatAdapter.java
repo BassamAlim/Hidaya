@@ -161,7 +161,7 @@ public class TelawatAdapter extends FilteredRecyclerAdapter<TelawatAdapter.ViewH
         layoutManager.setInitialPrefetchItemCount(card.getVersions().size());
         TelawaVersionAdapter versionsAdapter = new TelawaVersionAdapter(
                 context, getSelectedVersions(card.getVersions()), card.getVersions().size(),
-                card.getId(), db.suraDao().getNames());
+                card.getId(), db.suarDao().getNames());
         viewHolder.recyclerView.setLayoutManager(layoutManager);
         viewHolder.recyclerView.setAdapter(versionsAdapter);
         viewHolder.recyclerView.setRecycledViewPool(viewPool);

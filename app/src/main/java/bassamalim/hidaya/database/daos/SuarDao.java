@@ -5,19 +5,22 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import bassamalim.hidaya.database.dbs.SuraDB;
+import bassamalim.hidaya.database.dbs.SuarDB;
 
 @Dao
-public interface SuraDao {
+public interface SuarDao {
 
     @Query("SELECT * FROM suar")
-    List<SuraDB> getAll();
+    List<SuarDB> getAll();
 
     @Query("SELECT sura_name FROM suar")
     List<String> getNames();
 
+    @Query("SELECT sura_name_en FROM suar")
+    List<String> getNamesEn();
+
     @Query("SELECT * FROM suar WHERE favorite = 1")
-    List<SuraDB> getFavorites();
+    List<SuarDB> getFavorites();
 
     @Query("UPDATE suar SET favorite = :val WHERE sura_id = :index")
     void setFav(int index, int val);

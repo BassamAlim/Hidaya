@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/navigation_alathkar"
-        android:name="bassamalim.hidaya.fragments.AlathkarFragment"
+        android:name="bassamalim.hidaya.fragments.AthkarFragment"
         android:label="@string/title_alathkar"
         tools:layout="@layout/fragment_athkar" />
 

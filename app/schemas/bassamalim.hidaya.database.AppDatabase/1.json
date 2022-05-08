@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "45d6eb21788806800473c7efc8bf2bcd",
+    "identityHash": "48764f4448288667b8bb4d4d5cef4058",
     "entities": [
       {
         "tableName": "hafs_ayat",
@@ -80,7 +80,7 @@
       },
       {
         "tableName": "suar",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sura_id` INTEGER NOT NULL, `sura_name` TEXT, `search_name` TEXT, `tanzeel` INTEGER NOT NULL, `start_page` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, PRIMARY KEY(`sura_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sura_id` INTEGER NOT NULL, `sura_name` TEXT, `sura_name_en` TEXT, `search_name` TEXT, `search_name_en` TEXT, `tanzeel` INTEGER NOT NULL, `start_page` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, PRIMARY KEY(`sura_id`))",
         "fields": [
           {
             "fieldPath": "sura_id",
@@ -95,8 +95,20 @@
             "notNull": false
           },
           {
+            "fieldPath": "sura_name_en",
+            "columnName": "sura_name_en",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "search_name",
             "columnName": "search_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "search_name_en",
+            "columnName": "search_name_en",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -130,7 +142,7 @@
       },
       {
         "tableName": "athkar_categories",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`category_id` INTEGER NOT NULL, `category_name` TEXT, PRIMARY KEY(`category_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`category_id` INTEGER NOT NULL, `category_name` TEXT, `category_name_en` TEXT, PRIMARY KEY(`category_id`))",
         "fields": [
           {
             "fieldPath": "category_id",
@@ -141,6 +153,12 @@
           {
             "fieldPath": "category_name",
             "columnName": "category_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "category_name_en",
+            "columnName": "category_name_en",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -156,7 +174,7 @@
       },
       {
         "tableName": "athkar",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`athkar_id` INTEGER NOT NULL, `athkar_name` TEXT, `category_id` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, PRIMARY KEY(`athkar_id`), FOREIGN KEY(`category_id`) REFERENCES `athkar_categories`(`category_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`athkar_id` INTEGER NOT NULL, `athkar_name` TEXT, `athkar_name_en` TEXT, `category_id` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, PRIMARY KEY(`athkar_id`), FOREIGN KEY(`category_id`) REFERENCES `athkar_categories`(`category_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
         "fields": [
           {
             "fieldPath": "athkar_id",
@@ -167,6 +185,12 @@
           {
             "fieldPath": "athkar_name",
             "columnName": "athkar_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "athkar_name_en",
+            "columnName": "athkar_name_en",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -206,7 +230,7 @@
       },
       {
         "tableName": "thikrs",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`thikr_id` INTEGER NOT NULL, `title` TEXT, `text` TEXT, `repetition` TEXT, `fadl` TEXT, `reference` TEXT, `athkar_id` INTEGER NOT NULL, PRIMARY KEY(`thikr_id`, `athkar_id`), FOREIGN KEY(`athkar_id`) REFERENCES `athkar`(`athkar_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`thikr_id` INTEGER NOT NULL, `title` TEXT, `title_en` TEXT, `text` TEXT, `text_en` TEXT, `text_en_translation` TEXT, `repetition` TEXT, `repetition_en` TEXT, `fadl` TEXT, `fadl_en` TEXT, `reference` TEXT, `reference_en` TEXT, `athkar_id` INTEGER NOT NULL, PRIMARY KEY(`thikr_id`, `athkar_id`), FOREIGN KEY(`athkar_id`) REFERENCES `athkar`(`athkar_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
         "fields": [
           {
             "fieldPath": "thikr_id",
@@ -221,8 +245,26 @@
             "notNull": false
           },
           {
+            "fieldPath": "title_en",
+            "columnName": "title_en",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "text",
             "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "text_en",
+            "columnName": "text_en",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "text_en_translation",
+            "columnName": "text_en_translation",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -233,14 +275,32 @@
             "notNull": false
           },
           {
+            "fieldPath": "repetition_en",
+            "columnName": "repetition_en",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "fadl",
             "columnName": "fadl",
             "affinity": "TEXT",
             "notNull": false
           },
           {
+            "fieldPath": "fadl_en",
+            "columnName": "fadl_en",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "reference",
             "columnName": "reference",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "reference_en",
+            "columnName": "reference_en",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -520,7 +580,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '45d6eb21788806800473c7efc8bf2bcd')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '48764f4448288667b8bb4d4d5cef4058')"
     ]
   }
 }

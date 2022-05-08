@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +27,7 @@ import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.activities.QuranSearcherActivity;
 import bassamalim.hidaya.adapters.QuranFragmentAdapter;
 import bassamalim.hidaya.database.AppDatabase;
-import bassamalim.hidaya.database.dbs.SuraDB;
+import bassamalim.hidaya.database.dbs.SuarDB;
 import bassamalim.hidaya.databinding.FragmentQuranBinding;
 import bassamalim.hidaya.models.Sura;
 
@@ -38,6 +39,7 @@ public class FavoriteQuranFragment extends Fragment {
     private static Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
     private GridLayoutManager gridLayoutManager;
+    private List<String> names;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -121,11 +123,11 @@ public class FavoriteQuranFragment extends Fragment {
 
     public ArrayList<Sura> makeCards() {
         ArrayList<Sura> cards = new ArrayList<>();
-        List<SuraDB> suras = getSuras();
+        List<SuarDB> suras = getSuras();
 
         String surat = getString(R.string.sura);
         for (int i = 0; i < suras.size(); i++) {
-            SuraDB sura = suras.get(i);
+            SuarDB sura = suras.get(i);
 
             View.OnClickListener cardListener = v -> {
                 Intent intent = new Intent(getContext(), QuranActivity.class);
@@ -134,16 +136,22 @@ public class FavoriteQuranFragment extends Fragment {
                 requireContext().startActivity(intent);
             };
 
-            cards.add(new Sura(sura.getSura_id(), surat + " " + sura.getSura_name(),
+            cards.add(new Sura(sura.getSura_id(), surat + " " + names.get(i),
                     sura.getSearch_name(), sura.getTanzeel(), 1, cardListener));
         }
         return cards;
     }
 
-    private List<SuraDB> getSuras() {
-        return Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
-                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
-                .suraDao().getFavorites();
+    private List<SuarDB> getSuras() {
+        AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
+                .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
+
+        boolean en = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                .getString(getString(R.string.language_key), getString(R.string.default_language))
+                .equals("en");
+        names = en ? db.suarDao().getNamesEn() : db.suarDao().getNames();
+
+        return db.suarDao().getFavorites();
     }
 
     private void setSearchListeners() {

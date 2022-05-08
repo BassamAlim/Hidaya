@@ -139,7 +139,7 @@ public class Utils {
             Object[] favSuras = gson.fromJson(surasJson, Object[].class);
             for (int i = 0; i < favSuras.length; i++) {
                 Double d = (Double) favSuras[i];
-                db.suraDao().setFav(i, d.intValue());
+                db.suarDao().setFav(i, d.intValue());
             }
         }
 
