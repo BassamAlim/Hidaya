@@ -92,7 +92,7 @@ public class AthkarViewerAdapter extends RecyclerView.Adapter<AthkarViewerAdapte
             viewHolder.titleTv.setText(card.getTitle());
 
         if (LANGUAGE.equals("ar")
-                || card.getTextTranslation() == null || card.getTitle().length() == 0)
+                || card.getTextTranslation() == null || card.getTextTranslation().length() == 0)
             viewHolder.textTranslationTv.setVisibility(View.GONE);
         else
             viewHolder.textTranslationTv.setText(card.getTextTranslation());
