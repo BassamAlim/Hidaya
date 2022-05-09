@@ -43,13 +43,13 @@ public class MainActivity extends AppCompatActivity {
     public static Calendar[] times;
     public static boolean located;
     private String theme;
-    private String locale;
+    private String language;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         theme = Utils.onActivityCreateSetTheme(this);
-        locale = Utils.onActivityCreateSetLocale(this);
+        language = Utils.onActivityCreateSetLocale(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setTodayScreen();
         setContentView(binding.getRoot());
@@ -78,9 +78,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
 
-        if (!pref.getString(getString(R.string.theme_key), getString(R.string.default_theme)).equals(theme) ||
-                !pref.getString(getString(R.string.language_key), getString(R.string.default_language)).equals(locale))
+        String newTheme = pref.getString(getString(R.string.theme_key),
+                getString(R.string.default_theme));
+        String newLanguage = pref.getString(getString(R.string.language_key),
+                getString(R.string.default_language));
+
+        if (!newTheme.equals(theme) || !newLanguage.equals(language)) {
+            theme = newTheme;
+            language = newLanguage;
+
             Utils.refresh(this);
+        }
     }
 
     private void initNavBar() {

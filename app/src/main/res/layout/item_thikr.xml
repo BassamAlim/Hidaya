@@ -57,6 +57,14 @@
                     android:paddingVertical="10dp"
                     android:textColor="?mySpecialText" />
 
+                <TextView
+                    android:id="@+id/text_translation_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingVertical="10dp"
+                    android:textColor="?mySpecialText" />
+
                 <View
                     android:id="@+id/fadl_div"
                     android:layout_width="match_parent"

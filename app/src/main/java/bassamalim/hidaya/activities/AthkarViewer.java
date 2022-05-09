@@ -76,14 +76,14 @@ public class AthkarViewer extends AppCompatActivity {
 
             if (language.equals("en"))
                 cards.add(new Thikr(t.getThikr_id(), t.getTitle_en(), t.getText_en(),
-                    t.getFadl_en(), t.getReference_en(), t.getRepetition_en(), v ->
-                    new InfoDialog(getString(R.string.reference), t.getReference_en())
+                        t.getText_en_translation(), t.getFadl_en(), t.getReference_en(),
+                        t.getRepetition_en(), v -> new InfoDialog(getString(R.string.reference), t.getReference_en())
                             .show(getSupportFragmentManager(), InfoDialog.TAG)));
             else
-                cards.add(new Thikr(t.getThikr_id(), t.getTitle(), t.getText(), t.getFadl(),
-                        t.getReference(), t.getRepetition(), v ->
-                        new InfoDialog(getString(R.string.reference), t.getReference())
-                                .show(getSupportFragmentManager(), InfoDialog.TAG)));
+                cards.add(new Thikr(t.getThikr_id(), t.getTitle(), t.getText(),
+                        t.getText_en_translation(), t.getFadl(), t.getReference(),
+                        t.getRepetition(), v -> new InfoDialog(getString(R.string.reference),
+                        t.getReference()).show(getSupportFragmentManager(), InfoDialog.TAG)));
         }
         return cards;
     }
@@ -92,7 +92,7 @@ public class AthkarViewer extends AppCompatActivity {
         recycler = binding.recycler;
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recycler.setLayoutManager(layoutManager);
-        adapter = new AthkarViewerAdapter(this, makeCards(getThikrs(id)));
+        adapter = new AthkarViewerAdapter(this, makeCards(getThikrs(id)), language);
         recycler.setAdapter(adapter);
     }
 

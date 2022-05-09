@@ -77,6 +77,8 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
         setTanzeel(viewHolder, card);
 
         doFavorites(viewHolder, card, position);
+
+        viewHolder.card.setOnClickListener(card.getCardListener());
     }
 
     private void setTanzeel(ViewHolder vh, Sura card) {
@@ -98,7 +100,6 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
             vh.favBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_star));
 
-        vh.card.setOnClickListener(card.getCardListener());
         vh.favBtn.setOnClickListener(view -> {
             if (card.getFavorite() == 0) {
                 db.suarDao().setFav(card.getNumber(), 1);

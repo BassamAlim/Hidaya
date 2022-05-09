@@ -125,7 +125,7 @@ public class FavoriteQuranFragment extends Fragment {
         ArrayList<Sura> cards = new ArrayList<>();
         List<SuarDB> suras = getSuras();
 
-        String surat = getString(R.string.sura);
+        final String surat = getString(R.string.sura);
         for (int i = 0; i < suras.size(); i++) {
             SuarDB sura = suras.get(i);
 
@@ -136,8 +136,9 @@ public class FavoriteQuranFragment extends Fragment {
                 requireContext().startActivity(intent);
             };
 
-            cards.add(new Sura(sura.getSura_id(), surat + " " + names.get(i),
-                    sura.getSearch_name(), sura.getTanzeel(), 1, cardListener));
+            cards.add(new Sura(sura.getSura_id(), surat + " " +
+                    names.get(sura.getSura_id()), sura.getSearch_name(), sura.getTanzeel(),
+                    1, cardListener));
         }
         return cards;
     }
