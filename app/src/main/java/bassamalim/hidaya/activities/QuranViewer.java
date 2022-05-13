@@ -55,6 +55,7 @@ public class QuranViewer extends SwipeActivity {
     private SharedPreferences pref;
     private String action;
     private ViewFlipper flipper;
+    private ScrollView[] scrollViews;
     private LinearLayout[] lls;
     private RecyclerView recycler;
     private RecyclerQuranViewerAdapter adapter;
@@ -64,7 +65,7 @@ public class QuranViewer extends SwipeActivity {
     private String currentPageText;
     private String currentSurah;
     private int textSize;
-    private List<Ayah> allAyahs;
+    private final List<Ayah> allAyahs = new ArrayList<>();
     private List<String> names;
     private List<Ayah> arr;
     private TextView target;
@@ -88,13 +89,13 @@ public class QuranViewer extends SwipeActivity {
 
         checkFirstTime();
 
-        setListeners();
-
         Intent intent = getIntent();
         action = intent.getAction();
         action(intent);
 
         buildPage(currentPage);
+
+        setListeners();
 
         setupPlayer();
     }
@@ -118,6 +119,7 @@ public class QuranViewer extends SwipeActivity {
     private void initiate() {
         flipper = binding.flipper;
         flipper.setMeasureAllChildren(false);
+        scrollViews = new ScrollView[]{binding.scrollview1, binding.scrollview2};
         lls = new LinearLayout[]{binding.linear1, binding.linear2};
         recycler = binding.recycler;
 
@@ -138,13 +140,6 @@ public class QuranViewer extends SwipeActivity {
                     TutorialDialog.TAG);
     }
 
-    private void setupRecycler() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recycler.setLayoutManager(layoutManager);
-        adapter = new RecyclerQuranViewerAdapter(this, allAyahs, theme, language);
-        recycler.setAdapter(adapter);
-    }
-
     private void action(Intent intent) {
         switch (action) {
             case "by_surah":
@@ -160,90 +155,6 @@ public class QuranViewer extends SwipeActivity {
         }
     }
 
-    private void setListeners() {
-        binding.bookmarkButton.setOnClickListener(v -> {
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putInt("bookmarked_page", currentPage);
-            editor.putString("bookmarked_text", currentPageText + ", " + currentSurah);
-            editor.apply();
-
-            Toast.makeText(this, getString(R.string.page_bookmarked),
-                    Toast.LENGTH_SHORT).show();
-        });
-
-        binding.prevAyah.setOnClickListener(view -> ayahPlayer.prevAyah());
-
-        binding.play.setOnClickListener(view -> {
-            if (ayahPlayer.getState() == States.Playing) {
-                if (ayahPlayer.getLastPlayed() != null)
-                    selected = ayahPlayer.getLastPlayed();
-
-                ayahPlayer.pause();
-                updateUi(States.Paused);
-            }
-            else if (ayahPlayer.getState() == States.Paused) {
-                if (selected == null)
-                    ayahPlayer.resume();
-                else {
-                    ayahPlayer.setChosenSurah(selected.getSurahNum());
-                    ayahPlayer.requestPlay(selected);
-                }
-                updateUi(States.Playing);
-            }
-            else {
-                if (selected == null)
-                    selected = allAyahs.get(0);
-
-                ayahPlayer.setChosenSurah(selected.getSurahNum());
-                ayahPlayer.requestPlay(selected);
-
-                updateUi(States.Playing);
-            }
-            selected = null;
-        });
-
-        binding.nextAyah.setOnClickListener(view -> ayahPlayer.nextAyah());
-
-        binding.recitationSettings.setOnClickListener(v -> {
-            Intent intent = new Intent(this, QuranSettingsDialog.class);
-            settingsDialog.launch(intent);
-        });
-    }
-
-    private final ActivityResultLauncher<Intent> settingsDialog = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-            Intent data = result.getData();
-            assert data != null;
-            viewType = data.getStringExtra("view_type");
-            textSize = data.getIntExtra("text_size", 30);
-            buildPage(currentPage);
-        }
-    });
-
-    private void setupPlayer() {
-        ayahPlayer = new AyahPlayer(this);
-        ayahPlayer.setCurrentPage(currentPage);
-
-        AyahPlayer.Coordinator uiListener = new AyahPlayer.Coordinator() {
-            @Override
-            public void onUiUpdate(States state) {
-                updateUi(state);
-            }
-
-            @Override
-            public Ayah getAyah(int index) {
-                return allAyahs.get(index);
-            }
-
-            @Override
-            public void nextPage() {
-                next();
-            }
-        };
-        ayahPlayer.setCoordinator(uiListener);
-    }
-
     @Override
     protected void previous() {
         if (currentPage > 1) {
@@ -253,7 +164,7 @@ public class QuranViewer extends SwipeActivity {
             setCurrentPage(--currentPage);
             buildPage(currentPage);
             flipper.showPrevious();
-            binding.scrollView.scrollTo(0, 0);
+            scrollViews[currentLinear].scrollTo(0, 0);
         }
     }
 
@@ -266,7 +177,7 @@ public class QuranViewer extends SwipeActivity {
             setCurrentPage(++currentPage);
             buildPage(currentPage);
             flipper.showNext();
-            binding.scrollView.scrollTo(0, 0);
+            scrollViews[currentLinear].scrollTo(0, 0);
         }
     }
 
@@ -274,19 +185,15 @@ public class QuranViewer extends SwipeActivity {
         return db.suarDao().getPage(surahIndex);
     }
 
-    private int getPageStart(int pageNumber) {
-        int start;
-        int counter = 0;
-        while (ayatDB.get(counter).getPage() < pageNumber)
-            counter++;
-        start = counter;
-
-        return start;
+    private void setCurrentPage(int num) {
+        currentPage = num;
+        if (ayahPlayer != null)
+            ayahPlayer.setCurrentPage(num);
     }
 
     private void buildPage(int pageNumber) {
         lls[currentLinear].removeAllViews();
-        allAyahs = new ArrayList<>();
+        allAyahs.clear();
         arr = new ArrayList<>();
         List<List<Ayah>> pageAyahs = new ArrayList<>();
 
@@ -308,7 +215,7 @@ public class QuranViewer extends SwipeActivity {
             }
             arr.add(ayahModel);
 
-        } while (++counter != 6236 && ayatDB.get(counter).getPage() == pageNumber);
+        } while (++counter != Global.QURAN_AYAS && ayatDB.get(counter).getPage() == pageNumber);
 
         int juz = arr.get(0).getJuz();
 
@@ -362,7 +269,7 @@ public class QuranViewer extends SwipeActivity {
         screen.setText(ss);
         if (theme.equals("ThemeL"))
             screen.setMovementMethod(DoubleClickLMM.getInstance(
-                getResources().getColor(R.color.highlight_L, getTheme())));
+                    getResources().getColor(R.color.highlight_L, getTheme())));
         else
             screen.setMovementMethod(DoubleClickLMM.getInstance(
                     getResources().getColor(R.color.highlight_M, getTheme())));
@@ -384,10 +291,17 @@ public class QuranViewer extends SwipeActivity {
 
         if (action.equals("by_surah") && !scrolled) {
             long delay = 100; //delay to let finish with possible modifications to ScrollView
-            ScrollView scroll = binding.scrollView;
-            scroll.postDelayed(() -> scroll.smoothScrollTo(0, target.getTop()), delay);
+            scrollViews[currentLinear].postDelayed(() ->
+                    scrollViews[currentLinear].smoothScrollTo(0, target.getTop()), delay);
             scrolled = true;
         }
+    }
+
+    private void setupRecycler() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recycler.setLayoutManager(layoutManager);
+        adapter = new RecyclerQuranViewerAdapter(this, allAyahs, theme, language);
+        recycler.setAdapter(adapter);
     }
 
     private void updateUi(States state) {
@@ -403,10 +317,96 @@ public class QuranViewer extends SwipeActivity {
         }
     }
 
-    private void setCurrentPage(int num) {
-        currentPage = num;
-        if (ayahPlayer != null)
-            ayahPlayer.setCurrentPage(num);
+    private void setListeners() {
+        binding.bookmarkButton.setOnClickListener(v -> {
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putInt("bookmarked_page", currentPage);
+            editor.putString("bookmarked_text", currentPageText + ", " + currentSurah);
+            editor.apply();
+
+            Toast.makeText(this, getString(R.string.page_bookmarked),
+                    Toast.LENGTH_SHORT).show();
+        });
+
+        binding.play.setOnClickListener(view -> {
+            if (ayahPlayer.getState() == States.Playing) {
+                if (ayahPlayer.getLastPlayed() != null)
+                    selected = ayahPlayer.getLastPlayed();
+
+                ayahPlayer.pause();
+                updateUi(States.Paused);
+            }
+            else if (ayahPlayer.getState() == States.Paused) {
+                if (selected == null)
+                    ayahPlayer.resume();
+                else {
+                    ayahPlayer.setChosenSurah(selected.getSurahNum());
+                    ayahPlayer.requestPlay(selected);
+                }
+                updateUi(States.Playing);
+            }
+            else {
+                if (selected == null)
+                    selected = allAyahs.get(0);
+
+                ayahPlayer.setChosenSurah(selected.getSurahNum());
+                ayahPlayer.requestPlay(selected);
+
+                updateUi(States.Playing);
+            }
+            selected = null;
+        });
+        binding.prevAyah.setOnClickListener(view -> ayahPlayer.prevAyah());
+        binding.nextAyah.setOnClickListener(view -> ayahPlayer.nextAyah());
+
+        binding.recitationSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(this, QuranSettingsDialog.class);
+            settingsDialog.launch(intent);
+        });
+    }
+
+    private int getPageStart(int pageNumber) {
+        int start;
+        int counter = 0;
+        while (ayatDB.get(counter).getPage() < pageNumber)
+            counter++;
+        start = counter;
+
+        return start;
+    }
+
+    private final ActivityResultLauncher<Intent> settingsDialog = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Intent data = result.getData();
+            assert data != null;
+            viewType = data.getStringExtra("view_type");
+            textSize = data.getIntExtra("text_size", 30);
+            buildPage(currentPage);
+        }
+    });
+
+    private void setupPlayer() {
+        ayahPlayer = new AyahPlayer(this);
+        ayahPlayer.setCurrentPage(currentPage);
+
+        AyahPlayer.Coordinator uiListener = new AyahPlayer.Coordinator() {
+            @Override
+            public void onUiUpdate(States state) {
+                updateUi(state);
+            }
+
+            @Override
+            public Ayah getAyah(int index) {
+                return allAyahs.get(index);
+            }
+
+            @Override
+            public void nextPage() {
+                next();
+            }
+        };
+        ayahPlayer.setCoordinator(uiListener);
     }
 
     private void addHeader(int suraNum, String name) {

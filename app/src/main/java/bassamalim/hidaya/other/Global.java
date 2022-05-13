@@ -13,6 +13,7 @@ public class Global {
     public static final String STOP_ATHAN = "stop athan";
 
     public static final int QURAN_PAGES = 604;
+    public static final int QURAN_AYAS = 6236;
 
     public static int dbVer = 3;
 }
