@@ -233,5 +233,8 @@
     <string name="sura_number">سورة رقم</string>
     <string name="page_number">صفحة رقم</string>
     <string name="aya_number">آية رقم</string>
+    <string name="basmalah" translatable="false">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</string>
+    <string name="page_view">صفحة</string>
+    <string name="list_view">قائمة</string>
 
 </resources>

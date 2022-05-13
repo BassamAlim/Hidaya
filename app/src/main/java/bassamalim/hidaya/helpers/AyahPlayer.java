@@ -209,7 +209,7 @@ public class AyahPlayer {
      * @param ayah the ayah to play
      */
     private void preparePlayer(MediaPlayer player, Ayah ayah) {
-        if (pref.getBoolean(context.getString(R.string.stop_on_sura_key), false) && ayah.getSurah() != chosenSurah) {
+        if (pref.getBoolean(context.getString(R.string.stop_on_sura_key), false) && ayah.getSurahNum() != chosenSurah) {
             if (surahEnding)
                 stopPlaying();
             else
@@ -349,7 +349,7 @@ public class AyahPlayer {
 
         String uri = "https://www.everyayah.com/data/";
         uri += sources.get(0).getSource();
-        uri += String.format(Locale.US, "%03d%03d.mp3", ayah.getSurah(), ayah.getAyah());
+        uri += String.format(Locale.US, "%03d%03d.mp3", ayah.getSurahNum(), ayah.getAyahNum());
 
         return Uri.parse(uri);
     }

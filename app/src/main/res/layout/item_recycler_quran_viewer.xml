@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="5dp"
+    android:background="?myQBg"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/sura_name_tv"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="10dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/basmalah_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:gravity="center"
+        android:text="@string/basmalah"
+        android:visibility="gone"
+        android:textColor="?myText"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:fontFamily="@font/hafs_smart_08"
+        android:textColor="?mySpecialText" />
+
+    <TextView
+        android:id="@+id/translation_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="?mySpecialText" />
+
+</LinearLayout>

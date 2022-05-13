@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.activities.QuranActivity;
+import bassamalim.hidaya.activities.QuranViewer;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.models.Sura;
 
@@ -141,7 +141,7 @@ public class QuranFragmentAdapter extends RecyclerView.Adapter<QuranFragmentAdap
             try {
                 int num = Integer.parseInt(text);
                 if (num >= 1 && num <= 604) {
-                    Intent openPage = new Intent(context, QuranActivity.class);
+                    Intent openPage = new Intent(context, QuranViewer.class);
                     openPage.setAction("by_page");
                     openPage.putExtra("page", num);
                     context.startActivity(openPage);

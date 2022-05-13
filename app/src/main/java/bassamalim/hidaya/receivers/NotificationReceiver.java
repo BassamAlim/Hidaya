@@ -21,7 +21,7 @@ import java.util.Calendar;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.AthkarViewer;
-import bassamalim.hidaya.activities.QuranActivity;
+import bassamalim.hidaya.activities.QuranViewer;
 import bassamalim.hidaya.activities.Splash;
 import bassamalim.hidaya.enums.ID;
 import bassamalim.hidaya.other.Global;
@@ -140,11 +140,11 @@ public class NotificationReceiver extends BroadcastReceiver {
                 intent.putExtra("title", "أذكار المساء");
                 break;
             case DAILY_WERD:
-                intent = new Intent(context, QuranActivity.class);
+                intent = new Intent(context, QuranViewer.class);
                 intent.setAction("random");
                 break;
             case FRIDAY_KAHF:
-                intent = new Intent(context, QuranActivity.class);
+                intent = new Intent(context, QuranViewer.class);
                 intent.setAction("by_surah");
                 intent.putExtra("surah_id", 17);    // alkahf
                 break;

@@ -38,12 +38,15 @@ public class QuranSearcherActivity extends AppCompatActivity {
     private QuranSearcherAdapter adapter;
     private List<AyatDB> allAyat;
     private List<Ayah> matches;
+    private List<String> names;
     private int maxMatches;
+    private String language;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.myOnActivityCreated(this);
+        Utils.onActivityCreateSetTheme(this);
+        language = Utils.onActivityCreateSetLocale(this);
         binding = ActivityQuranSearcherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.home.setOnClickListener(v -> onBackPressed());
@@ -65,6 +68,11 @@ public class QuranSearcherActivity extends AppCompatActivity {
         searchView = binding.searchView;
 
         allAyat = db.ayahDao().getAll();
+
+        if (language.equals("en"))
+            names = db.suarDao().getNamesEn();
+        else
+            names = db.suarDao().getNames();
 
         matches = new ArrayList<>();
 
@@ -136,7 +144,7 @@ public class QuranSearcherActivity extends AppCompatActivity {
                 ss.setSpan(new ForegroundColorSpan(getColor(R.color.highlight_M)),
                         m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                matches.add(new Ayah(a.getSura_no(), a.getSura_name_ar(), a.getPage(),
+                matches.add(new Ayah(a.getSura_no(), names.get(a.getSura_no()), a.getPage(),
                         a.getAya_no(), a.getAya_tafseer(), ss));
             }
 

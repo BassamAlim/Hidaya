@@ -15,6 +15,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private ActivityWelcomeBinding binding;
 
+    public WelcomeActivity() {}    // added because of crashes without it
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

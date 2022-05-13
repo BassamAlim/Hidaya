@@ -6,11 +6,12 @@ import android.widget.TextView;
 public class Ayah {
 
     private int juz;
-    private final int surah;
-    private final int ayah;
+    private final int surahNum;
+    private final int ayahNum;
     private final String surahName;
     private int pageNum;
     private String text;
+    private String translation;
     private final String tafseer;
     private int start;
     private int end;
@@ -18,19 +19,21 @@ public class Ayah {
     private int index;
     private TextView screen;
 
-    public Ayah(int juz, int surah, int ayah, String surahName, String text, String tafseer) {
+    public Ayah(int juz, int surahNum, int ayahNum, String surahName,
+                String text, String translation, String tafseer) {
         this.juz = juz;
-        this.surah = surah;
-        this.ayah = ayah;
+        this.surahNum = surahNum;
+        this.ayahNum = ayahNum;
         this.surahName = surahName;
         this.text = text;
+        this.translation = translation;
         this.tafseer = tafseer;
     }
 
-    public Ayah(int surah, String surahName, int pageNum, int ayah,
+    public Ayah(int surahNum, String surahName, int pageNum, int ayahNum,
                 String tafseer, SpannableString ss) {
-        this.surah = surah;
-        this.ayah = ayah;
+        this.surahNum = surahNum;
+        this.ayahNum = ayahNum;
         this.pageNum = pageNum;
         this.surahName = surahName;
         this.tafseer = tafseer;
@@ -41,12 +44,12 @@ public class Ayah {
         return juz;
     }
 
-    public int getSurah() {
-        return surah;
+    public int getSurahNum() {
+        return surahNum;
     }
 
-    public int getAyah() {
-        return ayah;
+    public int getAyahNum() {
+        return ayahNum;
     }
 
     public String getSurahName() {
@@ -63,6 +66,10 @@ public class Ayah {
 
     public String getText() {
         return text;
+    }
+
+    public String getTranslation() {
+        return translation;
     }
 
     public String getTafseer() {

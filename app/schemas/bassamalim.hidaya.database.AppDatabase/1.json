@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "48764f4448288667b8bb4d4d5cef4058",
+    "identityHash": "ee8f6e53105820e51722275020b00ae3",
     "entities": [
       {
         "tableName": "hafs_ayat",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `jozz` INTEGER NOT NULL, `sura_no` INTEGER NOT NULL, `sura_name_en` TEXT, `sura_name_ar` TEXT, `page` INTEGER NOT NULL, `aya_no` INTEGER NOT NULL, `aya_text` TEXT, `aya_text_emlaey` TEXT, `aya_tafseer` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `jozz` INTEGER NOT NULL, `sura_no` INTEGER NOT NULL, `page` INTEGER NOT NULL, `aya_no` INTEGER NOT NULL, `aya_text` TEXT, `aya_text_en` TEXT, `aya_text_emlaey` TEXT, `aya_translation_en` TEXT, `aya_tafseer` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -27,18 +27,6 @@
             "notNull": true
           },
           {
-            "fieldPath": "sura_name_en",
-            "columnName": "sura_name_en",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "sura_name_ar",
-            "columnName": "sura_name_ar",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
             "fieldPath": "page",
             "columnName": "page",
             "affinity": "INTEGER",
@@ -57,8 +45,20 @@
             "notNull": false
           },
           {
+            "fieldPath": "aya_text_en",
+            "columnName": "aya_text_en",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "aya_text_emlaey",
             "columnName": "aya_text_emlaey",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "aya_translation_en",
+            "columnName": "aya_translation_en",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -580,7 +580,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '48764f4448288667b8bb4d4d5cef4058')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ee8f6e53105820e51722275020b00ae3')"
     ]
   }
 }

@@ -39,13 +39,10 @@ public class AthkarListAdapter extends RecyclerView.Adapter<AthkarListAdapter.Vi
 
         public ViewHolder(View view) {
             super(view);
+
             card = view.findViewById(R.id.alathkar_model_card);
             nameTv = view.findViewById(R.id.namescreen);
             favBtn = view.findViewById(R.id.athkar_fav_btn);
-        }
-
-        public CardView getCard() {
-            return card;
         }
     }
 
@@ -81,21 +78,20 @@ public class AthkarListAdapter extends RecyclerView.Adapter<AthkarListAdapter.Vi
             viewHolder.favBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_star));
 
-        viewHolder.getCard().setOnClickListener(card.getListener());
-        viewHolder.favBtn.setOnClickListener(
-                view -> {
-                    if (card.getFavorite() == 0) {
-                        db.athkarDao().setFav(card.getId(), 1);
-                        card.setFavorite(1);
-                    }
-                    else if (card.getFavorite() == 1) {
-                        db.athkarDao().setFav(card.getId(), 0);
-                        card.setFavorite(0);
-                    }
-                    notifyItemChanged(position);
+        viewHolder.card.setOnClickListener(card.getListener());
+        viewHolder.favBtn.setOnClickListener(view -> {
+            if (card.getFavorite() == 0) {
+                db.athkarDao().setFav(card.getId(), 1);
+                card.setFavorite(1);
+            }
+            else if (card.getFavorite() == 1) {
+                db.athkarDao().setFav(card.getId(), 0);
+                card.setFavorite(0);
+            }
+            notifyItemChanged(position);
 
-                    updateFavorites();
-                });
+            updateFavorites();
+        });
     }
 
     public void filter(String text) {

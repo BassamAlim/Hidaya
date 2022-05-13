@@ -59,9 +59,8 @@ public class AthkarViewerAdapter extends RecyclerView.Adapter<AthkarViewerAdapte
 
     @NonNull @Override
     public AthkarViewerAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        AthkarViewerAdapter.ViewHolder viewHolder = new AthkarViewerAdapter.ViewHolder(
-                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_thikr,
-                        viewGroup, false));
+        AthkarViewerAdapter.ViewHolder viewHolder = new ViewHolder(LayoutInflater.from(viewGroup
+                        .getContext()).inflate(R.layout.item_athkar_viewer, viewGroup, false));
 
         viewHolder.titleTv.setTextSize(textSize);
         viewHolder.textTv.setTextSize(textSize);

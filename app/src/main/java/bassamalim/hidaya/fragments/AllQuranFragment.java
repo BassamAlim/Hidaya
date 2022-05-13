@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Objects;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.activities.QuranActivity;
 import bassamalim.hidaya.activities.QuranSearcherActivity;
+import bassamalim.hidaya.activities.QuranViewer;
 import bassamalim.hidaya.adapters.QuranFragmentAdapter;
 import bassamalim.hidaya.database.AppDatabase;
 import bassamalim.hidaya.database.dbs.SuarDB;
@@ -41,10 +41,14 @@ public class AllQuranFragment extends Fragment {
     private GridLayoutManager gridLayoutManager;
     private List<String> names;
     private List<Integer> favs;
+    private String language;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        language = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                .getString(getString(R.string.language_key), getString(R.string.default_language));
 
         gridLayoutManager = new GridLayoutManager(getContext(), 1);
 
@@ -130,7 +134,7 @@ public class AllQuranFragment extends Fragment {
             SuarDB sura = suras.get(i);
 
             View.OnClickListener cardListener = v -> {
-                Intent intent = new Intent(getContext(), QuranActivity.class);
+                Intent intent = new Intent(getContext(), QuranViewer.class);
                 intent.setAction("by_surah");
                 intent.putExtra("surah_id", sura.getSura_id());
                 requireContext().startActivity(intent);
@@ -147,10 +151,7 @@ public class AllQuranFragment extends Fragment {
         AppDatabase db = Room.databaseBuilder(requireContext(), AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
 
-        boolean en = PreferenceManager.getDefaultSharedPreferences(requireContext())
-                .getString(getString(R.string.language_key), getString(R.string.default_language))
-                .equals("en");
-        names = en ? db.suarDao().getNamesEn() : db.suarDao().getNames();
+        names = language.equals("en") ? db.suarDao().getNamesEn() : db.suarDao().getNames();
 
         favs = db.suarDao().getFav();
 

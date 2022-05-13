@@ -18,7 +18,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.activities.QuranActivity;
+import bassamalim.hidaya.activities.QuranViewer;
 import bassamalim.hidaya.databinding.FragmentCollectionQuranBinding;
 import bassamalim.hidaya.dialogs.TutorialDialog;
 
@@ -68,7 +68,7 @@ public class QuranCollectionFragment extends Fragment {
             text = getString(R.string.bookmarked_page) + text;
 
             binding.continueReading.setOnClickListener(v -> {
-                Intent intent = new Intent(getContext(), QuranActivity.class);
+                Intent intent = new Intent(getContext(), QuranViewer.class);
                 intent.setAction("by_page");
                 intent.putExtra("page", page);
                 requireContext().startActivity(intent);

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import bassamalim.hidaya.R;
-import bassamalim.hidaya.activities.QuranActivity;
+import bassamalim.hidaya.activities.QuranViewer;
 import bassamalim.hidaya.models.Ayah;
 import bassamalim.hidaya.other.Utils;
 
@@ -72,7 +72,7 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
         Ayah card = items.get(position);
 
         String suraNumStr = suraNumString + " " + Utils.translateNumbers(
-                context, String.valueOf(card.getSurah()));
+                context, String.valueOf(card.getSurahNum()));
         viewHolder.suraNumTv.setText(suraNumStr);
 
         String suraNameStr = suraStr +  " " + card.getSurahName();
@@ -83,7 +83,7 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
         viewHolder.pageNumTv.setText(pageNumStr);
 
         String ayaNumStr = ayaNumString + " " + Utils.translateNumbers(
-                context, String.valueOf(card.getAyah()));
+                context, String.valueOf(card.getAyahNum()));
         viewHolder.ayaNumTv.setText(ayaNumStr);
 
         viewHolder.ayaTextTv.setText(card.getSS());
@@ -92,7 +92,7 @@ public class QuranSearcherAdapter extends RecyclerView.Adapter<QuranSearcherAdap
         viewHolder.ayaTafseerTv.setText(ayaTafseerStr);
 
         viewHolder.gotoPageBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(context, QuranActivity.class);
+            Intent intent = new Intent(context, QuranViewer.class);
             intent.setAction("by_page");
             intent.putExtra("page", card.getPageNum());
             context.startActivity(intent);
