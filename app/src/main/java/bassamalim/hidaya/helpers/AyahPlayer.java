@@ -35,6 +35,7 @@ public class AyahPlayer {
     private Ayah lastPlayed;
     private Ayah lastTracked;
     private boolean surahEnding;
+    private String viewType;
     private Object what;
     private int allAyahsSize;
     private int currentPage;
@@ -209,7 +210,8 @@ public class AyahPlayer {
      * @param ayah the ayah to play
      */
     private void preparePlayer(MediaPlayer player, Ayah ayah) {
-        if (pref.getBoolean(context.getString(R.string.stop_on_sura_key), false) && ayah.getSurahNum() != chosenSurah) {
+        if (pref.getBoolean(context.getString(R.string.stop_on_sura_key), false)
+                && ayah.getSurahNum() != chosenSurah) {
             if (surahEnding)
                 stopPlaying();
             else
@@ -241,8 +243,14 @@ public class AyahPlayer {
             lastTracked.getSS().removeSpan(what);
             lastTracked.getScreen().setText(lastTracked.getSS());
         }
-        ayah.getSS().setSpan(what, ayah.getStart(), ayah.getEnd(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        if (viewType.equals("list"))
+            ayah.getSS().setSpan(what, 0, ayah.getText().length()-1,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        else
+            ayah.getSS().setSpan(what, ayah.getStart(), ayah.getEnd(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         ayah.getScreen().setText(ayah.getSS());    // heavy, but the only working way
         lastTracked = ayah;
     }
@@ -390,6 +398,10 @@ public class AyahPlayer {
 
     public void setChosenSurah(int chosenSurah) {
         this.chosenSurah = chosenSurah;
+    }
+
+    public void setViewType(String viewType) {
+        this.viewType = viewType;
     }
 
     private int n(int i) {

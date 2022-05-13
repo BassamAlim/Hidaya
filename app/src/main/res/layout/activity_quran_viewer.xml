@@ -66,7 +66,7 @@
         <ScrollView
             android:id="@+id/scrollview1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:id="@+id/linear1"
@@ -81,7 +81,7 @@
         <ScrollView
             android:id="@+id/scrollview2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:id="@+id/linear2"
@@ -93,16 +93,25 @@
 
         </ScrollView>
 
-    </ViewFlipper>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/info_bar"
+            app:layout_constraintVertical_bias="0.0"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/info_bar"
-        app:layout_constraintVertical_bias="0.0"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/info_bar"
+            app:layout_constraintVertical_bias="0.0"/>
+
+    </ViewFlipper>
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/quran_tools_bar"

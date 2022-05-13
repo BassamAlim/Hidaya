@@ -12,6 +12,7 @@ import android.text.TextPaint;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -57,9 +58,10 @@ public class QuranViewer extends SwipeActivity {
     private ViewFlipper flipper;
     private ScrollView[] scrollViews;
     private LinearLayout[] lls;
-    private RecyclerView recycler;
+    private RecyclerView[] recyclers;
+    private LinearLayoutManager[] layoutManagers;
     private RecyclerQuranViewerAdapter adapter;
-    private int currentLinear;
+    private int currentView;
     private int surahIndex;
     private int currentPage;
     private String currentPageText;
@@ -89,9 +91,11 @@ public class QuranViewer extends SwipeActivity {
 
         checkFirstTime();
 
-        Intent intent = getIntent();
-        action = intent.getAction();
-        action(intent);
+        action = getIntent().getAction();
+        action(getIntent());
+
+        if (viewType.equals("list"))
+            setupRecyclers();
 
         buildPage(currentPage);
 
@@ -121,7 +125,6 @@ public class QuranViewer extends SwipeActivity {
         flipper.setMeasureAllChildren(false);
         scrollViews = new ScrollView[]{binding.scrollview1, binding.scrollview2};
         lls = new LinearLayout[]{binding.linear1, binding.linear2};
-        recycler = binding.recycler;
 
         db = Room.databaseBuilder(this, AppDatabase.class, "HidayaDB")
                 .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build();
@@ -155,16 +158,36 @@ public class QuranViewer extends SwipeActivity {
         }
     }
 
+    private void setupRecyclers() {
+        recyclers = new RecyclerView[]{binding.recycler1, binding.recycler2};
+
+        layoutManagers = new LinearLayoutManager[]
+                {new LinearLayoutManager(this), new LinearLayoutManager(this)};
+        recyclers[0].setLayoutManager(layoutManagers[0]);
+        recyclers[1].setLayoutManager(layoutManagers[1]);
+
+        if (action.equals("by_surah"))
+        adapter = new RecyclerQuranViewerAdapter(
+                this, allAyahs, theme, language, surahIndex);
+        else
+            adapter = new RecyclerQuranViewerAdapter(
+                    this, allAyahs, theme, language, -1);
+
+        recyclers[0].setAdapter(adapter);
+        recyclers[1].setAdapter(adapter);
+
+        flipper.setDisplayedChild(2);
+    }
+
     @Override
     protected void previous() {
         if (currentPage > 1) {
             flipper.setInAnimation(this, R.anim.slide_in_right);
             flipper.setOutAnimation(this, R.anim.slide_out_left);
-            currentLinear = (currentLinear + 1) % 2;
+            currentView = (currentView + 1) % 2;
             setCurrentPage(--currentPage);
             buildPage(currentPage);
-            flipper.showPrevious();
-            scrollViews[currentLinear].scrollTo(0, 0);
+            flip();
         }
     }
 
@@ -173,11 +196,29 @@ public class QuranViewer extends SwipeActivity {
         if (currentPage < Global.QURAN_PAGES) {
             flipper.setInAnimation(this, R.anim.slide_in_left);
             flipper.setOutAnimation(this, R.anim.slide_out_right);
-            currentLinear = (currentLinear + 1) % 2;
+            currentView = (currentView + 1) % 2;
             setCurrentPage(++currentPage);
             buildPage(currentPage);
-            flipper.showNext();
-            scrollViews[currentLinear].scrollTo(0, 0);
+            flip();
+        }
+    }
+
+    private void flip() {
+        if (viewType.equals("list")) {
+            if (flipper.getDisplayedChild() == 2)
+                flipper.setDisplayedChild(3);
+            else
+                flipper.setDisplayedChild(2);
+
+            recyclers[currentView].scrollTo(0, 0);
+        }
+        else {
+            if (flipper.getDisplayedChild() == 0)
+                flipper.setDisplayedChild(1);
+            else
+                flipper.setDisplayedChild(0);
+
+            scrollViews[currentView].scrollTo(0, 0);
         }
     }
 
@@ -192,7 +233,8 @@ public class QuranViewer extends SwipeActivity {
     }
 
     private void buildPage(int pageNumber) {
-        lls[currentLinear].removeAllViews();
+        if (viewType.equals("page"))
+            lls[currentView].removeAllViews();
         allAyahs.clear();
         arr = new ArrayList<>();
         List<List<Ayah>> pageAyahs = new ArrayList<>();
@@ -209,27 +251,36 @@ public class QuranViewer extends SwipeActivity {
             if (ayaNum == 1) {
                 if (arr.size() > 0) {
                     pageAyahs.add(arr);
-                    publish(arr);
+                    if (viewType.equals("page"))
+                        publishPage(arr);
                 }
-                addHeader(suraNum, ayahModel.getSurahName());
+                if (viewType.equals("page"))
+                    addHeader(suraNum, ayahModel.getSurahName());
             }
-            arr.add(ayahModel);
 
+            arr.add(ayahModel);
         } while (++counter != Global.QURAN_AYAS && ayatDB.get(counter).getPage() == pageNumber);
 
         int juz = arr.get(0).getJuz();
 
         pageAyahs.add(arr);
-        publish(arr);
+
+        if (viewType.equals("list")) {
+            publishList(arr);
+            if (adapter != null)
+                adapter.notifyDataSetChanged();
+        }
+        else
+            publishPage(arr);
 
         finalize(juz, pageAyahs.get(findMainSurah(pageAyahs)).get(0).getSurahName());
     }
 
-    private void publish(List<Ayah> list) {
+    private void publishPage(List<Ayah> list) {
         TextView screen = screen();
         StringBuilder text = new StringBuilder();
 
-        for (int i=0; i<list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             list.get(i).setStart(text.length());
             text.append(list.get(i).getText());
             list.get(i).setEnd(text.length()-3);
@@ -241,8 +292,8 @@ public class QuranViewer extends SwipeActivity {
             DoubleClickableSpan clickableSpan = new DoubleClickableSpan() {
                 @Override
                 public void onDoubleClick(View textView) {
-                    new InfoDialog(getString(R.string.tafseer), list.get(finalI).getTafseer()).show(
-                            getSupportFragmentManager(), InfoDialog.TAG);
+                    new InfoDialog(getString(R.string.tafseer), list.get(finalI).getTafseer())
+                            .show(getSupportFragmentManager(), InfoDialog.TAG);
                 }
                 @Override
                 public void onClick(@NonNull View widget) {
@@ -267,41 +318,70 @@ public class QuranViewer extends SwipeActivity {
             ayahPlayer.setAllAyahsSize(allAyahs.size());
 
         screen.setText(ss);
-        if (theme.equals("ThemeL"))
-            screen.setMovementMethod(DoubleClickLMM.getInstance(
-                    getResources().getColor(R.color.highlight_L, getTheme())));
-        else
-            screen.setMovementMethod(DoubleClickLMM.getInstance(
-                    getResources().getColor(R.color.highlight_M, getTheme())));
 
-        lls[currentLinear].addView(screen);
+        getContainer().addView(screen);
+
+        arr = new ArrayList<>();
+    }
+
+    private void publishList(List<Ayah> list) {
+        for (int i = 0; i < list.size(); i++) {
+            int finalI = i;
+
+            SpannableString ss = new SpannableString(list.get(i).getText());
+            DoubleClickableSpan clickableSpan = new DoubleClickableSpan() {
+                @Override
+                public void onDoubleClick(View textView) {
+                    new InfoDialog(getString(R.string.tafseer), list.get(finalI).getTafseer())
+                            .show(getSupportFragmentManager(), InfoDialog.TAG);
+                }
+                @Override
+                public void onClick(@NonNull View widget) {
+                    selected = allAyahs.get(list.get(finalI).getIndex());
+                }
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                }
+            };
+            list.get(finalI).setSS(ss);
+            ss.setSpan(clickableSpan, 0, list.get(i).getText().length()-1,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            list.get(finalI).setIndex(allAyahs.size());
+            allAyahs.add(list.get(finalI));
+        }
+
+        if (ayahPlayer != null)
+            ayahPlayer.setAllAyahsSize(allAyahs.size());
 
         arr = new ArrayList<>();
     }
 
     private void finalize(int juz, String name) {
-        String juzText = getString(R.string.juz) + " " + Utils.translateNumbers(
-                this, String.valueOf(juz));
+        String juzText = getString(R.string.juz) + " " +
+                Utils.translateNumbers(this, String.valueOf(juz));
         currentSurah = getString(R.string.sura) + " " + name;
-        currentPageText = getString(R.string.page) + " " + Utils.translateNumbers(
-                this, String.valueOf(currentPage));
+        currentPageText = getString(R.string.page) + " " +
+                Utils.translateNumbers(this, String.valueOf(currentPage));
         binding.juzNumber.setText(juzText);
         binding.suraName.setText(currentSurah);
         binding.pageNumber.setText(currentPageText);
 
         if (action.equals("by_surah") && !scrolled) {
-            long delay = 100; //delay to let finish with possible modifications to ScrollView
-            scrollViews[currentLinear].postDelayed(() ->
-                    scrollViews[currentLinear].smoothScrollTo(0, target.getTop()), delay);
+            long delay = 100;    //delay to let finish with possible modifications to ScrollView
+            if (viewType.equals("page"))
+                scrollViews[currentView].postDelayed(() ->
+                        scrollViews[currentView].smoothScrollTo(0, target.getTop()), delay);
             scrolled = true;
         }
     }
 
-    private void setupRecycler() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recycler.setLayoutManager(layoutManager);
-        adapter = new RecyclerQuranViewerAdapter(this, allAyahs, theme, language);
-        recycler.setAdapter(adapter);
+    private ViewGroup getContainer() {
+        if (viewType.equals("list"))
+            return recyclers[currentView];
+        return lls[currentView];
     }
 
     private void updateUi(States state) {
@@ -382,13 +462,24 @@ public class QuranViewer extends SwipeActivity {
             assert data != null;
             viewType = data.getStringExtra("view_type");
             textSize = data.getIntExtra("text_size", 30);
+
+            flipper.setInAnimation(null);
+            flipper.setOutAnimation(null);
+            if (viewType.equals("list"))
+                setupRecyclers();
+            else
+                flipper.setDisplayedChild(0);
+
             buildPage(currentPage);
+            if (ayahPlayer != null)
+                ayahPlayer.setViewType(viewType);
         }
     });
 
     private void setupPlayer() {
         ayahPlayer = new AyahPlayer(this);
         ayahPlayer.setCurrentPage(currentPage);
+        ayahPlayer.setViewType(viewType);
 
         AyahPlayer.Coordinator uiListener = new AyahPlayer.Coordinator() {
             @Override
@@ -407,17 +498,8 @@ public class QuranViewer extends SwipeActivity {
             }
         };
         ayahPlayer.setCoordinator(uiListener);
-    }
 
-    private void addHeader(int suraNum, String name) {
-        TextView nameScreen = surahName(name);
-
-        lls[currentLinear].addView(nameScreen);
-        if (suraNum != 1 && suraNum != 9)    // surat al-fatiha and At-Taubah
-            lls[currentLinear].addView(basmalah());
-
-        if (action.equals("by_surah") && suraNum == surahIndex+1)
-            target = nameScreen;
+        ayahPlayer.setAllAyahsSize(allAyahs.size());
     }
 
     private int findMainSurah(List<List<Ayah>> surahs) {
@@ -427,6 +509,17 @@ public class QuranViewer extends SwipeActivity {
                 largest = i;
         }
         return largest;
+    }
+
+    private void addHeader(int suraNum, String name) {
+        TextView nameScreen = surahName(name);
+
+        getContainer().addView(nameScreen);
+        if (suraNum != 1 && suraNum != 9)    // surat al-fatiha and At-Taubah
+            getContainer().addView(basmalah());
+
+        if (action.equals("by_surah") && suraNum == surahIndex+1)
+            target = nameScreen;
     }
 
     private TextView surahName(String name) {
@@ -484,6 +577,12 @@ public class QuranViewer extends SwipeActivity {
         tv.setTextColor(specialTextColor.data);
         tv.setLinkTextColor(specialTextColor.data);
         tv.setTypeface(ResourcesCompat.getFont(this, R.font.hafs_smart_08));
+        if (theme.equals("ThemeL"))
+            tv.setMovementMethod(DoubleClickLMM.getInstance(
+                    getResources().getColor(R.color.highlight_L, getTheme())));
+        else
+            tv.setMovementMethod(DoubleClickLMM.getInstance(
+                    getResources().getColor(R.color.highlight_M, getTheme())));
         return tv;
     }
 

@@ -85,7 +85,10 @@ public class QuranSettingsDialog extends AppCompatActivity {
         if (settingsFragment.textSizeSB.getValue() != initialTextSize
                 || !viewType.equals(initialViewType)) {
             Intent intent = new Intent();
-            intent.putExtra("view_type", radioGroup.getCheckedRadioButtonId());
+            if (radioGroup.getCheckedRadioButtonId() == R.id.list_view)
+                intent.putExtra("view_type", "list");
+            else
+                intent.putExtra("view_type", "page");
             intent.putExtra("text_size", settingsFragment.textSizeSB.getValue());
 
             setResult(RESULT_OK, intent);

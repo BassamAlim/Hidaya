@@ -1,6 +1,7 @@
 package bassamalim.hidaya.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import java.util.List;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.models.Ayah;
+import bassamalim.hidaya.other.Global;
+import bassamalim.hidaya.replacements.DoubleClickLMM;
 
 public class RecyclerQuranViewerAdapter
         extends RecyclerView.Adapter<RecyclerQuranViewerAdapter.ViewHolder> {
@@ -21,8 +24,11 @@ public class RecyclerQuranViewerAdapter
     private final String LANGUAGE;
     private final String THEME;
     private final int MARGIN = 15;
+    private final Context context;
     private final List<Ayah> items;
     private int textSize;
+    private int surahIndex;
+    private int target;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView suraNameTv;
@@ -41,10 +47,12 @@ public class RecyclerQuranViewerAdapter
     }
 
     public RecyclerQuranViewerAdapter(Context context, List<Ayah> items,
-                                      String theme,  String language) {
+                                      String theme, String language, int surahIndex) {
         THEME = theme;
         LANGUAGE = language;
+        this.context = context;
         this.items = items;
+        this.surahIndex = surahIndex;
 
         textSize = PreferenceManager.getDefaultSharedPreferences(context).getInt(
                 context.getString(R.string.alathkar_text_size_key), 15) + MARGIN;
@@ -55,10 +63,16 @@ public class RecyclerQuranViewerAdapter
         ViewHolder viewHolder = new ViewHolder(LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_recycler_quran_viewer, viewGroup, false));
 
-        if (THEME.equals("ThemeM"))
+        if (THEME.equals("ThemeM")) {
             viewHolder.suraNameTv.setBackgroundResource(R.drawable.surah_header);
-        else
+            viewHolder.textTv.setMovementMethod(DoubleClickLMM.getInstance(context.getResources()
+                    .getColor(R.color.highlight_M, context.getTheme())));
+        }
+        else {
             viewHolder.suraNameTv.setBackgroundResource(R.drawable.surah_header_light);
+            viewHolder.textTv.setMovementMethod(DoubleClickLMM.getInstance(context.getResources()
+                    .getColor(R.color.highlight_L, context.getTheme())));
+        }
 
         viewHolder.suraNameTv.setTextSize(textSize+5);
         viewHolder.basmalah.setTextSize(textSize);
@@ -72,16 +86,21 @@ public class RecyclerQuranViewerAdapter
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
         Ayah aya = items.get(position);
 
-        header(viewHolder, aya);
+        header(viewHolder, aya, position);
 
-        viewHolder.textTv.setText(aya.getText());
+        viewHolder.textTv.setText(aya.getSS());
         viewHolder.translationTv.setText(aya.getTranslation());
+
+        aya.setScreen(viewHolder.textTv);
     }
 
-    private void header(ViewHolder vh, Ayah aya) {
+    private void header(ViewHolder vh, Ayah aya, int position) {
         if (aya.getAyahNum() == 1) {
             vh.suraNameTv.setText(aya.getSurahName());
             vh.suraNameTv.setVisibility(View.VISIBLE);
+
+            /*if (aya.getSurahNum() == surahIndex+1 && aya.getAyahNum() == 1)
+                target = position;*/
 
             if (aya.getSurahNum() != 1 && aya.getAyahNum() != 9)   // surat al-fatiha and At-Taubah
                 vh.basmalah.setVisibility(View.VISIBLE);
@@ -90,6 +109,10 @@ public class RecyclerQuranViewerAdapter
             vh.suraNameTv.setVisibility(View.GONE);
             vh.basmalah.setVisibility(View.GONE);
         }
+    }
+
+    public int getTarget() {
+        return target;
     }
 
     @Override
