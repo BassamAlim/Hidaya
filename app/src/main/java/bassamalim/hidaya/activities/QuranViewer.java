@@ -167,11 +167,9 @@ public class QuranViewer extends SwipeActivity {
         recyclers[1].setLayoutManager(layoutManagers[1]);
 
         if (action.equals("by_surah"))
-        adapter = new RecyclerQuranViewerAdapter(
-                this, allAyahs, theme, language, surahIndex);
+            adapter = new RecyclerQuranViewerAdapter(this, allAyahs, theme, surahIndex);
         else
-            adapter = new RecyclerQuranViewerAdapter(
-                    this, allAyahs, theme, language, -1);
+            adapter = new RecyclerQuranViewerAdapter(this, allAyahs, theme, -1);
 
         recyclers[0].setAdapter(adapter);
         recyclers[1].setAdapter(adapter);
@@ -465,8 +463,15 @@ public class QuranViewer extends SwipeActivity {
 
             flipper.setInAnimation(null);
             flipper.setOutAnimation(null);
-            if (viewType.equals("list"))
+            if (viewType.equals("list")) {
                 setupRecyclers();
+
+                adapter.setTextSize(textSize);
+                recyclers[0].setAdapter(null);
+                recyclers[1].setAdapter(null);
+                recyclers[0].setAdapter(adapter);
+                recyclers[1].setAdapter(adapter);
+            }
             else
                 flipper.setDisplayedChild(0);
 

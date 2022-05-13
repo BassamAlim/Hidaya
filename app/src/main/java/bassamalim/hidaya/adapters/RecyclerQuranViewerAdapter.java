@@ -1,7 +1,6 @@
 package bassamalim.hidaya.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +14,12 @@ import java.util.List;
 
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.models.Ayah;
-import bassamalim.hidaya.other.Global;
 import bassamalim.hidaya.replacements.DoubleClickLMM;
 
 public class RecyclerQuranViewerAdapter
         extends RecyclerView.Adapter<RecyclerQuranViewerAdapter.ViewHolder> {
 
-    private final String LANGUAGE;
     private final String THEME;
-    private final int MARGIN = 15;
     private final Context context;
     private final List<Ayah> items;
     private int textSize;
@@ -47,15 +43,14 @@ public class RecyclerQuranViewerAdapter
     }
 
     public RecyclerQuranViewerAdapter(Context context, List<Ayah> items,
-                                      String theme, String language, int surahIndex) {
+                                      String theme, int surahIndex) {
         THEME = theme;
-        LANGUAGE = language;
         this.context = context;
         this.items = items;
         this.surahIndex = surahIndex;
 
         textSize = PreferenceManager.getDefaultSharedPreferences(context).getInt(
-                context.getString(R.string.alathkar_text_size_key), 15) + MARGIN;
+                context.getString(R.string.quran_text_size_key), 15);
     }
 
     @NonNull @Override
@@ -113,6 +108,10 @@ public class RecyclerQuranViewerAdapter
 
     public int getTarget() {
         return target;
+    }
+
+    public void setTextSize(int textSize) {
+        this.textSize = textSize;
     }
 
     @Override
