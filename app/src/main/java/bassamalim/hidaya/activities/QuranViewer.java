@@ -167,9 +167,11 @@ public class QuranViewer extends SwipeActivity {
         recyclers[1].setLayoutManager(layoutManagers[1]);
 
         if (action.equals("by_surah"))
-            adapter = new RecyclerQuranViewerAdapter(this, allAyahs, theme, surahIndex);
+            adapter = new RecyclerQuranViewerAdapter(
+                    this, allAyahs, theme, language,  surahIndex);
         else
-            adapter = new RecyclerQuranViewerAdapter(this, allAyahs, theme, -1);
+            adapter = new RecyclerQuranViewerAdapter(
+                    this, allAyahs, theme, language, -1);
 
         recyclers[0].setAdapter(adapter);
         recyclers[1].setAdapter(adapter);
@@ -244,7 +246,8 @@ public class QuranViewer extends SwipeActivity {
             int ayaNum = aya.getAya_no();
 
             Ayah ayahModel = new Ayah(aya.getJozz(), suraNum, ayaNum, names.get(suraNum-1),
-                    aya.getAya_text() + " ", null, aya.getAya_tafseer());
+                    aya.getAya_text() + " ", aya.getAya_translation_en(),
+                    aya.getAya_tafseer());
 
             if (ayaNum == 1) {
                 if (arr.size() > 0) {

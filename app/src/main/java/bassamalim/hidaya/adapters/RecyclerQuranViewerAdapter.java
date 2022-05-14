@@ -25,6 +25,7 @@ public class RecyclerQuranViewerAdapter
     private int textSize;
     private int surahIndex;
     private int target;
+    private boolean translate;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView suraNameTv;
@@ -43,7 +44,7 @@ public class RecyclerQuranViewerAdapter
     }
 
     public RecyclerQuranViewerAdapter(Context context, List<Ayah> items,
-                                      String theme, int surahIndex) {
+                                      String theme, String language, int surahIndex) {
         THEME = theme;
         this.context = context;
         this.items = items;
@@ -51,6 +52,9 @@ public class RecyclerQuranViewerAdapter
 
         textSize = PreferenceManager.getDefaultSharedPreferences(context).getInt(
                 context.getString(R.string.quran_text_size_key), 15);
+
+        if (language.equals("en"))
+            translate = true;
     }
 
     @NonNull @Override
@@ -72,7 +76,7 @@ public class RecyclerQuranViewerAdapter
         viewHolder.suraNameTv.setTextSize(textSize+5);
         viewHolder.basmalah.setTextSize(textSize);
         viewHolder.textTv.setTextSize(textSize);
-        viewHolder.translationTv.setTextSize(textSize);
+        viewHolder.translationTv.setTextSize(textSize-5);
 
         return viewHolder;
     }
@@ -84,7 +88,11 @@ public class RecyclerQuranViewerAdapter
         header(viewHolder, aya, position);
 
         viewHolder.textTv.setText(aya.getSS());
-        viewHolder.translationTv.setText(aya.getTranslation());
+
+        if (translate)
+            viewHolder.translationTv.setText(aya.getTranslation());
+        else
+            viewHolder.translationTv.setVisibility(View.GONE);
 
         aya.setScreen(viewHolder.textTv);
     }
