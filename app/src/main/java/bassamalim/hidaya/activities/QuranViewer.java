@@ -122,7 +122,6 @@ public class QuranViewer extends SwipeActivity {
 
     private void initiate() {
         flipper = binding.flipper;
-        flipper.setMeasureAllChildren(false);
         scrollViews = new ScrollView[]{binding.scrollview1, binding.scrollview2};
         lls = new LinearLayout[]{binding.linear1, binding.linear2};
 
@@ -574,9 +573,8 @@ public class QuranViewer extends SwipeActivity {
 
     private TextView screen() {
         TextView tv = new TextView(this);
-        LinearLayout.LayoutParams screenParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        tv.setLayoutParams(screenParams);
+        tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
         tv.setPadding(5, 0, 5, 30);
         tv.setGravity(Gravity.CENTER);
         tv.setTextSize(textSize);

@@ -7,7 +7,6 @@
         app:title="@string/appearance">
 
         <ListPreference
-            android:defaultValue="ar"
             android:entries="@array/language_entries"
             android:entryValues="@array/languages_values"
             android:key="@string/language_key"
@@ -16,7 +15,6 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            android:defaultValue="ThemeL"
             android:entries="@array/themes_entries"
             android:entryValues="@array/theme_values"
             android:key="@string/theme_key"

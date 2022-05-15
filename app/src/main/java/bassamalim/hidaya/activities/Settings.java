@@ -89,12 +89,8 @@ public class Settings extends AppCompatActivity {
             ListPreference languages = findPreference(getString(R.string.language_key));
             assert languages != null;
             languages.setOnPreferenceChangeListener((preference, newValue) -> {
-                if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
-                        .getString(requireContext().getString(R.string.language_key), getString(R.string.default_language)))) {
-
                     setLocale((String) newValue);
                     Utils.refresh(requireActivity());
-                }
                 return true;
             });
 
@@ -109,6 +105,9 @@ public class Settings extends AppCompatActivity {
                     Utils.refresh(requireActivity());
                 return true;
             });
+
+            if (action.equals("initial"))
+                themes.setSummaryProvider(null);
         }
 
         private void setSwitchListener(ID id) {
