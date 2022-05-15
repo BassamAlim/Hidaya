@@ -573,7 +573,7 @@ public class QuranViewer extends SwipeActivity {
 
     private TextView screen() {
         TextView tv = new TextView(this);
-        tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+        tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT));
         tv.setPadding(5, 0, 5, 30);
         tv.setGravity(Gravity.CENTER);

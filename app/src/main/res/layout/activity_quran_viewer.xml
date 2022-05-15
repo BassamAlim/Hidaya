@@ -60,7 +60,6 @@
         android:layout_height="match_parent"
         android:layout_marginVertical="?actionBarSize"
         android:background="?myQBg"
-        android:measureAllChildren="false"
         app:layout_constraintTop_toBottomOf="@id/info_bar"
         app:layout_constraintBottom_toTopOf="@id/quran_tools_bar">
 
@@ -75,7 +74,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center"
                 android:orientation="vertical"
-                android:paddingHorizontal="5dp"/>
+                android:paddingHorizontal="5dp">
+
+            </LinearLayout>
 
         </ScrollView>
 

@@ -208,7 +208,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_quiz_result.xml" value="0.15185185185185185" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_quran.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_quran_searcher.xml" value="0.22" />
-        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_quran_viewer.xml" value="0.22" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_quran_viewer.xml" value="0.1" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_radio.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_radio_client.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/activity_radio_player.xml" value="0.22376738305941846" />
@@ -291,6 +291,7 @@
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_quiz_result_question.xml" value="0.15555555555555556" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_quran_fragment.xml" value="0.1425925925925926" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_quran_searcher.xml" value="0.22" />
+        <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_quran_viewer_page.xml" value="0.17552083333333332" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_radio_reciter.xml" value="0.22" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_reciter_surah.xml" value="0.1425925925925926" />
         <entry key="..\:/Users/bassa/AndroidStudioProjects/Hidaya/app/src/main/res/layout/item_recycler_quran_viewer.xml" value="0.15555555555555556" />
