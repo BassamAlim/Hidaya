@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -572,17 +571,8 @@ public class QuranViewer extends SwipeActivity {
     }
 
     private TextView screen() {
-        TextView tv = new TextView(this);
-        tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        tv.setPadding(5, 0, 5, 30);
-        tv.setGravity(Gravity.CENTER);
+        TextView tv = (TextView) getLayoutInflater().inflate(R.layout.quran_viewer_tv, null);
         tv.setTextSize(textSize);
-        TypedValue specialTextColor = new TypedValue();
-        getTheme().resolveAttribute(R.attr.mySpecialText, specialTextColor, true);
-        tv.setTextColor(specialTextColor.data);
-        tv.setLinkTextColor(specialTextColor.data);
-        tv.setTypeface(ResourcesCompat.getFont(this, R.font.hafs_smart_08));
         if (theme.equals("ThemeL"))
             tv.setMovementMethod(DoubleClickLMM.getInstance(
                     getResources().getColor(R.color.highlight_L, getTheme())));
