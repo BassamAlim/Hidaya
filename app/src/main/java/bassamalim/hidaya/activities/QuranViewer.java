@@ -82,7 +82,6 @@ public class QuranViewer extends SwipeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         themeify();
-        language = Utils.onActivityCreateSetLocale(this);
         binding = ActivityQuranViewerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -105,6 +104,7 @@ public class QuranViewer extends SwipeActivity {
 
     private void themeify() {
         pref = PreferenceManager.getDefaultSharedPreferences(this);
+        language = Utils.onActivityCreateSetLocale(this);
         textSize = pref.getInt(getString(R.string.quran_text_size_key), 30);
         theme = pref.getString(getString(R.string.theme_key), getString(R.string.default_theme));
 
