@@ -107,7 +107,9 @@ public class QuranViewer extends SwipeActivity {
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         textSize = pref.getInt(getString(R.string.quran_text_size_key), 30);
         theme = pref.getString(getString(R.string.theme_key), getString(R.string.default_theme));
-        viewType = pref.getString("quran_view_type", "page");
+
+        viewType = language.equals("en") ? "list" :
+                pref.getString("quran_view_type", "page");
 
         switch (theme) {
             case "ThemeL":
@@ -186,6 +188,7 @@ public class QuranViewer extends SwipeActivity {
             setCurrentPage(--currentPage);
             buildPage(currentPage);
             flip();
+            recyclers[currentView].scrollTo(0, 0);
         }
     }
 
@@ -198,6 +201,7 @@ public class QuranViewer extends SwipeActivity {
             setCurrentPage(++currentPage);
             buildPage(currentPage);
             flip();
+            recyclers[currentView].scrollTo(0, 0);
         }
     }
 
@@ -370,7 +374,9 @@ public class QuranViewer extends SwipeActivity {
 
         if (action.equals("by_surah") && !scrolled) {
             long delay = 100;    //delay to let finish with possible modifications to ScrollView
-            if (viewType.equals("page"))
+            if (viewType.equals("list"))
+                recyclers[currentView].smoothScrollToPosition(0);
+            else
                 scrollViews[currentView].postDelayed(() ->
                         scrollViews[currentView].smoothScrollTo(0, target.getTop()), delay);
             scrolled = true;

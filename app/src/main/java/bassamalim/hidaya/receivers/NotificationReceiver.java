@@ -52,7 +52,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         int defaultType = id == ID.SHOROUQ ? 0 : 2;
 
         type = PreferenceManager.getDefaultSharedPreferences(context)
-                .getInt(id+"notification_type", defaultType);
+                .getInt(id + "notification_type", defaultType);
 
         if (type != 0)
             prepare();
@@ -73,14 +73,10 @@ public class NotificationReceiver extends BroadcastReceiver {
     private void showNotification() {
         createNotificationChannel();
 
-        if (id == ID.EVENING)    // so that night notification would replace morning notification
-            id = ID.MORNING;
-
         if (isPrayer) {
             AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             // Request audio focus                                   // Request permanent focus.
-            am.requestAudioFocus(null, AudioManager.STREAM_MUSIC,
-                    AudioManager.AUDIOFOCUS_GAIN);
+            am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         }
 
         NotificationManagerCompat.from(context).notify(id.ordinal(), build());
