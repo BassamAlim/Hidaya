@@ -188,7 +188,6 @@ public class QuranViewer extends SwipeActivity {
             setCurrentPage(--currentPage);
             buildPage(currentPage);
             flip();
-            recyclers[currentView].scrollTo(0, 0);
         }
     }
 
@@ -201,7 +200,6 @@ public class QuranViewer extends SwipeActivity {
             setCurrentPage(++currentPage);
             buildPage(currentPage);
             flip();
-            recyclers[currentView].scrollTo(0, 0);
         }
     }
 
