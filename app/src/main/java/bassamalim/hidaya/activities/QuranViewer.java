@@ -58,7 +58,6 @@ public class QuranViewer extends SwipeActivity {
     private ScrollView[] scrollViews;
     private LinearLayout[] lls;
     private RecyclerView[] recyclers;
-    private LinearLayoutManager[] layoutManagers;
     private RecyclerQuranViewerAdapter adapter;
     private int currentView;
     private int surahIndex;
@@ -161,7 +160,7 @@ public class QuranViewer extends SwipeActivity {
     private void setupRecyclers() {
         recyclers = new RecyclerView[]{binding.recycler1, binding.recycler2};
 
-        layoutManagers = new LinearLayoutManager[]
+        LinearLayoutManager[] layoutManagers = new LinearLayoutManager[]
                 {new LinearLayoutManager(this), new LinearLayoutManager(this)};
         recyclers[0].setLayoutManager(layoutManagers[0]);
         recyclers[1].setLayoutManager(layoutManagers[1]);
@@ -177,49 +176,6 @@ public class QuranViewer extends SwipeActivity {
         recyclers[1].setAdapter(adapter);
 
         flipper.setDisplayedChild(2);
-    }
-
-    @Override
-    protected void previous() {
-        if (currentPage > 1) {
-            flipper.setInAnimation(this, R.anim.slide_in_right);
-            flipper.setOutAnimation(this, R.anim.slide_out_left);
-            currentView = (currentView + 1) % 2;
-            setCurrentPage(--currentPage);
-            buildPage(currentPage);
-            flip();
-        }
-    }
-
-    @Override
-    protected void next() {
-        if (currentPage < Global.QURAN_PAGES) {
-            flipper.setInAnimation(this, R.anim.slide_in_left);
-            flipper.setOutAnimation(this, R.anim.slide_out_right);
-            currentView = (currentView + 1) % 2;
-            setCurrentPage(++currentPage);
-            buildPage(currentPage);
-            flip();
-        }
-    }
-
-    private void flip() {
-        if (viewType.equals("list")) {
-            if (flipper.getDisplayedChild() == 2)
-                flipper.setDisplayedChild(3);
-            else
-                flipper.setDisplayedChild(2);
-
-            recyclers[currentView].scrollTo(0, 0);
-        }
-        else {
-            if (flipper.getDisplayedChild() == 0)
-                flipper.setDisplayedChild(1);
-            else
-                flipper.setDisplayedChild(0);
-
-            scrollViews[currentView].scrollTo(0, 0);
-        }
     }
 
     private int getPage(int surahIndex) {
@@ -378,6 +334,49 @@ public class QuranViewer extends SwipeActivity {
                 scrollViews[currentView].postDelayed(() ->
                         scrollViews[currentView].smoothScrollTo(0, target.getTop()), delay);
             scrolled = true;
+        }
+    }
+
+    @Override
+    protected void previous() {
+        if (currentPage > 1) {
+            flipper.setInAnimation(this, R.anim.slide_in_right);
+            flipper.setOutAnimation(this, R.anim.slide_out_left);
+            currentView = (currentView + 1) % 2;
+            setCurrentPage(--currentPage);
+            buildPage(currentPage);
+            flip();
+        }
+    }
+
+    @Override
+    protected void next() {
+        if (currentPage < Global.QURAN_PAGES) {
+            flipper.setInAnimation(this, R.anim.slide_in_left);
+            flipper.setOutAnimation(this, R.anim.slide_out_right);
+            currentView = (currentView + 1) % 2;
+            setCurrentPage(++currentPage);
+            buildPage(currentPage);
+            flip();
+        }
+    }
+
+    private void flip() {
+        if (viewType.equals("list")) {
+            if (flipper.getDisplayedChild() == 2)
+                flipper.setDisplayedChild(3);
+            else
+                flipper.setDisplayedChild(2);
+
+            recyclers[currentView].scrollTo(0, 0);
+        }
+        else {
+            if (flipper.getDisplayedChild() == 0)
+                flipper.setDisplayedChild(1);
+            else
+                flipper.setDisplayedChild(0);
+
+            scrollViews[currentView].scrollTo(0, 0);
         }
     }
 
