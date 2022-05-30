@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:key="quran_settings_screen_key">
 
-    <PreferenceCategory android:title="@string/page_preferences">
+    <PreferenceCategory
+        android:title="@string/page_preferences"
+        app:iconSpaceReserved="false">
 
         <SeekBarPreference
             android:defaultValue="30"
@@ -17,7 +19,9 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/recitation_preferences">
+    <PreferenceCategory
+        android:title="@string/recitation_preferences"
+        app:iconSpaceReserved="false">
 
         <DropDownPreference
             android:key="@string/aya_reciter_key"

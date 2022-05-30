@@ -48,7 +48,7 @@ public class DateConverter extends AppCompatActivity {
             show(gregorianToHijri(choice), choice);
         }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DATE));
         datePicker.setButton(DatePickerDialog.BUTTON_POSITIVE,
-                getString(R.string.save), datePicker);
+                getString(R.string.select), datePicker);
         datePicker.setButton(DatePickerDialog.BUTTON_NEGATIVE,
                 getString(R.string.cancel), datePicker);
         datePicker.show();

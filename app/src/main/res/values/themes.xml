@@ -101,6 +101,7 @@
         <item name="myQBg">@color/primary_M</item>
         <item name="myQBars">@color/bg_M</item>
         <item name="mySurfaceDark">@color/ripple_M</item>
+        <item name="myQAccent">@color/accent_M</item>
         <item name="myQHighlight">@color/highlight_M</item>
         <item name="myQTrack">@color/track_M</item>
     </style>
@@ -111,6 +112,7 @@
         <item name="myQBg">@color/q_bg_L</item>
         <item name="myQBars">@color/primary_L</item>
         <item name="mySurfaceDark">@color/ripple_L</item>
+        <item name="myQAccent">@color/accent_L</item>
         <item name="myQHighlight">@color/highlight_L</item>
         <item name="myQTrack">@color/track_L</item>
     </style>

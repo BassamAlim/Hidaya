@@ -11,7 +11,7 @@
             android:entryValues="@array/languages_values"
             android:key="@string/language_key"
             android:title="@string/language"
-            app:iconSpaceReserved="false"
+            android:icon="@drawable/ic_translation"
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
@@ -19,7 +19,7 @@
             android:entryValues="@array/theme_values"
             android:key="@string/theme_key"
             android:title="@string/theme"
-            app:iconSpaceReserved="false"
+            android:icon="@drawable/ic_theme"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

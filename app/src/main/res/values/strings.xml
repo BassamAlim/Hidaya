@@ -208,6 +208,7 @@
     <string name="choose_rewaya">اختر الروايات</string>
     <string name="save">حفظ</string>
     <string name="finish">إنهاء</string>
+    <string name="select">اختيار</string>
     <string name="select_all">تحديد الكل</string>
     <string name="unselect_all">إلغاء تحديد الكل</string>
     <string name="do_not_show_again">لا تظهر مرة اخرى</string>
@@ -236,5 +237,6 @@
     <string name="basmalah" translatable="false">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</string>
     <string name="page_view">صفحة</string>
     <string name="list_view">قائمة</string>
+    <string name="view_method">طريقة العرض</string>
 
 </resources>

@@ -85,7 +85,7 @@ public class HijriDatePickerDialog extends DialogFragment {
                 (picker, oldVal, newVal) -> cal.set(Calendar.DATE, newVal));
 
         return new AlertDialog.Builder(requireActivity()).setView(dialog)
-                .setPositiveButton("حفظ", (dialog1, id) -> {
+                .setPositiveButton(R.string.select, (dialog1, id) -> {
                     int year = yearPicker.getValue();
                     listener.onDateSet(null, year,
                             monthPicker.getValue(), dayPicker.getValue());

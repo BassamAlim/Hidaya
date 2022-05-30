@@ -574,7 +574,7 @@ public class QuranViewer extends SwipeActivity {
     }
 
     private TextView screen() {
-        TextView tv = (TextView) getLayoutInflater().inflate(R.layout.quran_viewer_tv, null);
+        TextView tv = (TextView) getLayoutInflater().inflate(R.layout.tv_quran_viewer, null);
         tv.setTextSize(textSize);
         if (theme.equals("ThemeL"))
             tv.setMovementMethod(DoubleClickLMM.getInstance(

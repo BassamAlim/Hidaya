@@ -10,6 +10,17 @@
     android:orientation="vertical"
     tools:context=".dialogs.QuranSettingsDialog">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/view_method"
+        android:paddingTop="5dp"
+        android:paddingStart="12dp"
+        android:gravity="start"
+        android:textSize="18dp"
+        android:textColor="@color/white"
+        tools:ignore="RtlSymmetry,SpUsage" />
+
     <RadioGroup
         android:id="@+id/radio_group"
         android:layout_width="match_parent"

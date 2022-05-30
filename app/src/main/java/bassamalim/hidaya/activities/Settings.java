@@ -89,8 +89,11 @@ public class Settings extends AppCompatActivity {
             ListPreference languages = findPreference(getString(R.string.language_key));
             assert languages != null;
             languages.setOnPreferenceChangeListener((preference, newValue) -> {
+                if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
+                        .getString(requireContext().getString(R.string.language_key), getString(R.string.default_language)))) {
                     setLocale((String) newValue);
                     Utils.refresh(requireActivity());
+                }
                 return true;
             });
 
@@ -158,7 +161,7 @@ public class Settings extends AppCompatActivity {
 
             timePicker.setTitle(getString(R.string.time_picker_title));
             timePicker.setButton(TimePickerDialog.BUTTON_POSITIVE,
-                    getString(R.string.save), (Message) null);
+                    getString(R.string.select), (Message) null);
             timePicker.setButton(TimePickerDialog.BUTTON_NEGATIVE,
                     getString(R.string.cancel), (Message) null);
             timePicker.setCancelable(true);
