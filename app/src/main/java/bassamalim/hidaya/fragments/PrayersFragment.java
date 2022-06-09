@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,11 +29,10 @@ import java.util.TimeZone;
 import bassamalim.hidaya.R;
 import bassamalim.hidaya.activities.MainActivity;
 import bassamalim.hidaya.databinding.FragmentPrayersBinding;
-import bassamalim.hidaya.helpers.PrayTimes;
-import bassamalim.hidaya.other.Global;
-import bassamalim.hidaya.other.Utils;
 import bassamalim.hidaya.dialogs.PrayerDialog;
 import bassamalim.hidaya.dialogs.TutorialDialog;
+import bassamalim.hidaya.helpers.PrayTimes;
+import bassamalim.hidaya.other.Utils;
 
 public class PrayersFragment extends Fragment {
 
@@ -253,10 +251,8 @@ public class PrayersFragment extends Fragment {
                 if (getContext() != null)
                     counters[upcoming].setText(String.format(getString(R.string.remaining),
                             Utils.translateNumbers(requireContext(), hms)));
-                else {
+                else
                     cancelTimer();
-                    Log.e(Global.TAG, "Not attached to context problem in PrayersFragment");
-                }
             }
             @Override
             public void onFinish() {
