@@ -27,7 +27,6 @@ public class Compass implements SensorEventListener {
     private final float[] mData = new float[3];
     private final float[] myR = new float[9];
     private final float[] myI = new float[9];
-    private float azimuthFix;
 
     public Compass(Context gContext) {
         sensorManager = (SensorManager) gContext.getSystemService(Context.SENSOR_SERVICE);
@@ -84,7 +83,7 @@ public class Compass implements SensorEventListener {
                 SensorManager.getOrientation(myR, orientation);
 
                 float azimuth = (float) Math.toDegrees(orientation[0]); // orientation
-                azimuth = (azimuth + azimuthFix + 360) % 360;
+                azimuth = (azimuth + 360) % 360;
 
                 if (listener != null)
                     listener.onNewAzimuth(azimuth);
@@ -100,15 +99,5 @@ public class Compass implements SensorEventListener {
     public void setListener(CompassListener l) {
         listener = l;
     }
-
-    // used for something i don't know, thus don't need
-    /*public void setAzimuthFix(float fix) {
-        Log.i(Constants.TAG, "in qibla master setAzimuthFix");
-        azimuthFix = fix;
-    }
-
-    public void resetAzimuthFix() {
-        setAzimuthFix(0);
-    }*/
 
 }

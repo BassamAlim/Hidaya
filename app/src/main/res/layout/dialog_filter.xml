@@ -74,7 +74,7 @@
         android:background="@drawable/ripple_surface"
         android:fontFamily="@font/tajawal_regular"
         android:paddingVertical="10dp"
-        android:text="@string/finish"
+        android:text="@string/select"
         android:textColor="?attr/myActiveOnPrimary"
         android:textSize="24dp"
         tools:ignore="SpUsage" />

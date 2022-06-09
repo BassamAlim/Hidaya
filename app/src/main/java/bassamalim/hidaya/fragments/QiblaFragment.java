@@ -186,8 +186,9 @@ public class QiblaFragment extends Fragment {
                 binding.accuracyText.setText(R.string.low_accuracy_text);
                 binding.accuracyIndicator.setImageDrawable(AppCompatResources.getDrawable(
                         requireContext(), R.drawable.ic_warning));
-                binding.accuracyIndicator.setOnClickListener(v -> new CalibrationDialog(getContext())
-                        .show(requireActivity().getSupportFragmentManager(), CalibrationDialog.TAG));
+                binding.accuracyIndicator.setOnClickListener(v ->
+                        new CalibrationDialog(getContext()).show(requireActivity()
+                                .getSupportFragmentManager(), CalibrationDialog.TAG));
                 break;
         }
     }

@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -149,7 +150,7 @@ public class BookSearcher extends AppCompatActivity {
             return;
 
         for (int i = 0; i < bookTitles.length; i++) {
-            if (!selectedBooks[i])
+            if (!selectedBooks[i] || !downloaded(i))
                 continue;
 
             String jsonStr = Utils.getJsonFromDownloads(getExternalFilesDir(null) +
@@ -215,6 +216,29 @@ public class BookSearcher extends AppCompatActivity {
         Arrays.fill(defArr, true);
         String defStr = gson.toJson(defArr);
         return gson.fromJson(pref.getString("selected_search_books", defStr), boolean[].class);
+    }
+
+    private boolean downloaded(int id) {
+        File dir = new File(getExternalFilesDir(null) + "/Books/");
+
+        if (!dir.exists())
+            return false;
+
+        File[] files = dir.listFiles();
+
+        for (int i = 0; i < Objects.requireNonNull(files).length; i++) {
+            File file = files[i];
+
+            String name = file.getName();
+            String n = name.substring(0, name.length()-5);
+            try {
+                int num = Integer.parseInt(n);
+                if (num == id)
+                    return true;
+            }
+            catch (NumberFormatException ignored) {}
+        }
+        return false;
     }
 
     @Override

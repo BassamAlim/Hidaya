@@ -253,8 +253,10 @@ public class PrayersFragment extends Fragment {
                 if (getContext() != null)
                     counters[upcoming].setText(String.format(getString(R.string.remaining),
                             Utils.translateNumbers(requireContext(), hms)));
-                else
+                else {
+                    cancelTimer();
                     Log.e(Global.TAG, "Not attached to context problem in PrayersFragment");
+                }
             }
             @Override
             public void onFinish() {
