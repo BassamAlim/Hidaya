@@ -113,7 +113,7 @@ public class BooksActivity extends AppCompatActivity {
         downloadBtns = new ImageButton[]{binding.bokhariDownloadBtn, binding.muslimDownloadBtn};
 
         for (int i = 0; i < numOfBooks; i++) {
-            if (downloaded[i])
+            if (infoArr[i] != null && downloaded[i])
                 titleTvs[i].setText(infoArr[i].getBookTitle());
         }
 
