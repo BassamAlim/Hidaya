@@ -17,8 +17,7 @@ Features:
 - and much more
 
 
-![Samsung Galaxy S10 Screenshot 0](https://user-images.githubusercontent.com/65797540/174458415-47cbedb6-9906-4218-bf2e-57b004aeb987.png)
-![Samsung Galaxy S10 Screenshot 1](https://user-images.githubusercontent.com/65797540/174458438-06c5ef32-1786-41b5-974a-ca462b77bcb0.png)
+![Samsung Galaxy S10 Screenshot 0](https://user-images.githubusercontent.com/65797540/174458415-47cbedb6-9906-4218-bf2e-57b004aeb987.png)![Samsung Galaxy S10 Screenshot 1](https://user-images.githubusercontent.com/65797540/174458438-06c5ef32-1786-41b5-974a-ca462b77bcb0.png)
 ![Samsung Galaxy S10 Screenshot 2](https://user-images.githubusercontent.com/65797540/174458470-9b400a2e-d70a-483f-9e52-16b041340661.png)
 ![Samsung Galaxy S10 Screenshot 3](https://user-images.githubusercontent.com/65797540/174458487-b77e8c5e-c2e1-4c40-a195-eef01da25336.png)
 ![Samsung Galaxy S10 Screenshot 4](https://user-images.githubusercontent.com/65797540/174458505-9a48be0d-db70-4a29-9ad6-973930487676.png)
