@@ -2,6 +2,9 @@
 
 Hidaya is a fully equipped muslims app that helps reminds us with prayers and points us towards the qibla and give them easy access to quran and hidaya and much more.
 
+Get it from Google Play:
+https://play.google.com/store/apps/details?id=bassamalim.hidaya
+
 Features:
 - Prayer times
 - Athkar
