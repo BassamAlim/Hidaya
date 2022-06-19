@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center"
                 android:orientation="vertical"
-                android:paddingHorizontal="5dp">
+                android:paddingHorizontal="6dp">
 
             </LinearLayout>
 
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center"
                 android:orientation="vertical"
-                android:paddingHorizontal="5dp"/>
+                android:paddingHorizontal="6dp"/>
 
         </ScrollView>
 

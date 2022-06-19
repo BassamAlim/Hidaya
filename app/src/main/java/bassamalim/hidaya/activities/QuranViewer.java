@@ -471,7 +471,7 @@ public class QuranViewer extends SwipeActivity {
                 setupRecyclers();
 
                 adapter.setTextSize(textSize);
-                recyclers[0].setAdapter(null);
+                recyclers[0].setAdapter(null);    // restart recyclerview
                 recyclers[1].setAdapter(null);
                 recyclers[0].setAdapter(adapter);
                 recyclers[1].setAdapter(adapter);

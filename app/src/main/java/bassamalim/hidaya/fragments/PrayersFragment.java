@@ -237,6 +237,7 @@ public class PrayersFragment extends Fragment {
         if (tomorrow)
             till = tomorrowFajr.getTimeInMillis();
 
+        final boolean[] restart = {true};
         timer = new CountDownTimer(till - System.currentTimeMillis(),
                 1000) {
             @Override
@@ -251,8 +252,10 @@ public class PrayersFragment extends Fragment {
                 if (getContext() != null)
                     counters[upcoming].setText(String.format(getString(R.string.remaining),
                             Utils.translateNumbers(requireContext(), hms)));
-                else
+                else {
+                    restart[0] = false;
                     cancelTimer();
+                }
             }
             @Override
             public void onFinish() {
@@ -261,7 +264,8 @@ public class PrayersFragment extends Fragment {
                 constraintSet.applyTo(cls[upcoming]);
                 counters[upcoming].setVisibility(View.GONE);
 
-                count();
+                if (restart[0])
+                    count();
             }
         }.start();
     }
