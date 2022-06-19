@@ -21,6 +21,7 @@ import bassamalim.hidaya.other.Utils
 import java.util.*
 
 class Settings : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)

@@ -25,6 +25,7 @@ import bassamalim.hidaya.models.Sura
 import java.util.*
 
 class FavoriteQuranFragment : Fragment() {
+
     private var binding: FragmentQuranBinding? = null
     private var recyclerView: RecyclerView? = null
     private var adapter: QuranFragmentAdapter? = null
@@ -32,6 +33,7 @@ class FavoriteQuranFragment : Fragment() {
     private var gridLayoutManager: GridLayoutManager? = null
     private var names: List<String>? = null
     private var language: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -117,7 +119,7 @@ class FavoriteQuranFragment : Fragment() {
             cards.add(
                 Sura(
                     sura.sura_id, surat + " " +
-                            names!![sura.sura_id], sura.search_name!!, sura.tanzeel!!,
+                            names!![sura.sura_id], sura.search_name!!, sura.tanzeel,
                     1, cardListener
                 )
             )

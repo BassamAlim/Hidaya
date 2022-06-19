@@ -6,6 +6,7 @@ data class BookDoor(
     private val text: String,
     private var fav: Boolean
 ) {
+
     fun getDoorId(): Int {
         return doorId
     }

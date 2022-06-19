@@ -9,6 +9,7 @@ data class Reciter(
     private var favorite: Int,
     private val versions: List<RecitationVersion>
 ) {
+
     fun getId(): Int {
         return id
     }

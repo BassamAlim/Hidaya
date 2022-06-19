@@ -5,6 +5,7 @@ import android.os.Build
 import java.io.Serializable
 
 data class MyLocation(val loc: Location) : Serializable {
+
     val accuracy: Float = loc.accuracy
     val time: Long = loc.time
     val altitude: Double = loc.altitude

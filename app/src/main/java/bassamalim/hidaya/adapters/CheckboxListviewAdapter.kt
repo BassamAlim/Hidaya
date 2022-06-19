@@ -12,13 +12,11 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.models.CheckboxListItem
 
 class CheckboxListviewAdapter(
-    private val gContext: Context,
-    resource: Int,
+    private val gContext: Context, resource: Int,
     private val items: List<CheckboxListItem>,
-    private val selected: BooleanArray
-) : ArrayAdapter<CheckboxListItem?>(
-    gContext, resource, items
-) {
+    private val selected: BooleanArray) :
+    ArrayAdapter<CheckboxListItem?>(gContext, resource, items) {
+
     private var isFromView = false
 
     private class ViewHolder(view: View?) {
@@ -32,18 +30,18 @@ class CheckboxListviewAdapter(
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var convertView = convertView
+        var convertV = convertView
         val result: View
         val vh: ViewHolder
-        if (convertView == null) {
+        if (convertV == null) {
             val layoutInflater = LayoutInflater.from(gContext)
-            convertView = layoutInflater.inflate(R.layout.item_checkbox_list, null)
-            vh = ViewHolder(convertView)
-            result = convertView!!
-            convertView.tag = vh
+            convertV = layoutInflater.inflate(R.layout.item_checkbox_list, null)
+            vh = ViewHolder(convertV)
+            result = convertV!!
+            convertV.tag = vh
         } else {
-            vh = convertView.tag as ViewHolder
-            result = convertView
+            vh = convertV.tag as ViewHolder
+            result = convertV
         }
         val item = items[position]
         vh.tv.text = item.text

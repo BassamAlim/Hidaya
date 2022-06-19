@@ -41,6 +41,7 @@ import java.util.*
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
+
     private var playAction: NotificationCompat.Action? = null
     private var pauseAction: NotificationCompat.Action? = null
     private var nextAction: NotificationCompat.Action? = null
@@ -72,6 +73,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private var version: Reciter.RecitationVersion? = null
     private var shuffle = 0
     private var continueFrom = 0
+
     override fun onCreate() {
         super.onCreate()
         Utils.onActivityCreateSetLocale(this)

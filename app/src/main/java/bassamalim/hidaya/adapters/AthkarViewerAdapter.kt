@@ -14,7 +14,8 @@ import java.util.ArrayList
 
 class AthkarViewerAdapter(context: Context, cards: ArrayList<Thikr>, private val LANGUAGE: String) :
     RecyclerView.Adapter<AthkarViewerAdapter.ViewHolder?>() {
-    private val MARGIN = 15
+
+    private val margin = 15
     private val items: ArrayList<Thikr>
     private var textSize: Int
 
@@ -82,7 +83,7 @@ class AthkarViewerAdapter(context: Context, cards: ArrayList<Thikr>, private val
     }
 
     fun setTextSize(textSize: Int) {
-        this.textSize = textSize + MARGIN
+        this.textSize = textSize + margin
     }
 
     override fun getItemCount(): Int {
@@ -93,6 +94,6 @@ class AthkarViewerAdapter(context: Context, cards: ArrayList<Thikr>, private val
         items = cards
         textSize = PreferenceManager.getDefaultSharedPreferences(context).getInt(
             context.getString(R.string.alathkar_text_size_key), 15
-        ) + MARGIN
+        ) + margin
     }
 }

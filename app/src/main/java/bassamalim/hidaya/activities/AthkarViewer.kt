@@ -23,6 +23,7 @@ import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
 
 class AthkarViewer : AppCompatActivity() {
+
     private var binding: ActivityAthkarViewerBinding? = null
     private var pref: SharedPreferences? = null
     private var db: AppDatabase? = null
@@ -30,6 +31,7 @@ class AthkarViewer : AppCompatActivity() {
     private var textSizeSb: SeekBar? = null
     private var adapter: AthkarViewerAdapter? = null
     private var language: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.onActivityCreateSetTheme(this)

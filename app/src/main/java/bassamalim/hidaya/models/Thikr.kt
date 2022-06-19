@@ -12,6 +12,7 @@ data class Thikr(
     private val repetition: String,
     private val referenceListener: View.OnClickListener
 ) {
+
     fun getId(): Int {
         return id
     }

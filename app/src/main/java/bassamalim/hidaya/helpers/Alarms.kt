@@ -15,6 +15,7 @@ import bassamalim.hidaya.receivers.NotificationReceiver
 import java.util.*
 
 class Alarms {
+
     private val context: Context
     private var appContext: Context? = null
     private val times: Array<Calendar?>

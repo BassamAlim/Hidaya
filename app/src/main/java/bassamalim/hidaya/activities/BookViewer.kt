@@ -20,6 +20,7 @@ import com.google.gson.Gson
 import java.util.*
 
 class BookViewer : AppCompatActivity() {
+
     private var binding: ActivityBookViewerBinding? = null
     private var pref: SharedPreferences? = null
     private var bookId = 0
@@ -29,6 +30,7 @@ class BookViewer : AppCompatActivity() {
     private var recycler: RecyclerView? = null
     private var textSizeSb: SeekBar? = null
     private var adapter: BookViewerAdapter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)

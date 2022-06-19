@@ -14,8 +14,9 @@ import bassamalim.hidaya.models.QuizResultQuestion
 
 class QuizResultQuestionAdapter(
     private val context: Context,
-    cards: ArrayList<QuizResultQuestion>
-) : RecyclerView.Adapter<QuizResultQuestionAdapter.ViewHolder>() {
+    cards: ArrayList<QuizResultQuestion>) :
+    RecyclerView.Adapter<QuizResultQuestionAdapter.ViewHolder>() {
+
     private val items: ArrayList<QuizResultQuestion>
     private val question: String
 

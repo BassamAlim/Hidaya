@@ -34,10 +34,10 @@ import java.util.*
 
 class TelawatAdapter(private val context: Context, cards: ArrayList<Reciter>) :
     FilteredRecyclerAdapter<TelawatAdapter.ViewHolder>() {
-    private val db: AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "HidayaDB").createFromAsset(
-            "databases/HidayaDB.db"
-        ).allowMainThreadQueries().build()
+
+    private val db: AppDatabase = Room.databaseBuilder(
+        context, AppDatabase::class.java, "HidayaDB").createFromAsset(
+            "databases/HidayaDB.db").allowMainThreadQueries().build()
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson: Gson = Gson()
     private val rewayat: Array<String>

@@ -7,7 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlin.math.abs
 
 abstract class SwipeActivity : AppCompatActivity() {
+
     private var gestureDetector: GestureDetector? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gestureDetector = GestureDetector(this, SwipeDetector())

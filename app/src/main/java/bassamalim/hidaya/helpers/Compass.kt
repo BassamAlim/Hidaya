@@ -12,6 +12,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.other.Global
 
 class Compass(gContext: Context) : SensorEventListener {
+
     interface CompassListener {
         fun onNewAzimuth(azimuth: Float)
         fun calibration(accuracy: Int)

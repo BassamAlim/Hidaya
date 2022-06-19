@@ -8,15 +8,15 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.helpers.Keeper
 
 class PrayersWidget : AppWidgetProvider() {
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
         // There may be multiple widgets active, so update all of them
-        for (appWidgetId in appWidgetIds) {
+        for (appWidgetId in appWidgetIds)
             updateAppWidget(context, appWidgetManager, appWidgetId)
-        }
     }
 
     override fun onEnabled(context: Context) {
@@ -33,6 +33,7 @@ class PrayersWidget : AppWidgetProvider() {
             appWidgetManager: AppWidgetManager, appWidgetId: Int
         ) {
             Utils.onActivityCreateSetLocale(context)
+            
             val timesList = Keeper(context).retrieveStrTimes()
             if (timesList != null) {
                 // Construct the RemoteViews object

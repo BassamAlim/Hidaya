@@ -7,7 +7,9 @@ import bassamalim.hidaya.databinding.ActivityQuizLobbyBinding
 import bassamalim.hidaya.other.Utils
 
 class QuizLobbyActivity : AppCompatActivity() {
+
     private var binding: ActivityQuizLobbyBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)

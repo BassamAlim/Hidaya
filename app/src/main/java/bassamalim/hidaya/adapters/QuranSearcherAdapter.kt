@@ -15,6 +15,7 @@ import bassamalim.hidaya.other.Utils
 
 class QuranSearcherAdapter(private val context: Context, private val items: List<Ayah>) :
     RecyclerView.Adapter<QuranSearcherAdapter.ViewHolder>() {
+
     private val suraStr: String = context.getString(R.string.sura)
     private val tafseerString: String = context.getString(R.string.tafseer)
     private val suraNumString: String = context.getString(R.string.sura_number)

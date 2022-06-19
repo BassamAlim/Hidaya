@@ -19,12 +19,11 @@ import bassamalim.hidaya.other.Utils
 import java.util.*
 
 class AthanService : Service() {
+
     private var id: ID? = null
     private var channelId = ""
     private var mediaPlayer: MediaPlayer? = null
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (intent == null)
-            return START_NOT_STICKY
         id = intent.getSerializableExtra("id") as ID?
         Log.i(Global.TAG, "In athan service for $id")
         //int Notification_ID = (int) System.currentTimeMillis() % 10000;
@@ -115,7 +114,7 @@ class AthanService : Service() {
         return null
     }
 
-    fun stopMyService() {
+    private fun stopMyService() {
         stopForeground(true)
         stopSelf()
         if (mediaPlayer != null) {

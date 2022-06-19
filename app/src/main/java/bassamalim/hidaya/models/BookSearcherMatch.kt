@@ -11,6 +11,7 @@ data class BookSearcherMatch(
     private val doorTitle: String,
     private val text: Spannable
 ) {
+
     fun getBookId(): Int {
         return bookId
     }

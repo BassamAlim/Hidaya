@@ -26,8 +26,7 @@ class RadioClient : AppCompatActivity() {
     private var mediaBrowser: MediaBrowserCompat? = null
     private var controller: MediaControllerCompat? = null
     private var tc: MediaControllerCompat.TransportControls? = null
-    private var playBtn // play/pause button
-            : ImageButton? = null
+    private var playBtn: ImageButton? = null // play/pause button
     private var link: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

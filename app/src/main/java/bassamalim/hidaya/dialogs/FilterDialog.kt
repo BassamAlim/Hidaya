@@ -26,8 +26,8 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
     private val selected: BooleanArray,
     filteredAdapter: FilteredRecyclerAdapter<VH>,
     filterIb: ImageButton,
-    prefKey: String
-) {
+    prefKey: String) {
+
     private var popup: PopupWindow? = null
     private val pref: SharedPreferences
     private val gson: Gson
@@ -36,6 +36,7 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
     private val prefKey: String
     private var cbListAdapter: CheckboxListviewAdapter? = null
     private var items: MutableList<CheckboxListItem>? = null
+
     private fun showPopup(title: String) {
         val inflater: LayoutInflater = view.context
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater

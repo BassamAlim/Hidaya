@@ -15,9 +15,10 @@ import com.google.gson.Gson
 
 class BookViewerAdapter(
     private val context: Context, cards: ArrayList<BookDoor>,
-    bookId: Int, chapterId: Int
-) : RecyclerView.Adapter<BookViewerAdapter.ViewHolder?>() {
-    private val MARGIN = 15
+    bookId: Int, chapterId: Int) :
+    RecyclerView.Adapter<BookViewerAdapter.ViewHolder?>() {
+
+    private val margin = 15
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson: Gson = Gson()
     private val bookId: Int
@@ -94,7 +95,7 @@ class BookViewerAdapter(
     }
 
     fun setTextSize(textSize: Int) {
-        this.textSize = textSize + MARGIN
+        this.textSize = textSize + margin
     }
 
     override fun getItemCount(): Int {
@@ -105,7 +106,7 @@ class BookViewerAdapter(
         this.bookId = bookId
         this.chapterId = chapterId
         items = cards
-        textSize = pref.getInt(context.getString(R.string.books_text_size_key), 15) + MARGIN
+        textSize = pref.getInt(context.getString(R.string.books_text_size_key), 15) + margin
         getFavs()
     }
 }

@@ -26,17 +26,19 @@ import bassamalim.hidaya.services.AthanService
 import java.util.*
 
 class NotificationReceiver : BroadcastReceiver() {
+
     private var context: Context? = null
     private var id: ID? = null
     private var isPrayer = false
     private var channelId = ""
     private var type = 0
     private var time: Long = 0
+
     override fun onReceive(context: Context, intent: Intent) {
         this.context = context
         id = Utils.mapID(intent.getIntExtra("id", 0))
         time = intent.getLongExtra("time", 0)
-        isPrayer = intent.getAction() == "prayer"
+        isPrayer = intent.action == "prayer"
         Utils.onActivityCreateSetLocale(context)
         Log.i(Global.TAG, "in notification receiver for $id")
         val defaultType = if (id == ID.SHOROUQ) 0 else 2
@@ -49,7 +51,8 @@ class NotificationReceiver : BroadcastReceiver() {
         val max = time + 120000
         if (System.currentTimeMillis() <= max) {
             if (type == 3) startService() else showNotification()
-        } else Log.i(Global.TAG, id.toString() + " Passed")
+        }
+        else Log.i(Global.TAG, id.toString() + " Passed")
     }
 
     private fun showNotification() {
@@ -64,7 +67,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
     private fun startService() {
         val intent1 = Intent(context, AthanService::class.java)
-        intent1.setAction(Global.PLAY_ATHAN)
+        intent1.action = Global.PLAY_ATHAN
         intent1.putExtra("id", id)
         intent1.putExtra("time", time)
         if (Build.VERSION.SDK_INT >= 26)
@@ -83,10 +86,10 @@ class NotificationReceiver : BroadcastReceiver() {
         if (id == ID.DUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) i = 10
         builder.setContentTitle(context!!.resources.getStringArray(R.array.prayer_titles)[i])
         builder.setContentText(context!!.resources.getStringArray(R.array.prayer_subtitles)[i])
-        builder.setPriority(NotificationCompat.PRIORITY_MAX)
+        builder.priority = NotificationCompat.PRIORITY_MAX
         builder.setAutoCancel(true)
         builder.setOnlyAlertOnce(true)
-        builder.setColor(context!!.getColor(R.color.surface_M))
+        builder.color = context!!.getColor(R.color.surface_M)
         builder.setContentIntent(onClick(id))
         if (type == 1) builder.setSilent(true)
         return builder.build()
@@ -109,16 +112,16 @@ class NotificationReceiver : BroadcastReceiver() {
             }
             ID.DAILY_WERD -> {
                 intent = Intent(context, QuranViewer::class.java)
-                intent.setAction("random")
+                intent.action = "random"
             }
             ID.FRIDAY_KAHF -> {
                 intent = Intent(context, QuranViewer::class.java)
-                intent.setAction("by_surah")
+                intent.action = "by_surah"
                 intent.putExtra("surah_id", 17) // alkahf
             }
             else -> intent = Intent(context, Splash::class.java)
         }
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         return PendingIntent.getActivity(
             context, id!!.ordinal, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE

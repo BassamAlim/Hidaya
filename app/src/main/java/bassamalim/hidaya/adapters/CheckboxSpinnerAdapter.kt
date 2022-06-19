@@ -19,10 +19,8 @@ class CheckboxSpinnerAdapter(
     resource: Int,
     objects: List<CheckboxListItem>,
     selected: BooleanArray,
-    prefKey: String
-) : ArrayAdapter<CheckboxListItem?>(
-    gContext, resource, objects
-) {
+    prefKey: String) : ArrayAdapter<CheckboxListItem?>(gContext, resource, objects) {
+
     private val pref: SharedPreferences
     private val prefKey: String
     private val gson: Gson

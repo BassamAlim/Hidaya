@@ -15,9 +15,11 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class BooksChaptersCollectionActivity : FragmentActivity() {
+
     private var binding: ActivityCollectionBookChaptersBinding? = null
     private var adapter: FragmentStateAdapter? = null
     private var viewPager: ViewPager2? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)
@@ -50,6 +52,7 @@ class BooksChaptersCollectionActivity : FragmentActivity() {
 
 internal class FSAdapter(fragment: FragmentActivity?, private val bookId: Int) :
     FragmentStateAdapter(fragment!!) {
+
     override fun createFragment(position: Int): Fragment {
         val type: ListType = if (position == 0) ListType.All else ListType.Favorite
         return BookChaptersFragment(type, bookId)

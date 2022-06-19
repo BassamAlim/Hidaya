@@ -18,22 +18,24 @@ import com.google.android.gms.location.LocationServices
 import java.util.*
 
 class DailyUpdateReceiver : BroadcastReceiver() {
+
     private var context: Context? = null
     private var pref: SharedPreferences? = null
     private var time = 0
     private var now: Calendar? = null
+
     override fun onReceive(gContext: Context, intent: Intent) {
         Log.i(Global.TAG, "in daily update receiver")
         context = gContext
         pref = PreferenceManager.getDefaultSharedPreferences(context!!)
         now = Calendar.getInstance()
-        if (intent.getAction() == "daily") {
+        if (intent.action == "daily") {
             time = intent.getIntExtra("time", 0)
             if (needed()) locate() else Log.i(
                 Global.TAG,
                 "dead intent walking in daily update receiver"
             )
-        } else if (intent.getAction() == "boot") locate()
+        } else if (intent.action == "boot") locate()
     }
 
     private fun needed(): Boolean {
@@ -58,16 +60,16 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun update(location: Location) {
-        var location: Location? = location
-        if (location == null) {
-            location = Keeper(context!!).retrieveLocation()
-            if (location == null) {
+        var loc: Location? = location
+        if (loc == null) {
+            loc = Keeper(context!!).retrieveLocation()
+            if (loc == null) {
                 Log.e(Global.TAG, "No available location in DailyUpdate")
                 return
             }
         }
-        Keeper(context!!, location)
-        val times = Utils.getTimes(context!!, location)
+        Keeper(context!!, loc)
+        val times = Utils.getTimes(context!!, loc)
         Alarms(context!!, times)
         updateWidget()
         updated()
@@ -75,7 +77,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
     private fun updateWidget() {
         val intent = Intent(context, PrayersWidget::class.java)
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
         val ids: IntArray =
             AppWidgetManager.getInstance(context!!.applicationContext).getAppWidgetIds(
                 ComponentName(context!!.applicationContext, PrayersWidget::class.java)

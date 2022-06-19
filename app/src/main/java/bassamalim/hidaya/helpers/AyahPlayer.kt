@@ -22,6 +22,7 @@ import bassamalim.hidaya.other.Global
 import java.util.*
 
 class AyahPlayer(private val context: Context) {
+
     private var db: AppDatabase? = null
     private var pref: SharedPreferences? = null
     private var players: Array<MediaPlayer?>? = null

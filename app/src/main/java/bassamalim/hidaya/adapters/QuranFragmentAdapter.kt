@@ -21,7 +21,9 @@ import com.google.gson.Gson
 
 class QuranFragmentAdapter(private val context: Context, buttons: ArrayList<Sura>) :
     RecyclerView.Adapter<QuranFragmentAdapter.ViewHolder?>() {
-    private val db: AppDatabase = Room.databaseBuilder(context, AppDatabase::class.java, "HidayaDB")
+
+    private val db: AppDatabase = Room.databaseBuilder(
+        context, AppDatabase::class.java, "HidayaDB")
         .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson: Gson = Gson()

@@ -10,7 +10,9 @@ import bassamalim.hidaya.activities.AthkarListActivity
 import bassamalim.hidaya.databinding.FragmentAthkarBinding
 
 class AthkarFragment : Fragment() {
+
     private var binding: FragmentAthkarBinding? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?

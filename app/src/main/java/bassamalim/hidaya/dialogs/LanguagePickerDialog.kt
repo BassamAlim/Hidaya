@@ -12,9 +12,11 @@ import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 
 class LanguagePickerDialog(private val context: Context, view: View) {
+
     private var popup: PopupWindow? = null
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private var listView: ListView? = null
+
     private fun showPopup(view: View) {
         val inflater: LayoutInflater = view.context
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -35,7 +37,7 @@ class LanguagePickerDialog(private val context: Context, view: View) {
     }
 
     private fun setupListview() {
-        listView = popup!!.getContentView().findViewById(R.id.listview)
+        listView = popup!!.contentView.findViewById(R.id.listview)
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             context,
             androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,

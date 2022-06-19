@@ -17,12 +17,14 @@ import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 
 class TutorialDialog : DialogFragment {
+
     private var pref: SharedPreferences? = null
     private var gView: View? = null
     private var text: String? = null
     private var prefKey: String? = null
 
     constructor() {}
+
     constructor(context: Context, text: String?, prefKey: String?) {
         this.text = text
         this.prefKey = prefKey

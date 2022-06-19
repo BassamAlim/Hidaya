@@ -16,11 +16,9 @@ import bassamalim.hidaya.models.BookChapter
 import com.google.gson.Gson
 import java.util.ArrayList
 
-class BookChapterAdapter(
-    private val context: Context,
-    cards: ArrayList<BookChapter>,
-    bookId: Int
-) : RecyclerView.Adapter<BookChapterAdapter.ViewHolder?>() {
+class BookChapterAdapter(private val context: Context, cards: ArrayList<BookChapter>, bookId: Int) :
+    RecyclerView.Adapter<BookChapterAdapter.ViewHolder?>() {
+
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson: Gson = Gson()
     private val bookId: Int

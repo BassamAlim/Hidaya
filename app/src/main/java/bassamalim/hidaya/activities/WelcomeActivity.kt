@@ -10,7 +10,9 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity: AppCompatActivity() {
+
     private var binding: ActivityWelcomeBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWelcomeBinding.inflate(layoutInflater)

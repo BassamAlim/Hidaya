@@ -4,6 +4,7 @@ import android.text.SpannableString
 import android.widget.TextView
 
 class Ayah {
+
     private var juz = 0
     private val surahNum: Int
     private val ayahNum: Int

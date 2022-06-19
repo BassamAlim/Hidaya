@@ -25,6 +25,7 @@ import java.util.*
 import java.util.regex.Pattern
 
 class QuranSearcherActivity : AppCompatActivity() {
+
     private var binding: ActivityQuranSearcherBinding? = null
     private var pref: SharedPreferences? = null
     private var recyclerView: RecyclerView? = null
@@ -35,6 +36,7 @@ class QuranSearcherActivity : AppCompatActivity() {
     private var names: List<String>? = null
     private var maxMatches = 0
     private var language: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.onActivityCreateSetTheme(this)

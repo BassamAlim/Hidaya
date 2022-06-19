@@ -10,6 +10,7 @@ data class QuizResultQuestion(
     private val answer3: String,
     private val answer4: String
 ) {
+
     fun getQuestionNumber(): Int {
         return questionNumber
     }

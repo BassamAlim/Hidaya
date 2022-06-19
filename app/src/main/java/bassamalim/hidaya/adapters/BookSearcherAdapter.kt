@@ -12,8 +12,8 @@ import bassamalim.hidaya.replacements.FilteredRecyclerAdapter
 
 class BookSearcherAdapter(
     private val items: List<BookSearcherMatch>,
-    private val searchView: SearchView
-) : FilteredRecyclerAdapter<BookSearcherAdapter.ViewHolder>() {
+    private val searchView: SearchView) :
+    FilteredRecyclerAdapter<BookSearcherAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val bookTitleTv: TextView

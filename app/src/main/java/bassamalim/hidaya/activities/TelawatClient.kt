@@ -33,6 +33,7 @@ import java.util.*
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatClient : AppCompatActivity() {
+
     private var binding: ActivityTelawatClientBinding? = null
     private var db: AppDatabase? = null
     private var pref: SharedPreferences? = null
@@ -60,17 +61,15 @@ class TelawatClient : AppCompatActivity() {
     private var surahNames: List<String>? = null
     private var repeat = 0
     private var shuffle = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)
         binding = ActivityTelawatClientBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         binding!!.home.setOnClickListener { onBackPressed() }
-        db = Room.databaseBuilder(
-            applicationContext, AppDatabase::class.java,
-            "HidayaDB"
-        ).createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
-            .build()
+        db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "HidayaDB"
+        ).createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
         pref = PreferenceManager.getDefaultSharedPreferences(this)
         data
         retrieveState()
@@ -110,7 +109,8 @@ class TelawatClient : AppCompatActivity() {
         mediaBrowser!!.disconnect()
     }
 
-    private val connectionCallbacks: MediaBrowserCompat.ConnectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
+    private val connectionCallbacks: MediaBrowserCompat.ConnectionCallback = object :
+        MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             // Get the token for the MediaSession
             val token: MediaSessionCompat.Token = mediaBrowser!!.sessionToken

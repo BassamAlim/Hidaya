@@ -30,6 +30,7 @@ import java.util.*
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatFragment : Fragment {
+
     private var binding: FragmentTelawatBinding? = null
     private var pref: SharedPreferences? = null
     private var gson: Gson? = null
@@ -43,6 +44,7 @@ class TelawatFragment : Fragment {
     private var type: ListType? = null
 
     constructor()
+
     constructor(type: ListType?) {
         this.type = type
     }
@@ -131,7 +133,7 @@ class TelawatFragment : Fragment {
             cards.add(
                 Reciter(
                     reciter.reciter_id, reciter.reciter_name!!,
-                    reciter.favorite!!, versionsList
+                    reciter.favorite, versionsList
                 )
             )
         }

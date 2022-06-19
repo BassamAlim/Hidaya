@@ -15,7 +15,9 @@ import bassamalim.hidaya.databinding.FragmentOtherBinding
 import bassamalim.hidaya.other.Global
 
 class OtherFragment : Fragment() {
+
     private var binding: FragmentOtherBinding? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {

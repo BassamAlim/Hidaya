@@ -11,6 +11,7 @@ data class Sura(
     private var favorite: Int,
     private val cardListener: View.OnClickListener
 ) : Serializable {
+
     fun getNumber(): Int {
         return number
     }

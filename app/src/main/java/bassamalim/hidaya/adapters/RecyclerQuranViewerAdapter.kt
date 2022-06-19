@@ -13,8 +13,9 @@ import bassamalim.hidaya.replacements.DoubleClickLMM
 
 class RecyclerQuranViewerAdapter(
     private val context: Context, items: List<Ayah>,
-    private val THEME: String, language: String, surahIndex: Int
-) : RecyclerView.Adapter<RecyclerQuranViewerAdapter.ViewHolder?>() {
+    private val THEME: String, language: String, surahIndex: Int) :
+    RecyclerView.Adapter<RecyclerQuranViewerAdapter.ViewHolder?>() {
+
     private val items: List<Ayah>
     private var textSize: Int
     private val surahIndex: Int

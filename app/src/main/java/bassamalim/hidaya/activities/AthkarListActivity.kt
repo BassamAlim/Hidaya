@@ -20,6 +20,7 @@ import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
 
 class AthkarListActivity : AppCompatActivity() {
+
     private var binding: ActivityAthkarListBinding? = null
     private var recyclerView: RecyclerView? = null
     private var adapter: AthkarListAdapter? = null
@@ -28,6 +29,7 @@ class AthkarListActivity : AppCompatActivity() {
     private var db: AppDatabase? = null
     private var language: String? = null
     private var names: List<String>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.onActivityCreateSetTheme(this)

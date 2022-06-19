@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import bassamalim.hidaya.R
 
 class InfoDialog(private val title: String, private val text: String) : DialogFragment() {
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

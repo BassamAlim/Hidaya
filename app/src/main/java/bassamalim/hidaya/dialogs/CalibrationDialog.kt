@@ -15,12 +15,11 @@ import com.bumptech.glide.Glide
 import java.util.*
 
 class CalibrationDialog(private val gContext: Context) : DialogFragment() {
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        Objects.requireNonNull(dialog)!!.window!!
+        dialog!!.window!!
             .setLayout(10, 10)
         val view: View = layoutInflater.inflate(
             R.layout.compass_calibration_gif,

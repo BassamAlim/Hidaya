@@ -22,7 +22,8 @@ import bassamalim.hidaya.services.AthanService
 import com.google.android.gms.location.LocationServices
 
 class Splash : AppCompatActivity() {
-    private val PERMISSIONS = arrayOf(
+
+    private val permissions = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
@@ -47,7 +48,7 @@ class Splash : AppCompatActivity() {
                 background()
         } else {
             if (Keeper(this).retrieveLocation() == null)
-                requestMultiplePermissions.launch(PERMISSIONS)
+                requestMultiplePermissions.launch(permissions)
             else launch(null)
         }
     }
@@ -87,13 +88,16 @@ class Splash : AppCompatActivity() {
     }
 
     private fun launch(location: Location?) {
-        var location = location
+        var loc = location
+
         val intent = Intent(this, MainActivity::class.java)
-        if (location == null) {
-            location = Keeper(this).retrieveLocation()
-            intent.putExtra("located", location != null)
-        } else intent.putExtra("located", true)
-        intent.putExtra("location", location)
+        if (loc == null) {
+            loc = Keeper(this).retrieveLocation()
+            intent.putExtra("located", loc != null)
+        }
+        else intent.putExtra("located", true)
+
+        intent.putExtra("location", loc)
         startActivity(intent)
         finish()
     }

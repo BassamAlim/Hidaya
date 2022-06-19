@@ -14,7 +14,9 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
 class DateConverter : AppCompatActivity() {
+
     private var binding: ActivityDateConverterBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)

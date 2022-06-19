@@ -14,11 +14,13 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
 class HijriDatePickerDialog : DialogFragment() {
+
     private var listener: DatePickerDialog.OnDateSetListener? = null
     private var monthPicker: NumberPicker? = null
     private var yearPicker: NumberPicker? = null
     private var dayPicker: NumberPicker? = null
     private val cal: UmmalquraCalendar = UmmalquraCalendar()
+
     override fun onStart() {
         super.onStart()
         dialog!!.window!!.setBackgroundDrawableResource(R.color.bg_M)

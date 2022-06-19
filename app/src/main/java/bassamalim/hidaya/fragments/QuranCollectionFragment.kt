@@ -18,7 +18,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class QuranCollectionFragment : Fragment() {
+
     private var binding: FragmentCollectionQuranBinding? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

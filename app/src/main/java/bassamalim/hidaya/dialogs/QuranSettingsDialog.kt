@@ -17,25 +17,32 @@ import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.databinding.DialogQuranSettingsBinding
 
 class QuranSettingsDialog : AppCompatActivity() {
+
     private var binding: DialogQuranSettingsBinding? = null
     private var pref: SharedPreferences? = null
     private var radioGroup: RadioGroup? = null
     private var settingsFragment: SettingsFragment? = null
     private var initialViewType: String? = null
     private var initialTextSize = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         themeify()
         super.onCreate(savedInstanceState)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         binding = DialogQuranSettingsBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
+
         initialViewType = pref!!.getString("quran_view_type", "page")
         initialTextSize = pref!!.getInt(getString(R.string.quran_text_size_key), 30)
+
         initRadioGroup()
-        binding!!.executeBtn.setOnClickListener { execute() }
+
+        binding!!.executeBtn.setOnClickListener {execute()}
         settingsFragment = SettingsFragment()
-        if (savedInstanceState == null) supportFragmentManager.beginTransaction()
-            .replace(R.id.quran_settings, settingsFragment!!).commit()
+
+        if (savedInstanceState == null)
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.quran_settings, settingsFragment!!).commit()
     }
 
     private fun initRadioGroup() {
@@ -91,19 +98,19 @@ class QuranSettingsDialog : AppCompatActivity() {
         private fun setupReciters() {
             val recitersDropdown: DropDownPreference =
                 findPreference(getString(R.string.aya_reciter_key))!!
-            val reciterNames : List<String?>? = getReciterNames()
-            val ids = arrayOfNulls<CharSequence>(reciterNames!!.size)
+            val reciterNames : List<String?> = getReciterNames()
+            val ids = arrayOfNulls<CharSequence>(reciterNames.size)
             for (i in reciterNames.indices) ids[i] = i.toString()
             recitersDropdown.entries = reciterNames.toTypedArray()
             recitersDropdown.entryValues = ids
         }
 
-        private fun getReciterNames(): List<String?>? {
+        private fun getReciterNames(): List<String?> {
             return Room.databaseBuilder(
                 requireContext().applicationContext, AppDatabase::class.java,
                 "HidayaDB"
             ).createFromAsset("databases/HidayaDB.db")
-                .allowMainThreadQueries().build().ayatRecitersDao()!!.getNames()
+                .allowMainThreadQueries().build().ayatRecitersDao().getNames()
         }
     }
 }

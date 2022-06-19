@@ -22,6 +22,7 @@ import java.util.*
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatSuarFragment : Fragment {
+
     private var binding: FragmentTelawatSuarBinding? = null
     private var recycler: RecyclerView? = null
     private var adapter: TelawatSuarAdapter? = null
@@ -35,6 +36,7 @@ class TelawatSuarFragment : Fragment {
     private var downloaded: BooleanArray? = null
 
     constructor()
+
     constructor(type: ListType?, reciterId: Int, versionId: Int) {
         this.type = type
         this.reciterId = reciterId
@@ -79,6 +81,8 @@ class TelawatSuarFragment : Fragment {
         }
 
     private fun makeCards(): ArrayList<ReciterSura> {
+        data;
+
         val cards: ArrayList<ReciterSura> = ArrayList<ReciterSura>()
         for (i in 0..113) {
             if (!availableSurahs!!.contains("," + (i + 1) + ",") ||

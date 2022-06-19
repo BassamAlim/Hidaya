@@ -9,6 +9,7 @@ class ReciterSura(
     private var favorite: Int,
     private val listener: View.OnClickListener
 ) {
+
     fun getSurahName(): String {
         return surahName
     }

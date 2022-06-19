@@ -22,10 +22,11 @@ import java.io.File
 import java.util.*
 
 class TelawatSuarAdapter(
-    private val context: Context, cards: ArrayList<ReciterSura>,
-    reciterId: Int, versionId: Int
-) : RecyclerView.Adapter<TelawatSuarAdapter.ViewHolder?>() {
-    private val db: AppDatabase = Room.databaseBuilder(context, AppDatabase::class.java, "HidayaDB")
+    private val context: Context, cards: ArrayList<ReciterSura>, reciterId: Int, versionId: Int) :
+    RecyclerView.Adapter<TelawatSuarAdapter.ViewHolder?>() {
+
+    private val db: AppDatabase = Room.databaseBuilder(
+        context, AppDatabase::class.java, "HidayaDB")
         .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson = Gson()
@@ -157,7 +158,6 @@ class TelawatSuarAdapter(
         val title = context.getString(R.string.downloading) + " " +
                 items[num].getSearchName()
         request.setTitle(title)
-        request.setVisibleInDownloadsUi(true)
         val postfix = "/Telawat/" + ver.getReciter_id() + "/" + versionId
         Utils.createDir(context, postfix)
         request.setDestinationInExternalFilesDir(context, postfix, "$num.mp3")

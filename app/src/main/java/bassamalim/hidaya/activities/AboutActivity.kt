@@ -14,8 +14,10 @@ import bassamalim.hidaya.other.Utils
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 class AboutActivity : AppCompatActivity() {
+
     private var binding: ActivityAboutBinding? = null
     private var counter = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)

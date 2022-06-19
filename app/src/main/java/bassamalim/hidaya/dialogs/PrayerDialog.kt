@@ -19,6 +19,7 @@ import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
 
 class PrayerDialog(private val context: Context, private val view: View, id: ID, title: String) {
+
     private var popup: PopupWindow? = null
     private val id: ID
     private val pref: SharedPreferences
@@ -27,6 +28,7 @@ class PrayerDialog(private val context: Context, private val view: View, id: ID,
     private var images: Array<ImageView?>? = null
     private var delayTvs: Array<TextView?>? = null
     private var drawables: IntArray? = null
+
     private fun showPopup() {
         val inflater: LayoutInflater = view.context
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater

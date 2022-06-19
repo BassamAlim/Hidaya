@@ -18,9 +18,11 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatSuarCollectionActivity : FragmentActivity() {
+
     private var binding: ActivityCollectionTelawatSuarBinding? = null
     private var adapter: FragmentStateAdapter? = null
     private var viewPager: ViewPager2? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)

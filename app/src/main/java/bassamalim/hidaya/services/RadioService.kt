@@ -40,6 +40,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
+
     private var playPauseAction: NotificationCompat.Action? = null
     private var mediaSession: MediaSessionCompat? = null
     private var controller: MediaControllerCompat? = null
@@ -55,6 +56,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private var audioFocusRequest: AudioFocusRequest? = null
     private var wifiLock: WifiLock? = null
     private var link: String? = null
+
     override fun onCreate() {
         super.onCreate()
         Utils.onActivityCreateSetLocale(this)
@@ -197,7 +199,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) mediaSession!!.setCallback(callback)
 
         // Set the session's token so that client activities can communicate with it.
-        setSessionToken(mediaSession!!.sessionToken)
+        sessionToken = mediaSession!!.sessionToken
     }
 
     private fun buildNotification() {

@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import java.util.*
 
 class Keeper {
+
     private val context: Context
     private var gson: Gson? = null
     private var pref: SharedPreferences? = null

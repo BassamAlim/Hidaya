@@ -6,9 +6,8 @@ data class Book(val bookInfo: BookInfo, val chapters: Array<BookChapter>) {
     class BookChapter(
         val chapterId: Int,
         val chapterTitle: String,
-        val doors: Array<Book.BookChapter.BookDoor>
+        val doors: Array<BookDoor>
     ) {
-
         class BookDoor(val doorId: Int, val doorTitle: String, val text: String)
     }
 
