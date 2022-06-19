@@ -19,6 +19,7 @@ import bassamalim.hidaya.other.Utils
 import com.google.gson.Gson
 
 class BookChaptersFragment(type: ListType, bookId: Int) : Fragment() {
+
     private var binding: FragmentBookChaptersBinding? = null
     private var recycler: RecyclerView? = null
     private var adapter: BookChapterAdapter? = null
@@ -26,41 +27,48 @@ class BookChaptersFragment(type: ListType, bookId: Int) : Fragment() {
     private val bookId: Int
     private var book: Book? = null
     private var favs: BooleanArray? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         binding = FragmentBookChaptersBinding.inflate(inflater, container, false)
+
         setupRecycler()
+
         setSearchListeners()
+
         return binding!!.root
     }
 
     override fun setMenuVisibility(menuVisible: Boolean) {
         super.setMenuVisibility(menuVisible)
+
         if (menuVisible) {
             adapter = BookChapterAdapter(requireContext(), makeCards(), bookId)
             recycler!!.adapter = adapter
         }
     }
 
-    private val data: Unit
-        get() {
-            val path = requireContext().getExternalFilesDir(null).toString() + "/Books/" +
-                    bookId + ".json"
-            val jsonStr = Utils.getJsonFromDownloads(path)
-            val gson = Gson()
-            book = gson.fromJson(jsonStr, Book::class.java)
-            val pref: SharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(requireContext())
-            val favsStr: String = pref.getString("book" + bookId + "_favs", "")!!
-            favs = if (favsStr.isEmpty()) BooleanArray(book!!.chapters.size) else gson.fromJson(
-                favsStr,
-                BooleanArray::class.java
-            )
-        }
+    private fun getData() {
+        val path = requireContext().getExternalFilesDir(null).toString() + "/Books/" +
+                bookId + ".json"
+        val jsonStr = Utils.getJsonFromDownloads(path)
+        val gson = Gson()
+        book = gson.fromJson(jsonStr, Book::class.java)
+
+        val pref: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val favsStr: String = pref.getString("book" + bookId + "_favs", "")!!
+        favs =
+            if (favsStr.isEmpty()) BooleanArray(book!!.chapters.size)
+            else gson.fromJson(favsStr, BooleanArray::class.java)
+    }
 
     private fun makeCards(): ArrayList<BookChapter> {
+        getData()
+
         val cards = ArrayList<BookChapter>()
         for (i in book!!.chapters.indices) {
             if (type == ListType.All || type == ListType.Favorite && favs!![i]) {
