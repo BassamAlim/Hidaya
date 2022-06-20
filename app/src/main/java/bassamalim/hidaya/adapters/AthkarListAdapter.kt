@@ -17,15 +17,14 @@ import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.models.AthkarItem
 import com.google.gson.Gson
 
-class AthkarListAdapter(private val context: Context, cards: List<AthkarItem>) :
+class AthkarListAdapter(private val context: Context, private val original: List<AthkarItem>) :
     RecyclerView.Adapter<AthkarListAdapter.ViewHolder?>() {
 
     private val db: AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "HidayaDB").createFromAsset(
             "databases/HidayaDB.db").allowMainThreadQueries().build()
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    private val items = cards as MutableList<AthkarItem>
-    private val itemsCopy = cards
+    private val items = ArrayList(original)
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val card: CardView
@@ -80,9 +79,9 @@ class AthkarListAdapter(private val context: Context, cards: List<AthkarItem>) :
 
     fun filter(text: String) {
         items.clear()
-        if (text.isEmpty()) items.addAll(itemsCopy.toCollection(items))
+        if (text.isEmpty()) items.addAll(original.toCollection(items))
         else {
-            for (athkarItem in itemsCopy) {
+            for (athkarItem in original) {
                 if (athkarItem.name.contains(text)) items.add(athkarItem)
             }
         }

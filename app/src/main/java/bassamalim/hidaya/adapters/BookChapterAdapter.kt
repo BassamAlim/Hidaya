@@ -17,13 +17,13 @@ import com.google.gson.Gson
 import java.util.ArrayList
 
 class BookChapterAdapter(
-    private val context: Context, items: ArrayList<BookChapter>, private val bookId: Int
-    ) : RecyclerView.Adapter<BookChapterAdapter.ViewHolder?>() {
+    private val context: Context,
+    private val original: ArrayList<BookChapter>, private val bookId: Int)
+    : RecyclerView.Adapter<BookChapterAdapter.ViewHolder?>() {
 
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson: Gson = Gson()
-    private val items = ArrayList(items)
-    private val itemsCopy = items
+    private val items = ArrayList(original)
     private var favs: BooleanArray? = null
 
     init {
@@ -88,9 +88,9 @@ class BookChapterAdapter(
 
     fun filter(text: String) {
         items.clear()
-        if (text.isEmpty()) items.addAll(itemsCopy)
+        if (text.isEmpty()) items.addAll(original)
         else {
-            for (chapterCard in itemsCopy) {
+            for (chapterCard in original) {
                 if (chapterCard.chapterTitle.contains(text)) items.add(chapterCard)
             }
         }
