@@ -18,21 +18,17 @@ import bassamalim.hidaya.models.BookChapter
 import bassamalim.hidaya.other.Utils
 import com.google.gson.Gson
 
-class BookChaptersFragment(type: ListType, bookId: Int) : Fragment() {
+class BookChaptersFragment(private val type: ListType, private val bookId: Int) : Fragment() {
 
     private var binding: FragmentBookChaptersBinding? = null
     private var recycler: RecyclerView? = null
     private var adapter: BookChapterAdapter? = null
-    private val type: ListType
-    private val bookId: Int
     private var book: Book? = null
     private var favs: BooleanArray? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-
         binding = FragmentBookChaptersBinding.inflate(inflater, container, false)
 
         setupRecycler()
@@ -73,6 +69,7 @@ class BookChaptersFragment(type: ListType, bookId: Int) : Fragment() {
         for (i in book!!.chapters.indices) {
             if (type == ListType.All || type == ListType.Favorite && favs!![i]) {
                 val chapterTitle = book!!.chapters[i].chapterTitle
+
                 val listener = View.OnClickListener {
                     val intent = Intent(context, BookViewer::class.java)
                     intent.putExtra("book_id", bookId)
@@ -80,6 +77,7 @@ class BookChaptersFragment(type: ListType, bookId: Int) : Fragment() {
                     intent.putExtra("chapter_id", i)
                     startActivity(intent)
                 }
+
                 cards.add(BookChapter(i, chapterTitle, favs!![i], listener))
             }
         }
@@ -113,10 +111,5 @@ class BookChaptersFragment(type: ListType, bookId: Int) : Fragment() {
         binding = null
         recycler!!.adapter = null
         adapter = null
-    }
-
-    init {
-        this.type = type
-        this.bookId = bookId
     }
 }

@@ -57,10 +57,20 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private var wifiLock: WifiLock? = null
     private var link: String? = null
 
+    companion object {
+        private const val MY_MEDIA_ROOT_ID = "media_root_id"
+        private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
+        private const val ACTION_PLAY_PAUSE = "bassamalim.hidaya.services.RadioService.playpause"
+        private const val ACTION_STOP = "bassamalim.hidaya.services.RadioService.stop"
+    }
+
     override fun onCreate() {
         super.onCreate()
+
         Utils.onActivityCreateSetLocale(this)
+
         initSession()
+
         setActions()
         initMediaSessionMetadata()
     }
@@ -92,8 +102,9 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private fun play() {
         // Request audio focus for playback, this registers the afChangeListener
         var result: Int = AudioManager.AUDIOFOCUS_REQUEST_GRANTED
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) result =
-            am!!.requestAudioFocus(audioFocusRequest!!)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            result = am!!.requestAudioFocus(audioFocusRequest!!)
+
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             // Start the service
             startService(Intent(applicationContext, RadioService::class.java))
@@ -101,9 +112,12 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             mediaSession!!.isActive = true
 
             // start the player (custom call)
-            if (controller!!.playbackState.state == PlaybackStateCompat.STATE_PAUSED ||
-                controller!!.playbackState.state == PlaybackStateCompat.STATE_STOPPED
-            ) player!!.start() else startPlaying()
+            if (controller!!.playbackState.state == PlaybackStateCompat.STATE_PAUSED
+                || controller!!.playbackState.state == PlaybackStateCompat.STATE_STOPPED)
+                player!!.start()
+            else
+                startPlaying()
+
             updatePbState(PlaybackStateCompat.STATE_PLAYING)
             updateNotification(true)
 
@@ -120,6 +134,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         // pause the player (custom call)
         mediaSession!!.isActive = false
         player!!.pause()
+
         updatePbState(PlaybackStateCompat.STATE_PAUSED)
         updateNotification(false)
 
@@ -130,9 +145,9 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private fun stop() {
         Log.d(Global.TAG, "in stop of RadioService")
         // Abandon audio focus
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) am!!.abandonAudioFocusRequest(
-            audioFocusRequest!!
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            am!!.abandonAudioFocusRequest(audioFocusRequest!!)
+
         cleanUp()
         unregisterReceiver(receiver)
         // stop the player (custom call)
@@ -150,12 +165,13 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     override fun onAudioFocusChange(i: Int) {
         when (i) {
-            AudioManager.AUDIOFOCUS_GAIN -> if (player != null) player!!.setVolume(1.0f, 1.0f)
-            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> if (player != null && player!!.isPlaying) player!!.setVolume(
-                0.3f,
-                0.3f
-            )
-            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS -> if (player != null && player!!.isPlaying) pause()
+            AudioManager.AUDIOFOCUS_GAIN ->
+                if (player != null) player!!.setVolume(1.0f, 1.0f)
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK ->
+                if (player != null && player!!.isPlaying)
+                    player!!.setVolume(0.3f, 0.3f)
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS ->
+                if (player != null && player!!.isPlaying) pause()
         }
     }
 
@@ -166,14 +182,12 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                     Log.d(Global.TAG, "In ACTION_BECOMING_NOISY of RadioService")
                     pause()
                 }
-                ACTION_PLAY_PAUSE -> if (controller!!.playbackState.state
-                    == PlaybackStateCompat.STATE_PLAYING
-                ) {
-                    Log.d(Global.TAG, "In ACTION_PAUSE of RadioService")
-                    pause()
-                } else if (controller!!.playbackState.state ==
-                    PlaybackStateCompat.STATE_PAUSED
-                ) {
+                ACTION_PLAY_PAUSE ->
+                    if (controller!!.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
+                        Log.d(Global.TAG, "In ACTION_PAUSE of RadioService")
+                        pause()
+                    }
+                    else if (controller!!.playbackState.state == PlaybackStateCompat.STATE_PAUSED) {
                     Log.d(Global.TAG, "In ACTION_PLAY of RadioService")
                     play()
                 }
@@ -214,29 +228,34 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         // Create a NotificationCompat.Builder
         notificationBuilder = NotificationCompat.Builder(this, channelId)
-        notificationBuilder!! // Add the metadata for the currently playing track
-            .setContentTitle(description.title) // Stop the service when the notification is swiped away
-            .setDeleteIntent(
-                MediaButtonReceiver.buildMediaButtonPendingIntent(
-                    this,
-                    PlaybackStateCompat.ACTION_STOP
-                )
-            ) // Make the transport controls visible on the lockscreen
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) // Add an app icon and set its accent color
+
+        notificationBuilder!!
+            // Add the metadata for the currently playing track
+            .setContentTitle(description.title)
+            // Stop the service when the notification is swiped away
+            .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this,
+                PlaybackStateCompat.ACTION_STOP))
+            // Make the transport controls visible on the lockscreen
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            // Add an app icon and set its accent color
             // Be careful about the color
             .setSmallIcon(R.drawable.launcher_foreground)
             .setColorized(true)
-            .setColor(resources.getColor(R.color.surface_M, theme)) // Add buttons
+            .setColor(resources.getColor(R.color.surface_M, theme))
+            // Add buttons
             // Enable launching the player by clicking the notification
             .setContentIntent(controller!!.sessionActivity)
-            .addAction(playPauseAction) // So there will be no notification tone
-            .setSilent(true) // So the user wouldn't swipe it off
-            .setOngoing(true) // Take advantage of MediaStyle features
+            .addAction(playPauseAction)
+            // So there will be no notification tone
+            .setSilent(true)
+            // So the user wouldn't swipe it off
+            .setOngoing(true)
+            // Take advantage of MediaStyle features
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setMediaSession(mediaSession!!.sessionToken)
-                    .setShowActionsInCompactView(0) // Add a cancel button
-                    .setShowCancelButton(true)
+                    .setShowActionsInCompactView(0)
+                    .setShowCancelButton(true) // Add a cancel button
                     .setCancelButtonIntent(
                         MediaButtonReceiver.buildMediaButtonPendingIntent(
                             this, PlaybackStateCompat.ACTION_STOP
@@ -266,43 +285,42 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             MediaMetadataCompat.METADATA_KEY_ART,
             BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
         )
+
         metadataBuilder.putText(
-            MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE,
-            getString(R.string.quran_radio)
+            MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, getString(R.string.quran_radio)
         )
-        metadataBuilder.putText(
-            MediaMetadataCompat.METADATA_KEY_TITLE,
-            getString(R.string.quran_radio)
-        )
+        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_TITLE, getString(R.string.quran_radio))
+
         mediaSession!!.setMetadata(metadataBuilder.build())
     }
 
     private fun updatePbState(state: Int) {
         val stateBuilder: PlaybackStateCompat.Builder = PlaybackStateCompat.Builder()
+
         stateBuilder.setState(state, player!!.currentPosition.toLong(), 1F)
             .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+
         mediaSession!!.setPlaybackState(stateBuilder.build())
     }
 
     private fun updateNotification(playing: Boolean) {
-        playPauseAction = if (playing) {
-            NotificationCompat.Action(
-                R.drawable.ic_baseline_pause,
-                "play_pause", PendingIntent.getBroadcast(
-                    this, id,
-                    Intent(ACTION_PLAY_PAUSE).setPackage(packageName), flags
+        playPauseAction =
+            if (playing) {
+                NotificationCompat.Action(
+                    R.drawable.ic_baseline_pause, "play_pause", PendingIntent.getBroadcast(
+                        this, id, Intent(ACTION_PLAY_PAUSE).setPackage(packageName), flags
+                    )
                 )
-            )
-        } else {
-            NotificationCompat.Action(
-                R.drawable.ic_play_arrow,
-                "play_pause", PendingIntent.getBroadcast(
-                    this, id,
-                    Intent(ACTION_PLAY_PAUSE).setPackage(packageName), flags
+            }
+            else {
+                NotificationCompat.Action(
+                    R.drawable.ic_play_arrow, "play_pause", PendingIntent.getBroadcast(
+                        this, id, Intent(ACTION_PLAY_PAUSE).setPackage(packageName), flags
+                    )
                 )
-            )
-        }
+            }
         notificationBuilder!!.clearActions().addAction(playPauseAction)
+
         notification = notificationBuilder!!.build()
         notificationManager!!.notify(id, notification)
     }
@@ -310,25 +328,30 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private fun initPlayer() {
         player = MediaPlayer()
         player!!.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+
         wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
             .createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock")
         wifiLock!!.acquire()
+
         player!!.setAudioAttributes(
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .build()
         )
+
         am = getSystemService(Context.AUDIO_SERVICE) as AudioManager?
         val attrs: AudioAttributes = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
             .build()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
                 .setOnAudioFocusChangeListener(this)
                 .setAudioAttributes(attrs)
                 .build()
         }
+
         player!!.setOnPreparedListener {
             player!!.start()
             updatePbState(PlaybackStateCompat.STATE_PLAYING)
@@ -345,13 +368,13 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         intentFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
         intentFilter.addAction(ACTION_PLAY_PAUSE)
         intentFilter.addAction(ACTION_STOP)
+
         val pkg: String = packageName
         flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+
         playPauseAction = NotificationCompat.Action(
-            R.drawable.ic_play_arrow, "play_pause",
-            PendingIntent.getBroadcast(
-                this, id,
-                Intent(ACTION_PLAY_PAUSE).setPackage(pkg), flags
+            R.drawable.ic_play_arrow, "play_pause", PendingIntent.getBroadcast(
+                this, id, Intent(ACTION_PLAY_PAUSE).setPackage(pkg), flags
             )
         )
     }
@@ -364,9 +387,9 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     // Other Links:
     // https://www.aloula.sa/83c0bda5-18e7-4c80-9c0a-21e764537d47
     // https://m.live.net.sa:1935/live/quransa/playlist.m3u8
+
     private var thread = Thread {
         try {    // A mechanism to handle redirects and get the final dynamic link
-            Log.d(Global.TAG, "There")
             val url = URL(link)
             val connection = url.openConnection() as HttpURLConnection
             connection.instanceFollowRedirects = false
@@ -389,9 +412,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             channelId = "QuranRadio"
             name = getString(R.string.quran_radio)
             val importance: Int = NotificationManager.IMPORTANCE_DEFAULT
-            val notificationChannel = NotificationChannel(
-                channelId, name, importance
-            )
+            val notificationChannel = NotificationChannel(channelId, name, importance)
             notificationChannel.description = description
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             notificationManager = getSystemService(NotificationManager::class.java)
@@ -401,13 +422,14 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun getContentIntent(): PendingIntent {
         val intent: Intent = Intent(this, RadioClient::class.java).setAction("back")
+
         val flags: Int = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+
         return PendingIntent.getActivity(this, 37, intent, flags)
     }
 
     override fun onGetRoot(
-        clientPackageName: String,
-        clientUid: Int, rootHints: Bundle?
+        clientPackageName: String, clientUid: Int, rootHints: Bundle?
     ): BrowserRoot {
         // (Optional) Control the level of access for the specified package name.
         return if (allowBrowsing(clientPackageName, clientUid)) {
@@ -422,8 +444,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     override fun onLoadChildren(
-        parentId: String,
-        result: Result<List<MediaBrowserCompat.MediaItem?>?>
+        parentId: String, result: Result<List<MediaBrowserCompat.MediaItem?>?>
     ) {
         /*//  Browsing not allowed
         if (TextUtils.equals(MY_EMPTY_MEDIA_ROOT_ID, parentMediaId)) {
@@ -458,12 +479,5 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     override fun onUnbind(intent: Intent?): Boolean {
         Log.d(Global.TAG, "In onUnbind of RadioService")
         return super.onUnbind(intent)
-    }
-
-    companion object {
-        private const val MY_MEDIA_ROOT_ID = "media_root_id"
-        private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
-        private const val ACTION_PLAY_PAUSE = "bassamalim.hidaya.services.RadioService.playpause"
-        private const val ACTION_STOP = "bassamalim.hidaya.services.RadioService.stop"
     }
 }

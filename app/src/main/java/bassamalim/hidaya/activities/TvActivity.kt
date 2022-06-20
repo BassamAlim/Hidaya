@@ -28,6 +28,7 @@ class TvActivity : YouTubeBaseActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(binding!!.root)
         binding!!.home.setOnClickListener { onBackPressed() }
+
         getLinksAndInit()
     }
 
@@ -38,19 +39,21 @@ class TvActivity : YouTubeBaseActivity() {
                 apiKey = remoteConfig!!.getString("yt_api_key")
                 makkahUrl = remoteConfig!!.getString("makkah_url")
                 madinaUrl = remoteConfig!!.getString("madina_url")
+
                 Log.d(Global.TAG, "Config params updated")
                 Log.d(Global.TAG, "Makkah URL: $makkahUrl")
                 Log.d(Global.TAG, "Madina URL: $madinaUrl")
+
                 initYtPlayer()
-            } else Log.d(Global.TAG, "Fetch failed")
+            }
+            else Log.d(Global.TAG, "Fetch failed")
         }
     }
 
     private fun initYtPlayer() {
         binding!!.ytPlayer.initialize(apiKey, object : YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(
-                provider: YouTubePlayer.Provider?,
-                youTubePlayer: YouTubePlayer, b: Boolean
+                provider: YouTubePlayer.Provider?, youTubePlayer: YouTubePlayer, b: Boolean
             ) {
                 setListeners(youTubePlayer)
             }
@@ -60,10 +63,7 @@ class TvActivity : YouTubeBaseActivity() {
                 youTubeInitializationResult: YouTubeInitializationResult?
             ) {
                 Log.e(Global.TAG, java.lang.String.valueOf(youTubeInitializationResult))
-                Toast.makeText(
-                    applicationContext, getString(R.string.playback_failed),
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(applicationContext, getString(R.string.playback_failed), Toast.LENGTH_SHORT).show()
             }
         })
     }

@@ -42,9 +42,7 @@ class QuranSearcherAdapter(private val context: Context, private val items: List
         }
     }
 
-    override fun onCreateViewHolder(
-        viewGroup: ViewGroup, viewType: Int
-    ): ViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(viewGroup.context)
                 .inflate(R.layout.item_quran_searcher, viewGroup, false)
@@ -53,23 +51,28 @@ class QuranSearcherAdapter(private val context: Context, private val items: List
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val card = items[position]
-        val suraNumStr = "$suraNumString " + Utils.translateNumbers(
-            context, card.getSurahName()
-        )
+
+        val suraNumStr = "$suraNumString " + Utils.translateNumbers(context, card.getSurahName())
         viewHolder.suraNumTv.text = suraNumStr
+
         val suraNameStr = suraStr + " " + card.getSurahName()
         viewHolder.suraNameTv.text = suraNameStr
+
         val pageNumStr = "$pageNumString " + Utils.translateNumbers(
             context, card.getPageNum().toString()
         )
         viewHolder.pageNumTv.text = pageNumStr
+
         val ayaNumStr = "$ayaNumString " + Utils.translateNumbers(
             context, card.getAyahNum().toString()
         )
         viewHolder.ayaNumTv.text = ayaNumStr
+
         viewHolder.ayaTextTv.text = card.getSS()
+
         val ayaTafseerStr = tafseerString + ": " + card.getTafseer()
         viewHolder.ayaTafseerTv.text = ayaTafseerStr
+
         viewHolder.gotoPageBtn.setOnClickListener {
             val intent = Intent(context, QuranViewer::class.java)
             intent.action = "by_page"

@@ -34,28 +34,36 @@ class QiblaFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if (MainActivity.located) {
             location = MainActivity.location
+
             distance = getDistance()
             bearing = calculateBearing()
+
             setupCompass()
+
             compass?.start(requireContext())
-        } else located = false
+        }
+        else located = false
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentQiblaBinding.inflate(inflater, container, false)
         val root: View = binding!!.root
-        if (!located) binding!!.distanceText.text = getString(R.string.location_permission_for_qibla) else {
+
+        if (!located)
+            binding!!.distanceText.text = getString(R.string.location_permission_for_qibla)
+        else {
             val distanceText = (getString(R.string.distance_to_kaaba) + ": " +
-                    Utils.translateNumbers(requireContext(), distance.toString())
-                    + " " + getString(R.string.distance_unit))
+                    Utils.translateNumbers(requireContext(), distance.toString()) + " " + getString(R.string.distance_unit))
             binding!!.distanceText.text = distanceText
+
             binding!!.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT)
         }
+
         inflater.inflate(R.layout.fragment_qibla, container, false)
         return root
     }
@@ -92,6 +100,7 @@ class QiblaFragment : Fragment() {
 
     private fun adjust(azimuth: Float) {
         val target = bearing - currentAzimuth
+
         val rotate: Animation = RotateAnimation(
             target, -azimuth, Animation.RELATIVE_TO_SELF,
             0.5f, Animation.RELATIVE_TO_SELF, 0.565f
@@ -100,9 +109,11 @@ class QiblaFragment : Fragment() {
         rotate.repeatCount = 0
         rotate.fillAfter = true
         binding!!.qiblaPointer.startAnimation(rotate)
+
         currentAzimuth = azimuth
-        if (target > -2 && target < 2) binding!!.bingo.visibility = View.VISIBLE else binding!!.bingo.visibility =
-            View.INVISIBLE
+
+        if (target > -2 && target < 2) binding!!.bingo.visibility = View.VISIBLE
+        else binding!!.bingo.visibility = View.INVISIBLE
     }
 
     // maybe points north
@@ -132,6 +143,7 @@ class QiblaFragment : Fragment() {
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
         distance = earthRadius * c
         distance = (distance * 10).toInt() / 10.0
+
         return distance
     }
 
@@ -143,6 +155,7 @@ class QiblaFragment : Fragment() {
         val x = cos(myLatRad) * sin(kaabaLatInRad) - (sin(myLatRad)
                 * cos(kaabaLatInRad) * cos(lngDiff))
         result = ((Math.toDegrees(atan2(y, x)) + 360) % 360).toFloat()
+
         return result
     }
 
@@ -151,32 +164,25 @@ class QiblaFragment : Fragment() {
             3 -> {
                 binding!!.accuracyText.setText(R.string.high_accuracy_text)
                 binding!!.accuracyIndicator.setImageDrawable(
-                    AppCompatResources
-                        .getDrawable(requireContext(), R.drawable.green_dot)
+                    AppCompatResources.getDrawable(requireContext(), R.drawable.green_dot)
                 )
                 binding!!.accuracyIndicator.setOnClickListener(null)
             }
             2 -> {
                 binding!!.accuracyText.setText(R.string.medium_accuracy_text)
                 binding!!.accuracyIndicator.setImageDrawable(
-                    AppCompatResources
-                        .getDrawable(requireContext(), R.drawable.yellow_dot)
+                    AppCompatResources.getDrawable(requireContext(), R.drawable.yellow_dot)
                 )
                 binding!!.accuracyIndicator.setOnClickListener(null)
             }
             0, 1 -> {
                 binding!!.accuracyText.setText(R.string.low_accuracy_text)
                 binding!!.accuracyIndicator.setImageDrawable(
-                    AppCompatResources.getDrawable(
-                        requireContext(), R.drawable.ic_warning
-                    )
+                    AppCompatResources.getDrawable(requireContext(), R.drawable.ic_warning)
                 )
                 binding!!.accuracyIndicator.setOnClickListener {
                     CalibrationDialog(requireContext())
-                        .show(
-                            requireActivity().supportFragmentManager,
-                            CalibrationDialog.TAG
-                        )
+                        .show(requireActivity().supportFragmentManager, CalibrationDialog.TAG)
                 }
             }
         }

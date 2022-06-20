@@ -16,15 +16,19 @@ import bassamalim.hidaya.models.BookChapter
 import com.google.gson.Gson
 import java.util.ArrayList
 
-class BookChapterAdapter(private val context: Context, cards: ArrayList<BookChapter>, bookId: Int) :
-    RecyclerView.Adapter<BookChapterAdapter.ViewHolder?>() {
+class BookChapterAdapter(
+    private val context: Context, items: ArrayList<BookChapter>, private val bookId: Int
+    ) : RecyclerView.Adapter<BookChapterAdapter.ViewHolder?>() {
 
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson: Gson = Gson()
-    private val bookId: Int
-    private val items: ArrayList<BookChapter>
-    private val itemsCopy: ArrayList<BookChapter>
+    private val items = ArrayList(items)
+    private val itemsCopy = items
     private var favs: BooleanArray? = null
+
+    init {
+        getFavs()
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val card: CardView
@@ -40,10 +44,9 @@ class BookChapterAdapter(private val context: Context, cards: ArrayList<BookChap
 
     private fun getFavs() {
         val favsStr: String = pref.getString("book" + bookId + "_favs", "")!!
-        favs = if (favsStr.isEmpty()) BooleanArray(items.size) else gson.fromJson(
-            favsStr,
-            BooleanArray::class.java
-        )
+        favs =
+            if (favsStr.isEmpty()) BooleanArray(items.size)
+            else gson.fromJson(favsStr, BooleanArray::class.java)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -56,19 +59,25 @@ class BookChapterAdapter(private val context: Context, cards: ArrayList<BookChap
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val card = items[position]
+
         viewHolder.tv.text = items[position].chapterTitle
+
         val fav = card.favorite
-        if (fav) viewHolder.favBtn.setImageDrawable(
-            AppCompatResources.getDrawable(context, R.drawable.ic_star)
-        ) else viewHolder.favBtn.setImageDrawable(
-            AppCompatResources.getDrawable(context, R.drawable.ic_star_outline)
-        )
+        if (fav)
+            viewHolder.favBtn.setImageDrawable(
+                AppCompatResources.getDrawable(context, R.drawable.ic_star))
+        else
+            viewHolder.favBtn.setImageDrawable(
+                AppCompatResources.getDrawable(context, R.drawable.ic_star_outline))
+
         viewHolder.card.setOnClickListener(card.listener)
+
         viewHolder.favBtn.setOnClickListener {
             if (card.favorite) {
                 favs!![items[position].chapterId] = false
                 card.favorite = false
-            } else {
+            }
+            else {
                 favs!![items[position].chapterId] = true
                 card.favorite = true
             }
@@ -79,7 +88,8 @@ class BookChapterAdapter(private val context: Context, cards: ArrayList<BookChap
 
     fun filter(text: String) {
         items.clear()
-        if (text.isEmpty()) items.addAll(itemsCopy) else {
+        if (text.isEmpty()) items.addAll(itemsCopy)
+        else {
             for (chapterCard in itemsCopy) {
                 if (chapterCard.chapterTitle.contains(text)) items.add(chapterCard)
             }
@@ -96,12 +106,5 @@ class BookChapterAdapter(private val context: Context, cards: ArrayList<BookChap
 
     override fun getItemCount(): Int {
         return items.size
-    }
-
-    init {
-        this.bookId = bookId
-        items = cards
-        itemsCopy = cards
-        getFavs()
     }
 }

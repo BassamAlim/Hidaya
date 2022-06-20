@@ -50,23 +50,29 @@ class TelawatFragment : Fragment {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentTelawatBinding.inflate(inflater, container, false)
+
         pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
         gson = Gson()
         rewayat = resources.getStringArray(R.array.rewayat)
+
         reciters = data
+
         if (type == ListType.Downloaded) checkDownloaded()
+
         setupRecycler()
         filter()
+
         setListeners()
+
         return binding!!.root
     }
 
     override fun setMenuVisibility(menuVisible: Boolean) {
         super.setMenuVisibility(menuVisible)
+
         if (menuVisible) {
             adapter = TelawatAdapter(requireContext(), makeCards())
             recycler!!.adapter = adapter
@@ -75,31 +81,35 @@ class TelawatFragment : Fragment {
 
     private val data: List<TelawatRecitersDB>
         get() {
-            val db: AppDatabase = Room.databaseBuilder(
-                requireContext().applicationContext,
-                AppDatabase::class.java, "HidayaDB"
-            ).createFromAsset("databases/HidayaDB.db")
-                .allowMainThreadQueries().build()
+            val db: AppDatabase = Room.databaseBuilder(requireContext().applicationContext,
+                AppDatabase::class.java, "HidayaDB").createFromAsset(
+                "databases/HidayaDB.db").allowMainThreadQueries().build()
+
             telawat = db.telawatDao().all
-            return if (type == ListType.Favorite) db.telawatRecitersDao()
-                .getFavorites() else db.telawatRecitersDao().getAll()
+
+            return if (type == ListType.Favorite) db.telawatRecitersDao().getFavorites()
+            else db.telawatRecitersDao().getAll()
         }
 
     private fun checkDownloaded() {
         cleanup()
+
         downloaded = BooleanArray(telawat!!.size)
+
         val prefix = "/Telawat/"
+
         val dir = File(requireContext().getExternalFilesDir(null).toString() + prefix)
         if (!dir.exists()) return
+
         val files = dir.listFiles()
         if (files == null || files.isEmpty()) return
+
         for (element in files) {
             val name = element.name
             try {
                 val num = name.toInt()
                 downloaded!![num] = true
-            } catch (ignored: NumberFormatException) {
-            }
+            } catch (ignored: NumberFormatException) {}
         }
     }
 
@@ -107,34 +117,31 @@ class TelawatFragment : Fragment {
         val cards: ArrayList<Reciter> = ArrayList<Reciter>()
         for (i in reciters!!.indices) {
             if (type == ListType.Downloaded && !downloaded!![i]) continue
+
             val reciter: TelawatRecitersDB = reciters!![i]
             val versions: List<TelawatDB> = getVersions(reciter.reciter_id)
             val versionsList: MutableList<RecitationVersion> = ArrayList<RecitationVersion>()
+
             for (j in versions.indices) {
                 val telawa: TelawatDB = versions[j]
+
                 val listener = View.OnClickListener { v: View ->
-                    val intent = Intent(
-                        v.context,
-                        TelawatSuarCollectionActivity::class.java
-                    )
+                    val intent = Intent(v.context, TelawatSuarCollectionActivity::class.java)
                     intent.putExtra("reciter_id", telawa.getReciter_id())
                     intent.putExtra("reciter_name", telawa.getReciter_name())
                     intent.putExtra("version_id", telawa.getVersion_id())
                     startActivity(intent)
                 }
+
                 versionsList.add(
                     RecitationVersion(
-                        telawa.getVersion_id(),
-                        telawa.getUrl(), telawa.getRewaya(), telawa.getCount(),
-                        telawa.getSuras(), listener
+                        telawa.getVersion_id(), telawa.getUrl(), telawa.getRewaya(),
+                        telawa.getCount(), telawa.getSuras(), listener
                     )
                 )
             }
             cards.add(
-                Reciter(
-                    reciter.reciter_id, reciter.reciter_name!!,
-                    reciter.favorite, versionsList
-                )
+                Reciter(reciter.reciter_id, reciter.reciter_name!!, reciter.favorite, versionsList)
             )
         }
         return cards
@@ -163,9 +170,7 @@ class TelawatFragment : Fragment {
         for (aBoolean in selectedRewayat!!) {
             if (!aBoolean) {
                 binding!!.filterIb.setImageDrawable(
-                    AppCompatResources.getDrawable(
-                        requireContext(), R.drawable.ic_filtered
-                    )
+                    AppCompatResources.getDrawable(requireContext(), R.drawable.ic_filtered)
                 )
                 break
             }
@@ -184,6 +189,7 @@ class TelawatFragment : Fragment {
                 return true
             }
         })
+
         binding!!.filterIb.setOnClickListener { v ->
             FilterDialog(
                 requireContext(), v, resources.getString(R.string.choose_rewaya), rewayat!!,
@@ -196,23 +202,29 @@ class TelawatFragment : Fragment {
         val defArr = BooleanArray(rewayat!!.size)
         Arrays.fill(defArr, true)
         val defStr: String = gson!!.toJson(defArr)
+
         return gson!!.fromJson(pref!!.getString("selected_rewayat", defStr), BooleanArray::class.java)
     }
 
     private fun cleanup() {
         val path = requireContext().getExternalFilesDir(null).toString() + "/Telawat/"
         val file = File(path)
+
         val rFiles = file.listFiles() ?: return
+
         for (rFile in rFiles) {
             val rfName = rFile.name
             try {
                 rfName.toInt()
                 var vFiles: Array<out File>? = rFile.listFiles() ?: continue
+
                 for (vFile in vFiles!!) {
                     if (vFile.listFiles()!!.isEmpty()) vFile.delete()
                 }
+
                 vFiles = rFile.listFiles()
                 if (vFiles == null) continue
+
                 if (vFiles.isEmpty()) rFile.delete()
             } catch (ignored: NumberFormatException) {}
         }

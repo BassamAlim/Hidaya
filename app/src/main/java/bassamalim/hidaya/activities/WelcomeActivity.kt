@@ -17,10 +17,12 @@ class WelcomeActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
-        if (savedInstanceState == null) supportFragmentManager.beginTransaction().replace(
-            R.id.settings,
-            Settings.SettingsFragment("initial")
-        ).commit()
+
+        if (savedInstanceState == null)
+            supportFragmentManager.beginTransaction().replace(
+                R.id.settings, Settings.SettingsFragment("initial")
+            ).commit()
+
         setListeners()
     }
 
@@ -29,11 +31,13 @@ class WelcomeActivity: AppCompatActivity() {
             binding!!.settings.visibility = View.GONE
             binding!!.saveBtn.visibility = View.GONE
             binding!!.disclaimerSpace.visibility = View.VISIBLE
+
             val editor: SharedPreferences.Editor = PreferenceManager
                 .getDefaultSharedPreferences(this).edit()
             editor.putBoolean("new_user", false)
             editor.apply()
         }
+
         binding!!.agreed.setOnClickListener {
             val intent = Intent(this, Splash::class.java)
             startActivity(intent)

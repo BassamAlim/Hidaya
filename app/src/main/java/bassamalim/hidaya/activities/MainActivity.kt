@@ -45,19 +45,28 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setTodayScreen()
         setContentView(binding!!.root)
+
         pref = PreferenceManager.getDefaultSharedPreferences(this)
+
         setSupportActionBar(binding!!.topBar)
         setTitle(R.string.app_name)
+
         initNavBar()
+
         initFirebase()
+
         setAlarms()
+
         testDb()
+
         dailyUpdate()
+
         setupBootReceiver()
     }
 
     override fun onRestart() {
         super.onRestart()
+
         val newTheme: String? = pref?.getString(
             getString(R.string.theme_key),
             getString(R.string.default_theme)
@@ -66,9 +75,11 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.language_key),
             getString(R.string.default_language)
         )
+
         if (newTheme != theme || newLanguage != language) {
             theme = newTheme
             language = newLanguage
+
             Utils.refresh(this)
         }
     }
@@ -139,29 +150,35 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Utils.reviveDb(this)
         }
+
         val lastVer: Int? = pref?.getInt("last_db_version", 1)
         if (Global.dbVer > lastVer!!) Utils.reviveDb(this)
     }
 
     private fun dailyUpdate() {
         val day: Int? = pref?.getInt("last_day", 0)
+
         val today = Calendar.getInstance()
         if (day != today[Calendar.DAY_OF_MONTH]) {
             val dailyUpdateHour = 0
+
             val intent = Intent(this, DailyUpdateReceiver::class.java)
             intent.action = "daily"
             intent.putExtra("time", dailyUpdateHour)
+
             val time = Calendar.getInstance()
             time[Calendar.HOUR_OF_DAY] = dailyUpdateHour
+
             val pendIntent: PendingIntent = PendingIntent.getBroadcast(
                 this, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
+
             val myAlarm: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             myAlarm.setRepeating(
-                AlarmManager.RTC_WAKEUP, time.timeInMillis,
-                AlarmManager.INTERVAL_DAY, pendIntent
+                AlarmManager.RTC_WAKEUP, time.timeInMillis, AlarmManager.INTERVAL_DAY, pendIntent
             )
+
             sendBroadcast(intent)
         }
     }
@@ -172,11 +189,11 @@ class MainActivity : AppCompatActivity() {
         val hMonth = " " + resources.getStringArray(R.array.hijri_months)[Calendar.MONTH]
         val hDay = "" + hijri.get(Calendar.DATE)
         var hijriStr: String = resources
-            .getStringArray(R.array.week_days)[hijri.get(Calendar.DAY_OF_WEEK) - 1]
-            .toString() + " "
+            .getStringArray(R.array.week_days)[hijri.get(Calendar.DAY_OF_WEEK) - 1].toString() + " "
         hijriStr += Utils.translateNumbers(this, hDay) + hMonth +
                 Utils.translateNumbers(this, hYear)
         binding!!.hijriView.text = hijriStr
+
         val gregorian = Calendar.getInstance()
         val mYear = " " + gregorian[Calendar.YEAR]
         val mMonth = " " + resources
@@ -190,9 +207,9 @@ class MainActivity : AppCompatActivity() {
     private fun setupBootReceiver() {
         val receiver = ComponentName(this, DeviceBootReceiver::class.java)
         val pm: PackageManager = applicationContext.packageManager
+
         pm.setComponentEnabledSetting(
-            receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP
+            receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP
         )
     }
 

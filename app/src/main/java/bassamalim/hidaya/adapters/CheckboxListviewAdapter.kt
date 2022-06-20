@@ -32,6 +32,7 @@ class CheckboxListviewAdapter(
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertV = convertView
         val result: View
+
         val vh: ViewHolder
         if (convertV == null) {
             val layoutInflater = LayoutInflater.from(gContext)
@@ -39,21 +40,26 @@ class CheckboxListviewAdapter(
             vh = ViewHolder(convertV)
             result = convertV!!
             convertV.tag = vh
-        } else {
+        }
+        else {
             vh = convertV.tag as ViewHolder
             result = convertV
         }
+
         val item = items[position]
         vh.tv.text = item.text
+
         isFromView = true
         vh.cb.isChecked = item.isSelected
         isFromView = false
+
         vh.cb.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             if (!isFromView) {
                 item.isSelected = isChecked
                 selected[position] = isChecked
             }
         }
+
         return result
     }
 }

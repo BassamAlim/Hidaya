@@ -14,12 +14,13 @@ class AthkarFragment : Fragment() {
     private var binding: FragmentAthkarBinding? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentAthkarBinding.inflate(inflater, container, false)
         val root: View = binding!!.root
+
         setListeners()
+
         return root
     }
 
@@ -29,11 +30,13 @@ class AthkarFragment : Fragment() {
             intent.action = "all"
             startActivity(intent)
         }
+
         binding!!.favoriteAthkar.setOnClickListener {
             val intent = Intent(context, AthkarListActivity::class.java)
             intent.action = "favorite"
             startActivity(intent)
         }
+
         binding!!.dayAndNight.setOnClickListener { showThikrs(0) }
         binding!!.prayers.setOnClickListener { showThikrs(1) }
         binding!!.quran.setOnClickListener { showThikrs(2) }

@@ -64,21 +64,26 @@ class QuranSettingsDialog : AppCompatActivity() {
 
     private fun execute() {
         val viewType =
-            if (radioGroup!!.checkedRadioButtonId == R.id.list_view) "list" else "page"
+            if (radioGroup!!.checkedRadioButtonId == R.id.list_view) "list"
+            else "page"
         if (viewType != initialViewType) {
             val editor: SharedPreferences.Editor = pref!!.edit()
             editor.putString("quran_view_type", viewType)
             editor.apply()
         }
-        if (settingsFragment!!.textSizeSB!!.value != initialTextSize || viewType != initialViewType) {
+
+        if (settingsFragment!!.textSizeSB!!.value != initialTextSize
+            || viewType != initialViewType) {
             val intent = Intent()
-            if (radioGroup!!.checkedRadioButtonId == R.id.list_view) intent.putExtra(
-                "view_type",
-                "list"
-            ) else intent.putExtra("view_type", "page")
+            if (radioGroup!!.checkedRadioButtonId == R.id.list_view)
+                intent.putExtra("view_type", "list")
+            else
+                intent.putExtra("view_type", "page")
             intent.putExtra("text_size", settingsFragment!!.textSizeSB!!.value)
+
             setResult(Activity.RESULT_OK, intent)
         }
+
         finish()
     }
 
@@ -88,16 +93,19 @@ class QuranSettingsDialog : AppCompatActivity() {
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
+
         var textSizeSB: SeekBarPreference? = null
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.quran_preferences, rootKey)
+
             textSizeSB = findPreference(getString(R.string.quran_text_size_key))
+
             setupReciters()
         }
 
         private fun setupReciters() {
-            val recitersDropdown: DropDownPreference =
-                findPreference(getString(R.string.aya_reciter_key))!!
+            val recitersDropdown: DropDownPreference = findPreference(getString(R.string.aya_reciter_key))!!
             val reciterNames : List<String?> = getReciterNames()
             val ids = arrayOfNulls<CharSequence>(reciterNames.size)
             for (i in reciterNames.indices) ids[i] = i.toString()
@@ -107,10 +115,9 @@ class QuranSettingsDialog : AppCompatActivity() {
 
         private fun getReciterNames(): List<String?> {
             return Room.databaseBuilder(
-                requireContext().applicationContext, AppDatabase::class.java,
-                "HidayaDB"
-            ).createFromAsset("databases/HidayaDB.db")
-                .allowMainThreadQueries().build().ayatRecitersDao().getNames()
+                requireContext().applicationContext, AppDatabase::class.java, "HidayaDB"
+            ).createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+                .ayatRecitersDao().getNames()
         }
     }
 }

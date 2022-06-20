@@ -40,38 +40,31 @@ class AyahPlayer(private val context: Context) {
     private var paused = false
     private var repeated = 1
     private var on = false
-    private var coordinator: Coordinator? = null
 
+    private var coordinator: Coordinator? = null
     interface Coordinator {
         fun onUiUpdate(state: States)
         fun getAyah(index: Int): Ayah
         fun nextPage()
     }
-
     fun setCoordinator(listener: Coordinator?) {
         coordinator = listener
     }
 
-    private fun initiate() {
+    init {
         pref = PreferenceManager.getDefaultSharedPreferences(context)
+
         db = Room.databaseBuilder(
-            context.applicationContext, AppDatabase::class.java,
-            "HidayaDB"
-        ).createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
-            .build()
-        val theme: String? = pref!!.getString(
-            context.getString(R.string.theme_key),
-            context.getString(R.string.default_theme)
-        )
-        what = if (theme == "ThemeL") ForegroundColorSpan(
-            context.resources.getColor(
-                R.color.track_L, context.theme
-            )
-        ) else ForegroundColorSpan(
-            context.resources.getColor(
-                R.color.track_M, context.theme
-            )
-        )
+            context.applicationContext, AppDatabase::class.java, "HidayaDB")
+            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+
+        val theme: String? = pref!!.getString(context.getString(R.string.theme_key), context.getString(R.string.default_theme))
+
+        what =
+            if (theme == "ThemeL")
+                ForegroundColorSpan(context.resources.getColor(R.color.track_L, context.theme))
+            else
+                ForegroundColorSpan(context.resources.getColor(R.color.track_M, context.theme))
     }
 
     /**
@@ -81,6 +74,7 @@ class AyahPlayer(private val context: Context) {
      */
     fun requestPlay(startAyah: Ayah?) {
         if (!on) initPlayers()
+
         repeated = 1
         lastPlayed = startAyah
         state = States.Stopped
@@ -91,19 +85,24 @@ class AyahPlayer(private val context: Context) {
      * Initialize the two media players and the wifi lock
      */
     private fun initPlayers() {
-        players = arrayOf<MediaPlayer?>(MediaPlayer(), MediaPlayer())
+        players = arrayOf(MediaPlayer(), MediaPlayer())
+
         players!![0]!!.setWakeMode(context.applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
         players!![1]!!.setWakeMode(context.applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
-        wifiLock = (context.applicationContext.getSystemService(
-            Context.WIFI_SERVICE
-        ) as WifiManager).createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock")
+
+        wifiLock = (context.applicationContext.getSystemService(Context.WIFI_SERVICE)
+                as WifiManager).createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock")
         wifiLock!!.acquire()
+
         val attributes: AudioAttributes =
             AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .setUsage(AudioAttributes.USAGE_MEDIA).build()
+
         players!![0]!!.setAudioAttributes(attributes)
         players!![1]!!.setAudioAttributes(attributes)
+
         setPlayersListeners()
+
         on = true
     }
 
@@ -118,61 +117,64 @@ class AyahPlayer(private val context: Context) {
     private fun setPlayersListeners() {
         for (i in 0..1) {
             players!![i]!!.setOnPreparedListener {
-                if (players!![n(i)]!!.isPlaying) players!![n(i)]!!.setNextMediaPlayer(
-                    players!![i]
-                ) else if (state == States.Paused) {
-                    if (allAyahsSize > lastPlayed!!.getIndex()) lastPlayed =
-                        coordinator!!.getAyah(lastPlayed!!.getIndex())
-                } else {
+                if (players!![n(i)]!!.isPlaying)
+                    players!![n(i)]!!.setNextMediaPlayer(players!![i])
+                else if (state == States.Paused) {
+                    if (allAyahsSize > lastPlayed!!.getIndex())
+                        lastPlayed = coordinator!!.getAyah(lastPlayed!!.getIndex())
+                }
+                else {
                     players!![i]!!.start()
                     state = States.Playing
                     track(lastPlayed)
-                    if (allAyahsSize > lastPlayed!!.getIndex() + 1) preparePlayer(
-                        players!![n(i)],
-                        coordinator!!.getAyah(lastPlayed!!.getIndex() + 1)
-                    )
+                    if (allAyahsSize > lastPlayed!!.getIndex() + 1)
+                        preparePlayer(players!![n(i)],
+                            coordinator!!.getAyah(lastPlayed!!.getIndex() + 1))
                 }
             }
+
             players!![i]!!.setOnCompletionListener {
-                val repeat: Int = pref!!.getString(
-                    context.getString(
+                val repeat: Int = pref!!.getString(context.getString(
                         R.string.aya_repeat_mode_key
-                    ), "1"
-                )!!.toInt()
+                    ), "1")!!.toInt()
                 if ((repeat == 2 || repeat == 3 || repeat == 5 || repeat == 10)
-                    && repeated < repeat
-                ) {
+                    && repeated < repeat) {
                     preparePlayer(players!![i], lastPlayed)
                     players!![n(i)]!!.reset()
                     repeated++
-                } else if (repeat == 0) {
+                }
+                else if (repeat == 0) {
                     repeated = 0
                     preparePlayer(players!![i], lastPlayed)
                     players!![n(i)]!!.reset()
-                } else {
+                }
+                else {
                     repeated = 1
                     if (paused) {
                         paused = false
                         if (allAyahsSize > lastPlayed!!.getIndex()) {
-                            val newAyah: Ayah = coordinator!!.getAyah(lastPlayed!!.getIndex() + 1)
+                            val newAyah: Ayah =
+                                coordinator!!.getAyah(lastPlayed!!.getIndex() + 1)
                             track(newAyah)
-                            if (allAyahsSize > newAyah.getIndex()) preparePlayer(
-                                players!![i],
-                                coordinator!!.getAyah(newAyah.getIndex())
-                            )
+                            if (allAyahsSize > newAyah.getIndex())
+                                preparePlayer(players!![i],
+                                    coordinator!!.getAyah(newAyah.getIndex()))
                             lastPlayed = newAyah
-                        } else ended()
-                    } else if (allAyahsSize > lastPlayed!!.getIndex() + 1) {
+                        }
+                        else ended()
+                    }
+                    else if (allAyahsSize > lastPlayed!!.getIndex() + 1) {
                         val newAyah: Ayah = coordinator!!.getAyah(lastPlayed!!.getIndex() + 1)
                         track(newAyah)
-                        if (allAyahsSize > newAyah.getIndex() + 1) preparePlayer(
-                            players!![i],
-                            coordinator!!.getAyah(newAyah.getIndex() + 1)
-                        )
+                        if (allAyahsSize > newAyah.getIndex() + 1)
+                            preparePlayer(players!![i],
+                                coordinator!!.getAyah(newAyah.getIndex() + 1))
                         lastPlayed = newAyah
-                    } else ended()
+                    }
+                    else ended()
                 }
             }
+
             players!![i]!!.setOnErrorListener { _: MediaPlayer?, _: Int, _: Int ->
                 notFound()
                 true
@@ -193,13 +195,14 @@ class AyahPlayer(private val context: Context) {
      * @param ayah the ayah to play
      */
     private fun preparePlayer(player: MediaPlayer?, ayah: Ayah?) {
-        if (pref!!.getBoolean(context.getString(R.string.stop_on_sura_key), false)
-            && ayah!!.getSurahNum() != chosenSurah
-        ) {
-            if (surahEnding) stopPlaying() else surahEnding = true
+        if (pref!!.getBoolean(context.getString(R.string.stop_on_sura_key), false) && ayah!!.getSurahNum() != chosenSurah) {
+            if (surahEnding) stopPlaying()
+            else surahEnding = true
             return
         }
+
         player!!.reset()
+
         val uri: Uri
         try {
             uri = getUri(ayah, 0)
@@ -222,13 +225,14 @@ class AyahPlayer(private val context: Context) {
             lastTracked!!.getSS()!!.removeSpan(what)
             lastTracked!!.getScreen()!!.text = lastTracked!!.getSS()
         }
-        if (viewType == "list") ayah!!.getSS()!!.setSpan(
-            what, 0, ayah.getText()!!.length - 1,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        ) else ayah!!.getSS()!!.setSpan(
-            what, ayah.getStart(), ayah.getEnd(),
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+
+        if (viewType == "list")
+            ayah!!.getSS()!!.setSpan(
+                what, 0, ayah.getText()!!.length - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        else
+            ayah!!.getSS()!!.setSpan(
+                what, ayah.getStart(), ayah.getEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
         ayah.getScreen()!!.text = ayah.getSS() // heavy, but the only working way
         lastTracked = ayah
     }
@@ -239,8 +243,10 @@ class AyahPlayer(private val context: Context) {
      */
     fun nextAyah() {
         if (state != States.Playing || lastPlayed!!.getIndex() + 2 > allAyahsSize) return
+
         lastPlayed = coordinator!!.getAyah(lastPlayed!!.getIndex() + 1)
         track(lastPlayed)
+
         for (i in 0..1) {
             if (players!![i]!!.isPlaying) {
                 preparePlayer(players!![i], lastPlayed)
@@ -256,8 +262,10 @@ class AyahPlayer(private val context: Context) {
      */
     fun prevAyah() {
         if (state != States.Playing || lastPlayed!!.getIndex() - 1 < 0) return
+
         lastPlayed = coordinator!!.getAyah(lastPlayed!!.getIndex() - 1)
         track(lastPlayed)
+
         for (i in 0..1) {
             if (players!![i]!!.isPlaying) {
                 preparePlayer(players!![i], lastPlayed)
@@ -274,7 +282,7 @@ class AyahPlayer(private val context: Context) {
         paused = true
         state = States.Paused
         for (i in 0..1) {
-            if (players!![i]!!.isPlaying()) {
+            if (players!![i]!!.isPlaying) {
                 Log.d(Global.TAG, "Paused $i")
                 players!![i]!!.pause()
                 players!![n(i)]!!.reset()
@@ -294,25 +302,26 @@ class AyahPlayer(private val context: Context) {
     }
 
     private fun ended() {
-        val QURAN_PAGES = 604
-        if (pref!!.getBoolean(
-                context.getString(R.string.stop_on_page_key),
-                false
-            )
-        ) stopPlaying() else if (currentPage < QURAN_PAGES && lastPlayed!!.getIndex() + 1 == allAyahsSize) {
+        val quranPages = 604
+        if (pref!!.getBoolean(context.getString(R.string.stop_on_page_key), false))
+            stopPlaying()
+        else if (currentPage < quranPages && lastPlayed!!.getIndex() + 1 == allAyahsSize) {
             coordinator!!.nextPage()
             requestPlay(coordinator!!.getAyah(0))
         }
     }
 
-    fun stopPlaying() {
+    private fun stopPlaying() {
         state = States.Stopped
         coordinator!!.onUiUpdate(States.Paused)
+
         for (i in 0..1) {
             players!![i]!!.reset()
             players!![i]!!.release()
         }
+
         on = false
+
         if (lastTracked != null) {
             lastTracked!!.getSS()!!.removeSpan(what)
             lastTracked!!.getScreen()!!.text = lastTracked!!.getSS()
@@ -320,30 +329,33 @@ class AyahPlayer(private val context: Context) {
     }
 
     private fun getUri(ayah: Ayah?, change: Int): Uri {
-        val size: Int = db!!.ayatTelawaDao()!!.size
-        val choice: Int = pref!!.getString(
-            context.getString(R.string.aya_reciter_key), "13"
-        )!!.toInt()
-        val sources: List<AyatTelawaDB?>? =
-            db!!.ayatTelawaDao()!!.getReciter((choice + change) % (size - 1))
+        val size: Int = db!!.ayatTelawaDao().size
+
+        val choice: Int = pref!!.getString(context.getString(R.string.aya_reciter_key), "13")!!.toInt()
+        val sources: List<AyatTelawaDB?> =
+            db!!.ayatTelawaDao().getReciter((choice + change) % (size - 1))
+
         var uri = "https://www.everyayah.com/data/"
-        uri += sources!![0]!!.getSource()
-        uri += String.format(Locale.US, "%03d%03d.mp3", ayah!!.getSurahNum(), ayah.getAyahNum())
+        uri += sources[0]!!.getSource()
+        uri += String.format(Locale.US, "%03d%03d.mp3",
+            ayah!!.getSurahNum(), ayah.getAyahNum())
+
         return Uri.parse(uri)
     }
 
     private fun notFound() {
-        Toast.makeText(
-            context, context.getString(R.string.recitation_not_available),
-            Toast.LENGTH_SHORT
-        ).show()
+        Toast.makeText(context, context.getString(R.string.recitation_not_available), Toast.LENGTH_SHORT).show()
+
         state = States.Stopped
         coordinator!!.onUiUpdate(States.Paused)
+
         for (i in 0..1) players!![i]!!.reset()
+
         if (lastTracked != null) {
             lastTracked!!.getSS()!!.removeSpan(what)
             lastTracked!!.getScreen()!!.text = lastTracked!!.getSS()
         }
+
         getUri(lastPlayed, 1)
     }
 
@@ -388,9 +400,5 @@ class AyahPlayer(private val context: Context) {
                 wifiLock = null
             }
         }
-    }
-
-    init {
-        initiate()
     }
 }

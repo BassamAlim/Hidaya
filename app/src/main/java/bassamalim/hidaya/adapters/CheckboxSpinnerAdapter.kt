@@ -15,11 +15,9 @@ import bassamalim.hidaya.models.CheckboxListItem
 import com.google.gson.Gson
 
 class CheckboxSpinnerAdapter(
-    private val gContext: Context,
-    resource: Int,
-    objects: List<CheckboxListItem>,
-    selected: BooleanArray,
-    prefKey: String) : ArrayAdapter<CheckboxListItem?>(gContext, resource, objects) {
+    private val gContext: Context, resource: Int, objects: List<CheckboxListItem>,
+    selected: BooleanArray, prefKey: String
+ ) : ArrayAdapter<CheckboxListItem?>(gContext, resource, objects) {
 
     private val pref: SharedPreferences
     private val prefKey: String
@@ -47,21 +45,26 @@ class CheckboxSpinnerAdapter(
     }
 
     private fun getCustomView(position: Int, convertView: View?): View? {
-        var convertView = convertView
+        var convertV = convertView
         val vh: ViewHolder
-        if (convertView == null) {
+        if (convertV == null) {
             val layoutInflater: LayoutInflater = LayoutInflater.from(gContext)
-            convertView = layoutInflater.inflate(R.layout.item_checkbox_list, null)
-            vh = ViewHolder(convertView)
-            convertView.tag = vh
-        } else vh = convertView.tag as ViewHolder
+            convertV = layoutInflater.inflate(R.layout.item_checkbox_list, null)
+            vh = ViewHolder(convertV)
+            convertV.tag = vh
+        }
+        else vh = convertV.tag as ViewHolder
+
         vh.tv.text = items[position].text
 
         // To check weather checked event fire from getView() or user input
         isFromView = true
         vh.cb.isChecked = items[position].isSelected
         isFromView = false
-        if (position == 0) vh.cb.visibility = View.INVISIBLE else vh.cb.visibility = View.VISIBLE
+
+        if (position == 0) vh.cb.visibility = View.INVISIBLE
+        else vh.cb.visibility = View.VISIBLE
+
         if (position != 0) {
             vh.cb.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
                 if (!isFromView) {
@@ -71,7 +74,8 @@ class CheckboxSpinnerAdapter(
                 }
             }
         }
-        return convertView
+
+        return convertV
     }
 
     private fun updatePref() {

@@ -29,33 +29,38 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         context = gContext
         pref = PreferenceManager.getDefaultSharedPreferences(context!!)
         now = Calendar.getInstance()
+
         if (intent.action == "daily") {
             time = intent.getIntExtra("time", 0)
-            if (needed()) locate() else Log.i(
-                Global.TAG,
-                "dead intent walking in daily update receiver"
-            )
-        } else if (intent.action == "boot") locate()
+
+            if (needed()) locate()
+            else Log.i(Global.TAG, "dead intent walking in daily update receiver")
+        }
+        else if (intent.action == "boot")
+            locate()
     }
 
     private fun needed(): Boolean {
         val day: Int = pref!!.getInt("last_day", 0)
+
         val today = now!![Calendar.DATE]
         val hour = now!![Calendar.HOUR_OF_DAY]
+
         return day != today && time <= hour
     }
 
     private fun locate() {
         val fusedLocationClient: FusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(context!!)
+
         if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                context!!,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location: Location -> update(location) }
+            == PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(context!!,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            fusedLocationClient.lastLocation.addOnSuccessListener {
+                    location: Location -> update(location)
+            }
         }
     }
 
@@ -68,20 +73,23 @@ class DailyUpdateReceiver : BroadcastReceiver() {
                 return
             }
         }
+
         Keeper(context!!, loc)
+
         val times = Utils.getTimes(context!!, loc)
+
         Alarms(context!!, times)
+
         updateWidget()
+
         updated()
     }
 
     private fun updateWidget() {
         val intent = Intent(context, PrayersWidget::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        val ids: IntArray =
-            AppWidgetManager.getInstance(context!!.applicationContext).getAppWidgetIds(
-                ComponentName(context!!.applicationContext, PrayersWidget::class.java)
-            )
+        val ids: IntArray = AppWidgetManager.getInstance(context!!.applicationContext)
+            .getAppWidgetIds(ComponentName(context!!.applicationContext, PrayersWidget::class.java))
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
         context!!.sendBroadcast(intent)
     }

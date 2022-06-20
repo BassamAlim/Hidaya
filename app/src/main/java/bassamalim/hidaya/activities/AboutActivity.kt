@@ -23,7 +23,8 @@ class AboutActivity : AppCompatActivity() {
         Utils.myOnActivityCreated(this)
         binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
-        binding!!.home.setOnClickListener { onBackPressed() }
+        binding!!.home.setOnClickListener {onBackPressed()}
+
         setListener()
     }
 
@@ -32,15 +33,20 @@ class AboutActivity : AppCompatActivity() {
             counter++
             if (counter == 5) voala()
         }
+
         binding!!.rebuildDb.setOnClickListener {
             deleteDatabase("HidayaDB")
+
             Log.i(Global.TAG, "Database Rebuilt")
+
             Utils.reviveDb(this)
+
             Toast.makeText(
                 this, getString(R.string.database_rebuilt),
                 Toast.LENGTH_SHORT
             ).show()
         }
+
         binding!!.driveUpdate.setOnClickListener {
             val url: String = FirebaseRemoteConfig.getInstance().getString(Global.UPDATE_URL)
             val i = Intent(Intent.ACTION_VIEW)

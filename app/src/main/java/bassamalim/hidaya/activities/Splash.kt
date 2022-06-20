@@ -31,22 +31,26 @@ class Splash : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen: SplashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition { true }
+
         super.onCreate(savedInstanceState)
+
         stopService(Intent(this, AthanService::class.java))
-        if (PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("new_user", true)
-        ) welcome() else Utils.onActivityCreateSetLocale(this)
+
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("new_user", true))
+            welcome()
+        else Utils.onActivityCreateSetLocale(this)
+
         if (granted()) {
             getLocation()
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
                 && ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                ) !=
-                PackageManager.PERMISSION_GRANTED
+                    this, Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
             )
                 background()
-        } else {
+        }
+        else {
             if (Keeper(this).retrieveLocation() == null)
                 requestMultiplePermissions.launch(permissions)
             else launch(null)
@@ -61,26 +65,20 @@ class Splash : AppCompatActivity() {
 
     private fun granted(): Boolean {
         return (ActivityCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            this, Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) ==
-                PackageManager.PERMISSION_GRANTED)
+            this, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED)
     }
 
     private fun getLocation() {
         if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) ==
-            PackageManager.PERMISSION_GRANTED
+                this, Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
             LocationServices.getFusedLocationProviderClient(this).lastLocation
                 .addOnSuccessListener(this) { location: Location? -> launch(location) }
@@ -105,8 +103,10 @@ class Splash : AppCompatActivity() {
     private val requestMultiplePermissions: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(RequestMultiplePermissions()
         ) { permissions: Map<String, Boolean> ->
+
             val collection = permissions.values
             val array = collection.toTypedArray()
+
             if (array[0] && array[1]) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
                     background()
@@ -118,12 +118,11 @@ class Splash : AppCompatActivity() {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private fun background() {
         Toast.makeText(
-            this, getString(R.string.choose_allow_all_the_time),
-            Toast.LENGTH_LONG
+            this, getString(R.string.choose_allow_all_the_time), Toast.LENGTH_LONG
         ).show()
+
         requestPermissions(
-            arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-            0
+            arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION), 0
         )
     }
 }

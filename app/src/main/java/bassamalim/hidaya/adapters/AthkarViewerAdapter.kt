@@ -16,7 +16,7 @@ class AthkarViewerAdapter(context: Context, cards: ArrayList<Thikr>, private val
     RecyclerView.Adapter<AthkarViewerAdapter.ViewHolder?>() {
 
     private val margin = 15
-    private val items: ArrayList<Thikr>
+    private val items = cards
     private var textSize: Int
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -48,33 +48,41 @@ class AthkarViewerAdapter(context: Context, cards: ArrayList<Thikr>, private val
             LayoutInflater.from(viewGroup.context)
                 .inflate(R.layout.item_athkar_viewer, viewGroup, false)
         )
+
         viewHolder.titleTv.textSize = textSize.toFloat()
         viewHolder.textTv.textSize = textSize.toFloat()
         viewHolder.textTranslationTv.textSize = textSize.toFloat()
         viewHolder.fadlTv.textSize = (textSize - 8).toFloat()
         viewHolder.repetitionTv.textSize = textSize.toFloat()
+
         return viewHolder
     }
 
-    override fun onBindViewHolder(
-        viewHolder: ViewHolder,
-        position: Int
-    ) {
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val card: Thikr = items[position]
+
         viewHolder.textTv.text = card.getText()
+
         if (card.getRepetition() == "1") {
             viewHolder.repetitionTv.visibility = View.GONE
             viewHolder.repetitionDiv.visibility = View.GONE
-        } else viewHolder.repetitionTv.text = card.getRepetition()
-        if (card.getTitle().isEmpty()) viewHolder.titleTv.visibility =
-            View.GONE else viewHolder.titleTv.text = card.getTitle()
-        if (LANGUAGE == "ar" || card.getTextTranslation() == null || card.getTextTranslation()!!.isEmpty())
+        }
+        else viewHolder.repetitionTv.text = card.getRepetition()
+
+        if (card.getTitle().isEmpty()) viewHolder.titleTv.visibility = View.GONE
+        else viewHolder.titleTv.text = card.getTitle()
+
+        if (LANGUAGE == "ar"
+            || card.getTextTranslation() == null || card.getTextTranslation()!!.isEmpty())
             viewHolder.textTranslationTv.visibility = View.GONE
-            else viewHolder.textTranslationTv.text = card.getTextTranslation()
+        else viewHolder.textTranslationTv.text = card.getTextTranslation()
+
         if (card.getFadl().isEmpty()) {
             viewHolder.fadlTv.visibility = View.GONE
             viewHolder.fadlDiv.visibility = View.GONE
-        } else viewHolder.fadlTv.text = card.getFadl()
+        }
+        else viewHolder.fadlTv.text = card.getFadl()
+
         if (card.getReference().isEmpty()) {
             viewHolder.referenceBtn.visibility = View.GONE
             viewHolder.referenceDiv.visibility = View.GONE
@@ -91,9 +99,7 @@ class AthkarViewerAdapter(context: Context, cards: ArrayList<Thikr>, private val
     }
 
     init {
-        items = cards
-        textSize = PreferenceManager.getDefaultSharedPreferences(context).getInt(
-            context.getString(R.string.alathkar_text_size_key), 15
-        ) + margin
+        textSize = PreferenceManager.getDefaultSharedPreferences(context)
+            .getInt(context.getString(R.string.alathkar_text_size_key), 15) + margin
     }
 }

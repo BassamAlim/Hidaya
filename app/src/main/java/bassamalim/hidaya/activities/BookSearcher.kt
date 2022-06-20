@@ -48,18 +48,27 @@ class BookSearcher : AppCompatActivity() {
         binding = ActivityBookSearcherBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         binding!!.home.setOnClickListener { onBackPressed() }
+
         init()
+
         setListeners()
+
         initFilterIb()
+
         setupSizeSpinner()
     }
 
     private fun init() {
         pref = PreferenceManager.getDefaultSharedPreferences(this)
+
         gson = Gson()
+
         bookTitles = resources.getStringArray(R.array.books_titles)
+
         searchView = binding!!.searchView
+
         matches = ArrayList<BookSearcherMatch>()
+
         maxMatches = pref!!.getInt("books_searcher_matches_last_position", 10)
     }
 
@@ -74,9 +83,10 @@ class BookSearcher : AppCompatActivity() {
                 return true
             }
         })
+
         binding!!.filterIb.setOnClickListener { v ->
             FilterDialog(
-                this, v, "اختر الكتب", bookTitles!!, selectedBooks!!,
+                this, v, getString(R.string.choose_books), bookTitles!!, selectedBooks!!,
                 adapter!!, binding!!.filterIb, "selected_search_books"
             )
         }
@@ -86,17 +96,17 @@ class BookSearcher : AppCompatActivity() {
         val spinner: Spinner = binding!!.sizeSpinner
         val last: Int = pref!!.getInt("books_searcher_matches_last_position", 0)
         spinner.setSelection(last)
+
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View,
-                position: Int,
-                vId: Long
+                parent: AdapterView<*>?, view: View, position: Int, vId: Long
             ) {
                 maxMatches = spinner.getItemAtPosition(position).toString().toInt()
+
                 val editor: SharedPreferences.Editor = pref!!.edit()
                 editor.putInt("books_searcher_matches_last_position", position)
                 editor.apply()
+
                 if (adapter != null && adapter!!.itemCount > 0) perform(searchView!!.query.toString())
             }
 
@@ -107,28 +117,35 @@ class BookSearcher : AppCompatActivity() {
     private fun perform(query: String) {
         selectedBooks = getSelectedBooks()
         search(query)
+
         if (matches!!.isEmpty()) {
             binding!!.notFoundTv.visibility = View.VISIBLE
             binding!!.recycler.visibility = View.INVISIBLE
         } else {
             binding!!.notFoundTv.visibility = View.INVISIBLE
             binding!!.recycler.visibility = View.VISIBLE
+
             setupRecycler(matches)
+
             if (adapter != null) adapter!!.notifyDataSetChanged()
         }
     }
 
     private fun search(text: String) {
         matches!!.clear()
+
         val prefix = "/Books/"
         val dir = File(getExternalFilesDir(null).toString() + prefix)
+
         if (!dir.exists()) return
+
         for (i in bookTitles!!.indices) {
-            if (!selectedBooks!![i]) continue
+            if (!selectedBooks!![i] || !downloaded(i)) continue
+
             val jsonStr = Utils.getJsonFromDownloads(
-                getExternalFilesDir(null).toString() +
-                        prefix + i + ".json"
+                getExternalFilesDir(null).toString() + prefix + i + ".json"
             )
+
             val book: Book = try {
                 gson!!.fromJson(jsonStr, Book::class.java)
             } catch (e: Exception) {
@@ -136,11 +153,14 @@ class BookSearcher : AppCompatActivity() {
                 e.printStackTrace()
                 continue
             }
+
             for (j in book.chapters.indices) {
                 val chapter = book.chapters[j]
+
                 for (k in chapter.doors.indices) {
                     val door = chapter.doors[k]
                     val doorText = door.text
+
                     val m = Pattern.compile(text).matcher(doorText)
                     val ss: Spannable = SpannableString(doorText)
                     while (m.find()) {
@@ -148,6 +168,7 @@ class BookSearcher : AppCompatActivity() {
                             ForegroundColorSpan(getColor(R.color.highlight_M)),
                             m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
+
                         matches!!.add(
                             BookSearcherMatch(
                                 i, book.bookInfo.bookTitle,
@@ -155,6 +176,7 @@ class BookSearcher : AppCompatActivity() {
                                 k, door.doorTitle, ss
                             )
                         )
+
                         if (matches!!.size == maxMatches) return
                     }
                 }
@@ -190,6 +212,23 @@ class BookSearcher : AppCompatActivity() {
             pref!!.getString("selected_search_books", defStr),
             BooleanArray::class.java
         )
+    }
+
+    private fun downloaded(id: Int): Boolean {
+        val dir = File(getExternalFilesDir(null).toString() + "/Books/")
+
+        if (!dir.exists()) return false
+
+        val files = dir.listFiles()
+        for (element in files!!) {
+            val name = element.name
+            val n = name.substring(0, name.length - 5)
+            try {
+                val num = n.toInt()
+                if (num == id) return true
+            } catch (ignored: NumberFormatException) {}
+        }
+        return false
     }
 
     override fun onDestroy() {

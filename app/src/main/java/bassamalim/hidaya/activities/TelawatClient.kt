@@ -68,25 +68,32 @@ class TelawatClient : AppCompatActivity() {
         binding = ActivityTelawatClientBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         binding!!.home.setOnClickListener { onBackPressed() }
-        db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "HidayaDB"
-        ).createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+
+        db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "HidayaDB")
+            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+
         pref = PreferenceManager.getDefaultSharedPreferences(this)
+
         data
+
         retrieveState()
+
         mediaBrowser = MediaBrowserCompat(
-            this, ComponentName(
-                this,
-                TelawatService::class.java
-            ), connectionCallbacks, null
-        ) // optional Bundle
+            this, ComponentName(this, TelawatService::class.java),
+            connectionCallbacks, null
+        )
+
         initViews()
+
         setListeners()
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Log.d(Global.TAG, "In OnNewIntent")
+
         data
+
         sendPlayRequest() // Maybe this causes the problem of restarting when device unlocked
     }
 
@@ -116,22 +123,22 @@ class TelawatClient : AppCompatActivity() {
             val token: MediaSessionCompat.Token = mediaBrowser!!.sessionToken
 
             // Create a MediaControllerCompat
-            val mediaController = MediaControllerCompat(
-                this@TelawatClient, token
-            )
+            val mediaController = MediaControllerCompat(this@TelawatClient, token)
 
             // Save the controller
             MediaControllerCompat.setMediaController(this@TelawatClient, mediaController)
 
             // Finish building the UI
             buildTransportControls()
+
             data
+
             if (action != "back" &&
                 (controller!!.playbackState.state == PlaybackStateCompat.STATE_NONE ||
                         mediaId != controller!!.metadata.getString(
-                    MediaMetadataCompat.METADATA_KEY_MEDIA_ID
-                ))
-            ) sendPlayRequest()
+                    MediaMetadataCompat.METADATA_KEY_MEDIA_ID))
+            )
+                sendPlayRequest()
         }
 
         override fun onConnectionSuspended() {
@@ -152,15 +159,20 @@ class TelawatClient : AppCompatActivity() {
             val intent: Intent = intent
             action = intent.action
             mediaId = intent.getStringExtra("media_id")
+
             reciterId = mediaId!!.substring(0, 3).toInt()
             versionId = mediaId!!.substring(3, 5).toInt()
             surahIndex = mediaId!!.substring(5).toInt()
+
             reciterName = db!!.telawatRecitersDao().getNames()[reciterId]
-            val telawa: TelawatVersionsDB = db!!.telawatVersionsDao().getVersion(reciterId, versionId)
+
+            val telawa: TelawatVersionsDB =
+                db!!.telawatVersionsDao().getVersion(reciterId, versionId)
             version = RecitationVersion(
                 versionId, telawa.getUrl(), telawa.getRewaya(),
                 telawa.getCount(), telawa.getSuras(), null
             )
+
             surahNames = db!!.suarDao().getNames()
         }
 
@@ -181,18 +193,17 @@ class TelawatClient : AppCompatActivity() {
         rewindBtn = binding!!.rewind
         repeatBtn = binding!!.repeat
         shuffleBtn = binding!!.shuffle
+
         surahNamescreen!!.text = surahNames!![surahIndex]
         binding!!.reciterNamescreen.text = reciterName
         binding!!.versionNamescreen.text = version!!.getRewaya()
-        if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE) repeatBtn!!.background = ResourcesCompat.getDrawable(
-            resources,
-            R.drawable.rounded_dialog, theme
-        )
-        if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) shuffleBtn!!.background =
-            ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.rounded_dialog, theme
-            )
+
+        if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE)
+            repeatBtn!!.background =
+                ResourcesCompat.getDrawable(resources, R.drawable.rounded_dialog, theme)
+        if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL)
+            shuffleBtn!!.background =
+                ResourcesCompat.getDrawable(resources, R.drawable.rounded_dialog, theme)
     }
 
     private fun setListeners() {
@@ -200,45 +211,52 @@ class TelawatClient : AppCompatActivity() {
             if (repeat == PlaybackStateCompat.REPEAT_MODE_NONE) {
                 repeat = PlaybackStateCompat.REPEAT_MODE_ONE
                 tc!!.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)
+
                 val editor: SharedPreferences.Editor = pref!!.edit()
                 editor.putInt("telawat_repeat_mode", repeat)
                 editor.apply()
+
                 repeatBtn!!.background = ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.rounded_dialog, theme
+                    resources, R.drawable.rounded_dialog, theme
                 )
-            } else if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE) {
+            }
+            else if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE) {
                 repeat = PlaybackStateCompat.REPEAT_MODE_NONE
                 tc!!.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
+
                 val editor: SharedPreferences.Editor = pref!!.edit()
                 editor.putInt("telawat_repeat_mode", repeat)
                 editor.apply()
+
                 repeatBtn!!.background = ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.ripple_circle, theme
+                    resources, R.drawable.ripple_circle, theme
                 )
             }
         }
+
         shuffleBtn!!.setOnClickListener {
             if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_ALL
                 tc!!.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
+
                 val editor: SharedPreferences.Editor = pref!!.edit()
                 editor.putInt("telawat_shuffle_mode", shuffle)
                 editor.apply()
+
                 shuffleBtn!!.background = ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.rounded_dialog, theme
+                    resources, R.drawable.rounded_dialog, theme
                 )
-            } else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+            }
+            else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_NONE
                 tc!!.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE)
+
                 val editor: SharedPreferences.Editor = pref!!.edit()
                 editor.putInt("telawat_shuffle_mode", shuffle)
                 editor.apply()
+
                 shuffleBtn!!.background = ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.ripple_circle, theme
+                    resources, R.drawable.ripple_circle, theme
                 )
             }
         }
@@ -257,15 +275,10 @@ class TelawatClient : AppCompatActivity() {
 
     private fun updateButton(playing: Boolean) {
         if (playing) playPause!!.setImageDrawable(
-            ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.ic_player_pause, theme
-            )
-        ) else playPause!!.setImageDrawable(
-            ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.ic_player_play, theme
-            )
+            ResourcesCompat.getDrawable(resources, R.drawable.ic_player_pause, theme)
+        )
+        else playPause!!.setImageDrawable(
+            ResourcesCompat.getDrawable(resources, R.drawable.ic_player_play, theme)
         )
     }
 
@@ -277,14 +290,19 @@ class TelawatClient : AppCompatActivity() {
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
+
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
+
         playPause!!.setOnClickListener {
             // Since this is a play/pause button, you'll need to test the current state
             // and choose the action accordingly
             val pbState: Int = controller!!.playbackState.state
-            if (pbState == PlaybackStateCompat.STATE_PLAYING) tc!!.pause() else tc!!.play()
+
+            if (pbState == PlaybackStateCompat.STATE_PLAYING) tc!!.pause()
+            else tc!!.play()
         }
+
         nextBtn!!.setOnClickListener { tc!!.skipToNext() }
         prevBtn!!.setOnClickListener { tc!!.skipToPrevious() }
         forwardBtn!!.setOnClickListener { tc!!.fastForward() }
@@ -302,6 +320,7 @@ class TelawatClient : AppCompatActivity() {
 
     private fun buildTransportControls() {
         enableControls()
+
         controller = MediaControllerCompat.getMediaController(this@TelawatClient)
         tc = controller!!.transportControls
 
@@ -333,6 +352,7 @@ class TelawatClient : AppCompatActivity() {
     private fun updateMetadata(metadata: MediaMetadataCompat) {
         surahIndex = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
         surahNamescreen!!.text = surahNames!![surahIndex]
+
         val duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION).toInt()
         durationScreen!!.text = formatTime(duration)
         seekBar!!.max = duration
@@ -341,44 +361,13 @@ class TelawatClient : AppCompatActivity() {
     private fun updatePbState(state: PlaybackStateCompat) {
         seekBar!!.progress = state.position.toInt()
         progressScreen!!.text = formatTime(state.position.toInt())
+
         when (state.state) {
             PlaybackStateCompat.STATE_PLAYING -> {
                 updateButton(true)
                 progressScreen!!.text = formatTime(state.position.toInt())
-            }
-            PlaybackStateCompat.STATE_NONE -> {
-                run { updateButton(false) }
-            }
-            PlaybackStateCompat.STATE_STOPPED -> {
-                run { updateButton(false) }
-            }
-            PlaybackStateCompat.STATE_PAUSED -> {
-                run { updateButton(false) }
-            }
-            PlaybackStateCompat.STATE_FAST_FORWARDING -> {
-                run { updateButton(false) }
-            }
-            PlaybackStateCompat.STATE_REWINDING -> {
-                run { updateButton(false) }
-            }
-            PlaybackStateCompat.STATE_BUFFERING -> {
-                run { updateButton(false) }
-            }
-            PlaybackStateCompat.STATE_ERROR -> {
-                run { updateButton(false) }
-            }
-            PlaybackStateCompat.STATE_CONNECTING -> {
-                run { updateButton(false) }
-            }
-            PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS -> {
-                run { updateButton(false) }
-            }
-            PlaybackStateCompat.STATE_SKIPPING_TO_NEXT -> {
-                run { updateButton(false) }
-            }
-            PlaybackStateCompat.STATE_SKIPPING_TO_QUEUE_ITEM -> {
-                updateButton(false)
-            }
+            } // idea: put buffering state animation
+            else -> run { updateButton(false) }
         }
     }
 
@@ -387,8 +376,7 @@ class TelawatClient : AppCompatActivity() {
         val minutes = time / (60 * 1000) % 60
         val seconds = time / 1000 % 60
         var hms = String.format(
-            Locale.US, "%02d:%02d:%02d",
-            hours, minutes, seconds
+            Locale.US, "%02d:%02d:%02d", hours, minutes, seconds
         )
         if (hms.startsWith("0")) {
             hms = hms.substring(1)
@@ -399,6 +387,7 @@ class TelawatClient : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
+
         if (isTaskRoot) {
             val intent = Intent(this, TelawatSuarCollectionActivity::class.java)
             intent.putExtra("reciter_id", reciterId)

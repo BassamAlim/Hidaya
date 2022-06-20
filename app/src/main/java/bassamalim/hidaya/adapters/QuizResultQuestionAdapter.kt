@@ -13,12 +13,10 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.models.QuizResultQuestion
 
 class QuizResultQuestionAdapter(
-    private val context: Context,
-    cards: ArrayList<QuizResultQuestion>) :
-    RecyclerView.Adapter<QuizResultQuestionAdapter.ViewHolder>() {
+    private val context: Context, private val items: ArrayList<QuizResultQuestion>
+) : RecyclerView.Adapter<QuizResultQuestionAdapter.ViewHolder>() {
 
-    private val items: ArrayList<QuizResultQuestion>
-    private val question: String
+    private val question: String = context.getString(R.string.question)
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val card: CardView
@@ -59,10 +57,12 @@ class QuizResultQuestionAdapter(
         val qNum = question + " " + (items[position].getQuestionNumber() + 1)
         viewHolder.qNumTv.text = qNum
         viewHolder.qTextTv.text = items[position].getQuestionText()
+
         viewHolder.a1Tv.text = items[position].getAnswer1()
         viewHolder.a2Tv.text = items[position].getAnswer2()
         viewHolder.a3Tv.text = items[position].getAnswer3()
         viewHolder.a4Tv.text = items[position].getAnswer4()
+
         setImage(position, 0, viewHolder.a1iv)
         setImage(position, 1, viewHolder.a2iv)
         setImage(position, 2, viewHolder.a3iv)
@@ -72,24 +72,16 @@ class QuizResultQuestionAdapter(
     private fun setImage(position: Int, num: Int, iv: ImageView) {
         val chosen = items[position].getChosenAnswer()
         val correct = items[position].getCorrectAnswer()
-        if (num == correct) iv.setImageDrawable(
-            AppCompatResources.getDrawable(
-                context,
-                R.drawable.ic_correct
-            )
-        ) else if (chosen != correct && num == chosen) iv.setImageDrawable(
-            AppCompatResources.getDrawable(
-                context, R.drawable.ic_wrong
-            )
-        ) else iv.setImageDrawable(null)
+
+        if (num == correct)
+            iv.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_correct))
+        else if (chosen != correct && num == chosen)
+            iv.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_wrong))
+        else
+            iv.setImageDrawable(null)
     }
 
     override fun getItemCount(): Int {
         return items.size
-    }
-
-    init {
-        items = cards
-        question = context.getString(R.string.question)
     }
 }

@@ -22,7 +22,9 @@ class OtherFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentOtherBinding.inflate(inflater, container, false)
+
         setListeners()
+
         return binding!!.root
     }
 
@@ -31,40 +33,47 @@ class OtherFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val intent = Intent(context, TelawatCollectionActivity::class.java)
                 startActivity(intent)
-            } else Toast.makeText(
-                context, getString(R.string.feature_not_supported),
-                Toast.LENGTH_SHORT
+            }
+            else Toast.makeText(
+                context, getString(R.string.feature_not_supported), Toast.LENGTH_SHORT
             ).show()
         }
+
         binding!!.quiz.setOnClickListener {
             val intent = Intent(context, QuizLobbyActivity::class.java)
             startActivity(intent)
         }
+
         binding!!.books.setOnClickListener {
             val intent = Intent(context, BooksActivity::class.java)
             startActivity(intent)
         }
+
         binding!!.channels.setOnClickListener {
             val intent = Intent(context, TvActivity::class.java)
             startActivity(intent)
         }
+
         binding!!.radio.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val intent = Intent(context, RadioClient::class.java)
                 startActivity(intent)
-            } else Toast.makeText(
-                context, getString(R.string.feature_not_supported),
-                Toast.LENGTH_SHORT
+            }
+            else Toast.makeText(
+                context, getString(R.string.feature_not_supported), Toast.LENGTH_SHORT
             ).show()
         }
+
         binding!!.dateConverter.setOnClickListener {
             val intent = Intent(context, DateConverter::class.java)
             startActivity(intent)
         }
+
         binding!!.settings.setOnClickListener {
             val intent = Intent(context, Settings::class.java)
             startActivity(intent)
         }
+
         binding!!.contact.setOnClickListener {
             val intent = Intent(
                 Intent.ACTION_SENDTO, Uri.fromParts(
@@ -74,6 +83,7 @@ class OtherFragment : Fragment() {
             intent.putExtra(Intent.EXTRA_SUBJECT, "Hidaya")
             startActivity(Intent.createChooser(intent, "Choose an Email client :"))
         }
+
         binding!!.share.setOnClickListener {
             val sharingIntent = Intent(Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"
@@ -81,6 +91,7 @@ class OtherFragment : Fragment() {
             sharingIntent.putExtra(Intent.EXTRA_TEXT, Global.PLAY_STORE_URL)
             startActivity(Intent.createChooser(sharingIntent, "Share via"))
         }
+
         binding!!.about.setOnClickListener {
             val about = Intent(context, AboutActivity::class.java)
             startActivity(about)

@@ -16,6 +16,7 @@ class QuizLobbyActivity : AppCompatActivity() {
         binding = ActivityQuizLobbyBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         binding!!.home.setOnClickListener { onBackPressed() }
+
         setListeners()
     }
 

@@ -3,11 +3,9 @@ package bassamalim.hidaya.helpers
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.Location
-import android.util.Log
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.models.MyLocation
-import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
 import com.google.gson.Gson
 import java.util.*
@@ -39,7 +37,6 @@ class Keeper {
     private fun setUp() {
         pref = PreferenceManager.getDefaultSharedPreferences(context)
         gson = Gson()
-        Log.d(Global.TAG, "HERE")
     }
 
     /**
@@ -50,6 +47,7 @@ class Keeper {
     private fun storeLocation(gLocation: Location?) {
         val loc = MyLocation(gLocation!!)
         val editor: SharedPreferences.Editor = pref!!.edit()
+
         lJson = gson!!.toJson(loc)
         editor.putString("stored location", lJson)
         editor.apply()
@@ -85,10 +83,10 @@ class Keeper {
      * @return The location object.
      */
     fun retrieveLocation(): Location? {
-        Log.d(Global.TAG, "HERE1")
         lJson = pref!!.getString("stored location", "")
         val myLocation: MyLocation? = gson!!.fromJson(lJson, MyLocation::class.java)
-        return if (myLocation == null) null else MyLocation.toLocation(myLocation)
+        return if (myLocation == null) null
+        else MyLocation.toLocation(myLocation)
     }
 
     /**
@@ -122,14 +120,13 @@ class Keeper {
         val calendar = Calendar.getInstance()
         val date = Date()
         calendar.time = date
+
         val timeZoneObj = TimeZone.getDefault()
         val millis = timeZoneObj.getOffset(date.time).toLong()
         val timezone = millis / 3600000.0
+
         return reformatTimes(
-            PrayTimes(context).getPrayerTimes(
-                calendar, loc.latitude,
-                loc.longitude, timezone
-            )
+            PrayTimes(context).getPrayerTimes(calendar, loc.latitude, loc.longitude, timezone)
         )
     }
 
@@ -143,14 +140,17 @@ class Keeper {
     private fun reformatTimes(givenTimes: ArrayList<String>): Array<String?> {
         val arr = arrayOfNulls<String>(givenTimes.size - 1)
         val prayerNames = context.resources.getStringArray(R.array.prayer_names)
+
         var index = 0
         for (i in 0..4) {
             arr[i] = """
                 ${prayerNames[index]}
                 ${givenTimes[index]}
                 """.trimIndent()
+
             if (++index == 1) index = 2
         }
+
         return arr
     }
 }

@@ -19,16 +19,15 @@ import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.models.Sura
 import com.google.gson.Gson
 
-class QuranFragmentAdapter(private val context: Context, buttons: ArrayList<Sura>) :
+class QuranFragmentAdapter(private val context: Context, private val original: ArrayList<Sura>) :
     RecyclerView.Adapter<QuranFragmentAdapter.ViewHolder?>() {
 
-    private val db: AppDatabase = Room.databaseBuilder(
-        context, AppDatabase::class.java, "HidayaDB")
+    private val db: AppDatabase =
+        Room.databaseBuilder(context, AppDatabase::class.java, "HidayaDB")
         .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson: Gson = Gson()
-    private val items: ArrayList<Sura>
-    private val itemsCopy: ArrayList<Sura>
+    private val items = ArrayList(original)
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val card: CardView
@@ -46,20 +45,21 @@ class QuranFragmentAdapter(private val context: Context, buttons: ArrayList<Sura
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(
-                context
-            ).inflate(
-                R.layout.item_quran_fragment,
-                viewGroup, false
+            LayoutInflater.from(context).inflate(
+                R.layout.item_quran_fragment, viewGroup, false
             )
         )
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val card: Sura = items[position]
+
         viewHolder.namescreen.text = card.getSuraName()
+
         setTanzeel(viewHolder, card)
+
         doFavorites(viewHolder, card, position)
+
         viewHolder.card.setOnClickListener(card.getCardListener())
     }
 
@@ -67,25 +67,26 @@ class QuranFragmentAdapter(private val context: Context, buttons: ArrayList<Sura
         val tanzeel: Int = card.getTanzeel()
         if (tanzeel == 0) // Makkah
             vh.tanzeelView.setImageDrawable(
-                AppCompatResources.getDrawable(context, R.drawable.ic_kaaba_black)
-            ) else if (tanzeel == 1) // Madina
+                AppCompatResources.getDrawable(context, R.drawable.ic_kaaba_black))
+        else if (tanzeel == 1) // Madina
             vh.tanzeelView.setImageDrawable(
-                AppCompatResources.getDrawable(context, R.drawable.ic_madinah)
-            )
+                AppCompatResources.getDrawable(context, R.drawable.ic_madinah))
     }
 
     private fun doFavorites(vh: ViewHolder, card: Sura, position: Int) {
         val fav: Int = card.getFavorite()
-        if (fav == 0) vh.favBtn.setImageDrawable(
-            AppCompatResources.getDrawable(context, R.drawable.ic_star_outline)
-        ) else if (fav == 1) vh.favBtn.setImageDrawable(
-            AppCompatResources.getDrawable(context, R.drawable.ic_star)
-        )
+        if (fav == 0)
+            vh.favBtn.setImageDrawable(
+                AppCompatResources.getDrawable(context, R.drawable.ic_star_outline))
+        else if (fav == 1)
+            vh.favBtn.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_star))
+
         vh.favBtn.setOnClickListener {
             if (card.getFavorite() == 0) {
                 db.suarDao().setFav(card.getNumber(), 1)
                 card.setFavorite(1)
-            } else if (card.getFavorite() == 1) {
+            }
+            else if (card.getFavorite() == 1) {
                 db.suarDao().setFav(card.getNumber(), 0)
                 card.setFavorite(0)
             }
@@ -100,8 +101,9 @@ class QuranFragmentAdapter(private val context: Context, buttons: ArrayList<Sura
 
     fun filterName(text: String) {
         items.clear()
-        if (text.isEmpty()) items.addAll(itemsCopy) else {
-            for (suraCard in itemsCopy) {
+        if (text.isEmpty()) items.addAll(original)
+        else {
+            for (suraCard in original) {
                 if (suraCard.getSearchName().contains(text)) items.add(suraCard)
             }
         }
@@ -110,7 +112,8 @@ class QuranFragmentAdapter(private val context: Context, buttons: ArrayList<Sura
 
     fun filterNumber(text: String) {
         items.clear()
-        if (text.isEmpty()) items.addAll(itemsCopy) else {
+        if (text.isEmpty()) items.addAll(original)
+        else {
             try {
                 val num = text.toInt()
                 if (num in 1..604) {
@@ -118,12 +121,11 @@ class QuranFragmentAdapter(private val context: Context, buttons: ArrayList<Sura
                     openPage.action = "by_page"
                     openPage.putExtra("page", num)
                     context.startActivity(openPage)
-                } else Toast.makeText(
-                    context, context.getString(R.string.page_does_not_exist),
-                    Toast.LENGTH_SHORT
-                ).show()
+                }
+                else
+                    Toast.makeText(context, context.getString(R.string.page_does_not_exist), Toast.LENGTH_SHORT).show()
             } catch (e: NumberFormatException) {
-                for (suraCard in itemsCopy) {
+                for (suraCard in original) {
                     if (suraCard.getSearchName().contains(text)) items.add(suraCard)
                 }
             }
@@ -133,14 +135,11 @@ class QuranFragmentAdapter(private val context: Context, buttons: ArrayList<Sura
 
     private fun updateFavorites() {
         val favSuras: List<Any> = db.suarDao().getFav()
+
         val surasJson: String = gson.toJson(favSuras)
+
         val editor: SharedPreferences.Editor = pref.edit()
         editor.putString("favorite_suras", surasJson)
         editor.apply()
-    }
-
-    init {
-        items = ArrayList(buttons)
-        itemsCopy = ArrayList(buttons)
     }
 }

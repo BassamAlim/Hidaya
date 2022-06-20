@@ -12,14 +12,18 @@ import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.replacements.DoubleClickLMM
 
 class RecyclerQuranViewerAdapter(
-    private val context: Context, items: List<Ayah>,
-    private val THEME: String, language: String, surahIndex: Int) :
+    private val context: Context, private val items: List<Ayah>,
+    private val THEME: String, language: String, private val surahIndex: Int) :
     RecyclerView.Adapter<RecyclerQuranViewerAdapter.ViewHolder?>() {
 
-    private val items: List<Ayah>
     private var textSize: Int
-    private val surahIndex: Int
     private var translate = false
+
+    init {
+        textSize =
+            PreferenceManager.getDefaultSharedPreferences(context).getInt(context.getString(R.string.quran_text_size_key), 15)
+        if (language == "en") translate = true
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val suraNameTv: TextView
@@ -40,32 +44,38 @@ class RecyclerQuranViewerAdapter(
             LayoutInflater.from(viewGroup.context)
                 .inflate(R.layout.item_recycler_quran_viewer, viewGroup, false)
         )
+
         if (THEME == "ThemeM") {
             viewHolder.suraNameTv.setBackgroundResource(R.drawable.surah_header)
             viewHolder.textTv.movementMethod = DoubleClickLMM.getInstance(
-                context.resources
-                    .getColor(R.color.highlight_M, context.theme)
-            )
-        } else {
-            viewHolder.suraNameTv.setBackgroundResource(R.drawable.surah_header_light)
-            viewHolder.textTv.movementMethod = DoubleClickLMM.getInstance(
-                context.resources
-                    .getColor(R.color.highlight_L, context.theme)
+                context.resources.getColor(R.color.highlight_M, context.theme)
             )
         }
+        else {
+            viewHolder.suraNameTv.setBackgroundResource(R.drawable.surah_header_light)
+            viewHolder.textTv.movementMethod = DoubleClickLMM.getInstance(
+                context.resources.getColor(R.color.highlight_L, context.theme)
+            )
+        }
+
         viewHolder.suraNameTv.textSize = (textSize + 5).toFloat()
         viewHolder.basmalah.textSize = textSize.toFloat()
         viewHolder.textTv.textSize = textSize.toFloat()
         viewHolder.translationTv.textSize = (textSize - 5).toFloat()
+
         return viewHolder
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val aya: Ayah = items[position]
+
         header(viewHolder, aya)
+
         viewHolder.textTv.text = aya.getSS()
-        if (translate) viewHolder.translationTv.text = aya.getTranslation() else viewHolder.translationTv.visibility =
-            View.GONE
+
+        if (translate) viewHolder.translationTv.text = aya.getTranslation()
+        else viewHolder.translationTv.visibility = View.GONE
+
         aya.setScreen(viewHolder.textTv)
     }
 
@@ -76,7 +86,8 @@ class RecyclerQuranViewerAdapter(
 
             if (aya.getSurahNum() != 1 && aya.getAyahNum() != 9) // surat al-fatiha and At-Taubah
                 vh.basmalah.visibility = View.VISIBLE
-        } else {
+        }
+        else {
             vh.suraNameTv.visibility = View.GONE
             vh.basmalah.visibility = View.GONE
         }
@@ -88,14 +99,5 @@ class RecyclerQuranViewerAdapter(
 
     override fun getItemCount(): Int {
         return items.size
-    }
-
-    init {
-        this.items = items
-        this.surahIndex = surahIndex
-        textSize = PreferenceManager.getDefaultSharedPreferences(context).getInt(
-            context.getString(R.string.quran_text_size_key), 15
-        )
-        if (language == "en") translate = true
     }
 }

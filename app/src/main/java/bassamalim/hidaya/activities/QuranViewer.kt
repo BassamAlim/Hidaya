@@ -113,17 +113,16 @@ class QuranViewer : SwipeActivity() {
             .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
 
         ayatDB = db!!.ayahDao().getAll()
-        names = if (language == "en") db!!.suarDao().getNamesEn() else db!!.suarDao().getNames()
+        names =
+            if (language == "en") db!!.suarDao().getNamesEn()
+            else db!!.suarDao().getNames()
     }
 
     private fun checkFirstTime() {
         if (pref!!.getBoolean("is_first_time_in_quran", true)) TutorialDialog(
             this, getString(R.string.quran_tips),
             "is_first_time_in_quran"
-        ).show(
-            supportFragmentManager,
-            TutorialDialog.TAG
-        )
+        ).show(supportFragmentManager, TutorialDialog.TAG)
     }
 
     private fun action(intent: Intent) {
@@ -140,15 +139,16 @@ class QuranViewer : SwipeActivity() {
     private fun setupRecyclers() {
         recyclers = arrayOf(binding!!.recycler1, binding!!.recycler2)
 
-        val layoutManagers = arrayOf(LinearLayoutManager(this), LinearLayoutManager(this))
+        val layoutManagers =
+            arrayOf(LinearLayoutManager(this), LinearLayoutManager(this))
         recyclers!![0].layoutManager = layoutManagers[0]
         recyclers!![1].layoutManager = layoutManagers[1]
 
-        adapter = if (action == "by_surah") RecyclerQuranViewerAdapter(
-            this, allAyahs, theme!!, language!!, surahIndex
-        ) else RecyclerQuranViewerAdapter(
-            this, allAyahs, theme!!, language!!, -1
-        )
+        adapter =
+            if (action == "by_surah")
+                RecyclerQuranViewerAdapter(this, allAyahs, theme!!, language!!, surahIndex)
+            else
+                RecyclerQuranViewerAdapter(this, allAyahs, theme!!, language!!, -1)
 
         recyclers!![0].adapter = adapter
         recyclers!![1].adapter = adapter
@@ -327,7 +327,8 @@ class QuranViewer : SwipeActivity() {
             if (flipper!!.displayedChild == 2) flipper!!.displayedChild = 3
             else flipper!!.displayedChild = 2
             recyclers!![currentView].scrollTo(0, 0)
-        } else {
+        }
+        else {
             if (flipper!!.displayedChild == 0) flipper!!.displayedChild = 1
             else flipper!!.displayedChild = 0
             scrollViews!![currentView].scrollTo(0, 0)

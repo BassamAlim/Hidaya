@@ -22,11 +22,10 @@ class AthkarListAdapter(private val context: Context, cards: List<AthkarItem>) :
 
     private val db: AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "HidayaDB").createFromAsset(
-            "databases/HidayaDB.db"
-        ).allowMainThreadQueries().build()
+            "databases/HidayaDB.db").allowMainThreadQueries().build()
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    private val items: MutableList<AthkarItem>
-    private val itemsCopy: List<AthkarItem>
+    private val items = cards as MutableList<AthkarItem>
+    private val itemsCopy = cards
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val card: CardView
@@ -50,30 +49,39 @@ class AthkarListAdapter(private val context: Context, cards: List<AthkarItem>) :
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val card: AthkarItem = items[position]
+
         viewHolder.nameTv.text = card.name
+
         val fav: Int = card.favorite
-        if (fav == 0) viewHolder.favBtn.setImageDrawable(
-            AppCompatResources.getDrawable(context, R.drawable.ic_star_outline)
-        ) else if (fav == 1) viewHolder.favBtn.setImageDrawable(
-            AppCompatResources.getDrawable(context, R.drawable.ic_star)
+        if (fav == 0)
+            viewHolder.favBtn.setImageDrawable(
+                AppCompatResources.getDrawable(context, R.drawable.ic_star_outline)
         )
+        else if (fav == 1)
+            viewHolder.favBtn.setImageDrawable(
+                AppCompatResources.getDrawable(context, R.drawable.ic_star)
+        )
+
         viewHolder.card.setOnClickListener(card.listener)
         viewHolder.favBtn.setOnClickListener {
             if (card.favorite == 0) {
                 db.athkarDao().setFav(card.id, 1)
                 card.favorite = 1
-            } else if (card.favorite == 1) {
+            }
+            else if (card.favorite == 1) {
                 db.athkarDao().setFav(card.id, 0)
                 card.favorite = 0
             }
             notifyItemChanged(position)
+
             updateFavorites()
         }
     }
 
     fun filter(text: String) {
         items.clear()
-        if (text.isEmpty()) items.addAll(itemsCopy.toCollection(items)) else {
+        if (text.isEmpty()) items.addAll(itemsCopy.toCollection(items))
+        else {
             for (athkarItem in itemsCopy) {
                 if (athkarItem.name.contains(text)) items.add(athkarItem)
             }
@@ -83,16 +91,13 @@ class AthkarListAdapter(private val context: Context, cards: List<AthkarItem>) :
 
     private fun updateFavorites() {
         val favAthkar: List<Int> = db.athkarDao().getFavs()
+
         val gson = Gson()
         val athkarJson: String = gson.toJson(favAthkar)
+
         val editor: SharedPreferences.Editor = pref.edit()
         editor.putString("favorite_athkar", athkarJson)
         editor.apply()
-    }
-
-    init {
-        items = cards as MutableList<AthkarItem>
-        itemsCopy = cards
     }
 
     override fun getItemCount(): Int {

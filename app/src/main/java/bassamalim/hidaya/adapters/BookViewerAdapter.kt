@@ -14,18 +14,20 @@ import bassamalim.hidaya.models.BookDoor
 import com.google.gson.Gson
 
 class BookViewerAdapter(
-    private val context: Context, cards: ArrayList<BookDoor>,
-    bookId: Int, chapterId: Int) :
-    RecyclerView.Adapter<BookViewerAdapter.ViewHolder?>() {
+    private val context: Context, private val items: ArrayList<BookDoor>,
+    private val bookId: Int, private val chapterId: Int
+) : RecyclerView.Adapter<BookViewerAdapter.ViewHolder?>() {
 
     private val margin = 15
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson: Gson = Gson()
-    private val bookId: Int
-    private val chapterId: Int
-    private val items: ArrayList<BookDoor>
     private var favs: BooleanArray? = null
     private var textSize: Int
+
+    init {
+        textSize = pref.getInt(context.getString(R.string.books_text_size_key), 15) + margin
+        getFavs()
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val card: CardView
@@ -43,42 +45,48 @@ class BookViewerAdapter(
 
     private fun getFavs() {
         val favsStr: String = pref.getString(
-            "book" + bookId +
-                    "_chapter" + chapterId + "_favs", ""
+            "book" + bookId + "_chapter" + chapterId + "_favs", ""
         )!!
-        favs = if (favsStr.isEmpty()) BooleanArray(items.size) else gson.fromJson(
-            favsStr,
-            BooleanArray::class.java
-        )
+
+        favs =
+            if (favsStr.isEmpty()) BooleanArray(items.size)
+            else gson.fromJson(favsStr, BooleanArray::class.java)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val viewHolder = ViewHolder(
             LayoutInflater.from(viewGroup.context).inflate(
-                R.layout.item_book_door,
-                viewGroup, false
+                R.layout.item_book_door, viewGroup, false
             )
         )
+
         viewHolder.titleTv.textSize = textSize.toFloat()
         viewHolder.textTv.textSize = textSize.toFloat()
+
         return viewHolder
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val card = items[position]
+
         viewHolder.titleTv.text = items[position].getDoorTitle()
+
         viewHolder.textTv.text = items[position].getText()
+
         val fav = card.isFav()
-        if (fav) viewHolder.favBtn.setImageDrawable(
-            AppCompatResources.getDrawable(context, R.drawable.ic_star)
-        ) else viewHolder.favBtn.setImageDrawable(
-            AppCompatResources.getDrawable(context, R.drawable.ic_star_outline)
-        )
+        if (fav)
+            viewHolder.favBtn.setImageDrawable(
+                AppCompatResources.getDrawable(context, R.drawable.ic_star))
+        else
+            viewHolder.favBtn.setImageDrawable(
+            AppCompatResources.getDrawable(context, R.drawable.ic_star_outline))
+
         viewHolder.favBtn.setOnClickListener {
             if (card.isFav()) {
                 favs!![items[position].getDoorId()] = false
                 card.setFav(false)
-            } else {
+            }
+            else {
                 favs!![items[position].getDoorId()] = true
                 card.setFav(true)
             }
@@ -100,13 +108,5 @@ class BookViewerAdapter(
 
     override fun getItemCount(): Int {
         return items.size
-    }
-
-    init {
-        this.bookId = bookId
-        this.chapterId = chapterId
-        items = cards
-        textSize = pref.getInt(context.getString(R.string.books_text_size_key), 15) + margin
-        getFavs()
     }
 }

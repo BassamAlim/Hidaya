@@ -24,6 +24,7 @@ class HijriDatePickerDialog : DialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog!!.window!!.setBackgroundDrawableResource(R.color.bg_M)
+
         (dialog as AlertDialog?)!!.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
             resources.getColor(R.color.text_M, requireContext().theme)
         )
@@ -42,52 +43,49 @@ class HijriDatePickerDialog : DialogFragment() {
         yearPicker = dialog.findViewById(R.id.picker_year)
         monthPicker = dialog.findViewById(R.id.picker_month)
         dayPicker = dialog.findViewById(R.id.picker_day)
-        val MAX_YEAR = 2000
-        val tempArray = arrayOfNulls<String>(MAX_YEAR)
-        for (i in 0 until MAX_YEAR) tempArray[i] = Utils.translateNumbers(
+
+        val maxYear = 2000
+        val tempArray = arrayOfNulls<String>(maxYear)
+        for (i in 0 until maxYear) tempArray[i] = Utils.translateNumbers(
             requireContext(), (i + 1).toString()
         )
+
         yearPicker!!.minValue = 1
-        yearPicker!!.maxValue = MAX_YEAR
+        yearPicker!!.maxValue = maxYear
         yearPicker!!.displayedValues = tempArray
         yearPicker!!.value = cal.get(Calendar.YEAR)
         yearPicker!!.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
             cal.set(Calendar.YEAR, newVal)
             dayPicker!!.maxValue = cal.lengthOfMonth()
         }
+
         monthPicker!!.minValue = 1
         monthPicker!!.maxValue = 12
         monthPicker!!.value = cal.get(Calendar.MONTH) + 1
-        monthPicker!!.displayedValues = resources
-            .getStringArray(R.array.numbered_hijri_months)
+        monthPicker!!.displayedValues = resources.getStringArray(R.array.numbered_hijri_months)
         monthPicker!!.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
             cal.set(Calendar.MONTH, newVal - 1)
             dayPicker!!.maxValue = cal.lengthOfMonth()
         }
+
         val daysNums = arrayOfNulls<String>(30)
-        for (i in daysNums.indices) daysNums[i] = Utils.translateNumbers(
-            requireContext(), (i + 1).toString()
-        )
+        for (i in daysNums.indices)
+            daysNums[i] = Utils.translateNumbers(requireContext(), (i + 1).toString())
+
         dayPicker!!.minValue = 1
         dayPicker!!.maxValue = cal.lengthOfMonth()
         dayPicker!!.value = cal.get(Calendar.DATE)
         dayPicker!!.displayedValues = daysNums
         dayPicker!!.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
-            cal.set(
-                Calendar.DATE,
-                newVal
-            )
+            cal.set(Calendar.DATE, newVal)
         }
+
         return AlertDialog.Builder(requireActivity()).setView(dialog)
             .setPositiveButton(R.string.select) { _: DialogInterface?, _: Int ->
                 val year: Int = yearPicker!!.value
-                listener!!.onDateSet(
-                    null, year,
-                    monthPicker!!.value, dayPicker!!.value
-                )
+                listener!!.onDateSet(null, year, monthPicker!!.value, dayPicker!!.value)
             }
-            .setNegativeButton(R.string.cancel) { dialog12, _ ->
-                dialog12.cancel()
-            }.create()
+            .setNegativeButton(R.string.cancel) { dialog12, _ -> dialog12.cancel() }
+            .create()
     }
 }

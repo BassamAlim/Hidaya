@@ -13,12 +13,6 @@ import bassamalim.hidaya.other.Global
 
 class Compass(gContext: Context) : SensorEventListener {
 
-    interface CompassListener {
-        fun onNewAzimuth(azimuth: Float)
-        fun calibration(accuracy: Int)
-    }
-
-    private var listener: CompassListener? = null
     private val sensorManager: SensorManager
     private val mSensor: Sensor
     private val aSensor: Sensor
@@ -27,30 +21,34 @@ class Compass(gContext: Context) : SensorEventListener {
     private val myR = FloatArray(9)
     private val myI = FloatArray(9)
 
+    private var listener: CompassListener? = null
+    interface CompassListener {
+        fun onNewAzimuth(azimuth: Float)
+        fun calibration(accuracy: Int)
+    }
+
+    init {
+        sensorManager = gContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        aSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        mSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+    }
+
     /**
      * Register the listeners for the accelerometer and magnetometer sensors
      *
      * @param context The context of the calling class.
      */
     fun start(context: Context) {
-        sensorManager.registerListener(
-            this, aSensor,
-            SensorManager.SENSOR_DELAY_GAME
-        )
-        sensorManager.registerListener(
-            this, mSensor,
-            SensorManager.SENSOR_DELAY_GAME
-        )
+        sensorManager.registerListener(this, aSensor, SensorManager.SENSOR_DELAY_GAME)
+        sensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME)
+
         val manager = context.packageManager
         val haveAS = manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)
         val haveCS = manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS)
         if (!haveAS || !haveCS) {
             sensorManager.unregisterListener(this, aSensor)
             sensorManager.unregisterListener(this, mSensor)
-            Toast.makeText(
-                context, context.getString(R.string.feature_not_supported),
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(context, context.getString(R.string.feature_not_supported), Toast.LENGTH_SHORT).show()
             Log.e(Global.TAG, "Device don't have enough sensors")
         }
     }
@@ -73,11 +71,12 @@ class Compass(gContext: Context) : SensorEventListener {
                 mData[1] = alpha * mData[1] + (1 - alpha) * event.values[1]
                 mData[2] = alpha * mData[2] + (1 - alpha) * event.values[2]
             }
+
             val success = SensorManager.getRotationMatrix(myR, myI, aData, mData)
             if (success) {
                 val orientation = FloatArray(3)
                 SensorManager.getOrientation(myR, orientation)
-                var azimuth = Math.toDegrees(orientation[0].toDouble()).toFloat() // orientation
+                var azimuth = Math.toDegrees(orientation[0].toDouble()).toFloat()    // orientation
                 azimuth = (azimuth + 360) % 360
 
                 if (listener != null) listener!!.onNewAzimuth(azimuth)
@@ -91,11 +90,5 @@ class Compass(gContext: Context) : SensorEventListener {
 
     fun setListener(l: CompassListener?) {
         listener = l
-    }
-
-    init {
-        sensorManager = gContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        aSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        mSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
     }
 }

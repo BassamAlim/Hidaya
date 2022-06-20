@@ -33,16 +33,16 @@ class TelawatCollectionActivity : FragmentActivity() {
         binding = ActivityCollectionTelawatBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         binding!!.home.setOnClickListener { finish() }
+
         viewPager = findViewById(R.id.telawat_pager)
         adapter = TAdapter(this)
         viewPager!!.adapter = adapter
+
         val tabLayout: TabLayout = findViewById(R.id.tab_layout)
-        val tabs = arrayOf(
-            getString(R.string.all),
-            getString(R.string.favorite), getString(R.string.downloaded)
-        )
-        TabLayoutMediator(tabLayout, viewPager!!
-        ) { tab: TabLayout.Tab, position: Int -> tab.text = tabs[position] }.attach()
+        val tabs = arrayOf(getString(R.string.all), getString(R.string.favorite), getString(R.string.downloaded))
+        TabLayoutMediator(tabLayout, viewPager!!) { tab: TabLayout.Tab, position: Int ->
+            tab.text = tabs[position]
+        }.attach()
     }
 
     override fun onResume() {
@@ -56,6 +56,7 @@ class TelawatCollectionActivity : FragmentActivity() {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed()
+
             if (isTaskRoot) {
                 val intent = Intent(this, MainActivity::class.java)
                 val location: Location? = Keeper(this).retrieveLocation()
@@ -64,7 +65,8 @@ class TelawatCollectionActivity : FragmentActivity() {
                 startActivity(intent)
                 finish()
             }
-        } else {
+        }
+        else {
             // Otherwise, select the previous step.
             viewPager!!.currentItem = viewPager!!.currentItem - 1
         }
@@ -73,23 +75,28 @@ class TelawatCollectionActivity : FragmentActivity() {
     private fun setupContinue() {
         val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         var text: String = pref.getString("last_played_text", "")!!
+
         if (text.isEmpty()) text = getString(R.string.no_last_play)
         else {
             text = getString(R.string.last_play) + ": " + text
+
             binding!!.continueListening.setOnClickListener {
                 val lastMediaId: String = pref.getString("last_played_media_id", "")!!
+
                 val intent = Intent(this, TelawatClient::class.java)
                 intent.action = "continue"
                 intent.putExtra("media_id", lastMediaId)
                 startActivity(intent)
             }
         }
+
         binding!!.continueListening.text = text
     }
 }
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 internal class TAdapter(fragment: FragmentActivity?) : FragmentStateAdapter(fragment!!) {
+
     override fun createFragment(position: Int): Fragment {
         val type: ListType = when (position) {
             0 -> ListType.All

@@ -37,13 +37,18 @@ class BookViewer : AppCompatActivity() {
         binding = ActivityBookViewerBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         binding!!.home.setOnClickListener { onBackPressed() }
+
         pref = PreferenceManager.getDefaultSharedPreferences(this)
+
         val intent: Intent = intent
         bookId = intent.getIntExtra("book_id", 0)
         chapterId = intent.getIntExtra("chapter_id", 0)
         binding!!.topBarTitle.text = intent.getStringExtra("book_title")
+
         getData()
+
         setupRecycler()
+
         setupListeners()
     }
 
@@ -53,24 +58,19 @@ class BookViewer : AppCompatActivity() {
         val gson = Gson()
         val book: Book = gson.fromJson(jsonStr, Book::class.java)
         doors = book.chapters[chapterId].doors
+
         val favsStr: String = PreferenceManager.getDefaultSharedPreferences(this)
             .getString("book" + bookId + "_chapter" + chapterId + "_favs", "")!!
-        favs = if (favsStr.isEmpty()) BooleanArray(doors!!.size) else gson.fromJson(
-            favsStr,
-            BooleanArray::class.java
-        )
+        favs =
+            if (favsStr.isEmpty()) BooleanArray(doors!!.size)
+            else gson.fromJson(favsStr, BooleanArray::class.java)
     }
 
     private fun makeCards(): ArrayList<BookDoor> {
         val cards = ArrayList<BookDoor>()
         for (i in doors!!.indices) {
             val door = doors!![i]
-            cards.add(
-                BookDoor(
-                    door.doorId, door.doorTitle,
-                    door.text, favs!![i]
-                )
-            )
+            cards.add(BookDoor(door.doorId, door.doorTitle, door.text, favs!![i]))
         }
         return cards
     }
@@ -85,17 +85,24 @@ class BookViewer : AppCompatActivity() {
 
     private fun setupListeners() {
         textSizeSb = binding!!.textSizeSb
+
         textSizeSb!!.progress = pref!!.getInt(getString(R.string.books_text_size_key), 15)
+
         binding!!.textSizeIb.setOnClickListener {
-            if (textSizeSb!!.visibility == View.GONE) textSizeSb!!.visibility = View.VISIBLE else textSizeSb!!.visibility = View.GONE
+            if (textSizeSb!!.visibility == View.GONE) textSizeSb!!.visibility = View.VISIBLE
+            else textSizeSb!!.visibility = View.GONE
         }
+
         textSizeSb!!.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
+
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
+
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 val editor: SharedPreferences.Editor = pref!!.edit()
                 editor.putInt(getString(R.string.books_text_size_key), seekBar.progress)
                 editor.apply()
+
                 adapter!!.setTextSize(seekBar.progress)
                 recycler!!.adapter = null
                 recycler!!.adapter = adapter

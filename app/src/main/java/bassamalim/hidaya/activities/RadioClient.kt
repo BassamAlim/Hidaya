@@ -35,13 +35,14 @@ class RadioClient : AppCompatActivity() {
         binding = ActivityRadioClientBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         binding!!.home.setOnClickListener { onBackPressed() }
+
         playBtn = binding!!.radioPpBtn
+
         mediaBrowser = MediaBrowserCompat(
-            this, ComponentName(
-                this,
-                RadioService::class.java
-            ), connectionCallbacks, null
-        ) // optional Bundle
+            this, ComponentName(this, RadioService::class.java),
+            connectionCallbacks, null
+        )
+
         getLinkAndEnable()
     }
 
@@ -69,10 +70,13 @@ class RadioClient : AppCompatActivity() {
         remoteConfig!!.fetchAndActivate().addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 link = remoteConfig!!.getString("quran_radio_url")
+
                 Log.d(Global.TAG, "Config params updated")
                 Log.d(Global.TAG, "Quran Radio URL: $link")
+
                 enableControls()
-            } else Log.d(Global.TAG, "Fetch failed")
+            }
+            else Log.d(Global.TAG, "Fetch failed")
         }
     }
 
@@ -83,9 +87,7 @@ class RadioClient : AppCompatActivity() {
             val token: MediaSessionCompat.Token = mediaBrowser!!.sessionToken
 
             // Create a MediaControllerCompat
-            val mediaController = MediaControllerCompat(
-                this@RadioClient, token
-            )
+            val mediaController = MediaControllerCompat(this@RadioClient, token)
 
             // Save the controller
             MediaControllerCompat.setMediaController(this@RadioClient, mediaController)
@@ -140,17 +142,14 @@ class RadioClient : AppCompatActivity() {
     }
 
     private fun updateButton(playing: Boolean) {
-        if (playing) playBtn!!.setImageDrawable(
-            ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.ic_player_pause, theme
+        if (playing)
+            playBtn!!.setImageDrawable(
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_player_pause, theme)
             )
-        ) else playBtn!!.setImageDrawable(
-            ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.ic_player_play, theme
+        else
+            playBtn!!.setImageDrawable(
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_player_play, theme)
             )
-        )
     }
 
     private fun enableControls() {
@@ -159,10 +158,9 @@ class RadioClient : AppCompatActivity() {
             // Since this is a play/pause button, you'll need to test the current state
             // and choose the action accordingly
             val pbState: Int = controller!!.playbackState.state
-            if (pbState == PlaybackStateCompat.STATE_PLAYING) tc!!.pause() else tc!!.playFromMediaId(
-                link,
-                null
-            )
+
+            if (pbState == PlaybackStateCompat.STATE_PLAYING) tc!!.pause()
+            else tc!!.playFromMediaId(link, null)
         }
     }
 

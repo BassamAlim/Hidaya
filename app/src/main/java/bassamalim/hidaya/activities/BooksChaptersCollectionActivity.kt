@@ -26,13 +26,16 @@ class BooksChaptersCollectionActivity : FragmentActivity() {
         binding = ActivityCollectionBookChaptersBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         binding!!.home.setOnClickListener { finish() }
+
         val intent: Intent = intent
         val bookId: Int = intent.getIntExtra("book_id", 0)
         val bookTitle: String = intent.getStringExtra("book_title")!!
         binding!!.topBarTitle.text = bookTitle
+
         viewPager = findViewById(R.id.pager)
         adapter = FSAdapter(this, bookId)
         viewPager!!.adapter = adapter
+
         val tabLayout: TabLayout = findViewById(R.id.tab_layout)
         val tabs = arrayOf(getString(R.string.all), getString(R.string.favorite))
         TabLayoutMediator(tabLayout, viewPager!!
@@ -54,7 +57,10 @@ internal class FSAdapter(fragment: FragmentActivity?, private val bookId: Int) :
     FragmentStateAdapter(fragment!!) {
 
     override fun createFragment(position: Int): Fragment {
-        val type: ListType = if (position == 0) ListType.All else ListType.Favorite
+        val type: ListType =
+            if (position == 0) ListType.All
+            else ListType.Favorite
+
         return BookChaptersFragment(type, bookId)
     }
 

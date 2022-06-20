@@ -52,14 +52,18 @@ class PrayersFragment : Fragment() {
     ): View {
         binding = FragmentPrayersBinding.inflate(inflater, container, false)
         val root: View = binding!!.root
+
         pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+
         if (MainActivity.located) {
             initiate()
             goToToday()
             setInitialState()
             setListeners()
         }
+
         checkFirstTime()
+
         return root
     }
 
@@ -82,30 +86,35 @@ class PrayersFragment : Fragment() {
         cls[3] = binding!!.asrCl
         cls[4] = binding!!.maghribCl
         cls[5] = binding!!.ishaaCl
+
         screens[0] = binding!!.fajrScreen
         screens[1] = binding!!.shorouqScreen
         screens[2] = binding!!.duhrScreen
         screens[3] = binding!!.asrScreen
         screens[4] = binding!!.maghribScreen
         screens[5] = binding!!.ishaaScreen
+
         counters[0] = binding!!.fajrCounter
         counters[1] = binding!!.shorouqCounter
         counters[2] = binding!!.duhrCounter
         counters[3] = binding!!.asrCounter
         counters[4] = binding!!.maghribCounter
         counters[5] = binding!!.ishaaCounter
+
         images[0] = binding!!.fajrImage
         images[1] = binding!!.shorouqImage
         images[2] = binding!!.duhrImage
         images[3] = binding!!.asrImage
         images[4] = binding!!.maghribImage
         images[5] = binding!!.ishaaImage
+
         delayTvs[0] = binding!!.fajrDelayTv
         delayTvs[1] = binding!!.shorouqDelayTv
         delayTvs[2] = binding!!.duhrDelayTv
         delayTvs[3] = binding!!.asrDelayTv
         delayTvs[4] = binding!!.maghribDelayTv
         delayTvs[5] = binding!!.ishaaDelayTv
+
         dayScreen = binding!!.dayScreen
     }
 
@@ -124,30 +133,33 @@ class PrayersFragment : Fragment() {
      */
     private fun getTimes(change: Int) {
         val prayTimes = PrayTimes(context!!)
+
         val calendar = Calendar.getInstance()
         val date = Date()
         calendar.time = date
         calendar[Calendar.DATE] = calendar[Calendar.DATE] + change
+
         selectedDay = calendar
+
         val timeZoneObj = TimeZone.getDefault()
         val millis = timeZoneObj.getOffset(date.time).toLong()
         val timezone = millis / 3600000.0
+
         times = prayTimes.getPrayerTimesArray(
-            calendar, location!!.latitude,
-            location!!.longitude, timezone
+            calendar, location!!.latitude, location!!.longitude, timezone
         )
         val formattedTimes = prayTimes.getPrayerTimes(
-            calendar,
-            location!!.latitude, location!!.longitude, timezone
+            calendar, location!!.latitude, location!!.longitude, timezone
         )
         tomorrowFajr = prayTimes.getTomorrowFajr(
-            calendar, location!!.latitude,
-            location!!.longitude, timezone
+            calendar, location!!.latitude, location!!.longitude, timezone
         )
         tomorrowFajr!![Calendar.SECOND] = 0
+
         for (i in formattedTimes.indices) {
             val text = prayerNames!![i] + ": " + formattedTimes[i]
             screens[i]!!.text = text
+
             times!![i]!![Calendar.SECOND] = 0
         }
     }
@@ -181,6 +193,7 @@ class PrayersFragment : Fragment() {
                 PrayerDialog(context!!, v!!, Utils.mapID(i)!!, prayerNames!![i])
             }
         }
+
         binding!!.previousDayButton.setOnClickListener {previousDay()}
         binding!!.nextDayButton.setOnClickListener {nextDay()}
         binding!!.dayScreen.setOnClickListener {goToToday()}
@@ -188,13 +201,9 @@ class PrayersFragment : Fragment() {
 
     private fun checkFirstTime() {
         if (pref!!.getBoolean("is_first_time_in_prayers", true)) TutorialDialog(
-            context!!,
-            getString(R.string.prayers_tips),
+            context!!, getString(R.string.prayers_tips),
             "is_first_time_in_prayers"
-        ).show(
-            requireActivity()
-                .supportFragmentManager, TutorialDialog.TAG
-        )
+        ).show(requireActivity().supportFragmentManager, TutorialDialog.TAG)
     }
 
     private fun count() {
@@ -224,8 +233,9 @@ class PrayersFragment : Fragment() {
 
                 val hms = String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
 
-                if (context != null) counters[upcoming]!!.text = String.format(
-                    getString(R.string.remaining), Utils.translateNumbers(requireContext(), hms))
+                if (context != null)
+                    counters[upcoming]!!.text =
+                        String.format(getString(R.string.remaining), Utils.translateNumbers(requireContext(), hms))
                 else {
                     restart[0] = false
                     cancelTimer()
@@ -270,14 +280,18 @@ class PrayersFragment : Fragment() {
     }
 
     private fun updateDayScreen() {
-        if (currentChange == 0) dayScreen!!.text = getString(R.string.day) else {
+        if (currentChange == 0)
+            dayScreen!!.text = getString(R.string.day)
+        else {
             var text = ""
+
             val hijri: Calendar = UmmalquraCalendar()
             hijri.time = selectedDay!!.time
+
             val year = " " + hijri[Calendar.YEAR]
-            val month = " " +
-                    resources.getStringArray(R.array.hijri_months)[Calendar.MONTH]
+            val month = " " + resources.getStringArray(R.array.hijri_months)[Calendar.MONTH]
             val day = "" + hijri[Calendar.DATE]
+
             text += Utils.translateNumbers(context!!, day) + month +
                     Utils.translateNumbers(context!!, year)
             dayScreen!!.text = text

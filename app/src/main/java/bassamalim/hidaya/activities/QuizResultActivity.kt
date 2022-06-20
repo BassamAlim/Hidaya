@@ -32,14 +32,19 @@ class QuizResultActivity : AppCompatActivity() {
         binding = ActivityQuizResultBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         binding!!.home.setOnClickListener { onBackPressed() }
+
         db = Room.databaseBuilder(this, AppDatabase::class.java, "HidayaDB")
             .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+
         val intent: Intent = intent
         score = intent.getIntExtra("score", 10)
         cAnswers = intent.getIntArrayExtra("cAnswers")
         questions = intent.getSerializableExtra("questions") as List<QuizQuestionsDB>
+
         questionCards = makeQuestionCards()
+
         setupRecycler()
+
         show()
     }
 
@@ -47,13 +52,14 @@ class QuizResultActivity : AppCompatActivity() {
         val cards: ArrayList<QuizResultQuestion> = ArrayList()
         for (i in 0..9) {
             val answers: List<QuizAnswersDB> = getAnswers(questions!![i].getQuestion_id())
-            val model = QuizResultQuestion(
-                i,
-                questions!![i].getQuestion_text(), questions!![i].getCorrect_answer_id(),
-                cAnswers!![i], answers[0].answer_text!!, answers[1].answer_text!!,
-                answers[2].answer_text!!, answers[3].answer_text!!
+
+            cards.add(
+                QuizResultQuestion(
+                    i, questions!![i].getQuestion_text(), questions!![i].getCorrect_answer_id(),
+                    cAnswers!![i], answers[0].answer_text!!, answers[1].answer_text!!,
+                    answers[2].answer_text!!, answers[3].answer_text!!
+                )
             )
-            cards.add(model)
         }
         return cards
     }

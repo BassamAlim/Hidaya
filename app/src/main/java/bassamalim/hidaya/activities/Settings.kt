@@ -27,43 +27,43 @@ class Settings : AppCompatActivity() {
         Utils.myOnActivityCreated(this)
         setContentView(R.layout.activity_settings)
         findViewById<View>(id.home).setOnClickListener { onBackPressed() }
+
         if (savedInstanceState == null) supportFragmentManager.beginTransaction()
             .replace(R.id.settings, SettingsFragment("normal")).commit()
     }
 
     class SettingsFragment(private val action: String) : PreferenceFragmentCompat() {
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.preferences, rootKey)
+
             setInitialStates()
+
             setListeners()
         }
 
         private fun setInitialStates() {
             val pref: SharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(requireContext())
-            var pSwitch: SwitchPreferenceCompat? = findPreference(keyGetter(ID.MORNING))
-            assert(pSwitch != null)
-            pSwitch!!.summary = pref.getString(
-                ID.MORNING.toString() + "text",
-                getString(R.string.default_morning_summary)
+
+            var pSwitch: SwitchPreferenceCompat = findPreference(keyGetter(ID.MORNING))!!
+            pSwitch.summary = pref.getString(
+                ID.MORNING.toString() + "text", getString(R.string.default_morning_summary)
             )
-            pSwitch = findPreference(keyGetter(ID.EVENING))
-            assert(pSwitch != null)
-            pSwitch!!.summary = pref.getString(
-                ID.EVENING.toString() + "text",
-                getString(R.string.default_evening_summary)
+
+            pSwitch = findPreference(keyGetter(ID.EVENING))!!
+            pSwitch.summary = pref.getString(
+                ID.EVENING.toString() + "text", getString(R.string.default_evening_summary)
             )
-            pSwitch = findPreference(keyGetter(ID.DAILY_WERD))
-            assert(pSwitch != null)
-            pSwitch!!.summary = pref.getString(
-                ID.DAILY_WERD.toString() + "text",
-                getString(R.string.default_werd_summary)
+
+            pSwitch = findPreference(keyGetter(ID.DAILY_WERD))!!
+            pSwitch.summary = pref.getString(
+                ID.DAILY_WERD.toString() + "text", getString(R.string.default_werd_summary)
             )
-            pSwitch = findPreference(keyGetter(ID.FRIDAY_KAHF))
-            assert(pSwitch != null)
-            pSwitch!!.summary = pref.getString(
-                ID.FRIDAY_KAHF.toString() + "text",
-                getString(R.string.default_kahf_summary)
+
+            pSwitch = findPreference(keyGetter(ID.FRIDAY_KAHF))!!
+            pSwitch.summary = pref.getString(
+                ID.FRIDAY_KAHF.toString() + "text", getString(R.string.default_kahf_summary)
             )
         }
 
@@ -99,9 +99,11 @@ class Settings : AppCompatActivity() {
         private fun setSwitchListener(id: ID) {
             val key = keyGetter(id)
             val pSwitch: SwitchPreferenceCompat = findPreference(key)!!
+
             pSwitch.setOnPreferenceChangeListener { _, newValue ->
                 val on = newValue as Boolean
-                if (on) showTimePicker(id) else cancelAlarm(id)
+                if (on) showTimePicker(id)
+                else cancelAlarm(id)
                 true
             }
         }
@@ -109,15 +111,18 @@ class Settings : AppCompatActivity() {
         private fun showTimePicker(id: ID) {
             val key = keyGetter(id)
             val pSwitch: SwitchPreferenceCompat = findPreference(key)!!
+
             val currentTime = Calendar.getInstance()
             val cHour = currentTime[Calendar.HOUR_OF_DAY]
             val cMinute = currentTime[Calendar.MINUTE]
-            val timePicker = TimePickerDialog(
-                context,
+
+            val timePicker = TimePickerDialog(context,
                 { _: TimePicker?, hourOfDay: Int, minute: Int ->
                     val nums = intArrayOf(hourOfDay, minute)
                     val fixed = formatText(requireContext(), nums)
+
                     pSwitch.summary = fixed
+
                     val myPref: SharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(requireContext())
                     val editor: SharedPreferences.Editor = myPref.edit()
@@ -125,31 +130,36 @@ class Settings : AppCompatActivity() {
                     editor.putInt(id.toString() + "minute", minute)
                     editor.putString(id.toString() + "text", fixed)
                     editor.apply()
+
                     Alarms(requireContext(), id)
                 }, cHour, cMinute, false
             )
+
             timePicker.setOnCancelListener { setInitialStates() }
             timePicker.setOnDismissListener { setInitialStates() }
+
             timePicker.setTitle(getString(R.string.time_picker_title))
             timePicker.setButton(
-                TimePickerDialog.BUTTON_POSITIVE,
-                getString(R.string.select), null as Message?
+                TimePickerDialog.BUTTON_POSITIVE, getString(R.string.select), null as Message?
             )
             timePicker.setButton(
-                TimePickerDialog.BUTTON_NEGATIVE,
-                getString(R.string.cancel), null as Message?
+                TimePickerDialog.BUTTON_NEGATIVE, getString(R.string.cancel), null as Message?
             )
             timePicker.setCancelable(true)
+
             timePicker.show()
         }
 
         private fun setLocale(language: String) {
             val locale = Locale(language)
             Locale.setDefault(locale)
+
             val resources: Resources = resources
+
             val configuration = resources.configuration
             configuration.setLocale(locale)
             configuration.setLayoutDirection(locale)
+
             resources.updateConfiguration(configuration, resources.displayMetrics)
         }
 
@@ -178,6 +188,7 @@ class Settings : AppCompatActivity() {
                     context.getString(R.string.language_key),
                     context.getString(R.string.default_language)
                 )!!
+
             val result: String
             val map = HashMap<Char, Char>()
             map['0'] = '٠'
@@ -192,25 +203,31 @@ class Settings : AppCompatActivity() {
             map['9'] = '٩'
             map['A'] = 'ص'
             map['P'] = 'م'
+
             var h = nums[0]
             var m = nums[1].toString()
             var section = context.getString(R.string.at_morning)
-            if (h == 0) h = 12 else if (h >= 12) {
+            if (h == 0) h = 12
+            else if (h >= 12) {
                 section = context.getString(R.string.at_evening)
                 if (h > 12) h -= 12
             }
+
             if (m.length == 1) {
-                if (m[0] == '0') m += '0' else m = "0" + m[0]
+                if (m[0] == '0') m += '0'
+                else m = "0" + m[0]
             }
+
             result = "$h:$m $section"
             val translated = StringBuilder()
             for (element in result) {
                 if (map.containsKey(element)) {
-                    if (locale == "ar") translated.append(map[element]) else translated.append(
-                        element
-                    )
-                } else translated.append(element)
+                    if (locale == "ar") translated.append(map[element])
+                    else translated.append(element)
+                }
+                else translated.append(element)
             }
+
             return translated.toString()
         }
     }

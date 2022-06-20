@@ -41,13 +41,20 @@ class BooksActivity : AppCompatActivity() {
         binding = ActivityBooksBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         binding!!.home.setOnClickListener {onBackPressed()}
+
         gson = Gson()
+
         numOfBooks = resources.getStringArray(R.array.books_titles).size
         downloaded = BooleanArray(numOfBooks)
+
         checkFirstTime()
+
         checkDownloaded()
+
         getInfoArr()
+
         initViews()
+
         setListeners()
     }
 
@@ -63,11 +70,12 @@ class BooksActivity : AppCompatActivity() {
 
     private fun checkDownloaded() {
         val dir = File(getExternalFilesDir(null).toString() + prefix)
+
         if (!dir.exists()) return
+
         val files = dir.listFiles()
         for (i in 0 until files!!.size) {
-            val file = files[i]
-            val name = file.name
+            val name = files[i].name
             val n = name.substring(0, name.length - 5)
             try {
                 val num = n.toInt()
@@ -128,6 +136,7 @@ class BooksActivity : AppCompatActivity() {
                     updateUI(i, true)
                 }
             }
+
             downloadBtns!![i].setOnClickListener {
                 if (downloaded(i)) {
                     if (downloading(i)) Toast.makeText(
@@ -142,6 +151,7 @@ class BooksActivity : AppCompatActivity() {
                 }
             }
         }
+
         binding!!.fab.setOnClickListener {
             val intent = Intent(this, BookSearcher::class.java)
             startActivity(intent)
@@ -166,7 +176,6 @@ class BooksActivity : AppCompatActivity() {
     }
 
     private fun downloading(id: Int): Boolean {
-        Log.d(Global.TAG, "here")
         val path: String = getExternalFilesDir(null).toString() + "/Books/" + id + ".json"
         val jsonStr = Utils.getJsonFromDownloads(path)
         return try {
@@ -196,16 +205,17 @@ class BooksActivity : AppCompatActivity() {
             if (task.isSuccessful) {
                 links[0] = remoteConfig.getString("sahih_albokhari_url")
                 links[1] = remoteConfig.getString("sahih_muslim_url")
+
                 Log.d(Global.TAG, "Config params updated")
                 Log.d(Global.TAG, "Sahih Albokhari URL: " + links[0])
                 Log.d(Global.TAG, "Sahih Muslim URL: " + links[1])
+
                 download(id, links[id])
             } else Log.d(Global.TAG, "Fetch failed")
         }
     }
 
     private fun download(id: Int, link: String?) {
-        Log.d(Global.TAG, link!!)
         val downloadManager: DownloadManager =
             getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val uri = Uri.parse(link)

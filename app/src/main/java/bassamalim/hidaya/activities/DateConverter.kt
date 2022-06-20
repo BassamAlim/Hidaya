@@ -2,13 +2,11 @@ package bassamalim.hidaya.activities
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
 import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityDateConverterBinding
 import bassamalim.hidaya.dialogs.HijriDatePickerDialog
-import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
@@ -23,6 +21,7 @@ class DateConverter : AppCompatActivity() {
         binding = ActivityDateConverterBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         binding!!.home.setOnClickListener { onBackPressed() }
+
         setListeners()
     }
 
@@ -40,6 +39,7 @@ class DateConverter : AppCompatActivity() {
                 choice[Calendar.YEAR] = year
                 choice[Calendar.MONTH] = month // starts from 0
                 choice[Calendar.DATE] = day
+
                 show(gregorianToHijri(choice), choice)
             }, now[Calendar.YEAR], now[Calendar.MONTH], now[Calendar.DATE]
         )
@@ -56,14 +56,16 @@ class DateConverter : AppCompatActivity() {
 
     private fun pickHijri() {
         val hijriPicker = HijriDatePickerDialog()
+
         hijriPicker.setListener { _: DatePicker?, year: Int, month: Int, day: Int ->
-            Log.d(Global.TAG, "Here")
             val choice: Calendar = UmmalquraCalendar()
             choice[Calendar.YEAR] = year
             choice[Calendar.MONTH] = month - 1 // starts from 0
             choice[Calendar.DATE] = day
+
             show(choice, hijriToGregorian(choice))
         }
+
         hijriPicker.show(supportFragmentManager, "HijriDatePicker")
     }
 
@@ -80,22 +82,19 @@ class DateConverter : AppCompatActivity() {
     }
 
     private fun show(hijri: Calendar, gregorian: Calendar) {
-        binding!!.hijriYearTv.text = Utils.translateNumbers(this, hijri[Calendar.YEAR].toString())
-        binding!!.hijriMonthTv.text = resources.getStringArray(
-            R.array.numbered_hijri_months
-        )[hijri[Calendar.MONTH]]
-        binding!!.hijriDayTv.text = Utils.translateNumbers(this, hijri[Calendar.DATE].toString())
-        binding!!.gregorianYearTv.text = Utils.translateNumbers(
-            this,
-            gregorian[Calendar.YEAR].toString()
-        )
-        binding!!.gregorianMonthTv.text = resources.getStringArray(
-            R.array.numbered_gregorian_months
-        )[gregorian[Calendar.MONTH]]
-        binding!!.gregorianDayTv.text = Utils.translateNumbers(
-            this,
-            gregorian[Calendar.DATE].toString()
-        )
+        binding!!.hijriYearTv.text =
+            Utils.translateNumbers(this, hijri[Calendar.YEAR].toString())
+        binding!!.hijriMonthTv.text =
+            resources.getStringArray(R.array.numbered_hijri_months)[hijri[Calendar.MONTH]]
+        binding!!.hijriDayTv.text =
+            Utils.translateNumbers(this, hijri[Calendar.DATE].toString())
+
+        binding!!.gregorianYearTv.text =
+            Utils.translateNumbers(this, gregorian[Calendar.YEAR].toString())
+        binding!!.gregorianMonthTv.text =
+            resources.getStringArray(R.array.numbered_gregorian_months)[gregorian[Calendar.MONTH]]
+        binding!!.gregorianDayTv.text =
+            Utils.translateNumbers(this, gregorian[Calendar.DATE].toString())
     }
 
     override fun onDestroy() {

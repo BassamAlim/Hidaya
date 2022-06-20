@@ -11,9 +11,8 @@ import bassamalim.hidaya.models.BookSearcherMatch
 import bassamalim.hidaya.replacements.FilteredRecyclerAdapter
 
 class BookSearcherAdapter(
-    private val items: List<BookSearcherMatch>,
-    private val searchView: SearchView) :
-    FilteredRecyclerAdapter<BookSearcherAdapter.ViewHolder>() {
+    private val items: List<BookSearcherMatch>, private val searchView: SearchView
+    ) : FilteredRecyclerAdapter<BookSearcherAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val bookTitleTv: TextView
@@ -29,9 +28,7 @@ class BookSearcherAdapter(
         }
     }
 
-    override fun onCreateViewHolder(
-        viewGroup: ViewGroup, viewType: Int
-    ): ViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(viewGroup.context)
                 .inflate(R.layout.item_book_searcher, viewGroup, false)
@@ -40,6 +37,7 @@ class BookSearcherAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val card = items[position]
+
         viewHolder.bookTitleTv.text = card.getBookTitle()
         viewHolder.chapterTitleTv.text = card.getChapterTitle()
         viewHolder.doorTitleTv.text = card.getDoorTitle()

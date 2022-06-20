@@ -47,17 +47,20 @@ class TelawatSuarFragment : Fragment {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentTelawatSuarBinding.inflate(
-            inflater, container, false
-        )
+        binding = FragmentTelawatSuarBinding.inflate(inflater, container, false)
+
         if (type == ListType.Downloaded) checkDownloaded()
+
         setupRecycler()
+
         setSearchListeners()
+
         return binding!!.root
     }
 
     override fun setMenuVisibility(menuVisible: Boolean) {
         super.setMenuVisibility(menuVisible)
+
         if (menuVisible) {
             adapter = TelawatSuarAdapter(requireContext(), makeCards(), reciterId, versionId)
             recycler!!.adapter = adapter
@@ -66,17 +69,21 @@ class TelawatSuarFragment : Fragment {
 
     private val data: Unit
         get() {
-            val db: AppDatabase =
-                Room.databaseBuilder(requireContext(), AppDatabase::class.java, "HidayaDB")
-                    .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+            val db: AppDatabase = Room.databaseBuilder(requireContext(), AppDatabase::class.java,
+                "HidayaDB").createFromAsset("databases/HidayaDB.db")
+                .allowMainThreadQueries().build()
+
             val suras: List<SuarDB> = db.suarDao().getAll()
+
             surahNames = ArrayList()
             searchNames = arrayOfNulls(114)
             for (i in 0..113) {
                 surahNames!!.add(suras[i].sura_name!!)
                 searchNames!![i] = suras[i].search_name
             }
+
             availableSurahs = db.telawatVersionsDao().getSuras(reciterId, versionId)
+
             favs = db.suarDao().getFav()
         }
 
@@ -85,22 +92,27 @@ class TelawatSuarFragment : Fragment {
 
         val cards: ArrayList<ReciterSura> = ArrayList<ReciterSura>()
         for (i in 0..113) {
-            if (!availableSurahs!!.contains("," + (i + 1) + ",") ||
-                type == ListType.Favorite && favs!![i] == 0 ||
-                type == ListType.Downloaded && !downloaded!![i]
-            ) continue
+            if (!availableSurahs!!.contains("," + (i + 1) + ",")
+                || type == ListType.Favorite && favs!![i] == 0
+                || type == ListType.Downloaded && !downloaded!![i])
+                continue
+
             val name = surahNames!![i]
             val searchName = searchNames!![i]
+
             val listener = View.OnClickListener {
                 val intent = Intent(context, TelawatClient::class.java)
                 intent.action = "start"
+
                 val rId = String.format(Locale.US, "%03d", reciterId)
                 val vId = String.format(Locale.US, "%02d", versionId)
                 val sId = String.format(Locale.US, "%03d", i)
                 val mediaId = rId + vId + sId
                 intent.putExtra("media_id", mediaId)
+
                 startActivity(intent)
             }
+
             cards.add(ReciterSura(i, name, searchName!!, favs!![i], listener))
         }
         return cards
@@ -130,19 +142,20 @@ class TelawatSuarFragment : Fragment {
 
     private fun checkDownloaded() {
         downloaded = BooleanArray(114)
+
         val prefix = "/Telawat/$reciterId/$versionId"
+
         val dir = File(requireContext().getExternalFilesDir(null).toString() + prefix)
         if (!dir.exists()) return
+
         val files = dir.listFiles()
         for (i in 0 until files!!.size) {
-            val file = files[i]
-            val name = file.name
+            val name = files[i].name
             val n = name.substring(0, name.length - 4)
             try {
                 val num = n.toInt()
                 downloaded!![num] = true
-            } catch (ignored: NumberFormatException) {
-            }
+            } catch (ignored: NumberFormatException) {}
         }
     }
 

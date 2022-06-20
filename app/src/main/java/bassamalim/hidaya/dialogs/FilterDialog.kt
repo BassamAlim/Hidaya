@@ -24,34 +24,39 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
     title: String,
     private val strArr: Array<String>,
     private val selected: BooleanArray,
-    filteredAdapter: FilteredRecyclerAdapter<VH>,
-    filterIb: ImageButton,
-    prefKey: String) {
+    private val filteredAdapter: FilteredRecyclerAdapter<VH>,
+    private val filterIb: ImageButton,
+    private val prefKey: String) {
 
     private var popup: PopupWindow? = null
-    private val pref: SharedPreferences
-    private val gson: Gson
-    private val filteredAdapter: FilteredRecyclerAdapter<VH>
-    private val filterIb: ImageButton
-    private val prefKey: String
+    private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private val gson: Gson = Gson()
     private var cbListAdapter: CheckboxListviewAdapter? = null
     private var items: MutableList<CheckboxListItem>? = null
 
+    init {
+        showPopup(title)
+    }
+
     private fun showPopup(title: String) {
-        val inflater: LayoutInflater = view.context
-            .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val inflater: LayoutInflater =
+            view.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
         val popupView: View = inflater.inflate(
-            R.layout.dialog_filter,
-            LinearLayout(context), false
+            R.layout.dialog_filter, LinearLayout(context), false
         )
+
         popup = PopupWindow(
             popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT, true
         )
+
         popup!!.elevation = 10f
         popup!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         popup!!.isOutsideTouchable = false
+
         popup!!.showAtLocation(view, Gravity.CENTER, 0, 50)
+
         (popup!!.contentView.findViewById<View>(R.id.dialog_title_tv) as TextView).text = title
         setupListview()
         setListeners()
@@ -61,9 +66,11 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
         items = ArrayList<CheckboxListItem>()
         for (i in strArr.indices)
             items!!.add(CheckboxListItem(strArr[i], selected[i]))
+
         val listView: ListView = popup!!.contentView.findViewById(R.id.listview)
-        cbListAdapter = CheckboxListviewAdapter(context, 0,
-            items as ArrayList<CheckboxListItem>, selected)
+        cbListAdapter = CheckboxListviewAdapter(
+            context, 0, items as ArrayList<CheckboxListItem>, selected
+        )
         listView.adapter = cbListAdapter
     }
 
@@ -71,15 +78,21 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
         popup!!.contentView.findViewById<View>(R.id.select_all_btn).setOnClickListener {
             for (i in items!!.indices) items!![i].isSelected = true
             cbListAdapter!!.notifyDataSetChanged()
+
             Arrays.fill(selected, true)
         }
+
         popup!!.contentView.findViewById<View>(R.id.unselect_all_btn).setOnClickListener {
             for (i in items!!.indices) items!![i].isSelected = false
             cbListAdapter!!.notifyDataSetChanged()
+
             Arrays.fill(selected, false)
         }
-        popup!!.contentView.findViewById<View>(R.id.finish_btn)
-            .setOnClickListener { popup!!.dismiss() }
+
+        popup!!.contentView.findViewById<View>(R.id.finish_btn).setOnClickListener {
+            popup!!.dismiss()
+        }
+
         popup!!.setOnDismissListener {
             save()
             setFilterIb()
@@ -95,13 +108,10 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
             }
         }
         if (changed) filterIb.setImageDrawable(
-            AppCompatResources.getDrawable(
-                context, R.drawable.ic_filtered
-            )
-        ) else filterIb.setImageDrawable(
-            AppCompatResources.getDrawable(
-                context, R.drawable.ic_filter
-            )
+            AppCompatResources.getDrawable(context, R.drawable.ic_filtered)
+        )
+        else filterIb.setImageDrawable(
+            AppCompatResources.getDrawable(context, R.drawable.ic_filter)
         )
     }
 
@@ -111,14 +121,5 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
         editor.putString(prefKey, str)
         editor.apply()
         filteredAdapter.filter(null, selected)
-    }
-
-    init {
-        this.filteredAdapter = filteredAdapter
-        this.filterIb = filterIb
-        this.prefKey = prefKey
-        pref = PreferenceManager.getDefaultSharedPreferences(context)
-        gson = Gson()
-        showPopup(title)
     }
 }

@@ -35,16 +35,21 @@ class FavoriteQuranFragment : Fragment() {
     private var language: String? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         language = PreferenceManager.getDefaultSharedPreferences(requireContext())
             .getString(getString(R.string.language_key), getString(R.string.default_language))
+
         gridLayoutManager = GridLayoutManager(context, 1)
+
         binding = FragmentQuranBinding.inflate(inflater, container, false)
+
         setListeners()
+
         setupRecycler()
+
         setSearchListeners()
+
         return binding!!.root
     }
 
@@ -59,6 +64,7 @@ class FavoriteQuranFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         if (mBundleRecyclerViewState != null) {
             Handler().postDelayed({
                 mListState = mBundleRecyclerViewState!!.getParcelable("recycler_state")
@@ -82,15 +88,16 @@ class FavoriteQuranFragment : Fragment() {
             val intent = Intent(context, QuranSearcherActivity::class.java)
             startActivity(intent)
         }
+
         binding!!.recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0 || dy < 0 && binding!!.fab.isShown) binding!!.fab.hide()
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE &&
-                    recyclerView.canScrollVertically(1)
-                ) binding!!.fab.show()
+                if (newState == RecyclerView.SCROLL_STATE_IDLE
+                    && recyclerView.canScrollVertically(1))
+                    binding!!.fab.show()
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })
@@ -107,20 +114,22 @@ class FavoriteQuranFragment : Fragment() {
     private fun makeCards(): ArrayList<Sura> {
         val cards: ArrayList<Sura> = ArrayList<Sura>()
         val suras: List<SuarDB> = suras
+
         val surat = getString(R.string.sura)
         for (i in suras.indices) {
             val sura: SuarDB = suras[i]
+
             val cardListener = View.OnClickListener {
                 val intent = Intent(context, QuranViewer::class.java)
                 intent.action = "by_surah"
                 intent.putExtra("surah_id", sura.sura_id)
                 requireContext().startActivity(intent)
             }
+
             cards.add(
                 Sura(
-                    sura.sura_id, surat + " " +
-                            names!![sura.sura_id], sura.search_name!!, sura.tanzeel,
-                    1, cardListener
+                    sura.sura_id, surat + " " + names!![sura.sura_id],
+                    sura.search_name!!, sura.tanzeel, 1, cardListener
                 )
             )
         }
@@ -129,10 +138,14 @@ class FavoriteQuranFragment : Fragment() {
 
     private val suras: List<SuarDB>
         get() {
-            val db: AppDatabase =
-                Room.databaseBuilder(requireContext(), AppDatabase::class.java, "HidayaDB")
-                    .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
-            names = if (language == "en") db.suarDao().getNamesEn() else db.suarDao().getNames()
+            val db: AppDatabase = Room.databaseBuilder(requireContext(), AppDatabase::class.java,
+                "HidayaDB").createFromAsset("databases/HidayaDB.db")
+                .allowMainThreadQueries().build()
+
+            names =
+                if (language == "en") db.suarDao().getNamesEn()
+                else db.suarDao().getNames()
+
             return db.suarDao().getFavorites()
         }
 
