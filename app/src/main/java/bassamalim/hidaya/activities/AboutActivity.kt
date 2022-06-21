@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityAboutBinding
 import bassamalim.hidaya.other.Global
@@ -59,5 +60,8 @@ class AboutActivity : AppCompatActivity() {
         Toast.makeText(this, getString(R.string.vip_welcome), Toast.LENGTH_SHORT).show()
         binding!!.driveUpdate.visibility = View.VISIBLE
         binding!!.rebuildDb.visibility = View.VISIBLE
+        binding!!.lastUpdate.visibility = View.VISIBLE
+        binding!!.lastUpdate.text = PreferenceManager.getDefaultSharedPreferences(this)
+            .getString("last_daily_update", "No daily updates yet")
     }
 }

@@ -2,18 +2,18 @@ package bassamalim.hidaya.database.dbs
 
 class TelawatDB(reciter_id: Int, version_id: Int, reciter_name: String, rewaya: String,
                 url: String, count: Int, suras: String) {
-    private var reciterId = 0
-    private var versionId = 0
-    private var reciterName: String
+    private var reciter_id = 0
+    private var version_id = 0
+    private var reciter_name: String
     private var rewaya: String
     private var url: String
     private var count = 0
     private var suras: String
 
     init {
-        this.reciterId = reciter_id
-        this.versionId = version_id
-        this.reciterName = reciter_name
+        this.reciter_id = reciter_id
+        this.version_id = version_id
+        this.reciter_name = reciter_name
         this.rewaya = rewaya
         this.url = url
         this.count = count
@@ -21,15 +21,15 @@ class TelawatDB(reciter_id: Int, version_id: Int, reciter_name: String, rewaya: 
     }
 
     fun setReciterId(reciter_id: Int) {
-        this.reciterId = reciter_id
+        this.reciter_id = reciter_id
     }
 
     fun setVersionId(version_id: Int) {
-        this.versionId = version_id
+        this.version_id = version_id
     }
 
     fun setReciterName(reciter_name: String) {
-        this.reciterName = reciter_name
+        this.reciter_name = reciter_name
     }
 
     fun setRewaya(rewaya: String) {
@@ -49,15 +49,15 @@ class TelawatDB(reciter_id: Int, version_id: Int, reciter_name: String, rewaya: 
     }
 
     fun getReciterId(): Int {
-        return reciterId
+        return reciter_id
     }
 
     fun getVersionId(): Int {
-        return versionId
+        return version_id
     }
 
     fun getReciterName(): String {
-        return reciterName
+        return reciter_name
     }
 
     fun getRewaya(): String {

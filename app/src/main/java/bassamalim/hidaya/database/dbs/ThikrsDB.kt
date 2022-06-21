@@ -17,22 +17,22 @@ import androidx.room.ForeignKey
     )]
 )
 class ThikrsDB(
-    @field:ColumnInfo(name = "thikr_id") @field:NonNull private val thikr_id: Int,
+    @field:ColumnInfo(name = "thikr_id") @field:NonNull private val thikrId: Int,
     @field:ColumnInfo(name = "title") private val title: String?,
-    @field:ColumnInfo(name = "title_en") private val title_en: String?,
+    @field:ColumnInfo(name = "title_en") private val titleEn: String?,
     @field:ColumnInfo(name = "text") private val text: String?,
-    @field:ColumnInfo(name = "text_en") private val text_en: String?,
-    @field:ColumnInfo(name = "text_en_translation") private val text_en_translation: String?,
+    @field:ColumnInfo(name = "text_en") private val textEn: String?,
+    @field:ColumnInfo(name = "text_en_translation") private val textEnTranslation: String?,
     @field:ColumnInfo(name = "repetition") private val repetition: String?,
-    @field:ColumnInfo(name = "repetition_en") private val repetition_en: String?,
+    @field:ColumnInfo(name = "repetition_en") private val repetitionEn: String?,
     @field:ColumnInfo(name = "fadl") private val fadl: String?,
-    @field:ColumnInfo(name = "fadl_en") private val fadl_en: String?,
+    @field:ColumnInfo(name = "fadl_en") private val fadlEn: String?,
     @field:ColumnInfo(name = "reference") private val reference: String?,
-    @field:ColumnInfo(name = "reference_en") private val reference_en: String?,
-    @field:ColumnInfo(name = "athkar_id") @field:NonNull private val athkar_id: Int
+    @field:ColumnInfo(name = "reference_en") private val referenceEn: String?,
+    @field:ColumnInfo(name = "athkar_id") @field:NonNull private val athkarId: Int
 ) {
     fun getThikrId(): Int {
-        return thikr_id
+        return thikrId
     }
 
     fun getTitle(): String {
@@ -40,7 +40,7 @@ class ThikrsDB(
     }
 
     fun getTitleEn(): String {
-        return title_en!!
+        return titleEn!!
     }
 
     fun getText(): String {
@@ -48,11 +48,11 @@ class ThikrsDB(
     }
 
     fun getTextEn(): String {
-        return text_en!!
+        return textEn!!
     }
 
     fun getTextEnTranslation(): String? {
-        return text_en_translation
+        return textEnTranslation
     }
 
     fun getRepetition(): String {
@@ -60,7 +60,7 @@ class ThikrsDB(
     }
 
     fun getRepetitionEn(): String {
-        return repetition_en!!
+        return repetitionEn!!
     }
 
     fun getFadl(): String {
@@ -68,7 +68,7 @@ class ThikrsDB(
     }
 
     fun getFadlEn(): String {
-        return fadl_en!!
+        return fadlEn!!
     }
 
     fun getReference(): String {
@@ -76,10 +76,10 @@ class ThikrsDB(
     }
 
     fun getReferenceEn(): String {
-        return reference_en!!
+        return referenceEn!!
     }
 
     fun getAthkarId(): Int {
-        return athkar_id
+        return athkarId
     }
 }

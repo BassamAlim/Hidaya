@@ -96,8 +96,13 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun updated() {
+        val str = "Last Daily Update: ${now!!.get(Calendar.YEAR)}/${now!!.get(Calendar.MONTH)}" +
+            "/${now!!.get(Calendar.DATE)}" +
+            " ${now!!.get(Calendar.HOUR)}:${now!!.get(Calendar.MINUTE)}"
+
         val editor: SharedPreferences.Editor = pref!!.edit()
         editor.putInt("last_day", now!![Calendar.DATE])
+        editor.putString("last_daily_update", str)
         editor.apply()
     }
 }

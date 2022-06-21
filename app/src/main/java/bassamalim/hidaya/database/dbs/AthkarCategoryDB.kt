@@ -6,19 +6,19 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "athkar_categories")
 class AthkarCategoryDB(
-    @field:ColumnInfo(name = "category_id") @field:PrimaryKey private val category_id: Int,
-    @field:ColumnInfo(name = "category_name") private val category_name: String?,
-    @field:ColumnInfo(name = "category_name_en") private val category_name_en: String?
+    @field:ColumnInfo(name = "category_id") @field:PrimaryKey private val categoryId: Int,
+    @field:ColumnInfo(name = "category_name") private val categoryName: String?,
+    @field:ColumnInfo(name = "category_name_en") private val categoryNameEn: String?
 ) {
     fun getCategoryId(): Int {
-        return category_id
+        return categoryId
     }
 
     fun getCategoryName(): String {
-        return category_name!!
+        return categoryName!!
     }
 
     fun getCategoryNameEn(): String {
-        return category_name_en!!
+        return categoryNameEn!!
     }
 }

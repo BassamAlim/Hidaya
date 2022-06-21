@@ -7,19 +7,19 @@ import java.io.Serializable
 
 @Entity(tableName = "quiz_questions")
 class QuizQuestionsDB(
-    @field:ColumnInfo(name = "question_id") @field:PrimaryKey private val question_id: Int,
-    @field:ColumnInfo(name = "question_text") private val question_text: String?,
-    @field:ColumnInfo(name = "correct_answer_id") private val correct_answer_id: Int
+    @field:ColumnInfo(name = "question_id") @field:PrimaryKey private val questionId: Int,
+    @field:ColumnInfo(name = "question_text") private val questionText: String?,
+    @field:ColumnInfo(name = "correct_answer_id") private val correctAnswerId: Int
 ) : Serializable {
     fun getQuestionId(): Int {
-        return question_id
+        return questionId
     }
 
     fun getQuestionText(): String {
-        return question_text!!
+        return questionText!!
     }
 
     fun getCorrectAnswerId(): Int {
-        return correct_answer_id
+        return correctAnswerId
     }
 }

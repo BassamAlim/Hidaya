@@ -83,9 +83,9 @@ object Utils {
         map['A'] = 'ص'
         map['P'] = 'م'
 
-        if (english[0] == '0') {
-            eng = english.replaceFirst("0".toRegex(), "")
-            if (english[0] == '0') eng = english.replaceFirst("0:".toRegex(), "")
+        if (eng[0] == '0') {
+            eng = eng.replaceFirst("0", "")
+            if (eng[0] == '0') eng = eng.replaceFirst("0:", "")
         }
 
         val temp = StringBuilder()
