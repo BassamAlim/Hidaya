@@ -17,33 +17,33 @@ class PrayTimes(private val context: Context) {
     private var lat = 0.0 // latitude
     private var lng = 0.0 // longitude
     private var timeZone = 0.0 // time-zone
-    private var JDate = 0.0 // Julian date
+    private var jDate = 0.0 // Julian date
     // ------------------------------------------------------------
     // Calculation Methods
-    private var Jafari = 0 // Ithna Ashari
-    private var Karachi = 0 // University of Islamic Sciences, Karachi
-    private var ISNA = 0 // Islamic Society of North America (ISNA)
-    private var MWL = 0 // Muslim World League (MWL)
-    private var Makkah = 0 // Umm al-Qura, Makkah
-    private var Egypt = 0 // Egyptian General Authority of Survey
-    private var Custom = 0 // Custom Setting
-    private var Tehran = 0 // Institute of Geophysics, University of Tehran
+    private var jafari = 0 // Ithna Ashari
+    private var karachi = 0 // University of Islamic Sciences, Karachi
+    private var isna = 0 // Islamic Society of North America (ISNA)
+    private var mwl = 0 // Muslim World League (MWL)
+    private var makkah = 0 // Umm al-Qura, Makkah
+    private var egypt = 0 // Egyptian General Authority of Survey
+    private var custom = 0 // Custom Setting
+    private var tehran = 0 // Institute of Geophysics, University of Tehran
     // Juristic Methods
-    private var Shafii = 0 // Shafii (standard)
-    private var Hanafi = 0 // Hanafi
+    private var shafii = 0 // Shafii (standard)
+    private var hanafi = 0 // Hanafi
     // Adjusting Methods for Higher Latitudes
-    private var None = 0 // No adjustment
-    private var MidNight = 0 // middle of night
-    private var OneSeventh = 0 // 1/7th of night
-    private var AngleBased = 0 // angle/60th of night
+    private var none = 0 // No adjustment
+    private var midNight = 0 // middle of night
+    private var oneSeventh = 0 // 1/7th of night
+    private var angleBased = 0 // angle/60th of night
     // Time Formats
-    private var Time24 = 0 // 24-hour format
-    private var Time12 = 0 // 12-hour format
-    private var Time12NS = 0 // 12-hour format with no suffix
-    private var Floating = 0 // floating point number
+    private var time24 = 0 // 24-hour format
+    private var time12 = 0 // 12-hour format
+    private var time12NS = 0 // 12-hour format with no suffix
+    private var floating = 0 // floating point number
     // Time Names
     private val timeNames: ArrayList<String>
-    private val InvalidTime : String // The string used for invalid times
+    private val invalidTime : String // The string used for invalid times
     // --------------------- Technical Settings --------------------
     private var numIterations = 0 // number of iterations needed to compute times
     // ------------------- Calc Method Parameters --------------------
@@ -72,7 +72,7 @@ class PrayTimes(private val context: Context) {
     // range reduce hours to 0..23
     private fun fixhour(a: Double): Double {
         var a = a
-        a -= 24.0 * Math.floor(a / 24.0)
+        a -= 24.0 * floor(a / 24.0)
         a = if (a < 0) a + 24 else a
         return a
     }
@@ -160,23 +160,23 @@ class PrayTimes(private val context: Context) {
             year -= 1
             month += 12
         }
-        val A = Math.floor(year / 100.0)
-        val B = 2 - A + Math.floor(A / 4.0)
-        return (Math.floor(365.25 * (year + 4716))
-                + Math.floor(30.6001 * (month + 1)) + day + B) - 1524.5
+        val a = floor(year / 100.0)
+        val b = 2 - a + floor(a / 4.0)
+        return (floor(365.25 * (year + 4716))
+                + floor(30.6001 * (month + 1)) + day + b) - 1524.5
     }
 
     // convert a calendar date to julian date (second method)
     private fun calcJD(year: Int, month: Int, day: Int): Double {
-        val J1970 = 2440588.0
+        val j1970 = 2440588.0
         val cal = Calendar.getInstance()
         cal[Calendar.YEAR] = year
         cal[Calendar.MONTH] = month - 1
         cal[Calendar.DATE] = day
         val ms = cal.timeInMillis.toDouble() // # of milliseconds since midnight Jan 1,
         // 1970
-        val days = Math.floor(ms / (1000.0 * 60.0 * 60.0 * 24.0))
-        return J1970 + days - 0.5
+        val days = floor(ms / (1000.0 * 60.0 * 60.0 * 24.0))
+        return j1970 + days - 0.5
     }
 
     // ---------------------- Calculation Functions -----------------------
@@ -185,21 +185,21 @@ class PrayTimes(private val context: Context) {
     // http://aa.usno.navy.mil/faq/docs/SunApprox.html
     // compute declination angle of sun and equation of time
     private fun sunPosition(jd: Double): DoubleArray {
-        val D = jd - 2451545
-        val g = fixangle(357.529 + 0.98560028 * D)
-        val q = fixangle(280.459 + 0.98564736 * D)
-        val L = fixangle(q + 1.915 * dSin(g) + 0.020 * dSin(2 * g))
+        val dd = jd - 2451545
+        val g = fixangle(357.529 + 0.98560028 * dd)
+        val q = fixangle(280.459 + 0.98564736 * dd)
+        val l = fixangle(q + 1.915 * dSin(g) + 0.020 * dSin(2 * g))
 
         // double R = 1.00014 - 0.01671 * [self dcos:g] - 0.00014 * [self dcos:
         // (2*g)];
-        val e = 23.439 - 0.00000036 * D
-        val d = dArcSin(dSin(e) * dSin(L))
-        var RA = dArcTan2(dCos(e) * dSin(L), dCos(L)) / 15.0
-        RA = fixhour(RA)
-        val EqT = q / 15.0 - RA
+        val e = 23.439 - 0.00000036 * dd
+        val d = dArcSin(dSin(e) * dSin(l))
+        var ra = dArcTan2(dCos(e) * dSin(l), dCos(l)) / 15.0
+        ra = fixhour(ra)
+        val eqT = q / 15.0 - ra
         val sPosition = DoubleArray(2)
         sPosition[0] = d
-        sPosition[1] = EqT
+        sPosition[1] = eqT
         return sPosition
     }
 
@@ -215,26 +215,26 @@ class PrayTimes(private val context: Context) {
 
     // compute mid-day (Dhuhr, Zawal) time
     private fun computeMidDay(t: Double): Double {
-        val T = equationOfTime(getJDate() + t)
-        return fixhour(12 - T)
+        val t = equationOfTime(getJDate() + t)
+        return fixhour(12 - t)
     }
 
     // compute time for a given angle G
     private fun computeTime(G: Double, t: Double): Double {
-        val D = sunDeclination(getJDate() + t)
-        val Z = computeMidDay(t)
-        val Beg = -dSin(G) - dSin(D) * dSin(getLat())
-        val Mid = dCos(D) * dCos(getLat())
-        val V = dArcCos(Beg / Mid) / 15.0
-        return Z + if (G > 90) -V else V
+        val d = sunDeclination(getJDate() + t)
+        val z = computeMidDay(t)
+        val beg = -dSin(G) - dSin(d) * dSin(getLat())
+        val mid = dCos(d) * dCos(getLat())
+        val v = dArcCos(beg / mid) / 15.0
+        return z + if (G > 90) -v else v
     }
 
     // compute the time of Asr
     // Shafii: step=1, Hanafi: step=2
     private fun computeAsr(step: Double, t: Double): Double {
-        val D = sunDeclination(getJDate() + t)
-        val G = -dArcCot(step + dTan(Math.abs(getLat() - D)))
-        return computeTime(G, t)
+        val d = sunDeclination(getJDate() + t)
+        val g = -dArcCot(step + dTan(abs(getLat() - d)))
+        return computeTime(g, t)
     }
 
     // ---------------------- Misc Functions -----------------------
@@ -418,7 +418,7 @@ class PrayTimes(private val context: Context) {
         var time = time
         val result: String
         if (java.lang.Double.isNaN(time)) {
-            return InvalidTime
+            return invalidTime
         }
         time = fixhour(time + 0.5 / 60.0) // add 0.5 minutes to round
         val hours = floor(time).toInt()
@@ -436,17 +436,16 @@ class PrayTimes(private val context: Context) {
     }
 
     // convert double hours to 12h format
-    fun floatToTime12(time: Double, noSuffix: Boolean): String {
+    private fun floatToTime12(time: Double, noSuffix: Boolean): String {
         var time = time
         if (java.lang.Double.isNaN(time)) {
-            return InvalidTime
+            return invalidTime
         }
         time = fixhour(time + 0.5 / 60) // add 0.5 minutes to round
-        var hours = Math.floor(time).toInt()
-        val minutes = Math.floor((time - hours) * 60)
-        val suffix: String
+        var hours = floor(time).toInt()
+        val minutes = floor((time - hours) * 60)
         val result: String
-        suffix = if (hours >= 12) {
+        val suffix: String = if (hours >= 12) {
             "PM"
         } else {
             "AM"
@@ -454,25 +453,33 @@ class PrayTimes(private val context: Context) {
         hours = (hours + 12 - 1) % 12 + 1
         /*hours = (hours + 12) - 1;
         int hrs = (int) hours % 12;
-        hrs += 1;*/result = if (!noSuffix) {
+        hrs += 1;*/
+        result = if (!noSuffix) {
             if (hours in 0..9 && minutes >= 0 && minutes <= 9) {
                 ("0" + hours + ":0" + Math.round(minutes) + " "
                         + suffix)
-            } else if (hours in 0..9) {
+            }
+            else if (hours in 0..9) {
                 "0" + hours + ":" + Math.round(minutes) + " " + suffix
-            } else if (minutes in 0.0..9.0) {
+            }
+            else if (minutes in 0.0..9.0) {
                 hours.toString() + ":0" + Math.round(minutes) + " " + suffix
-            } else {
+            }
+            else {
                 hours.toString() + ":" + Math.round(minutes) + " " + suffix
             }
-        } else {
+        }
+        else {
             if (hours in 0..9 && minutes >= 0 && minutes <= 9) {
                 "0" + hours + ":0" + Math.round(minutes)
-            } else if (hours in 0..9) {
+            }
+            else if (hours in 0..9) {
                 "0" + hours + ":" + Math.round(minutes)
-            } else if (minutes in 0.0..9.0) {
+            }
+            else if (minutes in 0.0..9.0) {
                 hours.toString() + ":0" + Math.round(minutes)
-            } else {
+            }
+            else {
                 hours.toString() + ":" + Math.round(minutes)
             }
         }
@@ -488,20 +495,14 @@ class PrayTimes(private val context: Context) {
     // compute prayer times at given julian date
     private fun computeTimes(times: DoubleArray): DoubleArray {
         val t = dayPortion(times)
-        val Fajr = computeTime(
-            180 - (methodParams[getCalcMethod()]?.get(0)!!), t[0]
-        )
-        val Sunrise = computeTime(180 - 0.833, t[1])
-        val Dhuhr = computeMidDay(t[2])
-        val Asr = computeAsr((1 + getAsrJuristic()).toDouble(), t[3])
-        val Sunset = computeTime(0.833, t[4])
-        val Maghrib = computeTime(
-            methodParams[getCalcMethod()]?.get(2)!!, t[5]
-        )
-        val Isha = computeTime(
-            methodParams[getCalcMethod()]?.get(4)!!, t[6]
-        )
-        return doubleArrayOf(Fajr, Sunrise, Dhuhr, Asr, Sunset, Maghrib, Isha)
+        val fajr = computeTime(180 - (methodParams[getCalcMethod()]?.get(0)!!), t[0])
+        val sunrise = computeTime(180 - 0.833, t[1])
+        val dhuhr = computeMidDay(t[2])
+        val asr = computeAsr((1 + getAsrJuristic()).toDouble(), t[3])
+        val sunset = computeTime(0.833, t[4])
+        val maghrib = computeTime(methodParams[getCalcMethod()]?.get(2)!!, t[5])
+        val isha = computeTime(methodParams[getCalcMethod()]?.get(4)!!, t[6])
+        return doubleArrayOf(fajr, sunrise, dhuhr, asr, sunset, maghrib, isha)
     }
 
     // compute prayer times at given julian date
@@ -517,21 +518,17 @@ class PrayTimes(private val context: Context) {
 
     // adjust times in a prayer time array
     private fun adjustTimes(times: DoubleArray): DoubleArray {
-        for (i in times.indices) {
+        for (i in times.indices)
             times[i] += getTimeZone() - getLng() / 15
-        }
+
         times[2] += getDhuhrMinutes() / 60.0 // Dhuhr
         if (methodParams[getCalcMethod()]?.get(1)?.toInt() == 1) // Maghrib
-        {
             times[5] = times[4] + (methodParams[getCalcMethod()]?.get(2)!!) / 60
-        }
         if (methodParams[getCalcMethod()]?.get(3)?.toInt() == 1) // Isha
-        {
             times[6] = times[5] + (methodParams[getCalcMethod()]?.get(4)!!) / 60
-        }
-        if (getAdjustHighLats() != getNone()) {
+        if (getAdjustHighLats() != getNone())
             adjustHighLatTimes(times)
-        }
+
         return times
     }
 
@@ -544,14 +541,14 @@ class PrayTimes(private val context: Context) {
             }
             return result
         }
+
         for (i in 0..6) {
-            if (getTimeFormat() == getTime12()) {
+            if (getTimeFormat() == getTime12())
                 result.add(floatToTime12(times[i], false))
-            } else if (getTimeFormat() == getTime12NS()) {
+            else if (getTimeFormat() == getTime12NS())
                 result.add(floatToTime12(times[i], true))
-            } else {
+            else
                 result.add(floatToTime24(times[i]))
-            }
         }
         return result
     }
@@ -561,39 +558,46 @@ class PrayTimes(private val context: Context) {
         val nightTime = timeDiff(times[4], times[1]) // sunset to sunrise
 
         // Adjust Fajr
-        val FajrDiff = nightPortion(
+        val fajrDiff = nightPortion(
             methodParams[getCalcMethod()]?.get(0)!!
         ) * nightTime
-        if (java.lang.Double.isNaN(times[0]) || timeDiff(times[0], times[1]) > FajrDiff) {
-            times[0] = times[1] - FajrDiff
+        if (java.lang.Double.isNaN(times[0]) || timeDiff(times[0], times[1]) > fajrDiff) {
+            times[0] = times[1] - fajrDiff
         }
 
         // Adjust Isha
-        val IshaAngle: Double = if (
-            methodParams[getCalcMethod()]?.get(3)?.toInt() == 0
-        ) methodParams[getCalcMethod()]?.get(4)!!.toDouble() else 18.0
-        val IshaDiff = nightPortion(IshaAngle) * nightTime
-        if (java.lang.Double.isNaN(times[6]) || timeDiff(times[4], times[6]) > IshaDiff) {
-            times[6] = times[4] + IshaDiff
-        }
+        val ishaAngle: Double =
+            if (methodParams[getCalcMethod()]?.get(3)?.toInt() == 0)
+                methodParams[getCalcMethod()]?.get(4)!!.toDouble()
+            else
+                18.0
+
+        val ishaDiff = nightPortion(ishaAngle) * nightTime
+        if (java.lang.Double.isNaN(times[6]) || timeDiff(times[4], times[6]) > ishaDiff)
+            times[6] = times[4] + ishaDiff
 
         // Adjust Maghrib
-        val MaghribAngle: Double = if (
-            methodParams[getCalcMethod()]?.get(1)?.toInt() == 0
-        ) methodParams[getCalcMethod()]?.get(2)!!.toDouble() else 4.0
-        val MaghribDiff = nightPortion(MaghribAngle) * nightTime
-        if (java.lang.Double.isNaN(times[5]) || timeDiff(times[4], times[5]) > MaghribDiff) {
-            times[5] = times[4] + MaghribDiff
-        }
+        val maghribAngle: Double =
+            if (methodParams[getCalcMethod()]?.get(1)?.toInt() == 0)
+                methodParams[getCalcMethod()]?.get(2)!!.toDouble()
+            else
+                4.0
+
+        val maghribDiff = nightPortion(maghribAngle) * nightTime
+        if (java.lang.Double.isNaN(times[5]) || timeDiff(times[4], times[5]) > maghribDiff)
+            times[5] = times[4] + maghribDiff
+
         return times
     }
 
     // the night portion used for adjusting times in higher latitudes
     private fun nightPortion(angle: Double): Double {
         var calc = 0.0
-        if (adjustHighLats == AngleBased) calc =
-            angle / 60.0 else if (adjustHighLats == MidNight) calc =
-            0.5 else if (adjustHighLats == OneSeventh) calc = 0.14286
+        when (adjustHighLats) {
+            angleBased -> calc = angle / 60.0
+            midNight -> calc = 0.5
+            oneSeventh -> calc = 0.14286
+        }
         return calc
     }
 
@@ -645,220 +649,220 @@ class PrayTimes(private val context: Context) {
         }
 
     }*/
-    fun getCalcMethod(): Int {
+    private fun getCalcMethod(): Int {
         return calcMethod
     }
 
-    fun setCalcMethod(calcMethod: Int) {
+    private fun setCalcMethod(calcMethod: Int) {
         this.calcMethod = calcMethod
     }
 
-    fun getAsrJuristic(): Int {
+    private fun getAsrJuristic(): Int {
         return asrJuristic
     }
 
-    fun setAsrJuristic(asrJuristic: Int) {
+    private fun setAsrJuristic(asrJuristic: Int) {
         this.asrJuristic = asrJuristic
     }
 
-    fun getDhuhrMinutes(): Int {
+    private fun getDhuhrMinutes(): Int {
         return dhuhrMinutes
     }
 
-    fun setDhuhrMinutes(dhuhrMinutes: Int) {
+    private fun setDhuhrMinutes(dhuhrMinutes: Int) {
         this.dhuhrMinutes = dhuhrMinutes
     }
 
-    fun getAdjustHighLats(): Int {
+    private fun getAdjustHighLats(): Int {
         return adjustHighLats
     }
 
-    fun setAdjustHighLats(adjustHighLats: Int) {
+    private fun setAdjustHighLats(adjustHighLats: Int) {
         this.adjustHighLats = adjustHighLats
     }
 
-    fun getTimeFormat(): Int {
+    private fun getTimeFormat(): Int {
         return timeFormat
     }
 
-    fun setTimeFormat(timeFormat: Int) {
+    private fun setTimeFormat(timeFormat: Int) {
         this.timeFormat = timeFormat
     }
 
-    fun getLat(): Double {
+    private fun getLat(): Double {
         return lat
     }
 
-    fun setLat(lat: Double) {
+    private fun setLat(lat: Double) {
         this.lat = lat
     }
 
-    fun getLng(): Double {
+    private fun getLng(): Double {
         return lng
     }
 
-    fun setLng(lng: Double) {
+    private fun setLng(lng: Double) {
         this.lng = lng
     }
 
-    fun getTimeZone(): Double {
+    private fun getTimeZone(): Double {
         return timeZone
     }
 
-    fun setTimeZone(timeZone: Double) {
+    private fun setTimeZone(timeZone: Double) {
         this.timeZone = timeZone
     }
 
-    fun getJDate(): Double {
-        return JDate
+    private fun getJDate(): Double {
+        return jDate
     }
 
-    fun setJDate(jDate: Double) {
-        JDate = jDate
+    private fun setJDate(jDate: Double) {
+        this.jDate = jDate
     }
 
     private fun getJafari(): Int {
-        return Jafari
+        return jafari
     }
 
     private fun setJafari(jafari: Int) {
-        Jafari = jafari
+        this.jafari = jafari
     }
 
     private fun getKarachi(): Int {
-        return Karachi
+        return karachi
     }
 
     private fun setKarachi(karachi: Int) {
-        Karachi = karachi
+        this.karachi = karachi
     }
 
     private fun getISNA(): Int {
-        return ISNA
+        return isna
     }
 
     private fun setISNA(iSNA: Int) {
-        ISNA = iSNA
+        isna = iSNA
     }
 
     private fun getMWL(): Int {
-        return MWL
+        return mwl
     }
 
     private fun setMWL(mWL: Int) {
-        MWL = mWL
+        mwl = mWL
     }
 
     private fun getMakkah(): Int {
-        return Makkah
+        return makkah
     }
 
     private fun setMakkah(makkah: Int) {
-        Makkah = makkah
+        this.makkah = makkah
     }
 
     private fun getEgypt(): Int {
-        return Egypt
+        return egypt
     }
 
     private fun setEgypt(egypt: Int) {
-        Egypt = egypt
+        this.egypt = egypt
     }
 
     private fun getCustom(): Int {
-        return Custom
+        return custom
     }
 
     private fun setCustom(custom: Int) {
-        Custom = custom
+        this.custom = custom
     }
 
     private fun getTehran(): Int {
-        return Tehran
+        return tehran
     }
 
     private fun setTehran(tehran: Int) {
-        Tehran = tehran
+        this.tehran = tehran
     }
 
     private fun getShafii(): Int {
-        return Shafii
+        return shafii
     }
 
     private fun setShafii(shafii: Int) {
-        Shafii = shafii
+        this.shafii = shafii
     }
 
     private fun getHanafi(): Int {
-        return Hanafi
+        return hanafi
     }
 
     private fun setHanafi(hanafi: Int) {
-        Hanafi = hanafi
+        this.hanafi = hanafi
     }
 
     private fun getNone(): Int {
-        return None
+        return none
     }
 
     private fun setNone(none: Int) {
-        None = none
+        this.none = none
     }
 
     private fun getMidNight(): Int {
-        return MidNight
+        return midNight
     }
 
     private fun setMidNight(midNight: Int) {
-        MidNight = midNight
+        this.midNight = midNight
     }
 
     private fun getOneSeventh(): Int {
-        return OneSeventh
+        return oneSeventh
     }
 
     private fun setOneSeventh(oneSeventh: Int) {
-        OneSeventh = oneSeventh
+        this.oneSeventh = oneSeventh
     }
 
     private fun getAngleBased(): Int {
-        return AngleBased
+        return angleBased
     }
 
     private fun setAngleBased(angleBased: Int) {
-        AngleBased = angleBased
+        this.angleBased = angleBased
     }
 
     private fun getTime24(): Int {
-        return Time24
+        return time24
     }
 
     private fun setTime24(time24: Int) {
-        Time24 = time24
+        this.time24 = time24
     }
 
     private fun getTime12(): Int {
-        return Time12
+        return time12
     }
 
     private fun setTime12(time12: Int) {
-        Time12 = time12
+        this.time12 = time12
     }
 
     private fun getTime12NS(): Int {
-        return Time12NS
+        return time12NS
     }
 
     private fun setTime12NS(time12ns: Int) {
-        Time12NS = time12ns
+        time12NS = time12ns
     }
 
     private fun getFloating(): Int {
-        return Floating
+        return floating
     }
 
     private fun setFloating(floating: Int) {
-        Floating = floating
+        this.floating = floating
     }
 
     private fun getNumIterations(): Int {
@@ -917,7 +921,7 @@ class PrayTimes(private val context: Context) {
         timeNames.add("Sunset")
         timeNames.add("Maghrib")
         timeNames.add("Isha")
-        InvalidTime = "-----" // The string used for invalid times
+        invalidTime = "-----" // The string used for invalid times
 
         // --------------------- Technical Settings --------------------
         setNumIterations(1) // number of iterations needed to compute
@@ -944,35 +948,35 @@ class PrayTimes(private val context: Context) {
          */methodParams = HashMap()
 
         // Jafari
-        val Jvalues = doubleArrayOf(16.0, 0.0, 4.0, 0.0, 14.0)
-        methodParams[getJafari()] = Jvalues
+        val jvalues = doubleArrayOf(16.0, 0.0, 4.0, 0.0, 14.0)
+        methodParams[getJafari()] = jvalues
 
         // Karachi
-        val Kvalues = doubleArrayOf(18.0, 1.0, 0.0, 0.0, 18.0)
-        methodParams[getKarachi()] = Kvalues
+        val kvalues = doubleArrayOf(18.0, 1.0, 0.0, 0.0, 18.0)
+        methodParams[getKarachi()] = kvalues
 
         // ISNA
-        val Ivalues = doubleArrayOf(15.0, 1.0, 0.0, 0.0, 15.0)
-        methodParams[getISNA()] = Ivalues
+        val ivalues = doubleArrayOf(15.0, 1.0, 0.0, 0.0, 15.0)
+        methodParams[getISNA()] = ivalues
 
         // MWL
-        val MWvalues = doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0)
-        methodParams[getMWL()] = MWvalues
+        val mwValues = doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0)
+        methodParams[getMWL()] = mwValues
 
         // Makkah
-        val MKvalues = doubleArrayOf(18.5, 1.0, 0.0, 1.0, 90.0)
-        methodParams[getMakkah()] = MKvalues
+        val mkValues = doubleArrayOf(18.5, 1.0, 0.0, 1.0, 90.0)
+        methodParams[getMakkah()] = mkValues
 
         // Egypt
-        val Evalues = doubleArrayOf(19.5, 1.0, 0.0, 0.0, 17.5)
-        methodParams[getEgypt()] = Evalues
+        val eValues = doubleArrayOf(19.5, 1.0, 0.0, 0.0, 17.5)
+        methodParams[getEgypt()] = eValues
 
         // Tehran
-        val Tvalues = doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0)
-        methodParams[getTehran()] = Tvalues
+        val tValues = doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0)
+        methodParams[getTehran()] = tValues
 
         // Custom
-        val Cvalues = doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0)
-        methodParams[getCustom()] = Cvalues
+        val cValues = doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0)
+        methodParams[getCustom()] = cValues
     }
 }

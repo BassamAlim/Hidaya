@@ -26,6 +26,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
     override fun onReceive(gContext: Context, intent: Intent) {
         Log.i(Global.TAG, "in daily update receiver")
+
         context = gContext
         pref = PreferenceManager.getDefaultSharedPreferences(context!!)
         now = Calendar.getInstance()

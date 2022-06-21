@@ -4,8 +4,6 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
-import org.jetbrains.annotations.NotNull
 
 @Entity(
     tableName = "thikrs",
@@ -33,7 +31,7 @@ class ThikrsDB(
     @field:ColumnInfo(name = "reference_en") private val reference_en: String?,
     @field:ColumnInfo(name = "athkar_id") @field:NonNull private val athkar_id: Int
 ) {
-    fun getThikr_id(): Int {
+    fun getThikrId(): Int {
         return thikr_id
     }
 
@@ -41,7 +39,7 @@ class ThikrsDB(
         return title!!
     }
 
-    fun getTitle_en(): String {
+    fun getTitleEn(): String {
         return title_en!!
     }
 
@@ -49,11 +47,11 @@ class ThikrsDB(
         return text!!
     }
 
-    fun getText_en(): String {
+    fun getTextEn(): String {
         return text_en!!
     }
 
-    fun getText_en_translation(): String? {
+    fun getTextEnTranslation(): String? {
         return text_en_translation
     }
 
@@ -61,7 +59,7 @@ class ThikrsDB(
         return repetition!!
     }
 
-    fun getRepetition_en(): String {
+    fun getRepetitionEn(): String {
         return repetition_en!!
     }
 
@@ -69,7 +67,7 @@ class ThikrsDB(
         return fadl!!
     }
 
-    fun getFadl_en(): String {
+    fun getFadlEn(): String {
         return fadl_en!!
     }
 
@@ -77,11 +75,11 @@ class ThikrsDB(
         return reference!!
     }
 
-    fun getReference_en(): String {
+    fun getReferenceEn(): String {
         return reference_en!!
     }
 
-    fun getAthkar_id(): Int {
+    fun getAthkarId(): Int {
         return athkar_id
     }
 }

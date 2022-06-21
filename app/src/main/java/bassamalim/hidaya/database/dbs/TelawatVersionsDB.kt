@@ -23,11 +23,11 @@ class TelawatVersionsDB(
     @field:ColumnInfo(name = "count") private val count: Int,
     @field:ColumnInfo(name = "suras") private val suras: String?
 ) {
-    fun getReciter_id(): Int {
+    fun getReciterId(): Int {
         return reciter_id
     }
 
-    fun getVersion_id(): Int {
+    fun getVersionId(): Int {
         return version_id
     }
 
@@ -40,7 +40,7 @@ class TelawatVersionsDB(
     }
 
     fun getCount(): Int {
-        return count!!
+        return count
     }
 
     fun getSuras(): String {

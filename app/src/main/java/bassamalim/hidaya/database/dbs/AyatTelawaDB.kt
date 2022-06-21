@@ -21,7 +21,7 @@ class AyatTelawaDB(
     @field:ColumnInfo(name = "rate") @field:NonNull private val rate: Int,
     @field:ColumnInfo(name = "source") private val source: String?
 ) {
-    fun getRec_id(): Int {
+    fun getRecId(): Int {
         return rec_id
     }
 

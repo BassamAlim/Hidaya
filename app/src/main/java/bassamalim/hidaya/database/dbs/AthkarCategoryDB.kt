@@ -10,15 +10,15 @@ class AthkarCategoryDB(
     @field:ColumnInfo(name = "category_name") private val category_name: String?,
     @field:ColumnInfo(name = "category_name_en") private val category_name_en: String?
 ) {
-    fun getCategory_id(): Int {
+    fun getCategoryId(): Int {
         return category_id
     }
 
-    fun getCategory_name(): String {
+    fun getCategoryName(): String {
         return category_name!!
     }
 
-    fun getCategory_name_en(): String {
+    fun getCategoryNameEn(): String {
         return category_name_en!!
     }
 }

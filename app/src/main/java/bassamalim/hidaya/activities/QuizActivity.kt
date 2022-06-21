@@ -86,9 +86,9 @@ class QuizActivity : AppCompatActivity() {
         val qNum: String = getString(R.string.question) + " " + (current + 1)
         binding!!.topBarTitle.text = qNum
 
-        binding!!.questionScreen.text = questions!![current].getQuestion_text()
+        binding!!.questionScreen.text = questions!![current].getQuestionText()
 
-        val answers: List<QuizAnswersDB> = getAnswers(q.getQuestion_id())
+        val answers: List<QuizAnswersDB> = getAnswers(q.getQuestionId())
         for (i in answerBtns.indices) answerBtns[i]!!.text = answers[i].answer_text
 
         adjustButtons()
@@ -151,7 +151,7 @@ class QuizActivity : AppCompatActivity() {
     private fun endQuiz() {
         var score = 0
         for (i in 0..9) {
-            if (cAnswers[i] == questions!![i].getCorrect_answer_id()) score++
+            if (cAnswers[i] == questions!![i].getCorrectAnswerId()) score++
         }
 
         val intent = Intent(this, QuizResultActivity::class.java)

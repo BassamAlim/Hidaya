@@ -64,19 +64,19 @@ class AthkarViewer : AppCompatActivity() {
         for (i in thikrs.indices) {
             val t: ThikrsDB = thikrs[i]
 
-            if (language == "en" && (t.getText_en().isEmpty())) continue
+            if (language == "en" && (t.getTextEn().isEmpty())) continue
 
             if (language == "en") cards.add(
                 Thikr(
-                    t.getThikr_id(), t.getTitle_en(), t.getText_en(), t.getText_en_translation(),
-                    t.getFadl_en(), t.getReference_en(), t.getRepetition_en()
+                    t.getThikrId(), t.getTitleEn(), t.getTextEn(), t.getTextEnTranslation(),
+                    t.getFadlEn(), t.getReferenceEn(), t.getRepetitionEn()
                 ) {
-                    InfoDialog(getString(R.string.reference), t.getReference_en())
+                    InfoDialog(getString(R.string.reference), t.getReferenceEn())
                         .show(supportFragmentManager, InfoDialog.TAG)
                 }
             ) else cards.add(
-                Thikr(t.getThikr_id(), t.getTitle(), t.getText(),
-                    t.getText_en_translation(), t.getFadl(), t.getReference(),
+                Thikr(t.getThikrId(), t.getTitle(), t.getText(),
+                    t.getTextEnTranslation(), t.getFadl(), t.getReference(),
                     t.getRepetition()
                 ) {
                     InfoDialog(

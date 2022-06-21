@@ -127,15 +127,15 @@ class TelawatFragment : Fragment {
 
                 val listener = View.OnClickListener { v: View ->
                     val intent = Intent(v.context, TelawatSuarCollectionActivity::class.java)
-                    intent.putExtra("reciter_id", telawa.getReciter_id())
-                    intent.putExtra("reciter_name", telawa.getReciter_name())
-                    intent.putExtra("version_id", telawa.getVersion_id())
+                    intent.putExtra("reciter_id", telawa.getReciterId())
+                    intent.putExtra("reciter_name", telawa.getReciterName())
+                    intent.putExtra("version_id", telawa.getVersionId())
                     startActivity(intent)
                 }
 
                 versionsList.add(
                     RecitationVersion(
-                        telawa.getVersion_id(), telawa.getUrl(), telawa.getRewaya(),
+                        telawa.getVersionId(), telawa.getUrl(), telawa.getRewaya(),
                         telawa.getCount(), telawa.getSuras(), listener
                     )
                 )
@@ -151,7 +151,7 @@ class TelawatFragment : Fragment {
         val result: MutableList<TelawatDB> = ArrayList<TelawatDB>()
         for (i in telawat!!.indices) {
             val telawa: TelawatDB = telawat!![i]
-            if (telawa.getReciter_id() == id) result.add(telawa)
+            if (telawa.getReciterId() == id) result.add(telawa)
         }
         return result
     }

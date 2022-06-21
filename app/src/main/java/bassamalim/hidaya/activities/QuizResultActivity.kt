@@ -51,11 +51,11 @@ class QuizResultActivity : AppCompatActivity() {
     private fun makeQuestionCards(): ArrayList<QuizResultQuestion> {
         val cards: ArrayList<QuizResultQuestion> = ArrayList()
         for (i in 0..9) {
-            val answers: List<QuizAnswersDB> = getAnswers(questions!![i].getQuestion_id())
+            val answers: List<QuizAnswersDB> = getAnswers(questions!![i].getQuestionId())
 
             cards.add(
                 QuizResultQuestion(
-                    i, questions!![i].getQuestion_text(), questions!![i].getCorrect_answer_id(),
+                    i, questions!![i].getQuestionText(), questions!![i].getCorrectAnswerId(),
                     cAnswers!![i], answers[0].answer_text!!, answers[1].answer_text!!,
                     answers[2].answer_text!!, answers[3].answer_text!!
                 )

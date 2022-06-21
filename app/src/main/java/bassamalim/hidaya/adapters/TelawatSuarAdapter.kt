@@ -39,7 +39,7 @@ class TelawatSuarAdapter(
 
     init {
         ver = db.telawatVersionsDao().getVersion(reciterId, versionId)
-        prefix = "/Telawat/" + ver.getReciter_id() + "/" + versionId
+        prefix = "/Telawat/" + ver.getReciterId() + "/" + versionId
         checkDownloaded()
     }
 
@@ -173,7 +173,7 @@ class TelawatSuarAdapter(
         val request: DownloadManager.Request = DownloadManager.Request(uri)
         val title = context.getString(R.string.downloading) + " " + items[num].getSearchName()
         request.setTitle(title)
-        val postfix = "/Telawat/" + ver.getReciter_id() + "/" + versionId
+        val postfix = "/Telawat/" + ver.getReciterId() + "/" + versionId
         Utils.createDir(context, postfix)
         request.setDestinationInExternalFilesDir(context, postfix, "$num.mp3")
         request.setNotificationVisibility(

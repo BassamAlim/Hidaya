@@ -3,7 +3,6 @@ package bassamalim.hidaya.database.dbs
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import javax.annotation.Nullable
 
 @Entity(tableName = "hafs_ayat")
 class AyatDB(
