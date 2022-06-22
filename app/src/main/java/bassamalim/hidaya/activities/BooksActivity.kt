@@ -26,21 +26,21 @@ import java.io.File
 
 class BooksActivity : AppCompatActivity() {
 
-    private var binding: ActivityBooksBinding? = null
-    private var gson: Gson? = null
+    private lateinit var binding: ActivityBooksBinding
+    private lateinit var gson: Gson
     private var numOfBooks = 0
     private val prefix = "/Books/"
-    private var downloaded: BooleanArray? = null
-    private var cards: Array<CardView>? = null
-    private var downloadBtns: Array<ImageButton>? = null
-    private var infoArr: Array<BookInfo?>? = null
+    private lateinit var downloaded: BooleanArray
+    private lateinit var cards: Array<CardView>
+    private lateinit var downloadBtns: Array<ImageButton>
+    private lateinit var infoArr: Array<BookInfo?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)
         binding = ActivityBooksBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        binding!!.home.setOnClickListener {onBackPressed()}
+        setContentView(binding.root)
+        binding.home.setOnClickListener {onBackPressed()}
 
         gson = Gson()
 
@@ -79,7 +79,7 @@ class BooksActivity : AppCompatActivity() {
             val n = name.substring(0, name.length - 5)
             try {
                 val num = n.toInt()
-                downloaded!![num] = true
+                downloaded[num] = true
             } catch (ignored: NumberFormatException) {
             }
         }
@@ -90,31 +90,31 @@ class BooksActivity : AppCompatActivity() {
         val bookTitles: Array<String> = resources.getStringArray(R.array.books_titles)
         val bookAuthors: Array<String> = resources.getStringArray(R.array.books_authors)
         for (i in 0 until numOfBooks) {
-            if (downloaded!![i] && !downloading(i)) {
+            if (downloaded[i] && !downloading(i)) {
                 val path: String = getExternalFilesDir(null).toString() + "/Books/" + i + ".json"
                 val jsonStr = Utils.getJsonFromDownloads(path)
-                val book: Book = gson!!.fromJson(jsonStr, Book::class.java)
-                infoArr!![i] = BookInfo(i, bookTitles[i], bookAuthors[i])
+                val book: Book = gson.fromJson(jsonStr, Book::class.java)
+                infoArr[i] = BookInfo(i, bookTitles[i], bookAuthors[i])
             }
         }
     }
 
     private fun initViews() {
-        cards = arrayOf(binding!!.bokhariCard, binding!!.muslimCard)
-        val titleTvs: Array<TextView> = arrayOf(binding!!.bokhariTitleTv, binding!!.muslimTitleTv)
-        downloadBtns = arrayOf(binding!!.bokhariDownloadBtn, binding!!.muslimDownloadBtn)
+        cards = arrayOf(binding.bokhariCard, binding.muslimCard)
+        val titleTvs: Array<TextView> = arrayOf(binding.bokhariTitleTv, binding.muslimTitleTv)
+        downloadBtns = arrayOf(binding.bokhariDownloadBtn, binding.muslimDownloadBtn)
 
         for (i in 0 until numOfBooks) {
-            if (infoArr!![i] != null && downloaded!![i])
-                titleTvs[i].text = infoArr!![i]!!.bookTitle
+            if (infoArr[i] != null && downloaded[i])
+                titleTvs[i].text = infoArr[i]!!.bookTitle
         }
 
-        for (i in 0 until numOfBooks) updateUI(i, downloaded!![i])
+        for (i in 0 until numOfBooks) updateUI(i, downloaded[i])
     }
 
     private fun setListeners() {
         for (i in 0 until numOfBooks) {
-            cards!![i].setOnClickListener {
+            cards[i].setOnClickListener {
                 if (downloaded(i)) {
                     if (downloading(i)) Toast.makeText(
                         this, getString(R.string.wait_for_download),
@@ -137,7 +137,7 @@ class BooksActivity : AppCompatActivity() {
                 }
             }
 
-            downloadBtns!![i].setOnClickListener {
+            downloadBtns[i].setOnClickListener {
                 if (downloaded(i)) {
                     if (downloading(i)) Toast.makeText(
                         this, getString(R.string.wait_for_download), Toast.LENGTH_SHORT
@@ -152,7 +152,7 @@ class BooksActivity : AppCompatActivity() {
             }
         }
 
-        binding!!.fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             val intent = Intent(this, BookSearcher::class.java)
             startActivity(intent)
         }
@@ -179,7 +179,7 @@ class BooksActivity : AppCompatActivity() {
         val path: String = getExternalFilesDir(null).toString() + "/Books/" + id + ".json"
         val jsonStr = Utils.getJsonFromDownloads(path)
         return try {
-            gson!!.fromJson(jsonStr, Book::class.java)
+            gson.fromJson(jsonStr, Book::class.java)
             false
         } catch (e: Exception) {
             true
@@ -187,11 +187,11 @@ class BooksActivity : AppCompatActivity() {
     }
 
     private fun updateUI(id: Int, downloaded: Boolean) {
-        if (downloaded) downloadBtns!![id].setImageDrawable(
+        if (downloaded) downloadBtns[id].setImageDrawable(
             AppCompatResources.getDrawable(
                 this, R.drawable.ic_downloaded
             )
-        ) else downloadBtns!![id].setImageDrawable(
+        ) else downloadBtns[id].setImageDrawable(
             AppCompatResources.getDrawable(
                 this, R.drawable.ic_download
             )
@@ -231,4 +231,5 @@ class BooksActivity : AppCompatActivity() {
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
         downloadManager.enqueue(request)
     }
+
 }

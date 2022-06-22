@@ -62,4 +62,5 @@ class CheckboxListviewAdapter(
 
         return result
     }
+
 }

@@ -15,10 +15,10 @@ import java.util.*
 
 class HijriDatePickerDialog : DialogFragment() {
 
-    private var listener: DatePickerDialog.OnDateSetListener? = null
-    private var monthPicker: NumberPicker? = null
-    private var yearPicker: NumberPicker? = null
-    private var dayPicker: NumberPicker? = null
+    private lateinit var listener: DatePickerDialog.OnDateSetListener
+    private lateinit var monthPicker: NumberPicker
+    private lateinit var yearPicker: NumberPicker
+    private lateinit var dayPicker: NumberPicker
     private val cal: UmmalquraCalendar = UmmalquraCalendar()
 
     override fun onStart() {
@@ -33,7 +33,7 @@ class HijriDatePickerDialog : DialogFragment() {
         )
     }
 
-    fun setListener(listener: DatePickerDialog.OnDateSetListener?) {
+    fun setListener(listener: DatePickerDialog.OnDateSetListener) {
         this.listener = listener
     }
 
@@ -50,42 +50,43 @@ class HijriDatePickerDialog : DialogFragment() {
             requireContext(), (i + 1).toString()
         )
 
-        yearPicker!!.minValue = 1
-        yearPicker!!.maxValue = maxYear
-        yearPicker!!.displayedValues = tempArray
-        yearPicker!!.value = cal.get(Calendar.YEAR)
-        yearPicker!!.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
+        yearPicker.minValue = 1
+        yearPicker.maxValue = maxYear
+        yearPicker.displayedValues = tempArray
+        yearPicker.value = cal.get(Calendar.YEAR)
+        yearPicker.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
             cal.set(Calendar.YEAR, newVal)
-            dayPicker!!.maxValue = cal.lengthOfMonth()
+            dayPicker.maxValue = cal.lengthOfMonth()
         }
 
-        monthPicker!!.minValue = 1
-        monthPicker!!.maxValue = 12
-        monthPicker!!.value = cal.get(Calendar.MONTH) + 1
-        monthPicker!!.displayedValues = resources.getStringArray(R.array.numbered_hijri_months)
-        monthPicker!!.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
+        monthPicker.minValue = 1
+        monthPicker.maxValue = 12
+        monthPicker.value = cal.get(Calendar.MONTH) + 1
+        monthPicker.displayedValues = resources.getStringArray(R.array.numbered_hijri_months)
+        monthPicker.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
             cal.set(Calendar.MONTH, newVal - 1)
-            dayPicker!!.maxValue = cal.lengthOfMonth()
+            dayPicker.maxValue = cal.lengthOfMonth()
         }
 
         val daysNums = arrayOfNulls<String>(30)
         for (i in daysNums.indices)
             daysNums[i] = Utils.translateNumbers(requireContext(), (i + 1).toString())
 
-        dayPicker!!.minValue = 1
-        dayPicker!!.maxValue = cal.lengthOfMonth()
-        dayPicker!!.value = cal.get(Calendar.DATE)
-        dayPicker!!.displayedValues = daysNums
-        dayPicker!!.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
+        dayPicker.minValue = 1
+        dayPicker.maxValue = cal.lengthOfMonth()
+        dayPicker.value = cal.get(Calendar.DATE)
+        dayPicker.displayedValues = daysNums
+        dayPicker.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
             cal.set(Calendar.DATE, newVal)
         }
 
         return AlertDialog.Builder(requireActivity()).setView(dialog)
             .setPositiveButton(R.string.select) { _: DialogInterface?, _: Int ->
-                val year: Int = yearPicker!!.value
-                listener!!.onDateSet(null, year, monthPicker!!.value, dayPicker!!.value)
+                val year: Int = yearPicker.value
+                listener.onDateSet(null, year, monthPicker.value, dayPicker.value)
             }
             .setNegativeButton(R.string.cancel) { dialog12, _ -> dialog12.cancel() }
             .create()
     }
+
 }

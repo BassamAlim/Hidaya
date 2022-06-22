@@ -16,41 +16,42 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class BooksChaptersCollectionActivity : FragmentActivity() {
 
-    private var binding: ActivityCollectionBookChaptersBinding? = null
-    private var adapter: FragmentStateAdapter? = null
-    private var viewPager: ViewPager2? = null
+    private lateinit var binding: ActivityCollectionBookChaptersBinding
+    private lateinit var adapter: FragmentStateAdapter
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)
         binding = ActivityCollectionBookChaptersBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        binding!!.home.setOnClickListener { finish() }
+        setContentView(binding.root)
+        binding.home.setOnClickListener { finish() }
 
         val intent: Intent = intent
         val bookId: Int = intent.getIntExtra("book_id", 0)
         val bookTitle: String = intent.getStringExtra("book_title")!!
-        binding!!.topBarTitle.text = bookTitle
+        binding.topBarTitle.text = bookTitle
 
         viewPager = findViewById(R.id.pager)
         adapter = FSAdapter(this, bookId)
-        viewPager!!.adapter = adapter
+        viewPager.adapter = adapter
 
         val tabLayout: TabLayout = findViewById(R.id.tab_layout)
         val tabs = arrayOf(getString(R.string.all), getString(R.string.favorite))
-        TabLayoutMediator(tabLayout, viewPager!!
+        TabLayoutMediator(tabLayout, viewPager
         ) { tab: TabLayout.Tab, position: Int -> tab.text = tabs[position] }.attach()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (viewPager!!.currentItem == 0) {
+        if (viewPager.currentItem == 0) {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed()
         } else  // Otherwise, select the previous step.
-            viewPager!!.currentItem = viewPager!!.currentItem - 1
+            viewPager.currentItem = viewPager.currentItem - 1
     }
+
 }
 
 internal class FSAdapter(fragment: FragmentActivity?, private val bookId: Int) :
@@ -67,4 +68,5 @@ internal class FSAdapter(fragment: FragmentActivity?, private val bookId: Int) :
     override fun getItemCount(): Int {
         return 2
     }
+
 }

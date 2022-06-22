@@ -7,7 +7,6 @@ import android.content.res.AssetManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
-import android.os.AsyncTask
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +30,8 @@ import bassamalim.hidaya.replacements.FilteredRecyclerAdapter
 import com.google.gson.Gson
 import java.io.File
 import java.util.*
+import java.util.concurrent.Executors
+
 
 class TelawatAdapter(private val context: Context, private val original: ArrayList<Reciter>) :
     FilteredRecyclerAdapter<TelawatAdapter.ViewHolder>() {
@@ -187,6 +188,7 @@ class TelawatAdapter(private val context: Context, private val original: ArrayLi
     override fun getItemCount(): Int {
         return items.size
     }
+
 }
 
 internal class TelawaVersionAdapter(
@@ -255,8 +257,7 @@ internal class TelawaVersionAdapter(
                 )
             }
             else {
-                val runnable = Runnable { downloadVer(ver) } // run download on a background thread
-                AsyncTask.execute(runnable)
+                Executors.newSingleThreadExecutor().execute { downloadVer(ver) }
 
                 viewHolder.downloadBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_downloaded)
@@ -311,4 +312,5 @@ internal class TelawaVersionAdapter(
     override fun getItemCount(): Int {
         return items.size
     }
+
 }

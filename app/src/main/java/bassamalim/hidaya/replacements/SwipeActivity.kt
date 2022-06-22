@@ -66,4 +66,5 @@ abstract class SwipeActivity : AppCompatActivity() {
 
     protected abstract fun previous()
     protected abstract operator fun next()
+
 }

@@ -19,19 +19,19 @@ import java.util.*
 
 class AthanService : Service() {
 
-    private var id: ID? = null
+    private lateinit var id: ID
     private var channelId = ""
-    private var mediaPlayer: MediaPlayer? = null
+    private lateinit var mediaPlayer: MediaPlayer
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        id = intent.getSerializableExtra("id") as ID?
+        id = intent.getSerializableExtra("id") as ID
         Log.i(Global.TAG, "In athan service for $id")
         //int Notification_ID = (int) System.currentTimeMillis() % 10000;
 
         Utils.onActivityCreateSetLocale(this)
 
         createNotificationChannel()
-        startForeground(id!!.ordinal + 1, build())
+        startForeground(id.ordinal + 1, build())
 
         val am = getSystemService(AUDIO_SERVICE) as AudioManager
         // Request audio focus                                   // Request permanent focus.
@@ -47,7 +47,7 @@ class AthanService : Service() {
         builder.setSmallIcon(R.drawable.ic_athan)
         builder.setTicker(resources.getString(R.string.app_name))
 
-        var i = id!!.ordinal
+        var i = id.ordinal
         if (id == ID.DUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) i = 10
         builder.setContentTitle(resources.getStringArray(R.array.prayer_titles)[i])
         builder.setContentText(resources.getStringArray(R.array.prayer_subtitles)[i])
@@ -99,14 +99,15 @@ class AthanService : Service() {
 
     private fun play() {
         Log.i(Global.TAG, "Playing Athan")
+
         mediaPlayer = MediaPlayer.create(this, R.raw.athan1)
-        mediaPlayer!!.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
-        mediaPlayer!!.setAudioAttributes(
+        mediaPlayer.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+        mediaPlayer.setAudioAttributes(
             AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .setUsage(AudioAttributes.USAGE_MEDIA).build()
         )
-        mediaPlayer!!.setOnPreparedListener { mediaPlayer!!.start() }
-        mediaPlayer!!.setOnCompletionListener { stopMyService() }
+        mediaPlayer.setOnPreparedListener { mediaPlayer.start() }
+        mediaPlayer.setOnCompletionListener { stopMyService() }
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -116,14 +117,12 @@ class AthanService : Service() {
     private fun stopMyService() {
         stopForeground(true)
         stopSelf()
-        if (mediaPlayer != null) {
-            mediaPlayer!!.stop()
-            mediaPlayer = null
-        }
+        mediaPlayer.stop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         stopMyService()
     }
+
 }

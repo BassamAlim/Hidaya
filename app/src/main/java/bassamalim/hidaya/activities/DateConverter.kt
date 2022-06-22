@@ -13,21 +13,21 @@ import java.util.*
 
 class DateConverter : AppCompatActivity() {
 
-    private var binding: ActivityDateConverterBinding? = null
+    private lateinit var binding: ActivityDateConverterBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)
         binding = ActivityDateConverterBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        binding!!.home.setOnClickListener { onBackPressed() }
+        setContentView(binding.root)
+        binding.home.setOnClickListener { onBackPressed() }
 
         setListeners()
     }
 
     private fun setListeners() {
-        binding!!.hijriToGregorianBtn.setOnClickListener { pickHijri() }
-        binding!!.gregorianToHijriBtn.setOnClickListener { pickGregorian() }
+        binding.hijriToGregorianBtn.setOnClickListener { pickHijri() }
+        binding.gregorianToHijriBtn.setOnClickListener { pickGregorian() }
     }
 
     private fun pickGregorian() {
@@ -82,23 +82,19 @@ class DateConverter : AppCompatActivity() {
     }
 
     private fun show(hijri: Calendar, gregorian: Calendar) {
-        binding!!.hijriYearTv.text =
+        binding.hijriYearTv.text =
             Utils.translateNumbers(this, hijri[Calendar.YEAR].toString())
-        binding!!.hijriMonthTv.text =
+        binding.hijriMonthTv.text =
             resources.getStringArray(R.array.numbered_hijri_months)[hijri[Calendar.MONTH]]
-        binding!!.hijriDayTv.text =
+        binding.hijriDayTv.text =
             Utils.translateNumbers(this, hijri[Calendar.DATE].toString())
 
-        binding!!.gregorianYearTv.text =
+        binding.gregorianYearTv.text =
             Utils.translateNumbers(this, gregorian[Calendar.YEAR].toString())
-        binding!!.gregorianMonthTv.text =
+        binding.gregorianMonthTv.text =
             resources.getStringArray(R.array.numbered_gregorian_months)[gregorian[Calendar.MONTH]]
-        binding!!.gregorianDayTv.text =
+        binding.gregorianDayTv.text =
             Utils.translateNumbers(this, gregorian[Calendar.DATE].toString())
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-    }
 }

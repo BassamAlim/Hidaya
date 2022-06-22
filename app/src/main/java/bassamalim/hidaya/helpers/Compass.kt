@@ -26,6 +26,9 @@ class Compass(gContext: Context) : SensorEventListener {
         fun onNewAzimuth(azimuth: Float)
         fun calibration(accuracy: Int)
     }
+    fun setListener(l: CompassListener) {
+        listener = l
+    }
 
     init {
         sensorManager = gContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -88,7 +91,4 @@ class Compass(gContext: Context) : SensorEventListener {
         listener!!.calibration(accuracy)
     }
 
-    fun setListener(l: CompassListener?) {
-        listener = l
-    }
 }

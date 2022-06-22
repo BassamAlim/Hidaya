@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 object Utils {
+
     fun myOnActivityCreated(activity: Activity) {
         onActivityCreateSetTheme(activity)
         onActivityCreateSetLocale(activity)
@@ -238,4 +239,5 @@ object Utils {
 
         return jsonStr
     }
+
 }

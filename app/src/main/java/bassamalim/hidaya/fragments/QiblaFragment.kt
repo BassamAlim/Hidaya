@@ -27,7 +27,7 @@ class QiblaFragment : Fragment() {
     private var binding: FragmentQiblaBinding? = null
     private var located = true
     private var compass: Compass? = null
-    private var location: Location? = null
+    private lateinit var location: Location
     private var currentAzimuth = 0f
     private var distance = 0.0
     private var bearing = 0f
@@ -36,7 +36,7 @@ class QiblaFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         if (MainActivity.located) {
-            location = MainActivity.location
+            location = MainActivity.location!!
 
             distance = getDistance()
             bearing = calculateBearing()
@@ -132,11 +132,11 @@ class QiblaFragment : Fragment() {
 
     private fun getDistance(): Double {
         val earthRadius = 6371.0
-        val dLon = Math.toRadians(abs(location!!.latitude - kaabaLat))
-        val dLat = Math.toRadians(abs(location!!.longitude - kaabaLng))
+        val dLon = Math.toRadians(abs(location.latitude - kaabaLat))
+        val dLat = Math.toRadians(abs(location.longitude - kaabaLng))
         val a = sin(dLat / 2) * sin(dLat / 2) + (cos(
             Math.toRadians(
-                location!!.latitude
+                location.latitude
             )
         ) * cos(Math.toRadians(kaabaLat))
                 * sin(dLon / 2) * sin(dLon / 2))
@@ -149,8 +149,8 @@ class QiblaFragment : Fragment() {
 
     private fun calculateBearing(): Float {
         val result: Float
-        val myLatRad = Math.toRadians(location!!.latitude)
-        val lngDiff = Math.toRadians(kaabaLng - location!!.longitude)
+        val myLatRad = Math.toRadians(location.latitude)
+        val lngDiff = Math.toRadians(kaabaLng - location.longitude)
         val y = sin(lngDiff) * cos(kaabaLatInRad)
         val x = cos(myLatRad) * sin(kaabaLatInRad) - (sin(myLatRad)
                 * cos(kaabaLatInRad) * cos(lngDiff))
@@ -192,4 +192,5 @@ class QiblaFragment : Fragment() {
         super.onDestroyView()
         binding = null
     }
+
 }

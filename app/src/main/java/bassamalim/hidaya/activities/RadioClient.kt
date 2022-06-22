@@ -21,22 +21,22 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 class RadioClient : AppCompatActivity() {
 
-    private var binding: ActivityRadioClientBinding? = null
-    private var remoteConfig: FirebaseRemoteConfig? = null
-    private var mediaBrowser: MediaBrowserCompat? = null
-    private var controller: MediaControllerCompat? = null
-    private var tc: MediaControllerCompat.TransportControls? = null
-    private var playBtn: ImageButton? = null // play/pause button
-    private var link: String? = null
+    private lateinit var binding: ActivityRadioClientBinding
+    private lateinit var remoteConfig: FirebaseRemoteConfig
+    private lateinit var mediaBrowser: MediaBrowserCompat
+    private lateinit var controller: MediaControllerCompat
+    private lateinit var tc: MediaControllerCompat.TransportControls
+    private lateinit var playBtn: ImageButton // play/pause button
+    private lateinit var link: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)
         binding = ActivityRadioClientBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        binding!!.home.setOnClickListener { onBackPressed() }
+        setContentView(binding.root)
+        binding.home.setOnClickListener { onBackPressed() }
 
-        playBtn = binding!!.radioPpBtn
+        playBtn = binding.radioPpBtn
 
         mediaBrowser = MediaBrowserCompat(
             this, ComponentName(this, RadioService::class.java),
@@ -48,7 +48,7 @@ class RadioClient : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        mediaBrowser!!.connect()
+        mediaBrowser.connect()
     }
 
     override fun onResume() {
@@ -62,14 +62,14 @@ class RadioClient : AppCompatActivity() {
             MediaControllerCompat.getMediaController(this@RadioClient)
                 .unregisterCallback(controllerCallback)
         }
-        mediaBrowser!!.disconnect()
+        mediaBrowser.disconnect()
     }
 
     private fun getLinkAndEnable() {
         remoteConfig = FirebaseRemoteConfig.getInstance()
-        remoteConfig!!.fetchAndActivate().addOnCompleteListener(this) { task ->
+        remoteConfig.fetchAndActivate().addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
-                link = remoteConfig!!.getString("quran_radio_url")
+                link = remoteConfig.getString("quran_radio_url")
 
                 Log.d(Global.TAG, "Config params updated")
                 Log.d(Global.TAG, "Quran Radio URL: $link")
@@ -84,7 +84,7 @@ class RadioClient : AppCompatActivity() {
         object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             // Get the token for the MediaSession
-            val token: MediaSessionCompat.Token = mediaBrowser!!.sessionToken
+            val token: MediaSessionCompat.Token = mediaBrowser.sessionToken
 
             // Create a MediaControllerCompat
             val mediaController = MediaControllerCompat(this@RadioClient, token)
@@ -92,7 +92,7 @@ class RadioClient : AppCompatActivity() {
             // Save the controller
             MediaControllerCompat.setMediaController(this@RadioClient, mediaController)
             controller = MediaControllerCompat.getMediaController(this@RadioClient)
-            tc = controller!!.transportControls
+            tc = controller.transportControls
 
             // Finish building the UI
             buildTransportControls()
@@ -130,10 +130,10 @@ class RadioClient : AppCompatActivity() {
         //enableControls();
 
         // Display the initial state
-        updatePbState(controller!!.playbackState)
+        updatePbState(controller.playbackState)
 
         // Register a Callback to stay in sync
-        controller!!.registerCallback(controllerCallback)
+        controller.registerCallback(controllerCallback)
     }
 
     private fun updatePbState(state: PlaybackStateCompat) {
@@ -143,34 +143,29 @@ class RadioClient : AppCompatActivity() {
 
     private fun updateButton(playing: Boolean) {
         if (playing)
-            playBtn!!.setImageDrawable(
+            playBtn.setImageDrawable(
                 ResourcesCompat.getDrawable(resources, R.drawable.ic_player_pause, theme)
             )
         else
-            playBtn!!.setImageDrawable(
+            playBtn.setImageDrawable(
                 ResourcesCompat.getDrawable(resources, R.drawable.ic_player_play, theme)
             )
     }
 
     private fun enableControls() {
         // Attach a listeners to the buttons
-        playBtn!!.setOnClickListener {
+        playBtn.setOnClickListener {
             // Since this is a play/pause button, you'll need to test the current state
             // and choose the action accordingly
-            val pbState: Int = controller!!.playbackState.state
+            val pbState: Int = controller.playbackState.state
 
-            if (pbState == PlaybackStateCompat.STATE_PLAYING) tc!!.pause()
-            else tc!!.playFromMediaId(link, null)
+            if (pbState == PlaybackStateCompat.STATE_PLAYING) tc.pause()
+            else tc.playFromMediaId(link, null)
         }
     }
 
     private fun disableControls() {
-        playBtn!!.setOnClickListener(null)
+        playBtn.setOnClickListener(null)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-        mediaBrowser = null
-    }
 }

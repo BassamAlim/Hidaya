@@ -26,24 +26,24 @@ import java.util.regex.Pattern
 
 class QuranSearcherActivity : AppCompatActivity() {
 
-    private var binding: ActivityQuranSearcherBinding? = null
-    private var pref: SharedPreferences? = null
-    private var recyclerView: RecyclerView? = null
-    private var searchView: SearchView? = null
+    private lateinit var binding: ActivityQuranSearcherBinding
+    private lateinit var pref: SharedPreferences
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var searchView: SearchView
     private var adapter: QuranSearcherAdapter? = null
-    private var allAyat: List<AyatDB?>? = null
-    private var matches: MutableList<Ayah>? = null
-    private var names: List<String>? = null
+    private lateinit var allAyat: List<AyatDB?>
+    private lateinit var matches: MutableList<Ayah>
+    private lateinit var names: List<String>
     private var maxMatches = 0
-    private var language: String? = null
+    private lateinit var language: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.onActivityCreateSetTheme(this)
         language = Utils.onActivityCreateSetLocale(this)
         binding = ActivityQuranSearcherBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        binding!!.home.setOnClickListener { onBackPressed() }
+        setContentView(binding.root)
+        binding.home.setOnClickListener { onBackPressed() }
 
         init()
 
@@ -60,7 +60,7 @@ class QuranSearcherActivity : AppCompatActivity() {
             .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        searchView = binding!!.searchView
+        searchView = binding.searchView
 
         allAyat = db.ayahDao().getAll()
 
@@ -70,11 +70,11 @@ class QuranSearcherActivity : AppCompatActivity() {
 
         matches = ArrayList<Ayah>()
 
-        maxMatches = pref!!.getInt("quran_searcher_matches_last_position", 1)
+        maxMatches = pref.getInt("quran_searcher_matches_last_position", 1)
     }
 
     private fun setListeners() {
-        searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 perform(query)
                 return true
@@ -87,9 +87,9 @@ class QuranSearcherActivity : AppCompatActivity() {
     }
 
     private fun setupSizeSpinner() {
-        val spinner: Spinner = binding!!.sizeSpinner
+        val spinner: Spinner = binding.sizeSpinner
 
-        val last: Int = pref!!.getInt("quran_searcher_matches_last_position", 0)
+        val last: Int = pref.getInt("quran_searcher_matches_last_position", 0)
         spinner.setSelection(last)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -98,12 +98,12 @@ class QuranSearcherActivity : AppCompatActivity() {
             ) {
                 maxMatches = spinner.getItemAtPosition(position).toString().toInt()
 
-                val editor: SharedPreferences.Editor = pref!!.edit()
+                val editor: SharedPreferences.Editor = pref.edit()
                 editor.putInt("quran_searcher_matches_last_position", position)
                 editor.apply()
 
                 if (adapter != null && adapter!!.itemCount > 0)
-                    perform(searchView!!.query.toString())
+                    perform(searchView.query.toString())
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -113,23 +113,23 @@ class QuranSearcherActivity : AppCompatActivity() {
     private fun perform(query: String) {
         search(query)
 
-        if (matches!!.isEmpty()) {
-            binding!!.notFoundTv.visibility = View.VISIBLE
-            binding!!.recycler.visibility = View.INVISIBLE
+        if (matches.isEmpty()) {
+            binding.notFoundTv.visibility = View.VISIBLE
+            binding.recycler.visibility = View.INVISIBLE
         }
         else {
-            binding!!.notFoundTv.visibility = View.INVISIBLE
-            binding!!.recycler.visibility = View.VISIBLE
+            binding.notFoundTv.visibility = View.INVISIBLE
+            binding.recycler.visibility = View.VISIBLE
 
-            if (adapter != null) adapter!!.notifyDataSetChanged()
+            adapter?.notifyDataSetChanged()
         }
     }
 
     private fun search(text: String) {
-        matches!!.clear()
+        matches.clear()
 
-        for (i in allAyat!!.indices) {
-            val a: AyatDB = allAyat!![i]!!
+        for (i in allAyat.indices) {
+            val a: AyatDB = allAyat[i]!!
 
             val m = Pattern.compile(text).matcher(a.aya_text_emlaey!!)
             val ss = SpannableString(a.aya_text_emlaey)
@@ -139,27 +139,21 @@ class QuranSearcherActivity : AppCompatActivity() {
                     m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
 
-                matches!!.add(
-                    Ayah(a.sura_no, names!![a.sura_no], a.page, a.aya_no, a.aya_tafseer!!, ss)
+                matches.add(
+                    Ayah(a.sura_no, names[a.sura_no], a.page, a.aya_no, a.aya_tafseer!!, ss)
                 )
             }
 
-            if (matches!!.size == maxMatches) break
+            if (matches.size == maxMatches) break
         }
     }
 
     private fun initRecycler() {
-        recyclerView = binding!!.recycler
+        recyclerView = binding.recycler
         val layoutManager = LinearLayoutManager(this)
-        recyclerView!!.layoutManager = layoutManager
-        adapter = QuranSearcherAdapter(this, matches!!)
-        recyclerView!!.adapter = adapter
+        recyclerView.layoutManager = layoutManager
+        adapter = QuranSearcherAdapter(this, matches)
+        recyclerView.adapter = adapter
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-        if (recyclerView != null) recyclerView!!.adapter = null
-        adapter = null
-    }
 }

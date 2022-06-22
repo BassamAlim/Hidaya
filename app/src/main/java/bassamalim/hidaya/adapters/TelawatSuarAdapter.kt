@@ -193,4 +193,5 @@ class TelawatSuarAdapter(
         editor.putString("favorite_suras", surasJson)
         editor.apply()
     }
+
 }

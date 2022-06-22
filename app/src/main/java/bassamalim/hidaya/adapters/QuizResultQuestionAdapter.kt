@@ -84,4 +84,5 @@ class QuizResultQuestionAdapter(
     override fun getItemCount(): Int {
         return items.size
     }
+
 }

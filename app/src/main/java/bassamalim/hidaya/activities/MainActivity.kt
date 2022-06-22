@@ -32,11 +32,17 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var binding: ActivityMainBinding? = null
+    private lateinit var binding: ActivityMainBinding
     private var remoteConfig: FirebaseRemoteConfig? = FirebaseRemoteConfig.getInstance()
-    private var pref: SharedPreferences? = null
-    private var theme: String? = null
-    private var language: String? = null
+    private lateinit var pref: SharedPreferences
+    private lateinit var theme: String
+    private lateinit var language: String
+
+    companion object {
+        var location: Location? = null
+        var times: Array<Calendar?>? = null
+        var located = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,11 +50,11 @@ class MainActivity : AppCompatActivity() {
         language = Utils.onActivityCreateSetLocale(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setTodayScreen()
-        setContentView(binding!!.root)
+        setContentView(binding.root)
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        setSupportActionBar(binding!!.topBar)
+        setSupportActionBar(binding.topBar)
         setTitle(R.string.app_name)
 
         initNavBar()
@@ -67,14 +73,14 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
 
-        val newTheme: String? = pref?.getString(
+        val newTheme: String = pref.getString(
             getString(R.string.theme_key),
             getString(R.string.default_theme)
-        )
-        val newLanguage: String? = pref?.getString(
+        )!!
+        val newLanguage: String = pref.getString(
             getString(R.string.language_key),
             getString(R.string.default_language)
-        )
+        )!!
 
         if (newTheme != theme || newLanguage != language) {
             theme = newTheme
@@ -88,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment: NavHostFragment = (supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment)
         val navController: NavController = navHostFragment.navController
-        setupWithNavController(binding!!.navView, navController)
+        setupWithNavController(binding.navView, navController)
     }
 
     private fun initFirebase() {
@@ -151,23 +157,23 @@ class MainActivity : AppCompatActivity() {
             Utils.reviveDb(this)
         }
 
-        val lastVer: Int? = pref?.getInt("last_db_version", 1)
-        if (Global.dbVer > lastVer!!) Utils.reviveDb(this)
+        val lastVer: Int = pref.getInt("last_db_version", 1)
+        if (Global.dbVer > lastVer) Utils.reviveDb(this)
     }
 
     private fun dailyUpdate() {
-        val day: Int? = pref?.getInt("last_day", 0)
+        val day: Int = pref.getInt("last_day", 0)
 
         val today = Calendar.getInstance()
         if (day != today[Calendar.DAY_OF_MONTH]) {
-            val dailyUpdateHour = 0
+            val hour = 0
 
             val intent = Intent(this, DailyUpdateReceiver::class.java)
             intent.action = "daily"
-            intent.putExtra("time", dailyUpdateHour)
+            intent.putExtra("time", hour)
 
             val time = Calendar.getInstance()
-            time[Calendar.HOUR_OF_DAY] = dailyUpdateHour
+            time[Calendar.HOUR_OF_DAY] = hour
 
             val pendIntent: PendingIntent = PendingIntent.getBroadcast(
                 this, 0, intent,
@@ -192,7 +198,7 @@ class MainActivity : AppCompatActivity() {
             .getStringArray(R.array.week_days)[hijri.get(Calendar.DAY_OF_WEEK) - 1].toString() + " "
         hijriStr += Utils.translateNumbers(this, hDay) + hMonth +
                 Utils.translateNumbers(this, hYear)
-        binding!!.hijriView.text = hijriStr
+        binding.hijriView.text = hijriStr
 
         val gregorian = Calendar.getInstance()
         val mYear = " " + gregorian[Calendar.YEAR]
@@ -201,7 +207,7 @@ class MainActivity : AppCompatActivity() {
         val mDay = "" + gregorian[Calendar.DATE]
         val gregorianStr = (Utils.translateNumbers(this, mDay)
                 + mMonth + Utils.translateNumbers(this, mYear))
-        binding?.gregorianView?.text = gregorianStr
+        binding.gregorianView.text = gregorianStr
     }
 
     private fun setupBootReceiver() {
@@ -213,15 +219,4 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-        remoteConfig = null
-    }
-
-    companion object {
-        var location: Location? = null
-        var times: Array<Calendar?>? = null
-        var located = false
-    }
 }

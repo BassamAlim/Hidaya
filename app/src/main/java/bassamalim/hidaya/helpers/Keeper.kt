@@ -13,30 +13,23 @@ import java.util.*
 class Keeper {
 
     private val context: Context
-    private var gson: Gson? = null
-    private var pref: SharedPreferences? = null
-    private var lJson: String? = null
-    private var tJson: String? = null
+    private var gson = Gson()
+    private var pref: SharedPreferences
+    private lateinit var lJson: String
+    private lateinit var tJson: String
 
-    constructor(gContext: Context) {
-        context = gContext
-        setUp()
+    constructor(context: Context) {
+        this.context = context
+        pref = PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    constructor(gContext: Context, gLocation: Location) {
-        context = gContext
-        setUp()
+    constructor(context: Context, gLocation: Location) {
+        this.context = context
+        pref = PreferenceManager.getDefaultSharedPreferences(context)
+
         storeLocation(gLocation)
         storeTimes(Utils.getTimes(context, gLocation))
         storeStrTimes(getStrTimes(gLocation))
-    }
-
-    /**
-     * It sets up the shared preferences and the gson object.
-     */
-    private fun setUp() {
-        pref = PreferenceManager.getDefaultSharedPreferences(context)
-        gson = Gson()
     }
 
     /**
@@ -46,9 +39,9 @@ class Keeper {
      */
     private fun storeLocation(gLocation: Location?) {
         val loc = MyLocation(gLocation!!)
-        val editor: SharedPreferences.Editor = pref!!.edit()
+        val editor: SharedPreferences.Editor = pref.edit()
 
-        lJson = gson!!.toJson(loc)
+        lJson = gson.toJson(loc)
         editor.putString("stored location", lJson)
         editor.apply()
     }
@@ -59,8 +52,8 @@ class Keeper {
      * @param times The array of Calendar objects that you want to store.
      */
     private fun storeTimes(times: Array<Calendar?>) {
-        val editor: SharedPreferences.Editor = pref!!.edit()
-        tJson = gson!!.toJson(times)
+        val editor: SharedPreferences.Editor = pref.edit()
+        tJson = gson.toJson(times)
         editor.putString("stored times", tJson)
         editor.apply()
     }
@@ -71,8 +64,8 @@ class Keeper {
      * @param times The array of times to store.
      */
     private fun storeStrTimes(times: Array<String?>?) {
-        val editor: SharedPreferences.Editor = pref!!.edit()
-        tJson = gson!!.toJson(times)
+        val editor: SharedPreferences.Editor = pref.edit()
+        tJson = gson.toJson(times)
         editor.putString("stored string times", tJson)
         editor.apply()
     }
@@ -83,8 +76,8 @@ class Keeper {
      * @return The location object.
      */
     fun retrieveLocation(): Location? {
-        lJson = pref!!.getString("stored location", "")
-        val myLocation: MyLocation? = gson!!.fromJson(lJson, MyLocation::class.java)
+        lJson = pref.getString("stored location", "")!!
+        val myLocation: MyLocation? = gson.fromJson(lJson, MyLocation::class.java)
         return if (myLocation == null) null
         else MyLocation.toLocation(myLocation)
     }
@@ -95,8 +88,8 @@ class Keeper {
      * @return An array of Calendar objects.
      */
     fun retrieveTimes(): Array<Calendar?> {
-        tJson = pref!!.getString("stored times", "")
-        return gson!!.fromJson(tJson, Array<Calendar?>::class.java)
+        tJson = pref.getString("stored times", "")!!
+        return gson.fromJson(tJson, Array<Calendar?>::class.java)
     }
 
     /**
@@ -105,8 +98,8 @@ class Keeper {
      * @return An array of strings.
      */
     fun retrieveStrTimes(): Array<String>? {
-        tJson = pref!!.getString("stored string times", "")
-        return gson!!.fromJson(tJson, Array<String>::class.java)
+        tJson = pref.getString("stored string times", "")!!
+        return gson.fromJson(tJson, Array<String>::class.java)
     }
 
     /**
@@ -153,4 +146,5 @@ class Keeper {
 
         return arr
     }
+
 }

@@ -42,44 +42,44 @@ import java.util.*
 
 class QuranViewer : SwipeActivity() {
 
-    private var binding: ActivityQuranViewerBinding? = null
-    private var db: AppDatabase? = null
-    private var pref: SharedPreferences? = null
-    private var action: String? = null
-    private var flipper: ViewFlipper? = null
-    private var scrollViews: Array<ScrollView>? = null
-    private var lls: Array<LinearLayout>? = null
-    private var recyclers: Array<RecyclerView>? = null
+    private lateinit var binding: ActivityQuranViewerBinding
+    private lateinit var db: AppDatabase
+    private lateinit var pref: SharedPreferences
+    private lateinit var action: String
+    private lateinit var flipper: ViewFlipper
+    private lateinit var scrollViews: Array<ScrollView>
+    private lateinit var lls: Array<LinearLayout>
+    private lateinit var recyclers: Array<RecyclerView>
     private var adapter: RecyclerQuranViewerAdapter? = null
     private var currentView = 0
     private var surahIndex = 0
     private var currentPage = 0
-    private var currentPageText: String? = null
-    private var currentSurah: String? = null
+    private lateinit var currentPageText: String
+    private lateinit var currentSurah: String
     private var textSize = 0
     private val allAyahs: MutableList<Ayah> = ArrayList<Ayah>()
-    private var names: List<String>? = null
-    private var arr: MutableList<Ayah>? = null
-    private var target: TextView? = null
+    private lateinit var names: List<String>
+    private lateinit var arr: MutableList<Ayah>
+    private lateinit var target: TextView
     private var scrolled = false
     private var selected: Ayah? = null
     private var ayahPlayer: AyahPlayer? = null
-    private var ayatDB: List<AyatDB?>? = null
-    private var theme: String? = null
-    private var language: String? = null
-    private var viewType: String? = null
+    private lateinit var ayatDB: List<AyatDB?>
+    private lateinit var theme: String
+    private lateinit var language: String
+    private lateinit var viewType: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         themeify()
         binding = ActivityQuranViewerBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
+        setContentView(binding.root)
 
         initiate()
 
         checkFirstTime()
 
-        action = intent.action
+        action = intent.action!!
         action(intent)
 
         if (viewType == "list") setupRecyclers()
@@ -94,10 +94,10 @@ class QuranViewer : SwipeActivity() {
     private fun themeify() {
         pref = PreferenceManager.getDefaultSharedPreferences(this)
         language = Utils.onActivityCreateSetLocale(this)
-        textSize = pref!!.getInt(getString(R.string.quran_text_size_key), 30)
-        theme = pref!!.getString(getString(R.string.theme_key), getString(R.string.default_theme))
+        textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
+        theme = pref.getString(getString(R.string.theme_key), getString(R.string.default_theme))!!
 
-        viewType = if (language == "en") "list" else pref!!.getString("quran_view_type", "page")
+        viewType = if (language == "en") "list" else pref.getString("quran_view_type", "page")!!
         when (theme) {
             "ThemeL" -> setTheme(R.style.QuranL)
             "ThemeM" -> setTheme(R.style.QuranM)
@@ -105,21 +105,21 @@ class QuranViewer : SwipeActivity() {
     }
 
     private fun initiate() {
-        flipper = binding!!.flipper
-        scrollViews = arrayOf(binding!!.scrollview1, binding!!.scrollview2)
-        lls = arrayOf(binding!!.linear1, binding!!.linear2)
+        flipper = binding.flipper
+        scrollViews = arrayOf(binding.scrollview1, binding.scrollview2)
+        lls = arrayOf(binding.linear1, binding.linear2)
 
         db = Room.databaseBuilder(this, AppDatabase::class.java, "HidayaDB")
             .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
 
-        ayatDB = db!!.ayahDao().getAll()
+        ayatDB = db.ayahDao().getAll()
         names =
-            if (language == "en") db!!.suarDao().getNamesEn()
-            else db!!.suarDao().getNames()
+            if (language == "en") db.suarDao().getNamesEn()
+            else db.suarDao().getNames()
     }
 
     private fun checkFirstTime() {
-        if (pref!!.getBoolean("is_first_time_in_quran", true)) TutorialDialog(
+        if (pref.getBoolean("is_first_time_in_quran", true)) TutorialDialog(
             this, getString(R.string.quran_tips),
             "is_first_time_in_quran"
         ).show(supportFragmentManager, TutorialDialog.TAG)
@@ -137,67 +137,67 @@ class QuranViewer : SwipeActivity() {
     }
 
     private fun setupRecyclers() {
-        recyclers = arrayOf(binding!!.recycler1, binding!!.recycler2)
+        recyclers = arrayOf(binding.recycler1, binding.recycler2)
 
         val layoutManagers =
             arrayOf(LinearLayoutManager(this), LinearLayoutManager(this))
-        recyclers!![0].layoutManager = layoutManagers[0]
-        recyclers!![1].layoutManager = layoutManagers[1]
+        recyclers[0].layoutManager = layoutManagers[0]
+        recyclers[1].layoutManager = layoutManagers[1]
 
         adapter =
             if (action == "by_surah")
-                RecyclerQuranViewerAdapter(this, allAyahs, theme!!, language!!, surahIndex)
+                RecyclerQuranViewerAdapter(this, allAyahs, theme, language, surahIndex)
             else
-                RecyclerQuranViewerAdapter(this, allAyahs, theme!!, language!!, -1)
+                RecyclerQuranViewerAdapter(this, allAyahs, theme, language, -1)
 
-        recyclers!![0].adapter = adapter
-        recyclers!![1].adapter = adapter
+        recyclers[0].adapter = adapter
+        recyclers[1].adapter = adapter
 
-        flipper!!.displayedChild = 2
+        flipper.displayedChild = 2
     }
 
     private fun getPage(surahIndex: Int): Int {
-        return db!!.suarDao().getPage(surahIndex)
+        return db.suarDao().getPage(surahIndex)
     }
 
     private fun setCurrentPage(num: Int) {
         currentPage = num
-        if (ayahPlayer != null) ayahPlayer!!.setCurrentPage(num)
+        ayahPlayer?.setCurrentPage(num)
     }
 
     private fun buildPage(pageNumber: Int) {
-        if (viewType == "page") lls!![currentView].removeAllViews()
+        if (viewType == "page") lls[currentView].removeAllViews()
         allAyahs.clear()
         arr = ArrayList<Ayah>()
         val pageAyahs: MutableList<List<Ayah>?> = ArrayList<List<Ayah>?>()
 
         var counter = getPageStart(pageNumber)
         do {
-            val aya: AyatDB = ayatDB!![counter]!!
+            val aya: AyatDB = ayatDB[counter]!!
             val suraNum: Int = aya.sura_no // starts from 1
             val ayaNum: Int = aya.aya_no
 
-            val ayahModel = Ayah(aya.jozz, suraNum, ayaNum, names!![suraNum - 1],
+            val ayahModel = Ayah(aya.jozz, suraNum, ayaNum, names[suraNum - 1],
                 aya.aya_text + " ", aya.aya_translation_en, aya.aya_tafseer!!)
 
             if (ayaNum == 1) {
-                if (arr!!.size > 0) {
+                if (arr.size > 0) {
                     pageAyahs.add(arr)
                     if (viewType == "page") publishPage(arr)
                 }
                 if (viewType == "page") addHeader(suraNum, ayahModel.getSurahName())
             }
 
-            arr!!.add(ayahModel)
-        } while (++counter != Global.QURAN_AYAS && ayatDB!![counter]!!.page == pageNumber)
+            arr.add(ayahModel)
+        } while (++counter != Global.QURAN_AYAS && ayatDB[counter]!!.page == pageNumber)
 
-        val juz: Int = arr!![0].getJuz()
+        val juz: Int = arr[0].getJuz()
 
         pageAyahs.add(arr)
 
         if (viewType == "list") {
             publishList(arr)
-            if (adapter != null) adapter!!.notifyDataSetChanged()
+            adapter?.notifyDataSetChanged()
         }
         else publishPage(arr)
 
@@ -240,7 +240,7 @@ class QuranViewer : SwipeActivity() {
             allAyahs.add(list[i])
         }
 
-        if (ayahPlayer != null) ayahPlayer!!.setAllAyahsSize(allAyahs.size)
+        ayahPlayer?.setAllAyahsSize(allAyahs.size)
 
         screen.text = ss
 
@@ -275,7 +275,7 @@ class QuranViewer : SwipeActivity() {
             allAyahs.add(list[i])
         }
 
-        if (ayahPlayer != null) ayahPlayer!!.setAllAyahsSize(allAyahs.size)
+        ayahPlayer?.setAllAyahsSize(allAyahs.size)
 
         arr = ArrayList<Ayah>()
     }
@@ -286,15 +286,15 @@ class QuranViewer : SwipeActivity() {
         currentSurah = getString(R.string.sura) + " " + name
         currentPageText = getString(R.string.page) + " " +
                 Utils.translateNumbers(this, currentPage.toString())
-        binding!!.juzNumber.text = juzText
-        binding!!.suraName.text = currentSurah
-        binding!!.pageNumber.text = currentPageText
+        binding.juzNumber.text = juzText
+        binding.suraName.text = currentSurah
+        binding.pageNumber.text = currentPageText
 
         if (action == "by_surah" && !scrolled) {
             val delay: Long = 100 //delay to let finish with possible modifications to ScrollView
-            if (viewType == "list") recyclers!![currentView].smoothScrollToPosition(0)
-            else scrollViews!![currentView].postDelayed(
-                { scrollViews!![currentView].smoothScrollTo(0, target!!.top) }, delay
+            if (viewType == "list") recyclers[currentView].smoothScrollToPosition(0)
+            else scrollViews[currentView].postDelayed(
+                { scrollViews[currentView].smoothScrollTo(0, target.top) }, delay
             )
             scrolled = true
         }
@@ -302,8 +302,8 @@ class QuranViewer : SwipeActivity() {
 
     override fun previous() {
         if (currentPage > 1) {
-            flipper!!.setInAnimation(this, R.anim.slide_in_right)
-            flipper!!.setOutAnimation(this, R.anim.slide_out_left)
+            flipper.setInAnimation(this, R.anim.slide_in_right)
+            flipper.setOutAnimation(this, R.anim.slide_out_left)
             currentView = (currentView + 1) % 2
             setCurrentPage(--currentPage)
             buildPage(currentPage)
@@ -313,8 +313,8 @@ class QuranViewer : SwipeActivity() {
 
     override operator fun next() {
         if (currentPage < Global.QURAN_PAGES) {
-            flipper!!.setInAnimation(this, R.anim.slide_in_left)
-            flipper!!.setOutAnimation(this, R.anim.slide_out_right)
+            flipper.setInAnimation(this, R.anim.slide_in_left)
+            flipper.setOutAnimation(this, R.anim.slide_out_right)
             currentView = (currentView + 1) % 2
             setCurrentPage(++currentPage)
             buildPage(currentPage)
@@ -324,38 +324,38 @@ class QuranViewer : SwipeActivity() {
 
     private fun flip() {
         if (viewType == "list") {
-            if (flipper!!.displayedChild == 2) flipper!!.displayedChild = 3
-            else flipper!!.displayedChild = 2
-            recyclers!![currentView].scrollTo(0, 0)
+            if (flipper.displayedChild == 2) flipper.displayedChild = 3
+            else flipper.displayedChild = 2
+            recyclers[currentView].scrollTo(0, 0)
         }
         else {
-            if (flipper!!.displayedChild == 0) flipper!!.displayedChild = 1
-            else flipper!!.displayedChild = 0
-            scrollViews!![currentView].scrollTo(0, 0)
+            if (flipper.displayedChild == 0) flipper.displayedChild = 1
+            else flipper.displayedChild = 0
+            scrollViews[currentView].scrollTo(0, 0)
         }
     }
 
     private fun getContainer(): ViewGroup {
-        return if (viewType == "list") recyclers!![currentView] else lls!![currentView]
+        return if (viewType == "list") recyclers[currentView] else lls[currentView]
     }
 
     private fun updateUi(state: States) {
         when (state) {
-            States.Playing -> binding!!.play.setImageDrawable(
+            States.Playing -> binding.play.setImageDrawable(
                 ResourcesCompat.getDrawable(resources, R.drawable.ic_pause, getTheme())
             )
-            States.Paused -> binding!!.play.setImageDrawable(
+            States.Paused -> binding.play.setImageDrawable(
                 ResourcesCompat.getDrawable(resources, R.drawable.ic_play_aya, getTheme())
             )
-            States.Stopped -> binding!!.play.setImageDrawable(
+            States.Stopped -> binding.play.setImageDrawable(
                 ResourcesCompat.getDrawable(resources, R.drawable.ic_play_aya, getTheme())
             )
         }
     }
 
     private fun setListeners() {
-        binding!!.bookmarkButton.setOnClickListener {
-            val editor: SharedPreferences.Editor = pref!!.edit()
+        binding.bookmarkButton.setOnClickListener {
+            val editor: SharedPreferences.Editor = pref.edit()
             editor.putInt("bookmarked_page", currentPage)
             editor.putString("bookmarked_text", "$currentPageText, $currentSurah")
             editor.apply()
@@ -363,7 +363,7 @@ class QuranViewer : SwipeActivity() {
             Toast.makeText(this, getString(R.string.page_bookmarked), Toast.LENGTH_SHORT).show()
         }
 
-        binding!!.play.setOnClickListener {
+        binding.play.setOnClickListener {
             if (ayahPlayer!!.getState() == States.Playing) {
                 if (ayahPlayer!!.getLastPlayed() != null) selected = ayahPlayer!!.getLastPlayed()
 
@@ -374,7 +374,7 @@ class QuranViewer : SwipeActivity() {
                 if (selected == null) ayahPlayer!!.resume()
                 else {
                     ayahPlayer!!.setChosenSurah(selected!!.getSurahNum())
-                    ayahPlayer!!.requestPlay(selected)
+                    ayahPlayer!!.requestPlay(selected!!)
                 }
                 updateUi(States.Playing)
             }
@@ -382,16 +382,16 @@ class QuranViewer : SwipeActivity() {
                 if (selected == null) selected = allAyahs[0]
 
                 ayahPlayer!!.setChosenSurah(selected!!.getSurahNum())
-                ayahPlayer!!.requestPlay(selected)
+                ayahPlayer!!.requestPlay(selected!!)
 
                 updateUi(States.Playing)
             }
             selected = null
         }
-        binding!!.prevAyah.setOnClickListener {ayahPlayer!!.prevAyah()}
-        binding!!.nextAyah.setOnClickListener {ayahPlayer!!.nextAyah()}
+        binding.prevAyah.setOnClickListener { ayahPlayer!!.prevAyah()}
+        binding.nextAyah.setOnClickListener { ayahPlayer!!.nextAyah()}
 
-        binding!!.recitationSettings.setOnClickListener {
+        binding.recitationSettings.setOnClickListener {
             val intent = Intent(this, QuranSettingsDialog::class.java)
             settingsDialog.launch(intent)
         }
@@ -400,7 +400,7 @@ class QuranViewer : SwipeActivity() {
     private fun getPageStart(pageNumber: Int): Int {
         val start: Int
         var counter = 0
-        while (ayatDB!![counter]!!.page < pageNumber) counter++
+        while (ayatDB[counter]!!.page < pageNumber) counter++
         start = counter
         return start
     }
@@ -411,24 +411,24 @@ class QuranViewer : SwipeActivity() {
         ) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent = result.data!!
-                viewType = data.getStringExtra("view_type")
+                viewType = data.getStringExtra("view_type")!!
                 textSize = data.getIntExtra("text_size", 30)
 
-                flipper!!.inAnimation = null
-                flipper!!.outAnimation = null
+                flipper.inAnimation = null
+                flipper.outAnimation = null
                 if (viewType == "list") {
                     setupRecyclers()
 
                     adapter!!.setTextSize(textSize)
-                    recyclers!![0].adapter = null
-                    recyclers!![1].adapter = null
-                    recyclers!![0].adapter = adapter
-                    recyclers!![1].adapter = adapter
+                    recyclers[0].adapter = null
+                    recyclers[1].adapter = null
+                    recyclers[0].adapter = adapter
+                    recyclers[1].adapter = adapter
                 }
-                else flipper!!.displayedChild = 0
+                else flipper.displayedChild = 0
 
                 buildPage(currentPage)
-                if (ayahPlayer != null) ayahPlayer!!.setViewType(viewType)
+                ayahPlayer?.setViewType(viewType)
             }
         }
 
@@ -523,10 +523,4 @@ class QuranViewer : SwipeActivity() {
         return tv
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-        ayahPlayer!!.finish()
-        ayahPlayer = null
-    }
 }

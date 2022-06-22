@@ -109,4 +109,5 @@ class BookViewerAdapter(
     override fun getItemCount(): Int {
         return items.size
     }
+
 }

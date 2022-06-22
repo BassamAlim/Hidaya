@@ -15,30 +15,30 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 class TvActivity : YouTubeBaseActivity() {
 
-    private var binding: ActivityTvBinding? = null
-    private var remoteConfig: FirebaseRemoteConfig? = null
-    private var apiKey: String? = null
-    private var makkahUrl: String? = null
-    private var madinaUrl: String? = null
+    private lateinit var binding: ActivityTvBinding
+    private lateinit var remoteConfig: FirebaseRemoteConfig
+    private lateinit var apiKey: String
+    private lateinit var makkahUrl: String
+    private lateinit var madinaUrl: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)
         binding = ActivityTvBinding.inflate(layoutInflater)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        setContentView(binding!!.root)
-        binding!!.home.setOnClickListener { onBackPressed() }
+        setContentView(binding.root)
+        binding.home.setOnClickListener { onBackPressed() }
 
         getLinksAndInit()
     }
 
     private fun getLinksAndInit() {
         remoteConfig = FirebaseRemoteConfig.getInstance()
-        remoteConfig!!.fetchAndActivate().addOnCompleteListener(this) { task ->
+        remoteConfig.fetchAndActivate().addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
-                apiKey = remoteConfig!!.getString("yt_api_key")
-                makkahUrl = remoteConfig!!.getString("makkah_url")
-                madinaUrl = remoteConfig!!.getString("madina_url")
+                apiKey = remoteConfig.getString("yt_api_key")
+                makkahUrl = remoteConfig.getString("makkah_url")
+                madinaUrl = remoteConfig.getString("madina_url")
 
                 Log.d(Global.TAG, "Config params updated")
                 Log.d(Global.TAG, "Makkah URL: $makkahUrl")
@@ -51,7 +51,7 @@ class TvActivity : YouTubeBaseActivity() {
     }
 
     private fun initYtPlayer() {
-        binding!!.ytPlayer.initialize(apiKey, object : YouTubePlayer.OnInitializedListener {
+        binding.ytPlayer.initialize(apiKey, object : YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(
                 provider: YouTubePlayer.Provider?, youTubePlayer: YouTubePlayer, b: Boolean
             ) {
@@ -69,13 +69,14 @@ class TvActivity : YouTubeBaseActivity() {
     }
 
     private fun setListeners(ytPlayer: YouTubePlayer) {
-        binding!!.quranBtn.setOnClickListener {
+        binding.quranBtn.setOnClickListener {
             ytPlayer.loadVideo(makkahUrl)
             ytPlayer.play()
         }
-        binding!!.sunnahBtn.setOnClickListener {
+        binding.sunnahBtn.setOnClickListener {
             ytPlayer.loadVideo(madinaUrl)
             ytPlayer.play()
         }
     }
+
 }

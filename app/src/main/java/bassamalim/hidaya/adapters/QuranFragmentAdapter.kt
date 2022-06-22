@@ -142,4 +142,5 @@ class QuranFragmentAdapter(private val context: Context, private val original: A
         editor.putString("favorite_suras", surasJson)
         editor.apply()
     }
+
 }

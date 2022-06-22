@@ -102,4 +102,5 @@ class AthkarListAdapter(private val context: Context, private val original: List
     override fun getItemCount(): Int {
         return items.size
     }
+
 }

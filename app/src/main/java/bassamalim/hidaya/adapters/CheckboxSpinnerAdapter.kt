@@ -15,15 +15,12 @@ import bassamalim.hidaya.models.CheckboxListItem
 import com.google.gson.Gson
 
 class CheckboxSpinnerAdapter(
-    private val gContext: Context, resource: Int, objects: List<CheckboxListItem>,
-    selected: BooleanArray, prefKey: String
- ) : ArrayAdapter<CheckboxListItem?>(gContext, resource, objects) {
+    private val gContext: Context, resource: Int, private val items: List<CheckboxListItem>,
+    private val selected: BooleanArray, private val prefKey: String
+) : ArrayAdapter<CheckboxListItem?>(gContext, resource, items) {
 
-    private val pref: SharedPreferences
-    private val prefKey: String
-    private val gson: Gson
-    private val items: List<CheckboxListItem>
-    private val selected: BooleanArray
+    private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(gContext)
+    private val gson: Gson = Gson()
     private var isFromView = false
 
     private class ViewHolder(view: View?) {
@@ -85,11 +82,4 @@ class CheckboxSpinnerAdapter(
         editor.apply()
     }
 
-    init {
-        items = objects
-        this.selected = selected
-        this.prefKey = prefKey
-        pref = PreferenceManager.getDefaultSharedPreferences(gContext)
-        gson = Gson()
-    }
 }

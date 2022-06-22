@@ -22,21 +22,21 @@ import bassamalim.hidaya.other.Utils
 
 class AthkarViewer : AppCompatActivity() {
 
-    private var binding: ActivityAthkarViewerBinding? = null
-    private var pref: SharedPreferences? = null
-    private var db: AppDatabase? = null
-    private var recycler: RecyclerView? = null
-    private var textSizeSb: SeekBar? = null
-    private var adapter: AthkarViewerAdapter? = null
-    private var language: String? = null
+    private lateinit var binding: ActivityAthkarViewerBinding
+    private lateinit var pref: SharedPreferences
+    private lateinit var db: AppDatabase
+    private lateinit var recycler: RecyclerView
+    private lateinit var textSizeSb: SeekBar
+    private lateinit var adapter: AthkarViewerAdapter
+    private lateinit var language: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.onActivityCreateSetTheme(this)
         language = Utils.onActivityCreateSetLocale(this)
         binding = ActivityAthkarViewerBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        binding!!.home.setOnClickListener { onBackPressed() }
+        setContentView(binding.root)
+        binding.home.setOnClickListener { onBackPressed() }
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
@@ -46,9 +46,9 @@ class AthkarViewer : AppCompatActivity() {
         val intent: Intent = intent
         val id: Int = intent.getIntExtra("thikr_id", 0)
 
-        binding!!.topBarTitle.text =
-            if (language == "en") db!!.athkarDao().getNameEn(id)
-            else db!!.athkarDao().getName(id)
+        binding.topBarTitle.text =
+            if (language == "en") db.athkarDao().getNameEn(id)
+            else db.athkarDao().getName(id)
 
         setupRecycler(id)
 
@@ -56,7 +56,7 @@ class AthkarViewer : AppCompatActivity() {
     }
 
     private fun getThikrs(id: Int): List<ThikrsDB> {
-        return db!!.thikrsDao().getThikrs(id)
+        return db.thikrsDao().getThikrs(id)
     }
 
     private fun makeCards(thikrs: List<ThikrsDB>): ArrayList<Thikr> {
@@ -90,45 +90,39 @@ class AthkarViewer : AppCompatActivity() {
     }
 
     private fun setupRecycler(id: Int) {
-        recycler = binding!!.recycler
+        recycler = binding.recycler
         val layoutManager = LinearLayoutManager(this)
-        recycler!!.layoutManager = layoutManager
-        adapter = AthkarViewerAdapter(this, makeCards(getThikrs(id)), language!!)
-        recycler!!.adapter = adapter
+        recycler.layoutManager = layoutManager
+        adapter = AthkarViewerAdapter(this, makeCards(getThikrs(id)), language)
+        recycler.adapter = adapter
     }
 
     private fun setupListeners() {
-        textSizeSb = binding!!.textSizeSb
+        textSizeSb = binding.textSizeSb
 
-        textSizeSb!!.progress = pref!!.getInt(getString(R.string.alathkar_text_size_key), 15)
+        textSizeSb.progress = pref.getInt(getString(R.string.alathkar_text_size_key), 15)
 
-        binding!!.textSizeIb.setOnClickListener {
-            if (textSizeSb!!.visibility == View.GONE) textSizeSb!!.visibility = View.VISIBLE
-            else textSizeSb!!.visibility = View.GONE
+        binding.textSizeIb.setOnClickListener {
+            if (textSizeSb.visibility == View.GONE) textSizeSb.visibility = View.VISIBLE
+            else textSizeSb.visibility = View.GONE
         }
 
-        textSizeSb!!.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+        textSizeSb.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                val editor: SharedPreferences.Editor = pref!!.edit()
+                val editor: SharedPreferences.Editor = pref.edit()
 
                 editor.putInt(getString(R.string.alathkar_text_size_key), seekBar.progress)
                 editor.apply()
 
-                adapter!!.setTextSize(seekBar.progress)
-                recycler!!.adapter = null
-                recycler!!.adapter = adapter
+                adapter.setTextSize(seekBar.progress)
+                recycler.adapter = null
+                recycler.adapter = adapter
             }
         })
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-        recycler!!.adapter = null
-        adapter = null
-    }
 }

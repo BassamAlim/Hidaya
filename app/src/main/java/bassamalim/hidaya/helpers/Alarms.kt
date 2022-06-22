@@ -17,11 +17,11 @@ import java.util.*
 class Alarms {
 
     private val context: Context
-    private var appContext: Context? = null
+    private lateinit var appContext: Context
     private val times: Array<Calendar?>
-    private var pref: SharedPreferences? = null
-    private var action: String? = null
-    private var id: ID? = null
+    private lateinit var pref: SharedPreferences
+    private lateinit var action: String
+    private lateinit var id: ID
 
     constructor(gContext: Context, gTimes: Array<Calendar?>) {
         context = gContext
@@ -32,7 +32,7 @@ class Alarms {
         recognize()
     }
 
-    constructor(gContext: Context, id: ID?) {
+    constructor(gContext: Context, id: ID) {
         context = gContext
         this.id = id
 
@@ -70,9 +70,9 @@ class Alarms {
      */
     private fun setAlarm() {
         Log.i(Global.TAG, "in set alarm")
-        if (id!!.ordinal in 0..5)
+        if (id.ordinal in 0..5)
             setPrayerAlarm(id)
-        else if (id!!.ordinal in 6..9)
+        else if (id.ordinal in 6..9)
             setExtraAlarm(id)
     }
 
@@ -80,7 +80,7 @@ class Alarms {
         Log.i(Global.TAG, "in set prayer alarms")
         for (i in times.indices) {
             val mappedId: ID = Utils.mapID(i)!!
-            if (pref!!.getInt(mappedId.toString() + "notification_type", 2) != 0)
+            if (pref.getInt(mappedId.toString() + "notification_type", 2) != 0)
                 setPrayerAlarm(mappedId)
         }
     }
@@ -94,7 +94,7 @@ class Alarms {
         Log.i(Global.TAG, "in set alarm for: $id")
 
         // adjust the time with the delay
-        val adjustment: Long = pref!!.getLong(id.toString() + "time_adjustment", 0)
+        val adjustment: Long = pref.getLong(id.toString() + "time_adjustment", 0)
         val adjusted = times[id!!.ordinal]!!.timeInMillis + adjustment
 
         if (System.currentTimeMillis() <= adjusted) {
@@ -105,7 +105,7 @@ class Alarms {
             intent.putExtra("time", adjusted)
 
             val myAlarm: AlarmManager =
-                appContext!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                appContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
             val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
                 appContext, id.ordinal, intent,
@@ -127,13 +127,13 @@ class Alarms {
 
         val today = Calendar.getInstance()
 
-        if (pref!!.getBoolean(context.getString(R.string.morning_athkar_key), true))
+        if (pref.getBoolean(context.getString(R.string.morning_athkar_key), true))
             setExtraAlarm(ID.MORNING)
-        if (pref!!.getBoolean(context.getString(R.string.evening_athkar_key), true))
+        if (pref.getBoolean(context.getString(R.string.evening_athkar_key), true))
             setExtraAlarm(ID.EVENING)
-        if (pref!!.getBoolean(context.getString(R.string.daily_werd_key), true))
+        if (pref.getBoolean(context.getString(R.string.daily_werd_key), true))
             setExtraAlarm(ID.DAILY_WERD)
-        if (pref!!.getBoolean(context.getString(R.string.friday_kahf_key), true)
+        if (pref.getBoolean(context.getString(R.string.friday_kahf_key), true)
             && today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
             setExtraAlarm(ID.FRIDAY_KAHF)
     }
@@ -156,8 +156,8 @@ class Alarms {
             else -> {}
         }
 
-        val hour: Int = pref!!.getInt(id.toString() + "hour", defaultH)
-        val minute: Int = pref!!.getInt(id.toString() + "minute", defaultM)
+        val hour: Int = pref.getInt(id.toString() + "hour", defaultH)
+        val minute: Int = pref.getInt(id.toString() + "minute", defaultM)
 
         val time = Calendar.getInstance()
         time[Calendar.HOUR_OF_DAY] = hour
@@ -171,7 +171,7 @@ class Alarms {
         intent.putExtra("time", time.timeInMillis)
 
         val myAlarm: AlarmManager =
-            appContext!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            appContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
             appContext, id.ordinal, intent,
@@ -182,4 +182,5 @@ class Alarms {
 
         Log.i(Global.TAG, "alarm $id set")
     }
+
 }

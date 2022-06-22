@@ -29,16 +29,20 @@ class FavoriteQuranFragment : Fragment() {
     private var binding: FragmentQuranBinding? = null
     private var recyclerView: RecyclerView? = null
     private var adapter: QuranFragmentAdapter? = null
-    private var mListState: Parcelable? = null
-    private var gridLayoutManager: GridLayoutManager? = null
-    private var names: List<String>? = null
-    private var language: String? = null
+    private lateinit var mListState: Parcelable
+    private lateinit var gridLayoutManager: GridLayoutManager
+    private lateinit var names: List<String>
+    private lateinit var language: String
+
+    companion object {
+        private var mBundleRecyclerViewState: Bundle? = null
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         language = PreferenceManager.getDefaultSharedPreferences(requireContext())
-            .getString(getString(R.string.language_key), getString(R.string.default_language))
+            .getString(getString(R.string.language_key), getString(R.string.default_language))!!
 
         gridLayoutManager = GridLayoutManager(context, 1)
 
@@ -58,7 +62,7 @@ class FavoriteQuranFragment : Fragment() {
         mBundleRecyclerViewState = Bundle()
         mListState =
             Objects.requireNonNull<RecyclerView.LayoutManager>(recyclerView!!.layoutManager)
-                .onSaveInstanceState()
+                .onSaveInstanceState()!!
         mBundleRecyclerViewState!!.putParcelable("recycler_state", mListState)
     }
 
@@ -67,7 +71,7 @@ class FavoriteQuranFragment : Fragment() {
 
         if (mBundleRecyclerViewState != null) {
             Handler().postDelayed({
-                mListState = mBundleRecyclerViewState!!.getParcelable("recycler_state")
+                mListState = mBundleRecyclerViewState!!.getParcelable("recycler_state")!!
                 Objects.requireNonNull<RecyclerView.LayoutManager>(recyclerView!!.layoutManager)
                     .onRestoreInstanceState(mListState)
             }, 50)
@@ -128,7 +132,7 @@ class FavoriteQuranFragment : Fragment() {
 
             cards.add(
                 Sura(
-                    sura.sura_id, surat + " " + names!![sura.sura_id],
+                    sura.sura_id, surat + " " + names[sura.sura_id],
                     sura.search_name!!, sura.tanzeel, 1, cardListener
                 )
             )
@@ -170,7 +174,4 @@ class FavoriteQuranFragment : Fragment() {
         adapter = null
     }
 
-    companion object {
-        private var mBundleRecyclerViewState: Bundle? = null
-    }
 }

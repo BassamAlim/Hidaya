@@ -31,23 +31,23 @@ import java.util.regex.Pattern
 
 class BookSearcher : AppCompatActivity() {
 
-    private var binding: ActivityBookSearcherBinding? = null
-    private var pref: SharedPreferences? = null
-    private var gson: Gson? = null
-    private var bookTitles: Array<String>? = null
-    private var matches: MutableList<BookSearcherMatch>? = null
-    private var recyclerView: RecyclerView? = null
-    private var searchView: SearchView? = null
+    private lateinit var binding: ActivityBookSearcherBinding
+    private lateinit var pref: SharedPreferences
+    private lateinit var gson: Gson
+    private lateinit var bookTitles: Array<String>
+    private lateinit var matches: MutableList<BookSearcherMatch>
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var searchView: SearchView
     private var adapter: BookSearcherAdapter? = null
     private var maxMatches = 0
-    private var selectedBooks: BooleanArray? = null
+    private lateinit var selectedBooks: BooleanArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)
         binding = ActivityBookSearcherBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        binding!!.home.setOnClickListener { onBackPressed() }
+        setContentView(binding.root)
+        binding.home.setOnClickListener { onBackPressed() }
 
         init()
 
@@ -65,15 +65,15 @@ class BookSearcher : AppCompatActivity() {
 
         bookTitles = resources.getStringArray(R.array.books_titles)
 
-        searchView = binding!!.searchView
+        searchView = binding.searchView
 
         matches = ArrayList<BookSearcherMatch>()
 
-        maxMatches = pref!!.getInt("books_searcher_matches_last_position", 10)
+        maxMatches = pref.getInt("books_searcher_matches_last_position", 10)
     }
 
     private fun setListeners() {
-        searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 perform(query)
                 return true
@@ -84,17 +84,17 @@ class BookSearcher : AppCompatActivity() {
             }
         })
 
-        binding!!.filterIb.setOnClickListener { v ->
+        binding.filterIb.setOnClickListener { v ->
             FilterDialog(
-                this, v, getString(R.string.choose_books), bookTitles!!, selectedBooks!!,
-                adapter!!, binding!!.filterIb, "selected_search_books"
+                this, v, getString(R.string.choose_books), bookTitles, selectedBooks,
+                adapter!!, binding.filterIb, "selected_search_books"
             )
         }
     }
 
     private fun setupSizeSpinner() {
-        val spinner: Spinner = binding!!.sizeSpinner
-        val last: Int = pref!!.getInt("books_searcher_matches_last_position", 0)
+        val spinner: Spinner = binding.sizeSpinner
+        val last: Int = pref.getInt("books_searcher_matches_last_position", 0)
         spinner.setSelection(last)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -103,11 +103,11 @@ class BookSearcher : AppCompatActivity() {
             ) {
                 maxMatches = spinner.getItemAtPosition(position).toString().toInt()
 
-                val editor: SharedPreferences.Editor = pref!!.edit()
+                val editor: SharedPreferences.Editor = pref.edit()
                 editor.putInt("books_searcher_matches_last_position", position)
                 editor.apply()
 
-                if (adapter != null && adapter!!.itemCount > 0) perform(searchView!!.query.toString())
+                if (adapter != null && adapter!!.itemCount > 0) perform(searchView.query.toString())
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -118,36 +118,37 @@ class BookSearcher : AppCompatActivity() {
         selectedBooks = getSelectedBooks()
         search(query)
 
-        if (matches!!.isEmpty()) {
-            binding!!.notFoundTv.visibility = View.VISIBLE
-            binding!!.recycler.visibility = View.INVISIBLE
-        } else {
-            binding!!.notFoundTv.visibility = View.INVISIBLE
-            binding!!.recycler.visibility = View.VISIBLE
+        if (matches.isEmpty()) {
+            binding.notFoundTv.visibility = View.VISIBLE
+            binding.recycler.visibility = View.INVISIBLE
+        }
+        else {
+            binding.notFoundTv.visibility = View.INVISIBLE
+            binding.recycler.visibility = View.VISIBLE
 
             setupRecycler(matches)
 
-            if (adapter != null) adapter!!.notifyDataSetChanged()
+            adapter?.notifyDataSetChanged()
         }
     }
 
     private fun search(text: String) {
-        matches!!.clear()
+        matches.clear()
 
         val prefix = "/Books/"
         val dir = File(getExternalFilesDir(null).toString() + prefix)
 
         if (!dir.exists()) return
 
-        for (i in bookTitles!!.indices) {
-            if (!selectedBooks!![i] || !downloaded(i)) continue
+        for (i in bookTitles.indices) {
+            if (!selectedBooks[i] || !downloaded(i)) continue
 
             val jsonStr = Utils.getJsonFromDownloads(
                 getExternalFilesDir(null).toString() + prefix + i + ".json"
             )
 
             val book: Book = try {
-                gson!!.fromJson(jsonStr, Book::class.java)
+                gson.fromJson(jsonStr, Book::class.java)
             } catch (e: Exception) {
                 Log.e(Global.TAG, "Error in json read in BookSearcher")
                 e.printStackTrace()
@@ -169,7 +170,7 @@ class BookSearcher : AppCompatActivity() {
                             m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
 
-                        matches!!.add(
+                        matches.add(
                             BookSearcherMatch(
                                 i, book.bookInfo.bookTitle,
                                 j, chapter.chapterTitle,
@@ -177,7 +178,7 @@ class BookSearcher : AppCompatActivity() {
                             )
                         )
 
-                        if (matches!!.size == maxMatches) return
+                        if (matches.size == maxMatches) return
                     }
                 }
             }
@@ -185,18 +186,18 @@ class BookSearcher : AppCompatActivity() {
     }
 
     private fun setupRecycler(matches: List<BookSearcherMatch>?) {
-        recyclerView = binding!!.recycler
+        recyclerView = binding.recycler
         val layoutManager = LinearLayoutManager(this)
-        recyclerView!!.layoutManager = layoutManager
-        adapter = BookSearcherAdapter(matches!!, searchView!!)
-        recyclerView!!.adapter = adapter
+        recyclerView.layoutManager = layoutManager
+        adapter = BookSearcherAdapter(matches!!, searchView)
+        recyclerView.adapter = adapter
     }
 
     private fun initFilterIb() {
         selectedBooks = getSelectedBooks()
-        for (bool in selectedBooks!!) {
+        for (bool in selectedBooks) {
             if (!bool) {
-                binding!!.filterIb.setImageDrawable(
+                binding.filterIb.setImageDrawable(
                     AppCompatResources.getDrawable(this, R.drawable.ic_filtered)
                 )
                 break
@@ -205,11 +206,11 @@ class BookSearcher : AppCompatActivity() {
     }
 
     private fun getSelectedBooks(): BooleanArray {
-        val defArr = BooleanArray(bookTitles!!.size)
+        val defArr = BooleanArray(bookTitles.size)
         Arrays.fill(defArr, true)
-        val defStr: String = gson!!.toJson(defArr)
-        return gson!!.fromJson(
-            pref!!.getString("selected_search_books", defStr),
+        val defStr: String = gson.toJson(defArr)
+        return gson.fromJson(
+            pref.getString("selected_search_books", defStr),
             BooleanArray::class.java
         )
     }
@@ -231,10 +232,4 @@ class BookSearcher : AppCompatActivity() {
         return false
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-        if (recyclerView != null) recyclerView!!.adapter = null
-        adapter = null
-    }
 }

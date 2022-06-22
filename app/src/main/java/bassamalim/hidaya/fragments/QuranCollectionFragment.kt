@@ -77,9 +77,16 @@ class QuranCollectionFragment : Fragment() {
                 getString(R.string.quran_fragment_tips), key)
                 .show(requireActivity().supportFragmentManager, TutorialDialog.TAG)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
 }
 
 internal class QAdapter(fragment: Fragment?) : FragmentStateAdapter(fragment!!) {
+
     override fun createFragment(position: Int): Fragment {
         return if (position == 0) AllQuranFragment() else FavoriteQuranFragment()
     }
@@ -87,4 +94,5 @@ internal class QAdapter(fragment: Fragment?) : FragmentStateAdapter(fragment!!) 
     override fun getItemCount(): Int {
         return 2
     }
+
 }

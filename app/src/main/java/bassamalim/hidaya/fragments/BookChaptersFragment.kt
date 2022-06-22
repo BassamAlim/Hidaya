@@ -23,8 +23,8 @@ class BookChaptersFragment(private val type: ListType, private val bookId: Int) 
     private var binding: FragmentBookChaptersBinding? = null
     private var recycler: RecyclerView? = null
     private var adapter: BookChapterAdapter? = null
-    private var book: Book? = null
-    private var favs: BooleanArray? = null
+    private lateinit var book: Book
+    private lateinit var favs: BooleanArray
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -58,7 +58,7 @@ class BookChaptersFragment(private val type: ListType, private val bookId: Int) 
             PreferenceManager.getDefaultSharedPreferences(requireContext())
         val favsStr: String = pref.getString("book" + bookId + "_favs", "")!!
         favs =
-            if (favsStr.isEmpty()) BooleanArray(book!!.chapters.size)
+            if (favsStr.isEmpty()) BooleanArray(book.chapters.size)
             else gson.fromJson(favsStr, BooleanArray::class.java)
     }
 
@@ -66,9 +66,9 @@ class BookChaptersFragment(private val type: ListType, private val bookId: Int) 
         getData()
 
         val cards = ArrayList<BookChapter>()
-        for (i in book!!.chapters.indices) {
-            if (type == ListType.All || type == ListType.Favorite && favs!![i]) {
-                val chapterTitle = book!!.chapters[i].chapterTitle
+        for (i in book.chapters.indices) {
+            if (type == ListType.All || type == ListType.Favorite && favs[i]) {
+                val chapterTitle = book.chapters[i].chapterTitle
 
                 val listener = View.OnClickListener {
                     val intent = Intent(context, BookViewer::class.java)
@@ -78,7 +78,7 @@ class BookChaptersFragment(private val type: ListType, private val bookId: Int) 
                     startActivity(intent)
                 }
 
-                cards.add(BookChapter(i, chapterTitle, favs!![i], listener))
+                cards.add(BookChapter(i, chapterTitle, favs[i], listener))
             }
         }
         return cards
@@ -106,10 +106,11 @@ class BookChaptersFragment(private val type: ListType, private val bookId: Int) 
         })
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         binding = null
         recycler!!.adapter = null
         adapter = null
     }
+
 }

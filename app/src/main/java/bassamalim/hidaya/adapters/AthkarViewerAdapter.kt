@@ -19,6 +19,11 @@ class AthkarViewerAdapter(context: Context, cards: ArrayList<Thikr>, private val
     private val items = cards
     private var textSize: Int
 
+    init {
+        textSize = PreferenceManager.getDefaultSharedPreferences(context)
+            .getInt(context.getString(R.string.alathkar_text_size_key), 15) + margin
+    }
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val titleTv: TextView
         val textTv: TextView
@@ -98,8 +103,4 @@ class AthkarViewerAdapter(context: Context, cards: ArrayList<Thikr>, private val
         return items.size
     }
 
-    init {
-        textSize = PreferenceManager.getDefaultSharedPreferences(context)
-            .getInt(context.getString(R.string.alathkar_text_size_key), 15) + margin
-    }
 }

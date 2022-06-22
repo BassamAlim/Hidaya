@@ -125,4 +125,5 @@ class Splash : AppCompatActivity() {
             arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION), 0
         )
     }
+
 }

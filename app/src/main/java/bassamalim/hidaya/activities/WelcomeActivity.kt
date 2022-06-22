@@ -11,12 +11,12 @@ import bassamalim.hidaya.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity: AppCompatActivity() {
 
-    private var binding: ActivityWelcomeBinding? = null
+    private lateinit var binding: ActivityWelcomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
+        setContentView(binding.root)
 
         if (savedInstanceState == null)
             supportFragmentManager.beginTransaction().replace(
@@ -27,10 +27,10 @@ class WelcomeActivity: AppCompatActivity() {
     }
 
     private fun setListeners() {
-        binding!!.saveBtn.setOnClickListener {
-            binding!!.settings.visibility = View.GONE
-            binding!!.saveBtn.visibility = View.GONE
-            binding!!.disclaimerSpace.visibility = View.VISIBLE
+        binding.saveBtn.setOnClickListener {
+            binding.settings.visibility = View.GONE
+            binding.saveBtn.visibility = View.GONE
+            binding.disclaimerSpace.visibility = View.VISIBLE
 
             val editor: SharedPreferences.Editor = PreferenceManager
                 .getDefaultSharedPreferences(this).edit()
@@ -38,18 +38,19 @@ class WelcomeActivity: AppCompatActivity() {
             editor.apply()
         }
 
-        binding!!.agreed.setOnClickListener {
+        binding.agreed.setOnClickListener {
             val intent = Intent(this, Splash::class.java)
             startActivity(intent)
             finish()
         }
-        binding!!.rejected.setOnClickListener { launchAnyWay() }
+        binding.rejected.setOnClickListener { launchAnyway() }
     }
 
-    private fun launchAnyWay() {
+    private fun launchAnyway() {
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("located", false)
         startActivity(intent)
         finish()
     }
+
 }

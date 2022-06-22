@@ -58,4 +58,5 @@ class AthkarFragment : Fragment() {
         super.onDestroyView()
         binding = null
     }
+
 }

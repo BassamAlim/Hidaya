@@ -25,8 +25,8 @@ import java.util.*
 
 class NotificationReceiver : BroadcastReceiver() {
 
-    private var context: Context? = null
-    private var id: ID? = null
+    private lateinit var context: Context
+    private lateinit var id: ID
     private var isPrayer = false
     private var channelId = ""
     private var type = 0
@@ -35,7 +35,7 @@ class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         this.context = context
 
-        id = Utils.mapID(intent.getIntExtra("id", 0))
+        id = Utils.mapID(intent.getIntExtra("id", 0))!!
         time = intent.getLongExtra("time", 0)
         isPrayer = intent.action == "prayer"
 
@@ -59,19 +59,19 @@ class NotificationReceiver : BroadcastReceiver() {
             if (type == 3) startService()
             else showNotification()
         }
-        else Log.i(Global.TAG, id.toString() + " Passed")
+        else Log.i(Global.TAG, "$id Passed")
     }
 
     private fun showNotification() {
         createNotificationChannel()
 
         if (isPrayer) {
-            val am: AudioManager = context!!.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            val am: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
             // Request audio focus                                   // Request permanent focus.
             am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
         }
 
-        NotificationManagerCompat.from(context!!).notify(id!!.ordinal, build())
+        NotificationManagerCompat.from(context).notify(id.ordinal, build())
     }
 
     private fun startService() {
@@ -81,25 +81,25 @@ class NotificationReceiver : BroadcastReceiver() {
         intent1.putExtra("time", time)
 
         if (Build.VERSION.SDK_INT >= 26)
-            context!!.startForegroundService(intent1)
+            context.startForegroundService(intent1)
         else
-            context!!.startService(intent1)
+            context.startService(intent1)
     }
 
     private fun build(): Notification {
-        val builder: NotificationCompat.Builder = NotificationCompat.Builder(context!!, channelId)
+        val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, channelId)
         builder.setSmallIcon(R.drawable.ic_athan)
-        builder.setTicker(context!!.resources.getString(R.string.app_name))
+        builder.setTicker(context.resources.getString(R.string.app_name))
 
-        var i: Int = id!!.ordinal
+        var i: Int = id.ordinal
         if (id == ID.DUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) i = 10
-        builder.setContentTitle(context!!.resources.getStringArray(R.array.prayer_titles)[i])
-        builder.setContentText(context!!.resources.getStringArray(R.array.prayer_subtitles)[i])
+        builder.setContentTitle(context.resources.getStringArray(R.array.prayer_titles)[i])
+        builder.setContentText(context.resources.getStringArray(R.array.prayer_subtitles)[i])
 
         builder.priority = NotificationCompat.PRIORITY_MAX
         builder.setAutoCancel(true)
         builder.setOnlyAlertOnce(true)
-        builder.color = context!!.getColor(R.color.surface_M)
+        builder.color = context.getColor(R.color.surface_M)
         builder.setContentIntent(onClick(id))
 
         if (type == 1) builder.setSilent(true)
@@ -148,16 +148,17 @@ class NotificationReceiver : BroadcastReceiver() {
             val name: CharSequence
             val description = ""
 
-            channelId = context!!.resources.getStringArray(R.array.channel_ids)[id!!.ordinal]
-            name = context!!.resources.getStringArray(R.array.reminders)[id!!.ordinal]
+            channelId = context.resources.getStringArray(R.array.channel_ids)[id.ordinal]
+            name = context.resources.getStringArray(R.array.reminders)[id.ordinal]
 
             val importance: Int = NotificationManager.IMPORTANCE_HIGH
             val notificationChannel = NotificationChannel(channelId, name, importance)
             notificationChannel.description = description
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             val notificationManager: NotificationManager =
-                context!!.getSystemService(NotificationManager::class.java)
+                context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }
+
 }

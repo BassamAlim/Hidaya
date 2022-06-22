@@ -19,37 +19,37 @@ import com.google.android.material.tabs.TabLayoutMediator
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatSuarCollectionActivity : FragmentActivity() {
 
-    private var binding: ActivityCollectionTelawatSuarBinding? = null
-    private var adapter: FragmentStateAdapter? = null
-    private var viewPager: ViewPager2? = null
+    private lateinit var binding: ActivityCollectionTelawatSuarBinding
+    private lateinit var adapter: FragmentStateAdapter
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)
         binding = ActivityCollectionTelawatSuarBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        binding!!.home.setOnClickListener { finish() }
+        setContentView(binding.root)
+        binding.home.setOnClickListener { finish() }
 
         val intent: Intent = intent
         val reciterId: Int = intent.getIntExtra("reciter_id", 0)
         val reciterName: String = intent.getStringExtra("reciter_name")!!
         val versionId: Int = intent.getIntExtra("version_id", 0)
 
-        binding!!.topBarTitle.text = reciterName
+        binding.topBarTitle.text = reciterName
         viewPager = findViewById(R.id.telawat_pager)
         adapter = TSAdapter(this, reciterId, versionId)
-        viewPager!!.adapter = adapter
+        viewPager.adapter = adapter
 
         val tabLayout: TabLayout = findViewById(R.id.tab_layout)
         val tabs = arrayOf(getString(R.string.all), getString(R.string.favorite), getString(R.string.downloaded))
-        TabLayoutMediator(tabLayout, viewPager!!) { tab: TabLayout.Tab, position: Int ->
+        TabLayoutMediator(tabLayout, viewPager) { tab: TabLayout.Tab, position: Int ->
             tab.text = tabs[position]
         }.attach()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (viewPager!!.currentItem == 0) {
+        if (viewPager.currentItem == 0) {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed()
@@ -60,8 +60,9 @@ class TelawatSuarCollectionActivity : FragmentActivity() {
             }
         }
         else  // Otherwise, select the previous step.
-            viewPager!!.currentItem = viewPager!!.currentItem - 1
+            viewPager.currentItem = viewPager.currentItem - 1
     }
+
 }
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -81,4 +82,5 @@ internal class TSAdapter(
     override fun getItemCount(): Int {
         return 2
     }
+
 }

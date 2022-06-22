@@ -28,11 +28,11 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
     private val filterIb: ImageButton,
     private val prefKey: String) {
 
-    private var popup: PopupWindow? = null
+    private lateinit var popup: PopupWindow
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson: Gson = Gson()
-    private var cbListAdapter: CheckboxListviewAdapter? = null
-    private var items: MutableList<CheckboxListItem>? = null
+    private lateinit var cbListAdapter: CheckboxListviewAdapter
+    private lateinit var items: MutableList<CheckboxListItem>
 
     init {
         showPopup(title)
@@ -51,13 +51,13 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
             LinearLayout.LayoutParams.WRAP_CONTENT, true
         )
 
-        popup!!.elevation = 10f
-        popup!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        popup!!.isOutsideTouchable = false
+        popup.elevation = 10f
+        popup.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        popup.isOutsideTouchable = false
 
-        popup!!.showAtLocation(view, Gravity.CENTER, 0, 50)
+        popup.showAtLocation(view, Gravity.CENTER, 0, 50)
 
-        (popup!!.contentView.findViewById<View>(R.id.dialog_title_tv) as TextView).text = title
+        (popup.contentView.findViewById<View>(R.id.dialog_title_tv) as TextView).text = title
         setupListview()
         setListeners()
     }
@@ -65,9 +65,9 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
     private fun setupListview() {
         items = ArrayList<CheckboxListItem>()
         for (i in strArr.indices)
-            items!!.add(CheckboxListItem(strArr[i], selected[i]))
+            items.add(CheckboxListItem(strArr[i], selected[i]))
 
-        val listView: ListView = popup!!.contentView.findViewById(R.id.listview)
+        val listView: ListView = popup.contentView.findViewById(R.id.listview)
         cbListAdapter = CheckboxListviewAdapter(
             context, 0, items as ArrayList<CheckboxListItem>, selected
         )
@@ -75,25 +75,25 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
     }
 
     private fun setListeners() {
-        popup!!.contentView.findViewById<View>(R.id.select_all_btn).setOnClickListener {
-            for (i in items!!.indices) items!![i].isSelected = true
-            cbListAdapter!!.notifyDataSetChanged()
+        popup.contentView.findViewById<View>(R.id.select_all_btn).setOnClickListener {
+            for (i in items.indices) items[i].isSelected = true
+            cbListAdapter.notifyDataSetChanged()
 
             Arrays.fill(selected, true)
         }
 
-        popup!!.contentView.findViewById<View>(R.id.unselect_all_btn).setOnClickListener {
-            for (i in items!!.indices) items!![i].isSelected = false
-            cbListAdapter!!.notifyDataSetChanged()
+        popup.contentView.findViewById<View>(R.id.unselect_all_btn).setOnClickListener {
+            for (i in items.indices) items[i].isSelected = false
+            cbListAdapter.notifyDataSetChanged()
 
             Arrays.fill(selected, false)
         }
 
-        popup!!.contentView.findViewById<View>(R.id.finish_btn).setOnClickListener {
-            popup!!.dismiss()
+        popup.contentView.findViewById<View>(R.id.finish_btn).setOnClickListener {
+            popup.dismiss()
         }
 
-        popup!!.setOnDismissListener {
+        popup.setOnDismissListener {
             save()
             setFilterIb()
         }
@@ -122,4 +122,5 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
         editor.apply()
         filteredAdapter.filter(null, selected)
     }
+
 }

@@ -13,9 +13,9 @@ import bassamalim.hidaya.R
 
 class LanguagePickerDialog(private val context: Context, view: View) {
 
-    private var popup: PopupWindow? = null
+    private lateinit var popup: PopupWindow
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    private var listView: ListView? = null
+    private lateinit var listView: ListView
 
     init {
         showPopup(view)
@@ -34,27 +34,27 @@ class LanguagePickerDialog(private val context: Context, view: View) {
             LinearLayout.LayoutParams.WRAP_CONTENT, true
         )
 
-        popup!!.elevation = 10f
-        popup!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        popup!!.isOutsideTouchable = false
+        popup.elevation = 10f
+        popup.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        popup.isOutsideTouchable = false
 
-        popup!!.showAtLocation(view, Gravity.CENTER, 0, 50)
+        popup.showAtLocation(view, Gravity.CENTER, 0, 50)
 
         setupListview()
         setListeners()
     }
 
     private fun setupListview() {
-        listView = popup!!.contentView.findViewById(R.id.listview)
+        listView = popup.contentView.findViewById(R.id.listview)
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             context, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
             context.resources.getStringArray(R.array.languages_values)
         )
-        listView!!.adapter = adapter
+        listView.adapter = adapter
     }
 
     private fun setListeners() {
-        listView!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        listView.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?, view: View, position: Int, id: Long
             ) {
@@ -65,10 +65,11 @@ class LanguagePickerDialog(private val context: Context, view: View) {
                 )
                 editor.apply()
 
-                popup!!.dismiss()
+                popup.dismiss()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
+
 }

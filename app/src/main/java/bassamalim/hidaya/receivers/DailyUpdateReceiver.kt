@@ -19,16 +19,16 @@ import java.util.*
 
 class DailyUpdateReceiver : BroadcastReceiver() {
 
-    private var context: Context? = null
-    private var pref: SharedPreferences? = null
+    private lateinit var context: Context
+    private lateinit var pref: SharedPreferences
     private var time = 0
-    private var now: Calendar? = null
+    private lateinit var now: Calendar
 
     override fun onReceive(gContext: Context, intent: Intent) {
         Log.i(Global.TAG, "in daily update receiver")
 
         context = gContext
-        pref = PreferenceManager.getDefaultSharedPreferences(context!!)
+        pref = PreferenceManager.getDefaultSharedPreferences(context)
         now = Calendar.getInstance()
 
         if (intent.action == "daily") {
@@ -42,21 +42,22 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun needed(): Boolean {
-        val day: Int = pref!!.getInt("last_day", 0)
+        val day: Int = pref.getInt("last_day", 0)
 
-        val today = now!![Calendar.DATE]
-        val hour = now!![Calendar.HOUR_OF_DAY]
+        val today = now[Calendar.DATE]
+        val hour = now[Calendar.HOUR_OF_DAY]
 
         return day != today && time <= hour
     }
 
     private fun locate() {
         val fusedLocationClient: FusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(context!!)
+            LocationServices.getFusedLocationProviderClient(context)
 
-        if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(context!!,
+            && ActivityCompat.checkSelfPermission(
+                context,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             fusedLocationClient.lastLocation.addOnSuccessListener {
@@ -68,18 +69,18 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     private fun update(location: Location) {
         var loc: Location? = location
         if (loc == null) {
-            loc = Keeper(context!!).retrieveLocation()
+            loc = Keeper(context).retrieveLocation()
             if (loc == null) {
                 Log.e(Global.TAG, "No available location in DailyUpdate")
                 return
             }
         }
 
-        Keeper(context!!, loc)
+        Keeper(context, loc)
 
-        val times = Utils.getTimes(context!!, loc)
+        val times = Utils.getTimes(context, loc)
 
-        Alarms(context!!, times)
+        Alarms(context, times)
 
         updateWidget()
 
@@ -89,20 +90,20 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     private fun updateWidget() {
         val intent = Intent(context, PrayersWidget::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        val ids: IntArray = AppWidgetManager.getInstance(context!!.applicationContext)
-            .getAppWidgetIds(ComponentName(context!!.applicationContext, PrayersWidget::class.java))
+        val ids: IntArray = AppWidgetManager.getInstance(context.applicationContext)
+            .getAppWidgetIds(ComponentName(context.applicationContext, PrayersWidget::class.java))
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-        context!!.sendBroadcast(intent)
+        context.sendBroadcast(intent)
     }
 
     private fun updated() {
-        val str = "Last Daily Update: ${now!!.get(Calendar.YEAR)}/${now!!.get(Calendar.MONTH)}" +
-            "/${now!!.get(Calendar.DATE)}" +
-            " ${now!!.get(Calendar.HOUR)}:${now!!.get(Calendar.MINUTE)}"
+        val str = "Last Daily Update: ${now[Calendar.YEAR]}/${now[Calendar.MONTH]}" +
+            "/${now[Calendar.DATE]}" + " ${now[Calendar.HOUR]}:${now[Calendar.MINUTE]}"
 
-        val editor: SharedPreferences.Editor = pref!!.edit()
-        editor.putInt("last_day", now!![Calendar.DATE])
+        val editor: SharedPreferences.Editor = pref.edit()
+        editor.putInt("last_day", now[Calendar.DATE])
         editor.putString("last_daily_update", str)
         editor.apply()
     }
+
 }

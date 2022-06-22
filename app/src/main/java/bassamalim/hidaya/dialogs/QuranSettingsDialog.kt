@@ -18,11 +18,11 @@ import bassamalim.hidaya.databinding.DialogQuranSettingsBinding
 
 class QuranSettingsDialog : AppCompatActivity() {
 
-    private var binding: DialogQuranSettingsBinding? = null
-    private var pref: SharedPreferences? = null
-    private var radioGroup: RadioGroup? = null
-    private var settingsFragment: SettingsFragment? = null
-    private var initialViewType: String? = null
+    private lateinit var binding: DialogQuranSettingsBinding
+    private lateinit var pref: SharedPreferences
+    private lateinit var radioGroup: RadioGroup
+    private lateinit var settingsFragment: SettingsFragment
+    private lateinit var initialViewType: String
     private var initialTextSize = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,29 +30,30 @@ class QuranSettingsDialog : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         binding = DialogQuranSettingsBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
+        setContentView(binding.root)
 
-        initialViewType = pref!!.getString("quran_view_type", "page")
-        initialTextSize = pref!!.getInt(getString(R.string.quran_text_size_key), 30)
+        initialViewType = pref.getString("quran_view_type", "page")!!
+        initialTextSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
 
         initRadioGroup()
 
-        binding!!.executeBtn.setOnClickListener {execute()}
+        binding.executeBtn.setOnClickListener {execute()}
         settingsFragment = SettingsFragment()
 
         if (savedInstanceState == null)
             supportFragmentManager.beginTransaction()
-                .replace(R.id.quran_settings, settingsFragment!!).commit()
+                .replace(R.id.quran_settings, settingsFragment).commit()
     }
 
     private fun initRadioGroup() {
-        radioGroup = binding!!.radioGroup
-        if (initialViewType == "page") radioGroup!!.check(R.id.page_view) else radioGroup!!.check(R.id.list_view)
+        radioGroup = binding.radioGroup
+        if (initialViewType == "page") radioGroup.check(R.id.page_view)
+        else radioGroup.check(R.id.list_view)
     }
 
     private fun themeify() {
         pref = PreferenceManager.getDefaultSharedPreferences(this)
-        val theme: String? = pref!!.getString(
+        val theme: String? = pref.getString(
             getString(R.string.theme_key),
             getString(R.string.default_theme)
         )
@@ -64,22 +65,22 @@ class QuranSettingsDialog : AppCompatActivity() {
 
     private fun execute() {
         val viewType =
-            if (radioGroup!!.checkedRadioButtonId == R.id.list_view) "list"
+            if (radioGroup.checkedRadioButtonId == R.id.list_view) "list"
             else "page"
         if (viewType != initialViewType) {
-            val editor: SharedPreferences.Editor = pref!!.edit()
+            val editor: SharedPreferences.Editor = pref.edit()
             editor.putString("quran_view_type", viewType)
             editor.apply()
         }
 
-        if (settingsFragment!!.textSizeSB!!.value != initialTextSize
+        if (settingsFragment.textSizeSB!!.value != initialTextSize
             || viewType != initialViewType) {
             val intent = Intent()
-            if (radioGroup!!.checkedRadioButtonId == R.id.list_view)
+            if (radioGroup.checkedRadioButtonId == R.id.list_view)
                 intent.putExtra("view_type", "list")
             else
                 intent.putExtra("view_type", "page")
-            intent.putExtra("text_size", settingsFragment!!.textSizeSB!!.value)
+            intent.putExtra("text_size", settingsFragment.textSizeSB!!.value)
 
             setResult(Activity.RESULT_OK, intent)
         }
@@ -116,8 +117,9 @@ class QuranSettingsDialog : AppCompatActivity() {
         private fun getReciterNames(): List<String?> {
             return Room.databaseBuilder(
                 requireContext().applicationContext, AppDatabase::class.java, "HidayaDB"
-            ).createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
-                .ayatRecitersDao().getNames()
+            ).createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
+                .build().ayatRecitersDao().getNames()
         }
     }
+
 }

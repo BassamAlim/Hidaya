@@ -15,6 +15,10 @@ import com.bumptech.glide.Glide
 
 class CalibrationDialog(private val gContext: Context) : DialogFragment() {
 
+    companion object {
+        var TAG = "CompassCalibrationGif"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -26,13 +30,10 @@ class CalibrationDialog(private val gContext: Context) : DialogFragment() {
         )
 
         val screen = view.findViewById<ImageView>(R.id.gif_screen)
-        screen.setOnClickListener { v: View? -> dismiss() }
+        screen.setOnClickListener { dismiss() }
         Glide.with(gContext).load(R.drawable.compass_calibration).into(screen)
 
         return view
     }
 
-    companion object {
-        var TAG = "CompassCalibrationGif"
-    }
 }

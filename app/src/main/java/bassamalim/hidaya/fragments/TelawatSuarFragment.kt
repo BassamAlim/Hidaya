@@ -28,16 +28,16 @@ class TelawatSuarFragment : Fragment {
     private var adapter: TelawatSuarAdapter? = null
     private var reciterId = 0
     private var versionId = 0
-    private var type: ListType? = null
-    private var availableSurahs: String? = null
-    private var surahNames: ArrayList<String>? = null
-    private var searchNames: Array<String?>? = null
-    private var favs: List<Int>? = null
-    private var downloaded: BooleanArray? = null
+    private lateinit var type: ListType
+    private lateinit var availableSurahs: String
+    private lateinit var surahNames: ArrayList<String>
+    private lateinit var searchNames: Array<String?>
+    private lateinit var favs: List<Int>
+    private lateinit var downloaded: BooleanArray
 
     constructor()
 
-    constructor(type: ListType?, reciterId: Int, versionId: Int) {
+    constructor(type: ListType, reciterId: Int, versionId: Int) {
         this.type = type
         this.reciterId = reciterId
         this.versionId = versionId
@@ -78,8 +78,8 @@ class TelawatSuarFragment : Fragment {
             surahNames = ArrayList()
             searchNames = arrayOfNulls(114)
             for (i in 0..113) {
-                surahNames!!.add(suras[i].sura_name!!)
-                searchNames!![i] = suras[i].search_name
+                surahNames.add(suras[i].sura_name!!)
+                searchNames[i] = suras[i].search_name
             }
 
             availableSurahs = db.telawatVersionsDao().getSuras(reciterId, versionId)
@@ -92,13 +92,13 @@ class TelawatSuarFragment : Fragment {
 
         val cards: ArrayList<ReciterSura> = ArrayList<ReciterSura>()
         for (i in 0..113) {
-            if (!availableSurahs!!.contains("," + (i + 1) + ",")
-                || type == ListType.Favorite && favs!![i] == 0
-                || type == ListType.Downloaded && !downloaded!![i])
+            if (!availableSurahs.contains("," + (i + 1) + ",")
+                || type == ListType.Favorite && favs[i] == 0
+                || type == ListType.Downloaded && !downloaded[i])
                 continue
 
-            val name = surahNames!![i]
-            val searchName = searchNames!![i]
+            val name = surahNames[i]
+            val searchName = searchNames[i]
 
             val listener = View.OnClickListener {
                 val intent = Intent(context, TelawatClient::class.java)
@@ -113,7 +113,7 @@ class TelawatSuarFragment : Fragment {
                 startActivity(intent)
             }
 
-            cards.add(ReciterSura(i, name, searchName!!, favs!![i], listener))
+            cards.add(ReciterSura(i, name, searchName!!, favs[i], listener))
         }
         return cards
     }
@@ -154,15 +154,16 @@ class TelawatSuarFragment : Fragment {
             val n = name.substring(0, name.length - 4)
             try {
                 val num = n.toInt()
-                downloaded!![num] = true
+                downloaded[num] = true
             } catch (ignored: NumberFormatException) {}
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         binding = null
         recycler!!.adapter = null
         adapter = null
     }
+
 }

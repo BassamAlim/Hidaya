@@ -16,26 +16,26 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 class AboutActivity : AppCompatActivity() {
 
-    private var binding: ActivityAboutBinding? = null
+    private lateinit var binding: ActivityAboutBinding
     private var counter = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)
         binding = ActivityAboutBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        binding!!.home.setOnClickListener {onBackPressed()}
+        setContentView(binding.root)
+        binding.home.setOnClickListener {onBackPressed()}
 
         setListener()
     }
 
     private fun setListener() {
-        binding!!.titleTv.setOnClickListener {
+        binding.titleTv.setOnClickListener {
             counter++
             if (counter == 5) voala()
         }
 
-        binding!!.rebuildDb.setOnClickListener {
+        binding.rebuildDb.setOnClickListener {
             deleteDatabase("HidayaDB")
 
             Log.i(Global.TAG, "Database Rebuilt")
@@ -48,7 +48,7 @@ class AboutActivity : AppCompatActivity() {
             ).show()
         }
 
-        binding!!.driveUpdate.setOnClickListener {
+        binding.driveUpdate.setOnClickListener {
             val url: String = FirebaseRemoteConfig.getInstance().getString(Global.UPDATE_URL)
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
@@ -58,10 +58,11 @@ class AboutActivity : AppCompatActivity() {
 
     private fun voala() {
         Toast.makeText(this, getString(R.string.vip_welcome), Toast.LENGTH_SHORT).show()
-        binding!!.driveUpdate.visibility = View.VISIBLE
-        binding!!.rebuildDb.visibility = View.VISIBLE
-        binding!!.lastUpdate.visibility = View.VISIBLE
-        binding!!.lastUpdate.text = PreferenceManager.getDefaultSharedPreferences(this)
+        binding.driveUpdate.visibility = View.VISIBLE
+        binding.rebuildDb.visibility = View.VISIBLE
+        binding.lastUpdate.visibility = View.VISIBLE
+        binding.lastUpdate.text = PreferenceManager.getDefaultSharedPreferences(this)
             .getString("last_daily_update", "No daily updates yet")
     }
+
 }

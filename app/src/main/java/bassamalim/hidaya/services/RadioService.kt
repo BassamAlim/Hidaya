@@ -41,21 +41,21 @@ import java.net.URL
 
 class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
-    private var playPauseAction: NotificationCompat.Action? = null
-    private var mediaSession: MediaSessionCompat? = null
-    private var controller: MediaControllerCompat? = null
+    private lateinit var playPauseAction: NotificationCompat.Action
+    private lateinit var mediaSession: MediaSessionCompat
+    private lateinit var controller: MediaControllerCompat
     private var channelId = "channel ID"
     private val id = 444
     private var flags = 0
-    private var notificationManager: NotificationManager? = null
-    private var notificationBuilder: NotificationCompat.Builder? = null
-    private var notification: Notification? = null
-    private var player: MediaPlayer? = null
-    private var am: AudioManager? = null
+    private lateinit var notificationManager: NotificationManager
+    private lateinit var notificationBuilder: NotificationCompat.Builder
+    private lateinit var notification: Notification
+    private lateinit var player: MediaPlayer
+    private lateinit var am: AudioManager
     private val intentFilter: IntentFilter = IntentFilter()
-    private var audioFocusRequest: AudioFocusRequest? = null
-    private var wifiLock: WifiLock? = null
-    private var link: String? = null
+    private lateinit var audioFocusRequest: AudioFocusRequest
+    private lateinit var wifiLock: WifiLock
+    private lateinit var link: String
 
     companion object {
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
@@ -77,7 +77,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
-        override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+        override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
             Log.d(Global.TAG, "In onPlayFromMediaId of RadioClient")
             super.onPlayFromMediaId(mediaId, extras)
             link = mediaId
@@ -103,18 +103,18 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         // Request audio focus for playback, this registers the afChangeListener
         var result: Int = AudioManager.AUDIOFOCUS_REQUEST_GRANTED
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            result = am!!.requestAudioFocus(audioFocusRequest!!)
+            result = am.requestAudioFocus(audioFocusRequest)
 
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             // Start the service
             startService(Intent(applicationContext, RadioService::class.java))
             // Set the session active  (and update metadata and state)
-            mediaSession!!.isActive = true
+            mediaSession.isActive = true
 
             // start the player (custom call)
-            if (controller!!.playbackState.state == PlaybackStateCompat.STATE_PAUSED
-                || controller!!.playbackState.state == PlaybackStateCompat.STATE_STOPPED)
-                player!!.start()
+            if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED
+                || controller.playbackState.state == PlaybackStateCompat.STATE_STOPPED)
+                player.start()
             else
                 startPlaying()
 
@@ -132,8 +132,8 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         Log.d(Global.TAG, "in pause of RadioService")
         // Update metadata and state
         // pause the player (custom call)
-        mediaSession!!.isActive = false
-        player!!.pause()
+        mediaSession.isActive = false
+        player.pause()
 
         updatePbState(PlaybackStateCompat.STATE_PAUSED)
         updateNotification(false)
@@ -146,16 +146,16 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         Log.d(Global.TAG, "in stop of RadioService")
         // Abandon audio focus
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            am!!.abandonAudioFocusRequest(audioFocusRequest!!)
+            am.abandonAudioFocusRequest(audioFocusRequest)
 
         cleanUp()
         unregisterReceiver(receiver)
         // stop the player (custom call)
-        player!!.stop()
+        player.stop()
         // Stop the service
         stopSelf()
         // Set the session inactive  (and update metadata and state)
-        mediaSession!!.isActive = false
+        mediaSession.isActive = false
         updatePbState(PlaybackStateCompat.STATE_STOPPED)
 
         // Take the service out of the foreground
@@ -166,12 +166,12 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     override fun onAudioFocusChange(i: Int) {
         when (i) {
             AudioManager.AUDIOFOCUS_GAIN ->
-                if (player != null) player!!.setVolume(1.0f, 1.0f)
+                if (player != null) player.setVolume(1.0f, 1.0f)
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK ->
-                if (player != null && player!!.isPlaying)
-                    player!!.setVolume(0.3f, 0.3f)
+                if (player != null && player.isPlaying)
+                    player.setVolume(0.3f, 0.3f)
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS ->
-                if (player != null && player!!.isPlaying) pause()
+                if (player != null && player.isPlaying) pause()
         }
     }
 
@@ -183,11 +183,11 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                     pause()
                 }
                 ACTION_PLAY_PAUSE ->
-                    if (controller!!.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
+                    if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
                         Log.d(Global.TAG, "In ACTION_PAUSE of RadioService")
                         pause()
                     }
-                    else if (controller!!.playbackState.state == PlaybackStateCompat.STATE_PAUSED) {
+                    else if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED) {
                     Log.d(Global.TAG, "In ACTION_PLAY of RadioService")
                     play()
                 }
@@ -207,29 +207,29 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         val stateBuilder: PlaybackStateCompat.Builder = PlaybackStateCompat.Builder().setActions(
             PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
         )
-        mediaSession!!.setPlaybackState(stateBuilder.build())
+        mediaSession.setPlaybackState(stateBuilder.build())
 
         // callback() has methods that handle callbacks from a media controller
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) mediaSession!!.setCallback(callback)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) mediaSession.setCallback(callback)
 
         // Set the session's token so that client activities can communicate with it.
-        sessionToken = mediaSession!!.sessionToken
+        sessionToken = mediaSession.sessionToken
     }
 
     private fun buildNotification() {
         // Given a media session and its context (usually the component containing the session)
 
         // Get the session's metadata
-        controller = mediaSession!!.controller
-        val mediaMetadata: MediaMetadataCompat = controller!!.metadata
+        controller = mediaSession.controller
+        val mediaMetadata: MediaMetadataCompat = controller.metadata
         val description: MediaDescriptionCompat = mediaMetadata.description
-        mediaSession!!.setSessionActivity(getContentIntent())
+        mediaSession.setSessionActivity(getContentIntent())
         createNotificationChannel()
 
         // Create a NotificationCompat.Builder
         notificationBuilder = NotificationCompat.Builder(this, channelId)
 
-        notificationBuilder!!
+        notificationBuilder
             // Add the metadata for the currently playing track
             .setContentTitle(description.title)
             // Stop the service when the notification is swiped away
@@ -244,7 +244,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             .setColor(resources.getColor(R.color.surface_M, theme))
             // Add buttons
             // Enable launching the player by clicking the notification
-            .setContentIntent(controller!!.sessionActivity)
+            .setContentIntent(controller.sessionActivity)
             .addAction(playPauseAction)
             // So there will be no notification tone
             .setSilent(true)
@@ -253,7 +253,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             // Take advantage of MediaStyle features
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
-                    .setMediaSession(mediaSession!!.sessionToken)
+                    .setMediaSession(mediaSession.sessionToken)
                     .setShowActionsInCompactView(0)
                     .setShowCancelButton(true) // Add a cancel button
                     .setCancelButtonIntent(
@@ -262,7 +262,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                         )
                     )
             )
-        notification = notificationBuilder!!.build()
+        notification = notificationBuilder.build()
 
         // Display the notification and place the service in the foreground
         startForeground(id, notification)
@@ -291,16 +291,16 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         )
         metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_TITLE, getString(R.string.quran_radio))
 
-        mediaSession!!.setMetadata(metadataBuilder.build())
+        mediaSession.setMetadata(metadataBuilder.build())
     }
 
     private fun updatePbState(state: Int) {
         val stateBuilder: PlaybackStateCompat.Builder = PlaybackStateCompat.Builder()
 
-        stateBuilder.setState(state, player!!.currentPosition.toLong(), 1F)
+        stateBuilder.setState(state, player.currentPosition.toLong(), 1F)
             .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
 
-        mediaSession!!.setPlaybackState(stateBuilder.build())
+        mediaSession.setPlaybackState(stateBuilder.build())
     }
 
     private fun updateNotification(playing: Boolean) {
@@ -319,28 +319,28 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                     )
                 )
             }
-        notificationBuilder!!.clearActions().addAction(playPauseAction)
+        notificationBuilder.clearActions().addAction(playPauseAction)
 
-        notification = notificationBuilder!!.build()
-        notificationManager!!.notify(id, notification)
+        notification = notificationBuilder.build()
+        notificationManager.notify(id, notification)
     }
 
     private fun initPlayer() {
         player = MediaPlayer()
-        player!!.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+        player.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
 
         wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
             .createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock")
-        wifiLock!!.acquire()
+        wifiLock.acquire()
 
-        player!!.setAudioAttributes(
+        player.setAudioAttributes(
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .build()
         )
 
-        am = getSystemService(Context.AUDIO_SERVICE) as AudioManager?
+        am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val attrs: AudioAttributes = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
             .build()
@@ -352,13 +352,13 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 .build()
         }
 
-        player!!.setOnPreparedListener {
-            player!!.start()
+        player.setOnPreparedListener {
+            player.start()
             updatePbState(PlaybackStateCompat.STATE_PLAYING)
             updateNotification(true)
         }
-        player!!.setOnCompletionListener { stop() }
-        player!!.setOnErrorListener { _: MediaPlayer?, what: Int, _: Int ->
+        player.setOnCompletionListener { stop() }
+        player.setOnErrorListener { _: MediaPlayer?, what: Int, _: Int ->
             Log.e(Global.TAG, "Error in RadioService player: $what")
             true
         }
@@ -380,7 +380,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun startPlaying() {
-        player!!.reset()
+        player.reset()
         thread.start()
     }
 
@@ -395,10 +395,10 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             connection.instanceFollowRedirects = false
             val secondURL = URL(connection.getHeaderField("Location"))
             link = secondURL.toString()
-            link = link!!.replaceFirst("http:".toRegex(), "https:")
+            link = link.replaceFirst("http:".toRegex(), "https:")
             Log.i(Global.TAG, "Dynamic Quran Radio URL: $link")
-            player!!.setDataSource(applicationContext, Uri.parse(link))
-            player!!.prepareAsync()
+            player.setDataSource(applicationContext, Uri.parse(link))
+            player.prepareAsync()
         } catch (e: IOException) {
             Log.e(Global.TAG, "Problem in RadioService player")
             e.printStackTrace()
@@ -416,7 +416,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             notificationChannel.description = description
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager!!.createNotificationChannel(notificationChannel)
+            notificationManager.createNotificationChannel(notificationChannel)
         }
     }
 
@@ -469,15 +469,13 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun cleanUp() {
-        if (wifiLock != null) wifiLock!!.release()
-        if (player != null) {
-            player!!.release()
-            player = null
-        }
+        player.release()
+        wifiLock.release()
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         Log.d(Global.TAG, "In onUnbind of RadioService")
         return super.onUnbind(intent)
     }
+
 }

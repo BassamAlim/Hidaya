@@ -11,15 +11,24 @@ class DoubleClickLMM : LinkMovementMethod() {
 
     //variable for storing the time of first click
     private var lastClick: Long = 0
-
     //variable for storing the last clicked span
     private var lastSpan: DoubleClickableSpan? = null
-
     //variable for storing the last clicked string
     private var lastBuffer: Spannable? = null
-
     // stores to set span if no span is set even if its the last span
     private var firstClick = false
+
+    companion object {
+        // the spanning configuration
+        private var what: Any? = null
+        private var sInstance: DoubleClickLMM? = null
+
+        fun getInstance(color: Int): DoubleClickLMM {
+            what = ForegroundColorSpan(color)
+            if (sInstance == null) sInstance = DoubleClickLMM()
+            return sInstance as DoubleClickLMM
+        }
+    }
 
     override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_UP) {
@@ -83,17 +92,4 @@ class DoubleClickLMM : LinkMovementMethod() {
         return buffer.getSpans(off, off, DoubleClickableSpan::class.java)
     }
 
-    companion object {
-        // the spanning configuration
-        private var what: Any? = null
-        private var sInstance: DoubleClickLMM? = null
-        fun getInstance(color: Int): DoubleClickLMM {
-            // background span has a problem (covers part of the text)
-            //what = new BackgroundColorSpan(Color.Black);
-
-            what = ForegroundColorSpan(color)
-            if (sInstance == null) sInstance = DoubleClickLMM()
-            return sInstance as DoubleClickLMM
-        }
-    }
 }

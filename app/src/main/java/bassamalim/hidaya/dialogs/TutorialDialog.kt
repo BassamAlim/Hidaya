@@ -18,14 +18,18 @@ import bassamalim.hidaya.R
 
 class TutorialDialog : DialogFragment {
 
-    private var pref: SharedPreferences? = null
-    private var gView: View? = null
-    private var text: String? = null
-    private var prefKey: String? = null
+    private lateinit var pref: SharedPreferences
+    private lateinit var gView: View
+    private lateinit var text: String
+    private lateinit var prefKey: String
+
+    companion object {
+        var TAG = "TutorialDialog"
+    }
 
     constructor()
 
-    constructor(context: Context, text: String?, prefKey: String?) {
+    constructor(context: Context, text: String, prefKey: String) {
         this.text = text
         this.prefKey = prefKey
 
@@ -34,7 +38,7 @@ class TutorialDialog : DialogFragment {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
         gView = inflater.inflate(R.layout.dialog_tutorial, container, false)
@@ -44,7 +48,7 @@ class TutorialDialog : DialogFragment {
             dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
         }
 
-        val textTv: TextView = gView!!.findViewById(R.id.text_tv)
+        val textTv: TextView = gView.findViewById(R.id.text_tv)
         textTv.text = text
 
         return gView
@@ -55,13 +59,10 @@ class TutorialDialog : DialogFragment {
 
         val doNotShowAgainCheckbox: CheckBox = requireView().findViewById(R.id.do_not_show_again_cb)
         if (doNotShowAgainCheckbox.isChecked) {
-            val editor: SharedPreferences.Editor = pref!!.edit()
+            val editor: SharedPreferences.Editor = pref.edit()
             editor.putBoolean(prefKey, false)
             editor.apply()
         }
     }
 
-    companion object {
-        var TAG = "TutorialDialog"
-    }
 }

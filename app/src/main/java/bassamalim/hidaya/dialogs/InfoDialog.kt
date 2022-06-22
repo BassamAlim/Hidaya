@@ -13,6 +13,10 @@ import bassamalim.hidaya.R
 
 class InfoDialog(private val title: String, private val text: String) : DialogFragment() {
 
+    companion object {
+        var TAG = "InfoDialog"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -34,7 +38,4 @@ class InfoDialog(private val title: String, private val text: String) : DialogFr
         return view
     }
 
-    companion object {
-        var TAG = "InfoDialog"
-    }
 }

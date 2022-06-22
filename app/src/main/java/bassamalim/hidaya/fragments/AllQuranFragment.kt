@@ -27,11 +27,15 @@ class AllQuranFragment : Fragment() {
     private var binding: FragmentQuranBinding? = null
     private var recyclerView: RecyclerView? = null
     private var adapter: QuranFragmentAdapter? = null
-    private var mListState: Parcelable? = null
-    private var gridLayoutManager: GridLayoutManager? = null
-    private var names: List<String>? = null
-    private var favs: List<Int>? = null
-    private var language: String? = null
+    private lateinit var mListState: Parcelable
+    private lateinit var gridLayoutManager: GridLayoutManager
+    private lateinit var names: List<String>
+    private lateinit var favs: List<Int>
+    private lateinit var language: String
+
+    companion object {
+        private var mBundleRecyclerViewState: Bundle? = null
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +43,7 @@ class AllQuranFragment : Fragment() {
     ): View {
 
         language = PreferenceManager.getDefaultSharedPreferences(requireContext())
-            .getString(getString(R.string.language_key), getString(R.string.default_language))
+            .getString(getString(R.string.language_key), getString(R.string.default_language))!!
 
         gridLayoutManager = GridLayoutManager(context, 1)
 
@@ -59,7 +63,7 @@ class AllQuranFragment : Fragment() {
         mBundleRecyclerViewState = Bundle()
         mListState =
             Objects.requireNonNull<RecyclerView.LayoutManager>(recyclerView!!.layoutManager)
-                .onSaveInstanceState()
+                .onSaveInstanceState()!!
         mBundleRecyclerViewState!!.putParcelable("recycler_state", mListState)
     }
 
@@ -67,7 +71,7 @@ class AllQuranFragment : Fragment() {
         super.onResume()
         if (mBundleRecyclerViewState != null) {
             Handler().postDelayed({
-                mListState = mBundleRecyclerViewState!!.getParcelable("recycler_state")
+                mListState = mBundleRecyclerViewState!!.getParcelable("recycler_state")!!
                 Objects.requireNonNull<RecyclerView.LayoutManager>(recyclerView!!.layoutManager)
                     .onRestoreInstanceState(mListState)
             }, 50)
@@ -129,8 +133,8 @@ class AllQuranFragment : Fragment() {
 
             cards.add(
                 Sura(
-                    sura.sura_id, surat + " " + names!![i],
-                    sura.search_name!!, sura.tanzeel, favs!![sura.favorite], cardListener
+                    sura.sura_id, surat + " " + names[i],
+                    sura.search_name!!, sura.tanzeel, favs[sura.favorite], cardListener
                 )
             )
         }
@@ -171,7 +175,4 @@ class AllQuranFragment : Fragment() {
         adapter = null
     }
 
-    companion object {
-        private var mBundleRecyclerViewState: Bundle? = null
-    }
 }

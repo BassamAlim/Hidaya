@@ -42,35 +42,35 @@ import java.util.*
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
-    private var playAction: NotificationCompat.Action? = null
-    private var pauseAction: NotificationCompat.Action? = null
-    private var nextAction: NotificationCompat.Action? = null
-    private var prevAction: NotificationCompat.Action? = null
-    private var mediaSession: MediaSessionCompat? = null
-    private var stateBuilder: PlaybackStateCompat.Builder? = null
-    private var controller: MediaControllerCompat? = null
-    private var mediaMetadata: MediaMetadataCompat? = null
+    private lateinit var playAction: NotificationCompat.Action
+    private lateinit var pauseAction: NotificationCompat.Action
+    private lateinit var nextAction: NotificationCompat.Action
+    private lateinit var prevAction: NotificationCompat.Action
+    private lateinit var mediaSession: MediaSessionCompat
+    private lateinit var stateBuilder: PlaybackStateCompat.Builder
+    private lateinit var controller: MediaControllerCompat
+    private lateinit var mediaMetadata: MediaMetadataCompat
     private var channelId = "channel ID"
     private val id = 333
-    private var pref: SharedPreferences? = null
-    private var db: AppDatabase? = null
+    private lateinit var pref: SharedPreferences
+    private lateinit var db: AppDatabase
     private val handler: Handler = Handler(Looper.getMainLooper())
-    private var notificationManager: NotificationManager? = null
-    private var notificationBuilder: NotificationCompat.Builder? = null
-    private var notification: Notification? = null
-    private var player: MediaPlayer? = null
-    private var am: AudioManager? = null
+    private lateinit var notificationManager: NotificationManager
+    private lateinit var notificationBuilder: NotificationCompat.Builder
+    private lateinit var notification: Notification
+    private lateinit var player: MediaPlayer
+    private lateinit var am: AudioManager
     private val intentFilter: IntentFilter = IntentFilter()
-    private var audioFocusRequest: AudioFocusRequest? = null
-    private var wifiLock: WifiLock? = null
-    private var surahNames: List<String>? = null
-    private var mediaId: String? = null
-    private var reciterName: String? = null
-    private var playType: String? = null
+    private lateinit var audioFocusRequest: AudioFocusRequest
+    private lateinit var wifiLock: WifiLock
+    private lateinit var surahNames: List<String>
+    private  var mediaId: String? = null
+    private lateinit var reciterName: String
+    private lateinit var playType: String
     private var reciterId = 0
     private var versionId = 0
     private var surahIndex = 0
-    private var version: Reciter.RecitationVersion? = null
+    private lateinit var version: Reciter.RecitationVersion
     private var shuffle = 0
     private var continueFrom = 0
 
@@ -112,26 +112,26 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         override fun onPlayFromMediaId(givenMediaId: String, extras: Bundle) {
             Log.d(Global.TAG, "In onPlayFromMediaId of TelawatService")
 
-            playType = extras.getString("play_type")
+            playType = extras.getString("play_type")!!
             if (givenMediaId != mediaId || playType == "continue") {
                 Log.d(Global.TAG, "Old mediaID: $mediaId, New mediaId: $givenMediaId")
 
                 mediaId = givenMediaId
 
-                mediaSession!!.setSessionActivity(getContentIntent())
+                mediaSession.setSessionActivity(getContentIntent())
 
                 reciterId = givenMediaId.substring(0, 3).toInt()
                 versionId = givenMediaId.substring(3, 5).toInt()
                 surahIndex = givenMediaId.substring(5).toInt()
-                reciterName = extras.getString("reciter_name")
+                reciterName = extras.getString("reciter_name")!!
                 version = extras.getSerializable("version") as Reciter.RecitationVersion
 
-                if (playType == "continue") continueFrom = pref!!.getInt("last_telawa_progress", 0)
+                if (playType == "continue") continueFrom = pref.getInt("last_telawa_progress", 0)
 
                 buildNotification()
                 initPlayer()
 
-                if (controller!!.playbackState.state == PlaybackStateCompat.STATE_NONE) onPlay()
+                if (controller.playbackState.state == PlaybackStateCompat.STATE_NONE) onPlay()
                 else playOther()
             }
         }
@@ -140,18 +140,18 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             Log.d(Global.TAG, "In onPlay of TelawatService")
 
             // Request audio focus for playback, this registers the afChangeListener
-            val result: Int = am!!.requestAudioFocus(audioFocusRequest!!)
+            val result: Int = am.requestAudioFocus(audioFocusRequest)
 
             if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                 // Start the service
                 startService(Intent(applicationContext, TelawatService::class.java))
                 // Set the session active  (and update metadata and state)
-                mediaSession!!.isActive = true
+                mediaSession.isActive = true
 
                 // start the player (custom call)
-                if (controller!!.playbackState.state == PlaybackStateCompat.STATE_PAUSED
-                    || controller!!.playbackState.state == PlaybackStateCompat.STATE_STOPPED)
-                    player!!.start()
+                if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED
+                    || controller.playbackState.state == PlaybackStateCompat.STATE_STOPPED)
+                    player.start()
                 else
                     startPlaying(surahIndex)
 
@@ -170,18 +170,18 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             Log.d(Global.TAG, "In onStop of TelawatService")
 
             // Abandon audio focus
-            am!!.abandonAudioFocusRequest(audioFocusRequest!!)
+            am.abandonAudioFocusRequest(audioFocusRequest)
             cleanUp()
 
             unregisterReceiver(receiver)
             handler.removeCallbacks(runnable)
-            saveForLater(player!!.currentPosition)
+            saveForLater(player.currentPosition)
             // stop the player (custom call)
-            player!!.stop()
+            player.stop()
             // Stop the service
             stopSelf()
             // Set the session inactive  (and update metadata and state)
-            mediaSession!!.isActive = false
+            mediaSession.isActive = false
             updatePbState(PlaybackStateCompat.STATE_STOPPED)
 
             // Take the service out of the foreground
@@ -195,10 +195,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             updatePbState(PlaybackStateCompat.STATE_PAUSED)
             updateNotification(false)
 
-            saveForLater(player!!.currentPosition)
+            saveForLater(player.currentPosition)
 
             // pause the player
-            player!!.pause()
+            player.pause()
             handler.removeCallbacks(runnable)
 
             // Take the service out of the foreground, retain the notification
@@ -207,14 +207,14 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         override fun onFastForward() {
             super.onFastForward()
-            player!!.seekTo(player!!.currentPosition + 10000)
-            updatePbState(controller!!.playbackState.state)
+            player.seekTo(player.currentPosition + 10000)
+            updatePbState(controller.playbackState.state)
         }
 
         override fun onRewind() {
             super.onRewind()
-            player!!.seekTo(player!!.currentPosition - 10000)
-            updatePbState(controller!!.playbackState.state)
+            player.seekTo(player.currentPosition - 10000)
+            updatePbState(controller.playbackState.state)
         }
 
         override fun onSkipToNext() {
@@ -229,13 +229,13 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         override fun onSeekTo(pos: Long) {
             super.onSeekTo(pos)
-            player!!.seekTo(pos.toInt())
-            updatePbState(controller!!.playbackState.state)
+            player.seekTo(pos.toInt())
+            updatePbState(controller.playbackState.state)
         }
 
         override fun onSetRepeatMode(repeatMode: Int) {
             super.onSetRepeatMode(repeatMode)
-            player!!.isLooping = repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE
+            player.isLooping = repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE
         }
 
         override fun onSetShuffleMode(shuffleMode: Int) {
@@ -245,7 +245,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun playOther() {
-        mediaSession!!.isActive = true
+        mediaSession.isActive = true
         // start the player
         startPlaying(surahIndex)
 
@@ -259,13 +259,13 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp++
-            } while (temp < 114 && !version!!.getSuras().contains("," + (temp + 1) + ","))
+            } while (temp < 114 && !version.getSuras().contains("," + (temp + 1) + ","))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
                 temp = random.nextInt(114)
-            } while (!version!!.getSuras().contains("," + (temp + 1) + ","))
+            } while (!version.getSuras().contains("," + (temp + 1) + ","))
         }
 
         if (temp < 114) {
@@ -282,12 +282,12 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp--
-            } while (temp >= 0 && !version!!.getSuras().contains("," + (temp + 1) + ","))
+            } while (temp >= 0 && !version.getSuras().contains("," + (temp + 1) + ","))
         } else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
                 temp = random.nextInt(114)
-            } while (!version!!.getSuras().contains("," + (temp + 1) + ","))
+            } while (!version.getSuras().contains("," + (temp + 1) + ","))
         }
 
         if (temp >= 0) {
@@ -302,12 +302,11 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     override fun onAudioFocusChange(i: Int) {
         when (i) {
             AudioManager.AUDIOFOCUS_GAIN ->
-                if (player != null) player!!.setVolume(1.0f, 1.0f)
+                player.setVolume(1.0f, 1.0f)
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK ->
-                if (player != null && player!!.isPlaying)
-                    player!!.setVolume(0.3f, 0.3f)
+                if (player.isPlaying) player.setVolume(0.3f, 0.3f)
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS ->
-                if (player != null && player!!.isPlaying) callback.onPause()
+                if (player.isPlaying) callback.onPause()
         }
     }
 
@@ -350,13 +349,13 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         stateBuilder = PlaybackStateCompat.Builder().setActions(
             PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
         )
-        mediaSession!!.setPlaybackState(stateBuilder!!.build())
+        mediaSession.setPlaybackState(stateBuilder.build())
 
         // callback() has methods that handle callbacks from a media controller
-        mediaSession!!.setCallback(callback)
+        mediaSession.setCallback(callback)
 
         // Set the session's token so that client activities can communicate with it.
-        sessionToken = mediaSession!!.sessionToken
+        sessionToken = mediaSession.sessionToken
     }
 
     private fun setupActions() {
@@ -396,25 +395,25 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun buildNotification() {
         // Get the session's metadata
-        controller = mediaSession!!.controller
-        mediaMetadata = controller!!.metadata
-        val description: MediaDescriptionCompat = mediaMetadata!!.description
+        controller = mediaSession.controller
+        mediaMetadata = controller.metadata
+        val description: MediaDescriptionCompat = mediaMetadata.description
 
-        mediaSession!!.setSessionActivity(getContentIntent())
+        mediaSession.setSessionActivity(getContentIntent())
 
         createNotificationChannel()
 
         // Create a NotificationCompat.Builder
         notificationBuilder = NotificationCompat.Builder(this, channelId)
 
-        notificationBuilder!!
+        notificationBuilder
             // Add the metadata for the currently playing track
             .setContentTitle(description.title)
             .setContentText(description.subtitle)
             .setSubText(description.description)
             .setLargeIcon(description.iconBitmap)
             // Enable launching the player by clicking the notification
-            .setContentIntent(controller!!.sessionActivity)
+            .setContentIntent(controller.sessionActivity)
             // Stop the service when the notification is swiped away
             .setDeleteIntent(
                 MediaButtonReceiver.buildMediaButtonPendingIntent(
@@ -436,7 +435,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             // Take advantage of MediaStyle features
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
-                    .setMediaSession(mediaSession!!.sessionToken)
+                    .setMediaSession(mediaSession.sessionToken)
                     .setShowActionsInCompactView(0, 1, 2)
                     // Add a cancel button
                     .setShowCancelButton(true)
@@ -446,7 +445,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                         )
                     )
             )
-        notification = notificationBuilder!!.build()
+        notification = notificationBuilder.build()
 
         // Display the notification and place the service in the foreground
         startForeground(id, notification)
@@ -479,7 +478,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
 
-        mediaSession!!.setMetadata(metadataBuilder.build())
+        mediaSession.setMetadata(metadataBuilder.build())
     }
 
     private fun updateMetadata(duration: Boolean) {
@@ -503,76 +502,75 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
 
         metadataBuilder.putString(
-            MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, surahNames!![surahIndex]
+            MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, surahNames[surahIndex]
         )
         metadataBuilder.putString(
-            MediaMetadataCompat.METADATA_KEY_TITLE, surahNames!![surahIndex]
+            MediaMetadataCompat.METADATA_KEY_TITLE, surahNames[surahIndex]
         )
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterName)
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName)
         metadataBuilder.putString(
-            MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, version!!.getRewaya()
+            MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, version.getRewaya()
         )
 
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, surahIndex.toLong())
         metadataBuilder.putLong(
-            MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version!!.getCount().toLong()
+            MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version.getCount().toLong()
         )
         metadataBuilder.putLong(
             MediaMetadataCompat.METADATA_KEY_DURATION,
-            (if (duration) player!!.duration else 0).toLong()
+            (if (duration) player.duration else 0).toLong()
         )
 
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
 
         mediaMetadata = metadataBuilder.build()
-        mediaSession!!.setMetadata(mediaMetadata)
+        mediaSession.setMetadata(mediaMetadata)
     }
 
     private fun updatePbState(state: Int) {
-        stateBuilder!!.setState(state, player!!.currentPosition.toLong(), 1F)
+        stateBuilder.setState(state, player.currentPosition.toLong(), 1F)
             .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
 
-        mediaSession!!.setPlaybackState(stateBuilder!!.build())
+        mediaSession.setPlaybackState(stateBuilder.build())
     }
 
     private val runnable = Runnable {
-        if (player != null && controller!!.playbackState.state == PlaybackStateCompat.STATE_PLAYING)
-            refresh()
+        if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) refresh()
     }
 
     private fun refresh() {
-        updatePbState(controller!!.playbackState.state)
+        updatePbState(controller.playbackState.state)
         handler.postDelayed(runnable, 1000)
     }
 
     private fun updateNotification(playing: Boolean) {
         if (playing)
-            notificationBuilder!!.clearActions()
+            notificationBuilder.clearActions()
             .addAction(prevAction).addAction(pauseAction).addAction(nextAction)
         else
-            notificationBuilder!!.clearActions()
+            notificationBuilder.clearActions()
             .addAction(prevAction).addAction(playAction).addAction(nextAction)
 
-        notification = notificationBuilder!!.build()
-        notificationManager!!.notify(id, notification)
+        notification = notificationBuilder.build()
+        notificationManager.notify(id, notification)
     }
 
     private fun initPlayer() {
         player = MediaPlayer()
-        player!!.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+        player.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
 
         wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
             .createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock")
-        wifiLock!!.acquire()
+        wifiLock.acquire()
 
-        player!!.setAudioAttributes(
+        player.setAudioAttributes(
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .build()
         )
-        am = getSystemService(Context.AUDIO_SERVICE) as AudioManager?
+        am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val attrs: AudioAttributes = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
             .build()
@@ -582,32 +580,32 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             .setAudioAttributes(attrs)
             .build()
 
-        player!!.setOnPreparedListener {
-            if (playType == "continue") player!!.seekTo(continueFrom)
+        player.setOnPreparedListener {
+            if (playType == "continue") player.seekTo(continueFrom)
 
-            player!!.start()
+            player.start()
 
             updateMetadata(true) // For the duration
             updatePbState(PlaybackStateCompat.STATE_PLAYING)
             updateNotification(true)
         }
-        player!!.setOnCompletionListener { skipToNext() }
-        player!!.setOnErrorListener { _, what, _ ->
+        player.setOnCompletionListener { skipToNext() }
+        player.setOnErrorListener { _, what, _ ->
             Log.e(Global.TAG, "Error in TelawatService player: $what")
             true
         }
     }
 
     private fun startPlaying(surah: Int) {
-        player!!.reset()
+        player.reset()
 
         if (tryOffline(surah)) return
 
-        val text = String.format(Locale.US, "%s/%03d.mp3", version!!.getServer(), surah + 1)
+        val text = String.format(Locale.US, "%s/%03d.mp3", version.getServer(), surah + 1)
 
         try {
-            player!!.setDataSource(applicationContext, Uri.parse(text))
-            player!!.prepareAsync()
+            player.setDataSource(applicationContext, Uri.parse(text))
+            player.prepareAsync()
         } catch (e: IOException) {
             e.printStackTrace()
             Log.e(Global.TAG, "Problem in TelawatService player")
@@ -616,11 +614,11 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun tryOffline(surah: Int): Boolean {
         val path: String = (getExternalFilesDir(null).toString() + "/Telawat/" + reciterId
-                + "/" + version!!.getVersionId() + "/" + surah + ".mp3")
+                + "/" + version.getVersionId() + "/" + surah + ".mp3")
 
         return try {
-            player!!.setDataSource(path)
-            player!!.prepare()
+            player.setDataSource(path)
+            player.prepare()
             Log.i(Global.TAG, "Playing Offline")
             true
         } catch (f: FileNotFoundException) {
@@ -643,11 +641,11 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         notificationChannel.description = description
         notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager!!.createNotificationChannel(notificationChannel)
+        notificationManager.createNotificationChannel(notificationChannel)
     }
 
     private fun getSuraNames() {
-        surahNames = db!!.suarDao().getNames()
+        surahNames = db.suarDao().getNames()
     }
 
     private fun getContentIntent(): PendingIntent {
@@ -701,11 +699,11 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun saveForLater(progress: Int) {
         val text: String =
-            getString(R.string.sura) + " " + surahNames!![surahIndex] + " " +
+            getString(R.string.sura) + " " + surahNames[surahIndex] + " " +
                     getString(R.string.for_reciter) + " " + reciterName + " " +
-                    getString(R.string.in_rewaya_of) + " " + version!!.getRewaya()
+                    getString(R.string.in_rewaya_of) + " " + version.getRewaya()
 
-        val editor: SharedPreferences.Editor = pref!!.edit()
+        val editor: SharedPreferences.Editor = pref.edit()
         editor.putString("last_played_media_id", mediaId)
         editor.putString("last_played_text", text)
         editor.putInt("last_telawa_progress", progress)
@@ -713,19 +711,13 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun cleanUp() {
-        if (wifiLock != null) {
-            wifiLock!!.release()
-            wifiLock = null
-        }
-        if (player != null) {
-            player!!.release()
-            player = null
-        }
+        wifiLock.release()
+        player.release()
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         Log.d(Global.TAG, "In onUnbind of TelawatService")
-        saveForLater(player!!.currentPosition)
+        saveForLater(player.currentPosition)
         return super.onUnbind(intent)
     }
 
@@ -733,4 +725,5 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         super.onDestroy()
         cleanUp()
     }
+
 }

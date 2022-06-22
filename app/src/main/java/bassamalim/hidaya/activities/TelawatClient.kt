@@ -34,31 +34,31 @@ import java.util.*
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatClient : AppCompatActivity() {
 
-    private var binding: ActivityTelawatClientBinding? = null
-    private var db: AppDatabase? = null
-    private var pref: SharedPreferences? = null
-    private var mediaBrowser: MediaBrowserCompat? = null
-    private var controller: MediaControllerCompat? = null
-    private var tc: MediaControllerCompat.TransportControls? = null
-    private var surahNamescreen: TextView? = null
-    private var seekBar: SeekBar? = null
-    private var progressScreen: TextView? = null
-    private var durationScreen: TextView? = null
-    private var playPause: ImageButton? = null
-    private var nextBtn: ImageButton? = null
-    private var prevBtn: ImageButton? = null
-    private var forwardBtn: ImageButton? = null
-    private var rewindBtn: ImageButton? = null
-    private var repeatBtn: ImageButton? = null
-    private var shuffleBtn: ImageButton? = null
-    private var action: String? = null
-    private var mediaId: String? = null
+    private lateinit var binding: ActivityTelawatClientBinding
+    private lateinit var db: AppDatabase
+    private lateinit var pref: SharedPreferences
+    private lateinit var mediaBrowser: MediaBrowserCompat
+    private lateinit var controller: MediaControllerCompat
+    private lateinit var tc: MediaControllerCompat.TransportControls
+    private lateinit var surahNamescreen: TextView
+    private lateinit var seekBar: SeekBar
+    private lateinit var progressScreen: TextView
+    private lateinit var durationScreen: TextView
+    private lateinit var playPause: ImageButton
+    private lateinit var nextBtn: ImageButton
+    private lateinit var prevBtn: ImageButton
+    private lateinit var forwardBtn: ImageButton
+    private lateinit var rewindBtn: ImageButton
+    private lateinit var repeatBtn: ImageButton
+    private lateinit var shuffleBtn: ImageButton
+    private lateinit var action: String
+    private lateinit var mediaId: String
     private var reciterId = 0
     private var versionId = 0
     private var surahIndex = 0
-    private var reciterName: String? = null
-    private var version: RecitationVersion? = null
-    private var surahNames: List<String>? = null
+    private lateinit var reciterName: String
+    private lateinit var version: RecitationVersion
+    private lateinit var surahNames: List<String>
     private var repeat = 0
     private var shuffle = 0
 
@@ -66,8 +66,8 @@ class TelawatClient : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)
         binding = ActivityTelawatClientBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        binding!!.home.setOnClickListener { onBackPressed() }
+        setContentView(binding.root)
+        binding.home.setOnClickListener { onBackPressed() }
 
         db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "HidayaDB")
             .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
@@ -99,7 +99,7 @@ class TelawatClient : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        mediaBrowser!!.connect()
+        mediaBrowser.connect()
     }
 
     override fun onResume() {
@@ -113,14 +113,14 @@ class TelawatClient : AppCompatActivity() {
             MediaControllerCompat.getMediaController(this@TelawatClient)
                 .unregisterCallback(controllerCallback)
         }
-        mediaBrowser!!.disconnect()
+        mediaBrowser.disconnect()
     }
 
     private val connectionCallbacks: MediaBrowserCompat.ConnectionCallback = object :
         MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             // Get the token for the MediaSession
-            val token: MediaSessionCompat.Token = mediaBrowser!!.sessionToken
+            val token: MediaSessionCompat.Token = mediaBrowser.sessionToken
 
             // Create a MediaControllerCompat
             val mediaController = MediaControllerCompat(this@TelawatClient, token)
@@ -134,8 +134,8 @@ class TelawatClient : AppCompatActivity() {
             data
 
             if (action != "back" &&
-                (controller!!.playbackState.state == PlaybackStateCompat.STATE_NONE ||
-                        mediaId != controller!!.metadata.getString(
+                (controller.playbackState.state == PlaybackStateCompat.STATE_NONE ||
+                        mediaId != controller.metadata.getString(
                     MediaMetadataCompat.METADATA_KEY_MEDIA_ID))
             )
                 sendPlayRequest()
@@ -157,105 +157,105 @@ class TelawatClient : AppCompatActivity() {
     private val data: Unit
         get() {
             val intent: Intent = intent
-            action = intent.action
-            mediaId = intent.getStringExtra("media_id")
+            action = intent.action!!
+            mediaId = intent.getStringExtra("media_id")!!
 
-            reciterId = mediaId!!.substring(0, 3).toInt()
-            versionId = mediaId!!.substring(3, 5).toInt()
-            surahIndex = mediaId!!.substring(5).toInt()
+            reciterId = mediaId.substring(0, 3).toInt()
+            versionId = mediaId.substring(3, 5).toInt()
+            surahIndex = mediaId.substring(5).toInt()
 
-            reciterName = db!!.telawatRecitersDao().getNames()[reciterId]
+            reciterName = db.telawatRecitersDao().getNames()[reciterId]
 
             val telawa: TelawatVersionsDB =
-                db!!.telawatVersionsDao().getVersion(reciterId, versionId)
+                db.telawatVersionsDao().getVersion(reciterId, versionId)
             version = RecitationVersion(
                 versionId, telawa.getUrl(), telawa.getRewaya(),
                 telawa.getCount(), telawa.getSuras(), null
             )
 
-            surahNames = db!!.suarDao().getNames()
+            surahNames = db.suarDao().getNames()
         }
 
     private fun retrieveState() {
-        repeat = pref!!.getInt("telawat_repeat_mode", 0)
-        shuffle = pref!!.getInt("telawat_shuffle_mode", 0)
+        repeat = pref.getInt("telawat_repeat_mode", 0)
+        shuffle = pref.getInt("telawat_shuffle_mode", 0)
     }
 
     private fun initViews() {
-        surahNamescreen = binding!!.suraNamescreen
-        seekBar = binding!!.seekbar
-        durationScreen = binding!!.durationScreen
-        progressScreen = binding!!.progressScreen
-        playPause = binding!!.playPause
-        nextBtn = binding!!.nextTrack
-        prevBtn = binding!!.previousTrack
-        forwardBtn = binding!!.fastForward
-        rewindBtn = binding!!.rewind
-        repeatBtn = binding!!.repeat
-        shuffleBtn = binding!!.shuffle
+        surahNamescreen = binding.suraNamescreen
+        seekBar = binding.seekbar
+        durationScreen = binding.durationScreen
+        progressScreen = binding.progressScreen
+        playPause = binding.playPause
+        nextBtn = binding.nextTrack
+        prevBtn = binding.previousTrack
+        forwardBtn = binding.fastForward
+        rewindBtn = binding.rewind
+        repeatBtn = binding.repeat
+        shuffleBtn = binding.shuffle
 
-        surahNamescreen!!.text = surahNames!![surahIndex]
-        binding!!.reciterNamescreen.text = reciterName
-        binding!!.versionNamescreen.text = version!!.getRewaya()
+        surahNamescreen.text = surahNames[surahIndex]
+        binding.reciterNamescreen.text = reciterName
+        binding.versionNamescreen.text = version.getRewaya()
 
         if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE)
-            repeatBtn!!.background =
+            repeatBtn.background =
                 ResourcesCompat.getDrawable(resources, R.drawable.rounded_dialog, theme)
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL)
-            shuffleBtn!!.background =
+            shuffleBtn.background =
                 ResourcesCompat.getDrawable(resources, R.drawable.rounded_dialog, theme)
     }
 
     private fun setListeners() {
-        repeatBtn!!.setOnClickListener {
+        repeatBtn.setOnClickListener {
             if (repeat == PlaybackStateCompat.REPEAT_MODE_NONE) {
                 repeat = PlaybackStateCompat.REPEAT_MODE_ONE
-                tc!!.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)
+                tc.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)
 
-                val editor: SharedPreferences.Editor = pref!!.edit()
+                val editor: SharedPreferences.Editor = pref.edit()
                 editor.putInt("telawat_repeat_mode", repeat)
                 editor.apply()
 
-                repeatBtn!!.background = ResourcesCompat.getDrawable(
+                repeatBtn.background = ResourcesCompat.getDrawable(
                     resources, R.drawable.rounded_dialog, theme
                 )
             }
             else if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE) {
                 repeat = PlaybackStateCompat.REPEAT_MODE_NONE
-                tc!!.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
+                tc.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
 
-                val editor: SharedPreferences.Editor = pref!!.edit()
+                val editor: SharedPreferences.Editor = pref.edit()
                 editor.putInt("telawat_repeat_mode", repeat)
                 editor.apply()
 
-                repeatBtn!!.background = ResourcesCompat.getDrawable(
+                repeatBtn.background = ResourcesCompat.getDrawable(
                     resources, R.drawable.ripple_circle, theme
                 )
             }
         }
 
-        shuffleBtn!!.setOnClickListener {
+        shuffleBtn.setOnClickListener {
             if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_ALL
-                tc!!.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
+                tc.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
 
-                val editor: SharedPreferences.Editor = pref!!.edit()
+                val editor: SharedPreferences.Editor = pref.edit()
                 editor.putInt("telawat_shuffle_mode", shuffle)
                 editor.apply()
 
-                shuffleBtn!!.background = ResourcesCompat.getDrawable(
+                shuffleBtn.background = ResourcesCompat.getDrawable(
                     resources, R.drawable.rounded_dialog, theme
                 )
             }
             else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_NONE
-                tc!!.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE)
+                tc.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE)
 
-                val editor: SharedPreferences.Editor = pref!!.edit()
+                val editor: SharedPreferences.Editor = pref.edit()
                 editor.putInt("telawat_shuffle_mode", shuffle)
                 editor.apply()
 
-                shuffleBtn!!.background = ResourcesCompat.getDrawable(
+                shuffleBtn.background = ResourcesCompat.getDrawable(
                     resources, R.drawable.ripple_circle, theme
                 )
             }
@@ -270,23 +270,23 @@ class TelawatClient : AppCompatActivity() {
         bundle.putSerializable("version", version)
 
         // Start Playback
-        tc!!.playFromMediaId(mediaId, bundle)
+        tc.playFromMediaId(mediaId, bundle)
     }
 
     private fun updateButton(playing: Boolean) {
-        if (playing) playPause!!.setImageDrawable(
+        if (playing) playPause.setImageDrawable(
             ResourcesCompat.getDrawable(resources, R.drawable.ic_player_pause, theme)
         )
-        else playPause!!.setImageDrawable(
+        else playPause.setImageDrawable(
             ResourcesCompat.getDrawable(resources, R.drawable.ic_player_play, theme)
         )
     }
 
     private fun enableControls() {
         // Attach a listeners to the buttons
-        seekBar!!.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+        seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                if (fromUser) tc!!.seekTo(progress.toLong())
+                if (fromUser) tc.seekTo(progress.toLong())
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -294,42 +294,42 @@ class TelawatClient : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
-        playPause!!.setOnClickListener {
+        playPause.setOnClickListener {
             // Since this is a play/pause button, you'll need to test the current state
             // and choose the action accordingly
-            val pbState: Int = controller!!.playbackState.state
+            val pbState: Int = controller.playbackState.state
 
-            if (pbState == PlaybackStateCompat.STATE_PLAYING) tc!!.pause()
-            else tc!!.play()
+            if (pbState == PlaybackStateCompat.STATE_PLAYING) tc.pause()
+            else tc.play()
         }
 
-        nextBtn!!.setOnClickListener { tc!!.skipToNext() }
-        prevBtn!!.setOnClickListener { tc!!.skipToPrevious() }
-        forwardBtn!!.setOnClickListener { tc!!.fastForward() }
-        rewindBtn!!.setOnClickListener { tc!!.rewind() }
+        nextBtn.setOnClickListener { tc.skipToNext() }
+        prevBtn.setOnClickListener { tc.skipToPrevious() }
+        forwardBtn.setOnClickListener { tc.fastForward() }
+        rewindBtn.setOnClickListener { tc.rewind() }
     }
 
     private fun disableControls() {
-        playPause!!.setOnClickListener(null)
-        nextBtn!!.setOnClickListener(null)
-        prevBtn!!.setOnClickListener(null)
-        forwardBtn!!.setOnClickListener(null)
-        rewindBtn!!.setOnClickListener(null)
-        seekBar!!.setOnSeekBarChangeListener(null)
+        playPause.setOnClickListener(null)
+        nextBtn.setOnClickListener(null)
+        prevBtn.setOnClickListener(null)
+        forwardBtn.setOnClickListener(null)
+        rewindBtn.setOnClickListener(null)
+        seekBar.setOnSeekBarChangeListener(null)
     }
 
     private fun buildTransportControls() {
         enableControls()
 
         controller = MediaControllerCompat.getMediaController(this@TelawatClient)
-        tc = controller!!.transportControls
+        tc = controller.transportControls
 
         // Display the initial state
-        updateMetadata(controller!!.metadata)
-        updatePbState(controller!!.playbackState)
+        updateMetadata(controller.metadata)
+        updatePbState(controller.playbackState)
 
         // Register a Callback to stay in sync
-        controller!!.registerCallback(controllerCallback)
+        controller.registerCallback(controllerCallback)
     }
 
     private var controllerCallback: MediaControllerCompat.Callback = object : MediaControllerCompat.Callback() {
@@ -345,27 +345,27 @@ class TelawatClient : AppCompatActivity() {
         }
 
         override fun onSessionDestroyed() {
-            mediaBrowser!!.disconnect()
+            mediaBrowser.disconnect()
         }
     }
 
     private fun updateMetadata(metadata: MediaMetadataCompat) {
         surahIndex = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
-        surahNamescreen!!.text = surahNames!![surahIndex]
+        surahNamescreen.text = surahNames[surahIndex]
 
         val duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION).toInt()
-        durationScreen!!.text = formatTime(duration)
-        seekBar!!.max = duration
+        durationScreen.text = formatTime(duration)
+        seekBar.max = duration
     }
 
     private fun updatePbState(state: PlaybackStateCompat) {
-        seekBar!!.progress = state.position.toInt()
-        progressScreen!!.text = formatTime(state.position.toInt())
+        seekBar.progress = state.position.toInt()
+        progressScreen.text = formatTime(state.position.toInt())
 
         when (state.state) {
             PlaybackStateCompat.STATE_PLAYING -> {
                 updateButton(true)
-                progressScreen!!.text = formatTime(state.position.toInt())
+                progressScreen.text = formatTime(state.position.toInt())
             } // idea: put buffering state animation
             else -> run { updateButton(false) }
         }
@@ -397,9 +397,4 @@ class TelawatClient : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-        mediaBrowser = null
-    }
 }

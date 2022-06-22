@@ -22,6 +22,57 @@ import java.util.*
 
 class Settings : AppCompatActivity() {
 
+    companion object {
+        private fun formatText(context: Context, nums: IntArray): String {
+            val locale: String = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(
+                    context.getString(R.string.language_key),
+                    context.getString(R.string.default_language)
+                )!!
+
+            val result: String
+            val map = HashMap<Char, Char>()
+            map['0'] = '٠'
+            map['1'] = '١'
+            map['2'] = '٢'
+            map['3'] = '٣'
+            map['4'] = '٤'
+            map['5'] = '٥'
+            map['6'] = '٦'
+            map['7'] = '٧'
+            map['8'] = '٨'
+            map['9'] = '٩'
+            map['A'] = 'ص'
+            map['P'] = 'م'
+
+            var h = nums[0]
+            var m = nums[1].toString()
+            var section = context.getString(R.string.at_morning)
+            if (h == 0) h = 12
+            else if (h >= 12) {
+                section = context.getString(R.string.at_evening)
+                if (h > 12) h -= 12
+            }
+
+            if (m.length == 1) {
+                if (m[0] == '0') m += '0'
+                else m = "0" + m[0]
+            }
+
+            result = "$h:$m $section"
+            val translated = StringBuilder()
+            for (element in result) {
+                if (map.containsKey(element)) {
+                    if (locale == "ar") translated.append(map[element])
+                    else translated.append(element)
+                }
+                else translated.append(element)
+            }
+
+            return translated.toString()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.myOnActivityCreated(this)
@@ -181,54 +232,4 @@ class Settings : AppCompatActivity() {
         }
     }
 
-    companion object {
-        private fun formatText(context: Context, nums: IntArray): String {
-            val locale: String = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(
-                    context.getString(R.string.language_key),
-                    context.getString(R.string.default_language)
-                )!!
-
-            val result: String
-            val map = HashMap<Char, Char>()
-            map['0'] = '٠'
-            map['1'] = '١'
-            map['2'] = '٢'
-            map['3'] = '٣'
-            map['4'] = '٤'
-            map['5'] = '٥'
-            map['6'] = '٦'
-            map['7'] = '٧'
-            map['8'] = '٨'
-            map['9'] = '٩'
-            map['A'] = 'ص'
-            map['P'] = 'م'
-
-            var h = nums[0]
-            var m = nums[1].toString()
-            var section = context.getString(R.string.at_morning)
-            if (h == 0) h = 12
-            else if (h >= 12) {
-                section = context.getString(R.string.at_evening)
-                if (h > 12) h -= 12
-            }
-
-            if (m.length == 1) {
-                if (m[0] == '0') m += '0'
-                else m = "0" + m[0]
-            }
-
-            result = "$h:$m $section"
-            val translated = StringBuilder()
-            for (element in result) {
-                if (map.containsKey(element)) {
-                    if (locale == "ar") translated.append(map[element])
-                    else translated.append(element)
-                }
-                else translated.append(element)
-            }
-
-            return translated.toString()
-        }
-    }
 }

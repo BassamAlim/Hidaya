@@ -32,20 +32,20 @@ import java.util.*
 class TelawatFragment : Fragment {
 
     private var binding: FragmentTelawatBinding? = null
-    private var pref: SharedPreferences? = null
-    private var gson: Gson? = null
-    private var rewayat: Array<String>? = null
+    private lateinit var pref: SharedPreferences
+    private var gson: Gson = Gson()
+    private lateinit var rewayat: Array<String>
     private var recycler: RecyclerView? = null
     private var adapter: TelawatAdapter? = null
-    private var telawat: List<TelawatDB>? = null
-    private var reciters: List<TelawatRecitersDB>? = null
-    private var downloaded: BooleanArray? = null
-    private var selectedRewayat: BooleanArray? = null
-    private var type: ListType? = null
+    private lateinit var telawat: List<TelawatDB>
+    private lateinit var reciters: List<TelawatRecitersDB>
+    private lateinit var downloaded: BooleanArray
+    private lateinit var selectedRewayat: BooleanArray
+    private lateinit var type: ListType
 
     constructor()
 
-    constructor(type: ListType?) {
+    constructor(type: ListType) {
         this.type = type
     }
 
@@ -55,7 +55,6 @@ class TelawatFragment : Fragment {
         binding = FragmentTelawatBinding.inflate(inflater, container, false)
 
         pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        gson = Gson()
         rewayat = resources.getStringArray(R.array.rewayat)
 
         reciters = data
@@ -94,7 +93,7 @@ class TelawatFragment : Fragment {
     private fun checkDownloaded() {
         cleanup()
 
-        downloaded = BooleanArray(telawat!!.size)
+        downloaded = BooleanArray(telawat.size)
 
         val prefix = "/Telawat/"
 
@@ -108,17 +107,17 @@ class TelawatFragment : Fragment {
             val name = element.name
             try {
                 val num = name.toInt()
-                downloaded!![num] = true
+                downloaded[num] = true
             } catch (ignored: NumberFormatException) {}
         }
     }
 
     private fun makeCards(): ArrayList<Reciter> {
         val cards: ArrayList<Reciter> = ArrayList<Reciter>()
-        for (i in reciters!!.indices) {
-            if (type == ListType.Downloaded && !downloaded!![i]) continue
+        for (i in reciters.indices) {
+            if (type == ListType.Downloaded && !downloaded[i]) continue
 
-            val reciter: TelawatRecitersDB = reciters!![i]
+            val reciter: TelawatRecitersDB = reciters[i]
             val versions: List<TelawatDB> = getVersions(reciter.reciter_id)
             val versionsList: MutableList<RecitationVersion> = ArrayList<RecitationVersion>()
 
@@ -149,8 +148,8 @@ class TelawatFragment : Fragment {
 
     private fun getVersions(id: Int): List<TelawatDB> {
         val result: MutableList<TelawatDB> = ArrayList<TelawatDB>()
-        for (i in telawat!!.indices) {
-            val telawa: TelawatDB = telawat!![i]
+        for (i in telawat.indices) {
+            val telawa: TelawatDB = telawat[i]
             if (telawa.getReciterId() == id) result.add(telawa)
         }
         return result
@@ -166,8 +165,8 @@ class TelawatFragment : Fragment {
 
     private fun filter() {
         selectedRewayat = getSelectedRewayat()
-        adapter!!.filter(null, selectedRewayat!!)
-        for (aBoolean in selectedRewayat!!) {
+        adapter!!.filter(null, selectedRewayat)
+        for (aBoolean in selectedRewayat) {
             if (!aBoolean) {
                 binding!!.filterIb.setImageDrawable(
                     AppCompatResources.getDrawable(requireContext(), R.drawable.ic_filtered)
@@ -192,18 +191,18 @@ class TelawatFragment : Fragment {
 
         binding!!.filterIb.setOnClickListener { v ->
             FilterDialog(
-                requireContext(), v, resources.getString(R.string.choose_rewaya), rewayat!!,
-                selectedRewayat!!, adapter!!, binding!!.filterIb, "selected_rewayat"
+                requireContext(), v, resources.getString(R.string.choose_rewaya), rewayat,
+                selectedRewayat, adapter!!, binding!!.filterIb, "selected_rewayat"
             )
         }
     }
 
     private fun getSelectedRewayat(): BooleanArray {
-        val defArr = BooleanArray(rewayat!!.size)
+        val defArr = BooleanArray(rewayat.size)
         Arrays.fill(defArr, true)
-        val defStr: String = gson!!.toJson(defArr)
+        val defStr: String = gson.toJson(defArr)
 
-        return gson!!.fromJson(pref!!.getString("selected_rewayat", defStr), BooleanArray::class.java)
+        return gson.fromJson(pref.getString("selected_rewayat", defStr), BooleanArray::class.java)
     }
 
     private fun cleanup() {
@@ -230,10 +229,11 @@ class TelawatFragment : Fragment {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         binding = null
         recycler!!.adapter = null
         adapter = null
     }
+
 }
