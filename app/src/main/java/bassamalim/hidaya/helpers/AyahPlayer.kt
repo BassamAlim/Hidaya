@@ -30,7 +30,7 @@ class AyahPlayer(private val context: Context) {
     private lateinit var players: Array<MediaPlayer?>
     private lateinit var wifiLock: WifiManager.WifiLock
     private lateinit var lastPlayed: Ayah
-    private lateinit var lastTracked: Ayah
+    private var lastTracked: Ayah? = null
     private var surahEnding = false
     private lateinit var viewType: String
     private var what: Any
@@ -222,8 +222,8 @@ class AyahPlayer(private val context: Context) {
      */
     private fun track(ayah: Ayah?) {
         if (lastTracked != null) {
-            lastTracked.getSS()!!.removeSpan(what)
-            lastTracked.getScreen()!!.text = lastTracked.getSS()
+            lastTracked!!.getSS()!!.removeSpan(what)
+            lastTracked!!.getScreen()!!.text = lastTracked!!.getSS()
         }
 
         if (viewType == "list")
@@ -323,8 +323,8 @@ class AyahPlayer(private val context: Context) {
         on = false
 
         if (lastTracked != null) {
-            lastTracked.getSS()!!.removeSpan(what)
-            lastTracked.getScreen()!!.text = lastTracked.getSS()
+            lastTracked!!.getSS()!!.removeSpan(what)
+            lastTracked!!.getScreen()!!.text = lastTracked!!.getSS()
         }
     }
 
@@ -352,18 +352,18 @@ class AyahPlayer(private val context: Context) {
         for (i in 0..1) players[i]!!.reset()
 
         if (lastTracked != null) {
-            lastTracked.getSS()!!.removeSpan(what)
-            lastTracked.getScreen()!!.text = lastTracked.getSS()
+            lastTracked!!.getSS()!!.removeSpan(what)
+            lastTracked!!.getScreen()!!.text = lastTracked!!.getSS()
         }
 
         getUri(lastPlayed, 1)
     }
 
-    fun getLastPlayed(): Ayah? {
+    fun getLastPlayed(): Ayah {
         return lastPlayed
     }
 
-    fun getState(): States? {
+    fun getState(): States {
         return state
     }
 
