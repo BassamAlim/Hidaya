@@ -13,7 +13,6 @@ import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.PrayersWidget
 import bassamalim.hidaya.other.Utils
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.util.*
 
@@ -22,14 +21,13 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     private lateinit var context: Context
     private lateinit var pref: SharedPreferences
     private var time = 0
-    private lateinit var now: Calendar
+    private var now = Calendar.getInstance()
 
     override fun onReceive(gContext: Context, intent: Intent) {
         Log.i(Global.TAG, "in daily update receiver")
 
         context = gContext
         pref = PreferenceManager.getDefaultSharedPreferences(context)
-        now = Calendar.getInstance()
 
         if (intent.action == "daily") {
             time = intent.getIntExtra("time", 0)
@@ -51,22 +49,20 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun locate() {
-        val fusedLocationClient: FusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(context)
-
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            fusedLocationClient.lastLocation.addOnSuccessListener {
-                    location: Location -> update(location)
+            LocationServices.getFusedLocationProviderClient(context)
+                .lastLocation.addOnSuccessListener {
+                    location: Location? -> update(location)
             }
         }
     }
 
-    private fun update(location: Location) {
+    private fun update(location: Location?) {
         var loc: Location? = location
         if (loc == null) {
             loc = Keeper(context).retrieveLocation()
