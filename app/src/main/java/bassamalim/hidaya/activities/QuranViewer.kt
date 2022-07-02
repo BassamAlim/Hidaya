@@ -63,7 +63,7 @@ class QuranViewer : SwipeActivity() {
     private lateinit var target: TextView
     private var scrolled = false
     private var selected: Ayah? = null
-    private var ayahPlayer: AyahPlayer? = null
+    private lateinit var ayahPlayer: AyahPlayer
     private lateinit var ayatDB: List<AyatDB?>
     private lateinit var theme: String
     private lateinit var language: String
@@ -80,15 +80,15 @@ class QuranViewer : SwipeActivity() {
         checkFirstTime()
 
         action = intent.action!!
-        action(intent)
+         action(intent)
 
         if (viewType == "list") setupRecyclers()
+
+        setupPlayer()
 
         buildPage(currentPage)
 
         setListeners()
-
-        setupPlayer()
     }
 
     private fun themeify() {
@@ -129,7 +129,7 @@ class QuranViewer : SwipeActivity() {
         when (action) {
             "by_surah" -> {
                 surahIndex = intent.getIntExtra("surah_id", 0)
-                setCurrentPage(getPage(surahIndex))
+                currentPage = getPage(surahIndex)
             }
             "by_page" -> setCurrentPage(intent.getIntExtra("page", 0))
             "random" -> setCurrentPage(Random().nextInt(Global.QURAN_PAGES - 1))
@@ -162,7 +162,7 @@ class QuranViewer : SwipeActivity() {
 
     private fun setCurrentPage(num: Int) {
         currentPage = num
-        ayahPlayer?.setCurrentPage(num)
+        ayahPlayer.setCurrentPage(num)
     }
 
     private fun buildPage(pageNumber: Int) {
@@ -240,7 +240,7 @@ class QuranViewer : SwipeActivity() {
             allAyahs.add(list[i])
         }
 
-        ayahPlayer?.setAllAyahsSize(allAyahs.size)
+        ayahPlayer.setAllAyahsSize(allAyahs.size)
 
         screen.text = ss
 
@@ -275,7 +275,7 @@ class QuranViewer : SwipeActivity() {
             allAyahs.add(list[i])
         }
 
-        ayahPlayer?.setAllAyahsSize(allAyahs.size)
+        ayahPlayer.setAllAyahsSize(allAyahs.size)
 
         arr = ArrayList<Ayah>()
     }
@@ -364,32 +364,32 @@ class QuranViewer : SwipeActivity() {
         }
 
         binding.play.setOnClickListener {
-            if (ayahPlayer!!.getState() == States.Playing) {
-                if (ayahPlayer!!.getLastPlayed() != null) selected = ayahPlayer!!.getLastPlayed()
+            if (ayahPlayer.getState() == States.Playing) {
+                if (ayahPlayer.getLastPlayed() != null) selected = ayahPlayer.getLastPlayed()
 
-                ayahPlayer!!.pause()
+                ayahPlayer.pause()
                 updateUi(States.Paused)
             }
-            else if (ayahPlayer!!.getState() == States.Paused) {
-                if (selected == null) ayahPlayer!!.resume()
+            else if (ayahPlayer.getState() == States.Paused) {
+                if (selected == null) ayahPlayer.resume()
                 else {
-                    ayahPlayer!!.setChosenSurah(selected!!.getSurahNum())
-                    ayahPlayer!!.requestPlay(selected!!)
+                    ayahPlayer.setChosenSurah(selected!!.getSurahNum())
+                    ayahPlayer.requestPlay(selected!!)
                 }
                 updateUi(States.Playing)
             }
             else {
                 if (selected == null) selected = allAyahs[0]
 
-                ayahPlayer!!.setChosenSurah(selected!!.getSurahNum())
-                ayahPlayer!!.requestPlay(selected!!)
+                ayahPlayer.setChosenSurah(selected!!.getSurahNum())
+                ayahPlayer.requestPlay(selected!!)
 
                 updateUi(States.Playing)
             }
             selected = null
         }
-        binding.prevAyah.setOnClickListener { ayahPlayer!!.prevAyah()}
-        binding.nextAyah.setOnClickListener { ayahPlayer!!.nextAyah()}
+        binding.prevAyah.setOnClickListener { ayahPlayer.prevAyah() }
+        binding.nextAyah.setOnClickListener { ayahPlayer.nextAyah() }
 
         binding.recitationSettings.setOnClickListener {
             val intent = Intent(this, QuranSettingsDialog::class.java)
@@ -406,9 +406,7 @@ class QuranViewer : SwipeActivity() {
     }
 
     private val settingsDialog: ActivityResultLauncher<Intent> =
-        registerForActivityResult(
-            StartActivityForResult()
-        ) { result: ActivityResult ->
+        registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent = result.data!!
                 viewType = data.getStringExtra("view_type")!!
@@ -428,15 +426,11 @@ class QuranViewer : SwipeActivity() {
                 else flipper.displayedChild = 0
 
                 buildPage(currentPage)
-                ayahPlayer?.setViewType(viewType)
+                ayahPlayer.setViewType(viewType)
             }
         }
 
     private fun setupPlayer() {
-        ayahPlayer = AyahPlayer(this)
-        ayahPlayer!!.setCurrentPage(currentPage)
-        ayahPlayer!!.setViewType(viewType)
-
         val uiListener: Coordinator = object : Coordinator {
             override fun onUiUpdate(state: States) {
                 updateUi(state)
@@ -450,9 +444,7 @@ class QuranViewer : SwipeActivity() {
                 next()
             }
         }
-        ayahPlayer!!.setCoordinator(uiListener)
-
-        ayahPlayer!!.setAllAyahsSize(allAyahs.size)
+        ayahPlayer = AyahPlayer(this, currentPage, viewType, uiListener, allAyahs.size)
     }
 
     private fun findMainSurah(surahs: List<List<Ayah>?>): Int {

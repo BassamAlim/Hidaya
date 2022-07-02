@@ -21,7 +21,9 @@ import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.other.Global
 import java.util.*
 
-class AyahPlayer(private val context: Context) {
+class AyahPlayer(
+    private val context: Context, private var currentPage: Int, private var viewType: String,
+    private var coordinator: Coordinator, private var allAyahsSize: Int) {
 
     private var db: AppDatabase = Room.databaseBuilder(
         context.applicationContext, AppDatabase::class.java, "HidayaDB")
@@ -29,32 +31,24 @@ class AyahPlayer(private val context: Context) {
     private var pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private lateinit var players: Array<MediaPlayer?>
     private lateinit var wifiLock: WifiManager.WifiLock
-    private lateinit var lastPlayed: Ayah
+    private var lastPlayed: Ayah? = null
     private var lastTracked: Ayah? = null
     private var surahEnding = false
-    private lateinit var viewType: String
     private var what: Any
-    private var allAyahsSize = 0
-    private var currentPage = 0
     private var chosenSurah = 0
-    private lateinit var state: States
+    private var state: States = States.Stopped
     private var lastPlayer = 0
     private var paused = false
     private var repeated = 1
     private var on = false
 
-    private lateinit var coordinator: Coordinator
     interface Coordinator {
         fun onUiUpdate(state: States)
         fun getAyah(index: Int): Ayah
         fun nextPage()
     }
-    fun setCoordinator(listener: Coordinator) {
-        coordinator = listener
-    }
 
     init {
-
         val theme: String? = pref.getString(context.getString(R.string.theme_key), context.getString(R.string.default_theme))
 
         what =
@@ -117,17 +111,17 @@ class AyahPlayer(private val context: Context) {
                 if (players[n(i)]!!.isPlaying)
                     players[n(i)]!!.setNextMediaPlayer(players[i])
                 else if (state == States.Paused) {
-                    if (allAyahsSize > lastPlayed.getIndex())
-                        lastPlayed = coordinator.getAyah(lastPlayed.getIndex())
+                    if (allAyahsSize > lastPlayed!!.getIndex())
+                        lastPlayed = coordinator.getAyah(lastPlayed!!.getIndex())
                 }
                 else {
                     players[i]!!.start()
                     state = States.Playing
                     track(lastPlayed)
-                    if (allAyahsSize > lastPlayed.getIndex() + 1)
+                    if (allAyahsSize > lastPlayed!!.getIndex() + 1)
                         preparePlayer(
                             players[n(i)],
-                            coordinator.getAyah(lastPlayed.getIndex() + 1))
+                            coordinator.getAyah(lastPlayed!!.getIndex() + 1))
                 }
             }
 
@@ -150,9 +144,9 @@ class AyahPlayer(private val context: Context) {
                     repeated = 1
                     if (paused) {
                         paused = false
-                        if (allAyahsSize > lastPlayed.getIndex()) {
+                        if (allAyahsSize > lastPlayed!!.getIndex()) {
                             val newAyah: Ayah =
-                                coordinator.getAyah(lastPlayed.getIndex() + 1)
+                                coordinator.getAyah(lastPlayed!!.getIndex() + 1)
                             track(newAyah)
                             if (allAyahsSize > newAyah.getIndex())
                                 preparePlayer(
@@ -162,8 +156,8 @@ class AyahPlayer(private val context: Context) {
                         }
                         else ended()
                     }
-                    else if (allAyahsSize > lastPlayed.getIndex() + 1) {
-                        val newAyah: Ayah = coordinator.getAyah(lastPlayed.getIndex() + 1)
+                    else if (allAyahsSize > lastPlayed!!.getIndex() + 1) {
+                        val newAyah: Ayah = coordinator.getAyah(lastPlayed!!.getIndex() + 1)
                         track(newAyah)
                         if (allAyahsSize > newAyah.getIndex() + 1)
                             preparePlayer(
@@ -242,9 +236,9 @@ class AyahPlayer(private val context: Context) {
      * prepare the next ayah and reset the other player
      */
     fun nextAyah() {
-        if (state != States.Playing || lastPlayed.getIndex() + 2 > allAyahsSize) return
+        if (state != States.Playing || lastPlayed!!.getIndex() + 2 > allAyahsSize) return
 
-        lastPlayed = coordinator.getAyah(lastPlayed.getIndex() + 1)
+        lastPlayed = coordinator.getAyah(lastPlayed!!.getIndex() + 1)
         track(lastPlayed)
 
         for (i in 0..1) {
@@ -261,9 +255,9 @@ class AyahPlayer(private val context: Context) {
      * prepare the next ayah and reset the other player
      */
     fun prevAyah() {
-        if (state != States.Playing || lastPlayed.getIndex() - 1 < 0) return
+        if (state != States.Playing || lastPlayed!!.getIndex() - 1 < 0) return
 
-        lastPlayed = coordinator.getAyah(lastPlayed.getIndex() - 1)
+        lastPlayed = coordinator.getAyah(lastPlayed!!.getIndex() - 1)
         track(lastPlayed)
 
         for (i in 0..1) {
@@ -305,7 +299,7 @@ class AyahPlayer(private val context: Context) {
         val quranPages = 604
         if (pref.getBoolean(context.getString(R.string.stop_on_page_key), false))
             stopPlaying()
-        else if (currentPage < quranPages && lastPlayed.getIndex() + 1 == allAyahsSize) {
+        else if (currentPage < quranPages && lastPlayed!!.getIndex() + 1 == allAyahsSize) {
             coordinator.nextPage()
             requestPlay(coordinator.getAyah(0))
         }
@@ -359,7 +353,7 @@ class AyahPlayer(private val context: Context) {
         getUri(lastPlayed, 1)
     }
 
-    fun getLastPlayed(): Ayah {
+    fun getLastPlayed(): Ayah? {
         return lastPlayed
     }
 

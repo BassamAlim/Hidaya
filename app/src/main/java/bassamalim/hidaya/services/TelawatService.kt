@@ -718,12 +718,8 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     override fun onUnbind(intent: Intent?): Boolean {
         Log.d(Global.TAG, "In onUnbind of TelawatService")
         saveForLater(player.currentPosition)
-        return super.onUnbind(intent)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         cleanUp()
+        return super.onUnbind(intent)
     }
 
 }

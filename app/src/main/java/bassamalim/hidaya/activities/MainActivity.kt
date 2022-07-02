@@ -114,7 +114,8 @@ class MainActivity : AppCompatActivity() {
             times = Utils.getTimes(this, location)
             //times = test();
             Alarms(this, times!!)
-        } else {
+        }
+        else {
             Toast.makeText(
                 this, getString(R.string.give_location_permission_toast),
                 Toast.LENGTH_SHORT

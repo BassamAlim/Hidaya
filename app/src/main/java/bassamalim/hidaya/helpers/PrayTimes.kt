@@ -1,8 +1,10 @@
 package bassamalim.hidaya.helpers
 
 import android.content.Context
+import android.util.Log
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
+import bassamalim.hidaya.other.Global
 import java.lang.StringBuilder
 import java.util.*
 import kotlin.math.*
@@ -282,7 +284,9 @@ class PrayTimes(private val context: Context) {
         val year = date[Calendar.YEAR]
         val month = date[Calendar.MONTH]
         val day = date[Calendar.DATE]
-        return formatTimes(getDatePrayerTimes(year, month + 1, day, latitude, longitude, tZone))
+        return formatTimes(
+            getDatePrayerTimes(year, month + 1, day, latitude, longitude, tZone)
+        )
     }
 
     fun getTomorrowFajr(
