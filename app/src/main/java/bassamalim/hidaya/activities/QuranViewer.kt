@@ -80,7 +80,7 @@ class QuranViewer : SwipeActivity() {
         checkFirstTime()
 
         action = intent.action!!
-         action(intent)
+        action(intent)
 
         if (viewType == "list") setupRecyclers()
 
@@ -131,8 +131,8 @@ class QuranViewer : SwipeActivity() {
                 surahIndex = intent.getIntExtra("surah_id", 0)
                 currentPage = getPage(surahIndex)
             }
-            "by_page" -> setCurrentPage(intent.getIntExtra("page", 0))
-            "random" -> setCurrentPage(Random().nextInt(Global.QURAN_PAGES - 1))
+            "by_page" -> currentPage = intent.getIntExtra("page", 0)
+            "random" -> currentPage = Random().nextInt(Global.QURAN_PAGES - 1)
         }
     }
 
