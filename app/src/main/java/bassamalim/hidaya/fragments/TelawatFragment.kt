@@ -41,7 +41,7 @@ class TelawatFragment : Fragment {
     private lateinit var reciters: List<TelawatRecitersDB>
     private lateinit var downloaded: BooleanArray
     private lateinit var selectedRewayat: BooleanArray
-    private lateinit var type: ListType
+    private var type: ListType? = ListType.All
 
     constructor()
 

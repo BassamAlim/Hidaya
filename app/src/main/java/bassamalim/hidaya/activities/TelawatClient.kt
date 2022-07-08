@@ -90,7 +90,7 @@ class TelawatClient : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        Log.d(Global.TAG, "In OnNewIntent")
+        Log.i(Global.TAG, "In OnNewIntent")
 
         data
 
@@ -108,6 +108,7 @@ class TelawatClient : AppCompatActivity() {
     }
 
     override fun onStop() {
+        Log.i(Global.TAG, "in onStop of TelawatClient")
         super.onStop()
         if (MediaControllerCompat.getMediaController(this@TelawatClient) != null) {
             MediaControllerCompat.getMediaController(this@TelawatClient)
@@ -395,6 +396,12 @@ class TelawatClient : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    override fun onDestroy() {
+        Log.i(Global.TAG, "in onDestroy of TelawatClient")
+        super.onDestroy()
+        mediaBrowser.disconnect()
     }
 
 }

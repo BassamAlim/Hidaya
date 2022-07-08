@@ -83,7 +83,15 @@ class Settings : AppCompatActivity() {
             .replace(R.id.settings, SettingsFragment("normal")).commit()
     }
 
-    class SettingsFragment(private val action: String) : PreferenceFragmentCompat() {
+    class SettingsFragment : PreferenceFragmentCompat {
+
+        private var action = "normal"
+
+        constructor()
+
+        constructor(action: String) {
+            this.action = action
+        }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.preferences, rootKey)

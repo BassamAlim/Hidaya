@@ -28,7 +28,7 @@ class TelawatSuarFragment : Fragment {
     private var adapter: TelawatSuarAdapter? = null
     private var reciterId = 0
     private var versionId = 0
-    private lateinit var type: ListType
+    private var type: ListType? = ListType.All
     private lateinit var availableSurahs: String
     private lateinit var surahNames: ArrayList<String>
     private lateinit var searchNames: Array<String?>

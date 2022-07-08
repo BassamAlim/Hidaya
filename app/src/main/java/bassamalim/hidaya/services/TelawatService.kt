@@ -98,6 +98,8 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         initSession()
 
+        initPlayer()
+
         setupActions()
 
         initMediaSessionMetadata()
@@ -110,12 +112,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(givenMediaId: String, extras: Bundle) {
-            Log.d(Global.TAG, "In onPlayFromMediaId of TelawatService")
+            Log.i(Global.TAG, "In onPlayFromMediaId of TelawatService")
 
             playType = extras.getString("play_type")!!
             if (givenMediaId != mediaId || playType == "continue") {
-                Log.d(Global.TAG, "Old mediaID: $mediaId, New mediaId: $givenMediaId")
-
                 mediaId = givenMediaId
 
                 mediaSession.setSessionActivity(getContentIntent())
@@ -129,7 +129,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 if (playType == "continue") continueFrom = pref.getInt("last_telawa_progress", 0)
 
                 buildNotification()
-                initPlayer()
+                updateMetadata(false)
+
+                wifiLock.acquire()
 
                 if (controller.playbackState.state == PlaybackStateCompat.STATE_NONE) onPlay()
                 else playOther()
@@ -137,7 +139,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         }
 
         override fun onPlay() {
-            Log.d(Global.TAG, "In onPlay of TelawatService")
+            Log.i(Global.TAG, "In onPlay of TelawatService")
 
             // Request audio focus for playback, this registers the afChangeListener
             val result: Int = am.requestAudioFocus(audioFocusRequest)
@@ -148,33 +150,51 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 // Set the session active  (and update metadata and state)
                 mediaSession.isActive = true
 
+                // Register Receiver
+                registerReceiver(receiver, intentFilter)
+                // Put the service in the foreground, post notification
+                startForeground(id, notification)
+
                 // start the player (custom call)
                 if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED
-                    || controller.playbackState.state == PlaybackStateCompat.STATE_STOPPED)
+                    || controller.playbackState.state == PlaybackStateCompat.STATE_STOPPED) {
                     player.start()
+                    refresh()
+                }
                 else
                     startPlaying(surahIndex)
 
                 updatePbState(PlaybackStateCompat.STATE_PLAYING)
                 updateNotification(true)
-                refresh()
-
-                // Register Receiver
-                registerReceiver(receiver, intentFilter)
-                // Put the service in the foreground, post notification
-                startForeground(id, notification)
             }
         }
 
+        override fun onPause() {
+            Log.i(Global.TAG, "In onPause of TelawatService")
+
+            // Update metadata and state
+            updatePbState(PlaybackStateCompat.STATE_PAUSED)
+            updateNotification(false)
+
+            saveForLater(player.currentPosition)
+
+            handler.removeCallbacks(runnable)
+            // pause the player
+            player.pause()
+
+            // Take the service out of the foreground, retain the notification
+            stopForeground(false)
+        }
+
         override fun onStop() {
-            Log.d(Global.TAG, "In onStop of TelawatService")
+            Log.i(Global.TAG, "In onStop of TelawatService")
 
             // Abandon audio focus
             am.abandonAudioFocusRequest(audioFocusRequest)
-            cleanUp()
 
-            unregisterReceiver(receiver)
             handler.removeCallbacks(runnable)
+            wifiLock.release()
+            unregisterReceiver(receiver)
             saveForLater(player.currentPosition)
             // stop the player (custom call)
             player.stop()
@@ -185,23 +205,6 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             updatePbState(PlaybackStateCompat.STATE_STOPPED)
 
             // Take the service out of the foreground
-            stopForeground(false)
-        }
-
-        override fun onPause() {
-            Log.d(Global.TAG, "In onPause of TelawatService")
-
-            // Update metadata and state
-            updatePbState(PlaybackStateCompat.STATE_PAUSED)
-            updateNotification(false)
-
-            saveForLater(player.currentPosition)
-
-            // pause the player
-            player.pause()
-            handler.removeCallbacks(runnable)
-
-            // Take the service out of the foreground, retain the notification
             stopForeground(false)
         }
 
@@ -283,7 +286,8 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             do {
                 temp--
             } while (temp >= 0 && !version.getSuras().contains("," + (temp + 1) + ","))
-        } else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+        }
+        else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
                 temp = random.nextInt(114)
@@ -314,27 +318,27 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
-                    Log.d(Global.TAG, "In ACTION_BECOMING_NOISY")
+                    Log.i(Global.TAG, "In ACTION_BECOMING_NOISY")
                     callback.onPause()
                 }
                 ACTION_PLAY -> {
-                    Log.d(Global.TAG, "In ACTION_PLAY")
+                    Log.i(Global.TAG, "In ACTION_PLAY")
                     callback.onPlay()
                 }
                 ACTION_PAUSE -> {
-                    Log.d(Global.TAG, "In ACTION_PAUSE")
+                    Log.i(Global.TAG, "In ACTION_PAUSE")
                     callback.onPause()
                 }
                 ACTION_NEXT -> {
-                    Log.d(Global.TAG, "In ACTION_NEXT")
+                    Log.i(Global.TAG, "In ACTION_NEXT")
                     skipToNext()
                 }
                 ACTION_PREV -> {
-                    Log.d(Global.TAG, "In ACTION_PREV")
+                    Log.i(Global.TAG, "In ACTION_PREV")
                     skipToPrevious()
                 }
                 ACTION_STOP -> {
-                    Log.d(Global.TAG, "In ACTION_STOP")
+                    Log.i(Global.TAG, "In ACTION_STOP")
                     callback.onStop()
                 }
             }
@@ -562,7 +566,6 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
             .createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock")
-        wifiLock.acquire()
 
         player.setAudioAttributes(
             AudioAttributes.Builder()
@@ -588,6 +591,8 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             updateMetadata(true) // For the duration
             updatePbState(PlaybackStateCompat.STATE_PLAYING)
             updateNotification(true)
+
+            refresh()
         }
         player.setOnCompletionListener { skipToNext() }
         player.setOnErrorListener { _, what, _ ->
@@ -710,15 +715,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         editor.apply()
     }
 
-    private fun cleanUp() {
-        wifiLock.release()
-        player.release()
-    }
-
     override fun onUnbind(intent: Intent?): Boolean {
-        Log.d(Global.TAG, "In onUnbind of TelawatService")
+        Log.i(Global.TAG, "In onUnbind of TelawatService")
         saveForLater(player.currentPosition)
-        cleanUp()
+        wifiLock.release()
         return super.onUnbind(intent)
     }
 
