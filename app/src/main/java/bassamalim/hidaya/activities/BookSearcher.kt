@@ -16,8 +16,11 @@ import androidx.appcompat.widget.SearchView
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.adapters.BookSearcherAdapter
+import bassamalim.hidaya.database.AppDatabase
+import bassamalim.hidaya.database.dbs.BooksDB
 import bassamalim.hidaya.databinding.ActivityBookSearcherBinding
 import bassamalim.hidaya.dialogs.FilterDialog
 import bassamalim.hidaya.models.Book
@@ -33,21 +36,27 @@ class BookSearcher : AppCompatActivity() {
 
     private lateinit var binding: ActivityBookSearcherBinding
     private lateinit var pref: SharedPreferences
+    private lateinit var db: AppDatabase
     private lateinit var gson: Gson
-    private lateinit var bookTitles: Array<String>
+    private lateinit var books: List<BooksDB>
     private lateinit var matches: MutableList<BookSearcherMatch>
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchView: SearchView
     private var adapter: BookSearcherAdapter? = null
     private var maxMatches = 0
     private lateinit var selectedBooks: BooleanArray
+    private lateinit var language: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        Utils.onActivityCreateSetTheme(this)
+        language = Utils.onActivityCreateSetLocale(this)
         binding = ActivityBookSearcherBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
+
+        db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "HidayaDB")
+            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
 
         init()
 
@@ -63,7 +72,7 @@ class BookSearcher : AppCompatActivity() {
 
         gson = Gson()
 
-        bookTitles = resources.getStringArray(R.array.books_titles)
+        books = db.booksDao().getAll()
 
         searchView = binding.searchView
 
@@ -84,6 +93,12 @@ class BookSearcher : AppCompatActivity() {
             }
         })
 
+        val bookTitles: Array<String> = emptyArray()
+        for (i in books.indices) {
+            bookTitles[i] =
+                if (language == "en") books[i].titleEn
+                else books[i].title
+        }
         binding.filterIb.setOnClickListener { v ->
             FilterDialog(
                 this, v, getString(R.string.choose_books), bookTitles, selectedBooks,
@@ -140,7 +155,7 @@ class BookSearcher : AppCompatActivity() {
 
         if (!dir.exists()) return
 
-        for (i in bookTitles.indices) {
+        for (i in books.indices) {
             if (!selectedBooks[i] || !downloaded(i)) continue
 
             val jsonStr = Utils.getJsonFromDownloads(
@@ -206,7 +221,7 @@ class BookSearcher : AppCompatActivity() {
     }
 
     private fun getSelectedBooks(): BooleanArray {
-        val defArr = BooleanArray(bookTitles.size)
+        val defArr = BooleanArray(books.size)
         Arrays.fill(defArr, true)
         val defStr: String = gson.toJson(defArr)
         return gson.fromJson(

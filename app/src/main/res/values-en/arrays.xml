@@ -146,16 +146,6 @@
         <item>December (12)</item>
     </string-array>
 
-    <string-array name="books_titles">
-        <item>Saheeh al-Bokhari</item>
-        <item>Saheeh Moslim</item>
-    </string-array>
-
-    <string-array name="books_authors">
-        <item>imam al-Bokhari</item>
-        <item>imam Moslim</item>
-    </string-array>
-
     <string-array name="rewayat">
         <item>hafs from Aasim</item>
         <item>Qaloon from Nafi\'</item>

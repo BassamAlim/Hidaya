@@ -59,14 +59,14 @@ class AthkarViewer : AppCompatActivity() {
         return db.thikrsDao().getThikrs(id)
     }
 
-    private fun makeCards(thikrs: List<ThikrsDB>): ArrayList<Thikr> {
-        val cards: ArrayList<Thikr> = ArrayList()
+    private fun getItems(thikrs: List<ThikrsDB>): ArrayList<Thikr> {
+        val items: ArrayList<Thikr> = ArrayList()
         for (i in thikrs.indices) {
             val t: ThikrsDB = thikrs[i]
 
             if (language == "en" && (t.getTextEn().isEmpty())) continue
 
-            if (language == "en") cards.add(
+            if (language == "en") items.add(
                 Thikr(
                     t.getThikrId(), t.getTitleEn(), t.getTextEn(), t.getTextEnTranslation(),
                     t.getFadlEn(), t.getReferenceEn(), t.getRepetitionEn()
@@ -74,7 +74,7 @@ class AthkarViewer : AppCompatActivity() {
                     InfoDialog(getString(R.string.reference), t.getReferenceEn())
                         .show(supportFragmentManager, InfoDialog.TAG)
                 }
-            ) else cards.add(
+            ) else items.add(
                 Thikr(t.getThikrId(), t.getTitle(), t.getText(),
                     t.getTextEnTranslation(), t.getFadl(), t.getReference(),
                     t.getRepetition()
@@ -86,14 +86,14 @@ class AthkarViewer : AppCompatActivity() {
                 }
             )
         }
-        return cards
+        return items
     }
 
     private fun setupRecycler(id: Int) {
         recycler = binding.recycler
         val layoutManager = LinearLayoutManager(this)
         recycler.layoutManager = layoutManager
-        adapter = AthkarViewerAdapter(this, makeCards(getThikrs(id)), language)
+        adapter = AthkarViewerAdapter(this, getItems(getThikrs(id)), language)
         recycler.adapter = adapter
     }
 

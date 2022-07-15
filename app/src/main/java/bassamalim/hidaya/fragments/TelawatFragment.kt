@@ -49,20 +49,21 @@ class TelawatFragment : Fragment {
         this.type = type
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        cleanup()
+
+        pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        rewayat = resources.getStringArray(R.array.rewayat)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentTelawatBinding.inflate(inflater, container, false)
 
-        pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        rewayat = resources.getStringArray(R.array.rewayat)
-
-        reciters = data
-
-        if (type == ListType.Downloaded) checkDownloaded()
-
-        setupRecycler()
-        filter()
+        initRecycler()
 
         setListeners()
 
@@ -73,8 +74,10 @@ class TelawatFragment : Fragment {
         super.setMenuVisibility(menuVisible)
 
         if (menuVisible) {
-            adapter = TelawatAdapter(requireContext(), makeCards())
-            recycler!!.adapter = adapter
+            reciters = data
+            if (type == ListType.Downloaded) checkDownloaded()
+            setAdapter()
+            filter()
         }
     }
 
@@ -91,8 +94,6 @@ class TelawatFragment : Fragment {
         }
 
     private fun checkDownloaded() {
-        cleanup()
-
         downloaded = BooleanArray(telawat.size)
 
         val prefix = "/Telawat/"
@@ -104,16 +105,15 @@ class TelawatFragment : Fragment {
         if (files == null || files.isEmpty()) return
 
         for (element in files) {
-            val name = element.name
             try {
-                val num = name.toInt()
+                val num = element.name.toInt()
                 downloaded[num] = true
             } catch (ignored: NumberFormatException) {}
         }
     }
 
-    private fun makeCards(): ArrayList<Reciter> {
-        val cards: ArrayList<Reciter> = ArrayList<Reciter>()
+    private fun getItems(): ArrayList<Reciter> {
+        val items: ArrayList<Reciter> = ArrayList<Reciter>()
         for (i in reciters.indices) {
             if (type == ListType.Downloaded && !downloaded[i]) continue
 
@@ -139,11 +139,11 @@ class TelawatFragment : Fragment {
                     )
                 )
             }
-            cards.add(
+            items.add(
                 Reciter(reciter.reciter_id, reciter.reciter_name!!, reciter.favorite, versionsList)
             )
         }
-        return cards
+        return items
     }
 
     private fun getVersions(id: Int): List<TelawatDB> {
@@ -155,11 +155,14 @@ class TelawatFragment : Fragment {
         return result
     }
 
-    private fun setupRecycler() {
+    private fun initRecycler() {
         recycler = binding!!.recycler
         val layoutManager = LinearLayoutManager(context)
         recycler!!.layoutManager = layoutManager
-        adapter = TelawatAdapter(requireContext(), makeCards())
+    }
+
+    private fun setAdapter() {
+        adapter = TelawatAdapter(requireContext(), getItems())
         recycler!!.adapter = adapter
     }
 
@@ -210,21 +213,16 @@ class TelawatFragment : Fragment {
         val file = File(path)
 
         val rFiles = file.listFiles() ?: return
-
         for (rFile in rFiles) {
-            val rfName = rFile.name
             try {
-                rfName.toInt()
-                var vFiles: Array<out File>? = rFile.listFiles() ?: continue
+                rFile.name.toInt()
 
-                for (vFile in vFiles!!) {
+                val vFiles: Array<out File> = rFile.listFiles() ?: continue
+                for (vFile in vFiles) {
                     if (vFile.listFiles()!!.isEmpty()) vFile.delete()
                 }
 
-                vFiles = rFile.listFiles()
-                if (vFiles == null) continue
-
-                if (vFiles.isEmpty()) rFile.delete()
+                if (rFile.listFiles()!!.isEmpty()) rFile.delete()
             } catch (ignored: NumberFormatException) {}
         }
     }

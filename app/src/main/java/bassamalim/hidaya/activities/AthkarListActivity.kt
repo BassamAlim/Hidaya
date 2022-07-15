@@ -71,7 +71,7 @@ class AthkarListActivity : AppCompatActivity() {
             }
         }
 
-    private fun makeButtons(athkar: List<AthkarDB>): List<AthkarItem> {
+    private fun getItems(athkar: List<AthkarDB>): List<AthkarItem> {
         val buttons: MutableList<AthkarItem> = ArrayList()
         val favs: List<Int> = db.athkarDao().getFavs()
 
@@ -112,7 +112,7 @@ class AthkarListActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recycler)
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
-        adapter = AthkarListAdapter(this, makeButtons(data))
+        adapter = AthkarListAdapter(this, getItems(data))
         recyclerView.adapter = adapter
     }
 

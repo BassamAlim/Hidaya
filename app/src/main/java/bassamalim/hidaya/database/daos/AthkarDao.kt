@@ -27,8 +27,8 @@ interface AthkarDao {
     @Query("SELECT athkar_name_en FROM athkar WHERE athkar_id = :id")
     fun getNameEn(id: Int): String
 
-    @Query("UPDATE athkar SET favorite = :val WHERE athkar_id = :id")
-    fun setFav(id: Int, `val`: Int)
+    @Query("UPDATE athkar SET favorite = :value WHERE athkar_id = :id")
+    fun setFav(id: Int, value: Int)
 
     @Query("SELECT favorite FROM athkar")
     fun getFavs(): List<Int>

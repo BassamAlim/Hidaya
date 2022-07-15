@@ -164,7 +164,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 else
                     startPlaying(surahIndex)
 
-                updatePbState(PlaybackStateCompat.STATE_PLAYING)
+                updatePbState(
+                    PlaybackStateCompat.STATE_PLAYING, controller.playbackState.bufferedPosition
+                )
                 updateNotification(true)
             }
         }
@@ -173,7 +175,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             Log.i(Global.TAG, "In onPause of TelawatService")
 
             // Update metadata and state
-            updatePbState(PlaybackStateCompat.STATE_PAUSED)
+            updatePbState(
+                PlaybackStateCompat.STATE_PAUSED, controller.playbackState.bufferedPosition
+            )
             updateNotification(false)
 
             saveForLater(player.currentPosition)
@@ -202,7 +206,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             stopSelf()
             // Set the session inactive  (and update metadata and state)
             mediaSession.isActive = false
-            updatePbState(PlaybackStateCompat.STATE_STOPPED)
+            updatePbState(
+                PlaybackStateCompat.STATE_STOPPED, controller.playbackState.bufferedPosition
+            )
 
             // Take the service out of the foreground
             stopForeground(false)
@@ -211,13 +217,13 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         override fun onFastForward() {
             super.onFastForward()
             player.seekTo(player.currentPosition + 10000)
-            updatePbState(controller.playbackState.state)
+            updatePbState(controller.playbackState.state, controller.playbackState.bufferedPosition)
         }
 
         override fun onRewind() {
             super.onRewind()
             player.seekTo(player.currentPosition - 10000)
-            updatePbState(controller.playbackState.state)
+            updatePbState(controller.playbackState.state, controller.playbackState.bufferedPosition)
         }
 
         override fun onSkipToNext() {
@@ -233,7 +239,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         override fun onSeekTo(pos: Long) {
             super.onSeekTo(pos)
             player.seekTo(pos.toInt())
-            updatePbState(controller.playbackState.state)
+            updatePbState(controller.playbackState.state, controller.playbackState.bufferedPosition)
         }
 
         override fun onSetRepeatMode(repeatMode: Int) {
@@ -253,7 +259,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         startPlaying(surahIndex)
 
         // Update state
-        updatePbState(PlaybackStateCompat.STATE_PLAYING)
+        updatePbState(PlaybackStateCompat.STATE_PLAYING, controller.playbackState.bufferedPosition)
         updateNotification(true)
     }
 
@@ -276,7 +282,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             updateMetadata(false)
             updateNotification(true)
             startPlaying(surahIndex)
-            updatePbState(PlaybackStateCompat.STATE_PLAYING)
+            updatePbState(
+                PlaybackStateCompat.STATE_PLAYING, controller.playbackState.bufferedPosition
+            )
         }
     }
 
@@ -299,7 +307,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             updateMetadata(false)
             updateNotification(true)
             startPlaying(surahIndex)
-            updatePbState(PlaybackStateCompat.STATE_PLAYING)
+            updatePbState(
+                PlaybackStateCompat.STATE_PLAYING, controller.playbackState.bufferedPosition
+            )
         }
     }
 
@@ -532,9 +542,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         mediaSession.setMetadata(mediaMetadata)
     }
 
-    private fun updatePbState(state: Int) {
+    private fun updatePbState(state: Int, buffered: Long) {
         stateBuilder.setState(state, player.currentPosition.toLong(), 1F)
-            .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+            .setActions(PlaybackStateCompat.ACTION_SEEK_TO).setBufferedPosition(buffered)
 
         mediaSession.setPlaybackState(stateBuilder.build())
     }
@@ -544,7 +554,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun refresh() {
-        updatePbState(controller.playbackState.state)
+        updatePbState(
+            controller.playbackState.state, controller.playbackState.bufferedPosition
+        )
         handler.postDelayed(runnable, 1000)
     }
 
@@ -565,7 +577,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         player.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
 
         wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
-            .createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock")
+            .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
 
         player.setAudioAttributes(
             AudioAttributes.Builder()
@@ -589,12 +601,41 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             player.start()
 
             updateMetadata(true) // For the duration
-            updatePbState(PlaybackStateCompat.STATE_PLAYING)
+            updatePbState(
+                PlaybackStateCompat.STATE_PLAYING, controller.playbackState.bufferedPosition
+            )
             updateNotification(true)
 
             refresh()
         }
+
         player.setOnCompletionListener { skipToNext() }
+
+        player.setOnInfoListener { _, what, _ ->
+            Log.d(Global.TAG, "in onInfoListener, What: $what")
+            when (what) {
+                MediaPlayer.MEDIA_INFO_BUFFERING_START ->
+                    updatePbState(
+                        PlaybackStateCompat.STATE_BUFFERING,
+                        controller.playbackState.bufferedPosition
+                    )
+                MediaPlayer.MEDIA_INFO_BUFFERING_END ->
+                    updatePbState(PlaybackStateCompat.STATE_PLAYING,
+                        controller.playbackState.bufferedPosition)
+            }
+            false
+        }
+
+        player.setOnBufferingUpdateListener { _, percent ->
+            Log.d(Global.TAG, "inOnBufferingUpdateListener, Percent: $percent")
+            val ratio = percent / 100.0
+            var bufferingLevel = 0L
+            try {
+                bufferingLevel = (player.duration * ratio).toLong()
+            } catch (e: Exception) {}
+            updatePbState(controller.playbackState.state, bufferingLevel)
+        }
+
         player.setOnErrorListener { _, what, _ ->
             Log.e(Global.TAG, "Error in TelawatService player: $what")
             true

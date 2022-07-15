@@ -1,8 +1,7 @@
 package bassamalim.hidaya.adapters
 
 import android.app.DownloadManager
-import android.content.Context
-import android.content.SharedPreferences
+import android.content.*
 import android.content.res.AssetManager
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -11,9 +10,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import androidx.preference.PreferenceManager
@@ -70,13 +67,13 @@ class TelawatAdapter(private val context: Context, private val original: ArrayLi
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val card: Reciter = items[position]
+        val item = items[position]
 
-        viewHolder.reciterNamescreen.text = card.getName()
+        viewHolder.reciterNamescreen.text = item.getName()
 
         doFavorite(viewHolder, position)
 
-        setupVerRecycler(viewHolder, card)
+        setupVerRecycler(viewHolder, item)
     }
 
     override fun filter(text: String?, selected: BooleanArray?) {
@@ -147,6 +144,8 @@ class TelawatAdapter(private val context: Context, private val original: ArrayLi
         viewHolder.recyclerView.layoutManager = layoutManager
         viewHolder.recyclerView.adapter = versionsAdapter
         viewHolder.recyclerView.setRecycledViewPool(viewPool)
+
+        versionsAdapter.registerReceiver()
     }
 
     private fun getSelectedVersions(versions: List<RecitationVersion>): List<RecitationVersion> {
@@ -189,17 +188,23 @@ class TelawatAdapter(private val context: Context, private val original: ArrayLi
         return items.size
     }
 
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        (holder.recyclerView.adapter as TelawaVersionAdapter).unregisterReceiver()
+    }
+
 }
 
 internal class TelawaVersionAdapter(
     private val context: Context, private val items: List<RecitationVersion>,
-    private val fullSize: Int, private val reciterId: Int, private val names: List<String>
+    private val fullSize: Int, reciterId: Int, private val names: List<String>
 ) : RecyclerView.Adapter<TelawaVersionAdapter.ViewHolder?>() {
     // We need the full size of the unfiltered list of versions so that
     // the downloaded wont get mixed up because of the ids change
 
     private var downloaded: BooleanArray? = null
     private val prefix: String = "/Telawat/$reciterId"
+    private val downloadingIds = HashMap<Long, Int>()
 
     init {
         checkDownloaded()
@@ -209,11 +214,13 @@ internal class TelawaVersionAdapter(
         val cardView: CardView
         val tv: TextView
         val downloadBtn: ImageButton
+        val downloadingCircle: ProgressBar
 
         init {
             cardView = view.findViewById(R.id.main_card)
             tv = view.findViewById(R.id.version_namescreen)
             downloadBtn = view.findViewById(R.id.download_btn)
+            downloadingCircle = view.findViewById(R.id.buffering_circle)
         }
     }
 
@@ -234,34 +241,57 @@ internal class TelawaVersionAdapter(
         doDownloaded(viewHolder, position, ver)
     }
 
+    override fun getItemCount(): Int {
+        return items.size
+    }
+
     private fun doDownloaded(viewHolder: ViewHolder, position: Int, ver: RecitationVersion) {
         val verId: Int = items[position].getVersionId()
 
-        if (downloaded!![verId])
-            viewHolder.downloadBtn.setImageDrawable(
-                AppCompatResources.getDrawable(context, R.drawable.ic_downloaded)
-            )
-        else
-            viewHolder.downloadBtn.setImageDrawable(
-                AppCompatResources.getDrawable(context, R.drawable.ic_download)
-            )
+        if (downloaded!![verId]) {
+            if (downloadingIds.containsValue(verId)) updateUI(viewHolder, "downloading")
+            else updateUI(viewHolder, "downloaded")
+        }
+        else updateUI(viewHolder, "not downloaded")
 
         viewHolder.downloadBtn.setOnClickListener {
-            if (downloaded!![verId]) {
+            if (downloadingIds.containsValue(items[position].getVersionId()))
+                Toast.makeText(
+                    context, context.getString(R.string.wait_for_download), Toast.LENGTH_SHORT
+                ).show()
+            else if (downloaded!![verId]) {
                 val postfix = prefix + "/" + ver.getVersionId()
                 Utils.deleteFile(context, postfix)
 
                 downloaded!![ver.getVersionId()] = false
+                updateUI(viewHolder, "not downloaded")
+            }
+            else {
+                Executors.newSingleThreadExecutor().execute { downloadVer(ver) }
+                updateUI(viewHolder, "downloading")
+            }
+        }
+    }
+
+    private fun updateUI(viewHolder: ViewHolder, status: String) {
+        when(status) {
+            "downloaded" -> {
+                viewHolder.downloadingCircle.visibility = View.GONE
+                viewHolder.downloadBtn.visibility = View.VISIBLE
+                viewHolder.downloadBtn.setImageDrawable(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_downloaded)
+                )
+            }
+            "not downloaded" -> {
+                viewHolder.downloadingCircle.visibility = View.GONE
+                viewHolder.downloadBtn.visibility = View.VISIBLE
                 viewHolder.downloadBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_download)
                 )
             }
-            else {
-                Executors.newSingleThreadExecutor().execute { downloadVer(ver) }
-
-                viewHolder.downloadBtn.setImageDrawable(
-                    AppCompatResources.getDrawable(context, R.drawable.ic_downloaded)
-                )
+            "downloading" -> {
+                viewHolder.downloadBtn.visibility = View.GONE
+                viewHolder.downloadingCircle.visibility = View.VISIBLE
             }
         }
     }
@@ -302,15 +332,38 @@ internal class TelawaVersionAdapter(
                 request.setNotificationVisibility(
                     DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
                 )
-                downloadManager.enqueue(request)
+                val downloadId = downloadManager.enqueue(request)
+
+                if (i == 113) downloadingIds[downloadId] = ver.getVersionId()
             }
         }
 
         downloaded!![ver.getVersionId()] = true
     }
 
-    override fun getItemCount(): Int {
-        return items.size
+    private var onComplete: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(ctxt: Context, intent: Intent) {
+            val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            try {
+                val id = downloadingIds[downloadId]!!
+                downloadingIds.remove(downloadId)
+                notifyItemChanged(id)
+            } catch (e: RuntimeException) {
+                notifyDataSetChanged()
+            }
+        }
+    }
+
+    fun registerReceiver() {
+        context.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+    }
+
+    fun unregisterReceiver() {
+        try {
+            context.unregisterReceiver(onComplete)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        }
     }
 
 }

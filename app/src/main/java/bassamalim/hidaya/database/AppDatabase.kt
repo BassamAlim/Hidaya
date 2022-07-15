@@ -6,14 +6,16 @@ import bassamalim.hidaya.database.daos.*
 import bassamalim.hidaya.database.dbs.*
 
 @Database(
-    entities = [AyatDB::class, SuarDB::class, AthkarCategoryDB::class, AthkarDB::class,
-        ThikrsDB::class, AyatRecitersDB::class, AyatTelawaDB::class, TelawatRecitersDB::class,
+    entities = [AyatDB::class, SuarDB::class, BooksDB::class,
+        AthkarCategoryDB::class, AthkarDB::class, ThikrsDB::class,
+        AyatRecitersDB::class, AyatTelawaDB::class, TelawatRecitersDB::class,
         TelawatVersionsDB::class, QuizQuestionsDB::class, QuizAnswersDB::class],
     version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun ayahDao(): AyatDao
     abstract fun suarDao(): SuarDao
+    abstract fun booksDao(): BooksDao
     abstract fun athkarCategoryDao(): AthkarCategoryDao
     abstract fun athkarDao(): AthkarDao
     abstract fun thikrsDao(): ThikrsDao

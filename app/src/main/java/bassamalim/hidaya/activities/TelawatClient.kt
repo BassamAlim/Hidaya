@@ -12,10 +12,10 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import android.view.View
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -40,15 +40,8 @@ class TelawatClient : AppCompatActivity() {
     private lateinit var mediaBrowser: MediaBrowserCompat
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
-    private lateinit var surahNamescreen: TextView
     private lateinit var seekBar: SeekBar
-    private lateinit var progressScreen: TextView
-    private lateinit var durationScreen: TextView
     private lateinit var playPause: ImageButton
-    private lateinit var nextBtn: ImageButton
-    private lateinit var prevBtn: ImageButton
-    private lateinit var forwardBtn: ImageButton
-    private lateinit var rewindBtn: ImageButton
     private lateinit var repeatBtn: ImageButton
     private lateinit var shuffleBtn: ImageButton
     private lateinit var action: String
@@ -183,19 +176,12 @@ class TelawatClient : AppCompatActivity() {
     }
 
     private fun initViews() {
-        surahNamescreen = binding.suraNamescreen
         seekBar = binding.seekbar
-        durationScreen = binding.durationScreen
-        progressScreen = binding.progressScreen
         playPause = binding.playPause
-        nextBtn = binding.nextTrack
-        prevBtn = binding.previousTrack
-        forwardBtn = binding.fastForward
-        rewindBtn = binding.rewind
         repeatBtn = binding.repeat
         shuffleBtn = binding.shuffle
 
-        surahNamescreen.text = surahNames[surahIndex]
+        binding.suraNamescreen.text = surahNames[surahIndex]
         binding.reciterNamescreen.text = reciterName
         binding.versionNamescreen.text = version.getRewaya()
 
@@ -274,13 +260,27 @@ class TelawatClient : AppCompatActivity() {
         tc.playFromMediaId(mediaId, bundle)
     }
 
-    private fun updateButton(playing: Boolean) {
-        if (playing) playPause.setImageDrawable(
-            ResourcesCompat.getDrawable(resources, R.drawable.ic_player_pause, theme)
-        )
-        else playPause.setImageDrawable(
-            ResourcesCompat.getDrawable(resources, R.drawable.ic_player_play, theme)
-        )
+    private fun updateButton(state: Int) {
+        when(state) {
+            PlaybackStateCompat.STATE_PLAYING -> {
+                binding.bufferingCircle.visibility = View.GONE
+                playPause.visibility = View.VISIBLE
+                playPause.setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.ic_player_pause, theme)
+                )
+            }
+            PlaybackStateCompat.STATE_PAUSED -> {
+                binding.bufferingCircle.visibility = View.GONE
+                playPause.visibility = View.VISIBLE
+                playPause.setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.ic_player_play, theme)
+                )
+            }
+            PlaybackStateCompat.STATE_BUFFERING -> {
+                playPause.visibility = View.GONE
+                binding.bufferingCircle.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun enableControls() {
@@ -304,18 +304,18 @@ class TelawatClient : AppCompatActivity() {
             else tc.play()
         }
 
-        nextBtn.setOnClickListener { tc.skipToNext() }
-        prevBtn.setOnClickListener { tc.skipToPrevious() }
-        forwardBtn.setOnClickListener { tc.fastForward() }
-        rewindBtn.setOnClickListener { tc.rewind() }
+        binding.nextTrack.setOnClickListener { tc.skipToNext() }
+        binding.previousTrack.setOnClickListener { tc.skipToPrevious() }
+        binding.fastForward.setOnClickListener { tc.fastForward() }
+        binding.rewind.setOnClickListener { tc.rewind() }
     }
 
     private fun disableControls() {
         playPause.setOnClickListener(null)
-        nextBtn.setOnClickListener(null)
-        prevBtn.setOnClickListener(null)
-        forwardBtn.setOnClickListener(null)
-        rewindBtn.setOnClickListener(null)
+        binding.nextTrack.setOnClickListener(null)
+        binding.previousTrack.setOnClickListener(null)
+        binding.fastForward.setOnClickListener(null)
+        binding.rewind.setOnClickListener(null)
         seekBar.setOnSeekBarChangeListener(null)
     }
 
@@ -352,24 +352,22 @@ class TelawatClient : AppCompatActivity() {
 
     private fun updateMetadata(metadata: MediaMetadataCompat) {
         surahIndex = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
-        surahNamescreen.text = surahNames[surahIndex]
+        binding.suraNamescreen.text = surahNames[surahIndex]
 
         val duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION).toInt()
-        durationScreen.text = formatTime(duration)
+        binding.durationScreen.text = formatTime(duration)
         seekBar.max = duration
     }
 
     private fun updatePbState(state: PlaybackStateCompat) {
         seekBar.progress = state.position.toInt()
-        progressScreen.text = formatTime(state.position.toInt())
+        seekBar.secondaryProgress = state.bufferedPosition.toInt()
+        binding.progressScreen.text = formatTime(state.position.toInt())
 
-        when (state.state) {
-            PlaybackStateCompat.STATE_PLAYING -> {
-                updateButton(true)
-                progressScreen.text = formatTime(state.position.toInt())
-            } // idea: put buffering state animation
-            else -> run { updateButton(false) }
-        }
+        updateButton(state.state)
+
+        if (state.state == PlaybackStateCompat.STATE_PLAYING)
+            binding.progressScreen.text = formatTime(state.position.toInt())
     }
 
     private fun formatTime(time: Int): String {

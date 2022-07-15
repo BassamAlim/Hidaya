@@ -1,12 +1,15 @@
 package bassamalim.hidaya.adapters
 
 import android.app.DownloadManager
-import android.content.Context
-import android.content.SharedPreferences
+import android.content.*
 import android.net.Uri
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import androidx.preference.PreferenceManager
@@ -20,7 +23,6 @@ import bassamalim.hidaya.other.Utils
 import com.google.gson.Gson
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 
 class TelawatSuarAdapter(
     private val context: Context, private val original: ArrayList<ReciterSura>,
@@ -36,6 +38,7 @@ class TelawatSuarAdapter(
     private val ver: TelawatVersionsDB
     private val downloaded = BooleanArray(114)
     private val prefix: String
+    private val downloadingIds = HashMap<Long, Int>()
 
     init {
         ver = db.telawatVersionsDao().getVersion(reciterId, versionId)
@@ -48,12 +51,14 @@ class TelawatSuarAdapter(
         val namescreen: TextView
         val favBtn: ImageButton
         val downloadBtn: ImageButton
+        val downloadingCircle: ProgressBar
 
         init {
             card = view.findViewById(R.id.sura_model_card)
             namescreen = view.findViewById(R.id.sura_namescreen)
             favBtn = view.findViewById(R.id.sura_fav_btn)
             downloadBtn = view.findViewById(R.id.download_btn)
+            downloadingCircle = view.findViewById(R.id.buffering_circle)
         }
     }
 
@@ -119,37 +124,57 @@ class TelawatSuarAdapter(
     private fun doDownloaded(viewHolder: ViewHolder, position: Int) {
         val suraNum: Int = items[position].getNum()
 
-        if (downloaded[suraNum]) viewHolder.downloadBtn.setImageDrawable(
-            AppCompatResources.getDrawable(context, R.drawable.ic_downloaded)
-        )
-        else viewHolder.downloadBtn.setImageDrawable(
-            AppCompatResources.getDrawable(context, R.drawable.ic_download)
-        )
+        if (downloaded[suraNum]) {
+            if (downloadingIds.containsValue(suraNum)) updateUI(viewHolder, "downloading")
+            else updateUI(viewHolder, "downloaded")
+        }
+        else updateUI(viewHolder, "not downloaded")
 
         viewHolder.downloadBtn.setOnClickListener {
-            if (downloaded[items[position].getNum()]) {
+            if (downloadingIds.containsValue(items[position].getNum()))
+                Toast.makeText(
+                    context, context.getString(R.string.wait_for_download), Toast.LENGTH_SHORT
+                ).show()
+            else if (downloaded[items[position].getNum()]) {
                 val num: Int = items[position].getNum()
                 val postfix = "$prefix/$num.mp3"
                 Utils.deleteFile(context, postfix)
 
                 downloaded[num] = false
+                updateUI(viewHolder, "not downloaded")
+            }
+            else {
+                download(items[position].getNum())
+                updateUI(viewHolder, "downloading")
+            }
+        }
+    }
+
+    private fun updateUI(viewHolder: ViewHolder, status: String) {
+        when(status) {
+            "downloaded" -> {
+                viewHolder.downloadingCircle.visibility = View.GONE
+                viewHolder.downloadBtn.visibility = View.VISIBLE
+                viewHolder.downloadBtn.setImageDrawable(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_downloaded)
+                )
+            }
+            "not downloaded" -> {
+                viewHolder.downloadingCircle.visibility = View.GONE
+                viewHolder.downloadBtn.visibility = View.VISIBLE
                 viewHolder.downloadBtn.setImageDrawable(
                     AppCompatResources.getDrawable(context, R.drawable.ic_download)
                 )
             }
-            else {
-                download(items[position].getNum())
-
-                viewHolder.downloadBtn.setImageDrawable(
-                    AppCompatResources.getDrawable(context, R.drawable.ic_downloaded)
-                )
+            "downloading" -> {
+                viewHolder.downloadBtn.visibility = View.GONE
+                viewHolder.downloadingCircle.visibility = View.VISIBLE
             }
         }
     }
 
     private fun checkDownloaded() {
         val dir = File(context.getExternalFilesDir(null).toString() + prefix)
-
         if (!dir.exists()) return
 
         val files = dir.listFiles()
@@ -171,17 +196,29 @@ class TelawatSuarAdapter(
             context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val uri = Uri.parse(link)
         val request: DownloadManager.Request = DownloadManager.Request(uri)
-        val title = context.getString(R.string.downloading) + " " + items[num].getSearchName()
-        request.setTitle(title)
+        request.setTitle(items[num].getSearchName())
         val postfix = "/Telawat/" + ver.getReciterId() + "/" + versionId
         Utils.createDir(context, postfix)
         request.setDestinationInExternalFilesDir(context, postfix, "$num.mp3")
-        request.setNotificationVisibility(
-            DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
-        )
-        downloadManager.enqueue(request)
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+        val downloadId = downloadManager.enqueue(request)
+
+        downloadingIds[downloadId] = num
 
         downloaded[num] = true
+    }
+
+    private var onComplete: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(ctxt: Context, intent: Intent) {
+            val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            try {
+                val id = downloadingIds[downloadId]!!
+                downloadingIds.remove(downloadId)
+                notifyItemChanged(id)
+            } catch (e: RuntimeException) {
+                notifyDataSetChanged()
+            }
+        }
     }
 
     private fun updateFavorites() {
@@ -192,6 +229,18 @@ class TelawatSuarAdapter(
         val editor: SharedPreferences.Editor = pref.edit()
         editor.putString("favorite_suras", surasJson)
         editor.apply()
+    }
+
+    fun registerReceiver() {
+        context.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+    }
+
+    fun unregisterReceiver() {
+        try {
+            context.unregisterReceiver(onComplete)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        }
     }
 
 }

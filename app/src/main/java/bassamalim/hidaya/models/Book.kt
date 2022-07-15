@@ -3,10 +3,9 @@ package bassamalim.hidaya.models
 data class Book(val bookInfo: BookInfo, val chapters: Array<BookChapter>) {
 
     class BookInfo(val bookId: Int, val bookTitle: String, val author: String)
+
     class BookChapter(
-        val chapterId: Int,
-        val chapterTitle: String,
-        val doors: Array<BookDoor>
+        val chapterId: Int, val chapterTitle: String, val doors: Array<BookDoor>
     ) {
         class BookDoor(val doorId: Int, val doorTitle: String, val text: String)
     }
@@ -28,4 +27,5 @@ data class Book(val bookInfo: BookInfo, val chapters: Array<BookChapter>) {
         result = 31 * result + chapters.contentHashCode()
         return result
     }
+
 }

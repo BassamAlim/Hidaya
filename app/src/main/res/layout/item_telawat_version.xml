@@ -32,18 +32,31 @@
                 app:layout_constraintStart_toStartOf="parent"
                 tools:ignore="SpUsage" />
 
-            <ImageButton
-                android:id="@+id/download_btn"
+            <FrameLayout
+                android:id="@+id/state_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp"
-                android:background="@drawable/ripple_surface"
-                android:contentDescription="@string/fav_btn_description"
-                android:padding="10dp"
-                android:src="@drawable/ic_download"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/download_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ripple_surface"
+                    android:padding="10dp"
+                    android:contentDescription="@string/download" />
+
+                <ProgressBar
+                    android:id="@+id/buffering_circle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:visibility="gone"/>
+
+            </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -189,16 +189,6 @@
         <item>(١٢) ديسمبر</item>
     </string-array>
 
-    <string-array name="books_titles">
-        <item>صحيح البخاري</item>
-        <item>صحيح مسلم</item>
-    </string-array>
-
-    <string-array name="books_authors">
-        <item>الإمام البخاري</item>
-        <item>الإمام مسلم</item>
-    </string-array>
-
     <string-array name="rewayat">
         <item>حفص عن عاصم</item>
         <item>قالون عن نافع</item>

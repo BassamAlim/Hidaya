@@ -235,8 +235,7 @@ class PrayersFragment : Fragment() {
 
                 if (context != null)
                     counters[upcoming]!!.text =
-                        String.format(getString(R.string.remaining),
-                            Utils.translateNumbers(requireContext(), hms))
+                        String.format(getString(R.string.remaining), Utils.translateNumbers(requireContext(), hms))
                 else {
                     restart[0] = false
                     cancelTimer()

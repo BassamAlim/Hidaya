@@ -90,7 +90,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="?mySurface"
-            android:progressTint="?myAccentDark"
+            android:progressTint="?myAccent"
+            android:secondaryProgressTint="?myAccentDark"
             android:thumbTint="?myAccent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -146,22 +147,37 @@
             android:padding="10dp"
             android:src="@drawable/ic_backward"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/play_pause"
+            app:layout_constraintEnd_toStartOf="@id/state_view"
             app:layout_constraintStart_toEndOf="@id/previous_track"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/play_pause"
+        <FrameLayout
+            android:id="@+id/state_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple_circle"
-            android:contentDescription="@string/play_pause_btn_description"
-            android:padding="10dp"
-            android:src="@drawable/ic_player_play"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/fast_forward"
             app:layout_constraintStart_toEndOf="@id/rewind"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/play_pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="@drawable/ripple_circle"
+                android:contentDescription="@string/play_pause_btn_description"
+                android:src="@drawable/ic_player_play"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/buffering_circle"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:padding="10dp"
+                android:indeterminate="true"/>
+
+        </FrameLayout>
 
         <ImageButton
             android:id="@+id/fast_forward"
@@ -173,7 +189,7 @@
             android:src="@drawable/ic_forward"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/next_track"
-            app:layout_constraintStart_toEndOf="@id/play_pause"
+            app:layout_constraintStart_toEndOf="@id/state_view"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton

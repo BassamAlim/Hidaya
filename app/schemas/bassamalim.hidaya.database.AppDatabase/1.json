@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ee8f6e53105820e51722275020b00ae3",
+    "identityHash": "67d470c8f97fba0706aa043be792ab98",
     "entities": [
       {
         "tableName": "hafs_ayat",
@@ -141,23 +141,79 @@
         "foreignKeys": []
       },
       {
+        "tableName": "books",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `title_en` TEXT NOT NULL, `author` TEXT NOT NULL, `author_en` TEXT NOT NULL, `url` TEXT NOT NULL, `favorite` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "titleEn",
+            "columnName": "title_en",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "author",
+            "columnName": "author",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorEn",
+            "columnName": "author_en",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "favorite",
+            "columnName": "favorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
         "tableName": "athkar_categories",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`category_id` INTEGER NOT NULL, `category_name` TEXT, `category_name_en` TEXT, PRIMARY KEY(`category_id`))",
         "fields": [
           {
-            "fieldPath": "category_id",
+            "fieldPath": "categoryId",
             "columnName": "category_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "category_name",
+            "fieldPath": "categoryName",
             "columnName": "category_name",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "category_name_en",
+            "fieldPath": "categoryNameEn",
             "columnName": "category_name_en",
             "affinity": "TEXT",
             "notNull": false
@@ -233,7 +289,7 @@
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`thikr_id` INTEGER NOT NULL, `title` TEXT, `title_en` TEXT, `text` TEXT, `text_en` TEXT, `text_en_translation` TEXT, `repetition` TEXT, `repetition_en` TEXT, `fadl` TEXT, `fadl_en` TEXT, `reference` TEXT, `reference_en` TEXT, `athkar_id` INTEGER NOT NULL, PRIMARY KEY(`thikr_id`, `athkar_id`), FOREIGN KEY(`athkar_id`) REFERENCES `athkar`(`athkar_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
         "fields": [
           {
-            "fieldPath": "thikr_id",
+            "fieldPath": "thikrId",
             "columnName": "thikr_id",
             "affinity": "INTEGER",
             "notNull": true
@@ -245,7 +301,7 @@
             "notNull": false
           },
           {
-            "fieldPath": "title_en",
+            "fieldPath": "titleEn",
             "columnName": "title_en",
             "affinity": "TEXT",
             "notNull": false
@@ -257,13 +313,13 @@
             "notNull": false
           },
           {
-            "fieldPath": "text_en",
+            "fieldPath": "textEn",
             "columnName": "text_en",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "text_en_translation",
+            "fieldPath": "textEnTranslation",
             "columnName": "text_en_translation",
             "affinity": "TEXT",
             "notNull": false
@@ -275,7 +331,7 @@
             "notNull": false
           },
           {
-            "fieldPath": "repetition_en",
+            "fieldPath": "repetitionEn",
             "columnName": "repetition_en",
             "affinity": "TEXT",
             "notNull": false
@@ -287,7 +343,7 @@
             "notNull": false
           },
           {
-            "fieldPath": "fadl_en",
+            "fieldPath": "fadlEn",
             "columnName": "fadl_en",
             "affinity": "TEXT",
             "notNull": false
@@ -299,13 +355,13 @@
             "notNull": false
           },
           {
-            "fieldPath": "reference_en",
+            "fieldPath": "referenceEn",
             "columnName": "reference_en",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "athkar_id",
+            "fieldPath": "athkarId",
             "columnName": "athkar_id",
             "affinity": "INTEGER",
             "notNull": true
@@ -364,7 +420,7 @@
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rec_id` INTEGER NOT NULL, `rate` INTEGER NOT NULL, `source` TEXT, PRIMARY KEY(`rec_id`, `rate`), FOREIGN KEY(`rec_id`) REFERENCES `ayat_reciters`(`rec_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
         "fields": [
           {
-            "fieldPath": "rec_id",
+            "fieldPath": "recId",
             "columnName": "rec_id",
             "affinity": "INTEGER",
             "notNull": true
@@ -441,13 +497,13 @@
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reciter_id` INTEGER NOT NULL, `version_id` INTEGER NOT NULL, `rewaya` TEXT, `url` TEXT, `count` INTEGER NOT NULL, `suras` TEXT, PRIMARY KEY(`reciter_id`, `version_id`), FOREIGN KEY(`reciter_id`) REFERENCES `telawat_reciters`(`reciter_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
         "fields": [
           {
-            "fieldPath": "reciter_id",
+            "fieldPath": "reciterId",
             "columnName": "reciter_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "version_id",
+            "fieldPath": "versionId",
             "columnName": "version_id",
             "affinity": "INTEGER",
             "notNull": true
@@ -504,19 +560,19 @@
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`question_id` INTEGER NOT NULL, `question_text` TEXT, `correct_answer_id` INTEGER NOT NULL, PRIMARY KEY(`question_id`))",
         "fields": [
           {
-            "fieldPath": "question_id",
+            "fieldPath": "questionId",
             "columnName": "question_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "question_text",
+            "fieldPath": "questionText",
             "columnName": "question_text",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "correct_answer_id",
+            "fieldPath": "correctAnswerId",
             "columnName": "correct_answer_id",
             "affinity": "INTEGER",
             "notNull": true
@@ -580,7 +636,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ee8f6e53105820e51722275020b00ae3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '67d470c8f97fba0706aa043be792ab98')"
     ]
   }
 }

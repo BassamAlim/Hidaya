@@ -3,7 +3,9 @@ package bassamalim.hidaya.fragments
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -44,14 +46,11 @@ class TelawatSuarFragment : Fragment {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentTelawatSuarBinding.inflate(inflater, container, false)
 
-        if (type == ListType.Downloaded) checkDownloaded()
-
-        setupRecycler()
+        initRecycler()
 
         setSearchListeners()
 
@@ -62,9 +61,10 @@ class TelawatSuarFragment : Fragment {
         super.setMenuVisibility(menuVisible)
 
         if (menuVisible) {
-            adapter = TelawatSuarAdapter(requireContext(), makeCards(), reciterId, versionId)
-            recycler!!.adapter = adapter
+            if (type == ListType.Downloaded) checkDownloaded()
+            setAdapter()
         }
+        else adapter!!.unregisterReceiver()
     }
 
     private val data: Unit
@@ -87,10 +87,10 @@ class TelawatSuarFragment : Fragment {
             favs = db.suarDao().getFav()
         }
 
-    private fun makeCards(): ArrayList<ReciterSura> {
+    private fun getItems(): ArrayList<ReciterSura> {
         data;
 
-        val cards: ArrayList<ReciterSura> = ArrayList<ReciterSura>()
+        val items: ArrayList<ReciterSura> = ArrayList<ReciterSura>()
         for (i in 0..113) {
             if (!availableSurahs.contains("," + (i + 1) + ",")
                 || type == ListType.Favorite && favs[i] == 0
@@ -113,17 +113,22 @@ class TelawatSuarFragment : Fragment {
                 startActivity(intent)
             }
 
-            cards.add(ReciterSura(i, name, searchName!!, favs[i], listener))
+            items.add(ReciterSura(i, name, searchName!!, favs[i], listener))
         }
-        return cards
+        return items
     }
 
-    private fun setupRecycler() {
+    private fun initRecycler() {
         recycler = binding!!.recycler
         val layoutManager = LinearLayoutManager(context)
         recycler!!.layoutManager = layoutManager
-        adapter = TelawatSuarAdapter(requireContext(), makeCards(), reciterId, versionId)
+    }
+
+    private fun setAdapter() {
+        adapter = TelawatSuarAdapter(requireContext(), getItems(), reciterId, versionId)
         recycler!!.adapter = adapter
+
+        adapter!!.registerReceiver()
     }
 
     private fun setSearchListeners() {
@@ -162,6 +167,7 @@ class TelawatSuarFragment : Fragment {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+        adapter?.unregisterReceiver()
         recycler!!.adapter = null
         adapter = null
     }

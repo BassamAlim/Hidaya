@@ -110,7 +110,6 @@
     <!-- Formats -->
     <string name="remaining">Remaining: %1$s</string>
     <string name="settings_of">%s Settings</string>
-    <string name="book_downloading">%s downloading</string>
 
     <!-- Sources -->
     <string name="quran_source">Quran: from King Fahd Glorious Quran Printing Complex.</string>
@@ -217,5 +216,6 @@
     <string name="page_view">Page</string>
     <string name="list_view">List</string>
     <string name="view_method">View Method</string>
+    <string name="download">download</string>
 
 </resources>

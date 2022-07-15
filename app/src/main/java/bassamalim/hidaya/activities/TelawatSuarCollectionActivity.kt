@@ -80,7 +80,7 @@ internal class TSAdapter(
     }
 
     override fun getItemCount(): Int {
-        return 2
+        return 3
     }
 
 }

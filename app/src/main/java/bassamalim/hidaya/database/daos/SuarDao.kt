@@ -18,8 +18,8 @@ interface SuarDao {
     @Query("SELECT * FROM suar WHERE favorite = 1")
     fun getFavorites(): List<SuarDB>
 
-    @Query("UPDATE suar SET favorite = :val WHERE sura_id = :index")
-    fun setFav(index: Int, `val`: Int)
+    @Query("UPDATE suar SET favorite = :value WHERE sura_id = :index")
+    fun setFav(index: Int, value: Int)
 
     @Query("SELECT favorite FROM suar")
     fun getFav(): List<Int>

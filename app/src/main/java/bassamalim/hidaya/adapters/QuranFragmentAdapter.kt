@@ -73,8 +73,8 @@ class QuranFragmentAdapter(private val context: Context, private val original: A
                 AppCompatResources.getDrawable(context, R.drawable.ic_madinah))
     }
 
-    private fun doFavorites(vh: ViewHolder, card: Sura, position: Int) {
-        val fav: Int = card.getFavorite()
+    private fun doFavorites(vh: ViewHolder, item: Sura, position: Int) {
+        val fav: Int = item.getFavorite()
         if (fav == 0)
             vh.favBtn.setImageDrawable(
                 AppCompatResources.getDrawable(context, R.drawable.ic_star_outline))
@@ -82,13 +82,13 @@ class QuranFragmentAdapter(private val context: Context, private val original: A
             vh.favBtn.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_star))
 
         vh.favBtn.setOnClickListener {
-            if (card.getFavorite() == 0) {
-                db.suarDao().setFav(card.getNumber(), 1)
-                card.setFavorite(1)
+            if (item.getFavorite() == 0) {
+                db.suarDao().setFav(item.getNumber(), 1)
+                item.setFavorite(1)
             }
-            else if (card.getFavorite() == 1) {
-                db.suarDao().setFav(card.getNumber(), 0)
-                card.setFavorite(0)
+            else if (item.getFavorite() == 1) {
+                db.suarDao().setFav(item.getNumber(), 0)
+                item.setFavorite(0)
             }
             notifyItemChanged(position)
             updateFavorites()

@@ -15,8 +15,8 @@ interface TelawatRecitersDao {
     @Query("SELECT * FROM telawat_reciters WHERE favorite = 1")
     fun getFavorites(): List<TelawatRecitersDB>
 
-    @Query("UPDATE telawat_reciters SET favorite = :val WHERE reciter_id = :id")
-    fun setFav(id: Int, `val`: Int)
+    @Query("UPDATE telawat_reciters SET favorite = :value WHERE reciter_id = :id")
+    fun setFav(id: Int, value: Int)
 
     @Query("SELECT favorite FROM telawat_reciters")
     fun getFavs(): List<Int>

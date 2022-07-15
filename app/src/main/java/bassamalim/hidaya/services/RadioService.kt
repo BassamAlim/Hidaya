@@ -330,7 +330,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         player.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
 
         wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
-            .createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock")
+            .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
         wifiLock.acquire()
 
         player.setAudioAttributes(

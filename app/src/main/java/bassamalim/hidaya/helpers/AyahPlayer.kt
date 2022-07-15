@@ -82,7 +82,7 @@ class AyahPlayer(
         players[1]!!.setWakeMode(context.applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
 
         wifiLock = (context.applicationContext.getSystemService(Context.WIFI_SERVICE)
-                as WifiManager).createWifiLock(WifiManager.WIFI_MODE_FULL, "myLock")
+                as WifiManager).createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
         wifiLock.acquire()
 
         val attributes: AudioAttributes =
