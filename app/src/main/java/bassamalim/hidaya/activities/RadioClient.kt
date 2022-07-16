@@ -9,6 +9,7 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import android.view.View
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -26,8 +27,8 @@ class RadioClient : AppCompatActivity() {
     private lateinit var mediaBrowser: MediaBrowserCompat
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
-    private lateinit var playBtn: ImageButton // play/pause button
-    private lateinit var link: String
+    private lateinit var playPause: ImageButton // play/pause button
+    private lateinit var url: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +37,7 @@ class RadioClient : AppCompatActivity() {
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        playBtn = binding.radioPpBtn
+        playPause = binding.radioPpBtn
 
         mediaBrowser = MediaBrowserCompat(
             this, ComponentName(this, RadioService::class.java),
@@ -69,10 +70,9 @@ class RadioClient : AppCompatActivity() {
         remoteConfig = FirebaseRemoteConfig.getInstance()
         remoteConfig.fetchAndActivate().addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
-                link = remoteConfig.getString("quran_radio_url")
-
+                url = remoteConfig.getString("quran_radio_url")
                 Log.d(Global.TAG, "Config params updated")
-                Log.d(Global.TAG, "Quran Radio URL: $link")
+                Log.d(Global.TAG, "Quran Radio URL: $url")
 
                 enableControls()
             }
@@ -94,6 +94,9 @@ class RadioClient : AppCompatActivity() {
             controller = MediaControllerCompat.getMediaController(this@RadioClient)
             tc = controller.transportControls
 
+            // just sending the static url to extract the dynamic url
+            tc.playFromMediaId(url, null)
+
             // Finish building the UI
             buildTransportControls()
         }
@@ -102,13 +105,13 @@ class RadioClient : AppCompatActivity() {
             Log.e(Global.TAG, "Connection suspended in RadioClient")
             // The Service has crashed.
             // Disable transport controls until it automatically reconnects
-            disableControls()
+            playPause.setOnClickListener(null)
         }
 
         override fun onConnectionFailed() {
             Log.e(Global.TAG, "Connection failed in RadioClient")
             // The Service has refused our connection
-            disableControls()
+            playPause.setOnClickListener(null)
         }
     }
 
@@ -127,8 +130,6 @@ class RadioClient : AppCompatActivity() {
     }
 
     private fun buildTransportControls() {
-        //enableControls();
-
         // Display the initial state
         updatePbState(controller.playbackState)
 
@@ -137,35 +138,46 @@ class RadioClient : AppCompatActivity() {
     }
 
     private fun updatePbState(state: PlaybackStateCompat) {
-        val currentState: Int = state.state
-        updateButton(currentState == PlaybackStateCompat.STATE_PLAYING)
+        updateButton(state.state)
     }
 
-    private fun updateButton(playing: Boolean) {
-        if (playing)
-            playBtn.setImageDrawable(
-                ResourcesCompat.getDrawable(resources, R.drawable.ic_player_pause, theme)
-            )
-        else
-            playBtn.setImageDrawable(
-                ResourcesCompat.getDrawable(resources, R.drawable.ic_player_play, theme)
-            )
+    private fun updateButton(state: Int) {
+        when(state) {
+            PlaybackStateCompat.STATE_PLAYING -> {
+                binding.bufferingCircle.visibility = View.GONE
+                playPause.visibility = View.VISIBLE
+                playPause.setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.ic_player_pause, theme)
+                )
+            }
+            PlaybackStateCompat.STATE_PAUSED -> {
+                binding.bufferingCircle.visibility = View.GONE
+                playPause.visibility = View.VISIBLE
+                playPause.setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.ic_player_play, theme)
+                )
+            }
+            PlaybackStateCompat.STATE_BUFFERING -> {
+                playPause.visibility = View.GONE
+                binding.bufferingCircle.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun enableControls() {
+        updateButton(PlaybackStateCompat.STATE_PAUSED)
         // Attach a listeners to the buttons
-        playBtn.setOnClickListener {
+        playPause.setOnClickListener {
             // Since this is a play/pause button, you'll need to test the current state
             // and choose the action accordingly
             val pbState: Int = controller.playbackState.state
 
             if (pbState == PlaybackStateCompat.STATE_PLAYING) tc.pause()
-            else tc.playFromMediaId(link, null)
+            else {
+                tc.play()
+                updateButton(PlaybackStateCompat.STATE_BUFFERING)
+            }
         }
-    }
-
-    private fun disableControls() {
-        playBtn.setOnClickListener(null)
     }
 
 }

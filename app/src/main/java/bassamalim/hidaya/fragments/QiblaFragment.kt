@@ -1,8 +1,11 @@
 package bassamalim.hidaya.fragments
 
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +19,7 @@ import bassamalim.hidaya.databinding.FragmentQiblaBinding
 import bassamalim.hidaya.dialogs.CalibrationDialog
 import bassamalim.hidaya.helpers.Compass
 import bassamalim.hidaya.helpers.Compass.CompassListener
+import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
 import kotlin.math.*
 
@@ -34,6 +38,7 @@ class QiblaFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity!!.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         if (MainActivity.located) {
             location = MainActivity.location!!
@@ -46,6 +51,18 @@ class QiblaFragment : Fragment() {
             compass?.start(requireContext())
         }
         else located = false
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Log.d(Global.TAG, "in onConfigurationChanged")
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.d(Global.TAG, "NOOOOO")
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 
     override fun onCreateView(

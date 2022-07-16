@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.PowerManager
+import android.support.v4.media.session.PlaybackStateCompat
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.util.Log
@@ -16,7 +17,6 @@ import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AyatTelawaDB
-import bassamalim.hidaya.enums.States
 import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.other.Global
 import java.util.*
@@ -36,14 +36,13 @@ class AyahPlayer(
     private var surahEnding = false
     private var what: Any
     private var chosenSurah = 0
-    private var state: States = States.Stopped
+    private var state: Int = PlaybackStateCompat.STATE_STOPPED
     private var lastPlayer = 0
     private var paused = false
     private var repeated = 1
-    private var on = false
 
     interface Coordinator {
-        fun onUiUpdate(state: States)
+        fun onUiUpdate(state: Int)
         fun getAyah(index: Int): Ayah
         fun nextPage()
     }
@@ -56,6 +55,8 @@ class AyahPlayer(
                 ForegroundColorSpan(context.resources.getColor(R.color.track_L, context.theme))
             else
                 ForegroundColorSpan(context.resources.getColor(R.color.track_M, context.theme))
+
+        initPlayers()
     }
 
     /**
@@ -64,11 +65,9 @@ class AyahPlayer(
      * @param startAyah The ayah to start playing from.
      */
     fun requestPlay(startAyah: Ayah) {
-        if (!on) initPlayers()
-
         repeated = 1
         lastPlayed = startAyah
-        state = States.Stopped
+        state = PlaybackStateCompat.STATE_STOPPED
         preparePlayer(players[0], startAyah)
     }
 
@@ -93,8 +92,6 @@ class AyahPlayer(
         players[1]!!.setAudioAttributes(attributes)
 
         setPlayersListeners()
-
-        on = true
     }
 
     /**
@@ -110,18 +107,19 @@ class AyahPlayer(
             players[i]!!.setOnPreparedListener {
                 if (players[n(i)]!!.isPlaying)
                     players[n(i)]!!.setNextMediaPlayer(players[i])
-                else if (state == States.Paused) {
+                else if (state == PlaybackStateCompat.STATE_PAUSED) {
                     if (allAyahsSize > lastPlayed!!.getIndex())
                         lastPlayed = coordinator.getAyah(lastPlayed!!.getIndex())
                 }
                 else {
+                    coordinator.onUiUpdate(PlaybackStateCompat.STATE_PLAYING)
                     players[i]!!.start()
-                    state = States.Playing
+                    state = PlaybackStateCompat.STATE_PLAYING
                     track(lastPlayed)
                     if (allAyahsSize > lastPlayed!!.getIndex() + 1)
                         preparePlayer(
-                            players[n(i)],
-                            coordinator.getAyah(lastPlayed!!.getIndex() + 1))
+                            players[n(i)], coordinator.getAyah(lastPlayed!!.getIndex() + 1)
+                        )
                 }
             }
 
@@ -236,7 +234,9 @@ class AyahPlayer(
      * prepare the next ayah and reset the other player
      */
     fun nextAyah() {
-        if (state != States.Playing || lastPlayed!!.getIndex() + 2 > allAyahsSize) return
+        if (state != PlaybackStateCompat.STATE_PLAYING
+            || lastPlayed!!.getIndex() + 2 > allAyahsSize)
+            return
 
         lastPlayed = coordinator.getAyah(lastPlayed!!.getIndex() + 1)
         track(lastPlayed)
@@ -255,7 +255,7 @@ class AyahPlayer(
      * prepare the next ayah and reset the other player
      */
     fun prevAyah() {
-        if (state != States.Playing || lastPlayed!!.getIndex() - 1 < 0) return
+        if (state != PlaybackStateCompat.STATE_PLAYING || lastPlayed!!.getIndex() - 1 < 0) return
 
         lastPlayed = coordinator.getAyah(lastPlayed!!.getIndex() - 1)
         track(lastPlayed)
@@ -274,7 +274,7 @@ class AyahPlayer(
      */
     fun pause() {
         paused = true
-        state = States.Paused
+        state = PlaybackStateCompat.STATE_PAUSED
         for (i in 0..1) {
             if (players[i]!!.isPlaying) {
                 Log.d(Global.TAG, "Paused $i")
@@ -291,7 +291,7 @@ class AyahPlayer(
      */
     fun resume() {
         Log.d(Global.TAG, "Resume P$lastPlayer")
-        state = States.Playing
+        state = PlaybackStateCompat.STATE_PLAYING
         players[lastPlayer]!!.start()
     }
 
@@ -306,15 +306,13 @@ class AyahPlayer(
     }
 
     private fun stopPlaying() {
-        state = States.Stopped
-        coordinator.onUiUpdate(States.Paused)
+        state = PlaybackStateCompat.STATE_STOPPED
+        coordinator.onUiUpdate(PlaybackStateCompat.STATE_PAUSED)
 
         for (i in 0..1) {
             players[i]!!.reset()
             players[i]!!.release()
         }
-
-        on = false
 
         if (lastTracked != null) {
             lastTracked!!.getSS()!!.removeSpan(what)
@@ -340,8 +338,8 @@ class AyahPlayer(
     private fun notFound() {
         Toast.makeText(context, context.getString(R.string.recitation_not_available), Toast.LENGTH_SHORT).show()
 
-        state = States.Stopped
-        coordinator.onUiUpdate(States.Paused)
+        state = PlaybackStateCompat.STATE_STOPPED
+        coordinator.onUiUpdate(PlaybackStateCompat.STATE_PAUSED)
 
         for (i in 0..1) players[i]!!.reset()
 
@@ -357,7 +355,7 @@ class AyahPlayer(
         return lastPlayed
     }
 
-    fun getState(): States {
+    fun getState(): Int {
         return state
     }
 
@@ -383,7 +381,6 @@ class AyahPlayer(
 
     fun finish() {
         for (i in 0..1) players[i]!!.release()
-
         wifiLock.release()
     }
 

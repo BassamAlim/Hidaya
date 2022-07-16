@@ -86,22 +86,17 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     override fun onCreate() {
         super.onCreate()
-
         Utils.onActivityCreateSetLocale(this)
-
-        pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
         db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "HidayaDB")
             .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+        pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
         getSuraNames()
 
         initSession()
-
         initPlayer()
-
         setupActions()
-
         initMediaSessionMetadata()
     }
 
@@ -193,25 +188,24 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         override fun onStop() {
             Log.i(Global.TAG, "In onStop of TelawatService")
 
-            // Abandon audio focus
-            am.abandonAudioFocusRequest(audioFocusRequest)
-
-            handler.removeCallbacks(runnable)
-            wifiLock.release()
-            unregisterReceiver(receiver)
-            saveForLater(player.currentPosition)
-            // stop the player (custom call)
-            player.stop()
-            // Stop the service
-            stopSelf()
-            // Set the session inactive  (and update metadata and state)
-            mediaSession.isActive = false
             updatePbState(
                 PlaybackStateCompat.STATE_STOPPED, controller.playbackState.bufferedPosition
             )
 
-            // Take the service out of the foreground
-            stopForeground(false)
+            handler.removeCallbacks(runnable)
+            am.abandonAudioFocusRequest(audioFocusRequest)    // Abandon audio focus
+            try {
+                unregisterReceiver(receiver)
+            } catch (ignored: IllegalArgumentException) {}
+            if (wifiLock.isHeld) wifiLock.release()
+
+            saveForLater(player.currentPosition)
+
+            player.release()
+
+            stopSelf()    // Stop the service
+            mediaSession.isActive = false    // Set the session inactive
+            stopForeground(false)    // Take the service out of the foreground
         }
 
         override fun onFastForward() {
@@ -612,7 +606,6 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         player.setOnCompletionListener { skipToNext() }
 
         player.setOnInfoListener { _, what, _ ->
-            Log.d(Global.TAG, "in onInfoListener, What: $what")
             when (what) {
                 MediaPlayer.MEDIA_INFO_BUFFERING_START ->
                     updatePbState(
@@ -759,7 +752,6 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     override fun onUnbind(intent: Intent?): Boolean {
         Log.i(Global.TAG, "In onUnbind of TelawatService")
         saveForLater(player.currentPosition)
-        wifiLock.release()
         return super.onUnbind(intent)
     }
 

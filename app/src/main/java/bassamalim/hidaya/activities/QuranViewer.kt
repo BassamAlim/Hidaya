@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v4.media.session.PlaybackStateCompat
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -29,7 +30,6 @@ import bassamalim.hidaya.databinding.ActivityQuranViewerBinding
 import bassamalim.hidaya.dialogs.InfoDialog
 import bassamalim.hidaya.dialogs.QuranSettingsDialog
 import bassamalim.hidaya.dialogs.TutorialDialog
-import bassamalim.hidaya.enums.States
 import bassamalim.hidaya.helpers.AyahPlayer
 import bassamalim.hidaya.helpers.AyahPlayer.Coordinator
 import bassamalim.hidaya.models.Ayah
@@ -63,7 +63,7 @@ class QuranViewer : SwipeActivity() {
     private lateinit var target: TextView
     private var scrolled = false
     private var selected: Ayah? = null
-    private lateinit var ayahPlayer: AyahPlayer
+    private var ayahPlayer: AyahPlayer? = null
     private lateinit var ayatDB: List<AyatDB?>
     private lateinit var theme: String
     private lateinit var language: String
@@ -83,8 +83,6 @@ class QuranViewer : SwipeActivity() {
         action(intent)
 
         if (viewType == "list") setupRecyclers()
-
-        setupPlayer()
 
         buildPage(currentPage)
 
@@ -162,7 +160,7 @@ class QuranViewer : SwipeActivity() {
 
     private fun setCurrentPage(num: Int) {
         currentPage = num
-        ayahPlayer.setCurrentPage(num)
+        ayahPlayer?.setCurrentPage(num)
     }
 
     private fun buildPage(pageNumber: Int) {
@@ -240,7 +238,7 @@ class QuranViewer : SwipeActivity() {
             allAyahs.add(list[i])
         }
 
-        ayahPlayer.setAllAyahsSize(allAyahs.size)
+        ayahPlayer?.setAllAyahsSize(allAyahs.size)
 
         screen.text = ss
 
@@ -275,7 +273,7 @@ class QuranViewer : SwipeActivity() {
             allAyahs.add(list[i])
         }
 
-        ayahPlayer.setAllAyahsSize(allAyahs.size)
+        ayahPlayer?.setAllAyahsSize(allAyahs.size)
 
         arr = ArrayList<Ayah>()
     }
@@ -339,17 +337,26 @@ class QuranViewer : SwipeActivity() {
         return if (viewType == "list") recyclers[currentView] else lls[currentView]
     }
 
-    private fun updateUi(state: States) {
-        when (state) {
-            States.Playing -> binding.play.setImageDrawable(
-                ResourcesCompat.getDrawable(resources, R.drawable.ic_pause, getTheme())
-            )
-            States.Paused -> binding.play.setImageDrawable(
-                ResourcesCompat.getDrawable(resources, R.drawable.ic_play_aya, getTheme())
-            )
-            States.Stopped -> binding.play.setImageDrawable(
-                ResourcesCompat.getDrawable(resources, R.drawable.ic_play_aya, getTheme())
-            )
+    private fun updateButton(state: Int) {
+        when(state) {
+            PlaybackStateCompat.STATE_PLAYING -> {
+                binding.bufferingCircle.visibility = View.GONE
+                binding.playPause.visibility = View.VISIBLE
+                binding.playPause.setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.ic_pause, getTheme())
+                )
+            }
+            PlaybackStateCompat.STATE_PAUSED, PlaybackStateCompat.STATE_STOPPED-> {
+                binding.bufferingCircle.visibility = View.GONE
+                binding.playPause.visibility = View.VISIBLE
+                binding.playPause.setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.ic_play_aya, getTheme())
+                )
+            }
+            PlaybackStateCompat.STATE_BUFFERING -> {
+                binding.playPause.visibility = View.GONE
+                binding.bufferingCircle.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -363,33 +370,35 @@ class QuranViewer : SwipeActivity() {
             Toast.makeText(this, getString(R.string.page_bookmarked), Toast.LENGTH_SHORT).show()
         }
 
-        binding.play.setOnClickListener {
-            if (ayahPlayer.getState() == States.Playing) {
-                if (ayahPlayer.getLastPlayed() != null) selected = ayahPlayer.getLastPlayed()
+        binding.playPause.setOnClickListener {
+            if (ayahPlayer == null) {
+                setupPlayer()
 
-                ayahPlayer.pause()
-                updateUi(States.Paused)
-            }
-            else if (ayahPlayer.getState() == States.Paused) {
-                if (selected == null) ayahPlayer.resume()
-                else {
-                    ayahPlayer.setChosenSurah(selected!!.getSurahNum())
-                    ayahPlayer.requestPlay(selected!!)
-                }
-                updateUi(States.Playing)
-            }
-            else {
                 if (selected == null) selected = allAyahs[0]
 
-                ayahPlayer.setChosenSurah(selected!!.getSurahNum())
-                ayahPlayer.requestPlay(selected!!)
+                ayahPlayer!!.setChosenSurah(selected!!.getSurahNum())
+                ayahPlayer!!.requestPlay(selected!!)
 
-                updateUi(States.Playing)
+                updateButton(PlaybackStateCompat.STATE_BUFFERING)
+            }
+            else if (ayahPlayer!!.getState() == PlaybackStateCompat.STATE_PLAYING) {
+                if (ayahPlayer!!.getLastPlayed() != null) selected = ayahPlayer!!.getLastPlayed()
+
+                ayahPlayer!!.pause()
+                updateButton(PlaybackStateCompat.STATE_PAUSED)
+            }
+            else if (ayahPlayer!!.getState() == PlaybackStateCompat.STATE_PAUSED) {
+                if (selected == null) ayahPlayer!!.resume()
+                else {
+                    ayahPlayer!!.setChosenSurah(selected!!.getSurahNum())
+                    ayahPlayer!!.requestPlay(selected!!)
+                }
+                updateButton(PlaybackStateCompat.STATE_PLAYING)
             }
             selected = null
         }
-        binding.prevAyah.setOnClickListener { ayahPlayer.prevAyah() }
-        binding.nextAyah.setOnClickListener { ayahPlayer.nextAyah() }
+        binding.prevAyah.setOnClickListener { ayahPlayer?.prevAyah() }
+        binding.nextAyah.setOnClickListener { ayahPlayer?.nextAyah() }
 
         binding.recitationSettings.setOnClickListener {
             val intent = Intent(this, QuranSettingsDialog::class.java)
@@ -426,14 +435,14 @@ class QuranViewer : SwipeActivity() {
                 else flipper.displayedChild = 0
 
                 buildPage(currentPage)
-                ayahPlayer.setViewType(viewType)
+                ayahPlayer?.setViewType(viewType)
             }
         }
 
     private fun setupPlayer() {
         val uiListener: Coordinator = object : Coordinator {
-            override fun onUiUpdate(state: States) {
-                updateUi(state)
+            override fun onUiUpdate(state: Int) {
+                updateButton(state)
             }
 
             override fun getAyah(index: Int): Ayah {
@@ -513,6 +522,11 @@ class QuranViewer : SwipeActivity() {
             resources.getColor(R.color.highlight_M, getTheme())
         )
         return tv
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ayahPlayer?.finish()
     }
 
 }

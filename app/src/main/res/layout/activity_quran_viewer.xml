@@ -150,17 +150,32 @@
                 android:padding="5dp"
                 android:src="@drawable/ic_aya_backward" />
 
-            <ImageButton
-                android:id="@+id/play"
+            <FrameLayout
+                android:id="@+id/state_view"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_gravity="center"
                 android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="6dp"
-                android:background="@drawable/ripple_circle"
-                android:contentDescription="@string/bookmark_page_button_description"
-                android:src="@drawable/ic_play_aya" />
+                android:layout_marginBottom="6dp">
+
+                <ImageButton
+                    android:id="@+id/play_pause"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="3dp"
+                    android:background="@drawable/ripple_circle"
+                    android:contentDescription="@string/bookmark_page_button_description"
+                    android:src="@drawable/ic_play_aya" />
+
+                <ProgressBar
+                    android:id="@+id/buffering_circle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="4dp"
+                    android:indeterminate="true"
+                    android:visibility="gone"/>
+
+            </FrameLayout>
 
             <ImageButton
                 android:id="@+id/next_ayah"

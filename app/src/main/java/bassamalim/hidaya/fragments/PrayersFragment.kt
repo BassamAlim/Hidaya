@@ -1,6 +1,7 @@
 package bassamalim.hidaya.fragments
 
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo
 import android.location.Location
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -45,6 +46,11 @@ class PrayersFragment : Fragment() {
     private lateinit var selectedDay: Calendar
     private var upcoming = 0
     private val constraintSet = ConstraintSet()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity!!.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -55,7 +55,8 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private val intentFilter: IntentFilter = IntentFilter()
     private lateinit var audioFocusRequest: AudioFocusRequest
     private lateinit var wifiLock: WifiLock
-    private lateinit var link: String
+    private var staticUrl: String? = null
+    private lateinit var dynamicUrl: String
 
     companion object {
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
@@ -66,11 +67,10 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     override fun onCreate() {
         super.onCreate()
-
         Utils.onActivityCreateSetLocale(this)
 
         initSession()
-
+        initPlayer()
         setActions()
         initMediaSessionMetadata()
     }
@@ -80,98 +80,84 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
             Log.d(Global.TAG, "In onPlayFromMediaId of RadioClient")
             super.onPlayFromMediaId(mediaId, extras)
-            link = mediaId
+            if (staticUrl == null) {
+                staticUrl = mediaId
+                thread.start()    // get final URL
+            }
+        }
+
+        override fun onPlay() {
+            super.onPlay()
+
             buildNotification()
-            initPlayer()
-            play()
+            // Request audio focus for playback, this registers the afChangeListener
+            var result: Int = AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                result = am.requestAudioFocus(audioFocusRequest)
+
+            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                // Start the service
+                startService(Intent(applicationContext, RadioService::class.java))
+                // Set the session active  (and update metadata and state)
+                mediaSession.isActive = true
+
+                // start the player
+                startPlaying()
+
+                updatePbState(PlaybackStateCompat.STATE_PLAYING, player.currentPosition)
+                updateNotification(true)
+
+                // Register Receiver
+                registerReceiver(receiver, intentFilter)
+                // Put the service in the foreground, post notification
+                startForeground(id, notification)
+
+                wifiLock.acquire()
+            }
         }
 
         override fun onStop() {
             Log.d(Global.TAG, "In onStop of RadioClient")
             super.onStop()
-            stop()
+
+            updatePbState(PlaybackStateCompat.STATE_STOPPED, player.currentPosition)
+
+            try {
+                unregisterReceiver(receiver)
+            } catch (ignored: IllegalArgumentException) {}
+            am.abandonAudioFocusRequest(audioFocusRequest)    // Abandon audio focus
+            if (wifiLock.isHeld) wifiLock.release()
+            player.release()
+
+            stopSelf()    // Stop the service
+            mediaSession.isActive = false    // Set the session inactive
+            stopForeground(false)    // Take the service out of the foreground
         }
 
         override fun onPause() {
             super.onPause()
             Log.d(Global.TAG, "In onPause of RadioClient")
-            pause()
+
+            // pause the player (custom call)
+            mediaSession.isActive = false
+            player.stop()    // since its radio, it can not be paused and resumed normally
+
+            // Update metadata and state
+            updatePbState(PlaybackStateCompat.STATE_PAUSED, player.currentPosition)
+            updateNotification(false)
+
+            // Take the service out of the foreground, retain the notification
+            stopForeground(false)
         }
-    }
-
-    private fun play() {
-        // Request audio focus for playback, this registers the afChangeListener
-        var result: Int = AudioManager.AUDIOFOCUS_REQUEST_GRANTED
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            result = am.requestAudioFocus(audioFocusRequest)
-
-        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            // Start the service
-            startService(Intent(applicationContext, RadioService::class.java))
-            // Set the session active  (and update metadata and state)
-            mediaSession.isActive = true
-
-            // start the player (custom call)
-            if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED
-                || controller.playbackState.state == PlaybackStateCompat.STATE_STOPPED)
-                player.start()
-            else
-                startPlaying()
-
-            updatePbState(PlaybackStateCompat.STATE_PLAYING)
-            updateNotification(true)
-
-            // Register Receiver
-            registerReceiver(receiver, intentFilter)
-            // Put the service in the foreground, post notification
-            startForeground(id, notification)
-        }
-    }
-
-    private fun pause() {
-        Log.d(Global.TAG, "in pause of RadioService")
-        // Update metadata and state
-        // pause the player (custom call)
-        mediaSession.isActive = false
-        player.pause()
-
-        updatePbState(PlaybackStateCompat.STATE_PAUSED)
-        updateNotification(false)
-
-        // Take the service out of the foreground, retain the notification
-        stopForeground(false)
-    }
-
-    private fun stop() {
-        Log.d(Global.TAG, "in stop of RadioService")
-        // Abandon audio focus
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            am.abandonAudioFocusRequest(audioFocusRequest)
-
-        cleanUp()
-        unregisterReceiver(receiver)
-        // stop the player (custom call)
-        player.stop()
-        // Stop the service
-        stopSelf()
-        // Set the session inactive  (and update metadata and state)
-        mediaSession.isActive = false
-        updatePbState(PlaybackStateCompat.STATE_STOPPED)
-
-        // Take the service out of the foreground
-        stopForeground(false)
-        onDestroy()
     }
 
     override fun onAudioFocusChange(i: Int) {
         when (i) {
-            AudioManager.AUDIOFOCUS_GAIN ->
-                if (player != null) player.setVolume(1.0f, 1.0f)
+            AudioManager.AUDIOFOCUS_GAIN -> player.setVolume(1.0f, 1.0f)
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK ->
-                if (player != null && player.isPlaying)
-                    player.setVolume(0.3f, 0.3f)
+                if (player.isPlaying) player.setVolume(0.3f, 0.3f)
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS ->
-                if (player != null && player.isPlaying) pause()
+                if (player.isPlaying) callback.onPause()
         }
     }
 
@@ -180,20 +166,20 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             when (intent.action) {
                 AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
                     Log.d(Global.TAG, "In ACTION_BECOMING_NOISY of RadioService")
-                    pause()
+                    callback.onPause()
                 }
                 ACTION_PLAY_PAUSE ->
                     if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
                         Log.d(Global.TAG, "In ACTION_PAUSE of RadioService")
-                        pause()
+                        callback.onPause()
                     }
                     else if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED) {
-                    Log.d(Global.TAG, "In ACTION_PLAY of RadioService")
-                    play()
-                }
+                        Log.d(Global.TAG, "In ACTION_PLAY of RadioService")
+                        callback.onPlay()
+                    }
                 ACTION_STOP -> {
                     Log.d(Global.TAG, "In ACTION_STOP of RadioService")
-                    stop()
+                    callback.onStop()
                 }
             }
         }
@@ -294,10 +280,10 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         mediaSession.setMetadata(metadataBuilder.build())
     }
 
-    private fun updatePbState(state: Int) {
+    private fun updatePbState(state: Int, position: Int) {
         val stateBuilder: PlaybackStateCompat.Builder = PlaybackStateCompat.Builder()
 
-        stateBuilder.setState(state, player.currentPosition.toLong(), 1F)
+        stateBuilder.setState(state, position.toLong(), 1F)
             .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
 
         mediaSession.setPlaybackState(stateBuilder.build())
@@ -331,7 +317,6 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
             .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
-        wifiLock.acquire()
 
         player.setAudioAttributes(
             AudioAttributes.Builder()
@@ -354,10 +339,20 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         player.setOnPreparedListener {
             player.start()
-            updatePbState(PlaybackStateCompat.STATE_PLAYING)
+            updatePbState(PlaybackStateCompat.STATE_PLAYING, player.currentPosition)
             updateNotification(true)
         }
-        player.setOnCompletionListener { stop() }
+
+        player.setOnInfoListener { _, what, _ ->
+            when (what) {
+                MediaPlayer.MEDIA_INFO_BUFFERING_START ->
+                    updatePbState(PlaybackStateCompat.STATE_BUFFERING, player.currentPosition)
+                MediaPlayer.MEDIA_INFO_BUFFERING_END ->
+                    updatePbState(PlaybackStateCompat.STATE_PLAYING, player.currentPosition)
+            }
+            false
+        }
+
         player.setOnErrorListener { _: MediaPlayer?, what: Int, _: Int ->
             Log.e(Global.TAG, "Error in RadioService player: $what")
             true
@@ -381,24 +376,26 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun startPlaying() {
         player.reset()
-        thread.start()
+        player.setDataSource(applicationContext, Uri.parse(dynamicUrl))
+        player.prepareAsync()
     }
 
     // Other Links:
     // https://www.aloula.sa/83c0bda5-18e7-4c80-9c0a-21e764537d47
     // https://m.live.net.sa:1935/live/quransa/playlist.m3u8
 
-    private var thread = Thread {
+    private val thread = Thread {
+        updatePbState(PlaybackStateCompat.STATE_BUFFERING, 0)
+
         try {    // A mechanism to handle redirects and get the final dynamic link
-            val url = URL(link)
+            val url = URL(staticUrl)
             val connection = url.openConnection() as HttpURLConnection
             connection.instanceFollowRedirects = false
             val secondURL = URL(connection.getHeaderField("Location"))
-            link = secondURL.toString()
-            link = link.replaceFirst("http:".toRegex(), "https:")
-            Log.i(Global.TAG, "Dynamic Quran Radio URL: $link")
-            player.setDataSource(applicationContext, Uri.parse(link))
-            player.prepareAsync()
+            dynamicUrl = secondURL.toString().replaceFirst("http:".toRegex(), "https:")
+            Log.i(Global.TAG, "Dynamic Quran Radio URL: ${this.dynamicUrl}")
+
+            updatePbState(PlaybackStateCompat.STATE_PAUSED, 0)
         } catch (e: IOException) {
             Log.e(Global.TAG, "Problem in RadioService player")
             e.printStackTrace()
@@ -466,16 +463,6 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun allowBrowsing(clientPackageName: String, clientUid: Int): Boolean {
         return true
-    }
-
-    private fun cleanUp() {
-        player.release()
-        wifiLock.release()
-    }
-
-    override fun onUnbind(intent: Intent?): Boolean {
-        Log.d(Global.TAG, "In onUnbind of RadioService")
-        return super.onUnbind(intent)
     }
 
 }
