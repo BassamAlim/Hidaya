@@ -298,7 +298,7 @@ class PrayTimes(private val context: Context) {
         val str = getDatePrayerTimes(
             year, month + 1, day, latitude,
             longitude, tZone
-        )[1]
+        )[0]
         var hour = str.substring(0, 2).toInt()
         if (str[6] == 'P') hour += 12
         val calendar = Calendar.getInstance()
