@@ -60,9 +60,9 @@ class BookSearcher : AppCompatActivity() {
 
         init()
 
-        setListeners()
-
         initFilterIb()
+
+        setListeners()
 
         setupSizeSpinner()
     }
@@ -93,7 +93,7 @@ class BookSearcher : AppCompatActivity() {
             }
         })
 
-        val bookTitles: Array<String> = emptyArray()
+        val bookTitles = Array(books.size) { "" }    // how to create array in kotlin
         for (i in books.indices) {
             bookTitles[i] =
                 if (language == "en") books[i].titleEn
@@ -102,7 +102,7 @@ class BookSearcher : AppCompatActivity() {
         binding.filterIb.setOnClickListener { v ->
             FilterDialog(
                 this, v, getString(R.string.choose_books), bookTitles, selectedBooks,
-                adapter!!, binding.filterIb, "selected_search_books"
+                adapter, binding.filterIb, "selected_search_books"
             )
         }
     }

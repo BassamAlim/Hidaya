@@ -35,8 +35,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
             if (needed()) locate()
             else Log.i(Global.TAG, "dead intent walking in daily update receiver")
         }
-        else if (intent.action == "boot")
-            locate()
+        else if (intent.action == "boot") locate()
     }
 
     private fun needed(): Boolean {

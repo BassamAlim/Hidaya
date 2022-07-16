@@ -24,7 +24,7 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
     title: String,
     private val strArr: Array<String>,
     private val selected: BooleanArray,
-    private val filteredAdapter: FilteredRecyclerAdapter<VH>,
+    private val filteredAdapter: FilteredRecyclerAdapter<VH>?,
     private val filterIb: ImageButton,
     private val prefKey: String) {
 
@@ -120,7 +120,7 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
         val editor: SharedPreferences.Editor = pref.edit()
         editor.putString(prefKey, str)
         editor.apply()
-        filteredAdapter.filter(null, selected)
+        filteredAdapter?.filter(null, selected)
     }
 
 }

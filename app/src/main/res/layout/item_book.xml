@@ -47,7 +47,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/ripple_surface"
                     android:padding="10dp"
-                    android:contentDescription="@string/download" />
+                    android:contentDescription="@string/download"
+                    android:src="@drawable/ic_download"/>
 
                 <ProgressBar
                     android:id="@+id/buffering_circle"
