@@ -42,11 +42,10 @@ class BooksActivity : AppCompatActivity() {
     }
 
     private fun checkFirstTime() {
-        val key = "is_first_time_in_books_activity"
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(key, true))
-            TutorialDialog(
-            this, getString(R.string.books_activity_tips), key
-            ).show(this.supportFragmentManager, TutorialDialog.TAG)
+        val prefKey = "is_first_time_in_books_activity"
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(prefKey, true))
+            TutorialDialog.newInstance(getString(R.string.books_activity_tips), prefKey
+            ).show(supportFragmentManager, TutorialDialog.TAG)
     }
 
     private fun setupRecycler() {

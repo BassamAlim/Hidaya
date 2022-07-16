@@ -71,7 +71,7 @@ class AthkarViewer : AppCompatActivity() {
                     t.getThikrId(), t.getTitleEn(), t.getTextEn(), t.getTextEnTranslation(),
                     t.getFadlEn(), t.getReferenceEn(), t.getRepetitionEn()
                 ) {
-                    InfoDialog(getString(R.string.reference), t.getReferenceEn())
+                    InfoDialog.newInstance(getString(R.string.reference), t.getReferenceEn())
                         .show(supportFragmentManager, InfoDialog.TAG)
                 }
             ) else items.add(
@@ -79,10 +79,8 @@ class AthkarViewer : AppCompatActivity() {
                     t.getTextEnTranslation(), t.getFadl(), t.getReference(),
                     t.getRepetition()
                 ) {
-                    InfoDialog(
-                        getString(R.string.reference),
-                        t.getReference()
-                    ).show(supportFragmentManager, InfoDialog.TAG)
+                    InfoDialog.newInstance(getString(R.string.reference), t.getReference())
+                        .show(supportFragmentManager, InfoDialog.TAG)
                 }
             )
         }

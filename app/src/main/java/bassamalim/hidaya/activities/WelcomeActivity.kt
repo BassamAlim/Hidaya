@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityWelcomeBinding
+import bassamalim.hidaya.fragments.SettingsFragment
+import bassamalim.hidaya.other.Utils
 
 class WelcomeActivity: AppCompatActivity() {
 
@@ -15,12 +17,13 @@ class WelcomeActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Utils.myOnActivityCreated(this)
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         if (savedInstanceState == null)
             supportFragmentManager.beginTransaction().replace(
-                R.id.settings, Settings.SettingsFragment("initial")
+                R.id.settings, SettingsFragment.newInstance("initial")
             ).commit()
 
         setListeners()

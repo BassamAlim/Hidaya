@@ -206,10 +206,12 @@ class PrayersFragment : Fragment() {
     }
 
     private fun checkFirstTime() {
-        if (pref.getBoolean("is_first_time_in_prayers", true)) TutorialDialog(
-            context!!, getString(R.string.prayers_tips),
-            "is_first_time_in_prayers"
-        ).show(requireActivity().supportFragmentManager, TutorialDialog.TAG)
+        val prefKey = "is_first_time_in_prayers"
+        if (pref.getBoolean(prefKey, true))
+            TutorialDialog.newInstance(
+                getString(R.string.prayers_tips),
+                prefKey
+            ).show(requireActivity().supportFragmentManager, TutorialDialog.TAG)
     }
 
     private fun count() {

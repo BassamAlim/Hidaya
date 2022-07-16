@@ -77,11 +77,12 @@ class QuranCollectionFragment : Fragment() {
     }
 
     private fun checkFirstTime() {
-        val key = "is_first_time_in_quran_fragment"
-        if (PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean(key, true))
-            TutorialDialog(requireContext(),
-                getString(R.string.quran_fragment_tips), key)
-                .show(requireActivity().supportFragmentManager, TutorialDialog.TAG)
+        val prefKey = "is_first_time_in_quran_fragment"
+        if (PreferenceManager
+                .getDefaultSharedPreferences(requireContext()).getBoolean(prefKey, true))
+            TutorialDialog.newInstance(
+                getString(R.string.quran_fragment_tips), prefKey
+            ).show(requireActivity().supportFragmentManager, TutorialDialog.TAG)
     }
 
     override fun onDestroyView() {

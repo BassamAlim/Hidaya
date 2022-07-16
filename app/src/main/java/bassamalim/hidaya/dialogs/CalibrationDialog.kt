@@ -1,6 +1,5 @@
 package bassamalim.hidaya.dialogs
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -13,7 +12,7 @@ import androidx.fragment.app.DialogFragment
 import bassamalim.hidaya.R
 import com.bumptech.glide.Glide
 
-class CalibrationDialog(private val gContext: Context) : DialogFragment() {
+class CalibrationDialog : DialogFragment() {
 
     companion object {
         var TAG = "CompassCalibrationGif"
@@ -26,12 +25,12 @@ class CalibrationDialog(private val gContext: Context) : DialogFragment() {
         dialog!!.window!!.setLayout(10, 10)
 
         val view: View = layoutInflater.inflate(
-            R.layout.compass_calibration_gif, LinearLayout(gContext)
+            R.layout.compass_calibration_gif, LinearLayout(context)
         )
 
         val screen = view.findViewById<ImageView>(R.id.gif_screen)
         screen.setOnClickListener { dismiss() }
-        Glide.with(gContext).load(R.drawable.compass_calibration).into(screen)
+        Glide.with(requireContext()).load(R.drawable.compass_calibration).into(screen)
 
         return view
     }

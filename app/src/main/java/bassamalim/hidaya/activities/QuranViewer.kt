@@ -117,10 +117,11 @@ class QuranViewer : SwipeActivity() {
     }
 
     private fun checkFirstTime() {
-        if (pref.getBoolean("is_first_time_in_quran", true)) TutorialDialog(
-            this, getString(R.string.quran_tips),
-            "is_first_time_in_quran"
-        ).show(supportFragmentManager, TutorialDialog.TAG)
+        val prefKey = "is_first_time_in_quran"
+        if (pref.getBoolean(prefKey, true))
+            TutorialDialog.newInstance(
+                getString(R.string.quran_tips), prefKey
+            ).show(supportFragmentManager, TutorialDialog.TAG)
     }
 
     private fun action(intent: Intent) {
@@ -216,7 +217,7 @@ class QuranViewer : SwipeActivity() {
         for (i in list.indices) {
             val clickableSpan: DoubleClickableSpan = object : DoubleClickableSpan() {
                 override fun onDoubleClick(view: View?) {
-                    InfoDialog(getString(R.string.tafseer), list[i].getTafseer())
+                    InfoDialog.newInstance(getString(R.string.tafseer), list[i].getTafseer())
                         .show(supportFragmentManager, InfoDialog.TAG)
                 }
 
@@ -252,7 +253,7 @@ class QuranViewer : SwipeActivity() {
             val ss = SpannableString(list[i].getText())
             val clickableSpan: DoubleClickableSpan = object : DoubleClickableSpan() {
                 override fun onDoubleClick(view: View?) {
-                    InfoDialog(getString(R.string.tafseer), list[i].getTafseer())
+                    InfoDialog.newInstance(getString(R.string.tafseer), list[i].getTafseer())
                         .show(supportFragmentManager, InfoDialog.TAG)
                 }
 

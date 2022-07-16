@@ -11,10 +11,29 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import bassamalim.hidaya.R
 
-class InfoDialog(private val title: String, private val text: String) : DialogFragment() {
+class InfoDialog: DialogFragment() {
+
+    private lateinit var title: String
+    private lateinit var text: String
 
     companion object {
         var TAG = "InfoDialog"
+
+        fun newInstance(title: String, text: String): InfoDialog {
+            val dialog = InfoDialog()
+            val args = Bundle()
+            args.putString("title", title)
+            args.putString("text", text)
+            dialog.arguments = args
+            return dialog
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        title = arguments?.getString("title", "")!!
+        text = arguments?.getString("text", "")!!
     }
 
     override fun onCreateView(

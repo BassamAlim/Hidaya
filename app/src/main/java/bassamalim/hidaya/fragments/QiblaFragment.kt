@@ -198,7 +198,7 @@ class QiblaFragment : Fragment() {
                     AppCompatResources.getDrawable(requireContext(), R.drawable.ic_warning)
                 )
                 binding!!.accuracyIndicator.setOnClickListener {
-                    CalibrationDialog(requireContext())
+                    CalibrationDialog()
                         .show(requireActivity().supportFragmentManager, CalibrationDialog.TAG)
                 }
             }

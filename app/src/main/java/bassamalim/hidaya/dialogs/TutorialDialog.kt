@@ -1,6 +1,5 @@
 package bassamalim.hidaya.dialogs
 
-import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -16,7 +15,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 
-class TutorialDialog : DialogFragment {
+class TutorialDialog : DialogFragment() {
 
     private lateinit var pref: SharedPreferences
     private lateinit var gView: View
@@ -25,15 +24,22 @@ class TutorialDialog : DialogFragment {
 
     companion object {
         var TAG = "TutorialDialog"
+
+        fun newInstance(text: String, prefKey: String): TutorialDialog {
+            val dialog = TutorialDialog()
+            val args = Bundle()
+            args.putString("text", text)
+            args.putString("pref_key", prefKey)
+            dialog.arguments = args
+            return dialog
+        }
     }
 
-    constructor()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    constructor(context: Context, text: String, prefKey: String) {
-        this.text = text
-        this.prefKey = prefKey
-
-        pref = PreferenceManager.getDefaultSharedPreferences(context)
+        text = arguments?.getString("text", "")!!
+        prefKey = arguments?.getString("pref_key", "")!!
     }
 
     override fun onCreateView(
@@ -42,6 +48,8 @@ class TutorialDialog : DialogFragment {
         super.onCreateView(inflater, container, savedInstanceState)
 
         gView = inflater.inflate(R.layout.dialog_tutorial, container, false)
+
+        pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
         if (dialog != null && dialog!!.window != null) {
             dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
