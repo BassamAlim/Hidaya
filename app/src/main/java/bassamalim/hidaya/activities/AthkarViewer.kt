@@ -64,25 +64,28 @@ class AthkarViewer : AppCompatActivity() {
         for (i in thikrs.indices) {
             val t: ThikrsDB = thikrs[i]
 
-            if (language == "en" && (t.getTextEn().isEmpty())) continue
+            if (language == "en" && (t.getTextEn()!!.isEmpty())) continue
 
-            if (language == "en") items.add(
-                Thikr(
-                    t.getThikrId(), t.getTitleEn(), t.getTextEn(), t.getTextEnTranslation(),
-                    t.getFadlEn(), t.getReferenceEn(), t.getRepetitionEn()
-                ) {
-                    InfoDialog.newInstance(getString(R.string.reference), t.getReferenceEn())
-                        .show(supportFragmentManager, InfoDialog.TAG)
-                }
-            ) else items.add(
-                Thikr(t.getThikrId(), t.getTitle(), t.getText(),
-                    t.getTextEnTranslation(), t.getFadl(), t.getReference(),
-                    t.getRepetition()
-                ) {
-                    InfoDialog.newInstance(getString(R.string.reference), t.getReference())
-                        .show(supportFragmentManager, InfoDialog.TAG)
-                }
-            )
+            if (language == "en")
+                items.add(
+                    Thikr(
+                        t.getThikrId(), t.getTitleEn(), t.getTextEn()!!, t.getTextEnTranslation(),
+                        t.getFadlEn(), t.getReferenceEn(), t.getRepetitionEn()
+                    ) {
+                        InfoDialog.newInstance(getString(R.string.reference), t.getReferenceEn()!!)
+                            .show(supportFragmentManager, InfoDialog.TAG)
+                    }
+                )
+            else
+                items.add(
+                    Thikr(t.getThikrId(), t.getTitle(), t.getText()!!,
+                        t.getTextEnTranslation(), t.getFadl(), t.getReference(),
+                        t.getRepetition()
+                    ) {
+                        InfoDialog.newInstance(getString(R.string.reference), t.getReference()!!)
+                            .show(supportFragmentManager, InfoDialog.TAG)
+                    }
+                )
         }
         return items
     }

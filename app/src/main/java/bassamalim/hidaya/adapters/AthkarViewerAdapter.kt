@@ -74,7 +74,8 @@ class AthkarViewerAdapter(context: Context, cards: ArrayList<Thikr>, private val
         }
         else viewHolder.repetitionTv.text = card.getRepetition()
 
-        if (card.getTitle().isEmpty()) viewHolder.titleTv.visibility = View.GONE
+        if (card.getTitle() == null || card.getTitle()!!.isEmpty())
+            viewHolder.titleTv.visibility = View.GONE
         else viewHolder.titleTv.text = card.getTitle()
 
         if (LANGUAGE == "ar"
@@ -82,16 +83,17 @@ class AthkarViewerAdapter(context: Context, cards: ArrayList<Thikr>, private val
             viewHolder.textTranslationTv.visibility = View.GONE
         else viewHolder.textTranslationTv.text = card.getTextTranslation()
 
-        if (card.getFadl().isEmpty()) {
+        if (card.getFadl() == null || card.getFadl()!!.isEmpty()) {
             viewHolder.fadlTv.visibility = View.GONE
             viewHolder.fadlDiv.visibility = View.GONE
         }
         else viewHolder.fadlTv.text = card.getFadl()
 
-        if (card.getReference().isEmpty()) {
+        if (card.getReference() == null || card.getReference()!!.isEmpty()) {
             viewHolder.referenceBtn.visibility = View.GONE
             viewHolder.referenceDiv.visibility = View.GONE
         }
+
         viewHolder.referenceBtn.setOnClickListener(card.getReferenceListener())
     }
 

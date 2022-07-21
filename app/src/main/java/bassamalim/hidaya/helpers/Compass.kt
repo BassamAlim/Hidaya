@@ -1,17 +1,12 @@
 package bassamalim.hidaya.helpers
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.util.Log
-import android.widget.Toast
-import bassamalim.hidaya.R
-import bassamalim.hidaya.other.Global
 
-class Compass(gContext: Context) : SensorEventListener {
+class Compass(context: Context, private var listener: CompassListener) : SensorEventListener {
 
     private val sensorManager: SensorManager
     private val mSensor: Sensor
@@ -21,39 +16,23 @@ class Compass(gContext: Context) : SensorEventListener {
     private val myR = FloatArray(9)
     private val myI = FloatArray(9)
 
-    private var listener: CompassListener? = null
     interface CompassListener {
         fun onNewAzimuth(azimuth: Float)
         fun calibration(accuracy: Int)
     }
-    fun setListener(l: CompassListener) {
-        listener = l
-    }
 
     init {
-        sensorManager = gContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         aSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         mSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
     }
 
     /**
      * Register the listeners for the accelerometer and magnetometer sensors
-     *
-     * @param context The context of the calling class.
      */
-    fun start(context: Context) {
+    fun start() {
         sensorManager.registerListener(this, aSensor, SensorManager.SENSOR_DELAY_GAME)
         sensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME)
-
-        val manager = context.packageManager
-        val haveAS = manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)
-        val haveCS = manager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS)
-        if (!haveAS || !haveCS) {
-            sensorManager.unregisterListener(this, aSensor)
-            sensorManager.unregisterListener(this, mSensor)
-            Toast.makeText(context, context.getString(R.string.feature_not_supported), Toast.LENGTH_SHORT).show()
-            Log.e(Global.TAG, "Device don't have enough sensors")
-        }
     }
 
     fun stop() {
@@ -82,13 +61,13 @@ class Compass(gContext: Context) : SensorEventListener {
                 var azimuth = Math.toDegrees(orientation[0].toDouble()).toFloat()    // orientation
                 azimuth = (azimuth + 360) % 360
 
-                if (listener != null) listener!!.onNewAzimuth(azimuth)
+                listener.onNewAzimuth(azimuth)
             }
         }
     }
 
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-        listener!!.calibration(accuracy)
+        listener.calibration(accuracy)
     }
 
 }

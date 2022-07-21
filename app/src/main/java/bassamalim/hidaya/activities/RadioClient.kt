@@ -24,7 +24,7 @@ class RadioClient : AppCompatActivity() {
 
     private lateinit var binding: ActivityRadioClientBinding
     private lateinit var remoteConfig: FirebaseRemoteConfig
-    private lateinit var mediaBrowser: MediaBrowserCompat
+    private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
     private lateinit var playPause: ImageButton // play/pause button
@@ -39,17 +39,12 @@ class RadioClient : AppCompatActivity() {
 
         playPause = binding.radioPpBtn
 
-        mediaBrowser = MediaBrowserCompat(
-            this, ComponentName(this, RadioService::class.java),
-            connectionCallbacks, null
-        )
-
-        getLinkAndEnable()
+        getLinkAndConnect()
     }
 
     override fun onStart() {
         super.onStart()
-        mediaBrowser.connect()
+        mediaBrowser?.connect()
     }
 
     override fun onResume() {
@@ -63,10 +58,10 @@ class RadioClient : AppCompatActivity() {
             MediaControllerCompat.getMediaController(this@RadioClient)
                 .unregisterCallback(controllerCallback)
         }
-        mediaBrowser.disconnect()
+        mediaBrowser?.disconnect()
     }
 
-    private fun getLinkAndEnable() {
+    private fun getLinkAndConnect() {
         remoteConfig = FirebaseRemoteConfig.getInstance()
         remoteConfig.fetchAndActivate().addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
@@ -74,17 +69,25 @@ class RadioClient : AppCompatActivity() {
                 Log.d(Global.TAG, "Config params updated")
                 Log.d(Global.TAG, "Quran Radio URL: $url")
 
-                enableControls()
+                connect()
             }
             else Log.d(Global.TAG, "Fetch failed")
         }
+    }
+
+    private fun connect() {
+        mediaBrowser = MediaBrowserCompat(
+            this, ComponentName(this, RadioService::class.java),
+            connectionCallbacks, null
+        )
+        mediaBrowser!!.connect()
     }
 
     private val connectionCallbacks: MediaBrowserCompat.ConnectionCallback =
         object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             // Get the token for the MediaSession
-            val token: MediaSessionCompat.Token = mediaBrowser.sessionToken
+            val token: MediaSessionCompat.Token = mediaBrowser!!.sessionToken
 
             // Create a MediaControllerCompat
             val mediaController = MediaControllerCompat(this@RadioClient, token)
@@ -99,6 +102,8 @@ class RadioClient : AppCompatActivity() {
 
             // Finish building the UI
             buildTransportControls()
+
+            enableControls()
         }
 
         override fun onConnectionSuspended() {

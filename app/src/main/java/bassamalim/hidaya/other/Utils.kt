@@ -31,10 +31,13 @@ object Utils {
     }
 
     fun onActivityCreateSetTheme(activity: Activity): String {
-        val theme: String? =
-            PreferenceManager.getDefaultSharedPreferences(activity)
+        val theme: String? = PreferenceManager.getDefaultSharedPreferences(activity)
                 .getString(activity.getString(R.string.theme_key), activity.getString(R.string.default_theme))
-        if (theme == "ThemeM") activity.setTheme(R.style.Theme_HidayaM)
+        when(theme) {
+            "ThemeM" -> activity.setTheme(R.style.Theme_HidayaM)
+//            "ThemeR" -> activity.setTheme(R.style.Theme_HidayaR)
+            else -> activity.setTheme(R.style.Theme_HidayaL)
+        }
         return theme!!
     }
 

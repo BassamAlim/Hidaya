@@ -4,11 +4,11 @@ import android.view.View
 
 data class Thikr(
     private val id: Int,
-    private val title: String,
+    private val title: String?,
     private val text: String,
     private val textTranslation: String?,
-    private val fadl: String,
-    private val reference: String,
+    private val fadl: String?,
+    private val reference: String?,
     private val repetition: String,
     private val referenceListener: View.OnClickListener
 ) {
@@ -17,7 +17,7 @@ data class Thikr(
         return id
     }
 
-    fun getTitle(): String {
+    fun getTitle(): String? {
         return title
     }
 
@@ -29,11 +29,11 @@ data class Thikr(
         return textTranslation
     }
 
-    fun getFadl(): String {
+    fun getFadl(): String? {
         return fadl
     }
 
-    fun getReference(): String {
+    fun getReference(): String? {
         return reference
     }
 

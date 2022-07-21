@@ -1,11 +1,13 @@
 package bassamalim.hidaya.fragments
 
+import android.content.Context
 import android.content.pm.ActivityInfo
-import android.content.res.Configuration
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +21,6 @@ import bassamalim.hidaya.databinding.FragmentQiblaBinding
 import bassamalim.hidaya.dialogs.CalibrationDialog
 import bassamalim.hidaya.helpers.Compass
 import bassamalim.hidaya.helpers.Compass.CompassListener
-import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
 import kotlin.math.*
 
@@ -48,21 +49,9 @@ class QiblaFragment : Fragment() {
 
             setupCompass()
 
-            compass?.start(requireContext())
+            compass?.start()
         }
         else located = false
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        Log.d(Global.TAG, "in onConfigurationChanged")
-        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
-        else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Log.d(Global.TAG, "NOOOOO")
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
     }
 
     override fun onCreateView(
@@ -72,11 +61,11 @@ class QiblaFragment : Fragment() {
         val root: View = binding!!.root
 
         if (!located)
-            binding!!.distanceText.text = getString(R.string.location_permission_for_qibla)
+            binding!!.distanceTv.text = getString(R.string.location_permission_for_qibla)
         else {
             val distanceText = (getString(R.string.distance_to_kaaba) + ": " +
                     Utils.translateNumbers(requireContext(), distance.toString()) + " " + getString(R.string.distance_unit))
-            binding!!.distanceText.text = distanceText
+            binding!!.distanceTv.text = distanceText
 
             binding!!.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT)
         }
@@ -92,7 +81,7 @@ class QiblaFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (located && compass != null) compass!!.start(requireContext())
+        compass?.start()
     }
 
     override fun onStop() {
@@ -101,18 +90,30 @@ class QiblaFragment : Fragment() {
     }
 
     private fun setupCompass() {
-        compass = Compass(requireContext())
-        val listener: CompassListener = object : CompassListener {
-            override fun onNewAzimuth(azimuth: Float) {
-                adjust(azimuth)
-                adjustNorthDial(azimuth)
-            }
+        val sensorManager =
+            requireContext().getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val packageManager = requireContext().packageManager
 
-            override fun calibration(accuracy: Int) {
-                updateAccuracy(accuracy)
-            }
-        }
-        compass!!.setListener(listener)
+        // Checking features needed for Qibla
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null
+            && sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null
+            && packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)
+            && packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS))
+            compass = Compass(
+                requireContext(),
+                object : CompassListener {
+                    override fun onNewAzimuth(azimuth: Float) {
+                        adjust(azimuth)
+                        adjustNorthDial(azimuth)
+                    }
+
+                    override fun calibration(accuracy: Int) {
+                        updateAccuracy(accuracy)
+                    }
+                }
+            )
+        else
+            binding!!.distanceTv.text = getString(R.string.feature_not_supported)
     }
 
     private fun adjust(azimuth: Float) {

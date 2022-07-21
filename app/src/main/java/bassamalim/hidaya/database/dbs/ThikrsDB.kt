@@ -23,32 +23,33 @@ class ThikrsDB(
     @field:ColumnInfo(name = "text") private val text: String?,
     @field:ColumnInfo(name = "text_en") private val textEn: String?,
     @field:ColumnInfo(name = "text_en_translation") private val textEnTranslation: String?,
-    @field:ColumnInfo(name = "repetition") private val repetition: String?,
-    @field:ColumnInfo(name = "repetition_en") private val repetitionEn: String?,
+    @field:ColumnInfo(name = "repetition") private val repetition: String,
+    @field:ColumnInfo(name = "repetition_en") private val repetitionEn: String,
     @field:ColumnInfo(name = "fadl") private val fadl: String?,
     @field:ColumnInfo(name = "fadl_en") private val fadlEn: String?,
     @field:ColumnInfo(name = "reference") private val reference: String?,
     @field:ColumnInfo(name = "reference_en") private val referenceEn: String?,
     @field:ColumnInfo(name = "athkar_id") @field:NonNull private val athkarId: Int
 ) {
+
     fun getThikrId(): Int {
         return thikrId
     }
 
-    fun getTitle(): String {
-        return title!!
+    fun getTitle(): String? {
+        return title
     }
 
-    fun getTitleEn(): String {
-        return titleEn!!
+    fun getTitleEn(): String? {
+        return titleEn
     }
 
-    fun getText(): String {
-        return text!!
+    fun getText(): String? {
+        return text
     }
 
-    fun getTextEn(): String {
-        return textEn!!
+    fun getTextEn(): String? {
+        return textEn
     }
 
     fun getTextEnTranslation(): String? {
@@ -56,27 +57,27 @@ class ThikrsDB(
     }
 
     fun getRepetition(): String {
-        return repetition!!
+        return repetition
     }
 
     fun getRepetitionEn(): String {
-        return repetitionEn!!
+        return repetitionEn
     }
 
-    fun getFadl(): String {
-        return fadl!!
+    fun getFadl(): String? {
+        return fadl
     }
 
-    fun getFadlEn(): String {
-        return fadlEn!!
+    fun getFadlEn(): String? {
+        return fadlEn
     }
 
-    fun getReference(): String {
-        return reference!!
+    fun getReference(): String? {
+        return reference
     }
 
-    fun getReferenceEn(): String {
-        return referenceEn!!
+    fun getReferenceEn(): String? {
+        return referenceEn
     }
 
     fun getAthkarId(): Int {

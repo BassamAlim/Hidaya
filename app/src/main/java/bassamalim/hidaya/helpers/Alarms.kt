@@ -17,71 +17,39 @@ import java.util.*
 class Alarms {
 
     private val context: Context
-    private lateinit var appContext: Context
-    private val times: Array<Calendar?>
-    private lateinit var pref: SharedPreferences
-    private lateinit var action: String
-    private lateinit var id: ID
+    private var pref: SharedPreferences
 
     constructor(gContext: Context, gTimes: Array<Calendar?>) {
         context = gContext
-        times = gTimes
-        action = "all"
+        pref = PreferenceManager.getDefaultSharedPreferences(context)
 
-        setUp()
-        recognize()
+        setAll(gTimes)
     }
 
     constructor(gContext: Context, id: ID) {
         context = gContext
-        this.id = id
-
-        times = Keeper(context).retrieveTimes()
-
-        setUp()
-        setAlarm()
-    }
-
-    /**
-     * Creates a new instance of the application context and a new instance of the SharedPreferences
-     * object
-     */
-    private fun setUp() {
-        appContext = context.applicationContext
         pref = PreferenceManager.getDefaultSharedPreferences(context)
+
+        if (id.ordinal in 0..5)
+            setPrayerAlarm(id, Keeper(context).retrieveTimes()[id.ordinal])
+        else if (id.ordinal in 6..9)
+            setExtraAlarm(id)
     }
 
     /**
      * Finds out if the desired function and executes it
      */
-    private fun recognize() {
-        when (action) {
-            "all" -> {
-                setPrayerAlarms()
-                setExtraAlarms()
-            }
-            "prayers" -> setPrayerAlarms()
-            "extra" -> setExtraAlarms()
-        }
+    private fun setAll(times: Array<Calendar?>) {
+        setPrayerAlarms(times)
+        setExtraAlarms()
     }
 
-    /**
-     * It sets the alarm, using the proper method
-     */
-    private fun setAlarm() {
-        Log.i(Global.TAG, "in set alarm")
-        if (id.ordinal in 0..5)
-            setPrayerAlarm(id)
-        else if (id.ordinal in 6..9)
-            setExtraAlarm(id)
-    }
-
-    private fun setPrayerAlarms() {
+    private fun setPrayerAlarms(times: Array<Calendar?>) {
         Log.i(Global.TAG, "in set prayer alarms")
-        for (i in times.indices) {
+        for (i in 0..5) {
             val mappedId: ID = Utils.mapID(i)!!
             if (pref.getInt(mappedId.toString() + "notification_type", 2) != 0)
-                setPrayerAlarm(mappedId)
+                setPrayerAlarm(mappedId, times[i])
         }
     }
 
@@ -90,25 +58,25 @@ class Alarms {
      *
      * @param id the ID of the prayer
      */
-    private fun setPrayerAlarm(id: ID?) {
+    private fun setPrayerAlarm(id: ID, time: Calendar?) {
         Log.i(Global.TAG, "in set alarm for: $id")
 
         // adjust the time with the delay
         val adjustment: Long = pref.getLong(id.toString() + "time_adjustment", 0)
-        val adjusted = times[id!!.ordinal]!!.timeInMillis + adjustment
+        val adjusted = time!!.timeInMillis + adjustment
 
         if (System.currentTimeMillis() <= adjusted) {
-            val intent = Intent(appContext, NotificationReceiver::class.java)
+            val intent = Intent(context, NotificationReceiver::class.java)
             if (id == ID.SHOROUQ) intent.action = "extra"
             else intent.action = "prayer"
             intent.putExtra("id", id.ordinal)
             intent.putExtra("time", adjusted)
 
             val myAlarm: AlarmManager =
-                appContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
             val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
-                appContext, id.ordinal, intent,
+                context, id.ordinal, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
@@ -127,12 +95,9 @@ class Alarms {
 
         val today = Calendar.getInstance()
 
-        if (pref.getBoolean(context.getString(R.string.morning_athkar_key), true))
-            setExtraAlarm(ID.MORNING)
-        if (pref.getBoolean(context.getString(R.string.evening_athkar_key), true))
-            setExtraAlarm(ID.EVENING)
-        if (pref.getBoolean(context.getString(R.string.daily_werd_key), true))
-            setExtraAlarm(ID.DAILY_WERD)
+        if (pref.getBoolean(context.getString(R.string.morning_athkar_key), true)) setExtraAlarm(ID.MORNING)
+        if (pref.getBoolean(context.getString(R.string.evening_athkar_key), true)) setExtraAlarm(ID.EVENING)
+        if (pref.getBoolean(context.getString(R.string.daily_werd_key), true)) setExtraAlarm(ID.DAILY_WERD)
         if (pref.getBoolean(context.getString(R.string.friday_kahf_key), true)
             && today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
             setExtraAlarm(ID.FRIDAY_KAHF)
@@ -165,16 +130,15 @@ class Alarms {
         time[Calendar.SECOND] = 0
         time[Calendar.MILLISECOND] = 0
 
-        val intent = Intent(appContext, NotificationReceiver::class.java)
+        val intent = Intent(context, NotificationReceiver::class.java)
         intent.action = "extra"
         intent.putExtra("id", id!!.ordinal)
         intent.putExtra("time", time.timeInMillis)
 
-        val myAlarm: AlarmManager =
-            appContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val myAlarm: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
-            appContext, id.ordinal, intent,
+            context, id.ordinal, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 

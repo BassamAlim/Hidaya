@@ -103,7 +103,7 @@ class AthkarListActivity : AppCompatActivity() {
         val ts: List<ThikrsDB> = db.thikrsDao().getThikrs(thikr.athkar_id)
         for (i in ts.indices) {
             val t: ThikrsDB = ts[i]
-            if (t.getTextEn().length > 1) return true
+            if (t.getTextEn() != null && t.getTextEn()!!.length > 1) return true
         }
         return false
     }

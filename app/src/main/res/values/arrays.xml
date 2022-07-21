@@ -98,11 +98,13 @@
     <string-array name="themes_entries">
         <item>الفاتح</item>
         <item>الداكن</item>
+        <!--<item>إضافي</item>-->
     </string-array>
 
     <string-array name="theme_values" translatable="false">
         <item>ThemeL</item>
         <item>ThemeM</item>
+        <!--<item>ThemeR</item>-->
     </string-array>
 
     <string-array name="repeat_mode_entries">
