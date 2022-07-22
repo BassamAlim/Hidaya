@@ -390,6 +390,7 @@ class TelawatClient : AppCompatActivity() {
         if (isTaskRoot) {
             val intent = Intent(this, TelawatSuarCollectionActivity::class.java)
             intent.putExtra("reciter_id", reciterId)
+            intent.putExtra("reciter_name", reciterName)
             intent.putExtra("version_id", versionId)
             startActivity(intent)
             finish()

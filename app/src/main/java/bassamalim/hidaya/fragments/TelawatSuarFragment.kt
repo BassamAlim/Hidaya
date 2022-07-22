@@ -64,7 +64,7 @@ class TelawatSuarFragment : Fragment {
             if (type == ListType.Downloaded) checkDownloaded()
             setAdapter()
         }
-        else adapter!!.unregisterReceiver()
+        else adapter?.unregisterReceiver()
     }
 
     private val data: Unit
