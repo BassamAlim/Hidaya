@@ -157,12 +157,12 @@ class AllQuranFragment : Fragment() {
     private fun setSearchListeners() {
         binding!!.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                adapter!!.filterNumber(query)
+                adapter?.filterNumber(query)
                 return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                adapter!!.filterName(newText)
+                adapter?.filterName(newText)
                 return true
             }
         })

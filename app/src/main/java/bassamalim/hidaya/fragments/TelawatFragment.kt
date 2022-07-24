@@ -168,7 +168,7 @@ class TelawatFragment : Fragment {
 
     private fun filter() {
         selectedRewayat = getSelectedRewayat()
-        adapter!!.filter(null, selectedRewayat)
+        adapter?.filter(null, selectedRewayat)
         for (aBoolean in selectedRewayat) {
             if (!aBoolean) {
                 binding!!.filterIb.setImageDrawable(
@@ -182,12 +182,12 @@ class TelawatFragment : Fragment {
     private fun setListeners() {
         binding!!.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                adapter!!.filter(query, null)
+                adapter?.filter(query, null)
                 return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                adapter!!.filter(newText, null)
+                adapter?.filter(newText, null)
                 return true
             }
         })

@@ -134,12 +134,12 @@ class TelawatSuarFragment : Fragment {
     private fun setSearchListeners() {
         binding!!.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                adapter!!.filter(query)
+                adapter?.filter(query)
                 return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                adapter!!.filter(newText)
+                adapter?.filter(newText)
                 return true
             }
         })
