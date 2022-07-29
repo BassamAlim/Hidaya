@@ -23,8 +23,10 @@ class ThikrsDB(
     @field:ColumnInfo(name = "text") private val text: String?,
     @field:ColumnInfo(name = "text_en") private val textEn: String?,
     @field:ColumnInfo(name = "text_en_translation") private val textEnTranslation: String?,
-    @field:ColumnInfo(name = "repetition") private val repetition: String,
-    @field:ColumnInfo(name = "repetition_en") private val repetitionEn: String,
+    @field:ColumnInfo(name = "repetition", defaultValue = "1")
+        @field:NonNull private val repetition: String,
+    @field:ColumnInfo(name = "repetition_en", defaultValue = "1")
+        @field:NonNull private val repetitionEn: String,
     @field:ColumnInfo(name = "fadl") private val fadl: String?,
     @field:ColumnInfo(name = "fadl_en") private val fadlEn: String?,
     @field:ColumnInfo(name = "reference") private val reference: String?,

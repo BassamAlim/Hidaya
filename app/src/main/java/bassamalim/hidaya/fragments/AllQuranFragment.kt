@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
+import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -20,6 +21,7 @@ import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.SuarDB
 import bassamalim.hidaya.databinding.FragmentQuranBinding
 import bassamalim.hidaya.models.Sura
+import bassamalim.hidaya.other.Global
 import java.util.*
 
 class AllQuranFragment : Fragment() {

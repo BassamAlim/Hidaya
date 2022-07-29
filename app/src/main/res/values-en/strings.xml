@@ -4,6 +4,7 @@
     <string name="app_name">Hidaya</string>
 
     <!-- Tabs Titles -->
+    <string name="title_home">Home</string>
     <string name="title_prayers">Prayer times</string>
     <string name="title_alathkar">Athkar</string>
     <string name="title_qibla">Qibla</string>
@@ -26,7 +27,8 @@
     <string name="aya_repeat">Aya repetition</string>
 
     <!-- TextViews Text -->
-    <string name="distance_to_kaaba">Distance to kaaba</string>
+    <string name="telawat_time_record_title">Telawat Listening \nDuration</string>
+    <string name="quran_pages_record_title">Read Quran Pages \n (with repetition)</string>
 
     <!-- Buttons Text -->
     <string name="contact">Contact me</string>
@@ -110,6 +112,7 @@
     <!-- Formats -->
     <string name="remaining">Remaining: %1$s</string>
     <string name="settings_of">%s Settings</string>
+    <string name="distance_to_kaaba">Distance to Kaaba: %s</string>
 
     <!-- Sources -->
     <string name="quran_source">Quran: from King Fahd Glorious Quran Printing Complex.</string>
@@ -129,6 +132,8 @@
     <string name="playback_failed">Playback failed</string>
     <string name="choose_allow_all_the_time">Choose \"Allow all the time\" to keep the prayer times and qibla direction accurate</string>
     <string name="recitation_not_available">This aya\'s recitation is not available for the selected reciter</string>
+    <string name="incorrect_day">Incorrect day</string>
+
 
     <string name="athan_speaker">Athan</string>
     <string name="enable_notification">Sound notification</string>
@@ -217,5 +222,6 @@
     <string name="list_view">List</string>
     <string name="view_method">View Method</string>
     <string name="download">download</string>
+    <string name="qibla">Qibla</string>
 
 </resources>

@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home"
+        android:title="@string/title_home" />
+
+    <item
         android:id="@+id/navigation_prayers"
         android:icon="@drawable/ic_prayers_black_24dp"
         android:title="@string/title_prayers" />
-
-    <item
-        android:id="@+id/navigation_alathkar"
-        android:icon="@drawable/ic_duaa"
-        android:title="@string/title_alathkar" />
 
     <item
         android:id="@+id/navigation_quran"
@@ -17,9 +17,9 @@
         android:title="@string/title_quran" />
 
     <item
-        android:id="@+id/navigation_qibla"
-        android:icon="@drawable/ic_qibla_compass"
-        android:title="@string/title_qibla" />
+        android:id="@+id/navigation_alathkar"
+        android:icon="@drawable/ic_duaa"
+        android:title="@string/title_alathkar" />
 
     <item
         android:id="@+id/navigation_other"

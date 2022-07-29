@@ -21,7 +21,7 @@
         <attr name="mySpecialText" format="color|reference" />
         <attr name="myActiveOnPrimary" format="color|reference" />
         <attr name="myActiveOnPrimaryDark" format="color|reference" />
-        <attr name="myCounter" format="color|reference" />
+        <attr name="myRipple" format="color|reference" />
         <attr name="myDialogBg" format="color|reference" />
         <attr name="mySeparator" format="color|reference" />
 

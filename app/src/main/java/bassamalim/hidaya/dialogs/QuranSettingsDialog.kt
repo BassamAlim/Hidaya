@@ -37,7 +37,7 @@ class QuranSettingsDialog : AppCompatActivity() {
 
         initRadioGroup()
 
-        binding.executeBtn.setOnClickListener {execute()}
+        binding.executeBtn.setOnClickListener { execute() }
         settingsFragment = SettingsFragment()
 
         if (savedInstanceState == null)
@@ -59,7 +59,8 @@ class QuranSettingsDialog : AppCompatActivity() {
         )
         when (theme) {
             "ThemeM" -> setTheme(R.style.RoundedDialogM)
-            "ThemeL" -> setTheme(R.style.RoundedDialogL)
+            "ThemeR" -> setTheme(R.style.RoundedDialogM)
+            else -> setTheme(R.style.RoundedDialogL)
         }
     }
 

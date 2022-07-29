@@ -8,20 +8,6 @@ plugins {
 }
 
 android {
-    signingConfigs {
-        debug {
-            storeFile file('C:\\My Stuff\\MySigning\\MySigning.jks')
-            storePassword 'BA-1G@h$o$s@t2@1!2'
-            keyAlias 'BassamAlim'
-            keyPassword 'BA-1G@h$o$s@t2@1!2'
-        }
-        release {
-        storeFile file('C:\\My Stuff\\MySigning\\MySigning.jks')
-            storePassword 'BA-1G@h$o$s@t2@1!2'
-            keyPassword 'BA-1G@h$o$s@t2@1!2'
-            keyAlias 'BassamAlim'
-        }
-    }
     compileSdk 32
 
     defaultConfig {
@@ -37,6 +23,21 @@ android {
             annotationProcessorOptions {
                 arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file('C:\\My Stuff\\MySigning\\MySigning.jks')
+            storePassword 'BA-1G@h$o$s@t2@1!2'
+            keyAlias 'BassamAlim'
+            keyPassword 'BA-1G@h$o$s@t2@1!2'
+        }
+        release {
+        storeFile file('C:\\My Stuff\\MySigning\\MySigning.jks')
+            storePassword 'BA-1G@h$o$s@t2@1!2'
+            keyPassword 'BA-1G@h$o$s@t2@1!2'
+            keyAlias 'BassamAlim'
         }
     }
 

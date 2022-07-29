@@ -126,11 +126,12 @@ class PrayerDialog(
                 Log.i(Global.TAG, "delay is set to: $min")
 
                 if (min > 0) {
-                    val positive = Utils.translateNumbers(context, "+$min")
+                    val positive = Utils.translateNumbers(context, "+$min", false)
                     delayTvs[id.ordinal]!!.text = positive
                 }
                 else if (min < 0)
-                    delayTvs[id.ordinal]!!.text = Utils.translateNumbers(context, min.toString())
+                    delayTvs[id.ordinal]!!.text =
+                        Utils.translateNumbers(context, min.toString(), false)
                 else
                     delayTvs[id.ordinal]!!.text = ""
 

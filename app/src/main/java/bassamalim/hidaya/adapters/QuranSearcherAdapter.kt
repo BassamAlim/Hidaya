@@ -52,20 +52,19 @@ class QuranSearcherAdapter(private val context: Context, private val items: List
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val card = items[position]
 
-        val suraNumStr = "$suraNumString " + Utils.translateNumbers(context, card.getSurahName())
+        val suraNumStr = "$suraNumString " +
+                Utils.translateNumbers(context, card.getSurahName(), false)
         viewHolder.suraNumTv.text = suraNumStr
 
         val suraNameStr = suraStr + " " + card.getSurahName()
         viewHolder.suraNameTv.text = suraNameStr
 
-        val pageNumStr = "$pageNumString " + Utils.translateNumbers(
-            context, card.getPageNum().toString()
-        )
+        val pageNumStr = "$pageNumString " +
+                Utils.translateNumbers(context, card.getPageNum().toString(), false)
         viewHolder.pageNumTv.text = pageNumStr
 
-        val ayaNumStr = "$ayaNumString " + Utils.translateNumbers(
-            context, card.getAyahNum().toString()
-        )
+        val ayaNumStr = "$ayaNumString " +
+                Utils.translateNumbers(context, card.getAyahNum().toString(), false)
         viewHolder.ayaNumTv.text = ayaNumStr
 
         viewHolder.ayaTextTv.text = card.getSS()

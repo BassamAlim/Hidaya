@@ -37,21 +37,20 @@
     <color name="active_on_primary_L">#D18E21</color>
     <color name="active_on_primary_dark_L">#AA7113</color>
 
-    <!--// Theme R
-    <color name="bg_R">#EEEEEE</color>
-    <color name="primary_R">#CFCFCF</color>
-    <color name="surface_R">#CECFD1</color>
-    <color name="accent_R">#CA3E47</color>
-
+    // Theme R
+    <color name="bg_R">#101010</color>
+    <color name="primary_R">#141517</color>
+    <color name="surface_R">#141517</color>
+    <color name="accent_R">#0097AA</color>
     <color name="primary_weak_R">#B3323232</color>    // # alpha in hex + color
-    <color name="ripple_R">#EEEEEE</color>
-    <color name="accent_dark_R">#16C80F</color>
-    <color name="text_R">#000000</color>
+    <color name="ripple_R">#3B3E43</color>
+    <color name="accent_dark_R">#037583</color>
+    <color name="text_R">#BCC2C7</color>
     <color name="on_primary_R">#000000</color>
     <color name="highlight_R">#01849C</color>
     <color name="track_R">#113297</color>
     <color name="q_bg_R">#BACDE1</color>
-    <color name="active_on_primary_R">#16C80F</color>
-    <color name="active_on_primary_dark_R">#2b9348</color>-->
+    <color name="active_on_primary_R">#0097AA</color>
+    <color name="active_on_primary_dark_R">#037583</color>
 
 </resources>

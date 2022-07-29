@@ -2,8 +2,9 @@ package bassamalim.hidaya.models
 
 import android.text.SpannableString
 import android.widget.TextView
+import java.io.Serializable
 
-class Ayah {
+class Ayah: Serializable {
 
     private var juz = 0
     private val surahNum: Int

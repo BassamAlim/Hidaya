@@ -2,7 +2,13 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@+id/navigation_prayers">
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="bassamalim.hidaya.fragments.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_prayers"
@@ -11,22 +17,16 @@
         tools:layout="@layout/fragment_prayers" />
 
     <fragment
-        android:id="@+id/navigation_alathkar"
-        android:name="bassamalim.hidaya.fragments.AthkarFragment"
-        android:label="@string/title_alathkar"
-        tools:layout="@layout/fragment_athkar" />
-
-    <fragment
         android:id="@+id/navigation_quran"
         android:name="bassamalim.hidaya.fragments.QuranCollectionFragment"
         android:label="@string/title_quran"
         tools:layout="@layout/fragment_collection_quran" />
 
     <fragment
-        android:id="@+id/navigation_qibla"
-        android:name="bassamalim.hidaya.fragments.QiblaFragment"
-        android:label="@string/title_qibla"
-        tools:layout="@layout/fragment_qibla" />
+        android:id="@+id/navigation_alathkar"
+        android:name="bassamalim.hidaya.fragments.AthkarFragment"
+        android:label="@string/title_alathkar"
+        tools:layout="@layout/fragment_athkar" />
 
     <fragment
         android:id="@+id/navigation_other"

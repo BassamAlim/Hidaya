@@ -37,78 +37,95 @@
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/top_bar" />
 
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/hidden_btns_space"
+        app:layout_constraintTop_toBottomOf="@id/title_tv">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/quran_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/tajawal_regular"
+                android:padding="20dp"
+                android:text="@string/quran_source"
+                android:textSize="22sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?mySeparator" />
+
+            <TextView
+                android:id="@+id/tafseer_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/tajawal_regular"
+                android:padding="20dp"
+                android:text="@string/tafseer_source"
+                android:textSize="22sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?mySeparator" />
+
+            <TextView
+                android:id="@+id/books_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/tajawal_regular"
+                android:padding="20dp"
+                android:text="@string/hadeeth_source"
+                android:textSize="22sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?mySeparator" />
+
+            <TextView
+                android:id="@+id/athkar_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/tajawal_regular"
+                android:padding="20dp"
+                android:text="@string/athkar_source"
+                android:textSize="22sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?mySeparator" />
+
+            <TextView
+                android:id="@+id/quiz_source"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:fontFamily="@font/tajawal_regular"
+                android:padding="20dp"
+                android:text="@string/quiz_source"
+                android:textSize="22sp" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </ScrollView>
+
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/hidden_btns_space"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_tv">
-
-        <TextView
-            android:id="@+id/quran_source"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/tajawal_regular"
-            android:padding="20dp"
-            android:text="@string/quran_source"
-            android:textSize="22sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?mySeparator" />
-
-        <TextView
-            android:id="@+id/tafseer_source"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/tajawal_regular"
-            android:padding="20dp"
-            android:text="@string/tafseer_source"
-            android:textSize="22sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?mySeparator" />
-
-        <TextView
-            android:id="@+id/books_source"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/tajawal_regular"
-            android:padding="20dp"
-            android:text="@string/hadeeth_source"
-            android:textSize="22sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?mySeparator" />
-
-        <TextView
-            android:id="@+id/athkar_source"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/tajawal_regular"
-            android:padding="20dp"
-            android:text="@string/athkar_source"
-            android:textSize="22sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?mySeparator" />
-
-        <TextView
-            android:id="@+id/quiz_source"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:fontFamily="@font/tajawal_regular"
-            android:padding="20dp"
-            android:text="@string/quiz_source"
-            android:textSize="22sp" />
+        app:layout_constraintTop_toBottomOf="@id/scroll_view">
 
         <Button
             android:id="@+id/rebuild_db"

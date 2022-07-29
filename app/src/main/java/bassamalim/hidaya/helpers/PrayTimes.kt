@@ -275,6 +275,7 @@ class PrayTimes(private val context: Context) {
             )
         )
         result.removeAt(4)
+
         return result
     }
 
@@ -287,6 +288,24 @@ class PrayTimes(private val context: Context) {
         return formatTimes(
             getDatePrayerTimes(year, month + 1, day, latitude, longitude, tZone)
         )
+    }
+
+    private fun formatTimes(givenTimes: ArrayList<String>): Array<Calendar?> {
+        val formattedTimes = arrayOfNulls<Calendar>(givenTimes.size - 1) // subtracted one
+
+        // removing sunset time which is the same as maghrib and pushing others
+        givenTimes.removeAt(4)
+        for (i in givenTimes.indices) {
+            val m = givenTimes[i][6]
+            var hour = givenTimes[i].substring(0, 2).toInt()
+            if (m == 'P' && hour != 12) hour += 12
+            formattedTimes[i] = Calendar.getInstance()
+            formattedTimes[i]!!.set(Calendar.HOUR_OF_DAY, hour)
+            formattedTimes[i]!!.set(Calendar.MINUTE, givenTimes[i].substring(3, 5).toInt())
+            formattedTimes[i]!!.set(Calendar.SECOND, 0)
+            formattedTimes[i]!!.set(Calendar.MILLISECOND, 0)
+        }
+        return formattedTimes
     }
 
     fun getTomorrowFajr(
@@ -307,24 +326,6 @@ class PrayTimes(private val context: Context) {
         calendar[Calendar.MINUTE] = str.substring(3, 5).toInt()
         calendar[Calendar.SECOND] = 0
         return calendar
-    }
-
-    private fun formatTimes(givenTimes: ArrayList<String>): Array<Calendar?> {
-        val formattedTimes = arrayOfNulls<Calendar>(givenTimes.size - 1) // subtracted one
-
-        // removing sunset time which is the same as maghrib and pushing others
-        givenTimes.removeAt(4)
-        for (i in givenTimes.indices) {
-            val m = givenTimes[i][6]
-            var hour = givenTimes[i].substring(0, 2).toInt()
-            if (m == 'P' && hour != 12) hour += 12
-            formattedTimes[i] = Calendar.getInstance()
-            formattedTimes[i]!!.set(Calendar.HOUR_OF_DAY, hour)
-            formattedTimes[i]!!.set(Calendar.MINUTE, givenTimes[i].substring(3, 5).toInt())
-            formattedTimes[i]!!.set(Calendar.SECOND, 0)
-            formattedTimes[i]!!.set(Calendar.MILLISECOND, 0)
-        }
-        return formattedTimes
     }
 
     private fun translateNumbers(subject: ArrayList<String>): ArrayList<String> {

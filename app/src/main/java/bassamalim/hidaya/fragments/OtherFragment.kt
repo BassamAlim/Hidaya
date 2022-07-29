@@ -1,7 +1,6 @@
 package bassamalim.hidaya.fragments
 
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,11 +18,6 @@ class OtherFragment : Fragment() {
 
     private var binding: FragmentOtherBinding? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity!!.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -36,48 +30,41 @@ class OtherFragment : Fragment() {
 
     fun setListeners() {
         binding!!.telawat.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val intent = Intent(context, TelawatCollectionActivity::class.java)
-                startActivity(intent)
-            }
-            else Toast.makeText(
-                context, getString(R.string.feature_not_supported), Toast.LENGTH_SHORT
-            ).show()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                startActivity(Intent(context, TelawatCollectionActivity::class.java))
+            else
+                Toast.makeText(context, getString(R.string.feature_not_supported), Toast.LENGTH_SHORT).show()
+        }
+
+        binding!!.qibla.setOnClickListener {
+            startActivity(Intent(context, QiblaActivity::class.java))
         }
 
         binding!!.quiz.setOnClickListener {
-            val intent = Intent(context, QuizLobbyActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(context, QuizLobbyActivity::class.java))
         }
 
         binding!!.books.setOnClickListener {
-            val intent = Intent(context, BooksActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(context, BooksActivity::class.java))
         }
 
         binding!!.channels.setOnClickListener {
-            val intent = Intent(context, TvActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(context, TvActivity::class.java))
         }
 
         binding!!.radio.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val intent = Intent(context, RadioClient::class.java)
-                startActivity(intent)
-            }
-            else Toast.makeText(
-                context, getString(R.string.feature_not_supported), Toast.LENGTH_SHORT
-            ).show()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                startActivity(Intent(context, RadioClient::class.java))
+            else
+                Toast.makeText(context, getString(R.string.feature_not_supported), Toast.LENGTH_SHORT).show()
         }
 
         binding!!.dateConverter.setOnClickListener {
-            val intent = Intent(context, DateConverter::class.java)
-            startActivity(intent)
+            startActivity(Intent(context, DateConverter::class.java))
         }
 
         binding!!.settings.setOnClickListener {
-            val intent = Intent(context, Settings::class.java)
-            startActivity(intent)
+            startActivity(Intent(context, Settings::class.java))
         }
 
         binding!!.contact.setOnClickListener {
@@ -99,8 +86,7 @@ class OtherFragment : Fragment() {
         }
 
         binding!!.about.setOnClickListener {
-            val about = Intent(context, AboutActivity::class.java)
-            startActivity(about)
+            startActivity(Intent(context, AboutActivity::class.java))
         }
     }
 

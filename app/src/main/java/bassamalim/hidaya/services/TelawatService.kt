@@ -73,15 +73,16 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private lateinit var version: Reciter.RecitationVersion
     private var shuffle = 0
     private var continueFrom = 0
+    private var updateRecordCounter = 0
 
     companion object {
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
         private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
-        private const val ACTION_PLAY = "bassamalim.hidaya.services.TelawatService.play"
-        private const val ACTION_PAUSE = "bassamalim.hidaya.services.TelawatService.pause"
-        private const val ACTION_NEXT = "bassamalim.hidaya.services.TelawatService.next"
-        private const val ACTION_PREV = "bassamalim.hidaya.services.TelawatService.prev"
-        private const val ACTION_STOP = "bassamalim.hidaya.services.TelawatService.stop"
+        private const val ACTION_PLAY = "bassamalim.hidaya.services.TelawatService.PLAY"
+        private const val ACTION_PAUSE = "bassamalim.hidaya.services.TelawatService.PAUSE"
+        private const val ACTION_NEXT = "bassamalim.hidaya.services.TelawatService.NEXT"
+        private const val ACTION_PREV = "bassamalim.hidaya.services.TelawatService.PREVIOUS"
+        private const val ACTION_STOP = "bassamalim.hidaya.services.TelawatService.STOP"
     }
 
     override fun onCreate() {
@@ -176,6 +177,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             updateNotification(false)
 
             saveForLater(player.currentPosition)
+            updateDurationRecord(updateRecordCounter)
 
             handler.removeCallbacks(runnable)
             // pause the player
@@ -194,12 +196,11 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
             handler.removeCallbacks(runnable)
             am.abandonAudioFocusRequest(audioFocusRequest)    // Abandon audio focus
-            try {
-                unregisterReceiver(receiver)
-            } catch (ignored: IllegalArgumentException) {}
+            unregisterReceiver()
             if (wifiLock.isHeld) wifiLock.release()
 
             saveForLater(player.currentPosition)
+            updateDurationRecord(updateRecordCounter)
 
             player.release()
 
@@ -460,79 +461,59 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun initMediaSessionMetadata() {
-        val metadataBuilder: MediaMetadataCompat.Builder = MediaMetadataCompat.Builder()
-
-        //Notification icon in card
-        metadataBuilder.putBitmap(
-            MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-            BitmapFactory.decodeResource(resources, R.color.surface_M)
+        mediaSession.setMetadata(
+            MediaMetadataCompat.Builder()
+                .putBitmap(    //Notification icon in card
+                    MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
+                    BitmapFactory.decodeResource(resources, R.color.surface_M)
+                )
+                .putBitmap(
+                    MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
+                    BitmapFactory.decodeResource(resources, R.color.surface_M)
+                )
+                .putBitmap(    //lock screen icon for pre lollipop
+                    MediaMetadataCompat.METADATA_KEY_ART,
+                    BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
+                )
+                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "")
+                .putText(MediaMetadataCompat.METADATA_KEY_TITLE, "")
+                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "")
+                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, "")
+                .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 0)
+                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, 0)
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
+                .build()
         )
-        metadataBuilder.putBitmap(
-            MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-            BitmapFactory.decodeResource(resources, R.color.surface_M)
-        )
-        //lock screen icon for pre lollipop
-        metadataBuilder.putBitmap(
-            MediaMetadataCompat.METADATA_KEY_ART,
-            BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
-        )
-        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "")
-        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_TITLE, "")
-        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "")
-        metadataBuilder.putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, "")
-
-        metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 0)
-        metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, 0)
-
-        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
-
-        mediaSession.setMetadata(metadataBuilder.build())
     }
 
     private fun updateMetadata(duration: Boolean) {
-        val metadataBuilder: MediaMetadataCompat.Builder = MediaMetadataCompat.Builder()
+        mediaMetadata = MediaMetadataCompat.Builder()
+            .putBitmap(    //Notification icon in card
+                MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
+                BitmapFactory.decodeResource(resources, R.color.surface_M)
+            )
+            .putBitmap(
+                MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
+                BitmapFactory.decodeResource(resources, R.color.surface_M)
+            )
+            .putBitmap(    //lock screen icon for pre lollipop
+                MediaMetadataCompat.METADATA_KEY_ART,
+                BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
+            )
+            .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, surahNames[surahIndex])
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, surahNames[surahIndex])
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterName)
+            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, version.getRewaya())
+            .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, surahIndex.toLong())
+            .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version.getCount().toLong())
+            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
+                (if (duration) player.duration else 0).toLong()
+            )
+            .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
+            .build()
 
-        //Notification icon in card
-        metadataBuilder.putBitmap(
-            MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
-            BitmapFactory.decodeResource(resources, R.color.surface_M)
-        )
-        metadataBuilder.putBitmap(
-            MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-            BitmapFactory.decodeResource(resources, R.color.surface_M)
-        )
-        //lock screen icon for pre lollipop
-        metadataBuilder.putBitmap(
-            MediaMetadataCompat.METADATA_KEY_ART,
-            BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
-        )
-
-        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
-
-        metadataBuilder.putString(
-            MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, surahNames[surahIndex]
-        )
-        metadataBuilder.putString(
-            MediaMetadataCompat.METADATA_KEY_TITLE, surahNames[surahIndex]
-        )
-        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterName)
-        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName)
-        metadataBuilder.putString(
-            MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, version.getRewaya()
-        )
-
-        metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, surahIndex.toLong())
-        metadataBuilder.putLong(
-            MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version.getCount().toLong()
-        )
-        metadataBuilder.putLong(
-            MediaMetadataCompat.METADATA_KEY_DURATION,
-            (if (duration) player.duration else 0).toLong()
-        )
-
-        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
-
-        mediaMetadata = metadataBuilder.build()
         mediaSession.setMetadata(mediaMetadata)
     }
 
@@ -551,6 +532,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         updatePbState(
             controller.playbackState.state, controller.playbackState.bufferedPosition
         )
+
+        if (updateRecordCounter++ == 10) updateDurationRecord(updateRecordCounter)
+
         handler.postDelayed(runnable, 1000)
     }
 
@@ -573,16 +557,14 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
             .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
 
-        player.setAudioAttributes(
-            AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .build()
-        )
         am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
         val attrs: AudioAttributes = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .setUsage(AudioAttributes.USAGE_MEDIA)
             .build()
+
+        player.setAudioAttributes(attrs)
 
         audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
             .setOnAudioFocusChangeListener(this)
@@ -603,7 +585,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             refresh()
         }
 
-        player.setOnCompletionListener { skipToNext() }
+        player.setOnCompletionListener {
+            updateDurationRecord(updateRecordCounter)
+            skipToNext()
+        }
 
         player.setOnInfoListener { _, what, _ ->
             when (what) {
@@ -749,9 +734,29 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         editor.apply()
     }
 
+    private fun updateDurationRecord(amount: Int) {
+        val old = pref.getLong("telawat_playback_time", 0L)
+        val new = old + amount * 1000
+
+        Log.d(Global.TAG, new.toString())
+
+        val editor = pref.edit()
+        editor.putLong("telawat_playback_record", new)
+        editor.apply()
+
+        updateRecordCounter = 0
+    }
+
+    private fun unregisterReceiver() {
+        try {
+            unregisterReceiver(receiver)
+        } catch (e: IllegalArgumentException) {}
+    }
+
     override fun onUnbind(intent: Intent?): Boolean {
         Log.i(Global.TAG, "In onUnbind of TelawatService")
         saveForLater(player.currentPosition)
+        updateDurationRecord(updateRecordCounter)
         return super.onUnbind(intent)
     }
 

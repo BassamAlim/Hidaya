@@ -24,7 +24,7 @@ class AboutActivity : AppCompatActivity() {
         Utils.myOnActivityCreated(this)
         binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.home.setOnClickListener {onBackPressed()}
+        binding.home.setOnClickListener { onBackPressed() }
 
         setListener()
     }

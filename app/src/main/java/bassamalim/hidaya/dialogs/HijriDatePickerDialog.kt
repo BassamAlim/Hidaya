@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.NumberPicker
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import bassamalim.hidaya.R
@@ -47,7 +48,7 @@ class HijriDatePickerDialog : DialogFragment() {
         val maxYear = 2000
         val tempArray = arrayOfNulls<String>(maxYear)
         for (i in 0 until maxYear) tempArray[i] = Utils.translateNumbers(
-            requireContext(), (i + 1).toString()
+            requireContext(), (i + 1).toString(), false
         )
 
         yearPicker.minValue = 1
@@ -64,13 +65,21 @@ class HijriDatePickerDialog : DialogFragment() {
         monthPicker.value = cal.get(Calendar.MONTH) + 1
         monthPicker.displayedValues = resources.getStringArray(R.array.numbered_hijri_months)
         monthPicker.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
-            cal.set(Calendar.MONTH, newVal - 1)
+            try {
+                cal.set(Calendar.MONTH, newVal - 1)
+            } catch (e: Exception) {
+                Toast.makeText(
+                    requireContext(), getString(R.string.incorrect_day), Toast.LENGTH_SHORT
+                ).show()
+            }
+
             dayPicker.maxValue = cal.lengthOfMonth()
         }
 
         val daysNums = arrayOfNulls<String>(30)
-        for (i in daysNums.indices)
-            daysNums[i] = Utils.translateNumbers(requireContext(), (i + 1).toString())
+        for (i in daysNums.indices) daysNums[i] = Utils.translateNumbers(
+            requireContext(), (i + 1).toString(), false
+        )
 
         dayPicker.minValue = 1
         dayPicker.maxValue = cal.lengthOfMonth()

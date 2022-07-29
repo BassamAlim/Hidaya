@@ -26,6 +26,7 @@
         <DropDownPreference
             android:key="@string/aya_reciter_key"
             android:title="@string/reciter"
+            android:defaultValue="13"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 

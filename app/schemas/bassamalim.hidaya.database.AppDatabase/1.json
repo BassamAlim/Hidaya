@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2c71976247180887319e95a5fed07010",
+    "identityHash": "d0f067f0953a919e89a40ce66324a480",
     "entities": [
       {
         "tableName": "hafs_ayat",
@@ -286,7 +286,7 @@
       },
       {
         "tableName": "thikrs",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`thikr_id` INTEGER NOT NULL, `title` TEXT, `title_en` TEXT, `text` TEXT, `text_en` TEXT, `text_en_translation` TEXT, `repetition` TEXT NOT NULL, `repetition_en` TEXT NOT NULL, `fadl` TEXT, `fadl_en` TEXT, `reference` TEXT, `reference_en` TEXT, `athkar_id` INTEGER NOT NULL, PRIMARY KEY(`thikr_id`, `athkar_id`), FOREIGN KEY(`athkar_id`) REFERENCES `athkar`(`athkar_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`thikr_id` INTEGER NOT NULL, `title` TEXT, `title_en` TEXT, `text` TEXT, `text_en` TEXT, `text_en_translation` TEXT, `repetition` TEXT NOT NULL DEFAULT '1', `repetition_en` TEXT NOT NULL DEFAULT '1', `fadl` TEXT, `fadl_en` TEXT, `reference` TEXT, `reference_en` TEXT, `athkar_id` INTEGER NOT NULL, PRIMARY KEY(`thikr_id`, `athkar_id`), FOREIGN KEY(`athkar_id`) REFERENCES `athkar`(`athkar_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
         "fields": [
           {
             "fieldPath": "thikrId",
@@ -328,13 +328,15 @@
             "fieldPath": "repetition",
             "columnName": "repetition",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": true,
+            "defaultValue": "'1'"
           },
           {
             "fieldPath": "repetitionEn",
             "columnName": "repetition_en",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": true,
+            "defaultValue": "'1'"
           },
           {
             "fieldPath": "fadl",
@@ -636,7 +638,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2c71976247180887319e95a5fed07010')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd0f067f0953a919e89a40ce66324a480')"
     ]
   }
 }

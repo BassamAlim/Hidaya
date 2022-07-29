@@ -195,10 +195,10 @@ class MainActivity : AppCompatActivity() {
         val hYear = " " + hijri.get(Calendar.YEAR)
         val hMonth = " " + resources.getStringArray(R.array.hijri_months)[Calendar.MONTH]
         val hDay = "" + hijri.get(Calendar.DATE)
-        var hijriStr: String = resources
+        var hijriStr = resources
             .getStringArray(R.array.week_days)[hijri.get(Calendar.DAY_OF_WEEK) - 1].toString() + " "
-        hijriStr += Utils.translateNumbers(this, hDay) + hMonth +
-                Utils.translateNumbers(this, hYear)
+        hijriStr += Utils.translateNumbers(this, hDay, false) + hMonth +
+                Utils.translateNumbers(this, hYear, false)
         binding.hijriView.text = hijriStr
 
         val gregorian = Calendar.getInstance()
@@ -206,8 +206,8 @@ class MainActivity : AppCompatActivity() {
         val mMonth = " " + resources
             .getStringArray(R.array.gregorian_months)[gregorian[Calendar.MONTH]]
         val mDay = "" + gregorian[Calendar.DATE]
-        val gregorianStr = (Utils.translateNumbers(this, mDay)
-                + mMonth + Utils.translateNumbers(this, mYear))
+        val gregorianStr = (Utils.translateNumbers(this, mDay, false)
+                + mMonth + Utils.translateNumbers(this, mYear, false))
         binding.gregorianView.text = gregorianStr
     }
 

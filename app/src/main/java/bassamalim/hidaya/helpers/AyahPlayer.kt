@@ -197,7 +197,7 @@ class AyahPlayer(
 
         val uri: Uri
         try {
-            uri = getUri(ayah, 0)
+            uri = getUri(ayah)
             player.setDataSource(context.applicationContext, uri)
             player.prepareAsync()
         } catch (e: Exception) {
@@ -320,17 +320,15 @@ class AyahPlayer(
         }
     }
 
-    private fun getUri(ayah: Ayah?, change: Int): Uri {
-        val size: Int = db.ayatTelawaDao().size
-
+    private fun getUri(ayah: Ayah?): Uri {
         val choice: Int = pref.getString(context.getString(R.string.aya_reciter_key), "13")!!.toInt()
-        val sources: List<AyatTelawaDB?> =
-            db.ayatTelawaDao().getReciter((choice + change) % (size - 1))
+        val sources: List<AyatTelawaDB?> = db.ayatTelawaDao().getReciter(choice)
 
         var uri = "https://www.everyayah.com/data/"
         uri += sources[0]!!.getSource()
-        uri += String.format(Locale.US, "%03d%03d.mp3",
-            ayah!!.getSurahNum(), ayah.getAyahNum())
+        uri += String.format(
+            Locale.US, "%03d%03d.mp3", ayah!!.getSurahNum(), ayah.getAyahNum()
+        )
 
         return Uri.parse(uri)
     }
@@ -347,8 +345,6 @@ class AyahPlayer(
             lastTracked!!.getSS()!!.removeSpan(what)
             lastTracked!!.getScreen()!!.text = lastTracked!!.getSS()
         }
-
-        getUri(lastPlayed, 1)
     }
 
     fun getLastPlayed(): Ayah? {

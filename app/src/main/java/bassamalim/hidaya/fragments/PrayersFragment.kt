@@ -1,10 +1,8 @@
 package bassamalim.hidaya.fragments
 
 import android.content.SharedPreferences
-import android.content.pm.ActivityInfo
 import android.location.Location
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
@@ -32,29 +29,18 @@ class PrayersFragment : Fragment() {
     private lateinit var location: Location
     private lateinit var prayerNames: Array<String>
     private lateinit var times: Array<Calendar?>
-    private lateinit var tomorrowFajr: Calendar
     private val cards = arrayOfNulls<CardView>(6)
     private val cls = arrayOfNulls<ConstraintLayout>(6)
     private val screens = arrayOfNulls<TextView>(6)
-    private val counters = arrayOfNulls<TextView>(6)
     private val images = arrayOfNulls<ImageView>(6)
     private val delayTvs = arrayOfNulls<TextView>(6)
     private lateinit var dayScreen: TextView
-    private var timer: CountDownTimer? = null
     private lateinit var pref: SharedPreferences
-    private var currentChange = 0
+    private var currentDayChange = 0
     private lateinit var selectedDay: Calendar
-    private var upcoming = 0
-    private val constraintSet = ConstraintSet()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity!!.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentPrayersBinding.inflate(inflater, container, false)
         val root: View = binding!!.root
@@ -62,7 +48,7 @@ class PrayersFragment : Fragment() {
         pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
         if (MainActivity.located) {
-            initiate()
+            init()
             goToToday()
             setInitialState()
             setListeners()
@@ -73,7 +59,7 @@ class PrayersFragment : Fragment() {
         return root
     }
 
-    private fun initiate() {
+    private fun init() {
         location = MainActivity.location!!
         prayerNames = resources.getStringArray(R.array.prayer_names)
         setViews()
@@ -100,13 +86,6 @@ class PrayersFragment : Fragment() {
         screens[4] = binding!!.maghribScreen
         screens[5] = binding!!.ishaaScreen
 
-        counters[0] = binding!!.fajrCounter
-        counters[1] = binding!!.shorouqCounter
-        counters[2] = binding!!.duhrCounter
-        counters[3] = binding!!.asrCounter
-        counters[4] = binding!!.maghribCounter
-        counters[5] = binding!!.ishaaCounter
-
         images[0] = binding!!.fajrImage
         images[1] = binding!!.shorouqImage
         images[2] = binding!!.duhrImage
@@ -125,10 +104,9 @@ class PrayersFragment : Fragment() {
     }
 
     private fun goToToday() {
-        currentChange = 0
+        currentDayChange = 0
         getTimes(0)
         updateDayScreen()
-        count()
     }
 
     /**
@@ -141,14 +119,12 @@ class PrayersFragment : Fragment() {
         val prayTimes = PrayTimes(context!!)
 
         val calendar = Calendar.getInstance()
-        val date = Date()
-        calendar.time = date
         calendar[Calendar.DATE] = calendar[Calendar.DATE] + change
 
         selectedDay = calendar
 
         val timeZoneObj = TimeZone.getDefault()
-        val millis = timeZoneObj.getOffset(date.time).toLong()
+        val millis = timeZoneObj.getOffset(calendar.time.time).toLong()
         val timezone = millis / 3600000.0
 
         times = prayTimes.getPrayerTimesArray(
@@ -157,17 +133,9 @@ class PrayersFragment : Fragment() {
         val formattedTimes = prayTimes.getPrayerTimes(
             calendar, location.latitude, location.longitude, timezone
         )
-        tomorrowFajr = prayTimes.getTomorrowFajr(
-            calendar, location.latitude, location.longitude, timezone
-        )
-        tomorrowFajr[Calendar.SECOND] = 0
 
-        for (i in formattedTimes.indices) {
-            val text = prayerNames[i] + ": " + formattedTimes[i]
-            screens[i]!!.text = text
-
-            times[i]!![Calendar.SECOND] = 0
-        }
+        for (i in formattedTimes.indices)
+            screens[i]!!.text = prayerNames[i] + ": " + formattedTimes[i]
     }
 
     private fun setInitialState() {
@@ -185,10 +153,11 @@ class PrayersFragment : Fragment() {
             val min = resources.getStringArray(R.array.time_settings_values)[delayPosition].toInt()
 
             if (min > 0) {
-                val positive = Utils.translateNumbers(context!!, "+$min")
+                val positive = Utils.translateNumbers(context!!, "+$min", false)
                 delayTvs[i]!!.text = positive
             }
-            else if (min < 0) delayTvs[i]!!.text = Utils.translateNumbers(context!!, min.toString())
+            else if (min < 0) delayTvs[i]!!.text =
+                Utils.translateNumbers(context!!, min.toString(), false)
             else delayTvs[i]!!.text = ""
         }
     }
@@ -214,85 +183,20 @@ class PrayersFragment : Fragment() {
             ).show(requireActivity().supportFragmentManager, TutorialDialog.TAG)
     }
 
-    private fun count() {
-        upcoming = findUpcoming()
-
-        var tomorrow = false
-        if (upcoming == -1) {
-            tomorrow = true
-            upcoming = 0
-        }
-
-        counters[upcoming]!!.visibility = View.VISIBLE
-        constraintSet.clone(cls[upcoming])
-        constraintSet.clear(screens[upcoming]!!.id, ConstraintSet.BOTTOM)
-        constraintSet.applyTo(cls[upcoming])
-
-        var till = times[upcoming]!!.timeInMillis
-        if (tomorrow) till = tomorrowFajr.timeInMillis
-
-        val restart = booleanArrayOf(true)
-        timer = object : CountDownTimer(till - System.currentTimeMillis(),
-            1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                val hours = millisUntilFinished / (60 * 60 * 1000) % 24
-                val minutes = millisUntilFinished / (60 * 1000) % 60
-                val seconds = millisUntilFinished / 1000 % 60
-
-                val hms = String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
-
-                if (context != null)
-                    counters[upcoming]!!.text =
-                        String.format(getString(R.string.remaining), Utils.translateNumbers(requireContext(), hms))
-                else {
-                    restart[0] = false
-                    cancelTimer()
-                }
-            }
-
-            override fun onFinish() {
-                constraintSet.connect(
-                    screens[upcoming]!!.id, ConstraintSet.BOTTOM,
-                    cls[upcoming]!!.id, ConstraintSet.BOTTOM
-                )
-                constraintSet.applyTo(cls[upcoming])
-                counters[upcoming]!!.visibility = View.GONE
-
-                if (restart[0])
-                    count()
-            }
-        }.start()
-    }
-
-    private fun findUpcoming(): Int {
-        val currentMillis = System.currentTimeMillis()
-        for (i in times.indices) {
-            val millis = times[i]!!.timeInMillis
-            if (millis > currentMillis) return i
-        }
-        return -1
-    }
-
     private fun previousDay() {
-        getTimes(--currentChange)
+        getTimes(--currentDayChange)
         updateDayScreen()
-        cancelTimer()
-        if (currentChange == 0) count()
     }
 
     private fun nextDay() {
-        getTimes(++currentChange)
+        getTimes(++currentDayChange)
         updateDayScreen()
-        cancelTimer()
-        if (currentChange == 0) count()
     }
 
     private fun updateDayScreen() {
-        if (currentChange == 0)
+        if (currentDayChange == 0)
             dayScreen.text = getString(R.string.day)
         else {
-            var text = ""
-
             val hijri: Calendar = UmmalquraCalendar()
             hijri.time = selectedDay.time
 
@@ -300,28 +204,14 @@ class PrayersFragment : Fragment() {
             val month = " " + resources.getStringArray(R.array.hijri_months)[Calendar.MONTH]
             val day = "" + hijri[Calendar.DATE]
 
-            text += Utils.translateNumbers(context!!, day) + month +
-                    Utils.translateNumbers(context!!, year)
-            dayScreen.text = text
-        }
-    }
-
-    private fun cancelTimer() {
-        if (timer != null) {
-            timer!!.cancel()
-            constraintSet.connect(
-                screens[upcoming]!!.id, ConstraintSet.BOTTOM,
-                cls[upcoming]!!.id, ConstraintSet.BOTTOM
-            )
-            constraintSet.applyTo(cls[upcoming])
-            counters[upcoming]!!.visibility = View.GONE
+            dayScreen.text = Utils.translateNumbers(context!!, day, false) + month +
+                    Utils.translateNumbers(context!!, year, false)
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
-        cancelTimer()
     }
 
 }

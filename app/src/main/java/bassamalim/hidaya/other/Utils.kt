@@ -35,7 +35,7 @@ object Utils {
                 .getString(activity.getString(R.string.theme_key), activity.getString(R.string.default_theme))
         when(theme) {
             "ThemeM" -> activity.setTheme(R.style.Theme_HidayaM)
-//            "ThemeR" -> activity.setTheme(R.style.Theme_HidayaR)
+            "ThemeR" -> activity.setTheme(R.style.Theme_HidayaR)
             else -> activity.setTheme(R.style.Theme_HidayaL)
         }
         return theme!!
@@ -64,7 +64,7 @@ object Utils {
         activity.startActivity(intent)
     }
 
-    fun translateNumbers(context: Context, english: String): String {
+    fun translateNumbers(context: Context, english: String, timeFormat: Boolean): String {
         var eng = english
         if (!PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(context.getString(
@@ -86,9 +86,11 @@ object Utils {
         map['A'] = 'ص'
         map['P'] = 'م'
 
-        if (eng[0] == '0') {
-            eng = eng.replaceFirst("0", "")
-            if (eng[0] == '0') eng = eng.replaceFirst("0:", "")
+        if (timeFormat) {
+            if (eng[0] == '0') {
+                eng = eng.replaceFirst("0", "")
+                if (eng[0] == '0') eng = eng.replaceFirst("0:", "")
+            }
         }
 
         val temp = StringBuilder()

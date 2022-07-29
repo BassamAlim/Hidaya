@@ -2,6 +2,7 @@
     <string name="app_name">هِداية</string>
 
     <!-- Tabs Titles -->
+    <string name="title_home">الرئيسية</string>
     <string name="title_prayers">أوقات الصلاة</string>
     <string name="title_alathkar">الأذكار</string>
     <string name="title_qibla">القبلة</string>
@@ -44,7 +45,8 @@
     <string name="default_language" translatable="false">arabic</string>
 
     <!-- TextViews Text -->
-    <string name="distance_to_kaaba">المسافة الى الكعبة</string>
+    <string name="telawat_time_record_title">مدة الاستماع للتلاوات</string>
+    <string name="quran_pages_record_title">عدد صفحات القرآن المقروءة \n(مع التكرار)</string>
 
     <!-- Buttons Text -->
     <string name="contact">تواصل معي</string>
@@ -128,6 +130,7 @@
     <!-- Formats -->
     <string name="remaining">متبقي: %1$s</string>
     <string name="settings_of">إعدادات %s</string>
+    <string name="distance_to_kaaba">المسافة الى الكعبة: %s</string>
 
     <!-- Sources -->
     <string name="quran_source">المصحف: من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
@@ -147,6 +150,7 @@
     <string name="playback_failed">فشل التشغيل</string>
     <string name="choose_allow_all_the_time">اختر \"السماح طوال الوقت\" لإبقاء أوقات الصلاة وإتجاه القبلة دقيقة</string>
     <string name="recitation_not_available">لا يتوفر تسجيل الآية لهذا القارئ</string>
+    <string name="incorrect_day">اليوم غير صحيح</string>
 
     <string name="athan_speaker">أذان</string>
     <string name="enable_notification">إشعار مسموع</string>
@@ -238,5 +242,6 @@
     <string name="list_view">قائمة</string>
     <string name="view_method">طريقة العرض</string>
     <string name="download">تحميل</string>
+    <string name="qibla">القبلة</string>
 
 </resources>
