@@ -95,38 +95,38 @@
         <item name="myNavBar">@drawable/nav_bar_item_bg_l</item>
     </style>
 
-    <style name="Theme.HidayaR" parent="MainAppTheme">
+    <style name="Theme.HidayaN" parent="MainAppTheme">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/primary_R</item>
-        <item name="colorPrimaryVariant">@color/primary_R</item>
-        <item name="colorOnPrimary">@color/primary_R</item>
+        <item name="colorPrimary">@color/primary_N</item>
+        <item name="colorPrimaryVariant">@color/primary_N</item>
+        <item name="colorOnPrimary">@color/primary_N</item>
         <!-- Secondary brand color. -->
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/primary_R</item>
+        <item name="android:statusBarColor">@color/primary_N</item>
         <!-- Customize your theme here. -->
-        <item name="android:textColorPrimary">@color/text_R</item>
-        <item name="android:textColor">@color/text_R</item>
-        <item name="colorAccent">@color/accent_R</item>
-        <item name="titleTextColor">@color/text_R</item>
+        <item name="android:textColorPrimary">@color/text_N</item>
+        <item name="android:textColor">@color/text_N</item>
+        <item name="colorAccent">@color/accent_N</item>
+        <item name="titleTextColor">@color/text_N</item>
         <!-- My Special Theme -->
-        <item name="myMainBg">@color/bg_R</item>
-        <item name="myPrimary">@color/primary_R</item>
-        <item name="myPrimaryDark">@color/primary_weak_R</item>
-        <item name="myOnPrimary">@color/text_R</item>
-        <item name="mySurface">@color/surface_R</item>
-        <item name="mySurfaceDark">@color/ripple_R</item>
+        <item name="myMainBg">@color/bg_N</item>
+        <item name="myPrimary">@color/primary_N</item>
+        <item name="myPrimaryDark">@color/primary_weak_N</item>
+        <item name="myOnPrimary">@color/text_N</item>
+        <item name="mySurface">@color/surface_N</item>
+        <item name="mySurfaceDark">@color/ripple_N</item>
         <item name="myOnSurface">@color/black</item>
-        <item name="myAccent">@color/accent_R</item>
-        <item name="myAccentDark">@color/accent_dark_R</item>
-        <item name="myText">@color/text_R</item>
+        <item name="myAccent">@color/accent_N</item>
+        <item name="myAccentDark">@color/accent_dark_N</item>
+        <item name="myText">@color/text_N</item>
         <item name="mySpecialText">@color/white</item>
-        <item name="myRipple">@color/ripple_R</item>
-        <item name="myActiveOnPrimary">@color/active_on_primary_R</item>
-        <item name="myActiveOnPrimaryDark">@color/active_on_primary_dark_R</item>
-        <item name="myDialogBg">@color/primary_R</item>
+        <item name="myRipple">@color/ripple_N</item>
+        <item name="myActiveOnPrimary">@color/active_on_primary_N</item>
+        <item name="myActiveOnPrimaryDark">@color/active_on_primary_dark_N</item>
+        <item name="myDialogBg">@color/primary_N</item>
         <item name="mySeparator">@color/black</item>
-        <item name="myNavBar">@drawable/nav_bar_item_bg_r</item>
+        <item name="myNavBar">@drawable/nav_bar_item_bg_n</item>
     </style>
 
     <style name="QuranM" parent="Theme.HidayaM">

@@ -14,8 +14,8 @@ android {
         applicationId "bassamalim.hidaya"
         minSdk 23
         targetSdk 32
-        versionCode 192
-        versionName '1.9.2'
+        versionCode 193
+        versionName '1.9.3'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -94,7 +94,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:20.0.0'
     implementation 'com.google.code.gson:gson:2.9.0'
 
-    implementation platform('com.google.firebase:firebase-bom:30.3.0')
+    implementation platform('com.google.firebase:firebase-bom:30.3.1')
     implementation 'com.google.firebase:firebase-core'
     implementation 'com.google.firebase:firebase-config'
     implementation 'com.google.firebase:firebase-analytics'

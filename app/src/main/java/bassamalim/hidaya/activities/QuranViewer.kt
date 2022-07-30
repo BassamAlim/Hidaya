@@ -8,11 +8,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -34,6 +35,7 @@ import bassamalim.hidaya.databinding.ActivityQuranViewerBinding
 import bassamalim.hidaya.dialogs.InfoDialog
 import bassamalim.hidaya.dialogs.QuranSettingsDialog
 import bassamalim.hidaya.dialogs.TutorialDialog
+import bassamalim.hidaya.models.Aya
 import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
@@ -55,6 +57,7 @@ class QuranViewer : SwipeActivity() {
     private lateinit var lls: Array<LinearLayout>
     private lateinit var recyclers: Array<RecyclerView>
     private var adapter: RecyclerQuranViewerAdapter? = null
+    private lateinit var what: Any
     private var currentView = 0
     private var surahIndex = 0
     private var currentPage = 0
@@ -67,6 +70,7 @@ class QuranViewer : SwipeActivity() {
     private lateinit var target: TextView
     private var scrolled = false
     private var selected: Ayah? = null
+    private var lastTracked: Ayah? = null
     private var player: AyahPlayerService? = null
     private var serviceBound = false
     private lateinit var ayatDB: List<AyatDB?>
@@ -75,7 +79,7 @@ class QuranViewer : SwipeActivity() {
     private lateinit var viewType: String
     private val handler: Handler = Handler(Looper.getMainLooper())
     private var lastRecordedPage = 0
-    private var playerCallback: MediaSessionCompat.Callback? = null
+    private var tc: MediaControllerCompat.TransportControls? = null
     private var uiListener: AyahPlayerService.Coordinator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,6 +127,13 @@ class QuranViewer : SwipeActivity() {
         names =
             if (language == "en") db.suarDao().getNamesEn()
             else db.suarDao().getNames()
+
+        val theme: String? =
+            pref.getString(getString(R.string.theme_key), getString(R.string.default_theme))
+        what =
+            if (theme == "ThemeL")
+                ForegroundColorSpan(resources.getColor(R.color.track_L, getTheme()))
+            else ForegroundColorSpan(resources.getColor(R.color.track_M, getTheme()))
     }
 
     private fun checkFirstTime() {
@@ -403,21 +414,23 @@ class QuranViewer : SwipeActivity() {
         }
 
         binding.playPause.setOnClickListener {
-            Log.d(Global.TAG, "0: ${player?.getState()}")
+            Log.d(Global.TAG, "PlayPause clicked, current state: ${player?.getState()}")
             if (player == null) {
-                Log.d(Global.TAG, "1")
+                Log.d(Global.TAG, "Player is null, initiating player")
+                updateButton(PlaybackStateCompat.STATE_BUFFERING)
                 setupPlayer()
             }
             else if (player!!.getState() == PlaybackStateCompat.STATE_PLAYING) {
-                Log.d(Global.TAG, "2")
-                if (player!!.getLastPlayed() != null) selected = player!!.getLastPlayed()
+                Log.d(Global.TAG, "Player is playing")
+                //if (player!!.getLastPlayed() != null) selected = player!!.getLastPlayed()
 
-                playerCallback!!.onPause()
+                player!!.transportControls.pause()
                 updateButton(PlaybackStateCompat.STATE_PAUSED)
             }
             else if (player!!.getState() == PlaybackStateCompat.STATE_PAUSED) {
-                Log.d(Global.TAG, "3")
-                if (selected == null) playerCallback?.onPlay()
+                Log.d(Global.TAG, "Player is paused")
+                if (selected == null)
+                    player!!.transportControls.play()
                 else {
                     player!!.setChosenSurah(selected!!.getSurahNum())
                     requestPlay(selected!!)
@@ -427,8 +440,8 @@ class QuranViewer : SwipeActivity() {
             selected = null
         }
 
-        binding.prevAyah.setOnClickListener { playerCallback?.onSkipToPrevious() }
-        binding.nextAyah.setOnClickListener { playerCallback?.onSkipToNext() }
+        binding.prevAyah.setOnClickListener { player!!.transportControls.skipToPrevious() }
+        binding.nextAyah.setOnClickListener { player!!.transportControls.skipToNext() }
 
         binding.recitationSettings.setOnClickListener {
             val intent = Intent(this, QuranSettingsDialog::class.java)
@@ -475,12 +488,32 @@ class QuranViewer : SwipeActivity() {
                 updateButton(state)
             }
 
-            override fun getAyah(index: Int): Ayah {
-                return allAyahs[index]
+            override fun getAyah(index: Int): Aya {
+                val ayah = allAyahs[index]
+                return Aya(ayah.getSurahNum(), ayah.getAyahNum(), ayah.getIndex())
             }
 
             override fun nextPage() {
                 next()
+            }
+
+            override fun track(ayaIndex: Int) {
+                val ayah = allAyahs[ayaIndex]
+
+                if (lastTracked != null) {
+                    lastTracked!!.getSS()!!.removeSpan(what)
+                    lastTracked!!.getScreen()!!.text = lastTracked!!.getSS()
+                }
+
+                if (viewType == "list")
+                    ayah.getSS()!!.setSpan(what, 0, ayah.getText()!!.length - 1,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                else
+                    ayah.getSS()!!.setSpan(what, ayah.getStart(), ayah.getEnd(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                ayah.getScreen()!!.text = ayah.getSS() // heavy, but the only working way
+                lastTracked = ayah
             }
         }
 
@@ -492,10 +525,11 @@ class QuranViewer : SwipeActivity() {
     //Binding this Client to the AudioPlayer Service
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            Log.d(Global.TAG, "In onServiceConnected")
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             val binder: AyahPlayerService.LocalBinder = service as AyahPlayerService.LocalBinder
             player = binder.service
-            playerCallback = player!!.callback
+            tc = player!!.transportControls
             serviceBound = true
 
             if (selected == null) selected = allAyahs[0]
@@ -516,8 +550,9 @@ class QuranViewer : SwipeActivity() {
 
     private fun requestPlay(ayah: Ayah) {
         val bundle = Bundle()
-        bundle.putSerializable("ayah", ayah)
-        playerCallback!!.onPlayFromMediaId(ayah.getAyahNum().toString(), bundle)
+        val aya = Aya(ayah.getSurahNum(), ayah.getAyahNum(), ayah.getIndex())
+        bundle.putSerializable("aya", aya)
+        tc!!.playFromMediaId(ayah.getAyahNum().toString(), bundle)
     }
 
     private fun findMainSurah(surahs: List<List<Ayah>?>): Int {

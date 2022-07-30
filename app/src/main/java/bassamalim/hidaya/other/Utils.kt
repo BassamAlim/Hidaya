@@ -35,7 +35,7 @@ object Utils {
                 .getString(activity.getString(R.string.theme_key), activity.getString(R.string.default_theme))
         when(theme) {
             "ThemeM" -> activity.setTheme(R.style.Theme_HidayaM)
-            "ThemeR" -> activity.setTheme(R.style.Theme_HidayaR)
+            "ThemeR" -> activity.setTheme(R.style.Theme_HidayaN)
             else -> activity.setTheme(R.style.Theme_HidayaL)
         }
         return theme!!

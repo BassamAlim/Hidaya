@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import android.widget.NumberPicker
 import android.widget.Toast
@@ -24,7 +25,10 @@ class HijriDatePickerDialog : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        dialog!!.window!!.setBackgroundDrawableResource(R.color.bg_M)
+
+        val bgColor = TypedValue()
+        requireContext().theme.resolveAttribute(R.attr.myMainBg, bgColor, false)
+        dialog!!.window!!.setBackgroundDrawableResource(bgColor.data)
 
         (dialog as AlertDialog?)!!.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
             resources.getColor(R.color.text_M, requireContext().theme)
@@ -77,9 +81,10 @@ class HijriDatePickerDialog : DialogFragment() {
         }
 
         val daysNums = arrayOfNulls<String>(30)
-        for (i in daysNums.indices) daysNums[i] = Utils.translateNumbers(
-            requireContext(), (i + 1).toString(), false
-        )
+        for (i in daysNums.indices)
+            daysNums[i] = Utils.translateNumbers(
+                requireContext(), (i + 1).toString(), false
+            )
 
         dayPicker.minValue = 1
         dayPicker.maxValue = cal.lengthOfMonth()

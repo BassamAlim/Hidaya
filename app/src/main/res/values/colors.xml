@@ -37,20 +37,20 @@
     <color name="active_on_primary_L">#D18E21</color>
     <color name="active_on_primary_dark_L">#AA7113</color>
 
-    // Theme R
-    <color name="bg_R">#101010</color>
-    <color name="primary_R">#141517</color>
-    <color name="surface_R">#141517</color>
-    <color name="accent_R">#0097AA</color>
-    <color name="primary_weak_R">#B3323232</color>    // # alpha in hex + color
-    <color name="ripple_R">#3B3E43</color>
-    <color name="accent_dark_R">#037583</color>
-    <color name="text_R">#BCC2C7</color>
-    <color name="on_primary_R">#000000</color>
-    <color name="highlight_R">#01849C</color>
-    <color name="track_R">#113297</color>
-    <color name="q_bg_R">#BACDE1</color>
-    <color name="active_on_primary_R">#0097AA</color>
-    <color name="active_on_primary_dark_R">#037583</color>
+    // Theme N
+    <color name="bg_N">#101010</color>
+    <color name="primary_N">#141517</color>
+    <color name="surface_N">#141517</color>
+    <color name="accent_N">#0097AA</color>
+    <color name="primary_weak_N">#B3323232</color>    // # alpha in hex + color
+    <color name="ripple_N">#3B3E43</color>
+    <color name="accent_dark_N">#037583</color>
+    <color name="text_N">#BCC2C7</color>
+    <color name="on_primary_N">#000000</color>
+    <color name="highlight_N">#01849C</color>
+    <color name="track_N">#113297</color>
+    <color name="q_bg_N">#BACDE1</color>
+    <color name="active_on_primary_N">#0097AA</color>
+    <color name="active_on_primary_dark_N">#037583</color>
 
 </resources>
