@@ -64,8 +64,8 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private lateinit var audioFocusRequest: AudioFocusRequest
     private lateinit var wifiLock: WifiLock
     private lateinit var surahNames: List<String>
-    private  var mediaId: String? = null
-    private lateinit var reciterName: String
+    private var mediaId: String? = null
+    private var reciterName: String? = null
     private lateinit var playType: String
     private var reciterId = 0
     private var versionId = 0
@@ -503,8 +503,8 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, surahNames[surahIndex])
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, surahNames[surahIndex])
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterName)
-            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterName!!)
+            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName!!)
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, version.getRewaya())
             .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, surahIndex.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version.getCount().toLong())
@@ -722,10 +722,12 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun saveForLater(progress: Int) {
-        val text: String =
-            getString(R.string.sura) + " " + surahNames[surahIndex] + " " +
-                    getString(R.string.for_reciter) + " " + reciterName + " " +
-                    getString(R.string.in_rewaya_of) + " " + version.getRewaya()
+        if (reciterName == null)
+            return
+
+        val text = "${getString(R.string.sura)} ${surahNames[surahIndex]} " +
+                "${getString(R.string.for_reciter)} ${reciterName!!} " +
+                "${getString(R.string.in_rewaya_of)} ${version.getRewaya()}"
 
         val editor: SharedPreferences.Editor = pref.edit()
         editor.putString("last_played_media_id", mediaId)

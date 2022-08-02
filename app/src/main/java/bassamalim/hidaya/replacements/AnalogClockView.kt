@@ -1,12 +1,18 @@
 package bassamalim.hidaya.replacements
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Insets
 import android.graphics.Paint
 import android.graphics.Rect
+import android.os.Build
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
+import android.view.WindowInsets
+import androidx.annotation.NonNull
 import bassamalim.hidaya.R
 import java.util.*
 import kotlin.math.cos
@@ -17,7 +23,6 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
     private var mIsInit = false
     private var size = 900
     private var center = 0F
-    private var mPadding = 0
     private var teethR = 0F
     private var numeralsR = 0F
     private var hourHandR = 0F
@@ -78,6 +83,8 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
         setMeasuredDimension(size, size)
     }
 
@@ -93,8 +100,24 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
         postInvalidateDelayed(500)
     }
 
+    private fun getScreenWidth(@NonNull activity: Activity): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = activity.windowManager.currentWindowMetrics
+            val insets: Insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            windowMetrics.bounds.width() - insets.left - insets.right
+        }
+        else {
+            val displayMetrics = DisplayMetrics()
+            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            displayMetrics.widthPixels
+        }
+    }
+
     private fun init() {
-        size -= mPadding
+        val width = getScreenWidth(context as Activity)
+        size = (width * 0.83).toInt()
+
         center = size / 2F
 
         val radius = size / 2F

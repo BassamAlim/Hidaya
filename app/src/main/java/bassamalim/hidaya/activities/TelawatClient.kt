@@ -298,9 +298,7 @@ class TelawatClient : AppCompatActivity() {
         playPause.setOnClickListener {
             // Since this is a play/pause button, you'll need to test the current state
             // and choose the action accordingly
-            val pbState: Int = controller.playbackState.state
-
-            if (pbState == PlaybackStateCompat.STATE_PLAYING) tc.pause()
+            if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) tc.pause()
             else tc.play()
         }
 
