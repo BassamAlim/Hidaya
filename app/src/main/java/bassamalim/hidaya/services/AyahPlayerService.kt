@@ -58,10 +58,11 @@ class AyahPlayerService : Service(),
     private lateinit var nextAction: NotificationCompat.Action
     private lateinit var prevAction: NotificationCompat.Action
     private lateinit var reciterNames: List<String>
+    private lateinit var suarNames: List<String>
     private lateinit var viewType: String
-    private lateinit var reciterName: String
     private var lastPlayed: Aya? = null
     private val notificationId = 101
+    private var reciterId = -1
     private var pausedPlayer = -1
     private var chosenSurah = -1
     private var repeated = 1
@@ -98,7 +99,15 @@ class AyahPlayerService : Service(),
         initSession()
         initPlayers()
         setupActions()
+
         reciterNames = db.ayatRecitersDao().getNames()
+        suarNames =
+            if (pref.getString(
+                    getString(R.string.language_key), getString(R.string.default_language)
+                ) == "en")
+                db.suarDao().getNamesEn()
+            else db.suarDao().getNames()
+
         initMetadata()
     }
 
@@ -278,8 +287,7 @@ class AyahPlayerService : Service(),
             Log.i(Global.TAG, "In onPlayFromMediaId of AyahPlayerService")
 
             currentAyah = extras.getSerializable("aya") as Aya
-            val reciterId = pref.getString(getString(R.string.aya_reciter_key), "13")!!.toInt()
-            reciterName = reciterNames[reciterId]
+            reciterId = pref.getString(getString(R.string.aya_reciter_key), "13")!!.toInt()
 
             // Start the service
             startService(Intent(applicationContext, AyahPlayerService::class.java))
@@ -406,6 +414,7 @@ class AyahPlayerService : Service(),
                 preparePlayer(p2, coordinator.getAyah(lastPlayed!!.ayaIndex + 1))
         }
 
+        reciterId = pref.getString(getString(R.string.aya_reciter_key), "13")!!.toInt()
         updateMetadata(true) // For the duration
 
         refresh()
@@ -606,11 +615,12 @@ class AyahPlayerService : Service(),
                 MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
             )
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE,
-                reciterNames[currentAyah.suraNum])
-            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, reciterNames[currentAyah.suraNum])
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterName)
-            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName)
+            .putString(
+                MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, suarNames[currentAyah.suraNum]
+            )
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, suarNames[currentAyah.suraNum])
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterNames[reciterId])
+            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterNames[reciterId])
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION,
                 currentAyah.ayaNum.toString())
             .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, currentAyah.ayaNum.toLong())

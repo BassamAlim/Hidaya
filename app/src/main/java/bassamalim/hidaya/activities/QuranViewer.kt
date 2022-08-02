@@ -422,22 +422,18 @@ class QuranViewer : SwipeActivity() {
             }
             else if (player!!.getState() == PlaybackStateCompat.STATE_PLAYING) {
                 Log.d(Global.TAG, "Player is playing")
-                //if (player!!.getLastPlayed() != null) selected = player!!.getLastPlayed()
-
                 player!!.transportControls.pause()
                 updateButton(PlaybackStateCompat.STATE_PAUSED)
             }
             else if (player!!.getState() == PlaybackStateCompat.STATE_PAUSED) {
                 Log.d(Global.TAG, "Player is paused")
-                if (selected == null)
-                    player!!.transportControls.play()
+                if (selected == null) player!!.transportControls.play()
                 else {
                     player!!.setChosenSurah(selected!!.getSurahNum())
                     requestPlay(selected!!)
                 }
                 updateButton(PlaybackStateCompat.STATE_PLAYING)
             }
-            selected = null
         }
 
         binding.prevAyah.setOnClickListener { player!!.transportControls.skipToPrevious() }
@@ -541,6 +537,8 @@ class QuranViewer : SwipeActivity() {
 
             player!!.setChosenSurah(selected!!.getSurahNum())
             requestPlay(selected!!)
+
+            selected = null
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
