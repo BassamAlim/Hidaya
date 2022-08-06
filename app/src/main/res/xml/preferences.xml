@@ -15,6 +15,14 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
+            android:entries="@array/numerals_language_entries"
+            android:entryValues="@array/languages_values"
+            android:key="@string/numerals_language_key"
+            android:title="@string/numerals_language"
+            android:icon="@drawable/ic_translation"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
             android:entries="@array/themes_entries"
             android:entryValues="@array/theme_values"
             android:key="@string/theme_key"

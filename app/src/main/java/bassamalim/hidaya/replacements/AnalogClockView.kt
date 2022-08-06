@@ -40,10 +40,12 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
         setupPaint()
 
         language = PreferenceManager.getDefaultSharedPreferences(context).getString(
-            context.getString(R.string.language_key), context.getString(R.string.default_language)
+            context.getString(R.string.numerals_language_key), context.getString(R.string.default_language)
         )!!
 
-        numerals = context.resources.getStringArray(R.array.numerals)
+        numerals =
+            if (language == "en") context.resources.getStringArray(R.array.numerals_en)
+            else context.resources.getStringArray(R.array.numerals)
     }
 
     private fun setupPaint() {

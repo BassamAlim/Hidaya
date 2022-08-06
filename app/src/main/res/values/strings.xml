@@ -29,6 +29,7 @@
     <string name="stop_on_sura_key" translatable="false">stop_on_sura_key</string>
     <string name="stop_on_page_key" translatable="false">stop_on_page_key</string>
     <string name="language_key" translatable="false">language_key</string>
+    <string name="numerals_language_key" translatable="false">numerals language key</string>
 
     <!-- Preference Titles -->
     <string name="language" translatable="false">Language | اللغة</string>
@@ -243,5 +244,6 @@
     <string name="view_method">طريقة العرض</string>
     <string name="download">تحميل</string>
     <string name="qibla">القبلة</string>
+    <string name="numerals_language">لغة الأرقام</string>
 
 </resources>

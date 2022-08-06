@@ -51,9 +51,10 @@ class HijriDatePickerDialog : DialogFragment() {
 
         val maxYear = 2000
         val tempArray = arrayOfNulls<String>(maxYear)
-        for (i in 0 until maxYear) tempArray[i] = Utils.translateNumbers(
-            requireContext(), (i + 1).toString(), false
-        )
+        for (i in 0 until maxYear)
+            tempArray[i] = Utils.translateNumbers(
+                requireContext(), (i + 1).toString(), false
+            )
 
         yearPicker.minValue = 1
         yearPicker.maxValue = maxYear

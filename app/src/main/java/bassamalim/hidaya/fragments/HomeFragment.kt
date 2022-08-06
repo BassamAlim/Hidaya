@@ -55,7 +55,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun getTimes(location: Location) {
-        val prayTimes = PrayTimes(context!!)
+        val prayTimes = PrayTimes(requireContext())
         val today = Calendar.getInstance()
         val tomorrow = Calendar.getInstance()
         tomorrow[Calendar.DATE] = tomorrow[Calendar.DATE] + 1
@@ -111,8 +111,9 @@ class HomeFragment : Fragment() {
 
                 if (context != null)
                     binding!!.remainingTimeTv.text = String.format(
-                        getString(R.string.remaining), Utils.translateNumbers(requireContext(),
-                            hms, true))
+                        getString(R.string.remaining),
+                        Utils.translateNumbers(requireContext(), hms, true)
+                    )
                 else {
                     restart[0] = false
                     timer?.cancel()
@@ -140,23 +141,18 @@ class HomeFragment : Fragment() {
         val hours = millis / (60 * 60 * 1000) % 24
         val minutes = millis / (60 * 1000) % 60
         val seconds = millis / 1000 % 60
-        var hms = String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
-
-        if (pref.getString(getString(R.string.language_key),
-                getString(R.string.default_language)) == "ar")
-            hms = Utils.translateNumbers(requireContext(), hms, false)
+        val hms = Utils.translateNumbers(
+            requireContext(), String.format(Locale.US, "%02d:%02d:%02d",
+                hours, minutes, seconds), false
+        )
 
         binding!!.telawatTimeDuration.text = hms
     }
 
     private fun setupQuranRecordCard() {
-        var str = pref.getInt("quran_pages_record", 0).toString()
-
-        if (pref.getString(getString(R.string.language_key),
-                getString(R.string.default_language)) == "ar")
-            str = Utils.translateNumbers(requireContext(), str, false)
-
-        binding!!.quranPagesNum.text = str
+        binding!!.quranPagesNum.text = Utils.translateNumbers(
+            requireContext(), pref.getInt("quran_pages_record", 0).toString(), false
+        )
     }
 
     override fun onDestroyView() {

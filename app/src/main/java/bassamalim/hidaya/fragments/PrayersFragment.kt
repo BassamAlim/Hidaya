@@ -116,7 +116,7 @@ class PrayersFragment : Fragment() {
      * @param change The number of days to add to the current date.
      */
     private fun getTimes(change: Int) {
-        val prayTimes = PrayTimes(context!!)
+        val prayTimes = PrayTimes(requireContext())
 
         val calendar = Calendar.getInstance()
         calendar[Calendar.DATE] = calendar[Calendar.DATE] + change
@@ -134,8 +134,10 @@ class PrayersFragment : Fragment() {
             calendar, location.latitude, location.longitude, timezone
         )
 
-        for (i in formattedTimes.indices)
-            screens[i]!!.text = prayerNames[i] + ": " + formattedTimes[i]
+        for (i in formattedTimes.indices) {
+            val str = prayerNames[i] + ": " + formattedTimes[i]
+            screens[i]!!.text = str
+        }
     }
 
     private fun setInitialState() {
@@ -152,12 +154,11 @@ class PrayersFragment : Fragment() {
             val delayPosition = pref.getInt(Utils.mapID(i).toString() + "spinner_last", 6)
             val min = resources.getStringArray(R.array.time_settings_values)[delayPosition].toInt()
 
-            if (min > 0) {
-                val positive = Utils.translateNumbers(context!!, "+$min", false)
-                delayTvs[i]!!.text = positive
-            }
+            if (min > 0)
+                delayTvs[i]!!.text =
+                    Utils.translateNumbers(requireContext(), "+$min", false)
             else if (min < 0) delayTvs[i]!!.text =
-                Utils.translateNumbers(context!!, min.toString(), false)
+                Utils.translateNumbers(requireContext(), min.toString(), false)
             else delayTvs[i]!!.text = ""
         }
     }
@@ -165,7 +166,7 @@ class PrayersFragment : Fragment() {
     private fun setListeners() {
         for (i in cards.indices) {
             cards[i]!!.setOnClickListener { v: View? ->
-                PrayerDialog(context!!, v!!, Utils.mapID(i)!!, prayerNames[i])
+                PrayerDialog(requireContext(), v!!, Utils.mapID(i)!!, prayerNames[i])
             }
         }
 
@@ -194,8 +195,7 @@ class PrayersFragment : Fragment() {
     }
 
     private fun updateDayScreen() {
-        if (currentDayChange == 0)
-            dayScreen.text = getString(R.string.day)
+        if (currentDayChange == 0) dayScreen.text = getString(R.string.day)
         else {
             val hijri: Calendar = UmmalquraCalendar()
             hijri.time = selectedDay.time
@@ -204,8 +204,9 @@ class PrayersFragment : Fragment() {
             val month = " " + resources.getStringArray(R.array.hijri_months)[Calendar.MONTH]
             val day = "" + hijri[Calendar.DATE]
 
-            dayScreen.text = Utils.translateNumbers(context!!, day, false) + month +
-                    Utils.translateNumbers(context!!, year, false)
+            val str = Utils.translateNumbers(requireContext(), day, false) + month +
+                    Utils.translateNumbers(requireContext(), year, false)
+            dayScreen.text = str
         }
     }
 

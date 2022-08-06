@@ -1,10 +1,9 @@
 package bassamalim.hidaya.helpers
 
 import android.content.Context
-import android.util.Log
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.other.Global
+import bassamalim.hidaya.other.Utils
 import java.lang.StringBuilder
 import java.util.*
 import kotlin.math.*
@@ -267,13 +266,11 @@ class PrayTimes(private val context: Context) {
         val month = date[Calendar.MONTH]
         val day = date[Calendar.DATE]
 
-        // removing sunset time which is the same as maghrib and pushing others
-        val result = translateNumbers(
-            getDatePrayerTimes(
-                year, month + 1,
-                day, latitude, longitude, tZone
-            )
-        )
+        val result = getDatePrayerTimes(year, month + 1, day, latitude, longitude, tZone)
+
+        for (i in result.indices)
+            result[i] = Utils.translateNumbers(context, result[i], true)
+
         result.removeAt(4)
 
         return result
@@ -285,12 +282,12 @@ class PrayTimes(private val context: Context) {
         val year = date[Calendar.YEAR]
         val month = date[Calendar.MONTH]
         val day = date[Calendar.DATE]
-        return formatTimes(
+        return toCalendar(
             getDatePrayerTimes(year, month + 1, day, latitude, longitude, tZone)
         )
     }
 
-    private fun formatTimes(givenTimes: ArrayList<String>): Array<Calendar?> {
+    private fun toCalendar(givenTimes: ArrayList<String>): Array<Calendar?> {
         val formattedTimes = arrayOfNulls<Calendar>(givenTimes.size - 1) // subtracted one
 
         // removing sunset time which is the same as maghrib and pushing others
@@ -328,37 +325,9 @@ class PrayTimes(private val context: Context) {
         return calendar
     }
 
-    private fun translateNumbers(subject: ArrayList<String>): ArrayList<String> {
-        val arabic: Boolean = PreferenceManager.getDefaultSharedPreferences(context).getString(
-            context.getString(R.string.language_key), context.getString(
-                R.string.default_language
-            )
-        ).equals("ar")
-
-        val map = HashMap<Char, Char>()
-        if (!arabic) {
-            map['A'] = 'a'
-            map['P'] = 'p'
-            map['M'] = 'm'
-        }
-        else {
-            map['0'] = '٠'
-            map['1'] = '١'
-            map['2'] = '٢'
-            map['3'] = '٣'
-            map['4'] = '٤'
-            map['5'] = '٥'
-            map['6'] = '٦'
-            map['7'] = '٧'
-            map['8'] = '٨'
-            map['9'] = '٩'
-            map['A'] = 'ص'
-            map['P'] = 'م'
-        }
-
+    /*private fun translateNumbers(subject: ArrayList<String>): ArrayList<String> {
         for (i in subject.indices) {
             val sb = StringBuilder(subject[i])
-            if (arabic && sb[sb.length - 1] == 'M') sb.deleteCharAt(sb.length - 1)
             subject[i] = sb.toString()
             if (subject[i][0] == '0') subject[i] = subject[i].replaceFirst("0", "")
         }
@@ -373,7 +342,7 @@ class PrayTimes(private val context: Context) {
             subject[i] = temp.toString()
         }
         return subject
-    }
+    }*/
 
     // set custom values for calculation parameters
     private fun setCustomParams(params: DoubleArray) {

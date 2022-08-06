@@ -66,37 +66,41 @@ object Utils {
 
     fun translateNumbers(context: Context, english: String, timeFormat: Boolean): String {
         var eng = english
-        if (!PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(context.getString(
-                        R.string.language_key
-                    ), context.getString(R.string.default_language)).equals("ar"))
-            return english
-
-        val map = HashMap<Char, Char>()
-        map['0'] = '٠'
-        map['1'] = '١'
-        map['2'] = '٢'
-        map['3'] = '٣'
-        map['4'] = '٤'
-        map['5'] = '٥'
-        map['6'] = '٦'
-        map['7'] = '٧'
-        map['8'] = '٨'
-        map['9'] = '٩'
-        map['A'] = 'ص'
-        map['P'] = 'م'
-
         if (timeFormat) {
-            if (eng[0] == '0') {
+            if (eng.startsWith('0')) {
                 eng = eng.replaceFirst("0", "")
-                if (eng[0] == '0') eng = eng.replaceFirst("0:", "")
+                if (eng.startsWith('0')) {
+                    eng = eng.replaceFirst("0:", "")
+                    if (eng.startsWith('0') && !eng.startsWith("00"))
+                        eng = eng.replaceFirst("0", "")
+                }
+                Log.d(Global.TAG, "HE")
             }
         }
 
+        if (!PreferenceManager.getDefaultSharedPreferences(context).getString(
+                context.getString(R.string.numerals_language_key), context.getString(R.string.default_language)
+            ).equals("ar"))
+            return eng
+
+        val map = HashMap<String, Char>()
+        map["0"] = '٠'
+        map["1"] = '١'
+        map["2"] = '٢'
+        map["3"] = '٣'
+        map["4"] = '٤'
+        map["5"] = '٥'
+        map["6"] = '٦'
+        map["7"] = '٧'
+        map["8"] = '٨'
+        map["9"] = '٩'
+        map["AM"] = 'ص'
+        map["PM"] = 'م'
+
         val temp = StringBuilder()
         for (element in eng) {
-            var t = element
-            if (map.containsKey(t)) t = map[t]!!
+            var t = element.toString()
+            if (map.containsKey(t)) t = map[t].toString()
             temp.append(t)
         }
 

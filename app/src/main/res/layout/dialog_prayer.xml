@@ -115,7 +115,6 @@
             android:id="@+id/time_setting_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/time_settings_entries"
             android:popupBackground="?attr/myPrimary" />
 
     </LinearLayout>

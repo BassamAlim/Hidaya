@@ -223,5 +223,6 @@
     <string name="view_method">View Method</string>
     <string name="download">download</string>
     <string name="qibla">Qibla</string>
+    <string name="numerals_language">Numerals language</string>
 
 </resources>

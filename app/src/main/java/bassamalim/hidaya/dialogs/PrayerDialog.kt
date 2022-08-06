@@ -18,6 +18,7 @@ import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
 
+
 class PrayerDialog(
     private val context: Context, private val view: View, private val id: ID, title: String
 ) {
@@ -113,6 +114,19 @@ class PrayerDialog(
     private fun setupSpinner() {
         val spinner: Spinner = popup.contentView.findViewById(R.id.time_setting_spinner)
 
+        val arrRes =
+            if (pref.getString(context.getString(R.string.numerals_language_key),
+                context.getString(R.string.default_language)) == "en")
+                R.array.time_settings_entries_en
+            else
+                R.array.time_settings_entries
+
+        val adapter = ArrayAdapter.createFromResource(
+            context, arrRes, android.R.layout.simple_spinner_item
+        )
+        spinner.adapter = adapter
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
         val time: Int = pref.getInt(id.toString() + "spinner_last", 6)
         spinner.setSelection(time)
 
@@ -125,10 +139,9 @@ class PrayerDialog(
                     R.array.time_settings_values)[parent.selectedItemPosition].toInt()
                 Log.i(Global.TAG, "delay is set to: $min")
 
-                if (min > 0) {
-                    val positive = Utils.translateNumbers(context, "+$min", false)
-                    delayTvs[id.ordinal]!!.text = positive
-                }
+                if (min > 0)
+                    delayTvs[id.ordinal]!!.text =
+                        Utils.translateNumbers(context, "+$min", false)
                 else if (min < 0)
                     delayTvs[id.ordinal]!!.text =
                         Utils.translateNumbers(context, min.toString(), false)

@@ -192,11 +192,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setTodayScreen() {
         val hijri = UmmalquraCalendar()
-        val hYear = " " + hijri.get(Calendar.YEAR)
+        val hYear = " " + hijri[Calendar.YEAR]
         val hMonth = " " + resources.getStringArray(R.array.hijri_months)[Calendar.MONTH]
-        val hDay = "" + hijri.get(Calendar.DATE)
+        val hDay = "" + hijri[Calendar.DATE]
         var hijriStr = resources
-            .getStringArray(R.array.week_days)[hijri.get(Calendar.DAY_OF_WEEK) - 1].toString() + " "
+            .getStringArray(R.array.week_days)[hijri[Calendar.DAY_OF_WEEK] - 1].toString() + " "
         hijriStr += Utils.translateNumbers(this, hDay, false) + hMonth +
                 Utils.translateNumbers(this, hYear, false)
         binding.hijriView.text = hijriStr

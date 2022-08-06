@@ -63,7 +63,7 @@
         <item>friday_kahf</item>
     </string-array>
 
-    <string-array name="time_settings_entries">
+    <string-array name="time_settings_entries" translatable="false">
         <item>-٣٠</item>
         <item>-٢٥</item>
         <item>-٢٠</item>
@@ -77,6 +77,22 @@
         <item>+٢٠</item>
         <item>+٢٥</item>
         <item>+٣٠</item>
+    </string-array>
+
+    <string-array name="time_settings_entries_en" translatable="false">
+        <item>-30</item>
+        <item>-25</item>
+        <item>-20</item>
+        <item>-15</item>
+        <item>-10</item>
+        <item>-5</item>
+        <item>0</item>
+        <item>+5</item>
+        <item>+10</item>
+        <item>+15</item>
+        <item>+20</item>
+        <item>+25</item>
+        <item>+30</item>
     </string-array>
 
     <string-array name="time_settings_values" translatable="false">
@@ -126,6 +142,12 @@
     </string-array>
 
     <string-array name="searcher_matches">
+        <item>١٠</item>
+        <item>٣٠</item>
+        <item>١٠٠</item>
+    </string-array>
+
+    <string-array name="searcher_matches_en">
         <item>10</item>
         <item>30</item>
         <item>100</item>
@@ -227,7 +249,7 @@
         <item>السبت</item>
     </string-array>
 
-    <string-array name="numerals">
+    <string-array name="numerals" translatable="false">
         <item>١</item>
         <item>٢</item>
         <item>٣</item>
@@ -240,6 +262,26 @@
         <item>١٠</item>
         <item>١١</item>
         <item>١٢</item>
+    </string-array>
+
+    <string-array name="numerals_en" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+    <string-array name="numerals_language_entries" translatable="false">
+        <item>١ ٢ ٣</item>
+        <item>1 2 3</item>
     </string-array>
 
 </resources>

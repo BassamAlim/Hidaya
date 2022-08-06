@@ -7,6 +7,7 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -88,6 +89,19 @@ class QuranSearcherActivity : AppCompatActivity() {
 
     private fun setupSizeSpinner() {
         val spinner: Spinner = binding.sizeSpinner
+
+        val arrRes =
+            if (pref.getString(getString(R.string.numerals_language_key),
+                    getString(R.string.default_language)) == "en")
+                R.array.searcher_matches_en
+            else
+                R.array.searcher_matches
+
+        val spinnerAdapter = ArrayAdapter.createFromResource(
+            this, arrRes, android.R.layout.simple_spinner_item
+        )
+        spinner.adapter = spinnerAdapter
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         val last: Int = pref.getInt("quran_searcher_matches_last_position", 0)
         spinner.setSelection(last)

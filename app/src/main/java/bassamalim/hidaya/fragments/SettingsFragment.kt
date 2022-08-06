@@ -78,26 +78,31 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val languages: ListPreference = findPreference(getString(R.string.language_key))!!
         languages.setOnPreferenceChangeListener { _, newValue ->
-            if (!newValue.equals(
-                    PreferenceManager.getDefaultSharedPreferences(requireContext())
+            if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
                     .getString(requireContext().getString(R.string.language_key), getString(R.string.default_language)))) {
                 setLocale(newValue as String)
                 Utils.refresh(requireActivity())
             }
             true
         }
-
         if (action == "initial") languages.summaryProvider = null
+
+        val numeralsLanguages: ListPreference = findPreference(getString(R.string.numerals_language_key))!!
+        numeralsLanguages.setOnPreferenceChangeListener { _, newValue ->
+            if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
+                        .getString(requireContext().getString(R.string.numerals_language_key), getString(R.string.default_language))))
+                Utils.refresh(requireActivity())
+            true
+        }
+        if (action == "initial") numeralsLanguages.summaryProvider = null
 
         val themes: ListPreference = findPreference(getString(R.string.theme_key))!!
         themes.setOnPreferenceChangeListener { _, newValue ->
-            if (!newValue.equals(
-                    PreferenceManager.getDefaultSharedPreferences(requireContext())
+            if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
                     .getString(requireContext().getString(R.string.theme_key), getString(R.string.default_theme))))
                 Utils.refresh(requireActivity())
             true
         }
-
         if (action == "initial") themes.summaryProvider = null
     }
 
