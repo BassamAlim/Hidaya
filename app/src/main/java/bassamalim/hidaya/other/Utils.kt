@@ -74,7 +74,6 @@ object Utils {
                     if (eng.startsWith('0') && !eng.startsWith("00"))
                         eng = eng.replaceFirst("0", "")
                 }
-                Log.d(Global.TAG, "HE")
             }
         }
 
@@ -83,25 +82,24 @@ object Utils {
             ).equals("ar"))
             return eng
 
-        val map = HashMap<String, Char>()
-        map["0"] = '٠'
-        map["1"] = '١'
-        map["2"] = '٢'
-        map["3"] = '٣'
-        map["4"] = '٤'
-        map["5"] = '٥'
-        map["6"] = '٦'
-        map["7"] = '٧'
-        map["8"] = '٨'
-        map["9"] = '٩'
-        map["AM"] = 'ص'
-        map["PM"] = 'م'
+        val map = HashMap<Char, Char>()
+        map['0'] = '٠'
+        map['1'] = '١'
+        map['2'] = '٢'
+        map['3'] = '٣'
+        map['4'] = '٤'
+        map['5'] = '٥'
+        map['6'] = '٦'
+        map['7'] = '٧'
+        map['8'] = '٨'
+        map['9'] = '٩'
+        map['A'] = 'ص'
+        map['P'] = 'م'
 
         val temp = StringBuilder()
-        for (element in eng) {
-            var t = element.toString()
-            if (map.containsKey(t)) t = map[t].toString()
-            temp.append(t)
+        for (char in eng) {
+            if (map.containsKey(char)) temp.append(map[char])
+            else if (char != 'M') temp.append(char)
         }
 
         return temp.toString()
