@@ -737,7 +737,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun updateDurationRecord(amount: Int) {
-        val old = pref.getLong("telawat_playback_time", 0L)
+        val old = pref.getLong("telawat_playback_record", 0L)
         val new = old + amount * 1000
 
         Log.d(Global.TAG, new.toString())

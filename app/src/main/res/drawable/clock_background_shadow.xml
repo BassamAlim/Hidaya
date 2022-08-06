@@ -1,0 +1,17 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval" >
+
+    <solid android:color="?mySurface"/>
+
+    <!--<gradient
+        android:type="linear"
+        android:startColor="?mySurface"
+        android:endColor="?mySurfaceDark"
+        android:angle="90"/>-->
+
+    <!--<gradient
+        android:type="radial"
+        android:gradientRadius="100%p"
+        android:startColor="?mySurface"
+        android:endColor="?mySurfaceDark"/>-->
+
+</shape>

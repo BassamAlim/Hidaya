@@ -47,7 +47,7 @@
         <item name="myPrimaryDark">@color/primary_weak_M</item>
         <item name="myOnPrimary">@color/text_M</item>
         <item name="mySurface">@color/surface_M</item>
-        <item name="mySurfaceDark">@color/ripple_M</item>
+        <item name="mySurfaceDark">@color/surface_dark_M</item>
         <item name="myOnSurface">@color/on_surface_M</item>
         <item name="myAccent">@color/accent_M</item>
         <item name="myAccentDark">@color/accent_dark_M</item>
