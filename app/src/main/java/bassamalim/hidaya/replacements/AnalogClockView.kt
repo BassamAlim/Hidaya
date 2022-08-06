@@ -1,48 +1,49 @@
 package bassamalim.hidaya.replacements
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Insets
 import android.graphics.Paint
 import android.graphics.Rect
-import android.os.Build
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
-import android.view.WindowInsets
-import androidx.annotation.NonNull
+import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import java.util.*
 import kotlin.math.cos
+import kotlin.math.min
 import kotlin.math.sin
+
 
 class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
-    private var mIsInit = false
-    private var size = 900
     private var center = 0F
     private var teethR = 0F
     private var numeralsR = 0F
     private var hourHandR = 0F
     private var minuteHandR = 0F
     private var secondHandR = 0F
-    private var mFontSize = 60F
     private var mRect = Rect()
     private val numeralsPaint = Paint()
     private val teethPaint = Paint()
     private val hourHandPaint = Paint()
     private val minuteHandPaint = Paint()
     private val secondHandPaint = Paint()
-    private var mNumbers: IntArray = intArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+    private var numerals: Array<String>
     private var mHour = 0f
     private val bgColor = TypedValue()
     private val linesColor = TypedValue()
     private val accentColor = TypedValue()
+    private var language: String
 
     init {
         setupPaint()
+
+        language = PreferenceManager.getDefaultSharedPreferences(context).getString(
+            context.getString(R.string.language_key), context.getString(R.string.default_language)
+        )!!
+
+        numerals = context.resources.getStringArray(R.array.numerals)
     }
 
     private fun setupPaint() {
@@ -59,9 +60,7 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
         // Numerals
         numeralsPaint.style = Paint.Style.FILL
         numeralsPaint.color = linesColor.data
-        numeralsPaint.strokeWidth = 2F
         numeralsPaint.isAntiAlias = true
-        numeralsPaint.textSize = mFontSize
 
         // Hour hand
         hourHandPaint.style = Paint.Style.STROKE
@@ -85,49 +84,34 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        setMeasuredDimension(size, size)
+        val displayMetrics = context.resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val screenHeight = displayMetrics.heightPixels
+
+        val canvasSize = min(screenWidth, screenHeight) * 0.9F
+        setMeasuredDimension(canvasSize.toInt(), canvasSize.toInt())
+
+        center = canvasSize / 2F
+        val size = canvasSize * 0.95F
+
+        val radius = size / 2F
+        teethR = radius * 0.985F
+        numeralsR = radius * 0.85F
+        hourHandR = radius * 0.5F
+        minuteHandR = radius * 0.7F
+        secondHandR = radius * 0.7F
+
+        numeralsPaint.textSize = if (language == "eng") size * 0.065F else size * 0.08F
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-
-        if (!mIsInit) init()
 
         drawTeeth(canvas!!)
         drawNumerals(canvas)
         drawHands(canvas)
 
         postInvalidateDelayed(500)
-    }
-
-    private fun getScreenWidth(@NonNull activity: Activity): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val windowMetrics = activity.windowManager.currentWindowMetrics
-            val insets: Insets = windowMetrics.windowInsets
-                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
-            windowMetrics.bounds.width() - insets.left - insets.right
-        }
-        else {
-            val displayMetrics = DisplayMetrics()
-            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-            displayMetrics.widthPixels
-        }
-    }
-
-    private fun init() {
-        val width = getScreenWidth(context as Activity)
-        size = (width * 0.83).toInt()
-
-        center = size / 2F
-
-        val radius = size / 2F
-        teethR = radius * 0.98F
-        numeralsR = radius * 0.85F
-        hourHandR = radius * 0.5F
-        minuteHandR = radius * 0.7F
-        secondHandR = radius * 0.7F
-
-        mIsInit = true
     }
 
     private fun drawTeeth(canvas: Canvas) {
@@ -144,13 +128,12 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
     }
 
     private fun drawNumerals(canvas: Canvas) {
-        for (number in mNumbers) {
-            val num = number.toString()
-            numeralsPaint.getTextBounds(num, 0, num.length, mRect)
-            val angle = Math.PI / 6 * (number - 3)
+        for (number in numerals) {
+            numeralsPaint.getTextBounds(number, 0, number.length, mRect)
+            val angle = Math.PI / 6 * (number.toInt() - 3)
             val x = (center + cos(angle) * numeralsR - mRect.width() / 2).toInt()
             val y = (center + sin(angle) * numeralsR + mRect.height() / 2).toInt()
-            canvas.drawText(num, x.toFloat(), y.toFloat(), numeralsPaint)
+            canvas.drawText(number, x.toFloat(), y.toFloat(), numeralsPaint)
         }
     }
 

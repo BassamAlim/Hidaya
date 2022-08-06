@@ -227,4 +227,19 @@
         <item>السبت</item>
     </string-array>
 
+    <string-array name="numerals">
+        <item>١</item>
+        <item>٢</item>
+        <item>٣</item>
+        <item>٤</item>
+        <item>٥</item>
+        <item>٦</item>
+        <item>٧</item>
+        <item>٨</item>
+        <item>٩</item>
+        <item>١٠</item>
+        <item>١١</item>
+        <item>١٢</item>
+    </string-array>
+
 </resources>
