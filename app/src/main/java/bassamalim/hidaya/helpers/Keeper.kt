@@ -119,7 +119,7 @@ class Keeper {
         val timezone = millis / 3600000.0
 
         return reformatTimes(
-            PrayTimes(context).getPrayerTimes(calendar, loc.latitude, loc.longitude, timezone)
+            PrayTimes(context).getPrayerTimes(loc.latitude, loc.longitude, timezone, calendar)
         )
     }
 

@@ -65,17 +65,17 @@ class HomeFragment : Fragment() {
         val timezone = millis / 3600000.0
 
         times = prayTimes.getPrayerTimesArray(
-            today, location.latitude, location.longitude, timezone
+            location.latitude, location.longitude, timezone, today
         )
         formattedTimes = prayTimes.getPrayerTimes(
-            today, location.latitude, location.longitude, timezone
+            location.latitude, location.longitude, timezone, today
         )
 
         tomorrowFajr = prayTimes.getTomorrowFajr(
             tomorrow, location.latitude, location.longitude, timezone
         )
         formattedTomorrowFajr = prayTimes.getPrayerTimes(
-            tomorrow, location.latitude, location.longitude, timezone
+            location.latitude, location.longitude, timezone, tomorrow
         )[0]
     }
 

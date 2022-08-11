@@ -113,7 +113,7 @@ object Utils {
         val timezone = millis / 3600000.0
 
         return PrayTimes(context).getPrayerTimesArray(
-            calendar, loc!!.latitude, loc.longitude, timezone
+            loc!!.latitude, loc.longitude, timezone, calendar
         )
     }
 
