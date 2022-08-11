@@ -123,8 +123,7 @@ class PrayersFragment : Fragment() {
 
         selectedDay = calendar
 
-        val timeZoneObj = TimeZone.getDefault()
-        val millis = timeZoneObj.getOffset(calendar.time.time).toLong()
+        val millis = TimeZone.getDefault().getOffset(calendar.time.time).toLong()
         val timezone = millis / 3600000.0
 
         times = prayTimes.getPrayerTimesArray(
@@ -200,12 +199,15 @@ class PrayersFragment : Fragment() {
             val hijri: Calendar = UmmalquraCalendar()
             hijri.time = selectedDay.time
 
-            val year = " " + hijri[Calendar.YEAR]
-            val month = " " + resources.getStringArray(R.array.hijri_months)[Calendar.MONTH]
-            val day = "" + hijri[Calendar.DATE]
+            val year = Utils.translateNumbers(
+                requireContext(), hijri[Calendar.YEAR].toString(), false
+            )
+            val month = resources.getStringArray(R.array.hijri_months)[hijri[Calendar.MONTH]]
+            val day = Utils.translateNumbers(
+                requireContext(), hijri[Calendar.DATE].toString(), false
+            )
 
-            val str = Utils.translateNumbers(requireContext(), day, false) + month +
-                    Utils.translateNumbers(requireContext(), year, false)
+            val str = "$day $month $year"
             dayScreen.text = str
         }
     }

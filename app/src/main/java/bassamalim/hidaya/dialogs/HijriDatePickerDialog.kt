@@ -15,71 +15,50 @@ import bassamalim.hidaya.other.Utils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
-class HijriDatePickerDialog : DialogFragment() {
+class HijriDatePickerDialog(private val listener: DatePickerDialog.OnDateSetListener) :
+    DialogFragment() {
 
-    private lateinit var listener: DatePickerDialog.OnDateSetListener
-    private lateinit var monthPicker: NumberPicker
+    private lateinit var dialogView: View
     private lateinit var yearPicker: NumberPicker
+    private lateinit var monthPicker: NumberPicker
     private lateinit var dayPicker: NumberPicker
-    private val cal: UmmalquraCalendar = UmmalquraCalendar()
+    private val hCalendar = UmmalquraCalendar()
 
     override fun onStart() {
         super.onStart()
 
+        val dialog = dialog as AlertDialog
+
         val bgColor = TypedValue()
         requireContext().theme.resolveAttribute(R.attr.myMainBg, bgColor, false)
-        dialog!!.window!!.setBackgroundDrawableResource(bgColor.data)
+        dialog.window!!.setBackgroundDrawableResource(bgColor.data)
 
-        (dialog as AlertDialog?)!!.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
             resources.getColor(R.color.text_M, requireContext().theme)
         )
-        (dialog as AlertDialog?)!!.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
             resources.getColor(R.color.text_M, requireContext().theme)
         )
-    }
-
-    fun setListener(listener: DatePickerDialog.OnDateSetListener) {
-        this.listener = listener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog: View = requireActivity().layoutInflater
-            .inflate(R.layout.date_picker, null)
-        yearPicker = dialog.findViewById(R.id.picker_year)
-        monthPicker = dialog.findViewById(R.id.picker_month)
-        dayPicker = dialog.findViewById(R.id.picker_day)
+        dialogView = requireActivity().layoutInflater.inflate(R.layout.date_picker, null)
 
-        val maxYear = 2000
-        val tempArray = arrayOfNulls<String>(maxYear)
-        for (i in 0 until maxYear)
-            tempArray[i] = Utils.translateNumbers(
-                requireContext(), (i + 1).toString(), false
-            )
+        dayPicker = setupDayPicker()
+        monthPicker = setupMonthPicker()
+        yearPicker = setupYearPicker()
 
-        yearPicker.minValue = 1
-        yearPicker.maxValue = maxYear
-        yearPicker.displayedValues = tempArray
-        yearPicker.value = cal.get(Calendar.YEAR)
-        yearPicker.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
-            cal.set(Calendar.YEAR, newVal)
-            dayPicker.maxValue = cal.lengthOfMonth()
-        }
-
-        monthPicker.minValue = 1
-        monthPicker.maxValue = 12
-        monthPicker.value = cal.get(Calendar.MONTH) + 1
-        monthPicker.displayedValues = resources.getStringArray(R.array.numbered_hijri_months)
-        monthPicker.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
-            try {
-                cal.set(Calendar.MONTH, newVal - 1)
-            } catch (e: Exception) {
-                Toast.makeText(
-                    requireContext(), getString(R.string.incorrect_day), Toast.LENGTH_SHORT
-                ).show()
+        return AlertDialog.Builder(requireActivity()).setView(dialogView)
+            .setPositiveButton(R.string.select) { _: DialogInterface?, _: Int ->
+                val year: Int = yearPicker.value
+                listener.onDateSet(null, year, monthPicker.value, dayPicker.value)
             }
+            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
+            .create()
+    }
 
-            dayPicker.maxValue = cal.lengthOfMonth()
-        }
+    private fun setupDayPicker(): NumberPicker {
+        val dayPicker: NumberPicker = dialogView.findViewById(R.id.picker_day)
 
         val daysNums = arrayOfNulls<String>(30)
         for (i in daysNums.indices)
@@ -88,20 +67,57 @@ class HijriDatePickerDialog : DialogFragment() {
             )
 
         dayPicker.minValue = 1
-        dayPicker.maxValue = cal.lengthOfMonth()
-        dayPicker.value = cal.get(Calendar.DATE)
+        dayPicker.maxValue = hCalendar.lengthOfMonth()
+        dayPicker.value = hCalendar[Calendar.DATE]
         dayPicker.displayedValues = daysNums
         dayPicker.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
-            cal.set(Calendar.DATE, newVal)
+            hCalendar[Calendar.DATE] = newVal
         }
 
-        return AlertDialog.Builder(requireActivity()).setView(dialog)
-            .setPositiveButton(R.string.select) { _: DialogInterface?, _: Int ->
-                val year: Int = yearPicker.value
-                listener.onDateSet(null, year, monthPicker.value, dayPicker.value)
+        return dayPicker
+    }
+
+    private fun setupMonthPicker(): NumberPicker {
+        val monthPicker: NumberPicker = dialogView.findViewById(R.id.picker_month)
+
+        monthPicker.minValue = 1
+        monthPicker.maxValue = 12
+        monthPicker.value = hCalendar[Calendar.MONTH] + 1
+        monthPicker.displayedValues = resources.getStringArray(R.array.numbered_hijri_months)
+        monthPicker.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
+            try {
+                hCalendar[Calendar.MONTH] = newVal - 1
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), getString(R.string.incorrect_day), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton(R.string.cancel) { dialog12, _ -> dialog12.cancel() }
-            .create()
+
+            dayPicker.maxValue = hCalendar.lengthOfMonth()
+        }
+
+        return monthPicker
+    }
+
+    private fun setupYearPicker(): NumberPicker {
+        val yearPicker: NumberPicker = dialogView.findViewById(R.id.picker_year)
+
+        val minYear = 1000
+        val maxYear = 2000
+        val tempArray = arrayOfNulls<String>(maxYear - minYear)
+        for (i in minYear until maxYear)
+            tempArray[i - minYear] = Utils.translateNumbers(
+                requireContext(), i.toString(), false
+            )
+
+        yearPicker.minValue = minYear
+        yearPicker.maxValue = maxYear - 1
+        yearPicker.displayedValues = tempArray
+        yearPicker.value = hCalendar[Calendar.YEAR] - minYear
+        yearPicker.setOnValueChangedListener { _: NumberPicker?, _: Int, newVal: Int ->
+            hCalendar[Calendar.YEAR] = newVal
+            dayPicker.maxValue = hCalendar.lengthOfMonth()
+        }
+
+        return yearPicker
     }
 
 }

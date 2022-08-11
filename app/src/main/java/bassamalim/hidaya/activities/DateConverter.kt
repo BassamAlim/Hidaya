@@ -55,22 +55,14 @@ class DateConverter : AppCompatActivity() {
     }
 
     private fun pickHijri() {
-        val hijriPicker = HijriDatePickerDialog()
-
-        hijriPicker.setListener { _: DatePicker?, year: Int, month: Int, day: Int ->
-            val choice: Calendar = UmmalquraCalendar()
-            choice[Calendar.YEAR] = year
-            choice[Calendar.MONTH] = month - 1 // starts from 0
-            choice[Calendar.DATE] = day
-
+        HijriDatePickerDialog { _: DatePicker?, year: Int, month: Int, day: Int ->
+            val choice: Calendar = UmmalquraCalendar(year, month - 1, day)
             show(choice, hijriToGregorian(choice))
-        }
-
-        hijriPicker.show(supportFragmentManager, "HijriDatePicker")
+        }.show(supportFragmentManager, "HijriDatePicker")
     }
 
     private fun gregorianToHijri(gregorian: Calendar): Calendar {
-        val hijri: Calendar = UmmalquraCalendar()
+        val hijri = UmmalquraCalendar()
         hijri.time = gregorian.time
         return hijri
     }

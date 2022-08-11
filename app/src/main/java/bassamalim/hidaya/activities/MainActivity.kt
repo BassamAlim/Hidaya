@@ -192,22 +192,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun setTodayScreen() {
         val hijri = UmmalquraCalendar()
-        val hYear = " " + hijri[Calendar.YEAR]
-        val hMonth = " " + resources.getStringArray(R.array.hijri_months)[Calendar.MONTH]
-        val hDay = "" + hijri[Calendar.DATE]
-        var hijriStr = resources
-            .getStringArray(R.array.week_days)[hijri[Calendar.DAY_OF_WEEK] - 1].toString() + " "
-        hijriStr += Utils.translateNumbers(this, hDay, false) + hMonth +
-                Utils.translateNumbers(this, hYear, false)
+
+        val hYear = Utils.translateNumbers(
+            this, hijri[Calendar.YEAR].toString(), false
+        )
+        val hMonth = resources.getStringArray(R.array.hijri_months)[hijri[Calendar.MONTH]]
+        val hDay = Utils.translateNumbers(
+            this, hijri[Calendar.DATE].toString(), false
+        )
+        val hDayName = resources.getStringArray(R.array.week_days)[hijri[Calendar.DAY_OF_WEEK] - 1]
+        val hijriStr = "$hDayName $hDay $hMonth $hYear"
         binding.hijriView.text = hijriStr
 
         val gregorian = Calendar.getInstance()
-        val mYear = " " + gregorian[Calendar.YEAR]
-        val mMonth = " " + resources
-            .getStringArray(R.array.gregorian_months)[gregorian[Calendar.MONTH]]
-        val mDay = "" + gregorian[Calendar.DATE]
-        val gregorianStr = (Utils.translateNumbers(this, mDay, false)
-                + mMonth + Utils.translateNumbers(this, mYear, false))
+        val mYear = Utils.translateNumbers(
+            this, gregorian[Calendar.YEAR].toString(), false
+        )
+        val mMonth = resources.getStringArray(R.array.gregorian_months)[gregorian[Calendar.MONTH]]
+        val mDay = Utils.translateNumbers(
+            this, gregorian[Calendar.DATE].toString(), false
+        )
+        val gregorianStr = "$mDay $mMonth $mYear"
         binding.gregorianView.text = gregorianStr
     }
 
