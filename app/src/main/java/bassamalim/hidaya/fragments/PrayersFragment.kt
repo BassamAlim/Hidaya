@@ -126,10 +126,10 @@ class PrayersFragment : Fragment() {
         val millis = TimeZone.getDefault().getOffset(calendar.time.time).toLong()
         val timezone = millis / 3600000.0
 
-        times = prayTimes.getPrayerTimesArray(
+        times = prayTimes.getPrayerTimes(
             location.latitude, location.longitude, timezone, calendar
         )
-        val formattedTimes = prayTimes.getPrayerTimes(
+        val formattedTimes = prayTimes.getStrPrayerTimes(
             location.latitude, location.longitude, timezone, calendar
         )
 

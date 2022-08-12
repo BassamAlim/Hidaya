@@ -6,55 +6,56 @@ import java.util.*
 import kotlin.math.*
 
 class PrayTimes(private val context: Context) {
+
+    enum class TF {  // Time Format
+        H24,   // 24-hour format
+        H12,  // 12-hour format
+        H12NS,  // 12-hour format with no suffix
+        Floating  // floating point number
+    }
+    enum class CM {  // Calculation Method
+        MECCA,  // Umm al-Qura, Mecca
+        MWL,  // Muslim World League
+        ISNA,  // Islamic Society of North America
+        JAFARI,  // Ithna Ashari
+        KARACHI,  // University of Islamic Sciences, Karachi
+        EGYPT,  // Egyptian General Authority of Survey
+        TAHRAN,  // Institute of Geophysics, University of Tehran
+        CUSTOM  // Custom Setting
+    }
+    enum class JM { SHAFII /*(standard)*/, HANAFI }  // Juristic Methods
+    enum class AM {  // Adjusting Methods for Higher Latitudes
+        NONE,  // No adjustment
+        MIDNIGHT,  // Middle of night
+        ONE_SEVENTH,  // 1/7th of night
+        ANGLE_BASED  // Angle/60th of night
+    }
+
     // ---------------------- Global Variables --------------------
-    private var calcMethod = 4 // calculation method
-    private var asrJuristic = 0 // Juristic method for Asr
+    private var calcMethod = CM.MECCA // calculation method
+    private var timeFormat = TF.H12 // time format
+    private var asrJuristic = JM.SHAFII // Juristic method for Asr
+    private var adjustHighLats = AM.NONE // adjusting method for higher latitudes
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
-    private var adjustHighLats = 0 // adjusting method for higher latitudes
-    private var timeFormat = 1 // time format
     private var lat = 0.0 // latitude
     private var lng = 0.0 // longitude
     private var timeZone = 0.0 // time-zone
     private var jDate = 0.0 // Julian date
-    // ------------------------------------------------------------
-    // Calculation Methods
-    private var jafari = 0 // Ithna Ashari
-    private var karachi = 1 // University of Islamic Sciences, Karachi
-    private var isna = 2 // Islamic Society of North America (ISNA)
-    private var mwl = 3 // Muslim World League (MWL)
-    private var makkah = 4 // Umm al-Qura, Makkah
-    private var egypt = 5 // Egyptian General Authority of Survey
-    private var custom = 7 // Custom Setting
-    private var tehran = 6 // Institute of Geophysics, University of Tehran
-    // Juristic Methods
-    private var shafii = 0 // Shafii (standard)
-    private var hanafi = 1 // Hanafi
-    // Adjusting Methods for Higher Latitudes
-    private var none = 0 // No adjustment
-    private var midNight = 1 // middle of night
-    private var oneSeventh = 2 // 1/7th of night
-    private var angleBased = 3 // angle/60th of night
-    // Time Formats
-    private var time24 = 0 // 24-hour format
-    private var time12 = 1 // 12-hour format
-    private var time12NS = 2 // 12-hour format with no suffix
-    private var floating = 3 // floating point number
-    private val invalidTime = "-----" // The string used for invalid times
     // --------------------- Technical Settings --------------------
     private var numIterations = 1 // number of iterations needed to compute times
     // ------------------- Calc Method Parameters --------------------
     private val methodParams = hashMapOf(
-        jafari to doubleArrayOf(16.0, 0.0, 4.0, 0.0, 14.0),    // Jafari
-        karachi to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 18.0),    // Karachi
-        isna to doubleArrayOf(15.0, 1.0, 0.0, 0.0, 15.0),    // ISNA
-        mwl to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0),    // MWL
-        makkah to doubleArrayOf(18.5, 1.0, 0.0, 1.0, 90.0),    // Makkah
-        egypt to doubleArrayOf(19.5, 1.0, 0.0, 0.0, 17.5),    // Egypt
-        tehran to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0),    // Tehran
-        custom to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0)    // Custom
+        CM.MECCA to doubleArrayOf(18.5, 1.0, 0.0, 1.0, 90.0),
+        CM.MWL to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0),
+        CM.ISNA to doubleArrayOf(15.0, 1.0, 0.0, 0.0, 15.0),
+        CM.JAFARI to doubleArrayOf(16.0, 0.0, 4.0, 0.0, 14.0),
+        CM.KARACHI to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 18.0),
+        CM.EGYPT to doubleArrayOf(19.5, 1.0, 0.0, 0.0, 17.5),
+        CM.TAHRAN to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0),
+        CM.CUSTOM to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0)
     )
-    private val prayerTimesCurrent: DoubleArray? = null
     private val offsets = intArrayOf(0, 0, 0, 0, 0, 0, 0)
+    private val invalidTime = "-----" // The string used for invalid times
 
     // ---------------------- Trigonometric Functions -----------------------
     // range reduce angle in degrees.
@@ -106,11 +107,6 @@ class PrayTimes(private val context: Context) {
     // degree arcCos
     private fun dArcCos(x: Double): Double {
         return radiansToDegrees(acos(x))
-    }
-
-    // degree arcTan
-    private fun dArcTan(x: Double): Double {
-        return radiansToDegrees(atan(x))
     }
 
     // degree arcTan2
@@ -235,11 +231,24 @@ class PrayTimes(private val context: Context) {
         timeZone = tZone
         jDate = julianDate(year, month, day)
         jDate -= longitude / (15.0 * 24.0)
+
         return computeDayTimes()
     }
 
-    // return prayer times for a given date
     fun getPrayerTimes(
+        latitude: Double, longitude: Double,
+        tZone: Double = getDefaultTimeZone(), date: Calendar = Calendar.getInstance()
+    ): Array<Calendar?> {
+        return toCalendar(
+            getDatePrayerTimes(
+                date[Calendar.YEAR], date[Calendar.MONTH] + 1, date[Calendar.DATE],
+                latitude, longitude, tZone
+            )
+        )
+    }
+
+    // return prayer times for a given date
+    fun getStrPrayerTimes(
         latitude: Double, longitude: Double,
         tZone: Double = getDefaultTimeZone(), date: Calendar = Calendar.getInstance()
     ): ArrayList<String> {
@@ -256,18 +265,6 @@ class PrayTimes(private val context: Context) {
         return result
     }
 
-    fun getPrayerTimesArray(
-        latitude: Double, longitude: Double,
-        tZone: Double = getDefaultTimeZone(), date: Calendar = Calendar.getInstance()
-    ): Array<Calendar?> {
-        return toCalendar(
-            getDatePrayerTimes(
-                date[Calendar.YEAR], date[Calendar.MONTH] + 1, date[Calendar.DATE],
-                latitude, longitude, tZone
-            )
-        )
-    }
-
     private fun toCalendar(givenTimes: ArrayList<String>): Array<Calendar?> {
         val formattedTimes = arrayOfNulls<Calendar>(givenTimes.size - 1) // subtracted one
         // removing sunset time which is the same as maghrib and pushing others
@@ -275,7 +272,7 @@ class PrayTimes(private val context: Context) {
         for (i in givenTimes.indices) {
             val m = givenTimes[i][6]
             var hour = givenTimes[i].substring(0, 2).toInt()
-            if (m == 'P' && hour != 12) hour += 12
+            if (m == 'p' && hour != 12) hour += 12
 
             formattedTimes[i] = Calendar.getInstance()
             formattedTimes[i]!!.set(Calendar.HOUR_OF_DAY, hour)
@@ -295,7 +292,7 @@ class PrayTimes(private val context: Context) {
 
         val str = getDatePrayerTimes(year, month + 1, day, latitude, longitude, tZone)[0]
         var hour = str.substring(0, 2).toInt()
-        if (str[6] == 'P') hour += 12
+        if (str[6] == 'p') hour += 12
 
         val calendar = Calendar.getInstance()
         calendar[Calendar.DATE] = day
@@ -310,11 +307,11 @@ class PrayTimes(private val context: Context) {
         for (i in 0..4) {
             if (params[i].toInt() == -1) {
                 params[i] = methodParams[calcMethod]?.get(i)!!.toDouble()
-                methodParams[custom] = params
+                methodParams[CM.CUSTOM] = params
             }
-            else methodParams[custom]?.set(i, params[i])
+            else methodParams[CM.CUSTOM]?.set(i, params[i])
         }
-        calcMethod = custom
+        calcMethod = CM.CUSTOM
     }
 
     // set the angle for calculating Fajr
@@ -380,8 +377,8 @@ class PrayTimes(private val context: Context) {
         val minutes = floor((time - hours) * 60)
         val result: String
         val suffix: String =
-            if (hours >= 12) "PM"
-            else "AM"
+            if (hours >= 12) "pm"
+            else "am"
         hours = (hours + 12 - 1) % 12 + 1
 
         result =
@@ -420,7 +417,7 @@ class PrayTimes(private val context: Context) {
         val fajr = computeTime(180 - (methodParams[calcMethod]?.get(0)!!), t[0])
         val sunrise = computeTime(180 - 0.833, t[1])
         val dhuhr = computeMidDay(t[2])
-        val asr = computeAsr((1 + asrJuristic).toDouble(), t[3])
+        val asr = computeAsr((1 + asrJuristic.ordinal).toDouble(), t[3])
         val sunset = computeTime(0.833, t[4])
         val maghrib = computeTime(methodParams[calcMethod]?.get(2)!!, t[5])
         val isha = computeTime(methodParams[calcMethod]?.get(4)!!, t[6])
@@ -445,7 +442,7 @@ class PrayTimes(private val context: Context) {
             times[5] = times[4] + (methodParams[calcMethod]?.get(2)!!) / 60
         if (methodParams[calcMethod]?.get(3)?.toInt() == 1) // Isha
             times[6] = times[5] + (methodParams[calcMethod]?.get(4)!!) / 60
-        if (adjustHighLats != none)
+        if (adjustHighLats != AM.NONE)
             adjustHighLatTimes(times)
 
         return times
@@ -454,16 +451,12 @@ class PrayTimes(private val context: Context) {
     // convert times array to given time format
     private fun adjustTimesFormat(times: DoubleArray): ArrayList<String> {
         val result = ArrayList<String>()
-        if (timeFormat == floating) {
-            for (time in times) result.add(time.toString())
-            return result
-        }
-
-        for (i in 0..6) {
+        for (time in times) {
             when(timeFormat) {
-                time12 -> result.add(floatToTime12(times[i], false))
-                time12NS -> result.add(floatToTime12(times[i], true))
-                else -> result.add(floatToTime24(times[i]))
+                TF.H24 -> result.add(floatToTime24(time))
+                TF.H12 -> result.add(floatToTime12(time, false))
+                TF.H12NS -> result.add(floatToTime12(time, true))
+                TF.Floating -> result.add(time.toString())
             }
         }
         return result
@@ -503,13 +496,12 @@ class PrayTimes(private val context: Context) {
 
     // the night portion used for adjusting times in higher latitudes
     private fun nightPortion(angle: Double): Double {
-        var calc = 0.0
-        when (adjustHighLats) {
-            angleBased -> calc = angle / 60.0
-            midNight -> calc = 0.5
-            oneSeventh -> calc = 0.14286
+        return when (adjustHighLats) {
+            AM.NONE -> 0.0
+            AM.MIDNIGHT -> 0.5
+            AM.ONE_SEVENTH -> 0.14286
+            AM.ANGLE_BASED -> angle / 60.0
         }
-        return calc
     }
 
     // convert hours to day portions

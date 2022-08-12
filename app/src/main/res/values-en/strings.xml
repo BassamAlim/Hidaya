@@ -25,6 +25,7 @@
     <string name="text_size_title">Text size</string>
     <string name="reciter">Reciter</string>
     <string name="aya_repeat">Aya repetition</string>
+    <string name="time_format">Time format</string>
 
     <!-- TextViews Text -->
     <string name="telawat_time_record_title">Telawat Listening \nDuration</string>
@@ -90,12 +91,6 @@
     <string name="athkar_hint">Search for thikr</string>
     <string name="reciters_hint">Search for reciter</string>
     <string name="suar_hint">Search for suar</string>
-
-    <!-- Summaries -->
-    <string name="default_morning_summary">5:00 am</string>
-    <string name="default_evening_summary">4:00 pm</string>
-    <string name="default_werd_summary">9:00 pm</string>
-    <string name="default_kahf_summary">1:00 pm</string>
 
     <!-- Words -->
     <string name="more">More</string>

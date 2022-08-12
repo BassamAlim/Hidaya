@@ -50,24 +50,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
             .getDefaultSharedPreferences(requireContext())
 
         var pSwitch: SwitchPreferenceCompat = findPreference(keyGetter(ID.MORNING))!!
-        pSwitch.summary = pref.getString(
-            ID.MORNING.toString() + "text", getString(R.string.default_morning_summary)
-        )
+        pSwitch.summary = formatText(requireContext(), intArrayOf(
+            pref.getInt(ID.MORNING.toString() + "hour", 5),
+            pref.getInt(ID.MORNING.toString() + "minute", 0)))
 
         pSwitch = findPreference(keyGetter(ID.EVENING))!!
-        pSwitch.summary = pref.getString(
-            ID.EVENING.toString() + "text", getString(R.string.default_evening_summary)
-        )
+        pSwitch.summary = formatText(requireContext(), intArrayOf(
+            pref.getInt(ID.EVENING.toString() + "hour", 16),
+            pref.getInt(ID.EVENING.toString() + "minute", 0)))
 
         pSwitch = findPreference(keyGetter(ID.DAILY_WERD))!!
-        pSwitch.summary = pref.getString(
-            ID.DAILY_WERD.toString() + "text", getString(R.string.default_werd_summary)
-        )
+        pSwitch.summary = formatText(requireContext(), intArrayOf(
+            pref.getInt(ID.DAILY_WERD.toString() + "hour", 21),
+            pref.getInt(ID.DAILY_WERD.toString() + "minute", 0)))
 
         pSwitch = findPreference(keyGetter(ID.FRIDAY_KAHF))!!
-        pSwitch.summary = pref.getString(
-            ID.FRIDAY_KAHF.toString() + "text", getString(R.string.default_kahf_summary)
-        )
+        pSwitch.summary = formatText(requireContext(), intArrayOf(
+            pref.getInt(ID.FRIDAY_KAHF.toString() + "hour", 13),
+            pref.getInt(ID.FRIDAY_KAHF.toString() + "minute", 0)))
     }
 
     private fun setListeners() {
@@ -96,6 +96,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
         if (action == "initial") numeralsLanguages.summaryProvider = null
 
+        val timeFormat: ListPreference = findPreference(getString(R.string.time_format_key))!!
+        timeFormat.setOnPreferenceChangeListener { _, newValue ->
+            if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
+                    .getString(requireContext().getString(R.string.time_format_key), getString(R.string.default_time_format))))
+                Utils.refresh(requireActivity())
+            true
+        }
+        if (action == "initial") timeFormat.summaryProvider = null
+
         val themes: ListPreference = findPreference(getString(R.string.theme_key))!!
         themes.setOnPreferenceChangeListener { _, newValue ->
             if (!newValue.equals(PreferenceManager.getDefaultSharedPreferences(requireContext())
@@ -112,8 +121,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         pSwitch.setOnPreferenceChangeListener { _, newValue ->
             val on = newValue as Boolean
-            if (on) showTimePicker(id)
-            else cancelAlarm(id)
+            if (on) showTimePicker(id) else cancelAlarm(id)
             true
         }
     }
@@ -129,16 +137,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val timePicker = TimePickerDialog(context,
             { _: TimePicker?, hourOfDay: Int, minute: Int ->
                 val nums = intArrayOf(hourOfDay, minute)
-                val fixed = formatText(requireContext(), nums)
-
-                pSwitch.summary = fixed
+                pSwitch.summary = formatText(requireContext(), nums)
 
                 val myPref: SharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(requireContext())
                 val editor: SharedPreferences.Editor = myPref.edit()
                 editor.putInt(id.toString() + "hour", hourOfDay)
                 editor.putInt(id.toString() + "minute", minute)
-                editor.putString(id.toString() + "text", fixed)
                 editor.apply()
 
                 Alarms(requireContext(), id)
@@ -149,12 +154,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         timePicker.setOnDismissListener { setInitialStates() }
 
         timePicker.setTitle(getString(R.string.time_picker_title))
-        timePicker.setButton(
-            TimePickerDialog.BUTTON_POSITIVE, getString(R.string.select), null as Message?
-        )
-        timePicker.setButton(
-            TimePickerDialog.BUTTON_NEGATIVE, getString(R.string.cancel), null as Message?
-        )
+        timePicker.setButton(TimePickerDialog.BUTTON_POSITIVE, getString(R.string.select), null as Message?)
+        timePicker.setButton(TimePickerDialog.BUTTON_NEGATIVE, getString(R.string.cancel), null as Message?)
         timePicker.setCancelable(true)
 
         timePicker.show()
@@ -181,52 +182,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun formatText(context: Context, nums: IntArray): String {
-        val locale: String = PreferenceManager.getDefaultSharedPreferences(context)
-            .getString(
-                context.getString(R.string.language_key),
-                context.getString(R.string.default_language)
-            )!!
+        var hour = nums[0]
+        var minute = nums[1].toString()
+        var postfix = context.getString(R.string.at_morning)
 
-        val result: String
-        val map = HashMap<Char, Char>()
-        map['0'] = '٠'
-        map['1'] = '١'
-        map['2'] = '٢'
-        map['3'] = '٣'
-        map['4'] = '٤'
-        map['5'] = '٥'
-        map['6'] = '٦'
-        map['7'] = '٧'
-        map['8'] = '٨'
-        map['9'] = '٩'
-        map['A'] = 'ص'
-        map['P'] = 'م'
-
-        var h = nums[0]
-        var m = nums[1].toString()
-        var section = context.getString(R.string.at_morning)
-        if (h == 0) h = 12
-        else if (h >= 12) {
-            section = context.getString(R.string.at_evening)
-            if (h > 12) h -= 12
+        if (hour == 0) hour = 12
+        else if (hour >= 12) {
+            postfix = context.getString(R.string.at_evening)
+            if (hour > 12) hour -= 12
         }
 
-        if (m.length == 1) {
-            if (m[0] == '0') m += '0'
-            else m = "0" + m[0]
-        }
+        if (minute.length == 1) minute = "0" + minute[0]
 
-        result = "$h:$m $section"
-        val translated = StringBuilder()
-        for (element in result) {
-            if (map.containsKey(element)) {
-                if (locale == "ar") translated.append(map[element])
-                else translated.append(element)
-            }
-            else translated.append(element)
-        }
+        val str = Utils.translateNumbers(context, "$hour:$minute", false)
 
-        return translated.toString()
+        return "$str $postfix"
     }
 
     private fun keyGetter(id: ID): String {

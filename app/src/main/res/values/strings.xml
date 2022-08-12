@@ -29,7 +29,8 @@
     <string name="stop_on_sura_key" translatable="false">stop_on_sura_key</string>
     <string name="stop_on_page_key" translatable="false">stop_on_page_key</string>
     <string name="language_key" translatable="false">language_key</string>
-    <string name="numerals_language_key" translatable="false">numerals language key</string>
+    <string name="numerals_language_key" translatable="false">numerals_language_key</string>
+    <string name="time_format_key" translatable="false">time_format_key</string>
 
     <!-- Preference Titles -->
     <string name="language" translatable="false">Language | اللغة</string>
@@ -40,10 +41,12 @@
     <string name="text_size_title">حجم الخط</string>
     <string name="reciter">القارئ</string>
     <string name="aya_repeat">تكرار الآية</string>
+    <string name="time_format">صيغة الوقت</string>
 
     <!-- Defaults -->
     <string name="default_theme" translatable="false">ThemeL</string>
     <string name="default_language" translatable="false">arabic</string>
+    <string name="default_time_format" translatable="false">12h</string>
 
     <!-- TextViews Text -->
     <string name="telawat_time_record_title">مدة الاستماع للتلاوات</string>
@@ -109,12 +112,6 @@
     <string name="athkar_hint">ابحث عن الذِكر</string>
     <string name="reciters_hint">ابحث عن القارئ</string>
     <string name="suar_hint">ابحث عن السورة</string>
-
-    <!-- Summaries -->
-    <string name="default_morning_summary">٥:٠٠ صباحاً</string>
-    <string name="default_evening_summary">٤:٠٠ مساءاًً</string>
-    <string name="default_werd_summary">٩:٠٠ مساءاً</string>
-    <string name="default_kahf_summary">١:٠٠ مساءاً</string>
 
     <!-- Words -->
     <string name="settings">الإعدادات</string>

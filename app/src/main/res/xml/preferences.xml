@@ -23,6 +23,14 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
+            android:entries="@array/time_format_entries"
+            android:entryValues="@array/time_format_values"
+            android:key="@string/time_format_key"
+            android:title="@string/time_format"
+            android:icon="@drawable/ic_time_foramt"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
             android:entries="@array/themes_entries"
             android:entryValues="@array/theme_values"
             android:key="@string/theme_key"

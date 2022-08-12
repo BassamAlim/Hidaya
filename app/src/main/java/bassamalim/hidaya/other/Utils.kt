@@ -93,16 +93,20 @@ object Utils {
         map['7'] = '٧'
         map['8'] = '٨'
         map['9'] = '٩'
-        map['A'] = 'ص'
-        map['P'] = 'م'
+        map['a'] = 'ص'
+        map['p'] = 'م'
 
         val temp = StringBuilder()
         for (char in eng) {
             if (map.containsKey(char)) temp.append(map[char])
-            else if (char != 'M') temp.append(char)
+            else if (char != 'm') temp.append(char)
         }
 
         return temp.toString()
+    }
+
+    fun formatTime(str: String) {
+
     }
 
     fun getTimes(context: Context, loc: Location?): Array<Calendar?> {
@@ -112,7 +116,7 @@ object Utils {
         val millis = timeZoneObj.getOffset(calendar.time.time).toLong()
         val timezone = millis / 3600000.0
 
-        return PrayTimes(context).getPrayerTimesArray(
+        return PrayTimes(context).getPrayerTimes(
             loc!!.latitude, loc.longitude, timezone, calendar
         )
     }
