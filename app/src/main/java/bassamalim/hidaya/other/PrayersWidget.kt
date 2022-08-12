@@ -6,6 +6,7 @@ import android.content.Context
 import android.widget.RemoteViews
 import bassamalim.hidaya.R
 import bassamalim.hidaya.helpers.Keeper
+import java.util.*
 
 class PrayersWidget : AppWidgetProvider() {
 
@@ -30,21 +31,41 @@ class PrayersWidget : AppWidgetProvider() {
         ) {
             Utils.onActivityCreateSetLocale(context)
             
-            val timesList = Keeper(context).retrieveStrTimes()
+            val timesList = getTimesList(context)
 
-            if (timesList != null) {
-                // Construct the RemoteViews object
-                val views = RemoteViews(context.packageName, R.layout.widget_prayers)
+            // Construct the RemoteViews object
+            val views = RemoteViews(context.packageName, R.layout.widget_prayers)
 
-                views.setTextViewText(R.id.widget_fajr, timesList[0])
-                views.setTextViewText(R.id.widget_duhr, timesList[1])
-                views.setTextViewText(R.id.widget_asr, timesList[2])
-                views.setTextViewText(R.id.widget_maghrib, timesList[3])
-                views.setTextViewText(R.id.widget_ishaa, timesList[4])
+            views.setTextViewText(R.id.widget_fajr, timesList[0])
+            views.setTextViewText(R.id.widget_duhr, timesList[1])
+            views.setTextViewText(R.id.widget_asr, timesList[2])
+            views.setTextViewText(R.id.widget_maghrib, timesList[3])
+            views.setTextViewText(R.id.widget_ishaa, timesList[4])
 
-                // Instruct the widget manager to update the widget
-                appWidgetManager.updateAppWidget(appWidgetId, views)
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(appWidgetId, views)
+        }
+
+        private fun getTimesList(context: Context): Array<String?> {
+            val times = Keeper(context).retrieveTimes()
+            val prayerNames = context.resources.getStringArray(R.array.prayer_names)
+
+            val result = arrayOfNulls<String>(times.size-1)
+
+            var j = 0
+            for (i in 0..4) {
+                if (i == 1) j++  // To skip shorouq
+
+                result[i] = "${prayerNames[j]}\n${
+                    Utils.translateNumbers(context, Utils.formatTime(
+                        context, "${times[j]!![Calendar.HOUR]}:${times[j]!![Calendar.MINUTE]}"
+                    ), true)
+                }"
+
+                j++
             }
+
+            return result
         }
     }
 

@@ -21,6 +21,7 @@ import java.io.IOException
 import java.nio.channels.FileChannel
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
+import java.text.SimpleDateFormat
 import java.util.*
 
 object Utils {
@@ -64,7 +65,7 @@ object Utils {
         activity.startActivity(intent)
     }
 
-    fun translateNumbers(context: Context, english: String, timeFormat: Boolean): String {
+    fun translateNumbers(context: Context, english: String, timeFormat: Boolean = false): String {
         var eng = english
         if (timeFormat) {
             if (eng.startsWith('0')) {
@@ -105,8 +106,49 @@ object Utils {
         return temp.toString()
     }
 
-    fun formatTime(str: String) {
+    fun formatTime(
+        context: Context, gStr: String, suffixes: Array<String> = arrayOf("am", "pm")
+    ): String {
+        var str = gStr
 
+        val hour = "%d".format(str.split(':')[0].toInt())
+        var minute = str.split(":")[1]
+        minute = minute.replace("am", "")
+        minute = minute.replace("pm", "")
+        minute = minute.replace("ص", "")
+        minute = minute.replace("م", "")
+        minute = "%02d".format(minute.toInt())
+
+        str = "$hour:$minute"
+
+        Log.d(Global.TAG, "TO FORMAT: $str")
+
+        val timeFormat = timeFormat(PreferenceManager.getDefaultSharedPreferences(context)
+            .getString(
+                context.getString(R.string.time_format_key),
+                context.getString(R.string.default_time_format)
+            )
+        !!)
+
+        val h12Format = SimpleDateFormat("hh:mm aa", Locale.US)
+        val h24Format = SimpleDateFormat("HH:mm", Locale.US)
+
+        if (str[str.length-1].isDigit()) {  // Input is in 24h format
+            return if (timeFormat == PrayTimes.TF.H24) str
+            else {
+                val date = h24Format.parse(str)
+                val output = h12Format.format(date!!).lowercase()
+                output
+            }
+        }
+        else { // Input is in 12h format
+            return if (timeFormat == PrayTimes.TF.H12) str
+            else {
+                val date = h12Format.parse(str)
+                val output = h24Format.format(date!!)
+                output
+            }
+        }
     }
 
     fun getTimes(context: Context, loc: Location?): Array<Calendar?> {
@@ -204,6 +246,13 @@ object Utils {
             8 -> ID.DAILY_WERD
             9 -> ID.FRIDAY_KAHF
             else -> null
+        }
+    }
+
+    fun timeFormat(str: String): PrayTimes.TF {
+        return when(str) {
+            "24h" -> PrayTimes.TF.H24
+            else -> PrayTimes.TF.H12
         }
     }
 

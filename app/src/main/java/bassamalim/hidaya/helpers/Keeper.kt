@@ -29,7 +29,6 @@ class Keeper {
 
         storeLocation(gLocation)
         storeTimes(Utils.getTimes(context, gLocation))
-        storeStrTimes(getStrTimes(gLocation))
     }
 
     /**
@@ -59,18 +58,6 @@ class Keeper {
     }
 
     /**
-     * It stores the times in the shared preferences.
-     *
-     * @param times The array of times to store.
-     */
-    private fun storeStrTimes(times: Array<String?>?) {
-        val editor: SharedPreferences.Editor = pref.edit()
-        tJson = gson.toJson(times)
-        editor.putString("stored string times", tJson)
-        editor.apply()
-    }
-
-    /**
      * Retrieve the stored location from the shared preferences
      *
      * @return The location object.
@@ -90,37 +77,6 @@ class Keeper {
     fun retrieveTimes(): Array<Calendar?> {
         tJson = pref.getString("stored times", "")!!
         return gson.fromJson(tJson, Array<Calendar?>::class.java)
-    }
-
-    /**
-     * Retrieves the stored string times from the shared preferences
-     *
-     * @return An array of strings.
-     */
-    fun retrieveStrTimes(): Array<String>? {
-        tJson = pref.getString("stored string times", "")!!
-        return gson.fromJson(tJson, Array<String>::class.java)
-    }
-
-    /**
-     * This function takes a Location object and returns an array of strings representing the prayer
-     * times for that location
-     *
-     * @param loc Location object
-     * @return An array of strings.
-     */
-    private fun getStrTimes(loc: Location): Array<String?> {
-        val calendar = Calendar.getInstance()
-        val date = Date()
-        calendar.time = date
-
-        val timeZoneObj = TimeZone.getDefault()
-        val millis = timeZoneObj.getOffset(date.time).toLong()
-        val timezone = millis / 3600000.0
-
-        return reformatTimes(
-            PrayTimes(context).getStrPrayerTimes(loc.latitude, loc.longitude, timezone, calendar)
-        )
     }
 
     /**

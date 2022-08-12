@@ -1,7 +1,6 @@
 package bassamalim.hidaya.fragments
 
 import android.app.TimePickerDialog
-import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.os.Bundle
@@ -20,6 +19,7 @@ import java.util.*
 class SettingsFragment : PreferenceFragmentCompat() {
 
     private var action: String = "normal"
+    private lateinit var suffixes: Array<String>
 
     companion object {
         fun newInstance(action: String): SettingsFragment {
@@ -38,6 +38,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        suffixes = arrayOf(
+            requireContext().getString(R.string.at_morning),
+            requireContext().getString(R.string.at_evening)
+        )
+
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
         setInitialStates()
@@ -50,24 +55,28 @@ class SettingsFragment : PreferenceFragmentCompat() {
             .getDefaultSharedPreferences(requireContext())
 
         var pSwitch: SwitchPreferenceCompat = findPreference(keyGetter(ID.MORNING))!!
-        pSwitch.summary = formatText(requireContext(), intArrayOf(
-            pref.getInt(ID.MORNING.toString() + "hour", 5),
-            pref.getInt(ID.MORNING.toString() + "minute", 0)))
+        pSwitch.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
+            requireContext(), "${pref.getInt(ID.MORNING.toString() + "hour", 5)}:" +
+                    "${pref.getInt(ID.MORNING.toString() + "minute", 0)}", suffixes
+        ), true)
 
         pSwitch = findPreference(keyGetter(ID.EVENING))!!
-        pSwitch.summary = formatText(requireContext(), intArrayOf(
-            pref.getInt(ID.EVENING.toString() + "hour", 16),
-            pref.getInt(ID.EVENING.toString() + "minute", 0)))
+        pSwitch.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
+            requireContext(), "${pref.getInt(ID.EVENING.toString() + "hour", 16)}:" +
+                    "${pref.getInt(ID.EVENING.toString() + "minute", 0)}", suffixes
+        ), true)
 
         pSwitch = findPreference(keyGetter(ID.DAILY_WERD))!!
-        pSwitch.summary = formatText(requireContext(), intArrayOf(
-            pref.getInt(ID.DAILY_WERD.toString() + "hour", 21),
-            pref.getInt(ID.DAILY_WERD.toString() + "minute", 0)))
+        pSwitch.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
+            requireContext(), "${pref.getInt(ID.DAILY_WERD.toString() + "hour", 21)}:" +
+                    "${pref.getInt(ID.DAILY_WERD.toString() + "minute", 0)}", suffixes
+        ), true)
 
         pSwitch = findPreference(keyGetter(ID.FRIDAY_KAHF))!!
-        pSwitch.summary = formatText(requireContext(), intArrayOf(
-            pref.getInt(ID.FRIDAY_KAHF.toString() + "hour", 13),
-            pref.getInt(ID.FRIDAY_KAHF.toString() + "minute", 0)))
+        pSwitch.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
+            requireContext(), "${pref.getInt(ID.FRIDAY_KAHF.toString() + "hour", 13)}:" +
+                    "${pref.getInt(ID.FRIDAY_KAHF.toString() + "minute", 0)}", suffixes
+        ), true)
     }
 
     private fun setListeners() {
@@ -136,8 +145,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val timePicker = TimePickerDialog(context,
             { _: TimePicker?, hourOfDay: Int, minute: Int ->
-                val nums = intArrayOf(hourOfDay, minute)
-                pSwitch.summary = formatText(requireContext(), nums)
+                pSwitch.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
+                    requireContext(), "$hourOfDay:$minute", suffixes
+                ), true)
 
                 val myPref: SharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(requireContext())
@@ -179,24 +189,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val key = keyGetter(id)
         val pSwitch: SwitchPreferenceCompat = findPreference(key)!!
         pSwitch.summary = ""
-    }
-
-    private fun formatText(context: Context, nums: IntArray): String {
-        var hour = nums[0]
-        var minute = nums[1].toString()
-        var postfix = context.getString(R.string.at_morning)
-
-        if (hour == 0) hour = 12
-        else if (hour >= 12) {
-            postfix = context.getString(R.string.at_evening)
-            if (hour > 12) hour -= 12
-        }
-
-        if (minute.length == 1) minute = "0" + minute[0]
-
-        val str = Utils.translateNumbers(context, "$hour:$minute", false)
-
-        return "$str $postfix"
     }
 
     private fun keyGetter(id: ID): String {

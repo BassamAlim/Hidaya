@@ -116,6 +116,10 @@ class PrayersFragment : Fragment() {
      * @param change The number of days to add to the current date.
      */
     private fun getTimes(change: Int) {
+        val timeFormat = Utils.timeFormat(pref.getString(
+            getString(R.string.time_format_key), getString(R.string.default_time_format)
+        )!!)
+
         val prayTimes = PrayTimes(requireContext())
 
         val calendar = Calendar.getInstance()
@@ -130,7 +134,7 @@ class PrayersFragment : Fragment() {
             location.latitude, location.longitude, timezone, calendar
         )
         val formattedTimes = prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, timezone, calendar
+            location.latitude, location.longitude, timezone, calendar, timeFormat
         )
 
         for (i in formattedTimes.indices) {

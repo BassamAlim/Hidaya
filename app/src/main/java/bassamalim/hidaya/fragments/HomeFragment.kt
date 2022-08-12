@@ -64,18 +64,22 @@ class HomeFragment : Fragment() {
         val millis = timeZoneObj.getOffset(today.time.time).toLong()
         val timezone = millis / 3600000.0
 
+        val timeFormat = Utils.timeFormat(pref.getString(
+            getString(R.string.time_format_key), getString(R.string.default_time_format)
+        )!!)
+
         times = prayTimes.getPrayerTimes(
             location.latitude, location.longitude, timezone, today
         )
         formattedTimes = prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, timezone, today
+            location.latitude, location.longitude, timezone, today, timeFormat
         )
 
-        tomorrowFajr = prayTimes.getTomorrowFajr(
-            tomorrow, location.latitude, location.longitude, timezone
-        )
-        formattedTomorrowFajr = prayTimes.getStrPrayerTimes(
+        tomorrowFajr = prayTimes.getPrayerTimes(
             location.latitude, location.longitude, timezone, tomorrow
+        )[0]!!
+        formattedTomorrowFajr = prayTimes.getStrPrayerTimes(
+            location.latitude, location.longitude, timezone, tomorrow, timeFormat
         )[0]
     }
 
