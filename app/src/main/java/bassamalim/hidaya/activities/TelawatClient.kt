@@ -20,7 +20,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
-import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB
@@ -62,8 +61,7 @@ class TelawatClient : AppCompatActivity() {
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "HidayaDB")
-            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+        db = Utils.getDB(this)
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 

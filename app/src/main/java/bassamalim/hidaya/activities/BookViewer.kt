@@ -3,7 +3,7 @@ package bassamalim.hidaya.activities
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.*
+import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +17,6 @@ import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.models.BookDoor
 import bassamalim.hidaya.other.Utils
 import com.google.gson.Gson
-import java.util.*
 
 class BookViewer : AppCompatActivity() {
 

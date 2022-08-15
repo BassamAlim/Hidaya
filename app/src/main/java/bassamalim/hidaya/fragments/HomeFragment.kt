@@ -56,30 +56,27 @@ class HomeFragment : Fragment() {
 
     private fun getTimes(location: Location) {
         val prayTimes = PrayTimes(requireContext())
+
         val today = Calendar.getInstance()
         val tomorrow = Calendar.getInstance()
         tomorrow[Calendar.DATE] = tomorrow[Calendar.DATE] + 1
 
-        val timeZoneObj = TimeZone.getDefault()
-        val millis = timeZoneObj.getOffset(today.time.time).toLong()
-        val timezone = millis / 3600000.0
+        val utcOffset = Utils.getUtcOffset(requireContext(), pref)
 
-        val timeFormat = Utils.timeFormat(pref.getString(
-            getString(R.string.time_format_key), getString(R.string.default_time_format)
-        )!!)
+        val timeFormat = Utils.getTimeFormat(requireContext(), pref)
 
         times = prayTimes.getPrayerTimes(
-            location.latitude, location.longitude, timezone, today
+            location.latitude, location.longitude, utcOffset.toDouble(), today
         )
         formattedTimes = prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, timezone, today, timeFormat
+            location.latitude, location.longitude, utcOffset.toDouble(), today, timeFormat
         )
 
         tomorrowFajr = prayTimes.getPrayerTimes(
-            location.latitude, location.longitude, timezone, tomorrow
+            location.latitude, location.longitude, utcOffset.toDouble(), tomorrow
         )[0]!!
         formattedTomorrowFajr = prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, timezone, tomorrow, timeFormat
+            location.latitude, location.longitude, utcOffset.toDouble(), tomorrow, timeFormat
         )[0]
     }
 
@@ -125,7 +122,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun onFinish() {
-                if (restart[0]) setupUpcomingPrayer()
+                //if (restart[0]) setupUpcomingPrayer()
             }
         }.start()
     }

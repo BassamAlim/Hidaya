@@ -9,19 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranSearcherActivity
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.adapters.QuranFragmentAdapter
-import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.SuarDB
 import bassamalim.hidaya.databinding.FragmentQuranBinding
 import bassamalim.hidaya.models.Sura
+import bassamalim.hidaya.other.Utils
 import java.util.*
 
 class FavoriteQuranFragment : Fragment() {
@@ -41,8 +39,7 @@ class FavoriteQuranFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        language = PreferenceManager.getDefaultSharedPreferences(requireContext())
-            .getString(getString(R.string.language_key), getString(R.string.default_language))!!
+        language = Utils.getLanguage(requireContext())
 
         gridLayoutManager = GridLayoutManager(context, 1)
 
@@ -142,9 +139,7 @@ class FavoriteQuranFragment : Fragment() {
 
     private val suras: List<SuarDB>
         get() {
-            val db: AppDatabase = Room.databaseBuilder(requireContext(), AppDatabase::class.java,
-                "HidayaDB").createFromAsset("databases/HidayaDB.db")
-                .allowMainThreadQueries().build()
+            val db = Utils.getDB(requireContext())
 
             names =
                 if (language == "en") db.suarDao().getNamesEn()

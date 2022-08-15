@@ -14,9 +14,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import bassamalim.hidaya.R
-import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB
 import bassamalim.hidaya.models.ReciterSura
 import bassamalim.hidaya.other.Utils
@@ -29,9 +27,7 @@ class TelawatSuarAdapter(
     reciterId: Int, private val versionId: Int
 ) : RecyclerView.Adapter<TelawatSuarAdapter.ViewHolder?>() {
 
-    private val db: AppDatabase = Room.databaseBuilder(
-        context, AppDatabase::class.java, "HidayaDB")
-        .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+    private val db = Utils.getDB(context)
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson = Gson()
     private val items = ArrayList(original)

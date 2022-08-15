@@ -91,9 +91,6 @@
             android:name=".activities.QiblaActivity"
             android:exported="false" />
         <activity
-            android:name=".dialogs.QuranSettingsDialog"
-            android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity
             android:name=".activities.BookSearcher"
             android:exported="false" />
         <activity
@@ -123,6 +120,12 @@
             android:exported="true"
             android:label="@string/settings" />
         <activity android:name=".activities.AboutActivity" />
+        <activity
+            android:name=".dialogs.QuranSettingsDialog"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity
+            android:name=".dialogs.LocationPickerDialog"
+            android:theme="@style/Theme.AppCompat.Dialog" />
 
         <receiver android:name=".receivers.NotificationReceiver" />
         <receiver android:name=".receivers.DailyUpdateReceiver" />

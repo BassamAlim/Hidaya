@@ -3,7 +3,6 @@ package bassamalim.hidaya.helpers
 import android.content.Context
 import bassamalim.hidaya.other.Utils
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.*
 
 class PrayTimes(private val context: Context) {
@@ -17,7 +16,6 @@ class PrayTimes(private val context: Context) {
         KARACHI,  // University of Islamic Sciences, Karachi
         EGYPT,  // Egyptian General Authority of Survey
         TAHRAN,  // Institute of Geophysics, University of Tehran
-        CUSTOM  // Custom Setting
     }
     enum class JM { SHAFII /*(standard)*/, HANAFI }  // Juristic Methods
     enum class AM {  // Adjusting Methods for Higher Latitudes
@@ -34,7 +32,7 @@ class PrayTimes(private val context: Context) {
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
     private var latitude = 0.0 // latitude
     private var longitude = 0.0 // longitude
-    private var timeZone = 0.0 // time-zone
+    private var timeZone = 0.0 // time-zone UTC Offset
     private var jDate = 0.0 // Julian date
     // --------------------- Technical Settings --------------------
     private var numIterations = 1 // number of iterations needed to compute times
@@ -46,11 +44,9 @@ class PrayTimes(private val context: Context) {
         CM.JAFARI to doubleArrayOf(16.0, 0.0, 4.0, 0.0, 14.0),
         CM.KARACHI to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 18.0),
         CM.EGYPT to doubleArrayOf(19.5, 1.0, 0.0, 0.0, 17.5),
-        CM.TAHRAN to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0),
-        CM.CUSTOM to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0)
+        CM.TAHRAN to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0)
     )
     private val offsets = intArrayOf(0, 0, 0, 0, 0, 0, 0)
-    private val invalidTime = "-----" // The string used for invalid times
 
     // -------------------- Interface Functions --------------------
     // returns prayer times in Calendar object
@@ -72,7 +68,7 @@ class PrayTimes(private val context: Context) {
             val nums = times[i].split(":")
 
             val cal = Calendar.getInstance()
-            cal[Calendar.HOUR] = nums[0].toInt()
+            cal[Calendar.HOUR_OF_DAY] = nums[0].toInt()
             cal[Calendar.MINUTE] = nums[1].toInt()
             cal[Calendar.SECOND] = 0
             cal[Calendar.MILLISECOND] = 0
@@ -106,12 +102,7 @@ class PrayTimes(private val context: Context) {
     // ---------------------- Time-Zone Functions -----------------------
     // compute local time-zone for a specific date
     private fun getDefaultTimeZone(): Double {
-        return TimeZone.getDefault().rawOffset / 1000.0 / 3600
-    }
-
-    // detect daylight saving in a given date
-    private fun detectDaylightSaving(): Double {
-        return TimeZone.getDefault().dstSavings.toDouble()
+        return TimeZone.getDefault().rawOffset / 3600000.0
     }
 
     // ---------------------- Julian Date Functions -----------------------
@@ -129,16 +120,6 @@ class PrayTimes(private val context: Context) {
         return (
                 floor(365.25 * (year + 4716)) + floor(30.6001 * (month + 1)) + gDay + b
                 ) - 1524.5
-    }
-
-    // convert a calendar date to julian date (second method)
-    private fun calcJD(year: Int, month: Int, day: Int): Double {
-        val j1970 = 2440588.0
-        val cal = Calendar.getInstance()
-        cal.set(year, month-1, day)
-        val ms = cal.timeInMillis.toDouble() // # of milliseconds since midnight Jan 1, 1970
-        val days = floor(ms / (1000.0 * 60.0 * 60.0 * 24.0))
-        return j1970 + days - 0.5
     }
 
     // ---------------------- Calculation Functions -----------------------
@@ -215,95 +196,16 @@ class PrayTimes(private val context: Context) {
         jDate -= lng / (15.0 * 24.0)
     }
 
-    // set custom values for calculation parameters
-    private fun setCustomParams(params: DoubleArray) {
-        for (i in 0..4) {
-            if (params[i].toInt() == -1) {
-                params[i] = methodParams[calcMethod]?.get(i)!!.toDouble()
-                methodParams[CM.CUSTOM] = params
-            }
-            else methodParams[CM.CUSTOM]?.set(i, params[i])
-        }
-        calcMethod = CM.CUSTOM
-    }
-
-    // set the angle for calculating Fajr
-    fun setFajrAngle(angle: Double) {
-        val params = doubleArrayOf(angle, -1.0, -1.0, -1.0, -1.0)
-        setCustomParams(params)
-    }
-
-    // set the angle for calculating Maghrib
-    fun setMaghribAngle(angle: Double) {
-        val params = doubleArrayOf(-1.0, 0.0, angle, -1.0, -1.0)
-        setCustomParams(params)
-    }
-
-    // set the angle for calculating Isha
-    fun setIshaAngle(angle: Double) {
-        val params = doubleArrayOf(-1.0, -1.0, -1.0, 0.0, angle)
-        setCustomParams(params)
-    }
-
-    // set the minutes after Sunset for calculating Maghrib
-    fun setMaghribMinutes(minutes: Double) {
-        val params = doubleArrayOf(-1.0, 1.0, minutes, -1.0, -1.0)
-        setCustomParams(params)
-    }
-
-    // set the minutes after Maghrib for calculating Isha
-    fun setIshaMinutes(minutes: Double) {
-        val params = doubleArrayOf(-1.0, -1.0, -1.0, 1.0, minutes)
-        setCustomParams(params)
-    }
-
-    // convert double hours to 24h format
-    private fun floatToTime24(times: DoubleArray): ArrayList<String> {
-        val result = ArrayList<String>()
-        for (time in times) {
-            val fixed = fixHour(time + 0.5 / 60.0) // add 0.5 minutes to round
-            val hours = floor(fixed).toInt()
-            val minutes = floor((fixed - hours) * 60.0)
-
-            result.add(
-                if (hours in 0..9 && minutes >= 0 && minutes <= 9)
-                    "0" + hours + ":0" + minutes.roundToInt()
-                else if (hours in 0..9)
-                    "0" + hours + ":" + minutes.roundToInt()
-                else if (minutes in 0.0..9.0)
-                    hours.toString() + ":0" + minutes.roundToInt()
-                else
-                    hours.toString() + ":" + minutes.roundToInt()
-            )
-        }
-        return result
-    }
-
-    // convert double hours to 12h format
-    private fun floatToTime12(times: DoubleArray): ArrayList<String> {
-        val result = ArrayList<String>()
-        for (time in times) {
-            val fixed = fixHour(time + 0.5 / 60) // add 0.5 minutes to round
-            var hours = floor(fixed).toInt()
-            val minutes = floor((fixed - hours) * 60)
-            val suffix = if (hours >= 12) "pm" else "am"
-            hours = (hours + 12 - 1) % 12 + 1
-
-            result.add(
-                if (hours in 0..9 && minutes >= 0 && minutes <= 9)
-                    ("0" + hours + ":0" + minutes.roundToInt() + " " + suffix)
-                else if (hours in 0..9)
-                    "0" + hours + ":" + minutes.roundToInt() + " " + suffix
-                else if (minutes in 0.0..9.0)
-                    hours.toString() + ":0" + minutes.roundToInt() + " " + suffix
-                else
-                    hours.toString() + ":" + minutes.roundToInt() + " " + suffix
-            )
-        }
-        return result
-    }
-
     // ---------------------- Compute Prayer Times -----------------------
+    // compute prayer times at given julian date
+    private fun computeDayTimes(): DoubleArray {
+        var times = doubleArrayOf(5.0, 6.0, 12.0, 13.0, 18.0, 18.0, 18.0) // default times
+        for (i in 1..numIterations) times = computeTimes(times)
+        adjustTimes(times)
+        tuneTimes(times)
+        return times
+    }
+
     // compute prayer times at given julian date
     private fun computeTimes(times: DoubleArray): DoubleArray {
         val t = dayPortion(times)
@@ -315,15 +217,6 @@ class PrayTimes(private val context: Context) {
         val maghrib = computeTime(methodParams[calcMethod]?.get(2)!!, t[5])
         val isha = computeTime(methodParams[calcMethod]?.get(4)!!, t[6])
         return doubleArrayOf(fajr, sunrise, dhuhr, asr, sunset, maghrib, isha)
-    }
-
-    // compute prayer times at given julian date
-    private fun computeDayTimes(): DoubleArray {
-        var times = doubleArrayOf(5.0, 6.0, 12.0, 13.0, 18.0, 18.0, 18.0) // default times
-        for (i in 1..numIterations) times = computeTimes(times)
-        adjustTimes(times)
-        tuneTimes(times)
-        return times
     }
 
     // adjust times in a prayer time array
@@ -373,6 +266,12 @@ class PrayTimes(private val context: Context) {
         return times
     }
 
+    // convert hours to day portions
+    private fun dayPortion(times: DoubleArray): DoubleArray {
+        for (i in 0..6) times[i] = times[i] / 24
+        return times
+    }
+
     // the night portion used for adjusting times in higher latitudes
     private fun nightPortion(angle: Double): Double {
         return when (adjustHighLats) {
@@ -383,12 +282,6 @@ class PrayTimes(private val context: Context) {
         }
     }
 
-    // convert hours to day portions
-    private fun dayPortion(times: DoubleArray): DoubleArray {
-        for (i in 0..6) times[i] = times[i] / 24
-        return times
-    }
-
     // Tune timings for adjustments (Set time offsets)
     fun tune(offsetTimes: IntArray) {
         System.arraycopy(offsetTimes, 0, offsets, 0, offsetTimes.size)
@@ -397,6 +290,52 @@ class PrayTimes(private val context: Context) {
     private fun tuneTimes(times: DoubleArray): DoubleArray {
         for (i in times.indices) times[i] = times[i] + offsets[i] / 60.0
         return times
+    }
+
+    // convert double hours to 24h format
+    private fun floatToTime24(times: DoubleArray): ArrayList<String> {
+        val result = ArrayList<String>()
+        for (time in times) {
+            val fixed = fixHour(time + 0.5 / 60.0) // add 0.5 minutes to round
+            val hours = floor(fixed).toInt()
+            val minutes = floor((fixed - hours) * 60.0)
+
+            result.add(
+                if (hours in 0..9 && minutes >= 0 && minutes <= 9)
+                    "0" + hours + ":0" + minutes.roundToInt()
+                else if (hours in 0..9)
+                    "0" + hours + ":" + minutes.roundToInt()
+                else if (minutes in 0.0..9.0)
+                    hours.toString() + ":0" + minutes.roundToInt()
+                else
+                    hours.toString() + ":" + minutes.roundToInt()
+            )
+        }
+        return result
+    }
+
+    // convert double hours to 12h format
+    private fun floatToTime12(times: DoubleArray): ArrayList<String> {
+        val result = ArrayList<String>()
+        for (time in times) {
+            val fixed = fixHour(time + 0.5 / 60) // add 0.5 minutes to round
+            var hours = floor(fixed).toInt()
+            val minutes = floor((fixed - hours) * 60)
+            val suffix = if (hours >= 12) "pm" else "am"
+            hours = (hours + 12 - 1) % 12 + 1
+
+            result.add(
+                if (hours in 0..9 && minutes >= 0 && minutes <= 9)
+                    ("0" + hours + ":0" + minutes.roundToInt() + " " + suffix)
+                else if (hours in 0..9)
+                    "0" + hours + ":" + minutes.roundToInt() + " " + suffix
+                else if (minutes in 0.0..9.0)
+                    hours.toString() + ":0" + minutes.roundToInt() + " " + suffix
+                else
+                    hours.toString() + ":" + minutes.roundToInt() + " " + suffix
+            )
+        }
+        return result
     }
 
     // ---------------------- Trigonometric Functions -----------------------

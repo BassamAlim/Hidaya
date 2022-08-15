@@ -11,10 +11,9 @@ import androidx.preference.DropDownPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.preference.SeekBarPreference
-import androidx.room.Room
 import bassamalim.hidaya.R
-import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.databinding.DialogQuranSettingsBinding
+import bassamalim.hidaya.other.Utils
 
 class QuranSettingsDialog : AppCompatActivity() {
 
@@ -116,10 +115,7 @@ class QuranSettingsDialog : AppCompatActivity() {
         }
 
         private fun getReciterNames(): List<String?> {
-            return Room.databaseBuilder(
-                requireContext().applicationContext, AppDatabase::class.java, "HidayaDB"
-            ).createFromAsset("databases/HidayaDB.db").allowMainThreadQueries()
-                .build().ayatRecitersDao().getNames()
+            return Utils.getDB(requireContext()).ayatRecitersDao().getNames()
         }
     }
 

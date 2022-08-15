@@ -26,7 +26,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.adapters.RecyclerQuranViewerAdapter
 import bassamalim.hidaya.database.AppDatabase
@@ -120,8 +119,7 @@ class QuranViewer : SwipeActivity() {
         scrollViews = arrayOf(binding.scrollview1, binding.scrollview2)
         lls = arrayOf(binding.linear1, binding.linear2)
 
-        db = Room.databaseBuilder(this, AppDatabase::class.java, "HidayaDB")
-            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+        db = Utils.getDB(this)
 
         ayatDB = db.ayahDao().getAll()
         names =
@@ -414,19 +412,15 @@ class QuranViewer : SwipeActivity() {
         }
 
         binding.playPause.setOnClickListener {
-            Log.d(Global.TAG, "PlayPause clicked, current state: ${player?.getState()}")
             if (player == null) {
-                Log.d(Global.TAG, "Player is null, initiating player")
                 updateButton(PlaybackStateCompat.STATE_BUFFERING)
                 setupPlayer()
             }
             else if (player!!.getState() == PlaybackStateCompat.STATE_PLAYING) {
-                Log.d(Global.TAG, "Player is playing")
                 player!!.transportControls.pause()
                 updateButton(PlaybackStateCompat.STATE_PAUSED)
             }
             else if (player!!.getState() == PlaybackStateCompat.STATE_PAUSED) {
-                Log.d(Global.TAG, "Player is paused")
                 if (selected == null) player!!.transportControls.play()
                 else {
                     player!!.setChosenSurah(selected!!.getSurahNum())
@@ -440,8 +434,7 @@ class QuranViewer : SwipeActivity() {
         binding.nextAyah.setOnClickListener { player!!.transportControls.skipToNext() }
 
         binding.recitationSettings.setOnClickListener {
-            val intent = Intent(this, QuranSettingsDialog::class.java)
-            settingsDialog.launch(intent)
+            settingsDialog.launch(Intent(this, QuranSettingsDialog::class.java))
         }
     }
 
@@ -521,7 +514,7 @@ class QuranViewer : SwipeActivity() {
     //Binding this Client to the AudioPlayer Service
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            Log.d(Global.TAG, "In onServiceConnected")
+            Log.i(Global.TAG, "In onServiceConnected")
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             val binder: AyahPlayerService.LocalBinder = service as AyahPlayerService.LocalBinder
             player = binder.service

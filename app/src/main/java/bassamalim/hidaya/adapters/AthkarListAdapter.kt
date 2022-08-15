@@ -11,18 +11,15 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import bassamalim.hidaya.R
-import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.models.AthkarItem
+import bassamalim.hidaya.other.Utils
 import com.google.gson.Gson
 
 class AthkarListAdapter(private val context: Context, private val original: List<AthkarItem>) :
     RecyclerView.Adapter<AthkarListAdapter.ViewHolder?>() {
 
-    private val db: AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "HidayaDB").createFromAsset(
-            "databases/HidayaDB.db").allowMainThreadQueries().build()
+    private val db = Utils.getDB(context)
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val items = ArrayList(original)
 
@@ -47,29 +44,29 @@ class AthkarListAdapter(private val context: Context, private val original: List
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val card: AthkarItem = items[position]
+        val item = items[position]
 
-        viewHolder.nameTv.text = card.name
+        viewHolder.nameTv.text = item.name
 
-        val fav: Int = card.favorite
+        val fav: Int = item.favorite
         if (fav == 0)
             viewHolder.favBtn.setImageDrawable(
                 AppCompatResources.getDrawable(context, R.drawable.ic_star_outline)
-        )
+            )
         else if (fav == 1)
             viewHolder.favBtn.setImageDrawable(
                 AppCompatResources.getDrawable(context, R.drawable.ic_star)
-        )
+            )
 
-        viewHolder.card.setOnClickListener(card.listener)
+        viewHolder.card.setOnClickListener(item.listener)
         viewHolder.favBtn.setOnClickListener {
-            if (card.favorite == 0) {
-                db.athkarDao().setFav(card.id, 1)
-                card.favorite = 1
+            if (item.favorite == 0) {
+                db.athkarDao().setFav(item.id, 1)
+                item.favorite = 1
             }
-            else if (card.favorite == 1) {
-                db.athkarDao().setFav(card.id, 0)
-                card.favorite = 0
+            else if (item.favorite == 1) {
+                db.athkarDao().setFav(item.id, 0)
+                item.favorite = 0
             }
             notifyItemChanged(position)
 
@@ -79,12 +76,14 @@ class AthkarListAdapter(private val context: Context, private val original: List
 
     fun filter(text: String) {
         items.clear()
+
         if (text.isEmpty()) items.addAll(original.toCollection(items))
         else {
-            for (athkarItem in original) {
-                if (athkarItem.name.contains(text)) items.add(athkarItem)
+            for (item in original) {
+                if (item.name.contains(text)) items.add(item)
             }
         }
+
         notifyDataSetChanged()
     }
 

@@ -31,7 +31,7 @@ class Alarms {
         pref = PreferenceManager.getDefaultSharedPreferences(context)
 
         if (id.ordinal in 0..5)
-            setPrayerAlarm(id, Keeper(context).retrieveTimes()[id.ordinal])
+            setPrayerAlarm(id, Keeper(context).retrieveTimes()!![id.ordinal])
         else if (id.ordinal in 6..9)
             setExtraAlarm(id)
     }

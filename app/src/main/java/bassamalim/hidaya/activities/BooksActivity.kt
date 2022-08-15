@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.adapters.BooksAdapter
 import bassamalim.hidaya.database.AppDatabase
@@ -31,8 +30,7 @@ class BooksActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "HidayaDB")
-            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+        db = Utils.getDB(this)
 
         checkFirstTime()
 

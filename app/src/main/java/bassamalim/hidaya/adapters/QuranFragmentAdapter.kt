@@ -3,7 +3,9 @@ package bassamalim.hidaya.adapters
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,19 +14,16 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranViewer
-import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.models.Sura
+import bassamalim.hidaya.other.Utils
 import com.google.gson.Gson
 
 class QuranFragmentAdapter(private val context: Context, private val original: ArrayList<Sura>) :
     RecyclerView.Adapter<QuranFragmentAdapter.ViewHolder?>() {
 
-    private val db: AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "HidayaDB")
-        .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+    private val db = Utils.getDB(context)
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson: Gson = Gson()
     private val items = ArrayList(original)

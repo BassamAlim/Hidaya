@@ -15,9 +15,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.preference.PreferenceManager
-import androidx.room.Room
 import bassamalim.hidaya.R
-import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.databinding.ActivityMainBinding
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
@@ -77,10 +75,7 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.theme_key),
             getString(R.string.default_theme)
         )!!
-        val newLanguage: String = pref.getString(
-            getString(R.string.language_key),
-            getString(R.string.default_language)
-        )!!
+        val newLanguage = Utils.getLanguage(this, pref)
 
         if (newTheme != theme || newLanguage != language) {
             theme = newTheme
@@ -111,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         if (located) {
             location = intent.getParcelableExtra("location")
             Keeper(this, location!!)
-            times = Utils.getTimes(this, location)
+            times = Utils.getTimes(this, location!!)
             //times = test();
             Alarms(this, times!!)
         }
@@ -149,11 +144,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun testDb() {
         try {
-            val db: AppDatabase = Room.databaseBuilder(
-                this, AppDatabase::class.java, "HidayaDB")
-                .createFromAsset("databases/HidayaDB.db")
-                .allowMainThreadQueries().build()
-            db.suarDao().getFav() // if there is a problem in the db it will cause an error
+            // if there is a problem in the db it will cause an error
+            Utils.getDB(this).suarDao().getFav()
         } catch (e: Exception) {
             Utils.reviveDb(this)
         }

@@ -9,12 +9,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.MainActivity
+import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.databinding.FragmentPrayersBinding
 import bassamalim.hidaya.dialogs.PrayerDialog
 import bassamalim.hidaya.dialogs.TutorialDialog
@@ -26,11 +26,11 @@ import java.util.*
 class PrayersFragment : Fragment() {
 
     private var binding: FragmentPrayersBinding? = null
+    private lateinit var db: AppDatabase
     private lateinit var location: Location
     private lateinit var prayerNames: Array<String>
     private lateinit var times: Array<Calendar?>
     private val cards = arrayOfNulls<CardView>(6)
-    private val cls = arrayOfNulls<ConstraintLayout>(6)
     private val screens = arrayOfNulls<TextView>(6)
     private val images = arrayOfNulls<ImageView>(6)
     private val delayTvs = arrayOfNulls<TextView>(6)
@@ -46,15 +46,26 @@ class PrayersFragment : Fragment() {
         val root: View = binding!!.root
 
         pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        db = Utils.getDB(requireContext())
 
         if (MainActivity.located) {
             init()
-            goToToday()
-            setInitialState()
-            setListeners()
-        }
 
-        checkFirstTime()
+            goToToday()
+
+            setupLocationCard()
+
+            setInitialState()
+            setupListeners()
+
+            checkFirstTime()
+        }
+        else
+            binding!!.locationChangeBtn.setOnClickListener {
+                parentFragmentManager.beginTransaction().replace(
+                    R.id.nav_host_fragment_activity_main, LocationFragment.newInstance("normal")
+                ).commit()
+            }
 
         return root
     }
@@ -72,12 +83,6 @@ class PrayersFragment : Fragment() {
         cards[3] = binding!!.asrCard
         cards[4] = binding!!.maghribCard
         cards[5] = binding!!.ishaaCard
-        cls[0] = binding!!.fajrCl
-        cls[1] = binding!!.shorouqCl
-        cls[2] = binding!!.duhrCl
-        cls[3] = binding!!.asrCl
-        cls[4] = binding!!.maghribCl
-        cls[5] = binding!!.ishaaCl
 
         screens[0] = binding!!.fajrScreen
         screens[1] = binding!!.shorouqScreen
@@ -116,9 +121,7 @@ class PrayersFragment : Fragment() {
      * @param change The number of days to add to the current date.
      */
     private fun getTimes(change: Int) {
-        val timeFormat = Utils.timeFormat(pref.getString(
-            getString(R.string.time_format_key), getString(R.string.default_time_format)
-        )!!)
+        val timeFormat = Utils.getTimeFormat(requireContext())
 
         val prayTimes = PrayTimes(requireContext())
 
@@ -127,14 +130,13 @@ class PrayersFragment : Fragment() {
 
         selectedDay = calendar
 
-        val millis = TimeZone.getDefault().getOffset(calendar.time.time).toLong()
-        val timezone = millis / 3600000.0
+        val utcOffset = Utils.getUtcOffset(requireContext(), pref)
 
         times = prayTimes.getPrayerTimes(
-            location.latitude, location.longitude, timezone, calendar
+            location.latitude, location.longitude, utcOffset.toDouble(), calendar
         )
         val formattedTimes = prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, timezone, calendar, timeFormat
+            location.latitude, location.longitude, utcOffset.toDouble(), calendar, timeFormat
         )
 
         for (i in formattedTimes.indices) {
@@ -160,22 +162,51 @@ class PrayersFragment : Fragment() {
             if (min > 0)
                 delayTvs[i]!!.text =
                     Utils.translateNumbers(requireContext(), "+$min", false)
-            else if (min < 0) delayTvs[i]!!.text =
-                Utils.translateNumbers(requireContext(), min.toString(), false)
+            else if (min < 0)
+                delayTvs[i]!!.text =
+                    Utils.translateNumbers(requireContext(), min.toString(), false)
             else delayTvs[i]!!.text = ""
         }
     }
 
-    private fun setListeners() {
-        for (i in cards.indices) {
+    private fun setupLocationCard() {
+        val language = Utils.getLanguage(requireContext(), pref)
+
+        var countryId = pref.getInt("country_id", -1)
+        var cityId = pref.getInt("city_id", -1)
+
+        if (pref.getString("location_type", "auto") == "auto" || countryId == -1 || cityId == -1) {
+            val closest = db.cityDao().getClosest(location.latitude, location.longitude)
+            countryId = closest.countryId
+            cityId = closest.id
+        }
+
+        val countryName =
+            if (language == "en") db.countryDao().getNameEn(countryId)
+            else db.countryDao().getNameAr(countryId)
+        val cityName =
+            if (language == "en") db.cityDao().getCity(cityId).nameEn
+            else db.cityDao().getCity(cityId).nameAr
+
+        val str = "$countryName, $cityName"
+        binding!!.locationTv.text = str
+    }
+
+    private fun setupListeners() {
+        for (i in cards.indices)
             cards[i]!!.setOnClickListener { v: View? ->
                 PrayerDialog(requireContext(), v!!, Utils.mapID(i)!!, prayerNames[i])
             }
-        }
 
-        binding!!.previousDayButton.setOnClickListener {previousDay()}
-        binding!!.nextDayButton.setOnClickListener {nextDay()}
-        binding!!.dayScreen.setOnClickListener {goToToday()}
+        binding!!.previousDayButton.setOnClickListener { previousDay() }
+        binding!!.nextDayButton.setOnClickListener { nextDay() }
+        binding!!.dayScreen.setOnClickListener { goToToday() }
+
+        binding!!.locationChangeBtn.setOnClickListener {
+            parentFragmentManager.beginTransaction().replace(
+                R.id.nav_host_fragment_activity_main, LocationFragment.newInstance("normal")
+            ).commit()
+        }
     }
 
     private fun checkFirstTime() {

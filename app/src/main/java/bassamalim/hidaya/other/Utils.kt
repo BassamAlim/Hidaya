@@ -33,8 +33,11 @@ object Utils {
 
     fun onActivityCreateSetTheme(activity: Activity): String {
         val theme: String? = PreferenceManager.getDefaultSharedPreferences(activity)
-                .getString(activity.getString(R.string.theme_key), activity.getString(R.string.default_theme))
-        when(theme) {
+            .getString(
+                activity.getString(R.string.theme_key),
+                activity.getString(R.string.default_theme)
+            )
+        when (theme) {
             "ThemeM" -> activity.setTheme(R.style.Theme_HidayaM)
             "ThemeR" -> activity.setTheme(R.style.Theme_HidayaN)
             else -> activity.setTheme(R.style.Theme_HidayaL)
@@ -65,6 +68,66 @@ object Utils {
         activity.startActivity(intent)
     }
 
+    fun getDB(context: Context): AppDatabase {
+        return Room.databaseBuilder(context, AppDatabase::class.java, "HidayaDB")
+            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+    }
+
+    fun getLanguage(
+        context: Context,
+        pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    ): String {
+        return pref.getString(
+            context.getString(R.string.language_key), context.getString(R.string.default_language)
+        )!!
+    }
+
+    fun getNumeralsLanguage(
+        context: Context,
+        pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    ): String {
+        return pref.getString(
+            context.getString(R.string.numerals_language_key),
+            context.getString(R.string.default_language)
+        )!!
+    }
+
+    fun getTimeFormat(
+        context: Context,
+        pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    ): PrayTimes.TF {
+        val str = pref.getString(
+            context.getString(R.string.time_format_key),
+            context.getString(R.string.default_time_format)
+        )!!
+
+        return when(str) {
+            "24h" -> PrayTimes.TF.H24
+            else -> PrayTimes.TF.H12
+        }
+    }
+
+    fun getUtcOffset(
+        context: Context,
+        pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context),
+        db: AppDatabase = getDB(context)
+    ): Int {
+        when (pref.getString("location_type", "auto")) {
+            "auto" -> return TimeZone.getDefault().getOffset(Date().time) / 3600000
+            "manual" -> {
+                val cityId = pref.getInt("city_id", -1)
+
+                if (cityId == -1) return 0
+
+                val timeZoneId = db.cityDao().getCity(cityId).timeZone
+
+                val timeZone = TimeZone.getTimeZone(timeZoneId)
+                return timeZone.getOffset(Date().time) / 3600000
+            }
+            else -> return 0
+        }
+    }
+
     fun translateNumbers(context: Context, english: String, timeFormat: Boolean = false): String {
         var eng = english
         if (timeFormat) {
@@ -78,10 +141,7 @@ object Utils {
             }
         }
 
-        if (!PreferenceManager.getDefaultSharedPreferences(context).getString(
-                context.getString(R.string.numerals_language_key), context.getString(R.string.default_language)
-            ).equals("ar"))
-            return eng
+        if (getNumeralsLanguage(context) == "en") return eng
 
         val map = HashMap<Char, Char>()
         map['0'] = '٠'
@@ -106,9 +166,7 @@ object Utils {
         return temp.toString()
     }
 
-    fun formatTime(
-        context: Context, gStr: String, suffixes: Array<String> = arrayOf("am", "pm")
-    ): String {
+    fun formatTime(context: Context, gStr: String): String {
         var str = gStr
 
         val hour = "%d".format(str.split(':')[0].toInt())
@@ -121,14 +179,7 @@ object Utils {
 
         str = "$hour:$minute"
 
-        Log.d(Global.TAG, "TO FORMAT: $str")
-
-        val timeFormat = timeFormat(PreferenceManager.getDefaultSharedPreferences(context)
-            .getString(
-                context.getString(R.string.time_format_key),
-                context.getString(R.string.default_time_format)
-            )
-        !!)
+        val timeFormat = getTimeFormat(context)
 
         val h12Format = SimpleDateFormat("hh:mm aa", Locale.US)
         val h24Format = SimpleDateFormat("HH:mm", Locale.US)
@@ -151,15 +202,27 @@ object Utils {
         }
     }
 
-    fun getTimes(context: Context, loc: Location?): Array<Calendar?> {
-        val calendar = Calendar.getInstance()
+    fun getTimes(
+        context: Context, loc: Location, calendar: Calendar = Calendar.getInstance()
+    ): Array<Calendar?> {
+        val prayTimes = PrayTimes(context)
+        val utcOffset = getUtcOffset(context).toDouble()
 
-        val timeZoneObj = TimeZone.getDefault()
-        val millis = timeZoneObj.getOffset(calendar.time.time).toLong()
-        val timezone = millis / 3600000.0
+        return prayTimes.getPrayerTimes(loc.latitude, loc.longitude, utcOffset, calendar)
+    }
 
-        return PrayTimes(context).getPrayerTimes(
-            loc!!.latitude, loc.longitude, timezone, calendar
+    fun getStrTimes(
+        context: Context, loc: Location, calendar: Calendar = Calendar.getInstance()
+    ): ArrayList<String> {
+        val pref = PreferenceManager.getDefaultSharedPreferences(context)
+
+        val prayTimes = PrayTimes(context)
+        val utcOffset = getUtcOffset(context, pref).toDouble()
+
+        val timeFormat = getTimeFormat(context, pref)
+
+        return prayTimes.getStrPrayerTimes(
+            loc.latitude, loc.longitude, utcOffset, calendar, timeFormat
         )
     }
 
@@ -168,9 +231,7 @@ object Utils {
 
         context.deleteDatabase("HidayaDB")
 
-        val db: AppDatabase = Room.databaseBuilder(context, AppDatabase::class.java,
-            "HidayaDB").createFromAsset("databases/HidayaDB.db")
-            .allowMainThreadQueries().build()
+        val db = getDB(context)
 
         val surasJson: String? = pref.getString("favorite_suras", "")
         val recitersJson: String? = pref.getString("favorite_reciters", "")
@@ -246,13 +307,6 @@ object Utils {
             8 -> ID.DAILY_WERD
             9 -> ID.FRIDAY_KAHF
             else -> null
-        }
-    }
-
-    fun timeFormat(str: String): PrayTimes.TF {
-        return when(str) {
-            "24h" -> PrayTimes.TF.H24
-            else -> PrayTimes.TF.H12
         }
     }
 

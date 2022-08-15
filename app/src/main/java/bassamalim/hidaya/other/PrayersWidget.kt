@@ -31,7 +31,7 @@ class PrayersWidget : AppWidgetProvider() {
         ) {
             Utils.onActivityCreateSetLocale(context)
             
-            val timesList = getTimesList(context)
+            val timesList = getTimesList(context) ?: return
 
             // Construct the RemoteViews object
             val views = RemoteViews(context.packageName, R.layout.widget_prayers)
@@ -46,8 +46,9 @@ class PrayersWidget : AppWidgetProvider() {
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
 
-        private fun getTimesList(context: Context): Array<String?> {
-            val times = Keeper(context).retrieveTimes()
+        private fun getTimesList(context: Context): Array<String?>? {
+            val times = Keeper(context).retrieveTimes() ?: return null
+
             val prayerNames = context.resources.getStringArray(R.array.prayer_names)
 
             val result = arrayOfNulls<String>(times.size-1)
@@ -57,8 +58,8 @@ class PrayersWidget : AppWidgetProvider() {
                 if (i == 1) j++  // To skip shorouq
 
                 result[i] = "${prayerNames[j]}\n${
-                    Utils.translateNumbers(context, Utils.formatTime(
-                        context, "${times[j]!![Calendar.HOUR]}:${times[j]!![Calendar.MINUTE]}"
+                    Utils.translateNumbers(context, Utils.formatTime(context, 
+                        "${times[j]!![Calendar.HOUR_OF_DAY]}:${times[j]!![Calendar.MINUTE]}"
                     ), true)
                 }"
 

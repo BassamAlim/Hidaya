@@ -23,12 +23,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.preference.PreferenceManager
-import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AyatTelawaDB
 import bassamalim.hidaya.models.Aya
 import bassamalim.hidaya.other.Global
+import bassamalim.hidaya.other.Utils
 import java.util.*
 
 class AyahPlayerService : Service(),
@@ -92,8 +92,7 @@ class AyahPlayerService : Service(),
         super.onCreate()
         // Perform one-time setup procedures
 
-        db = Room.databaseBuilder(this, AppDatabase::class.java, "HidayaDB")
-        .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+        db = Utils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
         initSession()
@@ -102,10 +101,7 @@ class AyahPlayerService : Service(),
 
         reciterNames = db.ayatRecitersDao().getNames()
         suarNames =
-            if (pref.getString(
-                    getString(R.string.language_key), getString(R.string.default_language)
-                ) == "en")
-                db.suarDao().getNamesEn()
+            if (Utils.getLanguage(this, pref) == "en") db.suarDao().getNamesEn()
             else db.suarDao().getNames()
 
         initMetadata()
@@ -153,8 +149,10 @@ class AyahPlayerService : Service(),
         players[0].setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
         players[1].setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
 
-        wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE)
-                as WifiManager).createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
+        }
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
@@ -165,10 +163,12 @@ class AyahPlayerService : Service(),
 
         player.setAudioAttributes(attrs)
 
-        audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-            .setOnAudioFocusChangeListener(this)
-            .setAudioAttributes(attrs)
-            .build()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setOnAudioFocusChangeListener(this)
+                .setAudioAttributes(attrs)
+                .build()
+        }
 
         for (i in 0..1) {
             players[i].setOnPreparedListener(this)
@@ -320,7 +320,6 @@ class AyahPlayerService : Service(),
 
             // start the player (custom call)
             if (getState() == PlaybackStateCompat.STATE_PAUSED) {
-                Log.d(Global.TAG, "Resumed")
                 resume()
                 refresh()
             }
@@ -340,8 +339,6 @@ class AyahPlayerService : Service(),
 
             // pause the player
             pause()
-
-            Log.d(Global.TAG, "NOW: ${getState()}")
 
             updateDurationRecord(updateRecordCounter)
 
@@ -363,7 +360,8 @@ class AyahPlayerService : Service(),
             updatePbState(PlaybackStateCompat.STATE_STOPPED)
 
             handler.removeCallbacks(runnable)
-            audioManager.abandonAudioFocusRequest(audioFocusRequest)    // Abandon audio focus
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                audioManager.abandonAudioFocusRequest(audioFocusRequest) // Abandon audio focus
             unregisterReceiver()
             if (wifiLock.isHeld) wifiLock.release()
 
@@ -540,7 +538,7 @@ class AyahPlayerService : Service(),
     }
 
     private fun updatePbState(state: Int) {
-        Log.d(Global.TAG, "In updatePbState for $state")
+        Log.i(Global.TAG, "In updatePbState for $state")
 
         var currentPosition = 0L
         try {
@@ -716,7 +714,6 @@ class AyahPlayerService : Service(),
     private fun pause() {
         for (i in 0..1) {
             if (players[i].isPlaying) {
-                Log.d(Global.TAG, "Paused $i")
                 players[i].pause()
                 pausedPlayer = i
             }
@@ -727,7 +724,6 @@ class AyahPlayerService : Service(),
      * Resume the last player that was playing.
      */
     fun resume() {
-        Log.d(Global.TAG, "Resume P$pausedPlayer")
         players[pausedPlayer].start()
         pausedPlayer = -1
     }

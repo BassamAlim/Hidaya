@@ -11,14 +11,13 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import bassamalim.hidaya.activities.TelawatClient
 import bassamalim.hidaya.adapters.TelawatSuarAdapter
-import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.SuarDB
 import bassamalim.hidaya.databinding.FragmentTelawatSuarBinding
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.ReciterSura
+import bassamalim.hidaya.other.Utils
 import java.io.File
 import java.util.*
 
@@ -69,10 +68,7 @@ class TelawatSuarFragment : Fragment {
 
     private val data: Unit
         get() {
-            val db: AppDatabase = Room.databaseBuilder(requireContext(), AppDatabase::class.java,
-                "HidayaDB").createFromAsset("databases/HidayaDB.db")
-                .allowMainThreadQueries().build()
-
+            val db = Utils.getDB(requireContext())
             val suras: List<SuarDB> = db.suarDao().getAll()
 
             surahNames = ArrayList()

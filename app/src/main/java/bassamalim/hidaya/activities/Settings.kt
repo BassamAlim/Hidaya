@@ -18,7 +18,7 @@ class Settings : AppCompatActivity() {
 
         if (savedInstanceState == null)
             supportFragmentManager.beginTransaction()
-            .replace(R.id.settings, SettingsFragment.newInstance("normal")).commit()
+                .replace(R.id.settings, SettingsFragment.newInstance()).commit()
     }
 
 }

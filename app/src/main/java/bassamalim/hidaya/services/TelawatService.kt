@@ -28,7 +28,6 @@ import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.preference.PreferenceManager
-import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.TelawatClient
 import bassamalim.hidaya.database.AppDatabase
@@ -89,8 +88,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         super.onCreate()
         Utils.onActivityCreateSetLocale(this)
 
-        db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "HidayaDB")
-            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+        db = Utils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
         getSuraNames()
@@ -605,7 +603,6 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         }
 
         player.setOnBufferingUpdateListener { _, percent ->
-            Log.d(Global.TAG, "inOnBufferingUpdateListener, Percent: $percent")
             val ratio = percent / 100.0
             var bufferingLevel = 0L
             try {
@@ -739,8 +736,6 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private fun updateDurationRecord(amount: Int) {
         val old = pref.getLong("telawat_playback_record", 0L)
         val new = old + amount * 1000
-
-        Log.d(Global.TAG, new.toString())
 
         val editor = pref.edit()
         editor.putLong("telawat_playback_record", new)

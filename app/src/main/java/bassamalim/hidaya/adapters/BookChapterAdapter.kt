@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import bassamalim.hidaya.R
 import bassamalim.hidaya.models.BookChapter
 import com.google.gson.Gson
-import java.util.ArrayList
 
 class BookChapterAdapter(
     private val context: Context,

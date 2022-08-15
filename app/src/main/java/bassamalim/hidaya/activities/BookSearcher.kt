@@ -7,7 +7,7 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.view.*
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
@@ -17,7 +17,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.adapters.BookSearcherAdapter
 import bassamalim.hidaya.database.AppDatabase
@@ -56,8 +55,7 @@ class BookSearcher : AppCompatActivity() {
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "HidayaDB")
-            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+        db = Utils.getDB(this)
 
         init()
 
@@ -112,11 +110,9 @@ class BookSearcher : AppCompatActivity() {
         val spinner: Spinner = binding.sizeSpinner
 
         val arrRes =
-            if (pref.getString(getString(R.string.numerals_language_key),
-                    getString(R.string.default_language)) == "en")
-                R.array.searcher_matches_en
-            else
-                R.array.searcher_matches
+            if (Utils.getNumeralsLanguage(this, pref) == "en") R.array.searcher_matches_en
+            else R.array.searcher_matches
+
 
         val spinnerAdapter = ArrayAdapter.createFromResource(
             this, arrRes, android.R.layout.simple_spinner_item

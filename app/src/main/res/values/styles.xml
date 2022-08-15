@@ -61,6 +61,8 @@
     <style name="RoundedDialogM" parent="Theme.AppCompat.Dialog">
         <item name="android:windowBackground">@drawable/rounded_dialog</item>
         <item name="myMainBg">@color/bg_M</item>
+        <item name="myPrimary">@color/primary_M</item>
+        <item name="myOnPrimary">@color/on_primary_M</item>
         <item name="mySurface">@color/surface_M</item>
         <item name="mySurfaceDark">@color/ripple_M</item>
         <item name="myAccent">@color/accent_M</item>
@@ -73,6 +75,8 @@
         <item name="android:textColorHint">?myAccent</item>
         <item name="colorAccent">?myAccent</item>
         <item name="myMainBg">@color/bg_L</item>
+        <item name="myPrimary">@color/primary_L</item>
+        <item name="myOnPrimary">@color/on_primary_L</item>
         <item name="mySurface">@color/surface_L</item>
         <item name="mySurfaceDark">@color/ripple_L</item>
         <item name="myAccent">@color/accent_L</item>
@@ -81,8 +85,8 @@
     <style name="PrayerCard" parent="Base.CardView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/prayer_card_height</item>
-        <item name="android:layout_marginTop">12dp</item>
-        <item name="android:layout_marginBottom">12dp</item>
+        <item name="android:layout_marginTop">7dp</item>
+        <item name="android:layout_marginBottom">7dp</item>
         <item name="android:layout_marginStart">@dimen/prayer_card_margin</item>
         <item name="android:layout_marginEnd">@dimen/prayer_card_margin</item>
         <item name="cardBackgroundColor">?mySurface</item>

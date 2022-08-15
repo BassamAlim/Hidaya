@@ -74,7 +74,7 @@ class Keeper {
      *
      * @return An array of Calendar objects.
      */
-    fun retrieveTimes(): Array<Calendar?> {
+    fun retrieveTimes(): Array<Calendar?>? {
         tJson = pref.getString("stored times", "")!!
         return gson.fromJson(tJson, Array<Calendar?>::class.java)
     }

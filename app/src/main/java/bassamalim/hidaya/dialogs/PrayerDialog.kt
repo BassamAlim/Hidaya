@@ -115,11 +115,8 @@ class PrayerDialog(
         val spinner: Spinner = popup.contentView.findViewById(R.id.time_setting_spinner)
 
         val arrRes =
-            if (pref.getString(context.getString(R.string.numerals_language_key),
-                context.getString(R.string.default_language)) == "en")
-                R.array.time_settings_entries_en
-            else
-                R.array.time_settings_entries
+            if (Utils.getNumeralsLanguage(context, pref) == "en") R.array.time_settings_entries_en
+            else R.array.time_settings_entries
 
         val adapter = ArrayAdapter.createFromResource(
             context, arrRes, android.R.layout.simple_spinner_item

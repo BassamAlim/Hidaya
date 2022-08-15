@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.QuizAnswersDB
@@ -37,8 +36,7 @@ class QuizActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        db = Room.databaseBuilder(this, AppDatabase::class.java, "HidayaDB")
-            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+        db = Utils.getDB(this)
 
         colorText = TypedValue()
         theme.resolveAttribute(R.attr.myText, colorText, true)

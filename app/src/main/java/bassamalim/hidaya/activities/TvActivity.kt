@@ -40,13 +40,13 @@ class TvActivity : YouTubeBaseActivity() {
                 makkahUrl = remoteConfig.getString("makkah_url")
                 madinaUrl = remoteConfig.getString("madina_url")
 
-                Log.d(Global.TAG, "Config params updated")
-                Log.d(Global.TAG, "Makkah URL: $makkahUrl")
-                Log.d(Global.TAG, "Madina URL: $madinaUrl")
+                Log.i(Global.TAG, "Config params updated")
+                Log.i(Global.TAG, "Makkah URL: $makkahUrl")
+                Log.i(Global.TAG, "Madina URL: $madinaUrl")
 
                 initYtPlayer()
             }
-            else Log.d(Global.TAG, "Fetch failed")
+            else Log.e(Global.TAG, "Fetch failed")
         }
     }
 

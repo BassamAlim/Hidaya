@@ -17,9 +17,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
-import androidx.room.Room
 import bassamalim.hidaya.R
-import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.models.Reciter
 import bassamalim.hidaya.models.Reciter.RecitationVersion
 import bassamalim.hidaya.other.Utils
@@ -33,9 +31,7 @@ import java.util.concurrent.Executors
 class TelawatAdapter(private val context: Context, private val original: ArrayList<Reciter>) :
     FilteredRecyclerAdapter<TelawatAdapter.ViewHolder>() {
 
-    private val db: AppDatabase = Room.databaseBuilder(
-        context, AppDatabase::class.java, "HidayaDB").createFromAsset(
-            "databases/HidayaDB.db").allowMainThreadQueries().build()
+    private val db = Utils.getDB(context)
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson: Gson = Gson()
     private val rewayat: Array<String>

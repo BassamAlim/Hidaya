@@ -66,12 +66,12 @@ class RadioClient : AppCompatActivity() {
         remoteConfig.fetchAndActivate().addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 url = remoteConfig.getString("quran_radio_url")
-                Log.d(Global.TAG, "Config params updated")
-                Log.d(Global.TAG, "Quran Radio URL: $url")
+                Log.i(Global.TAG, "Config params updated")
+                Log.i(Global.TAG, "Quran Radio URL: $url")
 
                 connect()
             }
-            else Log.d(Global.TAG, "Fetch failed")
+            else Log.e(Global.TAG, "Fetch failed")
         }
     }
 

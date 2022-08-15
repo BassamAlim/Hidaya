@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.adapters.QuizResultQuestionAdapter
 import bassamalim.hidaya.database.AppDatabase
@@ -33,8 +32,7 @@ class QuizResultActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        db = Room.databaseBuilder(this, AppDatabase::class.java, "HidayaDB")
-            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+        db = Utils.getDB(this)
 
         val intent: Intent = intent
         score = intent.getIntExtra("score", 10)

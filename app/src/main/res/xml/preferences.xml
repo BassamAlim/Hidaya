@@ -11,6 +11,7 @@
             android:entryValues="@array/languages_values"
             android:key="@string/language_key"
             android:title="@string/language"
+            android:defaultValue="@string/default_language"
             android:icon="@drawable/ic_translation"
             app:useSimpleSummaryProvider="true" />
 
@@ -19,6 +20,7 @@
             android:entryValues="@array/languages_values"
             android:key="@string/numerals_language_key"
             android:title="@string/numerals_language"
+            android:defaultValue="@string/default_language"
             android:icon="@drawable/ic_translation"
             app:useSimpleSummaryProvider="true" />
 
@@ -27,6 +29,7 @@
             android:entryValues="@array/time_format_values"
             android:key="@string/time_format_key"
             android:title="@string/time_format"
+            android:defaultValue="@string/default_time_format"
             android:icon="@drawable/ic_time_foramt"
             app:useSimpleSummaryProvider="true" />
 
@@ -35,6 +38,7 @@
             android:entryValues="@array/theme_values"
             android:key="@string/theme_key"
             android:title="@string/theme"
+            android:defaultValue="@string/default_theme"
             android:icon="@drawable/ic_theme"
             app:useSimpleSummaryProvider="true" />
 

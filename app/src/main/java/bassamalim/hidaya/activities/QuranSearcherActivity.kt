@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.view.*
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
@@ -14,15 +14,12 @@ import androidx.appcompat.widget.SearchView
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.adapters.QuranSearcherAdapter
-import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AyatDB
 import bassamalim.hidaya.databinding.ActivityQuranSearcherBinding
 import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.other.Utils
-import java.util.*
 import java.util.regex.Pattern
 
 class QuranSearcherActivity : AppCompatActivity() {
@@ -56,9 +53,7 @@ class QuranSearcherActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        val db: AppDatabase = Room.databaseBuilder(
-            this, AppDatabase::class.java, "HidayaDB")
-            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
+        val db = Utils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
         searchView = binding.searchView
@@ -91,11 +86,8 @@ class QuranSearcherActivity : AppCompatActivity() {
         val spinner: Spinner = binding.sizeSpinner
 
         val arrRes =
-            if (pref.getString(getString(R.string.numerals_language_key),
-                    getString(R.string.default_language)) == "en")
-                R.array.searcher_matches_en
-            else
-                R.array.searcher_matches
+            if (Utils.getNumeralsLanguage(this, pref) == "en") R.array.searcher_matches_en
+            else R.array.searcher_matches
 
         val spinnerAdapter = ArrayAdapter.createFromResource(
             this, arrRes, android.R.layout.simple_spinner_item

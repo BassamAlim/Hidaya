@@ -11,9 +11,10 @@
         android:id="@+id/welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/tajawal_regular"
         android:text="@string/welcome_message"
         android:textSize="30sp"
+        android:fontFamily="@font/tajawal_regular"
+        android:lineSpacingExtra="6dp"
         app:layout_constraintBottom_toTopOf="@id/scrollview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,10 +30,10 @@
         app:layout_constraintTop_toBottomOf="@id/welcome">
 
         <FrameLayout
-            android:id="@+id/settings"
+            android:id="@+id/frame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp">
+            android:layout_margin="10dp">
 
         </FrameLayout>
 
@@ -42,6 +43,7 @@
         android:id="@+id/save_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/ripple_surface"
         android:text="@string/save"
         android:textColor="?myAccent"
@@ -51,51 +53,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/scrollview"
         tools:ignore="SpUsage" />
-
-    <LinearLayout
-        android:id="@+id/disclaimer_space"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="35dp"
-        android:background="?attr/mySurface"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/welcome">
-
-        <TextView
-            android:id="@+id/disclaimer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/tajawal_regular"
-            android:gravity="center"
-            android:paddingBottom="10dp"
-            android:text="@string/disclaimer"
-            android:textSize="25sp" />
-
-        <Button
-            android:id="@+id/agreed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="?myAccent"
-            android:fontFamily="@font/tajawal_regular"
-            android:text="@string/agreed"
-            android:textColor="?myMainBg"
-            android:textSize="22sp" />
-
-        <Button
-            android:id="@+id/rejected"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="?attr/mySurface"
-            android:fontFamily="@font/tajawal_regular"
-            android:text="@string/rejected"
-            android:textSize="22sp" />
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,7 +10,6 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import bassamalim.hidaya.R
 import bassamalim.hidaya.models.Thikr
-import java.util.ArrayList
 
 class AthkarViewerAdapter(context: Context, cards: ArrayList<Thikr>, private val LANGUAGE: String) :
     RecyclerView.Adapter<AthkarViewerAdapter.ViewHolder?>() {

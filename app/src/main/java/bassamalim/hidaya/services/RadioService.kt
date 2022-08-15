@@ -78,7 +78,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     @RequiresApi(api = Build.VERSION_CODES.O)
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
-            Log.d(Global.TAG, "In onPlayFromMediaId of RadioClient")
+            Log.i(Global.TAG, "In onPlayFromMediaId of RadioClient")
             super.onPlayFromMediaId(mediaId, extras)
             if (staticUrl == null) {
                 staticUrl = mediaId
@@ -117,7 +117,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         }
 
         override fun onStop() {
-            Log.d(Global.TAG, "In onStop of RadioClient")
+            Log.i(Global.TAG, "In onStop of RadioClient")
             super.onStop()
 
             updatePbState(PlaybackStateCompat.STATE_STOPPED, player.currentPosition)
@@ -136,7 +136,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         override fun onPause() {
             super.onPause()
-            Log.d(Global.TAG, "In onPause of RadioClient")
+            Log.i(Global.TAG, "In onPause of RadioClient")
 
             // pause the player (custom call)
             mediaSession.isActive = false
@@ -165,20 +165,20 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
-                    Log.d(Global.TAG, "In ACTION_BECOMING_NOISY of RadioService")
+                    Log.i(Global.TAG, "In ACTION_BECOMING_NOISY of RadioService")
                     callback.onPause()
                 }
                 ACTION_PLAY_PAUSE ->
                     if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
-                        Log.d(Global.TAG, "In ACTION_PAUSE of RadioService")
+                        Log.i(Global.TAG, "In ACTION_PAUSE of RadioService")
                         callback.onPause()
                     }
                     else if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED) {
-                        Log.d(Global.TAG, "In ACTION_PLAY of RadioService")
+                        Log.i(Global.TAG, "In ACTION_PLAY of RadioService")
                         callback.onPlay()
                     }
                 ACTION_STOP -> {
-                    Log.d(Global.TAG, "In ACTION_STOP of RadioService")
+                    Log.i(Global.TAG, "In ACTION_STOP of RadioService")
                     callback.onStop()
                 }
             }

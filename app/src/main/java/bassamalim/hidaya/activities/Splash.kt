@@ -1,15 +1,15 @@
 package bassamalim.hidaya.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen
@@ -23,10 +23,7 @@ import com.google.android.gms.location.LocationServices
 
 class Splash : AppCompatActivity() {
 
-    private val permissions = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
+    private lateinit var pref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen: SplashScreen = installSplashScreen()
@@ -36,24 +33,35 @@ class Splash : AppCompatActivity() {
 
         stopService(Intent(this, AthanService::class.java))
 
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("new_user", true))
-            welcome()
+        pref = PreferenceManager.getDefaultSharedPreferences(this)
+
+        if (pref.getBoolean("new_user", true)) welcome()
         else Utils.onActivityCreateSetLocale(this)
 
-        if (granted()) {
-            getLocation()
+        when(pref.getString("location_type", "auto")) {
+            "auto" -> {
+                if (granted()) locate()
+                else
+                    locationPermissionRequest.launch(arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION))
+            }
+            "manual" -> {
+                val cityId = pref.getInt("city_id", -1)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-                && ActivityCompat.checkSelfPermission(
-                    this, Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            )
-                background()
-        }
-        else {
-            if (Keeper(this).retrieveLocation() == null)
-                requestMultiplePermissions.launch(permissions)
-            else launch(null)
+                if (cityId == -1) launch(null)
+                else {
+                    val city = Utils.getDB(this).cityDao().getCity(cityId)
+
+                    val location = Location("")
+                    location.latitude = city.latitude
+                    location.longitude = city.longitude
+                    launch(location)
+                }
+            }
+            "none" -> {
+                launch(null)
+            }
         }
     }
 
@@ -64,25 +72,18 @@ class Splash : AppCompatActivity() {
     }
 
     private fun granted(): Boolean {
-        return (ActivityCompat.checkSelfPermission(
-            this, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(
-            this, Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED)
+        return ActivityCompat.checkSelfPermission(this,
+            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+            Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun getLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            LocationServices.getFusedLocationProviderClient(this).lastLocation
-                .addOnSuccessListener(this) { location: Location? -> launch(location) }
-        }
+    @SuppressLint("MissingPermission")
+    private fun locate() {
+        LocationServices.getFusedLocationProviderClient(this).lastLocation
+            .addOnSuccessListener(this) { location: Location? -> launch(location) }
+
+        background()
     }
 
     private fun launch(location: Location?) {
@@ -100,30 +101,31 @@ class Splash : AppCompatActivity() {
         finish()
     }
 
-    private val requestMultiplePermissions: ActivityResultLauncher<Array<String>> =
-        registerForActivityResult(RequestMultiplePermissions()
-        ) { permissions: Map<String, Boolean> ->
-
-            val collection = permissions.values
-            val array = collection.toTypedArray()
-
-            if (array[0] && array[1]) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                    background()
-                getLocation()
-            }
-            else launch(null)
+    private val locationPermissionRequest = registerForActivityResult(
+        RequestMultiplePermissions()) { permissions ->
+        if (permissions[Manifest.permission.ACCESS_FINE_LOCATION]!!
+            && permissions[Manifest.permission.ACCESS_COARSE_LOCATION]!!) {
+            background()
+            locate()
         }
+        else launch(null)
+    }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private val backgroundLocationPermissionRequest = registerForActivityResult(
+        RequestMultiplePermissions()) {}
+
     private fun background() {
-        Toast.makeText(
-            this, getString(R.string.choose_allow_all_the_time), Toast.LENGTH_LONG
-        ).show()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            Toast.makeText(this,
+                getString(R.string.choose_allow_all_the_time),
+                Toast.LENGTH_LONG).show()
 
-        requestPermissions(
-            arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION), 0
-        )
+            backgroundLocationPermissionRequest.launch(arrayOf(
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION))
+        }
     }
 
 }
