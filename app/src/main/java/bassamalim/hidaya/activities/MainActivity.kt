@@ -19,7 +19,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityMainBinding
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
-import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
 import bassamalim.hidaya.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.receivers.DeviceBootReceiver
@@ -60,8 +59,6 @@ class MainActivity : AppCompatActivity() {
         initFirebase()
 
         setAlarms()
-
-        testDb()
 
         dailyUpdate()
 
@@ -105,9 +102,9 @@ class MainActivity : AppCompatActivity() {
         located = intent.getBooleanExtra("located", false)
         if (located) {
             location = intent.getParcelableExtra("location")
+
             Keeper(this, location!!)
             times = Utils.getTimes(this, location!!)
-            //times = test();
             Alarms(this, times!!)
         }
         else {
@@ -116,42 +113,6 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
-    }
-
-    private fun test(): Array<Calendar?> {
-        val tester = arrayOfNulls<Calendar>(6)
-        tester[0] = Calendar.getInstance()
-        tester[0]?.set(Calendar.HOUR_OF_DAY, 0)
-        tester[0]?.set(Calendar.MINUTE, 9)
-        tester[0]?.set(Calendar.SECOND, 0)
-        tester[1] = Calendar.getInstance()
-        tester[1]?.set(Calendar.HOUR_OF_DAY, 13)
-        tester[1]?.set(Calendar.MINUTE, 48)
-        tester[2] = Calendar.getInstance()
-        tester[2]?.set(Calendar.HOUR_OF_DAY, 0)
-        tester[2]?.set(Calendar.MINUTE, 1)
-        tester[3] = Calendar.getInstance()
-        tester[3]?.set(Calendar.HOUR_OF_DAY, 0)
-        tester[3]?.set(Calendar.MINUTE, 27)
-        tester[4] = Calendar.getInstance()
-        tester[4]?.set(Calendar.HOUR_OF_DAY, 0)
-        tester[4]?.set(Calendar.MINUTE, 5)
-        tester[5] = Calendar.getInstance()
-        tester[5]?.set(Calendar.HOUR_OF_DAY, 2)
-        tester[5]?.set(Calendar.MINUTE, 43)
-        return tester
-    }
-
-    private fun testDb() {
-        try {
-            // if there is a problem in the db it will cause an error
-            Utils.getDB(this).suarDao().getFav()
-        } catch (e: Exception) {
-            Utils.reviveDb(this)
-        }
-
-        val lastVer: Int = pref.getInt("last_db_version", 1)
-        if (Global.dbVer > lastVer) Utils.reviveDb(this)
     }
 
     private fun dailyUpdate() {

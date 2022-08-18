@@ -64,7 +64,7 @@ class QuranSearcherActivity : AppCompatActivity() {
             if (language == "en") db.suarDao().getNamesEn()
             else db.suarDao().getNames()
 
-        matches = ArrayList<Ayah>()
+        matches = ArrayList()
 
         maxMatches = pref.getInt("quran_searcher_matches_last_position", 1)
     }

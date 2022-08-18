@@ -30,13 +30,13 @@
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 
-        <DropDownPreference
-            android:entries="@array/repeat_mode_entries"
-            android:entryValues="@array/repeat_mode_values"
-            android:key="@string/aya_repeat_mode_key"
+        <SeekBarPreference
+            android:key="@string/aya_repeat_key"
             android:title="@string/aya_repeat"
-            app:iconSpaceReserved="false"
-            app:useSimpleSummaryProvider="true" />
+            app:min="1"
+            android:max="11"
+            android:defaultValue="1"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreference
             android:defaultValue="false"

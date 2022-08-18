@@ -20,13 +20,8 @@
     </entry>
 
     <entry>
-        <key>sahih_albokhari_url</key>
-        <value>https://dl.dropboxusercontent.com/s/u1dfpvdu3tye2se/sahih_albokhari.json?dl=0</value>
-    </entry>
-
-    <entry>
-        <key>sahih_muslim_url</key>
-        <value>https://dl.dropboxusercontent.com/s/3rr8qlc19jwa8pm/sahih_muslim.json?dl=0</value>
+        <key>quran_radio_url</key>
+        <value>https://stream.radiojar.com/4wqre23fytzuv</value>
     </entry>
 
 </defaultsMap>

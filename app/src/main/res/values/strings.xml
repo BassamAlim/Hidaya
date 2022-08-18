@@ -25,7 +25,7 @@
     <string name="books_text_size_key" translatable="false">books_text_size_key</string>
     <string name="theme_key" translatable="false">theme_key</string>
     <string name="aya_reciter_key" translatable="false">aya_reciter_key</string>
-    <string name="aya_repeat_mode_key" translatable="false">aya_repeat_mode_key</string>
+    <string name="aya_repeat_key" translatable="false">aya_repeat_key</string>
     <string name="stop_on_sura_key" translatable="false">stop_on_sura_key</string>
     <string name="stop_on_page_key" translatable="false">stop_on_page_key</string>
     <string name="language_key" translatable="false">language_key</string>
@@ -159,7 +159,7 @@
     <string name="enable_notification">إشعار مسموع</string>
     <string name="silent_notification">إشعار صامت</string>
     <string name="disable_notification">إيقاف</string>
-    <string name="adjust_prayer_notification_time">تعديل وقت التنبيه</string>
+    <string name="adjust_prayer_notification_time">تعديل الوقت (دقيقة)</string>
     <string name="low_accuracy_text">الدقة ضعيفة … يرجى معايرة الجهاز</string>
     <string name="medium_accuracy_text">الدقة متوسطة</string>
     <string name="high_accuracy_text">الدقة جيدة</string>
@@ -247,5 +247,6 @@
     <string name="numerals_language">لغة الأرقام</string>
     <string name="choose_country">اختر البلد</string>
     <string name="choose_city">اختر المدينة</string>
+    <string name="infinite">بلا نهاية</string>
 
 </resources>

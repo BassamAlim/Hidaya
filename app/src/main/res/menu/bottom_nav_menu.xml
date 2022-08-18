@@ -17,7 +17,7 @@
         android:title="@string/title_quran" />
 
     <item
-        android:id="@+id/navigation_alathkar"
+        android:id="@+id/navigation_athkar"
         android:icon="@drawable/ic_duaa"
         android:title="@string/title_alathkar" />
 

@@ -17,6 +17,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.helpers.Keeper
+import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
 import bassamalim.hidaya.services.AthanService
 import com.google.android.gms.location.LocationServices
@@ -34,6 +35,8 @@ class Splash : AppCompatActivity() {
         stopService(Intent(this, AthanService::class.java))
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
+
+        testDB()
 
         if (pref.getBoolean("new_user", true)) welcome()
         else Utils.onActivityCreateSetLocale(this)
@@ -63,6 +66,18 @@ class Splash : AppCompatActivity() {
                 launch(null)
             }
         }
+    }
+
+    private fun testDB() {
+        try {
+            // if there is a problem in the db it will cause an error
+            Utils.getDB(this).suarDao().getFav()
+        } catch (e: Exception) {
+            Utils.reviveDb(this)
+        }
+
+        val lastVer: Int = pref.getInt("last_db_version", 1)
+        if (Global.dbVer > lastVer) Utils.reviveDb(this)
     }
 
     private fun welcome() {

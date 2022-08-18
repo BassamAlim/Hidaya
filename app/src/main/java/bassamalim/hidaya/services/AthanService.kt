@@ -12,26 +12,26 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.Splash
-import bassamalim.hidaya.enums.ID
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
 import java.util.*
 
 class AthanService : Service() {
 
-    private lateinit var id: ID
+    private lateinit var pid: PID
     private var channelId = ""
     private lateinit var mediaPlayer: MediaPlayer
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        id = intent.getSerializableExtra("id") as ID
-        Log.i(Global.TAG, "In athan service for $id")
+        pid = intent.getSerializableExtra("id") as PID
+        Log.i(Global.TAG, "In athan service for $pid")
         //int Notification_ID = (int) System.currentTimeMillis() % 10000;
 
         Utils.onActivityCreateSetLocale(this)
 
         createNotificationChannel()
-        startForeground(id.ordinal + 1, build())
+        startForeground(pid.ordinal + 1, build())
 
         val am = getSystemService(AUDIO_SERVICE) as AudioManager
         // Request audio focus                                   // Request permanent focus.
@@ -47,8 +47,8 @@ class AthanService : Service() {
         builder.setSmallIcon(R.drawable.ic_athan)
         builder.setTicker(resources.getString(R.string.app_name))
 
-        var i = id.ordinal
-        if (id == ID.DUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) i = 10
+        var i = pid.ordinal
+        if (pid == PID.DUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) i = 10
         builder.setContentTitle(resources.getStringArray(R.array.prayer_titles)[i])
         builder.setContentText(resources.getStringArray(R.array.prayer_subtitles)[i])
 

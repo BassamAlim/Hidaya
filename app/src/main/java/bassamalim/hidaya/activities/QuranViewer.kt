@@ -192,11 +192,11 @@ class QuranViewer : SwipeActivity() {
 
         var counter = getPageStart(pageNumber)
         do {
-            val aya: AyatDB = ayatDB[counter]!!
-            val suraNum: Int = aya.sura_no // starts from 1
-            val ayaNum: Int = aya.aya_no
+            val aya = ayatDB[counter]!!
+            val suraNum = aya.sura_no // starts from 1
+            val ayaNum = aya.aya_no
 
-            val ayahModel = Ayah(aya.jozz, suraNum, ayaNum, names[suraNum - 1],
+            val ayahModel = Ayah(aya.id, aya.jozz, suraNum, ayaNum, names[suraNum - 1],
                 aya.aya_text + " ", aya.aya_translation_en, aya.aya_tafseer!!)
 
             if (ayaNum == 1) {
@@ -312,11 +312,7 @@ class QuranViewer : SwipeActivity() {
         binding.pageNumber.text = currentPageText
 
         if (action == "by_surah" && !scrolled) {
-            val delay: Long = 100 //delay to let finish with possible modifications to ScrollView
-            if (viewType == "list") recyclers[currentView].smoothScrollToPosition(0)
-            else scrollViews[currentView].postDelayed(
-                { scrollViews[currentView].smoothScrollTo(0, target.top) }, delay
-            )
+            scrollTo(target.top)
             scrolled = true
         }
     }
@@ -477,17 +473,21 @@ class QuranViewer : SwipeActivity() {
                 updateButton(state)
             }
 
-            override fun getAyah(index: Int): Aya {
+            override fun getAya(index: Int): Aya {
                 val ayah = allAyahs[index]
-                return Aya(ayah.getSurahNum(), ayah.getAyahNum(), ayah.getIndex())
+                return Aya(ayah.getId(), ayah.getSurahNum(), ayah.getAyahNum(), ayah.getIndex())
             }
 
             override fun nextPage() {
                 next()
             }
 
-            override fun track(ayaIndex: Int) {
+            override fun track(ayaId: Int, ayaIndex: Int) {
                 val ayah = allAyahs[ayaIndex]
+
+                if (ayah.getId() != ayaId) return
+
+                scrollTo(ayah.getScreen()!!.top)
 
                 if (lastTracked != null) {
                     lastTracked!!.getSS()!!.removeSpan(what)
@@ -501,7 +501,7 @@ class QuranViewer : SwipeActivity() {
                     ayah.getSS()!!.setSpan(what, ayah.getStart(), ayah.getEnd(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-                ayah.getScreen()!!.text = ayah.getSS() // heavy, but the only working way
+                ayah.getScreen()!!.text = ayah.getSS()  // heavy, but the only working way
                 lastTracked = ayah
             }
         }
@@ -541,7 +541,7 @@ class QuranViewer : SwipeActivity() {
 
     private fun requestPlay(ayah: Ayah) {
         val bundle = Bundle()
-        val aya = Aya(ayah.getSurahNum(), ayah.getAyahNum(), ayah.getIndex())
+        val aya = Aya(ayah.getId(), ayah.getSurahNum(), ayah.getAyahNum(), ayah.getIndex())
         bundle.putSerializable("aya", aya)
         tc!!.playFromMediaId(ayah.getAyahNum().toString(), bundle)
     }
@@ -552,6 +552,14 @@ class QuranViewer : SwipeActivity() {
             if (surahs[i]!!.size > surahs[largest]!!.size) largest = i
         }
         return largest
+    }
+
+    private fun scrollTo(position: Int) {
+        val delay: Long = 100 //delay to let finish with possible modifications to ScrollView
+        if (viewType == "list") recyclers[currentView].smoothScrollToPosition(position)
+        else scrollViews[currentView].postDelayed(
+            { scrollViews[currentView].smoothScrollTo(0, position) }, delay
+        )
     }
 
     private fun addHeader(suraNum: Int, name: String) {

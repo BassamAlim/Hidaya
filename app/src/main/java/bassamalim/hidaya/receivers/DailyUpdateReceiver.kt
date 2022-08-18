@@ -32,7 +32,24 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         if (intent.action == "daily") {
             time = intent.getIntExtra("time", 0)
 
-            if (needed()) locate()
+            if (needed()) {
+                when (pref.getString("location_type", "auto")) {
+                    "auto" -> locate()
+                    "manual" -> {
+                        val cityId = pref.getInt("city_id", -1)
+
+                        if (cityId == -1) return
+
+                        val city = Utils.getDB(context).cityDao().getCity(cityId)
+
+                        val location = Location("")
+                        location.latitude = city.latitude
+                        location.longitude = city.longitude
+                        update(location)
+                    }
+                    "none" -> return
+                }
+            }
             else Log.i(Global.TAG, "dead intent walking in daily update receiver")
         }
         else if (intent.action == "boot") locate()
@@ -48,11 +65,13 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun locate() {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(
+                context, Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                context, Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
 
             LocationServices.getFusedLocationProviderClient(context)
                 .lastLocation.addOnSuccessListener {

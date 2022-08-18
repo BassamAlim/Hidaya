@@ -56,15 +56,6 @@
         <item>Night Mode</item>
     </string-array>
 
-    <string-array name="repeat_mode_entries">
-        <item>No repeat</item>
-        <item>Twice</item>
-        <item>3 Times</item>
-        <item>5 Times</item>
-        <item>10 Times</item>
-        <item>Non-stop</item>
-    </string-array>
-
     <string-array name="hijri_months">
         <item>Muharram</item>
         <item>Safar</item>

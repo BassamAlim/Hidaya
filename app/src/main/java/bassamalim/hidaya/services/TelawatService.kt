@@ -155,8 +155,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                     player.start()
                     refresh()
                 }
-                else
-                    startPlaying(surahIndex)
+                else startPlaying(surahIndex)
 
                 updatePbState(
                     PlaybackStateCompat.STATE_PLAYING, controller.playbackState.bufferedPosition

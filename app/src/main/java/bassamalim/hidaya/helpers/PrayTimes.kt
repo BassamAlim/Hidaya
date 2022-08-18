@@ -1,6 +1,8 @@
 package bassamalim.hidaya.helpers
 
 import android.content.Context
+import androidx.preference.PreferenceManager
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.other.Utils
 import java.util.*
 import kotlin.math.*
@@ -47,6 +49,10 @@ class PrayTimes(private val context: Context) {
         CM.TAHRAN to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0)
     )
     private val offsets = intArrayOf(0, 0, 0, 0, 0, 0, 0)
+
+    init {
+        setOffsets()
+    }
 
     // -------------------- Interface Functions --------------------
     // returns prayer times in Calendar object
@@ -283,8 +289,16 @@ class PrayTimes(private val context: Context) {
     }
 
     // Tune timings for adjustments (Set time offsets)
-    fun tune(offsetTimes: IntArray) {
-        System.arraycopy(offsetTimes, 0, offsets, 0, offsetTimes.size)
+    private fun setOffsets() {
+        val pref = PreferenceManager.getDefaultSharedPreferences(context)
+
+        offsets[0] = pref.getInt("${PID.FAJR} offset", 0)
+        offsets[1] = pref.getInt("${PID.SHOROUQ} offset", 0)
+        offsets[2] = pref.getInt("${PID.DUHR} offset", 0)
+        offsets[3] = pref.getInt("${PID.ASR} offset", 0)
+        // Skipping sunset
+        offsets[5] = pref.getInt("${PID.MAGHRIB} offset", 0)
+        offsets[6] = pref.getInt("${PID.ISHAA} offset", 0)
     }
 
     private fun tuneTimes(times: DoubleArray): DoubleArray {

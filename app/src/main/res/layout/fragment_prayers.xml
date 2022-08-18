@@ -59,6 +59,7 @@
         app:layout_constraintBottom_toTopOf="@id/day_selector">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cards_cl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center">

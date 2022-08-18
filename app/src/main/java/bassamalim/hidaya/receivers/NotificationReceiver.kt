@@ -17,7 +17,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.AthkarViewer
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.activities.Splash
-import bassamalim.hidaya.enums.ID
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.Utils
 import bassamalim.hidaya.services.AthanService
@@ -26,7 +26,7 @@ import java.util.*
 class NotificationReceiver : BroadcastReceiver() {
 
     private lateinit var context: Context
-    private lateinit var id: ID
+    private lateinit var pid: PID
     private var isPrayer = false
     private var channelId = ""
     private var type = 0
@@ -35,20 +35,20 @@ class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         this.context = context
 
-        id = Utils.mapID(intent.getIntExtra("id", 0))!!
+        pid = Utils.mapID(intent.getIntExtra("id", 0))!!
         time = intent.getLongExtra("time", 0)
         isPrayer = intent.action == "prayer"
 
         Utils.onActivityCreateSetLocale(context)
 
-        Log.i(Global.TAG, "in notification receiver for $id")
+        Log.i(Global.TAG, "in notification receiver for $pid")
 
         val defaultType =
-            if (id == ID.SHOROUQ) 0
+            if (pid == PID.SHOROUQ) 0
             else 2
 
         type = PreferenceManager.getDefaultSharedPreferences(context)
-            .getInt(id.toString() + "notification_type", defaultType)
+            .getInt("$pid notification_type", defaultType)
 
         if (type != 0) prepare()
     }
@@ -59,7 +59,7 @@ class NotificationReceiver : BroadcastReceiver() {
             if (type == 3) startService()
             else showNotification()
         }
-        else Log.i(Global.TAG, "$id Passed")
+        else Log.i(Global.TAG, "$pid Passed")
     }
 
     private fun showNotification() {
@@ -71,13 +71,13 @@ class NotificationReceiver : BroadcastReceiver() {
             am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
         }
 
-        NotificationManagerCompat.from(context).notify(id.ordinal, build())
+        NotificationManagerCompat.from(context).notify(pid.ordinal, build())
     }
 
     private fun startService() {
         val intent1 = Intent(context, AthanService::class.java)
         intent1.action = Global.PLAY_ATHAN
-        intent1.putExtra("id", id)
+        intent1.putExtra("id", pid)
         intent1.putExtra("time", time)
 
         if (Build.VERSION.SDK_INT >= 26)
@@ -91,8 +91,9 @@ class NotificationReceiver : BroadcastReceiver() {
         builder.setSmallIcon(R.drawable.ic_athan)
         builder.setTicker(context.resources.getString(R.string.app_name))
 
-        var i: Int = id.ordinal
-        if (id == ID.DUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) i = 10
+        var i: Int = pid.ordinal
+        if (pid == PID.DUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+            i = 10
         builder.setContentTitle(context.resources.getStringArray(R.array.prayer_titles)[i])
         builder.setContentText(context.resources.getStringArray(R.array.prayer_subtitles)[i])
 
@@ -100,34 +101,34 @@ class NotificationReceiver : BroadcastReceiver() {
         builder.setAutoCancel(true)
         builder.setOnlyAlertOnce(true)
         builder.color = context.getColor(R.color.surface_M)
-        builder.setContentIntent(onClick(id))
+        builder.setContentIntent(onClick(pid))
 
         if (type == 1) builder.setSilent(true)
 
         return builder.build()
     }
 
-    private fun onClick(id: ID?): PendingIntent {
+    private fun onClick(pid: PID?): PendingIntent {
         val intent: Intent
 
-        when (id) {
-            ID.MORNING -> {
+        when (pid) {
+            PID.MORNING -> {
                 intent = Intent(context, AthkarViewer::class.java)
                 intent.putExtra("category", 0)
                 intent.putExtra("thikr_id", 0)
                 intent.putExtra("title", "أذكار الصباح")
             }
-            ID.EVENING -> {
+            PID.EVENING -> {
                 intent = Intent(context, AthkarViewer::class.java)
                 intent.putExtra("category", 0)
                 intent.putExtra("thikr_id", 1)
                 intent.putExtra("title", "أذكار المساء")
             }
-            ID.DAILY_WERD -> {
+            PID.DAILY_WERD -> {
                 intent = Intent(context, QuranViewer::class.java)
                 intent.action = "random"
             }
-            ID.FRIDAY_KAHF -> {
+            PID.FRIDAY_KAHF -> {
                 intent = Intent(context, QuranViewer::class.java)
                 intent.action = "by_surah"
                 intent.putExtra("surah_id", 17) // alkahf
@@ -138,7 +139,7 @@ class NotificationReceiver : BroadcastReceiver() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
         return PendingIntent.getActivity(
-            context, id!!.ordinal, intent,
+            context, pid!!.ordinal, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
@@ -148,8 +149,8 @@ class NotificationReceiver : BroadcastReceiver() {
             val name: CharSequence
             val description = ""
 
-            channelId = context.resources.getStringArray(R.array.channel_ids)[id.ordinal]
-            name = context.resources.getStringArray(R.array.reminders)[id.ordinal]
+            channelId = context.resources.getStringArray(R.array.channel_ids)[pid.ordinal]
+            name = context.resources.getStringArray(R.array.reminders)[pid.ordinal]
 
             val importance: Int = NotificationManager.IMPORTANCE_HIGH
             val notificationChannel = NotificationChannel(channelId, name, importance)

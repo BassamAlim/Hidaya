@@ -23,7 +23,7 @@
         tools:layout="@layout/fragment_collection_quran" />
 
     <fragment
-        android:id="@+id/navigation_alathkar"
+        android:id="@+id/navigation_athkar"
         android:name="bassamalim.hidaya.fragments.AthkarFragment"
         android:label="@string/title_alathkar"
         tools:layout="@layout/fragment_athkar" />
@@ -32,6 +32,6 @@
         android:id="@+id/navigation_other"
         android:name="bassamalim.hidaya.fragments.OtherFragment"
         android:label="@string/more"
-        tools:layout="@layout/fragment_qibla" />
+        tools:layout="@layout/fragment_other" />
 
 </navigation>

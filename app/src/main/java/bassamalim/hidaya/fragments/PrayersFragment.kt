@@ -51,23 +51,30 @@ class PrayersFragment : Fragment() {
         if (MainActivity.located) {
             init()
 
+            checkFirstTime()
+        }
+        else
+            binding!!.locationChangeBtn.setOnClickListener {
+                parentFragmentManager.beginTransaction().replace(
+                    R.id.nav_host_fragment_activity_main,
+                    LocationFragment.newInstance("normal")
+                ).commit()
+            }
+
+        return root
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (MainActivity.located) {
             goToToday()
 
             setupLocationCard()
 
             setInitialState()
             setupListeners()
-
-            checkFirstTime()
         }
-        else
-            binding!!.locationChangeBtn.setOnClickListener {
-                parentFragmentManager.beginTransaction().replace(
-                    R.id.nav_host_fragment_activity_main, LocationFragment.newInstance("normal")
-                ).commit()
-            }
-
-        return root
     }
 
     private fun init() {
@@ -147,7 +154,7 @@ class PrayersFragment : Fragment() {
 
     private fun setInitialState() {
         for (i in cards.indices) {
-            when (pref.getInt(Utils.mapID(i).toString() + "notification_type", 2)) {
+            when (pref.getInt("${Utils.mapID(i)} notification_type", 2)) {
                 3 -> images[i]!!.setImageDrawable(ResourcesCompat.getDrawable(requireContext()
                                 .resources, R.drawable.ic_speaker, requireContext().theme))
                 1 -> images[i]!!.setImageDrawable(ResourcesCompat.getDrawable(requireContext()
@@ -156,15 +163,14 @@ class PrayersFragment : Fragment() {
                                     .resources, R.drawable.ic_disabled, requireContext().theme))
             }
 
-            val delayPosition = pref.getInt(Utils.mapID(i).toString() + "spinner_last", 6)
-            val min = resources.getStringArray(R.array.time_settings_values)[delayPosition].toInt()
+            val delay = pref.getInt("${Utils.mapID(i)} offset", 0)
 
-            if (min > 0)
+            if (delay > 0)
                 delayTvs[i]!!.text =
-                    Utils.translateNumbers(requireContext(), "+$min", false)
-            else if (min < 0)
+                    Utils.translateNumbers(requireContext(), "+$delay", false)
+            else if (delay < 0)
                 delayTvs[i]!!.text =
-                    Utils.translateNumbers(requireContext(), min.toString(), false)
+                    Utils.translateNumbers(requireContext(), delay.toString(), false)
             else delayTvs[i]!!.text = ""
         }
     }
@@ -193,9 +199,14 @@ class PrayersFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        val refresher = object : PrayerDialog.Refresher {
+            override fun refresh() {
+                onStart()
+            }
+        }
         for (i in cards.indices)
             cards[i]!!.setOnClickListener { v: View? ->
-                PrayerDialog(requireContext(), v!!, Utils.mapID(i)!!, prayerNames[i])
+                PrayerDialog(requireContext(), v!!, Utils.mapID(i)!!, prayerNames[i], refresher)
             }
 
         binding!!.previousDayButton.setOnClickListener { previousDay() }

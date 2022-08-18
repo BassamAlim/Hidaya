@@ -7,7 +7,7 @@ import android.os.Message
 import android.widget.TimePicker
 import androidx.preference.*
 import bassamalim.hidaya.R
-import bassamalim.hidaya.enums.ID
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.other.Utils
 import java.util.*
@@ -43,28 +43,28 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setInitialStates() {
-        var switchP: SwitchPreferenceCompat = findPreference(keyGetter(ID.MORNING))!!
+        var switchP: SwitchPreferenceCompat = findPreference(keyGetter(PID.MORNING))!!
         switchP.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
-            requireContext(), "${pref.getInt(ID.MORNING.toString() + "hour", 5)}:" +
-                    "${pref.getInt(ID.MORNING.toString() + "minute", 0)}"
+            requireContext(), "${pref.getInt(PID.MORNING.toString() + "hour", 5)}:" +
+                    "${pref.getInt(PID.MORNING.toString() + "minute", 0)}"
         ), true)
 
-        switchP = findPreference(keyGetter(ID.EVENING))!!
+        switchP = findPreference(keyGetter(PID.EVENING))!!
         switchP.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
-            requireContext(), "${pref.getInt(ID.EVENING.toString() + "hour", 16)}:" +
-                    "${pref.getInt(ID.EVENING.toString() + "minute", 0)}"
+            requireContext(), "${pref.getInt(PID.EVENING.toString() + "hour", 16)}:" +
+                    "${pref.getInt(PID.EVENING.toString() + "minute", 0)}"
         ), true)
 
-        switchP = findPreference(keyGetter(ID.DAILY_WERD))!!
+        switchP = findPreference(keyGetter(PID.DAILY_WERD))!!
         switchP.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
-            requireContext(), "${pref.getInt(ID.DAILY_WERD.toString() + "hour", 21)}:" +
-                    "${pref.getInt(ID.DAILY_WERD.toString() + "minute", 0)}"
+            requireContext(), "${pref.getInt(PID.DAILY_WERD.toString() + "hour", 21)}:" +
+                    "${pref.getInt(PID.DAILY_WERD.toString() + "minute", 0)}"
         ), true)
 
-        switchP = findPreference(keyGetter(ID.FRIDAY_KAHF))!!
+        switchP = findPreference(keyGetter(PID.FRIDAY_KAHF))!!
         switchP.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
-            requireContext(), "${pref.getInt(ID.FRIDAY_KAHF.toString() + "hour", 13)}:" +
-                    "${pref.getInt(ID.FRIDAY_KAHF.toString() + "minute", 0)}"
+            requireContext(), "${pref.getInt(PID.FRIDAY_KAHF.toString() + "hour", 13)}:" +
+                    "${pref.getInt(PID.FRIDAY_KAHF.toString() + "minute", 0)}"
         ), true)
     }
 
@@ -86,25 +86,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
         listP = findPreference(getString(R.string.theme_key))!!
         listP.onPreferenceChangeListener = changeListener
 
-        setSwitchListener(ID.MORNING)
-        setSwitchListener(ID.EVENING)
-        setSwitchListener(ID.DAILY_WERD)
-        setSwitchListener(ID.FRIDAY_KAHF)
+        setSwitchListener(PID.MORNING)
+        setSwitchListener(PID.EVENING)
+        setSwitchListener(PID.DAILY_WERD)
+        setSwitchListener(PID.FRIDAY_KAHF)
     }
 
-    private fun setSwitchListener(id: ID) {
-        val key = keyGetter(id)
+    private fun setSwitchListener(pid: PID) {
+        val key = keyGetter(pid)
         val pSwitch: SwitchPreferenceCompat = findPreference(key)!!
 
         pSwitch.setOnPreferenceChangeListener { _, newValue ->
             val on = newValue as Boolean
-            if (on) showTimePicker(id) else cancelAlarm(id)
+            if (on) showTimePicker(pid) else cancelAlarm(pid)
             true
         }
     }
 
-    private fun showTimePicker(id: ID) {
-        val key = keyGetter(id)
+    private fun showTimePicker(pid: PID) {
+        val key = keyGetter(pid)
         val pSwitch: SwitchPreferenceCompat = findPreference(key)!!
 
         val currentTime = Calendar.getInstance()
@@ -118,11 +118,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 ), true)
 
                 val editor = pref.edit()
-                editor.putInt(id.toString() + "hour", hourOfDay)
-                editor.putInt(id.toString() + "minute", minute)
+                editor.putInt(pid.toString() + "hour", hourOfDay)
+                editor.putInt(pid.toString() + "minute", minute)
                 editor.apply()
 
-                Alarms(requireContext(), id)
+                Alarms(requireContext(), pid)
             }, cHour, cMinute, false
         )
 
@@ -136,19 +136,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
         timePicker.show()
     }
 
-    private fun cancelAlarm(id: ID) {
-        Utils.cancelAlarm(requireContext(), id)
-        val key = keyGetter(id)
+    private fun cancelAlarm(pid: PID) {
+        Utils.cancelAlarm(requireContext(), pid)
+        val key = keyGetter(pid)
         val pSwitch: SwitchPreferenceCompat = findPreference(key)!!
         pSwitch.summary = ""
     }
 
-    private fun keyGetter(id: ID): String {
-        return when (id) {
-            ID.MORNING -> getString(R.string.morning_athkar_key)
-            ID.EVENING -> getString(R.string.evening_athkar_key)
-            ID.DAILY_WERD -> getString(R.string.daily_werd_key)
-            ID.FRIDAY_KAHF -> getString(R.string.friday_kahf_key)
+    private fun keyGetter(pid: PID): String {
+        return when (pid) {
+            PID.MORNING -> getString(R.string.morning_athkar_key)
+            PID.EVENING -> getString(R.string.evening_athkar_key)
+            PID.DAILY_WERD -> getString(R.string.daily_werd_key)
+            PID.FRIDAY_KAHF -> getString(R.string.friday_kahf_key)
             else -> ""
         }
     }

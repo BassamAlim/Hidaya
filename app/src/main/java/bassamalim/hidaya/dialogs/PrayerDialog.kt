@@ -5,31 +5,36 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
-import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.enums.ID
+import bassamalim.hidaya.activities.MainActivity
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.helpers.Alarms
-import bassamalim.hidaya.other.Global
+import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.other.Utils
 
 
 class PrayerDialog(
-    private val context: Context, private val view: View, private val id: ID, title: String
+    private val context: Context, private val view: View, private val pid: PID, title: String,
+    private val refresher: Refresher
 ) {
 
     private lateinit var popup: PopupWindow
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private lateinit var radioGroup: RadioGroup
     private lateinit var rButtons: Array<RadioButton?>
-    private lateinit var images: Array<ImageView?>
-    private lateinit var delayTvs: Array<TextView?>
     private lateinit var drawables: IntArray
+    private lateinit var seekbar: SeekBar
+    private lateinit var seekbarTv: TextView
+    private val offsetMin = 30
+
+    interface Refresher {
+        fun refresh()
+    }
 
     init {
         showPopup()
@@ -44,7 +49,7 @@ class PrayerDialog(
             R.layout.dialog_prayer, LinearLayout(context), false
         )
 
-        if (id == ID.SHOROUQ) popupView.findViewById<View>(R.id.athan_rb).visibility = View.GONE
+        if (pid == PID.SHOROUQ) popupView.findViewById<View>(R.id.athan_rb).visibility = View.GONE
 
         popup = PopupWindow(
             popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -57,6 +62,13 @@ class PrayerDialog(
         popup.animationStyle = R.style.PrayerDialogAnimation
 
         popup.showAtLocation(view, Gravity.START, 30, getY())
+
+        popup.setOnDismissListener {
+            refresher.refresh()
+
+            Keeper(context, MainActivity.location!!)
+            Alarms(context, pid)
+        }
     }
 
     @SuppressLint("StringFormatInvalid")
@@ -66,43 +78,19 @@ class PrayerDialog(
 
         setViews()
 
-        val defaultState =
-            if (id == ID.SHOROUQ) 0
-            else 2
-        val state: Int = pref.getInt(id.toString() + "notification_type", defaultState)
-        radioGroup.check(rButtons[state]!!.id)
+        setupRadioGroup()
 
-        radioGroup.setOnCheckedChangeListener { _: RadioGroup?, checkedId: Int ->
-            selectedAlertState(getIndex(checkedId))
-        }
+        setupSeekbar()
 
-        setupSpinner()
+        retrieveState()
     }
 
     private fun setViews() {
-        radioGroup = popup.contentView.findViewById(R.id.prayer_alert_rg)
-
         rButtons = arrayOfNulls(4)
         rButtons[0] = popup.contentView.findViewById(R.id.disable_rb)
         rButtons[1] = popup.contentView.findViewById(R.id.silent_rb)
         rButtons[2] = popup.contentView.findViewById(R.id.notify_rb)
         rButtons[3] = popup.contentView.findViewById(R.id.athan_rb)
-
-        images = arrayOfNulls(6)
-        images[0] = view.findViewById(R.id.fajr_image)
-        images[1] = view.findViewById(R.id.shorouq_image)
-        images[2] = view.findViewById(R.id.duhr_image)
-        images[3] = view.findViewById(R.id.asr_image)
-        images[4] = view.findViewById(R.id.maghrib_image)
-        images[5] = view.findViewById(R.id.ishaa_image)
-
-        delayTvs = arrayOfNulls(6)
-        delayTvs[0] = view.findViewById(R.id.fajr_delay_tv)
-        delayTvs[1] = view.findViewById(R.id.shorouq_delay_tv)
-        delayTvs[2] = view.findViewById(R.id.duhr_delay_tv)
-        delayTvs[3] = view.findViewById(R.id.asr_delay_tv)
-        delayTvs[4] = view.findViewById(R.id.maghrib_delay_tv)
-        delayTvs[5] = view.findViewById(R.id.ishaa_delay_tv)
 
         drawables = IntArray(4)
         drawables[0] = R.drawable.ic_disabled
@@ -111,62 +99,53 @@ class PrayerDialog(
         drawables[3] = R.drawable.ic_speaker
     }
 
-    private fun setupSpinner() {
-        val spinner: Spinner = popup.contentView.findViewById(R.id.time_setting_spinner)
+    private fun setupRadioGroup() {
+        radioGroup = popup.contentView.findViewById(R.id.prayer_alert_rg)
 
-        val arrRes =
-            if (Utils.getNumeralsLanguage(context, pref) == "en") R.array.time_settings_entries_en
-            else R.array.time_settings_entries
+        radioGroup.setOnCheckedChangeListener { _: RadioGroup?, checkedId: Int ->
+            val choice = getIndex(checkedId)
 
-        val adapter = ArrayAdapter.createFromResource(
-            context, arrRes, android.R.layout.simple_spinner_item
-        )
-        spinner.adapter = adapter
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            val editor: SharedPreferences.Editor = pref.edit()
+            editor.putInt("$pid notification_type", choice)
+            editor.apply()
 
-        val time: Int = pref.getInt(id.toString() + "spinner_last", 6)
-        spinner.setSelection(time)
-
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>, view: View, position: Int, vId: Long
-            ) {
-                val editor: SharedPreferences.Editor = pref.edit()
-                val min = context.resources.getStringArray(
-                    R.array.time_settings_values)[parent.selectedItemPosition].toInt()
-                Log.i(Global.TAG, "delay is set to: $min")
-
-                if (min > 0)
-                    delayTvs[id.ordinal]!!.text =
-                        Utils.translateNumbers(context, "+$min", false)
-                else if (min < 0)
-                    delayTvs[id.ordinal]!!.text =
-                        Utils.translateNumbers(context, min.toString(), false)
-                else
-                    delayTvs[id.ordinal]!!.text = ""
-
-                Alarms(context, id)
-
-                val millis = min * 60000L
-                editor.putLong(id.toString() + "time_adjustment", millis)
-                editor.putInt(id.toString() + "spinner_last", position)
-                editor.apply()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            Alarms(context, pid)
         }
     }
 
-    private fun selectedAlertState(choice: Int) {
-        val editor: SharedPreferences.Editor = pref.edit()
-        editor.putInt(id.toString() + "notification_type", choice)
-        editor.apply()
+    private fun setupSeekbar() {
+        seekbar = popup.contentView.findViewById(R.id.time_offset_seekbar)
+        seekbarTv = popup.contentView.findViewById(R.id.seekbar_tv)
 
-        images[id.ordinal]!!.setImageDrawable(
-            ResourcesCompat.getDrawable(context.resources, drawables[choice], context.theme)
-        )
+        seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                val offset = p1 - offsetMin
 
-        Alarms(context, id)
+                setOffsetTv(offset)
+
+                val editor = pref.edit()
+                editor.putInt("$pid offset", offset)
+                editor.apply()
+            }
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
+            override fun onStopTrackingTouch(p0: SeekBar?) {}
+        })
+    }
+
+    private fun retrieveState() {
+        val defaultState = if (pid == PID.SHOROUQ) 0 else 2
+        val notificationState = pref.getInt("$pid notification_type", defaultState)
+        radioGroup.check(rButtons[notificationState]!!.id)
+
+        val offsetState = pref.getInt("$pid offset", 0)
+        seekbar.progress = offsetState + offsetMin
+        setOffsetTv(offsetState)
+    }
+
+    private fun setOffsetTv(offset: Int) {
+        var offsetStr = offset.toString()
+        if (offset > 0) offsetStr += "+"
+        seekbarTv.text = Utils.translateNumbers(context, offsetStr)
     }
 
     private fun getIndex(checkedId: Int): Int {
@@ -177,13 +156,13 @@ class PrayerDialog(
     }
 
     private fun getY(): Int {
-        return when (id) {
-            ID.FAJR -> -400
-            ID.SHOROUQ -> -350
-            ID.DUHR -> -180
-            ID.ASR -> 100
-            ID.MAGHRIB -> 350
-            ID.ISHAA -> 510
+        return when (pid) {
+            PID.FAJR -> -400
+            PID.SHOROUQ -> -350
+            PID.DUHR -> -180
+            PID.ASR -> 100
+            PID.MAGHRIB -> 350
+            PID.ISHAA -> 510
             else -> 0
         }
     }

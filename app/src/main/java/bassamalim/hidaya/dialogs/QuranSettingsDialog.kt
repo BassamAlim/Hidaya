@@ -7,10 +7,7 @@ import android.os.Bundle
 import android.view.Window
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.DropDownPreference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
-import androidx.preference.SeekBarPreference
+import androidx.preference.*
 import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.DialogQuranSettingsBinding
 import bassamalim.hidaya.other.Utils
@@ -103,15 +100,39 @@ class QuranSettingsDialog : AppCompatActivity() {
             textSizeSB = findPreference(getString(R.string.quran_text_size_key))
 
             setupReciters()
+
+            setupRepeatSeekbar()
         }
 
         private fun setupReciters() {
-            val recitersDropdown: DropDownPreference = findPreference(getString(R.string.aya_reciter_key))!!
-            val reciterNames : List<String?> = getReciterNames()
+            val recitersDropdown = findPreference<DropDownPreference>(getString(R.string.aya_reciter_key))!!
+            val reciterNames = getReciterNames()
             val ids = arrayOfNulls<CharSequence>(reciterNames.size)
             for (i in reciterNames.indices) ids[i] = i.toString()
             recitersDropdown.entries = reciterNames.toTypedArray()
             recitersDropdown.entryValues = ids
+        }
+
+        private fun setupRepeatSeekbar() {
+            val repeatSB =
+                findPreference<SeekBarPreference>(getString(R.string.aya_repeat_key))!!
+
+            val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+            repeatSB.setSummaryProvider {
+                Utils.translateNumbers(
+                    requireContext(), pref.getInt(getString(R.string.aya_repeat_key), 1).toString()
+                )
+            }
+
+            repeatSB.onPreferenceChangeListener = Preference.OnPreferenceChangeListener {
+                    preference, newValue ->
+                if (newValue == 11) preference.setSummaryProvider { getString(R.string.infinite) }
+                else preference.setSummaryProvider {
+                    Utils.translateNumbers(requireContext(), newValue.toString())
+                }
+
+                true
+            }
         }
 
         private fun getReciterNames(): List<String?> {

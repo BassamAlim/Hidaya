@@ -6,6 +6,7 @@ import java.io.Serializable
 
 class Ayah: Serializable {
 
+    private var id = 0
     private var juz = 0
     private val surahNum: Int
     private val ayahNum: Int
@@ -21,9 +22,10 @@ class Ayah: Serializable {
     private var screen: TextView? = null
 
     constructor(
-        juz: Int, surahNum: Int, ayahNum: Int, surahName: String,
+        id: Int, juz: Int, surahNum: Int, ayahNum: Int, surahName: String,
         text: String?, translation: String?, tafseer: String
     ) {
+        this.id = id
         this.juz = juz
         this.surahNum = surahNum
         this.ayahNum = ayahNum
@@ -43,6 +45,10 @@ class Ayah: Serializable {
         this.surahName = surahName
         this.tafseer = tafseer
         this.ss = ss
+    }
+
+    fun getId(): Int {
+        return id
     }
 
     fun getJuz(): Int {

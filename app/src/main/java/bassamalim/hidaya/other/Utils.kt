@@ -12,7 +12,7 @@ import androidx.preference.PreferenceManager
 import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.enums.ID
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.helpers.PrayTimes
 import com.google.gson.Gson
 import java.io.File
@@ -282,30 +282,30 @@ object Utils {
         return if (file.exists()) file.delete() else false
     }
 
-    fun cancelAlarm(gContext: Context, id: ID) {
+    fun cancelAlarm(gContext: Context, PID: PID) {
         val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
-            gContext, id.ordinal, Intent(),
+            gContext, PID.ordinal, Intent(),
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val am: AlarmManager = gContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         am.cancel(pendingIntent)
 
-        Log.i(Global.TAG, "Canceled Alarm $id")
+        Log.i(Global.TAG, "Canceled Alarm $PID")
     }
 
-    fun mapID(num: Int): ID? {
+    fun mapID(num: Int): PID? {
         return when (num) {
-            0 -> ID.FAJR
-            1 -> ID.SHOROUQ
-            2 -> ID.DUHR
-            3 -> ID.ASR
-            4 -> ID.MAGHRIB
-            5 -> ID.ISHAA
-            6 -> ID.MORNING
-            7 -> ID.EVENING
-            8 -> ID.DAILY_WERD
-            9 -> ID.FRIDAY_KAHF
+            0 -> PID.FAJR
+            1 -> PID.SHOROUQ
+            2 -> PID.DUHR
+            3 -> PID.ASR
+            4 -> PID.MAGHRIB
+            5 -> PID.ISHAA
+            6 -> PID.MORNING
+            7 -> PID.EVENING
+            8 -> PID.DAILY_WERD
+            9 -> PID.FRIDAY_KAHF
             else -> null
         }
     }
