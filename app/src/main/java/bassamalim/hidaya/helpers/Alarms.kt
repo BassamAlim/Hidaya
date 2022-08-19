@@ -10,8 +10,8 @@ import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.other.Utils
 import bassamalim.hidaya.receivers.NotificationReceiver
+import bassamalim.hidaya.utils.PTUtils
 import java.util.*
 
 class Alarms {
@@ -47,7 +47,7 @@ class Alarms {
     private fun setPrayerAlarms(times: Array<Calendar?>) {
         Log.i(Global.TAG, "in set prayer alarms")
         for (i in 0..5) {
-            val mappedPID = Utils.mapID(i)!!
+            val mappedPID = PTUtils.mapID(i)!!
             if (pref.getInt("$mappedPID notification_type", 2) != 0)
                 setPrayerAlarm(mappedPID, times[i])
         }

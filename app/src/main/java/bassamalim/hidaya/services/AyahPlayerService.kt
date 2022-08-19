@@ -28,7 +28,8 @@ import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AyatTelawaDB
 import bassamalim.hidaya.models.Aya
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 
 class AyahPlayerService : Service(),
@@ -93,7 +94,7 @@ class AyahPlayerService : Service(),
         super.onCreate()
         // Perform one-time setup procedures
 
-        db = Utils.getDB(this)
+        db = DBUtils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
         initSession()
@@ -102,7 +103,7 @@ class AyahPlayerService : Service(),
 
         reciterNames = db.ayatRecitersDao().getNames()
         suarNames =
-            if (Utils.getLanguage(this, pref) == "en") db.suarDao().getNamesEn()
+            if (PrefUtils.getLanguage(this, pref) == "en") db.suarDao().getNamesEn()
             else db.suarDao().getNames()
 
         initMetadata()

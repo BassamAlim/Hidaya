@@ -9,7 +9,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityWelcomeBinding
 import bassamalim.hidaya.fragments.LocationFragment
 import bassamalim.hidaya.fragments.SettingsFragment
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
 
 class WelcomeActivity: AppCompatActivity() {
 
@@ -17,7 +17,7 @@ class WelcomeActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        ActivityUtils.myOnActivityCreated(this)
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

@@ -6,13 +6,13 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import bassamalim.hidaya.R
 import bassamalim.hidaya.fragments.SettingsFragment
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
 
 class Settings : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        ActivityUtils.myOnActivityCreated(this)
         setContentView(R.layout.activity_settings)
         findViewById<View>(id.home).setOnClickListener { onBackPressed() }
 

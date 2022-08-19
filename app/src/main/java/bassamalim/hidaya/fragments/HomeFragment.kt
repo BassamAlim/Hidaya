@@ -13,7 +13,9 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.MainActivity
 import bassamalim.hidaya.databinding.FragmentHomeBinding
 import bassamalim.hidaya.helpers.PrayTimes
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.PTUtils
+import bassamalim.hidaya.utils.PrefUtils
+import bassamalim.hidaya.utils.LangUtils
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -61,9 +63,9 @@ class HomeFragment : Fragment() {
         val tomorrow = Calendar.getInstance()
         tomorrow[Calendar.DATE] = tomorrow[Calendar.DATE] + 1
 
-        val utcOffset = Utils.getUtcOffset(requireContext(), pref)
+        val utcOffset = PTUtils.getUTCOffset(requireContext(), pref)
 
-        val timeFormat = Utils.getTimeFormat(requireContext(), pref)
+        val timeFormat = PrefUtils.getTimeFormat(requireContext(), pref)
 
         times = prayTimes.getPrayerTimes(
             location.latitude, location.longitude, utcOffset.toDouble(), today
@@ -113,7 +115,7 @@ class HomeFragment : Fragment() {
                 if (context != null)
                     binding!!.remainingTimeTv.text = String.format(
                         getString(R.string.remaining),
-                        Utils.translateNumbers(requireContext(), hms, true)
+                        LangUtils.translateNumbers(requireContext(), hms, true)
                     )
                 else {
                     restart[0] = false
@@ -142,7 +144,7 @@ class HomeFragment : Fragment() {
         val hours = millis / (60 * 60 * 1000) % 24
         val minutes = millis / (60 * 1000) % 60
         val seconds = millis / 1000 % 60
-        val hms = Utils.translateNumbers(
+        val hms = LangUtils.translateNumbers(
             requireContext(), String.format(Locale.US, "%02d:%02d:%02d",
                 hours, minutes, seconds), false
         )
@@ -151,7 +153,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupQuranRecordCard() {
-        binding!!.quranPagesNum.text = Utils.translateNumbers(
+        binding!!.quranPagesNum.text = LangUtils.translateNumbers(
             requireContext(), pref.getInt("quran_pages_record", 0).toString(), false
         )
     }

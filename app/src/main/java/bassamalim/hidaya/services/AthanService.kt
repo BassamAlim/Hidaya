@@ -14,7 +14,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.Splash
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
 import java.util.*
 
 class AthanService : Service() {
@@ -28,7 +28,7 @@ class AthanService : Service() {
         Log.i(Global.TAG, "In athan service for $pid")
         //int Notification_ID = (int) System.currentTimeMillis() % 10000;
 
-        Utils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetLocale(this)
 
         createNotificationChannel()
         startForeground(pid.ordinal + 1, build())

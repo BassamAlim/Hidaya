@@ -15,7 +15,8 @@ import bassamalim.hidaya.adapters.BookViewerAdapter
 import bassamalim.hidaya.databinding.ActivityBookViewerBinding
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.models.BookDoor
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.FileUtils
 import com.google.gson.Gson
 
 class BookViewer : AppCompatActivity() {
@@ -32,7 +33,7 @@ class BookViewer : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        ActivityUtils.myOnActivityCreated(this)
         binding = ActivityBookViewerBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
@@ -53,7 +54,7 @@ class BookViewer : AppCompatActivity() {
 
     private fun getData() {
         val path: String = getExternalFilesDir(null).toString() + "/Books/" + bookId + ".json"
-        val jsonStr = Utils.getJsonFromDownloads(path)
+        val jsonStr = FileUtils.getJsonFromDownloads(path)
         val gson = Gson()
         val book: Book = gson.fromJson(jsonStr, Book::class.java)
         doors = book.chapters[chapterId].doors

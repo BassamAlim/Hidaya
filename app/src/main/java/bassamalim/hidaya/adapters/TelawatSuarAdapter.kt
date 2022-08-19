@@ -17,7 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB
 import bassamalim.hidaya.models.ReciterSura
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.FileUtils
 import com.google.gson.Gson
 import java.io.File
 import java.util.*
@@ -27,7 +28,7 @@ class TelawatSuarAdapter(
     reciterId: Int, private val versionId: Int
 ) : RecyclerView.Adapter<TelawatSuarAdapter.ViewHolder?>() {
 
-    private val db = Utils.getDB(context)
+    private val db = DBUtils.getDB(context)
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson = Gson()
     private val items = ArrayList(original)
@@ -134,7 +135,7 @@ class TelawatSuarAdapter(
             else if (downloaded[items[position].getNum()]) {
                 val num: Int = items[position].getNum()
                 val postfix = "$prefix/$num.mp3"
-                Utils.deleteFile(context, postfix)
+                FileUtils.deleteFile(context, postfix)
 
                 downloaded[num] = false
                 updateUI(viewHolder, "not downloaded")
@@ -194,7 +195,7 @@ class TelawatSuarAdapter(
         val request: DownloadManager.Request = DownloadManager.Request(uri)
         request.setTitle(items[num].getSearchName())
         val postfix = "/Telawat/" + ver.getReciterId() + "/" + versionId
-        Utils.createDir(context, postfix)
+        FileUtils.createDir(context, postfix)
         request.setDestinationInExternalFilesDir(context, postfix, "$num.mp3")
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
         val downloadId = downloadManager.enqueue(request)

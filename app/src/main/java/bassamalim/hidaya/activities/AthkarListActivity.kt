@@ -14,7 +14,8 @@ import bassamalim.hidaya.database.dbs.AthkarDB
 import bassamalim.hidaya.database.dbs.ThikrsDB
 import bassamalim.hidaya.databinding.ActivityAthkarListBinding
 import bassamalim.hidaya.models.AthkarItem
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
 
 class AthkarListActivity : AppCompatActivity() {
 
@@ -29,13 +30,13 @@ class AthkarListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.onActivityCreateSetTheme(this)
-        language = Utils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetTheme(this)
+        language = ActivityUtils.onActivityCreateSetLocale(this)
         binding = ActivityAthkarListBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        db = Utils.getDB(this)
+        db = DBUtils.getDB(this)
 
         action = intent.action!!
         when (action) {

@@ -10,8 +10,9 @@ import android.widget.NumberPicker
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.LangUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
@@ -62,7 +63,7 @@ class HijriDatePickerDialog(private val listener: DatePickerDialog.OnDateSetList
 
         val daysNums = arrayOfNulls<String>(30)
         for (i in daysNums.indices)
-            daysNums[i] = Utils.translateNumbers(
+            daysNums[i] = LangUtils.translateNumbers(
                 requireContext(), (i + 1).toString(), false
             )
 
@@ -104,7 +105,7 @@ class HijriDatePickerDialog(private val listener: DatePickerDialog.OnDateSetList
         val maxYear = 2000
         val tempArray = arrayOfNulls<String>(maxYear - minYear)
         for (i in minYear until maxYear)
-            tempArray[i - minYear] = Utils.translateNumbers(
+            tempArray[i - minYear] = LangUtils.translateNumbers(
                 requireContext(), i.toString(), false
             )
 

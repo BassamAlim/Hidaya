@@ -7,7 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityDateConverterBinding
 import bassamalim.hidaya.dialogs.HijriDatePickerDialog
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.LangUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
@@ -17,7 +18,7 @@ class DateConverter : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        ActivityUtils.myOnActivityCreated(this)
         binding = ActivityDateConverterBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
@@ -56,7 +57,7 @@ class DateConverter : AppCompatActivity() {
 
     private fun pickHijri() {
         HijriDatePickerDialog { _: DatePicker?, year: Int, month: Int, day: Int ->
-            val choice: Calendar = UmmalquraCalendar(year, month - 1, day)
+            val choice = UmmalquraCalendar(year, month - 1, day)
             show(choice, hijriToGregorian(choice))
         }.show(supportFragmentManager, "HijriDatePicker")
     }
@@ -75,18 +76,18 @@ class DateConverter : AppCompatActivity() {
 
     private fun show(hijri: Calendar, gregorian: Calendar) {
         binding.hijriYearTv.text =
-            Utils.translateNumbers(this, hijri[Calendar.YEAR].toString(), false)
+            LangUtils.translateNumbers(this, hijri[Calendar.YEAR].toString(), false)
         binding.hijriMonthTv.text =
             resources.getStringArray(R.array.numbered_hijri_months)[hijri[Calendar.MONTH]]
         binding.hijriDayTv.text =
-            Utils.translateNumbers(this, hijri[Calendar.DATE].toString(), false)
+            LangUtils.translateNumbers(this, hijri[Calendar.DATE].toString(), false)
 
-        binding.gregorianYearTv.text = Utils.translateNumbers(
+        binding.gregorianYearTv.text = LangUtils.translateNumbers(
             this, gregorian[Calendar.YEAR].toString(), false
         )
         binding.gregorianMonthTv.text =
             resources.getStringArray(R.array.numbered_gregorian_months)[gregorian[Calendar.MONTH]]
-        binding.gregorianDayTv.text = Utils.translateNumbers(
+        binding.gregorianDayTv.text = LangUtils.translateNumbers(
             this, gregorian[Calendar.DATE].toString(), false
         )
     }

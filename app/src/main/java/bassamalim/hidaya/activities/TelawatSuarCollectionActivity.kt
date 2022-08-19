@@ -12,7 +12,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityCollectionTelawatSuarBinding
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.fragments.TelawatSuarFragment
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -25,7 +25,7 @@ class TelawatSuarCollectionActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        ActivityUtils.myOnActivityCreated(this)
         binding = ActivityCollectionTelawatSuarBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { finish() }

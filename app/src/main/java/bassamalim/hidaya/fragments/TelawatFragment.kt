@@ -24,7 +24,7 @@ import bassamalim.hidaya.dialogs.FilterDialog
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.Reciter
 import bassamalim.hidaya.models.Reciter.RecitationVersion
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.DBUtils
 import com.google.gson.Gson
 import java.io.File
 import java.util.*
@@ -84,7 +84,7 @@ class TelawatFragment : Fragment {
 
     private val data: List<TelawatRecitersDB>
         get() {
-            val db = Utils.getDB(requireContext())
+            val db = DBUtils.getDB(requireContext())
 
             telawat = db.telawatDao().all
 

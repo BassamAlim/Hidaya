@@ -16,8 +16,8 @@ import androidx.core.content.res.ResourcesCompat
 import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityRadioClientBinding
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.other.Utils
 import bassamalim.hidaya.services.RadioService
+import bassamalim.hidaya.utils.ActivityUtils
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 class RadioClient : AppCompatActivity() {
@@ -32,7 +32,7 @@ class RadioClient : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        ActivityUtils.myOnActivityCreated(this)
         binding = ActivityRadioClientBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }

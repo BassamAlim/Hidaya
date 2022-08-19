@@ -225,5 +225,6 @@
     <string name="choose_country">Choose country</string>
     <string name="choose_city">Choose city</string>
     <string name="infinite">Infinite</string>
+    <string name="adjust_date">Adjust Hijri date</string>
 
 </resources>

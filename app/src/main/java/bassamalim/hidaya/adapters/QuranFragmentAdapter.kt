@@ -17,13 +17,13 @@ import androidx.recyclerview.widget.RecyclerView
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.models.Sura
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.DBUtils
 import com.google.gson.Gson
 
 class QuranFragmentAdapter(private val context: Context, private val original: ArrayList<Sura>) :
     RecyclerView.Adapter<QuranFragmentAdapter.ViewHolder?>() {
 
-    private val db = Utils.getDB(context)
+    private val db = DBUtils.getDB(context)
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson: Gson = Gson()
     private val items = ArrayList(original)

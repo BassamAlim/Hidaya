@@ -19,8 +19,9 @@ import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.activities.Splash
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.other.Utils
 import bassamalim.hidaya.services.AthanService
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.PTUtils
 import java.util.*
 
 class NotificationReceiver : BroadcastReceiver() {
@@ -35,11 +36,11 @@ class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         this.context = context
 
-        pid = Utils.mapID(intent.getIntExtra("id", 0))!!
+        pid = PTUtils.mapID(intent.getIntExtra("id", 0))!!
         time = intent.getLongExtra("time", 0)
         isPrayer = intent.action == "prayer"
 
-        Utils.onActivityCreateSetLocale(context)
+        ActivityUtils.onActivityCreateSetLocale(context)
 
         Log.i(Global.TAG, "in notification receiver for $pid")
 

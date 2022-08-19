@@ -26,7 +26,10 @@ import bassamalim.hidaya.dialogs.FilterDialog
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.models.BookSearcherMatch
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.FileUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.gson.Gson
 import java.io.File
 import java.util.*
@@ -49,13 +52,13 @@ class BookSearcher : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.onActivityCreateSetTheme(this)
-        language = Utils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetTheme(this)
+        language = ActivityUtils.onActivityCreateSetLocale(this)
         binding = ActivityBookSearcherBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        db = Utils.getDB(this)
+        db = DBUtils.getDB(this)
 
         init()
 
@@ -110,7 +113,7 @@ class BookSearcher : AppCompatActivity() {
         val spinner: Spinner = binding.sizeSpinner
 
         val arrRes =
-            if (Utils.getNumeralsLanguage(this, pref) == "en") R.array.searcher_matches_en
+            if (PrefUtils.getNumeralsLanguage(this, pref) == "en") R.array.searcher_matches_en
             else R.array.searcher_matches
 
 
@@ -169,7 +172,7 @@ class BookSearcher : AppCompatActivity() {
         for (i in books.indices) {
             if (!selectedBooks[i] || !downloaded(i)) continue
 
-            val jsonStr = Utils.getJsonFromDownloads(
+            val jsonStr = FileUtils.getJsonFromDownloads(
                 getExternalFilesDir(null).toString() + prefix + i + ".json"
             )
 

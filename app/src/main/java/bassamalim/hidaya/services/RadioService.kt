@@ -34,7 +34,7 @@ import androidx.media.session.MediaButtonReceiver
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.RadioClient
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -67,7 +67,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     override fun onCreate() {
         super.onCreate()
-        Utils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetLocale(this)
 
         initSession()
         initPlayer()

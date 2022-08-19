@@ -12,7 +12,8 @@ import bassamalim.hidaya.database.dbs.QuizAnswersDB
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB
 import bassamalim.hidaya.databinding.ActivityQuizResultBinding
 import bassamalim.hidaya.models.QuizResultQuestion
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
 
 class QuizResultActivity : AppCompatActivity() {
 
@@ -27,12 +28,12 @@ class QuizResultActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        ActivityUtils.myOnActivityCreated(this)
         binding = ActivityQuizResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        db = Utils.getDB(this)
+        db = DBUtils.getDB(this)
 
         val intent: Intent = intent
         score = intent.getIntExtra("score", 10)

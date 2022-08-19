@@ -12,7 +12,8 @@ import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.QuizAnswersDB
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB
 import bassamalim.hidaya.databinding.ActivityQuizBinding
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
 import java.io.Serializable
 import java.util.*
 
@@ -31,12 +32,12 @@ class QuizActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        ActivityUtils.myOnActivityCreated(this)
         binding = ActivityQuizBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        db = Utils.getDB(this)
+        db = DBUtils.getDB(this)
 
         colorText = TypedValue()
         theme.resolveAttribute(R.attr.myText, colorText, true)

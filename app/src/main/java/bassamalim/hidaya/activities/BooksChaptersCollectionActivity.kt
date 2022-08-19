@@ -10,7 +10,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityCollectionBookChaptersBinding
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.fragments.BookChaptersFragment
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -22,7 +22,7 @@ class BooksChaptersCollectionActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        ActivityUtils.myOnActivityCreated(this)
         binding = ActivityCollectionBookChaptersBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { finish() }

@@ -17,7 +17,7 @@ import bassamalim.hidaya.database.dbs.SuarDB
 import bassamalim.hidaya.databinding.FragmentTelawatSuarBinding
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.ReciterSura
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.DBUtils
 import java.io.File
 import java.util.*
 
@@ -68,7 +68,7 @@ class TelawatSuarFragment : Fragment {
 
     private val data: Unit
         get() {
-            val db = Utils.getDB(requireContext())
+            val db = DBUtils.getDB(requireContext())
             val suras: List<SuarDB> = db.suarDao().getAll()
 
             surahNames = ArrayList()

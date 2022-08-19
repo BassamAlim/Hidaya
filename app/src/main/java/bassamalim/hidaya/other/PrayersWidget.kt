@@ -6,6 +6,9 @@ import android.content.Context
 import android.widget.RemoteViews
 import bassamalim.hidaya.R
 import bassamalim.hidaya.helpers.Keeper
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.PTUtils
+import bassamalim.hidaya.utils.LangUtils
 import java.util.*
 
 class PrayersWidget : AppWidgetProvider() {
@@ -29,7 +32,7 @@ class PrayersWidget : AppWidgetProvider() {
         fun updateAppWidget(
             context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int
         ) {
-            Utils.onActivityCreateSetLocale(context)
+            ActivityUtils.onActivityCreateSetLocale(context)
             
             val timesList = getTimesList(context) ?: return
 
@@ -58,7 +61,7 @@ class PrayersWidget : AppWidgetProvider() {
                 if (i == 1) j++  // To skip shorouq
 
                 result[i] = "${prayerNames[j]}\n${
-                    Utils.translateNumbers(context, Utils.formatTime(context, 
+                    LangUtils.translateNumbers(context, PTUtils.formatTime(context, 
                         "${times[j]!![Calendar.HOUR_OF_DAY]}:${times[j]!![Calendar.MINUTE]}"
                     ), true)
                 }"

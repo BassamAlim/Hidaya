@@ -37,11 +37,14 @@ import bassamalim.hidaya.dialogs.TutorialDialog
 import bassamalim.hidaya.models.Aya
 import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.other.Utils
 import bassamalim.hidaya.replacements.DoubleClickLMM
 import bassamalim.hidaya.replacements.DoubleClickableSpan
 import bassamalim.hidaya.replacements.SwipeActivity
 import bassamalim.hidaya.services.AyahPlayerService
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 
 
@@ -103,9 +106,9 @@ class QuranViewer : SwipeActivity() {
 
     private fun themeify() {
         pref = PreferenceManager.getDefaultSharedPreferences(this)
-        language = Utils.onActivityCreateSetLocale(this)
+        language = ActivityUtils.onActivityCreateSetLocale(this)
         textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
-        theme = pref.getString(getString(R.string.theme_key), getString(R.string.default_theme))!!
+        theme = PrefUtils.getTheme(this, pref)
 
         viewType = if (language == "en") "list" else pref.getString("quran_view_type", "page")!!
         when (theme) {
@@ -119,15 +122,13 @@ class QuranViewer : SwipeActivity() {
         scrollViews = arrayOf(binding.scrollview1, binding.scrollview2)
         lls = arrayOf(binding.linear1, binding.linear2)
 
-        db = Utils.getDB(this)
+        db = DBUtils.getDB(this)
 
         ayatDB = db.ayahDao().getAll()
         names =
             if (language == "en") db.suarDao().getNamesEn()
             else db.suarDao().getNames()
 
-        val theme: String? =
-            pref.getString(getString(R.string.theme_key), getString(R.string.default_theme))
         what =
             if (theme == "ThemeL")
                 ForegroundColorSpan(resources.getColor(R.color.track_L, getTheme()))
@@ -303,10 +304,10 @@ class QuranViewer : SwipeActivity() {
 
     private fun finalize(juz: Int, name: String) {
         val juzText: String = getString(R.string.juz) + " " +
-                Utils.translateNumbers(this, juz.toString(), false)
+                LangUtils.translateNumbers(this, juz.toString(), false)
         currentSurah = getString(R.string.sura) + " " + name
         currentPageText = getString(R.string.page) + " " +
-                Utils.translateNumbers(this, currentPage.toString(), false)
+                LangUtils.translateNumbers(this, currentPage.toString(), false)
         binding.juzNumber.text = juzText
         binding.suraName.text = currentSurah
         binding.pageNumber.text = currentPageText

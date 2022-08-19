@@ -17,7 +17,8 @@ import bassamalim.hidaya.database.dbs.ThikrsDB
 import bassamalim.hidaya.databinding.ActivityAthkarViewerBinding
 import bassamalim.hidaya.dialogs.InfoDialog
 import bassamalim.hidaya.models.Thikr
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
 
 class AthkarViewer : AppCompatActivity() {
 
@@ -31,15 +32,15 @@ class AthkarViewer : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.onActivityCreateSetTheme(this)
-        language = Utils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetTheme(this)
+        language = ActivityUtils.onActivityCreateSetLocale(this)
         binding = ActivityAthkarViewerBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        db = Utils.getDB(this)
+        db = DBUtils.getDB(this)
 
         val intent: Intent = intent
         val id: Int = intent.getIntExtra("thikr_id", 0)

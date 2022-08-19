@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
 import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.DialogQuranSettingsBinding
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.PrefUtils
 
 class QuranSettingsDialog : AppCompatActivity() {
 
@@ -22,6 +24,7 @@ class QuranSettingsDialog : AppCompatActivity() {
     private var initialTextSize = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        pref = PreferenceManager.getDefaultSharedPreferences(this)
         themeify()
         super.onCreate(savedInstanceState)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -48,12 +51,7 @@ class QuranSettingsDialog : AppCompatActivity() {
     }
 
     private fun themeify() {
-        pref = PreferenceManager.getDefaultSharedPreferences(this)
-        val theme: String? = pref.getString(
-            getString(R.string.theme_key),
-            getString(R.string.default_theme)
-        )
-        when (theme) {
+        when (PrefUtils.getTheme(this, pref)) {
             "ThemeM" -> setTheme(R.style.RoundedDialogM)
             "ThemeR" -> setTheme(R.style.RoundedDialogM)
             else -> setTheme(R.style.RoundedDialogL)
@@ -119,7 +117,7 @@ class QuranSettingsDialog : AppCompatActivity() {
 
             val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
             repeatSB.setSummaryProvider {
-                Utils.translateNumbers(
+                LangUtils.translateNumbers(
                     requireContext(), pref.getInt(getString(R.string.aya_repeat_key), 1).toString()
                 )
             }
@@ -128,7 +126,7 @@ class QuranSettingsDialog : AppCompatActivity() {
                     preference, newValue ->
                 if (newValue == 11) preference.setSummaryProvider { getString(R.string.infinite) }
                 else preference.setSummaryProvider {
-                    Utils.translateNumbers(requireContext(), newValue.toString())
+                    LangUtils.translateNumbers(requireContext(), newValue.toString())
                 }
 
                 true
@@ -136,7 +134,7 @@ class QuranSettingsDialog : AppCompatActivity() {
         }
 
         private fun getReciterNames(): List<String?> {
-            return Utils.getDB(requireContext()).ayatRecitersDao().getNames()
+            return DBUtils.getDB(requireContext()).ayatRecitersDao().getNames()
         }
     }
 

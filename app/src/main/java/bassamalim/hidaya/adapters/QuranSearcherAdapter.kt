@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.models.Ayah
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.LangUtils
 
 class QuranSearcherAdapter(private val context: Context, private val items: List<Ayah>) :
     RecyclerView.Adapter<QuranSearcherAdapter.ViewHolder>() {
@@ -53,18 +53,18 @@ class QuranSearcherAdapter(private val context: Context, private val items: List
         val card = items[position]
 
         val suraNumStr = "$suraNumString " +
-                Utils.translateNumbers(context, card.getSurahName(), false)
+                LangUtils.translateNumbers(context, card.getSurahName(), false)
         viewHolder.suraNumTv.text = suraNumStr
 
         val suraNameStr = suraStr + " " + card.getSurahName()
         viewHolder.suraNameTv.text = suraNameStr
 
         val pageNumStr = "$pageNumString " +
-                Utils.translateNumbers(context, card.getPageNum().toString(), false)
+                LangUtils.translateNumbers(context, card.getPageNum().toString(), false)
         viewHolder.pageNumTv.text = pageNumStr
 
         val ayaNumStr = "$ayaNumString " +
-                Utils.translateNumbers(context, card.getAyahNum().toString(), false)
+                LangUtils.translateNumbers(context, card.getAyahNum().toString(), false)
         viewHolder.ayaNumTv.text = ayaNumStr
 
         viewHolder.ayaTextTv.text = card.getSS()

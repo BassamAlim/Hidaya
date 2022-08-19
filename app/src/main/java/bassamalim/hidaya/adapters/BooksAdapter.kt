@@ -20,7 +20,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.BooksChaptersCollectionActivity
 import bassamalim.hidaya.database.dbs.BooksDB
 import bassamalim.hidaya.models.Book
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.FileUtils
 import com.google.gson.Gson
 import java.io.File
 
@@ -96,7 +96,7 @@ class BooksAdapter(
             else if (downloaded(item.id)) {
                 if (downloading(item.id)) showWaitMassage()
                 else {
-                    Utils.deleteFile(context, "$prefix${item.id}.json")
+                    FileUtils.deleteFile(context, "$prefix${item.id}.json")
                     updateUI(viewHolder, "not downloaded")
                 }
             }
@@ -133,7 +133,7 @@ class BooksAdapter(
     private fun downloading(id: Int): Boolean {
         val path: String = context.getExternalFilesDir(null).toString() + "/Books/" + id + ".json"
 
-        val jsonStr = Utils.getJsonFromDownloads(path)
+        val jsonStr = FileUtils.getJsonFromDownloads(path)
         return try {
             gson.fromJson(jsonStr, Book::class.java)
             false
@@ -171,7 +171,7 @@ class BooksAdapter(
         val uri = Uri.parse(item.url)
         val request: DownloadManager.Request = DownloadManager.Request(uri)
         request.setTitle(getTitle(item))
-        Utils.createDir(context, prefix)
+        FileUtils.createDir(context, prefix)
         request.setDestinationInExternalFilesDir(context, prefix, "${item.id}.json")
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
         val downloadId = downloadManager.enqueue(request)

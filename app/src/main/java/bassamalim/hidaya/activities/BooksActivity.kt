@@ -12,7 +12,8 @@ import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.BooksDB
 import bassamalim.hidaya.databinding.ActivityBooksBinding
 import bassamalim.hidaya.dialogs.TutorialDialog
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
 
 class BooksActivity : AppCompatActivity() {
 
@@ -24,13 +25,13 @@ class BooksActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.onActivityCreateSetTheme(this)
-        language = Utils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetTheme(this)
+        language = ActivityUtils.onActivityCreateSetLocale(this)
         binding = ActivityBooksBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        db = Utils.getDB(this)
+        db = DBUtils.getDB(this)
 
         checkFirstTime()
 

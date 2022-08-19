@@ -3,7 +3,7 @@ package bassamalim.hidaya.helpers
 import android.content.Context
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.enums.PID
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.LangUtils
 import java.util.*
 import kotlin.math.*
 
@@ -100,7 +100,7 @@ class PrayTimes(private val context: Context) {
         times.removeAt(4)  // removing sunset time
 
         for (i in times.indices)
-            times[i] = Utils.translateNumbers(context, times[i], true)
+            times[i] = LangUtils.translateNumbers(context, times[i], true)
 
         return times
     }

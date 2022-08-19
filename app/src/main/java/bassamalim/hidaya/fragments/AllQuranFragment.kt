@@ -19,7 +19,8 @@ import bassamalim.hidaya.adapters.QuranFragmentAdapter
 import bassamalim.hidaya.database.dbs.SuarDB
 import bassamalim.hidaya.databinding.FragmentQuranBinding
 import bassamalim.hidaya.models.Sura
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 
 class AllQuranFragment : Fragment() {
@@ -42,7 +43,7 @@ class AllQuranFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        language = Utils.getLanguage(requireContext())
+        language = PrefUtils.getLanguage(requireContext())
 
         gridLayoutManager = GridLayoutManager(context, 1)
 
@@ -142,7 +143,7 @@ class AllQuranFragment : Fragment() {
 
     private val suras: List<SuarDB>
         get() {
-            val db = Utils.getDB(requireContext())
+            val db = DBUtils.getDB(requireContext())
 
             names = if (language == "en") db.suarDao().getNamesEn() else db.suarDao().getNames()
 

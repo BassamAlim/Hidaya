@@ -15,7 +15,7 @@ import bassamalim.hidaya.activities.MainActivity
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.LangUtils
 
 
 class PrayerDialog(
@@ -145,7 +145,7 @@ class PrayerDialog(
     private fun setOffsetTv(offset: Int) {
         var offsetStr = offset.toString()
         if (offset > 0) offsetStr += "+"
-        seekbarTv.text = Utils.translateNumbers(context, offsetStr)
+        seekbarTv.text = LangUtils.translateNumbers(context, offsetStr)
     }
 
     private fun getIndex(checkedId: Int): Int {

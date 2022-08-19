@@ -9,7 +9,9 @@ import androidx.preference.*
 import bassamalim.hidaya.R
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.helpers.Alarms
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.PTUtils
+import bassamalim.hidaya.utils.LangUtils
 import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -44,25 +46,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setInitialStates() {
         var switchP: SwitchPreferenceCompat = findPreference(keyGetter(PID.MORNING))!!
-        switchP.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
+        switchP.summary = LangUtils.translateNumbers(requireContext(), PTUtils.formatTime(
             requireContext(), "${pref.getInt(PID.MORNING.toString() + "hour", 5)}:" +
                     "${pref.getInt(PID.MORNING.toString() + "minute", 0)}"
         ), true)
 
         switchP = findPreference(keyGetter(PID.EVENING))!!
-        switchP.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
+        switchP.summary = LangUtils.translateNumbers(requireContext(), PTUtils.formatTime(
             requireContext(), "${pref.getInt(PID.EVENING.toString() + "hour", 16)}:" +
                     "${pref.getInt(PID.EVENING.toString() + "minute", 0)}"
         ), true)
 
         switchP = findPreference(keyGetter(PID.DAILY_WERD))!!
-        switchP.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
+        switchP.summary = LangUtils.translateNumbers(requireContext(), PTUtils.formatTime(
             requireContext(), "${pref.getInt(PID.DAILY_WERD.toString() + "hour", 21)}:" +
                     "${pref.getInt(PID.DAILY_WERD.toString() + "minute", 0)}"
         ), true)
 
         switchP = findPreference(keyGetter(PID.FRIDAY_KAHF))!!
-        switchP.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
+        switchP.summary = LangUtils.translateNumbers(requireContext(), PTUtils.formatTime(
             requireContext(), "${pref.getInt(PID.FRIDAY_KAHF.toString() + "hour", 13)}:" +
                     "${pref.getInt(PID.FRIDAY_KAHF.toString() + "minute", 0)}"
         ), true)
@@ -70,7 +72,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setListeners() {
         val changeListener = Preference.OnPreferenceChangeListener { _, _ ->
-            Utils.refresh(requireActivity())
+            ActivityUtils.restartActivity(requireActivity())
             true
         }
 
@@ -113,7 +115,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val timePicker = TimePickerDialog(context,
             { _: TimePicker?, hourOfDay: Int, minute: Int ->
-                pSwitch.summary = Utils.translateNumbers(requireContext(), Utils.formatTime(
+                pSwitch.summary = LangUtils.translateNumbers(requireContext(), PTUtils.formatTime(
                     requireContext(), "$hourOfDay:$minute"
                 ), true)
 
@@ -137,7 +139,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun cancelAlarm(pid: PID) {
-        Utils.cancelAlarm(requireContext(), pid)
+        PTUtils.cancelAlarm(requireContext(), pid)
         val key = keyGetter(pid)
         val pSwitch: SwitchPreferenceCompat = findPreference(key)!!
         pSwitch.summary = ""

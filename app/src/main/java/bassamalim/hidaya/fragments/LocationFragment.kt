@@ -27,7 +27,7 @@ import bassamalim.hidaya.databinding.FragmentLocationBinding
 import bassamalim.hidaya.dialogs.LocationPickerDialog
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.DBUtils
 import com.google.android.gms.location.LocationServices
 
 
@@ -64,7 +64,7 @@ class LocationFragment: Fragment() {
         val root: View = binding.root
 
         pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        db = Utils.getDB(requireContext())
+        db = DBUtils.getDB(requireContext())
 
         setupListeners()
 

@@ -12,7 +12,8 @@ import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.PrayersWidget
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.PTUtils
 import com.google.android.gms.location.LocationServices
 import java.util.*
 
@@ -40,7 +41,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
                         if (cityId == -1) return
 
-                        val city = Utils.getDB(context).cityDao().getCity(cityId)
+                        val city = DBUtils.getDB(context).cityDao().getCity(cityId)
 
                         val location = Location("")
                         location.latitude = city.latitude
@@ -92,7 +93,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
         Keeper(context, loc)
 
-        val times = Utils.getTimes(context, loc)
+        val times = PTUtils.getTimes(context, loc)
 
         Alarms(context, times)
 

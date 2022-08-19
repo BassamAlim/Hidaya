@@ -17,11 +17,15 @@ import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityMainBinding
+import bassamalim.hidaya.dialogs.DateEditorDialog
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
-import bassamalim.hidaya.other.Utils
 import bassamalim.hidaya.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.receivers.DeviceBootReceiver
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.PrefUtils
+import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.PTUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
@@ -43,13 +47,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme = Utils.onActivityCreateSetTheme(this)
-        language = Utils.onActivityCreateSetLocale(this)
+
+        theme = ActivityUtils.onActivityCreateSetTheme(this)
+        language = ActivityUtils.onActivityCreateSetLocale(this)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setTodayScreen()
-        setContentView(binding.root)
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
+
+        setupTodayScreen()
+        setContentView(binding.root)
 
         setSupportActionBar(binding.topBar)
         setTitle(R.string.app_name)
@@ -57,6 +64,8 @@ class MainActivity : AppCompatActivity() {
         initNavBar()
 
         initFirebase()
+
+        setupListeners()
 
         setAlarms()
 
@@ -68,23 +77,21 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
 
-        val newTheme: String = pref.getString(
-            getString(R.string.theme_key),
-            getString(R.string.default_theme)
-        )!!
-        val newLanguage = Utils.getLanguage(this, pref)
+        val newTheme = PrefUtils.getTheme(this, pref)
+        val newLanguage = PrefUtils.getLanguage(this, pref)
 
         if (newTheme != theme || newLanguage != language) {
             theme = newTheme
             language = newLanguage
 
-            Utils.refresh(this)
+            ActivityUtils.restartActivity(this)
         }
     }
 
     private fun initNavBar() {
-        val navHostFragment: NavHostFragment = (supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment)
+        val navHostFragment: NavHostFragment =
+            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+                    as NavHostFragment)
         val navController: NavController = navHostFragment.navController
         setupWithNavController(binding.navView, navController)
     }
@@ -97,6 +104,17 @@ class MainActivity : AppCompatActivity() {
         remoteConfig?.setDefaultsAsync(R.xml.remote_config_defaults)
     }
 
+    private fun setupListeners() {
+        val refresher = object : DateEditorDialog.Refresher {
+            override fun refresh() {
+                setupTodayScreen()
+            }
+        }
+        binding.dateSpace.setOnClickListener {
+            DateEditorDialog(refresher).show(this.supportFragmentManager, "DateEditorDialog")
+        }
+    }
+
     private fun setAlarms() {
         val intent: Intent = intent
         located = intent.getBooleanExtra("located", false)
@@ -104,7 +122,7 @@ class MainActivity : AppCompatActivity() {
             location = intent.getParcelableExtra("location")
 
             Keeper(this, location!!)
-            times = Utils.getTimes(this, location!!)
+            times = PTUtils.getTimes(this, location!!)
             Alarms(this, times!!)
         }
         else {
@@ -143,30 +161,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setTodayScreen() {
+    private fun setupTodayScreen() {
         val hijri = UmmalquraCalendar()
-
-        val hYear = Utils.translateNumbers(
-            this, hijri[Calendar.YEAR].toString(), false
-        )
-        val hMonth = resources.getStringArray(R.array.hijri_months)[hijri[Calendar.MONTH]]
-        val hDay = Utils.translateNumbers(
-            this, hijri[Calendar.DATE].toString(), false
-        )
         val hDayName = resources.getStringArray(R.array.week_days)[hijri[Calendar.DAY_OF_WEEK] - 1]
-        val hijriStr = "$hDayName $hDay $hMonth $hYear"
-        binding.hijriView.text = hijriStr
+
+        val millisInDay = 1000 * 60 * 60 * 24
+        hijri.timeInMillis = hijri.timeInMillis + pref.getInt("date_offset", 0) * millisInDay
+
+        val hMonth = resources.getStringArray(R.array.hijri_months)[hijri[Calendar.MONTH]]
+        val hijriStr = "$hDayName ${hijri[Calendar.DATE]} $hMonth ${hijri[Calendar.YEAR]}"
+        binding.hijriView.text = LangUtils.translateNumbers(this, hijriStr, false)
+
 
         val gregorian = Calendar.getInstance()
-        val mYear = Utils.translateNumbers(
-            this, gregorian[Calendar.YEAR].toString(), false
-        )
         val mMonth = resources.getStringArray(R.array.gregorian_months)[gregorian[Calendar.MONTH]]
-        val mDay = Utils.translateNumbers(
-            this, gregorian[Calendar.DATE].toString(), false
-        )
-        val gregorianStr = "$mDay $mMonth $mYear"
-        binding.gregorianView.text = gregorianStr
+        val gregorianStr = "${gregorian[Calendar.DATE]} $mMonth ${gregorian[Calendar.YEAR]}"
+        binding.gregorianView.text =
+            LangUtils.translateNumbers(this, gregorianStr, false)
     }
 
     private fun setupBootReceiver() {

@@ -248,5 +248,6 @@
     <string name="choose_country">اختر البلد</string>
     <string name="choose_city">اختر المدينة</string>
     <string name="infinite">بلا نهاية</string>
+    <string name="adjust_date">تعديل التاريخ الهجري</string>
 
 </resources>

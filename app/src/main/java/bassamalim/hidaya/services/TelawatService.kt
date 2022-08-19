@@ -33,7 +33,8 @@ import bassamalim.hidaya.activities.TelawatClient
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.models.Reciter
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
@@ -86,9 +87,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     override fun onCreate() {
         super.onCreate()
-        Utils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetLocale(this)
 
-        db = Utils.getDB(this)
+        db = DBUtils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
         getSuraNames()

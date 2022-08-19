@@ -17,7 +17,7 @@ import bassamalim.hidaya.databinding.FragmentBookChaptersBinding
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.models.BookChapter
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.FileUtils
 import com.google.gson.Gson
 
 class BookChaptersFragment(private val type: ListType, private val bookId: Int) : Fragment() {
@@ -52,7 +52,7 @@ class BookChaptersFragment(private val type: ListType, private val bookId: Int) 
     private fun getData() {
         val path = requireContext().getExternalFilesDir(null).toString() + "/Books/" +
                 bookId + ".json"
-        val jsonStr = Utils.getJsonFromDownloads(path)
+        val jsonStr = FileUtils.getJsonFromDownloads(path)
         val gson = Gson()
         book = gson.fromJson(jsonStr, Book::class.java)
 

@@ -26,8 +26,9 @@ import bassamalim.hidaya.database.dbs.TelawatVersionsDB
 import bassamalim.hidaya.databinding.ActivityTelawatClientBinding
 import bassamalim.hidaya.models.Reciter.RecitationVersion
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.other.Utils
 import bassamalim.hidaya.services.TelawatService
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
 import java.util.*
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -56,12 +57,12 @@ class TelawatClient : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        ActivityUtils.myOnActivityCreated(this)
         binding = ActivityTelawatClientBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        db = Utils.getDB(this)
+        db = DBUtils.getDB(this)
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 

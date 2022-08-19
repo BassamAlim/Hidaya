@@ -13,13 +13,13 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import bassamalim.hidaya.R
 import bassamalim.hidaya.models.AthkarItem
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.DBUtils
 import com.google.gson.Gson
 
 class AthkarListAdapter(private val context: Context, private val original: List<AthkarItem>) :
     RecyclerView.Adapter<AthkarListAdapter.ViewHolder?>() {
 
-    private val db = Utils.getDB(context)
+    private val db = DBUtils.getDB(context)
     private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val items = ArrayList(original)
 

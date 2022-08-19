@@ -11,7 +11,8 @@ import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityAboutBinding
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 class AboutActivity : AppCompatActivity() {
@@ -21,7 +22,7 @@ class AboutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        ActivityUtils.myOnActivityCreated(this)
         binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
@@ -40,7 +41,7 @@ class AboutActivity : AppCompatActivity() {
 
             Log.i(Global.TAG, "Database Rebuilt")
 
-            Utils.reviveDb(this)
+            DBUtils.reviveDB(this)
 
             Toast.makeText(
                 this, getString(R.string.database_rebuilt),

@@ -19,7 +19,9 @@ import bassamalim.hidaya.adapters.QuranSearcherAdapter
 import bassamalim.hidaya.database.dbs.AyatDB
 import bassamalim.hidaya.databinding.ActivityQuranSearcherBinding
 import bassamalim.hidaya.models.Ayah
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.util.regex.Pattern
 
 class QuranSearcherActivity : AppCompatActivity() {
@@ -37,8 +39,8 @@ class QuranSearcherActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.onActivityCreateSetTheme(this)
-        language = Utils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetTheme(this)
+        language = ActivityUtils.onActivityCreateSetLocale(this)
         binding = ActivityQuranSearcherBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
@@ -53,7 +55,7 @@ class QuranSearcherActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        val db = Utils.getDB(this)
+        val db = DBUtils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
         searchView = binding.searchView
@@ -86,7 +88,7 @@ class QuranSearcherActivity : AppCompatActivity() {
         val spinner: Spinner = binding.sizeSpinner
 
         val arrRes =
-            if (Utils.getNumeralsLanguage(this, pref) == "en") R.array.searcher_matches_en
+            if (PrefUtils.getNumeralsLanguage(this, pref) == "en") R.array.searcher_matches_en
             else R.array.searcher_matches
 
         val spinnerAdapter = ArrayAdapter.createFromResource(

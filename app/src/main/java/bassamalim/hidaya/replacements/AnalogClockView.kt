@@ -8,7 +8,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import bassamalim.hidaya.R
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 import kotlin.math.cos
 import kotlin.math.min
@@ -39,7 +39,7 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
     init {
         setupPaint()
 
-        language = Utils.getNumeralsLanguage(context)
+        language = PrefUtils.getNumeralsLanguage(context)
 
         numerals =
             if (language == "en") context.resources.getStringArray(R.array.numerals_en)

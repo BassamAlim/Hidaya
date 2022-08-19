@@ -16,7 +16,8 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityQiblaBinding
 import bassamalim.hidaya.dialogs.CalibrationDialog
 import bassamalim.hidaya.helpers.Compass
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.LangUtils
 import kotlin.math.*
 
 class QiblaActivity : AppCompatActivity() {
@@ -33,7 +34,7 @@ class QiblaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Utils.myOnActivityCreated(this)
+        ActivityUtils.myOnActivityCreated(this)
         binding = ActivityQiblaBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
@@ -48,7 +49,7 @@ class QiblaActivity : AppCompatActivity() {
 
             binding.distanceTv.text = String.format(
                 getString(R.string.distance_to_kaaba),
-                Utils.translateNumbers(this, distance.toString(),
+                LangUtils.translateNumbers(this, distance.toString(),
                     false
                 ) + " " + getString(R.string.distance_unit))
             binding.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT)

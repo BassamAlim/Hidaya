@@ -17,7 +17,8 @@ import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.CityDB
 import bassamalim.hidaya.database.dbs.CountryDB
 import bassamalim.hidaya.databinding.DialogLocationPickerBinding
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.PrefUtils
 
 class LocationPickerDialog : AppCompatActivity() {
 
@@ -31,15 +32,16 @@ class LocationPickerDialog : AppCompatActivity() {
     private lateinit var language: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        pref = PreferenceManager.getDefaultSharedPreferences(this)
         themeify()
         super.onCreate(savedInstanceState)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         binding = DialogLocationPickerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        db = Utils.getDB(this)
+        db = DBUtils.getDB(this)
 
-        language = Utils.getLanguage(this, pref)
+        language = PrefUtils.getLanguage(this, pref)
 
         initRecycler()
         fillCountries()
@@ -48,12 +50,7 @@ class LocationPickerDialog : AppCompatActivity() {
     }
 
     private fun themeify() {
-        pref = PreferenceManager.getDefaultSharedPreferences(this)
-        val theme: String? = pref.getString(
-            getString(R.string.theme_key),
-            getString(R.string.default_theme)
-        )
-        when (theme) {
+        when (PrefUtils.getTheme(this, pref)) {
             "ThemeM" -> setTheme(R.style.RoundedDialogM)
             "ThemeR" -> setTheme(R.style.RoundedDialogM)
             else -> setTheme(R.style.RoundedDialogL)

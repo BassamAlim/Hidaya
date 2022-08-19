@@ -19,7 +19,10 @@ import bassamalim.hidaya.databinding.FragmentPrayersBinding
 import bassamalim.hidaya.dialogs.PrayerDialog
 import bassamalim.hidaya.dialogs.TutorialDialog
 import bassamalim.hidaya.helpers.PrayTimes
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.PTUtils
+import bassamalim.hidaya.utils.PrefUtils
+import bassamalim.hidaya.utils.LangUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
@@ -46,7 +49,7 @@ class PrayersFragment : Fragment() {
         val root: View = binding!!.root
 
         pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        db = Utils.getDB(requireContext())
+        db = DBUtils.getDB(requireContext())
 
         if (MainActivity.located) {
             init()
@@ -128,7 +131,7 @@ class PrayersFragment : Fragment() {
      * @param change The number of days to add to the current date.
      */
     private fun getTimes(change: Int) {
-        val timeFormat = Utils.getTimeFormat(requireContext())
+        val timeFormat = PrefUtils.getTimeFormat(requireContext())
 
         val prayTimes = PrayTimes(requireContext())
 
@@ -137,7 +140,7 @@ class PrayersFragment : Fragment() {
 
         selectedDay = calendar
 
-        val utcOffset = Utils.getUtcOffset(requireContext(), pref)
+        val utcOffset = PTUtils.getUTCOffset(requireContext(), pref)
 
         times = prayTimes.getPrayerTimes(
             location.latitude, location.longitude, utcOffset.toDouble(), calendar
@@ -154,7 +157,7 @@ class PrayersFragment : Fragment() {
 
     private fun setInitialState() {
         for (i in cards.indices) {
-            when (pref.getInt("${Utils.mapID(i)} notification_type", 2)) {
+            when (pref.getInt("${PTUtils.mapID(i)} notification_type", 2)) {
                 3 -> images[i]!!.setImageDrawable(ResourcesCompat.getDrawable(requireContext()
                                 .resources, R.drawable.ic_speaker, requireContext().theme))
                 1 -> images[i]!!.setImageDrawable(ResourcesCompat.getDrawable(requireContext()
@@ -163,20 +166,20 @@ class PrayersFragment : Fragment() {
                                     .resources, R.drawable.ic_disabled, requireContext().theme))
             }
 
-            val delay = pref.getInt("${Utils.mapID(i)} offset", 0)
+            val delay = pref.getInt("${PTUtils.mapID(i)} offset", 0)
 
             if (delay > 0)
                 delayTvs[i]!!.text =
-                    Utils.translateNumbers(requireContext(), "+$delay", false)
+                    LangUtils.translateNumbers(requireContext(), "+$delay", false)
             else if (delay < 0)
                 delayTvs[i]!!.text =
-                    Utils.translateNumbers(requireContext(), delay.toString(), false)
+                    LangUtils.translateNumbers(requireContext(), delay.toString(), false)
             else delayTvs[i]!!.text = ""
         }
     }
 
     private fun setupLocationCard() {
-        val language = Utils.getLanguage(requireContext(), pref)
+        val language = PrefUtils.getLanguage(requireContext(), pref)
 
         var countryId = pref.getInt("country_id", -1)
         var cityId = pref.getInt("city_id", -1)
@@ -206,7 +209,7 @@ class PrayersFragment : Fragment() {
         }
         for (i in cards.indices)
             cards[i]!!.setOnClickListener { v: View? ->
-                PrayerDialog(requireContext(), v!!, Utils.mapID(i)!!, prayerNames[i], refresher)
+                PrayerDialog(requireContext(), v!!, PTUtils.mapID(i)!!, prayerNames[i], refresher)
             }
 
         binding!!.previousDayButton.setOnClickListener { previousDay() }
@@ -245,11 +248,11 @@ class PrayersFragment : Fragment() {
             val hijri: Calendar = UmmalquraCalendar()
             hijri.time = selectedDay.time
 
-            val year = Utils.translateNumbers(
+            val year = LangUtils.translateNumbers(
                 requireContext(), hijri[Calendar.YEAR].toString(), false
             )
             val month = resources.getStringArray(R.array.hijri_months)[hijri[Calendar.MONTH]]
-            val day = Utils.translateNumbers(
+            val day = LangUtils.translateNumbers(
                 requireContext(), hijri[Calendar.DATE].toString(), false
             )
 

@@ -6,7 +6,7 @@ import android.location.Location
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.models.MyLocation
-import bassamalim.hidaya.other.Utils
+import bassamalim.hidaya.utils.PTUtils
 import com.google.gson.Gson
 import java.util.*
 
@@ -28,7 +28,7 @@ class Keeper {
         pref = PreferenceManager.getDefaultSharedPreferences(context)
 
         storeLocation(gLocation)
-        storeTimes(Utils.getTimes(context, gLocation))
+        storeTimes(PTUtils.getTimes(context, gLocation))
     }
 
     /**
