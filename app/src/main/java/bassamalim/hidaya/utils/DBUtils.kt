@@ -17,6 +17,20 @@ object DBUtils {
             .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
     }
 
+    fun testDB(
+        context: Context,
+        pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    ) {
+        try {  // if there is a problem in the db it will cause an error
+            getDB(context).suarDao().getFav()
+        } catch (e: Exception) {
+            reviveDB(context)
+        }
+
+        val lastVer: Int = pref.getInt("last_db_version", 1)
+        if (Global.dbVer > lastVer) reviveDB(context)
+    }
+
     fun reviveDB(context: Context) {
         val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 

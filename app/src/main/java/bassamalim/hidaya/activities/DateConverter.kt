@@ -76,18 +76,18 @@ class DateConverter : AppCompatActivity() {
 
     private fun show(hijri: Calendar, gregorian: Calendar) {
         binding.hijriYearTv.text =
-            LangUtils.translateNumbers(this, hijri[Calendar.YEAR].toString(), false)
+            LangUtils.translateNums(this, hijri[Calendar.YEAR].toString(), false)
         binding.hijriMonthTv.text =
             resources.getStringArray(R.array.numbered_hijri_months)[hijri[Calendar.MONTH]]
         binding.hijriDayTv.text =
-            LangUtils.translateNumbers(this, hijri[Calendar.DATE].toString(), false)
+            LangUtils.translateNums(this, hijri[Calendar.DATE].toString(), false)
 
-        binding.gregorianYearTv.text = LangUtils.translateNumbers(
+        binding.gregorianYearTv.text = LangUtils.translateNums(
             this, gregorian[Calendar.YEAR].toString(), false
         )
         binding.gregorianMonthTv.text =
             resources.getStringArray(R.array.numbered_gregorian_months)[gregorian[Calendar.MONTH]]
-        binding.gregorianDayTv.text = LangUtils.translateNumbers(
+        binding.gregorianDayTv.text = LangUtils.translateNums(
             this, gregorian[Calendar.DATE].toString(), false
         )
     }

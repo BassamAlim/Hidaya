@@ -46,27 +46,27 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setInitialStates() {
         var switchP: SwitchPreferenceCompat = findPreference(keyGetter(PID.MORNING))!!
-        switchP.summary = LangUtils.translateNumbers(requireContext(), PTUtils.formatTime(
-            requireContext(), "${pref.getInt(PID.MORNING.toString() + "hour", 5)}:" +
-                    "${pref.getInt(PID.MORNING.toString() + "minute", 0)}"
+        switchP.summary = LangUtils.translateNums(requireContext(), PTUtils.formatTime(
+            requireContext(), "${pref.getInt("${PID.MORNING} hour", 5)}:" +
+                    "${pref.getInt("${PID.MORNING} minute", 0)}"
         ), true)
 
         switchP = findPreference(keyGetter(PID.EVENING))!!
-        switchP.summary = LangUtils.translateNumbers(requireContext(), PTUtils.formatTime(
-            requireContext(), "${pref.getInt(PID.EVENING.toString() + "hour", 16)}:" +
-                    "${pref.getInt(PID.EVENING.toString() + "minute", 0)}"
+        switchP.summary = LangUtils.translateNums(requireContext(), PTUtils.formatTime(
+            requireContext(), "${pref.getInt("${PID.EVENING} hour", 16)}:" +
+                    "${pref.getInt("${PID.EVENING} minute", 0)}"
         ), true)
 
         switchP = findPreference(keyGetter(PID.DAILY_WERD))!!
-        switchP.summary = LangUtils.translateNumbers(requireContext(), PTUtils.formatTime(
-            requireContext(), "${pref.getInt(PID.DAILY_WERD.toString() + "hour", 21)}:" +
-                    "${pref.getInt(PID.DAILY_WERD.toString() + "minute", 0)}"
+        switchP.summary = LangUtils.translateNums(requireContext(), PTUtils.formatTime(
+            requireContext(), "${pref.getInt("${PID.DAILY_WERD} hour", 21)}:" +
+                    "${pref.getInt("${PID.DAILY_WERD} minute", 0)}"
         ), true)
 
         switchP = findPreference(keyGetter(PID.FRIDAY_KAHF))!!
-        switchP.summary = LangUtils.translateNumbers(requireContext(), PTUtils.formatTime(
-            requireContext(), "${pref.getInt(PID.FRIDAY_KAHF.toString() + "hour", 13)}:" +
-                    "${pref.getInt(PID.FRIDAY_KAHF.toString() + "minute", 0)}"
+        switchP.summary = LangUtils.translateNums(requireContext(), PTUtils.formatTime(
+            requireContext(), "${pref.getInt("${PID.FRIDAY_KAHF} hour", 13)}:" +
+                    "${pref.getInt("${PID.FRIDAY_KAHF} minute", 0)}"
         ), true)
     }
 
@@ -83,6 +83,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         listP.onPreferenceChangeListener = changeListener
 
         listP = findPreference(getString(R.string.time_format_key))!!
+        listP.entries = Array(listP.entries.size) {
+                i -> LangUtils.translateNums(requireContext(), listP.entries[i].toString())
+        }
         listP.onPreferenceChangeListener = changeListener
 
         listP = findPreference(getString(R.string.theme_key))!!
@@ -115,13 +118,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val timePicker = TimePickerDialog(context,
             { _: TimePicker?, hourOfDay: Int, minute: Int ->
-                pSwitch.summary = LangUtils.translateNumbers(requireContext(), PTUtils.formatTime(
+                pSwitch.summary = LangUtils.translateNums(requireContext(), PTUtils.formatTime(
                     requireContext(), "$hourOfDay:$minute"
                 ), true)
 
                 val editor = pref.edit()
-                editor.putInt(pid.toString() + "hour", hourOfDay)
-                editor.putInt(pid.toString() + "minute", minute)
+                editor.putInt("$pid hour", hourOfDay)
+                editor.putInt("$pid minute", minute)
                 editor.apply()
 
                 Alarms(requireContext(), pid)

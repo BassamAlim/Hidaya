@@ -53,18 +53,18 @@ class QuranSearcherAdapter(private val context: Context, private val items: List
         val card = items[position]
 
         val suraNumStr = "$suraNumString " +
-                LangUtils.translateNumbers(context, card.getSurahName(), false)
+                LangUtils.translateNums(context, card.getSurahName(), false)
         viewHolder.suraNumTv.text = suraNumStr
 
         val suraNameStr = suraStr + " " + card.getSurahName()
         viewHolder.suraNameTv.text = suraNameStr
 
         val pageNumStr = "$pageNumString " +
-                LangUtils.translateNumbers(context, card.getPageNum().toString(), false)
+                LangUtils.translateNums(context, card.getPageNum().toString(), false)
         viewHolder.pageNumTv.text = pageNumStr
 
         val ayaNumStr = "$ayaNumString " +
-                LangUtils.translateNumbers(context, card.getAyahNum().toString(), false)
+                LangUtils.translateNums(context, card.getAyahNum().toString(), false)
         viewHolder.ayaNumTv.text = ayaNumStr
 
         viewHolder.ayaTextTv.text = card.getSS()

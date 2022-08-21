@@ -118,8 +118,8 @@ class Alarms {
             else -> {}
         }
 
-        val hour: Int = pref.getInt(pid.toString() + "hour", defaultH)
-        val minute: Int = pref.getInt(pid.toString() + "minute", defaultM)
+        val hour: Int = pref.getInt("$pid hour", defaultH)
+        val minute: Int = pref.getInt("$pid minute", defaultM)
 
         val time = Calendar.getInstance()
         time[Calendar.HOUR_OF_DAY] = hour

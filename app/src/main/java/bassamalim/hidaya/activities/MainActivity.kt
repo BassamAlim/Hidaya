@@ -86,6 +86,8 @@ class MainActivity : AppCompatActivity() {
 
             ActivityUtils.restartActivity(this)
         }
+
+        setupTodayScreen()
     }
 
     private fun initNavBar() {
@@ -170,14 +172,14 @@ class MainActivity : AppCompatActivity() {
 
         val hMonth = resources.getStringArray(R.array.hijri_months)[hijri[Calendar.MONTH]]
         val hijriStr = "$hDayName ${hijri[Calendar.DATE]} $hMonth ${hijri[Calendar.YEAR]}"
-        binding.hijriView.text = LangUtils.translateNumbers(this, hijriStr, false)
+        binding.hijriView.text = LangUtils.translateNums(this, hijriStr, false)
 
 
         val gregorian = Calendar.getInstance()
         val mMonth = resources.getStringArray(R.array.gregorian_months)[gregorian[Calendar.MONTH]]
         val gregorianStr = "${gregorian[Calendar.DATE]} $mMonth ${gregorian[Calendar.YEAR]}"
         binding.gregorianView.text =
-            LangUtils.translateNumbers(this, gregorianStr, false)
+            LangUtils.translateNums(this, gregorianStr, false)
     }
 
     private fun setupBootReceiver() {

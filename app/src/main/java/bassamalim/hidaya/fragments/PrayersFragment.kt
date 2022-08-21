@@ -170,10 +170,10 @@ class PrayersFragment : Fragment() {
 
             if (delay > 0)
                 delayTvs[i]!!.text =
-                    LangUtils.translateNumbers(requireContext(), "+$delay", false)
+                    LangUtils.translateNums(requireContext(), "+$delay", false)
             else if (delay < 0)
                 delayTvs[i]!!.text =
-                    LangUtils.translateNumbers(requireContext(), delay.toString(), false)
+                    LangUtils.translateNums(requireContext(), delay.toString(), false)
             else delayTvs[i]!!.text = ""
         }
     }
@@ -248,11 +248,11 @@ class PrayersFragment : Fragment() {
             val hijri: Calendar = UmmalquraCalendar()
             hijri.time = selectedDay.time
 
-            val year = LangUtils.translateNumbers(
+            val year = LangUtils.translateNums(
                 requireContext(), hijri[Calendar.YEAR].toString(), false
             )
             val month = resources.getStringArray(R.array.hijri_months)[hijri[Calendar.MONTH]]
-            val day = LangUtils.translateNumbers(
+            val day = LangUtils.translateNums(
                 requireContext(), hijri[Calendar.DATE].toString(), false
             )
 

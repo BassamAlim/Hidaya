@@ -49,7 +49,7 @@ class QiblaActivity : AppCompatActivity() {
 
             binding.distanceTv.text = String.format(
                 getString(R.string.distance_to_kaaba),
-                LangUtils.translateNumbers(this, distance.toString(),
+                LangUtils.translateNums(this, distance.toString(),
                     false
                 ) + " " + getString(R.string.distance_unit))
             binding.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT)

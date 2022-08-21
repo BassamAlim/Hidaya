@@ -115,7 +115,7 @@ class HomeFragment : Fragment() {
                 if (context != null)
                     binding!!.remainingTimeTv.text = String.format(
                         getString(R.string.remaining),
-                        LangUtils.translateNumbers(requireContext(), hms, true)
+                        LangUtils.translateNums(requireContext(), hms, true)
                     )
                 else {
                     restart[0] = false
@@ -144,7 +144,7 @@ class HomeFragment : Fragment() {
         val hours = millis / (60 * 60 * 1000) % 24
         val minutes = millis / (60 * 1000) % 60
         val seconds = millis / 1000 % 60
-        val hms = LangUtils.translateNumbers(
+        val hms = LangUtils.translateNums(
             requireContext(), String.format(Locale.US, "%02d:%02d:%02d",
                 hours, minutes, seconds), false
         )
@@ -153,7 +153,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupQuranRecordCard() {
-        binding!!.quranPagesNum.text = LangUtils.translateNumbers(
+        binding!!.quranPagesNum.text = LangUtils.translateNums(
             requireContext(), pref.getInt("quran_pages_record", 0).toString(), false
         )
     }

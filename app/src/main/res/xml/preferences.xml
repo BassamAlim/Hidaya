@@ -30,7 +30,7 @@
             android:key="@string/time_format_key"
             android:title="@string/time_format"
             android:defaultValue="@string/default_time_format"
-            android:icon="@drawable/ic_time_foramt"
+            android:icon="@drawable/ic_time_format"
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference

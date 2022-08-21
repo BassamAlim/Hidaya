@@ -145,7 +145,7 @@ class PrayerDialog(
     private fun setOffsetTv(offset: Int) {
         var offsetStr = offset.toString()
         if (offset > 0) offsetStr += "+"
-        seekbarTv.text = LangUtils.translateNumbers(context, offsetStr)
+        seekbarTv.text = LangUtils.translateNums(context, offsetStr)
     }
 
     private fun getIndex(checkedId: Int): Int {

@@ -67,12 +67,12 @@ class DateEditorDialog(private val refresher: Refresher?) : DialogFragment() {
         val dateTv = dView.findViewById<TextView>(R.id.date_tv)
         val text =
             "${calendar[Calendar.DATE]}/${calendar[Calendar.MONTH] + 1}/${calendar[Calendar.YEAR]}"
-        dateTv.text = LangUtils.translateNumbers(requireContext(), text)
+        dateTv.text = LangUtils.translateNums(requireContext(), text)
 
         val offsetTv = dView.findViewById<TextView>(R.id.offset_tv)
         var offsetStr = offset.toString()
         if (offset > 0) offsetStr += "+"
-        offsetTv.text = LangUtils.translateNumbers(requireContext(), offsetStr)
+        offsetTv.text = LangUtils.translateNums(requireContext(), offsetStr)
     }
 
     private fun setupListeners() {

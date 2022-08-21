@@ -304,10 +304,10 @@ class QuranViewer : SwipeActivity() {
 
     private fun finalize(juz: Int, name: String) {
         val juzText: String = getString(R.string.juz) + " " +
-                LangUtils.translateNumbers(this, juz.toString(), false)
+                LangUtils.translateNums(this, juz.toString(), false)
         currentSurah = getString(R.string.sura) + " " + name
         currentPageText = getString(R.string.page) + " " +
-                LangUtils.translateNumbers(this, currentPage.toString(), false)
+                LangUtils.translateNums(this, currentPage.toString(), false)
         binding.juzNumber.text = juzText
         binding.suraName.text = currentSurah
         binding.pageNumber.text = currentPageText

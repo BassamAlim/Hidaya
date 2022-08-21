@@ -61,7 +61,7 @@ class PrayersWidget : AppWidgetProvider() {
                 if (i == 1) j++  // To skip shorouq
 
                 result[i] = "${prayerNames[j]}\n${
-                    LangUtils.translateNumbers(context, PTUtils.formatTime(context, 
+                    LangUtils.translateNums(context, PTUtils.formatTime(context, 
                         "${times[j]!![Calendar.HOUR_OF_DAY]}:${times[j]!![Calendar.MINUTE]}"
                     ), true)
                 }"

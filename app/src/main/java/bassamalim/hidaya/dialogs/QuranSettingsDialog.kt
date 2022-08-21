@@ -117,7 +117,7 @@ class QuranSettingsDialog : AppCompatActivity() {
 
             val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
             repeatSB.setSummaryProvider {
-                LangUtils.translateNumbers(
+                LangUtils.translateNums(
                     requireContext(), pref.getInt(getString(R.string.aya_repeat_key), 1).toString()
                 )
             }
@@ -126,7 +126,7 @@ class QuranSettingsDialog : AppCompatActivity() {
                     preference, newValue ->
                 if (newValue == 11) preference.setSummaryProvider { getString(R.string.infinite) }
                 else preference.setSummaryProvider {
-                    LangUtils.translateNumbers(requireContext(), newValue.toString())
+                    LangUtils.translateNums(requireContext(), newValue.toString())
                 }
 
                 true
