@@ -616,11 +616,14 @@ class QuranViewer : SwipeActivity() {
     private fun screen(): TextView {
         val tv: TextView = layoutInflater.inflate(R.layout.tv_quran_viewer, null) as TextView
         tv.textSize = textSize.toFloat()
-        if (theme == "ThemeL") tv.movementMethod = DoubleClickLMM.getInstance(
-            resources.getColor(R.color.highlight_L, getTheme())
-        ) else tv.movementMethod = DoubleClickLMM.getInstance(
-            resources.getColor(R.color.highlight_M, getTheme())
-        )
+        if (theme == "ThemeL")
+            tv.movementMethod = DoubleClickLMM.getInstance(
+                resources.getColor(R.color.highlight_L, getTheme())
+            )
+        else
+            tv.movementMethod = DoubleClickLMM.getInstance(
+                resources.getColor(R.color.highlight_M, getTheme())
+            )
         return tv
     }
 

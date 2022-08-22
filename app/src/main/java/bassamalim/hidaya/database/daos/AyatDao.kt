@@ -6,6 +6,6 @@ import bassamalim.hidaya.database.dbs.AyatDB
 
 @Dao
 interface AyatDao {
-    @Query("SELECT * FROM hafs_ayat")
+    @Query("SELECT * FROM ayat")
     fun getAll(): List<AyatDB>
 }

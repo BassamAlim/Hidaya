@@ -139,7 +139,7 @@ class QuranSearcherActivity : AppCompatActivity() {
         for (i in allAyat.indices) {
             val a: AyatDB = allAyat[i]!!
 
-            val m = Pattern.compile(text).matcher(a.aya_text_emlaey!!)
+            val m = Pattern.compile(text).matcher(a.aya_text_emlaey)
             val ss = SpannableString(a.aya_text_emlaey)
             while (m.find()) {
                 ss.setSpan(
@@ -148,7 +148,7 @@ class QuranSearcherActivity : AppCompatActivity() {
                 )
 
                 matches.add(
-                    Ayah(a.sura_no, names[a.sura_no], a.page, a.aya_no, a.aya_tafseer!!, ss)
+                    Ayah(a.sura_no, names[a.sura_no], a.page, a.aya_no, a.aya_tafseer, ss)
                 )
             }
 

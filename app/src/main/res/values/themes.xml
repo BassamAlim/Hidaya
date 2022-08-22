@@ -116,7 +116,7 @@
         <item name="myOnPrimary">@color/text_N</item>
         <item name="mySurface">@color/surface_N</item>
         <item name="mySurfaceDark">@color/ripple_N</item>
-        <item name="myOnSurface">@color/black</item>
+        <item name="myOnSurface">@color/on_surface_N</item>
         <item name="myAccent">@color/accent_N</item>
         <item name="myAccentDark">@color/accent_dark_N</item>
         <item name="myText">@color/text_N</item>

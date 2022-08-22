@@ -41,13 +41,14 @@
     // Theme N
     <color name="bg_N">#101010</color>
     <color name="primary_N">#141517</color>
-    <color name="surface_N">#141517</color>
-    <color name="accent_N">#0097AA</color>
     <color name="primary_weak_N">#B3323232</color>    // # alpha in hex + color
+    <color name="on_primary_N">#000000</color>
+    <color name="surface_N">#141517</color>
+    <color name="on_surface_N">#BCC2C7</color>
+    <color name="accent_N">#0097AA</color>
     <color name="ripple_N">#3B3E43</color>
     <color name="accent_dark_N">#037583</color>
     <color name="text_N">#BCC2C7</color>
-    <color name="on_primary_N">#000000</color>
     <color name="highlight_N">#01849C</color>
     <color name="track_N">#113297</color>
     <color name="q_bg_N">#BACDE1</color>

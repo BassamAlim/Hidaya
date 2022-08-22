@@ -5,5 +5,5 @@
     android:paddingVertical="4dp"
     android:gravity="center"
     android:textColor="?mySpecialText"
-    android:fontFamily="@font/hafs_smart_08"
+    android:fontFamily="@font/uthmanic_hafs1_ver18"
     android:breakStrategy="simple" />

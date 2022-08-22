@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:paddingVertical="5dp"
         android:gravity="center"
-        android:fontFamily="@font/hafs_smart_08"
+        android:fontFamily="@font/uthmanic_hafs1_ver18"
         android:breakStrategy="simple"
         android:textColor="?mySpecialText" />
 

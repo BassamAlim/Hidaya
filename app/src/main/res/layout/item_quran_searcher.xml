@@ -80,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
-                android:fontFamily="@font/hafs_smart_08"
+                android:fontFamily="@font/uthmanic_hafs1_ver18"
                 android:gravity="center"
                 android:textColor="?myText"
                 android:textSize="22sp"
