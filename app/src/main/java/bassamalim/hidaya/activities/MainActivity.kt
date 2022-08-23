@@ -136,31 +136,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun dailyUpdate() {
-        val day: Int = pref.getInt("last_day", 0)
+        if (pref.getInt("last_day", 0) == Calendar.getInstance()[Calendar.DAY_OF_MONTH]) return
 
-        val today = Calendar.getInstance()
-        if (day != today[Calendar.DAY_OF_MONTH]) {
-            val hour = 0
+        val hour = 0
+        val minute = 0
 
-            val intent = Intent(this, DailyUpdateReceiver::class.java)
-            intent.action = "daily"
-            intent.putExtra("time", hour)
+        val intent = Intent(this, DailyUpdateReceiver::class.java)
+        intent.action = "daily"
+        intent.putExtra("hour", hour)
+        intent.putExtra("minute", minute)
 
-            val time = Calendar.getInstance()
-            time[Calendar.HOUR_OF_DAY] = hour
+        val time = Calendar.getInstance()
+        time[Calendar.HOUR_OF_DAY] = hour
+        time[Calendar.MINUTE] = minute
 
-            val pendIntent: PendingIntent = PendingIntent.getBroadcast(
-                this, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
+        val pendIntent: PendingIntent = PendingIntent.getBroadcast(
+            this, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
-            val myAlarm: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            myAlarm.setRepeating(
-                AlarmManager.RTC_WAKEUP, time.timeInMillis, AlarmManager.INTERVAL_DAY, pendIntent
-            )
+        val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarm.setRepeating(
+            AlarmManager.RTC_WAKEUP, time.timeInMillis, AlarmManager.INTERVAL_DAY, pendIntent
+        )
 
-            sendBroadcast(intent)
-        }
+        sendBroadcast(intent)
     }
 
     private fun setupTodayScreen() {

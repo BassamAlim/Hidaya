@@ -21,17 +21,19 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
     private lateinit var context: Context
     private lateinit var pref: SharedPreferences
-    private var time = 0
+    private var hour = 0
+    private var minute = 0
     private var now = Calendar.getInstance()
 
     override fun onReceive(gContext: Context, intent: Intent) {
-        Log.i(Global.TAG, "in daily update receiver")
+        Log.i(Global.TAG, "in DailyUpdateReceiver")
 
         context = gContext
         pref = PreferenceManager.getDefaultSharedPreferences(context)
 
         if (intent.action == "daily") {
-            time = intent.getIntExtra("time", 0)
+            hour = intent.getIntExtra("hour", 0)
+            minute = intent.getIntExtra("minute", 0)
 
             if (needed()) {
                 when (pref.getString("location_type", "auto")) {
@@ -59,10 +61,11 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     private fun needed(): Boolean {
         val day: Int = pref.getInt("last_day", 0)
 
-        val today = now[Calendar.DATE]
-        val hour = now[Calendar.HOUR_OF_DAY]
+        val time = Calendar.getInstance()
+        time[Calendar.HOUR_OF_DAY] = hour
+        time[Calendar.MINUTE] = minute
 
-        return day != today && time <= hour
+        return day != now[Calendar.DATE] && time.timeInMillis <= now.timeInMillis
     }
 
     private fun locate() {
