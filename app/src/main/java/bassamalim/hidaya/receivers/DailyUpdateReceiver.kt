@@ -1,6 +1,8 @@
 package bassamalim.hidaya.receivers
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.*
 import android.content.pm.PackageManager
@@ -21,8 +23,6 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
     private lateinit var context: Context
     private lateinit var pref: SharedPreferences
-    private var hour = 0
-    private var minute = 0
     private var now = Calendar.getInstance()
 
     override fun onReceive(gContext: Context, intent: Intent) {
@@ -31,41 +31,35 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         context = gContext
         pref = PreferenceManager.getDefaultSharedPreferences(context)
 
-        if (intent.action == "daily") {
-            hour = intent.getIntExtra("hour", 0)
-            minute = intent.getIntExtra("minute", 0)
+        if ((intent.action == "daily" && needed()) || intent.action == "boot") {
+            when (pref.getString("location_type", "auto")) {
+                "auto" -> locate()
+                "manual" -> {
+                    val cityId = pref.getInt("city_id", -1)
 
-            if (needed()) {
-                when (pref.getString("location_type", "auto")) {
-                    "auto" -> locate()
-                    "manual" -> {
-                        val cityId = pref.getInt("city_id", -1)
+                    if (cityId == -1) return
 
-                        if (cityId == -1) return
+                    val city = DBUtils.getDB(context).cityDao().getCity(cityId)
 
-                        val city = DBUtils.getDB(context).cityDao().getCity(cityId)
-
-                        val location = Location("")
-                        location.latitude = city.latitude
-                        location.longitude = city.longitude
-                        update(location)
-                    }
-                    "none" -> return
+                    val location = Location("")
+                    location.latitude = city.latitude
+                    location.longitude = city.longitude
+                    update(location)
                 }
+                "none" -> return
             }
-            else Log.i(Global.TAG, "dead intent walking in daily update receiver")
         }
-        else if (intent.action == "boot") locate()
+        else Log.i(Global.TAG, "dead intent walking in daily update receiver")
     }
 
     private fun needed(): Boolean {
-        val day: Int = pref.getInt("last_day", 0)
+        val lastDay = pref.getInt("last_day", 0)
 
         val time = Calendar.getInstance()
-        time[Calendar.HOUR_OF_DAY] = hour
-        time[Calendar.MINUTE] = minute
+        time[Calendar.HOUR_OF_DAY] = Global.DAILY_UPDATE_HOUR
+        time[Calendar.MINUTE] = Global.DAILY_UPDATE_MINUTE
 
-        return day != now[Calendar.DATE] && time.timeInMillis <= now.timeInMillis
+        return lastDay != now[Calendar.DATE]
     }
 
     private fun locate() {
@@ -103,6 +97,8 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         updateWidget()
 
         updated()
+
+        setTomorrow()
     }
 
     private fun updateWidget() {
@@ -122,6 +118,24 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         editor.putInt("last_day", now[Calendar.DATE])
         editor.putString("last_daily_update", str)
         editor.apply()
+    }
+
+    private fun setTomorrow() {
+        val intent = Intent(context, DailyUpdateReceiver::class.java)
+        intent.action = "daily"
+
+        val time = Calendar.getInstance()
+        time[Calendar.DATE]++
+        time[Calendar.HOUR_OF_DAY] = Global.DAILY_UPDATE_HOUR
+        time[Calendar.MINUTE] = Global.DAILY_UPDATE_MINUTE
+
+        val pendIntent: PendingIntent = PendingIntent.getBroadcast(
+            context, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time.timeInMillis, pendIntent)
     }
 
 }

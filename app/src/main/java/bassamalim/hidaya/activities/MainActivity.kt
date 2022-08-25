@@ -20,12 +20,13 @@ import bassamalim.hidaya.databinding.ActivityMainBinding
 import bassamalim.hidaya.dialogs.DateEditorDialog
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
+import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.receivers.DeviceBootReceiver
 import bassamalim.hidaya.utils.ActivityUtils
-import bassamalim.hidaya.utils.PrefUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
@@ -138,17 +139,13 @@ class MainActivity : AppCompatActivity() {
     private fun dailyUpdate() {
         if (pref.getInt("last_day", 0) == Calendar.getInstance()[Calendar.DAY_OF_MONTH]) return
 
-        val hour = 0
-        val minute = 0
-
         val intent = Intent(this, DailyUpdateReceiver::class.java)
         intent.action = "daily"
-        intent.putExtra("hour", hour)
-        intent.putExtra("minute", minute)
 
         val time = Calendar.getInstance()
-        time[Calendar.HOUR_OF_DAY] = hour
-        time[Calendar.MINUTE] = minute
+        time[Calendar.DATE]++
+        time[Calendar.HOUR_OF_DAY] = Global.DAILY_UPDATE_HOUR
+        time[Calendar.MINUTE] = Global.DAILY_UPDATE_MINUTE
 
         val pendIntent: PendingIntent = PendingIntent.getBroadcast(
             this, 0, intent,
@@ -156,9 +153,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarm.setRepeating(
-            AlarmManager.RTC_WAKEUP, time.timeInMillis, AlarmManager.INTERVAL_DAY, pendIntent
-        )
+        alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time.timeInMillis, pendIntent)
 
         sendBroadcast(intent)
     }
