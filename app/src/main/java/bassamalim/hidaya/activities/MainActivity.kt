@@ -39,10 +39,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var theme: String
     private lateinit var language: String
+    private var times: Array<Calendar?>? = null
 
     companion object {
         var location: Location? = null
-        var times: Array<Calendar?>? = null
         var located = false
     }
 

@@ -49,7 +49,7 @@ class AllQuranFragment : Fragment() {
 
         binding = FragmentQuranBinding.inflate(inflater, container, false)
 
-        setListeners()
+        setupListeners()
 
         setupRecycler()
 
@@ -88,7 +88,7 @@ class AllQuranFragment : Fragment() {
         }
     }
 
-    private fun setListeners() {
+    private fun setupListeners() {
         binding!!.fab.setOnClickListener {
             val intent = Intent(context, QuranSearcherActivity::class.java)
             startActivity(intent)

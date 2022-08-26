@@ -14,6 +14,9 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.databinding.FragmentCollectionQuranBinding
 import bassamalim.hidaya.dialogs.TutorialDialog
+import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -51,13 +54,21 @@ class QuranCollectionFragment : Fragment() {
     private fun setupContinue() {
         val pref: SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val page: Int = pref.getInt("bookmarked_page", -1)
-        var text: String = pref.getString("bookmarked_text", "")!!
+        val page = pref.getInt("bookmarked_page", -1)
+        val sura = pref.getInt("bookmarked_sura", -1)
 
         if (page == -1)
-            text = getString(R.string.no_bookmarked_page)
+            binding!!.continueReading.text = getString(R.string.no_bookmarked_page)
         else {
-            text = getString(R.string.bookmarked_page) + text
+            val db = DBUtils.getDB(requireContext())
+            val suraName =
+                if (PrefUtils.getLanguage(requireContext(), pref) == "en")
+                    db.suarDao().getNameEn(sura)
+                else db.suarDao().getName(sura)
+
+            val text = "${getString(R.string.bookmarked_page)} ${getString(R.string.page)} " +
+                    "${LangUtils.translateNums(requireContext(), page.toString())}," +
+                    " ${getString(R.string.sura)} $suraName"
 
             binding!!.continueReading.setOnClickListener {
                 val intent = Intent(context, QuranViewer::class.java)
@@ -65,9 +76,9 @@ class QuranCollectionFragment : Fragment() {
                 intent.putExtra("page", page)
                 requireContext().startActivity(intent)
             }
-        }
 
-        binding!!.continueReading.text = text
+            binding!!.continueReading.text = text
+        }
     }
 
     private fun checkFirstTime() {

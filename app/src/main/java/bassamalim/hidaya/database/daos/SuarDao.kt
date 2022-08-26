@@ -15,6 +15,12 @@ interface SuarDao {
     @Query("SELECT sura_name_en FROM suar")
     fun getNamesEn(): List<String>
 
+    @Query("SELECT sura_name FROM suar WHERE sura_id == :id")
+    fun getName(id: Int): String
+
+    @Query("SELECT sura_name_en FROM suar WHERE sura_id == :id")
+    fun getNameEn(id: Int): String
+
     @Query("SELECT * FROM suar WHERE favorite = 1")
     fun getFavorites(): List<SuarDB>
 
