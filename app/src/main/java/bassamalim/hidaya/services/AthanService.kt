@@ -3,6 +3,7 @@ package bassamalim.hidaya.services
 import android.app.*
 import android.content.Intent
 import android.media.AudioAttributes
+import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
@@ -24,18 +25,30 @@ class AthanService : Service() {
     private lateinit var mediaPlayer: MediaPlayer
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        pid = intent.getSerializableExtra("id") as PID
         Log.i(Global.TAG, "In athan service for $pid")
-        //int Notification_ID = (int) System.currentTimeMillis() % 10000;
 
         ActivityUtils.onActivityCreateSetLocale(this)
 
-        createNotificationChannel()
-        startForeground(pid.ordinal + 1, build())
+        pid = intent.getSerializableExtra("id") as PID
 
-        val am = getSystemService(AUDIO_SERVICE) as AudioManager
-        // Request audio focus                                   // Request permanent focus.
-        am.requestAudioFocus(null, AudioManager.STREAM_ALARM, AudioManager.AUDIOFOCUS_GAIN)
+        createNotificationChannel()
+        startForeground(pid.ordinal, build())
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val am = getSystemService(AUDIO_SERVICE) as AudioManager
+            // Request audio focus
+            am.requestAudioFocus(             // Request permanent focus.
+                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .build()
+                    )
+                    .build()
+            )
+        }
 
         play()
 

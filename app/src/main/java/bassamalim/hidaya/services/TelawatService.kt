@@ -137,7 +137,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             Log.i(Global.TAG, "In onPlay of TelawatService")
 
             // Request audio focus for playback, this registers the afChangeListener
-            val result: Int = am.requestAudioFocus(audioFocusRequest)
+            val result = am.requestAudioFocus(audioFocusRequest)
 
             if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                 // Start the service
@@ -552,12 +552,18 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         player = MediaPlayer()
         player.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
 
-        wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
-            .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
+        wifiLock =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                    .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
+            else
+                (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                    .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "myLock")
+
 
         am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        val attrs: AudioAttributes = AudioAttributes.Builder()
+        val attrs = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
             .setUsage(AudioAttributes.USAGE_MEDIA)
             .build()

@@ -36,20 +36,21 @@ class DailyUpdateReceiver : BroadcastReceiver() {
                 "auto" -> locate()
                 "manual" -> {
                     val cityId = pref.getInt("city_id", -1)
-
                     if (cityId == -1) return
-
                     val city = DBUtils.getDB(context).cityDao().getCity(cityId)
 
                     val location = Location("")
                     location.latitude = city.latitude
                     location.longitude = city.longitude
+
                     update(location)
                 }
                 "none" -> return
             }
         }
         else Log.i(Global.TAG, "dead intent walking in daily update receiver")
+
+        setTomorrow()
     }
 
     private fun needed(): Boolean {
@@ -59,7 +60,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         time[Calendar.HOUR_OF_DAY] = Global.DAILY_UPDATE_HOUR
         time[Calendar.MINUTE] = Global.DAILY_UPDATE_MINUTE
 
-        return lastDay != now[Calendar.DATE]
+        return lastDay != now[Calendar.DATE] && time.timeInMillis < now.timeInMillis
     }
 
     private fun locate() {
@@ -97,8 +98,6 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         updateWidget()
 
         updated()
-
-        setTomorrow()
     }
 
     private fun updateWidget() {
@@ -111,7 +110,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun updated() {
-        val str = "Last Daily Update: ${now[Calendar.YEAR]}/${now[Calendar.MONTH]}" +
+        val str = "Last Daily Update: ${now[Calendar.YEAR]}/${now[Calendar.MONTH] + 1}" +
             "/${now[Calendar.DATE]}" + " ${now[Calendar.HOUR_OF_DAY]}:${now[Calendar.MINUTE]}"
 
         val editor: SharedPreferences.Editor = pref.edit()
@@ -129,8 +128,8 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         time[Calendar.HOUR_OF_DAY] = Global.DAILY_UPDATE_HOUR
         time[Calendar.MINUTE] = Global.DAILY_UPDATE_MINUTE
 
-        val pendIntent: PendingIntent = PendingIntent.getBroadcast(
-            context, 0, intent,
+        val pendIntent = PendingIntent.getBroadcast(
+            context, 1210, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 

@@ -1,9 +1,6 @@
 package bassamalim.hidaya.activities
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -20,7 +17,6 @@ import bassamalim.hidaya.databinding.ActivityMainBinding
 import bassamalim.hidaya.dialogs.DateEditorDialog
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
-import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.receivers.DeviceBootReceiver
 import bassamalim.hidaya.utils.ActivityUtils
@@ -108,13 +104,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        val refresher = object : DateEditorDialog.Refresher {
-            override fun refresh() {
-                setupTodayScreen()
-            }
-        }
         binding.dateSpace.setOnClickListener {
-            DateEditorDialog(refresher).show(this.supportFragmentManager, "DateEditorDialog")
+            DateEditorDialog(
+                object : DateEditorDialog.Refresher {
+                    override fun refresh() {
+                        setupTodayScreen()
+                    }
+                }
+            ).show(this.supportFragmentManager, "DateEditorDialog")
         }
     }
 
@@ -137,24 +134,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun dailyUpdate() {
-        if (pref.getInt("last_day", 0) == Calendar.getInstance()[Calendar.DAY_OF_MONTH]) return
-
         val intent = Intent(this, DailyUpdateReceiver::class.java)
         intent.action = "daily"
-
-        val time = Calendar.getInstance()
-        time[Calendar.DATE]++
-        time[Calendar.HOUR_OF_DAY] = Global.DAILY_UPDATE_HOUR
-        time[Calendar.MINUTE] = Global.DAILY_UPDATE_MINUTE
-
-        val pendIntent: PendingIntent = PendingIntent.getBroadcast(
-            this, 0, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time.timeInMillis, pendIntent)
-
         sendBroadcast(intent)
     }
 

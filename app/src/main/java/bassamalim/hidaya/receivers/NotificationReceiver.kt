@@ -1,12 +1,11 @@
 package bassamalim.hidaya.receivers
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Build
 import android.util.Log
@@ -66,10 +65,19 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun showNotification() {
         createNotificationChannel()
 
-        if (isPrayer) {
-            val am: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            // Request audio focus                                   // Request permanent focus.
-            am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
+        if (isPrayer && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val am = context.getSystemService(Service.AUDIO_SERVICE) as AudioManager
+            // Request audio focus
+            am.requestAudioFocus(                   // Request permanent focus.
+                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .build()
+                    )
+                    .build()
+            )
         }
 
         NotificationManagerCompat.from(context).notify(pid.ordinal, build())

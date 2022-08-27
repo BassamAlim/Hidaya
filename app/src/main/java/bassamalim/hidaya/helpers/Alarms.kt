@@ -69,15 +69,13 @@ class Alarms {
             intent.putExtra("id", pid.ordinal)
             intent.putExtra("time", millis)
 
-            val myAlarm: AlarmManager =
-                context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-            val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            val pendingIntent = PendingIntent.getBroadcast(
                 context, pid.ordinal, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-            myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
+            val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
 
             Log.i(Global.TAG, "alarm $pid set")
         }
