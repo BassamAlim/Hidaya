@@ -14,8 +14,8 @@ android {
         applicationId "bassamalim.hidaya"
         minSdk 23
         targetSdk 32
-        versionCode 199
-        versionName '1.9.9'
+        versionCode 200
+        versionName '2.0.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -70,7 +70,7 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
@@ -83,7 +83,7 @@ dependencies {
 
     implementation 'androidx.core:core-splashscreen:1.0.0'
     implementation 'androidx.activity:activity:1.5.1'
-    implementation 'androidx.fragment:fragment:1.5.1'
+    implementation 'androidx.fragment:fragment:1.5.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'androidx.viewpager:viewpager:1.1.0-alpha01'

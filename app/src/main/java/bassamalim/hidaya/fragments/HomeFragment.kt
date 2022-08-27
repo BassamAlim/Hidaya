@@ -13,9 +13,9 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.MainActivity
 import bassamalim.hidaya.databinding.FragmentHomeBinding
 import bassamalim.hidaya.helpers.PrayTimes
+import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
 import bassamalim.hidaya.utils.PrefUtils
-import bassamalim.hidaya.utils.LangUtils
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -57,16 +57,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun getTimes(location: Location) {
+        val utcOffset = PTUtils.getUTCOffset(requireContext(), pref)
+        val timeFormat = PrefUtils.getTimeFormat(requireContext(), pref)
+
         val prayTimes = PrayTimes(requireContext())
 
         val today = Calendar.getInstance()
-        val tomorrow = Calendar.getInstance()
-        tomorrow[Calendar.DATE] = tomorrow[Calendar.DATE] + 1
-
-        val utcOffset = PTUtils.getUTCOffset(requireContext(), pref)
-
-        val timeFormat = PrefUtils.getTimeFormat(requireContext(), pref)
-
         times = prayTimes.getPrayerTimes(
             location.latitude, location.longitude, utcOffset.toDouble(), today
         )
@@ -74,9 +70,12 @@ class HomeFragment : Fragment() {
             location.latitude, location.longitude, utcOffset.toDouble(), today, timeFormat
         )
 
+        val tomorrow = Calendar.getInstance()
+        tomorrow[Calendar.DATE]++
         tomorrowFajr = prayTimes.getPrayerTimes(
             location.latitude, location.longitude, utcOffset.toDouble(), tomorrow
         )[0]!!
+        tomorrowFajr[Calendar.DATE]++
         formattedTomorrowFajr = prayTimes.getStrPrayerTimes(
             location.latitude, location.longitude, utcOffset.toDouble(), tomorrow, timeFormat
         )[0]
@@ -102,7 +101,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun count(till: Long) {
-        val restart = booleanArrayOf(true)
         timer = object : CountDownTimer(till - System.currentTimeMillis(),
             1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -112,19 +110,16 @@ class HomeFragment : Fragment() {
 
                 val hms = String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
 
-                if (context != null)
+                if (binding != null)
                     binding!!.remainingTimeTv.text = String.format(
                         getString(R.string.remaining),
                         LangUtils.translateNums(requireContext(), hms, true)
                     )
-                else {
-                    restart[0] = false
-                    timer?.cancel()
-                }
+                else cancel()
             }
 
             override fun onFinish() {
-                //if (restart[0]) setupUpcomingPrayer()
+                setupUpcomingPrayer()
             }
         }.start()
     }
