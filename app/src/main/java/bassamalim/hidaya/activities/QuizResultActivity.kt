@@ -1,6 +1,5 @@
 package bassamalim.hidaya.activities
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,7 +34,7 @@ class QuizResultActivity : AppCompatActivity() {
 
         db = DBUtils.getDB(this)
 
-        val intent: Intent = intent
+        val intent = intent
         score = intent.getIntExtra("score", 10)
         cAnswers = intent.getIntArrayExtra("cAnswers")!!
         questions = intent.getSerializableExtra("questions") as List<QuizQuestionsDB>
@@ -50,7 +49,7 @@ class QuizResultActivity : AppCompatActivity() {
     private fun makeQuestionCards(): ArrayList<QuizResultQuestion> {
         val cards: ArrayList<QuizResultQuestion> = ArrayList()
         for (i in 0..9) {
-            val answers: List<QuizAnswersDB> = getAnswers(questions[i].getQuestionId())
+            val answers = getAnswers(questions[i].getQuestionId())
 
             cards.add(
                 QuizResultQuestion(
@@ -76,8 +75,7 @@ class QuizResultActivity : AppCompatActivity() {
     }
 
     private fun show() {
-        val resultText: String =
-            getString(R.string.your_score_is) + " " + score * 10 + "%"
+        val resultText = getString(R.string.your_score_is) + " " + score * 10 + "%"
         binding.resultScreen.text = resultText
     }
 

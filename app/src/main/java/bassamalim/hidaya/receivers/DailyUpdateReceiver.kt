@@ -103,7 +103,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     private fun updateWidget() {
         val intent = Intent(context, PrayersWidget::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        val ids: IntArray = AppWidgetManager.getInstance(context.applicationContext)
+        val ids = AppWidgetManager.getInstance(context.applicationContext)
             .getAppWidgetIds(ComponentName(context.applicationContext, PrayersWidget::class.java))
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
         context.sendBroadcast(intent)
@@ -113,7 +113,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         val str = "Last Daily Update: ${now[Calendar.YEAR]}/${now[Calendar.MONTH] + 1}" +
             "/${now[Calendar.DATE]}" + " ${now[Calendar.HOUR_OF_DAY]}:${now[Calendar.MINUTE]}"
 
-        val editor: SharedPreferences.Editor = pref.edit()
+        val editor = pref.edit()
         editor.putInt("last_day", now[Calendar.DATE])
         editor.putString("last_daily_update", str)
         editor.apply()

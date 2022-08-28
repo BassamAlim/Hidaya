@@ -2,11 +2,9 @@ package bassamalim.hidaya.adapters
 
 import android.app.DownloadManager
 import android.content.*
-import android.content.res.AssetManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -108,7 +106,7 @@ class TelawatAdapter(private val context: Context, private val original: ArrayLi
     private fun doFavorite(viewHolder: ViewHolder, position: Int) {
         val card: Reciter = items[position]
 
-        val fav: Int = card.getFavorite()
+        val fav = card.getFavorite()
         if (fav == 0) viewHolder.favBtn.setImageDrawable(
             AppCompatResources.getDrawable(context, R.drawable.ic_star_outline)
         )
@@ -162,19 +160,19 @@ class TelawatAdapter(private val context: Context, private val original: ArrayLi
     }
 
     private fun updateFavorites() {
-        val favReciters: List<Int?> = db.telawatRecitersDao().getFavs()
+        val favReciters = db.telawatRecitersDao().getFavs()
 
-        val recitersJson: String = gson.toJson(favReciters)
+        val recitersJson = gson.toJson(favReciters)
 
-        val editor: SharedPreferences.Editor = pref.edit()
+        val editor = pref.edit()
         editor.putString("favorite_reciters", recitersJson)
         editor.apply()
     }
 
     private fun getRewayat(): Array<String> {
         val standardResources = context.resources
-        val assets: AssetManager = standardResources.assets
-        val metrics: DisplayMetrics = standardResources.displayMetrics
+        val assets = standardResources.assets
+        val metrics = standardResources.displayMetrics
         val config = Configuration(standardResources.configuration)
         config.setLocale(Locale.forLanguageTag("ar"))
         val arabicResources = Resources(assets, metrics, config)
@@ -243,7 +241,7 @@ internal class TelawaVersionAdapter(
     }
 
     private fun doDownloaded(viewHolder: ViewHolder, position: Int, ver: RecitationVersion) {
-        val verId: Int = items[position].getVersionId()
+        val verId = items[position].getVersionId()
 
         if (downloaded!![verId]) {
             if (downloadingIds.containsValue(verId)) updateUI(viewHolder, "downloading")

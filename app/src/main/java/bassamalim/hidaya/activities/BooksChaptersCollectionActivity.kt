@@ -1,6 +1,5 @@
 package bassamalim.hidaya.activities
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -27,7 +26,7 @@ class BooksChaptersCollectionActivity : FragmentActivity() {
         setContentView(binding.root)
         binding.home.setOnClickListener { finish() }
 
-        val intent: Intent = intent
+        val intent = intent
         val bookId: Int = intent.getIntExtra("book_id", 0)
         val bookTitle: String = intent.getStringExtra("book_title")!!
         binding.topBarTitle.text = bookTitle
@@ -58,10 +57,7 @@ internal class FSAdapter(fragment: FragmentActivity?, private val bookId: Int) :
     FragmentStateAdapter(fragment!!) {
 
     override fun createFragment(position: Int): Fragment {
-        val type: ListType =
-            if (position == 0) ListType.All
-            else ListType.Favorite
-
+        val type = if (position == 0) ListType.All else ListType.Favorite
         return BookChaptersFragment(type, bookId)
     }
 

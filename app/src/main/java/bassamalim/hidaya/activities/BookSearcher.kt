@@ -123,7 +123,7 @@ class BookSearcher : AppCompatActivity() {
         spinner.adapter = spinnerAdapter
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        val last: Int = pref.getInt("books_searcher_matches_last_position", 0)
+        val last = pref.getInt("books_searcher_matches_last_position", 0)
         spinner.setSelection(last)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -132,7 +132,7 @@ class BookSearcher : AppCompatActivity() {
             ) {
                 maxMatches = spinner.getItemAtPosition(position).toString().toInt()
 
-                val editor: SharedPreferences.Editor = pref.edit()
+                val editor = pref.edit()
                 editor.putInt("books_searcher_matches_last_position", position)
                 editor.apply()
 
@@ -237,7 +237,7 @@ class BookSearcher : AppCompatActivity() {
     private fun getSelectedBooks(): BooleanArray {
         val defArr = BooleanArray(books.size)
         Arrays.fill(defArr, true)
-        val defStr: String = gson.toJson(defArr)
+        val defStr = gson.toJson(defArr)
         return gson.fromJson(
             pref.getString("selected_search_books", defStr),
             BooleanArray::class.java

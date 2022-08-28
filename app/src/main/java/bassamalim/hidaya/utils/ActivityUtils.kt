@@ -2,7 +2,6 @@ package bassamalim.hidaya.utils
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import bassamalim.hidaya.R
 import java.util.*
 
@@ -40,7 +39,7 @@ object ActivityUtils {
     }
 
     fun restartActivity(activity: Activity) {
-        val intent: Intent = activity.intent
+        val intent = activity.intent
         activity.finish()
         activity.startActivity(intent)
     }

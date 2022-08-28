@@ -7,8 +7,8 @@ import android.widget.RemoteViews
 import bassamalim.hidaya.R
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.utils.ActivityUtils
-import bassamalim.hidaya.utils.PTUtils
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.PTUtils
 import java.util.*
 
 class PrayersWidget : AppWidgetProvider() {

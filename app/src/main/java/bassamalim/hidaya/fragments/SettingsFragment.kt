@@ -10,8 +10,8 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.utils.ActivityUtils
-import bassamalim.hidaya.utils.PTUtils
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.PTUtils
 import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat() {

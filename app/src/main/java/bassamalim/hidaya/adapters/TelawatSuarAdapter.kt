@@ -186,13 +186,12 @@ class TelawatSuarAdapter(
     }
 
     private fun download(num: Int) {
-        val server: String = ver.getUrl()
+        val server = ver.getUrl()
         val link = String.format(Locale.US, "%s/%03d.mp3", server, num + 1)
 
-        val downloadManager: DownloadManager =
-            context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val uri = Uri.parse(link)
-        val request: DownloadManager.Request = DownloadManager.Request(uri)
+        val request = DownloadManager.Request(uri)
         request.setTitle(items[num].getSearchName())
         val postfix = "/Telawat/" + ver.getReciterId() + "/" + versionId
         FileUtils.createDir(context, postfix)
@@ -219,11 +218,11 @@ class TelawatSuarAdapter(
     }
 
     private fun updateFavorites() {
-        val favSuras: Array<Any> = db.suarDao().getFav().toTypedArray()
+        val favSuras = db.suarDao().getFav().toTypedArray()
 
-        val surasJson: String = gson.toJson(favSuras)
+        val surasJson = gson.toJson(favSuras)
 
-        val editor: SharedPreferences.Editor = pref.edit()
+        val editor = pref.edit()
         editor.putString("favorite_suras", surasJson)
         editor.apply()
     }

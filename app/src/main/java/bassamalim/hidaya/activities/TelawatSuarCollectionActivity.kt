@@ -30,17 +30,17 @@ class TelawatSuarCollectionActivity : FragmentActivity() {
         setContentView(binding.root)
         binding.home.setOnClickListener { finish() }
 
-        val intent: Intent = intent
-        val reciterId: Int = intent.getIntExtra("reciter_id", 0)
-        val reciterName: String = intent.getStringExtra("reciter_name")!!
-        val versionId: Int = intent.getIntExtra("version_id", 0)
+        val intent = intent
+        val reciterId = intent.getIntExtra("reciter_id", 0)
+        val reciterName = intent.getStringExtra("reciter_name")!!
+        val versionId = intent.getIntExtra("version_id", 0)
 
         binding.topBarTitle.text = reciterName
         viewPager = findViewById(R.id.telawat_pager)
         adapter = TSAdapter(this, reciterId, versionId)
         viewPager.adapter = adapter
 
-        val tabLayout: TabLayout = findViewById(R.id.tab_layout)
+        val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
         val tabs = arrayOf(getString(R.string.all), getString(R.string.favorite), getString(R.string.downloaded))
         TabLayoutMediator(tabLayout, viewPager) { tab: TabLayout.Tab, position: Int ->
             tab.text = tabs[position]
@@ -71,7 +71,7 @@ internal class TSAdapter(
 ) : FragmentStateAdapter(fragment!!) {
 
     override fun createFragment(position: Int): Fragment {
-        val type: ListType = when (position) {
+        val type = when (position) {
             0 -> ListType.All
             1 -> ListType.Favorite
             else -> ListType.Downloaded

@@ -1,6 +1,5 @@
 package bassamalim.hidaya.activities
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -42,7 +41,7 @@ class AthkarViewer : AppCompatActivity() {
 
         db = DBUtils.getDB(this)
 
-        val intent: Intent = intent
+        val intent = intent
         val id: Int = intent.getIntExtra("thikr_id", 0)
 
         binding.topBarTitle.text =
@@ -113,8 +112,7 @@ class AthkarViewer : AppCompatActivity() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                val editor: SharedPreferences.Editor = pref.edit()
-
+                val editor = pref.edit()
                 editor.putInt(getString(R.string.alathkar_text_size_key), seekBar.progress)
                 editor.apply()
 

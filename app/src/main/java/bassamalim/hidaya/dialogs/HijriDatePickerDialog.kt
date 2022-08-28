@@ -50,7 +50,7 @@ class HijriDatePickerDialog(private val listener: DatePickerDialog.OnDateSetList
 
         return AlertDialog.Builder(requireActivity()).setView(dialogView)
             .setPositiveButton(R.string.select) { _: DialogInterface?, _: Int ->
-                val year: Int = yearPicker.value
+                val year = yearPicker.value
                 listener.onDateSet(null, year, monthPicker.value, dayPicker.value)
             }
             .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }

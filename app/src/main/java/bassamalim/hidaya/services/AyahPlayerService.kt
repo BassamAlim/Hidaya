@@ -25,7 +25,6 @@ import androidx.media.session.MediaButtonReceiver
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.database.dbs.AyatTelawaDB
 import bassamalim.hidaya.models.Aya
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.utils.DBUtils
@@ -187,8 +186,8 @@ class AyahPlayerService : Service(),
         intentFilter.addAction(actionPREV)
         intentFilter.addAction(actionSTOP)
 
-        val pkg: String = packageName
-        val flags: Int = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        val pkg = packageName
+        val flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         playAction = NotificationCompat.Action(
             R.drawable.ic_play_arrow, "Play", PendingIntent.getBroadcast(
@@ -273,11 +272,10 @@ class AyahPlayerService : Service(),
     
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name: CharSequence
             val description = "quran listening"
             channelId = "AyahPlayer"
-            name = getString(R.string.recitations)
-            val importance: Int = NotificationManager.IMPORTANCE_DEFAULT
+            val name = getString(R.string.recitations)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
             val notificationChannel = NotificationChannel(channelId, name, importance)
             notificationChannel.description = description
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
@@ -765,11 +763,11 @@ class AyahPlayerService : Service(),
     }
 
     private fun getUri(ayah: Aya?): Uri {
-        val choice: Int = pref.getString(getString(R.string.aya_reciter_key), "13")!!.toInt()
-        val sources: List<AyatTelawaDB?> = db.ayatTelawaDao().getReciter(choice)
+        val choice = pref.getString(getString(R.string.aya_reciter_key), "13")!!.toInt()
+        val sources = db.ayatTelawaDao().getReciter(choice)
 
         var uri = "https://www.everyayah.com/data/"
-        uri += sources[0]!!.getSource()
+        uri += sources[0].getSource()
         uri += String.format(Locale.US, "%03d%03d.mp3", ayah!!.suraNum, ayah.ayaNum)
 
         return Uri.parse(uri)

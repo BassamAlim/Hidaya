@@ -116,8 +116,8 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
     }
 
     private fun save() {
-        val str: String = gson.toJson(selected)
-        val editor: SharedPreferences.Editor = pref.edit()
+        val str = gson.toJson(selected)
+        val editor = pref.edit()
         editor.putString(prefKey, str)
         editor.apply()
         filteredAdapter?.filter(null, selected)

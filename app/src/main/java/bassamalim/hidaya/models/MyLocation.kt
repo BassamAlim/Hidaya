@@ -6,17 +6,17 @@ import java.io.Serializable
 
 data class MyLocation(val loc: Location) : Serializable {
 
-    val accuracy: Float = loc.accuracy
-    val time: Long = loc.time
-    val altitude: Double = loc.altitude
-    val bearing: Float = loc.bearing
+    val accuracy = loc.accuracy
+    val time = loc.time
+    val altitude = loc.altitude
+    val bearing = loc.bearing
     var bearingAccuracyDegrees = 0f
-    val elapsedRealtimeNanos: Long = loc.elapsedRealtimeNanos
+    val elapsedRealtimeNanos = loc.elapsedRealtimeNanos
     private var elapsedRealtimeUncertaintyNanos = 0.0
-    val latitude: Double = loc.latitude
-    val longitude: Double = loc.longitude
+    val latitude = loc.latitude
+    val longitude = loc.longitude
     val provider: String = loc.provider
-    val speed: Float = loc.speed
+    val speed = loc.speed
     var speedAccuracyMetersPerSecond = 0f
     var verticalAccuracyMeters = 0f
 

@@ -404,11 +404,10 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name: CharSequence
             val description = "quran radio"
             channelId = "QuranRadio"
-            name = getString(R.string.quran_radio)
-            val importance: Int = NotificationManager.IMPORTANCE_DEFAULT
+            val name = getString(R.string.quran_radio)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
             val notificationChannel = NotificationChannel(channelId, name, importance)
             notificationChannel.description = description
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
@@ -418,9 +417,9 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun getContentIntent(): PendingIntent {
-        val intent: Intent = Intent(this, RadioClient::class.java).setAction("back")
+        val intent = Intent(this, RadioClient::class.java).setAction("back")
 
-        val flags: Int = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         return PendingIntent.getActivity(this, 37, intent, flags)
     }

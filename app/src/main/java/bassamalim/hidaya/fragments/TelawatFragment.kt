@@ -202,7 +202,7 @@ class TelawatFragment : Fragment {
     private fun getSelectedRewayat(): BooleanArray {
         val defArr = BooleanArray(rewayat.size)
         Arrays.fill(defArr, true)
-        val defStr: String = gson.toJson(defArr)
+        val defStr = gson.toJson(defArr)
 
         return gson.fromJson(pref.getString("selected_rewayat", defStr), BooleanArray::class.java)
     }

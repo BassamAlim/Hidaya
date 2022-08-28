@@ -48,7 +48,7 @@ class AthkarListAdapter(private val context: Context, private val original: List
 
         viewHolder.nameTv.text = item.name
 
-        val fav: Int = item.favorite
+        val fav = item.favorite
         if (fav == 0)
             viewHolder.favBtn.setImageDrawable(
                 AppCompatResources.getDrawable(context, R.drawable.ic_star_outline)
@@ -88,12 +88,12 @@ class AthkarListAdapter(private val context: Context, private val original: List
     }
 
     private fun updateFavorites() {
-        val favAthkar: List<Int> = db.athkarDao().getFavs()
+        val favAthkar = db.athkarDao().getFavs()
 
         val gson = Gson()
-        val athkarJson: String = gson.toJson(favAthkar)
+        val athkarJson = gson.toJson(favAthkar)
 
-        val editor: SharedPreferences.Editor = pref.edit()
+        val editor = pref.edit()
         editor.putString("favorite_athkar", athkarJson)
         editor.apply()
     }

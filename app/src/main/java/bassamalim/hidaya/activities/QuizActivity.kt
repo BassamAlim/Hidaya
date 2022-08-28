@@ -80,14 +80,14 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun ask(num: Int) {
-        val q: QuizQuestionsDB = questions[num]
+        val q = questions[num]
 
-        val qNum: String = getString(R.string.question) + " " + (current + 1)
+        val qNum = getString(R.string.question) + " " + (current + 1)
         binding.topBarTitle.text = qNum
 
         binding.questionScreen.text = questions[current].getQuestionText()
 
-        val answers: List<QuizAnswersDB> = getAnswers(q.getQuestionId())
+        val answers = getAnswers(q.getQuestionId())
         for (i in answerBtns.indices) answerBtns[i]!!.text = answers[i].answer_text
 
         adjustButtons()

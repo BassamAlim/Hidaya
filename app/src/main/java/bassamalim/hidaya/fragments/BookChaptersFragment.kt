@@ -1,7 +1,6 @@
 package bassamalim.hidaya.fragments
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -56,9 +55,8 @@ class BookChaptersFragment(private val type: ListType, private val bookId: Int) 
         val gson = Gson()
         book = gson.fromJson(jsonStr, Book::class.java)
 
-        val pref: SharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val favsStr: String = pref.getString("book" + bookId + "_favs", "")!!
+        val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val favsStr = pref.getString("book" + bookId + "_favs", "")!!
         favs =
             if (favsStr.isEmpty()) BooleanArray(book.chapters.size)
             else gson.fromJson(favsStr, BooleanArray::class.java)

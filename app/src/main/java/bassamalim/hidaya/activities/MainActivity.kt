@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setAlarms() {
-        val intent: Intent = intent
+        val intent = intent
         located = intent.getBooleanExtra("located", false)
         if (located) {
             location = intent.getParcelableExtra("location")

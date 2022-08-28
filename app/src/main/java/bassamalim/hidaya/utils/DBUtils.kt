@@ -27,24 +27,24 @@ object DBUtils {
             reviveDB(context)
         }
 
-        val lastVer: Int = pref.getInt("last_db_version", 1)
+        val lastVer = pref.getInt("last_db_version", 1)
         if (Global.dbVer > lastVer) reviveDB(context)
     }
 
     fun reviveDB(context: Context) {
-        val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val pref = PreferenceManager.getDefaultSharedPreferences(context)
 
         context.deleteDatabase("HidayaDB")
 
         val db = getDB(context)
 
-        val surasJson: String? = pref.getString("favorite_suras", "")
-        val recitersJson: String? = pref.getString("favorite_reciters", "")
-        val athkarJson: String? = pref.getString("favorite_athkar", "")
+        val surasJson = pref.getString("favorite_suras", "")!!
+        val recitersJson = pref.getString("favorite_reciters", "")!!
+        val athkarJson = pref.getString("favorite_athkar", "")!!
 
         val gson = Gson()
 
-        if (surasJson!!.isNotEmpty()) {
+        if (surasJson.isNotEmpty()) {
             val favSuras: Array<Any> = gson.fromJson(surasJson, Array<Any>::class.java)
             for (i in favSuras.indices) {
                 val d = favSuras[i] as Double
@@ -52,7 +52,7 @@ object DBUtils {
             }
         }
 
-        if (recitersJson!!.isNotEmpty()) {
+        if (recitersJson.isNotEmpty()) {
             val favReciters: Array<Any> = gson.fromJson(recitersJson, Array<Any>::class.java)
             for (i in favReciters.indices) {
                 val d = favReciters[i] as Double
@@ -60,7 +60,7 @@ object DBUtils {
             }
         }
 
-        if (athkarJson!!.isNotEmpty()) {
+        if (athkarJson.isNotEmpty()) {
             val favAthkar: Array<Any> = gson.fromJson(athkarJson, Array<Any>::class.java)
             for (i in favAthkar.indices) {
                 val d = favAthkar[i] as Double

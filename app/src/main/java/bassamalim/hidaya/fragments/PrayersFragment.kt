@@ -20,9 +20,9 @@ import bassamalim.hidaya.dialogs.PrayerDialog
 import bassamalim.hidaya.dialogs.TutorialDialog
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
 import bassamalim.hidaya.utils.PrefUtils
-import bassamalim.hidaya.utils.LangUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 

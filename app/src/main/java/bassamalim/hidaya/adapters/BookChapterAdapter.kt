@@ -42,7 +42,7 @@ class BookChapterAdapter(
     }
 
     private fun getFavs() {
-        val favsStr: String = pref.getString("book" + bookId + "_favs", "")!!
+        val favsStr = pref.getString("book" + bookId + "_favs", "")!!
         favs =
             if (favsStr.isEmpty()) BooleanArray(items.size)
             else gson.fromJson(favsStr, BooleanArray::class.java)
@@ -97,8 +97,8 @@ class BookChapterAdapter(
     }
 
     private fun updateFavorites() {
-        val favStr: String = gson.toJson(favs)
-        val editor: SharedPreferences.Editor = pref.edit()
+        val favStr = gson.toJson(favs)
+        val editor = pref.edit()
         editor.putString("book" + bookId + "_favs", favStr)
         editor.apply()
     }

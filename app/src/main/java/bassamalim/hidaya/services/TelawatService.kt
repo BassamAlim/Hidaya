@@ -373,8 +373,8 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         intentFilter.addAction(ACTION_PREV)
         intentFilter.addAction(ACTION_STOP)
 
-        val pkg: String = packageName
-        val flags: Int = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        val pkg = packageName
+        val flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         playAction = NotificationCompat.Action(
             R.drawable.ic_play_arrow, "Play", PendingIntent.getBroadcast(
@@ -640,7 +640,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun tryOffline(surah: Int): Boolean {
-        val path: String = (getExternalFilesDir(null).toString() + "/Telawat/" + reciterId
+        val path = (getExternalFilesDir(null).toString() + "/Telawat/" + reciterId
                 + "/" + version.getVersionId() + "/" + surah + ".mp3")
 
         return try {
@@ -659,11 +659,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun createNotificationChannel() {
-        val name: CharSequence
         val description = "quran listening"
         channelId = "Telawat"
-        name = getString(R.string.recitations)
-        val importance: Int = NotificationManager.IMPORTANCE_DEFAULT
+        val name = getString(R.string.recitations)
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
         val notificationChannel = NotificationChannel(channelId, name, importance)
         notificationChannel.description = description
         notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
@@ -676,10 +675,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun getContentIntent(): PendingIntent {
-        val intent: Intent = Intent(this, TelawatClient::class.java).setAction("back")
+        val intent = Intent(this, TelawatClient::class.java).setAction("back")
             .putExtra("media_id", mediaId)
 
-        val flags: Int = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         return PendingIntent.getActivity(this, 36, intent, flags)
     }
@@ -725,16 +724,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun saveForLater(progress: Int) {
-        if (reciterName == null)
-            return
-
-        val text = "${getString(R.string.sura)} ${surahNames[surahIndex]} " +
-                "${getString(R.string.for_reciter)} ${reciterName!!} " +
-                "${getString(R.string.in_rewaya_of)} ${version.getRewaya()}"
+        if (reciterName == null) return
 
         val editor: SharedPreferences.Editor = pref.edit()
         editor.putString("last_played_media_id", mediaId)
-        editor.putString("last_played_text", text)
         editor.putInt("last_telawa_progress", progress)
         editor.apply()
     }

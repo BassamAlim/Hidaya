@@ -22,7 +22,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.database.dbs.TelawatVersionsDB
 import bassamalim.hidaya.databinding.ActivityTelawatClientBinding
 import bassamalim.hidaya.models.Reciter.RecitationVersion
 import bassamalim.hidaya.other.Global
@@ -149,7 +148,7 @@ class TelawatClient : AppCompatActivity() {
     }
     private val data: Unit
         get() {
-            val intent: Intent = intent
+            val intent = intent
             action = intent.action!!
             mediaId = intent.getStringExtra("media_id")!!
 
@@ -157,10 +156,9 @@ class TelawatClient : AppCompatActivity() {
             versionId = mediaId.substring(3, 5).toInt()
             surahIndex = mediaId.substring(5).toInt()
 
-            reciterName = db.telawatRecitersDao().getNames()[reciterId]
+            reciterName = db.telawatRecitersDao().getName(reciterId)
 
-            val telawa: TelawatVersionsDB =
-                db.telawatVersionsDao().getVersion(reciterId, versionId)
+            val telawa = db.telawatVersionsDao().getVersion(reciterId, versionId)
             version = RecitationVersion(
                 versionId, telawa.getUrl(), telawa.getRewaya(),
                 telawa.getCount(), telawa.getSuras(), null
@@ -198,7 +196,7 @@ class TelawatClient : AppCompatActivity() {
                 repeat = PlaybackStateCompat.REPEAT_MODE_ONE
                 tc.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)
 
-                val editor: SharedPreferences.Editor = pref.edit()
+                val editor = pref.edit()
                 editor.putInt("telawat_repeat_mode", repeat)
                 editor.apply()
 
@@ -210,7 +208,7 @@ class TelawatClient : AppCompatActivity() {
                 repeat = PlaybackStateCompat.REPEAT_MODE_NONE
                 tc.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
 
-                val editor: SharedPreferences.Editor = pref.edit()
+                val editor = pref.edit()
                 editor.putInt("telawat_repeat_mode", repeat)
                 editor.apply()
 
@@ -225,7 +223,7 @@ class TelawatClient : AppCompatActivity() {
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_ALL
                 tc.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
 
-                val editor: SharedPreferences.Editor = pref.edit()
+                val editor = pref.edit()
                 editor.putInt("telawat_shuffle_mode", shuffle)
                 editor.apply()
 
@@ -237,7 +235,7 @@ class TelawatClient : AppCompatActivity() {
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_NONE
                 tc.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE)
 
-                val editor: SharedPreferences.Editor = pref.edit()
+                val editor = pref.edit()
                 editor.putInt("telawat_shuffle_mode", shuffle)
                 editor.apply()
 

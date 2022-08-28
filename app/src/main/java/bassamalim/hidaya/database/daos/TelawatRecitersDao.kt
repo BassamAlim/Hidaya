@@ -12,6 +12,9 @@ interface TelawatRecitersDao {
     @Query("SELECT reciter_name FROM telawat_reciters")
     fun getNames(): List<String>
 
+    @Query("SELECT reciter_name FROM telawat_reciters WHERE reciter_id == :id")
+    fun getName(id: Int): String
+
     @Query("SELECT * FROM telawat_reciters WHERE favorite = 1")
     fun getFavorites(): List<TelawatRecitersDB>
 

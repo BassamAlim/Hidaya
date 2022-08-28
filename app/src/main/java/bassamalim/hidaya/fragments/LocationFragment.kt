@@ -120,7 +120,7 @@ class LocationFragment: Fragment() {
     private val locationDialog: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent = result.data!!
+                val data = result.data!!
                 val countryId = data.getIntExtra("country_id", -1)
                 val cityId = data.getIntExtra("city_id", -1)
 

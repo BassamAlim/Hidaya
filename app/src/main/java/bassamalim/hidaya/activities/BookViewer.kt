@@ -1,6 +1,5 @@
 package bassamalim.hidaya.activities
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -40,7 +39,7 @@ class BookViewer : AppCompatActivity() {
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        val intent: Intent = intent
+        val intent = intent
         bookId = intent.getIntExtra("book_id", 0)
         chapterId = intent.getIntExtra("chapter_id", 0)
         binding.topBarTitle.text = intent.getStringExtra("book_title")
@@ -53,13 +52,13 @@ class BookViewer : AppCompatActivity() {
     }
 
     private fun getData() {
-        val path: String = getExternalFilesDir(null).toString() + "/Books/" + bookId + ".json"
+        val path = getExternalFilesDir(null).toString() + "/Books/" + bookId + ".json"
         val jsonStr = FileUtils.getJsonFromDownloads(path)
         val gson = Gson()
-        val book: Book = gson.fromJson(jsonStr, Book::class.java)
+        val book = gson.fromJson(jsonStr, Book::class.java)
         doors = book.chapters[chapterId].doors
 
-        val favsStr: String = PreferenceManager.getDefaultSharedPreferences(this)
+        val favsStr = PreferenceManager.getDefaultSharedPreferences(this)
             .getString("book" + bookId + "_chapter" + chapterId + "_favs", "")!!
         favs =
             if (favsStr.isEmpty()) BooleanArray(doors.size)
@@ -99,7 +98,7 @@ class BookViewer : AppCompatActivity() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                val editor: SharedPreferences.Editor = pref.edit()
+                val editor = pref.edit()
                 editor.putInt(getString(R.string.books_text_size_key), seekBar.progress)
                 editor.apply()
 

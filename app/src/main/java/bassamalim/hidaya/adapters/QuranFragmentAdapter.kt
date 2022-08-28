@@ -63,7 +63,7 @@ class QuranFragmentAdapter(private val context: Context, private val original: A
     }
 
     private fun setTanzeel(vh: ViewHolder, card: Sura) {
-        val tanzeel: Int = card.getTanzeel()
+        val tanzeel = card.getTanzeel()
         if (tanzeel == 0) // Makkah
             vh.tanzeelView.setImageDrawable(
                 AppCompatResources.getDrawable(context, R.drawable.ic_kaaba_black))
@@ -73,7 +73,7 @@ class QuranFragmentAdapter(private val context: Context, private val original: A
     }
 
     private fun doFavorites(vh: ViewHolder, item: Sura, position: Int) {
-        val fav: Int = item.getFavorite()
+        val fav = item.getFavorite()
         if (fav == 0)
             vh.favBtn.setImageDrawable(
                 AppCompatResources.getDrawable(context, R.drawable.ic_star_outline))
@@ -133,11 +133,11 @@ class QuranFragmentAdapter(private val context: Context, private val original: A
     }
 
     private fun updateFavorites() {
-        val favSuras: List<Any> = db.suarDao().getFav()
+        val favSuras = db.suarDao().getFav()
 
-        val surasJson: String = gson.toJson(favSuras)
+        val surasJson = gson.toJson(favSuras)
 
-        val editor: SharedPreferences.Editor = pref.edit()
+        val editor = pref.edit()
         editor.putString("favorite_suras", surasJson)
         editor.apply()
     }

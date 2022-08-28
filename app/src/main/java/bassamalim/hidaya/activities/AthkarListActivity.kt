@@ -46,8 +46,9 @@ class AthkarListActivity : AppCompatActivity() {
             else -> {
                 category = intent.getIntExtra("category", 0)
 
-                val topBarTitle: String = if (language == "en") db.athkarCategoryDao()
-                    .getNameEn(category) else db.athkarCategoryDao().getName(category)
+                val topBarTitle =
+                    if (language == "en") db.athkarCategoryDao().getNameEn(category)
+                    else db.athkarCategoryDao().getName(category)
                 binding.topBarTitle.text = topBarTitle
             }
         }
@@ -72,10 +73,10 @@ class AthkarListActivity : AppCompatActivity() {
 
     private fun getItems(athkar: List<AthkarDB>): List<AthkarItem> {
         val buttons: MutableList<AthkarItem> = ArrayList()
-        val favs: List<Int> = db.athkarDao().getFavs()
+        val favs = db.athkarDao().getFavs()
 
         for (i in athkar.indices) {
-            val thikr: AthkarDB = athkar[i]
+            val thikr = athkar[i]
 
             if (language == "en" && !hasEn(thikr)) continue
 

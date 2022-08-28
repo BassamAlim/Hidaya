@@ -97,7 +97,7 @@ class QuranSearcherActivity : AppCompatActivity() {
         spinner.adapter = spinnerAdapter
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        val last: Int = pref.getInt("quran_searcher_matches_last_position", 0)
+        val last = pref.getInt("quran_searcher_matches_last_position", 0)
         spinner.setSelection(last)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -106,7 +106,7 @@ class QuranSearcherActivity : AppCompatActivity() {
             ) {
                 maxMatches = spinner.getItemAtPosition(position).toString().toInt()
 
-                val editor: SharedPreferences.Editor = pref.edit()
+                val editor = pref.edit()
                 editor.putInt("quran_searcher_matches_last_position", position)
                 editor.apply()
 

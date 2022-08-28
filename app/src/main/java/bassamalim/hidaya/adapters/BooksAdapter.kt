@@ -131,7 +131,7 @@ class BooksAdapter(
     }
 
     private fun downloading(id: Int): Boolean {
-        val path: String = context.getExternalFilesDir(null).toString() + "/Books/" + id + ".json"
+        val path = context.getExternalFilesDir(null).toString() + "/Books/" + id + ".json"
 
         val jsonStr = FileUtils.getJsonFromDownloads(path)
         return try {

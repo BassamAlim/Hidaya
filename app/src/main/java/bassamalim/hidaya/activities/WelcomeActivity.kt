@@ -1,6 +1,5 @@
 package bassamalim.hidaya.activities
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -37,8 +36,7 @@ class WelcomeActivity: AppCompatActivity() {
                 R.id.frame, LocationFragment.newInstance("initial")
             ).commit()
 
-            val editor: SharedPreferences.Editor =
-                PreferenceManager.getDefaultSharedPreferences(this).edit()
+            val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
             editor.putBoolean("new_user", false)
             editor.apply()
         }
