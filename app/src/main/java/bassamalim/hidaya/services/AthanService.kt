@@ -25,11 +25,11 @@ class AthanService : Service() {
     private lateinit var mediaPlayer: MediaPlayer
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        Log.i(Global.TAG, "In athan service for $pid")
+        pid = intent.getSerializableExtra("id") as PID
 
         ActivityUtils.onActivityCreateSetLocale(this)
 
-        pid = intent.getSerializableExtra("id") as PID
+        Log.i(Global.TAG, "In athan service for $pid")
 
         createNotificationChannel()
         startForeground(pid.ordinal, build())

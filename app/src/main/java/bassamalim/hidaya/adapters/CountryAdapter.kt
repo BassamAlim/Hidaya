@@ -7,15 +7,12 @@ import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.dbs.CountryDB
+import bassamalim.hidaya.dialogs.LocationPickerDialog
 
 class CountryAdapter(
     private var original: List<CountryDB>,
-    private val callback: Callback, private val language: String
+    private val callback: LocationPickerDialog.Callback, private val language: String
 ): RecyclerView.Adapter<CountryAdapter.ViewHolder?>() {
-
-    interface Callback {
-        fun choice(id: Int)
-    }
 
     private val items = original.toMutableList()
 

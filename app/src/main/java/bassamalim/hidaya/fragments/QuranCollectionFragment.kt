@@ -52,8 +52,7 @@ class QuranCollectionFragment : Fragment() {
     }
 
     private fun setupContinue() {
-        val pref: SharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
         val page = pref.getInt("bookmarked_page", -1)
         val sura = pref.getInt("bookmarked_sura", -1)
 

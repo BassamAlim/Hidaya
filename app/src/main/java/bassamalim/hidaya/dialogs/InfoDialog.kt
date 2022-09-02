@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import bassamalim.hidaya.R
@@ -41,7 +42,7 @@ class InfoDialog: DialogFragment() {
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        val view: View = inflater.inflate(R.layout.dialog_info, container, false)
+        val view = inflater.inflate(R.layout.dialog_info, container, false)
 
         if (dialog != null && dialog!!.window != null) {
             dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -53,6 +54,8 @@ class InfoDialog: DialogFragment() {
 
         val textTv = view.findViewById<TextView>(R.id.text_tv)
         textTv.text = text
+
+        view.findViewById<ImageButton>(R.id.close_btn).setOnClickListener { dialog?.cancel() }
 
         return view
     }

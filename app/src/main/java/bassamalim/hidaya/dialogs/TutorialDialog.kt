@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
@@ -18,7 +19,6 @@ import bassamalim.hidaya.R
 class TutorialDialog : DialogFragment() {
 
     private lateinit var pref: SharedPreferences
-    private lateinit var gView: View
     private lateinit var text: String
     private lateinit var prefKey: String
 
@@ -47,7 +47,7 @@ class TutorialDialog : DialogFragment() {
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        gView = inflater.inflate(R.layout.dialog_tutorial, container, false)
+        val view = inflater.inflate(R.layout.dialog_tutorial, container, false)
 
         pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
@@ -56,10 +56,12 @@ class TutorialDialog : DialogFragment() {
             dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
         }
 
-        val textTv: TextView = gView.findViewById(R.id.text_tv)
+        val textTv = view.findViewById<TextView>(R.id.text_tv)
         textTv.text = text
 
-        return gView
+        view.findViewById<ImageButton>(R.id.close_btn).setOnClickListener { dialog?.cancel() }
+
+        return view
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -67,7 +69,7 @@ class TutorialDialog : DialogFragment() {
 
         val doNotShowAgainCheckbox: CheckBox = requireView().findViewById(R.id.do_not_show_again_cb)
         if (doNotShowAgainCheckbox.isChecked) {
-            val editor: SharedPreferences.Editor = pref.edit()
+            val editor = pref.edit()
             editor.putBoolean(prefKey, false)
             editor.apply()
         }

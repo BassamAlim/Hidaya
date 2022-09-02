@@ -39,6 +39,7 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private lateinit var playPauseAction: NotificationCompat.Action
@@ -75,7 +76,6 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         initMediaSessionMetadata()
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
             Log.i(Global.TAG, "In onPlayFromMediaId of RadioClient")
@@ -315,8 +315,13 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         player = MediaPlayer()
         player.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
 
-        wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
-            .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
+        wifiLock =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                    .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
+            else
+                (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                    .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "myLock")
 
         player.setAudioAttributes(
             AudioAttributes.Builder()
@@ -326,7 +331,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         )
 
         am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        val attrs: AudioAttributes = AudioAttributes.Builder()
+        val attrs = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
             .build()
 
@@ -364,7 +369,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         intentFilter.addAction(ACTION_PLAY_PAUSE)
         intentFilter.addAction(ACTION_STOP)
 
-        val pkg: String = packageName
+        val pkg = packageName
         flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         playPauseAction = NotificationCompat.Action(

@@ -14,20 +14,20 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
+import bassamalim.hidaya.other.DialogCallback
 import bassamalim.hidaya.utils.LangUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
-class DateEditorDialog(private val refresher: Refresher?) : DialogFragment() {
+class DateEditorDialog(private val callback: DialogCallback) : DialogFragment() {
 
     private lateinit var pref: SharedPreferences
     private lateinit var dView: View
     private lateinit var calendar: UmmalquraCalendar
+    private lateinit var dateTV: TextView
+    private lateinit var offsetTV: TextView
+    private var oldOffset = 0
     private var offset = 0
-
-    interface Refresher {
-        fun refresh()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -43,15 +43,23 @@ class DateEditorDialog(private val refresher: Refresher?) : DialogFragment() {
             dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
         }
 
-        offset = pref.getInt("date_offset", 0)
+        oldOffset = pref.getInt("date_offset", 0)
+        offset = oldOffset
 
         getDate()
+
+        setViews()
 
         updateTvs()
 
         setupListeners()
 
         return dView
+    }
+
+    private fun setViews() {
+        dateTV = dView.findViewById(R.id.date_tv)
+        offsetTV = dView.findViewById(R.id.offset_tv)
     }
 
     private fun getDate() {
@@ -64,41 +72,43 @@ class DateEditorDialog(private val refresher: Refresher?) : DialogFragment() {
     }
 
     private fun updateTvs() {
-        val dateTv = dView.findViewById<TextView>(R.id.date_tv)
         val text =
             "${calendar[Calendar.DATE]}/${calendar[Calendar.MONTH] + 1}/${calendar[Calendar.YEAR]}"
-        dateTv.text = LangUtils.translateNums(requireContext(), text)
+        dateTV.text = LangUtils.translateNums(requireContext(), text)
 
-        val offsetTv = dView.findViewById<TextView>(R.id.offset_tv)
-        var offsetStr = offset.toString()
-        if (offset > 0) offsetStr += "+"
-        offsetTv.text = LangUtils.translateNums(requireContext(), offsetStr)
+        if (offset == 0) offsetTV.text = getString(R.string.unchanged)
+        else {
+            var offsetStr = offset.toString()
+            if (offset > 0) offsetStr = "+$offsetStr"
+            offsetTV.text = LangUtils.translateNums(requireContext(), offsetStr)
+        }
     }
 
     private fun setupListeners() {
-        val prevBtn = dView.findViewById<ImageButton>(R.id.day_back_btn)
-        prevBtn.setOnClickListener {
+        dView.findViewById<ImageButton>(R.id.day_back_btn).setOnClickListener {
             offset--
             getDate()
             updateTvs()
         }
 
-        val nextBtn = dView.findViewById<ImageButton>(R.id.day_forward_btn)
-        nextBtn.setOnClickListener {
+        dView.findViewById<ImageButton>(R.id.day_forward_btn).setOnClickListener {
             offset++
             getDate()
             updateTvs()
         }
 
-        val saveBtn = dView.findViewById<Button>(R.id.save_btn)
-        saveBtn.setOnClickListener {
+        dView.findViewById<Button>(R.id.cancel_btn).setOnClickListener {
+            dialog!!.cancel()
+        }
+
+        dView.findViewById<Button>(R.id.save_btn).setOnClickListener {
             val editor = pref.edit()
             editor.putInt("date_offset", offset)
             editor.apply()
 
             dialog!!.dismiss()
 
-            refresher?.refresh()
+            callback.refresh()
         }
     }
 

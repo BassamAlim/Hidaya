@@ -19,6 +19,7 @@ import bassamalim.hidaya.databinding.FragmentPrayersBinding
 import bassamalim.hidaya.dialogs.PrayerDialog
 import bassamalim.hidaya.dialogs.TutorialDialog
 import bassamalim.hidaya.helpers.PrayTimes
+import bassamalim.hidaya.other.DialogCallback
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
@@ -202,7 +203,7 @@ class PrayersFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        val refresher = object : PrayerDialog.Refresher {
+        val refresher = object : DialogCallback {
             override fun refresh() {
                 onStart()
             }

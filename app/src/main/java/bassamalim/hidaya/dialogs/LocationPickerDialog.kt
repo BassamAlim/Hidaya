@@ -28,8 +28,12 @@ class LocationPickerDialog : AppCompatActivity() {
     private var recyclerView: RecyclerView? = null
     private var countryAdapter: CountryAdapter? = null
     private var cityAdapter: CityAdapter? = null
-    private var mode = 0  // 0 -> country , 1 -> city
+    private var mode = 0  // 0 : country , 1 : city
     private lateinit var language: String
+
+    interface Callback {
+        fun choice(id: Int)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         pref = PreferenceManager.getDefaultSharedPreferences(this)
@@ -64,7 +68,7 @@ class LocationPickerDialog : AppCompatActivity() {
     }
 
     private fun fillCountries() {
-        val callback = object : CountryAdapter.Callback {
+        val callback = object : Callback {
             override fun choice(id: Int) {
                 fillCities(id)
 
@@ -79,7 +83,7 @@ class LocationPickerDialog : AppCompatActivity() {
     }
 
     private fun fillCities(countryId: Int) {
-        val callback = object : CityAdapter.Callback {
+        val callback = object : Callback {
             override fun choice(id: Int) {
                 val intent = Intent()
                 intent.putExtra("country_id", countryId)

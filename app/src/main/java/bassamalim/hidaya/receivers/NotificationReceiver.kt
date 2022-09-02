@@ -4,6 +4,7 @@ import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
@@ -26,6 +27,7 @@ import java.util.*
 class NotificationReceiver : BroadcastReceiver() {
 
     private lateinit var context: Context
+    private lateinit var pref: SharedPreferences
     private lateinit var pid: PID
     private var isPrayer = false
     private var channelId = ""
@@ -43,12 +45,13 @@ class NotificationReceiver : BroadcastReceiver() {
 
         Log.i(Global.TAG, "in notification receiver for $pid")
 
+        pref = PreferenceManager.getDefaultSharedPreferences(context)
+
         val defaultType =
             if (pid == PID.SHOROUQ) 0
             else 2
 
-        type = PreferenceManager.getDefaultSharedPreferences(context)
-            .getInt("$pid notification_type", defaultType)
+        type = pref.getInt("$pid notification_type", defaultType)
 
         if (type != 0) prepare()
     }
@@ -96,11 +99,11 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun build(): Notification {
-        val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, channelId)
+        val builder = NotificationCompat.Builder(context, channelId)
         builder.setSmallIcon(R.drawable.ic_athan)
         builder.setTicker(context.resources.getString(R.string.app_name))
 
-        var i: Int = pid.ordinal
+        var i = pid.ordinal
         if (pid == PID.DUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
             i = 10
         builder.setContentTitle(context.resources.getStringArray(R.array.prayer_titles)[i])
@@ -135,12 +138,15 @@ class NotificationReceiver : BroadcastReceiver() {
             }
             PID.DAILY_WERD -> {
                 intent = Intent(context, QuranViewer::class.java)
-                intent.action = "random"
+                intent.action = "by_page"
+                intent.putExtra("page", pref.getInt(
+                    "today_werd_page", Random().nextInt(Global.QURAN_PAGES-1)
+                ))
             }
             PID.FRIDAY_KAHF -> {
                 intent = Intent(context, QuranViewer::class.java)
                 intent.action = "by_surah"
-                intent.putExtra("surah_id", 17) // alkahf
+                intent.putExtra("surah_id", 17) // surat al-kahf
             }
             else -> intent = Intent(context, Splash::class.java)
         }

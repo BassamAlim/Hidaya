@@ -17,6 +17,7 @@ import bassamalim.hidaya.databinding.ActivityMainBinding
 import bassamalim.hidaya.dialogs.DateEditorDialog
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
+import bassamalim.hidaya.other.DialogCallback
 import bassamalim.hidaya.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.receivers.DeviceBootReceiver
 import bassamalim.hidaya.utils.ActivityUtils
@@ -106,7 +107,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupListeners() {
         binding.dateSpace.setOnClickListener {
             DateEditorDialog(
-                object : DateEditorDialog.Refresher {
+                object : DialogCallback {
                     override fun refresh() {
                         setupTodayScreen()
                     }

@@ -8,15 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.CityDB
+import bassamalim.hidaya.dialogs.LocationPickerDialog
 
 class CityAdapter(
-    private var items: MutableList<CityDB>, private val callback: Callback,
+    private var items: MutableList<CityDB>, private val callback: LocationPickerDialog.Callback,
     private val db: AppDatabase, private val countryId: Int, private val language: String
     ): RecyclerView.Adapter<CityAdapter.ViewHolder?>() {
-
-    interface Callback {
-        fun choice(id: Int)
-    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val btn: Button

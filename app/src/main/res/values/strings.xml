@@ -249,5 +249,8 @@
     <string name="choose_city">اختر المدينة</string>
     <string name="infinite">بلا نهاية</string>
     <string name="adjust_date">تعديل التاريخ الهجري</string>
+    <string name="close">إغلاق</string>
+    <string name="unchanged">بلا تغيير</string>
+    <string name="today_werd">وِرد اليوم</string>
 
 </resources>

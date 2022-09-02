@@ -15,12 +15,13 @@ import bassamalim.hidaya.activities.MainActivity
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
+import bassamalim.hidaya.other.DialogCallback
 import bassamalim.hidaya.utils.LangUtils
 
 
 class PrayerDialog(
     private val context: Context, private val view: View, private val pid: PID, title: String,
-    private val refresher: Refresher
+    private val callback: DialogCallback
 ) {
 
     private lateinit var popup: PopupWindow
@@ -31,10 +32,6 @@ class PrayerDialog(
     private lateinit var seekbar: SeekBar
     private lateinit var seekbarTv: TextView
     private val offsetMin = 30
-
-    interface Refresher {
-        fun refresh()
-    }
 
     init {
         showPopup()
@@ -64,7 +61,7 @@ class PrayerDialog(
         popup.showAtLocation(view, Gravity.START, 30, getY())
 
         popup.setOnDismissListener {
-            refresher.refresh()
+            callback.refresh()
 
             Keeper(context, MainActivity.location!!)
             Alarms(context, pid)

@@ -226,5 +226,8 @@
     <string name="choose_city">Choose city</string>
     <string name="infinite">Infinite</string>
     <string name="adjust_date">Adjust Hijri date</string>
+    <string name="close">Close</string>
+    <string name="unchanged">Unchanged</string>
+    <string name="today_werd">Today\'s werd</string>
 
 </resources>

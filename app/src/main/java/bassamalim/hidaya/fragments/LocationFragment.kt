@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +25,6 @@ import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.databinding.FragmentLocationBinding
 import bassamalim.hidaya.dialogs.LocationPickerDialog
 import bassamalim.hidaya.helpers.Keeper
-import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.utils.DBUtils
 import com.google.android.gms.location.LocationServices
 
@@ -152,16 +150,16 @@ class LocationFragment: Fragment() {
             .addOnSuccessListener(requireActivity()) { location: Location? ->
                 launch(location)
 
-                Log.d(Global.TAG, "START")
-                val closestCity = db.cityDao().getClosest(location!!.latitude, location.longitude)
-                Log.d(Global.TAG, "END")
+                if (location != null) {
+                    val closestCity = db.cityDao().getClosest(location.latitude, location.longitude)
 
-                val editor = pref.edit()
-                editor.putInt("country_id", closestCity.countryId)
-                editor.putInt("city_id", closestCity.id)
-                editor.apply()
+                    val editor = pref.edit()
+                    editor.putInt("country_id", closestCity.countryId)
+                    editor.putInt("city_id", closestCity.id)
+                    editor.apply()
 
-                background()
+                    background()
+                }
             }
     }
 

@@ -47,6 +47,8 @@ class DailyUpdateReceiver : BroadcastReceiver() {
                 }
                 "none" -> return
             }
+
+            pickWerd()
         }
         else Log.i(Global.TAG, "dead intent walking in daily update receiver")
 
@@ -116,6 +118,13 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         val editor = pref.edit()
         editor.putInt("last_day", now[Calendar.DATE])
         editor.putString("last_daily_update", str)
+        editor.apply()
+    }
+
+    private fun pickWerd() {
+        val editor = pref.edit()
+        editor.putInt("today_werd_page", Random().nextInt(Global.QURAN_PAGES - 1))
+        editor.putBoolean("werd_done", false)
         editor.apply()
     }
 

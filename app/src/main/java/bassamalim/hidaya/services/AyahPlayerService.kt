@@ -109,11 +109,11 @@ class AyahPlayerService : Service(),
     }
 
     //The system calls this method when an activity, requests the service be started
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         //Handle Intent action from MediaSession.TransportControls
         MediaButtonReceiver.handleIntent(mediaSession, intent)
 
-        return super.onStartCommand(intent, flags, startId)
+        return START_NOT_STICKY
     }
 
     override fun onBind(intent: Intent): IBinder {
@@ -150,14 +150,17 @@ class AyahPlayerService : Service(),
         players[0].setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
         players[1].setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
-                .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
-        }
+        wifiLock =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                    .createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "myLock")
+            else
+                (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
+                    .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "myLock")
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        val attrs: AudioAttributes = AudioAttributes.Builder()
+        val attrs = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
             .setUsage(AudioAttributes.USAGE_MEDIA)
             .build()
@@ -171,10 +174,10 @@ class AyahPlayerService : Service(),
                 .build()
         }
 
-        for (i in 0..1) {
-            players[i].setOnPreparedListener(this)
-            players[i].setOnCompletionListener(this)
-            players[i].setOnErrorListener(this)
+        players.map { mediaPlayer ->
+            mediaPlayer.setOnPreparedListener(this)
+            mediaPlayer.setOnCompletionListener(this)
+            mediaPlayer.setOnErrorListener(this)
         }
     }
 

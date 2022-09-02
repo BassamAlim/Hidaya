@@ -20,7 +20,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
@@ -108,8 +107,10 @@ class QuranViewer : SwipeActivity() {
         language = ActivityUtils.onActivityCreateSetLocale(this)
         textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
         theme = PrefUtils.getTheme(this, pref)
+        viewType =
+            if (language == "en") "list"
+            else pref.getString("quran_view_type", "page")!!
 
-        viewType = if (language == "en") "list" else pref.getString("quran_view_type", "page")!!
         when (theme) {
             "ThemeL" -> setTheme(R.style.QuranL)
             "ThemeM" -> setTheme(R.style.QuranM)
@@ -149,7 +150,6 @@ class QuranViewer : SwipeActivity() {
                 currentPage = getPage(surahIndex)
             }
             "by_page" -> currentPage = intent.getIntExtra("page", 0)
-            "random" -> currentPage = Random().nextInt(Global.QURAN_PAGES - 1)
         }
     }
 
@@ -202,7 +202,9 @@ class QuranViewer : SwipeActivity() {
             }
 
             arr.add(ayahModel)
-        } while (++counter != Global.QURAN_AYAS && ayatDB[counter]!!.page == pageNumber)
+
+            counter++
+        } while (ayatDB[counter]!!.page == pageNumber && counter != Global.QURAN_AYAS )
 
         val juz = arr[0].getJuz()
 
@@ -222,18 +224,18 @@ class QuranViewer : SwipeActivity() {
     }
 
     private fun publishPage(list: List<Ayah>?) {
-        val screen: TextView = screen()
+        val screen = screen()
         val text = StringBuilder()
 
         for (i in list!!.indices) {
             list[i].setStart(text.length)
             text.append(list[i].getText())
-            list[i].setEnd(text.length - 3)
+            list[i].setEnd(text.length)
         }
 
         val ss = SpannableString(text)
         for (i in list.indices) {
-            val clickableSpan: DoubleClickableSpan = object : DoubleClickableSpan() {
+            val clickableSpan = object : DoubleClickableSpan() {
                 override fun onDoubleClick(view: View?) {
                     InfoDialog.newInstance(getString(R.string.tafseer), list[i].getTafseer())
                         .show(supportFragmentManager, InfoDialog.TAG)
@@ -269,7 +271,7 @@ class QuranViewer : SwipeActivity() {
     private fun publishList(list: List<Ayah>?) {
         for (i in list!!.indices) {
             val ss = SpannableString(list[i].getText())
-            val clickableSpan: DoubleClickableSpan = object : DoubleClickableSpan() {
+            val clickableSpan = object : DoubleClickableSpan() {
                 override fun onDoubleClick(view: View?) {
                     InfoDialog.newInstance(getString(R.string.tafseer), list[i].getTafseer())
                         .show(supportFragmentManager, InfoDialog.TAG)
@@ -285,8 +287,9 @@ class QuranViewer : SwipeActivity() {
                 }
             }
             list[i].setSS(ss)
-            ss.setSpan(clickableSpan, 0, list[i].getText()!!.length - 1,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            ss.setSpan(
+                clickableSpan, 0, list[i].getText()!!.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
 
             list[i].setIndex(allAyahs.size)
             allAyahs.add(list[i])
@@ -298,8 +301,7 @@ class QuranViewer : SwipeActivity() {
     }
 
     private fun finalize(juz: Int, name: String) {
-        val juzText =
-            "${getString(R.string.juz)} ${LangUtils.translateNums(this, juz.toString())}"
+        val juzText = "${getString(R.string.juz)} ${LangUtils.translateNums(this, juz.toString())}"
 
         currentSurah = "${getString(R.string.sura)} $name"
         currentPageText =
@@ -351,7 +353,7 @@ class QuranViewer : SwipeActivity() {
 
     private fun checkPage(pageNumber: Int) {
         lastRecordedPage = pageNumber
-        handler.postDelayed(runnable, 45000)
+        handler.postDelayed(runnable, 40000)
     }
 
     private val runnable = Runnable {
@@ -364,6 +366,7 @@ class QuranViewer : SwipeActivity() {
 
         val editor = pref.edit()
         editor.putInt("quran_pages_record", new)
+        if (currentPage == pref.getInt("today_werd_page", 25)) editor.putBoolean("werd_done", true)
         editor.apply()
     }
 
@@ -437,7 +440,7 @@ class QuranViewer : SwipeActivity() {
         return counter
     }
 
-    private val settingsDialog: ActivityResultLauncher<Intent> =
+    private val settingsDialog =
         registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data!!
@@ -455,7 +458,10 @@ class QuranViewer : SwipeActivity() {
                     listVs[0].adapter = adapter
                     listVs[1].adapter = adapter
                 }
-                else flipper.displayedChild = 0
+                else {
+                    currentView = 0
+                    flipper.displayedChild = 0
+                }
 
                 buildPage(currentPage)
                 player?.setViewType(viewType)

@@ -1,5 +1,6 @@
 package bassamalim.hidaya.fragments
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Location
 import android.os.Bundle
@@ -7,10 +8,12 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.MainActivity
+import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.databinding.FragmentHomeBinding
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.utils.LangUtils
@@ -48,6 +51,12 @@ class HomeFragment : Fragment() {
         setupQuranRecordCard()
 
         return root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        setupWerdCard()
     }
 
     private fun setupPrayersCard() {
@@ -151,6 +160,24 @@ class HomeFragment : Fragment() {
         binding!!.quranPagesNum.text = LangUtils.translateNums(
             requireContext(), pref.getInt("quran_pages_record", 0).toString(), false
         )
+    }
+
+    private fun setupWerdCard() {
+        val page = pref.getInt("today_werd_page", 25)
+        val text = "${getString(R.string.page)} ${LangUtils.translateNums(requireContext(), page.toString())}"
+        binding!!.werdText.text = text
+
+        if (pref.getBoolean("werd_done", false))
+            binding!!.werdIv.setImageDrawable(
+                AppCompatResources.getDrawable(requireContext(), R.drawable.ic_check)
+            )
+
+        binding!!.readBtn.setOnClickListener {
+            val intent = Intent(context, QuranViewer::class.java)
+            intent.action = "by_page"
+            intent.putExtra("page", page)
+            startActivity(intent)
+        }
     }
 
     override fun onDestroyView() {
