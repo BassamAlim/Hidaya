@@ -20,8 +20,6 @@ class QuranSettingsDialog : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var radioGroup: RadioGroup
     private lateinit var settingsFragment: SettingsFragment
-    private lateinit var initialViewType: String
-    private var initialTextSize = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         pref = PreferenceManager.getDefaultSharedPreferences(this)
@@ -31,14 +29,11 @@ class QuranSettingsDialog : AppCompatActivity() {
         binding = DialogQuranSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initialViewType = pref.getString("quran_view_type", "page")!!
-        initialTextSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
-
         initRadioGroup()
 
         binding.executeBtn.setOnClickListener { execute() }
-        settingsFragment = SettingsFragment()
 
+        settingsFragment = SettingsFragment()
         if (savedInstanceState == null)
             supportFragmentManager.beginTransaction()
                 .replace(R.id.quran_settings, settingsFragment).commit()
@@ -46,8 +41,8 @@ class QuranSettingsDialog : AppCompatActivity() {
 
     private fun initRadioGroup() {
         radioGroup = binding.radioGroup
-        if (initialViewType == "page") radioGroup.check(R.id.page_view)
-        else radioGroup.check(R.id.list_view)
+        if (pref.getString("quran_view_type", "page") == "list") radioGroup.check(R.id.list_view)
+        else radioGroup.check(R.id.page_view)
     }
 
     private fun themeify() {
@@ -62,23 +57,13 @@ class QuranSettingsDialog : AppCompatActivity() {
         val viewType =
             if (radioGroup.checkedRadioButtonId == R.id.list_view) "list"
             else "page"
-        if (viewType != initialViewType) {
-            val editor: SharedPreferences.Editor = pref.edit()
-            editor.putString("quran_view_type", viewType)
-            editor.apply()
-        }
 
-        if (settingsFragment.textSizeSB!!.value != initialTextSize
-            || viewType != initialViewType) {
-            val intent = Intent()
-            if (radioGroup.checkedRadioButtonId == R.id.list_view)
-                intent.putExtra("view_type", "list")
-            else
-                intent.putExtra("view_type", "page")
-            intent.putExtra("text_size", settingsFragment.textSizeSB!!.value)
+        val editor = pref.edit()
+        editor.putString("quran_view_type", viewType)
+        editor.apply()
 
-            setResult(Activity.RESULT_OK, intent)
-        }
+        val intent = Intent()
+        setResult(Activity.RESULT_OK, intent)
 
         finish()
     }
@@ -90,12 +75,8 @@ class QuranSettingsDialog : AppCompatActivity() {
 
     class SettingsFragment : PreferenceFragmentCompat() {
 
-        var textSizeSB: SeekBarPreference? = null
-
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.quran_preferences, rootKey)
-
-            textSizeSB = findPreference(getString(R.string.quran_text_size_key))
 
             setupReciters()
 
@@ -104,7 +85,7 @@ class QuranSettingsDialog : AppCompatActivity() {
 
         private fun setupReciters() {
             val recitersDropdown = findPreference<DropDownPreference>(getString(R.string.aya_reciter_key))!!
-            val reciterNames = getReciterNames()
+            val reciterNames = DBUtils.getDB(requireContext()).ayatRecitersDao().getNames()
             val ids = arrayOfNulls<CharSequence>(reciterNames.size)
             for (i in reciterNames.indices) ids[i] = i.toString()
             recitersDropdown.entries = reciterNames.toTypedArray()
@@ -131,10 +112,6 @@ class QuranSettingsDialog : AppCompatActivity() {
 
                 true
             }
-        }
-
-        private fun getReciterNames(): List<String?> {
-            return DBUtils.getDB(requireContext()).ayatRecitersDao().getNames()
         }
     }
 

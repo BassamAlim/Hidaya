@@ -20,7 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
@@ -42,7 +42,6 @@ import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PrefUtils
-import java.util.*
 
 
 class QuranViewer : SwipeActivity() {
@@ -64,7 +63,7 @@ class QuranViewer : SwipeActivity() {
     private lateinit var currentPageText: String
     private lateinit var currentSurah: String
     private var textSize = 0
-    private val allAyahs: MutableList<Ayah> = ArrayList<Ayah>()
+    private val allAyahs: MutableList<Ayah> = ArrayList()
     private lateinit var names: List<String>
     private lateinit var arr: MutableList<Ayah>
     private lateinit var target: TextView
@@ -179,7 +178,7 @@ class QuranViewer : SwipeActivity() {
 
         if (viewType == "page") lls[currentView].removeAllViews()
         allAyahs.clear()
-        arr = ArrayList<Ayah>()
+        arr = ArrayList()
         val pageAyahs = ArrayList<List<Ayah>?>()
 
         var counter = getPageStart(pageNumber)
@@ -265,7 +264,7 @@ class QuranViewer : SwipeActivity() {
 
         getContainer().addView(screen)
 
-        arr = ArrayList<Ayah>()
+        arr = ArrayList()
     }
 
     private fun publishList(list: List<Ayah>?) {
@@ -297,7 +296,7 @@ class QuranViewer : SwipeActivity() {
 
         player?.setAllAyahsSize(allAyahs.size)
 
-        arr = ArrayList<Ayah>()
+        arr = ArrayList()
     }
 
     private fun finalize(juz: Int, name: String) {
@@ -440,12 +439,12 @@ class QuranViewer : SwipeActivity() {
         return counter
     }
 
-    private val settingsDialog =
-        registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
+    private val settingsDialog = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data!!
-                viewType = data.getStringExtra("view_type")!!
-                textSize = data.getIntExtra("text_size", 30)
+                viewType = pref.getString("quran_view_type", "page")!!
+                textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
 
                 flipper.inAnimation = null
                 flipper.outAnimation = null

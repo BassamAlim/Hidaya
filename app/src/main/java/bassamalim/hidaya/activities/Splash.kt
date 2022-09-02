@@ -114,8 +114,8 @@ class Splash : AppCompatActivity() {
         else launch(null)
     }
 
-    private val backgroundLocationPermissionRequest = registerForActivityResult(
-        RequestMultiplePermissions()) {}
+    private val backgroundLocationPermissionRequest =
+        registerForActivityResult(RequestMultiplePermissions()) {}
 
     private fun background() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && ActivityCompat.checkSelfPermission(
