@@ -1,10 +1,7 @@
 package bassamalim.hidaya.replacements
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
-import android.graphics.RectF
+import android.graphics.*
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -68,18 +65,21 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
         hourHandPaint.style = Paint.Style.STROKE
         hourHandPaint.color = linesColor.data
         hourHandPaint.strokeWidth = 11F
+        hourHandPaint.strokeCap = Paint.Cap.ROUND
         hourHandPaint.isAntiAlias = true
 
         // Minute hand
         minuteHandPaint.style = Paint.Style.STROKE
         minuteHandPaint.color = linesColor.data
         minuteHandPaint.strokeWidth = 9F
+        minuteHandPaint.strokeCap = Paint.Cap.ROUND
         minuteHandPaint.isAntiAlias = true
 
         // Second hand
         secondHandPaint.style = Paint.Style.STROKE
         secondHandPaint.color = accentColor.data
         secondHandPaint.strokeWidth = 6F
+        secondHandPaint.strokeCap = Paint.Cap.ROUND
         secondHandPaint.isAntiAlias = true
     }
 
