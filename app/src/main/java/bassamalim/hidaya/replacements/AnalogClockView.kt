@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -17,6 +18,7 @@ import kotlin.math.sin
 
 class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
+    private val calendar = Calendar.getInstance()
     private var center = 0F
     private var teethR = 0F
     private var numeralsR = 0F
@@ -30,11 +32,11 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
     private val minuteHandPaint = Paint()
     private val secondHandPaint = Paint()
     private var numerals: Array<String>
-    private var mHour = 0f
     private val bgColor = TypedValue()
     private val linesColor = TypedValue()
     private val accentColor = TypedValue()
     private var language: String
+    private var remaining = 0L
 
     init {
         setupPaint()
@@ -107,9 +109,12 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
+        calendar.timeInMillis = System.currentTimeMillis()
+
         drawTeeth(canvas!!)
         drawNumerals(canvas)
         drawHands(canvas)
+        drawArc(canvas)
 
         postInvalidateDelayed(500)
     }
@@ -138,14 +143,10 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
     }
 
     private fun drawHands(canvas: Canvas) {
-        val calendar: Calendar = Calendar.getInstance()
-        mHour = calendar.get(Calendar.HOUR_OF_DAY).toFloat()
-        //convert to 12hour format from 24 hour format
-        mHour = if (mHour > 12) mHour - 12 else mHour
-        val mMinute = calendar.get(Calendar.MINUTE).toFloat()
+        val time = getTime()
 
-        drawHourHand(canvas, (mHour + mMinute / 60F) * 5)
-        drawMinuteHand(canvas, mMinute)
+        drawHourHand(canvas, (time[0] + time[1] / 60F) * 5)
+        drawMinuteHand(canvas, time[1])
         drawSecondsHand(canvas, calendar.get(Calendar.SECOND).toFloat())
     }
 
@@ -182,8 +183,40 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
         )
     }
 
+    private fun drawArc(canvas: Canvas) {
+        val strokeWidth = 10
+
+        val start = strokeWidth / 2
+        val end = 2 * center - start
+        val rect = RectF(start.toFloat(), start.toFloat(), end, end)
+
+        val time = getTime()
+
+        val nowTheta = -90 + 30 * (time[0] + time[1] / 60F)
+        val thetaDiff = remaining / 1000 / 60 / 2F
+        canvas.drawArc(rect, nowTheta, thetaDiff, false, secondHandPaint)
+    }
+
     private fun getHandTheta(location: Float): Double {
         return Math.PI * location / 30 - Math.PI / 2
+    }
+
+    /**
+     * It returns an array of two floats, the hour and the minute
+     *
+     * @return An array of floats.
+     */
+    private fun getTime(): Array<Float> {
+        var hour = calendar.get(Calendar.HOUR_OF_DAY).toFloat()
+        //convert to 12hour format from 24 hour format
+        hour = if (hour > 12) hour - 12 else hour
+        val minute = calendar.get(Calendar.MINUTE).toFloat()
+
+        return arrayOf(hour, minute)
+    }
+
+    fun setRemaining(remaining: Long) {
+        this.remaining = remaining
     }
 
 }

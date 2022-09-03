@@ -8,7 +8,6 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
@@ -110,8 +109,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun count(till: Long) {
-        timer = object : CountDownTimer(till - System.currentTimeMillis(),
-            1000) {
+        timer = object : CountDownTimer(
+            till - System.currentTimeMillis(), 1000
+        ) {
             override fun onTick(millisUntilFinished: Long) {
                 val hours = millisUntilFinished / (60 * 60 * 1000) % 24
                 val minutes = millisUntilFinished / (60 * 1000) % 60
@@ -119,11 +119,14 @@ class HomeFragment : Fragment() {
 
                 val hms = String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
 
-                if (binding != null)
+                if (binding != null) {
                     binding!!.remainingTimeTv.text = String.format(
                         getString(R.string.remaining),
                         LangUtils.translateNums(requireContext(), hms, true)
                     )
+
+                    binding!!.clock.setRemaining(millisUntilFinished)
+                }
                 else cancel()
             }
 
@@ -167,10 +170,7 @@ class HomeFragment : Fragment() {
         val text = "${getString(R.string.page)} ${LangUtils.translateNums(requireContext(), page.toString())}"
         binding!!.werdText.text = text
 
-        if (pref.getBoolean("werd_done", false))
-            binding!!.werdIv.setImageDrawable(
-                AppCompatResources.getDrawable(requireContext(), R.drawable.ic_check)
-            )
+        if (pref.getBoolean("werd_done", false)) binding!!.werdIv.visibility = View.VISIBLE
 
         binding!!.readBtn.setOnClickListener {
             val intent = Intent(context, QuranViewer::class.java)

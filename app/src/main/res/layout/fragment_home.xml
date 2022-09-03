@@ -185,7 +185,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingVertical="10dp"
-                    android:paddingHorizontal="20dp">
+                    android:paddingHorizontal="30dp">
 
                     <TextView
                         android:id="@+id/werd_title"
@@ -194,21 +194,20 @@
                         android:text="@string/today_werd"
                         android:textSize="22sp"
                         android:fontFamily="@font/tajawal_regular"
-                        app:layout_constraintBottom_toTopOf="@id/werd_iv"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/werd_text"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
 
                     <TextView
                         android:id="@+id/werd_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
                         android:textSize="20sp"
                         android:fontFamily="@font/tajawal_regular"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toEndOf="@id/werd_title"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintBottom_toTopOf="@id/read_btn" />
+                        app:layout_constraintBottom_toTopOf="@id/werd_iv" />
 
                     <Button
                         android:id="@+id/read_btn"
@@ -231,6 +230,8 @@
                         android:id="@+id/werd_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:src="@drawable/ic_check"
+                        android:visibility="invisible"
                         app:layout_constraintTop_toBottomOf="@id/werd_text"
                         app:layout_constraintStart_toEndOf="@id/read_btn"
                         app:layout_constraintEnd_toEndOf="parent"
