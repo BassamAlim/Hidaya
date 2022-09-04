@@ -24,8 +24,8 @@ class AthanService : Service() {
     private var channelId = ""
     private lateinit var mediaPlayer: MediaPlayer
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        pid = intent.getSerializableExtra("id") as PID
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        pid = intent?.getSerializableExtra("id") as PID
 
         ActivityUtils.onActivityCreateSetLocale(this)
 

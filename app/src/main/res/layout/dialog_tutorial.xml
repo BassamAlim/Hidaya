@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layoutDirection="ltr"
-        android:padding="8dp"
+        android:padding="6dp"
         android:background="@drawable/ripple_circle"
         android:src="@drawable/ic_close"
         android:contentDescription="@string/close"
