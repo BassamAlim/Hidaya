@@ -425,8 +425,8 @@ class QuranViewer : SwipeActivity() {
             }
         }
 
-        binding.prevAyah.setOnClickListener { player!!.transportControls.skipToPrevious() }
-        binding.nextAyah.setOnClickListener { player!!.transportControls.skipToNext() }
+        binding.prevAyah.setOnClickListener { player?.transportControls?.skipToPrevious() }
+        binding.nextAyah.setOnClickListener { player?.transportControls?.skipToNext() }
 
         binding.recitationSettings.setOnClickListener {
             settingsDialog.launch(Intent(this, QuranSettingsDialog::class.java))

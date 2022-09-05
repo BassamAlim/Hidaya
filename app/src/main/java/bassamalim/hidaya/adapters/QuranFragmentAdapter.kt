@@ -66,10 +66,10 @@ class QuranFragmentAdapter(private val context: Context, private val original: A
         val tanzeel = card.getTanzeel()
         if (tanzeel == 0) // Makkah
             vh.tanzeelView.setImageDrawable(
-                AppCompatResources.getDrawable(context, R.drawable.ic_kaaba_black))
+                AppCompatResources.getDrawable(context, R.drawable.ic_kaaba))
         else if (tanzeel == 1) // Madina
             vh.tanzeelView.setImageDrawable(
-                AppCompatResources.getDrawable(context, R.drawable.ic_madinah))
+                AppCompatResources.getDrawable(context, R.drawable.ic_madina))
     }
 
     private fun doFavorites(vh: ViewHolder, item: Sura, position: Int) {
