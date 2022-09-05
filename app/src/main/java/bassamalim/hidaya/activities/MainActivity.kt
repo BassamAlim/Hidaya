@@ -8,7 +8,6 @@ import android.location.Location
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.preference.PreferenceManager
@@ -89,17 +88,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initNavBar() {
-        val navHostFragment: NavHostFragment =
-            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
-                    as NavHostFragment)
-        val navController: NavController = navHostFragment.navController
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navController = navHostFragment.navController
         setupWithNavController(binding.navView, navController)
     }
 
     private fun initFirebase() {
-        val configSettings: FirebaseRemoteConfigSettings = FirebaseRemoteConfigSettings.Builder()
+        val configSettings = FirebaseRemoteConfigSettings.Builder()
+                                    // update at most every six hours
             .setMinimumFetchIntervalInSeconds(3600 * 6).build()
-        // update at most every six hours
         remoteConfig?.setConfigSettingsAsync(configSettings)
         remoteConfig?.setDefaultsAsync(R.xml.remote_config_defaults)
     }
@@ -161,9 +159,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBootReceiver() {
         val receiver = ComponentName(this, DeviceBootReceiver::class.java)
-        val pm: PackageManager = applicationContext.packageManager
-
-        pm.setComponentEnabledSetting(
+        applicationContext.packageManager.setComponentEnabledSetting(
             receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP
         )
     }

@@ -27,10 +27,10 @@ class AboutActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.home.setOnClickListener { onBackPressed() }
 
-        setListener()
+        setupListener()
     }
 
-    private fun setListener() {
+    private fun setupListener() {
         binding.titleTv.setOnClickListener {
             counter++
             if (counter == 5) voala()
@@ -50,7 +50,7 @@ class AboutActivity : AppCompatActivity() {
         }
 
         binding.driveUpdate.setOnClickListener {
-            val url: String = FirebaseRemoteConfig.getInstance().getString(Global.UPDATE_URL)
+            val url = FirebaseRemoteConfig.getInstance().getString(Global.UPDATE_URL)
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)

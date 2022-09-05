@@ -7,7 +7,6 @@
     </declare-styleable>
 
     <declare-styleable name="MainTheme">
-        <!--  Colors  -->
         <attr name="myMainBg" format="color|reference" />
         <attr name="myPrimary" format="color|reference" />
         <attr name="myPrimaryDark" format="color|reference" />
@@ -24,9 +23,6 @@
         <attr name="myRipple" format="color|reference" />
         <attr name="myDialogBg" format="color|reference" />
         <attr name="mySeparator" format="color|reference" />
-
-        <!--  Drawables  -->
-        <attr name="myNavBar" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="QuranTheme">

@@ -43,7 +43,6 @@ import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PrefUtils
 
-
 class QuranViewer : SwipeActivity() {
 
     private lateinit var binding: ActivityQuranViewerBinding

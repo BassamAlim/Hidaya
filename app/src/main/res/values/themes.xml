@@ -58,7 +58,6 @@
         <item name="myActiveOnPrimaryDark">@color/accent_dark_M</item>
         <item name="myDialogBg">@color/primary_M</item>
         <item name="mySeparator">@color/grey</item>
-        <item name="myNavBar">@drawable/nav_bar_item_bg_m</item>
     </style>
 
     <style name="Theme.HidayaL" parent="MainAppTheme">
@@ -92,7 +91,6 @@
         <item name="myActiveOnPrimaryDark">@color/active_on_primary_dark_L</item>
         <item name="myDialogBg">@color/ripple_L</item>
         <item name="mySeparator">@color/black</item>
-        <item name="myNavBar">@drawable/nav_bar_item_bg_l</item>
     </style>
 
     <style name="Theme.HidayaN" parent="MainAppTheme">
@@ -126,7 +124,6 @@
         <item name="myActiveOnPrimaryDark">@color/active_on_primary_dark_N</item>
         <item name="myDialogBg">@color/primary_N</item>
         <item name="mySeparator">@color/black</item>
-        <item name="myNavBar">@drawable/nav_bar_item_bg_n</item>
     </style>
 
     <style name="QuranM" parent="Theme.HidayaM">
