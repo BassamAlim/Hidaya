@@ -41,9 +41,7 @@
 
             <ImageButton
                 android:id="@+id/fav_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ripple_surface"
+                style="@style/MyImageBtn"
                 android:contentDescription="@string/fav_btn_description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

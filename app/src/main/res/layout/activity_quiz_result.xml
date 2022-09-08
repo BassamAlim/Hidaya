@@ -2,16 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?myMainBg"
+    style="@style/MyRootView"
     tools:context=".activities.QuizResultActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         style="@style/MyTopBar"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/top_bar_title"
@@ -27,10 +25,9 @@
 
     <TextView
         android:id="@+id/result_screen"
+        style="@style/MyTV"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/myPrimary"
-        android:fontFamily="@font/tajawal_regular"
+        android:background="?myPrimary"
         android:padding="20dp"
         android:textColor="?attr/myOnPrimary"
         android:textSize="30sp"
@@ -39,13 +36,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?myMainBg"
-        app:layout_constrainedHeight="true"
+        style="@style/MyRecyclerView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/result_screen"
-        app:layout_constraintVertical_bias="0.0">
+        tools:ignore="MissingConstraints">
 
     </androidx.recyclerview.widget.RecyclerView>
 

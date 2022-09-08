@@ -5,16 +5,13 @@
 
     <Button
         android:id="@+id/btn"
+        style="@style/MyBtn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginVertical="3dp"
         android:layout_marginHorizontal="7dp"
         android:paddingHorizontal="40dp"
         android:paddingVertical="10dp"
-        android:layout_gravity="center"
         android:gravity="center"
-        android:textSize="22sp"
-        android:background="@drawable/ripple_surface"
-        android:fontFamily="@font/tajawal_regular" />
+        android:textSize="22sp" />
 
 </FrameLayout>

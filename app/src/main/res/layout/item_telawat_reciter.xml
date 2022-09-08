@@ -12,7 +12,7 @@
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="-23dp"
-        android:backgroundTint="?attr/myPrimary"
+        android:backgroundTint="?myPrimary"
         app:cardCornerRadius="20dp"
         app:cardPreventCornerOverlap="true">
 
@@ -26,32 +26,29 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="7dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="3dp">
 
                 <TextView
                     android:id="@+id/reciter_namescreen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:gravity="center"
                     android:paddingHorizontal="40dp"
                     android:paddingVertical="12dp"
-                    android:textColor="?attr/myOnPrimary"
+                    android:textColor="?myOnPrimary"
                     android:textSize="25dp"
                     android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     tools:ignore="SpUsage" />
 
                 <ImageButton
                     android:id="@+id/telawa_fav_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/ripple_primary"
+                    style="@style/MyImageBtn"
+                    android:background="@drawable/ripple_rectangle"
                     android:contentDescription="@string/fav_btn_description"
-                    android:padding="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -60,8 +57,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/versions_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                style="@style/MyRecyclerView">
 
             </androidx.recyclerview.widget.RecyclerView>
 

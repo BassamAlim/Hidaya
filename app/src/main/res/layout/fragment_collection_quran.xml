@@ -2,17 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?myMainBg">
+    style="@style/MyRootView">
 
     <Button
         android:id="@+id/continue_reading"
+        style="@style/MyBtn"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
         android:layout_margin="5dp"
-        android:background="@drawable/ripple_surface"
-        android:fontFamily="@font/tajawal_regular"
         android:hint="@string/continue_reading"
         android:textColor="?myAccent"
         android:textSize="19dp"
@@ -22,22 +18,16 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/myPrimary"
+        style="@style/MyTabLayout"
         app:layout_constraintBottom_toTopOf="@id/quran_pager"
         app:layout_constraintTop_toBottomOf="@id/continue_reading"
-        app:tabIndicatorColor="?attr/myActiveOnPrimary"
-        app:tabSelectedTextColor="?attr/myActiveOnPrimary"
-        app:tabTextAppearance="@style/TajwalTab"
-        app:tabTextColor="@color/text_M" />
+        tools:ignore="MissingConstraints" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/quran_pager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        style="@style/MyViewPager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
+        app:layout_constraintTop_toBottomOf="@id/tab_layout"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

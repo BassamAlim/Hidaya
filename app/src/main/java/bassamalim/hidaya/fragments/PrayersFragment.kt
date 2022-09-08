@@ -42,12 +42,13 @@ class PrayersFragment : Fragment() {
     private lateinit var pref: SharedPreferences
     private var currentDayChange = 0
     private lateinit var selectedDay: Calendar
+    private lateinit var prayTimes: PrayTimes
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentPrayersBinding.inflate(inflater, container, false)
-        val root: View = binding!!.root
+        val root = binding!!.root
 
         pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
         db = DBUtils.getDB(requireContext())
@@ -83,6 +84,7 @@ class PrayersFragment : Fragment() {
 
     private fun init() {
         location = MainActivity.location!!
+        prayTimes = PrayTimes(requireContext())
         prayerNames = resources.getStringArray(R.array.prayer_names)
         setViews()
     }
@@ -133,8 +135,6 @@ class PrayersFragment : Fragment() {
      */
     private fun getTimes(change: Int) {
         val timeFormat = PrefUtils.getTimeFormat(requireContext())
-
-        val prayTimes = PrayTimes(requireContext())
 
         val calendar = Calendar.getInstance()
         calendar[Calendar.DATE] = calendar[Calendar.DATE] + change

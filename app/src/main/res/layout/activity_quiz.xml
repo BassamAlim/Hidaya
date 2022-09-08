@@ -2,16 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?myMainBg"
+    style="@style/MyRootView"
     tools:context=".activities.QuizActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         style="@style/MyTopBar"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/top_bar_title"
@@ -26,15 +24,14 @@
 
     <TextView
         android:id="@+id/question_screen"
+        style="@style/MyTV"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:background="?attr/myPrimary"
+        android:background="?myPrimary"
         android:elevation="10dp"
-        android:fontFamily="@font/tajawal_regular"
         android:paddingHorizontal="20dp"
         android:paddingVertical="15dp"
-        android:textColor="?attr/myOnPrimary"
+        android:textColor="?myOnPrimary"
         android:textSize="35dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

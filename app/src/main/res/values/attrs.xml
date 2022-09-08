@@ -23,6 +23,7 @@
         <attr name="myRipple" format="color|reference" />
         <attr name="myDialogBg" format="color|reference" />
         <attr name="mySeparator" format="color|reference" />
+        <attr name="myShadow" format="color|reference" />
     </declare-styleable>
 
     <declare-styleable name="QuranTheme">

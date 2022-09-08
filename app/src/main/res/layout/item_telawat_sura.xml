@@ -15,28 +15,23 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/ripple_surface"
-            android:gravity="center">
+            android:paddingHorizontal="6dp"
+            android:gravity="center"
+            android:background="@drawable/ripple_surface">
 
             <ImageButton
                 android:id="@+id/sura_fav_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="-60dp"
-                android:background="@drawable/ripple_surface"
+                style="@style/MyImageBtn"
+                android:layoutDirection="ltr"
+                android:background="@drawable/ripple_rectangle"
                 android:contentDescription="@string/fav_btn_description"
-                android:padding="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/sura_namescreen"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:fontFamily="@font/tajawal_regular"
-                android:gravity="center"
+                style="@style/MyTV"
                 android:paddingHorizontal="40dp"
                 android:paddingVertical="10dp"
                 android:textSize="22sp"
@@ -49,16 +44,15 @@
                 android:id="@+id/state_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layoutDirection="ltr"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageButton
                     android:id="@+id/download_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ripple_surface"
-                    android:padding="10dp"
+                    style="@style/MyImageBtn"
+                    android:background="@drawable/ripple_rectangle"
                     android:contentDescription="@string/download"/>
 
                 <ProgressBar

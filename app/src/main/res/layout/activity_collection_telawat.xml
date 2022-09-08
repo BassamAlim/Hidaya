@@ -2,17 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?myMainBg"
+    style="@style/MyRootView"
     android:orientation="vertical"
     tools:context=".activities.TelawatCollectionActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         style="@style/MyTopBar"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/top_bar_title"
@@ -28,11 +26,10 @@
 
     <Button
         android:id="@+id/continue_listening"
+        style="@style/MyBtn"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="5dp"
-        android:background="@drawable/ripple_surface"
-        android:fontFamily="@font/tajawal_regular"
         android:hint="@string/continue_listening"
         android:paddingHorizontal="4dp"
         android:paddingVertical="2dp"
@@ -42,18 +39,10 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/myPrimary"
-        app:tabIndicatorColor="?attr/myActiveOnPrimary"
-        app:tabSelectedTextColor="?attr/myActiveOnPrimary"
-        app:tabTextAppearance="@style/TajwalTab"
-        app:tabTextColor="@color/text_M" />
+        style="@style/MyTabLayout" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/telawat_pager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        style="@style/MyViewPager" />
 
 </LinearLayout>

@@ -12,12 +12,10 @@
 
     <TextView
         android:id="@+id/dialog_title_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/MyTV"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:fontFamily="@font/tajawal_regular"
         android:textSize="23dp"
         android:textStyle="bold"
         tools:ignore="SpUsage" />
@@ -40,11 +38,9 @@
 
         <Button
             android:id="@+id/select_all_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MyBtn"
             android:layout_marginHorizontal="5dp"
             android:background="@drawable/ripple_rectangle"
-            android:fontFamily="@font/tajawal_regular"
             android:paddingHorizontal="10dp"
             android:text="@string/select_all"
             android:textColor="?attr/myAccent"
@@ -53,11 +49,9 @@
 
         <Button
             android:id="@+id/unselect_all_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MyBtn"
             android:layout_marginHorizontal="5dp"
             android:background="@drawable/ripple_rectangle"
-            android:fontFamily="@font/tajawal_regular"
             android:paddingHorizontal="10dp"
             android:text="@string/unselect_all"
             android:textColor="?attr/myAccent"
@@ -68,11 +62,9 @@
 
     <Button
         android:id="@+id/finish_btn"
+        style="@style/MyBtn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:background="@drawable/ripple_surface"
-        android:fontFamily="@font/tajawal_regular"
         android:paddingVertical="10dp"
         android:text="@string/select"
         android:textColor="?attr/myActiveOnPrimary"

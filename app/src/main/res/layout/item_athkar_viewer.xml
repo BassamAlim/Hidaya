@@ -89,12 +89,10 @@
 
                 <ImageButton
                     android:id="@+id/reference_btn"
+                    style="@style/MyImageBtn"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ripple_surface"
-                    android:contentDescription="@string/source_btn_description"
-                    android:paddingVertical="10dp"
-                    android:src="@drawable/ic_help" />
+                    android:src="@drawable/ic_help"
+                    android:contentDescription="@string/source_btn_description" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

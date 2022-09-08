@@ -2,9 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?myMainBg"
+    style="@style/MyRootView"
     tools:context=".fragments.HomeFragment">
 
     <ScrollView
@@ -18,13 +16,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/clock_card"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:cardBackgroundColor="?mySurface"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="10dp"
-                app:cardMaxElevation="12dp"
-                app:cardPreventCornerOverlap="true"
+                style="@style/MyCard"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/telawat_time_card">
 
@@ -46,12 +38,10 @@
 
                     <TextView
                         android:id="@+id/prayer_name_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/MyTV"
                         android:layout_marginTop="5dp"
                         android:textSize="24sp"
                         android:textStyle="bold"
-                        android:fontFamily="@font/tajawal_regular"
                         app:layout_constraintTop_toBottomOf="@id/clock"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -59,10 +49,8 @@
 
                     <TextView
                         android:id="@+id/prayer_time_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/MyTV"
                         android:textSize="24sp"
-                        android:fontFamily="@font/tajawal_regular"
                         app:layout_constraintTop_toBottomOf="@id/prayer_name_tv"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -70,11 +58,9 @@
 
                     <TextView
                         android:id="@+id/remaining_time_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/MyTV"
                         android:layout_marginBottom="15dp"
                         android:textSize="24sp"
-                        android:fontFamily="@font/tajawal_regular"
                         app:layout_constraintTop_toBottomOf="@id/prayer_time_tv"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -86,13 +72,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/telawat_time_card"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:cardBackgroundColor="?mySurface"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="10dp"
-                app:cardMaxElevation="12dp"
-                app:cardPreventCornerOverlap="true"
+                style="@style/MyCard"
                 app:layout_constraintTop_toBottomOf="@id/clock_card"
                 app:layout_constraintBottom_toTopOf="@id/quran_pages_card">
 
@@ -104,21 +84,17 @@
 
                     <TextView
                         android:id="@+id/telawat_time_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/MyTV"
                         android:text="@string/telawat_time_record_title"
                         android:textSize="20sp"
-                        android:fontFamily="@font/tajawal_regular"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
                     <TextView
                         android:id="@+id/telawat_time_duration"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/MyTV"
                         android:textSize="28sp"
-                        android:fontFamily="@font/tajawal_regular"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -129,13 +105,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/quran_pages_card"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:cardBackgroundColor="?mySurface"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="10dp"
-                app:cardMaxElevation="12dp"
-                app:cardPreventCornerOverlap="true"
+                style="@style/MyCard"
                 app:layout_constraintTop_toBottomOf="@id/telawat_time_card"
                 app:layout_constraintBottom_toTopOf="@id/werd_card">
 
@@ -147,9 +117,7 @@
 
                     <TextView
                         android:id="@+id/quran_pages_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/tajawal_regular"
+                        style="@style/MyTV"
                         android:text="@string/quran_pages_record_title"
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -158,10 +126,8 @@
 
                     <TextView
                         android:id="@+id/quran_pages_num"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/MyTV"
                         android:textSize="28sp"
-                        android:fontFamily="@font/tajawal_regular"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent" />
@@ -172,13 +138,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/werd_card"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:cardBackgroundColor="?mySurface"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="10dp"
-                app:cardMaxElevation="12dp"
-                app:cardPreventCornerOverlap="true"
+                style="@style/MyCard"
                 app:layout_constraintTop_toBottomOf="@id/quran_pages_card"
                 app:layout_constraintBottom_toBottomOf="parent">
 
@@ -190,21 +150,17 @@
 
                     <TextView
                         android:id="@+id/werd_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/MyTV"
                         android:text="@string/today_werd"
                         android:textSize="22sp"
-                        android:fontFamily="@font/tajawal_regular"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
 
                     <TextView
                         android:id="@+id/werd_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/MyTV"
                         android:layout_marginStart="20dp"
                         android:textSize="20sp"
-                        android:fontFamily="@font/tajawal_regular"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toEndOf="@id/werd_title"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -233,10 +189,11 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_check"
                         android:visibility="invisible"
+                        android:contentDescription="@string/already_read_description"
                         app:layout_constraintTop_toBottomOf="@id/werd_text"
                         app:layout_constraintStart_toEndOf="@id/read_btn"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintBottom_toBottomOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>

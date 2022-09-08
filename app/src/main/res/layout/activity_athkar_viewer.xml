@@ -2,16 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?myMainBg"
+    style="@style/MyRootView"
     tools:context=".activities.AthkarViewer">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         style="@style/MyTopBar"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/top_bar_title"
@@ -26,12 +24,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constrainedHeight="true"
+        style="@style/MyRecyclerView"
         app:layout_constraintBottom_toTopOf="@id/bottom_bar"
         app:layout_constraintTop_toBottomOf="@id/top_bar"
-        app:layout_constraintVertical_bias="0.0">
+        tools:ignore="MissingConstraints">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -46,15 +42,13 @@
 
         <ImageButton
             android:id="@+id/text_size_ib"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MyImageBtn"
             android:layout_gravity="center"
             android:layout_marginHorizontal="15dp"
             android:layout_marginVertical="5dp"
             android:background="@drawable/ripple_circle"
-            android:contentDescription="@string/bookmark_page_button_description"
-            android:padding="10dp"
-            android:src="@drawable/ic_text_size" />
+            android:src="@drawable/ic_text_size"
+            android:contentDescription="@string/bookmark_page_button_description" />
 
         <SeekBar
             android:id="@+id/text_size_sb"

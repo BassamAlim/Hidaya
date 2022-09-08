@@ -9,8 +9,7 @@
 
     <ImageButton
         android:id="@+id/close_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/MyImageBtn"
         android:layoutDirection="ltr"
         android:padding="6dp"
         android:background="@drawable/ripple_circle"
@@ -31,10 +30,8 @@
 
         <TextView
             android:id="@+id/text_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MyTV"
             android:maxWidth="300dp"
-            android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
             android:textSize="20dp"
             app:layout_constraintTop_toTopOf="parent"
@@ -53,11 +50,9 @@
 
         <TextView
             android:id="@+id/do_not_show_again_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MyTV"
             android:layout_marginTop="20dp"
             android:layout_marginStart="5dp"
-            android:fontFamily="@font/tajawal_regular"
             android:text="@string/do_not_show_again"
             android:textColor="?myAccent"
             android:textSize="20dp"

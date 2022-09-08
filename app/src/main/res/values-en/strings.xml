@@ -82,6 +82,7 @@
     <string name="bookmark_page_button_description">Save Page</string>
     <string name="filter_search_description">Filter search</string>
     <string name="source_btn_description">Show reference</string>
+    <string name="already_read_description">Already read</string>
 
     <!-- Tips -->
     <string name="prayers_tips">Click on the prayer name to edit prayer preferences.\n\n Click on the right and left arrows in the bottom of the screen to view other days prayer times .. Then click on the text between the arrows to return to the current day.</string>

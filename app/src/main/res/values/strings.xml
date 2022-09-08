@@ -103,6 +103,7 @@
     <string name="bookmark_page_button_description">حفظ الصفحة</string>
     <string name="filter_search_description">تصفية البحث</string>
     <string name="source_btn_description">إظهار المرجع</string>
+    <string name="already_read_description">تمت القراءة</string>
 
     <!-- Tips -->
     <string name="prayers_tips">اضغط على اسم الصلاة لعرض اعدادات كل صلاة.\n\nاضغط على السهمين الايمن والايسر في اسفل الشاشة لاظهار اوقات صلاة الايام الاخرى .. ثم اضغط على النص بين السهمين للعودة الى اليوم الحالي.</string>

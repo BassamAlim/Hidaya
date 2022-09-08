@@ -2,19 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?myMainBg"
+    style="@style/MyRootView"
     tools:context=".activities.WelcomeActivity">
 
     <TextView
         android:id="@+id/welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/MyTV"
         android:text="@string/welcome_message"
         android:textSize="30sp"
-        android:fontFamily="@font/tajawal_regular"
-        android:lineSpacingExtra="6dp"
         app:layout_constraintBottom_toTopOf="@id/scrollview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,10 +36,8 @@
 
     <Button
         android:id="@+id/save_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/MyBtn"
         android:layout_marginBottom="15dp"
-        android:background="@drawable/ripple_surface"
         android:text="@string/save"
         android:textColor="?myAccent"
         android:textSize="22dp"

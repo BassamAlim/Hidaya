@@ -15,10 +15,8 @@
         android:src="@drawable/compass_calibration" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/MyTV"
         android:layout_marginTop="-150dp"
-        android:fontFamily="@font/tajawal_regular"
         android:paddingHorizontal="35dp"
         android:text="@string/qibla_warning"
         android:textColor="@android:color/holo_red_dark"

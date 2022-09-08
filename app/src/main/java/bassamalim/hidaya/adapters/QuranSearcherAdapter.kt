@@ -18,12 +18,10 @@ class QuranSearcherAdapter(private val context: Context, private val items: List
 
     private val suraStr: String = context.getString(R.string.sura)
     private val tafseerString: String = context.getString(R.string.tafseer)
-    private val suraNumString: String = context.getString(R.string.sura_number)
     private val pageNumString: String = context.getString(R.string.page_number)
     private val ayaNumString: String = context.getString(R.string.aya_number)
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val suraNumTv: TextView
         val suraNameTv: TextView
         val pageNumTv: TextView
         val ayaNumTv: TextView
@@ -32,7 +30,6 @@ class QuranSearcherAdapter(private val context: Context, private val items: List
         val gotoPageBtn: Button
 
         init {
-            suraNumTv = view.findViewById(R.id.sura_num_tv)
             suraNameTv = view.findViewById(R.id.sura_name_tv)
             pageNumTv = view.findViewById(R.id.page_num_tv)
             ayaNumTv = view.findViewById(R.id.aya_num_tv)
@@ -51,10 +48,6 @@ class QuranSearcherAdapter(private val context: Context, private val items: List
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val card = items[position]
-
-        val suraNumStr = "$suraNumString " +
-                LangUtils.translateNums(context, card.getSurahName(), false)
-        viewHolder.suraNumTv.text = suraNumStr
 
         val suraNameStr = suraStr + " " + card.getSurahName()
         viewHolder.suraNameTv.text = suraNameStr

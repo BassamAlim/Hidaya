@@ -2,16 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?myMainBg"
+    style="@style/MyRootView"
     tools:context=".activities.QiblaActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         style="@style/MyTopBar"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/top_bar_title"
@@ -71,33 +69,29 @@
 
         <TextView
             android:id="@+id/accuracy_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/tajawal_regular"
-            android:gravity="center"
+            style="@style/MyTV"
             android:paddingHorizontal="20dp"
             android:textColor="?myAccent"
             android:textSize="20sp" />
 
         <ImageButton
             android:id="@+id/accuracy_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MyImageBtn"
             android:contentDescription="@string/accuracy_indicator_description" />
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/distance_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/MyTV"
         android:layout_marginBottom="100dp"
-        android:fontFamily="@font/tajawal_regular"
         android:gravity="center"
         android:text="@string/distance_to_kaaba"
         android:textSize="30dp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/accuracy_screen"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="SpUsage" />
 

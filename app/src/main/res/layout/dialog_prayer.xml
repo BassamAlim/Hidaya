@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:minWidth="250dp"
+    android:elevation="10dp"
     android:layout_gravity="center"
     android:background="@drawable/rounded_dialog_primary"
-    android:elevation="10dp"
-    android:minWidth="250dp"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/prayer_name_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/MyTV"
         android:layout_gravity="center"
         android:layout_marginBottom="15dp"
-        android:fontFamily="@font/tajawal_regular"
         android:textSize="23dp"
         android:textStyle="bold"
         tools:ignore="SpUsage" />
@@ -106,10 +104,8 @@
 
         <TextView
             android:id="@+id/seekbar_title_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MyTV"
             android:layout_marginBottom="10dp"
-            android:fontFamily="@font/tajawal_regular"
             android:text="@string/adjust_prayer_notification_time"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -118,10 +114,8 @@
 
         <TextView
             android:id="@+id/seekbar_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MyTV"
             android:layout_marginBottom="10dp"
-            android:fontFamily="@font/tajawal_regular"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/seekbar_title_tv"
             app:layout_constraintEnd_toEndOf="parent"

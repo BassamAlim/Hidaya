@@ -14,8 +14,8 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         style="@style/MyTopBar"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/top_bar_title"
@@ -26,20 +26,17 @@
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:iconifiedByDefault="false"
+        style="@style/MySearchView"
+        app:queryHint="@string/country_hint"
         app:layout_constraintTop_toBottomOf="@id/top_bar"
-        app:queryHint="@string/country_hint" />
+        tools:ignore="MissingConstraints" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constrainedHeight="true"
+        style="@style/MyRecyclerView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_view"
-        app:layout_constraintVertical_bias="0.0">
+        tools:ignore="MissingConstraints">
 
     </androidx.recyclerview.widget.RecyclerView>
 

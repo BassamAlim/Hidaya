@@ -2,18 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?myMainBg"
+    style="@style/MyRootView"
     tools:context=".fragments.LocationFragment">
 
     <TextView
         android:id="@+id/disclaimer"
+        style="@style/MyTV"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginVertical="40dp"
         android:layout_marginHorizontal="20dp"
-        android:fontFamily="@font/tajawal_regular"
         android:gravity="center"
         android:text="@string/disclaimer"
         android:textSize="25sp"
@@ -32,32 +29,30 @@
 
         <Button
             android:id="@+id/locate"
+            style="@style/MyBtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
             android:layout_marginHorizontal="20dp"
             android:backgroundTint="?myAccent"
-            android:fontFamily="@font/tajawal_regular"
             android:text="@string/locate"
             android:textColor="?myMainBg"
             android:textSize="22sp" />
 
         <Button
             android:id="@+id/choose_manually"
+            style="@style/MyBtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
             android:layout_marginHorizontal="20dp"
-            android:backgroundTint="?attr/mySurface"
-            android:fontFamily="@font/tajawal_regular"
             android:text="@string/choose_manually"
             android:textSize="22sp" />
 
         <Button
             android:id="@+id/reject"
+            style="@style/MyBtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
             android:layout_marginHorizontal="20dp"
-            android:backgroundTint="?attr/mySurface"
-            android:fontFamily="@font/tajawal_regular"
             android:text="@string/rejected"
             android:textSize="22sp" />
 

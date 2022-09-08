@@ -16,13 +16,12 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingHorizontal="10dp"
             android:background="@drawable/ripple_surface">
 
             <TextView
                 android:id="@+id/chapter_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/tajawal_regular"
+                style="@style/MyTV"
                 android:gravity="center"
                 android:maxWidth="600dp"
                 android:paddingHorizontal="40dp"
@@ -36,12 +35,9 @@
 
             <ImageButton
                 android:id="@+id/fav_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/ripple_surface"
+                style="@style/MyImageBtn"
+                android:background="@drawable/ripple_rectangle"
                 android:contentDescription="@string/fav_btn_description"
-                android:padding="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

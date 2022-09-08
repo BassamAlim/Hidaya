@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="?attr/mySurfaceDark">
-
-    <item android:id="@android:id/mask">
-        <shape>
-            <corners android:radius="10dp" />
-            <solid android:color="@color/black" />
-        </shape>
-    </item>
+    android:color="?myRipple">
 
     <item>
         <shape>
             <corners android:radius="10dp" />
-            <solid android:color="?attr/myPrimary" />
+            <solid android:color="?myPrimary" />
         </shape>
     </item>
 

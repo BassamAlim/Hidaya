@@ -32,6 +32,74 @@
         <item name="android:layout_gravity">start</item>
     </style>
 
+    <style name="MyCard" parent="CardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="cardBackgroundColor">?mySurface</item>
+        <item name="cardCornerRadius">15dp</item>
+        <item name="cardElevation">10dp</item>
+        <item name="cardMaxElevation">12dp</item>
+        <item name="cardPreventCornerOverlap">true</item>
+    </style>
+
+    <style name="MyTV" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/tajawal_regular</item>
+        <item name="android:lineSpacingExtra">5dp</item>
+    </style>
+
+    <style name="MyBtn" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/ripple_surface</item>
+        <item name="android:elevation">10dp</item>
+        <item name="android:fontFamily">@font/tajawal_regular</item>
+    </style>
+
+    <style name="MyImageBtn" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/ripple_surface</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="MyRecyclerView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="layout_constrainedHeight">true</item>
+        <item name="layout_constraintVertical_bias">0.0</item>
+    </style>
+
+    <style name="MyRootView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">?myMainBg</item>
+    </style>
+
+    <style name="MySearchView" parent="Widget.AppCompat.SearchView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="iconifiedByDefault">false</item>
+    </style>
+
+    <style name="MyTabLayout" parent="Widget.Design.TabLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">?myPrimary</item>
+        <item name="tabIndicatorColor">?myActiveOnPrimary</item>
+        <item name="tabTextAppearance">@style/TajwalTab</item>
+        <item name="tabTextColor">@color/text_M</item>
+        <item name="tabSelectedTextColor">?myActiveOnPrimary</item>
+    </style>
+
+    <style name="MyViewPager">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
     <style name="PrayerDialogAnimation">
         <item name="android:windowEnterAnimation">@anim/prayer_dialog_show</item>
         <item name="android:windowExitAnimation">@anim/prayer_dialog_hide</item>
@@ -103,15 +171,17 @@
         <item name="android:paddingEnd">25dp</item>
         <item name="android:textSize" tools:ignore="SpUsage">35dp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/tajawal_regular</item>
     </style>
 
     <style name="PrayerDelayTv" parent="Widget.AppCompat.TextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:textSize" tools:ignore="SpUsage">25dp</item>
-        <item name="android:textColor">?myAccent</item>
         <item name="android:padding">5dp</item>
         <item name="android:gravity">center</item>
+        <item name="android:textSize" tools:ignore="SpUsage">25dp</item>
+        <item name="android:textColor">?myAccent</item>
+        <item name="android:fontFamily">@font/tajawal_regular</item>
     </style>
 
     <style name="MySpinnerItem" parent="TextAppearance.AppCompat.Widget.DropDownItem">

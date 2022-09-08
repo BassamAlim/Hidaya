@@ -2,16 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?myMainBg"
+    style="@style/MyRootView"
     tools:context=".activities.QuranSearcherActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         style="@style/MyTopBar"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/top_bar_title"
@@ -35,9 +33,7 @@
 
         <TextView
             android:id="@+id/search_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/tajawal_regular"
+            style="@style/MyTV"
             android:text="@string/search_for_quran_text"
             android:textSize="18dp"
             android:textStyle="bold"
@@ -49,22 +45,18 @@
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/search_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/MySearchView"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="15dp"
-            app:iconifiedByDefault="false"
+            app:queryHint="@string/text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/search_title"
-            app:queryHint="@string/text" />
+            app:layout_constraintTop_toBottomOf="@id/search_title" />
 
         <TextView
             android:id="@+id/spinner_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MyTV"
             android:layout_marginVertical="10dp"
-            android:fontFamily="@font/tajawal_regular"
             android:text="@string/max_num_of_marches"
             android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -88,8 +80,7 @@
 
     <TextView
         android:id="@+id/not_found_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/MyTV"
         android:layout_marginTop="50dp"
         android:text="@string/no_results"
         android:textColor="?myAccent"
@@ -102,12 +93,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constrainedHeight="true"
+        style="@style/MyRecyclerView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/spec_space"
-        app:layout_constraintVertical_bias="0.0">
+        tools:ignore="MissingConstraints">
 
     </androidx.recyclerview.widget.RecyclerView>
 

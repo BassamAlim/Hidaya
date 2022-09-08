@@ -2,16 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?myMainBg"
+    style="@style/MyRootView"
     tools:context=".activities.DateConverter">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_bar"
         style="@style/MyTopBar"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/top_bar_title"
@@ -39,12 +37,8 @@
 
             <Button
                 android:id="@+id/hijri_to_gregorian_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/MyBtn"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/ripple_surface"
-                android:elevation="10dp"
-                android:fontFamily="@font/tajawal_regular"
                 android:padding="15dp"
                 android:text="@string/pick_hijri_date"
                 android:textSize="25dp"
@@ -52,13 +46,9 @@
 
             <Button
                 android:id="@+id/gregorian_to_hijri_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/MyBtn"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/ripple_surface"
-                android:elevation="10dp"
-                android:fontFamily="@font/tajawal_regular"
                 android:padding="15dp"
                 android:text="@string/pick_gregorian_date"
                 android:textSize="25dp"
@@ -77,9 +67,7 @@
 
                 <TextView
                     android:id="@+id/hijri_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:paddingTop="5dp"
                     android:paddingBottom="10dp"
                     android:text="@string/hijri_date"
@@ -91,10 +79,7 @@
 
                 <TextView
                     android:id="@+id/hijri_year"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
-                    android:gravity="center"
+                    style="@style/MyTV"
                     android:padding="10dp"
                     android:text="@string/year"
                     android:textSize="22dp"
@@ -105,9 +90,7 @@
 
                 <TextView
                     android:id="@+id/hijri_month"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:padding="10dp"
                     android:text="@string/month"
                     android:textSize="22dp"
@@ -118,9 +101,7 @@
 
                 <TextView
                     android:id="@+id/hijri_day"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:padding="10dp"
                     android:text="@string/day"
                     android:textSize="22dp"
@@ -131,10 +112,7 @@
 
                 <TextView
                     android:id="@+id/hijri_year_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
-                    android:gravity="center"
+                    style="@style/MyTV"
                     android:padding="10dp"
                     android:textSize="22dp"
                     app:layout_constraintEnd_toEndOf="@id/hijri_year"
@@ -144,9 +122,7 @@
 
                 <TextView
                     android:id="@+id/hijri_month_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:padding="10dp"
                     android:textSize="22dp"
                     app:layout_constraintEnd_toEndOf="@id/hijri_month"
@@ -156,9 +132,7 @@
 
                 <TextView
                     android:id="@+id/hijri_day_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:padding="10dp"
                     android:textSize="22dp"
                     app:layout_constraintEnd_toEndOf="@id/hijri_day"
@@ -180,9 +154,7 @@
 
                 <TextView
                     android:id="@+id/gregorian_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:paddingTop="5dp"
                     android:paddingBottom="10dp"
                     android:text="@string/gregorian_date"
@@ -194,9 +166,7 @@
 
                 <TextView
                     android:id="@+id/gregorian_year"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:padding="10dp"
                     android:text="@string/year"
                     android:textSize="22dp"
@@ -207,9 +177,7 @@
 
                 <TextView
                     android:id="@+id/gregorian_month"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:padding="10dp"
                     android:text="@string/month"
                     android:textSize="22dp"
@@ -220,9 +188,7 @@
 
                 <TextView
                     android:id="@+id/gregorian_day"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:padding="10dp"
                     android:text="@string/day"
                     android:textSize="22dp"
@@ -233,9 +199,7 @@
 
                 <TextView
                     android:id="@+id/gregorian_year_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:padding="10dp"
                     android:textSize="22dp"
                     app:layout_constraintEnd_toEndOf="@id/gregorian_year"
@@ -245,9 +209,7 @@
 
                 <TextView
                     android:id="@+id/gregorian_month_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:padding="10dp"
                     android:textSize="22dp"
                     app:layout_constraintEnd_toEndOf="@id/gregorian_month"
@@ -257,9 +219,7 @@
 
                 <TextView
                     android:id="@+id/gregorian_day_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/tajawal_regular"
+                    style="@style/MyTV"
                     android:padding="10dp"
                     android:textSize="22dp"
                     app:layout_constraintEnd_toEndOf="@id/gregorian_day"

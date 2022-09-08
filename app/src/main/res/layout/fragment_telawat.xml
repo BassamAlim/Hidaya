@@ -2,30 +2,25 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?myMainBg"
+    style="@style/MyRootView"
     tools:context=".fragments.TelawatFragment">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
+        style="@style/MySearchView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         app:defaultQueryHint="@string/reciters_hint"
-        app:iconifiedByDefault="false"
         app:layout_constraintEnd_toStartOf="@id/filter_ib"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/filter_ib"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ripple_circle"
-        android:contentDescription="@string/filter_search_description"
+        style="@style/MyImageBtn"
         android:layout_marginTop="5dp"
-        android:padding="10dp"
+        android:background="@drawable/ripple_circle"
         android:src="@drawable/ic_filter"
+        android:contentDescription="@string/filter_search_description"
         app:layout_constraintBottom_toTopOf="@id/recycler"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/search_view"
@@ -33,12 +28,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constrainedHeight="true"
+        style="@style/MyRecyclerView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_view"
-        app:layout_constraintVertical_bias="0.0">
+        tools:ignore="MissingConstraints">
 
     </androidx.recyclerview.widget.RecyclerView>
 

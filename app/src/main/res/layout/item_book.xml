@@ -12,20 +12,18 @@
         android:layout_marginHorizontal="10dp"
         android:layout_marginVertical="5dp"
         android:elevation="15dp"
-        android:padding="10dp"
         app:cardCornerRadius="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="@drawable/ripple_surface"
-            android:paddingHorizontal="20dp">
+            android:layout_height="wrap_content"
+            android:paddingVertical="25dp"
+            android:paddingHorizontal="20dp"
+            android:background="@drawable/ripple_surface">
 
             <TextView
                 android:id="@+id/title_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/tajawal_regular"
+                style="@style/MyTV"
                 android:textSize="25dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -43,12 +41,10 @@
 
                 <ImageButton
                     android:id="@+id/download_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ripple_surface"
-                    android:padding="10dp"
-                    android:contentDescription="@string/download"
-                    android:src="@drawable/ic_download"/>
+                    style="@style/MyImageBtn"
+                    android:background="@drawable/ripple_rectangle"
+                    android:src="@drawable/ic_download"
+                    android:contentDescription="@string/download"/>
 
                 <ProgressBar
                     android:id="@+id/buffering_circle"
