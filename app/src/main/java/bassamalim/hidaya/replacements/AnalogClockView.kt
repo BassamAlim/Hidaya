@@ -28,11 +28,15 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
     private val hourHandPaint = Paint()
     private val minuteHandPaint = Paint()
     private val secondHandPaint = Paint()
+    private val betweenArcPaint = Paint()
     private var numerals: Array<String>
     private val bgColor = TypedValue()
     private val linesColor = TypedValue()
     private val accentColor = TypedValue()
+    private val accentDarkColor = TypedValue()
     private var language: String
+    private var pastTime = 0L
+    private var upcomingTime = 0L
     private var remaining = 0L
 
     init {
@@ -49,6 +53,7 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
         context.theme.resolveAttribute(R.attr.myMainBg, bgColor, true)
         context.theme.resolveAttribute(R.attr.myText, linesColor, true)
         context.theme.resolveAttribute(R.attr.myAccent, accentColor, true)
+        context.theme.resolveAttribute(R.attr.myAccentDark, accentDarkColor, true)
 
         // Teeth
         teethPaint.style = Paint.Style.STROKE
@@ -81,6 +86,13 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
         secondHandPaint.strokeWidth = 6F
         secondHandPaint.strokeCap = Paint.Cap.ROUND
         secondHandPaint.isAntiAlias = true
+
+        // Between prayers arc
+        betweenArcPaint.style = Paint.Style.STROKE
+        betweenArcPaint.color = accentDarkColor.data
+        betweenArcPaint.strokeWidth = 6F
+        betweenArcPaint.strokeCap = Paint.Cap.ROUND
+        betweenArcPaint.isAntiAlias = true
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -114,7 +126,8 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
         drawTeeth(canvas!!)
         drawNumerals(canvas)
         drawHands(canvas)
-        drawArc(canvas)
+        if (pastTime != -1L) drawBetweenArc(canvas)
+        drawRemainingArc(canvas)
 
         postInvalidateDelayed(500)
     }
@@ -183,7 +196,19 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
         )
     }
 
-    private fun drawArc(canvas: Canvas) {
+    private fun drawBetweenArc(canvas: Canvas) {
+        val strokeWidth = 10
+
+        val start = strokeWidth / 2
+        val end = 2 * center - start
+        val rect = RectF(start.toFloat(), start.toFloat(), end, end)
+
+        val fromTheta = pastTime / 1000 / 60 / 2F
+        val thetaDiff = (upcomingTime - pastTime) / 1000 / 60 / 2F
+        canvas.drawArc(rect, fromTheta, thetaDiff, false, betweenArcPaint)
+    }
+
+    private fun drawRemainingArc(canvas: Canvas) {
         val strokeWidth = 10
 
         val start = strokeWidth / 2
@@ -215,7 +240,9 @@ class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, att
         return arrayOf(hour, minute)
     }
 
-    fun setRemaining(remaining: Long) {
+    fun update(pastTime: Long, upcomingTime: Long, remaining: Long) {
+        this.pastTime = pastTime
+        this.upcomingTime = upcomingTime
         this.remaining = remaining
     }
 

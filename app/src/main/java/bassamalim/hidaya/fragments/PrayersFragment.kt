@@ -41,7 +41,7 @@ class PrayersFragment : Fragment() {
     private lateinit var dayScreen: TextView
     private lateinit var pref: SharedPreferences
     private var currentDayChange = 0
-    private lateinit var selectedDay: Calendar
+    private val calendar = Calendar.getInstance()
     private lateinit var prayTimes: PrayTimes
 
     override fun onCreateView(
@@ -136,10 +136,8 @@ class PrayersFragment : Fragment() {
     private fun getTimes(change: Int) {
         val timeFormat = PrefUtils.getTimeFormat(requireContext())
 
-        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
         calendar[Calendar.DATE] = calendar[Calendar.DATE] + change
-
-        selectedDay = calendar
 
         val utcOffset = PTUtils.getUTCOffset(requireContext(), pref)
 
@@ -247,7 +245,7 @@ class PrayersFragment : Fragment() {
         if (currentDayChange == 0) dayScreen.text = getString(R.string.day)
         else {
             val hijri: Calendar = UmmalquraCalendar()
-            hijri.time = selectedDay.time
+            hijri.time = calendar.time
 
             val year = LangUtils.translateNums(
                 requireContext(), hijri[Calendar.YEAR].toString(), false

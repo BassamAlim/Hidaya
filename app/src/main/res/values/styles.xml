@@ -134,6 +134,7 @@
         <item name="mySurface">@color/surface_M</item>
         <item name="mySurfaceDark">@color/ripple_M</item>
         <item name="myAccent">@color/accent_M</item>
+        <item name="myRipple">@color/ripple_M</item>
     </style>
 
     <style name="RoundedDialogL" parent="Theme.AppCompat.Dialog">
@@ -148,6 +149,7 @@
         <item name="mySurface">@color/surface_L</item>
         <item name="mySurfaceDark">@color/ripple_L</item>
         <item name="myAccent">@color/accent_L</item>
+        <item name="myRipple">@color/ripple_L</item>
     </style>
 
     <style name="PrayerCard" parent="Base.CardView">

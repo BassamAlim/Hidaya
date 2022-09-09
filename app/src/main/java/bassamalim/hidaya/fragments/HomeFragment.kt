@@ -125,7 +125,12 @@ class HomeFragment : Fragment() {
                         LangUtils.translateNums(requireContext(), hms, true)
                     )
 
-                    binding!!.clock.setRemaining(millisUntilFinished)
+                    val past =
+                        if (upcoming == 0) -1L
+                        else times[upcoming - 1]!!.timeInMillis
+                    binding!!.clock.update(
+                        past, times[upcoming]!!.timeInMillis, millisUntilFinished
+                    )
                 }
                 else cancel()
             }
