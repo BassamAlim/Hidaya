@@ -162,7 +162,7 @@ class PrayersFragment : Fragment() {
                 1 -> images[i]!!.setImageDrawable(ResourcesCompat.getDrawable(requireContext()
                                     .resources, R.drawable.ic_silent, requireContext().theme))
                 0 -> images[i]!!.setImageDrawable(ResourcesCompat.getDrawable(requireContext()
-                                    .resources, R.drawable.ic_disabled, requireContext().theme))
+                                    .resources, R.drawable.ic_block, requireContext().theme))
             }
 
             val delay = pref.getInt("${PTUtils.mapID(i)} offset", 0)

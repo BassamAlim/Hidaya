@@ -26,14 +26,14 @@ class Alarms {
         setAll(gTimes)
     }
 
-    constructor(gContext: Context, PID: PID) {
+    constructor(gContext: Context, pid: PID) {
         context = gContext
         pref = PreferenceManager.getDefaultSharedPreferences(context)
 
-        if (PID.ordinal in 0..5)
-            setPrayerAlarm(PID, Keeper(context).retrieveTimes()!![PID.ordinal])
-        else if (PID.ordinal in 6..9)
-            setExtraAlarm(PID)
+        val times = PTUtils.getTimes(context) ?: return
+
+        if (pid.ordinal in 0..5) setPrayerAlarm(pid, times[pid.ordinal])
+        else if (pid.ordinal in 6..9) setExtraAlarm(pid)
     }
 
     /**

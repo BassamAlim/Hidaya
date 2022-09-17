@@ -56,13 +56,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun needed(): Boolean {
-        val lastDay = pref.getInt("last_day", 0)
-
-        val time = Calendar.getInstance()
-        time[Calendar.HOUR_OF_DAY] = Global.DAILY_UPDATE_HOUR
-        time[Calendar.MINUTE] = Global.DAILY_UPDATE_MINUTE
-
-        return lastDay != now[Calendar.DATE] && time.timeInMillis < now.timeInMillis
+        return pref.getInt("last_day", 0) != now[Calendar.DATE]
     }
 
     private fun locate() {
@@ -82,7 +76,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun update(location: Location?) {
-        var loc: Location? = location
+        var loc = location
         if (loc == null) {
             loc = Keeper(context).retrieveLocation()
             if (loc == null) {
@@ -93,21 +87,26 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
         Keeper(context, loc)
 
-        val times = PTUtils.getTimes(context, loc)
+        val times = PTUtils.getTimes(context, loc)!!
 
         Alarms(context, times)
 
-        updateWidget()
+        updateWidget(times)
 
         updated()
     }
 
-    private fun updateWidget() {
+    private fun updateWidget(times: Array<Calendar?>) {
         val intent = Intent(context, PrayersWidget::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        val ids = AppWidgetManager.getInstance(context.applicationContext)
-            .getAppWidgetIds(ComponentName(context.applicationContext, PrayersWidget::class.java))
+        intent.putExtra("times", times)
+
+        val ids = AppWidgetManager.getInstance(context.applicationContext).getAppWidgetIds(
+            ComponentName(context.applicationContext, PrayersWidget::class.java)
+        )
+
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+
         context.sendBroadcast(intent)
     }
 
@@ -129,7 +128,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun setTomorrow() {
-        val intent = Intent(context, DailyUpdateReceiver::class.java)
+        val intent = Intent(context.applicationContext, DailyUpdateReceiver::class.java)
         intent.action = "daily"
 
         val time = Calendar.getInstance()
@@ -138,11 +137,12 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         time[Calendar.MINUTE] = Global.DAILY_UPDATE_MINUTE
 
         val pendIntent = PendingIntent.getBroadcast(
-            context, 1210, intent,
+            context.applicationContext, 1210, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarm =
+            context.applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time.timeInMillis, pendIntent)
     }
 

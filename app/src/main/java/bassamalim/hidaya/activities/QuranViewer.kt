@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
@@ -79,6 +80,7 @@ class QuranViewer : SwipeActivity() {
     private var lastRecordedPage = 0
     private var tc: MediaControllerCompat.TransportControls? = null
     private var uiListener: AyahPlayerService.Coordinator? = null
+    private var bookmarkedPage = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,6 +133,8 @@ class QuranViewer : SwipeActivity() {
             if (theme == "ThemeL")
                 ForegroundColorSpan(resources.getColor(R.color.track_L, getTheme()))
             else ForegroundColorSpan(resources.getColor(R.color.track_M, getTheme()))
+
+        bookmarkedPage = pref.getInt("bookmarked_page", -1)
     }
 
     private fun checkFirstTime() {
@@ -308,6 +312,15 @@ class QuranViewer : SwipeActivity() {
         binding.suraName.text = currentSurah
         binding.pageNumber.text = currentPageText
 
+        if (currentPage == bookmarkedPage)
+            binding.bookmarkButton.setImageDrawable(
+                AppCompatResources.getDrawable(this, R.drawable.ic_bookmarked)
+            )
+        else
+            binding.bookmarkButton.setImageDrawable(
+                AppCompatResources.getDrawable(this, R.drawable.ic_bookmark)
+            )
+
         if (action == "by_surah" && !scrolled) {
             if (viewType == "page") scrollTo(target.top)
             scrolled = true
@@ -397,12 +410,16 @@ class QuranViewer : SwipeActivity() {
 
     private fun setupListeners() {
         binding.bookmarkButton.setOnClickListener {
+            bookmarkedPage = currentPage
+
             val editor = pref.edit()
             editor.putInt("bookmarked_page", currentPage)
             editor.putInt("bookmarked_sura", surahIndex)
             editor.apply()
 
-            Toast.makeText(this, getString(R.string.page_bookmarked), Toast.LENGTH_SHORT).show()
+            binding.bookmarkButton.setImageDrawable(
+                AppCompatResources.getDrawable(this, R.drawable.ic_bookmarked)
+            )
         }
 
         binding.playPause.setOnClickListener {

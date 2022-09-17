@@ -28,7 +28,7 @@
         android:layout_gravity="end|bottom"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="10dp"
-        android:backgroundTint="?attr/myPrimary"
+        android:backgroundTint="?myPrimary"
         android:contentDescription="@string/search_in_quran"
         android:src="@drawable/ic_quran_search"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"

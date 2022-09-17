@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.enums.PID
+import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.other.Global
 import java.text.SimpleDateFormat
@@ -18,8 +19,12 @@ import java.util.*
 object PTUtils {
 
     fun getTimes(
-        context: Context, loc: Location, calendar: Calendar = Calendar.getInstance()
-    ): Array<Calendar?> {
+        context: Context,
+        loc: Location? = Keeper(context).retrieveLocation(),
+        calendar: Calendar = Calendar.getInstance()
+    ): Array<Calendar?>? {
+        if (loc == null) return null
+
         val prayTimes = PrayTimes(context)
         val utcOffset = getUTCOffset(context).toDouble()
 
@@ -27,8 +32,12 @@ object PTUtils {
     }
 
     fun getStrTimes(
-        context: Context, loc: Location, calendar: Calendar = Calendar.getInstance()
-    ): ArrayList<String> {
+        context: Context,
+        loc: Location? = Keeper(context).retrieveLocation(),
+        calendar: Calendar = Calendar.getInstance()
+    ): ArrayList<String>? {
+        if (loc == null) return null
+
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
 
         val prayTimes = PrayTimes(context)

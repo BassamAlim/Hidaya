@@ -90,7 +90,7 @@ class PrayerDialog(
         rButtons[3] = popup.contentView.findViewById(R.id.athan_rb)
 
         drawables = IntArray(4)
-        drawables[0] = R.drawable.ic_disabled
+        drawables[0] = R.drawable.ic_block
         drawables[1] = R.drawable.ic_silent
         drawables[2] = R.drawable.ic_sound
         drawables[3] = R.drawable.ic_speaker

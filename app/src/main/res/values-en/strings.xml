@@ -88,7 +88,7 @@
     <string name="prayers_tips">Click on the prayer name to edit prayer preferences.\n\n Click on the right and left arrows in the bottom of the screen to view other days prayer times .. Then click on the text between the arrows to return to the current day.</string>
     <string name="quran_tips">Double click the aya to view its tafseer.\n\n Click on an aya then click on the play button in the bottom bar to start playing from that aya.\n\n You can change the reciter while recitation is playing.</string>
     <string name="quran_fragment_tips">You can click on the button in the bottom corner of the screen to search in the quran.</string>
-    <string name="books_activity_tips">You can click on the button in the bottom corner of the screen to search in the books.</string>
+    <string name="books_activity_tips">You can click on the button in the bottom corner of the screen to search in the downloaded books.</string>
 
     <!-- Hints -->
     <string name="quran_query_hint">Search for sura name or page number</string>

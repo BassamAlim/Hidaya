@@ -64,9 +64,9 @@ class MainActivity : AppCompatActivity() {
 
         setupListeners()
 
-        setAlarms()
-
         dailyUpdate()
+
+        setAlarms()
 
         setupBootReceiver()
     }
