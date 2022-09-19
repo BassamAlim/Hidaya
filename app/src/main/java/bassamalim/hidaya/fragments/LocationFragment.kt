@@ -167,13 +167,11 @@ class LocationFragment: Fragment() {
         var loc = location
 
         val intent = Intent(context, MainActivity::class.java)
-        if (loc == null) {
-            loc = Keeper(requireContext()).retrieveLocation()
-            intent.putExtra("located", loc != null)
-        }
-        else intent.putExtra("located", true)
+        if (loc == null) loc = Keeper(requireContext()).retrieveLocation()
+        intent.putExtra("located", loc != null)
         intent.putExtra("location", loc)
         startActivity(intent)
+
         activity?.finish()
     }
 
