@@ -308,6 +308,8 @@ class AyahPlayerService : Service(),
         override fun onPlay() {
             Log.i(Global.TAG, "In onPlay of AyahPlayerService")
 
+            buildNotification()
+
             coordinator.onUiUpdate(PlaybackStateCompat.STATE_PLAYING)
             updateNotification(true)
 

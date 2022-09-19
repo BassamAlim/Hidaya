@@ -136,6 +136,8 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         override fun onPlay() {
             Log.i(Global.TAG, "In onPlay of TelawatService")
 
+            buildNotification()
+
             // Request audio focus for playback, this registers the afChangeListener
             val result = am.requestAudioFocus(audioFocusRequest)
 
@@ -613,7 +615,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             var bufferingLevel = 0L
             try {
                 bufferingLevel = (player.duration * ratio).toLong()
-            } catch (e: Exception) {}
+            } catch (_: Exception) {}
             updatePbState(controller.playbackState.state, bufferingLevel)
         }
 

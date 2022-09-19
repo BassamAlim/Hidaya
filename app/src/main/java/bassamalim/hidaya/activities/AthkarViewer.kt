@@ -62,7 +62,7 @@ class AthkarViewer : AppCompatActivity() {
         for (i in thikrs.indices) {
             val t: ThikrsDB = thikrs[i]
 
-            if (language == "en" && (t.getTextEn()!!.isEmpty())) continue
+            if (language == "en" && (t.getTextEn() == null || t.getTextEn()!!.isEmpty())) continue
 
             if (language == "en")
                 items.add(
