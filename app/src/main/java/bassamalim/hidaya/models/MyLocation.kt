@@ -15,7 +15,7 @@ data class MyLocation(val loc: Location) : Serializable {
     private var elapsedRealtimeUncertaintyNanos = 0.0
     val latitude = loc.latitude
     val longitude = loc.longitude
-    val provider: String = loc.provider
+    val provider: String? = loc.provider
     val speed = loc.speed
     var speedAccuracyMetersPerSecond = 0f
     var verticalAccuracyMeters = 0f
