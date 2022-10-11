@@ -51,6 +51,7 @@ fun SearchView(
         onValueChange = { value -> state.value = value },
         modifier = modifier
             .fillMaxWidth()
+            .padding(horizontal = 6.dp)
             .drawWithContent {
                 drawContent()
                 clipRect { // Not needed if you do not care about painting half stroke outside
@@ -63,9 +64,10 @@ fun SearchView(
                             strokeWidth = strokeWidth,
                             cap = StrokeCap.Square,
                             start = Offset.Zero.copy(x = 20F, y = y - 15),
-                            end = Offset(x = size.width - 140F, y = y - 15)
+                            end = Offset(x = size.width - 120F, y = y - 15)
                         )
-                    } else {
+                    }
+                    else {
                         drawLine(
                             brush = SolidColor(color),
                             strokeWidth = strokeWidth,
@@ -105,8 +107,19 @@ fun SearchView(
                 }
             }
         },
+        placeholder = {
+            MyText(
+                text = hint,
+                fontSize = 18.sp,
+                textColor = AppTheme.colors.weakText
+            )
+        },
         singleLine = true,
         shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = { onSubmit() }
+        ),
         colors = TextFieldDefaults.textFieldColors(
             textColor = Color.White,
             cursorColor = Color.White,
@@ -116,20 +129,6 @@ fun SearchView(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
-        ),
-        placeholder = {
-            MyText(
-                text = hint,
-                modifier = Modifier.padding(horizontal = 10.dp),
-                fontSize = 18.sp,
-                textColor = AppTheme.colors.weakText
-            )
-        },
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                onSubmit()
-            }
         )
     )
 }

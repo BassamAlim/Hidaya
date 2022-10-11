@@ -15,11 +15,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -30,6 +30,8 @@ import bassamalim.hidaya.replacements.AnalogClockView
 import bassamalim.hidaya.ui.components.MyButton
 import bassamalim.hidaya.ui.components.MySurface
 import bassamalim.hidaya.ui.components.MyText
+import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.ui.theme.Positive
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
 import bassamalim.hidaya.utils.PrefUtils
@@ -52,6 +54,9 @@ class HomeScreen(
     private val upcomingPrayerTime = mutableStateOf("")
     private val remainingTime = mutableStateOf("")
     private val werdDone = mutableStateOf(false)
+    private val pastTime = mutableStateOf(0L)
+    private val upcomingTime = mutableStateOf(0L)
+    private val remaining = mutableStateOf(0L)
 
     init {
         if (located) setupPrayersCard()
@@ -134,9 +139,10 @@ class HomeScreen(
                 val past =
                     if (upcomingPrayer.value == 0) -1L
                     else times[upcomingPrayer.value - 1]!!.timeInMillis
-                /*binding!!.clock.update(
-                    past, times[upcomingPrayer.value]!!.timeInMillis, millisUntilFinished
-                )*/
+
+                pastTime.value = past
+                upcomingTime.value = times[upcomingPrayer.value]!!.timeInMillis
+                remaining.value = millisUntilFinished
             }
 
             override fun onFinish() {
@@ -171,8 +177,6 @@ class HomeScreen(
 
     @Composable
     fun HomeUI() {
-        val context = LocalContext.current
-
         Column(
             Modifier
                 .fillMaxSize()
@@ -181,7 +185,9 @@ class HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MySurface(
-                Modifier.fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 3.dp)
             ) {
                 Column(
                     Modifier.fillMaxWidth(),
@@ -197,6 +203,7 @@ class HomeScreen(
                         },
                         update = { view ->
                             // Update the view
+                            view.update(pastTime, upcomingTime, remaining)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -206,25 +213,23 @@ class HomeScreen(
                     MyText(
                         text =
                             if (located)
-                                stringArrayResource(
-                                    id = R.array.prayer_names
-                                )[upcomingPrayer.value]
+                                stringArrayResource(id = R.array.prayer_names)[upcomingPrayer.value]
                             else "",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(5.dp)
+                        modifier = Modifier.padding(3.dp)
                     )
 
                     MyText(
                         text = upcomingPrayerTime.value,
                         fontSize = 24.sp,
-                        modifier = Modifier.padding(5.dp)
+                        modifier = Modifier.padding(3.dp)
                     )
 
                     MyText(
                         text = remainingTime.value,
                         fontSize = 24.sp,
-                        modifier = Modifier.padding(top = 5.dp, bottom = 15.dp)
+                        modifier = Modifier.padding(top = 3.dp, bottom = 15.dp)
                     )
                 }
             }
@@ -235,12 +240,13 @@ class HomeScreen(
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp, horizontal = 20.dp),
+                        .padding(vertical = 14.dp, horizontal = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    MyText(text = stringResource(id = R.string.telawat_time_record_title))
+                    MyText(stringResource(id = R.string.telawat_time_record_title))
 
-                    MyText(text = getTelawatRecord())
+                    MyText(getTelawatRecord(), fontSize = 30.sp)
                 }
             }
 
@@ -250,14 +256,22 @@ class HomeScreen(
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp, horizontal = 20.dp),
+                        .padding(vertical = 14.dp, horizontal = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    MyText(text = stringResource(id = R.string.quran_pages_record_title))
+                    MyText(
+                        stringResource(id = R.string.quran_pages_record_title),
+                        textAlign = TextAlign.Start
+                    )
 
-                    MyText(text = LangUtils.translateNums(
-                        context, pref.getInt("quran_pages_record", 0).toString(), false
-                    ))
+                    MyText(
+                        LangUtils.translateNums(
+                            context,
+                            pref.getInt("quran_pages_record", 0).toString(),
+                            false),
+                        fontSize = 30.sp
+                    )
                 }
             }
 
@@ -265,28 +279,35 @@ class HomeScreen(
                 Modifier.fillMaxWidth()
             ) {
                 Column(
-                    Modifier.fillMaxWidth(),
+                    Modifier.fillMaxWidth()
+                        .padding(vertical = 14.dp, horizontal = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     val werdPage = pref.getInt("today_werd_page", 25)
                     Row(
                         Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        MyText(text = stringResource(id = R.string.today_werd))
+                        MyText(stringResource(id = R.string.today_werd), fontSize = 22.sp)
 
                         MyText(
-                            text = context.getString(R.string.page) +
-                                    " ${LangUtils.translateNums(context, werdPage.toString())}"
+                            context.getString(R.string.page) +
+                                    " ${LangUtils.translateNums(context, werdPage.toString())}",
+                            fontSize = 22.sp
                         )
                     }
 
                     Row(
                         Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceAround
                     ) {
                         MyButton(
-                            text = stringResource(id = R.string.go_to_page)
+                            text = stringResource(id = R.string.go_to_page),
+                            textColor = AppTheme.colors.accent,
+                            elevation = 0,
+                            innerPadding = PaddingValues(0.dp)
                         ) {
                             val intent = Intent(context, QuranViewer::class.java)
                             intent.action = "by_page"
@@ -299,7 +320,9 @@ class HomeScreen(
                             contentDescription = stringResource(
                                 id = R.string.already_read_description
                             ),
+                            tint = Positive,
                             modifier = Modifier
+                                .size(40.dp)
                                 .alpha(if (werdDone.value) 1F else 0F)
                         )
                     }

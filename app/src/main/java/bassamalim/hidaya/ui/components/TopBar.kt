@@ -25,10 +25,7 @@ fun MyTopBar(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        Box(
-            Modifier
-                .height(32.dp)
-        ) {
+        Box {
             MyBackBtn(onBackPressed)
 
             Row(

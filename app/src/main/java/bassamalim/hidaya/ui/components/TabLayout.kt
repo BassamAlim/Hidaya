@@ -1,8 +1,6 @@
 package bassamalim.hidaya.ui.components
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.Icon
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
@@ -11,8 +9,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.ui.theme.AppTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -24,7 +22,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun TabLayout(
     pagerState: PagerState,
-    pagesInfo: List<Pair<String, Painter>>,
+    pagesInfo: List<String>,
     extraComponents: @Composable () -> Unit = {},
     tabsContent: @Composable (Int) -> Unit
 ) {
@@ -47,7 +45,7 @@ fun TabLayout(
 @Composable
 fun Tabs(
     pagerState: PagerState,
-    pagesInfo: List<Pair<String, Painter>>
+    pagesInfo: List<String>
 ) {
     // creating a variable for the scope.
     val scope = rememberCoroutineScope()
@@ -73,28 +71,16 @@ fun Tabs(
         pagesInfo.forEachIndexed { index, _ ->
             // creating a tab.
             Tab(
-                // specifying icon for each tab item and we are calling image from the list which we have created.
-                icon = {
-                    Icon(
-                        painter = pagesInfo[index].second,
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        tint = AppTheme.colors.onPrimary
-                    )
-                },
-                // specifying the text for the each tab item and we are calling data from the list which we have created.
                 text = {
                     MyText(
-                        text = pagesInfo[index].first,
-                        // specifying the text color for the text in that tab
+                        text = pagesInfo[index],
+                        fontSize = 18.sp,
                         textColor =
-                            if (pagerState.currentPage == index) Color.White
-                            else Color.LightGray
+                            if (pagerState.currentPage == index) AppTheme.colors.accent
+                            else AppTheme.colors.text
                     )
                 },
-                // specifying the tab which is selected.
                 selected = pagerState.currentPage == index,
-                // specifying the on click for the tab which is selected.
                 onClick = {
                     // specifying the scope.
                     scope.launch {

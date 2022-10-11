@@ -18,6 +18,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 @Composable
 fun MySurface(
     modifier: Modifier = Modifier,
+    cornerRadius: Dp = 10.dp,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
@@ -26,7 +27,7 @@ fun MySurface(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(6.dp),
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(cornerRadius),
             color = AppTheme.colors.surface,
             elevation = 10.dp
         ) {

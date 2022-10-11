@@ -26,7 +26,9 @@ fun MyButton(
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     textColor: Color = AppTheme.colors.text,
+    elevation: Int = 10,
     enabled: Boolean = true,
+    innerPadding: PaddingValues = PaddingValues(0.dp),
     image: @Composable () -> Unit = {},
     onClick: () -> Unit
 ) {
@@ -36,8 +38,8 @@ fun MyButton(
         colors = ButtonDefaults.buttonColors(backgroundColor = AppTheme.colors.surface),
         shape = RoundedCornerShape(10.dp),
         elevation =  ButtonDefaults.elevation(
-            defaultElevation = 10.dp,
-            pressedElevation = 15.dp,
+            defaultElevation = elevation.dp,
+            pressedElevation = (elevation + 5).dp,
             disabledElevation = 0.dp
         ),
         enabled = enabled
@@ -50,7 +52,7 @@ fun MyButton(
 
             MyText(
                 text = text,
-                modifier = Modifier.padding(6.dp),
+                modifier = Modifier.padding(innerPadding),
                 fontSize = fontSize,
                 fontWeight = fontWeight,
                 textColor = textColor

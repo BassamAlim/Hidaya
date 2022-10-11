@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import android.location.Location
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentManager
@@ -21,6 +24,7 @@ import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.ui.components.MyIconBtn
 import bassamalim.hidaya.ui.components.MySurface
 import bassamalim.hidaya.ui.components.MyText
+import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
@@ -51,6 +55,10 @@ class PrayersScreen(
 
             goToToday()
         }
+    }
+
+    fun onResume() {
+        if (located) updateDayScreen()
     }
 
     private fun goToToday() {
@@ -148,23 +156,28 @@ class PrayersScreen(
     @Composable
     fun PrayersUI() {
         Column(
-            Modifier.fillMaxSize(),
+            Modifier
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MySurface(
-                Modifier.fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 5.dp)
             ) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 5.dp),
+                        .padding(vertical = 5.dp, horizontal = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     MyText(text = if (located) getLocationName() else "")
 
                     MyIconBtn(
-                        iconId = R.drawable.ic_location
+                        iconId = R.drawable.ic_location,
+                        description = stringResource(id = R.string.locate),
+                        tint = AppTheme.colors.text
                     ) {
                         supportFragmentManager.beginTransaction().replace(
                             R.id.nav_host_fragment_activity_main,
@@ -174,10 +187,20 @@ class PrayersScreen(
                 }
             }
 
-            for (pid in prayerNames.indices) PrayerCard(pid)
+            Column(
+                Modifier
+                    .weight(1F)
+                    .padding(vertical = 10.dp, horizontal = 6.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.SpaceAround
+            ) {
+                for (pid in prayerNames.indices) PrayerCard(pid)
+            }
 
             MySurface(
-                Modifier.fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 5.dp, end = 5.dp, bottom = 5.dp)
             ) {
                 Row(
                     Modifier
@@ -188,7 +211,8 @@ class PrayersScreen(
                 ) {
                     MyIconBtn(
                         iconId = R.drawable.ic_left_arrow,
-                        description = stringResource(id = R.string.previous_day_button_description)
+                        description = stringResource(id = R.string.previous_day_button_description),
+                        tint = AppTheme.colors.text
                     ) {
                         previousDay()
                     }
@@ -201,7 +225,8 @@ class PrayersScreen(
 
                     MyIconBtn(
                         iconId = R.drawable.ic_right_arrow,
-                        description = stringResource(id = R.string.next_day_button_description)
+                        description = stringResource(id = R.string.next_day_button_description),
+                        tint = AppTheme.colors.text
                     ) {
                         nextDay()
                     }
@@ -219,17 +244,26 @@ class PrayersScreen(
                 .fillMaxWidth()
                 .clickable {
 //                    if (located) PrayerDialog(context, v!!, PTUtils.mapID(i)!!, prayerNames[i], refresher)
-                }
+                },
+            cornerRadius = 15.dp
         ) {
             Row(
-                Modifier.fillMaxWidth(),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp, horizontal = 20.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                MyText(text = if (located) "${prayerNames[pid]}: ${formattedTimes[pid]}" else "")
-
+                // Prayer name
                 MyText(
-                    text =
+                    if (located) "${prayerNames[pid]}: ${formattedTimes[pid]}" else "",
+                    fontSize = 33.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Row {
+                    // Delay
+                    MyText(
                         if (delay > 0) LangUtils.translateNums(
                             context, "+$delay", false
                         )
@@ -237,25 +271,29 @@ class PrayersScreen(
                             context, delay.toString(), false
                         )
                         else ""
-                )
-
-                val notificationType = pref.getInt(
-                    "${PTUtils.mapID(pid)} notification_type",
-                    if (pid == 1) 0 else 2
-                )
-                Icon(
-                    painter = painterResource(id =
-                        when (notificationType) {
-                            3 -> R.drawable.ic_speaker
-                            1 -> R.drawable.ic_silent
-                            0 -> R.drawable.ic_block
-                            else -> R.drawable.ic_sound
-                        }
-                    ),
-                    contentDescription = stringResource(
-                        id = R.string.notification_image_description
                     )
-                )
+
+                    // Notification type
+                    val notificationType = pref.getInt(
+                        "${PTUtils.mapID(pid)} notification_type",
+                        if (pid == 1) 0 else 2
+                    )
+                    Icon(
+                        painter = painterResource(
+                            when (notificationType) {
+                                3 -> R.drawable.ic_speaker
+                                1 -> R.drawable.ic_silent
+                                0 -> R.drawable.ic_block
+                                else -> R.drawable.ic_sound
+                            }
+                        ),
+                        contentDescription = stringResource(
+                            id = R.string.notification_image_description
+                        ),
+                        tint = AppTheme.colors.accent,
+                        modifier = Modifier.size(35.dp)
+                    )
+                }
             }
         }
     }

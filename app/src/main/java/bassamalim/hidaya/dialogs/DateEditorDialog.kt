@@ -11,22 +11,21 @@ import android.view.Window
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.compose.runtime.MutableState
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.other.DialogCallback
 import bassamalim.hidaya.utils.LangUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
-class DateEditorDialog(private val callback: DialogCallback) : DialogFragment() {
+class DateEditorDialog(private val dateOffset: MutableState<Int>) : DialogFragment() {
 
     private lateinit var pref: SharedPreferences
     private lateinit var dView: View
     private lateinit var calendar: UmmalquraCalendar
     private lateinit var dateTV: TextView
     private lateinit var offsetTV: TextView
-    private var oldOffset = 0
     private var offset = 0
 
     override fun onCreateView(
@@ -43,8 +42,7 @@ class DateEditorDialog(private val callback: DialogCallback) : DialogFragment() 
             dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
         }
 
-        oldOffset = pref.getInt("date_offset", 0)
-        offset = oldOffset
+        offset = dateOffset.value
 
         getDate()
 
@@ -108,7 +106,7 @@ class DateEditorDialog(private val callback: DialogCallback) : DialogFragment() 
 
             dialog!!.dismiss()
 
-            callback.refresh()
+            dateOffset.value = offset
         }
     }
 

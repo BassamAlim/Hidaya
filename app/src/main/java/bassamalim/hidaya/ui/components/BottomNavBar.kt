@@ -50,12 +50,15 @@ fun MyBottomNavigation(navController: NavController) {
         val currentRoute = navBackStackEntry?.destination?.route
         items.forEachIndexed { index, item ->
             BottomNavigationItem(
-                label = { MyText(text = titles[index], fontSize = 9.sp) },
+                label = {
+                    MyText(text = titles[index], fontSize = 10.sp)
+                },
+                alwaysShowLabel = false,
                 icon = {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = titles[index],
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier.size(24.dp)
                     )
                 },
                 selectedContentColor = AppTheme.colors.accent,

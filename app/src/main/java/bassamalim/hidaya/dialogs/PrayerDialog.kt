@@ -39,10 +39,10 @@ class PrayerDialog(
     }
 
     private fun showPopup() {
-        val inflater: LayoutInflater = view.context
-            .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val inflater =
+            view.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-        val popupView: View = inflater.inflate(
+        val popupView = inflater.inflate(
             R.layout.dialog_prayer, LinearLayout(context), false
         )
 

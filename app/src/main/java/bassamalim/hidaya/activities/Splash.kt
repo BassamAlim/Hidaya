@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
@@ -27,7 +26,7 @@ class Splash : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen: SplashScreen = installSplashScreen()
+        val splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition { true }
 
         super.onCreate(savedInstanceState)

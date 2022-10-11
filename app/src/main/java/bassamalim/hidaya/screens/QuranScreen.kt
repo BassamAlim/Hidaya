@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranViewer
@@ -26,6 +27,7 @@ import bassamalim.hidaya.dialogs.TutorialDialog
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.Sura
 import bassamalim.hidaya.ui.components.*
+import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PrefUtils
@@ -117,9 +119,12 @@ class QuranScreen(
                                     db.suarDao().getNameEn(bookmarkedSura)
                                 else db.suarDao().getName(bookmarkedSura)
                     },
+                fontSize = 18.sp,
+                textColor = AppTheme.colors.accent,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(5.dp)
+                    .padding(4.dp),
+                innerPadding = PaddingValues(vertical = 4.dp)
             ) {
                 if (bookmarkedPage.value != -1) {
                     val intent = Intent(context, QuranViewer::class.java)
@@ -132,8 +137,8 @@ class QuranScreen(
             TabLayout(
                 pagerState = pagerState,
                 pagesInfo = listOf(
-                    stringResource(R.string.all) to painterResource(id = R.drawable.ic_check),
-                    stringResource(R.string.favorite) to painterResource(id = R.drawable.ic_star)
+                    stringResource(R.string.all),
+                    stringResource(R.string.favorite)
                 ),
                 extraComponents = {
                     SearchView(
@@ -141,7 +146,7 @@ class QuranScreen(
                         hint = stringResource(id = R.string.quran_query_hint),
                         onSubmit = {
                             try {
-                                val num = textState.value.toString().toInt()
+                                val num = textState.value.text.toInt()
                                 if (num in 1..604) {
                                     val openPage = Intent(context, QuranViewer::class.java)
                                     openPage.action = "by_page"
@@ -179,7 +184,7 @@ class QuranScreen(
                     MySurface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 3.dp, horizontal = 5.dp),
+                            .padding(vertical = 3.dp, horizontal = 6.dp),
                         onClick = {
                             val intent = Intent(context, QuranViewer::class.java)
                             intent.action = "by_surah"
@@ -188,7 +193,9 @@ class QuranScreen(
                         }
                     ) {
                         Row(
-                            modifier = Modifier.padding(10.dp),
+                            modifier = Modifier.padding(
+                                top = 8.dp, bottom = 8.dp, start = 14.dp, end = 8.dp
+                            ),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {

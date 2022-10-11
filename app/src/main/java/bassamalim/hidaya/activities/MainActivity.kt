@@ -14,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,12 +29,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.dialogs.DateEditorDialog
-import bassamalim.hidaya.screens.*
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
-import bassamalim.hidaya.other.DialogCallback
 import bassamalim.hidaya.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.receivers.DeviceBootReceiver
+import bassamalim.hidaya.screens.*
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var theme: String
     private var times: Array<Calendar?>? = null
     private var currentScreen = mutableStateOf("")
+    private val dateOffset = mutableStateOf(0)
 
     private var homeScreen: HomeScreen? = null
     private var prayersScreen: PrayersScreen? = null
@@ -72,6 +73,7 @@ class MainActivity : AppCompatActivity() {
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
         theme = PrefUtils.getTheme(this, pref)
+        dateOffset.value = pref.getInt("date_offset", 0)
 
         getLocation()
 
@@ -102,8 +104,6 @@ class MainActivity : AppCompatActivity() {
 
             ActivityUtils.restartActivity(this)
         }
-
-        getTodayScreenContent()
     }
 
     override fun onPause() {
@@ -157,12 +157,12 @@ class MainActivity : AppCompatActivity() {
         sendBroadcast(intent)
     }
 
-    private fun getTodayScreenContent(): Array<String> {
+    private fun getTodayScreenContent(dateOffset: MutableState<Int>): Array<String> {
         val hijri = UmmalquraCalendar()
         val hDayName = resources.getStringArray(R.array.week_days)[hijri[Calendar.DAY_OF_WEEK] - 1]
 
         val millisInDay = 1000 * 60 * 60 * 24
-        hijri.timeInMillis = hijri.timeInMillis + pref.getInt("date_offset", 0) * millisInDay
+        hijri.timeInMillis = hijri.timeInMillis + dateOffset.value * millisInDay
 
         val hMonth = resources.getStringArray(R.array.hijri_months)[hijri[Calendar.MONTH]]
         var hijriStr = "$hDayName ${hijri[Calendar.DATE]} $hMonth ${hijri[Calendar.YEAR]}"
@@ -196,7 +196,6 @@ class MainActivity : AppCompatActivity() {
                     elevation = 8.dp,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp)
                 ) {
                     Box(
                         Modifier.fillMaxSize()
@@ -214,13 +213,7 @@ class MainActivity : AppCompatActivity() {
                                 Modifier
                                     .fillMaxHeight()
                                     .clickable {
-                                        DateEditorDialog(
-                                            object : DialogCallback {
-                                                override fun refresh() {
-                                                    getTodayScreenContent()
-                                                }
-                                            }
-                                        ).show(
+                                        DateEditorDialog(dateOffset).show(
                                             this@MainActivity.supportFragmentManager,
                                             "DateEditorDialog"
                                         )
@@ -233,7 +226,7 @@ class MainActivity : AppCompatActivity() {
                                         .padding(horizontal = 10.dp),
                                     horizontalAlignment = Alignment.End
                                 ) {
-                                    val content = getTodayScreenContent()
+                                    val content = getTodayScreenContent(dateOffset)
                                     MyText(
                                         text = content[0],
                                         fontSize = 16.sp,

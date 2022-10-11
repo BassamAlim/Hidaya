@@ -1,44 +1,47 @@
 package bassamalim.hidaya.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.MaterialTheme.typography
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.platform.LocalContext
+import bassamalim.hidaya.utils.PrefUtils
 
-private val DarkColorPalette = darkColors(
-    surface = SurfaceM,
-    onSurface = OnSurfaceM,
-    primary = PrimaryM,
-    onPrimary = OnPrimaryM
-)
+object AppTheme {
+    val colors: AppColors
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalColors.current
 
-private val LightColorPalette = lightColors(
-    surface = SurfaceL,
-    onSurface = OnSurfaceM,
-    primary = PrimaryL,
-    onPrimary = OnPrimaryL
-)
+    val typography: AppTypography
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalTypography.current
+
+    val dimensions: AppDimensions
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalDimensions.current
+}
 
 @Composable
-fun HidayaTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+fun AppTheme(
+    theme: String = PrefUtils.getTheme(LocalContext.current),
+    typography: AppTypography = AppTheme.typography,
+    dimensions: AppDimensions = AppTheme.dimensions,
     content: @Composable () -> Unit
 ) {
-    val systemUiController = rememberSystemUiController()
-    if (darkTheme) systemUiController.setSystemBarsColor(color = PrimaryM)
-    else systemUiController.setSystemBarsColor(color = PrimaryL)
 
-    val colors =
-        if (darkTheme) DarkColorPalette
-        else LightColorPalette
+    val colors = when (theme) {
+        "Dark" -> darkColors()
+        "Night" -> nightColors()
+        else -> lightColors()
+    }
 
-    MaterialTheme(
-        colors = colors,
-        typography = typography,
-        shapes = shapes,
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalColors provides colors,
+        LocalDimensions provides dimensions,
+        LocalTypography provides typography
+    ) {
+        content()
+    }
 }

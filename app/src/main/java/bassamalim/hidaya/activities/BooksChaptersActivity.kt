@@ -11,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -102,8 +101,8 @@ class BooksChaptersCollectionActivity : ComponentActivity() {
             TabLayout(
                 pagerState = pagerState,
                 pagesInfo = listOf(
-                    getString(R.string.all) to painterResource(id = R.drawable.ic_check),
-                    getString(R.string.favorite) to painterResource(id = R.drawable.ic_star)
+                    getString(R.string.all),
+                    getString(R.string.favorite)
                 ),
                 extraComponents = {
                     SearchView(
