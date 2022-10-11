@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import bassamalim.hidaya.R
-import bassamalim.hidaya.fragments.SettingsFragment
+import bassamalim.hidaya.screens.SettingsScreen
 import bassamalim.hidaya.utils.ActivityUtils
 
 class Settings : AppCompatActivity() {
@@ -18,7 +18,7 @@ class Settings : AppCompatActivity() {
 
         if (savedInstanceState == null)
             supportFragmentManager.beginTransaction()
-                .replace(R.id.settings, SettingsFragment.newInstance()).commit()
+                .replace(R.id.settings, SettingsScreen.newInstance()).commit()
     }
 
 }

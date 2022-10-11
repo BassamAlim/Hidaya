@@ -11,7 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityCollectionTelawatSuarBinding
 import bassamalim.hidaya.enums.ListType
-import bassamalim.hidaya.fragments.TelawatSuarFragment
+import bassamalim.hidaya.screens.TelawatSuarFragment
 import bassamalim.hidaya.utils.ActivityUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator

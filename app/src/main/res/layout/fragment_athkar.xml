@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MyRootView"
-    tools:context=".fragments.AthkarFragment">
+    tools:context=".screens.AthkarScreen">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -142,7 +142,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
                 android:elevation="@dimen/buttony_elevation"
-                android:text="@string/more"
+                android:text="@string/title_more"
                 app:layout_constraintTop_toBottomOf="@id/emotions"
                 app:layout_constraintStart_toEndOf="@id/places"
                 app:layout_constraintEnd_toEndOf="parent"

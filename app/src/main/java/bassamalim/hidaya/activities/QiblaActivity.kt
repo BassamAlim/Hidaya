@@ -2,20 +2,37 @@ package bassamalim.hidaya.activities
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.location.Location
 import android.os.Bundle
-import android.view.View
-import android.view.animation.Animation
-import android.view.animation.RotateAnimation
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Icon
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.databinding.ActivityQiblaBinding
 import bassamalim.hidaya.dialogs.CalibrationDialog
 import bassamalim.hidaya.helpers.Compass
+import bassamalim.hidaya.ui.components.MyIconBtn
+import bassamalim.hidaya.ui.components.MyScaffold
+import bassamalim.hidaya.ui.components.MyText
+import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.LangUtils
 import kotlin.math.*
@@ -23,22 +40,23 @@ import kotlin.math.*
 class QiblaActivity : AppCompatActivity() {
 
     private val kaabaLat = 21.4224779
-    private val kaabaLatInRad = Math.toRadians(kaabaLat)
     private val kaabaLng = 39.8251832
-    private lateinit var binding: ActivityQiblaBinding
+    private val kaabaLatInRad = Math.toRadians(kaabaLat)
     private var compass: Compass? = null
     private lateinit var location: Location
-    private var currentAzimuth = 0f
+    private var currentAzimuth = 0F
     private var distance = 0.0
-    private var bearing = 0f
+    private var bearing = 0F
+    private var compassAngle = mutableStateOf(0F)
+    private var qiblaAngle = mutableStateOf(0F)
+    private var accuracyState = mutableStateOf(0)
+    private var onPoint = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.myOnActivityCreated(this)
-        binding = ActivityQiblaBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.home.setOnClickListener { onBackPressed() }
+        ActivityUtils.onActivityCreateSetLocale(this)
 
+        val distanceStr: String
         if (MainActivity.located) {
             location = MainActivity.location!!
             distance = getDistance()
@@ -47,14 +65,19 @@ class QiblaActivity : AppCompatActivity() {
             setupCompass()
             compass?.start()
 
-            binding.distanceTv.text = String.format(
+            distanceStr = String.format(
                 getString(R.string.distance_to_kaaba),
-                LangUtils.translateNums(this, distance.toString(),
-                    false
-                ) + " " + getString(R.string.distance_unit))
-            binding.accuracyIndicator.setBackgroundColor(Color.TRANSPARENT)
+                LangUtils.translateNums(
+                    this, distance.toString(), false) + " " + getString(R.string.distance_unit)
+            )
         }
-        else binding.distanceTv.text = getString(R.string.location_permission_for_qibla)
+        else distanceStr = getString(R.string.location_permission_for_qibla)
+
+        setContent {
+            AppTheme {
+                UI(distanceStr)
+            }
+        }
     }
 
     private fun setupCompass() {
@@ -65,63 +88,39 @@ class QiblaActivity : AppCompatActivity() {
             && sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null
             && packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)
             && packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS))
-            compass = Compass(
-                this,
-                object : Compass.CompassListener {
-                    override fun onNewAzimuth(azimuth: Float) {
-                        adjust(azimuth)
-                        adjustNorthDial(azimuth)
-                    }
-
-                    override fun calibration(accuracy: Int) {
-                        updateAccuracy(accuracy)
-                    }
+            compass = Compass(this, object : Compass.CompassListener {
+                override fun onNewAzimuth(azimuth: Float) {
+                    adjust(azimuth)
+                    adjustNorthDial(azimuth)
                 }
-            )
-        else
-            binding.distanceTv.text = getString(R.string.feature_not_supported)
+
+                override fun calibration(accuracy: Int) {
+                    accuracyState.value = accuracy
+                }
+            })
+//        else binding.distanceTv.text = getString(R.string.feature_not_supported)
     }
 
     private fun adjust(azimuth: Float) {
         val target = bearing - currentAzimuth
-
-        val rotate: Animation = RotateAnimation(
-            target, -azimuth, Animation.RELATIVE_TO_SELF,
-            0.5f, Animation.RELATIVE_TO_SELF, 0.565f
-        )
-        rotate.duration = 500
-        rotate.repeatCount = 0
-        rotate.fillAfter = true
-        binding.qiblaPointer.startAnimation(rotate)
-
         currentAzimuth = azimuth
 
-        if (target > -2 && target < 2) binding.bingo.visibility = View.VISIBLE
-        else binding.bingo.visibility = View.INVISIBLE
+        qiblaAngle.value = target
+        onPoint.value = target > -2 && target < 2
     }
 
-    // maybe points north
     fun adjustNorthDial(azimuth: Float) {
-        val an: Animation = RotateAnimation(
-            -currentAzimuth, -azimuth,
-            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-            0.5f
-        )
         currentAzimuth = azimuth
-        an.duration = 500
-        an.repeatCount = 0
-        an.fillAfter = true
-        binding.compass.startAnimation(an)
+
+        compassAngle.value = -azimuth
     }
 
     private fun getDistance(): Double {
         val earthRadius = 6371.0
         val dLon = Math.toRadians(abs(location.latitude - kaabaLat))
         val dLat = Math.toRadians(abs(location.longitude - kaabaLng))
-        val a = sin(dLat / 2) * sin(dLat / 2) + (cos(
-            Math.toRadians(location.latitude)
-        ) * cos(Math.toRadians(kaabaLat))
-                * sin(dLon / 2) * sin(dLon / 2))
+        val a = sin(dLat / 2) * sin(dLat / 2) + (cos(Math.toRadians(location.latitude)) *
+                cos(Math.toRadians(kaabaLat)) * sin(dLon / 2) * sin(dLon / 2))
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
         distance = earthRadius * c
         distance = (distance * 10).toInt() / 10.0
@@ -129,41 +128,107 @@ class QiblaActivity : AppCompatActivity() {
     }
 
     private fun calculateBearing(): Float {
-        val result: Float
         val myLatRad = Math.toRadians(location.latitude)
         val lngDiff = Math.toRadians(kaabaLng - location.longitude)
         val y = sin(lngDiff) * cos(kaabaLatInRad)
-        val x = cos(myLatRad) * sin(kaabaLatInRad) - (sin(myLatRad)
-                * cos(kaabaLatInRad) * cos(lngDiff))
-        result = ((Math.toDegrees(atan2(y, x)) + 360) % 360).toFloat()
-        return result
+        val x = cos(myLatRad) * sin(kaabaLatInRad) -
+                (sin(myLatRad) * cos(kaabaLatInRad) * cos(lngDiff))
+        return ((Math.toDegrees(atan2(y, x)) + 360) % 360).toFloat()
     }
 
-    private fun updateAccuracy(accuracy: Int) {
-        when (accuracy) {
-            3 -> {
-                binding.accuracyText.setText(R.string.high_accuracy_text)
-                binding.accuracyIndicator.setImageDrawable(
-                    AppCompatResources.getDrawable(this, R.drawable.green_dot)
+    @Composable
+    private fun UI(distanceStr: String) {
+        MyScaffold(
+            title = stringResource(id = R.string.qibla),
+            onBackPressed = { onBackPressedDispatcher.onBackPressed() }
+        ) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = 20.dp,bottom = 100.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_check),
+                    contentDescription = "",
+                    tint = Color.Green,
+                    modifier = Modifier
+                        .alpha(if (onPoint.value) 1F else 0F)
                 )
-                binding.accuracyIndicator.setOnClickListener(null)
-            }
-            2 -> {
-                binding.accuracyText.setText(R.string.medium_accuracy_text)
-                binding.accuracyIndicator.setImageDrawable(
-                    AppCompatResources.getDrawable(this, R.drawable.yellow_dot)
-                )
-                binding.accuracyIndicator.setOnClickListener(null)
-            }
-            0, 1 -> {
-                binding.accuracyText.setText(R.string.low_accuracy_text)
-                binding.accuracyIndicator.setImageDrawable(
-                    AppCompatResources.getDrawable(this, R.drawable.ic_warning)
-                )
-                binding.accuracyIndicator.setOnClickListener {
-                    CalibrationDialog()
-                        .show(supportFragmentManager, CalibrationDialog.TAG)
+
+                Box(
+                    Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.compass),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .rotate(compassAngle.value)
+                            .padding(horizontal = 10.dp)
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.qibla_pointer),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .rotate(qiblaAngle.value)
+                            .padding(bottom = 26.dp)
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_qibla_kaaba),
+                        contentDescription = ""
+                    )
                 }
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    MyText(
+                        text = when(accuracyState.value) {
+                            2 -> { stringResource(id = R.string.medium_accuracy_text) }
+                            0, 1 -> { stringResource(id = R.string.low_accuracy_text) }
+                            else -> { stringResource(id = R.string.high_accuracy_text) }
+                        },
+                        modifier = Modifier.padding(horizontal = 12.dp)
+                    )
+
+                    when (accuracyState.value) {
+                        0, 1 -> {
+                            MyIconBtn(
+                                iconId = R.drawable.ic_warning,
+                                description = stringResource(
+                                    id = R.string.accuracy_indicator_description
+                                ),
+                                tint = Color(0xFFE2574C)
+                            ) {
+                                CalibrationDialog().show(
+                                    supportFragmentManager, CalibrationDialog.TAG
+                                )
+                            }
+                        }
+                        else -> {
+                            Box(
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        if (accuracyState.value == 2) Color(0xFF9FAA17)
+                                        else Color(0xFF1C8818)
+                                    )
+                            )
+                        }
+                    }
+                }
+
+                MyText(
+                    text = distanceStr,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

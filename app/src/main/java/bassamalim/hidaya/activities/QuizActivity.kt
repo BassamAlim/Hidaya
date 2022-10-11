@@ -2,142 +2,91 @@ package bassamalim.hidaya.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.TypedValue
-import android.widget.Button
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.database.dbs.QuizAnswersDB
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB
-import bassamalim.hidaya.databinding.ActivityQuizBinding
+import bassamalim.hidaya.ui.components.CustomRadioGroup
+import bassamalim.hidaya.ui.components.MyButton
+import bassamalim.hidaya.ui.components.MyScaffold
+import bassamalim.hidaya.ui.components.MyText
+import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.ui.theme.Grey
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import java.io.Serializable
 import java.util.*
 
-class QuizActivity : AppCompatActivity() {
+class QuizActivity : ComponentActivity() {
 
-    private lateinit var binding: ActivityQuizBinding
     private lateinit var db: AppDatabase
     private lateinit var questions: List<QuizQuestionsDB>
-    private var current = 0
     private val cAnswers = IntArray(10)
-    private lateinit var nextBtn: Button
-    private lateinit var prevBtn: Button
-    private lateinit var radioGroup: RadioGroup
-    private val answerBtns: Array<RadioButton?> = arrayOfNulls(4)
-    private lateinit var colorText: TypedValue
+    private val current = mutableStateOf(0)
+    private val currentAs = mutableStateListOf("", "", "", "")
+    private val selection = mutableStateOf(-1)
+    private val allAnswered = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.myOnActivityCreated(this)
-        binding = ActivityQuizBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.home.setOnClickListener { onBackPressed() }
+        ActivityUtils.onActivityCreateSetLocale(this)
 
         db = DBUtils.getDB(this)
 
-        colorText = TypedValue()
-        theme.resolveAttribute(R.attr.myText, colorText, true)
-
-        selectQuestions(getQuestions())
+        getQuestions()
 
         Arrays.fill(cAnswers, -1)
 
-        initViews()
+        ask(current.value)
 
-        setListeners()
-
-        ask(current)
-    }
-
-    private fun selectQuestions(rawQuestions: MutableList<QuizQuestionsDB?>) {
-        rawQuestions.shuffle()
-        questions = ArrayList<QuizQuestionsDB>(rawQuestions.subList(0, 10))
-    }
-
-    private fun initViews() {
-        nextBtn = binding.nextQuestion
-        prevBtn = binding.previousQuestion
-
-        radioGroup = binding.answersRadioGroup
-
-        answerBtns[0] = binding.answer1
-        answerBtns[1] = binding.answer2
-        answerBtns[2] = binding.answer3
-        answerBtns[3] = binding.answer4
-    }
-
-    private fun setListeners() {
-        for (i in answerBtns.indices) {
-            answerBtns[i]!!.setOnClickListener {answered(i)}
+        setContent {
+            AppTheme {
+                UI()
+            }
         }
+    }
 
-        prevBtn.setOnClickListener { previousQ() }
-        nextBtn.setOnClickListener { nextQ() }
+    private fun getQuestions() {
+        val rawQuestions = db.quizQuestionDao().all.toMutableList()
+        rawQuestions.shuffle()
+        questions = ArrayList(rawQuestions.subList(0, 10))
     }
 
     private fun ask(num: Int) {
+        current.value = num
+
         val q = questions[num]
+        val answers = db.quizAnswerDao().getAnswers(q.getQuestionId())
+        for (i in currentAs.indices) currentAs[i] = answers[i].answer_text!!
 
-        val qNum = getString(R.string.question) + " " + (current + 1)
-        binding.topBarTitle.text = qNum
-
-        binding.questionScreen.text = questions[current].getQuestionText()
-
-        val answers = getAnswers(q.getQuestionId())
-        for (i in answerBtns.indices) answerBtns[i]!!.text = answers[i].answer_text
-
-        adjustButtons()
-    }
-
-    private fun adjustButtons() {
-        radioGroup.clearCheck()
-        if (cAnswers[current] != -1) radioGroup.check(answerBtns[cAnswers[current]]!!.id)
-
-        if (current == 0) {
-            prevBtn.isEnabled = false
-            prevBtn.setTextColor(resources.getColor(R.color.grey, theme))
-        }
-        else if (current == 9) {
-            if (allAnswered()) {
-                nextBtn.text = getString(R.string.finish_quiz)
-                nextBtn.isEnabled = true
-                nextBtn.setTextColor(colorText.data)
-            }
-            else {
-                nextBtn.text = getString(R.string.answer_all_questions)
-                nextBtn.isEnabled = false
-                nextBtn.setTextColor(resources.getColor(R.color.grey, theme))
-            }
-        }
-        else {
-            prevBtn.isEnabled = true
-            prevBtn.setTextColor(colorText.data)
-
-            nextBtn.isEnabled = true
-            nextBtn.text = getString(R.string.next_question)
-            nextBtn.setTextColor(colorText.data)
-        }
+        selection.value = cAnswers[current.value]
     }
 
     private fun answered(a: Int) {
-        cAnswers[current] = a
+        cAnswers[current.value] = a
 
-        adjustButtons()
-
-        if (current != 9) nextQ()
+        allAnswered.value = allAnswered()
+        if (current.value != 9) nextQ()
     }
 
     private fun nextQ() {
-        if (current == 9) endQuiz()
-        else ask(++current)
+        if (current.value == 9) endQuiz()
+        else ask(++current.value)
     }
 
     private fun previousQ() {
-        if (current > 0) ask(--current)
+        if (current.value > 0) ask(--current.value)
     }
 
     private fun allAnswered(): Boolean {
@@ -162,12 +111,76 @@ class QuizActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun getQuestions(): MutableList<QuizQuestionsDB?> {
-        return db.quizQuestionDao().all.toMutableList()
-    }
+    @Composable
+    private fun UI() {
+        MyScaffold(
+            title = "${getString(R.string.question)} ${current.value + 1}",
+            onBackPressed = { onBackPressedDispatcher.onBackPressed() }
+        ) {
+            Column(
+                Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(AppTheme.colors.primary),
+                    contentAlignment = Alignment.Center
+                ) {
+                    MyText(
+                        text = questions[current.value].getQuestionText(),
+                        fontSize = 28.sp,
+                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
+                    )
+                }
 
-    private fun getAnswers(qId: Int): List<QuizAnswersDB> {
-        return db.quizAnswerDao().getAnswers(qId)
+                CustomRadioGroup(
+                    options = currentAs,
+                    selection = selection
+                ) { index ->
+                    answered(index)
+                }
+
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1F, false)
+                        .padding(bottom = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    MyButton(
+                        text = stringResource(id = R.string.previous_question),
+                        textColor =
+                            if (current.value == 0) Grey
+                            else AppTheme.colors.text
+                    ) {
+                        if (current.value != 0) previousQ()
+                    }
+
+                    MyButton(
+                        text = stringResource(id =
+                            if (current.value == 9) {
+                                if (allAnswered.value) R.string.finish_quiz
+                                else R.string.answer_all_questions
+                            }
+                            else R.string.next_question
+                        ),
+                        textColor =
+                            if (current.value == 9) {
+                                if (allAnswered.value) AppTheme.colors.text
+                                else Grey
+                            }
+                            else AppTheme.colors.text
+                    ) {
+                        if (current.value == 9) {
+                            if (allAnswered.value) nextQ()
+                        }
+                        else nextQ()
+                    }
+                }
+            }
+        }
     }
 
 }

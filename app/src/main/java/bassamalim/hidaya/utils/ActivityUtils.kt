@@ -15,8 +15,8 @@ object ActivityUtils {
     fun onActivityCreateSetTheme(activity: Activity): String {
         val theme = PrefUtils.getTheme(activity)
         when (theme) {
-            "ThemeM" -> activity.setTheme(R.style.Theme_HidayaM)
-            "ThemeR" -> activity.setTheme(R.style.Theme_HidayaN)
+            "Dark" -> activity.setTheme(R.style.Theme_HidayaM)
+            "Night" -> activity.setTheme(R.style.Theme_HidayaN)
             else -> activity.setTheme(R.style.Theme_HidayaL)
         }
         return theme

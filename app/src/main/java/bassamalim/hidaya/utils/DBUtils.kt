@@ -45,11 +45,8 @@ object DBUtils {
         val gson = Gson()
 
         if (surasJson.isNotEmpty()) {
-            val favSuras: Array<Any> = gson.fromJson(surasJson, Array<Any>::class.java)
-            for (i in favSuras.indices) {
-                val d = favSuras[i] as Double
-                db.suarDao().setFav(i, d.toInt())
-            }
+            val favSuras = gson.fromJson(surasJson, IntArray::class.java)
+            for (i in favSuras.indices) db.suarDao().setFav(i, favSuras[i])
         }
 
         if (recitersJson.isNotEmpty()) {

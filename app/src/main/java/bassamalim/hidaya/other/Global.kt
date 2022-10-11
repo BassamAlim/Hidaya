@@ -8,6 +8,7 @@ object Global {
     const val PLAY_ATHAN = "play_athan"
     const val STOP_ATHAN = "stop_athan"
     const val QURAN_PAGES = 604
+    const val QURAN_SURAS = 114
     const val QURAN_AYAS = 6236
     const val dbVer = 12
     const val DAILY_UPDATE_HOUR = 0

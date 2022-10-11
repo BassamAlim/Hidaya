@@ -2,28 +2,60 @@ package bassamalim.hidaya.activities
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import bassamalim.hidaya.databinding.ActivityQuizLobbyBinding
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import bassamalim.hidaya.R
+import bassamalim.hidaya.ui.components.MyButton
+import bassamalim.hidaya.ui.components.MyScaffold
+import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 
-class QuizLobbyActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityQuizLobbyBinding
+class QuizLobbyActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityUtils.myOnActivityCreated(this)
-        binding = ActivityQuizLobbyBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.home.setOnClickListener { onBackPressed() }
 
-        setListeners()
+        setContent {
+            AppTheme {
+                UI()
+            }
+        }
     }
 
-    private fun setListeners() {
-        binding.startQuiz.setOnClickListener {
-            val intent = Intent(this, QuizActivity::class.java)
-            startActivity(intent)
+    @Composable
+    private fun UI() {
+        val context = LocalContext.current
+
+        MyScaffold(
+            title = stringResource(id = R.string.quiz_title),
+            onBackPressed = { onBackPressedDispatcher.onBackPressed() }
+        ) {
+            Column(
+                Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                MyButton(
+                    text = stringResource(id = R.string.start_quiz),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    textColor = AppTheme.colors.accent
+                ) {
+                    val intent = Intent(context, QuizActivity::class.java)
+                    startActivity(intent)
+                }
+            }
         }
     }
 

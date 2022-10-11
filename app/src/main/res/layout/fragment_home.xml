@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MyRootView"
-    tools:context=".fragments.HomeFragment">
+    tools:context=".screens.HomeScreen">
 
     <ScrollView
         android:layout_width="match_parent"

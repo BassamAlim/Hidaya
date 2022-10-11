@@ -13,7 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityCollectionTelawatBinding
 import bassamalim.hidaya.enums.ListType
-import bassamalim.hidaya.fragments.TelawatFragment
+import bassamalim.hidaya.screens.TelawatFragment
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils

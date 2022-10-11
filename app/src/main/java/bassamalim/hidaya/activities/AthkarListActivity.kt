@@ -2,68 +2,67 @@ package bassamalim.hidaya.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
+import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.adapters.AthkarListAdapter
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AthkarDB
-import bassamalim.hidaya.database.dbs.ThikrsDB
-import bassamalim.hidaya.databinding.ActivityAthkarListBinding
 import bassamalim.hidaya.models.AthkarItem
+import bassamalim.hidaya.ui.components.*
+import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
+import com.google.gson.Gson
 
-class AthkarListActivity : AppCompatActivity() {
+class AthkarListActivity : ComponentActivity() {
 
-    private lateinit var binding: ActivityAthkarListBinding
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: AthkarListAdapter
     private var category = 0
     private lateinit var action: String
     private lateinit var db: AppDatabase
     private lateinit var language: String
-    private lateinit var names: List<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetTheme(this)
         language = ActivityUtils.onActivityCreateSetLocale(this)
-        binding = ActivityAthkarListBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.home.setOnClickListener { onBackPressed() }
 
         db = DBUtils.getDB(this)
 
         action = intent.action!!
+
+        val title: String
         when (action) {
-            "all" -> binding.topBarTitle.text = getString(R.string.all_athkar)
-            "favorite" -> binding.topBarTitle.text =
-                getString(R.string.favorite_athkar)
+            "all" -> title = getString(R.string.all_athkar)
+            "favorite" -> title = getString(R.string.favorite_athkar)
             else -> {
                 category = intent.getIntExtra("category", 0)
-
-                val topBarTitle =
+                title =
                     if (language == "en") db.athkarCategoryDao().getNameEn(category)
                     else db.athkarCategoryDao().getName(category)
-                binding.topBarTitle.text = topBarTitle
             }
         }
 
-        setupRecycler()
-
-        setSearchListeners()
+        setContent {
+            AppTheme {
+                UI(title)
+            }
+        }
     }
 
     private val data: List<AthkarDB>
         get() {
-            names =
-                if (language == "en") db.athkarDao().getNamesEn()
-                else db.athkarDao().getNames()
-
             return when (action) {
                 "all" -> db.athkarDao().getAll()
                 "favorite" -> db.athkarDao().getFavorites()
@@ -72,62 +71,102 @@ class AthkarListActivity : AppCompatActivity() {
         }
 
     private fun getItems(athkar: List<AthkarDB>): List<AthkarItem> {
-        val buttons: MutableList<AthkarItem> = ArrayList()
-        val favs = db.athkarDao().getFavs()
+        val items: MutableList<AthkarItem> = ArrayList()
 
         for (i in athkar.indices) {
             val thikr = athkar[i]
 
             if (language == "en" && !hasEn(thikr)) continue
 
-            val clickListener = View.OnClickListener {
-                val intent = Intent(this, AthkarViewer::class.java)
-                intent.action = action
-                intent.putExtra("thikr_id", thikr.athkar_id)
-                startActivity(intent)
-            }
+            val name =
+                if (language == "en") thikr.name_en!!
+                else thikr.name!!
 
-            val fav = if (action == "favorite") 1 else favs[thikr.athkar_id]
-
-            buttons.add(
+            items.add(
                 AthkarItem(
-                    thikr.athkar_id, thikr.category_id,
-                    names[thikr.athkar_id], fav, clickListener
+                    thikr.id, thikr.category_id, name, mutableStateOf(thikr.favorite)
                 )
             )
         }
-        return buttons
+        return items
     }
 
     private fun hasEn(thikr: AthkarDB): Boolean {
-        val ts: List<ThikrsDB> = db.thikrsDao().getThikrs(thikr.athkar_id)
+        val ts = db.thikrsDao().getThikrs(thikr.id)
         for (i in ts.indices) {
-            val t: ThikrsDB = ts[i]
+            val t = ts[i]
             if (t.getTextEn() != null && t.getTextEn()!!.length > 1) return true
         }
         return false
     }
 
-    private fun setupRecycler() {
-        recyclerView = findViewById(R.id.recycler)
-        val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
-        adapter = AthkarListAdapter(this, getItems(data))
-        recyclerView.adapter = adapter
+    private fun updateFavorites() {
+        val favAthkar = db.athkarDao().getFavs()
+
+        val gson = Gson()
+        val athkarJson = gson.toJson(favAthkar)
+
+        val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
+        editor.putString("favorite_athkar", athkarJson)
+        editor.apply()
     }
 
-    private fun setSearchListeners() {
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                adapter.filter(query)
-                return true
-            }
+    @Composable
+    private fun UI(title: String) {
+        MyScaffold(
+            title = title,
+            onBackPressed = { onBackPressedDispatcher.onBackPressed() }
+        ) {
+            val context = LocalContext.current
+            val textState = remember { mutableStateOf(TextFieldValue("")) }
 
-            override fun onQueryTextChange(newText: String): Boolean {
-                adapter.filter(newText)
-                return true
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(it)
+            ) {
+                SearchView (
+                    state = textState,
+                    hint = stringResource(id = R.string.athkar_hint)
+                )
+
+                MyLazyColumn(
+                    lazyList = {
+                        items(
+                            items = getItems(data).filter { item ->
+                                item.name.contains(textState.value.text, ignoreCase = true)
+                            }
+                        ) { item ->
+                            MyBtnSurface(
+                                text = item.name,
+                                modifier = Modifier.padding(vertical = 3.dp, horizontal = 5.dp),
+                                iconBtn = {
+                                    MyFavBtn(
+                                        fav = item.favorite.value
+                                    ) {
+                                        if (item.favorite.value == 0) {
+                                            db.athkarDao().setFav(item.id, 1)
+                                            item.favorite.value = 1
+                                        }
+                                        else if (item.favorite.value == 1) {
+                                            db.athkarDao().setFav(item.id, 0)
+                                            item.favorite.value = 0
+                                        }
+                                        updateFavorites()
+                                    }
+                                }
+                            ) {
+                                context.startActivity(
+                                    Intent(context, AthkarViewer::class.java)
+                                        .setAction(action)
+                                        .putExtra("thikr_id", item.id)
+                                )
+                            }
+                        }
+                    }
+                )
             }
-        })
+        }
     }
 
 }

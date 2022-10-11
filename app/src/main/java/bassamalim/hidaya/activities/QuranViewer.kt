@@ -112,8 +112,8 @@ class QuranViewer : SwipeActivity() {
             else pref.getString("quran_view_type", "page")!!
 
         when (theme) {
-            "ThemeL" -> setTheme(R.style.QuranL)
-            "ThemeM" -> setTheme(R.style.QuranM)
+            "Light" -> setTheme(R.style.QuranL)
+            "Dark" -> setTheme(R.style.QuranM)
         }
     }
 
@@ -130,9 +130,10 @@ class QuranViewer : SwipeActivity() {
             else db.suarDao().getNames()
 
         what =
-            if (theme == "ThemeL")
+            if (theme == "Dark")
+                ForegroundColorSpan(resources.getColor(R.color.track_M, getTheme()))
+            else
                 ForegroundColorSpan(resources.getColor(R.color.track_L, getTheme()))
-            else ForegroundColorSpan(resources.getColor(R.color.track_M, getTheme()))
 
         bookmarkedPage = pref.getInt("bookmarked_page", -1)
     }
@@ -593,7 +594,7 @@ class QuranViewer : SwipeActivity() {
         nameTv.gravity = Gravity.CENTER
         nameTv.setBackgroundColor(Color.TRANSPARENT)
         nameTv.textSize = (textSize + 5).toFloat()
-        if (theme == "ThemeL") nameTv.setBackgroundResource(R.drawable.surah_header_light)
+        if (theme == "Light") nameTv.setBackgroundResource(R.drawable.surah_header_light)
         else nameTv.setBackgroundResource(R.drawable.surah_header)
         nameTv.typeface = Typeface.DEFAULT_BOLD
         nameTv.text = name
@@ -611,13 +612,13 @@ class QuranViewer : SwipeActivity() {
         nameScreen.textSize = textSize.toFloat()
         nameScreen.typeface = Typeface.DEFAULT_BOLD
         nameScreen.text = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
-        if (theme == "ThemeL") {
-            nameScreen.setTextColor(Color.BLACK)
-            nameScreen.setLinkTextColor(Color.BLACK)
-        }
-        else {
+        if (theme == "Dark") {
             nameScreen.setTextColor(Color.WHITE)
             nameScreen.setLinkTextColor(Color.WHITE)
+        }
+        else {
+            nameScreen.setTextColor(Color.BLACK)
+            nameScreen.setLinkTextColor(Color.BLACK)
         }
         return nameScreen
     }
@@ -625,14 +626,14 @@ class QuranViewer : SwipeActivity() {
     private fun screen(): TextView {
         val tv: TextView = layoutInflater.inflate(R.layout.tv_quran_viewer, null) as TextView
         tv.textSize = textSize.toFloat()
-        if (theme == "ThemeL")
-            tv.movementMethod = DoubleClickLMM.getInstance(
-                resources.getColor(R.color.highlight_L, getTheme())
-            )
-        else
+        if (theme == "Dark")
             tv.movementMethod = DoubleClickLMM.getInstance(
                 resources.getColor(R.color.highlight_M, getTheme())
             )
+        else
+        tv.movementMethod = DoubleClickLMM.getInstance(
+            resources.getColor(R.color.highlight_L, getTheme())
+        )
         return tv
     }
 

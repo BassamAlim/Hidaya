@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">هِداية</string>
 
-    <!-- Tabs Titles -->
+    <!-- Tab Titles -->
     <string name="title_home">الرئيسية</string>
     <string name="title_prayers">أوقات الصلاة</string>
-    <string name="title_alathkar">الأذكار</string>
-    <string name="title_qibla">القبلة</string>
     <string name="title_quran">القرآن</string>
+    <string name="title_athkar">الأذكار</string>
+    <string name="title_more">المزيد</string>
 
     <!-- Preference Categories -->
     <string name="notifications_header">الإشعارات الإضافية</string>
@@ -44,7 +44,7 @@
     <string name="time_format">صيغة الوقت</string>
 
     <!-- Defaults -->
-    <string name="default_theme" translatable="false">ThemeL</string>
+    <string name="default_theme" translatable="false">Light</string>
     <string name="default_language" translatable="false">ar</string>
     <string name="default_time_format" translatable="false">12h</string>
 
@@ -121,7 +121,6 @@
 
     <!-- Words -->
     <string name="settings">الإعدادات</string>
-    <string name="more">المزيد</string>
     <string name="all">الكل</string>
     <string name="favorite">المفضلة</string>
     <string name="downloaded">المحملة</string>

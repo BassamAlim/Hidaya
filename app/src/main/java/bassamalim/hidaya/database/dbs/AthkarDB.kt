@@ -16,9 +16,9 @@ import androidx.room.PrimaryKey
     )]
 )
 class AthkarDB(
-    @field:ColumnInfo(name = "athkar_id") @field:PrimaryKey val athkar_id: Int,
-    @field:ColumnInfo(name = "athkar_name") val athkar_name: String?,
-    @field:ColumnInfo(name = "athkar_name_en") val athkar_name_en: String?,
+    @field:ColumnInfo(name = "athkar_id") @field:PrimaryKey val id: Int,
+    @field:ColumnInfo(name = "athkar_name") val name: String?,
+    @field:ColumnInfo(name = "athkar_name_en") val name_en: String?,
     @field:ColumnInfo(name = "category_id") val category_id: Int,
-    @field:ColumnInfo(name = "favorite") val favorite: Int
+    @field:ColumnInfo(name = "favorite") var favorite: Int
 )

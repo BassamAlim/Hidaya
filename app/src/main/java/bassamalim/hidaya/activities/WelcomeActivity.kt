@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.databinding.ActivityWelcomeBinding
-import bassamalim.hidaya.fragments.LocationFragment
-import bassamalim.hidaya.fragments.SettingsFragment
+import bassamalim.hidaya.screens.LocationScreen
+import bassamalim.hidaya.screens.SettingsScreen
 import bassamalim.hidaya.utils.ActivityUtils
 
 class WelcomeActivity: AppCompatActivity() {
@@ -22,7 +22,7 @@ class WelcomeActivity: AppCompatActivity() {
 
         if (savedInstanceState == null)
             supportFragmentManager.beginTransaction().replace(
-                R.id.frame, SettingsFragment.newInstance(true)
+                R.id.frame, SettingsScreen.newInstance(true)
             ).commit()
 
         setListeners()
@@ -33,7 +33,7 @@ class WelcomeActivity: AppCompatActivity() {
             binding.saveBtn.visibility = View.GONE
 
             supportFragmentManager.beginTransaction().replace(
-                R.id.frame, LocationFragment.newInstance("initial")
+                R.id.frame, LocationScreen.newInstance("initial")
             ).commit()
 
             val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()

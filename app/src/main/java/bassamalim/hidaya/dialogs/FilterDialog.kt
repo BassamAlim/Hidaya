@@ -1,36 +1,37 @@
 package bassamalim.hidaya.dialogs
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
-import androidx.appcompat.content.res.AppCompatResources
+import android.widget.LinearLayout
+import android.widget.ListView
+import android.widget.PopupWindow
+import android.widget.TextView
+import androidx.compose.runtime.MutableState
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.RecyclerView
 import bassamalim.hidaya.R
 import bassamalim.hidaya.adapters.CheckboxListviewAdapter
 import bassamalim.hidaya.models.CheckboxListItem
-import bassamalim.hidaya.replacements.FilteredRecyclerAdapter
 import com.google.gson.Gson
 import java.util.*
 
-class FilterDialog<VH : RecyclerView.ViewHolder>(
+class FilterDialog(
     private val context: Context,
     private val view: View,
     title: String,
     private val strArr: Array<String>,
     private val selected: BooleanArray,
-    private val filteredAdapter: FilteredRecyclerAdapter<VH>?,
-    private val filterIb: ImageButton,
-    private val prefKey: String) {
+    private val filteredState: MutableState<Boolean>,
+    private val refresh: (BooleanArray) -> Unit,
+    private val prefKey: String
+) {
 
     private lateinit var popup: PopupWindow
-    private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    private val gson: Gson = Gson()
+    private val pref = PreferenceManager.getDefaultSharedPreferences(context)
+    private val gson = Gson()
     private lateinit var cbListAdapter: CheckboxListviewAdapter
     private lateinit var items: MutableList<CheckboxListItem>
 
@@ -64,10 +65,9 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
 
     private fun setupListview() {
         items = ArrayList<CheckboxListItem>()
-        for (i in strArr.indices)
-            items.add(CheckboxListItem(strArr[i], selected[i]))
+        for (i in strArr.indices) items.add(CheckboxListItem(strArr[i], selected[i]))
 
-        val listView: ListView = popup.contentView.findViewById(R.id.listview)
+        val listView = popup.contentView.findViewById<ListView>(R.id.listview)
         cbListAdapter = CheckboxListviewAdapter(
             context, 0, items as ArrayList<CheckboxListItem>, selected
         )
@@ -107,12 +107,7 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
                 break
             }
         }
-        if (changed) filterIb.setImageDrawable(
-            AppCompatResources.getDrawable(context, R.drawable.ic_filtered)
-        )
-        else filterIb.setImageDrawable(
-            AppCompatResources.getDrawable(context, R.drawable.ic_filter)
-        )
+        filteredState.value = changed
     }
 
     private fun save() {
@@ -120,7 +115,7 @@ class FilterDialog<VH : RecyclerView.ViewHolder>(
         val editor = pref.edit()
         editor.putString(prefKey, str)
         editor.apply()
-        filteredAdapter?.filter(null, selected)
+        refresh(selected)
     }
 
 }

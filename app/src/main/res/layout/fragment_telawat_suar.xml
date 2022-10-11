@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MyRootView"
-    tools:context=".fragments.TelawatSuarFragment">
+    tools:context=".screens.TelawatSuarFragment">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"

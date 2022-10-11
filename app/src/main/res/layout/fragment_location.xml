@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MyRootView"
-    tools:context=".fragments.LocationFragment">
+    tools:context=".screens.LocationScreen">
 
     <TextView
         android:id="@+id/disclaimer"
