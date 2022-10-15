@@ -36,7 +36,7 @@
     <string name="language" translatable="false">Language | اللغة</string>
     <string name="morning_athkar_title">إشعار أذكار الصباح</string>
     <string name="evening_athkar_title">إشعار أذكار المساء</string>
-    <string name="daily_page_enable_title">إشعار صفحة اليوم</string>
+    <string name="daily_werd_title">إشعار صفحة اليوم</string>
     <string name="friday_kahf_title">إشعار سورة الكهف</string>
     <string name="text_size_title">حجم الخط</string>
     <string name="reciter">القارئ</string>

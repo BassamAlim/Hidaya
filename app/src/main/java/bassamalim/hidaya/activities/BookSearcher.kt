@@ -179,10 +179,7 @@ class BookSearcher : ComponentActivity() {
         val textState = remember { mutableStateOf(TextFieldValue("")) }
         val highlightColor = AppTheme.colors.accent
 
-        MyScaffold(
-            title = stringResource(id = R.string.books_searcher),
-            onBackPressed = { onBackPressedDispatcher.onBackPressed() }
-        ) { padding ->
+        MyScaffold(stringResource(id = R.string.books_searcher)) { padding ->
             Column(
                 Modifier
                     .fillMaxSize()
@@ -246,9 +243,9 @@ class BookSearcher : ComponentActivity() {
                             selectedIndex = maxMatchesIndex,
                             items = maxMatchesItems
                         ) { index ->
-                            val editor = pref.edit()
-                            editor.putInt("books_searcher_max_matches_index", index)
-                            editor.apply()
+                            pref.edit()
+                                .putInt("books_searcher_max_matches_index", index)
+                                .apply()
                         }
                     }
                 }

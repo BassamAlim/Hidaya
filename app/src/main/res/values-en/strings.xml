@@ -20,7 +20,7 @@
     <!-- Preference Titles -->
     <string name="morning_athkar_title">Morning athkar reminder</string>
     <string name="evening_athkar_title">Evening athkar reminder</string>
-    <string name="daily_page_enable_title">Daily werd reminder</string>
+    <string name="daily_werd_title">Daily werd reminder</string>
     <string name="friday_kahf_title">Surat al-kahf reminder</string>
     <string name="text_size_title">Text size</string>
     <string name="reciter">Reciter</string>

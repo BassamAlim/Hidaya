@@ -728,10 +728,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private fun saveForLater(progress: Int) {
         if (reciterName == null) return
 
-        val editor: SharedPreferences.Editor = pref.edit()
-        editor.putString("last_played_media_id", mediaId)
-        editor.putInt("last_telawa_progress", progress)
-        editor.apply()
+        pref.edit()
+            .putString("last_played_media_id", mediaId)
+            .putInt("last_telawa_progress", progress)
+            .apply()
     }
 
     private fun updateDurationRecord(amount: Int) {

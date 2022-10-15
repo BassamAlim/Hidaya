@@ -106,17 +106,14 @@ class AthkarListActivity : ComponentActivity() {
         val gson = Gson()
         val athkarJson = gson.toJson(favAthkar)
 
-        val editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
-        editor.putString("favorite_athkar", athkarJson)
-        editor.apply()
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+            .putString("favorite_athkar", athkarJson)
+            .apply()
     }
 
     @Composable
     private fun UI(title: String) {
-        MyScaffold(
-            title = title,
-            onBackPressed = { onBackPressedDispatcher.onBackPressed() }
-        ) {
+        MyScaffold(title) {
             val context = LocalContext.current
             val textState = remember { mutableStateOf(TextFieldValue("")) }
 

@@ -16,8 +16,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 fun MyTopBar(
     title: String = "",
     backgroundColor: Color = AppTheme.colors.primary,
-    contentColor: Color = AppTheme.colors.onPrimary,
-    onBackPressed: () -> Unit
+    contentColor: Color = AppTheme.colors.onPrimary
 ) {
     TopAppBar(
         backgroundColor = backgroundColor,
@@ -26,7 +25,7 @@ fun MyTopBar(
             .fillMaxWidth()
     ) {
         Box {
-            MyBackBtn(onBackPressed)
+            MyBackBtn()
 
             Row(
                 Modifier.fillMaxSize(),

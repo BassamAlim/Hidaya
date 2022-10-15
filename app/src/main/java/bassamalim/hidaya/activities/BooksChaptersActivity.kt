@@ -27,7 +27,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.google.gson.Gson
 
-class BooksChaptersCollectionActivity : ComponentActivity() {
+class BooksChaptersActivity : ComponentActivity() {
 
     private lateinit var pref: SharedPreferences
     private val gson: Gson = Gson()
@@ -83,18 +83,15 @@ class BooksChaptersCollectionActivity : ComponentActivity() {
 
     private fun updateFavorites() {
         val favStr = gson.toJson(favStates)
-        val editor = pref.edit()
-        editor.putString("book" + bookId + "_favs", favStr)
-        editor.apply()
+        pref.edit()
+            .putString("book" + bookId + "_favs", favStr)
+            .apply()
     }
 
     @OptIn(ExperimentalPagerApi::class)
     @Composable
     private fun UI(title: String) {
-        MyScaffold(
-            title = title,
-            onBackPressed = { onBackPressedDispatcher.onBackPressed() }
-        ) {
+        MyScaffold(title) {
             val pagerState = rememberPagerState(pageCount = 2)
             val textState = remember { mutableStateOf(TextFieldValue("")) }
 

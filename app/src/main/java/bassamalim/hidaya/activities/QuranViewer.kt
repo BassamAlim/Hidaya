@@ -31,7 +31,6 @@ import bassamalim.hidaya.database.dbs.AyatDB
 import bassamalim.hidaya.databinding.ActivityQuranViewerBinding
 import bassamalim.hidaya.dialogs.InfoDialog
 import bassamalim.hidaya.dialogs.QuranSettingsDialog
-import bassamalim.hidaya.dialogs.TutorialDialog
 import bassamalim.hidaya.models.Aya
 import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.other.Global
@@ -90,7 +89,10 @@ class QuranViewer : SwipeActivity() {
 
         initiate()
 
-        checkFirstTime()
+        ActivityUtils.checkFirstTime(
+            this, supportFragmentManager, "is_first_time_in_quran",
+            R.string.quran_tips, pref
+        )
 
         action = intent.action!!
         action(intent)
@@ -136,14 +138,6 @@ class QuranViewer : SwipeActivity() {
                 ForegroundColorSpan(resources.getColor(R.color.track_L, getTheme()))
 
         bookmarkedPage = pref.getInt("bookmarked_page", -1)
-    }
-
-    private fun checkFirstTime() {
-        val prefKey = "is_first_time_in_quran"
-        if (pref.getBoolean(prefKey, true))
-            TutorialDialog.newInstance(
-                getString(R.string.quran_tips), prefKey
-            ).show(supportFragmentManager, TutorialDialog.TAG)
     }
 
     private fun action(intent: Intent) {
@@ -413,10 +407,10 @@ class QuranViewer : SwipeActivity() {
         binding.bookmarkButton.setOnClickListener {
             bookmarkedPage = currentPage
 
-            val editor = pref.edit()
-            editor.putInt("bookmarked_page", currentPage)
-            editor.putInt("bookmarked_sura", surahIndex)
-            editor.apply()
+            pref.edit()
+                .putInt("bookmarked_page", currentPage)
+                .putInt("bookmarked_sura", surahIndex)
+                .apply()
 
             binding.bookmarkButton.setImageDrawable(
                 AppCompatResources.getDrawable(this, R.drawable.ic_bookmarked)

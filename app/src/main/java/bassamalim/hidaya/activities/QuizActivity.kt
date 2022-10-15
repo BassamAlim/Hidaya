@@ -113,10 +113,7 @@ class QuizActivity : ComponentActivity() {
 
     @Composable
     private fun UI() {
-        MyScaffold(
-            title = "${getString(R.string.question)} ${current.value + 1}",
-            onBackPressed = { onBackPressedDispatcher.onBackPressed() }
-        ) {
+        MyScaffold("${getString(R.string.question)} ${current.value + 1}") {
             Column(
                 Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween,

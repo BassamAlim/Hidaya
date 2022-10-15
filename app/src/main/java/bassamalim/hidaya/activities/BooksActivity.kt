@@ -18,10 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.dbs.BooksDB
-import bassamalim.hidaya.dialogs.TutorialDialog
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
@@ -48,7 +46,10 @@ class BooksActivity : AppCompatActivity() {
 
         initStates()
 
-        checkFirstTime()
+        ActivityUtils.checkFirstTime(
+            this, supportFragmentManager, "is_first_time_in_books_activity",
+            R.string.books_activity_tips
+        )
 
         setContent {
             AppTheme {
@@ -61,13 +62,6 @@ class BooksActivity : AppCompatActivity() {
 
     private fun initStates() {
         for (book in books) downloadStates.add("not downloaded")
-    }
-
-    private fun checkFirstTime() {
-        val prefKey = "is_first_time_in_books_activity"
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(prefKey, true))
-            TutorialDialog.newInstance(getString(R.string.books_activity_tips), prefKey
-            ).show(supportFragmentManager, TutorialDialog.TAG)
     }
 
     private fun showWaitMassage() {
@@ -146,7 +140,6 @@ class BooksActivity : AppCompatActivity() {
 
         MyScaffold(
             title = stringResource(id = R.string.hadeeth_books),
-            onBackPressed = { onBackPressedDispatcher.onBackPressed() },
             fab = {
                   MyFloatingActionButton(
                       iconId = R.drawable.ic_quran_search,
@@ -207,7 +200,7 @@ class BooksActivity : AppCompatActivity() {
                                 if (downloading(item.id)) showWaitMassage()
                                 else {
                                     val intent = Intent(
-                                        context, BooksChaptersCollectionActivity::class.java
+                                        context, BooksChaptersActivity::class.java
                                     )
                                     intent.putExtra("book_id", item.id)
                                     intent.putExtra("book_title", getTitle(item))

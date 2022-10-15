@@ -8,12 +8,8 @@ import bassamalim.hidaya.ui.theme.AppTheme
 @Composable
 fun MyScaffold(
     title: String,
-    onBackPressed: () -> Unit,
     topBar: @Composable () -> Unit = {
-        MyTopBar(
-            title,
-            onBackPressed = onBackPressed
-        )
+        MyTopBar(title)
     },
     bottomBar: @Composable () -> Unit = {},
     fab: @Composable () -> Unit = {},

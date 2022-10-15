@@ -1,8 +1,10 @@
 package bassamalim.hidaya.screens
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Location
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,16 +21,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.dialogs.TutorialDialog
+import bassamalim.hidaya.activities.LocationActivity
 import bassamalim.hidaya.helpers.PrayTimes
+import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.ui.components.MyIconBtn
 import bassamalim.hidaya.ui.components.MySurface
 import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
-import bassamalim.hidaya.utils.DBUtils
-import bassamalim.hidaya.utils.LangUtils
-import bassamalim.hidaya.utils.PTUtils
-import bassamalim.hidaya.utils.PrefUtils
+import bassamalim.hidaya.utils.*
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
@@ -37,34 +37,33 @@ class PrayersScreen(
     private val pref: SharedPreferences,
     private val located: Boolean,
     private val location: Location?,
-    private val supportFragmentManager: FragmentManager
+    supportFragmentManager: FragmentManager
 ) {
 
     private val db = DBUtils.getDB(context)
     private val prayTimes = PrayTimes(context)
     private val prayerNames = context.resources.getStringArray(R.array.prayer_names)
-    private lateinit var times: Array<Calendar?>
-    private lateinit var formattedTimes: List<String>
     private val calendar = Calendar.getInstance()
-    private val dateText = mutableStateOf(context.getString(R.string.day))
-    private var currentDayChange = 0
+    private var dayChange = mutableStateOf(0)
 
     init {
         if (located) {
-            checkFirstTime()
+            ActivityUtils.checkFirstTime(
+                context, supportFragmentManager,
+                "is_first_time_in_prayers", R.string.prayers_tips, pref
+            )
 
             goToToday()
         }
     }
 
     fun onResume() {
-        if (located) updateDayScreen()
+        if (located) goToToday()
     }
 
     private fun goToToday() {
-        currentDayChange = 0
+        dayChange.value = 0
         getTimes(0)
-        updateDayScreen()
     }
 
     /**
@@ -73,7 +72,8 @@ class PrayersScreen(
      *
      * @param change The number of days to add to the current date.
      */
-    private fun getTimes(change: Int) {
+    private fun getTimes(change: Int): List<String> {
+        Log.d(Global.TAG, "$change")
         val timeFormat = PrefUtils.getTimeFormat(context)
 
         calendar.timeInMillis = System.currentTimeMillis()
@@ -81,11 +81,8 @@ class PrayersScreen(
 
         val utcOffset = PTUtils.getUTCOffset(context, pref)
 
-        times = prayTimes.getPrayerTimes(
-            location!!.latitude, location.longitude, utcOffset.toDouble(), calendar
-        )
-        formattedTimes = prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, utcOffset.toDouble(), calendar, timeFormat
+        return prayTimes.getStrPrayerTimes(
+            location!!.latitude, location.longitude, utcOffset.toDouble(), calendar, timeFormat
         )
     }
 
@@ -111,31 +108,16 @@ class PrayersScreen(
         return "$countryName, $cityName"
     }
 
-    private fun checkFirstTime() {
-        val prefKey = "is_first_time_in_prayers"
-        if (pref.getBoolean(prefKey, true))
-            TutorialDialog.newInstance(
-                context.getString(R.string.prayers_tips),
-                prefKey
-            ).show(supportFragmentManager, TutorialDialog.TAG)
-    }
-
     private fun previousDay() {
-        if (located) {
-            getTimes(--currentDayChange)
-            updateDayScreen()
-        }
+        if (located) getTimes(--dayChange.value)
     }
 
     private fun nextDay() {
-        if (located) {
-            getTimes(++currentDayChange)
-            updateDayScreen()
-        }
+        if (located) getTimes(++dayChange.value)
     }
 
-    private fun updateDayScreen() {
-        if (currentDayChange == 0) dateText.value = context.getString(R.string.day)
+    private fun getDayText(): String {
+        if (dayChange.value == 0) return context.getString(R.string.day)
         else {
             val hijri = UmmalquraCalendar()
             hijri.time = calendar.time
@@ -143,13 +125,14 @@ class PrayersScreen(
             val year = LangUtils.translateNums(
                 context, hijri[Calendar.YEAR].toString(), false
             )
-            val month = context.resources.getStringArray(R.array.hijri_months)[hijri[Calendar.MONTH]]
+            val month = context.resources.getStringArray(
+                R.array.hijri_months
+            )[hijri[Calendar.MONTH]]
             val day = LangUtils.translateNums(
                 context, hijri[Calendar.DATE].toString(), false
             )
 
-            val str = "$day $month $year"
-            dateText.value = str
+            return "$day $month $year"
         }
     }
 
@@ -168,21 +151,24 @@ class PrayersScreen(
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 5.dp, horizontal = 10.dp),
+                        .padding(vertical = 5.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    MyText(text = if (located) getLocationName() else "")
+                    MyText(
+                        text = if (located) getLocationName() else "",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
 
                     MyIconBtn(
                         iconId = R.drawable.ic_location,
                         description = stringResource(id = R.string.locate),
-                        tint = AppTheme.colors.text
+                        tint = AppTheme.colors.text,
+                        modifier = Modifier.padding(end = 8.dp)
                     ) {
-                        supportFragmentManager.beginTransaction().replace(
-                            R.id.nav_host_fragment_activity_main,
-                            LocationScreen.newInstance("normal")
-                        ).commit()
+                        val intent = Intent(context, LocationActivity::class.java)
+                        intent.action = "normal"
+                        context.startActivity(intent)
                     }
                 }
             }
@@ -194,7 +180,9 @@ class PrayersScreen(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.SpaceAround
             ) {
-                for (pid in prayerNames.indices) PrayerCard(pid)
+                Log.d(Global.TAG, "HO")
+
+                PrayerCards(getTimes(dayChange.value))
             }
 
             MySurface(
@@ -218,7 +206,7 @@ class PrayersScreen(
                     }
 
                     MyText(
-                        text = dateText.value,
+                        text = getDayText(),
                         fontSize = 24.sp,
                         modifier = Modifier.clickable { goToToday() }
                     )
@@ -236,7 +224,12 @@ class PrayersScreen(
     }
 
     @Composable
-    private fun PrayerCard(pid: Int) {
+    private fun PrayerCards(times: List<String>) {
+        for (pid in times.indices) PrayerCard(pid = pid, time = times[pid])
+    }
+
+    @Composable
+    private fun PrayerCard(pid: Int, time: String) {
         val delay = pref.getInt("${PTUtils.mapID(pid)} offset", 0)
 
         MySurface(
@@ -256,7 +249,7 @@ class PrayersScreen(
             ) {
                 // Prayer name
                 MyText(
-                    if (located) "${prayerNames[pid]}: ${formattedTimes[pid]}" else "",
+                    if (located) "${prayerNames[pid]}: $time" else "",
                     fontSize = 33.sp,
                     fontWeight = FontWeight.Bold
                 )

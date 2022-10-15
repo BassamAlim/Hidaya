@@ -1,160 +1,206 @@
 package bassamalim.hidaya.screens
 
 import android.app.TimePickerDialog
-import android.content.SharedPreferences
-import android.os.Bundle
+import android.content.Context
 import android.os.Message
 import android.widget.TimePicker
-import androidx.preference.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.unit.dp
+import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.helpers.Alarms
-import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.ui.components.CategoryTitle
+import bassamalim.hidaya.ui.components.ListPref
+import bassamalim.hidaya.ui.components.MyHorizontalDivider
+import bassamalim.hidaya.ui.components.SwitchPref
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
 import java.util.*
 
-class SettingsScreen : PreferenceFragmentCompat() {
+class SettingsScreen(
+    private val context: Context
+) {
+    
+    private val pref = PreferenceManager.getDefaultSharedPreferences(context)
+    private val morningSummary = mutableStateOf("")
+    private val eveningSummary = mutableStateOf("")
+    private val werdSummary = mutableStateOf("")
+    private val kahfSummary = mutableStateOf("")
 
-    private var initial = false
-    private lateinit var pref: SharedPreferences
-
-    companion object {
-        fun newInstance(initial: Boolean = false): SettingsScreen {
-            val fragment = SettingsScreen()
-            val args = Bundle()
-            args.putBoolean("initial", initial)
-            fragment.arguments = args
-            return fragment
-        }
+    init {
+        setSummaries()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        initial = arguments?.getBoolean("initial", false)!!
-    }
-
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
-
-        setPreferencesFromResource(R.xml.preferences, rootKey)
-
-        setInitialStates()
-        setListeners()
-    }
-
-    private fun setInitialStates() {
-        var switchP: SwitchPreferenceCompat = findPreference(keyGetter(PID.MORNING))!!
-        switchP.summary = LangUtils.translateNums(requireContext(), PTUtils.formatTime(
-            requireContext(), "${pref.getInt("${PID.MORNING} hour", 5)}:" +
+    private fun setSummaries() {
+        morningSummary.value = LangUtils.translateNums(context, PTUtils.formatTime(
+            context, "${pref.getInt("${PID.MORNING} hour", 5)}:" +
                     "${pref.getInt("${PID.MORNING} minute", 0)}"
         ), true)
 
-        switchP = findPreference(keyGetter(PID.EVENING))!!
-        switchP.summary = LangUtils.translateNums(requireContext(), PTUtils.formatTime(
-            requireContext(), "${pref.getInt("${PID.EVENING} hour", 16)}:" +
+        eveningSummary.value = LangUtils.translateNums(context, PTUtils.formatTime(
+            context, "${pref.getInt("${PID.EVENING} hour", 16)}:" +
                     "${pref.getInt("${PID.EVENING} minute", 0)}"
         ), true)
 
-        switchP = findPreference(keyGetter(PID.DAILY_WERD))!!
-        switchP.summary = LangUtils.translateNums(requireContext(), PTUtils.formatTime(
-            requireContext(), "${pref.getInt("${PID.DAILY_WERD} hour", 21)}:" +
+        werdSummary.value = LangUtils.translateNums(context, PTUtils.formatTime(
+            context, "${pref.getInt("${PID.DAILY_WERD} hour", 21)}:" +
                     "${pref.getInt("${PID.DAILY_WERD} minute", 0)}"
         ), true)
 
-        switchP = findPreference(keyGetter(PID.FRIDAY_KAHF))!!
-        switchP.summary = LangUtils.translateNums(requireContext(), PTUtils.formatTime(
-            requireContext(), "${pref.getInt("${PID.FRIDAY_KAHF} hour", 13)}:" +
+        kahfSummary.value = LangUtils.translateNums(context, PTUtils.formatTime(
+            context, "${pref.getInt("${PID.FRIDAY_KAHF} hour", 13)}:" +
                     "${pref.getInt("${PID.FRIDAY_KAHF} minute", 0)}"
         ), true)
     }
 
-    private fun setListeners() {
-        val changeListener = Preference.OnPreferenceChangeListener { _, _ ->
-            ActivityUtils.restartActivity(requireActivity())
-            true
-        }
-
-        var listP: ListPreference = findPreference(getString(R.string.language_key))!!
-        listP.onPreferenceChangeListener = changeListener
-
-        listP = findPreference(getString(R.string.numerals_language_key))!!
-        listP.onPreferenceChangeListener = changeListener
-
-        listP = findPreference(getString(R.string.time_format_key))!!
-        listP.entries = Array(listP.entries.size) {
-                i -> LangUtils.translateNums(requireContext(), listP.entries[i].toString())
-        }
-        listP.onPreferenceChangeListener = changeListener
-
-        listP = findPreference(getString(R.string.theme_key))!!
-        listP.onPreferenceChangeListener = changeListener
-
-        setSwitchListener(PID.MORNING)
-        setSwitchListener(PID.EVENING)
-        setSwitchListener(PID.DAILY_WERD)
-        setSwitchListener(PID.FRIDAY_KAHF)
+    private fun onSwitch(checked: Boolean, pid: PID, summary: MutableState<String>) {
+        if (checked) showTimePicker(pid, summary)
+        else cancelAlarm(pid, summary)
     }
 
-    private fun setSwitchListener(pid: PID) {
-        val key = keyGetter(pid)
-        val pSwitch: SwitchPreferenceCompat = findPreference(key)!!
-
-        pSwitch.setOnPreferenceChangeListener { _, newValue ->
-            val on = newValue as Boolean
-            if (on) showTimePicker(pid) else cancelAlarm(pid)
-            true
-        }
-    }
-
-    private fun showTimePicker(pid: PID) {
-        val key = keyGetter(pid)
-        val pSwitch: SwitchPreferenceCompat = findPreference(key)!!
-
+    private fun showTimePicker(pid: PID, summary: MutableState<String>) {
         val currentTime = Calendar.getInstance()
         val cHour = currentTime[Calendar.HOUR_OF_DAY]
         val cMinute = currentTime[Calendar.MINUTE]
 
         val timePicker = TimePickerDialog(context,
             { _: TimePicker?, hourOfDay: Int, minute: Int ->
-                pSwitch.summary = LangUtils.translateNums(requireContext(), PTUtils.formatTime(
-                    requireContext(), "$hourOfDay:$minute"
+                summary.value = LangUtils.translateNums(context, PTUtils.formatTime(
+                    context, "$hourOfDay:$minute"
                 ), true)
 
-                val editor = pref.edit()
-                editor.putInt("$pid hour", hourOfDay)
-                editor.putInt("$pid minute", minute)
-                editor.apply()
+                pref.edit()
+                    .putInt("$pid hour", hourOfDay)
+                    .putInt("$pid minute", minute)
+                    .apply()
 
-                Alarms(requireContext(), pid)
+                Alarms(context, pid)
             }, cHour, cMinute, false
         )
 
-        timePicker.setOnCancelListener { setInitialStates() }
-        timePicker.setOnDismissListener { setInitialStates() }
-        timePicker.setTitle(getString(R.string.time_picker_title))
-        timePicker.setButton(TimePickerDialog.BUTTON_POSITIVE, getString(R.string.select), null as Message?)
-        timePicker.setButton(TimePickerDialog.BUTTON_NEGATIVE, getString(R.string.cancel), null as Message?)
+        timePicker.setOnCancelListener { setSummaries() }
+        timePicker.setOnDismissListener { setSummaries() }
+        timePicker.setTitle(context.getString(R.string.time_picker_title))
+        timePicker.setButton(
+            TimePickerDialog.BUTTON_POSITIVE, context.getString(R.string.select), null as Message?
+        )
+        timePicker.setButton(
+            TimePickerDialog.BUTTON_NEGATIVE, context.getString(R.string.cancel), null as Message?
+        )
         timePicker.setCancelable(true)
-
         timePicker.show()
     }
 
-    private fun cancelAlarm(pid: PID) {
-        PTUtils.cancelAlarm(requireContext(), pid)
-        val key = keyGetter(pid)
-        val pSwitch: SwitchPreferenceCompat = findPreference(key)!!
-        pSwitch.summary = ""
+    private fun cancelAlarm(pid: PID, summary: MutableState<String>) {
+        PTUtils.cancelAlarm(context, pid)
+        summary.value = ""
     }
 
-    private fun keyGetter(pid: PID): String {
-        return when (pid) {
-            PID.MORNING -> getString(R.string.morning_athkar_key)
-            PID.EVENING -> getString(R.string.evening_athkar_key)
-            PID.DAILY_WERD -> getString(R.string.daily_werd_key)
-            PID.FRIDAY_KAHF -> getString(R.string.friday_kahf_key)
-            else -> ""
+    @Composable
+    fun SettingsUI() {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp, horizontal = 10.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            CategoryTitle(titleResId = R.string.appearance)
+
+            // Language
+            ListPref(
+                pref = pref,
+                titleResId = R.string.language,
+                keyResId = R.string.language_key,
+                iconResId = R.drawable.ic_translation,
+                entries = stringArrayResource(id = R.array.language_entries),
+                values = stringArrayResource(id = R.array.languages_values),
+                defaultValueResId = R.string.default_language
+            )
+
+            // Numerals language
+            ListPref(
+                pref = pref,
+                titleResId = R.string.numerals_language,
+                keyResId = R.string.numerals_language_key,
+                iconResId = R.drawable.ic_translation,
+                entries = stringArrayResource(id = R.array.numerals_language_entries),
+                values = stringArrayResource(id = R.array.languages_values),
+                defaultValueResId = R.string.default_language
+            )
+
+            // Time format
+            val timeFormatEntries = stringArrayResource(id = R.array.time_format_values).map {
+                LangUtils.translateNums(context, it)
+            }.toTypedArray()
+            ListPref(
+                pref = pref,
+                titleResId = R.string.time_format,
+                keyResId = R.string.time_format_key,
+                iconResId = R.drawable.ic_time_format,
+                entries = timeFormatEntries,
+                values = stringArrayResource(id = R.array.time_format_values),
+                defaultValueResId = R.string.default_time_format
+            )
+
+            // Theme
+            ListPref(
+                pref = pref,
+                titleResId = R.string.theme,
+                keyResId = R.string.theme_key,
+                iconResId = R.drawable.ic_theme,
+                entries = stringArrayResource(id = R.array.themes_entries),
+                values = stringArrayResource(id = R.array.theme_values),
+                defaultValueResId = R.string.default_theme
+            )
+
+            MyHorizontalDivider()
+            CategoryTitle(titleResId = R.string.notifications_header)
+
+            SwitchPref(
+                pref = pref,
+                keyResId = R.string.morning_athkar_key,
+                titleResId = R.string.morning_athkar_title,
+                summary = morningSummary
+            ) { checked ->
+                onSwitch(checked, PID.MORNING, morningSummary)
+            }
+
+            SwitchPref(
+                pref = pref,
+                keyResId = R.string.evening_athkar_key,
+                titleResId = R.string.evening_athkar_title,
+                summary = eveningSummary
+            ) { checked ->
+                onSwitch(checked, PID.EVENING, eveningSummary)
+            }
+
+            SwitchPref(
+                pref = pref,
+                keyResId = R.string.daily_werd_key,
+                titleResId = R.string.daily_werd_title,
+                summary = werdSummary
+            ) { checked ->
+                onSwitch(checked, PID.DAILY_WERD, werdSummary)
+            }
+
+            SwitchPref(
+                pref = pref,
+                keyResId = R.string.friday_kahf_key,
+                titleResId = R.string.friday_kahf_title,
+                summary = kahfSummary
+            ) { checked ->
+                onSwitch(checked, PID.FRIDAY_KAHF, kahfSummary)
+            }
         }
     }
 }

@@ -23,11 +23,11 @@ import androidx.fragment.app.FragmentManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.database.dbs.SuarDB
-import bassamalim.hidaya.dialogs.TutorialDialog
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.Sura
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PrefUtils
@@ -38,7 +38,7 @@ import com.google.gson.Gson
 class QuranScreen(
     private val context: Context,
     private val pref: SharedPreferences,
-    private val supportFragmentManager: FragmentManager
+    supportFragmentManager: FragmentManager
 ) {
 
     private val db = DBUtils.getDB(context)
@@ -48,19 +48,14 @@ class QuranScreen(
     private val bookmarkedPage = mutableStateOf(pref.getInt("bookmarked_page", -1))
 
     init {
-        checkFirstTime()
+        ActivityUtils.checkFirstTime(
+            context, supportFragmentManager, "is_first_time_in_quran_fragment",
+            R.string.quran_fragment_tips, pref
+        )
     }
 
     fun onResume() {
         bookmarkedPage.value = pref.getInt("bookmarked_page", -1)
-    }
-
-    private fun checkFirstTime() {
-        val prefKey = "is_first_time_in_quran_fragment"
-        if (pref.getBoolean(prefKey, true))
-            TutorialDialog.newInstance(
-                context.getString(R.string.quran_fragment_tips), prefKey
-            ).show(supportFragmentManager, TutorialDialog.TAG)
     }
 
     private fun getItems(type: ListType): List<Sura> {

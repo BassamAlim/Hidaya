@@ -189,7 +189,6 @@ class MainActivity : AppCompatActivity() {
 
         MyScaffold(
             title = stringResource(id = R.string.app_name),
-            onBackPressed = { onBackPressedDispatcher.onBackPressed() },
             topBar = {
                 TopAppBar(
                     backgroundColor = AppTheme.colors.primary,

@@ -106,9 +106,9 @@ class QuranSearcherActivity : AppCompatActivity() {
             ) {
                 maxMatches = spinner.getItemAtPosition(position).toString().toInt()
 
-                val editor = pref.edit()
-                editor.putInt("quran_searcher_matches_last_position", position)
-                editor.apply()
+                pref.edit()
+                    .putInt("quran_searcher_matches_last_position", position)
+                    .apply()
 
                 if (adapter != null && adapter!!.itemCount > 0)
                     perform(searchView.query.toString())

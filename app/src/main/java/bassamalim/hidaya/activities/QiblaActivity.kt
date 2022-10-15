@@ -138,10 +138,7 @@ class QiblaActivity : AppCompatActivity() {
 
     @Composable
     private fun UI(distanceStr: String) {
-        MyScaffold(
-            title = stringResource(id = R.string.qibla),
-            onBackPressed = { onBackPressedDispatcher.onBackPressed() }
-        ) {
+        MyScaffold(stringResource(id = R.string.qibla)) {
             Column(
                 Modifier
                     .fillMaxSize()

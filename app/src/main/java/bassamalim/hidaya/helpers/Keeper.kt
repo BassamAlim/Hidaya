@@ -35,9 +35,9 @@ class Keeper {
         val loc = MyLocation(gLocation!!)
         locJson = gson.toJson(loc)
 
-        val editor = pref.edit()
-        editor.putString("stored location", locJson)
-        editor.apply()
+        pref.edit()
+            .putString("stored location", locJson)
+            .apply()
     }
 
     /**

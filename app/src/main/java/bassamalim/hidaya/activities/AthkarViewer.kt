@@ -88,16 +88,15 @@ class AthkarViewer : AppCompatActivity() {
 
         MyScaffold(
             title = title,
-            onBackPressed = { onBackPressedDispatcher.onBackPressed() },
             bottomBar = {
                 MyReadingBottomBar(
                     textSizeState = textSize
                 ) {
                     textSize.value = it.toInt()
 
-                    val editor = pref.edit()
-                    editor.putInt(getString(R.string.alathkar_text_size_key), it.toInt())
-                    editor.apply()
+                    pref.edit()
+                        .putInt(getString(R.string.alathkar_text_size_key), it.toInt())
+                        .apply()
                 }
             }
         ) {

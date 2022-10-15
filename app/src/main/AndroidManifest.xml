@@ -93,7 +93,7 @@
             android:name=".activities.BookSearcher"
             android:exported="false" />
         <activity
-            android:name=".activities.BooksChaptersCollectionActivity"
+            android:name=".activities.BooksChaptersActivity"
             android:exported="false" />
         <activity
             android:name=".activities.BookViewer"
@@ -125,6 +125,9 @@
         <activity
             android:name=".dialogs.LocationPickerDialog"
             android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity
+            android:name=".activities.LocationActivity"
+            android:exported="false" />
 
         <receiver android:name=".receivers.NotificationReceiver" />
         <receiver android:name=".receivers.DailyUpdateReceiver" />

@@ -1,5 +1,6 @@
 package bassamalim.hidaya.ui.components
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,6 +25,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 fun MyButton(
     text: String,
     modifier: Modifier = Modifier,
+    colors: ButtonColors = ButtonDefaults.buttonColors(backgroundColor = AppTheme.colors.surface),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     textColor: Color = AppTheme.colors.text,
@@ -35,7 +38,7 @@ fun MyButton(
     Button(
         onClick = onClick,
         modifier = modifier,
-        colors = ButtonDefaults.buttonColors(backgroundColor = AppTheme.colors.surface),
+        colors = colors,
         shape = RoundedCornerShape(10.dp),
         elevation =  ButtonDefaults.elevation(
             defaultElevation = elevation.dp,
@@ -65,12 +68,14 @@ fun MyButton(
 @Composable
 fun MyIconBtn(
     iconId: Int,
+    modifier: Modifier = Modifier,
     description: String = "",
     tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
     onClick: () -> Unit
 ) {
     IconButton(
-        onClick = onClick
+        onClick = onClick,
+        modifier = modifier
     ) {
         Icon(
             painter = painterResource(id = iconId),
@@ -99,9 +104,9 @@ fun MyIconBtn(
 }
 
 @Composable
-fun MyBackBtn(
-    onBackPressed: () -> Unit
-) {
+fun MyBackBtn() {
+    val context = LocalContext.current
+
     Row(
         Modifier
             .fillMaxHeight()
@@ -112,7 +117,9 @@ fun MyBackBtn(
             LocalContentAlpha provides ContentAlpha.high,
         ) {
             IconButton(
-                onClick = onBackPressed,
+                onClick = {
+                    (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
+                },
                 enabled = true
             ) {
                 Icon(

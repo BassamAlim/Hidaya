@@ -72,7 +72,7 @@ object PTUtils {
     }
 
     fun cancelAlarm(gContext: Context, PID: PID) {
-        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
+        val pendingIntent = PendingIntent.getBroadcast(
             gContext, PID.ordinal, Intent(),
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -80,7 +80,7 @@ object PTUtils {
         val am: AlarmManager = gContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         am.cancel(pendingIntent)
 
-        Log.i(Global.TAG, "Canceled Alarm $PID")
+        Log.i(Global.TAG, "Canceled $PID Alarm")
     }
 
     fun formatTime(context: Context, gStr: String): String {

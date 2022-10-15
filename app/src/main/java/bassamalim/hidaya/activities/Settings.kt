@@ -1,24 +1,38 @@
 package bassamalim.hidaya.activities
 
-import android.R.id
 import android.os.Bundle
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import bassamalim.hidaya.R
 import bassamalim.hidaya.screens.SettingsScreen
+import bassamalim.hidaya.ui.components.MyScaffold
+import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 
-class Settings : AppCompatActivity() {
+class Settings : ComponentActivity() {
+
+    private lateinit var settingsScreen: SettingsScreen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.myOnActivityCreated(this)
-        setContentView(R.layout.activity_settings)
-        findViewById<View>(id.home).setOnClickListener { onBackPressed() }
+        ActivityUtils.onActivityCreateSetLocale(this)
 
-        if (savedInstanceState == null)
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.settings, SettingsScreen.newInstance()).commit()
+        settingsScreen = SettingsScreen(this)
+
+        setContent {
+            AppTheme {
+                UI()
+            }
+        }
+    }
+
+    @Composable
+    private fun UI() {
+        MyScaffold(stringResource(id = R.string.settings)) {
+            settingsScreen.SettingsUI()
+        }
     }
 
 }

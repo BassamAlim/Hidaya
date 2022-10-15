@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Divider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,10 +29,10 @@ import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.ui.components.MyButton
+import bassamalim.hidaya.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.ui.components.MyScaffold
 import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
-import bassamalim.hidaya.ui.theme.Grey
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -54,10 +53,7 @@ class AboutActivity : ComponentActivity() {
     @Preview(showBackground = true)
     @Composable
     private fun UI() {
-        MyScaffold(
-            title = stringResource(id = R.string.about),
-            onBackPressed = { onBackPressedDispatcher.onBackPressed() }
-        ) {
+        MyScaffold(stringResource(id = R.string.about)) {
             val context = LocalContext.current
             var counter by remember { mutableStateOf(0) }
 
@@ -81,33 +77,21 @@ class AboutActivity : ComponentActivity() {
                         ) {
                             counter++
                             if (counter == 5)
-                                Toast
-                                    .makeText(
+                                Toast.makeText(
                                         context, getString(R.string.vip_welcome), Toast.LENGTH_SHORT
-                                    )
-                                    .show()
+                                    ).show()
                         }
                 )
 
-                Source(
-                    stringResource(id = R.string.quran_source)
-                )
-                Divider()
-                Source(
-                    stringResource(id = R.string.tafseer_source)
-                )
-                Divider()
-                Source(
-                    stringResource(id = R.string.hadeeth_source)
-                )
-                Divider()
-                Source(
-                    stringResource(id = R.string.athkar_source)
-                )
-                Divider()
-                Source(
-                    stringResource(id = R.string.quiz_source)
-                )
+                Source(R.string.quran_source)
+                MyHorizontalDivider()
+                Source(R.string.tafseer_source)
+                MyHorizontalDivider()
+                Source(R.string.hadeeth_source)
+                MyHorizontalDivider()
+                Source(R.string.athkar_source)
+                MyHorizontalDivider()
+                Source(R.string.quiz_source)
 
                 val shownModifier = Modifier.align(Alignment.CenterHorizontally)
                 val hiddenModifier = shownModifier.alpha(0F)
@@ -149,22 +133,12 @@ class AboutActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun Source(text: String) {
+    private fun Source(textResId: Int) {
         MyText(
-            text = text,
-            modifier = Modifier
-                .padding(10.dp),
+            text = stringResource(id = textResId),
+            modifier = Modifier.padding(10.dp),
             fontSize = 22.sp,
             textAlign = TextAlign.Start
-        )
-    }
-
-    @Composable
-    private fun Divider() {
-        Divider(
-            thickness = 1.dp,
-            color = Grey,
-            modifier = Modifier.padding(vertical = 5.dp)
         )
     }
 

@@ -2,7 +2,11 @@ package bassamalim.hidaya.utils
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.fragment.app.FragmentManager
+import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
+import bassamalim.hidaya.dialogs.TutorialDialog
 import java.util.*
 
 object ActivityUtils {
@@ -42,6 +46,19 @@ object ActivityUtils {
         val intent = activity.intent
         activity.finish()
         activity.startActivity(intent)
+    }
+
+    fun checkFirstTime(
+        context: Context,
+        supportFragmentManager: FragmentManager,
+        prefKey: String,
+        textResId: Int,
+        pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    ) {
+        if (pref.getBoolean(prefKey, true))
+            TutorialDialog.newInstance(
+                context.getString(textResId), prefKey
+            ).show(supportFragmentManager, TutorialDialog.TAG)
     }
 
 }

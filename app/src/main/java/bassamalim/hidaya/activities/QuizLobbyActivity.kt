@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -35,12 +34,7 @@ class QuizLobbyActivity : ComponentActivity() {
 
     @Composable
     private fun UI() {
-        val context = LocalContext.current
-
-        MyScaffold(
-            title = stringResource(id = R.string.quiz_title),
-            onBackPressed = { onBackPressedDispatcher.onBackPressed() }
-        ) {
+        MyScaffold(stringResource(id = R.string.quiz_title)) {
             Column(
                 Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -52,8 +46,10 @@ class QuizLobbyActivity : ComponentActivity() {
                     fontWeight = FontWeight.Bold,
                     textColor = AppTheme.colors.accent
                 ) {
-                    val intent = Intent(context, QuizActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(
+                        this@QuizLobbyActivity,
+                        QuizActivity::class.java
+                    ))
                 }
             }
         }

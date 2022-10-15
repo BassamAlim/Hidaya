@@ -110,10 +110,7 @@ class DateConverter : AppCompatActivity() {
 
     @Composable
     private fun UI() {
-        MyScaffold(
-            title = stringResource(id = R.string.date_converter),
-            onBackPressed = { onBackPressedDispatcher.onBackPressed() }
-        ) {
+        MyScaffold(stringResource(id = R.string.date_converter),) {
             Column(
                 Modifier
                     .fillMaxSize()
