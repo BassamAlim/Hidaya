@@ -26,17 +26,19 @@ fun MySurface(
         Surface(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(6.dp),
+                .padding(vertical = 5.dp, horizontal = 8.dp),
             shape = RoundedCornerShape(cornerRadius),
             color = AppTheme.colors.surface,
-            elevation = 10.dp
+            elevation = 10.dp,
         ) {
             content()
         }
     }
     else {
         Surface(
-            modifier = modifier,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(vertical = 5.dp, horizontal = 8.dp),
             shape = RoundedCornerShape(10.dp),
             color = AppTheme.colors.surface,
             elevation = 10.dp,

@@ -79,10 +79,6 @@
     <!-- Descriptions -->
     <string name="qibla_view_description">اتجاه القبلة</string>
     <string name="bingo_view_description">اتجاه صحيح</string>
-    <string name="first_answer_description">الاجابة الاولى</string>
-    <string name="second_answer_description">الاجابة الثانية</string>
-    <string name="third_answer_description">الاجابة الثالثة</string>
-    <string name="fourth_answer_description">الاجابة الرابعة</string>
     <string name="back_description">العودة</string>
     <string name="shuffle_description">تشغيل عشوائي</string>
     <string name="download_description">تحميل</string>

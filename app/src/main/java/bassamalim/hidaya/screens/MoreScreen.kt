@@ -19,10 +19,10 @@ import bassamalim.hidaya.ui.components.MySquareButton
 
 class MoreScreen(
     private val context: Context
-) {
+): NavigationScreen() {
 
     @Composable
-    fun OtherUI() {
+    fun MoreUI() {
         Column(
             Modifier
                 .fillMaxSize()

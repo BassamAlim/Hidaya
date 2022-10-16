@@ -35,14 +35,12 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="10dp"
-            android:background="@drawable/radio_selector"
             android:button="@android:color/transparent"
             android:elevation="6dp"
             android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
             android:padding="10dp"
             android:text="@string/page_view"
-            android:textColor="@drawable/radio_text_selector"
             android:textSize="20dp"
             tools:ignore="SpUsage" />
 
@@ -52,13 +50,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="10dp"
-            android:background="@drawable/radio_selector"
             android:button="@android:color/transparent"
             android:elevation="6dp"
             android:fontFamily="@font/tajawal_regular"
             android:gravity="center"
             android:padding="10dp"
-            android:textColor="@drawable/radio_text_selector"
             android:textSize="20dp"
             android:text="@string/list_view"
             tools:ignore="SpUsage" />

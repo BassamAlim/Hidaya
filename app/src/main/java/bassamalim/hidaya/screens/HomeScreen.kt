@@ -42,7 +42,7 @@ class HomeScreen(
     private val pref: SharedPreferences,
     private val located: Boolean,
     private val location: Location?
-) {
+): NavigationScreen() {
 
     private lateinit var times: Array<Calendar?>
     private lateinit var formattedTimes: ArrayList<String>
@@ -64,11 +64,11 @@ class HomeScreen(
         onResume()
     }
 
-    fun onPause() {
+    override fun onPause() {
         timer?.cancel()
     }
 
-    fun onResume() {
+    override fun onResume() {
         if (pref.getBoolean("werd_done", false)) werdDone.value = true
     }
 
@@ -185,9 +185,7 @@ class HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MySurface(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 3.dp)
+                Modifier.padding(top = 3.dp)
             ) {
                 Column(
                     Modifier.fillMaxWidth(),
@@ -234,9 +232,7 @@ class HomeScreen(
                 }
             }
 
-            MySurface(
-                Modifier.fillMaxWidth()
-            ) {
+            MySurface {
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -250,9 +246,7 @@ class HomeScreen(
                 }
             }
 
-            MySurface(
-                Modifier.fillMaxWidth()
-            ) {
+            MySurface {
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -275,9 +269,7 @@ class HomeScreen(
                 }
             }
 
-            MySurface(
-                Modifier.fillMaxWidth()
-            ) {
+            MySurface {
                 Column(
                     Modifier.fillMaxWidth()
                         .padding(vertical = 14.dp, horizontal = 20.dp),

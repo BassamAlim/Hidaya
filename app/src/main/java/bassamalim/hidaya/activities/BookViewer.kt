@@ -92,9 +92,7 @@ class BookViewer : ComponentActivity() {
     @Composable
     private fun DoorCard(door: Book.BookChapter.BookDoor, textSize: MutableState<Int>) {
         val textSizeMargin = 15
-        MySurface(
-            Modifier.padding(vertical = 3.dp, horizontal = 5.dp),
-        ) {
+        MySurface {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

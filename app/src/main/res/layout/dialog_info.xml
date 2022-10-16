@@ -12,7 +12,6 @@
         style="@style/MyImageBtn"
         android:layoutDirection="ltr"
         android:padding="6dp"
-        android:background="@drawable/ripple_circle"
         android:src="@drawable/ic_close"
         android:contentDescription="@string/close"
         app:layout_constraintTop_toTopOf="parent"

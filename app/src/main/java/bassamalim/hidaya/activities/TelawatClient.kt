@@ -212,9 +212,9 @@ class TelawatClient : AppCompatActivity() {
                 editor.putInt("telawat_repeat_mode", repeat)
                 editor.apply()
 
-                repeatBtn.background = ResourcesCompat.getDrawable(
+                /*repeatBtn.background = ResourcesCompat.getDrawable(
                     resources, R.drawable.ripple_circle, theme
-                )
+                )*/
             }
         }
 
@@ -239,9 +239,9 @@ class TelawatClient : AppCompatActivity() {
                 editor.putInt("telawat_shuffle_mode", shuffle)
                 editor.apply()
 
-                shuffleBtn.background = ResourcesCompat.getDrawable(
+                /*shuffleBtn.background = ResourcesCompat.getDrawable(
                     resources, R.drawable.ripple_circle, theme
-                )
+                )*/
             }
         }
     }

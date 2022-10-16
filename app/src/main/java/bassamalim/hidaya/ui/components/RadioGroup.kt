@@ -28,7 +28,6 @@ fun CustomRadioGroup(
             MySurface(
                 modifier =
                     if (index == selection.value) Modifier
-                        .fillMaxWidth()
                         .padding(vertical = 12.dp, horizontal = 16.dp)
                         .border(
                             width = 3.dp,
@@ -36,7 +35,6 @@ fun CustomRadioGroup(
                             shape = RoundedCornerShape(10.dp)
                         )
                     else Modifier
-                        .fillMaxWidth()
                         .padding(vertical = 12.dp, horizontal = 16.dp),
                 onClick = {
                     selection.value = index

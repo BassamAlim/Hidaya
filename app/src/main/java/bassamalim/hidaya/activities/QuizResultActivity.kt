@@ -1,36 +1,39 @@
 package bassamalim.hidaya.activities
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.adapters.QuizResultQuestionAdapter
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.database.dbs.QuizAnswersDB
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB
-import bassamalim.hidaya.databinding.ActivityQuizResultBinding
 import bassamalim.hidaya.models.QuizResultQuestion
+import bassamalim.hidaya.ui.components.*
+import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 
-class QuizResultActivity : AppCompatActivity() {
+class QuizResultActivity : ComponentActivity() {
 
-    private lateinit var binding: ActivityQuizResultBinding
     private lateinit var db: AppDatabase
     private var score = 0
-    private lateinit var cAnswers: IntArray
     private lateinit var questions: List<QuizQuestionsDB>
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: QuizResultQuestionAdapter
-    private lateinit var questionCards: ArrayList<QuizResultQuestion>
+    private lateinit var cAnswers: IntArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.myOnActivityCreated(this)
-        binding = ActivityQuizResultBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.home.setOnClickListener { onBackPressed() }
+        ActivityUtils.onActivityCreateSetLocale(this)
 
         db = DBUtils.getDB(this)
 
@@ -39,44 +42,109 @@ class QuizResultActivity : AppCompatActivity() {
         cAnswers = intent.getIntArrayExtra("cAnswers")!!
         questions = intent.getSerializableExtra("questions") as List<QuizQuestionsDB>
 
-        questionCards = makeQuestionCards()
-
-        setupRecycler()
-
-        show()
+        setContent {
+            AppTheme {
+                UI()
+            }
+        }
     }
 
-    private fun makeQuestionCards(): ArrayList<QuizResultQuestion> {
-        val cards: ArrayList<QuizResultQuestion> = ArrayList()
+    private fun getQuestionItems(): List<QuizResultQuestion> {
+        val items = ArrayList<QuizResultQuestion>()
         for (i in 0..9) {
-            val answers = getAnswers(questions[i].getQuestionId())
+            val answers = db.quizAnswerDao().getAnswers(questions[i].getQuestionId())
+            val answersText = List(answers.size) { answers[it].answer_text!! }
 
-            cards.add(
+            items.add(
                 QuizResultQuestion(
                     i, questions[i].getQuestionText(), questions[i].getCorrectAnswerId(),
-                    cAnswers[i], answers[0].answer_text!!, answers[1].answer_text!!,
-                    answers[2].answer_text!!, answers[3].answer_text!!
+                    cAnswers[i], answersText
                 )
             )
         }
-        return cards
+        return items
     }
 
-    private fun getAnswers(qId: Int): List<QuizAnswersDB> {
-        return db.quizAnswerDao().getAnswers(qId)
+    @Composable
+    private fun UI() {
+        MyScaffold(stringResource(R.string.quiz_result)) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(it),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(AppTheme.colors.primary),
+                    contentAlignment = Alignment.Center
+                ) {
+                    MyText(
+                        text = "${getString(R.string.your_score_is)} ${score * 10}%",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
+                    )
+                }
+
+                MyLazyColumn(lazyList = {
+                    items(
+                        items = getQuestionItems()
+                    ) { item ->
+                        Question(item)
+                    }
+                })
+            }
+        }
     }
 
-    private fun setupRecycler() {
-        recyclerView = binding.recycler
-        val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
-        adapter = QuizResultQuestionAdapter(this, questionCards)
-        recyclerView.adapter = adapter
+    @Composable
+    fun Question(question: QuizResultQuestion) {
+        MySurface {
+            // Question number
+            MyText(
+                text = "${stringResource(id = R.string.question)} ${question.questionNum+1}",
+                fontSize = 16.sp
+            )
+
+            // Question text
+            MyText(text = question.questionText)
+
+            // Answers
+            for (i in 0..3) {
+                MyHorizontalDivider(if (i == 0) 2.dp else 1.dp)
+
+                Answer(
+                    ansNum = i,
+                    ansText = question.answers[i],
+                    correctAns = question.correctAns,
+                    chosenAns = question.chosenAns
+                )
+            }
+        }
     }
 
-    private fun show() {
-        val resultText = getString(R.string.your_score_is) + " " + score * 10 + "%"
-        binding.resultScreen.text = resultText
+    @Composable
+    private fun Answer(ansNum: Int, ansText: String, correctAns: Int, chosenAns: Int) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            MyText(text = ansText)
+
+            if (ansNum == chosenAns || ansNum == correctAns)
+                Image(
+                    painter = painterResource(
+                        if (ansNum == correctAns) R.drawable.ic_check
+                        else R.drawable.ic_wrong
+                    ),
+                    contentDescription = ""
+                )
+        }
     }
 
 }

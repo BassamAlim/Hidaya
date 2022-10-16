@@ -80,7 +80,6 @@
                 style="@style/MyBtn"
                 android:layout_marginVertical="15dp"
                 android:layout_marginHorizontal="10dp"
-                android:background="@drawable/ripple_rectangle"
                 android:paddingVertical="10dp"
                 android:paddingHorizontal="20dp"
                 android:text="@string/go_to_page"

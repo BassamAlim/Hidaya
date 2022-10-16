@@ -260,9 +260,7 @@ class BookSearcher : ComponentActivity() {
                         items(
                             items = matches
                         ) { item ->
-                            MySurface(
-                                Modifier.padding(vertical = 3.dp, horizontal = 5.dp),
-                            ) {
+                            MySurface {
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {

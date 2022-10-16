@@ -15,8 +15,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingHorizontal="10dp"
-            android:background="@drawable/ripple_surface">
+            android:paddingHorizontal="10dp">
 
             <TextView
                 android:id="@+id/version_namescreen"
@@ -42,7 +41,6 @@
                 <ImageButton
                     android:id="@+id/download_btn"
                     style="@style/MyImageBtn"
-                    android:background="@drawable/ripple_rectangle"
                     android:contentDescription="@string/download" />
 
                 <ProgressBar

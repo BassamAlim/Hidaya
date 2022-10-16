@@ -1,5 +1,6 @@
 package bassamalim.hidaya.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -14,9 +15,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import bassamalim.hidaya.R
+import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.ui.theme.AppTheme
 
-sealed class BottomNavItem(var icon:Int, var screen_route:String){
+sealed class BottomNavItem(var icon: Int, var screen_route: String){
     object Home: BottomNavItem(R.drawable.ic_home,"home")
     object Prayers: BottomNavItem(R.drawable.ic_clock,"prayers")
     object Quran: BottomNavItem(R.drawable.ic_bar_quran,"quran")
@@ -26,6 +28,8 @@ sealed class BottomNavItem(var icon:Int, var screen_route:String){
 
 @Composable
 fun MyBottomNavigation(navController: NavController) {
+    Log.d(Global.TAG, "5")
+
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Prayers,
@@ -48,11 +52,10 @@ fun MyBottomNavigation(navController: NavController) {
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
+
         items.forEachIndexed { index, item ->
             BottomNavigationItem(
-                label = {
-                    MyText(text = titles[index], fontSize = 10.sp)
-                },
+                label = { MyText(text = titles[index], fontSize = 10.sp) },
                 alwaysShowLabel = false,
                 icon = {
                     Icon(

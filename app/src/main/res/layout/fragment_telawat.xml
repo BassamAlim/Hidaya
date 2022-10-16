@@ -18,7 +18,6 @@
         android:id="@+id/filter_ib"
         style="@style/MyImageBtn"
         android:layout_marginTop="5dp"
-        android:background="@drawable/ripple_circle"
         android:src="@drawable/ic_filter"
         android:contentDescription="@string/filter_search_description"
         app:layout_constraintBottom_toTopOf="@id/recycler"

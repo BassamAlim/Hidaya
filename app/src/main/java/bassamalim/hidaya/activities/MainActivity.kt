@@ -14,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -47,19 +48,13 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var remoteConfig: FirebaseRemoteConfig? = FirebaseRemoteConfig.getInstance()
+    private var navScreen: NavigationScreen? = null
+    private var remoteConfig = FirebaseRemoteConfig.getInstance()
     private lateinit var pref: SharedPreferences
     private lateinit var language: String
     private lateinit var theme: String
     private var times: Array<Calendar?>? = null
-    private var currentScreen = mutableStateOf("")
     private val dateOffset = mutableStateOf(0)
-
-    private var homeScreen: HomeScreen? = null
-    private var prayersScreen: PrayersScreen? = null
-    private var quranScreen: QuranScreen? = null
-    private var athkarScreen: AthkarScreen? = null
-    private var moreScreen: MoreScreen? = null
 
     companion object {
         var location: Location? = null
@@ -108,13 +103,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        homeScreen?.onPause()
+        navScreen?.onPause()
     }
 
     override fun onResume() {
         super.onResume()
-        homeScreen?.onResume()
-        quranScreen?.onResume()
+        navScreen?.onResume()
     }
 
     private fun getLocation() {
@@ -133,8 +127,8 @@ class MainActivity : AppCompatActivity() {
         val configSettings = FirebaseRemoteConfigSettings.Builder()
                                     // update at most every six hours
             .setMinimumFetchIntervalInSeconds(3600 * 6).build()
-        remoteConfig?.setConfigSettingsAsync(configSettings)
-        remoteConfig?.setDefaultsAsync(R.xml.remote_config_defaults)
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
     }
 
     private fun setAlarms() {
@@ -188,13 +182,12 @@ class MainActivity : AppCompatActivity() {
         val navController = rememberNavController()
 
         MyScaffold(
-            title = stringResource(id = R.string.app_name),
+            title = getString(R.string.app_name),
             topBar = {
                 TopAppBar(
                     backgroundColor = AppTheme.colors.primary,
                     elevation = 8.dp,
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Box(
                         Modifier.fillMaxSize()
@@ -241,19 +234,18 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             },
-            bottomBar = { MyBottomNavigation(navController = navController) },
+            bottomBar = { MyBottomNavigation(navController) },
             fab = {
-                if (currentScreen.value == "Quran")
+                if (navScreen is QuranScreen)
                     MyFloatingActionButton(
                         iconId = R.drawable.ic_quran_search,
                         description = stringResource(id = R.string.search_in_quran)
                     ) {
-                        val intent = Intent(this, QuranSearcherActivity::class.java)
-                        startActivity(intent)
+                        startActivity(Intent(this, QuranSearcherActivity::class.java))
                     }
             }
         ) {
-            NavigationGraph(navController = navController, it)
+            NavigationGraph(navController, it)
         }
     }
 
@@ -265,53 +257,41 @@ class MainActivity : AppCompatActivity() {
             modifier = Modifier.padding(padding)
         ) {
             composable(BottomNavItem.Home.screen_route) {
-                homeScreen = HomeScreen(this@MainActivity, pref, located, location)
-                homeScreen!!.HomeUI()
-
-                prayersScreen = null
-                quranScreen = null
-                athkarScreen = null
-                moreScreen = null
+                navScreen = HomeScreen(this@MainActivity, pref, located, location)
+                (navScreen as HomeScreen).HomeUI()
             }
             composable(BottomNavItem.Prayers.screen_route) {
-                prayersScreen = PrayersScreen(
-                    this@MainActivity, pref, located, location, supportFragmentManager
-                )
-                prayersScreen!!.PrayersUI()
+                navScreen = PrayersScreen(this@MainActivity, pref, located, location)
+                (navScreen as PrayersScreen).PrayersUI()
 
-                homeScreen = null
-                quranScreen = null
-                athkarScreen = null
-                moreScreen = null
+                LaunchedEffect(Unit) {
+                    if (located)
+                        ActivityUtils.checkFirstTime(
+                            this@MainActivity, supportFragmentManager,
+                            "is_first_time_in_prayers",
+                            R.string.prayers_tips, pref
+                        )
+                }
             }
             composable(BottomNavItem.Quran.screen_route) {
-                quranScreen = QuranScreen(
-                    this@MainActivity, pref, supportFragmentManager
-                )
-                quranScreen!!.QuranUI()
+                navScreen = QuranScreen(this@MainActivity, pref)
+                (navScreen as QuranScreen).QuranUI()
 
-                homeScreen = null
-                prayersScreen = null
-                athkarScreen = null
-                moreScreen = null
+                LaunchedEffect(Unit) {
+                    ActivityUtils.checkFirstTime(
+                        this@MainActivity, supportFragmentManager,
+                        "is_first_time_in_quran_fragment",
+                        R.string.quran_fragment_tips, pref
+                    )
+                }
             }
             composable(BottomNavItem.Athkar.screen_route) {
-                athkarScreen = AthkarScreen(this@MainActivity)
-                athkarScreen!!.AthkarUI()
-
-                homeScreen = null
-                prayersScreen = null
-                quranScreen = null
-                moreScreen = null
+                navScreen = AthkarScreen(this@MainActivity)
+                (navScreen as AthkarScreen).AthkarUI()
             }
             composable(BottomNavItem.More.screen_route) {
-                moreScreen = MoreScreen(this@MainActivity)
-                moreScreen!!.OtherUI()
-
-                homeScreen = null
-                prayersScreen = null
-                quranScreen = null
-                athkarScreen = null
+                navScreen = MoreScreen(this@MainActivity)
+                (navScreen as MoreScreen).MoreUI()
             }
         }
     }

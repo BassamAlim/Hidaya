@@ -46,7 +46,6 @@
         <ImageButton
             android:id="@+id/radio_pp_btn"
             style="@style/MyImageBtn"
-            android:background="@drawable/ripple_circle"
             android:padding="20dp"
             android:contentDescription="@string/play_pause_btn_description"
             android:visibility="gone" />

@@ -18,7 +18,7 @@ import bassamalim.hidaya.ui.components.MySquareButton
 
 class AthkarScreen(
     private val context: Context
-) {
+): NavigationScreen() {
 
     private fun showThikrs(category: Int) {
         val intent = Intent(context, AthkarListActivity::class.java)

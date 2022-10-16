@@ -58,10 +58,6 @@
     <!-- Descriptions -->
     <string name="qibla_view_description">Qibla direction</string>
     <string name="bingo_view_description">Correct direction</string>
-    <string name="first_answer_description">First answer</string>
-    <string name="second_answer_description">Second answer</string>
-    <string name="third_answer_description">Third answer</string>
-    <string name="fourth_answer_description">Fourth answer</string>
     <string name="back_description">Back</string>
     <string name="shuffle_description">Shuffle</string>
     <string name="download_description">Download</string>

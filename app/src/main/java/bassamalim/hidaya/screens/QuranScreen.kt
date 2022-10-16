@@ -19,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.FragmentManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.database.dbs.SuarDB
@@ -27,7 +26,6 @@ import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.Sura
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
-import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PrefUtils
@@ -37,9 +35,8 @@ import com.google.gson.Gson
 
 class QuranScreen(
     private val context: Context,
-    private val pref: SharedPreferences,
-    supportFragmentManager: FragmentManager
-) {
+    private val pref: SharedPreferences
+): NavigationScreen() {
 
     private val db = DBUtils.getDB(context)
     private val gson = Gson()
@@ -47,14 +44,7 @@ class QuranScreen(
     private lateinit var names: List<String>
     private val bookmarkedPage = mutableStateOf(pref.getInt("bookmarked_page", -1))
 
-    init {
-        ActivityUtils.checkFirstTime(
-            context, supportFragmentManager, "is_first_time_in_quran_fragment",
-            R.string.quran_fragment_tips, pref
-        )
-    }
-
-    fun onResume() {
+    override fun onResume() {
         bookmarkedPage.value = pref.getInt("bookmarked_page", -1)
     }
 
@@ -177,9 +167,6 @@ class QuranScreen(
                     }
                 ) { item ->
                     MySurface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 3.dp, horizontal = 6.dp),
                         onClick = {
                             val intent = Intent(context, QuranViewer::class.java)
                             intent.action = "by_surah"
