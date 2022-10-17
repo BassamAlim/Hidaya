@@ -164,9 +164,9 @@ class TelawatAdapter(private val context: Context, private val original: ArrayLi
 
         val recitersJson = gson.toJson(favReciters)
 
-        val editor = pref.edit()
-        editor.putString("favorite_reciters", recitersJson)
-        editor.apply()
+        pref.edit()
+            .putString("favorite_reciters", recitersJson)
+            .apply()
     }
 
     private fun getRewayat(): Array<String> {

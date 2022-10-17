@@ -196,9 +196,9 @@ class TelawatClient : AppCompatActivity() {
                 repeat = PlaybackStateCompat.REPEAT_MODE_ONE
                 tc.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)
 
-                val editor = pref.edit()
-                editor.putInt("telawat_repeat_mode", repeat)
-                editor.apply()
+                pref.edit()
+                    .putInt("telawat_repeat_mode", repeat)
+                    .apply()
 
                 repeatBtn.background = ResourcesCompat.getDrawable(
                     resources, R.drawable.rounded_dialog, theme
@@ -208,9 +208,9 @@ class TelawatClient : AppCompatActivity() {
                 repeat = PlaybackStateCompat.REPEAT_MODE_NONE
                 tc.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
 
-                val editor = pref.edit()
-                editor.putInt("telawat_repeat_mode", repeat)
-                editor.apply()
+                pref.edit()
+                    .putInt("telawat_repeat_mode", repeat)
+                    .apply()
 
                 /*repeatBtn.background = ResourcesCompat.getDrawable(
                     resources, R.drawable.ripple_circle, theme
@@ -223,9 +223,9 @@ class TelawatClient : AppCompatActivity() {
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_ALL
                 tc.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
 
-                val editor = pref.edit()
-                editor.putInt("telawat_shuffle_mode", shuffle)
-                editor.apply()
+                pref.edit()
+                    .putInt("telawat_shuffle_mode", shuffle)
+                    .apply()
 
                 shuffleBtn.background = ResourcesCompat.getDrawable(
                     resources, R.drawable.rounded_dialog, theme
@@ -235,9 +235,9 @@ class TelawatClient : AppCompatActivity() {
                 shuffle = PlaybackStateCompat.SHUFFLE_MODE_NONE
                 tc.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE)
 
-                val editor = pref.edit()
-                editor.putInt("telawat_shuffle_mode", shuffle)
-                editor.apply()
+                pref.edit()
+                    .putInt("telawat_shuffle_mode", shuffle)
+                    .apply()
 
                 /*shuffleBtn.background = ResourcesCompat.getDrawable(
                     resources, R.drawable.ripple_circle, theme

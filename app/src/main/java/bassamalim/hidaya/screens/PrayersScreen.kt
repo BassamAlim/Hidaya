@@ -126,8 +126,6 @@ class PrayersScreen(
     @Composable
     fun PrayersUI() {
         Column(
-            Modifier
-                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MySurface(
@@ -136,7 +134,7 @@ class PrayersScreen(
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 5.dp),
+                        .padding(vertical = 2.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -171,7 +169,9 @@ class PrayersScreen(
                 )
             }
 
-            MySurface {
+            MySurface(
+                Modifier.padding(bottom = 5.dp)
+            ) {
                 Row(
                     Modifier
                         .fillMaxWidth()

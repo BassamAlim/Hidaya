@@ -12,10 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
@@ -114,7 +112,6 @@ class AthkarListActivity : ComponentActivity() {
     @Composable
     private fun UI(title: String) {
         MyScaffold(title) {
-            val context = LocalContext.current
             val textState = remember { mutableStateOf(TextFieldValue("")) }
 
             Column(
@@ -136,7 +133,6 @@ class AthkarListActivity : ComponentActivity() {
                         ) { item ->
                             MyBtnSurface(
                                 text = item.name,
-                                modifier = Modifier.padding(vertical = 3.dp, horizontal = 5.dp),
                                 iconBtn = {
                                     MyFavBtn(
                                         fav = item.favorite.value
@@ -153,11 +149,12 @@ class AthkarListActivity : ComponentActivity() {
                                     }
                                 }
                             ) {
-                                context.startActivity(
-                                    Intent(context, AthkarViewer::class.java)
-                                        .setAction(action)
-                                        .putExtra("thikr_id", item.id)
+                                val intent = Intent(
+                                    this@AthkarListActivity, AthkarViewer::class.java
                                 )
+                                intent.action = action
+                                intent.putExtra("thikr_id", item.id)
+                                startActivity(intent)
                             }
                         }
                     }

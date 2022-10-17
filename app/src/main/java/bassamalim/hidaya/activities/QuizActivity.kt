@@ -144,13 +144,15 @@ class QuizActivity : ComponentActivity() {
                         .fillMaxWidth()
                         .weight(1F, false)
                         .padding(bottom = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     MyButton(
                         text = stringResource(id = R.string.previous_question),
                         textColor =
                             if (current.value == 0) Grey
-                            else AppTheme.colors.text
+                            else AppTheme.colors.text,
+                        innerPadding = PaddingValues(10.dp)
                     ) {
                         if (current.value != 0) previousQ()
                     }
@@ -168,7 +170,8 @@ class QuizActivity : ComponentActivity() {
                                 if (allAnswered.value) AppTheme.colors.text
                                 else Grey
                             }
-                            else AppTheme.colors.text
+                            else AppTheme.colors.text,
+                        innerPadding = PaddingValues(10.dp)
                     ) {
                         if (current.value == 9) {
                             if (allAnswered.value) nextQ()

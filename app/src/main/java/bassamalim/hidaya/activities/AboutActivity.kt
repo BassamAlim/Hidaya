@@ -10,15 +10,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,79 +52,89 @@ class AboutActivity : ComponentActivity() {
     @Composable
     private fun UI() {
         MyScaffold(stringResource(id = R.string.about)) {
-            val context = LocalContext.current
             var counter by remember { mutableStateOf(0) }
 
             Column(
                 Modifier
                     .background(AppTheme.colors.background)
                     .padding(it)
-                    .fillMaxWidth()
-                    .fillMaxHeight()
+                    .padding(horizontal = 5.dp)
+                    .fillMaxSize()
             ) {
                 MyText(
                     text = stringResource(id = R.string.thanks),
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .padding(top = 15.dp, bottom = 30.dp)
+                        .padding(top = 15.dp, bottom = 20.dp)
                         .align(Alignment.CenterHorizontally)
                         .clickable(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
                         ) {
-                            counter++
-                            if (counter == 5)
-                                Toast.makeText(
-                                        context, getString(R.string.vip_welcome), Toast.LENGTH_SHORT
-                                    ).show()
+                            if (++counter == 5)
+                                Toast
+                                    .makeText(
+                                        this@AboutActivity,
+                                        getString(R.string.vip_welcome), Toast.LENGTH_SHORT
+                                    )
+                                    .show()
                         }
                 )
 
-                Source(R.string.quran_source)
-                MyHorizontalDivider()
-                Source(R.string.tafseer_source)
-                MyHorizontalDivider()
-                Source(R.string.hadeeth_source)
-                MyHorizontalDivider()
-                Source(R.string.athkar_source)
-                MyHorizontalDivider()
-                Source(R.string.quiz_source)
+                Column(
+                    Modifier
+                        .weight(1F)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Source(R.string.quran_source)
+                    MyHorizontalDivider()
+                    Source(R.string.tafseer_source)
+                    MyHorizontalDivider()
+                    Source(R.string.hadeeth_source)
+                    MyHorizontalDivider()
+                    Source(R.string.athkar_source)
+                    MyHorizontalDivider()
+                    Source(R.string.quiz_source)
+                }
 
-                val shownModifier = Modifier.align(Alignment.CenterHorizontally)
-                val hiddenModifier = shownModifier.alpha(0F)
                 MyButton(
                     stringResource(id = R.string.rebuild_database),
-                    if (counter < 5) hiddenModifier else shownModifier
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .alpha(if (counter < 5) 0F else 1F)
                 ) {
-                    context.deleteDatabase("HidayaDB")
+                    deleteDatabase("HidayaDB")
 
                     Log.i(Global.TAG, "Database Rebuilt")
 
-                    DBUtils.reviveDB(context)
+                    DBUtils.reviveDB(this@AboutActivity)
 
                     Toast.makeText(
-                        context, context.getString(R.string.database_rebuilt),
+                        this@AboutActivity, getString(R.string.database_rebuilt),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
                 MyButton(
                     stringResource(id = R.string.quick_update),
-                    if (counter < 5) hiddenModifier else shownModifier
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .alpha(if (counter < 5) 0F else 1F)
                 ) {
                     val url = FirebaseRemoteConfig.getInstance().getString(Global.UPDATE_URL)
                     val i = Intent(Intent.ACTION_VIEW)
                     i.data = Uri.parse(url)
-                    context.startActivity(i)
+                    startActivity(i)
                 }
                 MyText(
                     text =
                         if (counter < 5) ""
-                        else PreferenceManager.getDefaultSharedPreferences(context)
-                            .getString("last_daily_update", "No daily updates yet")!!,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(10.dp)
+                        else PreferenceManager.getDefaultSharedPreferences(
+                            this@AboutActivity
+                        ).getString("last_daily_update", "No daily updates yet")!!,
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(10.dp)
                 )
             }
         }

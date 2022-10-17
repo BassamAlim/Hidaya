@@ -50,11 +50,14 @@ fun MyFloatingActionButton(
 }
 
 @Composable
-fun MyHorizontalDivider(thickness: Dp = 1.dp) {
+fun MyHorizontalDivider(
+    modifier: Modifier = Modifier,
+    thickness: Dp = 1.dp
+) {
     Divider(
         thickness = thickness,
         color = Grey,
-        modifier = Modifier
+        modifier = modifier
             .alpha(0.5F)
             .padding(vertical = 5.dp)
     )

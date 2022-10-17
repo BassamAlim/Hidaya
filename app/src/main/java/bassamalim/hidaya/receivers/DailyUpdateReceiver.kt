@@ -114,17 +114,17 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         val str = "Last Daily Update: ${now[Calendar.YEAR]}/${now[Calendar.MONTH] + 1}" +
             "/${now[Calendar.DATE]}" + " ${now[Calendar.HOUR_OF_DAY]}:${now[Calendar.MINUTE]}"
 
-        val editor = pref.edit()
-        editor.putInt("last_day", now[Calendar.DATE])
-        editor.putString("last_daily_update", str)
-        editor.apply()
+        pref.edit()
+            .putInt("last_day", now[Calendar.DATE])
+            .putString("last_daily_update", str)
+            .apply()
     }
 
     private fun pickWerd() {
-        val editor = pref.edit()
-        editor.putInt("today_werd_page", Random().nextInt(Global.QURAN_PAGES - 1))
-        editor.putBoolean("werd_done", false)
-        editor.apply()
+        pref.edit()
+            .putInt("today_werd_page", Random().nextInt(Global.QURAN_PAGES - 1))
+            .putBoolean("werd_done", false)
+            .apply()
     }
 
     private fun setTomorrow() {

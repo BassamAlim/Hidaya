@@ -110,7 +110,7 @@ class DateConverter : AppCompatActivity() {
 
     @Composable
     private fun UI() {
-        MyScaffold(stringResource(id = R.string.date_converter),) {
+        MyScaffold(stringResource(id = R.string.date_converter)) {
             Column(
                 Modifier
                     .fillMaxSize()
@@ -122,7 +122,8 @@ class DateConverter : AppCompatActivity() {
                     MyButton(
                         text = stringResource(id = R.string.pick_hijri_date),
                         fontSize = 22.sp,
-                        modifier = Modifier.padding(vertical = 15.dp)
+                        modifier = Modifier.padding(vertical = 15.dp),
+                        innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp)
                     ) {
                         pickHijri()
                     }
@@ -130,7 +131,8 @@ class DateConverter : AppCompatActivity() {
                     MyButton(
                         text = stringResource(id = R.string.pick_hijri_date),
                         fontSize = 22.sp,
-                        modifier = Modifier.padding(vertical = 15.dp)
+                        modifier = Modifier.padding(vertical = 15.dp),
+                        innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp)
                     ) {
                         pickGregorian()
                     }

@@ -5,15 +5,11 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.enums.ListType
@@ -118,8 +114,6 @@ class BooksChaptersActivity : ComponentActivity() {
         items: List<BookChapter>,
         textState: MutableState<TextFieldValue>
     ) {
-        val context = LocalContext.current
-
         MyLazyColumn(
             lazyList = {
                 items(
@@ -129,7 +123,6 @@ class BooksChaptersActivity : ComponentActivity() {
                 ) { item ->
                     MyBtnSurface(
                         text = item.title,
-                        modifier = Modifier.padding(vertical = 3.dp, horizontal = 5.dp),
                         iconBtn = {
                             MyFavBtn(
                                 fav = favStates[item.id]
@@ -140,11 +133,12 @@ class BooksChaptersActivity : ComponentActivity() {
                             }
                         }
                     ) {
-                        val intent = Intent(context, BookViewer::class.java)
-                        intent.putExtra("book_id", bookId)
-                        intent.putExtra("book_title", item.title)
-                        intent.putExtra("chapter_id", item.id)
-                        startActivity(intent)
+                        startActivity(
+                            Intent(this@BooksChaptersActivity, BookViewer::class.java)
+                                .putExtra("book_id", bookId)
+                                .putExtra("book_title", item.title)
+                                .putExtra("chapter_id", item.id)
+                        )
                     }
                 }
             }

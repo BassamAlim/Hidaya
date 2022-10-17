@@ -100,11 +100,9 @@ class PrayerDialog(
         radioGroup = popup.contentView.findViewById(R.id.prayer_alert_rg)
 
         radioGroup.setOnCheckedChangeListener { _: RadioGroup?, checkedId: Int ->
-            val choice = getIndex(checkedId)
-
-            val editor: SharedPreferences.Editor = pref.edit()
-            editor.putInt("$pid notification_type", choice)
-            editor.apply()
+            pref.edit()
+                .putInt("$pid notification_type", getIndex(checkedId))
+                .apply()
 
             Alarms(context, pid)
         }
@@ -117,12 +115,11 @@ class PrayerDialog(
         seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                 val offset = p1 - offsetMin
-
                 setOffsetTv(offset)
 
-                val editor = pref.edit()
-                editor.putInt("$pid offset", offset)
-                editor.apply()
+                pref.edit()
+                    .putInt("$pid offset", offset)
+                    .apply()
             }
             override fun onStartTrackingTouch(p0: SeekBar?) {}
             override fun onStopTrackingTouch(p0: SeekBar?) {}

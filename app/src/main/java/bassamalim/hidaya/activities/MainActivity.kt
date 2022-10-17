@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var theme: String
     private var times: Array<Calendar?>? = null
     private val dateOffset = mutableStateOf(0)
+    private val currentScreen = mutableStateOf("")
 
     companion object {
         var location: Location? = null
@@ -236,7 +237,7 @@ class MainActivity : AppCompatActivity() {
             },
             bottomBar = { MyBottomNavigation(navController) },
             fab = {
-                if (navScreen is QuranScreen)
+                if (currentScreen.value == BottomNavItem.Quran.screen_route)
                     MyFloatingActionButton(
                         iconId = R.drawable.ic_quran_search,
                         description = stringResource(id = R.string.search_in_quran)
@@ -257,10 +258,12 @@ class MainActivity : AppCompatActivity() {
             modifier = Modifier.padding(padding)
         ) {
             composable(BottomNavItem.Home.screen_route) {
+                currentScreen.value = BottomNavItem.Home.screen_route
                 navScreen = HomeScreen(this@MainActivity, pref, located, location)
                 (navScreen as HomeScreen).HomeUI()
             }
             composable(BottomNavItem.Prayers.screen_route) {
+                currentScreen.value = BottomNavItem.Prayers.screen_route
                 navScreen = PrayersScreen(this@MainActivity, pref, located, location)
                 (navScreen as PrayersScreen).PrayersUI()
 
@@ -274,6 +277,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             composable(BottomNavItem.Quran.screen_route) {
+                currentScreen.value = BottomNavItem.Quran.screen_route
                 navScreen = QuranScreen(this@MainActivity, pref)
                 (navScreen as QuranScreen).QuranUI()
 
@@ -286,10 +290,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             composable(BottomNavItem.Athkar.screen_route) {
+                currentScreen.value = BottomNavItem.Athkar.screen_route
                 navScreen = AthkarScreen(this@MainActivity)
                 (navScreen as AthkarScreen).AthkarUI()
             }
             composable(BottomNavItem.More.screen_route) {
+                currentScreen.value = BottomNavItem.More.screen_route
                 navScreen = MoreScreen(this@MainActivity)
                 (navScreen as MoreScreen).MoreUI()
             }

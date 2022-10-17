@@ -15,9 +15,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.dbs.BooksDB
 import bassamalim.hidaya.models.Book
@@ -136,8 +136,6 @@ class BooksActivity : AppCompatActivity() {
 
     @Composable
     private fun UI() {
-        val context = LocalContext.current
-
         MyScaffold(
             title = stringResource(id = R.string.hadeeth_books),
             fab = {
@@ -145,11 +143,12 @@ class BooksActivity : AppCompatActivity() {
                       iconId = R.drawable.ic_quran_search,
                       description = stringResource(id = R.string.search_in_books)
                   ) {
-                      startActivity(Intent(context, BookSearcher::class.java))
+                      startActivity(Intent(this, BookSearcher::class.java))
                   }
             }
         ) {
             MyLazyColumn(
+                Modifier.padding(vertical = 5.dp),
                 lazyList = {
                     items(
                         items = books
@@ -163,7 +162,9 @@ class BooksActivity : AppCompatActivity() {
 
                         MyBtnSurface(
                             text = item.title,
-                            modifier = Modifier.padding(vertical = 3.dp, horizontal = 5.dp),
+                            innerVPadding = 15.dp,
+                            fontSize = 22.sp,
+                            modifier = Modifier.padding(vertical = 2.dp),
                             iconBtn = {
                                 if (downloadStates[item.id] == "downloading")
                                     MyCircularProgressIndicator()
@@ -182,7 +183,8 @@ class BooksActivity : AppCompatActivity() {
                                             if (downloading(item.id)) showWaitMassage()
                                             else {
                                                 FileUtils.deleteFile(
-                                                    context, "$prefix${item.id}.json"
+                                                    this@BooksActivity,
+                                                    "$prefix${item.id}.json"
                                                 )
                                                 downloadStates[item.id] = "not downloaded"
                                             }
@@ -200,11 +202,12 @@ class BooksActivity : AppCompatActivity() {
                                 if (downloading(item.id)) showWaitMassage()
                                 else {
                                     val intent = Intent(
-                                        context, BooksChaptersActivity::class.java
+                                        this@BooksActivity,
+                                        BooksChaptersActivity::class.java
                                     )
                                     intent.putExtra("book_id", item.id)
                                     intent.putExtra("book_title", getTitle(item))
-                                    context.startActivity(intent)
+                                    startActivity(intent)
                                 }
                             }
                             else {

@@ -58,9 +58,9 @@ class QuranSettingsDialog : AppCompatActivity() {
             if (radioGroup.checkedRadioButtonId == R.id.list_view) "list"
             else "page"
 
-        val editor = pref.edit()
-        editor.putString("quran_view_type", viewType)
-        editor.apply()
+        pref.edit()
+            .putString("quran_view_type", viewType)
+            .apply()
 
         val intent = Intent()
         setResult(Activity.RESULT_OK, intent)

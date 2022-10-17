@@ -6,12 +6,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.components.MyButton
@@ -42,6 +44,7 @@ class QuizLobbyActivity : ComponentActivity() {
             ) {
                 MyButton(
                     text = stringResource(id = R.string.start_quiz),
+                    innerPadding = PaddingValues(vertical = 10.dp, horizontal = 25.dp),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     textColor = AppTheme.colors.accent

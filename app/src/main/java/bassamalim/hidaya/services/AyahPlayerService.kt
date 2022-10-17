@@ -821,9 +821,9 @@ class AyahPlayerService : Service(),
         val old = pref.getLong("telawat_playback_record", 0L)
         val new = old + amount * 1000
 
-        val editor = pref.edit()
-        editor.putLong("telawat_playback_record", new)
-        editor.apply()
+        pref.edit()
+            .putLong("telawat_playback_record", new)
+            .apply()
 
         updateRecordCounter = 0
     }

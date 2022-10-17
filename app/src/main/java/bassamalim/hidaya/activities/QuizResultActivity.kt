@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -103,47 +104,61 @@ class QuizResultActivity : ComponentActivity() {
     @Composable
     fun Question(question: QuizResultQuestion) {
         MySurface {
-            // Question number
-            MyText(
-                text = "${stringResource(id = R.string.question)} ${question.questionNum+1}",
-                fontSize = 16.sp
-            )
-
-            // Question text
-            MyText(text = question.questionText)
-
-            // Answers
-            for (i in 0..3) {
-                MyHorizontalDivider(if (i == 0) 2.dp else 1.dp)
-
-                Answer(
-                    ansNum = i,
-                    ansText = question.answers[i],
-                    correctAns = question.correctAns,
-                    chosenAns = question.chosenAns
+            Column(
+                Modifier.padding(vertical = 5.dp, horizontal = 5.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Question number
+                MyText(
+                    text = "${stringResource(id = R.string.question)} ${question.questionNum+1}",
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 3.dp)
                 )
+
+                // Question text
+                MyText(
+                    text = question.questionText,
+                    modifier = Modifier.padding(vertical = 3.dp)
+                )
+
+                MyHorizontalDivider(thickness = 2.dp)
+
+                // Answers
+                for (i in 0..3) {
+                    Answer(
+                        ansNum = i,
+                        ansText = question.answers[i],
+                        correctAns = question.correctAns,
+                        chosenAns = question.chosenAns
+                    )
+                }
             }
         }
     }
 
     @Composable
     private fun Answer(ansNum: Int, ansText: String, correctAns: Int, chosenAns: Int) {
+        if (ansNum != 0) MyHorizontalDivider(modifier = Modifier.padding(horizontal = 5.dp))
+
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp),
+                .padding(horizontal = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            MyText(text = ansText)
+            MyText(text = ansText, fontSize = 18.sp)
 
-            if (ansNum == chosenAns || ansNum == correctAns)
-                Image(
-                    painter = painterResource(
-                        if (ansNum == correctAns) R.drawable.ic_check
-                        else R.drawable.ic_wrong
-                    ),
-                    contentDescription = ""
-                )
+            Image(
+                painter = painterResource(
+                    if (ansNum == correctAns) R.drawable.ic_check
+                    else R.drawable.ic_wrong
+                ),
+                contentDescription = "",
+                Modifier
+                    .size(25.dp)
+                    .alpha(if (ansNum == chosenAns || ansNum == correctAns) 1F else 0F)
+            )
         }
     }
 

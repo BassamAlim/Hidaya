@@ -111,10 +111,10 @@ class FilterDialog(
     }
 
     private fun save() {
-        val str = gson.toJson(selected)
-        val editor = pref.edit()
-        editor.putString(prefKey, str)
-        editor.apply()
+        pref.edit()
+            .putString(prefKey, gson.toJson(selected))
+            .apply()
+
         refresh(selected)
     }
 

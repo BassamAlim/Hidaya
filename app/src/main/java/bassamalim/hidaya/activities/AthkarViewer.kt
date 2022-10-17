@@ -84,7 +84,9 @@ class AthkarViewer : AppCompatActivity() {
 
     @Composable
     private fun UI(title: String, id: Int) {
-        val textSize = remember { mutableStateOf(pref.getInt(getString(R.string.alathkar_text_size_key), 15)) }
+        val textSize = remember {
+            mutableStateOf(pref.getInt(getString(R.string.alathkar_text_size_key), 15))
+        }
 
         MyScaffold(
             title = title,
@@ -116,6 +118,7 @@ class AthkarViewer : AppCompatActivity() {
     @Composable
     private fun ThikrCard(thikr: Thikr, textSize: MutableState<Int>) {
         val textSizeMargin = 15
+
         MySurface {
             Row(
                 modifier = Modifier

@@ -65,9 +65,9 @@ object DBUtils {
             }
         }
 
-        val editor: SharedPreferences.Editor = pref.edit()
-        editor.putInt("last_db_version", Global.dbVer)
-        editor.apply()
+        pref.edit()
+            .putInt("last_db_version", Global.dbVer)
+            .apply()
 
         Log.i(Global.TAG, "Database Revived")
     }

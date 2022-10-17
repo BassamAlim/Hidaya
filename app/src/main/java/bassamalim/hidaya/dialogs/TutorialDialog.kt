@@ -69,9 +69,9 @@ class TutorialDialog : DialogFragment() {
 
         val doNotShowAgainCheckbox: CheckBox = requireView().findViewById(R.id.do_not_show_again_cb)
         if (doNotShowAgainCheckbox.isChecked) {
-            val editor = pref.edit()
-            editor.putBoolean(prefKey, false)
-            editor.apply()
+            pref.edit()
+                .putBoolean(prefKey, false)
+                .apply()
         }
     }
 

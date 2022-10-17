@@ -105,7 +105,7 @@ class AthkarScreen(
             text = stringResource(id = textResId),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 7.dp, horizontal = 24.dp),
+                .padding(vertical = 5.dp, horizontal = 24.dp),
             fontWeight = FontWeight.Bold,
             onClick = onClick
         )

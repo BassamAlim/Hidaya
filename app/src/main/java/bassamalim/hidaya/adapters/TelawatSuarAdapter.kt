@@ -222,9 +222,9 @@ class TelawatSuarAdapter(
 
         val surasJson = gson.toJson(favSuras)
 
-        val editor = pref.edit()
-        editor.putString("favorite_suras", surasJson)
-        editor.apply()
+        pref.edit()
+            .putString("favorite_suras", surasJson)
+            .apply()
     }
 
     fun registerReceiver() {

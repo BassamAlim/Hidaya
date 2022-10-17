@@ -100,9 +100,9 @@ class DateEditorDialog(private val dateOffset: MutableState<Int>) : DialogFragme
         }
 
         dView.findViewById<Button>(R.id.save_btn).setOnClickListener {
-            val editor = pref.edit()
-            editor.putInt("date_offset", offset)
-            editor.apply()
+            pref.edit()
+                .putInt("date_offset", offset)
+                .apply()
 
             dialog!!.dismiss()
 

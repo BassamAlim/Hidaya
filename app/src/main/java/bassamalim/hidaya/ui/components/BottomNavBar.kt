@@ -28,8 +28,6 @@ sealed class BottomNavItem(var icon: Int, var screen_route: String){
 
 @Composable
 fun MyBottomNavigation(navController: NavController) {
-    Log.d(Global.TAG, "5")
-
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Prayers,

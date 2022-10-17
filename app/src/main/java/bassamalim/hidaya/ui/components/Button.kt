@@ -31,13 +31,13 @@ fun MyButton(
     textColor: Color = AppTheme.colors.text,
     elevation: Int = 10,
     enabled: Boolean = true,
-    innerPadding: PaddingValues = PaddingValues(0.dp),
+    innerPadding: PaddingValues = PaddingValues(6.dp),
     image: @Composable () -> Unit = {},
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.padding(3.dp),
         colors = colors,
         shape = RoundedCornerShape(10.dp),
         elevation =  ButtonDefaults.elevation(
@@ -142,7 +142,7 @@ fun MySquareButton(
         text = stringResource(id = textResId),
         modifier = Modifier
             .size(180.dp)
-            .padding(vertical = 10.dp, horizontal = 10.dp),
+            .padding(vertical = 7.dp, horizontal = 7.dp),
         image = {
             Image(
                 painter = painterResource(id = imageResId),

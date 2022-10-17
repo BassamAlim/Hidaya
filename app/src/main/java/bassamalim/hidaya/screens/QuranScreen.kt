@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -74,10 +73,9 @@ class QuranScreen(
     }
 
     private fun updateFavorites() {
-        val favStr = gson.toJson(db.suarDao().getFav().toIntArray())
-        val editor = pref.edit()
-        editor.putString("favorite_suras", favStr)
-        editor.apply()
+        pref.edit()
+            .putString("favorite_suras", gson.toJson(db.suarDao().getFav().toIntArray()))
+            .apply()
     }
 
     @OptIn(ExperimentalPagerApi::class)
@@ -157,8 +155,6 @@ class QuranScreen(
         items: List<Sura>,
         textState: MutableState<TextFieldValue>
     ) {
-        val context = LocalContext.current
-
         MyLazyColumn(
             lazyList = {
                 items(
@@ -166,7 +162,7 @@ class QuranScreen(
                         item.searchName.contains(textState.value.text, ignoreCase = true)
                     }
                 ) { item ->
-                    MySurface(
+                    MyClickableSurface(
                         onClick = {
                             val intent = Intent(context, QuranViewer::class.java)
                             intent.action = "by_surah"
@@ -176,7 +172,7 @@ class QuranScreen(
                     ) {
                         Row(
                             modifier = Modifier.padding(
-                                top = 8.dp, bottom = 8.dp, start = 14.dp, end = 8.dp
+                                top = 10.dp, bottom = 10.dp, start = 14.dp, end = 8.dp
                             ),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically

@@ -21,7 +21,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.BooksDB
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.models.BookSearcherMatch
@@ -39,7 +38,6 @@ import java.util.regex.Pattern
 class BookSearcher : ComponentActivity() {
 
     private lateinit var pref: SharedPreferences
-    private lateinit var db: AppDatabase
     private val gson = Gson()
     private lateinit var books: List<BooksDB>
     private lateinit var language: String
@@ -62,7 +60,7 @@ class BookSearcher : ComponentActivity() {
     }
 
     private fun init() {
-        db = DBUtils.getDB(this)
+        val db = DBUtils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
         books = db.booksDao().getAll()
@@ -128,18 +126,18 @@ class BookSearcher : ComponentActivity() {
                     val door = chapter.doors[k]
                     val doorText = door.text
 
-                    val match = Pattern.compile(text).matcher(doorText)
-                    if (match.find()) {
+                    val matcher = Pattern.compile(text).matcher(doorText)
+                    if (matcher.find()) {
                         val annotatedString = buildAnnotatedString {
                             append(doorText)
 
                             do {
                                 addStyle(
                                     style = SpanStyle(color = highlightColor),
-                                    start = match.start(),
-                                    end = match.end()
+                                    start = matcher.start(),
+                                    end = matcher.end()
                                 )
-                            } while (match.find())
+                            } while (matcher.find())
                         }
 
                         matches.add(
@@ -288,5 +286,4 @@ class BookSearcher : ComponentActivity() {
             }
         }
     }
-
 }

@@ -90,7 +90,9 @@ fun ListPref(
                 ActivityUtils.restartActivity(context as Activity)
             }
 
-            Dialog({}) {
+            Dialog(
+                onDismissRequest = { shown = false }
+            ) {
                 Surface(
                     color = Color.Transparent
                 ) {

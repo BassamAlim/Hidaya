@@ -182,8 +182,8 @@ class QuranViewer : SwipeActivity() {
         var counter = getPageStart(pageNumber)
         do {
             val aya = ayatDB[counter]!!
-            val suraNum = aya.sura_no // starts from 1
-            val ayaNum = aya.aya_no
+            val suraNum = aya.sura_num // starts from 1
+            val ayaNum = aya.aya_num
 
             val ayahModel = Ayah(
                 aya.id, aya.jozz, suraNum, ayaNum, names[suraNum - 1],

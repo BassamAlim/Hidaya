@@ -269,7 +269,9 @@ class HomeScreen(
                 }
             }
 
-            MySurface {
+            MySurface(
+                Modifier.padding(bottom = 3.dp)
+            ) {
                 Column(
                     Modifier.fillMaxWidth()
                         .padding(vertical = 14.dp, horizontal = 20.dp),
