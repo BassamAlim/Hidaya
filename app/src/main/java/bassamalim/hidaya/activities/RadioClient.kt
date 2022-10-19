@@ -2,15 +2,16 @@ package bassamalim.hidaya.activities
 
 import android.content.ComponentName
 import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
-import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.view.View
 import android.widget.ImageButton
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import bassamalim.hidaya.R
@@ -20,6 +21,7 @@ import bassamalim.hidaya.services.RadioService
 import bassamalim.hidaya.utils.ActivityUtils
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RadioClient : AppCompatActivity() {
 
     private lateinit var binding: ActivityRadioClientBinding
@@ -87,7 +89,7 @@ class RadioClient : AppCompatActivity() {
         object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             // Get the token for the MediaSession
-            val token: MediaSessionCompat.Token = mediaBrowser!!.sessionToken
+            val token = mediaBrowser!!.sessionToken
 
             // Create a MediaControllerCompat
             val mediaController = MediaControllerCompat(this@RadioClient, token)
@@ -175,7 +177,7 @@ class RadioClient : AppCompatActivity() {
         playPause.setOnClickListener {
             // Since this is a play/pause button, you'll need to test the current state
             // and choose the action accordingly
-            val pbState: Int = controller.playbackState.state
+            val pbState = controller.playbackState.state
 
             if (pbState == PlaybackStateCompat.STATE_PLAYING) tc.pause()
             else {

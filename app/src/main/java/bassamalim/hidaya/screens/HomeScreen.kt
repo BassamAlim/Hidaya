@@ -60,8 +60,6 @@ class HomeScreen(
 
     init {
         if (located) setupPrayersCard()
-
-        onResume()
     }
 
     override fun onPause() {
