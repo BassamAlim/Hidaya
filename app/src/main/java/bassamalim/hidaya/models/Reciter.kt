@@ -1,12 +1,10 @@
 package bassamalim.hidaya.models
 
-import androidx.compose.runtime.MutableState
 import java.io.Serializable
 
 data class Reciter(
     val id: Int,
     val name: String,
-    var favorite: MutableState<Int>,
     val versions: List<RecitationVersion>
 ) {
 

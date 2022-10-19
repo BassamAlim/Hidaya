@@ -158,13 +158,14 @@ class QuizActivity : ComponentActivity() {
                     }
 
                     MyButton(
-                        text = stringResource(id =
+                        text = stringResource(
                             if (current.value == 9) {
                                 if (allAnswered.value) R.string.finish_quiz
                                 else R.string.answer_all_questions
                             }
                             else R.string.next_question
                         ),
+                        modifier = Modifier.sizeIn(maxWidth = 175.dp),
                         textColor =
                             if (current.value == 9) {
                                 if (allAnswered.value) AppTheme.colors.text

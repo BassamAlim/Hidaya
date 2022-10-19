@@ -12,27 +12,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.ui.theme.AppTheme
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TabLayout(
-    pagerState: PagerState,
-    pagesInfo: List<String>,
-    extraComponents: @Composable () -> Unit = {},
+    pageNames: List<String>,
+    searchComponent: @Composable () -> Unit = {},
     tabsContent: @Composable (Int) -> Unit
 ) {
+    val pagerState = rememberPagerState(pageCount = pageNames.size)
+
     Column {
         Tabs(
             pagerState = pagerState,
-            pagesInfo = pagesInfo
+            pagesInfo = pageNames
         )
 
-        extraComponents()
+        searchComponent()
 
         TabsContent(
             pagerState = pagerState,

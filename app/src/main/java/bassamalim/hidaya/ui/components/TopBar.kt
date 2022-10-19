@@ -16,16 +16,16 @@ import bassamalim.hidaya.ui.theme.AppTheme
 fun MyTopBar(
     title: String = "",
     backgroundColor: Color = AppTheme.colors.primary,
-    contentColor: Color = AppTheme.colors.onPrimary
+    contentColor: Color = AppTheme.colors.onPrimary,
+    onBack: (() -> Unit)? = null
 ) {
     TopAppBar(
         backgroundColor = backgroundColor,
         elevation = 8.dp,
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         Box {
-            MyBackBtn()
+            MyBackBtn(onBack)
 
             Row(
                 Modifier.fillMaxSize(),

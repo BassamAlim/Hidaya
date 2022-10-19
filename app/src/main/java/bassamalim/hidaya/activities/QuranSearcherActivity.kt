@@ -40,6 +40,7 @@ class QuranSearcherActivity : ComponentActivity() {
     private val maxMatchesIndex = mutableStateOf(0)
     private lateinit var maxMatchesItems: Array<String>
     private lateinit var language: String
+    private var searched = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +104,7 @@ class QuranSearcherActivity : ComponentActivity() {
                     )
                 )
 
+                searched = true
                 if (matches.size == maxMatchesItems[maxMatchesIndex.value].toInt()) return
             }
         }
@@ -131,10 +133,12 @@ class QuranSearcherActivity : ComponentActivity() {
                         text = stringResource(id = R.string.search_for_quran_text)
                     )
 
-                    SearchView(
+                    SearchComponent(
                         state = textState,
                         hint = stringResource(id = R.string.search),
-                        modifier = Modifier.padding(horizontal = 30.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 30.dp),
                         onSubmit = {
                             search(
                                 text = textState.value.text,
@@ -164,11 +168,13 @@ class QuranSearcherActivity : ComponentActivity() {
                     }
                 }
 
-                if (matches.isEmpty())
-                    MyText(
-                        text = stringResource(id = R.string.no_results),
-                        modifier = Modifier.padding(top = 100.dp)
-                    )
+                if (matches.isEmpty()) {
+                    if (searched)
+                        MyText(
+                            text = stringResource(id = R.string.no_matches),
+                            modifier = Modifier.padding(top = 100.dp)
+                        )
+                }
                 else {
                     MyLazyColumn(lazyList = {
                         items(

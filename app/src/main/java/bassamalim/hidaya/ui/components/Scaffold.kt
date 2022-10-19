@@ -8,9 +8,8 @@ import bassamalim.hidaya.ui.theme.AppTheme
 @Composable
 fun MyScaffold(
     title: String,
-    topBar: @Composable () -> Unit = {
-        MyTopBar(title)
-    },
+    onBack: (() -> Unit)? = null,
+    topBar: @Composable () -> Unit = { MyTopBar(title, onBack = onBack) },
     bottomBar: @Composable () -> Unit = {},
     fab: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit

@@ -104,7 +104,7 @@ fun MyIconBtn(
 }
 
 @Composable
-fun MyBackBtn() {
+fun MyBackBtn(onClick: (() -> Unit)? = null) {
     val context = LocalContext.current
 
     Row(
@@ -117,7 +117,7 @@ fun MyBackBtn() {
             LocalContentAlpha provides ContentAlpha.high,
         ) {
             IconButton(
-                onClick = {
+                onClick = onClick ?: {
                     (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
                 },
                 enabled = true

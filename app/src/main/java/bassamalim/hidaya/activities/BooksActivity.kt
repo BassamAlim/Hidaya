@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.padding
@@ -62,12 +61,6 @@ class BooksActivity : AppCompatActivity() {
 
     private fun initStates() {
         for (book in books) downloadStates.add("not downloaded")
-    }
-
-    private fun showWaitMassage() {
-        Toast.makeText(
-            this, getString(R.string.wait_for_download), Toast.LENGTH_SHORT
-        ).show()
     }
 
     private fun downloaded(id: Int): Boolean {
@@ -178,9 +171,11 @@ class BooksActivity : AppCompatActivity() {
                                         description = stringResource(id = R.string.download_description),
                                         tint = AppTheme.colors.accent
                                     ) {
-                                        if (downloadingIds.containsValue(item.id)) showWaitMassage()
+                                        if (downloadingIds.containsValue(item.id))
+                                            FileUtils.showWaitMassage(this@BooksActivity)
                                         else if (downloaded(item.id)) {
-                                            if (downloading(item.id)) showWaitMassage()
+                                            if (downloading(item.id))
+                                                FileUtils.showWaitMassage(this@BooksActivity)
                                             else {
                                                 FileUtils.deleteFile(
                                                     this@BooksActivity,
@@ -197,9 +192,11 @@ class BooksActivity : AppCompatActivity() {
                                 }
                             }
                         ) {
-                            if (downloadingIds.containsValue(item.id)) showWaitMassage()
+                            if (downloadingIds.containsValue(item.id))
+                                FileUtils.showWaitMassage(this@BooksActivity)
                             else if (downloaded(item.id)) {
-                                if (downloading(item.id)) showWaitMassage()
+                                if (downloading(item.id))
+                                    FileUtils.showWaitMassage(this@BooksActivity)
                                 else {
                                     val intent = Intent(
                                         this@BooksActivity,

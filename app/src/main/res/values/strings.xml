@@ -184,7 +184,8 @@
     <string name="text">النص</string>
     <string name="go_to_page">الانتقال إلى الصفحة</string>
     <string name="max_num_of_marches">اقصى عدد من النتائج</string>
-    <string name="no_results">لا توجد نتائج. تأكد من تحميل الكتب</string>
+    <string name="no_matches">لا توجد نتائج</string>
+    <string name="books_no_matches">لا توجد نتائج. تأكد من تحميل الكتب</string>
     <string name="hadeeth_books">كتب الحديث</string>
     <string name="sahih_albokhari">صحيح البخاري</string>
     <string name="sahih_muslim">صحيح مسلم</string>

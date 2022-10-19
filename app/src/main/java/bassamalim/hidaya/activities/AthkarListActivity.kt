@@ -120,9 +120,10 @@ class AthkarListActivity : ComponentActivity() {
                     .fillMaxWidth()
                     .padding(it)
             ) {
-                SearchView (
+                SearchComponent (
                     state = textState,
-                    hint = stringResource(id = R.string.athkar_hint)
+                    hint = stringResource(id = R.string.athkar_hint),
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 MyLazyColumn(

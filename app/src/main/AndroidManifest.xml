@@ -52,7 +52,7 @@
             android:name=".activities.QuranSearcherActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.TelawatSuarCollectionActivity"
+            android:name=".activities.TelawatSuarActivity"
             android:exported="false" />
         <activity
             android:name=".activities.QuizResultActivity"

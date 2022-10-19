@@ -29,7 +29,7 @@ fun MySurface(
             .padding(vertical = 5.dp, horizontal = 8.dp),
         shape = RoundedCornerShape(cornerRadius),
         color = AppTheme.colors.surface,
-        elevation = 10.dp,
+        elevation = 10.dp
     ) {
         content()
     }

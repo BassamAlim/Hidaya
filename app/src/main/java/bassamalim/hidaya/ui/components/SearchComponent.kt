@@ -1,6 +1,5 @@
 package bassamalim.hidaya.ui.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
@@ -38,38 +37,36 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.theme.AppTheme
 
 @Composable
-fun SearchView(
+fun SearchComponent(
     state: MutableState<TextFieldValue>,
     modifier: Modifier = Modifier,
     hint: String = stringResource(id = R.string.search),
     onSubmit: () -> Unit = {}
 ) {
-    val color = AppTheme.colors.weakText
+    val lineColor = AppTheme.colors.weakText
     val layoutDirection = LocalLayoutDirection.current
+
     TextField(
         value = state.value,
         onValueChange = { value -> state.value = value },
         modifier = modifier
-            .fillMaxWidth()
             .padding(horizontal = 6.dp)
             .drawWithContent {
                 drawContent()
-                clipRect { // Not needed if you do not care about painting half stroke outside
+                clipRect {
                     val strokeWidth = Stroke.DefaultMiter
-                    val y = size.height // - strokeWidth
-                    // if the whole line should be inside component
+                    val y = size.height
                     if (layoutDirection == LayoutDirection.Rtl) {
                         drawLine(
-                            brush = SolidColor(color),
+                            brush = SolidColor(lineColor),
                             strokeWidth = strokeWidth,
                             cap = StrokeCap.Square,
                             start = Offset.Zero.copy(x = 20F, y = y - 15),
                             end = Offset(x = size.width - 120F, y = y - 15)
                         )
-                    }
-                    else {
+                    } else {
                         drawLine(
-                            brush = SolidColor(color),
+                            brush = SolidColor(lineColor),
                             strokeWidth = strokeWidth,
                             cap = StrokeCap.Square,
                             start = Offset.Zero.copy(x = 140F, y = y - 15),
@@ -137,5 +134,5 @@ fun SearchView(
 @Composable
 fun SearchViewPreview() {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
-    SearchView(textState)
+    SearchComponent(textState)
 }

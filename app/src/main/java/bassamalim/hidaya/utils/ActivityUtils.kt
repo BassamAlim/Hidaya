@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.dialogs.TutorialDialog
+import bassamalim.hidaya.enums.ListType
 import java.util.*
 
 object ActivityUtils {
@@ -59,6 +60,14 @@ object ActivityUtils {
             TutorialDialog.newInstance(
                 context.getString(textResId), prefKey
             ).show(supportFragmentManager, TutorialDialog.TAG)
+    }
+
+    fun getListType(ordinal: Int): ListType {
+        return when (ordinal) {
+            1 -> ListType.Favorite
+            2 -> ListType.Downloaded
+            else -> ListType.All
+        }
     }
 
 }

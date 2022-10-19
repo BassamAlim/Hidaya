@@ -7,10 +7,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -20,16 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranViewer
-import bassamalim.hidaya.database.dbs.SuarDB
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.Sura
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PrefUtils
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.rememberPagerState
 import com.google.gson.Gson
 
 class QuranScreen(
@@ -39,52 +34,55 @@ class QuranScreen(
 
     private val db = DBUtils.getDB(context)
     private val gson = Gson()
-    private val types = hashMapOf(0 to ListType.All, 1 to ListType.Favorite)
-    private lateinit var names: List<String>
     private val bookmarkedPage = mutableStateOf(pref.getInt("bookmarked_page", -1))
+    private var favs = mutableStateListOf<Int>()
+    private val names =
+        if (PrefUtils.getLanguage(context) == "en") db.suarDao().getNamesEn()
+        else db.suarDao().getNames()
+
+    init {
+        setupFavs()
+    }
 
     override fun onResume() {
         bookmarkedPage.value = pref.getInt("bookmarked_page", -1)
     }
 
+    private fun setupFavs() {
+        for (fav in db.suarDao().getFavs()) favs.add(fav)
+    }
+
     private fun getItems(type: ListType): List<Sura> {
         val items = ArrayList<Sura>()
-        val suras = getSuras()
+        val suras = db.suarDao().getAll()
 
         val surat = context.getString(R.string.sura)
         for (i in suras.indices) {
             val sura = suras[i]
 
-            if (type == ListType.All || (type == ListType.Favorite && sura.favorite == 1))
-                items.add(
-                    Sura(
-                        sura.sura_id, "$surat ${names[sura.sura_id]}",
-                        sura.search_name!!, sura.tanzeel, mutableStateOf(sura.favorite)
-                    )
+            if (type == ListType.Favorite && favs[i] == 0) continue
+
+            items.add(
+                Sura(
+                    sura.sura_id, "$surat ${names[sura.sura_id]}",
+                    sura.search_name!!, sura.tanzeel
                 )
+            )
         }
         return items
     }
 
-    private fun getSuras(): List<SuarDB> {
-        names = if (PrefUtils.getLanguage(context) == "en") db.suarDao().getNamesEn() else db.suarDao().getNames()
-
-        return db.suarDao().getAll()
-    }
-
     private fun updateFavorites() {
         pref.edit()
-            .putString("favorite_suras", gson.toJson(db.suarDao().getFav().toIntArray()))
+            .putString("favorite_suras", gson.toJson(db.suarDao().getFavs().toIntArray()))
             .apply()
     }
 
-    @OptIn(ExperimentalPagerApi::class)
     @Composable
     fun QuranUI() {
         Column(
             Modifier.fillMaxSize()
         ) {
-            val pagerState = rememberPagerState(pageCount = 2)
             val textState = remember { mutableStateOf(TextFieldValue("")) }
 
             val bookmarkedSura = pref.getInt("bookmarked_sura", -1)
@@ -116,13 +114,12 @@ class QuranScreen(
             }
 
             TabLayout(
-                pagerState = pagerState,
-                pagesInfo = listOf(
+                pageNames = listOf(
                     stringResource(R.string.all),
                     stringResource(R.string.favorite)
                 ),
-                extraComponents = {
-                    SearchView(
+                searchComponent = {
+                    SearchComponent(
                         state = textState,
                         hint = stringResource(id = R.string.quran_query_hint),
                         onSubmit = {
@@ -143,7 +140,7 @@ class QuranScreen(
                     )
                 }
             ) { page ->
-                Tab(items = getItems(types[page]!!), textState)
+                Tab(items = getItems(ActivityUtils.getListType(page)), textState)
             }
         }
     }
@@ -172,8 +169,8 @@ class QuranScreen(
                             modifier = Modifier.padding(
                                 top = 10.dp, bottom = 10.dp, start = 14.dp, end = 8.dp
                             ),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
                         ) {
                             Icon(
                                 painter = painterResource(id =
@@ -192,11 +189,15 @@ class QuranScreen(
                                     .padding(10.dp)
                             )
 
-                            MyFavBtn(
-                                fav = item.favorite.value
-                            ) {
-                                if (item.favorite.value == 0) item.favorite.value = 1
-                                else item.favorite.value = 0
+                            MyFavBtn(favs[item.id]) {
+                                if (favs[item.id] == 0) {
+                                    favs[item.id] = 1
+                                    db.suarDao().setFav(item.id, 1)
+                                }
+                                else {
+                                    favs[item.id] = 0
+                                    db.suarDao().setFav(item.id, 0)
+                                }
                                 updateFavorites()
                             }
                         }

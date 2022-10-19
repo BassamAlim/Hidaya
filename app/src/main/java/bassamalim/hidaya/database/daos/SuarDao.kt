@@ -12,6 +12,9 @@ interface SuarDao {
     @Query("SELECT sura_name FROM suar")
     fun getNames(): List<String>
 
+    @Query("SELECT search_name FROM suar")
+    fun getSearchNames(): List<String>
+
     @Query("SELECT sura_name_en FROM suar")
     fun getNamesEn(): List<String>
 
@@ -28,7 +31,7 @@ interface SuarDao {
     fun setFav(index: Int, value: Int)
 
     @Query("SELECT favorite FROM suar")
-    fun getFav(): List<Int>
+    fun getFavs(): List<Int>
 
     @Query("SELECT start_page FROM suar WHERE sura_id = :index")
     fun getPage(index: Int): Int

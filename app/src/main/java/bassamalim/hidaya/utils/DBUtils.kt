@@ -22,7 +22,7 @@ object DBUtils {
         pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     ) {
         try {  // if there is a problem in the db it will cause an error
-            getDB(context).suarDao().getFav()
+            getDB(context).suarDao().getFavs()
         } catch (e: Exception) {
             reviveDB(context)
         }

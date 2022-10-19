@@ -1,6 +1,8 @@
 package bassamalim.hidaya.utils
 
 import android.content.Context
+import android.widget.Toast
+import bassamalim.hidaya.R
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -10,16 +12,22 @@ import java.nio.charset.StandardCharsets
 
 object FileUtils {
 
-    fun createDir(context: Context, postfix: String): Boolean {
-        val dir = File(context.getExternalFilesDir(null).toString() + postfix)
+    fun createDir(context: Context, path: String): Boolean {
+        val dir = File(context.getExternalFilesDir(null).toString() + path)
 
         return if (!dir.exists()) dir.mkdirs() else false
     }
 
-    fun deleteFile(context: Context, postfix: String): Boolean {
-        val file = File(context.getExternalFilesDir(null).toString() + postfix)
+    fun deleteFile(context: Context, path: String): Boolean {
+        val file = File(context.getExternalFilesDir(null).toString() + path)
+        return if (file.exists()) file.deleteRecursively() else false
+    }
 
-        return if (file.exists()) file.delete() else false
+    fun deleteDirRecursive(target: File) {
+        if (target.isDirectory) {
+            for (child in target.listFiles()!!) deleteDirRecursive(child)
+        }
+        if (target.isDirectory) target.delete()
     }
 
     fun getJsonFromAssets(context: Context, fileName: String?): String? {
@@ -63,6 +71,12 @@ object FileUtils {
         }
 
         return jsonStr
+    }
+
+    fun showWaitMassage(context: Context) {
+        Toast.makeText(
+            context, context.getString(R.string.wait_for_download), Toast.LENGTH_SHORT
+        ).show()
     }
 
 }

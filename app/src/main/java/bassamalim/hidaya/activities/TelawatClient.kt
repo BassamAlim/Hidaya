@@ -383,7 +383,7 @@ class TelawatClient : AppCompatActivity() {
         super.onBackPressed()
 
         if (isTaskRoot) {
-            val intent = Intent(this, TelawatSuarCollectionActivity::class.java)
+            val intent = Intent(this, TelawatSuarActivity::class.java)
             intent.putExtra("reciter_id", reciterId)
             intent.putExtra("reciter_name", reciterName)
             intent.putExtra("version_id", versionId)

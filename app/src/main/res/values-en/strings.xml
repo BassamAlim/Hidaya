@@ -162,7 +162,8 @@
     <string name="text">Text</string>
     <string name="go_to_page">Go to page</string>
     <string name="max_num_of_marches">Maximum number of matches</string>
-    <string name="no_results">No matches found. Make sure you downloaded the books</string>
+    <string name="no_matches">No matches found. Make sure you downloaded the books</string>
+    <string name="books_no_matches">No matches found</string>
     <string name="hadeeth_books">Hadeeth books</string>
     <string name="sahih_albokhari">Saheeh al-bokhari</string>
     <string name="sahih_muslim">Saheeh moslim</string>

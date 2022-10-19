@@ -44,7 +44,8 @@ fun MyFloatingActionButton(
             contentDescription = description,
             modifier = Modifier
                 .size(60.dp)
-                .padding(12.dp)
+                .padding(12.dp),
+            tint = AppTheme.colors.accent
         )
     }
 }
@@ -58,7 +59,7 @@ fun MyHorizontalDivider(
         thickness = thickness,
         color = Grey,
         modifier = modifier
-            .alpha(0.5F)
+            .alpha(0.6F)
             .padding(vertical = 5.dp)
     )
 }
