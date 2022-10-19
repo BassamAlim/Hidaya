@@ -1,6 +1,7 @@
 package bassamalim.hidaya.activities
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +28,8 @@ import com.google.gson.Gson
 
 class AthkarListActivity : ComponentActivity() {
 
+    private lateinit var pref: SharedPreferences
+    private val gson = Gson()
     private var category = 0
     private lateinit var action: String
     private lateinit var db: AppDatabase
@@ -37,6 +40,7 @@ class AthkarListActivity : ComponentActivity() {
         language = ActivityUtils.onActivityCreateSetLocale(this)
 
         db = DBUtils.getDB(this)
+        pref = PreferenceManager.getDefaultSharedPreferences(this)
 
         action = intent.action!!
 
@@ -100,11 +104,8 @@ class AthkarListActivity : ComponentActivity() {
 
     private fun updateFavorites() {
         val favAthkar = db.athkarDao().getFavs()
-
-        val gson = Gson()
         val athkarJson = gson.toJson(favAthkar)
-
-        PreferenceManager.getDefaultSharedPreferences(this).edit()
+        pref.edit()
             .putString("favorite_athkar", athkarJson)
             .apply()
     }

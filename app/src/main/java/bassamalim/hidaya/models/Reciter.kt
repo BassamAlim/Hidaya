@@ -1,42 +1,21 @@
 package bassamalim.hidaya.models
 
-import android.view.View
+import androidx.compose.runtime.MutableState
 import java.io.Serializable
 
 data class Reciter(
-    private val id: Int,
-    private val name: String,
-    private var favorite: Int,
-    private val versions: List<RecitationVersion>
+    val id: Int,
+    val name: String,
+    var favorite: MutableState<Int>,
+    val versions: List<RecitationVersion>
 ) {
 
-    fun getId(): Int {
-        return id
-    }
-
-    fun getName(): String {
-        return name
-    }
-
-    fun setFavorite(favorite: Int) {
-        this.favorite = favorite
-    }
-
-    fun getFavorite(): Int {
-        return favorite
-    }
-
-    fun getVersions(): List<RecitationVersion> {
-        return versions
-    }
-
-    class RecitationVersion(
+    data class RecitationVersion(
         private val versionId: Int,
         private val server: String,
         private val rewaya: String,
         private val count: Int,
-        private val suras: String,
-        private val listener: View.OnClickListener?
+        private val suras: String
     ) : Serializable {
         fun getVersionId(): Int {
             return versionId
@@ -57,9 +36,6 @@ data class Reciter(
         fun getSuras(): String {
             return suras
         }
-
-        fun getListener(): View.OnClickListener {
-            return listener!!
-        }
     }
+
 }

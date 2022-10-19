@@ -37,7 +37,7 @@ class MoreScreen(
             ) {
                 MySquareButton(R.string.recitations, R.drawable.ic_headphone) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                        context.startActivity(Intent(context, TelawatCollectionActivity::class.java))
+                        context.startActivity(Intent(context, TelawatActivity::class.java))
                     else
                         Toast.makeText(context, context.getString(R.string.feature_not_supported), Toast.LENGTH_SHORT).show()
                 }

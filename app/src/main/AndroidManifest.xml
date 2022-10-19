@@ -85,7 +85,7 @@
         <activity
             android:name=".activities.TelawatClient"
             android:launchMode="singleTop" />
-        <activity android:name=".activities.TelawatCollectionActivity" />
+        <activity android:name=".activities.TelawatActivity" />
         <activity
             android:name=".activities.QiblaActivity"
             android:exported="false" />

@@ -1,7 +1,9 @@
 package bassamalim.hidaya.database.dbs
 
-class TelawatDB(reciter_id: Int, version_id: Int, reciter_name: String, rewaya: String,
-                url: String, count: Int, suras: String) {
+class TelawatDB(
+    reciter_id: Int, version_id: Int, reciter_name: String,
+    rewaya: String, url: String, count: Int, suras: String
+) {
     private var reciter_id = 0
     private var version_id = 0
     private var reciter_name: String

@@ -161,7 +161,7 @@ class TelawatClient : AppCompatActivity() {
             val telawa = db.telawatVersionsDao().getVersion(reciterId, versionId)
             version = RecitationVersion(
                 versionId, telawa.getUrl(), telawa.getRewaya(),
-                telawa.getCount(), telawa.getSuras(), null
+                telawa.getCount(), telawa.getSuras()
             )
 
             surahNames = db.suarDao().getNames()

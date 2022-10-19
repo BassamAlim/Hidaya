@@ -78,6 +78,8 @@ class WelcomeActivity: AppCompatActivity() {
                         .edit()
                         .putBoolean("new_user", false)
                         .apply()
+
+                    finish()
                 }
             }
         }

@@ -171,10 +171,10 @@ class BooksActivity : AppCompatActivity() {
                                 else {
                                     MyIconBtn(
                                         iconId =
-                                        if (downloadStates[item.id] == "downloaded")
-                                            R.drawable.ic_downloaded
-                                        else
-                                            R.drawable.ic_download,
+                                            if (downloadStates[item.id] == "downloaded")
+                                                R.drawable.ic_downloaded
+                                            else
+                                                R.drawable.ic_download,
                                         description = stringResource(id = R.string.download_description),
                                         tint = AppTheme.colors.accent
                                     ) {

@@ -13,6 +13,7 @@ import bassamalim.hidaya.databinding.ActivityCollectionTelawatSuarBinding
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.screens.TelawatSuarFragment
 import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -32,7 +33,7 @@ class TelawatSuarCollectionActivity : FragmentActivity() {
 
         val intent = intent
         val reciterId = intent.getIntExtra("reciter_id", 0)
-        val reciterName = intent.getStringExtra("reciter_name")!!
+        val reciterName = DBUtils.getDB(this).telawatRecitersDao().getName(reciterId)
         val versionId = intent.getIntExtra("version_id", 0)
 
         binding.topBarTitle.text = reciterName
@@ -55,7 +56,7 @@ class TelawatSuarCollectionActivity : FragmentActivity() {
             super.onBackPressed()
 
             if (isTaskRoot) {
-                val intent = Intent(this, TelawatCollectionActivity::class.java)
+                val intent = Intent(this, TelawatActivity::class.java)
                 startActivity(intent)
             }
         }

@@ -104,9 +104,7 @@ class QuranScreen(
                     },
                 fontSize = 18.sp,
                 textColor = AppTheme.colors.accent,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
+                modifier = Modifier.fillMaxWidth(),
                 innerPadding = PaddingValues(vertical = 4.dp)
             ) {
                 if (bookmarkedPage.value != -1) {
