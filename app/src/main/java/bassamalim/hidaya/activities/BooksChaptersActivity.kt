@@ -38,7 +38,6 @@ class BooksChaptersActivity : ComponentActivity() {
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        val intent = intent
         bookId = intent.getIntExtra("book_id", 0)
         bookTitle = intent.getStringExtra("book_title")!!
 

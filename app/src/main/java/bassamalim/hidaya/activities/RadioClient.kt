@@ -9,37 +9,46 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
-import android.view.View
-import android.widget.ImageButton
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.databinding.ActivityRadioClientBinding
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.services.RadioService
+import bassamalim.hidaya.ui.components.MyPlayerBtn
+import bassamalim.hidaya.ui.components.MyScaffold
+import bassamalim.hidaya.ui.components.MyText
+import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 @RequiresApi(Build.VERSION_CODES.O)
-class RadioClient : AppCompatActivity() {
+class RadioClient : ComponentActivity() {
 
-    private lateinit var binding: ActivityRadioClientBinding
     private lateinit var remoteConfig: FirebaseRemoteConfig
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
-    private lateinit var playPause: ImageButton // play/pause button
     private lateinit var url: String
+    private val btnState = mutableStateOf(PlaybackStateCompat.STATE_NONE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityUtils.myOnActivityCreated(this)
-        binding = ActivityRadioClientBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.home.setOnClickListener { onBackPressed() }
 
-        playPause = binding.radioPpBtn
+        setContent {
+            AppTheme {
+                UI()
+            }
+        }
 
         getLinkAndConnect()
     }
@@ -105,20 +114,20 @@ class RadioClient : AppCompatActivity() {
             // Finish building the UI
             buildTransportControls()
 
-            enableControls()
+            btnState.value = PlaybackStateCompat.STATE_STOPPED
         }
 
         override fun onConnectionSuspended() {
             Log.e(Global.TAG, "Connection suspended in RadioClient")
             // The Service has crashed.
             // Disable transport controls until it automatically reconnects
-            playPause.setOnClickListener(null)
+            btnState.value = PlaybackStateCompat.STATE_NONE
         }
 
         override fun onConnectionFailed() {
             Log.e(Global.TAG, "Connection failed in RadioClient")
             // The Service has refused our connection
-            playPause.setOnClickListener(null)
+            btnState.value = PlaybackStateCompat.STATE_NONE
         }
     }
 
@@ -145,46 +154,46 @@ class RadioClient : AppCompatActivity() {
     }
 
     private fun updatePbState(state: PlaybackStateCompat) {
-        updateButton(state.state)
-    }
-
-    private fun updateButton(state: Int) {
-        when(state) {
-            PlaybackStateCompat.STATE_PLAYING -> {
-                binding.bufferingCircle.visibility = View.GONE
-                playPause.visibility = View.VISIBLE
-                playPause.setImageDrawable(
-                    ResourcesCompat.getDrawable(resources, R.drawable.ic_player_pause, theme)
-                )
-            }
-            PlaybackStateCompat.STATE_PAUSED -> {
-                binding.bufferingCircle.visibility = View.GONE
-                playPause.visibility = View.VISIBLE
-                playPause.setImageDrawable(
-                    ResourcesCompat.getDrawable(resources, R.drawable.ic_player_play, theme)
-                )
-            }
-            PlaybackStateCompat.STATE_BUFFERING -> {
-                playPause.visibility = View.GONE
-                binding.bufferingCircle.visibility = View.VISIBLE
-            }
+        when (state.state) {
+            PlaybackStateCompat.STATE_PLAYING,
+            PlaybackStateCompat.STATE_STOPPED,
+            PlaybackStateCompat.STATE_CONNECTING -> btnState.value = state.state
+            else -> {}
         }
     }
 
-    private fun enableControls() {
-        updateButton(PlaybackStateCompat.STATE_PAUSED)
-        // Attach a listeners to the buttons
-        playPause.setOnClickListener {
-            // Since this is a play/pause button, you'll need to test the current state
-            // and choose the action accordingly
-            val pbState = controller.playbackState.state
+    @Composable
+    private fun UI() {
+        MyScaffold(stringResource(id = R.string.quran_radio)) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(it),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                MyText(
+                    text = stringResource(R.string.holy_quran_radio),
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 50.dp)
+                )
 
-            if (pbState == PlaybackStateCompat.STATE_PLAYING) tc.pause()
-            else {
-                tc.play()
-                updateButton(PlaybackStateCompat.STATE_BUFFERING)
+                MyPlayerBtn(state = btnState, padding = 10.dp) {
+                    if (btnState.value != PlaybackStateCompat.STATE_NONE) {
+                        // Since this is a play/pause button
+                        // test the current state and choose the action accordingly=
+                        if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
+                            tc.pause()
+                            btnState.value = PlaybackStateCompat.STATE_STOPPED
+                        }
+                        else {
+                            tc.play()
+                            btnState.value = PlaybackStateCompat.STATE_PLAYING
+                        }
+                    }
+                }
             }
         }
     }
-
 }

@@ -1,20 +1,24 @@
 package bassamalim.hidaya.ui.components
 
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -169,4 +173,55 @@ fun MyFavBtn(
         onClick = onClick,
         tint = AppTheme.colors.accent
     )
+}
+
+@Composable
+fun MyImageButton(
+    imageResId: Int,
+    description: String = "",
+    enabled: Boolean = true,
+    padding: Dp = 10.dp,
+    onClick: () -> Unit
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .clip(CircleShape)
+            .clickable { if (enabled) onClick() }
+    ) {
+        Image(
+            painter = painterResource(imageResId),
+            contentDescription = description,
+            modifier = Modifier.padding(padding)
+        )
+    }
+}
+
+@Composable
+fun MyPlayerBtn(
+    state: MutableState<Int>,
+    size: Dp = 150.dp,
+    padding: Dp = 5.dp,
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(size)
+            .clip(CircleShape)
+            .clickable { if (enabled) onClick() }
+    ) {
+        if (state.value == PlaybackStateCompat.STATE_NONE) MyCircularProgressIndicator()
+        else {
+            Image(
+                painter = painterResource(
+                    if (state.value == PlaybackStateCompat.STATE_PLAYING) R.drawable.ic_player_pause
+                    else R.drawable.ic_player_play
+                ),
+                contentDescription = stringResource(R.string.play_pause_btn_description),
+                modifier = Modifier.padding(padding)
+            )
+        }
+    }
 }

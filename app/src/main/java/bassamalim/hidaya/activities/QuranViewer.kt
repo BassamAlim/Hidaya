@@ -625,9 +625,9 @@ class QuranViewer : SwipeActivity() {
                 resources.getColor(R.color.highlight_M, getTheme())
             )
         else
-        tv.movementMethod = DoubleClickLMM.getInstance(
-            resources.getColor(R.color.highlight_L, getTheme())
-        )
+            tv.movementMethod = DoubleClickLMM.getInstance(
+                resources.getColor(R.color.highlight_L, getTheme())
+            )
         return tv
     }
 

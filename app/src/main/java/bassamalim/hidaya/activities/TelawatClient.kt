@@ -9,74 +9,90 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
-import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
-import android.view.View
-import android.widget.ImageButton
-import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomAppBar
+import androidx.compose.material.Slider
+import androidx.compose.material.SliderDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.databinding.ActivityTelawatClientBinding
 import bassamalim.hidaya.models.Reciter.RecitationVersion
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.services.TelawatService
+import bassamalim.hidaya.ui.components.*
+import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import java.util.*
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-class TelawatClient : AppCompatActivity() {
+class TelawatClient : ComponentActivity() {
 
-    private lateinit var binding: ActivityTelawatClientBinding
     private lateinit var db: AppDatabase
     private lateinit var pref: SharedPreferences
     private lateinit var mediaBrowser: MediaBrowserCompat
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
-    private lateinit var seekBar: SeekBar
-    private lateinit var playPause: ImageButton
-    private lateinit var repeatBtn: ImageButton
-    private lateinit var shuffleBtn: ImageButton
     private lateinit var action: String
     private lateinit var mediaId: String
     private var reciterId = 0
     private var versionId = 0
     private var surahIndex = 0
-    private lateinit var reciterName: String
     private lateinit var version: RecitationVersion
     private lateinit var surahNames: List<String>
-    private var repeat = 0
-    private var shuffle = 0
+    private val suraName = mutableStateOf("")
+    private val versionName = mutableStateOf("")
+    private val reciterName = mutableStateOf("")
+    private val repeat = mutableStateOf(PlaybackStateCompat.REPEAT_MODE_NONE)
+    private val shuffle = mutableStateOf(PlaybackStateCompat.SHUFFLE_MODE_NONE)
+    private val duration = mutableStateOf(0L)
+    private val durationText = mutableStateOf("0")
+    private val btnState = mutableStateOf(PlaybackStateCompat.STATE_NONE)
+    private val progress = mutableStateOf(0L)
+    private val progressText = mutableStateOf("0")
+    private val secondaryProgress = mutableStateOf(0)
+    private val controlsEnabled = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityUtils.myOnActivityCreated(this)
-        binding = ActivityTelawatClientBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.home.setOnClickListener { onBackPressed() }
 
         db = DBUtils.getDB(this)
-
         pref = PreferenceManager.getDefaultSharedPreferences(this)
-
         data
 
-        retrieveState()
+        retrieveStates()
+
+        suraName.value = surahNames[surahIndex]
+        versionName.value = version.getRewaya()
+
+        setContent {
+            AppTheme {
+                UI()
+            }
+        }
 
         mediaBrowser = MediaBrowserCompat(
             this, ComponentName(this, TelawatService::class.java),
             connectionCallbacks, null
         )
-
-        initViews()
-
-        setListeners()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -112,7 +128,7 @@ class TelawatClient : AppCompatActivity() {
         MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             // Get the token for the MediaSession
-            val token: MediaSessionCompat.Token = mediaBrowser.sessionToken
+            val token = mediaBrowser.sessionToken
 
             // Create a MediaControllerCompat
             val mediaController = MediaControllerCompat(this@TelawatClient, token)
@@ -148,7 +164,6 @@ class TelawatClient : AppCompatActivity() {
     }
     private val data: Unit
         get() {
-            val intent = intent
             action = intent.action!!
             mediaId = intent.getStringExtra("media_id")!!
 
@@ -156,162 +171,39 @@ class TelawatClient : AppCompatActivity() {
             versionId = mediaId.substring(3, 5).toInt()
             surahIndex = mediaId.substring(5).toInt()
 
-            reciterName = db.telawatRecitersDao().getName(reciterId)
+            reciterName.value = db.telawatRecitersDao().getName(reciterId)
 
             val telawa = db.telawatVersionsDao().getVersion(reciterId, versionId)
             version = RecitationVersion(
-                versionId, telawa.getUrl(), telawa.getRewaya(),
-                telawa.getCount(), telawa.getSuras()
+                versionId, telawa.getUrl(), telawa.getRewaya(), telawa.getCount(), telawa.getSuras()
             )
 
             surahNames = db.suarDao().getNames()
         }
 
-    private fun retrieveState() {
-        repeat = pref.getInt("telawat_repeat_mode", 0)
-        shuffle = pref.getInt("telawat_shuffle_mode", 0)
-    }
-
-    private fun initViews() {
-        seekBar = binding.seekbar
-        playPause = binding.playPause
-        repeatBtn = binding.repeat
-        shuffleBtn = binding.shuffle
-
-        binding.suraNamescreen.text = surahNames[surahIndex]
-        binding.reciterNamescreen.text = reciterName
-        binding.versionNamescreen.text = version.getRewaya()
-
-        if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE)
-            repeatBtn.background =
-                ResourcesCompat.getDrawable(resources, R.drawable.rounded_dialog, theme)
-        if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL)
-            shuffleBtn.background =
-                ResourcesCompat.getDrawable(resources, R.drawable.rounded_dialog, theme)
-    }
-
-    private fun setListeners() {
-        repeatBtn.setOnClickListener {
-            if (repeat == PlaybackStateCompat.REPEAT_MODE_NONE) {
-                repeat = PlaybackStateCompat.REPEAT_MODE_ONE
-                tc.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)
-
-                pref.edit()
-                    .putInt("telawat_repeat_mode", repeat)
-                    .apply()
-
-                repeatBtn.background = ResourcesCompat.getDrawable(
-                    resources, R.drawable.rounded_dialog, theme
-                )
-            }
-            else if (repeat == PlaybackStateCompat.REPEAT_MODE_ONE) {
-                repeat = PlaybackStateCompat.REPEAT_MODE_NONE
-                tc.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
-
-                pref.edit()
-                    .putInt("telawat_repeat_mode", repeat)
-                    .apply()
-
-                /*repeatBtn.background = ResourcesCompat.getDrawable(
-                    resources, R.drawable.ripple_circle, theme
-                )*/
-            }
-        }
-
-        shuffleBtn.setOnClickListener {
-            if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
-                shuffle = PlaybackStateCompat.SHUFFLE_MODE_ALL
-                tc.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
-
-                pref.edit()
-                    .putInt("telawat_shuffle_mode", shuffle)
-                    .apply()
-
-                shuffleBtn.background = ResourcesCompat.getDrawable(
-                    resources, R.drawable.rounded_dialog, theme
-                )
-            }
-            else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
-                shuffle = PlaybackStateCompat.SHUFFLE_MODE_NONE
-                tc.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE)
-
-                pref.edit()
-                    .putInt("telawat_shuffle_mode", shuffle)
-                    .apply()
-
-                /*shuffleBtn.background = ResourcesCompat.getDrawable(
-                    resources, R.drawable.ripple_circle, theme
-                )*/
-            }
-        }
+    private fun retrieveStates() {
+        repeat.value = pref.getInt("telawat_repeat_mode", 0)
+        shuffle.value = pref.getInt("telawat_shuffle_mode", 0)
     }
 
     private fun sendPlayRequest() {
         // Pass media data
         val bundle = Bundle()
         bundle.putString("play_type", action)
-        bundle.putString("reciter_name", reciterName)
+        bundle.putString("reciter_name", reciterName.value)
         bundle.putSerializable("version", version)
 
         // Start Playback
         tc.playFromMediaId(mediaId, bundle)
     }
 
-    private fun updateButton(state: Int) {
-        when(state) {
-            PlaybackStateCompat.STATE_PLAYING -> {
-                binding.bufferingCircle.visibility = View.GONE
-                playPause.visibility = View.VISIBLE
-                playPause.setImageDrawable(
-                    ResourcesCompat.getDrawable(resources, R.drawable.ic_player_pause, theme)
-                )
-            }
-            PlaybackStateCompat.STATE_PAUSED -> {
-                binding.bufferingCircle.visibility = View.GONE
-                playPause.visibility = View.VISIBLE
-                playPause.setImageDrawable(
-                    ResourcesCompat.getDrawable(resources, R.drawable.ic_player_play, theme)
-                )
-            }
-            PlaybackStateCompat.STATE_BUFFERING -> {
-                playPause.visibility = View.GONE
-                binding.bufferingCircle.visibility = View.VISIBLE
-            }
-        }
-    }
-
     private fun enableControls() {
-        // Attach a listeners to the buttons
-        seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                if (fromUser) tc.seekTo(progress.toLong())
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-        })
-
-        playPause.setOnClickListener {
-            // Since this is a play/pause button, you'll need to test the current state
-            // and choose the action accordingly
-            if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) tc.pause()
-            else tc.play()
-        }
-
-        binding.nextTrack.setOnClickListener { tc.skipToNext() }
-        binding.previousTrack.setOnClickListener { tc.skipToPrevious() }
-        binding.fastForward.setOnClickListener { tc.fastForward() }
-        binding.rewind.setOnClickListener { tc.rewind() }
+        controlsEnabled.value = true
+        btnState.value = PlaybackStateCompat.STATE_PLAYING
     }
 
     private fun disableControls() {
-        playPause.setOnClickListener(null)
-        binding.nextTrack.setOnClickListener(null)
-        binding.previousTrack.setOnClickListener(null)
-        binding.fastForward.setOnClickListener(null)
-        binding.rewind.setOnClickListener(null)
-        seekBar.setOnSeekBarChangeListener(null)
+        controlsEnabled.value = false
     }
 
     private fun buildTransportControls() {
@@ -328,7 +220,8 @@ class TelawatClient : AppCompatActivity() {
         controller.registerCallback(controllerCallback)
     }
 
-    private var controllerCallback: MediaControllerCompat.Callback = object : MediaControllerCompat.Callback() {
+    private var controllerCallback: MediaControllerCompat.Callback =
+        object : MediaControllerCompat.Callback() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat) {
             // To change the metadata inside the app when the user changes it from the notification
             updateMetadata(metadata)
@@ -347,31 +240,23 @@ class TelawatClient : AppCompatActivity() {
 
     private fun updateMetadata(metadata: MediaMetadataCompat) {
         surahIndex = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
-        binding.suraNamescreen.text = surahNames[surahIndex]
+        suraName.value = surahNames[surahIndex]
 
-        val duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION).toInt()
-        binding.durationScreen.text = formatTime(duration)
-        seekBar.max = duration
+        duration.value = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
+        durationText.value = formatTime(duration.value.toInt())
     }
 
     private fun updatePbState(state: PlaybackStateCompat) {
-        seekBar.progress = state.position.toInt()
-        seekBar.secondaryProgress = state.bufferedPosition.toInt()
-        binding.progressScreen.text = formatTime(state.position.toInt())
-
-        updateButton(state.state)
-
-        if (state.state == PlaybackStateCompat.STATE_PLAYING)
-            binding.progressScreen.text = formatTime(state.position.toInt())
+        progress.value = state.position
+        secondaryProgress.value = state.bufferedPosition.toInt()
+        progressText.value = formatTime(state.position.toInt())
     }
 
-    private fun formatTime(time: Int): String {
-        val hours = time / (60 * 60 * 1000) % 24
-        val minutes = time / (60 * 1000) % 60
-        val seconds = time / 1000 % 60
-        var hms = String.format(
-            Locale.US, "%02d:%02d:%02d", hours, minutes, seconds
-        )
+    private fun formatTime(timeInMillis: Int): String {
+        val hours = timeInMillis / (60 * 60 * 1000) % 24
+        val minutes = timeInMillis / (60 * 1000) % 60
+        val seconds = timeInMillis / 1000 % 60
+        var hms = String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
         if (hms.startsWith("0")) {
             hms = hms.substring(1)
             if (hms.startsWith("0")) hms = hms.substring(2)
@@ -380,22 +265,236 @@ class TelawatClient : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        onBack()
+    }
 
-        if (isTaskRoot) {
-            val intent = Intent(this, TelawatSuarActivity::class.java)
-            intent.putExtra("reciter_id", reciterId)
-            intent.putExtra("reciter_name", reciterName)
-            intent.putExtra("version_id", versionId)
-            startActivity(intent)
-            finish()
-        }
+    private fun onBack() {
+        val intent = Intent(this, TelawatSuarActivity::class.java)
+        intent.putExtra("reciter_id", reciterId)
+        intent.putExtra("reciter_name", reciterName.value)
+        intent.putExtra("version_id", versionId)
+        startActivity(intent)
+        finish()
     }
 
     override fun onDestroy() {
         Log.i(Global.TAG, "in onDestroy of TelawatClient")
         super.onDestroy()
         mediaBrowser.disconnect()
+    }
+
+    @Composable
+    private fun UI() {
+        MyScaffold(
+            title = stringResource(id = R.string.recitations),
+            bottomBar = {
+                BottomAppBar(
+                    backgroundColor = AppTheme.colors.weakPrimary
+                ) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        MyIconBtn(
+                            iconId = R.drawable.ic_repeat,
+                            description = stringResource(R.string.repeat_description),
+                            tint =
+                            if (repeat.value == PlaybackStateCompat.REPEAT_MODE_ONE)
+                                AppTheme.colors.accent
+                            else AppTheme.colors.onPrimary
+                        ) {
+                            if (repeat.value == PlaybackStateCompat.REPEAT_MODE_NONE) {
+                                repeat.value = PlaybackStateCompat.REPEAT_MODE_ONE
+                                tc.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)
+
+                                pref.edit()
+                                    .putInt("telawat_repeat_mode", repeat.value)
+                                    .apply()
+                            }
+                            else if (repeat.value == PlaybackStateCompat.REPEAT_MODE_ONE) {
+                                repeat.value = PlaybackStateCompat.REPEAT_MODE_NONE
+                                tc.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
+
+                                pref.edit()
+                                    .putInt("telawat_repeat_mode", repeat.value)
+                                    .apply()
+                            }
+                        }
+
+                        MyIconBtn(
+                            iconId = R.drawable.ic_download,
+                            description = stringResource(R.string.download_description),
+                            modifier = Modifier.alpha(0F)
+                        ) {
+
+                        }
+
+                        MyIconBtn(
+                            iconId = R.drawable.ic_shuffle,
+                            description = stringResource(R.string.shuffle_description),
+                            tint =
+                                if (shuffle.value == PlaybackStateCompat.SHUFFLE_MODE_ALL)
+                                    AppTheme.colors.accent
+                                else AppTheme.colors.onPrimary
+                        ) {
+                            if (shuffle.value == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
+                                shuffle.value = PlaybackStateCompat.SHUFFLE_MODE_ALL
+                                tc.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
+
+                                pref.edit()
+                                    .putInt("telawat_shuffle_mode", shuffle.value)
+                                    .apply()
+                            }
+                            else if (shuffle.value == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+                                shuffle.value = PlaybackStateCompat.SHUFFLE_MODE_NONE
+                                tc.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE)
+
+                                pref.edit()
+                                    .putInt("telawat_shuffle_mode", shuffle.value)
+                                    .apply()
+                            }
+                        }
+                    }
+                }
+            }
+        ) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(it),
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    Modifier
+                        .border(
+                            width = 2.dp,
+                            shape = RoundedCornerShape(10),
+                            color = AppTheme.colors.accent
+                        )
+                ) {
+                    Column(
+                        Modifier
+                            .padding(vertical = 25.dp, horizontal = 75.dp),
+                        verticalArrangement = Arrangement.SpaceEvenly,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        MyText(
+                            text = suraName.value,
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 10.dp)
+                        )
+
+                        MyText(
+                            text = versionName.value,
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 10.dp)
+                        )
+
+                        MyText(
+                            text = reciterName.value,
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 10.dp)
+                        )
+                    }
+                }
+
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(AppTheme.colors.weakPrimary),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    MyText(
+                        text = progressText.value,
+                        modifier = Modifier.padding(10.dp)
+                    )
+
+                    Slider(
+                        value = progress.value.toFloat(),
+                        valueRange = 0F..duration.value.toFloat(),
+                        enabled = controlsEnabled.value,
+                        modifier = Modifier.weight(1F),
+                        colors = SliderDefaults.colors(
+                            activeTrackColor = AppTheme.colors.accent,
+                            inactiveTrackColor = AppTheme.colors.altAccent,
+                            thumbColor = AppTheme.colors.accent
+                        ),
+                        onValueChangeFinished = { tc.seekTo(progress.value) },
+                        onValueChange = { newValue -> progress.value = newValue.toLong() }
+                    )
+
+                    MyText(
+                        text = durationText.value,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
+
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(AppTheme.colors.weakPrimary),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    MyImageButton(
+                        imageResId = R.drawable.ic_player_previous,
+                        description = stringResource(id = R.string.previous_day_button_description),
+                        enabled = controlsEnabled.value
+                    ) {
+                        tc.skipToPrevious()
+                    }
+
+                    MyImageButton(
+                        imageResId = R.drawable.ic_backward,
+                        description = stringResource(id = R.string.rewind_btn_description),
+                        enabled = controlsEnabled.value
+                    ) {
+                        tc.rewind()
+                    }
+
+                    MyPlayerBtn(
+                        state = btnState,
+                        enabled = controlsEnabled.value
+                    ) {
+                        if (btnState.value != PlaybackStateCompat.STATE_NONE) {
+                            // Since this is a play/pause button
+                            // test the current state and choose the action accordingly=
+                            if (controller.playbackState.state ==
+                                PlaybackStateCompat.STATE_PLAYING) {
+                                tc.pause()
+                                btnState.value = PlaybackStateCompat.STATE_STOPPED
+                            }
+                            else {
+                                tc.play()
+                                btnState.value = PlaybackStateCompat.STATE_PLAYING
+                            }
+                        }
+                    }
+
+                    MyImageButton(
+                        imageResId = R.drawable.ic_forward,
+                        description = stringResource(id = R.string.fast_forward_btn_description),
+                        enabled = controlsEnabled.value
+                    ) {
+                        tc.fastForward()
+                    }
+
+                    MyImageButton(
+                        imageResId = R.drawable.ic_player_next,
+                        description = stringResource(id = R.string.next_track_btn_description),
+                        enabled = controlsEnabled.value
+                    ) {
+                        tc.skipToNext()
+                    }
+                }
+            }
+        }
     }
 
 }
