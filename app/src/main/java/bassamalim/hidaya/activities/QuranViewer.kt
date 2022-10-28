@@ -20,7 +20,6 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -55,8 +54,6 @@ import bassamalim.hidaya.utils.LangUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 class QuranViewer : AppCompatActivity() {
 
@@ -233,7 +230,7 @@ class QuranViewer : AppCompatActivity() {
             }
 
             override fun nextPage() {
-
+                if (currentPage.value < Global.QURAN_PAGES) currentPage.value++
             }
 
             override fun track(ayaId: Int, ayaIndex: Int) {
@@ -462,14 +459,14 @@ class QuranViewer : AppCompatActivity() {
                     if (viewType.value == "list") ListItems()
                     else PageItems()
 
-                    if (scrollTo != -1F) {
+                    /*if (scrollTo != -1F) {
                         LaunchedEffect(null) {
                             coroutineScope.launch {
                                 scrollState.animateScrollTo(scrollTo.roundToInt())
                                 scrollTo = -1F
                             }
                         }
-                    }
+                    }*/
                 }
             }
         }
