@@ -2,182 +2,147 @@ package bassamalim.hidaya.activities
 
 import android.app.Activity
 import android.content.*
-import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.widget.*
+import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.res.ResourcesCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.adapters.ListQuranViewerAdapter
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AyatDB
-import bassamalim.hidaya.databinding.ActivityQuranViewerBinding
 import bassamalim.hidaya.dialogs.InfoDialog
 import bassamalim.hidaya.dialogs.QuranSettingsDialog
 import bassamalim.hidaya.models.Aya
 import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.other.Global
-import bassamalim.hidaya.replacements.DoubleClickLMM
-import bassamalim.hidaya.replacements.DoubleClickableSpan
-import bassamalim.hidaya.replacements.SwipeActivity
 import bassamalim.hidaya.services.AyahPlayerService
+import bassamalim.hidaya.ui.components.*
+import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.ui.theme.uthmanic
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
-import bassamalim.hidaya.utils.PrefUtils
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
-class QuranViewer : SwipeActivity() {
+class QuranViewer : AppCompatActivity() {
 
-    private lateinit var binding: ActivityQuranViewerBinding
     private lateinit var db: AppDatabase
     private lateinit var pref: SharedPreferences
     private lateinit var action: String
-    private lateinit var flipper: ViewFlipper
-    private lateinit var scrollViews: Array<ScrollView>
-    private lateinit var lls: Array<LinearLayout>
-    private lateinit var listVs: Array<ListView>
-    private var adapter: ListQuranViewerAdapter? = null
-    private lateinit var what: Any
-    private var currentView = 0
-    private var surahIndex = 0
-    private var currentPage = 0
-    private var currentSura = 0
-    private lateinit var currentPageText: String
-    private lateinit var currentSurah: String
-    private var textSize = 0
-    private val allAyahs: MutableList<Ayah> = ArrayList()
+    private lateinit var ayatDB: List<AyatDB?>
     private lateinit var names: List<String>
-    private lateinit var arr: MutableList<Ayah>
-    private lateinit var target: TextView
-    private var scrolled = false
-    private var selected: Ayah? = null
-    private var lastTracked: Ayah? = null
+    private var textSize = 0
+    private val handler = Handler(Looper.getMainLooper())
+    private val pageAyas = ArrayList<Ayah>()
+    private var lastRecordedPage = 0
+    private var initialPage = 0
+    private var initialSura = -1
+    private var currentSura = 0
+    private var currentJuz = 0
+    private var lastClickT = 0L
+    private var lastClickedId = -1
+    private var scrollTo = -1F
+
+    private val viewType = mutableStateOf("page")
+    @OptIn(ExperimentalPagerApi::class)
+    private lateinit var pagerState: PagerState
+    private val currentPage = mutableStateOf(0)
+    private val bookmarkedPage = mutableStateOf(-1)
+    private val selected = mutableStateOf<Ayah?>(null)
+    private var tracked = mutableStateOf<Ayah?>(null)
+
+    private val playerState = mutableStateOf(PlaybackStateCompat.STATE_STOPPED)
     private var player: AyahPlayerService? = null
     private var serviceBound = false
-    private lateinit var ayatDB: List<AyatDB?>
-    private lateinit var theme: String
-    private lateinit var language: String
-    private lateinit var viewType: String
-    private val handler: Handler = Handler(Looper.getMainLooper())
-    private var lastRecordedPage = 0
     private var tc: MediaControllerCompat.TransportControls? = null
     private var uiListener: AyahPlayerService.Coordinator? = null
-    private var bookmarkedPage = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        themeify()
-        binding = ActivityQuranViewerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        ActivityUtils.myOnActivityCreated(this)
 
-        initiate()
+        init()
 
         ActivityUtils.checkFirstTime(
-            this, supportFragmentManager, "is_first_time_in_quran",
-            R.string.quran_tips, pref
+            this, supportFragmentManager,
+            "is_first_time_in_quran", R.string.quran_tips, pref
         )
 
         action = intent.action!!
         action(intent)
 
-        if (viewType == "list") setupListVs()
-
-        buildPage(currentPage)
-
-        setupListeners()
-    }
-
-    private fun themeify() {
-        pref = PreferenceManager.getDefaultSharedPreferences(this)
-        language = ActivityUtils.onActivityCreateSetLocale(this)
-        textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
-        theme = PrefUtils.getTheme(this, pref)
-        viewType =
-            if (language == "en") "list"
-            else pref.getString("quran_view_type", "page")!!
-
-        when (theme) {
-            "Light" -> setTheme(R.style.QuranL)
-            "Dark" -> setTheme(R.style.QuranM)
+        setContent {
+            AppTheme {
+                UI()
+            }
         }
     }
 
-    private fun initiate() {
-        flipper = binding.flipper
-        scrollViews = arrayOf(binding.scrollview1, binding.scrollview2)
-        lls = arrayOf(binding.linear1, binding.linear2)
-
+    private fun init() {
+        pref = PreferenceManager.getDefaultSharedPreferences(this)
         db = DBUtils.getDB(this)
+
+        textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
+
+        val language = ActivityUtils.onActivityCreateSetLocale(this)
+        if (language == "en") viewType.value = "list"
 
         ayatDB = db.ayahDao().getAll()
         names =
             if (language == "en") db.suarDao().getNamesEn()
             else db.suarDao().getNames()
 
-        what =
-            if (theme == "Dark")
-                ForegroundColorSpan(resources.getColor(R.color.track_M, getTheme()))
-            else
-                ForegroundColorSpan(resources.getColor(R.color.track_L, getTheme()))
-
-        bookmarkedPage = pref.getInt("bookmarked_page", -1)
+        bookmarkedPage.value = pref.getInt("bookmarked_page", -1)
     }
 
     private fun action(intent: Intent) {
         when (action) {
             "by_surah" -> {
-                surahIndex = intent.getIntExtra("surah_id", 0)
-                currentPage = getPage(surahIndex)
+                initialSura = intent.getIntExtra("surah_id", 0)
+                currentSura = initialSura
+                initialPage = db.suarDao().getPage(currentSura)
             }
-            "by_page" -> currentPage = intent.getIntExtra("page", 0)
+            "by_page" -> initialPage = intent.getIntExtra("page", 0)
         }
-    }
-
-    private fun setupListVs() {
-        listVs = arrayOf(binding.listview1, binding.listview2)
-
-        adapter = ListQuranViewerAdapter(
-            this, R.layout.item_listview_quran_viewer, allAyahs, theme, language
-        )
-
-        listVs.map { listView -> listView.adapter = adapter }
-
-        flipper.displayedChild = 2
-    }
-
-    private fun getPage(surahIndex: Int): Int {
-        return db.suarDao().getPage(surahIndex)
-    }
-
-    private fun setCurrentPage(num: Int) {
-        currentPage = num
-        player?.setCurrentPage(num)
     }
 
     private fun buildPage(pageNumber: Int) {
         handler.removeCallbacks(runnable)
-
-        if (viewType == "page") lls[currentView].removeAllViews()
-        allAyahs.clear()
-        arr = ArrayList()
-        val pageAyahs = ArrayList<List<Ayah>?>()
+        pageAyas.clear()
 
         var counter = getPageStart(pageNumber)
         do {
@@ -190,170 +155,49 @@ class QuranViewer : SwipeActivity() {
                 "${aya.aya_text} ", aya.aya_translation_en, aya.aya_tafseer
             )
 
-            if (ayaNum == 1) {
-                if (arr.size > 0) {
-                    pageAyahs.add(arr)
-                    if (viewType == "page") publishPage(arr)
-                }
-                if (viewType == "page") addHeader(suraNum, ayahModel.getSurahName())
-            }
-
-            arr.add(ayahModel)
+            pageAyas.add(ayahModel)
 
             counter++
-        } while (ayatDB[counter]!!.page == pageNumber && counter != Global.QURAN_AYAS )
+        } while (counter != Global.QURAN_AYAS && ayatDB[counter]!!.page == pageNumber)
 
-        val juz = arr[0].getJuz()
+        finalize(pageAyas[0])
 
-        pageAyahs.add(arr)
+        checkPage(currentPage.value)
 
-        if (viewType == "list") {
-            publishList(arr)
-            adapter?.notifyDataSetChanged()
-        }
-        else publishPage(arr)
-
-        currentSura = pageAyahs.indexOf(pageAyahs.maxBy { list -> list!!.size })
-
-        finalize(juz, pageAyahs[currentSura]!![0].getSurahName())
-
-        checkPage(currentPage)
+        currentPage.value = pageNumber
     }
 
-    private fun publishPage(list: List<Ayah>?) {
-        val screen = screen()
-        val text = StringBuilder()
+    private fun finalize(aya: Ayah) {
+        currentSura = aya.getSurahNum()
+        currentJuz = aya.getJuz()
+    }
 
-        for (i in list!!.indices) {
-            list[i].setStart(text.length)
-            text.append(list[i].getText())
-            list[i].setEnd(text.length)
-        }
+    private fun onAyaClick(ayaId: Int, offset: Int) {
+        val startIdx = pageAyas.indexOfFirst { it.getId() == ayaId }
 
-        val ss = SpannableString(text)
-        for (i in list.indices) {
-            val clickableSpan = object : DoubleClickableSpan() {
-                override fun onDoubleClick(view: View?) {
-                    InfoDialog.newInstance(getString(R.string.tafseer), list[i].getTafseer())
-                        .show(supportFragmentManager, InfoDialog.TAG)
+        val maxDuration = 1200
+        for (idx in startIdx until pageAyas.size) {
+            val aya = pageAyas[idx]
+
+            if (offset < aya.getEnd()) {
+                // double click
+                if (aya.getId() == lastClickedId &&
+                    System.currentTimeMillis() < lastClickT + maxDuration) {
+                    selected.value = null
+
+                    InfoDialog.newInstance(
+                        getString(R.string.tafseer), aya.getTafseer()
+                    ).show(supportFragmentManager, InfoDialog.TAG)
+                }
+                else {  // single click
+                    if (selected.value == aya) selected.value = null
+                    else selected.value = aya
                 }
 
-                override fun onClick(widget: View) {
-                    selected = allAyahs[list[i].getIndex()]
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                }
+                lastClickedId = aya.getId()
+                lastClickT = System.currentTimeMillis()
+                break
             }
-            list[i].setSS(ss)
-            ss.setSpan(clickableSpan, list[i].getStart(), list[i].getEnd(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-            list[i].setIndex(allAyahs.size)
-            list[i].setScreen(screen)
-            allAyahs.add(list[i])
-        }
-
-        player?.setAllAyahsSize(allAyahs.size)
-
-        screen.text = ss
-
-        getContainer().addView(screen)
-
-        arr = ArrayList()
-    }
-
-    private fun publishList(list: List<Ayah>?) {
-        for (i in list!!.indices) {
-            val ss = SpannableString(list[i].getText())
-            val clickableSpan = object : DoubleClickableSpan() {
-                override fun onDoubleClick(view: View?) {
-                    InfoDialog.newInstance(getString(R.string.tafseer), list[i].getTafseer())
-                        .show(supportFragmentManager, InfoDialog.TAG)
-                }
-
-                override fun onClick(widget: View) {
-                    selected = allAyahs[list[i].getIndex()]
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                }
-            }
-            list[i].setSS(ss)
-            ss.setSpan(
-                clickableSpan, 0, list[i].getText()!!.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-
-            list[i].setIndex(allAyahs.size)
-            allAyahs.add(list[i])
-        }
-
-        player?.setAllAyahsSize(allAyahs.size)
-
-        arr = ArrayList()
-    }
-
-    private fun finalize(juz: Int, name: String) {
-        val juzText = "${getString(R.string.juz)} ${LangUtils.translateNums(this, juz.toString())}"
-
-        currentSurah = "${getString(R.string.sura)} $name"
-        currentPageText =
-            "${getString(R.string.page)} ${LangUtils.translateNums(this, currentPage.toString())}"
-        binding.juzNumber.text = juzText
-        binding.suraName.text = currentSurah
-        binding.pageNumber.text = currentPageText
-
-        if (currentPage == bookmarkedPage)
-            binding.bookmarkButton.setImageDrawable(
-                AppCompatResources.getDrawable(this, R.drawable.ic_bookmarked)
-            )
-        else
-            binding.bookmarkButton.setImageDrawable(
-                AppCompatResources.getDrawable(this, R.drawable.ic_bookmark)
-            )
-
-        if (action == "by_surah" && !scrolled) {
-            if (viewType == "page") scrollTo(target.top)
-            scrolled = true
-        }
-    }
-
-    override fun previous() {
-        if (currentPage > 1) {
-            flipper.setInAnimation(this, R.anim.slide_in_right)
-            flipper.setOutAnimation(this, R.anim.slide_out_left)
-            currentView = (currentView + 1) % 2
-            setCurrentPage(--currentPage)
-            buildPage(currentPage)
-            flip()
-        }
-    }
-
-    override operator fun next() {
-        if (currentPage < Global.QURAN_PAGES) {
-            flipper.setInAnimation(this, R.anim.slide_in_left)
-            flipper.setOutAnimation(this, R.anim.slide_out_right)
-            currentView = (currentView + 1) % 2
-            setCurrentPage(++currentPage)
-            buildPage(currentPage)
-            flip()
-        }
-    }
-
-    private fun flip() {
-        if (viewType == "list") {
-            if (flipper.displayedChild == 2) flipper.displayedChild = 3
-            else flipper.displayedChild = 2
-            listVs[currentView].scrollTo(0, 0)
-        }
-        else {
-            if (flipper.displayedChild == 0) flipper.displayedChild = 1
-            else flipper.displayedChild = 0
-            scrollViews[currentView].scrollTo(0, 0)
         }
     }
 
@@ -363,7 +207,7 @@ class QuranViewer : SwipeActivity() {
     }
 
     private val runnable = Runnable {
-        if (currentPage == lastRecordedPage) updateRecord()
+        if (currentPage.value == lastRecordedPage) updateRecord()
     }
 
     private fun updateRecord() {
@@ -372,111 +216,10 @@ class QuranViewer : SwipeActivity() {
 
         val editor = pref.edit()
         editor.putInt("quran_pages_record", new)
-        if (currentPage == pref.getInt("today_werd_page", 25)) editor.putBoolean("werd_done", true)
+        if (currentPage.value == pref.getInt("today_werd_page", 25))
+            editor.putBoolean("werd_done", true)
         editor.apply()
     }
-
-    private fun getContainer(): ViewGroup {
-        return if (viewType == "list") listVs[currentView] else lls[currentView]
-    }
-
-    private fun updateButton(state: Int) {
-        when(state) {
-            PlaybackStateCompat.STATE_PLAYING -> {
-                binding.bufferingCircle.visibility = View.GONE
-                binding.playPause.visibility = View.VISIBLE
-                binding.playPause.setImageDrawable(
-                    ResourcesCompat.getDrawable(resources, R.drawable.ic_pause, getTheme())
-                )
-            }
-            PlaybackStateCompat.STATE_PAUSED, PlaybackStateCompat.STATE_STOPPED-> {
-                binding.bufferingCircle.visibility = View.GONE
-                binding.playPause.visibility = View.VISIBLE
-                binding.playPause.setImageDrawable(
-                    ResourcesCompat.getDrawable(resources, R.drawable.ic_play_aya, getTheme())
-                )
-            }
-            PlaybackStateCompat.STATE_BUFFERING -> {
-                binding.playPause.visibility = View.GONE
-                binding.bufferingCircle.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    private fun setupListeners() {
-        binding.bookmarkButton.setOnClickListener {
-            bookmarkedPage = currentPage
-
-            pref.edit()
-                .putInt("bookmarked_page", currentPage)
-                .putInt("bookmarked_sura", surahIndex)
-                .apply()
-
-            binding.bookmarkButton.setImageDrawable(
-                AppCompatResources.getDrawable(this, R.drawable.ic_bookmarked)
-            )
-        }
-
-        binding.playPause.setOnClickListener {
-            if (player == null) {
-                updateButton(PlaybackStateCompat.STATE_BUFFERING)
-                setupPlayer()
-            }
-            else if (player!!.getState() == PlaybackStateCompat.STATE_PLAYING) {
-                player!!.transportControls.pause()
-                updateButton(PlaybackStateCompat.STATE_PAUSED)
-            }
-            else if (player!!.getState() == PlaybackStateCompat.STATE_PAUSED) {
-                if (selected == null) player!!.transportControls.play()
-                else {
-                    player!!.setChosenSurah(selected!!.getSurahNum())
-                    requestPlay(selected!!)
-                }
-                updateButton(PlaybackStateCompat.STATE_PLAYING)
-            }
-        }
-
-        binding.prevAyah.setOnClickListener { player?.transportControls?.skipToPrevious() }
-        binding.nextAyah.setOnClickListener { player?.transportControls?.skipToNext() }
-
-        binding.recitationSettings.setOnClickListener {
-            settingsDialog.launch(Intent(this, QuranSettingsDialog::class.java))
-        }
-    }
-
-    private fun getPageStart(pageNumber: Int): Int {
-        var counter = 0
-        while (ayatDB[counter]!!.page < pageNumber) counter++
-        return counter
-    }
-
-    private val settingsDialog = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                viewType = pref.getString("quran_view_type", "page")!!
-                textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
-
-                flipper.inAnimation = null
-                flipper.outAnimation = null
-                if (viewType == "list") {
-                    setupListVs()
-
-                    adapter!!.setTextSize(textSize)
-                    listVs[0].adapter = null
-                    listVs[1].adapter = null
-                    listVs[0].adapter = adapter
-                    listVs[1].adapter = adapter
-                }
-                else {
-                    currentView = 0
-                    flipper.displayedChild = 0
-                }
-
-                buildPage(currentPage)
-                player?.setViewType(viewType)
-            }
-        }
 
     private fun setupPlayer() {
         uiListener = object : AyahPlayerService.Coordinator {
@@ -485,35 +228,22 @@ class QuranViewer : SwipeActivity() {
             }
 
             override fun getAya(index: Int): Aya {
-                val ayah = allAyahs[index]
+                val ayah = pageAyas[index]
                 return Aya(ayah.getId(), ayah.getSurahNum(), ayah.getAyahNum(), ayah.getIndex())
             }
 
             override fun nextPage() {
-                next()
+
             }
 
             override fun track(ayaId: Int, ayaIndex: Int) {
-                val ayah = allAyahs[ayaIndex]
+                val aya = pageAyas[ayaIndex]
 
-                if (ayah.getId() != ayaId) return
+                if (aya.getId() != ayaId) return  // not the same page
 
-                scrollTo(ayah.getScreen()!!.top)
+                //scrollTo(aya.getScreen()!!.top)
 
-                if (lastTracked != null) {
-                    lastTracked!!.getSS()!!.removeSpan(what)
-                    lastTracked!!.getScreen()!!.text = lastTracked!!.getSS()
-                }
-
-                if (viewType == "list")
-                    ayah.getSS()!!.setSpan(what, 0, ayah.getText()!!.length - 1,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                else
-                    ayah.getSS()!!.setSpan(what, ayah.getStart(), ayah.getEnd(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-                ayah.getScreen()!!.text = ayah.getSS()  // heavy, but the only working way
-                lastTracked = ayah
+                tracked.value = aya
             }
         }
 
@@ -527,22 +257,22 @@ class QuranViewer : SwipeActivity() {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             Log.i(Global.TAG, "In onServiceConnected")
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            val binder: AyahPlayerService.LocalBinder = service as AyahPlayerService.LocalBinder
+            val binder = service as AyahPlayerService.LocalBinder
             player = binder.service
             tc = player!!.transportControls
             serviceBound = true
 
-            if (selected == null) selected = allAyahs[0]
-            
-            player!!.setCurrentPage(currentPage)
-            player!!.setViewType(viewType)
-            player!!.setAllAyahsSize(allAyahs.size)
+            if (selected.value == null) selected.value = pageAyas[0]
+
+            player!!.setCurrentPage(currentPage.value)
+            player!!.setViewType(viewType.value)
+            player!!.setPageAyasSize(pageAyas.size)
             player!!.setCoordinator(uiListener!!)
 
-            player!!.setChosenSurah(selected!!.getSurahNum())
-            requestPlay(selected!!)
+            player!!.setChosenSurah(selected.value!!.getSurahNum())
+            requestPlay(selected.value!!)
 
-            selected = null
+            selected.value = null
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
@@ -557,78 +287,29 @@ class QuranViewer : SwipeActivity() {
         tc!!.playFromMediaId(ayah.getAyahNum().toString(), bundle)
     }
 
-    private fun scrollTo(position: Int) {
-        val delay = 100L //delay to let finish with possible modifications to View
-        if (viewType == "list") {
-            listVs[currentView].smoothScrollToPosition(position)
+    private fun updateButton(state: Int) {
+        when (state) {
+            PlaybackStateCompat.STATE_NONE,
+            PlaybackStateCompat.STATE_STOPPED,
+            PlaybackStateCompat.STATE_PLAYING,
+            PlaybackStateCompat.STATE_BUFFERING -> playerState.value = state
+            else -> {}
         }
-        else scrollViews[currentView].postDelayed(
-            { scrollViews[currentView].smoothScrollTo(0, position) }, delay
-        )
     }
 
-    private fun addHeader(suraNum: Int, name: String) {
-        val nameScreen = surahName(name)
-
-        getContainer().addView(nameScreen)
-        if (suraNum != 1 && suraNum != 9) // surat al-fatiha and At-Taubah
-            getContainer().addView(basmalah())
-
-        if (action == "by_surah" && suraNum == surahIndex + 1) target = nameScreen
+    private fun getPageStart(pageNumber: Int): Int {
+        var counter = 0
+        while (ayatDB[counter]!!.page < pageNumber) counter++
+        return counter
     }
 
-    private fun surahName(name: String): TextView {
-        val nameTv = TextView(this)
-        val screenParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, 160
-        )
-        screenParams.bottomMargin = 20
-        nameTv.layoutParams = screenParams
-        nameTv.setPadding(0, 10, 0, 10)
-        nameTv.gravity = Gravity.CENTER
-        nameTv.setBackgroundColor(Color.TRANSPARENT)
-        nameTv.textSize = (textSize + 5).toFloat()
-        if (theme == "Light") nameTv.setBackgroundResource(R.drawable.surah_header_light)
-        else nameTv.setBackgroundResource(R.drawable.surah_header)
-        nameTv.typeface = Typeface.DEFAULT_BOLD
-        nameTv.text = name
-        return nameTv
-    }
-
-    private fun basmalah(): TextView {
-        val nameScreen = TextView(this)
-        val screenParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        nameScreen.layoutParams = screenParams
-        nameScreen.setPadding(0, 0, 0, 10)
-        nameScreen.gravity = Gravity.CENTER
-        nameScreen.textSize = textSize.toFloat()
-        nameScreen.typeface = Typeface.DEFAULT_BOLD
-        nameScreen.text = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
-        if (theme == "Dark") {
-            nameScreen.setTextColor(Color.WHITE)
-            nameScreen.setLinkTextColor(Color.WHITE)
+    private val settingsDialog = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            viewType.value = pref.getString("quran_view_type", "page")!!
+            textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
         }
-        else {
-            nameScreen.setTextColor(Color.BLACK)
-            nameScreen.setLinkTextColor(Color.BLACK)
-        }
-        return nameScreen
-    }
-
-    private fun screen(): TextView {
-        val tv: TextView = layoutInflater.inflate(R.layout.tv_quran_viewer, null) as TextView
-        tv.textSize = textSize.toFloat()
-        if (theme == "Dark")
-            tv.movementMethod = DoubleClickLMM.getInstance(
-                resources.getColor(R.color.highlight_M, getTheme())
-            )
-        else
-            tv.movementMethod = DoubleClickLMM.getInstance(
-                resources.getColor(R.color.highlight_L, getTheme())
-            )
-        return tv
     }
 
     override fun onDestroy() {
@@ -640,6 +321,292 @@ class QuranViewer : SwipeActivity() {
         }
         player?.onDestroy()
         handler.removeCallbacks(runnable)
+    }
+
+    @OptIn(ExperimentalPagerApi::class)
+    @Composable
+    private fun UI() {
+        MyScaffold(
+            title = "",
+            topBar = {
+                TopAppBar(
+                    backgroundColor = AppTheme.colors.primary,
+                    elevation = 8.dp,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        MyText(
+                            text = "${getString(R.string.sura)} ${names[currentSura]}",
+                            fontSize = 18.sp
+                        )
+
+                        MyText(
+                            text = "${getString(R.string.page)} " +
+                                    LangUtils.translateNums(
+                                        this@QuranViewer, currentPage.value.toString()
+                                    ),
+                            fontSize = 18.sp
+                        )
+
+                        MyText(
+                            text = "${getString(R.string.juz)} " +
+                                    LangUtils.translateNums(
+                                        this@QuranViewer, currentJuz.toString()
+                                    ),
+                            fontSize = 18.sp
+                        )
+                    }
+                }
+            },
+            bottomBar = {
+                BottomAppBar(
+                    backgroundColor = AppTheme.colors.primary
+                ) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        // Bookmark btn
+                        MyIconBtn(
+                            iconId =
+                                if (currentPage.value == bookmarkedPage.value)
+                                    R.drawable.ic_bookmarked
+                                else R.drawable.ic_bookmark,
+                            description = stringResource(R.string.bookmark_page_button_description),
+                            tint =
+                                if (currentPage.value == bookmarkedPage.value)
+                                    AppTheme.colors.accent
+                                else AppTheme.colors.onPrimary
+                        ) {
+                            bookmarkedPage.value = currentPage.value
+
+                            pref.edit()
+                                .putInt("bookmarked_page", currentPage.value)
+                                .putInt("bookmarked_sura", currentSura)
+                                .apply()
+                        }
+
+                        MyImageButton(
+                            imageResId = R.drawable.ic_aya_backward,
+                            description = stringResource(R.string.rewind_btn_description)
+                        ) {
+                            player?.transportControls?.skipToPrevious()
+                        }
+
+                        MyPlayerBtn(
+                            state = playerState
+                        ) {
+                            if (player == null) {
+                                updateButton(PlaybackStateCompat.STATE_BUFFERING)
+                                setupPlayer()
+                            }
+                            else if (player!!.getState() == PlaybackStateCompat.STATE_PLAYING) {
+                                player!!.transportControls.pause()
+                                updateButton(PlaybackStateCompat.STATE_PAUSED)
+                            }
+                            else if (player!!.getState() == PlaybackStateCompat.STATE_PAUSED) {
+                                if (selected.value == null) player!!.transportControls.play()
+                                else {
+                                    player!!.setChosenSurah(selected.value!!.getSurahNum())
+                                    requestPlay(selected.value!!)
+                                }
+                                updateButton(PlaybackStateCompat.STATE_PLAYING)
+                            }
+                        }
+
+                        MyImageButton(
+                            imageResId = R.drawable.ic_aya_forward,
+                            description = stringResource(R.string.fast_forward_btn_description)
+                        ) {
+                            player?.transportControls?.skipToNext()
+                        }
+
+                        // Preferences btn
+                        MyIconBtn(
+                            iconId = R.drawable.ic_preferences,
+                            description = stringResource(R.string.settings),
+                            tint = AppTheme.colors.accent
+                        ) {
+                            settingsDialog.launch(Intent(
+                                this@QuranViewer, QuranSettingsDialog::class.java
+                            ))
+                        }
+                    }
+                }
+            }
+        ) {
+            pagerState = rememberPagerState(initialPage-1)
+            HorizontalPagerScreen(
+                count = 604,
+                pagerState = pagerState,
+                modifier = Modifier.padding(it)
+            ) {
+                val coroutineScope = rememberCoroutineScope()
+                val scrollState = rememberScrollState()
+
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    buildPage(currentPage+1)
+
+                    if (viewType.value == "list") ListItems()
+                    else PageItems()
+
+                    if (scrollTo != -1F) {
+                        LaunchedEffect(null) {
+                            coroutineScope.launch {
+                                scrollState.animateScrollTo(scrollTo.roundToInt())
+                                scrollTo = -1F
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun PageItems() {
+        var text = StringBuilder()
+        var sequence = ArrayList<Ayah>()
+        var lastSura = pageAyas[0].getSurahNum()
+
+        NewSura(pageAyas[0])
+
+        for (aya in pageAyas) {
+            if (aya.getSurahNum() == lastSura) {
+                aya.setStart(text.length)
+                text.append(aya.getText())
+                aya.setEnd(text.length)
+                sequence.add(aya)
+            }
+            else {
+                PageItem(text = text.toString(), sequence = sequence)
+
+                NewSura(aya)
+
+                text = StringBuilder()
+                sequence = ArrayList()
+            }
+
+            lastSura = aya.getSurahNum()
+        }
+
+        PageItem(text = text.toString(), sequence = sequence)
+    }
+
+    @Composable
+    private fun PageItem(text: String, sequence: List<Ayah>) {
+        val annotatedString = buildAnnotatedString {
+            append(text)
+
+            for (seqAya in sequence) {
+                addStyle(
+                    style = SpanStyle(color =
+                        if (selected.value == seqAya) AppTheme.colors.accent
+                        else AppTheme.colors.strongText
+                    ),
+                    start = seqAya.getStart(),
+                    end = seqAya.getEnd()
+                )
+            }
+        }
+
+        Screen(annotatedString = annotatedString, ayaId = sequence[0].getId())
+    }
+
+    @Composable
+    private fun ListItems() {
+        for (aya in pageAyas) {
+            NewSura(aya)
+
+            val annotatedString = AnnotatedString(aya.getText()!!)
+            Screen(annotatedString, aya.getId())
+
+            MyText(
+                text = aya.getTranslation()!!,
+                fontSize = (textSize - 5).sp,
+                modifier = Modifier.padding(6.dp)
+            )
+
+            MyHorizontalDivider()
+        }
+    }
+
+    @Composable
+    private fun Screen(annotatedString: AnnotatedString, ayaId: Int) {
+        ClickableText(
+            text = annotatedString,
+            style = TextStyle(
+                fontFamily = uthmanic,
+                fontSize = textSize.sp,
+                color = AppTheme.colors.strongText,
+                textAlign = TextAlign.Center
+            ),
+            modifier = Modifier.padding(vertical = 4.dp),
+            onClick = { offset ->
+                onAyaClick(ayaId, offset)
+            }
+        )
+    }
+
+    @Composable
+    private fun NewSura(aya: Ayah) {
+        if (aya.getAyahNum() == 1) {
+            SuraHeader(aya)
+            // surat al-fatiha and At-Taubah
+            if (aya.getSurahNum() != 1 && aya.getSurahNum() != 9) Basmalah()
+        }
+    }
+
+    @Composable
+    private fun SuraHeader(aya: Ayah) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(70.dp)
+                .padding(vertical = 10.dp)
+                .onGloballyPositioned { layoutCoordinates ->
+                    if (aya.getSurahNum() == initialSura) {
+                        scrollTo = layoutCoordinates.positionInRoot().y
+                        initialSura = -1
+                    }
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(R.drawable.surah_header),
+                contentDescription = aya.getSurahName(),
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier.fillMaxSize()
+            )
+
+            MyText(
+                text = aya.getSurahName(),
+                fontSize = (textSize + 5).sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+
+    @Composable
+    private fun Basmalah() {
+        MyText(
+            text = stringResource(R.string.basmalah),
+            fontSize = textSize.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 5.dp)
+        )
     }
 
 }

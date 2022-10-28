@@ -782,7 +782,7 @@ class AyahPlayerService : Service(),
         return controller.playbackState.state
     }
 
-    fun setAllAyahsSize(allAyahsSize: Int) {
+    fun setPageAyasSize(allAyahsSize: Int) {
         this.allAyahsSize = allAyahsSize
     }
 

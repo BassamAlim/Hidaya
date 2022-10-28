@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -21,14 +22,15 @@ fun MyText(
     fontSize: TextUnit = 20.sp,
     textColor: Color = AppTheme.colors.text,
     fontWeight: FontWeight = FontWeight.Normal,
-    textAlign: TextAlign = TextAlign.Center
+    textAlign: TextAlign = TextAlign.Center,
+    fontFamily: FontFamily = tajwal
 ) {
     Text(
         text = text,
         modifier = modifier,
         fontSize = fontSize,
         style = TextStyle(
-            fontFamily = tajwal,
+            fontFamily = fontFamily,
             color = textColor,
             fontWeight = fontWeight,
             textAlign = textAlign,
@@ -44,18 +46,19 @@ fun MyText(
     fontSize: TextUnit = 20.sp,
     textColor: Color = AppTheme.colors.text,
     fontWeight: FontWeight = FontWeight.Normal,
-    textAlign: TextAlign = TextAlign.Center
+    textAlign: TextAlign = TextAlign.Center,
+    fontFamily: FontFamily = tajwal
 ) {
     Text(
         text = text,
         modifier = modifier,
         fontSize = fontSize,
         style = TextStyle(
-            fontFamily = tajwal,
+            fontFamily = fontFamily,
             color = textColor,
             fontWeight = fontWeight,
             textAlign = textAlign,
-            lineHeight = fontSize * 1.4
+            lineHeight = fontSize * 1.4,
         )
     )
 }

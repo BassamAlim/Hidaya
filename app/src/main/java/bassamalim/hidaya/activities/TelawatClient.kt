@@ -63,10 +63,8 @@ class TelawatClient : ComponentActivity() {
     private val repeat = mutableStateOf(PlaybackStateCompat.REPEAT_MODE_NONE)
     private val shuffle = mutableStateOf(PlaybackStateCompat.SHUFFLE_MODE_NONE)
     private val duration = mutableStateOf(0L)
-    private val durationText = mutableStateOf("0")
     private val btnState = mutableStateOf(PlaybackStateCompat.STATE_NONE)
     private val progress = mutableStateOf(0L)
-    private val progressText = mutableStateOf("0")
     private val secondaryProgress = mutableStateOf(0)
     private val controlsEnabled = mutableStateOf(false)
 
@@ -243,16 +241,14 @@ class TelawatClient : ComponentActivity() {
         suraName.value = surahNames[surahIndex]
 
         duration.value = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
-        durationText.value = formatTime(duration.value.toInt())
     }
 
     private fun updatePbState(state: PlaybackStateCompat) {
         progress.value = state.position
         secondaryProgress.value = state.bufferedPosition.toInt()
-        progressText.value = formatTime(state.position.toInt())
     }
 
-    private fun formatTime(timeInMillis: Int): String {
+    private fun formatTime(timeInMillis: Long): String {
         val hours = timeInMillis / (60 * 60 * 1000) % 24
         val minutes = timeInMillis / (60 * 1000) % 60
         val seconds = timeInMillis / 1000 % 60
@@ -411,7 +407,7 @@ class TelawatClient : ComponentActivity() {
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     MyText(
-                        text = progressText.value,
+                        text = formatTime(progress.value),
                         modifier = Modifier.padding(10.dp)
                     )
 
@@ -430,7 +426,7 @@ class TelawatClient : ComponentActivity() {
                     )
 
                     MyText(
-                        text = durationText.value,
+                        text = formatTime(duration.value),
                         modifier = Modifier.padding(10.dp)
                     )
                 }

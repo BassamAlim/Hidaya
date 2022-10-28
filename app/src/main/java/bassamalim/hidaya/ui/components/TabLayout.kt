@@ -22,17 +22,18 @@ fun TabLayout(
     searchComponent: @Composable () -> Unit = {},
     tabsContent: @Composable (Int) -> Unit
 ) {
-    val pagerState = rememberPagerState(pageCount = pageNames.size)
+    val pagerState = rememberPagerState()
 
     Column {
         Tabs(
             pagerState = pagerState,
-            pagesInfo = pageNames
+            pageNames = pageNames
         )
 
         searchComponent()
 
         TabsContent(
+            count = pageNames.size,
             pagerState = pagerState,
             content = tabsContent
         )
@@ -43,7 +44,7 @@ fun TabLayout(
 @Composable
 fun Tabs(
     pagerState: PagerState,
-    pagesInfo: List<String>
+    pageNames: List<String>
 ) {
     // creating a variable for the scope.
     val scope = rememberCoroutineScope()
@@ -59,19 +60,22 @@ fun Tabs(
         indicator = { tabPositions ->
             // specifying the styling for tab indicator by specifying height and color for the tab indicator.
             TabRowDefaults.Indicator(
-                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
+                Modifier.pagerTabIndicatorOffset(
+                    pagerState = pagerState,
+                    tabPositions = tabPositions
+                ),
                 height = 2.dp,
                 color = AppTheme.colors.secondary
             )
         }
     ) {
         // specifying icon and text for the individual tab item
-        pagesInfo.forEachIndexed { index, _ ->
+        pageNames.forEachIndexed { index, _ ->
             // creating a tab.
             Tab(
                 text = {
                     MyText(
-                        text = pagesInfo[index],
+                        text = pageNames[index],
                         fontSize = 18.sp,
                         textColor =
                             if (pagerState.currentPage == index) AppTheme.colors.accent
@@ -94,11 +98,13 @@ fun Tabs(
 @ExperimentalPagerApi
 @Composable
 fun TabsContent(
+    count: Int,
     pagerState: PagerState,
     content: @Composable (Int) -> Unit
 ) {
     // creating horizontal pager for our tab layout.
     HorizontalPager(
+        count = count,
         state = pagerState,
         verticalAlignment = Alignment.Top
     ) { page ->
