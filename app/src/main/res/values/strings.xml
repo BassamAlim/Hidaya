@@ -250,25 +250,4 @@
     <string name="unchanged">بلا تغيير</string>
     <string name="today_werd">وِرد اليوم</string>
 
-
-
-
-
-    <string name="mdtp_done_label" msgid="7007948707597430919">"تم"</string>
-    <string name="mdtp_day_picker_description" msgid="3968620852217927702">"شبكة الشهر مكونة من الأيام"</string>
-    <string name="mdtp_year_picker_description" msgid="6963340404644587098">"قائمة الأعوام"</string>
-    <string name="mdtp_select_day" msgid="3973338219107019769">"تحديد الشهر واليوم"</string>
-    <string name="mdtp_select_year" msgid="2603330600102539372">"تحديد العام"</string>
-    <string name="mdtp_date_v1_monthyear">MMMM yyyy</string>
-    <string name="mdtp_date_v2_daymonthyear">EEE، dd MMM</string>
-    <string name="mdtp_ok">اختيار</string>
-    <string name="mdtp_cancel">الغاء</string>
-    <string name="mdtp_date">Date</string>
-    <!-- DO NOT TRANSLATE -->
-    <string name="mdtp_radial_numbers_typeface" translatable="false">sans-serif</string>
-    <!-- DO NOT TRANSLATE -->
-    <string name="mdtp_sans_serif" translatable="false">sans-serif</string>
-    <!-- DO NOT TRANSLATE -->
-    <string name="mdtp_day_of_week_label_typeface" translatable="false">sans-serif</string>
-
 </resources>

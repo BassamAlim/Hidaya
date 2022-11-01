@@ -227,42 +227,4 @@
     <string name="unchanged">Unchanged</string>
     <string name="today_werd">Today\'s werd</string>
 
-
-
-
-
-    <!-- Pattern for the v1 month and year string (localised) -->
-    <string name="mdtp_date_v1_monthyear">MMMM yyyy</string>
-    <!-- Pattern for the v2 day month and year string (localised) -->
-    <string name="mdtp_date_v2_daymonthyear">EEE, MMM dd</string>
-
-    <!-- Label for date or time [CHAR LIMIT=30] -->
-    <string name="mdtp_done_label">Done</string>
-    <string name="mdtp_ok">@android:string/ok</string>
-    <string name="mdtp_cancel">@android:string/cancel</string>
-    <!--
-         Content description for the second selector in the time picker, which displays
-         selectable five-second intervals along the inside edge of a circle, as in an analog clock.
-         [CHAR LIMIT=50]
-    -->
-
-    <string name="mdtp_date">Date</string>
-
-    <!--
-        Content description for the month and day selector in the date picker, which displays
-        a selectable grid of days laid out by month.
-        [CHAR LIMIT=50]
-     -->
-    <string name="mdtp_day_picker_description">Month grid of days</string>
-    <!--
-        Content description for the year selector in the date picker, which displays
-        a scrolling, vertical list of years.
-        [CHAR LIMIT=50]
-     -->
-    <string name="mdtp_year_picker_description">Year list</string>
-    <!-- Accessibility announcement for the day picker [CHAR LIMIT=NONE] -->
-    <string name="mdtp_select_day">Select month and day</string>
-    <!-- Accessibility announcement for the year picker [CHAR LIMIT=NONE] -->
-    <string name="mdtp_select_year">Select year</string>
-
 </resources>
