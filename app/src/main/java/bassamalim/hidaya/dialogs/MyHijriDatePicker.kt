@@ -30,7 +30,8 @@ import java.util.*
 class MyHijriDatePicker(
     private val context: Context,
     private val shown: MutableState<Boolean>,
-    private val selectionState: MutableState<UmmalquraCalendar>
+    private val selectionState: MutableState<UmmalquraCalendar>,
+    private val onSet: () -> Unit
 ) {
 
     private val now = UmmalquraCalendar()
@@ -168,6 +169,7 @@ class MyHijriDatePicker(
                                     selected[0], selected[1], selected[2]
                                 )
                                 shown.value = false
+                                onSet()
                             }
                     )
 

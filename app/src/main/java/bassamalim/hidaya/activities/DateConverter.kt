@@ -29,7 +29,7 @@ import bassamalim.hidaya.utils.LangUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
-class DateConverter : AppCompatActivity()/*, HijriDatePickerDialog.OnDateSetListener*/ {
+class DateConverter : AppCompatActivity() {
 
     private val hijriValues = mutableStateListOf("", "", "")
     private val gregorianValues = mutableStateListOf("", "", "")
@@ -73,16 +73,6 @@ class DateConverter : AppCompatActivity()/*, HijriDatePickerDialog.OnDateSetList
 
     private fun pickHijri() {
         hDatePickerShown.value = true
-
-        /*val now = UmmalquraCalendar()
-        val dpd = HijriDatePickerDialog.newInstance(
-            this,
-            now.get(UmmalquraCalendar.YEAR),
-            now.get(UmmalquraCalendar.MONTH),
-            now.get(UmmalquraCalendar.DAY_OF_MONTH)
-        )
-        dpd.show(supportFragmentManager, "HijriDatePickerDialog")*/
-
     }
 
     private fun gregorianToHijri(gregorian: Calendar): Calendar {
@@ -118,17 +108,6 @@ class DateConverter : AppCompatActivity()/*, HijriDatePickerDialog.OnDateSetList
             this, gregorian[Calendar.DATE].toString(), false
         )
     }
-
-    /*override fun onDateSet(
-        view: HijriDatePickerDialog?,
-        year: Int,
-        monthOfYear: Int,
-        dayOfMonth: Int
-    ) {
-        //YOUR CODE
-        val choice = UmmalquraCalendar(year, monthOfYear - 1, dayOfMonth)
-        show(choice, hijriToGregorian(choice))
-    }*/
 
     @Composable
     private fun UI() {
@@ -168,7 +147,9 @@ class DateConverter : AppCompatActivity()/*, HijriDatePickerDialog.OnDateSetList
             if (hDatePickerShown.value) {
                 MyHijriDatePicker(
                     this, hDatePickerShown, pickedHijri
-                ).MyHijriDatePickerDialog()
+                ) {
+                    show(pickedHijri.value, hijriToGregorian(pickedHijri.value))
+                }.MyHijriDatePickerDialog()
             }
         }
     }
