@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
@@ -21,9 +22,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -137,11 +138,13 @@ class QuranViewer : AppCompatActivity() {
         }
     }
 
+    @OptIn(ExperimentalPagerApi::class)
     private fun buildPage(pageNumber: Int) {
         handler.removeCallbacks(runnable)
         pageAyas.clear()
 
-        var counter = getPageStart(pageNumber)
+        // get page start
+        var counter = ayatDB.indexOfFirst { aya -> aya!!.page == pageNumber }
         do {
             val aya = ayatDB[counter]!!
             val suraNum = aya.sura_num // starts from 1
@@ -157,16 +160,16 @@ class QuranViewer : AppCompatActivity() {
             counter++
         } while (counter != Global.QURAN_AYAS && ayatDB[counter]!!.page == pageNumber)
 
-        finalize(pageAyas[0])
-
         checkPage(currentPage.value)
 
-        currentPage.value = pageNumber
+        currentPage.value = pagerState.currentPage + 1
+
+        updateTopBar(currentPage.value)
     }
 
-    private fun finalize(aya: Ayah) {
-        currentSura = aya.getSurahNum()
-        currentJuz = aya.getJuz()
+    private fun updateTopBar(pageNumber: Int) {
+        currentSura = ayatDB.first { aya -> aya!!.page == pageNumber }!!.sura_num - 1
+        currentJuz =ayatDB.first { aya -> aya!!.page == pageNumber }!!.jozz
     }
 
     private fun onAyaClick(ayaId: Int, offset: Int) {
@@ -294,12 +297,6 @@ class QuranViewer : AppCompatActivity() {
         }
     }
 
-    private fun getPageStart(pageNumber: Int): Int {
-        var counter = 0
-        while (ayatDB[counter]!!.page < pageNumber) counter++
-        return counter
-    }
-
     private val settingsDialog = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
@@ -340,7 +337,9 @@ class QuranViewer : AppCompatActivity() {
                     ) {
                         MyText(
                             text = "${getString(R.string.sura)} ${names[currentSura]}",
-                            fontSize = 18.sp
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier.width(140.dp)
                         )
 
                         MyText(
@@ -348,7 +347,8 @@ class QuranViewer : AppCompatActivity() {
                                     LangUtils.translateNums(
                                         this@QuranViewer, currentPage.value.toString()
                                     ),
-                            fontSize = 18.sp
+                            fontSize = 18.sp,
+                            modifier = Modifier.width(140.dp)
                         )
 
                         MyText(
@@ -356,7 +356,9 @@ class QuranViewer : AppCompatActivity() {
                                     LangUtils.translateNums(
                                         this@QuranViewer, currentJuz.toString()
                                     ),
-                            fontSize = 18.sp
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.width(140.dp)
                         )
                     }
                 }
@@ -366,9 +368,11 @@ class QuranViewer : AppCompatActivity() {
                     backgroundColor = AppTheme.colors.primary
                 ) {
                     Row(
-                        Modifier.fillMaxWidth(),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         // Bookmark btn
                         MyIconBtn(
@@ -377,10 +381,7 @@ class QuranViewer : AppCompatActivity() {
                                     R.drawable.ic_bookmarked
                                 else R.drawable.ic_bookmark,
                             description = stringResource(R.string.bookmark_page_button_description),
-                            tint =
-                                if (currentPage.value == bookmarkedPage.value)
-                                    AppTheme.colors.accent
-                                else AppTheme.colors.onPrimary
+                            tint = AppTheme.colors.accent
                         ) {
                             bookmarkedPage.value = currentPage.value
 
@@ -390,39 +391,44 @@ class QuranViewer : AppCompatActivity() {
                                 .apply()
                         }
 
-                        MyImageButton(
-                            imageResId = R.drawable.ic_aya_backward,
-                            description = stringResource(R.string.rewind_btn_description)
-                        ) {
-                            player?.transportControls?.skipToPrevious()
-                        }
+                        Row {
+                            MyImageButton(
+                                imageResId = R.drawable.ic_aya_backward,
+                                description = stringResource(R.string.rewind_btn_description)
+                            ) {
+                                player?.transportControls?.skipToPrevious()
+                            }
 
-                        MyPlayerBtn(
-                            state = playerState
-                        ) {
-                            if (player == null) {
-                                updateButton(PlaybackStateCompat.STATE_BUFFERING)
-                                setupPlayer()
-                            }
-                            else if (player!!.getState() == PlaybackStateCompat.STATE_PLAYING) {
-                                player!!.transportControls.pause()
-                                updateButton(PlaybackStateCompat.STATE_PAUSED)
-                            }
-                            else if (player!!.getState() == PlaybackStateCompat.STATE_PAUSED) {
-                                if (selected.value == null) player!!.transportControls.play()
-                                else {
-                                    player!!.setChosenSurah(selected.value!!.getSurahNum())
-                                    requestPlay(selected.value!!)
+                            MyPlayerBtn(
+                                playerState,
+                                size = 50.dp,
+                                padding = 5.dp,
+                                modifier = Modifier.padding(horizontal = 10.dp)
+                            ) {
+                                if (player == null) {
+                                    updateButton(PlaybackStateCompat.STATE_BUFFERING)
+                                    setupPlayer()
                                 }
-                                updateButton(PlaybackStateCompat.STATE_PLAYING)
+                                else if (player!!.getState() == PlaybackStateCompat.STATE_PLAYING) {
+                                    player!!.transportControls.pause()
+                                    updateButton(PlaybackStateCompat.STATE_PAUSED)
+                                }
+                                else if (player!!.getState() == PlaybackStateCompat.STATE_PAUSED) {
+                                    if (selected.value == null) player!!.transportControls.play()
+                                    else {
+                                        player!!.setChosenSurah(selected.value!!.getSurahNum())
+                                        requestPlay(selected.value!!)
+                                    }
+                                    updateButton(PlaybackStateCompat.STATE_PLAYING)
+                                }
                             }
-                        }
 
-                        MyImageButton(
-                            imageResId = R.drawable.ic_aya_forward,
-                            description = stringResource(R.string.fast_forward_btn_description)
-                        ) {
-                            player?.transportControls?.skipToNext()
+                            MyImageButton(
+                                imageResId = R.drawable.ic_aya_forward,
+                                description = stringResource(R.string.fast_forward_btn_description)
+                            ) {
+                                player?.transportControls?.skipToNext()
+                            }
                         }
 
                         // Preferences btn
@@ -444,8 +450,7 @@ class QuranViewer : AppCompatActivity() {
                 count = 604,
                 pagerState = pagerState,
                 modifier = Modifier.padding(it)
-            ) {
-                val coroutineScope = rememberCoroutineScope()
+            ) { page ->
                 val scrollState = rememberScrollState()
 
                 Column(
@@ -454,14 +459,14 @@ class QuranViewer : AppCompatActivity() {
                         .verticalScroll(scrollState),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    buildPage(currentPage+1)
+                    buildPage(page+1)
 
                     if (viewType.value == "list") ListItems()
                     else PageItems()
 
                     /*if (scrollTo != -1F) {
                         LaunchedEffect(null) {
-                            coroutineScope.launch {
+                            launch {
                                 scrollState.animateScrollTo(scrollTo.roundToInt())
                                 scrollTo = -1F
                             }
@@ -571,8 +576,8 @@ class QuranViewer : AppCompatActivity() {
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(70.dp)
-                .padding(vertical = 10.dp)
+                .height(90.dp)
+                .padding(vertical = 10.dp, horizontal = 5.dp)
                 .onGloballyPositioned { layoutCoordinates ->
                     if (aya.getSurahNum() == initialSura) {
                         scrollTo = layoutCoordinates.positionInRoot().y

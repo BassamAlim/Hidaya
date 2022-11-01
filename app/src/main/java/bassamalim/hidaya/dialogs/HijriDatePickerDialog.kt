@@ -15,7 +15,7 @@ import bassamalim.hidaya.utils.LangUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
-class HijriDatePickerDialog(private val listener: DatePickerDialog.OnDateSetListener) :
+class HijriDatePickerDialog2(private val listener: DatePickerDialog.OnDateSetListener) :
     DialogFragment() {
 
     private lateinit var dialogView: View

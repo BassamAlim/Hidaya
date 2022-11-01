@@ -200,6 +200,7 @@ fun MyImageButton(
 @Composable
 fun MyPlayerBtn(
     state: MutableState<Int>,
+    modifier: Modifier = Modifier,
     size: Dp = 150.dp,
     padding: Dp = 5.dp,
     enabled: Boolean = true,
@@ -207,7 +208,7 @@ fun MyPlayerBtn(
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier
             .size(size)
             .clip(CircleShape)
             .clickable { if (enabled) onClick() }

@@ -31,7 +31,7 @@ import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
 import java.util.regex.Pattern
 
-class QuranSearcherActivity : ComponentActivity() {
+class QuranSearcher : ComponentActivity() {
 
     private lateinit var pref: SharedPreferences
     private lateinit var allAyat: List<AyatDB?>
@@ -198,7 +198,7 @@ class QuranSearcherActivity : ComponentActivity() {
                                         MyText(
                                             "${stringResource(R.string.page)} " +
                                                     LangUtils.translateNums(
-                                                        this@QuranSearcherActivity,
+                                                        this@QuranSearcher,
                                                         item.pageNum.toString(),
                                                         false
                                                     )
@@ -208,7 +208,7 @@ class QuranSearcherActivity : ComponentActivity() {
                                     MyText(
                                         text = "${stringResource(id = R.string.aya_number)} " +
                                             LangUtils.translateNums(
-                                                this@QuranSearcherActivity,
+                                                this@QuranSearcher,
                                                 item.ayaNum.toString(),
                                                 false
                                             ),
@@ -231,7 +231,7 @@ class QuranSearcherActivity : ComponentActivity() {
                                         modifier = Modifier.padding(bottom = 6.dp)
                                     ) {
                                         val intent = Intent(
-                                            this@QuranSearcherActivity,
+                                            this@QuranSearcher,
                                             QuranViewer::class.java
                                         )
                                         intent.action = "by_page"

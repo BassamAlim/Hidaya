@@ -25,6 +25,7 @@ import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.TelawatDB
+import bassamalim.hidaya.dialogs.FilterDialog
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.models.Reciter
@@ -53,8 +54,10 @@ class TelawatActivity : ComponentActivity() {
     private lateinit var rewayat: Array<String>
     private var favs = mutableStateListOf<Int>()
     private val downloadStates = mutableStateListOf(mutableStateListOf<String>())
-    private lateinit var selectedVersions: BooleanArray
+    private val selectedVersions = mutableStateListOf<Boolean>()
     private val downloading = HashMap<Long, Pair<Int, Int>>()
+    private val filterDialogShown = mutableStateOf(false)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,12 +114,21 @@ class TelawatActivity : ComponentActivity() {
 
         rewayat = resources.getStringArray(R.array.rewayat)
 
+        initSelectedVersions()
         initFilterIb()
         initDownloadStates()
     }
 
+    private fun initSelectedVersions() {
+        for (i in rewayat.indices) selectedVersions.add(true)
+        val json = pref.getString("selected_rewayat", "")!!
+        if (json.isNotEmpty()) {
+            val boolArr =  gson.fromJson(json, BooleanArray::class.java)
+            for (i in boolArr.indices) selectedVersions[i] = boolArr[i]
+        }
+    }
+
     private fun initFilterIb() {
-        selectedVersions = getSelectedVersions()
         for (bool in selectedVersions) {
             if (!bool) {
                 filteredState.value = true
@@ -141,13 +153,6 @@ class TelawatActivity : ComponentActivity() {
             else
                 downloadStates[telawa.getReciterId()].add(state)
         }
-    }
-
-    private fun getSelectedVersions(): BooleanArray {
-        val defArr = BooleanArray(rewayat.size)
-        Arrays.fill(defArr, true)
-        val defStr = gson.toJson(defArr)
-        return gson.fromJson(pref.getString("selected_rewayat", defStr), BooleanArray::class.java)
     }
 
     private fun setupContinue() {
@@ -323,20 +328,26 @@ class TelawatActivity : ComponentActivity() {
                                 iconId = R.drawable.ic_filter,
                                 description = stringResource(id = R.string.filter_search_description),
                                 tint =
-                                if (filteredState.value) AppTheme.colors.secondary
-                                else AppTheme.colors.weakText
+                                    if (filteredState.value) AppTheme.colors.secondary
+                                    else AppTheme.colors.weakText
                             ) {
-                                /*FilterDialog(
-                                    requireContext(), v, resources.getString(R.string.choose_rewaya),
-                                    rewayat, selectedRewayat, adapter!!, binding!!.filterIb,
-                                    "selected_rewayat"
-                                )*/
+                                filterDialogShown.value = true
+
                             }
                         }
                     }
                 ) { page ->
                     Tab(items = getItems(ActivityUtils.getListType(page)), textState)
                 }
+            }
+
+            if (filterDialogShown.value) {
+                FilterDialog(
+                    pref, gson, getString(R.string.choose_rewaya),
+                    rewayat.toList(), selectedVersions, filteredState,
+                    {  },
+                    "selected_rewayat", filterDialogShown
+                ).Dialog()
             }
         }
     }

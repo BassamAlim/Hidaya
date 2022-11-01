@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.location.Location
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -27,14 +28,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.dialogs.CalibrationDialog
 import bassamalim.hidaya.helpers.Compass
+import bassamalim.hidaya.ui.components.MyDialog
 import bassamalim.hidaya.ui.components.MyIconBtn
 import bassamalim.hidaya.ui.components.MyScaffold
 import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.LangUtils
+import coil.ImageLoader
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
+import coil.size.Size
 import kotlin.math.*
 
 class QiblaActivity : AppCompatActivity() {
@@ -51,6 +58,7 @@ class QiblaActivity : AppCompatActivity() {
     private var qiblaAngle = mutableStateOf(0F)
     private var accuracyState = mutableStateOf(0)
     private var onPoint = mutableStateOf(false)
+    private val dialogShown = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,7 +150,7 @@ class QiblaActivity : AppCompatActivity() {
             Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(top = 20.dp,bottom = 100.dp),
+                    .padding(top = 20.dp, bottom = 100.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
@@ -202,9 +210,7 @@ class QiblaActivity : AppCompatActivity() {
                                 ),
                                 tint = Color(0xFFE2574C)
                             ) {
-                                CalibrationDialog().show(
-                                    supportFragmentManager, CalibrationDialog.TAG
-                                )
+                                dialogShown.value = true
                             }
                         }
                         else -> {
@@ -225,6 +231,41 @@ class QiblaActivity : AppCompatActivity() {
                     text = distanceStr,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
+                )
+
+                if (dialogShown.value) CalibrationDialog()
+            }
+        }
+    }
+
+    @Composable
+    private fun CalibrationDialog() {
+        MyDialog(dialogShown) {
+            Column(
+                Modifier.padding(vertical = 20.dp, horizontal = 30.dp)
+            ) {
+                val imageLoader = ImageLoader.Builder(this@QiblaActivity)
+                    .components {
+                        if (SDK_INT >= 28) add(ImageDecoderDecoder.Factory())
+                        else add(GifDecoder.Factory())
+                    }.build()
+
+                Image(
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest.Builder(this@QiblaActivity)
+                            .data(data = R.drawable.compass_calibration)
+                            .apply(block = { size(Size.ORIGINAL) }).build(),
+                        imageLoader = imageLoader
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                )
+
+                MyText(
+                    stringResource(R.string.qibla_warning),
+                    textColor = Color.Red
                 )
             }
         }

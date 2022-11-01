@@ -1,102 +1,55 @@
 package bassamalim.hidaya.dialogs
 
-import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.LinearLayout
-import android.widget.ListView
-import android.widget.PopupWindow
-import android.widget.TextView
+import android.content.SharedPreferences
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Checkbox
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.preference.PreferenceManager
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.adapters.CheckboxListviewAdapter
-import bassamalim.hidaya.models.CheckboxListItem
+import bassamalim.hidaya.ui.components.MyButton
+import bassamalim.hidaya.ui.components.MyDialog
+import bassamalim.hidaya.ui.components.MyLazyColumn
+import bassamalim.hidaya.ui.components.MyText
+import bassamalim.hidaya.ui.theme.AppTheme
 import com.google.gson.Gson
-import java.util.*
 
 class FilterDialog(
-    private val context: Context,
-    private val view: View,
-    title: String,
-    private val strArr: Array<String>,
-    private val selected: BooleanArray,
+    private val pref: SharedPreferences,
+    private val gson: Gson,
+    private val title: String,
+    private val strings: List<String>,
+    private val selected: SnapshotStateList<Boolean>,
     private val filteredState: MutableState<Boolean>,
     private val refresh: (BooleanArray) -> Unit,
-    private val prefKey: String
+    private val prefKey: String,
+    private val shown: MutableState<Boolean>
 ) {
 
-    private lateinit var popup: PopupWindow
-    private val pref = PreferenceManager.getDefaultSharedPreferences(context)
-    private val gson = Gson()
-    private lateinit var cbListAdapter: CheckboxListviewAdapter
-    private lateinit var items: MutableList<CheckboxListItem>
+    private fun onDismiss() {
+        save()
 
-    init {
-        showPopup(title)
+        setFilterIb()
+
+        shown.value = false
     }
 
-    private fun showPopup(title: String) {
-        val inflater: LayoutInflater =
-            view.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private fun save() {
+        val boolArr = selected.toBooleanArray()
 
-        val popupView: View = inflater.inflate(
-            R.layout.dialog_filter, LinearLayout(context), false
-        )
+        pref.edit()
+            .putString(prefKey, gson.toJson(boolArr))
+            .apply()
 
-        popup = PopupWindow(
-            popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT, true
-        )
-
-        popup.elevation = 10f
-        popup.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        popup.isOutsideTouchable = false
-
-        popup.showAtLocation(view, Gravity.CENTER, 0, 50)
-
-        (popup.contentView.findViewById<View>(R.id.dialog_title_tv) as TextView).text = title
-        setupListview()
-        setListeners()
-    }
-
-    private fun setupListview() {
-        items = ArrayList<CheckboxListItem>()
-        for (i in strArr.indices) items.add(CheckboxListItem(strArr[i], selected[i]))
-
-        val listView = popup.contentView.findViewById<ListView>(R.id.listview)
-        cbListAdapter = CheckboxListviewAdapter(
-            context, 0, items as ArrayList<CheckboxListItem>, selected
-        )
-        listView.adapter = cbListAdapter
-    }
-
-    private fun setListeners() {
-        popup.contentView.findViewById<View>(R.id.select_all_btn).setOnClickListener {
-            for (i in items.indices) items[i].isSelected = true
-            cbListAdapter.notifyDataSetChanged()
-
-            Arrays.fill(selected, true)
-        }
-
-        popup.contentView.findViewById<View>(R.id.unselect_all_btn).setOnClickListener {
-            for (i in items.indices) items[i].isSelected = false
-            cbListAdapter.notifyDataSetChanged()
-
-            Arrays.fill(selected, false)
-        }
-
-        popup.contentView.findViewById<View>(R.id.finish_btn).setOnClickListener {
-            popup.dismiss()
-        }
-
-        popup.setOnDismissListener {
-            save()
-            setFilterIb()
-        }
+        refresh(boolArr)
     }
 
     private fun setFilterIb() {
@@ -110,12 +63,76 @@ class FilterDialog(
         filteredState.value = changed
     }
 
-    private fun save() {
-        pref.edit()
-            .putString(prefKey, gson.toJson(selected))
-            .apply()
+    @Composable
+    fun Dialog() {
+        MyDialog(shown) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp, horizontal = 30.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                MyText(
+                    title,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 10.dp)
+                )
 
-        refresh(selected)
+                MyLazyColumn(
+                    Modifier.heightIn(0.dp, 300.dp),
+                    lazyList = {
+                        itemsIndexed(strings) { index, _ ->
+                            CheckboxListItem(index = index)
+                        }
+                    }
+                )
+
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    MyText(
+                        stringResource(R.string.select_all),
+                        textColor = AppTheme.colors.accent,
+                        modifier = Modifier.clickable { selected.fill(true) }
+                    )
+
+                    MyText(
+                        stringResource(R.string.unselect_all),
+                        textColor = AppTheme.colors.accent,
+                        modifier = Modifier.clickable { selected.fill(false) }
+                    )
+                }
+
+                MyButton(
+                    text = stringResource(id = R.string.select),
+                    modifier = Modifier.padding(horizontal = 10.dp)
+                ) {
+                    onDismiss()
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun CheckboxListItem(index: Int) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Checkbox(
+                checked = selected[index],
+                onCheckedChange = {
+                    selected[index] = it
+                }
+            )
+
+            MyText(strings[index])
+        }
     }
 
 }

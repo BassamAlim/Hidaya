@@ -21,7 +21,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
+import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.BooksDB
+import bassamalim.hidaya.dialogs.FilterDialog
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.models.BookSearcherMatch
 import bassamalim.hidaya.other.Global
@@ -32,20 +34,22 @@ import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.FileUtils
 import com.google.gson.Gson
 import java.io.File
-import java.util.*
 import java.util.regex.Pattern
 
 class BookSearcher : ComponentActivity() {
 
     private lateinit var pref: SharedPreferences
+    private lateinit var db: AppDatabase
     private val gson = Gson()
     private lateinit var books: List<BooksDB>
     private lateinit var language: String
+    private val selectedBooks = mutableStateListOf<Boolean>()
     private val filteredState = mutableStateOf(false)
     private val maxMatchesIndex = mutableStateOf(0)
     private lateinit var maxMatchesItems: Array<String>
     private val matches = mutableStateListOf<BookSearcherMatch>()
     private var searched = false
+    private val filterDialogShown = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,16 +65,26 @@ class BookSearcher : ComponentActivity() {
     }
 
     private fun init() {
-        val db = DBUtils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(this)
+        db = DBUtils.getDB(this)
 
         books = db.booksDao().getAll()
 
-        initFilterIb(getSelectedBooks())
+        initSelectedBooks()
+        initFilterIb()
         initMaxMatches()
     }
 
-    private fun initFilterIb(selectedBooks: BooleanArray) {
+    private fun initSelectedBooks() {
+        for (i in books.indices) selectedBooks.add(true)
+        val json = pref.getString("selected_search_books", "")!!
+        if (json.isNotEmpty()) {
+            val boolArr =  gson.fromJson(json, BooleanArray::class.java)
+            for (i in boolArr.indices) selectedBooks[i] = boolArr[i]
+        }
+    }
+
+    private fun initFilterIb() {
         for (bool in selectedBooks) {
             if (!bool) {
                 filteredState.value = true
@@ -87,19 +101,8 @@ class BookSearcher : ComponentActivity() {
             else resources.getStringArray(R.array.searcher_matches)
     }
 
-    private fun getSelectedBooks(): BooleanArray {
-        val defArr = BooleanArray(books.size)
-        Arrays.fill(defArr, true)
-        val defStr = gson.toJson(defArr)
-        return gson.fromJson(
-            pref.getString("selected_search_books", defStr), BooleanArray::class.java
-        )
-    }
-
     private fun search(text: String, highlightColor: Color) {
         matches.clear()
-
-        val selectedBooks = getSelectedBooks()
 
         val prefix = "/Books/"
         val dir = File(getExternalFilesDir(null).toString() + prefix)
@@ -226,11 +229,7 @@ class BookSearcher : ComponentActivity() {
                                 if (filteredState.value) AppTheme.colors.secondary
                                 else AppTheme.colors.weakText
                         ) {
-                            /*FilterDialog(
-                                context, v, getString(R.string.choose_books), bookTitles, selectedBooks,
-                                filteredState,
-                                { search(textState.value.text) }, "selected_search_books"
-                            )*/
+                            filterDialogShown.value = true
                         }
                     }
 
@@ -289,6 +288,18 @@ class BookSearcher : ComponentActivity() {
                         }
                     })
                 }
+            }
+
+            if (filterDialogShown.value) {
+                val bookTitles =
+                    if (language == "en") db.booksDao().getTitlesEn()
+                    else db.booksDao().getTitles()
+                FilterDialog(
+                    pref, gson, getString(R.string.choose_books),
+                    bookTitles, selectedBooks, filteredState,
+                    { if (searched) search(textState.value.text, highlightColor) },
+                    "selected_search_books", filterDialogShown
+                ).Dialog()
             }
         }
     }

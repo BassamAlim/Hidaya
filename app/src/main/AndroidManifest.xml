@@ -49,7 +49,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.QuranSearcherActivity"
+            android:name=".activities.QuranSearcher"
             android:exported="false" />
         <activity
             android:name=".activities.TelawatSuarActivity"

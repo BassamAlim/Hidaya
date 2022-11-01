@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     private var times: Array<Calendar?>? = null
     private val dateOffset = mutableStateOf(0)
     private val currentScreen = mutableStateOf("")
+    private val dateEditorShown = mutableStateOf(false)
 
     companion object {
         var location: Location? = null
@@ -205,12 +206,7 @@ class MainActivity : AppCompatActivity() {
                             Column(
                                 Modifier
                                     .fillMaxHeight()
-                                    .clickable {
-                                        DateEditorDialog(dateOffset).show(
-                                            this@MainActivity.supportFragmentManager,
-                                            "DateEditorDialog"
-                                        )
-                                    },
+                                    .clickable { dateEditorShown.value = true },
                                 verticalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 Column(
@@ -242,11 +238,14 @@ class MainActivity : AppCompatActivity() {
                         iconId = R.drawable.ic_quran_search,
                         description = stringResource(id = R.string.search_in_quran)
                     ) {
-                        startActivity(Intent(this, QuranSearcherActivity::class.java))
+                        startActivity(Intent(this, QuranSearcher::class.java))
                     }
             }
         ) {
             NavigationGraph(navController, it)
+
+            if (dateEditorShown.value)
+                DateEditorDialog(this, pref, dateOffset, dateEditorShown).Dialog()
         }
     }
 

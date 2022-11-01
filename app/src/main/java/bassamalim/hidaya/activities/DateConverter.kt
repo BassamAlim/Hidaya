@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.dialogs.HijriDatePickerDialog
+import bassamalim.hidaya.dialogs.MyHijriDatePicker
+//import bassamalim.hidaya.hijridatepicker.date.hijri.HijriDatePickerDialog
 import bassamalim.hidaya.ui.components.MyButton
 import bassamalim.hidaya.ui.components.MyScaffold
 import bassamalim.hidaya.ui.components.MyText
@@ -27,10 +29,12 @@ import bassamalim.hidaya.utils.LangUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
-class DateConverter : AppCompatActivity() {
+class DateConverter : AppCompatActivity()/*, HijriDatePickerDialog.OnDateSetListener*/ {
 
     private val hijriValues = mutableStateListOf("", "", "")
     private val gregorianValues = mutableStateListOf("", "", "")
+    private val hDatePickerShown = mutableStateOf(false)
+    private val pickedHijri = mutableStateOf(UmmalquraCalendar())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,10 +72,17 @@ class DateConverter : AppCompatActivity() {
     }
 
     private fun pickHijri() {
-        HijriDatePickerDialog { _: DatePicker?, year: Int, month: Int, day: Int ->
-            val choice = UmmalquraCalendar(year, month - 1, day)
-            show(choice, hijriToGregorian(choice))
-        }.show(supportFragmentManager, "HijriDatePicker")
+        hDatePickerShown.value = true
+
+        /*val now = UmmalquraCalendar()
+        val dpd = HijriDatePickerDialog.newInstance(
+            this,
+            now.get(UmmalquraCalendar.YEAR),
+            now.get(UmmalquraCalendar.MONTH),
+            now.get(UmmalquraCalendar.DAY_OF_MONTH)
+        )
+        dpd.show(supportFragmentManager, "HijriDatePickerDialog")*/
+
     }
 
     private fun gregorianToHijri(gregorian: Calendar): Calendar {
@@ -108,6 +119,17 @@ class DateConverter : AppCompatActivity() {
         )
     }
 
+    /*override fun onDateSet(
+        view: HijriDatePickerDialog?,
+        year: Int,
+        monthOfYear: Int,
+        dayOfMonth: Int
+    ) {
+        //YOUR CODE
+        val choice = UmmalquraCalendar(year, monthOfYear - 1, dayOfMonth)
+        show(choice, hijriToGregorian(choice))
+    }*/
+
     @Composable
     private fun UI() {
         MyScaffold(stringResource(id = R.string.date_converter)) {
@@ -129,7 +151,7 @@ class DateConverter : AppCompatActivity() {
                     }
 
                     MyButton(
-                        text = stringResource(id = R.string.pick_hijri_date),
+                        text = stringResource(id = R.string.pick_gregorian_date),
                         fontSize = 22.sp,
                         modifier = Modifier.padding(vertical = 15.dp),
                         innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp)
@@ -141,6 +163,12 @@ class DateConverter : AppCompatActivity() {
                 ResultSpace(stringResource(id = R.string.hijri_date), hijriValues)
 
                 ResultSpace(stringResource(id = R.string.gregorian_date), gregorianValues)
+            }
+
+            if (hDatePickerShown.value) {
+                MyHijriDatePicker(
+                    this, hDatePickerShown, pickedHijri
+                ).MyHijriDatePickerDialog()
             }
         }
     }

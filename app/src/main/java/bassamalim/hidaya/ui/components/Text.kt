@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.ui.theme.tajwal
-import bassamalim.hidaya.ui.theme.uthmanic
 
 @Composable
 fun MyText(
@@ -59,25 +58,6 @@ fun MyText(
             fontWeight = fontWeight,
             textAlign = textAlign,
             lineHeight = fontSize * 1.4,
-        )
-    )
-}
-
-@Composable
-fun MySpecialText(
-    text: String,
-    modifier: Modifier = Modifier,
-    fontSize: TextUnit = 20.sp,
-) {
-    Text(
-        text = text,
-        modifier = modifier,
-        fontSize = fontSize,
-        style = TextStyle(
-            fontFamily = uthmanic,
-            color = AppTheme.colors.strongText,
-            textAlign = TextAlign.Center,
-            lineHeight = fontSize * 1.35
         )
     )
 }

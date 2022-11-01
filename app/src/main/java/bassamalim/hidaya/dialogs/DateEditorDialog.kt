@@ -1,64 +1,47 @@
 package bassamalim.hidaya.dialogs
 
+import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.fragment.app.DialogFragment
-import androidx.preference.PreferenceManager
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
+import bassamalim.hidaya.ui.components.MyButton
+import bassamalim.hidaya.ui.components.MyDialog
+import bassamalim.hidaya.ui.components.MyImageButton
+import bassamalim.hidaya.ui.components.MyText
+import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.LangUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
-class DateEditorDialog(private val dateOffset: MutableState<Int>) : DialogFragment() {
+class DateEditorDialog(
+    private val context: Context,
+    private val pref: SharedPreferences,
+    private val dateOffset: MutableState<Int>,
+    private val shown: MutableState<Boolean>
+) {
 
-    private lateinit var pref: SharedPreferences
-    private lateinit var dView: View
     private lateinit var calendar: UmmalquraCalendar
-    private lateinit var dateTV: TextView
-    private lateinit var offsetTV: TextView
     private var offset = 0
+    private val dateText = mutableStateOf("")
+    private val offsetText = mutableStateOf("")
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-
-        pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
-
-        dView = inflater.inflate(R.layout.dialog_date_editor, container, false)
-
-        if (dialog != null && dialog!!.window != null) {
-            dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        }
-
+    init {
         offset = dateOffset.value
 
         getDate()
 
-        setViews()
-
         updateTvs()
-
-        setupListeners()
-
-        return dView
     }
 
-    private fun setViews() {
-        dateTV = dView.findViewById(R.id.date_tv)
-        offsetTV = dView.findViewById(R.id.offset_tv)
-    }
 
     private fun getDate() {
         val cal = UmmalquraCalendar()
@@ -72,41 +55,87 @@ class DateEditorDialog(private val dateOffset: MutableState<Int>) : DialogFragme
     private fun updateTvs() {
         val text =
             "${calendar[Calendar.DATE]}/${calendar[Calendar.MONTH] + 1}/${calendar[Calendar.YEAR]}"
-        dateTV.text = LangUtils.translateNums(requireContext(), text)
+        dateText.value =LangUtils.translateNums(context, text)
 
-        if (offset == 0) offsetTV.text = getString(R.string.unchanged)
+        if (offset == 0) offsetText.value = context.getString(R.string.unchanged)
         else {
             var offsetStr = offset.toString()
             if (offset > 0) offsetStr = "+$offsetStr"
-            offsetTV.text = LangUtils.translateNums(requireContext(), offsetStr)
+            offsetText.value = LangUtils.translateNums(context, offsetStr)
         }
     }
 
-    private fun setupListeners() {
-        dView.findViewById<ImageButton>(R.id.day_back_btn).setOnClickListener {
-            offset--
-            getDate()
-            updateTvs()
-        }
+    @Composable
+    fun Dialog() {
+        MyDialog(shown) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp, horizontal = 30.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                MyText(
+                    stringResource(R.string.adjust_date),
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 10.dp)
+                )
 
-        dView.findViewById<ImageButton>(R.id.day_forward_btn).setOnClickListener {
-            offset++
-            getDate()
-            updateTvs()
-        }
+                MyText(
+                    offsetText.value,
+                    textColor = AppTheme.colors.accent,
+                    fontSize = 22.sp
+                )
 
-        dView.findViewById<Button>(R.id.cancel_btn).setOnClickListener {
-            dialog!!.cancel()
-        }
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    MyImageButton(
+                        imageResId = R.drawable.ic_left_arrow
+                    ) {
+                        offset--
+                        getDate()
+                        updateTvs()
+                    }
 
-        dView.findViewById<Button>(R.id.save_btn).setOnClickListener {
-            pref.edit()
-                .putInt("date_offset", offset)
-                .apply()
+                    MyText(dateText.value, fontSize = 22.sp)
 
-            dialog!!.dismiss()
+                    MyImageButton(
+                        imageResId = R.drawable.ic_right_arrow
+                    ) {
+                        offset++
+                        getDate()
+                        updateTvs()
+                    }
+                }
 
-            dateOffset.value = offset
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    MyButton(
+                        text = stringResource(id = R.string.save)
+                    ) {
+                        pref.edit()
+                            .putInt("date_offset", offset)
+                            .apply()
+
+                        shown.value = false
+
+                        dateOffset.value = offset
+                    }
+
+                    MyButton(
+                        text = stringResource(id = R.string.cancel)
+                    ) {
+                        shown.value = false
+                    }
+                }
+            }
         }
     }
 
