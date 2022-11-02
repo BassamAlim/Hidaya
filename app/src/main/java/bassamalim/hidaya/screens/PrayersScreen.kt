@@ -24,6 +24,7 @@ import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.ui.components.MyIconBtn
 import bassamalim.hidaya.ui.components.MySurface
 import bassamalim.hidaya.ui.components.MyText
+import bassamalim.hidaya.ui.components.TutorialDialog
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
@@ -203,6 +204,11 @@ class PrayersScreen(
                 }
             }
         }
+
+        TutorialDialog(
+            textResId = R.string.prayers_tips,
+            prefKey = "is_first_time_in_prayers"
+        )
     }
 
     @Composable

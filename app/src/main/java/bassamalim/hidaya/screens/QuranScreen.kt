@@ -143,6 +143,11 @@ class QuranScreen(
                 Tab(items = getItems(ActivityUtils.getListType(page)), textState)
             }
         }
+
+        TutorialDialog(
+            textResId = R.string.quran_fragment_tips,
+            prefKey = "is_first_time_in_quran_fragment"
+        )
     }
 
     @Composable

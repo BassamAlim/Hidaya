@@ -21,7 +21,6 @@ import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.ThikrsDB
-import bassamalim.hidaya.dialogs.InfoDialog
 import bassamalim.hidaya.models.Thikr
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
@@ -33,6 +32,8 @@ class AthkarViewer : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var db: AppDatabase
     private lateinit var language: String
+    private val infoDialogShown = mutableStateOf(false)
+    private var infoDialogText = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,10 +52,6 @@ class AthkarViewer : AppCompatActivity() {
                 UI(title, id)
             }
         }
-    }
-
-    private fun getThikrs(id: Int): List<ThikrsDB> {
-        return db.thikrsDao().getThikrs(id)
     }
 
     private fun getItems(thikrs: List<ThikrsDB>): List<Thikr> {
@@ -106,12 +103,19 @@ class AthkarViewer : AppCompatActivity() {
                 modifier = Modifier.padding(it),
                 lazyList = {
                     items(
-                        items = getItems(getThikrs(id))
+                        items = getItems(db.thikrsDao().getThikrs(id))
                     ) { item ->
                         ThikrCard(thikr = item, textSize)
                     }
                 }
             )
+
+            if (infoDialogShown.value)
+                InfoDialog(
+                    title = stringResource(R.string.reference),
+                    text = infoDialogText,
+                    infoDialogShown
+                )
         }
     }
 
@@ -178,8 +182,8 @@ class AthkarViewer : AppCompatActivity() {
                             description = stringResource(id = R.string.source_btn_description),
                             tint = AppTheme.colors.text
                         ) {
-                            InfoDialog.newInstance(getString(R.string.reference), thikr.reference)
-                                .show(supportFragmentManager, InfoDialog.TAG)
+                            infoDialogText = thikr.reference
+                            infoDialogShown.value = true
                         }
                     }
                 }

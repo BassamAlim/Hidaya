@@ -14,7 +14,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
@@ -24,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,7 +38,6 @@ import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AyatDB
-import bassamalim.hidaya.dialogs.InfoDialog
 import bassamalim.hidaya.dialogs.QuranSettingsDialog
 import bassamalim.hidaya.models.Aya
 import bassamalim.hidaya.models.Ayah
@@ -74,6 +71,8 @@ class QuranViewer : AppCompatActivity() {
     private var lastClickT = 0L
     private var lastClickedId = -1
     private var scrollTo = -1F
+    private var infoDialogText = ""
+    private val infoDialogShown = mutableStateOf(false)
 
     private val viewType = mutableStateOf("page")
     @OptIn(ExperimentalPagerApi::class)
@@ -173,7 +172,7 @@ class QuranViewer : AppCompatActivity() {
     }
 
     private fun onAyaClick(ayaId: Int, offset: Int) {
-        val startIdx = pageAyas.indexOfFirst { it.getId() == ayaId }
+        val startIdx = pageAyas.indexOfFirst { it.getId() == ayaId } + 1
 
         val maxDuration = 1200
         for (idx in startIdx until pageAyas.size) {
@@ -185,9 +184,8 @@ class QuranViewer : AppCompatActivity() {
                     System.currentTimeMillis() < lastClickT + maxDuration) {
                     selected.value = null
 
-                    InfoDialog.newInstance(
-                        getString(R.string.tafseer), aya.getTafseer()
-                    ).show(supportFragmentManager, InfoDialog.TAG)
+                    infoDialogText = aya.getTafseer()
+                    infoDialogShown.value = true
                 }
                 else {  // single click
                     if (selected.value == aya) selected.value = null
@@ -463,18 +461,16 @@ class QuranViewer : AppCompatActivity() {
 
                     if (viewType.value == "list") ListItems()
                     else PageItems()
-
-                    /*if (scrollTo != -1F) {
-                        LaunchedEffect(null) {
-                            launch {
-                                scrollState.animateScrollTo(scrollTo.roundToInt())
-                                scrollTo = -1F
-                            }
-                        }
-                    }*/
                 }
             }
         }
+
+        if (infoDialogShown.value)
+            InfoDialog(
+                title = stringResource(R.string.tafseer),
+                text = infoDialogText,
+                infoDialogShown
+            )
     }
 
     @Composable

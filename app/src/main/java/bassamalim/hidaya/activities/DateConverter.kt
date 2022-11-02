@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.dialogs.MyHijriDatePicker
+import bassamalim.hidaya.dialogs.HijriDatePickerDialog
 //import bassamalim.hidaya.hijridatepicker.date.hijri.HijriDatePickerDialog
 import bassamalim.hidaya.ui.components.MyButton
 import bassamalim.hidaya.ui.components.MyScaffold
@@ -111,7 +111,7 @@ class DateConverter : AppCompatActivity() {
 
     @Composable
     private fun UI() {
-        MyScaffold(stringResource(id = R.string.date_converter)) {
+        MyScaffold(stringResource(R.string.date_converter)) {
             Column(
                 Modifier
                     .fillMaxSize()
@@ -145,7 +145,7 @@ class DateConverter : AppCompatActivity() {
             }
 
             if (hDatePickerShown.value) {
-                MyHijriDatePicker(
+                HijriDatePickerDialog(
                     this, hDatePickerShown, pickedHijri
                 ) {
                     show(pickedHijri.value, hijriToGregorian(pickedHijri.value))

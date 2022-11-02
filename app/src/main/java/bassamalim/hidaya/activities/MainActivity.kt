@@ -14,7 +14,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -265,28 +264,11 @@ class MainActivity : AppCompatActivity() {
                 currentScreen.value = BottomNavItem.Prayers.screen_route
                 navScreen = PrayersScreen(this@MainActivity, pref, located, location)
                 (navScreen as PrayersScreen).PrayersUI()
-
-                LaunchedEffect(Unit) {
-                    if (located)
-                        ActivityUtils.checkFirstTime(
-                            this@MainActivity, supportFragmentManager,
-                            "is_first_time_in_prayers",
-                            R.string.prayers_tips, pref
-                        )
-                }
             }
             composable(BottomNavItem.Quran.screen_route) {
                 currentScreen.value = BottomNavItem.Quran.screen_route
                 navScreen = QuranScreen(this@MainActivity, pref)
                 (navScreen as QuranScreen).QuranUI()
-
-                LaunchedEffect(Unit) {
-                    ActivityUtils.checkFirstTime(
-                        this@MainActivity, supportFragmentManager,
-                        "is_first_time_in_quran_fragment",
-                        R.string.quran_fragment_tips, pref
-                    )
-                }
             }
             composable(BottomNavItem.Athkar.screen_route) {
                 currentScreen.value = BottomNavItem.Athkar.screen_route

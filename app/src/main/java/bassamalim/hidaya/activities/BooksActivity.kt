@@ -45,11 +45,6 @@ class BooksActivity : AppCompatActivity() {
 
         initStates()
 
-        ActivityUtils.checkFirstTime(
-            this, supportFragmentManager, "is_first_time_in_books_activity",
-            R.string.books_activity_tips
-        )
-
         setContent {
             AppTheme {
                 UI()
@@ -214,6 +209,11 @@ class BooksActivity : AppCompatActivity() {
                         }
                     }
                 }
+            )
+
+            TutorialDialog(
+                textResId = R.string.books_activity_tips,
+                prefKey = "is_first_time_in_books_activity"
             )
         }
     }

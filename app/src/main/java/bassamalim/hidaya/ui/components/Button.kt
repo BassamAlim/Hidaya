@@ -226,3 +226,17 @@ fun MyPlayerBtn(
         }
     }
 }
+
+@Composable
+fun MyCloseBtn(
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit
+) {
+    MyIconBtn(
+        iconId = R.drawable.ic_close,
+        modifier = modifier,
+        description = stringResource(id = R.string.close),
+        onClick = onClose,
+        tint = AppTheme.colors.text
+    )
+}
