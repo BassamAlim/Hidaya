@@ -92,7 +92,7 @@ fun TutorialDialog(
         shown.value = false
         if (doNotShowAgain.value)
             pref.edit()
-                .putBoolean(prefKey, true)
+                .putBoolean(prefKey, false)
                 .apply()
     }
 

@@ -73,7 +73,7 @@ class AthkarListActivity : ComponentActivity() {
         }
 
     private fun getItems(athkar: List<AthkarDB>): List<AthkarItem> {
-        val items: MutableList<AthkarItem> = ArrayList()
+        val items = ArrayList<AthkarItem>()
 
         for (i in athkar.indices) {
             val thikr = athkar[i]

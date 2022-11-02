@@ -50,11 +50,10 @@ import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 
 class QuranViewer : AppCompatActivity() {
-
+// TODO fix tracking
     private lateinit var db: AppDatabase
     private lateinit var pref: SharedPreferences
     private lateinit var action: String
@@ -62,7 +61,7 @@ class QuranViewer : AppCompatActivity() {
     private lateinit var names: List<String>
     private var textSize = 0
     private val handler = Handler(Looper.getMainLooper())
-    private val pageAyas = ArrayList<Ayah>()
+    private lateinit var currentAyas: List<Ayah>
     private var lastRecordedPage = 0
     private var initialPage = 0
     private var initialSura = -1
@@ -75,8 +74,6 @@ class QuranViewer : AppCompatActivity() {
     private val infoDialogShown = mutableStateOf(false)
 
     private val viewType = mutableStateOf("page")
-    @OptIn(ExperimentalPagerApi::class)
-    private lateinit var pagerState: PagerState
     private val currentPage = mutableStateOf(0)
     private val bookmarkedPage = mutableStateOf(-1)
     private val selected = mutableStateOf<Ayah?>(null)
@@ -93,11 +90,6 @@ class QuranViewer : AppCompatActivity() {
         ActivityUtils.myOnActivityCreated(this)
 
         init()
-
-        ActivityUtils.checkFirstTime(
-            this, supportFragmentManager,
-            "is_first_time_in_quran", R.string.quran_tips, pref
-        )
 
         action = intent.action!!
         action(intent)
@@ -137,10 +129,8 @@ class QuranViewer : AppCompatActivity() {
         }
     }
 
-    @OptIn(ExperimentalPagerApi::class)
-    private fun buildPage(pageNumber: Int) {
-        handler.removeCallbacks(runnable)
-        pageAyas.clear()
+    private fun buildPage(pageNumber: Int): ArrayList<Ayah> {
+        val ayas = ArrayList<Ayah>()
 
         // get page start
         var counter = ayatDB.indexOfFirst { aya -> aya!!.page == pageNumber }
@@ -154,29 +144,25 @@ class QuranViewer : AppCompatActivity() {
                 "${aya.aya_text} ", aya.aya_translation_en, aya.aya_tafseer
             )
 
-            pageAyas.add(ayahModel)
+            ayas.add(ayahModel)
 
             counter++
         } while (counter != Global.QURAN_AYAS && ayatDB[counter]!!.page == pageNumber)
 
-        checkPage(currentPage.value)
-
-        currentPage.value = pagerState.currentPage + 1
-
-        updateTopBar(currentPage.value)
+        return ayas
     }
 
-    private fun updateTopBar(pageNumber: Int) {
-        currentSura = ayatDB.first { aya -> aya!!.page == pageNumber }!!.sura_num - 1
-        currentJuz =ayatDB.first { aya -> aya!!.page == pageNumber }!!.jozz
+    private fun updateTopBar() {
+        currentSura = ayatDB.first { aya -> aya!!.page == currentPage.value }!!.sura_num - 1
+        currentJuz = ayatDB.first { aya -> aya!!.page == currentPage.value }!!.jozz
     }
 
     private fun onAyaClick(ayaId: Int, offset: Int) {
-        val startIdx = pageAyas.indexOfFirst { it.getId() == ayaId } + 1
+        val startIdx = currentAyas.indexOfFirst { it.getId() == ayaId }
 
         val maxDuration = 1200
-        for (idx in startIdx until pageAyas.size) {
-            val aya = pageAyas[idx]
+        for (idx in startIdx until currentAyas.size) {
+            val aya = currentAyas[idx]
 
             if (offset < aya.getEnd()) {
                 // double click
@@ -199,8 +185,8 @@ class QuranViewer : AppCompatActivity() {
         }
     }
 
-    private fun checkPage(pageNumber: Int) {
-        lastRecordedPage = pageNumber
+    private fun checkPage() {
+        lastRecordedPage = currentPage.value
         handler.postDelayed(runnable, 40000)
     }
 
@@ -226,8 +212,8 @@ class QuranViewer : AppCompatActivity() {
             }
 
             override fun getAya(index: Int): Aya {
-                val ayah = pageAyas[index]
-                return Aya(ayah.getId(), ayah.getSurahNum(), ayah.getAyahNum(), ayah.getIndex())
+                val aya = currentAyas[index]
+                return Aya(aya.getId(), aya.getSurahNum(), aya.getAyahNum(), aya.getIndex())
             }
 
             override fun nextPage() {
@@ -235,7 +221,7 @@ class QuranViewer : AppCompatActivity() {
             }
 
             override fun track(ayaId: Int, ayaIndex: Int) {
-                val aya = pageAyas[ayaIndex]
+                val aya = currentAyas[ayaIndex]
 
                 if (aya.getId() != ayaId) return  // not the same page
 
@@ -260,11 +246,11 @@ class QuranViewer : AppCompatActivity() {
             tc = player!!.transportControls
             serviceBound = true
 
-            if (selected.value == null) selected.value = pageAyas[0]
+            if (selected.value == null) selected.value = currentAyas[0]
 
             player!!.setCurrentPage(currentPage.value)
             player!!.setViewType(viewType.value)
-            player!!.setPageAyasSize(pageAyas.size)
+            player!!.setPageAyasSize(currentAyas.size)
             player!!.setCoordinator(uiListener!!)
 
             player!!.setChosenSurah(selected.value!!.getSurahNum())
@@ -288,6 +274,7 @@ class QuranViewer : AppCompatActivity() {
     private fun updateButton(state: Int) {
         when (state) {
             PlaybackStateCompat.STATE_NONE,
+            PlaybackStateCompat.STATE_PAUSED,
             PlaybackStateCompat.STATE_STOPPED,
             PlaybackStateCompat.STATE_PLAYING,
             PlaybackStateCompat.STATE_BUFFERING -> playerState.value = state
@@ -408,16 +395,16 @@ class QuranViewer : AppCompatActivity() {
                                     setupPlayer()
                                 }
                                 else if (player!!.getState() == PlaybackStateCompat.STATE_PLAYING) {
-                                    player!!.transportControls.pause()
                                     updateButton(PlaybackStateCompat.STATE_PAUSED)
+                                    player!!.transportControls.pause()
                                 }
                                 else if (player!!.getState() == PlaybackStateCompat.STATE_PAUSED) {
+                                    updateButton(PlaybackStateCompat.STATE_BUFFERING)
                                     if (selected.value == null) player!!.transportControls.play()
                                     else {
                                         player!!.setChosenSurah(selected.value!!.getSurahNum())
                                         requestPlay(selected.value!!)
                                     }
-                                    updateButton(PlaybackStateCompat.STATE_PLAYING)
                                 }
                             }
 
@@ -443,7 +430,7 @@ class QuranViewer : AppCompatActivity() {
                 }
             }
         ) {
-            pagerState = rememberPagerState(initialPage-1)
+            val pagerState = rememberPagerState(initialPage-1)
             HorizontalPagerScreen(
                 count = 604,
                 pagerState = pagerState,
@@ -451,19 +438,35 @@ class QuranViewer : AppCompatActivity() {
             ) { page ->
                 val scrollState = rememberScrollState()
 
+                if (pagerState.currentPage != this@QuranViewer.currentPage.value)
+                    handler.removeCallbacks(runnable)
+
+                this@QuranViewer.currentPage.value = pagerState.currentPage + 1
+
+                updateTopBar()
+
                 Column(
                     Modifier
                         .fillMaxSize()
                         .verticalScroll(scrollState),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    buildPage(page+1)
+                    val ayas = buildPage(page+1)
 
-                    if (viewType.value == "list") ListItems()
-                    else PageItems()
+                    if (page == pagerState.currentPage) currentAyas = ayas
+
+                    if (viewType.value == "list") ListItems(ayas)
+                    else PageItems(ayas)
                 }
+
+                checkPage()
             }
         }
+
+        TutorialDialog(
+            textResId = R.string.quran_tips,
+            prefKey = "is_first_time_in_quran"
+        )
 
         if (infoDialogShown.value)
             InfoDialog(
@@ -474,14 +477,14 @@ class QuranViewer : AppCompatActivity() {
     }
 
     @Composable
-    private fun PageItems() {
+    private fun PageItems(ayas: List<Ayah>) {
         var text = StringBuilder()
         var sequence = ArrayList<Ayah>()
-        var lastSura = pageAyas[0].getSurahNum()
+        var lastSura = ayas[0].getSurahNum()
 
-        NewSura(pageAyas[0])
+        NewSura(ayas[0])
 
-        for (aya in pageAyas) {
+        for (aya in ayas) {
             if (aya.getSurahNum() == lastSura) {
                 aya.setStart(text.length)
                 text.append(aya.getText())
@@ -510,9 +513,11 @@ class QuranViewer : AppCompatActivity() {
 
             for (seqAya in sequence) {
                 addStyle(
-                    style = SpanStyle(color =
-                        if (selected.value == seqAya) AppTheme.colors.accent
-                        else AppTheme.colors.strongText
+                    style = SpanStyle(
+                        color =
+                            if (selected.value == seqAya) AppTheme.colors.accent
+                            else if (tracked.value == seqAya) AppTheme.colors.track
+                            else AppTheme.colors.strongText
                     ),
                     start = seqAya.getStart(),
                     end = seqAya.getEnd()
@@ -524,8 +529,8 @@ class QuranViewer : AppCompatActivity() {
     }
 
     @Composable
-    private fun ListItems() {
-        for (aya in pageAyas) {
+    private fun ListItems(ayas: List<Ayah>) {
+        for (aya in ayas) {
             NewSura(aya)
 
             val annotatedString = AnnotatedString(aya.getText()!!)
@@ -573,7 +578,7 @@ class QuranViewer : AppCompatActivity() {
             Modifier
                 .fillMaxWidth()
                 .height(90.dp)
-                .padding(vertical = 10.dp, horizontal = 5.dp)
+                .padding(top = 5.dp, bottom = 10.dp, start = 5.dp, end = 5.dp)
                 .onGloballyPositioned { layoutCoordinates ->
                     if (aya.getSurahNum() == initialSura) {
                         scrollTo = layoutCoordinates.positionInRoot().y

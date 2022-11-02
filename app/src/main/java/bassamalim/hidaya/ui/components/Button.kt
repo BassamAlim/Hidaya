@@ -213,7 +213,9 @@ fun MyPlayerBtn(
             .clip(CircleShape)
             .clickable { if (enabled) onClick() }
     ) {
-        if (state.value == PlaybackStateCompat.STATE_NONE) MyCircularProgressIndicator()
+        if (state.value == PlaybackStateCompat.STATE_NONE ||
+            state.value == PlaybackStateCompat.STATE_BUFFERING)
+            MyCircularProgressIndicator()
         else {
             Image(
                 painter = painterResource(

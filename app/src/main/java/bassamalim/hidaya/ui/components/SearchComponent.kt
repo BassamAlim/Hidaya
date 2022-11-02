@@ -89,10 +89,7 @@ fun SearchComponent(
         trailingIcon = {
             if (state.value != TextFieldValue("")) {
                 IconButton(
-                    onClick = {
-                        state.value =
-                            TextFieldValue("") // Remove text from TextField when you press the 'X' icon
-                    }
+                    onClick = { state.value = TextFieldValue("") }
                 ) {
                     Icon(
                         Icons.Default.Close,

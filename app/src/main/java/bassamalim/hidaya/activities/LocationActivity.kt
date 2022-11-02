@@ -2,7 +2,6 @@ package bassamalim.hidaya.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -12,13 +11,12 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -42,6 +40,7 @@ class LocationActivity: ComponentActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var db: AppDatabase
     private var action = "normal"
+    private val locationPickerShown = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,28 +71,6 @@ class LocationActivity: ComponentActivity() {
                 ))
             else launch(null)
         }
-    }
-
-    private val locationDialog: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data!!
-                val countryId = data.getIntExtra("country_id", -1)
-                val cityId = data.getIntExtra("city_id", -1)
-
-                pref.edit()
-                    .putInt("country_id", countryId)
-                    .putInt("city_id", cityId)
-                    .apply()
-
-                val city = db.cityDao().getCity(cityId)
-
-                val location = Location("")
-                location.latitude = city.latitude
-                location.longitude = city.longitude
-
-                launch(location)
-            }
     }
 
     private fun granted(): Boolean {
@@ -157,7 +134,8 @@ class LocationActivity: ComponentActivity() {
                 this, Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(
-                this, getString(R.string.choose_allow_all_the_time), Toast.LENGTH_LONG
+                this, getString(R.string.choose_allow_all_the_time),
+                Toast.LENGTH_LONG
             ).show()
 
             backgroundLocationPermissionRequest.launch(
@@ -212,9 +190,7 @@ class LocationActivity: ComponentActivity() {
                         .putString("location_type", "manual")
                         .apply()
 
-                    locationDialog.launch(
-                        Intent(this@LocationActivity, LocationPickerDialog::class.java)
-                    )
+                    locationPickerShown.value = true
                 }
 
                 if (action == "initial") {
@@ -239,6 +215,25 @@ class LocationActivity: ComponentActivity() {
                     }
                 }
             }
+        }
+
+        if (locationPickerShown.value) {
+            LocationPickerDialog(
+                this, pref, db, locationPickerShown
+            ) { countryId, cityId ->
+                pref.edit()
+                    .putInt("country_id", countryId)
+                    .putInt("city_id", cityId)
+                    .apply()
+
+                val city = db.cityDao().getCity(cityId)
+
+                val location = Location("")
+                location.latitude = city.latitude
+                location.longitude = city.longitude
+
+                launch(location)
+            }.Dialog()
         }
     }
 }

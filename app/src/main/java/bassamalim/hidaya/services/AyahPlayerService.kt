@@ -359,7 +359,7 @@ class AyahPlayerService : Service(),
             // Take the service out of the foreground, retain the notification
             stopForeground(false)
 
-//            coordinator.onUiUpdate(PlaybackStateCompat.STATE_PAUSED)
+            coordinator.onUiUpdate(PlaybackStateCompat.STATE_PAUSED)
 //            updatePbState(PlaybackStateCompat.STATE_PAUSED)
 //            updateNotification(false)
         }
