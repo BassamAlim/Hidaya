@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.LocationActivity
+import bassamalim.hidaya.dialogs.PrayerDialog
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.ui.components.MyIconBtn
 import bassamalim.hidaya.ui.components.MySurface
@@ -45,6 +46,8 @@ class PrayersScreen(
     private val prayerNames = context.resources.getStringArray(R.array.prayer_names)
     private val calendar = Calendar.getInstance()
     private var dayChange = mutableStateOf(0)
+    private val settingsDialogShown = mutableStateOf(false)
+    private var clickedPID = -1
 
     override fun onResume() {
         if (located) goToToday()
@@ -205,6 +208,14 @@ class PrayersScreen(
             }
         }
 
+        if (settingsDialogShown.value) {
+            PrayerDialog(
+                context, PTUtils.mapID(clickedPID)!!, prayerNames[clickedPID], settingsDialogShown
+            ) {
+
+            }.Dialog()
+        }
+
         TutorialDialog(
             textResId = R.string.prayers_tips,
             prefKey = "is_first_time_in_prayers"
@@ -222,7 +233,10 @@ class PrayersScreen(
 
         MySurface(
             Modifier.clickable {
-//                    if (located) PrayerDialog(context, v!!, PTUtils.mapID(i)!!, prayerNames[i], refresher)
+                if (located) {
+                    clickedPID = pid
+                    settingsDialogShown.value = true
+                }
             },
             cornerRadius = 15.dp
         ) {

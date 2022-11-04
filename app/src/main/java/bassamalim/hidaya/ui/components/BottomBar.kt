@@ -2,8 +2,6 @@ package bassamalim.hidaya.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.BottomAppBar
-import androidx.compose.material.Slider
-import androidx.compose.material.SliderDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -39,16 +37,11 @@ fun MyReadingBottomBar(
             )
 
             if (isSelected) {
-                Slider(
+                MySlider(
                     value = textSizeState.value.toFloat(),
                     valueRange = 1F..40F,
-                    onValueChange = onSeek,
-                    colors = SliderDefaults.colors(
-                        activeTrackColor = AppTheme.colors.accent,
-                        inactiveTrackColor = AppTheme.colors.altAccent,
-                        thumbColor = AppTheme.colors.accent
-                    ),
-                    modifier = Modifier.padding(15.dp)
+                    modifier = Modifier.padding(15.dp),
+                    onValueChange = onSeek
                 )
             }
         }

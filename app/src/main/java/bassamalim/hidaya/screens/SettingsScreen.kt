@@ -1,5 +1,6 @@
 package bassamalim.hidaya.screens
 
+import android.app.Activity
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Message
@@ -14,6 +15,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
@@ -23,6 +25,7 @@ import bassamalim.hidaya.ui.components.CategoryTitle
 import bassamalim.hidaya.ui.components.ListPref
 import bassamalim.hidaya.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.ui.components.SwitchPref
+import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
 import java.util.*
@@ -124,8 +127,10 @@ class SettingsScreen(
                 iconResId = R.drawable.ic_translation,
                 entries = stringArrayResource(id = R.array.language_entries),
                 values = stringArrayResource(id = R.array.languages_values),
-                defaultValueResId = R.string.default_language
-            )
+                defaultValue = stringResource(R.string.default_language)
+            ) {
+                ActivityUtils.restartActivity(context as Activity)
+            }
 
             // Numerals language
             ListPref(
@@ -135,8 +140,10 @@ class SettingsScreen(
                 iconResId = R.drawable.ic_translation,
                 entries = stringArrayResource(id = R.array.numerals_language_entries),
                 values = stringArrayResource(id = R.array.languages_values),
-                defaultValueResId = R.string.default_language
-            )
+                defaultValue = stringResource(R.string.default_language)
+            ) {
+                ActivityUtils.restartActivity(context as Activity)
+            }
 
             // Time format
             val timeFormatEntries = stringArrayResource(id = R.array.time_format_values).map {
@@ -149,8 +156,10 @@ class SettingsScreen(
                 iconResId = R.drawable.ic_time_format,
                 entries = timeFormatEntries,
                 values = stringArrayResource(id = R.array.time_format_values),
-                defaultValueResId = R.string.default_time_format
-            )
+                defaultValue = stringResource(R.string.default_time_format)
+            ) {
+                ActivityUtils.restartActivity(context as Activity)
+            }
 
             // Theme
             ListPref(
@@ -160,8 +169,10 @@ class SettingsScreen(
                 iconResId = R.drawable.ic_theme,
                 entries = stringArrayResource(id = R.array.themes_entries),
                 values = stringArrayResource(id = R.array.theme_values),
-                defaultValueResId = R.string.default_theme
-            )
+                defaultValue = stringResource(R.string.default_theme)
+            ) {
+                ActivityUtils.restartActivity(context as Activity)
+            }
 
             MyHorizontalDivider()
             CategoryTitle(titleResId = R.string.notifications_header)

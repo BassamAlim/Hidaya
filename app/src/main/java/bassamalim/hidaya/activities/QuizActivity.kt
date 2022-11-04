@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB
-import bassamalim.hidaya.ui.components.CustomRadioGroup
+import bassamalim.hidaya.ui.components.RadioGroup
 import bassamalim.hidaya.ui.components.MyButton
 import bassamalim.hidaya.ui.components.MyScaffold
 import bassamalim.hidaya.ui.components.MyText
@@ -132,7 +132,7 @@ class QuizActivity : ComponentActivity() {
                     )
                 }
 
-                CustomRadioGroup(
+                RadioGroup(
                     options = currentAs,
                     selection = selection
                 ) { index ->

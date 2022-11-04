@@ -1,10 +1,7 @@
 package bassamalim.hidaya.ui.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
@@ -38,6 +35,7 @@ fun MySurface(
 @Composable
 fun MyClickableSurface(
     modifier: Modifier = Modifier,
+    padding: PaddingValues = PaddingValues(vertical = 3.dp, horizontal = 8.dp),
     cornerRadius: Dp = 10.dp,
     onClick: () -> Unit,
     content: @Composable () -> Unit
@@ -45,7 +43,7 @@ fun MyClickableSurface(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 3.dp, horizontal = 8.dp)
+            .padding(padding)
             .clickable { onClick() },
         shape = RoundedCornerShape(cornerRadius),
         color = AppTheme.colors.surface,

@@ -19,8 +19,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomAppBar
-import androidx.compose.material.Slider
-import androidx.compose.material.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -411,16 +409,11 @@ class TelawatClient : ComponentActivity() {
                         modifier = Modifier.padding(10.dp)
                     )
 
-                    Slider(
+                    MySlider(
                         value = progress.value.toFloat(),
                         valueRange = 0F..duration.value.toFloat(),
-                        enabled = controlsEnabled.value,
                         modifier = Modifier.weight(1F),
-                        colors = SliderDefaults.colors(
-                            activeTrackColor = AppTheme.colors.accent,
-                            inactiveTrackColor = AppTheme.colors.altAccent,
-                            thumbColor = AppTheme.colors.accent
-                        ),
+                        enabled = controlsEnabled.value,
                         onValueChangeFinished = { tc.seekTo(progress.value) },
                         onValueChange = { newValue -> progress.value = newValue.toLong() }
                     )

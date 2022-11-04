@@ -1,6 +1,5 @@
 package bassamalim.hidaya.activities
 
-import android.app.Activity
 import android.content.*
 import android.os.Bundle
 import android.os.Handler
@@ -10,8 +9,6 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -72,6 +69,7 @@ class QuranViewer : AppCompatActivity() {
     private var scrollTo = -1F
     private var infoDialogText = ""
     private val infoDialogShown = mutableStateOf(false)
+    private val settingsDialogShown = mutableStateOf(false)
 
     private val viewType = mutableStateOf("page")
     private val currentPage = mutableStateOf(0)
@@ -282,15 +280,6 @@ class QuranViewer : AppCompatActivity() {
         }
     }
 
-    private val settingsDialog = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            viewType.value = pref.getString("quran_view_type", "page")!!
-            textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         player?.finish()
@@ -323,6 +312,7 @@ class QuranViewer : AppCompatActivity() {
                         MyText(
                             text = "${getString(R.string.sura)} ${names[currentSura]}",
                             fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Start,
                             modifier = Modifier.width(140.dp)
                         )
@@ -332,7 +322,8 @@ class QuranViewer : AppCompatActivity() {
                                     LangUtils.translateNums(
                                         this@QuranViewer, currentPage.value.toString()
                                     ),
-                            fontSize = 18.sp,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier.width(140.dp)
                         )
 
@@ -341,7 +332,8 @@ class QuranViewer : AppCompatActivity() {
                                     LangUtils.translateNums(
                                         this@QuranViewer, currentJuz.toString()
                                     ),
-                            fontSize = 18.sp,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.End,
                             modifier = Modifier.width(140.dp)
                         )
@@ -422,9 +414,7 @@ class QuranViewer : AppCompatActivity() {
                             description = stringResource(R.string.settings),
                             tint = AppTheme.colors.accent
                         ) {
-                            settingsDialog.launch(Intent(
-                                this@QuranViewer, QuranSettingsDialog::class.java
-                            ))
+                            settingsDialogShown.value = true
                         }
                     }
                 }
@@ -474,6 +464,12 @@ class QuranViewer : AppCompatActivity() {
                 text = infoDialogText,
                 infoDialogShown
             )
+
+        if (settingsDialogShown.value)
+            QuranSettingsDialog(pref, db, settingsDialogShown) {
+                viewType.value = pref.getString("quran_view_type", "page")!!
+                textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
+            }.Dialog()
     }
 
     @Composable
@@ -556,7 +552,7 @@ class QuranViewer : AppCompatActivity() {
                 color = AppTheme.colors.strongText,
                 textAlign = TextAlign.Center
             ),
-            modifier = Modifier.padding(vertical = 4.dp),
+            modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp),
             onClick = { offset ->
                 onAyaClick(ayaId, offset)
             }

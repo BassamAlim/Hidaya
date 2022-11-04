@@ -1,10 +1,7 @@
 package bassamalim.hidaya.ui.components
 
-import android.app.Activity
 import android.content.SharedPreferences
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -13,46 +10,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.theme.AppTheme
-import bassamalim.hidaya.utils.ActivityUtils
-
-@Composable
-fun CategoryTitle(titleResId: Int) {
-    MyText(
-        stringResource(id = titleResId),
-        Modifier
-            .fillMaxWidth()
-            .padding(vertical = 15.dp, horizontal = 15.dp),
-        fontSize = 16.sp,
-        textAlign = TextAlign.Start,
-        textColor = AppTheme.colors.accent)
-}
 
 @Composable
 fun ListPref(
     pref: SharedPreferences,
     titleResId: Int,
     keyResId: Int,
-    iconResId: Int,
+    iconResId: Int = -1,
     entries: Array<String>,
     values: Array<String>,
-    defaultValueResId: Int
+    defaultValue: String,
+    onSelection: () -> Unit = {}
 ) {
-    val context = LocalContext.current
-    val key = stringResource(id = keyResId)
+    val key = stringResource(keyResId)
     var shown by remember { mutableStateOf(false) }
-    val initialValue = pref.getString(
-        stringResource(id = keyResId),
-        stringResource(id = defaultValueResId)
-    )
-    val selectedValue by remember { mutableStateOf(initialValue) }
+    val initialValue = pref.getString(stringResource(keyResId), defaultValue)
+    var selectedValue by remember { mutableStateOf(initialValue) }
 
     Box(
         Modifier
@@ -68,14 +49,15 @@ fun ListPref(
                 .padding(vertical = 6.dp, horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = iconResId),
-                contentDescription = stringResource(id = titleResId),
-                Modifier.padding(end = 20.dp)
-            )
+            if (iconResId != -1)
+                Image(
+                    painter = painterResource(iconResId),
+                    contentDescription = stringResource(titleResId),
+                    Modifier.padding(end = 20.dp)
+                )
 
             Column {
-                MyText(text = stringResource(id = titleResId))
+                PreferenceTitle(titleResId)
 
                 SummaryText(entries[values.indexOf(selectedValue)])
             }
@@ -83,11 +65,13 @@ fun ListPref(
 
         if (shown) {
             val onSelect = { index: Int ->
+                selectedValue = values[index]
+
                 pref.edit()
                     .putString(key, values[index])
                     .apply()
 
-                ActivityUtils.restartActivity(context as Activity)
+                onSelection()
             }
 
             Dialog(
@@ -97,43 +81,50 @@ fun ListPref(
                     color = Color.Transparent
                 ) {
                     Box(
-                        Modifier.background(
-                            shape = RoundedCornerShape(16.dp),
-                            color = AppTheme.colors.background
-                        )
+                        Modifier
+                            .background(
+                                shape = RoundedCornerShape(16.dp),
+                                color = AppTheme.colors.background
+                            )
                     ) {
                         Column(
-                            Modifier.padding(vertical = 20.dp, horizontal = 30.dp)
+                            Modifier.padding(vertical = 20.dp, horizontal = 10.dp)
                         ) {
                             MyText(
                                 text = stringResource(id = titleResId),
-                                Modifier.padding(bottom = 10.dp)
+                                Modifier.padding(start = 10.dp, bottom = 10.dp)
                             )
 
-                            entries.forEachIndexed { index, text ->
-                                Row(
-                                    Modifier
-                                        .clip(RoundedCornerShape(100.dp))
-                                        .fillMaxWidth()
-                                        .padding(6.dp)
-                                        .clickable { onSelect(index) },
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    RadioButton(
-                                        selected = index == values.indexOf(selectedValue),
-                                        onClick = { onSelect(index) },
-                                        colors = RadioButtonDefaults.colors(
-                                            selectedColor = AppTheme.colors.accent,
-                                            unselectedColor = AppTheme.colors.text
+                            Column(
+                                Modifier
+                                    .heightIn(1.dp, 400.dp)
+                                    .verticalScroll(rememberScrollState())
+                            ) {
+                                entries.forEachIndexed { index, text ->
+                                    Row(
+                                        Modifier
+                                            .clip(RoundedCornerShape(100.dp))
+                                            .fillMaxWidth()
+                                            .padding(6.dp)
+                                            .clickable { onSelect(index) },
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        RadioButton(
+                                            selected = index == values.indexOf(selectedValue),
+                                            onClick = { onSelect(index) },
+                                            colors = RadioButtonDefaults.colors(
+                                                selectedColor = AppTheme.colors.accent,
+                                                unselectedColor = AppTheme.colors.text
+                                            )
                                         )
-                                    )
 
-                                    MyText(text = text)
+                                        MyText(text = text)
+                                    }
                                 }
                             }
 
                             MyButton(
-                                stringResource(id = bassamalim.hidaya.R.string.cancel),
+                                stringResource(R.string.cancel),
                                 colors = ButtonDefaults.buttonColors(
                                     backgroundColor = AppTheme.colors.background
                                 ),
@@ -156,8 +147,8 @@ fun SwitchPref(
     keyResId: Int,
     titleResId: Int,
     defaultValue: Boolean = true,
-    summary: MutableState<String>,
-    onSwitch: (Boolean) -> Unit
+    summary: MutableState<String> = mutableStateOf(""),
+    onSwitch: (Boolean) -> Unit = {}
 ) {
     val key = stringResource(keyResId)
     val initialValue = pref.getBoolean(key, defaultValue)
@@ -191,7 +182,7 @@ fun SwitchPref(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                MyText(text = stringResource(id = titleResId))
+                PreferenceTitle(titleResId, Modifier.padding(end = 40.dp))
 
                 Switch(
                     checked = checked,
@@ -207,6 +198,61 @@ fun SwitchPref(
             SummaryText(text = summary.value)
         }
     }
+}
+
+@Composable
+fun SliderPref(
+    pref: SharedPreferences,
+    keyResId: Int,
+    titleResId: Int,
+    defaultValue: Int,
+    valueRange: ClosedFloatingPointRange<Float>,
+    infinite: Boolean = false,
+    sliderFraction: Float = 0.8F,
+    onValueChange: () -> Unit = {}
+) {
+    val key = stringResource(keyResId)
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp, horizontal = 16.dp)
+    ) {
+        PreferenceTitle(titleResId)
+
+        MyValuedSlider(
+            initialValue = pref.getInt(key, defaultValue),
+            valueRange = valueRange,
+            infinite = infinite,
+            sliderFraction = sliderFraction,
+            onValueChange = { value ->
+                pref.edit()
+                    .putInt(key, value)
+                    .apply()
+
+                onValueChange()
+            }
+        )
+    }
+}
+
+@Composable
+fun CategoryTitle(titleResId: Int) {
+    MyText(
+        stringResource(id = titleResId),
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 15.dp, horizontal = 15.dp),
+        fontSize = 16.sp,
+        textAlign = TextAlign.Start,
+        textColor = AppTheme.colors.accent)
+}
+
+@Composable
+private fun PreferenceTitle(
+    titleResId: Int, modifier: Modifier = Modifier
+) {
+    MyText(stringResource(titleResId), modifier)
 }
 
 @Composable
