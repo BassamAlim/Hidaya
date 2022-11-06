@@ -12,7 +12,6 @@ import android.media.MediaPlayer.*
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.*
-import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -25,7 +24,7 @@ import androidx.media.session.MediaButtonReceiver
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.models.Aya
+import bassamalim.hidaya.database.dbs.AyatDB
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.PrefUtils
@@ -46,7 +45,7 @@ class AyahPlayerService : Service(),
     private lateinit var audioFocusRequest: AudioFocusRequest
     private lateinit var controller: MediaControllerCompat
     lateinit var transportControls: MediaControllerCompat.TransportControls
-    private lateinit var currentAyah: Aya
+    private lateinit var allAyas: List<AyatDB>
     private lateinit var audioManager: AudioManager
     private lateinit var stateBuilder: PlaybackStateCompat.Builder
     private lateinit var mediaMetadata: MediaMetadataCompat
@@ -59,15 +58,13 @@ class AyahPlayerService : Service(),
     private lateinit var prevAction: NotificationCompat.Action
     private lateinit var reciterNames: List<String>
     private lateinit var suarNames: List<String>
-    private lateinit var viewType: String
-    private var lastPlayed: Aya? = null
     private val notificationId = 101
+    private var lastPlayedIdx = -1
     private var reciterId = -1
     private var pausedPlayer = -1
     private var chosenSurah = -1
     private var timesPlayed = 1
     private var currentPage = -1
-    private var allAyahsSize = -1
     private var updateRecordCounter = 0
     private var surahEnding = false
     private var resume = true
@@ -81,9 +78,8 @@ class AyahPlayerService : Service(),
     private lateinit var coordinator: Coordinator
     interface Coordinator {
         fun onUiUpdate(state: Int)
-        fun getAya(index: Int): Aya
         fun nextPage()
-        fun track(ayaId: Int, ayaIndex: Int)
+        fun track(ayaId: Int)
     }
     fun setCoordinator(coordinator: Coordinator) {
         this.coordinator = coordinator
@@ -100,6 +96,7 @@ class AyahPlayerService : Service(),
         initPlayers()
         setupActions()
 
+        allAyas = db.ayahDao().getAll()
         reciterNames = db.ayatRecitersDao().getNames()
         suarNames =
             if (PrefUtils.getLanguage(this, pref) == "en") db.suarDao().getNamesEn()
@@ -224,7 +221,7 @@ class AyahPlayerService : Service(),
         // Get the session's metadata
         controller = mediaSession.controller
         mediaMetadata = controller.metadata
-        val description: MediaDescriptionCompat = mediaMetadata.description
+        val description = mediaMetadata.description
 
         createNotificationChannel()
 
@@ -291,13 +288,15 @@ class AyahPlayerService : Service(),
         override fun onPlayFromMediaId(givenMediaId: String, extras: Bundle) {
             Log.i(Global.TAG, "In onPlayFromMediaId of AyahPlayerService")
 
-            currentAyah = extras.getSerializable("aya") as Aya
             reciterId = pref.getString(getString(R.string.aya_reciter_key), "13")!!.toInt()
 
-            if (lastPlayed == null) {
+            val initialize = lastPlayedIdx == -1
+
+            lastPlayedIdx = allAyas.indexOfFirst { aya -> aya.id == givenMediaId.toInt() }
+
+            if (initialize) {
                 // Start the service
                 startService(Intent(applicationContext, AyahPlayerService::class.java))
-                buildNotification()
                 updateMetadata(false)
             }
             else resume = false
@@ -334,7 +333,7 @@ class AyahPlayerService : Service(),
                 resume()
                 refresh()
             }
-            else playNew(currentAyah)
+            else playNew(lastPlayedIdx)
 
             updatePbState(PlaybackStateCompat.STATE_PLAYING)
             coordinator.onUiUpdate(PlaybackStateCompat.STATE_PLAYING)
@@ -357,11 +356,9 @@ class AyahPlayerService : Service(),
             removeAudioFocus()
 
             // Take the service out of the foreground, retain the notification
-            stopForeground(false)
+            stopForeground()
 
             coordinator.onUiUpdate(PlaybackStateCompat.STATE_PAUSED)
-//            updatePbState(PlaybackStateCompat.STATE_PAUSED)
-//            updateNotification(false)
         }
 
         override fun onStop() {
@@ -382,7 +379,7 @@ class AyahPlayerService : Service(),
 
             stopSelf()    // Stop the service
             mediaSession.isActive = false    // Set the session inactive
-            stopForeground(false)    // Take the service out of the foreground
+            stopForeground()
         }
 
         override fun onSkipToNext() {
@@ -410,15 +407,14 @@ class AyahPlayerService : Service(),
     /**
      * The function's purpose is to prepare the first player to play the given `aya`.
      *
-     * @param aya The ayah to start playing from.
+     * @param ayaIdx The ayah to start playing from.
      */
-    private fun playNew(aya: Aya) {
+    private fun playNew(ayaIdx: Int) {
         resetPlayers()
 
         timesPlayed = 1
-        lastPlayed = aya
 
-        preparePlayer(players[0], aya)
+        preparePlayer(players[0], ayaIdx)
     }
 
     override fun onPrepared(mp: MediaPlayer) {
@@ -426,15 +422,10 @@ class AyahPlayerService : Service(),
         val p2 = players[oIndex(mp)]
 
         if (p2.isPlaying) p2.setNextMediaPlayer(p1)
-        else if (getState() == PlaybackStateCompat.STATE_PAUSED) {
-            if (allAyahsSize > lastPlayed!!.ayaIndex)
-                lastPlayed = coordinator.getAya(lastPlayed!!.ayaIndex)
-        }
         else {
             p1.start()
-            coordinator.track(lastPlayed!!.id, lastPlayed!!.ayaIndex)
-            if (allAyahsSize > lastPlayed!!.ayaIndex + 1)
-                preparePlayer(p2, coordinator.getAya(lastPlayed!!.ayaIndex + 1))
+            coordinator.track(allAyas[lastPlayedIdx].id)
+            if (lastPlayedIdx + 1 < allAyas.size) preparePlayer(p2, lastPlayedIdx + 1)
         }
 
         reciterId = pref.getString(getString(R.string.aya_reciter_key), "13")!!.toInt()
@@ -449,33 +440,35 @@ class AyahPlayerService : Service(),
 
         val repeat = pref.getInt(getString(R.string.aya_repeat_key), 1)
         if (repeat == 11) {
-            preparePlayer(p1, lastPlayed)
+            preparePlayer(p1, lastPlayedIdx)
             p2.reset()
             timesPlayed = 1
         }
         else if (timesPlayed < repeat) {
-            preparePlayer(p1, lastPlayed)
+            preparePlayer(p1, lastPlayedIdx)
             p2.reset()
             timesPlayed++
         }
         else {
             timesPlayed = 1
             if (getState() == PlaybackStateCompat.STATE_PAUSED) {
-                if (allAyahsSize > lastPlayed!!.ayaIndex) {
-                    val newAyah: Aya = coordinator.getAya(lastPlayed!!.ayaIndex + 1)
-                    coordinator.track(newAyah.id, newAyah.ayaIndex)
-                    if (allAyahsSize > newAyah.ayaIndex)
-                        preparePlayer(p1, coordinator.getAya(newAyah.ayaIndex))
-                    lastPlayed = newAyah
+                if (lastPlayedIdx < allAyas.size) {
+                    val newAyaIdx = lastPlayedIdx + 1
+                    val newAyah = allAyas[newAyaIdx]
+                    coordinator.track(newAyah.id)
+                    if (newAyah.id < allAyas.size) preparePlayer(p1, newAyaIdx)
+                    lastPlayedIdx = newAyaIdx
                 }
                 else ended()
             }
-            else if (allAyahsSize > lastPlayed!!.ayaIndex + 1) {
-                val newAyah: Aya = coordinator.getAya(lastPlayed!!.ayaIndex + 1)
-                coordinator.track(newAyah.id, newAyah.ayaIndex)
-                if (allAyahsSize > newAyah.ayaIndex + 1)
-                    preparePlayer(p1, coordinator.getAya(newAyah.ayaIndex + 1))
-                lastPlayed = newAyah
+            else if (lastPlayedIdx < allAyas.size + 1) {
+                val newAyaIdx = lastPlayedIdx + 1
+                val newAyah = allAyas[newAyaIdx]
+                coordinator.track(newAyah.id)
+                val newerAyaIdx = newAyaIdx + 1
+                //Log.d(Global.TAG, "BOBO ${newAyah.ayaIndex} and ${newerAya.ayaIndex}")
+                lastPlayedIdx = newAyaIdx
+                if (newAyah.id < allAyas.size) preparePlayer(p1, newerAyaIdx)
             }
             else ended()
         }
@@ -485,12 +478,16 @@ class AyahPlayerService : Service(),
 
     override fun onError(mp: MediaPlayer, what: Int, extra: Int): Boolean {
         // Not found
-        Toast.makeText(this, getString(R.string.recitation_not_available), Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            this,
+            getString(R.string.recitation_not_available),
+            Toast.LENGTH_SHORT
+        ).show()
 
         updatePbState(PlaybackStateCompat.STATE_STOPPED)
         coordinator.onUiUpdate(PlaybackStateCompat.STATE_PAUSED)
 
-        getUri(lastPlayed)
+        getUri(allAyas[lastPlayedIdx])
 
         return true
     }
@@ -551,12 +548,10 @@ class AyahPlayerService : Service(),
     }
 
     private fun updatePbState(state: Int) {
-        //Log.i(Global.TAG, "In updatePbState for $state")
-
         var currentPosition = 0L
         try {
             currentPosition = player.currentPosition.toLong()
-        } catch (e: IllegalStateException) {}
+        } catch (_: IllegalStateException) {}
 
         stateBuilder.setState(state, currentPosition, 1F)
             .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
@@ -616,6 +611,8 @@ class AyahPlayerService : Service(),
     }
 
     private fun updateMetadata(duration: Boolean) {
+        val aya = allAyas[lastPlayedIdx]
+
         mediaMetadata = MediaMetadataCompat.Builder()
             .putBitmap(    //Notification icon in card
                 MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
@@ -629,15 +626,12 @@ class AyahPlayerService : Service(),
                 MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
             )
-            .putString(
-                MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, suarNames[currentAyah.suraNum]
-            )
-            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, suarNames[currentAyah.suraNum])
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, suarNames[aya.sura_num])
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, suarNames[aya.sura_num])
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterNames[reciterId])
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterNames[reciterId])
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION,
-                currentAyah.ayaNum.toString())
-            .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, currentAyah.ayaNum.toLong())
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, aya.aya_num.toString())
+            .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, aya.aya_num.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
                 (if (duration) player.duration else 0).toLong()
             )
@@ -656,11 +650,13 @@ class AyahPlayerService : Service(),
      * MediaPlayer's prepare()
      *
      * @param player The MediaPlayer object that will be used to play the audio.
-     * @param ayah the ayah to play
+     * @param ayaIdx the ayah to play
      */
-    private fun preparePlayer(player: MediaPlayer, ayah: Aya?) {
+    private fun preparePlayer(player: MediaPlayer, ayaIdx: Int) {
+        val aya = allAyas[ayaIdx]
+
         if (pref.getBoolean(getString(R.string.stop_on_sura_key), false)
-            && ayah!!.suraNum != chosenSurah) {
+            && aya.sura_num != chosenSurah) {
             if (surahEnding) stopPlaying()
             else surahEnding = true
             return
@@ -668,9 +664,11 @@ class AyahPlayerService : Service(),
 
         player.reset()
 
+        Log.d(Global.TAG, "Preparing ${aya.id}")
+
         val uri: Uri
         try {
-            uri = getUri(ayah)
+            uri = getUri(aya)
             player.setDataSource(applicationContext, uri)
             player.prepareAsync()
         } catch (e: Exception) {
@@ -685,15 +683,16 @@ class AyahPlayerService : Service(),
      */
     fun nextAyah() {
         if (getState() != PlaybackStateCompat.STATE_PLAYING
-            || lastPlayed!!.ayaIndex + 2 > allAyahsSize)
+            || lastPlayedIdx + 2 > allAyas.size)
             return
 
-        lastPlayed = coordinator.getAya(lastPlayed!!.ayaIndex + 1)
-        coordinator.track(lastPlayed!!.id, lastPlayed!!.ayaIndex)
+        lastPlayedIdx++
+        Log.d(Global.TAG, "HERE")
+        coordinator.track(allAyas[lastPlayedIdx].id)
 
         for (i in 0..1) {
             if (players[i].isPlaying) {
-                preparePlayer(players[i], lastPlayed)
+                preparePlayer(players[i], lastPlayedIdx)
                 players[o(i)].reset()
                 break
             }
@@ -707,15 +706,14 @@ class AyahPlayerService : Service(),
      * prepare the next ayah and reset the other player
      */
     fun previousAyah() {
-        if (getState() != PlaybackStateCompat.STATE_PLAYING || lastPlayed!!.ayaIndex - 1 < 0)
-            return
+        if (getState() != PlaybackStateCompat.STATE_PLAYING || lastPlayedIdx - 1 < 0) return
 
-        lastPlayed = coordinator.getAya(lastPlayed!!.ayaIndex - 1)
-        coordinator.track(lastPlayed!!.id, lastPlayed!!.ayaIndex)
+        lastPlayedIdx--
+        coordinator.track(allAyas[lastPlayedIdx].id)
 
         for (i in 0..1) {
             if (players[i].isPlaying) {
-                preparePlayer(players[i], lastPlayed)
+                preparePlayer(players[i], lastPlayedIdx)
                 players[o(i)].reset()
                 break
             }
@@ -748,14 +746,10 @@ class AyahPlayerService : Service(),
     private fun ended() {
         val quranPages = 604
         if (pref.getBoolean(getString(R.string.stop_on_page_key), false)) stopPlaying()
-        else if (currentPage < quranPages && lastPlayed!!.ayaIndex + 1 == allAyahsSize) {
+        else if (currentPage < quranPages && lastPlayedIdx + 1 == allAyas.size) {
             coordinator.nextPage()
 
-            val ayah = coordinator.getAya(0)
-            val bundle = Bundle()
-            val aya = Aya(ayah.id, ayah.suraNum, ayah.ayaNum, ayah.ayaIndex)
-            bundle.putSerializable("aya", aya)
-            callback.onPlayFromMediaId(ayah.ayaNum.toString(), bundle)
+            callback.onPlayFromMediaId("0", null)
         }
     }
 
@@ -767,13 +761,13 @@ class AyahPlayerService : Service(),
         releasePlayers()
     }
 
-    private fun getUri(ayah: Aya?): Uri {
+    private fun getUri(ayah: AyatDB): Uri {
         val choice = pref.getString(getString(R.string.aya_reciter_key), "13")!!.toInt()
         val sources = db.ayatTelawaDao().getReciter(choice)
 
         var uri = "https://www.everyayah.com/data/"
         uri += sources[0].getSource()
-        uri += String.format(Locale.US, "%03d%03d.mp3", ayah!!.suraNum, ayah.ayaNum)
+        uri += String.format(Locale.US, "%03d%03d.mp3", ayah.sura_num, ayah.aya_num)
 
         return Uri.parse(uri)
     }
@@ -782,20 +776,12 @@ class AyahPlayerService : Service(),
         return controller.playbackState.state
     }
 
-    fun setPageAyasSize(allAyahsSize: Int) {
-        this.allAyahsSize = allAyahsSize
-    }
-
-    fun setCurrentPage(currentPage: Int) {
+    fun setChosenPage(currentPage: Int) {
         this.currentPage = currentPage
     }
 
     fun setChosenSurah(chosenSurah: Int) {
         this.chosenSurah = chosenSurah
-    }
-
-    fun setViewType(viewType: String) {
-        this.viewType = viewType
     }
 
     private fun o(i: Int): Int {
@@ -838,10 +824,15 @@ class AyahPlayerService : Service(),
         players[1].release()
     }
 
+    private fun stopForeground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) stopForeground(STOP_FOREGROUND_DETACH)
+        else stopForeground(false)
+    }
+
     private fun unregisterReceiver() {
         try {
             unregisterReceiver(receiver)
-        } catch (e: IllegalArgumentException) {}
+        } catch (_: IllegalArgumentException) {}
     }
 
     override fun onUnbind(intent: Intent?): Boolean {

@@ -21,8 +21,7 @@ fun MyCircularProgressIndicator(
 ) {
     CircularProgressIndicator(
         color = color,
-        modifier = Modifier
-            .padding(padding)
+        modifier = Modifier.padding(padding)
     )
 }
 

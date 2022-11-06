@@ -36,7 +36,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AyatDB
 import bassamalim.hidaya.dialogs.QuranSettingsDialog
-import bassamalim.hidaya.models.Aya
 import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.services.AyahPlayerService
@@ -48,9 +47,10 @@ import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
+import java.util.concurrent.Executors
 
 class QuranViewer : AppCompatActivity() {
-// TODO fix tracking
+
     private lateinit var db: AppDatabase
     private lateinit var pref: SharedPreferences
     private lateinit var action: String
@@ -209,23 +209,18 @@ class QuranViewer : AppCompatActivity() {
                 updateButton(state)
             }
 
-            override fun getAya(index: Int): Aya {
-                val aya = currentAyas[index]
-                return Aya(aya.getId(), aya.getSurahNum(), aya.getAyahNum(), aya.getIndex())
-            }
-
             override fun nextPage() {
                 if (currentPage.value < Global.QURAN_PAGES) currentPage.value++
             }
 
-            override fun track(ayaId: Int, ayaIndex: Int) {
-                val aya = currentAyas[ayaIndex]
+            override fun track(ayaId: Int) {
+                val idx = currentAyas.indexOfFirst { aya -> aya.getId() == ayaId }
 
-                if (aya.getId() != ayaId) return  // not the same page
+                if (idx == -1) return  // not the same page
 
                 //scrollTo(aya.getScreen()!!.top)
 
-                tracked.value = aya
+                tracked.value = currentAyas[idx]
             }
         }
 
@@ -246,13 +241,11 @@ class QuranViewer : AppCompatActivity() {
 
             if (selected.value == null) selected.value = currentAyas[0]
 
-            player!!.setCurrentPage(currentPage.value)
-            player!!.setViewType(viewType.value)
-            player!!.setPageAyasSize(currentAyas.size)
+            player!!.setChosenPage(currentPage.value)
             player!!.setCoordinator(uiListener!!)
-
             player!!.setChosenSurah(selected.value!!.getSurahNum())
-            requestPlay(selected.value!!)
+
+            requestPlay(selected.value!!.getId())
 
             selected.value = null
         }
@@ -262,11 +255,11 @@ class QuranViewer : AppCompatActivity() {
         }
     }
 
-    private fun requestPlay(ayah: Ayah) {
+    private fun requestPlay(ayahId: Int) {
         val bundle = Bundle()
-        val aya = Aya(ayah.getId(), ayah.getSurahNum(), ayah.getAyahNum(), ayah.getIndex())
-        bundle.putSerializable("aya", aya)
-        tc!!.playFromMediaId(ayah.getAyahNum().toString(), bundle)
+        Executors.newSingleThreadExecutor().execute {
+            tc!!.playFromMediaId(ayahId.toString(), bundle)
+        }
     }
 
     private fun updateButton(state: Int) {
@@ -395,7 +388,7 @@ class QuranViewer : AppCompatActivity() {
                                     if (selected.value == null) player!!.transportControls.play()
                                     else {
                                         player!!.setChosenSurah(selected.value!!.getSurahNum())
-                                        requestPlay(selected.value!!)
+                                        requestPlay(selected.value!!.getId())
                                     }
                                 }
                             }
@@ -573,7 +566,7 @@ class QuranViewer : AppCompatActivity() {
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(90.dp)
+                .height(80.dp)
                 .padding(top = 5.dp, bottom = 10.dp, start = 5.dp, end = 5.dp)
                 .onGloballyPositioned { layoutCoordinates ->
                     if (aya.getSurahNum() == initialSura) {
@@ -592,7 +585,7 @@ class QuranViewer : AppCompatActivity() {
 
             MyText(
                 text = aya.getSurahName(),
-                fontSize = (textSize + 5).sp,
+                fontSize = (textSize + 2).sp,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -602,7 +595,7 @@ class QuranViewer : AppCompatActivity() {
     private fun Basmalah() {
         MyText(
             text = stringResource(R.string.basmalah),
-            fontSize = textSize.sp,
+            fontSize = (textSize - 2).sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 5.dp)
         )

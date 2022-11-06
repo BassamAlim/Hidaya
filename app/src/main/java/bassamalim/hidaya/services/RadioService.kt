@@ -131,7 +131,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
             stopSelf()    // Stop the service
             mediaSession.isActive = false    // Set the session inactive
-            stopForeground(false)    // Take the service out of the foreground
+            stopForeground()    // Take the service out of the foreground
         }
 
         override fun onPause() {
@@ -147,7 +147,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             updateNotification(false)
 
             // Take the service out of the foreground, retain the notification
-            stopForeground(false)
+            stopForeground()
         }
     }
 
@@ -419,6 +419,11 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(notificationChannel)
         }
+    }
+
+    private fun stopForeground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) stopForeground(STOP_FOREGROUND_DETACH)
+        else stopForeground(false)
     }
 
     private fun getContentIntent(): PendingIntent {

@@ -184,7 +184,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             player.pause()
 
             // Take the service out of the foreground, retain the notification
-            stopForeground(false)
+            stopForeground()
         }
 
         override fun onStop() {
@@ -206,7 +206,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
             stopSelf()    // Stop the service
             mediaSession.isActive = false    // Set the session inactive
-            stopForeground(false)    // Take the service out of the foreground
+            stopForeground()    // Take the service out of the foreground
         }
 
         override fun onFastForward() {
@@ -748,7 +748,12 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private fun unregisterReceiver() {
         try {
             unregisterReceiver(receiver)
-        } catch (e: IllegalArgumentException) {}
+        } catch (_: IllegalArgumentException) {}
+    }
+
+    private fun stopForeground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) stopForeground(STOP_FOREGROUND_DETACH)
+        else stopForeground(false)
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
