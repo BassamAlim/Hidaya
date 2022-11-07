@@ -1,6 +1,7 @@
 package bassamalim.hidaya.ui.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
@@ -97,7 +98,7 @@ fun Tabs(
 // creating a tab content method in which we will be displaying the individual page of our tab.
 @ExperimentalPagerApi
 @Composable
-fun TabsContent(
+fun ColumnScope.TabsContent(
     count: Int,
     pagerState: PagerState,
     content: @Composable (Int) -> Unit
@@ -106,7 +107,8 @@ fun TabsContent(
     HorizontalPager(
         count = count,
         state = pagerState,
-        verticalAlignment = Alignment.Top
+        verticalAlignment = Alignment.Top,
+        modifier = Modifier.weight(1F)
     ) { page ->
         content(page)
     }

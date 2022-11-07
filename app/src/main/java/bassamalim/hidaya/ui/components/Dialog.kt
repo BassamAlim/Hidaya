@@ -88,7 +88,6 @@ fun TutorialDialog(
     val doNotShowAgain = remember { mutableStateOf(false) }
     val shown = remember { mutableStateOf(true) }
     val onDismiss = {
-        Log.d(Global.TAG, "HERE")
         shown.value = false
         if (doNotShowAgain.value)
             pref.edit()

@@ -200,7 +200,10 @@ class MainActivity : AppCompatActivity() {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            MyText(text = stringResource(id = R.string.app_name))
+                            MyText(
+                                stringResource(id = R.string.app_name),
+                                textColor = AppTheme.colors.onPrimary
+                            )
 
                             Column(
                                 Modifier
@@ -215,14 +218,18 @@ class MainActivity : AppCompatActivity() {
                                     horizontalAlignment = Alignment.End
                                 ) {
                                     val content = getTodayScreenContent(dateOffset)
+
                                     MyText(
                                         text = content[0],
                                         fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.Bold,
+                                        textColor = AppTheme.colors.onPrimary
                                     )
+
                                     MyText(
                                         text = content[1],
-                                        fontSize = 16.sp
+                                        fontSize = 16.sp,
+                                        textColor = AppTheme.colors.onPrimary
                                     )
                                 }
                             }

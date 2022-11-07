@@ -1,6 +1,5 @@
 package bassamalim.hidaya.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -15,7 +14,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import bassamalim.hidaya.R
-import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.ui.theme.AppTheme
 
 sealed class BottomNavItem(var icon: Int, var screen_route: String){
@@ -53,7 +51,13 @@ fun MyBottomNavigation(navController: NavController) {
 
         items.forEachIndexed { index, item ->
             BottomNavigationItem(
-                label = { MyText(text = titles[index], fontSize = 10.sp) },
+                label = {
+                    MyText(
+                        titles[index],
+                        fontSize = 10.sp,
+                        textColor = AppTheme.colors.accent
+                    )
+                },
                 alwaysShowLabel = false,
                 icon = {
                     Icon(

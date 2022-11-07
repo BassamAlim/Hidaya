@@ -297,7 +297,7 @@ class HomeScreen(
                     ) {
                         MyButton(
                             text = stringResource(id = R.string.go_to_page),
-                            textColor = AppTheme.colors.accent,
+                            textColor = AppTheme.colors.secondary,
                             elevation = 0,
                             innerPadding = PaddingValues(0.dp)
                         ) {

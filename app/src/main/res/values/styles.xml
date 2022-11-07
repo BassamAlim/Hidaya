@@ -152,40 +152,6 @@
         <item name="myRipple">@color/ripple_L</item>
     </style>
 
-    <style name="PrayerCard" parent="Base.CardView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/prayer_card_height</item>
-        <item name="android:layout_marginTop">7dp</item>
-        <item name="android:layout_marginBottom">7dp</item>
-        <item name="android:layout_marginStart">@dimen/prayer_card_margin</item>
-        <item name="android:layout_marginEnd">@dimen/prayer_card_margin</item>
-        <item name="cardBackgroundColor">?mySurface</item>
-        <item name="cardCornerRadius">20dp</item>
-        <item name="cardElevation">10dp</item>
-        <item name="cardMaxElevation">12dp</item>
-        <item name="cardPreventCornerOverlap">true</item>
-    </style>
-
-    <style name="PrayerScreen" parent="Widget.AppCompat.TextView">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingStart">25dp</item>
-        <item name="android:paddingEnd">25dp</item>
-        <item name="android:textSize" tools:ignore="SpUsage">35dp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:fontFamily">@font/tajawal_regular</item>
-    </style>
-
-    <style name="PrayerDelayTv" parent="Widget.AppCompat.TextView">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:padding">5dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textSize" tools:ignore="SpUsage">25dp</item>
-        <item name="android:textColor">?myAccent</item>
-        <item name="android:fontFamily">@font/tajawal_regular</item>
-    </style>
-
     <style name="MySpinnerItem" parent="TextAppearance.AppCompat.Widget.DropDownItem">
         <item name="android:gravity">center</item>
         <item name="android:textSize">18sp</item>

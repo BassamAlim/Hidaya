@@ -123,7 +123,9 @@ class DateConverter : AppCompatActivity() {
                     MyButton(
                         text = stringResource(id = R.string.pick_hijri_date),
                         fontSize = 22.sp,
-                        modifier = Modifier.padding(vertical = 15.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 15.dp, horizontal = 30.dp),
                         innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp)
                     ) {
                         pickHijri()
@@ -132,7 +134,9 @@ class DateConverter : AppCompatActivity() {
                     MyButton(
                         text = stringResource(id = R.string.pick_gregorian_date),
                         fontSize = 22.sp,
-                        modifier = Modifier.padding(vertical = 15.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 15.dp, horizontal = 30.dp),
                         innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp)
                     ) {
                         pickGregorian()

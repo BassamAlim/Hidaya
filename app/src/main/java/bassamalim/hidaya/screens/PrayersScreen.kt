@@ -257,12 +257,10 @@ class PrayersScreen(
                 Row {
                     // Delay
                     MyText(
-                        if (delay > 0) LangUtils.translateNums(
-                            context, "+$delay", false
-                        )
-                        else if (delay < 0) LangUtils.translateNums(
-                            context, delay.toString(), false
-                        )
+                        if (delay > 0)
+                            LangUtils.translateNums(context, "+$delay", false)
+                        else if (delay < 0)
+                            LangUtils.translateNums(context, delay.toString(), false)
                         else ""
                     )
 
@@ -283,7 +281,7 @@ class PrayersScreen(
                         contentDescription = stringResource(
                             id = R.string.notification_image_description
                         ),
-                        tint = AppTheme.colors.accent,
+                        tint = AppTheme.colors.secondary,
                         modifier = Modifier.size(35.dp)
                     )
                 }

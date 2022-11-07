@@ -466,7 +466,6 @@ class AyahPlayerService : Service(),
                 val newAyah = allAyas[newAyaIdx]
                 coordinator.track(newAyah.id)
                 val newerAyaIdx = newAyaIdx + 1
-                //Log.d(Global.TAG, "BOBO ${newAyah.ayaIndex} and ${newerAya.ayaIndex}")
                 lastPlayedIdx = newAyaIdx
                 if (newAyah.id < allAyas.size) preparePlayer(p1, newerAyaIdx)
             }
@@ -664,8 +663,6 @@ class AyahPlayerService : Service(),
 
         player.reset()
 
-        Log.d(Global.TAG, "Preparing ${aya.id}")
-
         val uri: Uri
         try {
             uri = getUri(aya)
@@ -687,7 +684,6 @@ class AyahPlayerService : Service(),
             return
 
         lastPlayedIdx++
-        Log.d(Global.TAG, "HERE")
         coordinator.track(allAyas[lastPlayedIdx].id)
 
         for (i in 0..1) {
