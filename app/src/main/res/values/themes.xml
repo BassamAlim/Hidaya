@@ -2,8 +2,6 @@
 
     <style name="MainAppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="textAllCaps">false</item>
-        <item name="spinnerDropDownItemStyle">@style/MySpinnerItem</item>
-        <item name="alertDialogTheme">@style/MyAlertDialogTheme</item>
         <item name="android:datePickerDialogTheme">@style/MyDatePickerDialogTheme</item>
         <item name="android:timePickerDialogTheme">@style/MyTimePicker</item>
         <item name="android:timePickerStyle">@style/MyTimePicker</item>

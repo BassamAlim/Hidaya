@@ -1,6 +1,0 @@
-<resources>
-
-    <dimen name="prayer_card_height">80dp</dimen>
-    <dimen name="prayer_card_margin">16dp</dimen>
-
-</resources>
