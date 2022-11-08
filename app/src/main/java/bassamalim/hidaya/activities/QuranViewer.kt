@@ -508,7 +508,7 @@ class QuranViewer : AppCompatActivity() {
                 addStyle(
                     style = SpanStyle(
                         color =
-                            if (selected.value == seqAya) AppTheme.colors.accent
+                            if (selected.value == seqAya) AppTheme.colors.highlight
                             else if (tracked.value == seqAya) AppTheme.colors.track
                             else AppTheme.colors.strongText
                     ),

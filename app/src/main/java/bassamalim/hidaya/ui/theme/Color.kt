@@ -42,7 +42,6 @@ val AccentM = Color(0xFF00ADB5)
 val AltAccentM = Color(0xFF006B70)
 val TextM = Color(0xFFBCC2C7)
 val WeakTextM = Color(0xFFACB1B6)
-val HighlightM = Color(0xFF00ADB5)
 val TrackM = Color(0xFF48C986)
 val ShadowM = Color(0xFF586678)
 
@@ -61,7 +60,7 @@ val WeakTextN = Color(0xFFACB1B6)
 val HighlightN = Color(0xFF01849C)
 val TrackN = Color(0xFF113297)
 val ShadowN = Color(0xFF343D47)
-val QuranBGN = Color(0xFFBACDE1)
+val QuranBGN = Color(0xFF101010)
 
 class AppColors(
     background: Color,
@@ -162,7 +161,7 @@ fun darkColors(): AppColors = AppColors(
     strongText = White,
     weakText = WeakTextM,
     ripple = RippleM,
-    highlight = HighlightM,
+    highlight = AccentM,
     shadow = ShadowM,
     track = TrackM,
     quranBG = BGM
