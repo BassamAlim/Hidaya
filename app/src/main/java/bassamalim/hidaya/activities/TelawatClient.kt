@@ -283,7 +283,7 @@ class TelawatClient : ComponentActivity() {
             title = stringResource(id = R.string.recitations),
             bottomBar = {
                 BottomAppBar(
-                    backgroundColor = AppTheme.colors.weakPrimary
+                    backgroundColor = AppTheme.colors.primary
                 ) {
                     Row(
                         Modifier.fillMaxWidth(),
@@ -294,9 +294,9 @@ class TelawatClient : ComponentActivity() {
                             iconId = R.drawable.ic_repeat,
                             description = stringResource(R.string.repeat_description),
                             tint =
-                            if (repeat.value == PlaybackStateCompat.REPEAT_MODE_ONE)
-                                AppTheme.colors.accent
-                            else AppTheme.colors.onPrimary
+                                if (repeat.value == PlaybackStateCompat.REPEAT_MODE_ONE)
+                                    AppTheme.colors.secondary
+                                else AppTheme.colors.onPrimary
                         ) {
                             if (repeat.value == PlaybackStateCompat.REPEAT_MODE_NONE) {
                                 repeat.value = PlaybackStateCompat.REPEAT_MODE_ONE
@@ -329,7 +329,7 @@ class TelawatClient : ComponentActivity() {
                             description = stringResource(R.string.shuffle_description),
                             tint =
                                 if (shuffle.value == PlaybackStateCompat.SHUFFLE_MODE_ALL)
-                                    AppTheme.colors.accent
+                                    AppTheme.colors.secondary
                                 else AppTheme.colors.onPrimary
                         ) {
                             if (shuffle.value == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
@@ -433,7 +433,7 @@ class TelawatClient : ComponentActivity() {
                 ) {
                     MyImageButton(
                         imageResId = R.drawable.ic_player_previous,
-                        description = stringResource(id = R.string.previous_day_button_description),
+                        description = stringResource(R.string.previous_day_button_description),
                         enabled = controlsEnabled.value
                     ) {
                         tc.skipToPrevious()
@@ -441,7 +441,7 @@ class TelawatClient : ComponentActivity() {
 
                     MyImageButton(
                         imageResId = R.drawable.ic_backward,
-                        description = stringResource(id = R.string.rewind_btn_description),
+                        description = stringResource(R.string.rewind_btn_description),
                         enabled = controlsEnabled.value
                     ) {
                         tc.rewind()
@@ -449,7 +449,7 @@ class TelawatClient : ComponentActivity() {
 
                     MyPlayerBtn(
                         state = btnState,
-                        enabled = controlsEnabled.value
+                        enabled = controlsEnabled.value,
                     ) {
                         if (btnState.value != PlaybackStateCompat.STATE_NONE) {
                             // Since this is a play/pause button
@@ -468,7 +468,7 @@ class TelawatClient : ComponentActivity() {
 
                     MyImageButton(
                         imageResId = R.drawable.ic_forward,
-                        description = stringResource(id = R.string.fast_forward_btn_description),
+                        description = stringResource(R.string.fast_forward_btn_description),
                         enabled = controlsEnabled.value
                     ) {
                         tc.fastForward()
@@ -476,7 +476,7 @@ class TelawatClient : ComponentActivity() {
 
                     MyImageButton(
                         imageResId = R.drawable.ic_player_next,
-                        description = stringResource(id = R.string.next_track_btn_description),
+                        description = stringResource(R.string.next_track_btn_description),
                         enabled = controlsEnabled.value
                     ) {
                         tc.skipToNext()

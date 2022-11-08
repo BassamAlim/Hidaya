@@ -86,6 +86,7 @@ class QuizResultActivity : ComponentActivity() {
                         text = "${getString(R.string.your_score_is)} ${score * 10}%",
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
+                        textColor = AppTheme.colors.onPrimary,
                         modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
                     )
                 }

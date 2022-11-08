@@ -42,7 +42,7 @@ fun MyFloatingActionButton(
             modifier = Modifier
                 .size(60.dp)
                 .padding(12.dp),
-            tint = AppTheme.colors.accent
+            tint = AppTheme.colors.secondary
         )
     }
 }

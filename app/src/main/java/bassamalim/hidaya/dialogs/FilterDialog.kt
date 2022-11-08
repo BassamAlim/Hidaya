@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -15,10 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.ui.components.MyButton
-import bassamalim.hidaya.ui.components.MyDialog
-import bassamalim.hidaya.ui.components.MyLazyColumn
-import bassamalim.hidaya.ui.components.MyText
+import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import com.google.gson.Gson
 
@@ -128,7 +126,11 @@ class FilterDialog(
                 checked = selected[index],
                 onCheckedChange = {
                     selected[index] = it
-                }
+                },
+                colors = CheckboxDefaults.colors(
+                    checkedColor = AppTheme.colors.accent,
+                    uncheckedColor = AppTheme.colors.text
+                )
             )
 
             MyText(strings[index])

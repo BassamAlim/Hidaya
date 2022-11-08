@@ -16,18 +16,18 @@ val BGL = Color(0xFF8D99AE)
 val PrimaryL = Color(0xFF293241)
 val PrimaryWeakL = Color(0xB3293241)
 val OnPrimaryL = Color(0xFFBCC2C7)
+val SecondaryL = Color(0xFFD18E21)
+val AltSecondaryL = Color(0xFFAA7113)
 val SurfaceL = Color(0xFF7E899C)
-val RippleL = Color(0xFF99A5BC)
-val AccentL = Color(0xFFD18E21)
-val AltAccentL = Color(0xFFAA7113)
+val AccentL = Color(0xFF14213D)
+val AltAccentL = Color(0xFF1C2E55)
 val TextL = Color(0xFF000000)
 val WeakTextL = Color(0xFF414040)
+val RippleL = Color(0xFF99A5BC)
 val HighlightL = Color(0xFF01849C)
 val TrackL = Color(0xFF113297)
-val QBGL = Color(0xFFBACDE1)
-val SecondaryL = Color(0xFF14213D)
-val AltSecondaryL = Color(0xFF1C2E55)
 val ShadowL = Color(0xFF586678)
+val QuranBGL = Color(0xFFBACDE1)
 
 // Theme M (Dark)
 val BGM = Color(0xFF1A2027)
@@ -60,19 +60,19 @@ val TextN = Color(0xFFBCC2C7)
 val WeakTextN = Color(0xFFACB1B6)
 val HighlightN = Color(0xFF01849C)
 val TrackN = Color(0xFF113297)
-val QBGN = Color(0xFFBACDE1)
 val ShadowN = Color(0xFF343D47)
+val QuranBGN = Color(0xFFBACDE1)
 
 class AppColors(
     background: Color,
-    surface: Color,
-    altSurface: Color,
-    onSurface: Color,
     primary: Color,
     weakPrimary: Color,
     onPrimary: Color,
     secondary: Color,
     onSecondary: Color,
+    surface: Color,
+    altSurface: Color,
+    onSurface: Color,
     accent: Color,
     altAccent: Color,
     text: Color,
@@ -81,7 +81,8 @@ class AppColors(
     ripple: Color,
     highlight: Color,
     shadow: Color,
-    track: Color
+    track: Color,
+    quranBG: Color
 ) {
     var background by mutableStateOf(background)
         private set
@@ -119,6 +120,8 @@ class AppColors(
         private set
     var track by mutableStateOf(track)
         private set
+    var quranBG by mutableStateOf(quranBG)
+        private set
 }
 
 fun lightColors(): AppColors = AppColors(
@@ -139,7 +142,8 @@ fun lightColors(): AppColors = AppColors(
     ripple = RippleL,
     highlight = HighlightL,
     shadow = ShadowL,
-    track = TrackL
+    track = TrackL,
+    quranBG = QuranBGL
 )
 
 fun darkColors(): AppColors = AppColors(
@@ -160,7 +164,8 @@ fun darkColors(): AppColors = AppColors(
     ripple = RippleM,
     highlight = HighlightM,
     shadow = ShadowM,
-    track = TrackM
+    track = TrackM,
+    quranBG = BGM
 )
 
 fun nightColors(): AppColors = AppColors(
@@ -181,7 +186,8 @@ fun nightColors(): AppColors = AppColors(
     ripple = RippleN,
     highlight = HighlightN,
     shadow = ShadowN,
-    track = TrackN
+    track = TrackN,
+    quranBG = QuranBGN
 )
 
 val LocalColors = staticCompositionLocalOf { lightColors() }

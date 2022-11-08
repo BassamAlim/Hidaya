@@ -79,8 +79,8 @@ fun Tabs(
                         text = pageNames[index],
                         fontSize = 18.sp,
                         textColor =
-                            if (pagerState.currentPage == index) AppTheme.colors.accent
-                            else AppTheme.colors.text
+                            if (pagerState.currentPage == index) AppTheme.colors.secondary
+                            else AppTheme.colors.onPrimary
                     )
                 },
                 selected = pagerState.currentPage == index,

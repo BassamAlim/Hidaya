@@ -26,8 +26,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.helpers.PrayTimes
-import bassamalim.hidaya.replacements.AnalogClockView
+import bassamalim.hidaya.replacements.AnalogClock
 import bassamalim.hidaya.ui.components.MyButton
+import bassamalim.hidaya.ui.components.MyClickableText
 import bassamalim.hidaya.ui.components.MySurface
 import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
@@ -193,7 +194,7 @@ class HomeScreen(
                         factory = { context ->
                             val view = LayoutInflater.from(context).inflate(
                                 R.layout.clock_view, null, false
-                            ) as AnalogClockView
+                            ) as AnalogClock
                             // do whatever you want...
                             view // return the view
                         },
@@ -271,7 +272,8 @@ class HomeScreen(
                 Modifier.padding(bottom = 3.dp)
             ) {
                 Column(
-                    Modifier.fillMaxWidth()
+                    Modifier
+                        .fillMaxWidth()
                         .padding(vertical = 14.dp, horizontal = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -295,11 +297,10 @@ class HomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        MyButton(
-                            text = stringResource(id = R.string.go_to_page),
-                            textColor = AppTheme.colors.secondary,
-                            elevation = 0,
-                            innerPadding = PaddingValues(0.dp)
+                        MyClickableText(
+                            stringResource(R.string.go_to_page),
+                            textColor = AppTheme.colors.accent,
+                            modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                         ) {
                             val intent = Intent(context, QuranViewer::class.java)
                             intent.action = "by_page"

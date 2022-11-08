@@ -128,6 +128,7 @@ class QuizActivity : ComponentActivity() {
                     MyText(
                         text = questions[current.value].getQuestionText(),
                         fontSize = 28.sp,
+                        textColor = AppTheme.colors.onPrimary,
                         modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
                     )
                 }

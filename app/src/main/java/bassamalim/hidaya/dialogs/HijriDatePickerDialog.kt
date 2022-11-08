@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
+import bassamalim.hidaya.ui.components.MyClickableText
 import bassamalim.hidaya.ui.components.MyDialog
 import bassamalim.hidaya.ui.components.MyImageButton
 import bassamalim.hidaya.ui.components.MyText
@@ -80,7 +81,8 @@ class HijriDatePickerDialog(
                             text = LangUtils.translateNums(
                                 context, selected[0].toString()
                             ),
-                            fontSize = 18.sp
+                            fontSize = 18.sp,
+                            textColor = AppTheme.colors.onPrimary
                         )
 
                         // main text
@@ -90,7 +92,8 @@ class HijriDatePickerDialog(
                         MyText(
                             text = mainText,
                             fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            textColor = AppTheme.colors.onPrimary
                         )
                     }
                 }
@@ -161,28 +164,24 @@ class HijriDatePickerDialog(
                         .padding(bottom = 20.dp)
                 ) {
                     // save
-                    MyText(
+                    MyClickableText(
                         stringResource(R.string.select),
-                        Modifier
-                            .padding(horizontal = 20.dp)
-                            .clickable {
-                                selectionState.value = UmmalquraCalendar(
-                                    selected[0], selected[1], selected[2]
-                                )
-                                shown.value = false
-                                onSet()
-                            }
-                    )
+                        Modifier.padding(start = 10.dp)
+                    ) {
+                        selectionState.value = UmmalquraCalendar(
+                            selected[0], selected[1], selected[2]
+                        )
+                        shown.value = false
+                        onSet()
+                    }
 
                     // cancel
-                    MyText(
+                    MyClickableText(
                         stringResource(R.string.cancel),
-                        Modifier
-                            .padding(horizontal = 20.dp)
-                            .clickable {
-                                shown.value = false
-                            }
-                    )
+                        Modifier.padding(start = 10.dp)
+                    ) {
+                        shown.value = false
+                    }
                 }
             }
         }
@@ -209,16 +208,20 @@ class HijriDatePickerDialog(
                         ints.forEachIndexed { col, value ->
                             if (value.isEmpty()) MyText(value, Modifier.size(40.dp))
                             else {
+                                val isSelected = current[Calendar.YEAR] == selected[0]
+                                        && current[Calendar.MONTH] == selected[1]
+                                        && value.toInt() == selected[2]
+
                                 MyText(
                                     LangUtils.translateNums(context, value),
-                                    Modifier
+                                    textColor =
+                                        if (isSelected) AppTheme.colors.onPrimary
+                                        else AppTheme.colors.text,
+                                    modifier = Modifier
                                         .size(40.dp)
                                         .clip(CircleShape)
                                         .background(
-                                            if (current[Calendar.YEAR] == selected[0]
-                                                && current[Calendar.MONTH] == selected[1]
-                                                && value.toInt() == selected[2]
-                                            ) AppTheme.colors.accent
+                                            if (isSelected) AppTheme.colors.accent
                                             else AppTheme.colors.background
                                         )
                                         .clickable {

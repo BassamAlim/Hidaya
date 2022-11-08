@@ -50,10 +50,11 @@ fun ListPref(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (iconResId != -1)
-                Image(
+                Icon(
                     painter = painterResource(iconResId),
                     contentDescription = stringResource(titleResId),
-                    Modifier.padding(end = 20.dp)
+                    Modifier.padding(end = 20.dp),
+                    tint = AppTheme.colors.text
                 )
 
             Column {

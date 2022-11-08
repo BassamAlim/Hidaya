@@ -378,7 +378,7 @@ class TelawatActivity : ComponentActivity() {
                 .padding(vertical = 6.dp, horizontal = 8.dp),
             elevation = 10.dp,
             shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
-            color = AppTheme.colors.primary
+            color = AppTheme.colors.surface
         ) {
             Column(
                 Modifier

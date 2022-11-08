@@ -43,7 +43,7 @@ fun MyBottomNavigation(navController: NavController) {
 
     BottomNavigation(
         backgroundColor = AppTheme.colors.primary,
-        contentColor = AppTheme.colors.accent,
+        contentColor = AppTheme.colors.secondary,
         elevation = 12.dp
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -55,7 +55,7 @@ fun MyBottomNavigation(navController: NavController) {
                     MyText(
                         titles[index],
                         fontSize = 10.sp,
-                        textColor = AppTheme.colors.accent
+                        textColor = AppTheme.colors.secondary
                     )
                 },
                 alwaysShowLabel = false,
@@ -66,7 +66,7 @@ fun MyBottomNavigation(navController: NavController) {
                         modifier = Modifier.size(24.dp)
                     )
                 },
-                selectedContentColor = AppTheme.colors.accent,
+                selectedContentColor = AppTheme.colors.secondary,
                 unselectedContentColor = AppTheme.colors.onPrimary,
                 selected = currentRoute == item.screen_route,
                 onClick = {

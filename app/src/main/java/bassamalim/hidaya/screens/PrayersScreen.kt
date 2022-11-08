@@ -281,7 +281,7 @@ class PrayersScreen(
                         contentDescription = stringResource(
                             id = R.string.notification_image_description
                         ),
-                        tint = AppTheme.colors.secondary,
+                        tint = AppTheme.colors.accent,
                         modifier = Modifier.size(35.dp)
                     )
                 }

@@ -289,6 +289,7 @@ class QuranViewer : AppCompatActivity() {
     private fun UI() {
         MyScaffold(
             title = "",
+            backgroundColor = AppTheme.colors.quranBG,
             topBar = {
                 TopAppBar(
                     backgroundColor = AppTheme.colors.primary,
@@ -307,6 +308,7 @@ class QuranViewer : AppCompatActivity() {
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Start,
+                            textColor = AppTheme.colors.onPrimary,
                             modifier = Modifier.width(140.dp)
                         )
 
@@ -317,6 +319,7 @@ class QuranViewer : AppCompatActivity() {
                                     ),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
+                            textColor = AppTheme.colors.onPrimary,
                             modifier = Modifier.width(140.dp)
                         )
 
@@ -328,6 +331,7 @@ class QuranViewer : AppCompatActivity() {
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.End,
+                            textColor = AppTheme.colors.onPrimary,
                             modifier = Modifier.width(140.dp)
                         )
                     }
@@ -351,7 +355,7 @@ class QuranViewer : AppCompatActivity() {
                                     R.drawable.ic_bookmarked
                                 else R.drawable.ic_bookmark,
                             description = stringResource(R.string.bookmark_page_button_description),
-                            tint = AppTheme.colors.accent
+                            tint = AppTheme.colors.onPrimary
                         ) {
                             bookmarkedPage.value = currentPage.value
 
@@ -405,7 +409,7 @@ class QuranViewer : AppCompatActivity() {
                         MyIconBtn(
                             iconId = R.drawable.ic_preferences,
                             description = stringResource(R.string.settings),
-                            tint = AppTheme.colors.accent
+                            tint = AppTheme.colors.onPrimary
                         ) {
                             settingsDialogShown.value = true
                         }
@@ -586,7 +590,8 @@ class QuranViewer : AppCompatActivity() {
             MyText(
                 text = aya.getSurahName(),
                 fontSize = (textSize + 2).sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textColor = AppTheme.colors.onPrimary
             )
         }
     }

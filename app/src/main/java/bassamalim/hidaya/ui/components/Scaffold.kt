@@ -3,11 +3,13 @@ package bassamalim.hidaya.ui.components
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import bassamalim.hidaya.ui.theme.AppTheme
 
 @Composable
 fun MyScaffold(
     title: String,
+    backgroundColor: Color = AppTheme.colors.background,
     onBack: (() -> Unit)? = null,
     topBar: @Composable () -> Unit = { MyTopBar(title, onBack = onBack) },
     bottomBar: @Composable () -> Unit = {},
@@ -15,7 +17,7 @@ fun MyScaffold(
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
-        backgroundColor = AppTheme.colors.background,
+        backgroundColor = backgroundColor,
         topBar = topBar,
         bottomBar = bottomBar,
         floatingActionButton = fab,

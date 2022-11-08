@@ -17,7 +17,7 @@ import kotlin.math.min
 import kotlin.math.sin
 
 
-class AnalogClockView(context: Context, attrs: AttributeSet) : View(context, attrs) {
+class AnalogClock(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private val calendar = Calendar.getInstance()
     private var center = 0F
