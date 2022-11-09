@@ -151,7 +151,7 @@ class AboutActivity : ComponentActivity() {
     @Composable
     private fun Source(textResId: Int) {
         MyText(
-            text = stringResource(id = textResId),
+            text = stringResource(textResId),
             modifier = Modifier.padding(10.dp),
             fontSize = 22.sp,
             textAlign = TextAlign.Start

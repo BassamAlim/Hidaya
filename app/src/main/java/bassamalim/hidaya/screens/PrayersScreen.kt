@@ -146,7 +146,7 @@ class PrayersScreen(
 
                     MyIconBtn(
                         iconId = R.drawable.ic_location,
-                        description = stringResource(id = R.string.locate),
+                        description = stringResource(R.string.locate),
                         tint = AppTheme.colors.text,
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
@@ -182,7 +182,7 @@ class PrayersScreen(
                 ) {
                     MyIconBtn(
                         iconId = R.drawable.ic_left_arrow,
-                        description = stringResource(id = R.string.previous_day_button_description),
+                        description = stringResource(R.string.previous_day_button_description),
                         tint = AppTheme.colors.text
                     ) {
                         previousDay()
@@ -198,7 +198,7 @@ class PrayersScreen(
 
                     MyIconBtn(
                         iconId = R.drawable.ic_right_arrow,
-                        description = stringResource(id = R.string.next_day_button_description),
+                        description = stringResource(R.string.next_day_button_description),
                         tint = AppTheme.colors.text
                     ) {
                         nextDay()

@@ -115,7 +115,7 @@ class QuranSearcher : ComponentActivity() {
         val textState = remember { mutableStateOf(TextFieldValue("")) }
         val highlightColor = AppTheme.colors.accent
 
-        MyScaffold(stringResource(id = R.string.quran_searcher)) { padding ->
+        MyScaffold(stringResource(R.string.quran_searcher)) { padding ->
             Column(
                 Modifier
                     .fillMaxSize()
@@ -130,12 +130,12 @@ class QuranSearcher : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MyText(
-                        text = stringResource(id = R.string.search_for_quran_text)
+                        text = stringResource(R.string.search_for_quran_text)
                     )
 
                     SearchComponent(
                         state = textState,
-                        hint = stringResource(id = R.string.search),
+                        hint = stringResource(R.string.search),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 30.dp),
@@ -153,7 +153,7 @@ class QuranSearcher : ComponentActivity() {
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         MyText(
-                            text = stringResource(id = R.string.max_num_of_marches),
+                            text = stringResource(R.string.max_num_of_marches),
                             fontSize = 18.sp
                         )
 
@@ -171,7 +171,7 @@ class QuranSearcher : ComponentActivity() {
                 if (matches.isEmpty()) {
                     if (searched)
                         MyText(
-                            text = stringResource(id = R.string.no_matches),
+                            text = stringResource(R.string.no_matches),
                             modifier = Modifier.padding(top = 100.dp)
                         )
                 }
@@ -206,7 +206,7 @@ class QuranSearcher : ComponentActivity() {
                                     }
 
                                     MyText(
-                                        text = "${stringResource(id = R.string.aya_number)} " +
+                                        text = "${stringResource(R.string.aya_number)} " +
                                             LangUtils.translateNums(
                                                 this@QuranSearcher,
                                                 item.ayaNum.toString(),
@@ -224,7 +224,7 @@ class QuranSearcher : ComponentActivity() {
                                     )
 
                                     MyButton(
-                                        text = stringResource(id = R.string.go_to_page),
+                                        text = stringResource(R.string.go_to_page),
                                         textColor = AppTheme.colors.accent,
                                         elevation = 0,
                                         innerPadding = PaddingValues(0.dp),

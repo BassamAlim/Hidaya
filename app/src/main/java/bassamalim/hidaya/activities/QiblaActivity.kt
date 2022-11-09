@@ -146,7 +146,7 @@ class QiblaActivity : AppCompatActivity() {
 
     @Composable
     private fun UI(distanceStr: String) {
-        MyScaffold(stringResource(id = R.string.qibla)) {
+        MyScaffold(stringResource(R.string.qibla)) {
             Column(
                 Modifier
                     .fillMaxSize()
@@ -194,9 +194,9 @@ class QiblaActivity : AppCompatActivity() {
                 ) {
                     MyText(
                         text = when(accuracyState.value) {
-                            2 -> { stringResource(id = R.string.medium_accuracy_text) }
-                            0, 1 -> { stringResource(id = R.string.low_accuracy_text) }
-                            else -> { stringResource(id = R.string.high_accuracy_text) }
+                            2 -> { stringResource(R.string.medium_accuracy_text) }
+                            0, 1 -> { stringResource(R.string.low_accuracy_text) }
+                            else -> { stringResource(R.string.high_accuracy_text) }
                         },
                         modifier = Modifier.padding(horizontal = 12.dp)
                     )

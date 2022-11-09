@@ -102,7 +102,7 @@ class AthkarScreen(
     @Composable
     private fun LargeBtn(textResId: Int, onClick: () -> Unit) {
         MyButton(
-            text = stringResource(id = textResId),
+            text = stringResource(textResId),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 5.dp, horizontal = 24.dp),

@@ -125,11 +125,11 @@ class BooksActivity : AppCompatActivity() {
     @Composable
     private fun UI() {
         MyScaffold(
-            title = stringResource(id = R.string.hadeeth_books),
+            title = stringResource(R.string.hadeeth_books),
             fab = {
                   MyFloatingActionButton(
                       iconId = R.drawable.ic_quran_search,
-                      description = stringResource(id = R.string.search_in_books)
+                      description = stringResource(R.string.search_in_books)
                   ) {
                       startActivity(Intent(this, BookSearcher::class.java))
                   }
@@ -163,7 +163,7 @@ class BooksActivity : AppCompatActivity() {
                                                 R.drawable.ic_downloaded
                                             else
                                                 R.drawable.ic_download,
-                                        description = stringResource(id = R.string.download_description),
+                                        description = stringResource(R.string.download_description),
                                         tint = AppTheme.colors.accent
                                     ) {
                                         if (downloadingIds.containsValue(item.id))

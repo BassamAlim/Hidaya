@@ -164,7 +164,7 @@ class RadioClient : ComponentActivity() {
 
     @Composable
     private fun UI() {
-        MyScaffold(stringResource(id = R.string.quran_radio)) {
+        MyScaffold(stringResource(R.string.quran_radio)) {
             Column(
                 Modifier
                     .fillMaxSize()

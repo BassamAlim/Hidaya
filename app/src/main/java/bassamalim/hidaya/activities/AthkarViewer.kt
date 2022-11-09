@@ -179,7 +179,7 @@ class AthkarViewer : AppCompatActivity() {
 
                         MyIconBtn(
                             iconId = R.drawable.ic_help,
-                            description = stringResource(id = R.string.source_btn_description),
+                            description = stringResource(R.string.source_btn_description),
                             tint = AppTheme.colors.text
                         ) {
                             infoDialogText = thikr.reference

@@ -34,11 +34,11 @@ fun MyBottomNavigation(navController: NavController) {
         BottomNavItem.More
     )
     val titles = listOf(
-        stringResource(id = R.string.title_home),
-        stringResource(id = R.string.title_prayers),
-        stringResource(id = R.string.title_quran),
-        stringResource(id = R.string.title_athkar),
-        stringResource(id = R.string.title_more),
+        stringResource(R.string.title_home),
+        stringResource(R.string.title_prayers),
+        stringResource(R.string.title_quran),
+        stringResource(R.string.title_athkar),
+        stringResource(R.string.title_more),
     )
 
     BottomNavigation(

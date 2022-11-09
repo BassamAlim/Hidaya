@@ -106,7 +106,7 @@ class FilterDialog(
                 }
 
                 MyButton(
-                    text = stringResource(id = R.string.select),
+                    text = stringResource(R.string.select),
                     modifier = Modifier.padding(horizontal = 10.dp)
                 ) {
                     onDismiss()

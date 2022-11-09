@@ -88,7 +88,7 @@ class QuranScreen(
             val bookmarkedSura = pref.getInt("bookmarked_sura", -1)
             MyButton(
                 text =
-                    if (bookmarkedPage.value == -1) stringResource(id = R.string.no_bookmarked_page)
+                    if (bookmarkedPage.value == -1) stringResource(R.string.no_bookmarked_page)
                     else {
                         "${context.getString(R.string.bookmarked_page)} " +
                                 "${context.getString(R.string.page)} " +
@@ -121,7 +121,8 @@ class QuranScreen(
                 searchComponent = {
                     SearchComponent(
                         state = textState,
-                        hint = stringResource(id = R.string.quran_query_hint),
+                        hint = stringResource(R.string.quran_query_hint),
+                        modifier = Modifier.fillMaxWidth(),
                         onSubmit = {
                             try {
                                 val num = textState.value.text.toInt()

@@ -121,7 +121,7 @@ class DateConverter : AppCompatActivity() {
             ) {
                 Column {
                     MyButton(
-                        text = stringResource(id = R.string.pick_hijri_date),
+                        text = stringResource(R.string.pick_hijri_date),
                         fontSize = 22.sp,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -132,7 +132,7 @@ class DateConverter : AppCompatActivity() {
                     }
 
                     MyButton(
-                        text = stringResource(id = R.string.pick_gregorian_date),
+                        text = stringResource(R.string.pick_gregorian_date),
                         fontSize = 22.sp,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -143,9 +143,9 @@ class DateConverter : AppCompatActivity() {
                     }
                 }
 
-                ResultSpace(stringResource(id = R.string.hijri_date), hijriValues)
+                ResultSpace(stringResource(R.string.hijri_date), hijriValues)
 
-                ResultSpace(stringResource(id = R.string.gregorian_date), gregorianValues)
+                ResultSpace(stringResource(R.string.gregorian_date), gregorianValues)
             }
 
             if (hDatePickerShown.value) {
@@ -188,7 +188,7 @@ class DateConverter : AppCompatActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MyText(
-                        text = stringResource(id = R.string.day),
+                        text = stringResource(R.string.day),
                         Modifier.padding(10.dp)
                     )
 
@@ -202,7 +202,7 @@ class DateConverter : AppCompatActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MyText(
-                        text = stringResource(id = R.string.month),
+                        text = stringResource(R.string.month),
                         Modifier.padding(10.dp)
                     )
 
@@ -216,7 +216,7 @@ class DateConverter : AppCompatActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MyText(
-                        text = stringResource(id = R.string.year),
+                        text = stringResource(R.string.year),
                         Modifier.padding(10.dp)
                     )
 

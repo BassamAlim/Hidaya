@@ -201,7 +201,7 @@ class MainActivity : AppCompatActivity() {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             MyText(
-                                stringResource(id = R.string.app_name),
+                                stringResource(R.string.app_name),
                                 textColor = AppTheme.colors.onPrimary
                             )
 
@@ -242,7 +242,7 @@ class MainActivity : AppCompatActivity() {
                 if (currentScreen.value == BottomNavItem.Quran.screen_route)
                     MyFloatingActionButton(
                         iconId = R.drawable.ic_quran_search,
-                        description = stringResource(id = R.string.search_in_quran)
+                        description = stringResource(R.string.search_in_quran)
                     ) {
                         startActivity(Intent(this, QuranSearcher::class.java))
                     }

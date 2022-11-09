@@ -182,7 +182,7 @@ class BookSearcher : ComponentActivity() {
         val textState = remember { mutableStateOf(TextFieldValue("")) }
         val highlightColor = AppTheme.colors.accent
 
-        MyScaffold(stringResource(id = R.string.books_searcher)) { padding ->
+        MyScaffold(stringResource(R.string.books_searcher)) { padding ->
             Column(
                 Modifier
                     .fillMaxSize()
@@ -197,13 +197,13 @@ class BookSearcher : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MyText(
-                        text = stringResource(id = R.string.search_in_books),
+                        text = stringResource(R.string.search_in_books),
                         modifier = Modifier.padding(vertical = 6.dp)
                     )
 
                     SearchComponent(
                         state = textState,
-                        hint = stringResource(id = R.string.search),
+                        hint = stringResource(R.string.search),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 30.dp),
@@ -220,11 +220,11 @@ class BookSearcher : ComponentActivity() {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        MyText(text = stringResource(id = R.string.selected_books))
+                        MyText(text = stringResource(R.string.selected_books))
 
                         MyIconBtn(
                             iconId = R.drawable.ic_filter,
-                            description = stringResource(id = R.string.filter_search_description),
+                            description = stringResource(R.string.filter_search_description),
                             tint =
                                 if (filteredState.value) AppTheme.colors.secondary
                                 else AppTheme.colors.weakText
@@ -238,7 +238,7 @@ class BookSearcher : ComponentActivity() {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        MyText(text = stringResource(id = R.string.max_num_of_marches))
+                        MyText(text = stringResource(R.string.max_num_of_marches))
 
                         MyDropDownMenu(
                             selectedIndex = maxMatchesIndex,
@@ -254,7 +254,7 @@ class BookSearcher : ComponentActivity() {
                 if (matches.isEmpty()) {
                     if (searched)
                         MyText(
-                            text = stringResource(id = R.string.books_no_matches),
+                            text = stringResource(R.string.books_no_matches),
                             modifier = Modifier.padding(top = 100.dp)
                         )
                 }

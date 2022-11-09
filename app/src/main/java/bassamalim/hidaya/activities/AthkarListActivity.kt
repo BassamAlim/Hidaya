@@ -122,7 +122,7 @@ class AthkarListActivity : ComponentActivity() {
             ) {
                 SearchComponent (
                     state = textState,
-                    hint = stringResource(id = R.string.athkar_hint),
+                    hint = stringResource(R.string.athkar_hint),
                     modifier = Modifier.fillMaxWidth()
                 )
 

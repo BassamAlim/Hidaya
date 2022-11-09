@@ -154,7 +154,7 @@ class LocationActivity: ComponentActivity() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MyText(
-                text = stringResource(id = R.string.disclaimer),
+                text = stringResource(R.string.disclaimer),
                 fontSize = 26.sp,
                 modifier = Modifier.padding(horizontal = 15.dp)
             )
@@ -164,7 +164,7 @@ class LocationActivity: ComponentActivity() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MyButton(
-                    text = stringResource(id = R.string.locate),
+                    text = stringResource(R.string.locate),
                     fontSize = 22.sp,
                     colors = ButtonDefaults.buttonColors(backgroundColor = AppTheme.colors.accent),
                     textColor = AppTheme.colors.background,
@@ -180,7 +180,7 @@ class LocationActivity: ComponentActivity() {
                 }
 
                 MyButton(
-                    text = stringResource(id = R.string.choose_manually),
+                    text = stringResource(R.string.choose_manually),
                     fontSize = 22.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -195,7 +195,7 @@ class LocationActivity: ComponentActivity() {
 
                 if (action == "initial") {
                     MyButton(
-                        text = stringResource(id = R.string.rejected),
+                        text = stringResource(R.string.rejected),
                         fontSize = 22.sp,
                         modifier = Modifier
                             .fillMaxWidth()

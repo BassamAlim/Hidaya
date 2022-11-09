@@ -242,7 +242,7 @@ class HomeScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    MyText(stringResource(id = R.string.telawat_time_record_title))
+                    MyText(stringResource(R.string.telawat_time_record_title))
 
                     MyText(getTelawatRecord(), fontSize = 30.sp)
                 }

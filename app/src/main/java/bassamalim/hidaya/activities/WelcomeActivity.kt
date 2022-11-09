@@ -51,7 +51,7 @@ class WelcomeActivity: AppCompatActivity() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MyText(
-                    text = stringResource(id = R.string.welcome_message),
+                    text = stringResource(R.string.welcome_message),
                     fontSize = 26.sp
                 )
 
@@ -62,7 +62,7 @@ class WelcomeActivity: AppCompatActivity() {
                 }
 
                 MyButton(
-                    text = stringResource(id = R.string.save),
+                    text = stringResource(R.string.save),
                     fontSize = 24.sp,
                     innerPadding = PaddingValues(vertical = 2.dp, horizontal = 25.dp),
                     modifier = Modifier.padding(bottom = 10.dp)

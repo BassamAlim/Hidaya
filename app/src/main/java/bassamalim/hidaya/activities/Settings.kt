@@ -30,7 +30,7 @@ class Settings : ComponentActivity() {
 
     @Composable
     private fun UI() {
-        MyScaffold(stringResource(id = R.string.settings)) {
+        MyScaffold(stringResource(R.string.settings)) {
             settingsScreen.SettingsUI()
         }
     }

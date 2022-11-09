@@ -36,14 +36,14 @@ class QuizLobbyActivity : ComponentActivity() {
 
     @Composable
     private fun UI() {
-        MyScaffold(stringResource(id = R.string.quiz_title)) {
+        MyScaffold(stringResource(R.string.quiz_title)) {
             Column(
                 Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MyButton(
-                    text = stringResource(id = R.string.start_quiz),
+                    text = stringResource(R.string.start_quiz),
                     innerPadding = PaddingValues(vertical = 10.dp, horizontal = 25.dp),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,

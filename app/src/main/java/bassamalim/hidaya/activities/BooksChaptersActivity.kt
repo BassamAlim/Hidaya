@@ -98,7 +98,7 @@ class BooksChaptersActivity : ComponentActivity() {
                 searchComponent = {
                     SearchComponent(
                         state = textState,
-                        hint = stringResource(id = R.string.search),
+                        hint = stringResource(R.string.search),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

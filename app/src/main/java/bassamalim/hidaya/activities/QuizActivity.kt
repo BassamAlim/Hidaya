@@ -149,7 +149,7 @@ class QuizActivity : ComponentActivity() {
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     MyButton(
-                        text = stringResource(id = R.string.previous_question),
+                        text = stringResource(R.string.previous_question),
                         textColor =
                             if (current.value == 0) Grey
                             else AppTheme.colors.text,

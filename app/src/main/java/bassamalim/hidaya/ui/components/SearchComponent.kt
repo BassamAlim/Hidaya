@@ -40,7 +40,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 fun SearchComponent(
     state: MutableState<TextFieldValue>,
     modifier: Modifier = Modifier,
-    hint: String = stringResource(id = R.string.search),
+    hint: String = stringResource(R.string.search),
     onSubmit: () -> Unit = {}
 ) {
     val lineColor = AppTheme.colors.weakText

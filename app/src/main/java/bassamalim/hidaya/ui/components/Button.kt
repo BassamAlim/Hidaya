@@ -144,14 +144,14 @@ fun MySquareButton(
     onClick: () -> Unit
 ) {
     MyButton(
-        text = stringResource(id = textResId),
+        text = stringResource(textResId),
         modifier = Modifier
             .size(180.dp)
             .padding(vertical = 7.dp, horizontal = 7.dp),
         image = {
             Image(
                 painter = painterResource(id = imageResId),
-                contentDescription = stringResource(id = textResId),
+                contentDescription = stringResource(textResId),
                 modifier = Modifier.size(70.dp)
             )
         },
@@ -238,7 +238,7 @@ fun MyCloseBtn(
     MyIconBtn(
         iconId = R.drawable.ic_close,
         modifier = modifier,
-        description = stringResource(id = R.string.close),
+        description = stringResource(R.string.close),
         onClick = onClose,
         tint = AppTheme.colors.text
     )

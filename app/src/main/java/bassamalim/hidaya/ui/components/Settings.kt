@@ -92,7 +92,7 @@ fun ListPref(
                             Modifier.padding(vertical = 20.dp, horizontal = 10.dp)
                         ) {
                             MyText(
-                                text = stringResource(id = titleResId),
+                                text = stringResource(titleResId),
                                 Modifier.padding(start = 10.dp, bottom = 10.dp)
                             )
 
@@ -240,7 +240,7 @@ fun SliderPref(
 @Composable
 fun CategoryTitle(titleResId: Int) {
     MyText(
-        stringResource(id = titleResId),
+        stringResource(titleResId),
         Modifier
             .fillMaxWidth()
             .padding(vertical = 15.dp, horizontal = 15.dp),

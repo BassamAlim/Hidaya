@@ -185,7 +185,7 @@ class TelawatSuarActivity : ComponentActivity() {
                 searchComponent = {
                     SearchComponent(
                         state = textState,
-                        hint = stringResource(id = R.string.search),
+                        hint = stringResource(R.string.search),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -244,7 +244,7 @@ class TelawatSuarActivity : ComponentActivity() {
                             iconId =
                             if (downloadState == "downloaded") R.drawable.ic_downloaded
                             else R.drawable.ic_download,
-                            description = stringResource(id = R.string.download_description),
+                            description = stringResource(R.string.download_description),
                             tint = AppTheme.colors.accent
                         ) {
                             if (downloading.containsValue(sura.num))

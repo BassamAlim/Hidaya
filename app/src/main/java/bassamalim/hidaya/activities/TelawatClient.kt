@@ -280,7 +280,7 @@ class TelawatClient : ComponentActivity() {
     @Composable
     private fun UI() {
         MyScaffold(
-            title = stringResource(id = R.string.recitations),
+            title = stringResource(R.string.recitations),
             bottomBar = {
                 BottomAppBar(
                     backgroundColor = AppTheme.colors.primary

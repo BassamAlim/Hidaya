@@ -316,23 +316,23 @@ class TelawatActivity : ComponentActivity() {
                     searchComponent = {
                         Row(
                             Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             SearchComponent(
                                 state = textState,
-                                hint = stringResource(id = R.string.search)
+                                hint = stringResource(R.string.search),
+                                modifier = Modifier.weight(1F)
                             )
 
                             MyIconBtn(
                                 iconId = R.drawable.ic_filter,
-                                description = stringResource(id = R.string.filter_search_description),
+                                modifier = Modifier.padding(end = 10.dp),
+                                description = stringResource(R.string.filter_search_description),
                                 tint =
                                     if (filteredState.value) AppTheme.colors.secondary
                                     else AppTheme.colors.weakText
                             ) {
                                 filterDialogShown.value = true
-
                             }
                         }
                     }
@@ -454,7 +454,7 @@ class TelawatActivity : ComponentActivity() {
                             iconId =
                             if (downloadState == "downloaded") R.drawable.ic_downloaded
                             else R.drawable.ic_download,
-                            description = stringResource(id = R.string.download_description),
+                            description = stringResource(R.string.download_description),
                             tint = AppTheme.colors.accent
                         ) {
                             if (downloading.containsValue(Pair(reciterId, version.getVersionId())))

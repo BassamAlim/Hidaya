@@ -111,7 +111,7 @@ class QuizResultActivity : ComponentActivity() {
             ) {
                 // Question number
                 MyText(
-                    text = "${stringResource(id = R.string.question)} ${question.questionNum+1}",
+                    text = "${stringResource(R.string.question)} ${question.questionNum+1}",
                     fontSize = 16.sp,
                     modifier = Modifier.padding(bottom = 3.dp)
                 )

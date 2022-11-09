@@ -118,7 +118,7 @@ class DateEditorDialog(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     MyButton(
-                        text = stringResource(id = R.string.save)
+                        text = stringResource(R.string.save)
                     ) {
                         pref.edit()
                             .putInt("date_offset", offset)
@@ -130,7 +130,7 @@ class DateEditorDialog(
                     }
 
                     MyButton(
-                        text = stringResource(id = R.string.cancel)
+                        text = stringResource(R.string.cancel)
                     ) {
                         shown.value = false
                     }
