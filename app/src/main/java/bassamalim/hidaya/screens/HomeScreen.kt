@@ -61,7 +61,6 @@ class HomeScreen(
     private val remaining = mutableStateOf(0L)
 
     init {
-        if (located) setupPrayersCard()
         onResume()
     }
 
@@ -70,7 +69,9 @@ class HomeScreen(
     }
 
     override fun onResume() {
-        if (pref.getBoolean("werd_done", false)) werdDone.value = true
+        if (located) setupPrayersCard()
+
+        werdDone.value = pref.getBoolean("werd_done", false)
     }
 
     private fun setupPrayersCard() {
