@@ -58,14 +58,11 @@ class TelawatActivity : ComponentActivity() {
     private val downloading = HashMap<Long, Pair<Int, Int>>()
     private val filterDialogShown = mutableStateOf(false)
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityUtils.onActivityCreateSetLocale(this)
 
         init()
-
-        setupFavs()
 
         setContent {
             AppTheme {
@@ -90,18 +87,21 @@ class TelawatActivity : ComponentActivity() {
         setupContinue()
 
         clean()
-        initDownloadStates()
+        checkDownloaded()
 
         registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
     private fun onBack() {
-        val intent = Intent(this, MainActivity::class.java)
-        val location = Keeper(this).retrieveLocation()
-        intent.putExtra("located", location != null)
-        intent.putExtra("location", location)
-        startActivity(intent)
-        finish()
+        if (isTaskRoot) {
+            val intent = Intent(this, MainActivity::class.java)
+            val location = Keeper(this).retrieveLocation()
+            intent.putExtra("located", location != null)
+            intent.putExtra("location", location)
+            startActivity(intent)
+            finish()
+        }
+        else onBackPressedDispatcher.onBackPressed()
     }
 
     override fun onBackPressed() {
@@ -109,39 +109,30 @@ class TelawatActivity : ComponentActivity() {
     }
 
     private fun init() {
-        db = DBUtils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(this)
+        db = DBUtils.getDB(this)
 
+        continueListeningText = getString(R.string.no_last_play)
         rewayat = resources.getStringArray(R.array.rewayat)
 
+        favs.addAll(db.telawatRecitersDao().getFavs())
         initSelectedVersions()
-        initFilterIb()
-        initDownloadStates()
     }
 
     private fun initSelectedVersions() {
-        for (i in rewayat.indices) selectedVersions.add(true)
         val json = pref.getString("selected_rewayat", "")!!
         if (json.isNotEmpty()) {
-            val boolArr =  gson.fromJson(json, BooleanArray::class.java)
-            for (i in boolArr.indices) selectedVersions[i] = boolArr[i]
+            val boolArr = gson.fromJson(json, BooleanArray::class.java)
+            boolArr.forEach { bool -> selectedVersions.add(bool) }
         }
+        else rewayat.forEach { _ -> selectedVersions.add(true) }
+
+        filteredState.value = selectedVersions.any { bool -> !bool }
     }
 
-    private fun initFilterIb() {
-        for (bool in selectedVersions) {
-            if (!bool) {
-                filteredState.value = true
-                break
-            }
-        }
-    }
+    private fun checkDownloaded() {
+        downloadStates.clear()
 
-    private fun setupFavs() {
-        for (fav in db.telawatRecitersDao().getFavs()) favs.add(fav)
-    }
-
-    private fun initDownloadStates() {
         for (telawa in db.telawatDao().all) {  // all versions
             val state =
                 if (isDownloaded("${telawa.getReciterId()}/${telawa.getVersionId()}"))
@@ -158,26 +149,23 @@ class TelawatActivity : ComponentActivity() {
     private fun setupContinue() {
         continueListeningMediaId.value = pref.getString("last_played_media_id", "")!!
 
-        if (continueListeningMediaId.value.isEmpty())
-            continueListeningText = getString(R.string.no_last_play)
-        else {
-            val reciterId = continueListeningMediaId.value.substring(0, 3).toInt()
-            val versionId = continueListeningMediaId.value.substring(3, 5).toInt()
-            val suraIndex = continueListeningMediaId.value.substring(5).toInt()
+        if (continueListeningMediaId.value.isEmpty()) return
 
-            val suraName =
-                if (PrefUtils.getLanguage(this, pref) == "en")
-                    db.suarDao().getNameEn(suraIndex)
-                else db.suarDao().getName(suraIndex)
-            val reciterName = db.telawatRecitersDao().getName(reciterId)
-            val rewaya = db.telawatVersionsDao().getVersion(reciterId, versionId).getRewaya()
+        val reciterId = continueListeningMediaId.value.substring(0, 3).toInt()
+        val versionId = continueListeningMediaId.value.substring(3, 5).toInt()
+        val suraIndex = continueListeningMediaId.value.substring(5).toInt()
 
-            val text = "${getString(R.string.last_play)}: " +
-                    "${getString(R.string.sura)} $suraName " +
-                    "${getString(R.string.for_reciter)} $reciterName " +
-                    "${getString(R.string.in_rewaya_of)} $rewaya"
-            continueListeningText = text
-        }
+        val suraName =
+            if (PrefUtils.getLanguage(this, pref) == "en")
+                db.suarDao().getNameEn(suraIndex)
+            else db.suarDao().getName(suraIndex)
+        val reciterName = db.telawatRecitersDao().getName(reciterId)
+        val rewaya = db.telawatVersionsDao().getVersion(reciterId, versionId).getRewaya()
+
+        continueListeningText = "${getString(R.string.last_play)}: " +
+                "${getString(R.string.sura)} $suraName " +
+                "${getString(R.string.for_reciter)} $reciterName " +
+                "${getString(R.string.in_rewaya_of)} $rewaya"
     }
 
     private fun getItems(type: ListType): List<Reciter> {
@@ -194,8 +182,7 @@ class TelawatActivity : ComponentActivity() {
             val versions = filterSelectedVersions(db.telawatDao().getReciterTelawat(reciter.id))
             val versionsList = ArrayList<RecitationVersion>()
 
-            for (j in versions.indices) {
-                val telawa = versions[j]
+            versions.forEach { telawa ->
                 versionsList.add(
                     RecitationVersion(
                         telawa.getVersionId(), telawa.getUrl(), telawa.getRewaya(),
@@ -225,17 +212,14 @@ class TelawatActivity : ComponentActivity() {
     }
 
     private fun updateFavorites() {
-        val favReciters = db.telawatRecitersDao().getFavs()
-        val recitersJson = gson.toJson(favReciters)
+        val recitersJson = gson.toJson(db.telawatRecitersDao().getFavs())
         pref.edit()
             .putString("favorite_reciters", recitersJson)
             .apply()
     }
 
     private fun isDownloaded(suffix: String): Boolean {
-        return File(
-            "${getExternalFilesDir(null)}$prefix$suffix"
-        ).exists()
+        return File("${getExternalFilesDir(null)}$prefix$suffix").exists()
     }
 
     private fun downloadVer(reciterId: Int, ver: RecitationVersion) {

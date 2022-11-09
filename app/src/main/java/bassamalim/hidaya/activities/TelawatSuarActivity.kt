@@ -85,8 +85,11 @@ class TelawatSuarActivity : ComponentActivity() {
     }
 
     private fun onBack() {
-        startActivity(Intent(this, TelawatActivity::class.java))
-        finish()
+        if (isTaskRoot) {
+            startActivity(Intent(this, TelawatActivity::class.java))
+            finish()
+        }
+        else onBackPressedDispatcher.onBackPressed()
     }
 
     override fun onBackPressed() {
