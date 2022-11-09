@@ -76,8 +76,7 @@
         </activity>
         <activity
             android:name=".activities.QuranViewer"
-            android:exported="true"
-            android:theme="@style/QuranM">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>

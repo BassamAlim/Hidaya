@@ -22,10 +22,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.LocationActivity
 import bassamalim.hidaya.dialogs.PrayerDialog
 import bassamalim.hidaya.helpers.PrayTimes
-import bassamalim.hidaya.ui.components.MyIconBtn
-import bassamalim.hidaya.ui.components.MySurface
-import bassamalim.hidaya.ui.components.MyText
-import bassamalim.hidaya.ui.components.TutorialDialog
+import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
@@ -191,11 +188,13 @@ class PrayersScreen(
                         previousDay()
                     }
 
-                    MyText(
+                    MyClickableText(
                         text = getDayText(),
                         fontSize = 24.sp,
-                        modifier = Modifier.clickable { goToToday() }
-                    )
+                        innerPadding = PaddingValues(vertical = 3.dp, horizontal = 15.dp)
+                    ) {
+                        goToToday()
+                    }
 
                     MyIconBtn(
                         iconId = R.drawable.ic_right_arrow,

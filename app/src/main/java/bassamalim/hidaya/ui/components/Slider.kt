@@ -51,7 +51,7 @@ fun MyValuedSlider(
     val context = LocalContext.current
     var currentValue by remember { mutableStateOf(initialValue) }
     var sliderText by remember {
-        mutableStateOf(LangUtils.translateNums(context, initialValue.toString()))
+        mutableStateOf(LangUtils.translateNums(context, (initialValue - progressMin).toString()))
     }
 
     Row(

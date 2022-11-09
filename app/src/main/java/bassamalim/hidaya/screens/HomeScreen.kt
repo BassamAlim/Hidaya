@@ -6,6 +6,9 @@ import android.content.SharedPreferences
 import android.location.Location
 import android.os.CountDownTimer
 import android.view.LayoutInflater
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -27,7 +29,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.replacements.AnalogClock
-import bassamalim.hidaya.ui.components.MyButton
 import bassamalim.hidaya.ui.components.MyClickableText
 import bassamalim.hidaya.ui.components.MySurface
 import bassamalim.hidaya.ui.components.MyText
@@ -61,6 +62,7 @@ class HomeScreen(
 
     init {
         if (located) setupPrayersCard()
+        onResume()
     }
 
     override fun onPause() {
@@ -174,6 +176,7 @@ class HomeScreen(
         )
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     fun HomeUI() {
         Column(
@@ -254,7 +257,7 @@ class HomeScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     MyText(
-                        stringResource(id = R.string.quran_pages_record_title),
+                        stringResource(R.string.quran_pages_record_title),
                         textAlign = TextAlign.Start
                     )
 
@@ -283,7 +286,7 @@ class HomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        MyText(stringResource(id = R.string.today_werd), fontSize = 22.sp)
+                        MyText(stringResource(R.string.today_werd), fontSize = 22.sp)
 
                         MyText(
                             context.getString(R.string.page) +
@@ -308,16 +311,17 @@ class HomeScreen(
                             context.startActivity(intent)
                         }
 
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_check),
-                            contentDescription = stringResource(
-                                id = R.string.already_read_description
-                            ),
-                            tint = Positive,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .alpha(if (werdDone.value) 1F else 0F)
-                        )
+                        AnimatedVisibility(
+                            visible = werdDone.value,
+                            enter = scaleIn()
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_check),
+                                contentDescription = stringResource(R.string.already_read_description),
+                                tint = Positive,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
                     }
                 }
             }

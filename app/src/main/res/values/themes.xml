@@ -127,32 +127,4 @@
         <item name="myShadow">@color/shadow_N</item>
     </style>
 
-    <style name="QuranM" parent="Theme.HidayaM">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textColorLink">@color/white</item>
-        <item name="myQBg">@color/primary_M</item>
-        <item name="myQBars">@color/bg_M</item>
-        <item name="mySurfaceDark">@color/ripple_M</item>
-        <item name="myQAccent">@color/accent_M</item>
-        <item name="myQHighlight">@color/highlight_M</item>
-        <item name="myQTrack">@color/track_M</item>
-    </style>
-
-    <style name="QuranL" parent="Theme.HidayaL">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textColorLink">@color/black</item>
-        <item name="myQBg">@color/q_bg_L</item>
-        <item name="myQBars">@color/primary_L</item>
-        <item name="mySurfaceDark">@color/ripple_L</item>
-        <item name="myQAccent">@color/accent_L</item>
-        <item name="myQHighlight">@color/highlight_L</item>
-        <item name="myQTrack">@color/track_L</item>
-    </style>
-
-    <style name="Theme.Hidaya.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
-        <item name="appWidgetRadius">8dp</item>
-        <item name="appWidgetPadding">4dp</item>
-        <item name="appWidgetInnerRadius">4dp</item>
-    </style>
-
 </resources>

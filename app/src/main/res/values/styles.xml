@@ -1,19 +1,5 @@
 <resources>
 
-    <style name="PrayerDialogAnimation">
-        <item name="android:windowEnterAnimation">@anim/prayer_dialog_show</item>
-        <item name="android:windowExitAnimation">@anim/prayer_dialog_hide</item>
-    </style>
-
-    <style name="QuranSettingsDialogAnimation" parent="@android:style/Animation.Activity">
-        <item name="android:windowEnterAnimation">@anim/quran_settings_dialog_show</item>
-        <item name="android:windowExitAnimation">@anim/quran_settings_dialog_hide</item>
-        <item name="android:activityOpenEnterAnimation">@anim/quran_settings_dialog_show</item>
-        <item name="android:activityOpenExitAnimation">@anim/quran_settings_dialog_hide</item>
-        <item name="android:activityCloseEnterAnimation">@anim/quran_settings_dialog_show</item>
-        <item name="android:activityCloseExitAnimation">@anim/quran_settings_dialog_hide</item>
-    </style>
-
     <style name="MyDatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">?myMainBg</item>
         <item name="android:colorAccent">?attr/myPrimary</item>

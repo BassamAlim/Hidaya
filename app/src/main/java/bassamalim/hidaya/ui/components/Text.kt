@@ -2,6 +2,7 @@ package bassamalim.hidaya.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -77,6 +78,7 @@ fun MyClickableText(
     fontWeight: FontWeight = FontWeight.Normal,
     textAlign: TextAlign = TextAlign.Center,
     fontFamily: FontFamily = tajwal,
+    innerPadding: PaddingValues = PaddingValues(vertical = 6.dp, horizontal = 15.dp),
     onClick: () -> Unit
 ) {
     Box(
@@ -86,7 +88,7 @@ fun MyClickableText(
     ) {
         Text(
             text = text,
-            modifier = Modifier.padding(vertical = 6.dp, horizontal = 15.dp),
+            modifier = Modifier.padding(innerPadding),
             fontSize = fontSize,
             style = TextStyle(
                 fontFamily = fontFamily,

@@ -7,17 +7,19 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -52,7 +54,7 @@ class AboutActivity : ComponentActivity() {
     @Preview(showBackground = true)
     @Composable
     private fun UI() {
-        MyScaffold(stringResource(id = R.string.about)) {
+        MyScaffold(stringResource(R.string.about)) {
             var counter by remember { mutableStateOf(0) }
 
             Column(
@@ -62,7 +64,7 @@ class AboutActivity : ComponentActivity() {
                     .padding(horizontal = 5.dp)
             ) {
                 MyText(
-                    text = stringResource(id = R.string.thanks),
+                    text = stringResource(R.string.thanks),
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -98,44 +100,50 @@ class AboutActivity : ComponentActivity() {
                     Source(R.string.quiz_source)
                 }
 
-                MyButton(
-                    stringResource(id = R.string.rebuild_database),
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .alpha(if (counter < 5) 0F else 1F)
+                AnimatedVisibility(
+                    visible = counter >= 5,
+                    enter = expandVertically()
                 ) {
-                    deleteDatabase("HidayaDB")
+                    Column(
+                        Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        MyButton(
+                            stringResource(R.string.rebuild_database),
+                            Modifier.align(Alignment.CenterHorizontally)
+                        ) {
+                            deleteDatabase("HidayaDB")
 
-                    Log.i(Global.TAG, "Database Rebuilt")
+                            Log.i(Global.TAG, "Database Rebuilt")
 
-                    DBUtils.reviveDB(this@AboutActivity)
+                            DBUtils.reviveDB(this@AboutActivity)
 
-                    Toast.makeText(
-                        this@AboutActivity, getString(R.string.database_rebuilt),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                            Toast.makeText(
+                                this@AboutActivity, getString(R.string.database_rebuilt),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        MyButton(
+                            stringResource(R.string.quick_update),
+                            Modifier.align(Alignment.CenterHorizontally)
+                        ) {
+                            val url = FirebaseRemoteConfig.getInstance().getString(Global.UPDATE_URL)
+                            val i = Intent(Intent.ACTION_VIEW)
+                            i.data = Uri.parse(url)
+                            startActivity(i)
+                        }
+
+                        MyText(
+                            text = PreferenceManager.getDefaultSharedPreferences(
+                                this@AboutActivity
+                            ).getString("last_daily_update", "No daily updates yet")!!,
+                            Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(10.dp)
+                        )
+                    }
                 }
-                MyButton(
-                    stringResource(id = R.string.quick_update),
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .alpha(if (counter < 5) 0F else 1F)
-                ) {
-                    val url = FirebaseRemoteConfig.getInstance().getString(Global.UPDATE_URL)
-                    val i = Intent(Intent.ACTION_VIEW)
-                    i.data = Uri.parse(url)
-                    startActivity(i)
-                }
-                MyText(
-                    text =
-                        if (counter < 5) ""
-                        else PreferenceManager.getDefaultSharedPreferences(
-                            this@AboutActivity
-                        ).getString("last_daily_update", "No daily updates yet")!!,
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(10.dp)
-                )
             }
         }
     }
