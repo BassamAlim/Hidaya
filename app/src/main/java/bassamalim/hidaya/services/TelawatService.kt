@@ -263,13 +263,13 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp++
-            } while (temp < 114 && !version.getSuras().contains("," + (temp + 1) + ","))
+            } while (temp < 114 && !version.suras.contains("," + (temp + 1) + ","))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
                 temp = random.nextInt(114)
-            } while (!version.getSuras().contains("," + (temp + 1) + ","))
+            } while (!version.suras.contains("," + (temp + 1) + ","))
         }
 
         if (temp < 114) {
@@ -288,13 +288,13 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp--
-            } while (temp >= 0 && !version.getSuras().contains("," + (temp + 1) + ","))
+            } while (temp >= 0 && !version.suras.contains("," + (temp + 1) + ","))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
                 temp = random.nextInt(114)
-            } while (!version.getSuras().contains("," + (temp + 1) + ","))
+            } while (!version.suras.contains("," + (temp + 1) + ","))
         }
 
         if (temp >= 0) {
@@ -505,9 +505,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, surahNames[surahIndex])
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterName!!)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName!!)
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, version.getRewaya())
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, version.rewaya)
             .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, surahIndex.toLong())
-            .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version.getCount().toLong())
+            .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version.count.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
                 (if (duration) player.duration else 0).toLong()
             )
@@ -630,7 +630,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         if (tryOffline(surah)) return
 
-        val text = String.format(Locale.US, "%s/%03d.mp3", version.getServer(), surah + 1)
+        val text = String.format(Locale.US, "%s/%03d.mp3", version.server, surah + 1)
 
         try {
             player.setDataSource(applicationContext, Uri.parse(text))
@@ -643,7 +643,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun tryOffline(surah: Int): Boolean {
         val path = (getExternalFilesDir(null).toString() + "/Telawat/" + reciterId
-                + "/" + version.getVersionId() + "/" + surah + ".mp3")
+                + "/" + version.versionId + "/" + surah + ".mp3")
 
         return try {
             player.setDataSource(path)

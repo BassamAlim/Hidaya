@@ -156,19 +156,19 @@ class QuranViewer : AppCompatActivity() {
     }
 
     private fun onAyaClick(ayaId: Int, offset: Int) {
-        val startIdx = currentAyas.indexOfFirst { it.getId() == ayaId }
+        val startIdx = currentAyas.indexOfFirst { it.id == ayaId }
 
         val maxDuration = 1200
         for (idx in startIdx until currentAyas.size) {
             val aya = currentAyas[idx]
 
-            if (offset < aya.getEnd()) {
+            if (offset < aya.end) {
                 // double click
-                if (aya.getId() == lastClickedId &&
+                if (aya.id == lastClickedId &&
                     System.currentTimeMillis() < lastClickT + maxDuration) {
                     selected.value = null
 
-                    infoDialogText = aya.getTafseer()
+                    infoDialogText = aya.tafseer
                     infoDialogShown.value = true
                 }
                 else {  // single click
@@ -176,7 +176,7 @@ class QuranViewer : AppCompatActivity() {
                     else selected.value = aya
                 }
 
-                lastClickedId = aya.getId()
+                lastClickedId = aya.id
                 lastClickT = System.currentTimeMillis()
                 break
             }
@@ -214,7 +214,7 @@ class QuranViewer : AppCompatActivity() {
             }
 
             override fun track(ayaId: Int) {
-                val idx = currentAyas.indexOfFirst { aya -> aya.getId() == ayaId }
+                val idx = currentAyas.indexOfFirst { aya -> aya.id == ayaId }
 
                 if (idx == -1) return  // not the same page
 
@@ -243,9 +243,9 @@ class QuranViewer : AppCompatActivity() {
 
             player!!.setChosenPage(currentPage.value)
             player!!.setCoordinator(uiListener!!)
-            player!!.setChosenSurah(selected.value!!.getSurahNum())
+            player!!.setChosenSurah(selected.value!!.surahNum)
 
-            requestPlay(selected.value!!.getId())
+            requestPlay(selected.value!!.id)
 
             selected.value = null
         }
@@ -391,8 +391,8 @@ class QuranViewer : AppCompatActivity() {
                                     updateButton(PlaybackStateCompat.STATE_BUFFERING)
                                     if (selected.value == null) player!!.transportControls.play()
                                     else {
-                                        player!!.setChosenSurah(selected.value!!.getSurahNum())
-                                        requestPlay(selected.value!!.getId())
+                                        player!!.setChosenSurah(selected.value!!.surahNum)
+                                        requestPlay(selected.value!!.id)
                                     }
                                 }
                             }
@@ -473,15 +473,15 @@ class QuranViewer : AppCompatActivity() {
     private fun PageItems(ayas: List<Ayah>) {
         var text = StringBuilder()
         var sequence = ArrayList<Ayah>()
-        var lastSura = ayas[0].getSurahNum()
+        var lastSura = ayas[0].surahNum
 
         NewSura(ayas[0])
 
         for (aya in ayas) {
-            if (aya.getSurahNum() == lastSura) {
-                aya.setStart(text.length)
-                text.append(aya.getText())
-                aya.setEnd(text.length)
+            if (aya.surahNum == lastSura) {
+                aya.start = text.length
+                text.append(aya.text)
+                aya.end = text.length
                 sequence.add(aya)
             }
             else {
@@ -493,7 +493,7 @@ class QuranViewer : AppCompatActivity() {
                 sequence = ArrayList()
             }
 
-            lastSura = aya.getSurahNum()
+            lastSura = aya.surahNum
         }
 
         PageItem(text = text.toString(), sequence = sequence)
@@ -512,13 +512,13 @@ class QuranViewer : AppCompatActivity() {
                             else if (tracked.value == seqAya) AppTheme.colors.track
                             else AppTheme.colors.strongText
                     ),
-                    start = seqAya.getStart(),
-                    end = seqAya.getEnd()
+                    start = seqAya.start,
+                    end = seqAya.end
                 )
             }
         }
 
-        Screen(annotatedString = annotatedString, ayaId = sequence[0].getId())
+        Screen(annotatedString = annotatedString, ayaId = sequence[0].id)
     }
 
     @Composable
@@ -526,11 +526,11 @@ class QuranViewer : AppCompatActivity() {
         for (aya in ayas) {
             NewSura(aya)
 
-            val annotatedString = AnnotatedString(aya.getText()!!)
-            Screen(annotatedString, aya.getId())
+            val annotatedString = AnnotatedString(aya.text!!)
+            Screen(annotatedString, aya.id)
 
             MyText(
-                text = aya.getTranslation()!!,
+                text = aya.translation!!,
                 fontSize = (textSize - 5).sp,
                 modifier = Modifier.padding(6.dp)
             )
@@ -558,10 +558,10 @@ class QuranViewer : AppCompatActivity() {
 
     @Composable
     private fun NewSura(aya: Ayah) {
-        if (aya.getAyahNum() == 1) {
+        if (aya.ayahNum == 1) {
             SuraHeader(aya)
             // surat al-fatiha and At-Taubah
-            if (aya.getSurahNum() != 1 && aya.getSurahNum() != 9) Basmalah()
+            if (aya.surahNum != 1 && aya.surahNum != 9) Basmalah()
         }
     }
 
@@ -573,7 +573,7 @@ class QuranViewer : AppCompatActivity() {
                 .height(80.dp)
                 .padding(top = 5.dp, bottom = 10.dp, start = 5.dp, end = 5.dp)
                 .onGloballyPositioned { layoutCoordinates ->
-                    if (aya.getSurahNum() == initialSura) {
+                    if (aya.surahNum == initialSura) {
                         scrollTo = layoutCoordinates.positionInRoot().y
                         initialSura = -1
                     }
@@ -582,13 +582,13 @@ class QuranViewer : AppCompatActivity() {
         ) {
             Image(
                 painter = painterResource(R.drawable.surah_header),
-                contentDescription = aya.getSurahName(),
+                contentDescription = aya.surahName,
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.fillMaxSize()
             )
 
             MyText(
-                text = aya.getSurahName(),
+                text = aya.surahName,
                 fontSize = (textSize + 2).sp,
                 fontWeight = FontWeight.Bold,
                 textColor = AppTheme.colors.onPrimary

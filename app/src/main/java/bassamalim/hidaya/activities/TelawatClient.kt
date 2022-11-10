@@ -77,7 +77,7 @@ class TelawatClient : ComponentActivity() {
         retrieveStates()
 
         suraName.value = surahNames[surahIndex]
-        versionName.value = version.getRewaya()
+        versionName.value = version.rewaya
 
         setContent {
             AppTheme {

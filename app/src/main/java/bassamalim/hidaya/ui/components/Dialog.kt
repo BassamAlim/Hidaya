@@ -1,7 +1,6 @@
 package bassamalim.hidaya.ui.components
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.ui.theme.AppTheme
 
 @Composable

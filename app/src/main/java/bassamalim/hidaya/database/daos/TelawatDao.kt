@@ -2,7 +2,6 @@ package bassamalim.hidaya.database.daos
 
 import androidx.room.Dao
 import androidx.room.Query
-import bassamalim.hidaya.database.dbs.AthkarCategoryDB
 import bassamalim.hidaya.database.dbs.TelawatDB
 
 @Dao
