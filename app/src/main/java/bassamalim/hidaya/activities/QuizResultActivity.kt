@@ -72,7 +72,7 @@ class QuizResultActivity : ComponentActivity() {
             Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(it),
+                    .padding(it).padding(bottom = 5.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

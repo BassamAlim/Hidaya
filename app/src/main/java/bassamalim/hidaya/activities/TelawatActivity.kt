@@ -227,13 +227,13 @@ class TelawatActivity : ComponentActivity() {
         var request: DownloadManager.Request
         var posted = false
         for (i in 0..113) {
-            if (ver.getSuras().contains("," + (i + 1) + ",")) {
-                val link = String.format(Locale.US, "%s/%03d.mp3", ver.getServer(), i + 1)
+            if (ver.suras.contains("," + (i + 1) + ",")) {
+                val link = String.format(Locale.US, "%s/%03d.mp3", ver.server, i + 1)
                 val uri = Uri.parse(link)
 
                 request = DownloadManager.Request(uri)
-                request.setTitle("${db.telawatRecitersDao().getName(reciterId)} ${ver.getRewaya()}")
-                val suffix = "$prefix$reciterId/${ver.getVersionId()}"
+                request.setTitle("${db.telawatRecitersDao().getName(reciterId)} ${ver.rewaya}")
+                val suffix = "$prefix$reciterId/${ver.versionId}"
                 FileUtils.createDir(this, suffix)
                 request.setDestinationInExternalFilesDir(this, suffix, "$i.mp3")
                 request.setNotificationVisibility(
@@ -243,8 +243,8 @@ class TelawatActivity : ComponentActivity() {
                 val downloadId = downloadManager.enqueue(request)
 
                 if (!posted) {
-                    downloadStates[reciterId][ver.getVersionId()] = "downloading"
-                    downloading[downloadId] = Pair(reciterId, ver.getVersionId())
+                    downloadStates[reciterId][ver.versionId] = "downloading"
+                    downloading[downloadId] = Pair(reciterId, ver.versionId)
                     posted = true
                 }
             }
@@ -407,7 +407,7 @@ class TelawatActivity : ComponentActivity() {
 
     @Composable
     private fun VersionCard(reciterId: Int, version: RecitationVersion) {
-        if (version.getVersionId() != 0) MyHorizontalDivider()
+        if (version.versionId != 0) MyHorizontalDivider()
 
         Box(
             Modifier.clickable {
@@ -415,7 +415,7 @@ class TelawatActivity : ComponentActivity() {
                     this@TelawatActivity, TelawatSuarActivity::class.java
                 )
                 intent.putExtra("reciter_id", reciterId)
-                intent.putExtra("version_id", version.getVersionId())
+                intent.putExtra("version_id", version.versionId)
                 startActivity(intent)
             }
         ) {
@@ -426,12 +426,12 @@ class TelawatActivity : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                MyText(text = version.getRewaya(), fontSize = 18.sp)
+                MyText(text = version.rewaya, fontSize = 18.sp)
 
                 Box(
                     Modifier.size(25.dp)
                 ) {
-                    val downloadState = downloadStates[reciterId][version.getVersionId()]
+                    val downloadState = downloadStates[reciterId][version.versionId]
                     if (downloadState == "downloading") MyCircularProgressIndicator()
                     else {
                         MyIconBtn(
@@ -441,20 +441,20 @@ class TelawatActivity : ComponentActivity() {
                             description = stringResource(R.string.download_description),
                             tint = AppTheme.colors.accent
                         ) {
-                            if (downloading.containsValue(Pair(reciterId, version.getVersionId())))
+                            if (downloading.containsValue(Pair(reciterId, version.versionId)))
                                 FileUtils.showWaitMassage(this@TelawatActivity)
-                            else if (isDownloaded("${reciterId}/${version.getVersionId()}")) {
+                            else if (isDownloaded("${reciterId}/${version.versionId}")) {
                                 FileUtils.deleteFile(
                                     this@TelawatActivity,
-                                    "$prefix$reciterId/${version.getVersionId()}"
+                                    "$prefix$reciterId/${version.versionId}"
                                 )
-                                downloadStates[reciterId][version.getVersionId()] = "not downloaded"
+                                downloadStates[reciterId][version.versionId] = "not downloaded"
                             }
                             else {
                                 Executors.newSingleThreadExecutor().execute {
                                     downloadVer(reciterId, version)
                                 }
-                                downloadStates[reciterId][version.getVersionId()] = "downloading"
+                                downloadStates[reciterId][version.versionId] = "downloading"
                             }
                         }
                     }

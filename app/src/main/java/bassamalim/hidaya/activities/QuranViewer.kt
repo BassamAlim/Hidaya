@@ -17,6 +17,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -106,7 +107,10 @@ class QuranViewer : AppCompatActivity() {
         textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
 
         val language = ActivityUtils.onActivityCreateSetLocale(this)
-        if (language == "en") viewType.value = "list"
+
+        viewType.value =
+            if (language == "en") "list"
+            else pref.getString("quran_view_type", "page")!!
 
         ayatDB = db.ayahDao().getAll()
         names =
@@ -137,12 +141,12 @@ class QuranViewer : AppCompatActivity() {
             val suraNum = aya.sura_num // starts from 1
             val ayaNum = aya.aya_num
 
-            val ayahModel = Ayah(
-                aya.id, aya.jozz, suraNum, ayaNum, names[suraNum - 1],
-                "${aya.aya_text} ", aya.aya_translation_en, aya.aya_tafseer
+            ayas.add(
+                Ayah(
+                    aya.id, aya.jozz, suraNum, ayaNum, names[suraNum - 1],
+                    "${aya.aya_text} ", aya.aya_translation_en, aya.aya_tafseer
+                )
             )
-
-            ayas.add(ayahModel)
 
             counter++
         } while (counter != Global.QURAN_AYAS && ayatDB[counter]!!.page == pageNumber)
@@ -444,6 +448,12 @@ class QuranViewer : AppCompatActivity() {
 
                     if (viewType.value == "list") ListItems(ayas)
                     else PageItems(ayas)
+
+                    if (page == pagerState.currentPage)
+                        LaunchedEffect(null) {
+                            Log.d(Global.TAG, "$scrollTo")
+                            scrollState.animateScrollTo(scrollTo.toInt())
+                        }
                 }
 
                 checkPage()
@@ -574,7 +584,7 @@ class QuranViewer : AppCompatActivity() {
                 .padding(top = 5.dp, bottom = 10.dp, start = 5.dp, end = 5.dp)
                 .onGloballyPositioned { layoutCoordinates ->
                     if (aya.surahNum == initialSura) {
-                        scrollTo = layoutCoordinates.positionInRoot().y
+                        scrollTo = layoutCoordinates.positionInWindow().y
                         initialSura = -1
                     }
                 },
@@ -600,7 +610,7 @@ class QuranViewer : AppCompatActivity() {
     private fun Basmalah() {
         MyText(
             text = stringResource(R.string.basmalah),
-            fontSize = (textSize - 2).sp,
+            fontSize = (textSize - 3).sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 5.dp)
         )
