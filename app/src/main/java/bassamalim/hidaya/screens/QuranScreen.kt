@@ -41,27 +41,22 @@ class QuranScreen(
         else db.suarDao().getNames()
 
     init {
-        setupFavs()
+        favs.addAll(db.suarDao().getFavs())
     }
 
     override fun onResume() {
         bookmarkedPage.value = pref.getInt("bookmarked_page", -1)
     }
 
-    private fun setupFavs() {
-        for (fav in db.suarDao().getFavs()) favs.add(fav)
-    }
-
     private fun getItems(type: ListType): List<Sura> {
+        val surat = context.getString(R.string.sura)
+
         val items = ArrayList<Sura>()
         val suras = db.suarDao().getAll()
-
-        val surat = context.getString(R.string.sura)
         for (i in suras.indices) {
-            val sura = suras[i]
-
             if (type == ListType.Favorite && favs[i] == 0) continue
 
+            val sura = suras[i]
             items.add(
                 Sura(
                     sura.sura_id, "$surat ${names[sura.sura_id]}",

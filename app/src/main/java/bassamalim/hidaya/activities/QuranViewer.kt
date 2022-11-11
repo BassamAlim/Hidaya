@@ -51,7 +51,7 @@ import com.google.accompanist.pager.rememberPagerState
 import java.util.concurrent.Executors
 
 class QuranViewer : AppCompatActivity() {
-
+// TODO: Scroll
     private lateinit var db: AppDatabase
     private lateinit var pref: SharedPreferences
     private lateinit var action: String
