@@ -1,4 +1,4 @@
-package bassamalim.hidaya.replacements
+package bassamalim.hidaya.other
 
 import android.content.Context
 import android.graphics.Canvas

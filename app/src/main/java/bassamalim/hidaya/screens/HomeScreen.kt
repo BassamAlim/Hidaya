@@ -28,7 +28,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.helpers.PrayTimes
-import bassamalim.hidaya.replacements.AnalogClock
+import bassamalim.hidaya.other.AnalogClock
 import bassamalim.hidaya.ui.components.MyClickableText
 import bassamalim.hidaya.ui.components.MySurface
 import bassamalim.hidaya.ui.components.MyText
