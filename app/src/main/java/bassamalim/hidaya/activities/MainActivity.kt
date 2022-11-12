@@ -48,11 +48,9 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private var navScreen: NavigationScreen? = null
-    private var remoteConfig = FirebaseRemoteConfig.getInstance()
     private lateinit var pref: SharedPreferences
-    private lateinit var language: String
     private lateinit var theme: String
-    private var times: Array<Calendar?>? = null
+    private lateinit var language: String
     private val dateOffset = mutableStateOf(0)
     private val currentScreen = mutableStateOf("")
     private val dateEditorShown = mutableStateOf(false)
@@ -64,11 +62,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetTheme(this)
+        theme = ActivityUtils.onActivityCreateSetTheme(this)
         language = ActivityUtils.onActivityCreateSetLocale(this)
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
-        theme = PrefUtils.getTheme(this, pref)
         dateOffset.value = pref.getInt("date_offset", 0)
 
         getLocation()
@@ -125,6 +122,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initFirebase() {
+        val remoteConfig = FirebaseRemoteConfig.getInstance()
         val configSettings = FirebaseRemoteConfigSettings.Builder()
                                     // update at most every six hours
             .setMinimumFetchIntervalInSeconds(3600 * 6).build()
@@ -135,15 +133,13 @@ class MainActivity : AppCompatActivity() {
     private fun setAlarms() {
         if (located) {
             Keeper(this, location!!)
-            times = PTUtils.getTimes(this, location!!)
-            Alarms(this, times!!)
+            Alarms(this, PTUtils.getTimes(this, location!!)!!)
         }
-        else {
+        else
             Toast.makeText(
                 this, getString(R.string.give_location_permission_toast),
                 Toast.LENGTH_SHORT
             ).show()
-        }
     }
 
     private fun dailyUpdate() {
