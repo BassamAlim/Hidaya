@@ -168,9 +168,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBootReceiver() {
-        val receiver = ComponentName(this, DeviceBootReceiver::class.java)
         applicationContext.packageManager.setComponentEnabledSetting(
-            receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP
+            ComponentName(this, DeviceBootReceiver::class.java),
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP
         )
     }
 
