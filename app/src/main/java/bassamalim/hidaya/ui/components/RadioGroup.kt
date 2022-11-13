@@ -12,17 +12,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.ui.theme.nsp
 
 @Composable
 fun RadioGroup(
     options: List<String>,
     selection: MutableState<Int>,
+    modifier: Modifier = Modifier,
     onSelect: (Int) -> Unit
 ) {
     Column(
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         options.forEachIndexed { index, text ->
             MyButton(
@@ -67,6 +69,7 @@ fun HorizontalRadioGroup(
         options.forEachIndexed { index, text ->
             MyButton(
                 text = text,
+                fontSize = 20.nsp,
                 textColor =
                     if (index == selection.value) AppTheme.colors.accent
                     else AppTheme.colors.text,
@@ -74,7 +77,8 @@ fun HorizontalRadioGroup(
                 modifier =
                     if (index == selection.value)
                         Modifier
-                            .padding(vertical = 10.dp, horizontal = 16.dp)
+                            .fillMaxWidth(1.0F / options.size)
+                            .padding(vertical = 10.dp, horizontal = 6.dp)
                             .border(
                                 width = 3.dp,
                                 color = AppTheme.colors.accent,

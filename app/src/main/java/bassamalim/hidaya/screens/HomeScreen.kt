@@ -243,7 +243,10 @@ class HomeScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    MyText(stringResource(R.string.telawat_time_record_title))
+                    MyText(
+                        stringResource(R.string.telawat_time_record_title),
+                        Modifier.widthIn(1.dp, 200.dp)
+                    )
 
                     MyText(getTelawatRecord(), fontSize = 30.sp)
                 }
@@ -259,7 +262,8 @@ class HomeScreen(
                 ) {
                     MyText(
                         stringResource(R.string.quran_pages_record_title),
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.widthIn(1.dp, 280.dp)
                     )
 
                     MyText(

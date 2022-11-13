@@ -24,6 +24,7 @@ import bassamalim.hidaya.dialogs.PrayerDialog
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.ui.theme.nsp
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
@@ -141,7 +142,9 @@ class PrayersScreen(
                 ) {
                     MyText(
                         text = if (located) getLocationName() else "",
-                        modifier = Modifier.padding(start = 15.dp)
+                        modifier = Modifier
+                            .widthIn(1.dp, 300.dp)
+                            .padding(start = 15.dp)
                     )
 
                     MyIconBtn(
@@ -249,7 +252,7 @@ class PrayersScreen(
                 // Prayer name
                 MyText(
                     "${prayerNames[pid]}: $time",
-                    fontSize = 33.sp,
+                    fontSize = 33.nsp,
                     fontWeight = FontWeight.Bold
                 )
 

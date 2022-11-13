@@ -1,6 +1,8 @@
 package bassamalim.hidaya.ui.theme
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -49,3 +51,7 @@ data class AppTypography(
 )
 
 internal val LocalTypography = staticCompositionLocalOf { AppTypography() }
+
+val Int.nsp
+    @Composable
+    get() = (this / LocalDensity.current.fontScale * 1.15).sp

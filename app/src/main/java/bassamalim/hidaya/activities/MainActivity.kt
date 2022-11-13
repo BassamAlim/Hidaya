@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -36,6 +35,7 @@ import bassamalim.hidaya.receivers.DeviceBootReceiver
 import bassamalim.hidaya.screens.*
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.ui.theme.nsp
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
@@ -218,14 +218,14 @@ class MainActivity : AppCompatActivity() {
 
                                     MyText(
                                         text = content[0],
-                                        fontSize = 16.sp,
+                                        fontSize = 16.nsp,
                                         fontWeight = FontWeight.Bold,
                                         textColor = AppTheme.colors.onPrimary
                                     )
 
                                     MyText(
                                         text = content[1],
-                                        fontSize = 16.sp,
+                                        fontSize = 16.nsp,
                                         textColor = AppTheme.colors.onPrimary
                                     )
                                 }

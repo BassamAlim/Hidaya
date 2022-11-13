@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.ui.theme.nsp
 
 @Composable
 fun MyButton(
@@ -146,6 +147,7 @@ fun MySquareButton(
 ) {
     MyButton(
         text = stringResource(textResId),
+        fontSize = 18.nsp,
         modifier = Modifier
             .size(180.dp)
             .padding(vertical = 7.dp, horizontal = 7.dp),

@@ -19,6 +19,7 @@ import bassamalim.hidaya.ui.components.MyDialog
 import bassamalim.hidaya.ui.components.MyImageButton
 import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.ui.theme.nsp
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PrefUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
@@ -91,7 +92,7 @@ class HijriDatePickerDialog(
                                 months[selected[1]]
                         MyText(
                             text = mainText,
-                            fontSize = 22.sp,
+                            fontSize = 22.nsp,
                             fontWeight = FontWeight.Bold,
                             textColor = AppTheme.colors.onPrimary
                         )

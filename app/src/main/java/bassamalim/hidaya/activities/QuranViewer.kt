@@ -42,6 +42,7 @@ import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.services.AyahPlayerService
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.ui.theme.nsp
 import bassamalim.hidaya.ui.theme.uthmanic
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
@@ -51,7 +52,7 @@ import com.google.accompanist.pager.rememberPagerState
 import java.util.concurrent.Executors
 
 class QuranViewer : AppCompatActivity() {
-// TODO: Scroll
+// TODO: Scroll, it does not scroll because the first aya is from another sura
     private lateinit var db: AppDatabase
     private lateinit var pref: SharedPreferences
     private lateinit var action: String
@@ -309,11 +310,10 @@ class QuranViewer : AppCompatActivity() {
                     ) {
                         MyText(
                             text = "${getString(R.string.sura)} ${names[currentSura]}",
-                            fontSize = 18.sp,
+                            fontSize = 18.nsp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Start,
-                            textColor = AppTheme.colors.onPrimary,
-                            modifier = Modifier.width(140.dp)
+                            textColor = AppTheme.colors.onPrimary
                         )
 
                         MyText(
@@ -321,10 +321,9 @@ class QuranViewer : AppCompatActivity() {
                                     LangUtils.translateNums(
                                         this@QuranViewer, currentPage.value.toString()
                                     ),
-                            fontSize = 20.sp,
+                            fontSize = 18.nsp,
                             fontWeight = FontWeight.Bold,
-                            textColor = AppTheme.colors.onPrimary,
-                            modifier = Modifier.width(140.dp)
+                            textColor = AppTheme.colors.onPrimary
                         )
 
                         MyText(
@@ -332,11 +331,10 @@ class QuranViewer : AppCompatActivity() {
                                     LangUtils.translateNums(
                                         this@QuranViewer, currentJuz.toString()
                                     ),
-                            fontSize = 20.sp,
+                            fontSize = 18.nsp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.End,
-                            textColor = AppTheme.colors.onPrimary,
-                            modifier = Modifier.width(140.dp)
+                            textColor = AppTheme.colors.onPrimary
                         )
                     }
                 }
@@ -580,7 +578,7 @@ class QuranViewer : AppCompatActivity() {
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(80.dp)
+                .height((textSize * 3.5).dp)
                 .padding(top = 5.dp, bottom = 10.dp, start = 5.dp, end = 5.dp)
                 .onGloballyPositioned { layoutCoordinates ->
                     if (aya.surahNum == initialSura) {

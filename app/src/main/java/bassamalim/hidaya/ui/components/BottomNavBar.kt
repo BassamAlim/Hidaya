@@ -10,11 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.ui.theme.nsp
 
 sealed class BottomNavItem(var icon: Int, var screen_route: String){
     object Home: BottomNavItem(R.drawable.ic_home,"home")
@@ -54,8 +54,9 @@ fun MyBottomNavigation(navController: NavController) {
                 label = {
                     MyText(
                         titles[index],
-                        fontSize = 10.sp,
-                        textColor = AppTheme.colors.secondary
+                        fontSize = 9.nsp,
+                        textColor = AppTheme.colors.secondary,
+                        softWrap = false
                     )
                 },
                 alwaysShowLabel = false,

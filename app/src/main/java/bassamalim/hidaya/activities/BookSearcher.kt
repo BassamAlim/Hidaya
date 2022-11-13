@@ -190,9 +190,7 @@ class BookSearcher : ComponentActivity() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
+                    Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.SpaceAround,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -234,7 +232,9 @@ class BookSearcher : ComponentActivity() {
                     }
 
                     Row(
-                        Modifier.fillMaxWidth(),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 5.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {

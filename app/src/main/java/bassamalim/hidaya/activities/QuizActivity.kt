@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -122,6 +124,8 @@ class QuizActivity : ComponentActivity() {
                 Box(
                     Modifier
                         .fillMaxWidth()
+                        .heightIn(1.dp, 200.dp)
+                        .verticalScroll(rememberScrollState())
                         .background(AppTheme.colors.primary),
                     contentAlignment = Alignment.Center
                 ) {
@@ -135,7 +139,10 @@ class QuizActivity : ComponentActivity() {
 
                 RadioGroup(
                     options = currentAs,
-                    selection = selection
+                    selection = selection,
+                    modifier = Modifier
+                        .heightIn(1.dp, 400.dp)
+                        .verticalScroll(rememberScrollState())
                 ) { index ->
                     answered(index)
                 }

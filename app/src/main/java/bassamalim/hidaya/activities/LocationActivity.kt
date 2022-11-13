@@ -31,6 +31,7 @@ import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.ui.components.MyButton
 import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.ui.theme.nsp
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import com.google.android.gms.location.LocationServices
@@ -155,7 +156,7 @@ class LocationActivity: ComponentActivity() {
         ) {
             MyText(
                 text = stringResource(R.string.disclaimer),
-                fontSize = 26.sp,
+                fontSize = 26.nsp,
                 modifier = Modifier.padding(horizontal = 15.dp)
             )
 

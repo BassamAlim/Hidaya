@@ -26,10 +26,11 @@ fun MyText(
     text: String,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 20.sp,
-    textColor: Color = AppTheme.colors.text,
     fontWeight: FontWeight = FontWeight.Normal,
     textAlign: TextAlign = TextAlign.Center,
-    fontFamily: FontFamily = tajwal
+    textColor: Color = AppTheme.colors.text,
+    fontFamily: FontFamily = tajwal,
+    softWrap: Boolean = true
 ) {
     Text(
         text = text,
@@ -41,7 +42,8 @@ fun MyText(
             fontWeight = fontWeight,
             textAlign = textAlign,
             lineHeight = fontSize * 1.4
-        )
+        ),
+        softWrap = softWrap
     )
 }
 
