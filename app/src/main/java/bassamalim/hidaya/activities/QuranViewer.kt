@@ -52,7 +52,7 @@ import com.google.accompanist.pager.rememberPagerState
 import java.util.concurrent.Executors
 
 class QuranViewer : AppCompatActivity() {
-// TODO: Scroll, it does not scroll because the first aya is from another sura
+
     private lateinit var db: AppDatabase
     private lateinit var pref: SharedPreferences
     private lateinit var action: String
@@ -222,8 +222,6 @@ class QuranViewer : AppCompatActivity() {
                 val idx = currentAyas.indexOfFirst { aya -> aya.id == ayaId }
 
                 if (idx == -1) return  // not the same page
-
-                //scrollTo(aya.getScreen()!!.top)
 
                 tracked.value = currentAyas[idx]
             }
@@ -425,6 +423,8 @@ class QuranViewer : AppCompatActivity() {
                 pagerState = pagerState,
                 modifier = Modifier.padding(it)
             ) { page ->
+                val isCurrentPage = page == pagerState.currentPage
+
                 val scrollState = rememberScrollState()
 
                 if (pagerState.currentPage != this@QuranViewer.currentPage.value)
@@ -442,15 +442,16 @@ class QuranViewer : AppCompatActivity() {
                 ) {
                     val ayas = buildPage(page+1)
 
-                    if (page == pagerState.currentPage) currentAyas = ayas
+                    if (isCurrentPage) currentAyas = ayas
 
-                    if (viewType.value == "list") ListItems(ayas)
-                    else PageItems(ayas)
+                    if (viewType.value == "list") ListItems(ayas, isCurrentPage)
+                    else PageItems(ayas, isCurrentPage)
 
                     if (page == pagerState.currentPage)
                         LaunchedEffect(null) {
-                            Log.d(Global.TAG, "$scrollTo")
+                            Log.d(Global.TAG, scrollTo.toString())
                             scrollState.animateScrollTo(scrollTo.toInt())
+                            scrollTo = 0F
                         }
                 }
 
@@ -478,12 +479,12 @@ class QuranViewer : AppCompatActivity() {
     }
 
     @Composable
-    private fun PageItems(ayas: List<Ayah>) {
+    private fun PageItems(ayas: List<Ayah>, isCurrentPage: Boolean) {
         var text = StringBuilder()
         var sequence = ArrayList<Ayah>()
         var lastSura = ayas[0].surahNum
 
-        NewSura(ayas[0])
+        NewSura(ayas[0], isCurrentPage)
 
         for (aya in ayas) {
             if (aya.surahNum == lastSura) {
@@ -495,7 +496,7 @@ class QuranViewer : AppCompatActivity() {
             else {
                 PageItem(text = text.toString(), sequence = sequence)
 
-                NewSura(aya)
+                NewSura(aya, isCurrentPage)
 
                 text = StringBuilder()
                 sequence = ArrayList()
@@ -530,9 +531,9 @@ class QuranViewer : AppCompatActivity() {
     }
 
     @Composable
-    private fun ListItems(ayas: List<Ayah>) {
+    private fun ListItems(ayas: List<Ayah>, isCurrentPage: Boolean) {
         for (aya in ayas) {
-            NewSura(aya)
+            NewSura(aya, isCurrentPage)
 
             val annotatedString = AnnotatedString(aya.text!!)
             Screen(annotatedString, aya.id)
@@ -565,25 +566,27 @@ class QuranViewer : AppCompatActivity() {
     }
 
     @Composable
-    private fun NewSura(aya: Ayah) {
+    private fun NewSura(aya: Ayah, isCurrentPage: Boolean) {
         if (aya.ayahNum == 1) {
-            SuraHeader(aya)
+            SuraHeader(aya, isCurrentPage)
             // surat al-fatiha and At-Taubah
             if (aya.surahNum != 1 && aya.surahNum != 9) Basmalah()
         }
     }
 
     @Composable
-    private fun SuraHeader(aya: Ayah) {
+    private fun SuraHeader(aya: Ayah, isCurrentPage: Boolean) {
         Box(
             Modifier
                 .fillMaxWidth()
-                .height((textSize * 3.5).dp)
+                .height((textSize * 2.6).dp)
                 .padding(top = 5.dp, bottom = 10.dp, start = 5.dp, end = 5.dp)
                 .onGloballyPositioned { layoutCoordinates ->
-                    if (aya.surahNum == initialSura) {
-                        scrollTo = layoutCoordinates.positionInWindow().y
-                        initialSura = -1
+                    if (isCurrentPage) {
+                        if (aya.surahNum == initialSura+1) {
+                            scrollTo = layoutCoordinates.positionInParent().y - 13
+                            initialSura = -1
+                        }
                     }
                 },
             contentAlignment = Alignment.Center
