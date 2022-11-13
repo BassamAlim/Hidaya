@@ -449,7 +449,6 @@ class QuranViewer : AppCompatActivity() {
 
                     if (page == pagerState.currentPage)
                         LaunchedEffect(null) {
-                            Log.d(Global.TAG, scrollTo.toString())
                             scrollState.animateScrollTo(scrollTo.toInt())
                             scrollTo = 0F
                         }
