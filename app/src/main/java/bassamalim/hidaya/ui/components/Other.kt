@@ -16,12 +16,12 @@ import bassamalim.hidaya.ui.theme.Grey
 
 @Composable
 fun MyCircularProgressIndicator(
-    color: Color = AppTheme.colors.accent,
-    padding: Dp = 0.dp
+    modifier: Modifier = Modifier,
+    color: Color = AppTheme.colors.accent
 ) {
     CircularProgressIndicator(
         color = color,
-        modifier = Modifier.padding(padding)
+        modifier = modifier
     )
 }
 

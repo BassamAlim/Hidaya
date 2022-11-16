@@ -355,7 +355,8 @@ class QuranViewer : AppCompatActivity() {
                                     R.drawable.ic_bookmarked
                                 else R.drawable.ic_bookmark,
                             description = stringResource(R.string.bookmark_page_button_description),
-                            tint = AppTheme.colors.onPrimary
+                            tint = AppTheme.colors.onPrimary,
+                            size = 40.dp
                         ) {
                             bookmarkedPage.value = currentPage.value
 
@@ -409,7 +410,8 @@ class QuranViewer : AppCompatActivity() {
                         MyIconBtn(
                             iconId = R.drawable.ic_preferences,
                             description = stringResource(R.string.settings),
-                            tint = AppTheme.colors.onPrimary
+                            tint = AppTheme.colors.onPrimary,
+                            size = 44.dp
                         ) {
                             settingsDialogShown.value = true
                         }

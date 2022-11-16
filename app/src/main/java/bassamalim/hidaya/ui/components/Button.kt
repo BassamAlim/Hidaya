@@ -25,8 +25,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
+import bassamalim.hidaya.enums.DownloadState
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.ui.theme.nsp
+import bassamalim.hidaya.utils.FileUtils
 
 @Composable
 fun MyButton(
@@ -76,6 +78,7 @@ fun MyButton(
 fun MyIconBtn(
     iconId: Int,
     modifier: Modifier = Modifier,
+    size: Dp = 24.dp,
     description: String = "",
     tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
     onClick: () -> Unit
@@ -87,7 +90,8 @@ fun MyIconBtn(
         Icon(
             painter = painterResource(id = iconId),
             tint = tint,
-            contentDescription = description
+            contentDescription = description,
+            modifier = Modifier.size(size)
         )
     }
 }
@@ -175,8 +179,46 @@ fun MyFavBtn(
         iconId = iconId,
         description = "Favorite",
         onClick = onClick,
-        tint = AppTheme.colors.accent
+        tint = AppTheme.colors.accent,
+        size = 28.dp
     )
+}
+
+@Composable
+fun MyDownloadBtn(
+    state: DownloadState,
+    id: Int,
+    path: String,
+    modifier: Modifier = Modifier,
+    size: Dp = 26.dp,
+    deleted: (Int) -> Unit,
+    download: (Int) -> Unit
+) {
+    val context = LocalContext.current
+
+    Box(
+        modifier.size(size),
+        contentAlignment = Alignment.Center
+    ) {
+        if (state == DownloadState.Downloading) MyCircularProgressIndicator(Modifier.size(size))
+        else {
+            MyIconBtn(
+                iconId =
+                    if (state == DownloadState.Downloaded) R.drawable.ic_downloaded
+                    else R.drawable.ic_download,
+                description = stringResource(R.string.download_description),
+                tint = AppTheme.colors.accent,
+                size = size
+            ) {
+                if (state == DownloadState.Downloaded) {
+                    deleted(id)
+                    FileUtils.deleteFile(context, path)
+                }
+                else download(id)
+            }
+        }
+    }
+
 }
 
 @Composable

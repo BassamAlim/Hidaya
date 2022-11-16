@@ -8,7 +8,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +23,7 @@ import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB
+import bassamalim.hidaya.enums.DownloadState
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.ReciterSura
 import bassamalim.hidaya.ui.components.*
@@ -30,7 +34,6 @@ import bassamalim.hidaya.utils.FileUtils
 import com.google.gson.Gson
 import java.io.File
 import java.util.*
-import java.util.concurrent.Executors
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatSuarActivity : ComponentActivity() {
@@ -45,7 +48,7 @@ class TelawatSuarActivity : ComponentActivity() {
     private lateinit var suraNames: List<String>
     private lateinit var searchNames: List<String>
     private var favs = mutableStateListOf<Int>()
-    private val downloadStates = mutableStateListOf<String>()
+    private val downloadStates = mutableStateListOf<DownloadState>()
     private val downloading = HashMap<Long, Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,6 +84,8 @@ class TelawatSuarActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
+        checkDownloads()
+
         registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
@@ -104,18 +109,18 @@ class TelawatSuarActivity : ComponentActivity() {
         prefix = "/Telawat/${ver.getReciterId()}/${versionId}/"
 
         setupFavs()
-        initDownloadStates()
     }
 
     private fun setupFavs() {
         for (fav in db.suarDao().getFavs()) favs.add(fav)
     }
 
-    private fun initDownloadStates() {
+    private fun checkDownloads() {
+        downloadStates.clear()
         for (i in 0..113) {
             downloadStates.add(
-                if (isDownloaded(i)) "downloaded"
-                else "not downloaded"
+                if (isDownloaded(i)) DownloadState.Downloaded
+                else DownloadState.NotDownloaded
             )
         }
     }
@@ -139,6 +144,8 @@ class TelawatSuarActivity : ComponentActivity() {
     }
 
     private fun download(sura: ReciterSura) {
+        downloadStates[sura.num] = DownloadState.Downloading
+
         val server = ver.getUrl()
         val link = String.format(Locale.US, "%s/%03d.mp3", server, sura.num + 1)
         val uri = Uri.parse(link)
@@ -167,10 +174,10 @@ class TelawatSuarActivity : ComponentActivity() {
             val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             try {
                 val id = downloading[downloadId]!!
-                downloadStates[id] = "downloaded"
+                downloadStates[id] = DownloadState.Downloaded
                 downloading.remove(downloadId)
             } catch (e: RuntimeException) {
-                for (i in downloadStates.indices) downloadStates[i] = downloadStates[i]
+                checkDownloads()
             }
         }
     }
@@ -237,7 +244,20 @@ class TelawatSuarActivity : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Box(
+                MyDownloadBtn(
+                    state = downloadStates[sura.num],
+                    id = sura.num,
+                    path = "$prefix${sura.num}.mp3",
+                    modifier = Modifier.padding(end = 0.dp),
+                    size = 28.dp,
+                    deleted = {
+                        downloadStates[sura.num] = DownloadState.NotDownloaded
+                    }
+                ) {
+                    download(sura)
+                }
+
+                /*Box(
                     Modifier.size(26.dp)
                 ) {
                     val downloadState = downloadStates[sura.num]
@@ -245,8 +265,8 @@ class TelawatSuarActivity : ComponentActivity() {
                     else {
                         MyIconBtn(
                             iconId =
-                            if (downloadState == "downloaded") R.drawable.ic_downloaded
-                            else R.drawable.ic_download,
+                                if (downloadState == "downloaded") R.drawable.ic_downloaded
+                                else R.drawable.ic_download,
                             description = stringResource(R.string.download_description),
                             tint = AppTheme.colors.accent
                         ) {
@@ -259,12 +279,12 @@ class TelawatSuarActivity : ComponentActivity() {
                                 downloadStates[sura.num] = "not downloaded"
                             }
                             else {
-                                Executors.newSingleThreadExecutor().execute { download(sura) }
                                 downloadStates[sura.num] = "downloading"
+                                Executors.newSingleThreadExecutor().execute { download(sura) }
                             }
                         }
                     }
-                }
+                }*/
 
                 MyText(
                     text = sura.surahName,

@@ -151,7 +151,8 @@ class PrayersScreen(
                         iconId = R.drawable.ic_location,
                         description = stringResource(R.string.locate),
                         tint = AppTheme.colors.text,
-                        modifier = Modifier.padding(end = 8.dp)
+                        modifier = Modifier.padding(end = 8.dp),
+                        size = 32.dp
                     ) {
                         val intent = Intent(context, LocationActivity::class.java)
                         intent.action = "normal"

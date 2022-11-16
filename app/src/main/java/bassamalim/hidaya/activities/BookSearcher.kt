@@ -223,6 +223,7 @@ class BookSearcher : ComponentActivity() {
                         MyIconBtn(
                             iconId = R.drawable.ic_filter,
                             description = stringResource(R.string.filter_search_description),
+                            size = 30.dp,
                             tint =
                                 if (filteredState.value) AppTheme.colors.secondary
                                 else AppTheme.colors.weakText

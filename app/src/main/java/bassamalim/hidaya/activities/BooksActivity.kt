@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.dbs.BooksDB
+import bassamalim.hidaya.enums.DownloadState
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
@@ -33,9 +34,9 @@ class BooksActivity : AppCompatActivity() {
     private lateinit var language: String
     private val prefix = "/Books/"
     private val gson = Gson()
-    private val downloadingIds = HashMap<Long, Int>()
-    private val downloadStates = mutableStateListOf<String>()
     private lateinit var books: List<BooksDB>
+    private val downloadStates = mutableStateListOf<DownloadState>()
+    private val downloading = HashMap<Long, Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,22 +44,45 @@ class BooksActivity : AppCompatActivity() {
 
         books = DBUtils.getDB(this).booksDao().getAll()
 
-        initStates()
-
         setContent {
             AppTheme {
                 UI()
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        try {
+            unregisterReceiver(onComplete)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        checkDownloads()
 
         registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
-    private fun initStates() {
-        for (book in books) downloadStates.add("not downloaded")
+    private fun checkDownloads() {
+        downloadStates.clear()
+        for (book in books) {
+            downloadStates.add(
+                if (isDownloaded(book.id)) {
+                    if (downloading(book.id)) DownloadState.Downloading
+                    else DownloadState.Downloaded
+                }
+                else DownloadState.NotDownloaded
+            )
+        }
     }
 
-    private fun downloaded(id: Int): Boolean {
+    private fun isDownloaded(id: Int): Boolean {
         val dir = File(getExternalFilesDir(null).toString() + prefix)
 
         if (!dir.exists()) return false
@@ -72,6 +96,7 @@ class BooksActivity : AppCompatActivity() {
                 if (num == id) return true
             } catch (ignored: NumberFormatException) {}
         }
+
         return false
     }
 
@@ -88,6 +113,8 @@ class BooksActivity : AppCompatActivity() {
     }
 
     private fun download(item: BooksDB) {
+        downloadStates[item.id] = DownloadState.Downloading
+
         val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val uri = Uri.parse(item.url)
         val request = DownloadManager.Request(uri)
@@ -97,18 +124,18 @@ class BooksActivity : AppCompatActivity() {
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
         val downloadId = downloadManager.enqueue(request)
 
-        downloadingIds[downloadId] = item.id
+        downloading[downloadId] = item.id
     }
 
     private var onComplete: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(ctxt: Context, intent: Intent) {
             val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             try {
-                val id = downloadingIds[downloadId]!!
-                downloadStates[id] = "downloaded"
-                downloadingIds.remove(downloadId)
+                val id = downloading[downloadId]!!
+                downloadStates[id] = DownloadState.Downloaded
+                downloading.remove(downloadId)
             } catch (e: RuntimeException) {
-                for (i in downloadStates.indices) downloadStates[i] = downloadStates[i]
+                checkDownloads()
             }
         }
     }
@@ -117,22 +144,17 @@ class BooksActivity : AppCompatActivity() {
         return if (language == "en") item.titleEn else item.title
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(onComplete)
-    }
-
     @Composable
     private fun UI() {
         MyScaffold(
             title = stringResource(R.string.hadeeth_books),
             fab = {
-                  MyFloatingActionButton(
-                      iconId = R.drawable.ic_quran_search,
-                      description = stringResource(R.string.search_in_books)
-                  ) {
-                      startActivity(Intent(this, BookSearcher::class.java))
-                  }
+                MyFloatingActionButton(
+                    iconId = R.drawable.ic_quran_search,
+                    description = stringResource(R.string.search_in_books)
+                ) {
+                    startActivity(Intent(this, BookSearcher::class.java))
+                }
             }
         ) {
             MyLazyColumn(
@@ -141,71 +163,38 @@ class BooksActivity : AppCompatActivity() {
                     items(
                         items = books
                     ) { item ->
-                        downloadStates[item.id] =
-                            if (downloaded(item.id)) {
-                                if (downloading(item.id)) "downloading"
-                                else "downloaded"
-                            }
-                            else "not downloading"
-
                         MyBtnSurface(
                             text = item.title,
                             innerVPadding = 15.dp,
                             fontSize = 22.sp,
                             modifier = Modifier.padding(vertical = 2.dp),
                             iconBtn = {
-                                if (downloadStates[item.id] == "downloading")
-                                    MyCircularProgressIndicator()
-                                else {
-                                    MyIconBtn(
-                                        iconId =
-                                            if (downloadStates[item.id] == "downloaded")
-                                                R.drawable.ic_downloaded
-                                            else
-                                                R.drawable.ic_download,
-                                        description = stringResource(R.string.download_description),
-                                        tint = AppTheme.colors.accent
-                                    ) {
-                                        if (downloadingIds.containsValue(item.id))
-                                            FileUtils.showWaitMassage(this@BooksActivity)
-                                        else if (downloaded(item.id)) {
-                                            if (downloading(item.id))
-                                                FileUtils.showWaitMassage(this@BooksActivity)
-                                            else {
-                                                FileUtils.deleteFile(
-                                                    this@BooksActivity,
-                                                    "$prefix${item.id}.json"
-                                                )
-                                                downloadStates[item.id] = "not downloaded"
-                                            }
-                                        }
-                                        else {
-                                            download(item)
-                                            downloadStates[item.id] = "downloading"
-                                        }
+                                MyDownloadBtn(
+                                    state = downloadStates[item.id],
+                                    id = item.id,
+                                    path = "$prefix${item.id}.json",
+                                    modifier = Modifier.padding(end = 10.dp),
+                                    size = 32.dp,
+                                    deleted = {
+                                        downloadStates[item.id] = DownloadState.NotDownloaded
                                     }
+                                ) {
+                                    download(item)
                                 }
                             }
                         ) {
-                            if (downloadingIds.containsValue(item.id))
-                                FileUtils.showWaitMassage(this@BooksActivity)
-                            else if (downloaded(item.id)) {
-                                if (downloading(item.id))
-                                    FileUtils.showWaitMassage(this@BooksActivity)
-                                else {
-                                    val intent = Intent(
-                                        this@BooksActivity,
-                                        BooksChaptersActivity::class.java
-                                    )
-                                    intent.putExtra("book_id", item.id)
-                                    intent.putExtra("book_title", getTitle(item))
-                                    startActivity(intent)
-                                }
-                            }
-                            else {
+                            if (downloadStates[item.id] == DownloadState.NotDownloaded)
                                 download(item)
-                                downloadStates[item.id] = "downloading"
+                            else if (downloadStates[item.id] == DownloadState.Downloaded) {
+                                val intent = Intent(
+                                    this@BooksActivity,
+                                    BooksChaptersActivity::class.java
+                                )
+                                intent.putExtra("book_id", item.id)
+                                intent.putExtra("book_title", getTitle(item))
+                                startActivity(intent)
                             }
+                            else FileUtils.showWaitMassage(this@BooksActivity)
                         }
                     }
                 }

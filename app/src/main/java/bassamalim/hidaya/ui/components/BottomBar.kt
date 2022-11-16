@@ -31,6 +31,7 @@ fun MyReadingBottomBar(
             MyIconBtn(
                 iconId = R.drawable.ic_text_size,
                 tint = AppTheme.colors.onPrimary,
+                size = 38.dp,
                 onClick = {
                     isSelected = !isSelected
                 }

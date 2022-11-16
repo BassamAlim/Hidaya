@@ -312,6 +312,7 @@ class TelawatActivity : ComponentActivity() {
                                 iconId = R.drawable.ic_filter,
                                 modifier = Modifier.padding(end = 10.dp),
                                 description = stringResource(R.string.filter_search_description),
+                                size = 32.dp,
                                 tint =
                                     if (filteredState.value) AppTheme.colors.secondary
                                     else AppTheme.colors.weakText
