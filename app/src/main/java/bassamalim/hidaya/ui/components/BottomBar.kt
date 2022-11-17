@@ -10,7 +10,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 
 @Composable
 fun MyReadingBottomBar(
-    textSizeState: MutableState<Int>,
+    textSizeState: MutableState<Float>,
     onSeek: (Float) -> Unit
 ) {
     var isSelected by remember { mutableStateOf(false) }
@@ -18,8 +18,7 @@ fun MyReadingBottomBar(
     BottomAppBar(
         backgroundColor = AppTheme.colors.primary,
         elevation = 12.dp,
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -39,7 +38,7 @@ fun MyReadingBottomBar(
 
             if (isSelected) {
                 MySlider(
-                    value = textSizeState.value.toFloat(),
+                    value = textSizeState.value,
                     valueRange = 1F..40F,
                     modifier = Modifier.padding(15.dp),
                     onValueChange = onSeek

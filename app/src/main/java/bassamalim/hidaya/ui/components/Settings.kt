@@ -222,13 +222,13 @@ fun SliderPref(
         PreferenceTitle(titleResId)
 
         MyValuedSlider(
-            initialValue = pref.getInt(key, defaultValue),
+            initialValue = pref.getInt(key, defaultValue).toFloat(),
             valueRange = valueRange,
             infinite = infinite,
             sliderFraction = sliderFraction,
             onValueChange = { value ->
                 pref.edit()
-                    .putInt(key, value)
+                    .putInt(key, value.toInt())
                     .apply()
 
                 onValueChange()

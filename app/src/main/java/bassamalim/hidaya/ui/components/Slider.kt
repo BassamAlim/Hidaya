@@ -38,7 +38,7 @@ fun MySlider(
 
 @Composable
 fun MyValuedSlider(
-    initialValue: Int,
+    initialValue: Float,
     valueRange: ClosedFloatingPointRange<Float>,
     modifier: Modifier = Modifier,
     progressMin: Int = 0,
@@ -46,12 +46,14 @@ fun MyValuedSlider(
     enabled: Boolean = true,
     infinite: Boolean = false,
     onValueChangeFinished: () -> Unit = {},
-    onValueChange: (Int) -> Unit
+    onValueChange: (Float) -> Unit
 ) {
     val context = LocalContext.current
     var currentValue by remember { mutableStateOf(initialValue) }
     var sliderText by remember {
-        mutableStateOf(LangUtils.translateNums(context, (initialValue - progressMin).toString()))
+        mutableStateOf(LangUtils.translateNums(
+            context, (initialValue - progressMin).toInt().toString()
+        ))
     }
 
     Row(
@@ -60,19 +62,19 @@ fun MyValuedSlider(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         MySlider(
-            value = currentValue.toFloat(),
+            value = currentValue,
             valueRange = valueRange,
             modifier = Modifier.fillMaxWidth(fraction = sliderFraction),
             enabled = enabled,
             onValueChange = { value ->
-                currentValue = value.toInt()
+                currentValue = value
 
                 val progress = currentValue - progressMin
 
-                var progressStr = progress.toString()
+                var progressStr = progress.toInt().toString()
                 if (progressMin != 0 && progress > 0) progressStr += "+"
                 sliderText =
-                    if (infinite && progress == valueRange.endInclusive.toInt())
+                    if (infinite && progress == valueRange.endInclusive)
                         context.getString(R.string.infinite)
                     else LangUtils.translateNums(context, progressStr)
 

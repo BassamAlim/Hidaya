@@ -61,7 +61,9 @@ class BookViewer : ComponentActivity() {
 
     @Composable
     private fun UI(title: String) {
-        val textSize = remember { mutableStateOf(pref.getInt(getString(R.string.alathkar_text_size_key), 15)) }
+        val textSize = remember {
+            mutableStateOf(pref.getInt(getString(R.string.alathkar_text_size_key), 15).toFloat())
+        }
 
         MyScaffold(
             title = title,
@@ -69,7 +71,7 @@ class BookViewer : ComponentActivity() {
                 MyReadingBottomBar(
                     textSizeState = textSize
                 ) {
-                    textSize.value = it.toInt()
+                    textSize.value = it
 
                     pref.edit()
                         .putInt(getString(R.string.alathkar_text_size_key), it.toInt())
@@ -89,7 +91,7 @@ class BookViewer : ComponentActivity() {
     }
 
     @Composable
-    private fun DoorCard(door: Book.BookChapter.BookDoor, textSize: MutableState<Int>) {
+    private fun DoorCard(door: Book.BookChapter.BookDoor, textSize: MutableState<Float>) {
         val textSizeMargin = 15
         MySurface {
             Column(

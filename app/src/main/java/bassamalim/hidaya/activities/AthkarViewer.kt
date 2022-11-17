@@ -82,7 +82,7 @@ class AthkarViewer : AppCompatActivity() {
     @Composable
     private fun UI(title: String, id: Int) {
         val textSize = remember {
-            mutableStateOf(pref.getInt(getString(R.string.alathkar_text_size_key), 15))
+            mutableStateOf(pref.getInt(getString(R.string.alathkar_text_size_key), 15).toFloat())
         }
 
         MyScaffold(
@@ -91,7 +91,7 @@ class AthkarViewer : AppCompatActivity() {
                 MyReadingBottomBar(
                     textSizeState = textSize
                 ) {
-                    textSize.value = it.toInt()
+                    textSize.value = it
 
                     pref.edit()
                         .putInt(getString(R.string.alathkar_text_size_key), it.toInt())
@@ -120,7 +120,7 @@ class AthkarViewer : AppCompatActivity() {
     }
 
     @Composable
-    private fun ThikrCard(thikr: Thikr, textSize: MutableState<Int>) {
+    private fun ThikrCard(thikr: Thikr, textSize: MutableState<Float>) {
         val textSizeMargin = 15
 
         MySurface {

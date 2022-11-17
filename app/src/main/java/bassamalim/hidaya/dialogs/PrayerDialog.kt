@@ -35,7 +35,7 @@ class PrayerDialog(
     private val offsetMin = 30
     private val notificationType = mutableStateOf(0)
     private val offset = mutableStateOf(0)
-    private var sliderProgress = 30
+    private var sliderProgress = 30F
 
     init {
         retrieveState()
@@ -47,7 +47,7 @@ class PrayerDialog(
         notificationType.value = notificationState
 
         offset.value = pref.getInt("$pid offset", 0)
-        sliderProgress = offset.value + offsetMin
+        sliderProgress = offset.value + offsetMin.toFloat()
     }
 
     private fun getNotificationTypes(): List<Pair<Int, Int>> {
@@ -112,7 +112,7 @@ class PrayerDialog(
                     sliderFraction = 0.875F,
                     onValueChange = { value ->
                         pref.edit()
-                            .putInt("$pid offset", value)
+                            .putInt("$pid offset", value.toInt())
                             .apply()
                     }
                 )
