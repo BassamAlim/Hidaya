@@ -119,12 +119,6 @@
             android:label="@string/settings" />
         <activity android:name=".activities.AboutActivity" />
         <activity
-            android:name=".dialogs.QuranSettingsDialog"
-            android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity
-            android:name=".dialogs.LocationPickerDialog"
-            android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity
             android:name=".activities.LocationActivity"
             android:exported="false" />
 
