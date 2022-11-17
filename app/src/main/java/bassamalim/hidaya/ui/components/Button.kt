@@ -187,12 +187,12 @@ fun MyFavBtn(
 @Composable
 fun MyDownloadBtn(
     state: DownloadState,
-    id: Int,
     path: String,
     modifier: Modifier = Modifier,
     size: Dp = 26.dp,
-    deleted: (Int) -> Unit,
-    download: (Int) -> Unit
+    tint: Color = AppTheme.colors.accent,
+    deleted: () -> Unit,
+    download: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -207,14 +207,14 @@ fun MyDownloadBtn(
                     if (state == DownloadState.Downloaded) R.drawable.ic_downloaded
                     else R.drawable.ic_download,
                 description = stringResource(R.string.download_description),
-                tint = AppTheme.colors.accent,
+                tint = tint,
                 size = size
             ) {
                 if (state == DownloadState.Downloaded) {
-                    deleted(id)
+                    deleted()
                     FileUtils.deleteFile(context, path)
                 }
-                else download(id)
+                else download()
             }
         }
     }

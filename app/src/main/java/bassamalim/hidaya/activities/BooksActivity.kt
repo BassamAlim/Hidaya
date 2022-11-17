@@ -171,7 +171,6 @@ class BooksActivity : AppCompatActivity() {
                             iconBtn = {
                                 MyDownloadBtn(
                                     state = downloadStates[item.id],
-                                    id = item.id,
                                     path = "$prefix${item.id}.json",
                                     modifier = Modifier.padding(end = 10.dp),
                                     size = 32.dp,

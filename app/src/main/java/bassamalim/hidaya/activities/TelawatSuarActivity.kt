@@ -246,9 +246,7 @@ class TelawatSuarActivity : ComponentActivity() {
             ) {
                 MyDownloadBtn(
                     state = downloadStates[sura.num],
-                    id = sura.num,
                     path = "$prefix${sura.num}.mp3",
-                    modifier = Modifier.padding(end = 0.dp),
                     size = 28.dp,
                     deleted = {
                         downloadStates[sura.num] = DownloadState.NotDownloaded
@@ -256,35 +254,6 @@ class TelawatSuarActivity : ComponentActivity() {
                 ) {
                     download(sura)
                 }
-
-                /*Box(
-                    Modifier.size(26.dp)
-                ) {
-                    val downloadState = downloadStates[sura.num]
-                    if (downloadState == "downloading") MyCircularProgressIndicator()
-                    else {
-                        MyIconBtn(
-                            iconId =
-                                if (downloadState == "downloaded") R.drawable.ic_downloaded
-                                else R.drawable.ic_download,
-                            description = stringResource(R.string.download_description),
-                            tint = AppTheme.colors.accent
-                        ) {
-                            if (downloading.containsValue(sura.num))
-                                FileUtils.showWaitMassage(this@TelawatSuarActivity)
-                            else if (isDownloaded(sura.num)) {
-                                FileUtils.deleteFile(
-                                    this@TelawatSuarActivity, "$prefix${sura.num}.mp3"
-                                )
-                                downloadStates[sura.num] = "not downloaded"
-                            }
-                            else {
-                                downloadStates[sura.num] = "downloading"
-                                Executors.newSingleThreadExecutor().execute { download(sura) }
-                            }
-                        }
-                    }
-                }*/
 
                 MyText(
                     text = sura.surahName,

@@ -26,6 +26,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.TelawatDB
 import bassamalim.hidaya.dialogs.FilterDialog
+import bassamalim.hidaya.enums.DownloadState
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.models.Reciter
@@ -39,7 +40,6 @@ import bassamalim.hidaya.utils.PrefUtils
 import com.google.gson.Gson
 import java.io.File
 import java.util.*
-import java.util.concurrent.Executors
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatActivity : ComponentActivity() {
@@ -53,7 +53,7 @@ class TelawatActivity : ComponentActivity() {
     private val filteredState = mutableStateOf(false)
     private lateinit var rewayat: Array<String>
     private var favs = mutableStateListOf<Int>()
-    private val downloadStates = mutableStateListOf(mutableStateListOf<String>())
+    private val downloadStates = mutableStateListOf(mutableStateListOf<DownloadState>())
     private val selectedVersions = mutableStateListOf<Boolean>()
     private val downloading = HashMap<Long, Pair<Int, Int>>()
     private val filterDialogShown = mutableStateOf(false)
@@ -136,8 +136,8 @@ class TelawatActivity : ComponentActivity() {
         for (telawa in db.telawatDao().all) {  // all versions
             val state =
                 if (isDownloaded("${telawa.getReciterId()}/${telawa.getVersionId()}"))
-                    "downloaded"
-                else "not downloaded"
+                    DownloadState.Downloaded
+                else DownloadState.NotDownloaded
 
             if (telawa.getReciterId() == downloadStates.size)
                 downloadStates.add(mutableStateListOf(state))
@@ -223,6 +223,8 @@ class TelawatActivity : ComponentActivity() {
     }
 
     private fun downloadVer(reciterId: Int, ver: RecitationVersion) {
+        downloadStates[reciterId][ver.versionId] = DownloadState.Downloading
+
         val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         var request: DownloadManager.Request
         var posted = false
@@ -241,9 +243,7 @@ class TelawatActivity : ComponentActivity() {
                 )
 
                 val downloadId = downloadManager.enqueue(request)
-
                 if (!posted) {
-                    downloadStates[reciterId][ver.versionId] = "downloading"
                     downloading[downloadId] = Pair(reciterId, ver.versionId)
                     posted = true
                 }
@@ -256,7 +256,7 @@ class TelawatActivity : ComponentActivity() {
             val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             try {
                 val ids = downloading[downloadId]!!
-                downloadStates[ids.first][ids.second] = "downloaded"
+                downloadStates[ids.first][ids.second] = DownloadState.Downloaded
                 downloading.remove(downloadId)
             } catch (e: RuntimeException) {
                 for (i in downloadStates.indices) downloadStates[i] = downloadStates[i]
@@ -429,36 +429,15 @@ class TelawatActivity : ComponentActivity() {
             ) {
                 MyText(text = version.rewaya, fontSize = 18.sp)
 
-                Box(
-                    Modifier.size(25.dp)
-                ) {
-                    val downloadState = downloadStates[reciterId][version.versionId]
-                    if (downloadState == "downloading") MyCircularProgressIndicator()
-                    else {
-                        MyIconBtn(
-                            iconId =
-                                if (downloadState == "downloaded") R.drawable.ic_downloaded
-                                else R.drawable.ic_download,
-                            description = stringResource(R.string.download_description),
-                            tint = AppTheme.colors.accent
-                        ) {
-                            if (downloading.containsValue(Pair(reciterId, version.versionId)))
-                                FileUtils.showWaitMassage(this@TelawatActivity)
-                            else if (isDownloaded("${reciterId}/${version.versionId}")) {
-                                FileUtils.deleteFile(
-                                    this@TelawatActivity,
-                                    "$prefix$reciterId/${version.versionId}"
-                                )
-                                downloadStates[reciterId][version.versionId] = "not downloaded"
-                            }
-                            else {
-                                Executors.newSingleThreadExecutor().execute {
-                                    downloadVer(reciterId, version)
-                                }
-                                downloadStates[reciterId][version.versionId] = "downloading"
-                            }
-                        }
+                MyDownloadBtn(
+                    state = downloadStates[reciterId][version.versionId],
+                    path = "$prefix$reciterId/${version.versionId}",
+                    size = 28.dp,
+                    deleted = {
+                        downloadStates[reciterId][version.versionId] = DownloadState.NotDownloaded
                     }
+                ) {
+                    downloadVer(reciterId, version)
                 }
             }
         }

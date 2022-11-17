@@ -1,9 +1,9 @@
 package bassamalim.hidaya.activities
 
-import android.content.ComponentName
-import android.content.Intent
-import android.content.SharedPreferences
+import android.app.DownloadManager
+import android.content.*
 import android.media.AudioManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -23,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
+import bassamalim.hidaya.enums.DownloadState
 import bassamalim.hidaya.models.Reciter.RecitationVersion
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.services.TelawatService
@@ -38,6 +38,8 @@ import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.FileUtils
+import java.io.File
 import java.util.*
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -52,7 +54,7 @@ class TelawatClient : ComponentActivity() {
     private lateinit var mediaId: String
     private var reciterId = 0
     private var versionId = 0
-    private var surahIndex = 0
+    private var suraIdx = 0
     private lateinit var version: RecitationVersion
     private lateinit var surahNames: List<String>
     private val suraName = mutableStateOf("")
@@ -65,6 +67,8 @@ class TelawatClient : ComponentActivity() {
     private val progress = mutableStateOf(0L)
     private val secondaryProgress = mutableStateOf(0)
     private val controlsEnabled = mutableStateOf(false)
+    private var prefix = ""
+    private val downloadState = mutableStateOf(DownloadState.NotDownloaded)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +80,7 @@ class TelawatClient : ComponentActivity() {
 
         retrieveStates()
 
-        suraName.value = surahNames[surahIndex]
+        suraName.value = surahNames[suraIdx]
         versionName.value = version.rewaya
 
         setContent {
@@ -105,9 +109,21 @@ class TelawatClient : ComponentActivity() {
         mediaBrowser.connect()
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        try {
+            unregisterReceiver(onComplete)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         volumeControlStream = AudioManager.STREAM_MUSIC
+
+        registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
     override fun onStop() {
@@ -118,6 +134,12 @@ class TelawatClient : ComponentActivity() {
                 .unregisterCallback(controllerCallback)
         }
         mediaBrowser.disconnect()
+    }
+
+    private var onComplete: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(ctx: Context, intent: Intent) {
+            checkDownload()
+        }
     }
 
     private val connectionCallbacks: MediaBrowserCompat.ConnectionCallback = object :
@@ -165,7 +187,7 @@ class TelawatClient : ComponentActivity() {
 
             reciterId = mediaId.substring(0, 3).toInt()
             versionId = mediaId.substring(3, 5).toInt()
-            surahIndex = mediaId.substring(5).toInt()
+            suraIdx = mediaId.substring(5).toInt()
 
             reciterName.value = db.telawatRecitersDao().getName(reciterId)
 
@@ -180,6 +202,13 @@ class TelawatClient : ComponentActivity() {
     private fun retrieveStates() {
         repeat.value = pref.getInt("telawat_repeat_mode", 0)
         shuffle.value = pref.getInt("telawat_shuffle_mode", 0)
+    }
+
+    private fun checkDownload() {
+        downloadState.value =
+            if (File("${getExternalFilesDir(null)}$prefix").exists())
+                DownloadState.Downloaded
+            else DownloadState.NotDownloaded
     }
 
     private fun sendPlayRequest() {
@@ -235,10 +264,13 @@ class TelawatClient : ComponentActivity() {
     }
 
     private fun updateMetadata(metadata: MediaMetadataCompat) {
-        surahIndex = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
-        suraName.value = surahNames[surahIndex]
+        suraIdx = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
+        suraName.value = surahNames[suraIdx]
 
         duration.value = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
+
+        prefix = "${"/Telawat/${reciterId}/${versionId}/"}$suraIdx.mp3"
+        checkDownload()
     }
 
     private fun updatePbState(state: PlaybackStateCompat) {
@@ -258,17 +290,36 @@ class TelawatClient : ComponentActivity() {
         return hms
     }
 
+    private fun download() {
+        downloadState.value = DownloadState.Downloading
+
+        val server = version.server
+        val link = String.format(Locale.US, "%s/%03d.mp3", server, suraIdx + 1)
+        val uri = Uri.parse(link)
+
+        val request = DownloadManager.Request(uri)
+        request.setTitle(suraName.value)
+        FileUtils.createDir(this, prefix)
+        request.setDestinationInExternalFilesDir(this, prefix, "${suraIdx}.mp3")
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+
+        (getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
+    }
+
     override fun onBackPressed() {
         onBack()
     }
 
     private fun onBack() {
-        val intent = Intent(this, TelawatSuarActivity::class.java)
-        intent.putExtra("reciter_id", reciterId)
-        intent.putExtra("reciter_name", reciterName.value)
-        intent.putExtra("version_id", versionId)
-        startActivity(intent)
-        finish()
+        if (isTaskRoot) {
+            val intent = Intent(this, TelawatSuarActivity::class.java)
+            intent.putExtra("reciter_id", reciterId)
+            intent.putExtra("reciter_name", reciterName.value)
+            intent.putExtra("version_id", versionId)
+            startActivity(intent)
+            finish()
+        }
+        else onBackPressedDispatcher.onBackPressed()
     }
 
     override fun onDestroy() {
@@ -288,7 +339,7 @@ class TelawatClient : ComponentActivity() {
                     Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        horizontalArrangement = Arrangement.SpaceAround
                     ) {
                         MyIconBtn(
                             iconId = R.drawable.ic_repeat,
@@ -316,12 +367,17 @@ class TelawatClient : ComponentActivity() {
                             }
                         }
 
-                        MyIconBtn(
-                            iconId = R.drawable.ic_download,
-                            description = stringResource(R.string.download_description),
-                            modifier = Modifier.alpha(0F)
+                        MyDownloadBtn(
+                            state = downloadState.value,
+                            path = "${"/Telawat/${reciterId}/${versionId}/"}$suraIdx.mp3",
+                            size = 28.dp,
+                            tint =
+                                if (downloadState.value == DownloadState.Downloaded)
+                                    AppTheme.colors.secondary
+                                else AppTheme.colors.onPrimary,
+                            deleted = { downloadState.value = DownloadState.NotDownloaded }
                         ) {
-
+                            download()
                         }
 
                         MyIconBtn(
@@ -412,7 +468,7 @@ class TelawatClient : ComponentActivity() {
                     MySlider(
                         value = progress.value.toFloat(),
                         valueRange = 0F..duration.value.toFloat(),
-                        modifier = Modifier.weight(1F),
+                        modifier = Modifier.fillMaxWidth(0.7F),
                         enabled = controlsEnabled.value,
                         onValueChangeFinished = { tc.seekTo(progress.value) },
                         onValueChange = { newValue -> progress.value = newValue.toLong() }
