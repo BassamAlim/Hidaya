@@ -1,22 +1,26 @@
 # Hidaya
 
 Hidaya is a fully equipped muslims app that helps reminds us with prayers and points us towards the qibla and give them easy access to quran and hidaya and much more.
+Originally developed with Java/XML, then migrated to Kotlin/Jetpack Compose.
 
 Get it from Google Play:
 https://play.google.com/store/apps/details?id=bassamalim.hidaya
 
 Features:
-- Prayer times
+- Prayer times, using your current location or a location of your choice
 - Athkar
-- Quran with Tafseer and Recitations
+- Quran with Tafseer and audio Recitations
 - Qibla direction with Compass
-- Recitations with more than 200 Reciters
+- Audio Recitations with more than 200 Reciters
 - Islamic quiz to test your information with more than 700 questiouns
 - Hadeeth books such as Saheeh al-Bokhari and Saheeh Muslim
 - Live tv feed of Quran channel and Sunnah channel
 - Quran radio station
 - Date converter between Hijri and Gregorian dates
 - Quran searcher and books searcher
+- Get daily reminder notifications for: morning athkar, evening athkar, daily werd page of quran, and surat al-kahf on friday
+- Available in Arabic and English
+- Choose between many themes
 - and much more
 
 
