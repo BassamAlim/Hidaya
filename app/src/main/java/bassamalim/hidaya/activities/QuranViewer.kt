@@ -486,15 +486,8 @@ class QuranViewer : AppCompatActivity() {
         var lastSura = ayas[0].surahNum
 
         NewSura(ayas[0], isCurrentPage)
-
         for (aya in ayas) {
-            if (aya.surahNum == lastSura) {
-                aya.start = text.length
-                text.append(aya.text)
-                aya.end = text.length
-                sequence.add(aya)
-            }
-            else {
+            if (aya.surahNum != lastSura) {
                 PageItem(text = text.toString(), sequence = sequence)
 
                 NewSura(aya, isCurrentPage)
@@ -503,9 +496,13 @@ class QuranViewer : AppCompatActivity() {
                 sequence = ArrayList()
             }
 
+            aya.start = text.length
+            text.append(aya.text)
+            aya.end = text.length
+            sequence.add(aya)
+
             lastSura = aya.surahNum
         }
-
         PageItem(text = text.toString(), sequence = sequence)
     }
 

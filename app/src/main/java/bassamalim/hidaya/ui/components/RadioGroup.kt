@@ -63,8 +63,10 @@ fun HorizontalRadioGroup(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp),
     ) {
         options.forEachIndexed { index, text ->
             MyButton(
@@ -73,12 +75,12 @@ fun HorizontalRadioGroup(
                 textColor =
                     if (index == selection.value) AppTheme.colors.accent
                     else AppTheme.colors.text,
-                innerPadding = PaddingValues(vertical = 0.dp, horizontal = 12.dp),
+                innerPadding = PaddingValues(vertical = 1.dp),
                 modifier =
                     if (index == selection.value)
                         Modifier
-                            .fillMaxWidth(1.0F / options.size)
-                            .padding(vertical = 10.dp, horizontal = 6.dp)
+                            .weight(1F)
+                            .padding(horizontal = 5.dp)
                             .border(
                                 width = 3.dp,
                                 color = AppTheme.colors.accent,
@@ -86,7 +88,8 @@ fun HorizontalRadioGroup(
                             )
                     else
                         Modifier
-                            .padding(vertical = 10.dp, horizontal = 16.dp)
+                            .weight(1F)
+                            .padding(horizontal = 5.dp)
             ) {
                 selection.value = index
                 onSelect(index)
