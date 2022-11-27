@@ -3,6 +3,7 @@ package bassamalim.hidaya.screens
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
@@ -16,9 +17,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
+import bassamalim.hidaya.activities.QuranSearcher
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.Sura
+import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
@@ -75,68 +78,84 @@ class QuranScreen(
 
     @Composable
     fun QuranUI() {
-        Column(
-            Modifier.fillMaxSize()
+        MyScaffold(
+            topBar = {},
+            fab = {
+                MyFloatingActionButton(
+                    iconId = R.drawable.ic_quran_search,
+                    description = stringResource(R.string.search_in_quran)
+                ) {
+                    context.startActivity(Intent(context, QuranSearcher::class.java))
+                }
+            }
         ) {
-            val textState = remember { mutableStateOf(TextFieldValue("")) }
+            Column(
+                Modifier.fillMaxSize()
+            ) {
+                val textState = remember { mutableStateOf(TextFieldValue("")) }
 
-            val bookmarkedSura = pref.getInt("bookmarked_sura", -1)
-            MyButton(
-                text =
+                val bookmarkedSura = pref.getInt("bookmarked_sura", -1)
+                MyButton(
+                    text =
                     if (bookmarkedPage.value == -1) stringResource(R.string.no_bookmarked_page)
                     else {
                         "${context.getString(R.string.bookmarked_page)} " +
                                 "${context.getString(R.string.page)} " +
-                                "${LangUtils.translateNums(
-                                    context, bookmarkedPage.value.toString()
-                                )}, " +
+                                "${
+                                    LangUtils.translateNums(
+                                        context, bookmarkedPage.value.toString()
+                                    )
+                                }, " +
                                 "${context.getString(R.string.sura)} " +
                                 if (PrefUtils.getLanguage(context, pref) == "en")
                                     db.suarDao().getNameEn(bookmarkedSura)
                                 else db.suarDao().getName(bookmarkedSura)
                     },
-                fontSize = 18.sp,
-                textColor = AppTheme.colors.accent,
-                modifier = Modifier.fillMaxWidth(),
-                innerPadding = PaddingValues(vertical = 4.dp)
-            ) {
-                if (bookmarkedPage.value != -1) {
-                    val intent = Intent(context, QuranViewer::class.java)
-                    intent.action = "by_page"
-                    intent.putExtra("page", bookmarkedPage.value)
-                    context.startActivity(intent)
+                    fontSize = 18.sp,
+                    textColor = AppTheme.colors.accent,
+                    modifier = Modifier.fillMaxWidth(),
+                    innerPadding = PaddingValues(vertical = 4.dp)
+                ) {
+                    if (bookmarkedPage.value != -1) {
+                        val intent = Intent(context, QuranViewer::class.java)
+                        intent.action = "by_page"
+                        intent.putExtra("page", bookmarkedPage.value)
+                        context.startActivity(intent)
+                    }
                 }
-            }
 
-            TabLayout(
-                pageNames = listOf(
-                    stringResource(R.string.all),
-                    stringResource(R.string.favorite)
-                ),
-                searchComponent = {
-                    SearchComponent(
-                        state = textState,
-                        hint = stringResource(R.string.quran_query_hint),
-                        modifier = Modifier.fillMaxWidth(),
-                        onSubmit = {
-                            try {
-                                val num = textState.value.text.toInt()
-                                if (num in 1..604) {
-                                    val openPage = Intent(context, QuranViewer::class.java)
-                                    openPage.action = "by_page"
-                                    openPage.putExtra("page", num)
-                                    context.startActivity(openPage)
-                                }
-                                else
-                                    Toast.makeText(
-                                        context, context.getString(R.string.page_does_not_exist), Toast.LENGTH_SHORT
-                                    ).show()
-                            } catch (_: NumberFormatException) {}
-                        }
-                    )
+                TabLayout(
+                    pageNames = listOf(
+                        stringResource(R.string.all),
+                        stringResource(R.string.favorite)
+                    ),
+                    searchComponent = {
+                        SearchComponent(
+                            state = textState,
+                            hint = stringResource(R.string.quran_query_hint),
+                            modifier = Modifier.fillMaxWidth(),
+                            onSubmit = {
+                                try {
+                                    val num = textState.value.text.toInt()
+                                    if (num in 1..604) {
+                                        val openPage = Intent(context, QuranViewer::class.java)
+                                        openPage.action = "by_page"
+                                        openPage.putExtra("page", num)
+                                        context.startActivity(openPage)
+                                    }
+                                    else
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.page_does_not_exist),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                } catch (_: NumberFormatException) {}
+                            }
+                        )
+                    }
+                ) { page ->
+                    Tab(items = getItems(ActivityUtils.getListType(page)), textState)
                 }
-            ) { page ->
-                Tab(items = getItems(ActivityUtils.getListType(page)), textState)
             }
         }
 

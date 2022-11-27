@@ -453,6 +453,23 @@ class TelawatClient : ComponentActivity() {
                     }
                 }
 
+                /*AndroidView(
+                    factory = { context ->
+                        val view = LayoutInflater.from(context).inflate(
+                            R.layout.waview, null, false
+                        ) as MultiWave
+                        // do whatever you want...
+                        view // return the view
+                    },
+                    update = { view ->
+                        // Update the view
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .padding(vertical = 10.dp)
+                )*/
+
                 Row(
                     Modifier
                         .fillMaxWidth()

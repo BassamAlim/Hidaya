@@ -52,13 +52,13 @@ class HomeScreen(
     private lateinit var formattedTomorrowFajr: String
     private var timer: CountDownTimer? = null
     private var tomorrow = false
-    private val upcomingPrayer = mutableStateOf(0)
-    private val upcomingPrayerTime = mutableStateOf("")
+    private var upcomingPrayer = 0
+    private var upcomingPrayerTime = ""
+    private var pastTime = 0L
+    private var upcomingTime = 0L
+    private var remaining = 0L
     private val remainingTime = mutableStateOf("")
     private val werdDone = mutableStateOf(false)
-    private val pastTime = mutableStateOf(0L)
-    private val upcomingTime = mutableStateOf(0L)
-    private val remaining = mutableStateOf(0L)
 
     init {
         onResume()
@@ -105,18 +105,19 @@ class HomeScreen(
     }
 
     private fun setupUpcomingPrayer() {
-        upcomingPrayer.value = findUpcoming()
+        upcomingPrayer = findUpcoming()
 
         tomorrow = false
-        if (upcomingPrayer.value == -1) {
+        if (upcomingPrayer == -1) {
             tomorrow = true
-            upcomingPrayer.value = 0
+            upcomingPrayer = 0
         }
 
-        if (tomorrow) upcomingPrayerTime.value = formattedTomorrowFajr
-        else upcomingPrayerTime.value = formattedTimes[upcomingPrayer.value]
+        upcomingPrayerTime =
+            if (tomorrow) formattedTomorrowFajr
+            else formattedTimes[upcomingPrayer]
 
-        var till = times[upcomingPrayer.value]!!.timeInMillis
+        var till = times[upcomingPrayer]!!.timeInMillis
         if (tomorrow) till = tomorrowFajr.timeInMillis
 
         count(till)
@@ -139,12 +140,12 @@ class HomeScreen(
                 )
 
                 val past =
-                    if (upcomingPrayer.value == 0) -1L
-                    else times[upcomingPrayer.value - 1]!!.timeInMillis
+                    if (upcomingPrayer == 0) -1L
+                    else times[upcomingPrayer - 1]!!.timeInMillis
 
-                pastTime.value = past
-                upcomingTime.value = times[upcomingPrayer.value]!!.timeInMillis
-                remaining.value = millisUntilFinished
+                pastTime = past
+                upcomingTime = times[upcomingPrayer]!!.timeInMillis
+                remaining = millisUntilFinished
             }
 
             override fun onFinish() {
@@ -214,7 +215,7 @@ class HomeScreen(
                     MyText(
                         text =
                             if (located)
-                                stringArrayResource(id = R.array.prayer_names)[upcomingPrayer.value]
+                                stringArrayResource(id = R.array.prayer_names)[upcomingPrayer]
                             else "",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
@@ -222,7 +223,7 @@ class HomeScreen(
                     )
 
                     MyText(
-                        text = upcomingPrayerTime.value,
+                        text = upcomingPrayerTime,
                         fontSize = 24.sp,
                         modifier = Modifier.padding(3.dp)
                     )

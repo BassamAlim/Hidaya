@@ -16,6 +16,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,7 +34,10 @@ import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.receivers.DeviceBootReceiver
 import bassamalim.hidaya.screens.*
-import bassamalim.hidaya.ui.components.*
+import bassamalim.hidaya.ui.components.BottomNavItem
+import bassamalim.hidaya.ui.components.MyBottomNavigation
+import bassamalim.hidaya.ui.components.MyScaffold
+import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.ui.theme.nsp
 import bassamalim.hidaya.utils.ActivityUtils
@@ -52,8 +56,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var theme: String
     private lateinit var language: String
     private val dateOffset = mutableStateOf(0)
-    private val currentScreen = mutableStateOf("")
-    private val dateEditorShown = mutableStateOf(false)
 
     companion object {
         var location: Location? = null
@@ -178,6 +180,7 @@ class MainActivity : AppCompatActivity() {
     @Composable
     fun MainUI() {
         val navController = rememberNavController()
+        val dateEditorShown = remember { mutableStateOf(false) }
 
         MyScaffold(
             title = getString(R.string.app_name),
@@ -234,16 +237,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             },
-            bottomBar = { MyBottomNavigation(navController) },
-            fab = {
-                if (currentScreen.value == BottomNavItem.Quran.screen_route)
-                    MyFloatingActionButton(
-                        iconId = R.drawable.ic_quran_search,
-                        description = stringResource(R.string.search_in_quran)
-                    ) {
-                        startActivity(Intent(this, QuranSearcher::class.java))
-                    }
-            }
+            bottomBar = { MyBottomNavigation(navController) }
         ) {
             NavigationGraph(navController, it)
 
@@ -260,27 +254,22 @@ class MainActivity : AppCompatActivity() {
             modifier = Modifier.padding(padding)
         ) {
             composable(BottomNavItem.Home.screen_route) {
-                currentScreen.value = BottomNavItem.Home.screen_route
                 navScreen = HomeScreen(this@MainActivity, pref, located, location)
                 (navScreen as HomeScreen).HomeUI()
             }
             composable(BottomNavItem.Prayers.screen_route) {
-                currentScreen.value = BottomNavItem.Prayers.screen_route
                 navScreen = PrayersScreen(this@MainActivity, pref, located, location)
                 (navScreen as PrayersScreen).PrayersUI()
             }
             composable(BottomNavItem.Quran.screen_route) {
-                currentScreen.value = BottomNavItem.Quran.screen_route
                 navScreen = QuranScreen(this@MainActivity, pref)
                 (navScreen as QuranScreen).QuranUI()
             }
             composable(BottomNavItem.Athkar.screen_route) {
-                currentScreen.value = BottomNavItem.Athkar.screen_route
                 navScreen = AthkarScreen(this@MainActivity)
                 (navScreen as AthkarScreen).AthkarUI()
             }
             composable(BottomNavItem.More.screen_route) {
-                currentScreen.value = BottomNavItem.More.screen_route
                 navScreen = MoreScreen(this@MainActivity)
                 (navScreen as MoreScreen).MoreUI()
             }

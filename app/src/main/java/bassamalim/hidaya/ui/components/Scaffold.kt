@@ -8,7 +8,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 
 @Composable
 fun MyScaffold(
-    title: String,
+    title: String = "",
     backgroundColor: Color = AppTheme.colors.background,
     onBack: (() -> Unit)? = null,
     topBar: @Composable () -> Unit = { MyTopBar(title, onBack = onBack) },
