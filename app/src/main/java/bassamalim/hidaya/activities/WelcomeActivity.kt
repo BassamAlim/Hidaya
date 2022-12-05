@@ -26,7 +26,7 @@ class WelcomeActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.myOnActivityCreated(this)
 
         settingsScreen = SettingsScreen(this)
 
@@ -58,7 +58,7 @@ class WelcomeActivity: AppCompatActivity() {
                 Box(
                     Modifier.weight(1F)
                 ) {
-                    settingsScreen.SettingsUI()
+                    settingsScreen.InitialSettingsUI()
                 }
 
                 MyButton(

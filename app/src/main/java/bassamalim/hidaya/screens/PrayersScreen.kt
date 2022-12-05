@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Location
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -63,15 +62,13 @@ class PrayersScreen(
      * @param change The number of days to add to the current date.
      */
     private fun getTimes(change: Int): List<String> {
-        val timeFormat = PrefUtils.getTimeFormat(context)
-
         calendar.timeInMillis = System.currentTimeMillis()
         calendar[Calendar.DATE] = calendar[Calendar.DATE] + change
 
         val utcOffset = PTUtils.getUTCOffset(context, pref)
 
         return prayTimes.getStrPrayerTimes(
-            location!!.latitude, location.longitude, utcOffset.toDouble(), calendar, timeFormat
+            location!!.latitude, location.longitude, utcOffset.toDouble(), calendar
         )
     }
 
@@ -234,8 +231,8 @@ class PrayersScreen(
     private fun PrayerCard(pid: Int, time: String) {
         val delay = pref.getInt("${PTUtils.mapID(pid)} offset", 0)
 
-        MySurface(
-            Modifier.clickable {
+        MyClickableSurface(
+            onClick = {
                 if (located) {
                     clickedPID = pid
                     settingsDialogShown.value = true
@@ -281,9 +278,7 @@ class PrayersScreen(
                                 else -> R.drawable.ic_sound
                             }
                         ),
-                        contentDescription = stringResource(
-                            id = R.string.notification_image_description
-                        ),
+                        contentDescription = stringResource(R.string.notification_image_description),
                         tint = AppTheme.colors.accent,
                         modifier = Modifier.size(35.dp)
                     )

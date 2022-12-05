@@ -26,15 +26,15 @@
 
     <!-- Base application theme. -->
     <style name="Theme.HidayaM" parent="MainAppTheme">
-        <!-- Primary brand color. -->
+        <!-- Primary color -->
         <item name="colorPrimary">@color/primary_M</item>
         <item name="colorPrimaryVariant">@color/primary_M</item>
         <item name="colorOnPrimary">@color/primary_M</item>
-        <!-- Secondary brand color. -->
+        <!-- Secondary color -->
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/bg_M</item>
-        <!-- Customize your theme here. -->
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">@color/primary_M</item>
+        <!-- Customize your theme here -->
         <item name="android:textColorPrimary">@color/text_M</item>
         <item name="android:textColor">@color/text_M</item>
         <item name="colorAccent">@color/accent_M</item>

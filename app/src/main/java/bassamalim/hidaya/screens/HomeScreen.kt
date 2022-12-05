@@ -36,7 +36,6 @@ import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.ui.theme.Positive
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
-import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 
 class HomeScreen(
@@ -81,7 +80,6 @@ class HomeScreen(
 
     private fun getTimes(location: Location) {
         val utcOffset = PTUtils.getUTCOffset(context, pref)
-        val timeFormat = PrefUtils.getTimeFormat(context, pref)
 
         val prayTimes = PrayTimes(context)
 
@@ -90,7 +88,7 @@ class HomeScreen(
             location.latitude, location.longitude, utcOffset.toDouble(), today
         )
         formattedTimes = prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, utcOffset.toDouble(), today, timeFormat
+            location.latitude, location.longitude, utcOffset.toDouble(), today
         )
 
         val tomorrow = Calendar.getInstance()
@@ -100,7 +98,7 @@ class HomeScreen(
         )[0]!!
         tomorrowFajr[Calendar.DATE]++
         formattedTomorrowFajr = prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, utcOffset.toDouble(), tomorrow, timeFormat
+            location.latitude, location.longitude, utcOffset.toDouble(), tomorrow
         )[0]
     }
 

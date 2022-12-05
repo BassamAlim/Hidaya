@@ -87,9 +87,9 @@ class QuranViewer : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.myOnActivityCreated(this)
+        val language = ActivityUtils.myOnActivityCreated(this)[1]
 
-        init()
+        init(language)
 
         action = intent.action!!
         action(intent)
@@ -101,13 +101,11 @@ class QuranViewer : AppCompatActivity() {
         }
     }
 
-    private fun init() {
+    private fun init(language: String) {
         pref = PreferenceManager.getDefaultSharedPreferences(this)
         db = DBUtils.getDB(this)
 
         textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
-
-        val language = ActivityUtils.onActivityCreateSetLocale(this)
 
         viewType.value =
             if (language == "en") "list"

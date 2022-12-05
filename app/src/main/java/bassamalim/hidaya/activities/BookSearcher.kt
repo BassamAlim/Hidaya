@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.preference.PreferenceManager
@@ -53,7 +54,7 @@ class BookSearcher : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        language = ActivityUtils.onActivityCreateSetLocale(this)
+        language = ActivityUtils.myOnActivityCreated(this)[1]
 
         init()
 
@@ -270,6 +271,7 @@ class BookSearcher : ComponentActivity() {
                                 ) {
                                     MyText(
                                         text = item.bookTitle,
+                                        fontWeight = FontWeight.Bold,
                                         modifier = Modifier.padding(6.dp)
                                     )
                                     MyText(

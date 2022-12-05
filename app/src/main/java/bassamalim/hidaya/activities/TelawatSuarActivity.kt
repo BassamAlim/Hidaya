@@ -53,7 +53,7 @@ class TelawatSuarActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.myOnActivityCreated(this)
 
         db = DBUtils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(this)

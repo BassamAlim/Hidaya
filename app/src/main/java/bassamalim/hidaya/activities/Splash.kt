@@ -38,7 +38,7 @@ class Splash : AppCompatActivity() {
         DBUtils.testDB(this, pref)
 
         if (pref.getBoolean("new_user", true)) welcome()
-        else ActivityUtils.onActivityCreateSetLocale(this)
+        else ActivityUtils.myOnActivityCreated(this)
 
         when(pref.getString("location_type", "auto")) {
             "auto" -> {

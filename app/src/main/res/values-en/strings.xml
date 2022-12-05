@@ -11,11 +11,12 @@
     <string name="title_more">More</string>
 
     <!-- Preference Categories -->
-    <string name="notifications_header">Extra reminders</string>
+    <string name="extra_notifications">Extra reminders</string>
     <string name="page_preferences">Page preferences</string>
     <string name="recitation_preferences">Recitation preferences</string>
     <string name="appearance">Appearance</string>
     <string name="theme">Theme</string>
+    <string name="prayer_time_settings">Prayer times settings</string>
 
     <!-- Preference Titles -->
     <string name="morning_athkar_title">Morning athkar reminder</string>
@@ -26,6 +27,9 @@
     <string name="reciter">Reciter</string>
     <string name="aya_repeat">Aya repetition</string>
     <string name="time_format">Time format</string>
+    <string name="calculation_method_title">Calculation method</string>
+    <string name="juristic_method_title">Juristic method</string>
+    <string name="high_lat_adjustment_title">High latitude adjustment</string>
 
     <!-- TextViews Text -->
     <string name="telawat_time_record_title">Telawat Listening \nDuration</string>

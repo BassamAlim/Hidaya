@@ -39,7 +39,7 @@ fun ListPref(
         Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .background(AppTheme.colors.background)
+            .background(AppTheme.colors.surface)
             .clip(RoundedCornerShape(10.dp))
             .clickable { shown = true }
     ) {
@@ -169,7 +169,7 @@ fun SwitchPref(
         Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .background(AppTheme.colors.background)
+            .background(AppTheme.colors.surface)
             .clip(RoundedCornerShape(10.dp))
             .clickable { onCheckChange() }
     ) {

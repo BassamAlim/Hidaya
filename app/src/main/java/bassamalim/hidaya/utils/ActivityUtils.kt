@@ -8,12 +8,11 @@ import java.util.*
 
 object ActivityUtils {
 
-    fun myOnActivityCreated(activity: Activity) {
-        onActivityCreateSetTheme(activity)
-        onActivityCreateSetLocale(activity)
+    fun myOnActivityCreated(activity: Activity): Array<String> {
+        return arrayOf(onActivityCreateSetTheme(activity), onActivityCreateSetLocale(activity))
     }
 
-    fun onActivityCreateSetTheme(activity: Activity): String {
+    private fun onActivityCreateSetTheme(activity: Activity): String {
         val theme = PrefUtils.getTheme(activity)
         when (theme) {
             "Dark" -> activity.setTheme(R.style.Theme_HidayaM)

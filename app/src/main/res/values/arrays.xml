@@ -228,4 +228,48 @@
         <item>24h</item>
     </string-array>
 
+    <string-array name="prayer_times_calc_method_entries">
+        <item>جامعة أم القرى, مكة المكرمة</item>
+        <item>رابطة العالم الإسلامي</item>
+        <item>الجمعية الإسلامية لأمريكا الشمالية</item>
+        <item>جامعة العلوم الإسلامية, كراتشي</item>
+        <item>الهيْة المصرية العامة</item>
+        <item>مؤسسة الجيوفيزياء, جامعة طهران</item>
+        <item>جعفري (إثنا عشري)</item>
+    </string-array>
+
+    <string-array name="prayer_times_calc_method_values" translatable="false">
+        <item>MECCA</item>
+        <item>MWL</item>
+        <item>ISNA</item>
+        <item>KARACHI</item>
+        <item>EGYPT</item>
+        <item>TAHRAN</item>
+        <item>JAFARI</item>
+    </string-array>
+
+    <string-array name="juristic_method_entries">
+        <item>شافعي</item>
+        <item>حنفي</item>
+    </string-array>
+
+    <string-array name="juristic_method_values" translatable="false">
+        <item>SHAFII</item>
+        <item>HANAFI</item>
+    </string-array>
+
+    <string-array name="high_lat_adjustment_entries">
+        <item>بدون تعديل</item>
+        <item>منتصف الليل</item>
+        <item>سُبع الليل</item>
+        <item>حسب الزاوية</item>
+    </string-array>
+
+    <string-array name="high_lat_adjustment_values" translatable="false">
+        <item>NONE</item>
+        <item>MIDNIGHT</item>
+        <item>ONE_SEVENTH</item>
+        <item>ANGLE_BASED</item>
+    </string-array>
+
 </resources>

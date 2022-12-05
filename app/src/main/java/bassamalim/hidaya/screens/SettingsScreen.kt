@@ -110,7 +110,7 @@ class SettingsScreen(
     }
 
     @Composable
-    fun SettingsUI() {
+    fun InitialSettingsUI() {
         Column(
             Modifier
                 .fillMaxWidth()
@@ -119,14 +119,29 @@ class SettingsScreen(
         ) {
             CategoryTitle(titleResId = R.string.appearance)
 
+            AppearanceSettings()
+
+            MyHorizontalDivider()
+
+            CategoryTitle(R.string.extra_notifications)
+
+            ExtraNotificationsSettings()
+        }
+    }
+
+    @Composable
+    fun AppearanceSettings() {
+        Column(
+            Modifier.padding(bottom = 10.dp)
+        ) {
             // Language
             ListPref(
                 pref = pref,
                 titleResId = R.string.language,
                 keyResId = R.string.language_key,
                 iconResId = R.drawable.ic_translation,
-                entries = stringArrayResource(id = R.array.language_entries),
-                values = stringArrayResource(id = R.array.languages_values),
+                entries = stringArrayResource(R.array.language_entries),
+                values = stringArrayResource(R.array.languages_values),
                 defaultValue = stringResource(R.string.default_language)
             ) {
                 ActivityUtils.restartActivity(context as Activity)
@@ -138,15 +153,15 @@ class SettingsScreen(
                 titleResId = R.string.numerals_language,
                 keyResId = R.string.numerals_language_key,
                 iconResId = R.drawable.ic_translation,
-                entries = stringArrayResource(id = R.array.numerals_language_entries),
-                values = stringArrayResource(id = R.array.languages_values),
+                entries = stringArrayResource(R.array.numerals_language_entries),
+                values = stringArrayResource(R.array.languages_values),
                 defaultValue = stringResource(R.string.default_language)
             ) {
                 ActivityUtils.restartActivity(context as Activity)
             }
 
             // Time format
-            val timeFormatEntries = stringArrayResource(id = R.array.time_format_values).map {
+            val timeFormatEntries = stringArrayResource(R.array.time_format_values).map {
                 LangUtils.translateNums(context, it)
             }.toTypedArray()
             ListPref(
@@ -155,7 +170,7 @@ class SettingsScreen(
                 keyResId = R.string.time_format_key,
                 iconResId = R.drawable.ic_time_format,
                 entries = timeFormatEntries,
-                values = stringArrayResource(id = R.array.time_format_values),
+                values = stringArrayResource(R.array.time_format_values),
                 defaultValue = stringResource(R.string.default_time_format)
             ) {
                 ActivityUtils.restartActivity(context as Activity)
@@ -167,16 +182,20 @@ class SettingsScreen(
                 titleResId = R.string.theme,
                 keyResId = R.string.theme_key,
                 iconResId = R.drawable.ic_theme,
-                entries = stringArrayResource(id = R.array.themes_entries),
-                values = stringArrayResource(id = R.array.theme_values),
+                entries = stringArrayResource(R.array.themes_entries),
+                values = stringArrayResource(R.array.theme_values),
                 defaultValue = stringResource(R.string.default_theme)
             ) {
                 ActivityUtils.restartActivity(context as Activity)
             }
+        }
+    }
 
-            MyHorizontalDivider()
-            CategoryTitle(titleResId = R.string.notifications_header)
-
+    @Composable
+    fun ExtraNotificationsSettings() {
+        Column(
+            Modifier.padding(bottom = 10.dp)
+        ) {
             SwitchPref(
                 pref = pref,
                 keyResId = R.string.morning_athkar_key,
@@ -214,4 +233,5 @@ class SettingsScreen(
             }
         }
     }
+
 }

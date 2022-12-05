@@ -45,7 +45,7 @@ class LocationActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.myOnActivityCreated(this)
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
         db = DBUtils.getDB(this)

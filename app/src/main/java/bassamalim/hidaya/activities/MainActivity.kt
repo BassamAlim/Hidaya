@@ -64,8 +64,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme = ActivityUtils.onActivityCreateSetTheme(this)
-        language = ActivityUtils.onActivityCreateSetLocale(this)
+        val values = ActivityUtils.myOnActivityCreated(this)
+        theme = values[0]
+        language = values[1]
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
         dateOffset.value = pref.getInt("date_offset", 0)
