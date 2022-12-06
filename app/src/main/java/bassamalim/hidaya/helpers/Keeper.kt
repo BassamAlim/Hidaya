@@ -47,7 +47,7 @@ class Keeper {
      */
     fun retrieveLocation(): Location? {
         locJson = pref.getString("stored location", "")!!
-        val myLocation: MyLocation? = gson.fromJson(locJson, MyLocation::class.java)
+        val myLocation = gson.fromJson(locJson, MyLocation::class.java)
         return if (myLocation == null) null
         else MyLocation.toLocation(myLocation)
     }

@@ -117,20 +117,4 @@ object PTUtils {
         }
     }
 
-    fun mapID(num: Int): PID? {
-        return when (num) {
-            0 -> PID.FAJR
-            1 -> PID.SHOROUQ
-            2 -> PID.DUHR
-            3 -> PID.ASR
-            4 -> PID.MAGHRIB
-            5 -> PID.ISHAA
-            6 -> PID.MORNING
-            7 -> PID.EVENING
-            8 -> PID.DAILY_WERD
-            9 -> PID.FRIDAY_KAHF
-            else -> null
-        }
-    }
-
 }

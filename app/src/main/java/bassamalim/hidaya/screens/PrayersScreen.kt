@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.LocationActivity
 import bassamalim.hidaya.dialogs.PrayerDialog
+import bassamalim.hidaya.enums.NotificationType
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
@@ -44,7 +46,7 @@ class PrayersScreen(
     private val calendar = Calendar.getInstance()
     private var dayChange = mutableStateOf(0)
     private val settingsDialogShown = mutableStateOf(false)
-    private var clickedPID = -1
+    private var clickedPID = PID.FAJR
 
     override fun onResume() {
         if (located) goToToday()
@@ -208,13 +210,10 @@ class PrayersScreen(
             }
         }
 
-        if (settingsDialogShown.value) {
+        if (settingsDialogShown.value)
             PrayerDialog(
-                context, PTUtils.mapID(clickedPID)!!, prayerNames[clickedPID], settingsDialogShown
-            ) {
-
-            }.Dialog()
-        }
+                context, clickedPID, prayerNames[clickedPID.ordinal], settingsDialogShown
+            ) {}.Dialog()
 
         TutorialDialog(
             textResId = R.string.prayers_tips,
@@ -224,12 +223,13 @@ class PrayersScreen(
 
     @Composable
     private fun PrayerCards(times: List<String>) {
-        for (pid in times.indices) PrayerCard(pid = pid, time = times[pid])
+        val pidValues = PID.values()
+        for (prayer in times.indices) PrayerCard(pid = pidValues[prayer], time = times[prayer])
     }
 
     @Composable
-    private fun PrayerCard(pid: Int, time: String) {
-        val delay = pref.getInt("${PTUtils.mapID(pid)} offset", 0)
+    private fun PrayerCard(pid: PID, time: String) {
+        val delay = pref.getInt("${pid.ordinal} offset", 0)
 
         MyClickableSurface(
             onClick = {
@@ -249,7 +249,7 @@ class PrayersScreen(
             ) {
                 // Prayer name
                 MyText(
-                    "${prayerNames[pid]}: $time",
+                    "${prayerNames[pid.ordinal]}: $time",
                     fontSize = 33.nsp,
                     fontWeight = FontWeight.Bold
                 )
@@ -265,17 +265,18 @@ class PrayersScreen(
                     )
 
                     // Notification type
-                    val notificationType = pref.getInt(
-                        "${PTUtils.mapID(pid)} notification_type",
-                        if (pid == 1) 0 else 2
-                    )
+                    val defaultType =
+                        if (pid == PID.SHOROUQ) NotificationType.None
+                        else NotificationType.Notification
+                    val typeName = pref.getString("$pid notification_type", defaultType.name)!!
+                    val notificationType = NotificationType.valueOf(typeName)
                     Icon(
                         painter = painterResource(
                             when (notificationType) {
-                                3 -> R.drawable.ic_speaker
-                                1 -> R.drawable.ic_silent
-                                0 -> R.drawable.ic_block
-                                else -> R.drawable.ic_sound
+                                NotificationType.Athan -> R.drawable.ic_speaker
+                                NotificationType.Notification -> R.drawable.ic_sound
+                                NotificationType.Silent -> R.drawable.ic_silent
+                                NotificationType.None -> R.drawable.ic_block
                             }
                         ),
                         contentDescription = stringResource(R.string.notification_image_description),
