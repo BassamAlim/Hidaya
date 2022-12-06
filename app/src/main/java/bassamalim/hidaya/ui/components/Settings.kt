@@ -39,13 +39,13 @@ fun ListPref(
         Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .background(AppTheme.colors.surface)
             .clip(RoundedCornerShape(10.dp))
             .clickable { shown = true }
     ) {
         Row(
             Modifier
                 .fillMaxWidth()
+                .background(AppTheme.colors.surface)
                 .padding(vertical = 6.dp, horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
