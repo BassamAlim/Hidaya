@@ -3,7 +3,6 @@ package bassamalim.hidaya.screens
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
@@ -21,7 +20,6 @@ import bassamalim.hidaya.activities.QuranSearcher
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.Sura
-import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
@@ -92,8 +90,6 @@ class QuranScreen(
             Column(
                 Modifier.fillMaxSize()
             ) {
-                val textState = remember { mutableStateOf(TextFieldValue("")) }
-
                 val bookmarkedSura = pref.getInt("bookmarked_sura", -1)
                 MyButton(
                     text =
@@ -124,6 +120,7 @@ class QuranScreen(
                     }
                 }
 
+                val textState = remember { mutableStateOf(TextFieldValue("")) }
                 TabLayout(
                     pageNames = listOf(
                         stringResource(R.string.all),

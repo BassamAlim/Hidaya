@@ -28,6 +28,7 @@ fun ListPref(
     entries: Array<String>,
     values: Array<String>,
     defaultValue: String,
+    bgColor: Color = AppTheme.colors.surface,
     onSelection: () -> Unit = {}
 ) {
     val key = stringResource(keyResId)
@@ -45,7 +46,7 @@ fun ListPref(
         Row(
             Modifier
                 .fillMaxWidth()
-                .background(AppTheme.colors.surface)
+                .background(bgColor)
                 .padding(vertical = 6.dp, horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -149,6 +150,7 @@ fun SwitchPref(
     titleResId: Int,
     defaultValue: Boolean = true,
     summary: MutableState<String> = mutableStateOf(""),
+    bgColor: Color = AppTheme.colors.surface,
     onSwitch: (Boolean) -> Unit = {}
 ) {
     val key = stringResource(keyResId)
@@ -169,7 +171,7 @@ fun SwitchPref(
         Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .background(AppTheme.colors.surface)
+            .background(bgColor)
             .clip(RoundedCornerShape(10.dp))
             .clickable { onCheckChange() }
     ) {

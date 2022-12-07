@@ -180,10 +180,10 @@ class BookSearcher : ComponentActivity() {
 
     @Composable
     private fun UI() {
-        val textState = remember { mutableStateOf(TextFieldValue("")) }
-        val highlightColor = AppTheme.colors.accent
-
         MyScaffold(stringResource(R.string.books_searcher)) { padding ->
+            val highlightColor = AppTheme.colors.accent
+            val textState = remember { mutableStateOf(TextFieldValue("")) }
+
             Column(
                 Modifier
                     .fillMaxSize()

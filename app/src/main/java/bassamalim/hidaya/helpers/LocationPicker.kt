@@ -1,4 +1,4 @@
-package bassamalim.hidaya.dialogs
+package bassamalim.hidaya.helpers
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -17,10 +17,11 @@ import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.CityDB
+import bassamalim.hidaya.database.dbs.CountryDB
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.utils.PrefUtils
 
-class LocationPickerDialog(
+class LocationPicker(
     private val context: Context,
     pref: SharedPreferences,
     private val db: AppDatabase,
@@ -30,8 +31,14 @@ class LocationPickerDialog(
 
     private val language = PrefUtils.getLanguage(context, pref)
     private var mode = mutableStateOf(0)  // 0 : country , 1 : city
-    private val title = mutableStateOf(context.getString(R.string.choose_country))
     private var countryId = 0
+
+    private fun getCountryItems(): List<CountryDB> {
+        return db.countryDao().getAll().sortedBy { countryDB: CountryDB ->
+            if (language == "en") countryDB.name_en
+            else countryDB.name_ar
+        }
+    }
 
     private fun getCityItems(): List<CityDB> {
         return if (language == "en") db.cityDao().getTopEn(countryId, "").toList()
@@ -39,24 +46,27 @@ class LocationPickerDialog(
     }
 
     @Composable
-    fun Dialog() {
+    fun UI() {
         MyScaffold(
-            title = title.value,
             topBar = {
-                MyTopBar(onBack = {
-                    if (mode.value == 1) mode.value = 0
-                    else shown.value = false
-                })
+                MyTopBar(
+                    title = context.getString(
+                        if (mode.value == 0) R.string.choose_country else R.string.choose_city
+                    ),
+                    onBack = {
+                        if (mode.value == 1) mode.value = 0
+                        else shown.value = false
+                    }
+                )
             }
         ) {
-            val searchText = remember { mutableStateOf(TextFieldValue("")) }
-
             Column(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                val searchText = remember { mutableStateOf(TextFieldValue("")) }
                 SearchComponent(
                     state = searchText,
                     modifier = Modifier
@@ -68,7 +78,7 @@ class LocationPickerDialog(
                     lazyList = {
                         if (mode.value == 0) {
                             items(
-                                items =  db.countryDao().getAll().filter { item ->
+                                items =  getCountryItems().filter { item ->
                                     item.name_en.contains(searchText.value.text, ignoreCase = true)
                                             || item.name_ar.contains(searchText.value.text)
                                 }
@@ -80,7 +90,6 @@ class LocationPickerDialog(
                                     countryId = item.id
                                     mode.value = 1
 
-                                    title.value = context.getString(R.string.choose_city)
                                     searchText.value = TextFieldValue("")
                                 }
                             }

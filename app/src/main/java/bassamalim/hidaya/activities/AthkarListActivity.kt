@@ -113,13 +113,12 @@ class AthkarListActivity : ComponentActivity() {
     @Composable
     private fun UI(title: String) {
         MyScaffold(title) {
-            val textState = remember { mutableStateOf(TextFieldValue("")) }
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(it)
             ) {
+                val textState = remember { mutableStateOf(TextFieldValue("")) }
                 SearchComponent (
                     state = textState,
                     hint = stringResource(R.string.athkar_hint),

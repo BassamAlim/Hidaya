@@ -122,7 +122,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
     private fun pickWerd() {
         pref.edit()
-            .putInt("today_werd_page", Random().nextInt(Global.QURAN_PAGES - 1))
+            .putInt("today_werd_page", Random().nextInt(Global.QURAN_PAGES) + 1)
             .putBoolean("werd_done", false)
             .apply()
     }

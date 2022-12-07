@@ -275,8 +275,6 @@ class TelawatActivity : ComponentActivity() {
             stringResource(R.string.recitations),
             onBack = { onBack() }
         ) {
-            val textState = remember { mutableStateOf(TextFieldValue("")) }
-
             Column {
                 MyButton(
                     text = continueListeningText,
@@ -295,6 +293,7 @@ class TelawatActivity : ComponentActivity() {
                     }
                 }
 
+                val textState = remember { mutableStateOf(TextFieldValue("")) }
                 TabLayout(
                     pageNames = listOf(getString(R.string.all), getString(R.string.favorite), getString(R.string.downloaded)),
                     searchComponent = {

@@ -26,7 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.dialogs.LocationPickerDialog
+import bassamalim.hidaya.helpers.LocationPicker
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.ui.components.MyButton
 import bassamalim.hidaya.ui.components.MyText
@@ -219,7 +219,7 @@ class LocationActivity: ComponentActivity() {
         }
 
         if (locationPickerShown.value) {
-            LocationPickerDialog(
+            LocationPicker(
                 this, pref, db, locationPickerShown
             ) { countryId, cityId ->
                 pref.edit()
@@ -234,7 +234,7 @@ class LocationActivity: ComponentActivity() {
                 location.longitude = city.longitude
 
                 launch(location)
-            }.Dialog()
+            }.UI()
         }
     }
 }

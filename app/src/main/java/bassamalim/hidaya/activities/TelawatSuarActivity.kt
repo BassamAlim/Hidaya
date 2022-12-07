@@ -189,7 +189,6 @@ class TelawatSuarActivity : ComponentActivity() {
             onBack = { onBack() }
         ) {
             val textState = remember { mutableStateOf(TextFieldValue("")) }
-
             TabLayout(
                 pageNames = listOf(getString(R.string.all), getString(R.string.favorite), getString(R.string.downloaded)),
                 searchComponent = {

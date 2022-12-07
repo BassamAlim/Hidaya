@@ -112,9 +112,6 @@ class QuranSearcher : ComponentActivity() {
 
     @Composable
     private fun UI() {
-        val textState = remember { mutableStateOf(TextFieldValue("")) }
-        val highlightColor = AppTheme.colors.accent
-
         MyScaffold(stringResource(R.string.quran_searcher)) { padding ->
             Column(
                 Modifier
@@ -131,6 +128,8 @@ class QuranSearcher : ComponentActivity() {
                         text = stringResource(R.string.search_for_quran_text)
                     )
 
+                    val highlightColor = AppTheme.colors.accent
+                    val textState = remember { mutableStateOf(TextFieldValue("")) }
                     SearchComponent(
                         state = textState,
                         hint = stringResource(R.string.search),
