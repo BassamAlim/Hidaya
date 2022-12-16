@@ -35,6 +35,7 @@ import bassamalim.hidaya.models.Reciter
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
@@ -735,7 +736,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun updateDurationRecord(amount: Int) {
-        val old = pref.getLong("telawat_playback_record", 0L)
+        val old = PrefUtils.getLong(pref, "telawat_playback_record", 0L)
         val new = old + amount * 1000
 
         pref.edit()

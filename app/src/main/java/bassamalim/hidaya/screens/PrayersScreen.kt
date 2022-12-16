@@ -77,10 +77,11 @@ class PrayersScreen(
     private fun getLocationName(): String {
         val language = PrefUtils.getLanguage(context, pref)
 
-        var countryId = pref.getInt("country_id", -1)
-        var cityId = pref.getInt("city_id", -1)
+        var countryId = PrefUtils.getInt(pref, "country_id", -1)
+        var cityId = PrefUtils.getInt(pref, "city_id", -1)
 
-        if (pref.getString("location_type", "auto") == "auto" || countryId == -1 || cityId == -1) {
+        if (PrefUtils.getString(pref, "location_type", "auto") == "auto"
+            || countryId == -1 || cityId == -1) {
             val closest = db.cityDao().getClosest(location!!.latitude, location.longitude)
             countryId = closest.countryId
             cityId = closest.id
@@ -212,7 +213,7 @@ class PrayersScreen(
 
         if (settingsDialogShown.value)
             PrayerDialog(
-                context, clickedPID, prayerNames[clickedPID.ordinal], settingsDialogShown
+                context, pref, clickedPID, prayerNames[clickedPID.ordinal], settingsDialogShown
             ) {}.Dialog()
 
         TutorialDialog(
@@ -229,7 +230,7 @@ class PrayersScreen(
 
     @Composable
     private fun PrayerCard(pid: PID, time: String) {
-        val delay = pref.getInt("${pid.ordinal} offset", 0)
+        val delay = PrefUtils.getInt(pref, "${pid.ordinal} offset", 0)
 
         MyClickableSurface(
             onClick = {
@@ -268,7 +269,9 @@ class PrayersScreen(
                     val defaultType =
                         if (pid == PID.SHOROUQ) NotificationType.None
                         else NotificationType.Notification
-                    val typeName = pref.getString("$pid notification_type", defaultType.name)!!
+                    val typeName = PrefUtils.getString(
+                        pref, "$pid notification_type", defaultType.name
+                    )
                     val notificationType = NotificationType.valueOf(typeName)
                     Icon(
                         painter = painterResource(

@@ -15,11 +15,15 @@ class PrayTimes(
 ) {
 
     private val timeFormat = PrefUtils.getTimeFormat(context, pref)
-    private val calcMethod = pref.getString("prayer_times_calc_method_key", "MECCA")
+    private val calcMethod = PrefUtils.getString(
+        pref, "prayer_times_calc_method_key", "MECCA"
+    )
     private var asrJuristic =
-        if (pref.getString("juristic_method_key", "SHAFII") == "HANAFI") 1
+        if (PrefUtils.getString(pref, "juristic_method_key", "SHAFII") == "HANAFI") 1
         else 0
-    private val adjustHighLats = pref.getString("high_lat_adjustment_key", "NONE")
+    private val adjustHighLats = PrefUtils.getString(
+        pref, "high_lat_adjustment_key", "NONE"
+    )
 
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
     private var latitude = 0.0 // latitude
@@ -279,13 +283,13 @@ class PrayTimes(
 
     // Tune timings for adjustments (Set time offsets)
     private fun setOffsets() {
-        offsets[0] = pref.getInt("${PID.FAJR} offset", 0)
-        offsets[1] = pref.getInt("${PID.SHOROUQ} offset", 0)
-        offsets[2] = pref.getInt("${PID.DUHR} offset", 0)
-        offsets[3] = pref.getInt("${PID.ASR} offset", 0)
+        offsets[0] = PrefUtils.getInt(pref, "${PID.FAJR} offset", 0)
+        offsets[1] = PrefUtils.getInt(pref, "${PID.SHOROUQ} offset", 0)
+        offsets[2] = PrefUtils.getInt(pref, "${PID.DUHR} offset", 0)
+        offsets[3] = PrefUtils.getInt(pref, "${PID.ASR} offset", 0)
         // Skipping sunset
-        offsets[5] = pref.getInt("${PID.MAGHRIB} offset", 0)
-        offsets[6] = pref.getInt("${PID.ISHAA} offset", 0)
+        offsets[5] = PrefUtils.getInt(pref, "${PID.MAGHRIB} offset", 0)
+        offsets[6] = PrefUtils.getInt(pref, "${PID.ISHAA} offset", 0)
     }
 
     private fun tuneTimes(times: DoubleArray): DoubleArray {

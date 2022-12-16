@@ -22,6 +22,7 @@ import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.services.AthanService
 import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 
 class NotificationReceiver : BroadcastReceiver() {
@@ -50,7 +51,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val defaultType =
             if (pid == PID.SHOROUQ) NotificationType.None
             else NotificationType.Notification
-        val typeName = pref.getString("$pid notification_type", defaultType.name)!!
+        val typeName = PrefUtils.getString(pref, "$pid notification_type", defaultType.name)
         type = NotificationType.valueOf(typeName)
 
         if (type != NotificationType.None) prepare()
@@ -137,9 +138,11 @@ class NotificationReceiver : BroadcastReceiver() {
             PID.DAILY_WERD -> {
                 intent = Intent(context, QuranViewer::class.java)
                 intent.action = "by_page"
-                intent.putExtra("page", pref.getInt(
-                    "today_werd_page", Random().nextInt(Global.QURAN_PAGES-1)
-                ))
+                intent.putExtra("page",
+                    PrefUtils.getInt(
+                        pref, "today_werd_page", Random().nextInt(Global.QURAN_PAGES-1)
+                    )
+                )
             }
             PID.FRIDAY_KAHF -> {
                 intent = Intent(context, QuranViewer::class.java)

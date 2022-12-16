@@ -1,6 +1,7 @@
 package bassamalim.hidaya.dialogs
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -25,13 +26,17 @@ import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.utils.PrefUtils
 
 class PrayerDialog(
-    private val context: Context, private val pid: PID, private val prayerName: String,
-    private val shown: MutableState<Boolean>, private val refresh: () -> Unit
+    private val context: Context,
+    private val pref: SharedPreferences,
+    private val pid: PID,
+    private val prayerName: String,
+    private val shown: MutableState<Boolean>,
+    private val refresh: () -> Unit
 ) {
 
-    private val pref = PreferenceManager.getDefaultSharedPreferences(context)
     private val offsetMin = 30
     private val notificationType = mutableStateOf(NotificationType.None)
     private val offset = mutableStateOf(0)
@@ -51,10 +56,12 @@ class PrayerDialog(
         val defaultState =
             if (pid == PID.SHOROUQ) NotificationType.None
             else NotificationType.Notification
-        val notificationState = pref.getString("$pid notification_type", defaultState.name)!!
+        val notificationState = PrefUtils.getString(
+            pref, "$pid notification_type", defaultState.name
+        )
         notificationType.value = NotificationType.valueOf(notificationState)
 
-        offset.value = pref.getInt("$pid offset", 0)
+        offset.value = PrefUtils.getInt(pref, "$pid offset", 0)
         sliderProgress = offset.value + offsetMin.toFloat()
     }
 

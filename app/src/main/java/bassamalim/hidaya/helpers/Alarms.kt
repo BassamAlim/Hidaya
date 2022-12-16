@@ -13,6 +13,7 @@ import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.receivers.NotificationReceiver
 import bassamalim.hidaya.utils.PTUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 
 class Alarms {
@@ -50,8 +51,8 @@ class Alarms {
         val pidValues = PID.values()
         for (i in times.indices) {
             val pid = pidValues[i]
-            if (pref.getString(
-                    "$pid notification_type", NotificationType.Notification.name
+            if (PrefUtils.getString(
+                    pref, "$pid notification_type", NotificationType.Notification.name
                 ) != NotificationType.None.name)
                 setPrayerAlarm(pid, times[i])
         }
@@ -94,10 +95,13 @@ class Alarms {
 
         val today = Calendar.getInstance()
 
-        if (pref.getBoolean(context.getString(R.string.morning_athkar_key), true)) setExtraAlarm(PID.MORNING)
-        if (pref.getBoolean(context.getString(R.string.evening_athkar_key), true)) setExtraAlarm(PID.EVENING)
-        if (pref.getBoolean(context.getString(R.string.daily_werd_key), true)) setExtraAlarm(PID.DAILY_WERD)
-        if (pref.getBoolean(context.getString(R.string.friday_kahf_key), true)
+        if (PrefUtils.getBoolean(pref, context.getString(R.string.morning_athkar_key), true))
+            setExtraAlarm(PID.MORNING)
+        if (PrefUtils.getBoolean(pref, context.getString(R.string.evening_athkar_key), true))
+            setExtraAlarm(PID.EVENING)
+        if (PrefUtils.getBoolean(pref, context.getString(R.string.daily_werd_key), true))
+            setExtraAlarm(PID.DAILY_WERD)
+        if (PrefUtils.getBoolean(pref, context.getString(R.string.friday_kahf_key), true)
             && today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
             setExtraAlarm(PID.FRIDAY_KAHF)
     }
@@ -120,8 +124,8 @@ class Alarms {
             else -> {}
         }
 
-        val hour = pref.getInt("$pid hour", defaultH)
-        val minute = pref.getInt("$pid minute", defaultM)
+        val hour = PrefUtils.getInt(pref, "$pid hour", defaultH)
+        val minute = PrefUtils.getInt(pref, "$pid minute", defaultM)
 
         val time = Calendar.getInstance()
         time[Calendar.HOUR_OF_DAY] = hour

@@ -16,6 +16,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.utils.PrefUtils
 
 class QuranSettingsDialog(
     private val pref: SharedPreferences,
@@ -25,7 +26,7 @@ class QuranSettingsDialog(
 ) {
 
     private val viewType = mutableStateOf(
-        if (pref.getString("quran_view_type", "page") == "list") 1
+        if (PrefUtils.getString(pref, "quran_view_type", "page") == "list") 1
         else 0
     )
     private val reciterNames = db.ayatRecitersDao().getNames().toTypedArray()

@@ -39,6 +39,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.FileUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.io.File
 import java.util.*
 
@@ -200,8 +201,8 @@ class TelawatClient : ComponentActivity() {
         }
 
     private fun retrieveStates() {
-        repeat.value = pref.getInt("telawat_repeat_mode", 0)
-        shuffle.value = pref.getInt("telawat_shuffle_mode", 0)
+        repeat.value = PrefUtils.getInt(pref, "telawat_repeat_mode", 0)
+        shuffle.value = PrefUtils.getInt(pref, "telawat_shuffle_mode", 0)
     }
 
     private fun checkDownload() {

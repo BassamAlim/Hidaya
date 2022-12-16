@@ -47,6 +47,7 @@ import bassamalim.hidaya.ui.theme.uthmanic
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import java.util.concurrent.Executors
@@ -105,7 +106,7 @@ class QuranViewer : AppCompatActivity() {
         pref = PreferenceManager.getDefaultSharedPreferences(this)
         db = DBUtils.getDB(this)
 
-        textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
+        textSize = PrefUtils.getInt(pref, getString(R.string.quran_text_size_key), 30)
 
         viewType.value =
             if (language == "en") "list"

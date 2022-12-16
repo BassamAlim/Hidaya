@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.utils.PrefUtils
 
 @Composable
 fun ListPref(
@@ -33,7 +34,7 @@ fun ListPref(
 ) {
     val key = stringResource(keyResId)
     var shown by remember { mutableStateOf(false) }
-    val initialValue = pref.getString(stringResource(keyResId), defaultValue)
+    val initialValue = PrefUtils.getString(pref, stringResource(keyResId), defaultValue)
     var selectedValue by remember { mutableStateOf(initialValue) }
 
     Box(
@@ -154,7 +155,7 @@ fun SwitchPref(
     onSwitch: (Boolean) -> Unit = {}
 ) {
     val key = stringResource(keyResId)
-    val initialValue = pref.getBoolean(key, defaultValue)
+    val initialValue = PrefUtils.getBoolean(pref, key, defaultValue)
     var checked by remember { mutableStateOf(initialValue) }
 
     val onCheckChange = {
@@ -224,7 +225,7 @@ fun SliderPref(
         PreferenceTitle(titleResId)
 
         MyValuedSlider(
-            initialValue = pref.getInt(key, defaultValue).toFloat(),
+            initialValue = PrefUtils.getInt(pref, key, defaultValue).toFloat(),
             valueRange = valueRange,
             infinite = infinite,
             sliderFraction = sliderFraction,

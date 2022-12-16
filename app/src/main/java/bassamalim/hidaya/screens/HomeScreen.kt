@@ -36,6 +36,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.ui.theme.Positive
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 
 class HomeScreen(
@@ -70,7 +71,7 @@ class HomeScreen(
     override fun onResume() {
         if (located) setupPrayersCard()
 
-        werdDone.value = pref.getBoolean("werd_done", false)
+        werdDone.value = PrefUtils.getBoolean(pref, "werd_done", false)
     }
 
     private fun setupPrayersCard() {
@@ -162,7 +163,7 @@ class HomeScreen(
     }
 
     private fun getTelawatRecord(): String {
-        val millis = pref.getLong("telawat_playback_record", 0L)
+        val millis = PrefUtils.getLong(pref, "telawat_playback_record", 0L)
 
         val hours = millis / (60 * 60 * 1000) % 24
         val minutes = millis / (60 * 1000) % 60
@@ -268,8 +269,9 @@ class HomeScreen(
                     MyText(
                         LangUtils.translateNums(
                             context,
-                            pref.getInt("quran_pages_record", 0).toString(),
-                            false),
+                            PrefUtils.getInt(pref, "quran_pages_record", 0).toString(),
+                            false
+                        ),
                         fontSize = 30.sp
                     )
                 }
@@ -284,7 +286,7 @@ class HomeScreen(
                         .padding(vertical = 14.dp, horizontal = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val werdPage = pref.getInt("today_werd_page", 25)
+                    val werdPage = PrefUtils.getInt(pref, "today_werd_page", 25)
                     Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,

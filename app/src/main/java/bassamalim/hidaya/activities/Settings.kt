@@ -30,6 +30,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PTUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 
 class Settings : ComponentActivity() {
@@ -57,23 +58,23 @@ class Settings : ComponentActivity() {
 
     private fun setSummaries() {
         morningSummary.value = LangUtils.translateNums(this, PTUtils.formatTime(
-            this, "${pref.getInt("${PID.MORNING} hour", 5)}:" +
-                    "${pref.getInt("${PID.MORNING} minute", 0)}"
+            this, "${PrefUtils.getInt(pref, "${PID.MORNING} hour", 5)}:" +
+                    "${PrefUtils.getInt(pref, "${PID.MORNING} minute", 0)}"
         ), true)
 
         eveningSummary.value = LangUtils.translateNums(this, PTUtils.formatTime(
-            this, "${pref.getInt("${PID.EVENING} hour", 16)}:" +
-                    "${pref.getInt("${PID.EVENING} minute", 0)}"
+            this, "${PrefUtils.getInt(pref, "${PID.EVENING} hour", 16)}:" +
+                    "${PrefUtils.getInt(pref, "${PID.EVENING} minute", 0)}"
         ), true)
 
         werdSummary.value = LangUtils.translateNums(this, PTUtils.formatTime(
-            this, "${pref.getInt("${PID.DAILY_WERD} hour", 21)}:" +
-                    "${pref.getInt("${PID.DAILY_WERD} minute", 0)}"
+            this, "${PrefUtils.getInt(pref, "${PID.DAILY_WERD} hour", 21)}:" +
+                    "${PrefUtils.getInt(pref, "${PID.DAILY_WERD} minute", 0)}"
         ), true)
 
         kahfSummary.value = LangUtils.translateNums(this, PTUtils.formatTime(
-            this, "${pref.getInt("${PID.FRIDAY_KAHF} hour", 13)}:" +
-                    "${pref.getInt("${PID.FRIDAY_KAHF} minute", 0)}"
+            this, "${PrefUtils.getInt(pref, "${PID.FRIDAY_KAHF} hour", 13)}:" +
+                    "${PrefUtils.getInt(pref, "${PID.FRIDAY_KAHF} minute", 0)}"
         ), true)
     }
 

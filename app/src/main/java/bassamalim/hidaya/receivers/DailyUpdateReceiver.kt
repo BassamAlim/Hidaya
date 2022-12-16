@@ -16,6 +16,7 @@ import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.PrayersWidget
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.PTUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.android.gms.location.LocationServices
 import java.util.*
 
@@ -32,10 +33,10 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         pref = PreferenceManager.getDefaultSharedPreferences(context)
 
         if ((intent.action == "daily" && needed()) || intent.action == "boot") {
-            when (pref.getString("location_type", "auto")) {
+            when (PrefUtils.getString(pref, "location_type", "auto")) {
                 "auto" -> locate()
                 "manual" -> {
-                    val cityId = pref.getInt("city_id", -1)
+                    val cityId = PrefUtils.getInt(pref, "city_id", -1)
                     if (cityId == -1) return
                     val city = DBUtils.getDB(context).cityDao().getCity(cityId)
 
@@ -56,7 +57,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun needed(): Boolean {
-        return pref.getInt("last_day", 0) != now[Calendar.DATE]
+        return PrefUtils.getInt(pref, "last_day", 0) != now[Calendar.DATE]
     }
 
     private fun locate() {

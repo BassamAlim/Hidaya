@@ -120,7 +120,7 @@ class TelawatActivity : ComponentActivity() {
     }
 
     private fun initSelectedVersions() {
-        val json = pref.getString("selected_rewayat", "")!!
+        val json = PrefUtils.getString(pref, "selected_rewayat", "")
         if (json.isNotEmpty()) {
             val boolArr = gson.fromJson(json, BooleanArray::class.java)
             boolArr.forEach { bool -> selectedVersions.add(bool) }
@@ -147,7 +147,9 @@ class TelawatActivity : ComponentActivity() {
     }
 
     private fun setupContinue() {
-        continueListeningMediaId.value = pref.getString("last_played_media_id", "")!!
+        continueListeningMediaId.value = PrefUtils.getString(
+            pref, "last_played_media_id", ""
+        )
 
         if (continueListeningMediaId.value.isEmpty()) return
 

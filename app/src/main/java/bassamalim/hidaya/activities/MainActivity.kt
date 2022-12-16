@@ -51,10 +51,10 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var navScreen: NavigationScreen? = null
     private lateinit var pref: SharedPreferences
     private lateinit var theme: String
     private lateinit var language: String
+    private var navScreen: NavigationScreen? = null
     private val dateOffset = mutableStateOf(0)
 
     companion object {
@@ -69,7 +69,8 @@ class MainActivity : AppCompatActivity() {
         language = values[1]
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
-        dateOffset.value = pref.getInt("date_offset", 0)
+
+        dateOffset.value = PrefUtils.getInt(pref, "date_offset", 0)
 
         getLocation()
 

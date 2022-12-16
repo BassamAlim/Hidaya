@@ -35,7 +35,9 @@ class QuranScreen(
 
     private val db = DBUtils.getDB(context)
     private val gson = Gson()
-    private val bookmarkedPage = mutableStateOf(pref.getInt("bookmarked_page", -1))
+    private val bookmarkedPage = mutableStateOf(
+        PrefUtils.getInt(pref, "bookmarked_page", -1)
+    )
     private var favs = mutableStateListOf<Int>()
     private val names =
         if (PrefUtils.getLanguage(context) == "en") db.suarDao().getNamesEn()
@@ -46,7 +48,7 @@ class QuranScreen(
     }
 
     override fun onResume() {
-        bookmarkedPage.value = pref.getInt("bookmarked_page", -1)
+        bookmarkedPage.value = PrefUtils.getInt(pref, "bookmarked_page", -1)
     }
 
     private fun getItems(type: ListType): List<Sura> {
@@ -90,7 +92,7 @@ class QuranScreen(
             Column(
                 Modifier.fillMaxSize()
             ) {
-                val bookmarkedSura = pref.getInt("bookmarked_sura", -1)
+                val bookmarkedSura = PrefUtils.getInt(pref, "bookmarked_sura", -1)
                 MyButton(
                     text =
                     if (bookmarkedPage.value == -1) stringResource(R.string.no_bookmarked_page)

@@ -33,6 +33,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.FileUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.gson.Gson
 import java.io.File
 import java.util.regex.Pattern
@@ -78,7 +79,7 @@ class BookSearcher : ComponentActivity() {
 
     private fun initSelectedBooks() {
         for (i in books.indices) selectedBooks.add(true)
-        val json = pref.getString("selected_search_books", "")!!
+        val json = PrefUtils.getString(pref, "selected_search_books", "")
         if (json.isNotEmpty()) {
             val boolArr =  gson.fromJson(json, BooleanArray::class.java)
             for (i in boolArr.indices) selectedBooks[i] = boolArr[i]
@@ -95,7 +96,9 @@ class BookSearcher : ComponentActivity() {
     }
 
     private fun initMaxMatches() {
-        maxMatchesIndex.value = pref.getInt("books_searcher_max_matches_index", 0)
+        maxMatchesIndex.value = PrefUtils.getInt(
+            pref, "books_searcher_max_matches_index", 0
+        )
 
         maxMatchesItems =
             if (language == "en") resources.getStringArray(R.array.searcher_matches_en)

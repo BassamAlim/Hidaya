@@ -34,6 +34,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.ui.theme.nsp
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.android.gms.location.LocationServices
 
 class LocationActivity: ComponentActivity() {
@@ -65,7 +66,7 @@ class LocationActivity: ComponentActivity() {
             background()
         }
         else {
-            if (pref.getString("location_type", "auto") == "auto")
+            if (PrefUtils.getString(pref, "location_type", "auto") == "auto")
                 locationPermissionRequest.launch(arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION

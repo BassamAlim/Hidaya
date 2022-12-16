@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.location.Location
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.models.MyLocation
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.gson.Gson
 
 class Keeper {
@@ -46,7 +47,7 @@ class Keeper {
      * @return The location object.
      */
     fun retrieveLocation(): Location? {
-        locJson = pref.getString("stored location", "")!!
+        locJson = PrefUtils.getString(pref, "stored location", "")
         val myLocation = gson.fromJson(locJson, MyLocation::class.java)
         return if (myLocation == null) null
         else MyLocation.toLocation(myLocation)

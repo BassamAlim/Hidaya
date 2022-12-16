@@ -53,10 +53,10 @@ object PTUtils {
         pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context),
         db: AppDatabase = DBUtils.getDB(context)
     ): Int {
-        when (pref.getString("location_type", "auto")) {
+        when (PrefUtils.getString(pref, "location_type", "auto")) {
             "auto" -> return TimeZone.getDefault().getOffset(Date().time) / 3600000
             "manual" -> {
-                val cityId = pref.getInt("city_id", -1)
+                val cityId = PrefUtils.getInt(pref, "city_id", -1)
 
                 if (cityId == -1) return 0
 
