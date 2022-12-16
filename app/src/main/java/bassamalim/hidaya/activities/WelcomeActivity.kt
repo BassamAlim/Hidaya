@@ -1,6 +1,7 @@
 package bassamalim.hidaya.activities
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.screens.SettingsScreen
 import bassamalim.hidaya.ui.components.MyButton
 import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
@@ -22,13 +22,13 @@ import bassamalim.hidaya.utils.ActivityUtils
 
 class WelcomeActivity: AppCompatActivity() {
 
-    private lateinit var settingsScreen: SettingsScreen
+    private lateinit var pref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.myOnActivityCreated(this)
 
-        settingsScreen = SettingsScreen(this)
+        pref = PreferenceManager.getDefaultSharedPreferences(this)
 
         setContent {
             AppTheme {
@@ -40,14 +40,13 @@ class WelcomeActivity: AppCompatActivity() {
     @Composable
     private fun UI() {
         Box(
-            Modifier
-                .fillMaxSize()
-                .background(AppTheme.colors.background)
+            Modifier.background(AppTheme.colors.background)
         ) {
             Column(
                 Modifier
                     .fillMaxSize()
                     .padding(6.dp),
+                verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MyText(
@@ -55,11 +54,7 @@ class WelcomeActivity: AppCompatActivity() {
                     fontSize = 26.sp
                 )
 
-                Box(
-                    Modifier.weight(1F)
-                ) {
-                    settingsScreen.SettingsUI()
-                }
+                Settings.AppearanceSettings(this@WelcomeActivity, pref)
 
                 MyButton(
                     text = stringResource(R.string.save),
@@ -73,9 +68,7 @@ class WelcomeActivity: AppCompatActivity() {
                     intent.action = "initial"
                     startActivity(intent)
 
-                    PreferenceManager
-                        .getDefaultSharedPreferences(this@WelcomeActivity)
-                        .edit()
+                    pref.edit()
                         .putBoolean("new_user", false)
                         .apply()
 

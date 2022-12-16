@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Location
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -21,6 +20,8 @@ import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.LocationActivity
 import bassamalim.hidaya.dialogs.PrayerDialog
+import bassamalim.hidaya.enums.NotificationType
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
@@ -45,7 +46,7 @@ class PrayersScreen(
     private val calendar = Calendar.getInstance()
     private var dayChange = mutableStateOf(0)
     private val settingsDialogShown = mutableStateOf(false)
-    private var clickedPID = -1
+    private var clickedPID = PID.FAJR
 
     override fun onResume() {
         if (located) goToToday()
@@ -63,25 +64,24 @@ class PrayersScreen(
      * @param change The number of days to add to the current date.
      */
     private fun getTimes(change: Int): List<String> {
-        val timeFormat = PrefUtils.getTimeFormat(context)
-
         calendar.timeInMillis = System.currentTimeMillis()
         calendar[Calendar.DATE] = calendar[Calendar.DATE] + change
 
         val utcOffset = PTUtils.getUTCOffset(context, pref)
 
         return prayTimes.getStrPrayerTimes(
-            location!!.latitude, location.longitude, utcOffset.toDouble(), calendar, timeFormat
+            location!!.latitude, location.longitude, utcOffset.toDouble(), calendar
         )
     }
 
     private fun getLocationName(): String {
         val language = PrefUtils.getLanguage(context, pref)
 
-        var countryId = pref.getInt("country_id", -1)
-        var cityId = pref.getInt("city_id", -1)
+        var countryId = PrefUtils.getInt(pref, "country_id", -1)
+        var cityId = PrefUtils.getInt(pref, "city_id", -1)
 
-        if (pref.getString("location_type", "auto") == "auto" || countryId == -1 || cityId == -1) {
+        if (PrefUtils.getString(pref, "location_type", "auto") == "auto"
+            || countryId == -1 || cityId == -1) {
             val closest = db.cityDao().getClosest(location!!.latitude, location.longitude)
             countryId = closest.countryId
             cityId = closest.id
@@ -211,13 +211,10 @@ class PrayersScreen(
             }
         }
 
-        if (settingsDialogShown.value) {
+        if (settingsDialogShown.value)
             PrayerDialog(
-                context, PTUtils.mapID(clickedPID)!!, prayerNames[clickedPID], settingsDialogShown
-            ) {
-
-            }.Dialog()
-        }
+                context, pref, clickedPID, prayerNames[clickedPID.ordinal], settingsDialogShown
+            ) {}.Dialog()
 
         TutorialDialog(
             textResId = R.string.prayers_tips,
@@ -227,15 +224,16 @@ class PrayersScreen(
 
     @Composable
     private fun PrayerCards(times: List<String>) {
-        for (pid in times.indices) PrayerCard(pid = pid, time = times[pid])
+        val pidValues = PID.values()
+        for (prayer in times.indices) PrayerCard(pid = pidValues[prayer], time = times[prayer])
     }
 
     @Composable
-    private fun PrayerCard(pid: Int, time: String) {
-        val delay = pref.getInt("${PTUtils.mapID(pid)} offset", 0)
+    private fun PrayerCard(pid: PID, time: String) {
+        val delay = PrefUtils.getInt(pref, "${pid.ordinal} offset", 0)
 
-        MySurface(
-            Modifier.clickable {
+        MyClickableSurface(
+            onClick = {
                 if (located) {
                     clickedPID = pid
                     settingsDialogShown.value = true
@@ -252,7 +250,7 @@ class PrayersScreen(
             ) {
                 // Prayer name
                 MyText(
-                    "${prayerNames[pid]}: $time",
+                    "${prayerNames[pid.ordinal]}: $time",
                     fontSize = 33.nsp,
                     fontWeight = FontWeight.Bold
                 )
@@ -268,22 +266,23 @@ class PrayersScreen(
                     )
 
                     // Notification type
-                    val notificationType = pref.getInt(
-                        "${PTUtils.mapID(pid)} notification_type",
-                        if (pid == 1) 0 else 2
+                    val defaultType =
+                        if (pid == PID.SHOROUQ) NotificationType.None
+                        else NotificationType.Notification
+                    val typeName = PrefUtils.getString(
+                        pref, "$pid notification_type", defaultType.name
                     )
+                    val notificationType = NotificationType.valueOf(typeName)
                     Icon(
                         painter = painterResource(
                             when (notificationType) {
-                                3 -> R.drawable.ic_speaker
-                                1 -> R.drawable.ic_silent
-                                0 -> R.drawable.ic_block
-                                else -> R.drawable.ic_sound
+                                NotificationType.Athan -> R.drawable.ic_speaker
+                                NotificationType.Notification -> R.drawable.ic_sound
+                                NotificationType.Silent -> R.drawable.ic_silent
+                                NotificationType.None -> R.drawable.ic_block
                             }
                         ),
-                        contentDescription = stringResource(
-                            id = R.string.notification_image_description
-                        ),
+                        contentDescription = stringResource(R.string.notification_image_description),
                         tint = AppTheme.colors.accent,
                         modifier = Modifier.size(35.dp)
                     )

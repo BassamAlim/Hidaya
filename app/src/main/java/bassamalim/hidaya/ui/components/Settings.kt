@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.utils.PrefUtils
 
 @Composable
 fun ListPref(
@@ -28,24 +29,25 @@ fun ListPref(
     entries: Array<String>,
     values: Array<String>,
     defaultValue: String,
+    bgColor: Color = AppTheme.colors.surface,
     onSelection: () -> Unit = {}
 ) {
     val key = stringResource(keyResId)
     var shown by remember { mutableStateOf(false) }
-    val initialValue = pref.getString(stringResource(keyResId), defaultValue)
+    val initialValue = PrefUtils.getString(pref, stringResource(keyResId), defaultValue)
     var selectedValue by remember { mutableStateOf(initialValue) }
 
     Box(
         Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .background(AppTheme.colors.background)
             .clip(RoundedCornerShape(10.dp))
             .clickable { shown = true }
     ) {
         Row(
             Modifier
                 .fillMaxWidth()
+                .background(bgColor)
                 .padding(vertical = 6.dp, horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -149,10 +151,11 @@ fun SwitchPref(
     titleResId: Int,
     defaultValue: Boolean = true,
     summary: MutableState<String> = mutableStateOf(""),
+    bgColor: Color = AppTheme.colors.surface,
     onSwitch: (Boolean) -> Unit = {}
 ) {
     val key = stringResource(keyResId)
-    val initialValue = pref.getBoolean(key, defaultValue)
+    val initialValue = PrefUtils.getBoolean(pref, key, defaultValue)
     var checked by remember { mutableStateOf(initialValue) }
 
     val onCheckChange = {
@@ -169,7 +172,7 @@ fun SwitchPref(
         Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .background(AppTheme.colors.background)
+            .background(bgColor)
             .clip(RoundedCornerShape(10.dp))
             .clickable { onCheckChange() }
     ) {
@@ -222,7 +225,7 @@ fun SliderPref(
         PreferenceTitle(titleResId)
 
         MyValuedSlider(
-            initialValue = pref.getInt(key, defaultValue).toFloat(),
+            initialValue = PrefUtils.getInt(pref, key, defaultValue).toFloat(),
             valueRange = valueRange,
             infinite = infinite,
             sliderFraction = sliderFraction,

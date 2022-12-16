@@ -9,11 +9,12 @@
     <string name="title_more">المزيد</string>
 
     <!-- Preference Categories -->
-    <string name="notifications_header">الإشعارات الإضافية</string>
+    <string name="extra_notifications">الإشعارات الإضافية</string>
     <string name="page_preferences">إعدادات الصفحة</string>
     <string name="recitation_preferences">إعدادات التلاوة</string>
     <string name="appearance">المظهر</string>
     <string name="theme">السمة</string>
+    <string name="prayer_time_settings">إعدادات أوقات الصلاة</string>
 
     <!-- Preference Keys -->
     <string name="morning_athkar_key" translatable="false">morning_athkar_key</string>
@@ -31,6 +32,9 @@
     <string name="language_key" translatable="false">language_key</string>
     <string name="numerals_language_key" translatable="false">numerals_language_key</string>
     <string name="time_format_key" translatable="false">time_format_key</string>
+    <string name="prayer_times_calc_method_key" translatable="false">prayer_times_calc_method_key</string>
+    <string name="juristic_method_key" translatable="false">juristic_method_key</string>
+    <string name="high_lat_adjustment_key" translatable="false">high_lat_adjustment_key</string>
 
     <!-- Preference Titles -->
     <string name="language" translatable="false">Language | اللغة</string>
@@ -42,11 +46,17 @@
     <string name="reciter">القارئ</string>
     <string name="aya_repeat">تكرار الآية</string>
     <string name="time_format">صيغة الوقت</string>
+    <string name="calculation_method_title">طريقة الحساب</string>
+    <string name="juristic_method_title">الطريقة الفقهية</string>
+    <string name="high_lat_adjustment_title">التعديل لخطوط العرض المرتفعة</string>
 
     <!-- Defaults -->
     <string name="default_theme" translatable="false">Light</string>
     <string name="default_language" translatable="false">ar</string>
     <string name="default_time_format" translatable="false">12h</string>
+    <string name="default_prayer_times_calc_method" translatable="false">MECCA</string>
+    <string name="default_juristic_method" translatable="false">SHAFII</string>
+    <string name="default_high_lat_adjustment" translatable="false">NONE</string>
 
     <!-- TextViews Text -->
     <string name="telawat_time_record_title">مدة الاستماع للتلاوات</string>

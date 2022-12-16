@@ -29,6 +29,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.util.regex.Pattern
 
 class QuranSearcher : ComponentActivity() {
@@ -44,7 +45,7 @@ class QuranSearcher : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        language = ActivityUtils.onActivityCreateSetLocale(this)
+        language = ActivityUtils.myOnActivityCreated(this)[1]
 
         init()
 
@@ -69,7 +70,9 @@ class QuranSearcher : ComponentActivity() {
     }
 
     private fun initMaxMatches() {
-        maxMatchesIndex.value = pref.getInt("quran_searcher_max_matches_index", 0)
+        maxMatchesIndex.value = PrefUtils.getInt(
+            pref, "quran_searcher_max_matches_index", 0
+        )
 
         maxMatchesItems =
             if (language == "en") resources.getStringArray(R.array.searcher_matches_en)
@@ -99,7 +102,7 @@ class QuranSearcher : ComponentActivity() {
 
                 matches.add(
                     QuranSearcherMatch(
-                        a.sura_num, a.aya_num, names[a.sura_num], a.page,
+                        a.sura_num, a.aya_num, names[a.sura_num-1], a.page,
                         annotatedString, a.aya_tafseer
                     )
                 )
@@ -112,9 +115,6 @@ class QuranSearcher : ComponentActivity() {
 
     @Composable
     private fun UI() {
-        val textState = remember { mutableStateOf(TextFieldValue("")) }
-        val highlightColor = AppTheme.colors.accent
-
         MyScaffold(stringResource(R.string.quran_searcher)) { padding ->
             Column(
                 Modifier
@@ -131,6 +131,8 @@ class QuranSearcher : ComponentActivity() {
                         text = stringResource(R.string.search_for_quran_text)
                     )
 
+                    val highlightColor = AppTheme.colors.accent
+                    val textState = remember { mutableStateOf(TextFieldValue("")) }
                     SearchComponent(
                         state = textState,
                         hint = stringResource(R.string.search),

@@ -36,11 +36,10 @@ class BooksActivity : AppCompatActivity() {
     private val gson = Gson()
     private lateinit var books: List<BooksDB>
     private val downloadStates = mutableStateListOf<DownloadState>()
-    private val downloading = HashMap<Long, Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        language = ActivityUtils.onActivityCreateSetLocale(this)
+        language = ActivityUtils.myOnActivityCreated(this)[1]
 
         books = DBUtils.getDB(this).booksDao().getAll()
 
@@ -122,21 +121,13 @@ class BooksActivity : AppCompatActivity() {
         FileUtils.createDir(this, prefix)
         request.setDestinationInExternalFilesDir(this, prefix, "${item.id}.json")
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-        val downloadId = downloadManager.enqueue(request)
 
-        downloading[downloadId] = item.id
+        downloadManager.enqueue(request)
     }
 
     private var onComplete: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(ctxt: Context, intent: Intent) {
-            val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            try {
-                val id = downloading[downloadId]!!
-                downloadStates[id] = DownloadState.Downloaded
-                downloading.remove(downloadId)
-            } catch (e: RuntimeException) {
-                checkDownloads()
-            }
+            checkDownloads()
         }
     }
 

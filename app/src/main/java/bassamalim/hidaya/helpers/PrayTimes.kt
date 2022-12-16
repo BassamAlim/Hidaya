@@ -1,54 +1,47 @@
 package bassamalim.hidaya.helpers
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 import kotlin.math.*
 
-class PrayTimes(private val context: Context) {
+class PrayTimes(
+    private val context: Context,
+    private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+) {
 
-    enum class TF { H24, H12 }  // Time Format
-    enum class CM {  // Calculation Method
-        MECCA,  // Umm al-Qura, Mecca
-        MWL,  // Muslim World League
-        ISNA,  // Islamic Society of North America
-        JAFARI,  // Ithna Ashari
-        KARACHI,  // University of Islamic Sciences, Karachi
-        EGYPT,  // Egyptian General Authority of Survey
-        TAHRAN,  // Institute of Geophysics, University of Tehran
-    }
-    enum class JM { SHAFII /*(standard)*/, HANAFI }  // Juristic Methods
-    enum class AM {  // Adjusting Methods for Higher Latitudes
-        NONE,  // No adjustment
-        MIDNIGHT,  // Middle of night
-        ONE_SEVENTH,  // 1/7th of night
-        ANGLE_BASED  // Angle/60th of night
-    }
+    private val timeFormat = PrefUtils.getTimeFormat(context, pref)
+    private val calcMethod = PrefUtils.getString(
+        pref, "prayer_times_calc_method_key", "MECCA"
+    )
+    private var asrJuristic =
+        if (PrefUtils.getString(pref, "juristic_method_key", "SHAFII") == "HANAFI") 1
+        else 0
+    private val adjustHighLats = PrefUtils.getString(
+        pref, "high_lat_adjustment_key", "NONE"
+    )
 
-    // ---------------------- Global Variables --------------------
-    private var calcMethod = CM.MECCA // calculation method
-    private var asrJuristic = JM.SHAFII // Juristic method for Asr
-    private var adjustHighLats = AM.NONE // adjusting method for higher latitudes
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
     private var latitude = 0.0 // latitude
     private var longitude = 0.0 // longitude
     private var timeZone = 0.0 // time-zone UTC Offset
     private var jDate = 0.0 // Julian date
-    // --------------------- Technical Settings --------------------
-    private var numIterations = 1 // number of iterations needed to compute times
-    // ------------------- Calc Method Parameters --------------------
-    private val methodParams = hashMapOf(
-        CM.MECCA to doubleArrayOf(18.5, 1.0, 0.0, 1.0, 90.0),
-        CM.MWL to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0),
-        CM.ISNA to doubleArrayOf(15.0, 1.0, 0.0, 0.0, 15.0),
-        CM.JAFARI to doubleArrayOf(16.0, 0.0, 4.0, 0.0, 14.0),
-        CM.KARACHI to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 18.0),
-        CM.EGYPT to doubleArrayOf(19.5, 1.0, 0.0, 0.0, 17.5),
-        CM.TAHRAN to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0)
-    )
     private val offsets = intArrayOf(0, 0, 0, 0, 0, 0, 0)
+    private var numIterations = 1 // number of iterations needed to compute times
+
+    private val methodParams = hashMapOf(
+        "MECCA" to doubleArrayOf(18.5, 1.0, 0.0, 1.0, 90.0),
+        "MWL" to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0),
+        "ISNA" to doubleArrayOf(15.0, 1.0, 0.0, 0.0, 15.0),
+        "JAFARI" to doubleArrayOf(16.0, 0.0, 4.0, 0.0, 14.0),
+        "KARACHI" to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 18.0),
+        "EGYPT" to doubleArrayOf(19.5, 1.0, 0.0, 0.0, 17.5),
+        "TAHRAN" to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0)
+    )
 
     init {
         setOffsets()
@@ -86,7 +79,7 @@ class PrayTimes(private val context: Context) {
     // return prayer times for a given date in string format
     fun getStrPrayerTimes(
         lat: Double, lng: Double, tZone: Double = getDefaultTimeZone(),
-        date: Calendar = Calendar.getInstance(), timeFormat: TF = TF.H12
+        date: Calendar = Calendar.getInstance()
     ): ArrayList<String> {
 
         setValues(
@@ -95,7 +88,7 @@ class PrayTimes(private val context: Context) {
         )
 
         val times =
-            if (timeFormat == TF.H24) floatToTime24(computeDayTimes())
+            if (timeFormat == "24h") floatToTime24(computeDayTimes())
             else floatToTime12(computeDayTimes())
         times.removeAt(4)  // removing sunset time
 
@@ -218,7 +211,7 @@ class PrayTimes(private val context: Context) {
         val fajr = computeTime(180 - (methodParams[calcMethod]?.get(0)!!), t[0])
         val sunrise = computeTime(180 - 0.833, t[1])
         val dhuhr = computeMidDay(t[2])
-        val asr = computeAsr((1 + asrJuristic.ordinal).toDouble(), t[3])
+        val asr = computeAsr((1 + asrJuristic).toDouble(), t[3])
         val sunset = computeTime(0.833, t[4])
         val maghrib = computeTime(methodParams[calcMethod]?.get(2)!!, t[5])
         val isha = computeTime(methodParams[calcMethod]?.get(4)!!, t[6])
@@ -234,7 +227,7 @@ class PrayTimes(private val context: Context) {
             times[5] = times[4] + (methodParams[calcMethod]?.get(2)!!) / 60
         if (methodParams[calcMethod]?.get(3)?.toInt() == 1) // Isha
             times[6] = times[5] + (methodParams[calcMethod]?.get(4)!!) / 60
-        if (adjustHighLats != AM.NONE)
+        if (adjustHighLats != "NONE")
             adjustHighLatTimes(times)
 
         return times
@@ -281,24 +274,22 @@ class PrayTimes(private val context: Context) {
     // the night portion used for adjusting times in higher latitudes
     private fun nightPortion(angle: Double): Double {
         return when (adjustHighLats) {
-            AM.NONE -> 0.0
-            AM.MIDNIGHT -> 0.5
-            AM.ONE_SEVENTH -> 0.14286
-            AM.ANGLE_BASED -> angle / 60.0
+            "MIDNIGHT" -> 0.5
+            "ONE_SEVENTH" -> 0.14286
+            "ANGLE_BASED" -> angle / 60.0
+            else -> 0.0
         }
     }
 
     // Tune timings for adjustments (Set time offsets)
     private fun setOffsets() {
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-
-        offsets[0] = pref.getInt("${PID.FAJR} offset", 0)
-        offsets[1] = pref.getInt("${PID.SHOROUQ} offset", 0)
-        offsets[2] = pref.getInt("${PID.DUHR} offset", 0)
-        offsets[3] = pref.getInt("${PID.ASR} offset", 0)
+        offsets[0] = PrefUtils.getInt(pref, "${PID.FAJR} offset", 0)
+        offsets[1] = PrefUtils.getInt(pref, "${PID.SHOROUQ} offset", 0)
+        offsets[2] = PrefUtils.getInt(pref, "${PID.DUHR} offset", 0)
+        offsets[3] = PrefUtils.getInt(pref, "${PID.ASR} offset", 0)
         // Skipping sunset
-        offsets[5] = pref.getInt("${PID.MAGHRIB} offset", 0)
-        offsets[6] = pref.getInt("${PID.ISHAA} offset", 0)
+        offsets[5] = PrefUtils.getInt(pref, "${PID.MAGHRIB} offset", 0)
+        offsets[6] = PrefUtils.getInt(pref, "${PID.ISHAA} offset", 0)
     }
 
     private fun tuneTimes(times: DoubleArray): DoubleArray {

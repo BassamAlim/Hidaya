@@ -43,10 +43,8 @@ object PTUtils {
         val prayTimes = PrayTimes(context)
         val utcOffset = getUTCOffset(context, pref).toDouble()
 
-        val timeFormat = PrefUtils.getTimeFormat(context, pref)
-
         return prayTimes.getStrPrayerTimes(
-            loc.latitude, loc.longitude, utcOffset, calendar, timeFormat
+            loc.latitude, loc.longitude, utcOffset, calendar
         )
     }
 
@@ -55,10 +53,10 @@ object PTUtils {
         pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context),
         db: AppDatabase = DBUtils.getDB(context)
     ): Int {
-        when (pref.getString("location_type", "auto")) {
+        when (PrefUtils.getString(pref, "location_type", "auto")) {
             "auto" -> return TimeZone.getDefault().getOffset(Date().time) / 3600000
             "manual" -> {
-                val cityId = pref.getInt("city_id", -1)
+                val cityId = PrefUtils.getInt(pref, "city_id", -1)
 
                 if (cityId == -1) return 0
 
@@ -102,7 +100,7 @@ object PTUtils {
         val h24Format = SimpleDateFormat("HH:mm", Locale.US)
 
         if (str[str.length-1].isDigit()) {  // Input is in 24h format
-            return if (timeFormat == PrayTimes.TF.H24) str
+            return if (timeFormat == "24h") str
             else {
                 val date = h24Format.parse(str)
                 val output = h12Format.format(date!!).lowercase()
@@ -110,28 +108,12 @@ object PTUtils {
             }
         }
         else { // Input is in 12h format
-            return if (timeFormat == PrayTimes.TF.H12) str
+            return if (timeFormat == "12h") str
             else {
                 val date = h12Format.parse(str)
                 val output = h24Format.format(date!!)
                 output
             }
-        }
-    }
-
-    fun mapID(num: Int): PID? {
-        return when (num) {
-            0 -> PID.FAJR
-            1 -> PID.SHOROUQ
-            2 -> PID.DUHR
-            3 -> PID.ASR
-            4 -> PID.MAGHRIB
-            5 -> PID.ISHAA
-            6 -> PID.MORNING
-            7 -> PID.EVENING
-            8 -> PID.DAILY_WERD
-            9 -> PID.FRIDAY_KAHF
-            else -> null
         }
     }
 

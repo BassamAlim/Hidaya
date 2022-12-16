@@ -17,11 +17,12 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.AthkarViewer
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.activities.Splash
+import bassamalim.hidaya.enums.NotificationType
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.services.AthanService
 import bassamalim.hidaya.utils.ActivityUtils
-import bassamalim.hidaya.utils.PTUtils
+import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 
 class NotificationReceiver : BroadcastReceiver() {
@@ -31,13 +32,13 @@ class NotificationReceiver : BroadcastReceiver() {
     private lateinit var pid: PID
     private var isPrayer = false
     private var channelId = ""
-    private var type = 0
-    private var time: Long = 0
+    private var type = NotificationType.None
+    private var time = 0L
 
     override fun onReceive(context: Context, intent: Intent) {
         this.context = context
 
-        pid = PTUtils.mapID(intent.getIntExtra("id", 0))!!
+        pid = PID.valueOf(intent.getStringExtra("id")!!)
         time = intent.getLongExtra("time", 0)
         isPrayer = intent.action == "prayer"
 
@@ -48,18 +49,18 @@ class NotificationReceiver : BroadcastReceiver() {
         pref = PreferenceManager.getDefaultSharedPreferences(context)
 
         val defaultType =
-            if (pid == PID.SHOROUQ) 0
-            else 2
+            if (pid == PID.SHOROUQ) NotificationType.None
+            else NotificationType.Notification
+        val typeName = PrefUtils.getString(pref, "$pid notification_type", defaultType.name)
+        type = NotificationType.valueOf(typeName)
 
-        type = pref.getInt("$pid notification_type", defaultType)
-
-        if (type != 0) prepare()
+        if (type != NotificationType.None) prepare()
     }
 
     private fun prepare() {
         val max = time + 120000
         if (System.currentTimeMillis() <= max) {
-            if (type == 3) startService()
+            if (type == NotificationType.Athan) startService()
             else showNotification()
         }
         else Log.i(Global.TAG, "$pid Passed")
@@ -87,15 +88,13 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun startService() {
-        val intent1 = Intent(context, AthanService::class.java)
-        intent1.action = Global.PLAY_ATHAN
-        intent1.putExtra("id", pid)
-        intent1.putExtra("time", time)
+        val serviceIntent = Intent(context, AthanService::class.java)
+        serviceIntent.action = Global.PLAY_ATHAN
+        serviceIntent.putExtra("pid", pid.name)
+        serviceIntent.putExtra("time", time)
 
-        if (Build.VERSION.SDK_INT >= 26)
-            context.startForegroundService(intent1)
-        else
-            context.startService(intent1)
+        if (Build.VERSION.SDK_INT >= 26) context.startForegroundService(serviceIntent)
+        else context.startService(serviceIntent)
     }
 
     private fun build(): Notification {
@@ -115,7 +114,7 @@ class NotificationReceiver : BroadcastReceiver() {
         builder.color = context.getColor(R.color.surface_M)
         builder.setContentIntent(onClick(pid))
 
-        if (type == 1) builder.setSilent(true)
+        if (type == NotificationType.Silent) builder.setSilent(true)
 
         return builder.build()
     }
@@ -139,9 +138,11 @@ class NotificationReceiver : BroadcastReceiver() {
             PID.DAILY_WERD -> {
                 intent = Intent(context, QuranViewer::class.java)
                 intent.action = "by_page"
-                intent.putExtra("page", pref.getInt(
-                    "today_werd_page", Random().nextInt(Global.QURAN_PAGES-1)
-                ))
+                intent.putExtra("page",
+                    PrefUtils.getInt(
+                        pref, "today_werd_page", Random().nextInt(Global.QURAN_PAGES-1)
+                    )
+                )
             }
             PID.FRIDAY_KAHF -> {
                 intent = Intent(context, QuranViewer::class.java)
@@ -161,18 +162,14 @@ class NotificationReceiver : BroadcastReceiver() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name: CharSequence
-            val description = ""
-
             channelId = context.resources.getStringArray(R.array.channel_ids)[pid.ordinal]
-            name = context.resources.getStringArray(R.array.reminders)[pid.ordinal]
+            val name = context.resources.getStringArray(R.array.reminders)[pid.ordinal]
 
-            val importance: Int = NotificationManager.IMPORTANCE_HIGH
+            val importance = NotificationManager.IMPORTANCE_HIGH
             val notificationChannel = NotificationChannel(channelId, name, importance)
-            notificationChannel.description = description
+            notificationChannel.description = "description"
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-            val notificationManager: NotificationManager =
-                context.getSystemService(NotificationManager::class.java)
+            val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }

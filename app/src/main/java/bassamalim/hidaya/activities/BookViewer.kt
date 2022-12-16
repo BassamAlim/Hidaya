@@ -23,6 +23,7 @@ import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.FileUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.gson.Gson
 
 class BookViewer : ComponentActivity() {
@@ -35,7 +36,7 @@ class BookViewer : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.myOnActivityCreated(this)
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
@@ -62,7 +63,9 @@ class BookViewer : ComponentActivity() {
     @Composable
     private fun UI(title: String) {
         val textSize = remember {
-            mutableStateOf(pref.getInt(getString(R.string.alathkar_text_size_key), 15).toFloat())
+            mutableStateOf(
+                PrefUtils.getInt(pref, getString(R.string.alathkar_text_size_key), 15).toFloat()
+            )
         }
 
         MyScaffold(

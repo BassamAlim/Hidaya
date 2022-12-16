@@ -42,7 +42,7 @@ class QuizActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.myOnActivityCreated(this)
 
         db = DBUtils.getDB(this)
 

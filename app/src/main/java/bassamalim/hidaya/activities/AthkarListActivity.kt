@@ -37,7 +37,7 @@ class AthkarListActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        language = ActivityUtils.onActivityCreateSetLocale(this)
+        language = ActivityUtils.myOnActivityCreated(this)[1]
 
         db = DBUtils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(this)
@@ -113,13 +113,12 @@ class AthkarListActivity : ComponentActivity() {
     @Composable
     private fun UI(title: String) {
         MyScaffold(title) {
-            val textState = remember { mutableStateOf(TextFieldValue("")) }
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(it)
             ) {
+                val textState = remember { mutableStateOf(TextFieldValue("")) }
                 SearchComponent (
                     state = textState,
                     hint = stringResource(R.string.athkar_hint),

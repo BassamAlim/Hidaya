@@ -147,4 +147,26 @@
         <item>24 hours</item>
     </string-array>
 
+    <string-array name="prayer_times_calc_method_entries">
+        <item>Umm al-Qura University, Makkah</item>
+        <item>Muslim World League</item>
+        <item>Islamic Society of North America</item>
+        <item>University of Islamic Sciences, Karachi</item>
+        <item>Egyptian General Authority of Survey</item>
+        <item>Institute of Geophysics, University of Tehran</item>
+        <item>Shia Ithna Ashari (Ja`fari)</item>
+    </string-array>
+
+    <string-array name="juristic_method_entries">
+        <item>Shafii</item>
+        <item>Hanafi</item>
+    </string-array>
+
+    <string-array name="high_lat_adjustment_entries">
+        <item>None</item>
+        <item>Midnight</item>
+        <item>One-seventh</item>
+        <item>Angle based</item>
+    </string-array>
+
 </resources>

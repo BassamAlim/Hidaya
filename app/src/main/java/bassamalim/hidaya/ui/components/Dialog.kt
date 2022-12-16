@@ -20,6 +20,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.utils.PrefUtils
 
 @Composable
 fun MyDialog(
@@ -81,7 +82,7 @@ fun TutorialDialog(
     pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(LocalContext.current),
     prefKey: String
 ) {
-    if (!pref.getBoolean(prefKey, true)) return
+    if (!PrefUtils.getBoolean(pref, prefKey, true)) return
 
     val doNotShowAgain = remember { mutableStateOf(false) }
     val shown = remember { mutableStateOf(true) }

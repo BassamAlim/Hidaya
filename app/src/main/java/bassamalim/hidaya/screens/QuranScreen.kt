@@ -16,6 +16,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
+import bassamalim.hidaya.activities.QuranSearcher
 import bassamalim.hidaya.activities.QuranViewer
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.Sura
@@ -34,7 +35,9 @@ class QuranScreen(
 
     private val db = DBUtils.getDB(context)
     private val gson = Gson()
-    private val bookmarkedPage = mutableStateOf(pref.getInt("bookmarked_page", -1))
+    private val bookmarkedPage = mutableStateOf(
+        PrefUtils.getInt(pref, "bookmarked_page", -1)
+    )
     private var favs = mutableStateListOf<Int>()
     private val names =
         if (PrefUtils.getLanguage(context) == "en") db.suarDao().getNamesEn()
@@ -45,7 +48,7 @@ class QuranScreen(
     }
 
     override fun onResume() {
-        bookmarkedPage.value = pref.getInt("bookmarked_page", -1)
+        bookmarkedPage.value = PrefUtils.getInt(pref, "bookmarked_page", -1)
     }
 
     private fun getItems(type: ListType): List<Sura> {
@@ -75,68 +78,83 @@ class QuranScreen(
 
     @Composable
     fun QuranUI() {
-        Column(
-            Modifier.fillMaxSize()
+        MyScaffold(
+            topBar = {},
+            fab = {
+                MyFloatingActionButton(
+                    iconId = R.drawable.ic_quran_search,
+                    description = stringResource(R.string.search_in_quran)
+                ) {
+                    context.startActivity(Intent(context, QuranSearcher::class.java))
+                }
+            }
         ) {
-            val textState = remember { mutableStateOf(TextFieldValue("")) }
-
-            val bookmarkedSura = pref.getInt("bookmarked_sura", -1)
-            MyButton(
-                text =
+            Column(
+                Modifier.fillMaxSize()
+            ) {
+                val bookmarkedSura = PrefUtils.getInt(pref, "bookmarked_sura", -1)
+                MyButton(
+                    text =
                     if (bookmarkedPage.value == -1) stringResource(R.string.no_bookmarked_page)
                     else {
                         "${context.getString(R.string.bookmarked_page)} " +
                                 "${context.getString(R.string.page)} " +
-                                "${LangUtils.translateNums(
-                                    context, bookmarkedPage.value.toString()
-                                )}, " +
+                                "${
+                                    LangUtils.translateNums(
+                                        context, bookmarkedPage.value.toString()
+                                    )
+                                }, " +
                                 "${context.getString(R.string.sura)} " +
                                 if (PrefUtils.getLanguage(context, pref) == "en")
                                     db.suarDao().getNameEn(bookmarkedSura)
                                 else db.suarDao().getName(bookmarkedSura)
                     },
-                fontSize = 18.sp,
-                textColor = AppTheme.colors.accent,
-                modifier = Modifier.fillMaxWidth(),
-                innerPadding = PaddingValues(vertical = 4.dp)
-            ) {
-                if (bookmarkedPage.value != -1) {
-                    val intent = Intent(context, QuranViewer::class.java)
-                    intent.action = "by_page"
-                    intent.putExtra("page", bookmarkedPage.value)
-                    context.startActivity(intent)
+                    fontSize = 18.sp,
+                    textColor = AppTheme.colors.accent,
+                    modifier = Modifier.fillMaxWidth(),
+                    innerPadding = PaddingValues(vertical = 4.dp)
+                ) {
+                    if (bookmarkedPage.value != -1) {
+                        val intent = Intent(context, QuranViewer::class.java)
+                        intent.action = "by_page"
+                        intent.putExtra("page", bookmarkedPage.value)
+                        context.startActivity(intent)
+                    }
                 }
-            }
 
-            TabLayout(
-                pageNames = listOf(
-                    stringResource(R.string.all),
-                    stringResource(R.string.favorite)
-                ),
-                searchComponent = {
-                    SearchComponent(
-                        state = textState,
-                        hint = stringResource(R.string.quran_query_hint),
-                        modifier = Modifier.fillMaxWidth(),
-                        onSubmit = {
-                            try {
-                                val num = textState.value.text.toInt()
-                                if (num in 1..604) {
-                                    val openPage = Intent(context, QuranViewer::class.java)
-                                    openPage.action = "by_page"
-                                    openPage.putExtra("page", num)
-                                    context.startActivity(openPage)
-                                }
-                                else
-                                    Toast.makeText(
-                                        context, context.getString(R.string.page_does_not_exist), Toast.LENGTH_SHORT
-                                    ).show()
-                            } catch (_: NumberFormatException) {}
-                        }
-                    )
+                val textState = remember { mutableStateOf(TextFieldValue("")) }
+                TabLayout(
+                    pageNames = listOf(
+                        stringResource(R.string.all),
+                        stringResource(R.string.favorite)
+                    ),
+                    searchComponent = {
+                        SearchComponent(
+                            state = textState,
+                            hint = stringResource(R.string.quran_query_hint),
+                            modifier = Modifier.fillMaxWidth(),
+                            onSubmit = {
+                                try {
+                                    val num = textState.value.text.toInt()
+                                    if (num in 1..604) {
+                                        val openPage = Intent(context, QuranViewer::class.java)
+                                        openPage.action = "by_page"
+                                        openPage.putExtra("page", num)
+                                        context.startActivity(openPage)
+                                    }
+                                    else
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.page_does_not_exist),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                } catch (_: NumberFormatException) {}
+                            }
+                        )
+                    }
+                ) { page ->
+                    Tab(items = getItems(ActivityUtils.getListType(page)), textState)
                 }
-            ) { page ->
-                Tab(items = getItems(ActivityUtils.getListType(page)), textState)
             }
         }
 

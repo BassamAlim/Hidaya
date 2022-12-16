@@ -8,7 +8,6 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
-import androidx.compose.runtime.MutableState
 import bassamalim.hidaya.R
 import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
@@ -245,13 +244,13 @@ class AnalogClock(context: Context, attrs: AttributeSet) : View(context, attrs) 
     }
 
     fun update(
-        pastTime: MutableState<Long>,
-        upcomingTime: MutableState<Long>,
-        remaining: MutableState<Long>
+        pastTime: Long,
+        upcomingTime: Long,
+        remaining: Long
     ) {
-        this.pastTime = pastTime.value
-        this.upcomingTime = upcomingTime.value
-        this.remaining = remaining.value
+        this.pastTime = pastTime
+        this.upcomingTime = upcomingTime
+        this.remaining = remaining
     }
 
 }

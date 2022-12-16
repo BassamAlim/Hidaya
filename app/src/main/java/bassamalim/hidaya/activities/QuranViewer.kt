@@ -47,6 +47,7 @@ import bassamalim.hidaya.ui.theme.uthmanic
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import java.util.concurrent.Executors
@@ -87,9 +88,9 @@ class QuranViewer : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.myOnActivityCreated(this)
+        val language = ActivityUtils.myOnActivityCreated(this)[1]
 
-        init()
+        init(language)
 
         action = intent.action!!
         action(intent)
@@ -101,13 +102,11 @@ class QuranViewer : AppCompatActivity() {
         }
     }
 
-    private fun init() {
+    private fun init(language: String) {
         pref = PreferenceManager.getDefaultSharedPreferences(this)
         db = DBUtils.getDB(this)
 
-        textSize = pref.getInt(getString(R.string.quran_text_size_key), 30)
-
-        val language = ActivityUtils.onActivityCreateSetLocale(this)
+        textSize = PrefUtils.getInt(pref, getString(R.string.quran_text_size_key), 30)
 
         viewType.value =
             if (language == "en") "list"

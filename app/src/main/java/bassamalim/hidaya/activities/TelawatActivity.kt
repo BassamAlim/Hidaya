@@ -60,7 +60,7 @@ class TelawatActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.myOnActivityCreated(this)
 
         init()
 
@@ -120,7 +120,7 @@ class TelawatActivity : ComponentActivity() {
     }
 
     private fun initSelectedVersions() {
-        val json = pref.getString("selected_rewayat", "")!!
+        val json = PrefUtils.getString(pref, "selected_rewayat", "")
         if (json.isNotEmpty()) {
             val boolArr = gson.fromJson(json, BooleanArray::class.java)
             boolArr.forEach { bool -> selectedVersions.add(bool) }
@@ -147,7 +147,9 @@ class TelawatActivity : ComponentActivity() {
     }
 
     private fun setupContinue() {
-        continueListeningMediaId.value = pref.getString("last_played_media_id", "")!!
+        continueListeningMediaId.value = PrefUtils.getString(
+            pref, "last_played_media_id", ""
+        )
 
         if (continueListeningMediaId.value.isEmpty()) return
 
@@ -275,8 +277,6 @@ class TelawatActivity : ComponentActivity() {
             stringResource(R.string.recitations),
             onBack = { onBack() }
         ) {
-            val textState = remember { mutableStateOf(TextFieldValue("")) }
-
             Column {
                 MyButton(
                     text = continueListeningText,
@@ -295,6 +295,7 @@ class TelawatActivity : ComponentActivity() {
                     }
                 }
 
+                val textState = remember { mutableStateOf(TextFieldValue("")) }
                 TabLayout(
                     pageNames = listOf(getString(R.string.all), getString(R.string.favorite), getString(R.string.downloaded)),
                     searchComponent = {
@@ -395,9 +396,7 @@ class TelawatActivity : ComponentActivity() {
                 MyHorizontalDivider(thickness = 2.dp)
 
                 Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
+                    Modifier.fillMaxWidth()
                 ) {
                     for (version in reciter.versions)
                         VersionCard(reciterId = reciter.id, version = version)
@@ -420,24 +419,27 @@ class TelawatActivity : ComponentActivity() {
                 startActivity(intent)
             }
         ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 8.dp, start = 15.dp, end = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                MyText(text = version.rewaya, fontSize = 18.sp)
-
-                MyDownloadBtn(
-                    state = downloadStates[reciterId][version.versionId],
-                    path = "$prefix$reciterId/${version.versionId}",
-                    size = 28.dp,
-                    deleted = {
-                        downloadStates[reciterId][version.versionId] = DownloadState.NotDownloaded
-                    }
+            Box(Modifier.padding(horizontal = 10.dp)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 15.dp, bottom = 15.dp, start = 10.dp, end = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    downloadVer(reciterId, version)
+                    MyText(text = version.rewaya, fontSize = 18.sp)
+
+                    MyDownloadBtn(
+                        state = downloadStates[reciterId][version.versionId],
+                        path = "$prefix$reciterId/${version.versionId}",
+                        size = 28.dp,
+                        deleted = {
+                            downloadStates[reciterId][version.versionId] =
+                                DownloadState.NotDownloaded
+                        }
+                    ) {
+                        downloadVer(reciterId, version)
+                    }
                 }
             }
         }

@@ -21,6 +21,7 @@ import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.FileUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.gson.Gson
 
 class BooksChaptersActivity : ComponentActivity() {
@@ -34,7 +35,7 @@ class BooksChaptersActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.myOnActivityCreated(this)
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
@@ -59,7 +60,7 @@ class BooksChaptersActivity : ComponentActivity() {
     }
 
     private fun setupFavs() {
-        val favsStr = pref.getString("book" + bookId + "_favs", "")!!
+        val favsStr = PrefUtils.getString(pref, "book" + bookId + "_favs", "")
         if (favsStr.isEmpty()) {
             for (chapter in book.chapters) favs.add(0)
         }

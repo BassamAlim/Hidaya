@@ -26,7 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.dialogs.LocationPickerDialog
+import bassamalim.hidaya.helpers.LocationPicker
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.ui.components.MyButton
 import bassamalim.hidaya.ui.components.MyText
@@ -34,6 +34,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.ui.theme.nsp
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.android.gms.location.LocationServices
 
 class LocationActivity: ComponentActivity() {
@@ -45,7 +46,7 @@ class LocationActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.myOnActivityCreated(this)
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
         db = DBUtils.getDB(this)
@@ -65,7 +66,7 @@ class LocationActivity: ComponentActivity() {
             background()
         }
         else {
-            if (pref.getString("location_type", "auto") == "auto")
+            if (PrefUtils.getString(pref, "location_type", "auto") == "auto")
                 locationPermissionRequest.launch(arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -219,7 +220,7 @@ class LocationActivity: ComponentActivity() {
         }
 
         if (locationPickerShown.value) {
-            LocationPickerDialog(
+            LocationPicker(
                 this, pref, db, locationPickerShown
             ) { countryId, cityId ->
                 pref.edit()
@@ -234,7 +235,7 @@ class LocationActivity: ComponentActivity() {
                 location.longitude = city.longitude
 
                 launch(location)
-            }.Dialog()
+            }.UI()
         }
     }
 }

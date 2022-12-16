@@ -25,7 +25,7 @@ class AthanService : Service() {
     private lateinit var mediaPlayer: MediaPlayer
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        pid = intent?.getSerializableExtra("id") as PID
+        pid = PID.valueOf(intent?.getStringExtra("pid")!!)
 
         ActivityUtils.onActivityCreateSetLocale(this)
 
@@ -45,8 +45,7 @@ class AthanService : Service() {
                             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                             .setUsage(AudioAttributes.USAGE_ALARM)
                             .build()
-                    )
-                    .build()
+                    ).build()
             )
         }
 

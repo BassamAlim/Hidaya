@@ -36,13 +36,14 @@ import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 class AboutActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.myOnActivityCreated(this)
 
         setContent {
             AppTheme {
@@ -75,12 +76,10 @@ class AboutActivity : ComponentActivity() {
                             interactionSource = remember { MutableInteractionSource() }
                         ) {
                             if (++counter == 5)
-                                Toast
-                                    .makeText(
+                                Toast.makeText(
                                         this@AboutActivity,
                                         getString(R.string.vip_welcome), Toast.LENGTH_SHORT
-                                    )
-                                    .show()
+                                    ).show()
                         }
                 )
 
@@ -135,9 +134,12 @@ class AboutActivity : ComponentActivity() {
                         }
 
                         MyText(
-                            text = PreferenceManager.getDefaultSharedPreferences(
-                                this@AboutActivity
-                            ).getString("last_daily_update", "No daily updates yet")!!,
+                            PrefUtils.getString(
+                                PreferenceManager
+                                    .getDefaultSharedPreferences(this@AboutActivity),
+                                "last_daily_update",
+                                "No daily updates yet"
+                            ),
                             Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .padding(10.dp)

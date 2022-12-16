@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.preference.PreferenceManager
@@ -32,6 +33,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.FileUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.gson.Gson
 import java.io.File
 import java.util.regex.Pattern
@@ -53,7 +55,7 @@ class BookSearcher : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        language = ActivityUtils.onActivityCreateSetLocale(this)
+        language = ActivityUtils.myOnActivityCreated(this)[1]
 
         init()
 
@@ -77,7 +79,7 @@ class BookSearcher : ComponentActivity() {
 
     private fun initSelectedBooks() {
         for (i in books.indices) selectedBooks.add(true)
-        val json = pref.getString("selected_search_books", "")!!
+        val json = PrefUtils.getString(pref, "selected_search_books", "")
         if (json.isNotEmpty()) {
             val boolArr =  gson.fromJson(json, BooleanArray::class.java)
             for (i in boolArr.indices) selectedBooks[i] = boolArr[i]
@@ -94,7 +96,9 @@ class BookSearcher : ComponentActivity() {
     }
 
     private fun initMaxMatches() {
-        maxMatchesIndex.value = pref.getInt("books_searcher_max_matches_index", 0)
+        maxMatchesIndex.value = PrefUtils.getInt(
+            pref, "books_searcher_max_matches_index", 0
+        )
 
         maxMatchesItems =
             if (language == "en") resources.getStringArray(R.array.searcher_matches_en)
@@ -179,10 +183,10 @@ class BookSearcher : ComponentActivity() {
 
     @Composable
     private fun UI() {
-        val textState = remember { mutableStateOf(TextFieldValue("")) }
-        val highlightColor = AppTheme.colors.accent
-
         MyScaffold(stringResource(R.string.books_searcher)) { padding ->
+            val highlightColor = AppTheme.colors.accent
+            val textState = remember { mutableStateOf(TextFieldValue("")) }
+
             Column(
                 Modifier
                     .fillMaxSize()
@@ -270,6 +274,7 @@ class BookSearcher : ComponentActivity() {
                                 ) {
                                     MyText(
                                         text = item.bookTitle,
+                                        fontWeight = FontWeight.Bold,
                                         modifier = Modifier.padding(6.dp)
                                     )
                                     MyText(

@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.ui.components.*
+import bassamalim.hidaya.ui.theme.AppTheme
+import bassamalim.hidaya.utils.PrefUtils
 
 class QuranSettingsDialog(
     private val pref: SharedPreferences,
@@ -24,7 +26,7 @@ class QuranSettingsDialog(
 ) {
 
     private val viewType = mutableStateOf(
-        if (pref.getString("quran_view_type", "page") == "list") 1
+        if (PrefUtils.getString(pref, "quran_view_type", "page") == "list") 1
         else 0
     )
     private val reciterNames = db.ayatRecitersDao().getNames().toTypedArray()
@@ -39,7 +41,7 @@ class QuranSettingsDialog(
                     .padding(vertical = 10.dp, horizontal = 10.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                CategoryTitle(titleResId = R.string.page_preferences)
+                CategoryTitle(R.string.page_preferences)
 
                 MyText(stringResource(R.string.display_method), Modifier.padding(horizontal = 16.dp))
 
@@ -74,7 +76,8 @@ class QuranSettingsDialog(
                     iconResId = -1,
                     entries = reciterNames,
                     values = reciterIds,
-                    defaultValue = "13"
+                    defaultValue = "13",
+                    bgColor = AppTheme.colors.background
                 )
 
                 SliderPref(
@@ -89,13 +92,15 @@ class QuranSettingsDialog(
                 SwitchPref(
                     pref = pref,
                     keyResId = R.string.stop_on_sura_key,
-                    titleResId = R.string.stop_on_sura_end
+                    titleResId = R.string.stop_on_sura_end,
+                    bgColor = AppTheme.colors.background
                 )
 
                 SwitchPref(
                     pref = pref,
                     keyResId = R.string.stop_on_page_key,
-                    titleResId = R.string.stop_on_page_end
+                    titleResId = R.string.stop_on_page_end,
+                    bgColor = AppTheme.colors.background
                 )
 
                 MyButton(

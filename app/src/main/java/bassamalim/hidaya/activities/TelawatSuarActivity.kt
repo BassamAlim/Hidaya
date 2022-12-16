@@ -53,7 +53,7 @@ class TelawatSuarActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.myOnActivityCreated(this)
 
         db = DBUtils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(this)
@@ -189,7 +189,6 @@ class TelawatSuarActivity : ComponentActivity() {
             onBack = { onBack() }
         ) {
             val textState = remember { mutableStateOf(TextFieldValue("")) }
-
             TabLayout(
                 pageNames = listOf(getString(R.string.all), getString(R.string.favorite), getString(R.string.downloaded)),
                 searchComponent = {

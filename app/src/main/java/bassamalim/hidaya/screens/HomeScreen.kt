@@ -52,13 +52,13 @@ class HomeScreen(
     private lateinit var formattedTomorrowFajr: String
     private var timer: CountDownTimer? = null
     private var tomorrow = false
-    private val upcomingPrayer = mutableStateOf(0)
-    private val upcomingPrayerTime = mutableStateOf("")
+    private var upcomingPrayer = 0
+    private var upcomingPrayerTime = ""
+    private var pastTime = 0L
+    private var upcomingTime = 0L
+    private var remaining = 0L
     private val remainingTime = mutableStateOf("")
     private val werdDone = mutableStateOf(false)
-    private val pastTime = mutableStateOf(0L)
-    private val upcomingTime = mutableStateOf(0L)
-    private val remaining = mutableStateOf(0L)
 
     init {
         onResume()
@@ -71,7 +71,7 @@ class HomeScreen(
     override fun onResume() {
         if (located) setupPrayersCard()
 
-        werdDone.value = pref.getBoolean("werd_done", false)
+        werdDone.value = PrefUtils.getBoolean(pref, "werd_done", false)
     }
 
     private fun setupPrayersCard() {
@@ -81,7 +81,6 @@ class HomeScreen(
 
     private fun getTimes(location: Location) {
         val utcOffset = PTUtils.getUTCOffset(context, pref)
-        val timeFormat = PrefUtils.getTimeFormat(context, pref)
 
         val prayTimes = PrayTimes(context)
 
@@ -90,7 +89,7 @@ class HomeScreen(
             location.latitude, location.longitude, utcOffset.toDouble(), today
         )
         formattedTimes = prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, utcOffset.toDouble(), today, timeFormat
+            location.latitude, location.longitude, utcOffset.toDouble(), today
         )
 
         val tomorrow = Calendar.getInstance()
@@ -100,23 +99,24 @@ class HomeScreen(
         )[0]!!
         tomorrowFajr[Calendar.DATE]++
         formattedTomorrowFajr = prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, utcOffset.toDouble(), tomorrow, timeFormat
+            location.latitude, location.longitude, utcOffset.toDouble(), tomorrow
         )[0]
     }
 
     private fun setupUpcomingPrayer() {
-        upcomingPrayer.value = findUpcoming()
+        upcomingPrayer = findUpcoming()
 
         tomorrow = false
-        if (upcomingPrayer.value == -1) {
+        if (upcomingPrayer == -1) {
             tomorrow = true
-            upcomingPrayer.value = 0
+            upcomingPrayer = 0
         }
 
-        if (tomorrow) upcomingPrayerTime.value = formattedTomorrowFajr
-        else upcomingPrayerTime.value = formattedTimes[upcomingPrayer.value]
+        upcomingPrayerTime =
+            if (tomorrow) formattedTomorrowFajr
+            else formattedTimes[upcomingPrayer]
 
-        var till = times[upcomingPrayer.value]!!.timeInMillis
+        var till = times[upcomingPrayer]!!.timeInMillis
         if (tomorrow) till = tomorrowFajr.timeInMillis
 
         count(till)
@@ -139,12 +139,12 @@ class HomeScreen(
                 )
 
                 val past =
-                    if (upcomingPrayer.value == 0) -1L
-                    else times[upcomingPrayer.value - 1]!!.timeInMillis
+                    if (upcomingPrayer == 0) -1L
+                    else times[upcomingPrayer - 1]!!.timeInMillis
 
-                pastTime.value = past
-                upcomingTime.value = times[upcomingPrayer.value]!!.timeInMillis
-                remaining.value = millisUntilFinished
+                pastTime = past
+                upcomingTime = times[upcomingPrayer]!!.timeInMillis
+                remaining = millisUntilFinished
             }
 
             override fun onFinish() {
@@ -163,7 +163,7 @@ class HomeScreen(
     }
 
     private fun getTelawatRecord(): String {
-        val millis = pref.getLong("telawat_playback_record", 0L)
+        val millis = PrefUtils.getLong(pref, "telawat_playback_record", 0L)
 
         val hours = millis / (60 * 60 * 1000) % 24
         val minutes = millis / (60 * 1000) % 60
@@ -214,7 +214,7 @@ class HomeScreen(
                     MyText(
                         text =
                             if (located)
-                                stringArrayResource(id = R.array.prayer_names)[upcomingPrayer.value]
+                                stringArrayResource(id = R.array.prayer_names)[upcomingPrayer]
                             else "",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
@@ -222,7 +222,7 @@ class HomeScreen(
                     )
 
                     MyText(
-                        text = upcomingPrayerTime.value,
+                        text = upcomingPrayerTime,
                         fontSize = 24.sp,
                         modifier = Modifier.padding(3.dp)
                     )
@@ -269,8 +269,9 @@ class HomeScreen(
                     MyText(
                         LangUtils.translateNums(
                             context,
-                            pref.getInt("quran_pages_record", 0).toString(),
-                            false),
+                            PrefUtils.getInt(pref, "quran_pages_record", 0).toString(),
+                            false
+                        ),
                         fontSize = 30.sp
                     )
                 }
@@ -285,7 +286,7 @@ class HomeScreen(
                         .padding(vertical = 14.dp, horizontal = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val werdPage = pref.getInt("today_werd_page", 25)
+                    val werdPage = PrefUtils.getInt(pref, "today_werd_page", 25)
                     Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,

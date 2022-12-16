@@ -27,7 +27,7 @@ object DBUtils {
             reviveDB(context)
         }
 
-        val lastVer = pref.getInt("last_db_version", 1)
+        val lastVer = PrefUtils.getInt(pref, "last_db_version", 1)
         if (Global.dbVer > lastVer) reviveDB(context)
     }
 
@@ -38,9 +38,9 @@ object DBUtils {
 
         val db = getDB(context)
 
-        val surasJson = pref.getString("favorite_suras", "")!!
-        val recitersJson = pref.getString("favorite_reciters", "")!!
-        val athkarJson = pref.getString("favorite_athkar", "")!!
+        val surasJson = PrefUtils.getString(pref, "favorite_suras", "")
+        val recitersJson = PrefUtils.getString(pref, "favorite_reciters", "")
+        val athkarJson = PrefUtils.getString(pref, "favorite_athkar", "")
 
         val gson = Gson()
 

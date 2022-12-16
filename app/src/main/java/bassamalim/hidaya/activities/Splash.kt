@@ -19,6 +19,7 @@ import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.services.AthanService
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.PrefUtils
 import com.google.android.gms.location.LocationServices
 
 class Splash : AppCompatActivity() {
@@ -37,10 +38,10 @@ class Splash : AppCompatActivity() {
 
         DBUtils.testDB(this, pref)
 
-        if (pref.getBoolean("new_user", true)) welcome()
-        else ActivityUtils.onActivityCreateSetLocale(this)
+        if (PrefUtils.getBoolean(pref, "new_user", true)) welcome()
+        else ActivityUtils.myOnActivityCreated(this)
 
-        when(pref.getString("location_type", "auto")) {
+        when (PrefUtils.getString(pref, "location_type", "auto")) {
             "auto" -> {
                 if (granted()) locate()
                 else
@@ -49,7 +50,7 @@ class Splash : AppCompatActivity() {
                         Manifest.permission.ACCESS_COARSE_LOCATION))
             }
             "manual" -> {
-                val cityId = pref.getInt("city_id", -1)
+                val cityId = PrefUtils.getInt(pref, "city_id", -1)
 
                 if (cityId == -1) launch(null)
                 else {
