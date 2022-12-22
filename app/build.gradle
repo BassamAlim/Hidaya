@@ -119,6 +119,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-inappmessaging-display'
     implementation 'com.google.firebase:firebase-perf'
+    implementation 'com.google.firebase:firebase-storage-ktx'
 
     implementation 'io.coil-kt:coil-compose:2.2.2'
     implementation 'io.coil-kt:coil-gif:2.2.2'

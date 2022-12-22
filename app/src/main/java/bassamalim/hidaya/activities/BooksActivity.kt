@@ -1,12 +1,8 @@
 package bassamalim.hidaya.activities
 
-import android.app.DownloadManager
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.padding
@@ -21,11 +17,14 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.database.dbs.BooksDB
 import bassamalim.hidaya.enums.DownloadState
 import bassamalim.hidaya.models.Book
+import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.FileUtils
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
 import java.io.File
 
@@ -50,22 +49,10 @@ class BooksActivity : AppCompatActivity() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-
-        try {
-            unregisterReceiver(onComplete)
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
-    }
-
     override fun onResume() {
         super.onResume()
 
         checkDownloads()
-
-        registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
     private fun checkDownloads() {
@@ -114,20 +101,21 @@ class BooksActivity : AppCompatActivity() {
     private fun download(item: BooksDB) {
         downloadStates[item.id] = DownloadState.Downloading
 
-        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val uri = Uri.parse(item.url)
-        val request = DownloadManager.Request(uri)
-        request.setTitle(getTitle(item))
+        val storage = Firebase.storage
+        // Create a storage reference from our app
+        val storageRef = storage.reference
+        // Create a reference with an initial file path and name
+        val fileRef = storageRef.child("Books/${item.id}.json")
+
         FileUtils.createDir(this, prefix)
-        request.setDestinationInExternalFilesDir(this, prefix, "${item.id}.json")
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+        val file = File("${getExternalFilesDir(null)}/$prefix/${fileRef.name}")
+        file.createNewFile()
 
-        downloadManager.enqueue(request)
-    }
-
-    private var onComplete: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(ctxt: Context, intent: Intent) {
+        fileRef.getFile(file).addOnSuccessListener {
+            Log.i(Global.TAG, "File download succeeded")
             checkDownloads()
+        }.addOnFailureListener {
+            Log.e(Global.TAG, "File download failed")
         }
     }
 

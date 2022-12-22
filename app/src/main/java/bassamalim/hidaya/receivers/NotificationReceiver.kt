@@ -42,7 +42,7 @@ class NotificationReceiver : BroadcastReceiver() {
         ActivityUtils.onActivityCreateSetLocale(context)
 
         pid = PID.valueOf(intent.getStringExtra("id")!!)
-        time = intent.getLongExtra("time", 0)
+        time = intent.getLongExtra("time", 0L)
         isPrayer = intent.action == "prayer"
 
         Log.i(Global.TAG, "in notification receiver for $pid")
@@ -71,7 +71,7 @@ class NotificationReceiver : BroadcastReceiver() {
         if (isPrayer && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val am = context.getSystemService(Service.AUDIO_SERVICE) as AudioManager
             // Request audio focus
-            am.requestAudioFocus(                   // Request permanent focus.
+            am.requestAudioFocus(                   // Request permanent focus
                 AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
                     .setAudioAttributes(
                         AudioAttributes.Builder()
