@@ -37,16 +37,15 @@ class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         this.context = context
+        pref = PreferenceManager.getDefaultSharedPreferences(context)
+
+        ActivityUtils.onActivityCreateSetLocale(context)
 
         pid = PID.valueOf(intent.getStringExtra("id")!!)
         time = intent.getLongExtra("time", 0)
         isPrayer = intent.action == "prayer"
 
-        ActivityUtils.onActivityCreateSetLocale(context)
-
         Log.i(Global.TAG, "in notification receiver for $pid")
-
-        pref = PreferenceManager.getDefaultSharedPreferences(context)
 
         val defaultType =
             if (pid == PID.SHOROUQ) NotificationType.None
@@ -79,8 +78,7 @@ class NotificationReceiver : BroadcastReceiver() {
                             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                             .setUsage(AudioAttributes.USAGE_ALARM)
                             .build()
-                    )
-                    .build()
+                    ).build()
             )
         }
 

@@ -6,6 +6,7 @@ import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -20,20 +21,28 @@ import java.util.*
 
 class AthanService : Service() {
 
+    private val iBinder = LocalBinder()
     private lateinit var pid: PID
     private var channelId = ""
     private lateinit var mediaPlayer: MediaPlayer
 
+    inner class LocalBinder : Binder() {
+        val service: AthanService
+            get() = this@AthanService
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        ActivityUtils.onActivityCreateSetLocale(this)
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         pid = PID.valueOf(intent?.getStringExtra("pid")!!)
-
-        ActivityUtils.onActivityCreateSetLocale(this)
 
         Log.i(Global.TAG, "In athan service for $pid")
 
         createNotificationChannel()
         startForeground(pid.ordinal, build())
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val am = getSystemService(AUDIO_SERVICE) as AudioManager
@@ -60,7 +69,8 @@ class AthanService : Service() {
         builder.setTicker(resources.getString(R.string.app_name))
 
         var i = pid.ordinal
-        if (pid == PID.DUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) i = 10
+        if (pid == PID.DUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+            i = 10
         builder.setContentTitle(resources.getStringArray(R.array.prayer_titles)[i])
         builder.setContentText(resources.getStringArray(R.array.prayer_subtitles)[i])
 
@@ -94,15 +104,12 @@ class AthanService : Service() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name: CharSequence
-            val description = ""
-
             channelId = "Athan"
-            name = getString(R.string.prayer_alerts)
+            val name = getString(R.string.prayer_alerts)
 
             val importance = NotificationManager.IMPORTANCE_HIGH
             val notificationChannel = NotificationChannel(channelId, name, importance)
-            notificationChannel.description = description
+            notificationChannel.description = "Athan"
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(notificationChannel)
@@ -122,8 +129,8 @@ class AthanService : Service() {
         mediaPlayer.setOnCompletionListener { stopMyService() }
     }
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null
+    override fun onBind(intent: Intent): IBinder {
+        return iBinder
     }
 
     private fun stopMyService() {

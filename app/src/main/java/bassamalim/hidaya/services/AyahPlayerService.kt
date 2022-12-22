@@ -75,6 +75,11 @@ class AyahPlayerService : Service(),
     private val actionPREV = "bassamalim.hidaya.services.AyahPlayerService.PREVIOUS"
     private val actionSTOP = "bassamalim.hidaya.services.AyahPlayerService.STOP"
 
+    inner class LocalBinder : Binder() {
+        val service: AyahPlayerService
+            get() = this@AyahPlayerService
+    }
+
     private lateinit var coordinator: Coordinator
     interface Coordinator {
         fun onUiUpdate(state: Int)
@@ -735,7 +740,7 @@ class AyahPlayerService : Service(),
      * Resume the last player that was playing.
      */
     fun resume() {
-        players[pausedPlayer].start()
+        if (pausedPlayer != -1) players[pausedPlayer].start()
         pausedPlayer = -1
     }
 
@@ -847,11 +852,6 @@ class AyahPlayerService : Service(),
         removeAudioFocus()
 
         unregisterReceiver()
-    }
-
-    inner class LocalBinder : Binder() {
-        val service: AyahPlayerService
-            get() = this@AyahPlayerService
     }
 
 }
