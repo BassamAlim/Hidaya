@@ -91,7 +91,8 @@ class NotificationReceiver : BroadcastReceiver() {
         serviceIntent.putExtra("pid", pid.name)
         serviceIntent.putExtra("time", time)
 
-        if (Build.VERSION.SDK_INT >= 26) context.startForegroundService(serviceIntent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            context.startForegroundService(serviceIntent)
         else context.startService(serviceIntent)
     }
 

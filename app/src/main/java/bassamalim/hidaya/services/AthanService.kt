@@ -12,6 +12,7 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.Splash
 import bassamalim.hidaya.enums.PID
@@ -34,15 +35,15 @@ class AthanService : Service() {
     override fun onCreate() {
         super.onCreate()
         ActivityUtils.onActivityCreateSetLocale(this)
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        pid = PID.valueOf(intent?.getStringExtra("pid")!!)
 
         Log.i(Global.TAG, "In athan service for $pid")
 
         createNotificationChannel()
-        startForeground(pid.ordinal, build())
+        startForeground(243, build())
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        pid = PID.valueOf(intent?.getStringExtra("pid")!!)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val am = getSystemService(AUDIO_SERVICE) as AudioManager
@@ -52,7 +53,7 @@ class AthanService : Service() {
                     .setAudioAttributes(
                         AudioAttributes.Builder()
                             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
                             .build()
                     ).build()
             )
@@ -75,6 +76,7 @@ class AthanService : Service() {
         builder.setContentText(resources.getStringArray(R.array.prayer_subtitles)[i])
 
         builder.addAction(0, getString(R.string.stop_athan), getStopIntent())
+        builder.clearActions()
         builder.setContentIntent(getStopAndOpenIntent())
         builder.setDeleteIntent(getStopIntent())
         builder.priority = NotificationCompat.PRIORITY_MAX
@@ -123,26 +125,46 @@ class AthanService : Service() {
         mediaPlayer.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
         mediaPlayer.setAudioAttributes(
             AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .setUsage(AudioAttributes.USAGE_MEDIA).build()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build()
         )
         mediaPlayer.setOnPreparedListener { mediaPlayer.start() }
-        mediaPlayer.setOnCompletionListener { stopMyService() }
+        mediaPlayer.setOnCompletionListener {
+            showReminderNotification()
+            onDestroy()
+        }
+    }
+
+    private fun showReminderNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val am = getSystemService(AUDIO_SERVICE) as AudioManager
+            // Request audio focus
+            am.requestAudioFocus(                   // Request permanent focus
+                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .build()
+                    ).build()
+            )
+        }
+
+        NotificationManagerCompat.from(this).notify(pid.ordinal, build())
     }
 
     override fun onBind(intent: Intent): IBinder {
         return iBinder
     }
 
-    private fun stopMyService() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) stopForeground(STOP_FOREGROUND_REMOVE)
-        else stopForeground(true)
-        stopSelf()
-        mediaPlayer.stop()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        stopMyService()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) stopForeground(STOP_FOREGROUND_REMOVE)
+        else stopForeground(true)
+
+        mediaPlayer.stop()
+
+        stopSelf()
     }
 
 }
