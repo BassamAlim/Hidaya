@@ -64,7 +64,8 @@ fun SearchComponent(
                             start = Offset.Zero.copy(x = 20F, y = y - 15),
                             end = Offset(x = size.width - 120F, y = y - 15)
                         )
-                    } else {
+                    }
+                    else {
                         drawLine(
                             brush = SolidColor(lineColor),
                             strokeWidth = strokeWidth,

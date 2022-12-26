@@ -128,7 +128,7 @@ class AthkarListActivity : ComponentActivity() {
                 MyLazyColumn(
                     lazyList = {
                         items(
-                            items = getItems(data).filter { item ->
+                            getItems(data).filter { item ->
                                 item.name.contains(textState.value.text, ignoreCase = true)
                             }
                         ) { item ->

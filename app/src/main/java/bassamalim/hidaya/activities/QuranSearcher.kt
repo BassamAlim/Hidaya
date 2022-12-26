@@ -8,7 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,7 +35,6 @@ class QuranSearcher : ComponentActivity() {
 
     private lateinit var pref: SharedPreferences
     private lateinit var allAyat: List<AyatDB?>
-    private val matches = mutableStateListOf<QuranSearcherMatch>()
     private lateinit var names: List<String>
     private val maxMatchesIndex = mutableStateOf(0)
     private lateinit var maxMatchesItems: Array<String>
@@ -79,8 +77,8 @@ class QuranSearcher : ComponentActivity() {
             else resources.getStringArray(R.array.searcher_matches)
     }
 
-    private fun search(text: String, highlightColor: Color) {
-        matches.clear()
+    private fun search(text: String, highlightColor: Color): List<QuranSearcherMatch> {
+        val matches = ArrayList<QuranSearcherMatch>()
 
         for (i in allAyat.indices) {
             val a = allAyat[i]!!
@@ -93,7 +91,7 @@ class QuranSearcher : ComponentActivity() {
 
                     do {
                         addStyle(
-                            style = SpanStyle(color = highlightColor),
+                            style = SpanStyle(highlightColor),
                             start = matcher.start(),
                             end = matcher.end()
                         )
@@ -108,9 +106,11 @@ class QuranSearcher : ComponentActivity() {
                 )
 
                 searched = true
-                if (matches.size == maxMatchesItems[maxMatchesIndex.value].toInt()) return
+                if (matches.size == maxMatchesItems[maxMatchesIndex.value].toInt()) break
             }
         }
+
+        return matches
     }
 
     @Composable
@@ -122,29 +122,22 @@ class QuranSearcher : ComponentActivity() {
                     .padding(padding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                val textState = remember { mutableStateOf(TextFieldValue("")) }
+                val highlightColor = AppTheme.colors.accent
+
                 Column(
                     Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.SpaceAround,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    MyText(
-                        text = stringResource(R.string.search_for_quran_text)
-                    )
+                    MyText(stringResource(R.string.search_for_quran_text))
 
-                    val highlightColor = AppTheme.colors.accent
-                    val textState = remember { mutableStateOf(TextFieldValue("")) }
                     SearchComponent(
                         state = textState,
                         hint = stringResource(R.string.search),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 30.dp),
-                        onSubmit = {
-                            search(
-                                text = textState.value.text,
-                                highlightColor = highlightColor
-                            )
-                        }
+                            .padding(horizontal = 30.dp)
                     )
 
                     Row(
@@ -170,18 +163,17 @@ class QuranSearcher : ComponentActivity() {
                     }
                 }
 
-                if (matches.isEmpty()) {
-                    if (searched)
-                        MyText(
-                            text = stringResource(R.string.no_matches),
-                            modifier = Modifier.padding(top = 100.dp)
-                        )
+                val matches = search(textState.value.text, highlightColor)
+
+                if (searched && matches.isEmpty()) {
+                    MyText(
+                        text = stringResource(R.string.no_matches),
+                        modifier = Modifier.padding(top = 100.dp)
+                    )
                 }
-                else {
+                else if (textState.value.text.isNotEmpty()) {
                     MyLazyColumn(lazyList = {
-                        items(
-                            items = matches
-                        ) { item ->
+                        items(matches) { item ->
                             MySurface {
                                 Column(
                                     Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
