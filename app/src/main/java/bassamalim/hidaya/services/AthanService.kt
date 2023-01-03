@@ -36,14 +36,14 @@ class AthanService : Service() {
         super.onCreate()
         ActivityUtils.onActivityCreateSetLocale(this)
 
-        Log.i(Global.TAG, "In athan service for $pid")
-
         createNotificationChannel()
         startForeground(243, build())
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         pid = PID.valueOf(intent?.getStringExtra("pid")!!)
+
+        Log.i(Global.TAG, "In athan service for $pid")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val am = getSystemService(AUDIO_SERVICE) as AudioManager

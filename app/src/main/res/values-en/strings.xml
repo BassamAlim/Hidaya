@@ -122,7 +122,6 @@
 
     <!-- Toasts -->
     <string name="give_location_permission_toast">Location can not be accessed, give the app location permission to calculate prayer times and qibla</string>
-    <string name="page_bookmarked">Page bookmarked</string>
     <string name="location_permission_for_qibla">Location permission is needed to calculate qibla direction</string>
     <string name="vip_welcome">Welcome to the VIP section</string>
     <string name="database_rebuilt">Database rebuilt</string>
@@ -133,7 +132,6 @@
     <string name="choose_allow_all_the_time">Choose \"Allow all the time\" to keep the prayer times and qibla direction accurate</string>
     <string name="recitation_not_available">This aya\'s recitation is not available for the selected reciter</string>
     <string name="incorrect_day">Incorrect day</string>
-
 
     <string name="athan_speaker">Athan</string>
     <string name="enable_notification">Sound notification</string>

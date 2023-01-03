@@ -149,7 +149,6 @@
 
     <!-- Toasts -->
     <string name="give_location_permission_toast">لا يمكن الوصول للموقع، يرجى إعطاء أذن الوصول للموقع لحساب أوقات الصلاة والقبلة</string>
-    <string name="page_bookmarked">تم حفظ الصفحة</string>
     <string name="location_permission_for_qibla">يجب السماح بالوصول للموقع لحساب اتجاه القبلة</string>
     <string name="vip_welcome">مرحبا بك في قسم الشخصيات المهمة</string>
     <string name="database_rebuilt">تمت إعادة بناء قاعدة البيانات</string>

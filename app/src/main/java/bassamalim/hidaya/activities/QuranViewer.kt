@@ -579,11 +579,9 @@ class QuranViewer : AppCompatActivity() {
                 .height((textSize * 2.6).dp)
                 .padding(top = 5.dp, bottom = 10.dp, start = 5.dp, end = 5.dp)
                 .onGloballyPositioned { layoutCoordinates ->
-                    if (isCurrentPage) {
-                        if (aya.surahNum == initialSura+1) {
-                            scrollTo = layoutCoordinates.positionInParent().y - 13
-                            initialSura = -1
-                        }
+                    if (isCurrentPage && scrollTo == -1F && aya.surahNum == initialSura+1) {
+                        scrollTo = layoutCoordinates.positionInParent().y - 13
+                        initialSura = -1
                     }
                 },
             contentAlignment = Alignment.Center

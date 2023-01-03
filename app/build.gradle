@@ -15,8 +15,8 @@ android {
         applicationId "bassamalim.hidaya"
         minSdk 23
         targetSdk 33
-        versionCode 209
-        versionName '2.0.9'
+        versionCode 210
+        versionName '2.1.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -35,7 +35,7 @@ android {
             keyPassword 'BA-1G@h$o$s@t2@1!2'
         }
         release {
-        storeFile file('C:\\My Stuff\\MySigning\\MySigning.jks')
+            storeFile file('C:\\My Stuff\\MySigning\\MySigning.jks')
             storePassword 'BA-1G@h$o$s@t2@1!2'
             keyPassword 'BA-1G@h$o$s@t2@1!2'
             keyAlias 'BassamAlim'
