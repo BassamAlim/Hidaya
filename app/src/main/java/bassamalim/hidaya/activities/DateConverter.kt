@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.dialogs.HijriDatePickerDialog
-//import bassamalim.hidaya.hijridatepicker.date.hijri.HijriDatePickerDialog
 import bassamalim.hidaya.ui.components.MyButton
 import bassamalim.hidaya.ui.components.MyScaffold
 import bassamalim.hidaya.ui.components.MyText
