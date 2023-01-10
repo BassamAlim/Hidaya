@@ -1,56 +1,45 @@
 package bassamalim.hidaya.utils
 
-import android.content.Context
 import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
-import bassamalim.hidaya.R
+import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enum.Theme
 
 object PrefUtils {
 
-    fun getLanguage(
-        context: Context,
-        pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    ): String {
-        return getString(
+    fun getLanguage(pref: SharedPreferences): Language {
+        val lang = getString(
             pref,
-            context.getString(R.string.language_key),
-            context.getString(R.string.default_language)
+            Prefs.Language.key,
+            Prefs.Language.default as String
         )
+        return if (lang == "en") Language.ENGLISH
+        else Language.ARABIC
     }
 
-    fun getNumeralsLanguage(
-        context: Context,
-        pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    ): String {
-        return getString(
+    fun getNumeralsLanguage(pref: SharedPreferences): Language {
+        val lang = getString(
             pref,
-            context.getString(R.string.numerals_language_key),
-            context.getString(R.string.default_language)
+            Prefs.NumeralsLanguage.key,
+            Prefs.NumeralsLanguage.default as String
         )
+        return if (lang == "en") Language.ENGLISH
+        else Language.ARABIC
     }
 
-    fun getTimeFormat(
-        context: Context,
-        pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    ): String {
-        return getString(
+    fun getTheme(pref: SharedPreferences): Theme {
+        val themeStr = getString(
             pref,
-            context.getString(R.string.time_format_key),
-            context.getString(R.string.default_time_format)
+            Prefs.Theme.key,
+            Prefs.Theme.default as String
         )
-    }
 
-    fun getTheme(
-        context: Context,
-        pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    ) : String {
-        return getString(
-            pref,
-            context.getString(R.string.theme_key),
-            context.getString(R.string.default_theme)
-        )
+        return when(themeStr) {
+            "Dark" -> Theme.DARK
+            "Night" -> Theme.NIGHT
+            else -> Theme.LIGHT
+        }
     }
-
 
     /**
      * Created as a fail safe in case the data type of the preference is changed

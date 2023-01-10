@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.QuranSearcher
 import bassamalim.hidaya.activities.QuranViewer
-import bassamalim.hidaya.enums.ListType
+import bassamalim.hidaya.enum.ListType
 import bassamalim.hidaya.models.Sura
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
@@ -130,7 +130,7 @@ class QuranScreen(
                     ),
                     searchComponent = {
                         SearchComponent(
-                            state = textState,
+                            value = textState,
                             hint = stringResource(R.string.quran_query_hint),
                             modifier = Modifier.fillMaxWidth(),
                             onSubmit = {

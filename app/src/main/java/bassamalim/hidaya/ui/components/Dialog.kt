@@ -5,10 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,26 +21,25 @@ import bassamalim.hidaya.utils.PrefUtils
 
 @Composable
 fun MyDialog(
-    shown: MutableState<Boolean>,
+    shown: Boolean,
     onDismiss: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
-    Dialog(
-        onDismissRequest = {
-            shown.value = false
-            onDismiss()
-        }
-    ) {
-        Surface(
-            color = Color.Transparent
+    if (shown) {
+        Dialog(
+            onDismissRequest = { onDismiss() }
         ) {
-            Box(
-                Modifier.background(
-                    shape = RoundedCornerShape(16.dp),
-                    color = AppTheme.colors.background
-                )
+            Surface(
+                color = Color.Transparent
             ) {
-                content()
+                Box(
+                    Modifier.background(
+                        shape = RoundedCornerShape(16.dp),
+                        color = AppTheme.colors.background
+                    )
+                ) {
+                    content()
+                }
             }
         }
     }
@@ -53,7 +49,8 @@ fun MyDialog(
 fun InfoDialog(
     title: String,
     text: String,
-    shown: MutableState<Boolean>
+    shown: Boolean,
+    onDismiss: () -> Unit = {}
 ) {
     MyDialog(
         shown = shown
@@ -62,7 +59,7 @@ fun InfoDialog(
             Modifier.padding(top = 5.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)
         ) {
             Box(Modifier.fillMaxWidth()) {
-                MyCloseBtn(Modifier.align(Alignment.CenterStart)) { shown.value = false }
+                MyCloseBtn(Modifier.align(Alignment.CenterStart)) { onDismiss() }
 
                 MyText(
                     title,
@@ -85,40 +82,38 @@ fun TutorialDialog(
     if (!PrefUtils.getBoolean(pref, prefKey, true)) return
 
     val doNotShowAgain = remember { mutableStateOf(false) }
-    val shown = remember { mutableStateOf(true) }
+    var shown by remember { mutableStateOf(true) }
     val onDismiss = {
-        shown.value = false
+        shown = false
         if (doNotShowAgain.value)
             pref.edit()
                 .putBoolean(prefKey, false)
                 .apply()
     }
 
-    if (shown.value) {
-        MyDialog(
-            shown = shown,
-            onDismiss = onDismiss
+    MyDialog(
+        shown = shown,
+        onDismiss = onDismiss
+    ) {
+        Column(
+            Modifier.padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
         ) {
-            Column(
-                Modifier.padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+            MyCloseBtn(onClose = onDismiss)
+
+            MyText(stringResource(textResId))
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                MyCloseBtn(onClose = onDismiss)
+                MyCheckbox(state = doNotShowAgain)
 
-                MyText(stringResource(textResId))
-
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    MyCheckbox(state = doNotShowAgain)
-
-                    MyText(
-                        stringResource(R.string.do_not_show_again),
-                        textColor = AppTheme.colors.accent
-                    )
-                }
+                MyText(
+                    stringResource(R.string.do_not_show_again),
+                    textColor = AppTheme.colors.accent
+                )
             }
         }
     }

@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.LocationActivity
 import bassamalim.hidaya.dialogs.PrayerDialog
-import bassamalim.hidaya.enums.NotificationType
-import bassamalim.hidaya.enums.PID
+import bassamalim.hidaya.enum.NotificationType
+import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme

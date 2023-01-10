@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.dbs.BooksDB
-import bassamalim.hidaya.enums.DownloadState
+import bassamalim.hidaya.enum.DownloadState
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.ui.components.*

@@ -17,11 +17,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.MainActivity
-import bassamalim.hidaya.enums.NotificationType
-import bassamalim.hidaya.enums.PID
+import bassamalim.hidaya.enum.NotificationType
+import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.ui.components.*

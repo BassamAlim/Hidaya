@@ -12,9 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
@@ -28,8 +25,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,17 +33,18 @@ import bassamalim.hidaya.ui.theme.AppTheme
 
 @Composable
 fun SearchComponent(
-    state: MutableState<TextFieldValue>,
+    value: String,
     modifier: Modifier = Modifier,
     hint: String = stringResource(R.string.search),
-    onSubmit: () -> Unit = {}
+    onSubmit: () -> Unit = {},
+    onValueChange: (String) -> Unit = {}
 ) {
     val lineColor = AppTheme.colors.weakText
     val layoutDirection = LocalLayoutDirection.current
 
     TextField(
-        value = state.value,
-        onValueChange = { value -> state.value = value },
+        value = value,
+        onValueChange = onValueChange,
         modifier = modifier
             .padding(horizontal = 6.dp)
             .drawWithContent {
@@ -88,9 +84,9 @@ fun SearchComponent(
             )
         },
         trailingIcon = {
-            if (state.value != TextFieldValue("")) {
+            if (value != "") {
                 IconButton(
-                    onClick = { state.value = TextFieldValue("") }
+                    onClick = { onValueChange("") }
                 ) {
                     Icon(
                         Icons.Default.Close,
@@ -126,11 +122,4 @@ fun SearchComponent(
             disabledIndicatorColor = Color.Transparent
         )
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SearchViewPreview() {
-    val textState = remember { mutableStateOf(TextFieldValue("")) }
-    SearchComponent(textState)
 }

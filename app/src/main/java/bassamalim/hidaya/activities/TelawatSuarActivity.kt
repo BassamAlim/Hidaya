@@ -23,8 +23,8 @@ import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.TelawatVersionsDB
-import bassamalim.hidaya.enums.DownloadState
-import bassamalim.hidaya.enums.ListType
+import bassamalim.hidaya.enum.DownloadState
+import bassamalim.hidaya.enum.ListType
 import bassamalim.hidaya.models.ReciterSura
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
@@ -193,7 +193,7 @@ class TelawatSuarActivity : ComponentActivity() {
                 pageNames = listOf(getString(R.string.all), getString(R.string.favorite), getString(R.string.downloaded)),
                 searchComponent = {
                     SearchComponent(
-                        state = textState,
+                        value = textState,
                         hint = stringResource(R.string.search),
                         modifier = Modifier.fillMaxWidth()
                     )

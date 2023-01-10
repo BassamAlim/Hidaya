@@ -3,7 +3,7 @@ package bassamalim.hidaya.helpers
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import bassamalim.hidaya.enums.PID
+import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.PrefUtils
 import java.util.*

@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.enums.ListType
+import bassamalim.hidaya.enum.ListType
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.models.BookChapter
 import bassamalim.hidaya.ui.components.*
@@ -98,7 +98,7 @@ class BooksChaptersActivity : ComponentActivity() {
                 ),
                 searchComponent = {
                     SearchComponent(
-                        state = textState,
+                        value = textState,
                         hint = stringResource(R.string.search),
                         modifier = Modifier.fillMaxWidth()
                     )

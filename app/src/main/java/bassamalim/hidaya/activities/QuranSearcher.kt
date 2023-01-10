@@ -133,7 +133,7 @@ class QuranSearcher : ComponentActivity() {
                     MyText(stringResource(R.string.search_for_quran_text))
 
                     SearchComponent(
-                        state = textState,
+                        value = textState,
                         hint = stringResource(R.string.search),
                         modifier = Modifier
                             .fillMaxWidth()

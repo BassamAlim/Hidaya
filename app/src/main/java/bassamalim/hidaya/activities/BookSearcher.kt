@@ -204,7 +204,7 @@ class BookSearcher : ComponentActivity() {
                     )
 
                     SearchComponent(
-                        state = textState,
+                        value = textState,
                         hint = stringResource(R.string.search),
                         modifier = Modifier
                             .fillMaxWidth()

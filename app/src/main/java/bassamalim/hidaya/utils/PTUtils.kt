@@ -9,7 +9,7 @@ import android.location.Location
 import android.util.Log
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.enums.PID
+import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.other.Global

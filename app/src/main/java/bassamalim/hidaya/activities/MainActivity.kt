@@ -64,9 +64,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val values = ActivityUtils.myOnActivityCreated(this)
-        theme = values[0]
-        language = values[1]
+
+        theme = onActivityCreateSetTheme()
+        language = onActivityCreateSetLocale()
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
@@ -111,6 +111,32 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         navScreen?.onResume()
+    }
+
+    private fun onActivityCreateSetTheme(): String {
+        val theme = PrefUtils.getTheme(this)
+        when (theme) {
+            "Dark" -> setTheme(R.style.Theme_HidayaM)
+            "Night" -> setTheme(R.style.Theme_HidayaN)
+            else -> setTheme(R.style.Theme_HidayaL)
+        }
+        return theme
+    }
+
+    private fun onActivityCreateSetLocale(): String {
+        val language = PrefUtils.getLanguage(this)
+
+        val locale = Locale(language)
+        Locale.setDefault(locale)
+        val resources = resources
+
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
+        configuration.setLayoutDirection(locale)
+
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+
+        return language
     }
 
     private fun getLocation() {

@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.enums.DownloadState
+import bassamalim.hidaya.enum.DownloadState
 import bassamalim.hidaya.models.Reciter.RecitationVersion
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.services.TelawatService

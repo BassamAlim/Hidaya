@@ -22,9 +22,8 @@
     <string name="daily_werd_key" translatable="false">daily_werd_enable_key</string>
     <string name="friday_kahf_key" translatable="false">friday_kahf_key</string>
     <string name="quran_text_size_key" translatable="false">quran_text_size_key</string>
-    <string name="alathkar_text_size_key" translatable="false">alathkar_text_size_key</string>
+    <string name="athkar_text_size_key" translatable="false">athkar_text_size_key</string>
     <string name="books_text_size_key" translatable="false">books_text_size_key</string>
-    <string name="theme_key" translatable="false">theme_key</string>
     <string name="aya_reciter_key" translatable="false">aya_reciter_key</string>
     <string name="aya_repeat_key" translatable="false">aya_repeat_key</string>
     <string name="stop_on_sura_key" translatable="false">stop_on_sura_key</string>
@@ -32,6 +31,7 @@
     <string name="language_key" translatable="false">language_key</string>
     <string name="numerals_language_key" translatable="false">numerals_language_key</string>
     <string name="time_format_key" translatable="false">time_format_key</string>
+    <string name="theme_key" translatable="false">theme_key</string>
     <string name="prayer_times_calc_method_key" translatable="false">prayer_times_calc_method_key</string>
     <string name="juristic_method_key" translatable="false">juristic_method_key</string>
     <string name="high_lat_adjustment_key" translatable="false">high_lat_adjustment_key</string>

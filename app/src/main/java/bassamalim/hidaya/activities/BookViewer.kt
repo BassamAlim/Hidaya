@@ -64,7 +64,7 @@ class BookViewer : ComponentActivity() {
     private fun UI(title: String) {
         val textSize = remember {
             mutableStateOf(
-                PrefUtils.getInt(pref, getString(R.string.alathkar_text_size_key), 15).toFloat()
+                PrefUtils.getInt(pref, getString(R.string.athkar_text_size_key), 15).toFloat()
             )
         }
 
@@ -77,7 +77,7 @@ class BookViewer : ComponentActivity() {
                     textSize.value = it
 
                     pref.edit()
-                        .putInt(getString(R.string.alathkar_text_size_key), it.toInt())
+                        .putInt(getString(R.string.athkar_text_size_key), it.toInt())
                         .apply()
                 }
             }

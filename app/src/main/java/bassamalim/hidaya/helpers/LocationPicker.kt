@@ -68,7 +68,7 @@ class LocationPicker(
             ) {
                 val searchText = remember { mutableStateOf(TextFieldValue("")) }
                 SearchComponent(
-                    state = searchText,
+                    value = searchText,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 10.dp)

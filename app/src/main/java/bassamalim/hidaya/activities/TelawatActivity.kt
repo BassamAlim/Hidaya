@@ -26,8 +26,8 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.TelawatDB
 import bassamalim.hidaya.dialogs.FilterDialog
-import bassamalim.hidaya.enums.DownloadState
-import bassamalim.hidaya.enums.ListType
+import bassamalim.hidaya.enum.DownloadState
+import bassamalim.hidaya.enum.ListType
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.models.Reciter
 import bassamalim.hidaya.models.Reciter.RecitationVersion
@@ -304,7 +304,7 @@ class TelawatActivity : ComponentActivity() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             SearchComponent(
-                                state = textState,
+                                value = textState,
                                 hint = stringResource(R.string.search),
                                 modifier = Modifier.weight(1F)
                             )
