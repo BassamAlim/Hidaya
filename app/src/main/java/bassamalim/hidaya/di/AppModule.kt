@@ -42,10 +42,10 @@ object AppModule {
 
     @Provides @Singleton
     fun provideAthkarListRepository(
-        pref: SharedPreferences,
-        db: AppDatabase,
+        preferences: SharedPreferences,
+        database: AppDatabase,
         gson: Gson
-    ) = AthkarListRepo(pref, db, gson)
+    ) = AthkarListRepo(preferences, database, gson)
 
     @Provides @Singleton
     fun provideAthkarRepository() = AthkarRepo()
@@ -53,9 +53,9 @@ object AppModule {
     @Provides @Singleton
     fun provideAthkarViewerRepository(
         application: Application,
-        pref: SharedPreferences,
-        db: AppDatabase
-    ) = AthkarViewerRepo(application, pref, db)
+        preferences: SharedPreferences,
+        database: AppDatabase
+    ) = AthkarViewerRepo(application, preferences, database)
 
     @Provides @Singleton
     fun provideBookChaptersRepository() = BookChaptersRepo()
@@ -64,7 +64,12 @@ object AppModule {
     fun provideBookSearcherRepository() = BookSearcherRepo()
 
     @Provides @Singleton
-    fun provideBooksRepository() = BooksRepo()
+    fun provideBooksRepository(
+        context: Context,
+        preferences: SharedPreferences,
+        database: AppDatabase,
+        gson: Gson
+    ) = BooksRepo(context, preferences, database, gson)
 
     @Provides @Singleton
     fun provideBookViewerRepository() = BookViewerRepo()
