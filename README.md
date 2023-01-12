@@ -23,6 +23,31 @@ Features:
 - Choose between many themes
 - and much more
 
+== License
+
+All code found in this repository is licensed under GPL v3
+
+[source]
+----
+Copyright 2022-2030 Andres Almiray
+
+This file is part of Hidaya
+
+Hidaya is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Hidaya is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Hidaya. If not, see <http://www.gnu.org/licenses/>.
+----
+
+== Screenshots
 
 ![Samsung Galaxy S10 Screenshot 0](https://user-images.githubusercontent.com/65797540/174458415-47cbedb6-9906-4218-bf2e-57b004aeb987.png)
 
