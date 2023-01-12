@@ -14,7 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.preference.PreferenceManager
+import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
+import bassamalim.hidaya.enum.LocationType
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.services.AthanService
 import bassamalim.hidaya.utils.ActivityUtils
@@ -38,19 +40,25 @@ class Splash : AppCompatActivity() {
 
         DBUtils.testDB(this, pref)
 
-        if (PrefUtils.getBoolean(pref, "new_user", true)) welcome()
-        else ActivityUtils.myOnActivityCreated(this)
+        if (PrefUtils.getBoolean(pref, Prefs.FirstTime)) welcome()
+        else {
+            ActivityUtils.onActivityCreateSetTheme(this)
+            ActivityUtils.onActivityCreateSetLocale(this)
+        }
 
-        when (PrefUtils.getString(pref, "location_type", "auto")) {
-            "auto" -> {
+        when (PrefUtils.getString(pref, Prefs.LocationType)) {
+            LocationType.Auto.name -> {
                 if (granted()) locate()
                 else
-                    locationPermissionRequest.launch(arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION))
+                    locationPermissionRequest.launch(
+                        arrayOf(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        )
+                    )
             }
-            "manual" -> {
-                val cityId = PrefUtils.getInt(pref, "city_id", -1)
+            LocationType.Manual.name -> {
+                val cityId = PrefUtils.getInt(pref, Prefs.CityID)
 
                 if (cityId == -1) launch(null)
                 else {
@@ -62,7 +70,7 @@ class Splash : AppCompatActivity() {
                     launch(location)
                 }
             }
-            "none" -> {
+            LocationType.None.name -> {
                 launch(null)
             }
         }

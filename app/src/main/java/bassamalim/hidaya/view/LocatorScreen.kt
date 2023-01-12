@@ -6,12 +6,12 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import bassamalim.hidaya.viewmodel.HomeVM
+import bassamalim.hidaya.viewmodel.LocatorVM
 
 @Composable
-fun HomeUI(
+fun LocatorUI(
     navController: NavController = rememberNavController(),
-    viewModel: HomeVM = hiltViewModel()
+    viewModel: LocatorVM = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
 }

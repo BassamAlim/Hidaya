@@ -1,5 +1,5 @@
 package bassamalim.hidaya.state
 
-data class WelcomeState(
+data class LocatorState(
 
 )

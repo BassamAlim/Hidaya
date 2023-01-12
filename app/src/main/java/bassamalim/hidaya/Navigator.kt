@@ -21,6 +21,7 @@ sealed class Screen(val route: String) {
     object Books: Screen("books")
     object BookViewer: Screen("book_viewer")
     object DateConverter: Screen("date_converter")
+    object Locator: Screen("locator")
     object Main: Screen("main")
     object Qibla: Screen("qibla")
     object QuizLobby: Screen("quiz_lobby")
@@ -123,6 +124,18 @@ fun Navigator(context: Context) {
 
         composable(Screen.DateConverter.route) {
             DateConverterUI(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
+        }
+
+        composable(
+            route = Screen.Locator.route,
+            arguments = listOf(
+                navArgument("action") { type = NavType.StringType }
+            )
+        ) {
+            LocatorUI(
                 navController = navController,
                 viewModel = hiltViewModel()
             )

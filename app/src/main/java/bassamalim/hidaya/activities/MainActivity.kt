@@ -27,8 +27,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.preference.PreferenceManager
+import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.dialogs.DateEditorDialog
+import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enum.Theme
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.receivers.DailyUpdateReceiver
@@ -52,8 +55,8 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var pref: SharedPreferences
-    private lateinit var theme: String
-    private lateinit var language: String
+    private lateinit var theme: Theme
+    private lateinit var language: Language
     private var navScreen: NavigationScreen? = null
     private val dateOffset = mutableStateOf(0)
 
@@ -65,12 +68,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        theme = onActivityCreateSetTheme()
-        language = onActivityCreateSetLocale()
+        theme = ActivityUtils.onActivityCreateSetTheme(this)
+        language = ActivityUtils.onActivityCreateSetLocale(this)
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        dateOffset.value = PrefUtils.getInt(pref, "date_offset", 0)
+        dateOffset.value = PrefUtils.getInt(pref, Prefs.DateOffset)
 
         getLocation()
 
@@ -92,8 +95,8 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
 
-        val newTheme = PrefUtils.getTheme(this, pref)
-        val newLanguage = PrefUtils.getLanguage(this, pref)
+        val newTheme = PrefUtils.getTheme(pref)
+        val newLanguage = PrefUtils.getLanguage(pref)
 
         if (newTheme != theme || newLanguage != language) {
             theme = newTheme
@@ -111,32 +114,6 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         navScreen?.onResume()
-    }
-
-    private fun onActivityCreateSetTheme(): String {
-        val theme = PrefUtils.getTheme(this)
-        when (theme) {
-            "Dark" -> setTheme(R.style.Theme_HidayaM)
-            "Night" -> setTheme(R.style.Theme_HidayaN)
-            else -> setTheme(R.style.Theme_HidayaL)
-        }
-        return theme
-    }
-
-    private fun onActivityCreateSetLocale(): String {
-        val language = PrefUtils.getLanguage(this)
-
-        val locale = Locale(language)
-        Locale.setDefault(locale)
-        val resources = resources
-
-        val configuration = resources.configuration
-        configuration.setLocale(locale)
-        configuration.setLayoutDirection(locale)
-
-        resources.updateConfiguration(configuration, resources.displayMetrics)
-
-        return language
     }
 
     private fun getLocation() {

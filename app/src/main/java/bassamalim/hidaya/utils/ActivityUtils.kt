@@ -1,9 +1,42 @@
 package bassamalim.hidaya.utils
 
 import android.app.Activity
-import bassamalim.hidaya.enum.ListType
+import android.content.Context
+import androidx.preference.PreferenceManager
+import bassamalim.hidaya.R
+import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enum.Theme
+import java.util.*
 
 object ActivityUtils {
+
+    fun onActivityCreateSetTheme(context: Context): Theme {
+        val theme = PrefUtils.getTheme(PreferenceManager.getDefaultSharedPreferences(context))
+        when (theme) {
+            Theme.LIGHT -> context.setTheme(R.style.Theme_HidayaL)
+            Theme.DARK -> context.setTheme(R.style.Theme_HidayaM)
+            Theme.NIGHT -> context.setTheme(R.style.Theme_HidayaN)
+        }
+        return theme
+    }
+
+    fun onActivityCreateSetLocale(activity: Activity): Language {
+        val language = PrefUtils.getLanguage(
+            PreferenceManager.getDefaultSharedPreferences(activity)
+        )
+
+        val locale = Locale(if (language == Language.ENGLISH) "en" else "ar")
+        Locale.setDefault(locale)
+        val resources = activity.resources
+
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
+        configuration.setLayoutDirection(locale)
+
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+
+        return language
+    }
 
     fun restartActivity(activity: Activity) {
         val intent = activity.intent

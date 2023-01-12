@@ -85,6 +85,9 @@ object AppModule {
     fun provideHomeRepository() = HomeRepo()
 
     @Provides @Singleton
+    fun provideLocatorRepository() = LocatorRepo()
+
+    @Provides @Singleton
     fun provideMoreRepository() = MoreRepo()
 
     @Provides @Singleton
@@ -130,6 +133,8 @@ object AppModule {
     fun provideTvRepository() = TvRepo()
 
     @Provides @Singleton
-    fun provideWelcomeRepository() = WelcomeRepo()
+    fun provideWelcomeRepository(
+        preferences: SharedPreferences
+    ) = WelcomeRepo(preferences)
 
 }
