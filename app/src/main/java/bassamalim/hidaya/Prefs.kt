@@ -30,6 +30,8 @@ sealed class Prefs(val key: String, val default: Any) {
     object FavoriteReciters: Prefs("favorite_reciters", "")
     object DateOffset: Prefs("date_offset", 0)
     object CityID: Prefs("city_id", -1)
+    object SelectedSearchBooks: Prefs("selected_search_books", "")
+    object BookSearcherMaxMatchesIndex: Prefs("books_searcher_max_matches_index", 0)
     data class BookChaptersFavs(val bookId: Int): Prefs(
         "book${bookId}_favs",
         ""

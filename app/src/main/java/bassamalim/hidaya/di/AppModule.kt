@@ -65,7 +65,12 @@ object AppModule {
     ) = BookChaptersRepo(context, preferences, gson)
 
     @Provides @Singleton
-    fun provideBookSearcherRepository() = BookSearcherRepo()
+    fun provideBookSearcherRepository(
+        context: Context,
+        preferences: SharedPreferences,
+        database: AppDatabase,
+        gson: Gson
+    ) = BookSearcherRepo(context, preferences, database, gson)
 
     @Provides @Singleton
     fun provideBooksRepository(

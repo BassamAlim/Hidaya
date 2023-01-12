@@ -1,24 +1,50 @@
 # Hidaya
 
 Hidaya is a fully equipped muslims app that helps reminds us with prayers and points us towards the qibla and give them easy access to quran and hidaya and much more.
+Originally developed with Java/XML, then migrated to Kotlin/Jetpack Compose.
 
 Get it from Google Play:
 https://play.google.com/store/apps/details?id=bassamalim.hidaya
 
 Features:
-- Prayer times
+- Prayer times, using your current location or a location of your choice
 - Athkar
-- Quran with Tafseer and Recitations
+- Quran with Tafseer and audio Recitations
 - Qibla direction with Compass
-- Recitations with more than 200 Reciters
+- Audio Recitations with more than 200 Reciters
 - Islamic quiz to test your information with more than 700 questiouns
 - Hadeeth books such as Saheeh al-Bokhari and Saheeh Muslim
 - Live tv feed of Quran channel and Sunnah channel
 - Quran radio station
 - Date converter between Hijri and Gregorian dates
 - Quran searcher and books searcher
+- Get daily reminder notifications for: morning athkar, evening athkar, daily werd page of quran, and surat al-kahf on friday
+- Available in Arabic and English
+- Choose between many themes
 - and much more
 
+License
+----
+
+All code found in this repository is licensed under GPL v3
+Copyright (C) 2023  Bassam Alim
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+Screenshots
+----
 
 ![Samsung Galaxy S10 Screenshot 0](https://user-images.githubusercontent.com/65797540/174458415-47cbedb6-9906-4218-bf2e-57b004aeb987.png)
 

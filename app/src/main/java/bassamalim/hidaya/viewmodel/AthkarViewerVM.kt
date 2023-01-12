@@ -20,9 +20,10 @@ class AthkarViewerVM @Inject constructor(
 
     private val id = savedStateHandle.get<Int>("thikr_id") ?: 0
 
+    private val language = repository.getLanguage()
+
     private val _uiState = MutableStateFlow(AthkarViewerState(
         title = repository.getTitle(id),
-        language = repository.language,
         textSize = repository.getTextSize().toFloat(),
         items = getItems()
     ))
@@ -35,11 +36,11 @@ class AthkarViewerVM @Inject constructor(
         for (i in thikrs.indices) {
             val t = thikrs[i]
 
-            if (repository.language == Language.ENGLISH &&
+            if (language == Language.ENGLISH &&
                 (t.getTextEn() == null || t.getTextEn()!!.isEmpty()))
                 continue
 
-            if (repository.language == Language.ENGLISH)
+            if (language == Language.ENGLISH)
                 items.add(
                     Thikr(
                         t.getThikrId(), t.getTitleEn(), t.getTextEn()!!, t.getTextEnTranslation(),
@@ -83,7 +84,7 @@ class AthkarViewerVM @Inject constructor(
     }
 
     fun shouldShowTranslation(thikr: Thikr): Boolean {
-        return repository.language != Language.ARABIC
+        return language != Language.ARABIC
                 && thikr.textTranslation != null
                 && thikr.textTranslation.isNotEmpty()
     }

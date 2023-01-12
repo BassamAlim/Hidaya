@@ -16,7 +16,9 @@ class AthkarListRepo @Inject constructor(
     private val gson: Gson
 ) {
 
-    val language = PrefUtils.getLanguage(pref)
+    fun getLanguage(): Language {
+        return PrefUtils.getLanguage(pref)
+    }
 
     fun updateFavorites() {
         val favAthkar = db.athkarDao().getFavs()

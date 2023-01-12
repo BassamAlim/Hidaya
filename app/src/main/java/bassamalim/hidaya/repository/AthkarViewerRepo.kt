@@ -16,10 +16,12 @@ class AthkarViewerRepo @Inject constructor(
     private val db: AppDatabase
 ) {
 
-    val language = PrefUtils.getLanguage(pref)
+    fun getLanguage(): Language {
+        return PrefUtils.getLanguage(pref)
+    }
 
     fun getTextSize(): Int {
-        return PrefUtils.getInt(pref, Prefs.AthkarTextSize.key, Prefs.AthkarTextSize.default as Int)
+        return PrefUtils.getInt(pref, Prefs.AthkarTextSize)
     }
 
     fun updateTextSize(textSize: Float) {
@@ -29,7 +31,7 @@ class AthkarViewerRepo @Inject constructor(
     }
 
     fun getTitle(id: Int): String {
-        return when(language) {
+        return when(getLanguage()) {
             Language.ARABIC -> db.athkarDao().getName(id)
             Language.ENGLISH -> db.athkarDao().getNameEn(id)
         }

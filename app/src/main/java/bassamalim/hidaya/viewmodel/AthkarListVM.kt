@@ -11,6 +11,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.Screen
 import bassamalim.hidaya.database.dbs.AthkarDB
 import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enum.ListType
 import bassamalim.hidaya.models.AthkarItem
 import bassamalim.hidaya.repository.AthkarListRepo
 import bassamalim.hidaya.state.AthkarListState
@@ -32,12 +33,13 @@ class AthkarListVM @Inject constructor(
     private val context = getApplication<Application>().applicationContext
     var searchText by mutableStateOf("")
         private set
+    private val language = repository.getLanguage()
 
     private val _uiState = MutableStateFlow(AthkarListState(
-        title = when (type) {
-            "all" -> context.getString(R.string.all_athkar)
-            "favorite" -> context.getString(R.string.favorite_athkar)
-            else -> repository.getName(repository.language, category)
+        title = when (ListType.valueOf(type)) {
+            ListType.Favorite -> context.getString(R.string.favorite_athkar)
+            ListType.Custom -> repository.getName(language, category)
+            else -> context.getString(R.string.all_athkar)
         },
         items = getItems().filter { item ->
             item.name.contains(searchText, ignoreCase = true)
@@ -52,10 +54,10 @@ class AthkarListVM @Inject constructor(
         for (i in athkar.indices) {
             val thikr = athkar[i]
 
-            if (repository.language == Language.ENGLISH && !hasEn(thikr)) continue
+            if (language == Language.ENGLISH && !hasEn(thikr)) continue
 
             val name =
-                if (repository.language == Language.ENGLISH) thikr.name_en!!
+                if (language == Language.ENGLISH) thikr.name_en!!
                 else thikr.name!!
 
             items.add(
