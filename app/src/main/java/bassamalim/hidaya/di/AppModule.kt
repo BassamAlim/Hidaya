@@ -58,7 +58,11 @@ object AppModule {
     ) = AthkarViewerRepo(application, preferences, database)
 
     @Provides @Singleton
-    fun provideBookChaptersRepository() = BookChaptersRepo()
+    fun provideBookChaptersRepository(
+        context: Context,
+        preferences: SharedPreferences,
+        gson: Gson
+    ) = BookChaptersRepo(context, preferences, gson)
 
     @Provides @Singleton
     fun provideBookSearcherRepository() = BookSearcherRepo()

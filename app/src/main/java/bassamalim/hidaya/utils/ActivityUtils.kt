@@ -11,12 +11,4 @@ object ActivityUtils {
         activity.startActivity(intent)
     }
 
-    fun getListType(ordinal: Int): ListType {
-        return when (ordinal) {
-            1 -> ListType.Favorite
-            2 -> ListType.Downloaded
-            else -> ListType.All
-        }
-    }
-
 }

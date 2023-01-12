@@ -1,6 +1,7 @@
 package bassamalim.hidaya.repository
 
 import android.content.SharedPreferences
+import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AthkarDB
 import bassamalim.hidaya.database.dbs.ThikrsDB
@@ -21,12 +22,12 @@ class AthkarListRepo @Inject constructor(
         val favAthkar = db.athkarDao().getFavs()
         val athkarJson = gson.toJson(favAthkar)
         pref.edit()
-            .putString("favorite_athkar", athkarJson)
+            .putString(Prefs.FavoriteAthkar.key, athkarJson)
             .apply()
     }
 
-    fun getAthkar(action: String, category: Int): List<AthkarDB> {
-        return when (action) {
+    fun getAthkar(type: String, category: Int): List<AthkarDB> {
+        return when (type) {
             "all" -> db.athkarDao().getAll()
             "favorite" -> db.athkarDao().getFavorites()
             else -> db.athkarDao().getList(category)

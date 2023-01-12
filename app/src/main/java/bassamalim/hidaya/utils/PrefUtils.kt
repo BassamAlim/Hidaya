@@ -8,33 +8,21 @@ import bassamalim.hidaya.enum.Theme
 object PrefUtils {
 
     fun getLanguage(pref: SharedPreferences): Language {
-        val lang = getString(
-            pref,
-            Prefs.Language.key,
-            Prefs.Language.default as String
-        )
-        return if (lang == "en") Language.ENGLISH
-        else Language.ARABIC
+        return when (getString(pref, Prefs.Language)) {
+            "en" -> Language.ENGLISH
+            else -> Language.ARABIC
+        }
     }
 
     fun getNumeralsLanguage(pref: SharedPreferences): Language {
-        val lang = getString(
-            pref,
-            Prefs.NumeralsLanguage.key,
-            Prefs.NumeralsLanguage.default as String
-        )
-        return if (lang == "en") Language.ENGLISH
-        else Language.ARABIC
+        return when (getString(pref, Prefs.NumeralsLanguage)) {
+            "en" -> Language.ENGLISH
+            else -> Language.ARABIC
+        }
     }
 
     fun getTheme(pref: SharedPreferences): Theme {
-        val themeStr = getString(
-            pref,
-            Prefs.Theme.key,
-            Prefs.Theme.default as String
-        )
-
-        return when(themeStr) {
+        return when (getString(pref, Prefs.Theme)) {
             "Dark" -> Theme.DARK
             "Night" -> Theme.NIGHT
             else -> Theme.LIGHT
@@ -47,17 +35,17 @@ object PrefUtils {
      * to the given default value and return the default value."
      *
      *
-     * @param key The key of the preference you want to get
-     * @param default The default value to return if the preference doesn't exist.
-     * @param pref SharedPreferences - The SharedPreferences object to get the value from
-     * @param context Context
+     * @param pref SharedPreferences object
+     * @param prefObj an object that identifies a preference, contains key, default
      * @return The value with the key in the SharedPreferences object.
      */
+
     fun getString(
         pref: SharedPreferences,
-        key: String,
-        default: String
+        prefObj: Prefs
     ): String {
+        val key = prefObj.key
+        val default = prefObj.default as String
         return try {
             pref.getString(key, default)!!
         } catch (e: java.lang.ClassCastException) {
@@ -65,15 +53,16 @@ object PrefUtils {
                 .putString(key, default)
                 .apply()
 
-            getString(pref, key, default)
+            getString(pref, prefObj)
         }
     }
 
     fun getInt(
         pref: SharedPreferences,
-        key: String,
-        default: Int
+        prefObj: Prefs
     ): Int {
+        val key = prefObj.key
+        val default = prefObj.default as Int
         return try {
             pref.getInt(key, default)
         } catch (e: java.lang.ClassCastException) {
@@ -81,15 +70,16 @@ object PrefUtils {
                 .putInt(key, default)
                 .apply()
 
-            getInt(pref, key, default)
+            getInt(pref, prefObj)
         }
     }
 
     fun getFloat(
         pref: SharedPreferences,
-        key: String,
-        default: Float
+        prefObj: Prefs
     ): Float {
+        val key = prefObj.key
+        val default = prefObj.default as Float
         return try {
             pref.getFloat(key, default)
         } catch (e: java.lang.ClassCastException) {
@@ -97,15 +87,16 @@ object PrefUtils {
                 .putFloat(key, default)
                 .apply()
 
-            getFloat(pref, key, default)
+            getFloat(pref, prefObj)
         }
     }
 
     fun getBoolean(
         pref: SharedPreferences,
-        key: String,
-        default: Boolean
+        prefObj: Prefs
     ): Boolean {
+        val key = prefObj.key
+        val default = prefObj.default as Boolean
         return try {
             pref.getBoolean(key, default)
         } catch (e: java.lang.ClassCastException) {
@@ -113,15 +104,16 @@ object PrefUtils {
                 .putBoolean(key, default)
                 .apply()
 
-            getBoolean(pref, key, default)
+            getBoolean(pref, prefObj)
         }
     }
 
     fun getLong(
         pref: SharedPreferences,
-        key: String,
-        default: Long
+        prefObj: Prefs
     ): Long {
+        val key = prefObj.key
+        val default = prefObj.default as Long
         return try {
             pref.getLong(key, default)
         } catch (e: java.lang.ClassCastException) {
@@ -129,7 +121,7 @@ object PrefUtils {
                 .putLong(key, default)
                 .apply()
 
-            getLong(pref, key, default)
+            getLong(pref, prefObj)
         }
     }
 

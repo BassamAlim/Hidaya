@@ -44,9 +44,7 @@ sealed class Screen(val route: String) {
 @Composable
 fun Navigator(context: Context) {
     val pref = PreferenceManager.getDefaultSharedPreferences(context)
-    val isFirstTime = PrefUtils.getBoolean(
-        pref,Prefs.FirstTime.key, Prefs.FirstTime.default as Boolean
-    )
+    val isFirstTime = PrefUtils.getBoolean(pref, Prefs.FirstTime)
 
     val navController = rememberNavController()
     NavHost(
@@ -89,7 +87,13 @@ fun Navigator(context: Context) {
             )
         }
 
-        composable(Screen.BookChapters.route) {
+        composable(
+            route = Screen.BookChapters.route,
+            arguments = listOf(
+                navArgument("bookId") { type = NavType.IntType },
+                navArgument("bookTitle") { type = NavType.StringType }
+            )
+        ) {
             BookChaptersUI(
                 navController = navController,
                 viewModel = hiltViewModel()
