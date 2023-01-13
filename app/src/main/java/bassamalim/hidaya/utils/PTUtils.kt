@@ -26,8 +26,13 @@ object PTUtils {
     ): Array<Calendar?>? {
         if (loc == null) return null
 
-        val prayTimes = PrayTimes(context)
-        val utcOffset = getUTCOffset(context).toDouble()
+        val pref = PrefUtils.getPreferences(context)
+
+        val prayTimes = PrayTimes(pref)
+        val utcOffset = getUTCOffset(
+            pref,
+            DBUtils.getDB(context)
+        ).toDouble()
 
         return prayTimes.getPrayerTimes(loc.latitude, loc.longitude, utcOffset, calendar)
     }
@@ -41,8 +46,11 @@ object PTUtils {
 
         val pref = PrefUtils.getPreferences(context)
 
-        val prayTimes = PrayTimes(context)
-        val utcOffset = getUTCOffset(context, pref).toDouble()
+        val prayTimes = PrayTimes(pref)
+        val utcOffset = getUTCOffset(
+            pref,
+            DBUtils.getDB(context)
+        ).toDouble()
 
         return prayTimes.getStrPrayerTimes(
             loc.latitude, loc.longitude, utcOffset, calendar
@@ -50,9 +58,8 @@ object PTUtils {
     }
 
     fun getUTCOffset(
-        context: Context,
-        pref: SharedPreferences = PrefUtils.getPreferences(context),
-        db: AppDatabase = DBUtils.getDB(context)
+        pref: SharedPreferences,
+        db: AppDatabase
     ): Int {
         when (PrefUtils.getString(pref, Prefs.LocationType)) {
             "auto" -> return TimeZone.getDefault().getOffset(Date().time) / 3600000

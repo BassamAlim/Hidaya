@@ -1,7 +1,42 @@
 package bassamalim.hidaya.repository
 
+import android.content.Context
+import android.content.SharedPreferences
+import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.R
+import bassamalim.hidaya.database.AppDatabase
+import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 
-class HomeRepo @Inject constructor() {
+class HomeRepo @Inject constructor(
+    private val context: Context,
+    val pref: SharedPreferences,
+    val db: AppDatabase
+) {
+
+    fun isWerdDone(): Boolean {
+        return PrefUtils.getBoolean(pref, Prefs.WerdDone)
+    }
+
+    fun getPrayerNames(): Array<String> {
+        return context.resources.getStringArray(R.array.prayer_names)
+    }
+
+    fun getNumeralsLanguage(): Language {
+        return Language.valueOf(PrefUtils.getString(pref, Prefs.NumeralsLanguage))
+    }
+
+    fun getTodayWerdPage(): Int {
+        return PrefUtils.getInt(pref, Prefs.TodayWerdPage)
+    }
+
+    fun getQuranPagesRecord(): Int {
+        return PrefUtils.getInt(pref, Prefs.QuranPagesRecord)
+    }
+
+    fun getTelawatPlaybackRecord(): Long {
+        return PrefUtils.getLong(pref, Prefs.TelawatPlaybackRecord)
+    }
 
 }

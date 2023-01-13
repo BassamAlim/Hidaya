@@ -9,14 +9,17 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import bassamalim.hidaya.R
+import bassamalim.hidaya.enum.Language
 import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
 
-
-class AnalogClock(context: Context, attrs: AttributeSet) : View(context, attrs) {
+class AnalogClock(
+    context: Context,
+    attrs: AttributeSet
+) : View(context, attrs) {
 
     private val calendar = Calendar.getInstance()
     private var center = 0F
@@ -37,7 +40,7 @@ class AnalogClock(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private val linesColor = TypedValue()
     private val accentColor = TypedValue()
     private val accentDarkColor = TypedValue()
-    private var language: String
+    private var language: Language
     private var pastTime = 0L
     private var upcomingTime = 0L
     private var remaining = 0L
@@ -45,10 +48,10 @@ class AnalogClock(context: Context, attrs: AttributeSet) : View(context, attrs) 
     init {
         setupPaint()
 
-        language = PrefUtils.getNumeralsLanguage(context)
+        language = PrefUtils.getNumeralsLanguage(PrefUtils.getPreferences(context))
 
         numerals =
-            if (language == "en") context.resources.getStringArray(R.array.numerals_en)
+            if (language == Language.ENGLISH) context.resources.getStringArray(R.array.numerals_en)
             else context.resources.getStringArray(R.array.numerals)
     }
 
@@ -118,7 +121,7 @@ class AnalogClock(context: Context, attrs: AttributeSet) : View(context, attrs) 
         minuteHandR = radius * 0.7F
         secondHandR = radius * 0.7F
 
-        numeralsPaint.textSize = if (language == "eng") size * 0.065F else size * 0.08F
+        numeralsPaint.textSize = if (language == Language.ENGLISH) size * 0.065F else size * 0.08F
     }
 
     override fun onDraw(canvas: Canvas?) {

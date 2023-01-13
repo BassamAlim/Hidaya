@@ -1,5 +1,6 @@
 package bassamalim.hidaya.utils
 
+import android.content.Context
 import android.content.SharedPreferences
 import bassamalim.hidaya.enum.Language
 
@@ -9,20 +10,56 @@ object LangUtils {
     private val arNums = arrayOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
 
     fun translateNums(
-        preferences: SharedPreferences,
+        context: Context,
         string: String,
         timeFormat: Boolean = false
     ) : String {
-        val language = PrefUtils.getNumeralsLanguage(preferences)
-        
-        val str = if (timeFormat) cleanup(string, language) else string
-        
+        val numeralsLanguage = PrefUtils.getNumeralsLanguage(PrefUtils.getPreferences(context))
+
+        val str = if (timeFormat) cleanup(string, numeralsLanguage) else string
+
         return if (arNums.contains(string[0])) {
-            if (language == Language.ARABIC) str
+            if (numeralsLanguage == Language.ARABIC) str
             else arToEn(str)
         }
         else {
-            if (language == Language.ENGLISH) str
+            if (numeralsLanguage == Language.ENGLISH) str
+            else enToAr(str)
+        }
+    }
+
+    fun translateNums(
+        pref: SharedPreferences,
+        string: String,
+        timeFormat: Boolean = false
+    ) : String {
+        val numeralsLanguage = PrefUtils.getNumeralsLanguage(pref)
+
+        val str = if (timeFormat) cleanup(string, numeralsLanguage) else string
+
+        return if (arNums.contains(string[0])) {
+            if (numeralsLanguage == Language.ARABIC) str
+            else arToEn(str)
+        }
+        else {
+            if (numeralsLanguage == Language.ENGLISH) str
+            else enToAr(str)
+        }
+    }
+
+    fun translateNums(
+        numeralsLanguage: Language,
+        string: String,
+        timeFormat: Boolean = false
+    ) : String {
+        val str = if (timeFormat) cleanup(string, numeralsLanguage) else string
+
+        return if (arNums.contains(string[0])) {
+            if (numeralsLanguage == Language.ARABIC) str
+            else arToEn(str)
+        }
+        else {
+            if (numeralsLanguage == Language.ENGLISH) str
             else enToAr(str)
         }
     }

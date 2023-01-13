@@ -96,9 +96,6 @@ object AppModule {
     fun provideLocatorRepository() = LocatorRepo()
 
     @Provides @Singleton
-    fun provideMoreRepository() = MoreRepo()
-
-    @Provides @Singleton
     fun providePrayersRepository() = PrayersRepo()
 
     @Provides @Singleton

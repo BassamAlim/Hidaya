@@ -1,5 +1,7 @@
 package bassamalim.hidaya
 
+import bassamalim.hidaya.enum.PID
+
 sealed class Prefs(val key: String, val default: Any) {
     object Language : Prefs(
         "language_key",
@@ -34,8 +36,19 @@ sealed class Prefs(val key: String, val default: Any) {
     object CityID: Prefs("city_id", -1)
     object SelectedSearchBooks: Prefs("selected_search_books", "")
     object BookSearcherMaxMatchesIndex: Prefs("books_searcher_max_matches_index", 0)
+    object TodayWerdPage: Prefs("today_werd_page", 25)
+    object WerdDone: Prefs("werd_done", false)
+    object PrayerTimesCalculationMethod: Prefs("prayer_times_calc_method_key", "MECCA")
+    object PrayerTimesJuristicMethod: Prefs("juristic_method_key", "SHAFII")
+    object PrayerTimesAdjustment: Prefs("high_lat_adjustment_key", "NONE")
+    object TelawatPlaybackRecord: Prefs("telawat_playback_record", 0L)
+    object QuranPagesRecord: Prefs("quran_pages_record", 0)
     data class BookChaptersFavs(val bookId: Int): Prefs(
         "book${bookId}_favs",
         ""
+    )
+    data class PrayerOffset(val pid: PID): Prefs(
+        "book${pid.name}_offset",
+        0
     )
 }
