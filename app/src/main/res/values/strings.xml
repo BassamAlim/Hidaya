@@ -22,8 +22,6 @@
     <string name="daily_werd_key" translatable="false">daily_werd_enable_key</string>
     <string name="friday_kahf_key" translatable="false">friday_kahf_key</string>
     <string name="quran_text_size_key" translatable="false">quran_text_size_key</string>
-    <string name="athkar_text_size_key" translatable="false">athkar_text_size_key</string>
-    <string name="books_text_size_key" translatable="false">books_text_size_key</string>
     <string name="aya_reciter_key" translatable="false">aya_reciter_key</string>
     <string name="aya_repeat_key" translatable="false">aya_repeat_key</string>
     <string name="stop_on_sura_key" translatable="false">stop_on_sura_key</string>

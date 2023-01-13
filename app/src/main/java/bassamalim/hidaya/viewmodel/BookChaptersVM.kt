@@ -23,8 +23,8 @@ class BookChaptersVM @Inject constructor(
     private val repository: BookChaptersRepo
 ): ViewModel() {
 
-    private val bookId = savedStateHandle.get<Int>("bookId")?: 0
-    private val bookTitle = savedStateHandle.get<String>("bookTitle")?: ""
+    private val bookId = savedStateHandle.get<Int>("book_id")?: 0
+    private val bookTitle = savedStateHandle.get<String>("book_title")?: ""
 
     private val book = repository.getBook(bookId)
     var favs = repository.getFavs(book)

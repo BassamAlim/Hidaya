@@ -52,10 +52,9 @@ object AppModule {
 
     @Provides @Singleton
     fun provideAthkarViewerRepository(
-        application: Application,
         preferences: SharedPreferences,
         database: AppDatabase
-    ) = AthkarViewerRepo(application, preferences, database)
+    ) = AthkarViewerRepo(preferences, database)
 
     @Provides @Singleton
     fun provideBookChaptersRepository(
@@ -81,7 +80,11 @@ object AppModule {
     ) = BooksRepo(context, preferences, database, gson)
 
     @Provides @Singleton
-    fun provideBookViewerRepository() = BookViewerRepo()
+    fun provideBookViewerRepository(
+        context: Context,
+        preferences: SharedPreferences,
+        gson: Gson
+    ) = BookViewerRepo(context, preferences, gson)
 
     @Provides @Singleton
     fun provideDateConverterRepository() = DateConverterRepo()

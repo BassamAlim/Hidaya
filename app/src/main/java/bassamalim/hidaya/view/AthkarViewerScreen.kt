@@ -32,7 +32,7 @@ fun AthkarViewerUI(
         title = state.title,
         bottomBar = {
             MyReadingBottomBar(
-                textSizeState = state.textSize
+                textSize = state.textSize
             ) {
                 viewModel.onTextSizeChange(it)
             }

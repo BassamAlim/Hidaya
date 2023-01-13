@@ -91,8 +91,8 @@ fun Navigator(context: Context) {
         composable(
             route = Screen.BookChapters.route,
             arguments = listOf(
-                navArgument("bookId") { type = NavType.IntType },
-                navArgument("bookTitle") { type = NavType.StringType }
+                navArgument("book_id") { type = NavType.IntType },
+                navArgument("book_title") { type = NavType.StringType }
             )
         ) {
             BookChaptersUI(
@@ -115,7 +115,14 @@ fun Navigator(context: Context) {
             )
         }
 
-        composable(Screen.BookViewer.route) {
+        composable(
+            route = Screen.BookViewer.route,
+            arguments = listOf(
+                navArgument("book_id") { type = NavType.IntType },
+                navArgument("book_title") { type = NavType.StringType },
+                navArgument("chapter_id") { type = NavType.IntType }
+            )
+        ) {
             BookViewerUI(
                 navController = navController,
                 viewModel = hiltViewModel()

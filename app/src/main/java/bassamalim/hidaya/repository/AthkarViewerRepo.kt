@@ -1,9 +1,7 @@
 package bassamalim.hidaya.repository
 
-import android.content.Context
 import android.content.SharedPreferences
 import bassamalim.hidaya.Prefs
-import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.ThikrsDB
 import bassamalim.hidaya.enum.Language
@@ -11,7 +9,6 @@ import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 
 class AthkarViewerRepo @Inject constructor(
-    private val context: Context,
     private val pref: SharedPreferences,
     private val db: AppDatabase
 ) {
@@ -26,7 +23,7 @@ class AthkarViewerRepo @Inject constructor(
 
     fun updateTextSize(textSize: Float) {
         pref.edit()
-            .putInt(context.getString(R.string.athkar_text_size_key), textSize.toInt())
+            .putInt(Prefs.AthkarTextSize.key, textSize.toInt())
             .apply()
     }
 

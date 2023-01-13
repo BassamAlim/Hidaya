@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AthkarViewerVM @Inject constructor(
     private val repository: AthkarViewerRepo,
-    savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     private val id = savedStateHandle.get<Int>("thikr_id") ?: 0
