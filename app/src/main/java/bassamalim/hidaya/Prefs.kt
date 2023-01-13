@@ -26,6 +26,7 @@ sealed class Prefs(val key: String, val default: Any) {
     object AthkarTextSize: Prefs("athkar_text_size_key", 15f)
     object BooksTextSize: Prefs("books_text_size_key", 15f)
     object LastDailyUpdate: Prefs("last_daily_update", "No daily updates yet")
+    object LastDailyUpdateDay: Prefs("last_daily_update_day", 0)
     object FavoriteSuras: Prefs("favorite_suras", "")
     object FavoriteAthkar: Prefs("favorite_athkar", "")
     object FavoriteReciters: Prefs("favorite_reciters", "")

@@ -23,16 +23,10 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.*
 
 class DateEditorDialog(
-    private val context: Context,
-    private val pref: SharedPreferences,
-    private val dateOffset: MutableState<Int>,
-    private val shown: MutableState<Boolean>
+
 ) {
 
-    private lateinit var calendar: UmmalquraCalendar
-    private var offset = 0
-    private val dateText = mutableStateOf("")
-    private val offsetText = mutableStateOf("")
+
 
     init {
         offset = dateOffset.value
@@ -65,78 +59,87 @@ class DateEditorDialog(
         }
     }
 
-    @Composable
-    fun Dialog() {
-        MyDialog(shown) {
-            Column(
+}
+
+
+@Composable
+fun Dialog(
+    dateOffset: Int,
+    shown: Boolean
+) {
+    var calendar: UmmalquraCalendar
+    var offset = 0
+    val dateText = mutableStateOf("")
+    val offsetText = mutableStateOf("")
+
+    MyDialog(shown) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 20.dp, horizontal = 30.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            MyText(
+                stringResource(R.string.adjust_date),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = 10.dp)
+            )
+
+            MyText(
+                offsetText.value,
+                textColor = AppTheme.colors.accent,
+                fontSize = 22.sp
+            )
+
+            Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 20.dp, horizontal = 30.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                MyText(
-                    stringResource(R.string.adjust_date),
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 10.dp)
-                )
-
-                MyText(
-                    offsetText.value,
-                    textColor = AppTheme.colors.accent,
-                    fontSize = 22.sp
-                )
-
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                MyImageButton(
+                    imageResId = R.drawable.ic_left_arrow
                 ) {
-                    MyImageButton(
-                        imageResId = R.drawable.ic_left_arrow
-                    ) {
-                        offset--
-                        getDate()
-                        updateTvs()
-                    }
-
-                    MyText(dateText.value, fontSize = 22.sp)
-
-                    MyImageButton(
-                        imageResId = R.drawable.ic_right_arrow
-                    ) {
-                        offset++
-                        getDate()
-                        updateTvs()
-                    }
+                    offset--
+                    getDate()
+                    updateTvs()
                 }
 
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                MyText(dateText.value, fontSize = 22.sp)
+
+                MyImageButton(
+                    imageResId = R.drawable.ic_right_arrow
                 ) {
-                    MyButton(
-                        text = stringResource(R.string.save)
-                    ) {
-                        pref.edit()
-                            .putInt("date_offset", offset)
-                            .apply()
+                    offset++
+                    getDate()
+                    updateTvs()
+                }
+            }
 
-                        shown.value = false
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                MyButton(
+                    text = stringResource(R.string.save)
+                ) {
+                    pref.edit()
+                        .putInt("date_offset", offset)
+                        .apply()
 
-                        dateOffset.value = offset
-                    }
+                    shown.value = false
 
-                    MyButton(
-                        text = stringResource(R.string.cancel)
-                    ) {
-                        shown.value = false
-                    }
+                    dateOffset.value = offset
+                }
+
+                MyButton(
+                    text = stringResource(R.string.cancel)
+                ) {
+                    shown.value = false
                 }
             }
         }
     }
-
 }

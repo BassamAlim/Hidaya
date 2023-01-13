@@ -6,6 +6,7 @@ import androidx.preference.PreferenceManager
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.enum.Language
 import bassamalim.hidaya.enum.Theme
+import bassamalim.hidaya.enum.TimeFormat
 
 object PrefUtils {
 
@@ -33,6 +34,10 @@ object PrefUtils {
             "Night" -> Theme.NIGHT
             else -> Theme.LIGHT
         }
+    }
+
+    fun getTimeFormat(pref: SharedPreferences): TimeFormat {
+        return TimeFormat.valueOf(getString(pref, Prefs.TimeFormat))
     }
 
     /**

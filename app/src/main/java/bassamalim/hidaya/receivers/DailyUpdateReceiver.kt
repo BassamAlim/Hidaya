@@ -9,7 +9,8 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import androidx.preference.PreferenceManager
+import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.enum.LocationType
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.other.Global
@@ -33,10 +34,10 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         pref = PrefUtils.getPreferences(context)
 
         if ((intent.action == "daily" && needed()) || intent.action == "boot") {
-            when (PrefUtils.getString(pref, "location_type", "auto")) {
-                "auto" -> locate()
-                "manual" -> {
-                    val cityId = PrefUtils.getInt(pref, "city_id", -1)
+            when (LocationType.valueOf(PrefUtils.getString(pref, Prefs.LocationType))) {
+                LocationType.Auto -> locate()
+                LocationType.Manual -> {
+                    val cityId = PrefUtils.getInt(pref, Prefs.CityID)
                     if (cityId == -1) return
                     val city = DBUtils.getDB(context).cityDao().getCity(cityId)
 
@@ -46,7 +47,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
                     update(location)
                 }
-                "none" -> return
+                LocationType.None -> return
             }
 
             pickWerd()
@@ -57,7 +58,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun needed(): Boolean {
-        return PrefUtils.getInt(pref, "last_day", 0) != now[Calendar.DATE]
+        return PrefUtils.getInt(pref, Prefs.LastDailyUpdateDay) != now[Calendar.DATE]
     }
 
     private fun locate() {

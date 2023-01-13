@@ -1,7 +1,6 @@
 package bassamalim.hidaya.viewmodel
 
 import androidx.lifecycle.ViewModel
-import bassamalim.hidaya.repository.HomeRepo
 import bassamalim.hidaya.repository.MainRepo
 import bassamalim.hidaya.state.MainState
 import dagger.hilt.android.lifecycle.HiltViewModel

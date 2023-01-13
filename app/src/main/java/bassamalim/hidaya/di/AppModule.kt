@@ -48,9 +48,6 @@ object AppModule {
     ) = AthkarListRepo(preferences, database, gson)
 
     @Provides @Singleton
-    fun provideAthkarRepository() = AthkarRepo()
-
-    @Provides @Singleton
     fun provideAthkarViewerRepository(
         preferences: SharedPreferences,
         database: AppDatabase

@@ -7,9 +7,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Location
 import android.util.Log
-import androidx.preference.PreferenceManager
+import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.enum.PID
+import bassamalim.hidaya.enum.TimeFormat
 import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.other.Global
@@ -53,10 +54,10 @@ object PTUtils {
         pref: SharedPreferences = PrefUtils.getPreferences(context),
         db: AppDatabase = DBUtils.getDB(context)
     ): Int {
-        when (PrefUtils.getString(pref, "location_type", "auto")) {
+        when (PrefUtils.getString(pref, Prefs.LocationType)) {
             "auto" -> return TimeZone.getDefault().getOffset(Date().time) / 3600000
             "manual" -> {
-                val cityId = PrefUtils.getInt(pref, "city_id", -1)
+                val cityId = PrefUtils.getInt(pref, Prefs.CityID)
 
                 if (cityId == -1) return 0
 
@@ -94,13 +95,13 @@ object PTUtils {
 
         str = "$hour:$minute"
 
-        val timeFormat = PrefUtils.getTimeFormat(context)
+        val timeFormat = PrefUtils.getTimeFormat(PrefUtils.getPreferences(context))
 
         val h12Format = SimpleDateFormat("hh:mm aa", Locale.US)
         val h24Format = SimpleDateFormat("HH:mm", Locale.US)
 
         if (str[str.length-1].isDigit()) {  // Input is in 24h format
-            return if (timeFormat == "24h") str
+            return if (timeFormat == TimeFormat.TWENTY_FOUR) str
             else {
                 val date = h24Format.parse(str)
                 val output = h12Format.format(date!!).lowercase()
@@ -108,7 +109,7 @@ object PTUtils {
             }
         }
         else { // Input is in 12h format
-            return if (timeFormat == "12h") str
+            return if (timeFormat == TimeFormat.TWELVE) str
             else {
                 val date = h12Format.parse(str)
                 val output = h24Format.format(date!!)

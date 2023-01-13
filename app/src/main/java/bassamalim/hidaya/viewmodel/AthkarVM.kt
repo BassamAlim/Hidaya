@@ -1,19 +1,34 @@
 package bassamalim.hidaya.viewmodel
 
 import androidx.lifecycle.ViewModel
-import bassamalim.hidaya.repository.AthkarRepo
-import bassamalim.hidaya.state.AthkarState
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import javax.inject.Inject
+import androidx.navigation.NavController
+import bassamalim.hidaya.Screen
 
-@HiltViewModel
-class AthkarVM @Inject constructor(
-    private val repository: AthkarRepo
-): ViewModel() {
+class AthkarVM : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AthkarState())
-    val uiState = _uiState.asStateFlow()
+    fun onAllAthkarClick(navController: NavController) {
+        navController.navigate(
+            Screen.AthkarList.withArgs(
+                "all"
+            )
+        )
+    }
+
+    fun onFavoriteAthkarClick(navController: NavController) {
+        navController.navigate(
+            Screen.AthkarList.withArgs(
+                "favorite"
+            )
+        )
+    }
+
+    fun onCategoryClick(navController: NavController, category: Int) {
+        navController.navigate(
+            Screen.AthkarList.withArgs(
+                "category",
+                category.toString()
+            )
+        )
+    }
 
 }
