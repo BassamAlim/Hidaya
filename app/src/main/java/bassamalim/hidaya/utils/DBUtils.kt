@@ -20,7 +20,7 @@ object DBUtils {
 
     fun testDB(
         context: Context,
-        pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        pref: SharedPreferences = PrefUtils.getPreferences(context)
     ) {
         try {  // if there is a problem in the db it will cause an error
             getDB(context).suarDao().getFavs()
@@ -33,7 +33,7 @@ object DBUtils {
     }
 
     fun reviveDB(context: Context) {
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
+        val pref = PrefUtils.getPreferences(context)
 
         context.deleteDatabase("HidayaDB")
 

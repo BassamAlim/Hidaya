@@ -23,14 +23,14 @@ class Alarms {
 
     constructor(gContext: Context, gTimes: Array<Calendar?>) {
         context = gContext
-        pref = PreferenceManager.getDefaultSharedPreferences(context)
+        pref = PrefUtils.getPreferences(context)
 
         setAll(gTimes)
     }
 
     constructor(gContext: Context, pid: PID) {
         context = gContext
-        pref = PreferenceManager.getDefaultSharedPreferences(context)
+        pref = PrefUtils.getPreferences(context)
 
         val times = PTUtils.getTimes(context) ?: return
 

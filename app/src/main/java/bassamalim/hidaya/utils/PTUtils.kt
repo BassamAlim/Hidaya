@@ -38,7 +38,7 @@ object PTUtils {
     ): ArrayList<String>? {
         if (loc == null) return null
 
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
+        val pref = PrefUtils.getPreferences(context)
 
         val prayTimes = PrayTimes(context)
         val utcOffset = getUTCOffset(context, pref).toDouble()
@@ -50,7 +50,7 @@ object PTUtils {
 
     fun getUTCOffset(
         context: Context,
-        pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context),
+        pref: SharedPreferences = PrefUtils.getPreferences(context),
         db: AppDatabase = DBUtils.getDB(context)
     ): Int {
         when (PrefUtils.getString(pref, "location_type", "auto")) {

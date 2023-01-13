@@ -11,7 +11,7 @@ import kotlin.math.*
 
 class PrayTimes(
     private val context: Context,
-    private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private val pref: SharedPreferences = PrefUtils.getPreferences(context)
 ) {
 
     private val timeFormat = PrefUtils.getTimeFormat(context, pref)

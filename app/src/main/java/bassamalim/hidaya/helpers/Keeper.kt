@@ -17,12 +17,12 @@ class Keeper {
 
     constructor(context: Context) {
         this.context = context
-        pref = PreferenceManager.getDefaultSharedPreferences(context)
+        pref = PrefUtils.getPreferences(context)
     }
 
     constructor(context: Context, gLocation: Location) {
         this.context = context
-        pref = PreferenceManager.getDefaultSharedPreferences(context)
+        pref = PrefUtils.getPreferences(context)
 
         storeLocation(gLocation)
     }

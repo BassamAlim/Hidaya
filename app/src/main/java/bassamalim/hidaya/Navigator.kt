@@ -44,7 +44,7 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun Navigator(context: Context) {
-    val pref = PreferenceManager.getDefaultSharedPreferences(context)
+    val pref = PrefUtils.getPreferences(context)
     val isFirstTime = PrefUtils.getBoolean(pref, Prefs.FirstTime)
 
     val navController = rememberNavController()

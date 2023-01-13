@@ -30,7 +30,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         Log.i(Global.TAG, "in DailyUpdateReceiver")
 
         context = gContext
-        pref = PreferenceManager.getDefaultSharedPreferences(context)
+        pref = PrefUtils.getPreferences(context)
 
         if ((intent.action == "daily" && needed()) || intent.action == "boot") {
             when (PrefUtils.getString(pref, "location_type", "auto")) {

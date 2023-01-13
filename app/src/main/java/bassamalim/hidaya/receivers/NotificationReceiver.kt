@@ -37,9 +37,9 @@ class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         this.context = context
-        pref = PreferenceManager.getDefaultSharedPreferences(context)
+        pref = PrefUtils.getPreferences(context)
 
-        ActivityUtils.onActivityCreateSetLocale(context)
+        ActivityUtils.onActivityCreateSetLocale(context as Activity)
 
         pid = PID.valueOf(intent.getStringExtra("id")!!)
         time = intent.getLongExtra("time", 0L)

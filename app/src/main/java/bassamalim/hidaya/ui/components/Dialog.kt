@@ -1,6 +1,5 @@
 package bassamalim.hidaya.ui.components
 
-import android.content.SharedPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,15 +8,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.theme.AppTheme
-import bassamalim.hidaya.utils.PrefUtils
 
 @Composable
 fun MyDialog(
@@ -75,45 +71,50 @@ fun InfoDialog(
 
 @Composable
 fun TutorialDialog(
+    shown: Boolean,
     textResId: Int,
-    pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(LocalContext.current),
-    prefKey: String
+    onDismiss: (Boolean) -> Unit
 ) {
-    if (!PrefUtils.getBoolean(pref, prefKey, true)) return
+    var doNotShowAgain = false
 
-    val doNotShowAgain = remember { mutableStateOf(false) }
-    var shown by remember { mutableStateOf(true) }
-    val onDismiss = {
-        shown = false
-        if (doNotShowAgain.value)
-            pref.edit()
-                .putBoolean(prefKey, false)
-                .apply()
-    }
-
-    MyDialog(
-        shown = shown,
-        onDismiss = onDismiss
-    ) {
-        Column(
-            Modifier.padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+    if (shown) {
+        Dialog(
+            onDismissRequest = { onDismiss(doNotShowAgain) }
         ) {
-            MyCloseBtn(onClose = onDismiss)
-
-            MyText(stringResource(textResId))
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Surface(
+                color = Color.Transparent
             ) {
-                MyCheckbox(state = doNotShowAgain)
+                Box(
+                    Modifier.background(
+                        shape = RoundedCornerShape(16.dp),
+                        color = AppTheme.colors.background
+                    )
+                ) {
+                    Column(
+                        Modifier.padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+                    ) {
+                        MyCloseBtn(onClose = { onDismiss(doNotShowAgain) })
 
-                MyText(
-                    stringResource(R.string.do_not_show_again),
-                    textColor = AppTheme.colors.accent
-                )
+                        MyText(stringResource(textResId))
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            MyCheckbox(
+                                isChecked = doNotShowAgain,
+                                onCheckedChange = { doNotShowAgain = it }
+                            )
+
+                            MyText(
+                                stringResource(R.string.do_not_show_again),
+                                textColor = AppTheme.colors.accent
+                            )
+                        }
+                    }
+                }
             }
         }
     }

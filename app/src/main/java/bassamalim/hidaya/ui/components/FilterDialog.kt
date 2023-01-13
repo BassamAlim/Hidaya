@@ -1,4 +1,4 @@
-package bassamalim.hidaya.dialogs
+package bassamalim.hidaya.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,7 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 
 @Composable

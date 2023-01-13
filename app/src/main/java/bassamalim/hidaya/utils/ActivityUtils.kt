@@ -11,7 +11,7 @@ import java.util.*
 object ActivityUtils {
 
     fun onActivityCreateSetTheme(context: Context): Theme {
-        val theme = PrefUtils.getTheme(PreferenceManager.getDefaultSharedPreferences(context))
+        val theme = PrefUtils.getTheme(PrefUtils.getPreferences(context))
         when (theme) {
             Theme.LIGHT -> context.setTheme(R.style.Theme_HidayaL)
             Theme.DARK -> context.setTheme(R.style.Theme_HidayaM)
@@ -21,9 +21,7 @@ object ActivityUtils {
     }
 
     fun onActivityCreateSetLocale(activity: Activity): Language {
-        val language = PrefUtils.getLanguage(
-            PreferenceManager.getDefaultSharedPreferences(activity)
-        )
+        val language = PrefUtils.getLanguage(PrefUtils.getPreferences(activity))
 
         val locale = Locale(if (language == Language.ENGLISH) "en" else "ar")
         Locale.setDefault(locale)

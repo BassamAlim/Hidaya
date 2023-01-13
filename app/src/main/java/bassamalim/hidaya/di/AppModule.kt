@@ -87,7 +87,10 @@ object AppModule {
     ) = BookViewerRepo(context, preferences, gson)
 
     @Provides @Singleton
-    fun provideDateConverterRepository() = DateConverterRepo()
+    fun provideDateConverterRepository(
+        context: Context,
+        preferences: SharedPreferences
+    ) = DateConverterRepo(context, preferences)
 
     @Provides @Singleton
     fun provideHomeRepository() = HomeRepo()

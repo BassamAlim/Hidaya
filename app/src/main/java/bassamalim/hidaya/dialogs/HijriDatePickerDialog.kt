@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
+import bassamalim.hidaya.enum.Language
 import bassamalim.hidaya.ui.components.MyClickableText
 import bassamalim.hidaya.ui.components.MyDialog
 import bassamalim.hidaya.ui.components.MyImageButton
@@ -31,25 +32,27 @@ import java.util.*
 
 class HijriDatePickerDialog(
     private val context: Context,
-    private val shown: MutableState<Boolean>,
-    private val selectionState: MutableState<UmmalquraCalendar>,
-    private val onSet: () -> Unit
+    private val shown: Boolean,
+    private val selectionState: UmmalquraCalendar,
+    private val onCancelClick: () -> Unit,
+    private val onSelectClick: (UmmalquraCalendar) -> Unit
 ) {
 
     private val now = UmmalquraCalendar()
     private val selected = mutableStateListOf(
-        selectionState.value[Calendar.YEAR], selectionState.value[Calendar.MONTH],
-        selectionState.value[Calendar.DAY_OF_MONTH], selectionState.value[Calendar.DAY_OF_WEEK] - 1
+        selectionState[Calendar.YEAR], selectionState[Calendar.MONTH],
+        selectionState[Calendar.DATE], selectionState[Calendar.DAY_OF_WEEK] - 1
     )
     private val minYear = now[Calendar.YEAR] - 100
     private val maxYear = now[Calendar.YEAR] + 100
-    private val language = PrefUtils.getLanguage(context)
+    private val pref = PrefUtils.getPreferences(context)
+    private val language = PrefUtils.getLanguage(pref)
     private val months = context.resources.getStringArray(R.array.hijri_months)
     private val weekDays = context.resources.getStringArray(R.array.week_days)
     private val weekDaysAbb =
-        if (language == "en") listOf("S", "M", "T", "W", "T", "F", "S")
+        if (language == Language.ENGLISH) listOf("S", "M", "T", "W", "T", "F", "S")
         else listOf("أ", "إ", "ث", "أ", "خ", "ج", "س")
-    private val divider = if (language == "en") "," else "،"
+    private val divider = if (language == Language.ENGLISH) "," else "،"
 
     private fun buildGrid(current: UmmalquraCalendar): Array<Array<String>> {
         val offset = current[Calendar.DAY_OF_WEEK] - 1
@@ -79,16 +82,14 @@ class HijriDatePickerDialog(
                     ) {
                         // year
                         MyText(
-                            text = LangUtils.translateNums(
-                                context, selected[0].toString()
-                            ),
+                            text = LangUtils.translateNums(pref, selected[0].toString()),
                             fontSize = 18.sp,
                             textColor = AppTheme.colors.onPrimary
                         )
 
                         // main text
                         val mainText = "${weekDays[selected[3]]}$divider " +
-                                "${LangUtils.translateNums(context, selected[2].toString())} " +
+                                "${LangUtils.translateNums(pref, selected[2].toString())} " +
                                 months[selected[1]]
                         MyText(
                             text = mainText,
@@ -100,8 +101,8 @@ class HijriDatePickerDialog(
                 }
 
                 val pagerState = rememberPagerState(
-                    initialPage = (selectionState.value[Calendar.YEAR] - minYear) * 12 +
-                            selectionState.value[Calendar.MONTH]
+                    initialPage = (selectionState[Calendar.YEAR] - minYear)
+                            * 12 + selectionState[Calendar.MONTH]
                 )
 
                 val coroutineScope = rememberCoroutineScope()
@@ -123,7 +124,7 @@ class HijriDatePickerDialog(
                     val absMonth = minYear * 12 + pagerState.currentPage
                     MyText(
                         "${months[absMonth % 12]} " +
-                                LangUtils.translateNums(context, (absMonth / 12).toString()),
+                                LangUtils.translateNums(pref, (absMonth / 12).toString()),
                         Modifier.width(150.dp)
                     )
 
@@ -164,16 +165,15 @@ class HijriDatePickerDialog(
                         .fillMaxWidth()
                         .padding(bottom = 20.dp)
                 ) {
-                    // save
+                    // select
                     MyClickableText(
                         stringResource(R.string.select),
                         Modifier.padding(start = 10.dp)
                     ) {
-                        selectionState.value = UmmalquraCalendar(
-                            selected[0], selected[1], selected[2]
-                        )
-                        shown.value = false
-                        onSet()
+                        selectionState[Calendar.YEAR] = selected[0]
+                        selectionState[Calendar.MONTH] = selected[1]
+                        selectionState[Calendar.DATE] = selected[2]
+                        onSelectClick(selectionState)
                     }
 
                     // cancel
@@ -181,7 +181,7 @@ class HijriDatePickerDialog(
                         stringResource(R.string.cancel),
                         Modifier.padding(start = 10.dp)
                     ) {
-                        shown.value = false
+                        onCancelClick()
                     }
                 }
             }
@@ -214,7 +214,7 @@ class HijriDatePickerDialog(
                                         && value.toInt() == selected[2]
 
                                 MyText(
-                                    LangUtils.translateNums(context, value),
+                                    LangUtils.translateNums(pref, value),
                                     textColor =
                                         if (isSelected) AppTheme.colors.onPrimary
                                         else AppTheme.colors.text,

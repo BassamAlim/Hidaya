@@ -1,11 +1,17 @@
 package bassamalim.hidaya.utils
 
+import android.content.Context
 import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.enum.Language
 import bassamalim.hidaya.enum.Theme
 
 object PrefUtils {
+
+    fun getPreferences(context: Context): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+    }
 
     fun getLanguage(pref: SharedPreferences): Language {
         return when (getString(pref, Prefs.Language)) {

@@ -1,23 +1,28 @@
 package bassamalim.hidaya.utils
 
-import android.content.Context
+import android.content.SharedPreferences
+import bassamalim.hidaya.enum.Language
 
 object LangUtils {
 
     private val enNums = arrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
     private val arNums = arrayOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
 
-    fun translateNums(context: Context, string: String, timeFormat: Boolean = false) : String {
-        val language = PrefUtils.getNumeralsLanguage(context)
+    fun translateNums(
+        preferences: SharedPreferences,
+        string: String,
+        timeFormat: Boolean = false
+    ) : String {
+        val language = PrefUtils.getNumeralsLanguage(preferences)
         
         val str = if (timeFormat) cleanup(string, language) else string
         
         return if (arNums.contains(string[0])) {
-            if (language == "ar") str
+            if (language == Language.ARABIC) str
             else arToEn(str)
         }
         else {
-            if (language == "en") str
+            if (language == Language.ENGLISH) str
             else enToAr(str)
         }
     }
@@ -48,10 +53,10 @@ object LangUtils {
             .replace(Regex("م"), "pm")
     }
     
-    private fun cleanup(string: String, language: String) : String {
+    private fun cleanup(string: String, language: Language) : String {
         var str = string
 
-        if (language == "en") {
+        if (language == Language.ENGLISH) {
             if (str.startsWith('٠')) {
                 str = str.replaceFirst("٠", "")
                 if (str.startsWith('٠')) {

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -63,15 +62,12 @@ fun MyHorizontalDivider(
 
 @Composable
 fun MyCheckbox(
-    state: MutableState<Boolean>,
-    onCheck: () -> Unit = {}
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit = {}
 ) {
     Checkbox(
-        checked = state.value,
-        onCheckedChange = {
-            state.value = it
-            onCheck()
-        },
+        checked = isChecked,
+        onCheckedChange = { onCheckedChange(it) },
         colors = CheckboxDefaults.colors(
             checkedColor = AppTheme.colors.accent,
             uncheckedColor = AppTheme.colors.text
