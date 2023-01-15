@@ -34,6 +34,11 @@ object AppModule {
     fun providePreferences(application: Application) =
         PreferenceManager.getDefaultSharedPreferences(application.applicationContext)!!
 
+    // try it and see if you can change language
+//    @Provides @Singleton
+//    fun provideResources(application: Application) =
+//        application.applicationContext.resources
+
     @Provides @Singleton
     fun provideGson() = Gson()
 
@@ -119,7 +124,12 @@ object AppModule {
     fun provideQuizResultRepository() = QuizResultRepo()
 
     @Provides @Singleton
-    fun provideQuranRepository() = QuranRepo()
+    fun provideQuranRepository(
+        context: Context,
+        preferences: SharedPreferences,
+        database: AppDatabase,
+        gson: Gson
+    ) = QuranRepo(context, preferences, database, gson)
 
     @Provides @Singleton
     fun provideQuranSearcherRepository() = QuranSearcherRepo()

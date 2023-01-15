@@ -31,7 +31,9 @@ fun BookChaptersUI(
                     value = viewModel.searchText,
                     hint = stringResource(R.string.search),
                     modifier = Modifier.fillMaxWidth()
-                )
+                ) {
+                    viewModel.onSearchTextChange(it)
+                }
             }
         ) { pageNum ->
             viewModel.onListTypeChange(pageNum)
@@ -53,7 +55,7 @@ private fun Tab(
                 MyBtnSurface(
                     text = item.title,
                     iconBtn = {
-                        MyFavBtn(viewModel.favs[item.id]) {
+                        MyFavBtn(state.favs[item.id]) {
                             viewModel.onFavClick(item.id)
                         }
                     }

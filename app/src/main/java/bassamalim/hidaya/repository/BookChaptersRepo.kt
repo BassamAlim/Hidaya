@@ -2,8 +2,6 @@ package bassamalim.hidaya.repository
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.utils.FileUtils
@@ -25,24 +23,21 @@ class BookChaptersRepo @Inject constructor(
         return gson.fromJson(jsonStr, Book::class.java)
     }
 
-    fun getFavs(book: Book): SnapshotStateList<Int> {
-        var favs = mutableStateListOf<Int>()
-
-        val favsPref = Prefs.BookChaptersFavs(book.bookInfo.bookId)
-        val favsStr = PrefUtils.getString(pref, favsPref.key, favsPref.default as String)
-        if (favsStr.isNotEmpty())
-            favs = gson.fromJson(favsStr, SnapshotStateList::class.java) as SnapshotStateList<Int>
-        else book.chapters.forEach { _ -> favs.add(0) }
-
-        return favs
+    fun getFavs(book: Book): List<Int> {
+        val favsStr = PrefUtils.getString(pref, Prefs.BookChaptersFavs(book.bookInfo.bookId))
+        return if (favsStr.isNotEmpty())
+            gson.fromJson(favsStr, IntArray::class.java).toList()
+        else {
+            val favs = mutableListOf<Int>()
+            book.chapters.forEach { _ -> favs.add(0) }
+            favs
+        }
     }
 
-    fun updateFavorites(bookId: Int, favs: SnapshotStateList<Int>) {
-        val favStr = gson.toJson(favs)
-
-        val favsPref = Prefs.BookChaptersFavs(bookId)
+    fun updateFavorites(bookId: Int, favs: List<Int>) {
+        val json = gson.toJson(favs.toIntArray())
         pref.edit()
-            .putString(favsPref.key, favStr)
+            .putString(Prefs.BookChaptersFavs(bookId).key, json)
             .apply()
     }
 

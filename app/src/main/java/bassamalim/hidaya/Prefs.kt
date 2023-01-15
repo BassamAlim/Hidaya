@@ -8,6 +8,7 @@ import bassamalim.hidaya.enum.TimeFormat.TWELVE
 import bassamalim.hidaya.enum.NotificationType.*
 
 sealed class Prefs(val key: String, val default: Any) {
+    object BookmarkedSura: Prefs("bookmarked_sura", -1)
     object Language : Prefs("language_key", ARABIC.name)
     object NumeralsLanguage : Prefs("numerals_language_key", ARABIC.name)
     object TimeFormat : Prefs("time_format_key", TWELVE.name)
@@ -22,6 +23,7 @@ sealed class Prefs(val key: String, val default: Any) {
     object FavoriteSuras: Prefs("favorite_suras", "")
     object FavoriteAthkar: Prefs("favorite_athkar", "")
     object FavoriteReciters: Prefs("favorite_reciters", "")
+    object BookmarkedPage: Prefs("bookmarked_page", -1)
     object DateOffset: Prefs("date_offset", 0)
     object CountryID: Prefs("country_id", -1)
     object CityID: Prefs("city_id", -1)
@@ -30,8 +32,9 @@ sealed class Prefs(val key: String, val default: Any) {
     object BookSearcherMaxMatchesIndex: Prefs("books_searcher_max_matches_index", 0)
     object TodayWerdPage: Prefs("today_werd_page", 25)
     object WerdDone: Prefs("werd_done", false)
-    object ShowBooksTutorial: Prefs("show_books_activity_tutorial", false)
-    object ShowPrayersTutorial: Prefs("is_first_time_in_prayers", false)
+    object ShowBooksTutorial: Prefs("show_books_tutorial", false)
+    object ShowQuranTutorial: Prefs("show_quran_tutorial", false)
+    object ShowPrayersTutorial: Prefs("show_prayers_tutorial", false)
     object PrayerTimesCalculationMethod: Prefs("prayer_times_calc_method_key", "MECCA")
     object PrayerTimesJuristicMethod: Prefs("juristic_method_key", "SHAFII")
     object PrayerTimesAdjustment: Prefs("high_lat_adjustment_key", "NONE")

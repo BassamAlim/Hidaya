@@ -27,13 +27,13 @@ class BookChaptersVM @Inject constructor(
     private val bookTitle = savedStateHandle.get<String>("book_title")?: ""
 
     private val book = repository.getBook(bookId)
-    var favs = repository.getFavs(book)
     var searchText by mutableStateOf("")
         private set
 
     private val _uiState = MutableStateFlow(BookChaptersState(
         title = bookTitle,
-        items = getItems(ListType.All)
+        items = getItems(ListType.All),
+        favs = repository.getFavs(book)
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -41,7 +41,8 @@ class BookChaptersVM @Inject constructor(
         val items = ArrayList<BookChapter>()
         for (i in book.chapters.indices) {
             val chapter = book.chapters[i]
-            if (listType == ListType.All || listType == ListType.Favorite && favs[i] == 1)
+            if (listType == ListType.All ||
+                listType == ListType.Favorite && _uiState.value.favs[i] == 1)
                 items.add(BookChapter(chapter.chapterId, chapter.chapterTitle))
         }
         return items
@@ -56,10 +57,14 @@ class BookChaptersVM @Inject constructor(
     }
 
     fun onFavClick(itemId: Int) {
-        if (favs[itemId] == 0) favs[itemId] = 1
-        else favs[itemId] = 0
+        val mutableFavs = _uiState.value.favs.toMutableList()
+        mutableFavs[itemId] = if (mutableFavs[itemId] == 1) 0 else 1
 
-        repository.updateFavorites(bookId, favs)
+        _uiState.update { it.copy(
+            favs = mutableFavs
+        )}
+
+        repository.updateFavorites(bookId, mutableFavs.toList())
     }
 
     fun onListTypeChange(pageNum: Int) {
@@ -69,6 +74,10 @@ class BookChaptersVM @Inject constructor(
             listType = listType,
             items = getItems(listType)
         )}
+    }
+
+    fun onSearchTextChange(text: String) {
+        searchText = text
     }
 
 }
