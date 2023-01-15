@@ -6,8 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.preference.PreferenceManager
-import bassamalim.hidaya.R
+import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.enum.NotificationType
 import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.other.Global
@@ -51,9 +50,7 @@ class Alarms {
         val pidValues = PID.values()
         for (i in times.indices) {
             val pid = pidValues[i]
-            if (PrefUtils.getString(
-                    pref, "$pid notification_type", NotificationType.Notification.name
-                ) != NotificationType.None.name)
+            if (PrefUtils.getString(pref, Prefs.NotificationType(pid)) != NotificationType.None.name)
                 setPrayerAlarm(pid, times[i])
         }
     }
@@ -69,7 +66,7 @@ class Alarms {
         val millis = time!!.timeInMillis
         if (System.currentTimeMillis() <= millis) {
             val intent = Intent(context, NotificationReceiver::class.java)
-            if (pid == PID.SHOROUQ) intent.action = "extra"
+            if (pid == PID.SUNRISE) intent.action = "extra"
             else intent.action = "prayer"
             intent.putExtra("id", pid.name)
             intent.putExtra("time", millis)
@@ -95,13 +92,13 @@ class Alarms {
 
         val today = Calendar.getInstance()
 
-        if (PrefUtils.getBoolean(pref, context.getString(R.string.morning_athkar_key), true))
+        if (PrefUtils.getBoolean(pref, Prefs.NotifyExtraNotification(PID.MORNING)))
             setExtraAlarm(PID.MORNING)
-        if (PrefUtils.getBoolean(pref, context.getString(R.string.evening_athkar_key), true))
+        if (PrefUtils.getBoolean(pref, Prefs.NotifyExtraNotification(PID.EVENING)))
             setExtraAlarm(PID.EVENING)
-        if (PrefUtils.getBoolean(pref, context.getString(R.string.daily_werd_key), true))
+        if (PrefUtils.getBoolean(pref, Prefs.NotifyExtraNotification(PID.DAILY_WERD)))
             setExtraAlarm(PID.DAILY_WERD)
-        if (PrefUtils.getBoolean(pref, context.getString(R.string.friday_kahf_key), true)
+        if (PrefUtils.getBoolean(pref, Prefs.NotifyExtraNotification(PID.FRIDAY_KAHF))
             && today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
             setExtraAlarm(PID.FRIDAY_KAHF)
     }
@@ -114,18 +111,8 @@ class Alarms {
     private fun setExtraAlarm(pid: PID) {
         Log.i(Global.TAG, "in set extra alarm")
 
-        var defaultH = 0
-        val defaultM = 0
-        when (pid) {
-            PID.MORNING -> defaultH = 5
-            PID.EVENING -> defaultH = 16
-            PID.DAILY_WERD -> defaultH = 21
-            PID.FRIDAY_KAHF -> defaultH = 13
-            else -> {}
-        }
-
-        val hour = PrefUtils.getInt(pref, "$pid hour", defaultH)
-        val minute = PrefUtils.getInt(pref, "$pid minute", defaultM)
+        val hour = PrefUtils.getInt(pref, Prefs.ExtraNotificationHour(pid))
+        val minute = PrefUtils.getInt(pref, Prefs.ExtraNotificationMinute(pid))
 
         val time = Calendar.getInstance()
         time[Calendar.HOUR_OF_DAY] = hour

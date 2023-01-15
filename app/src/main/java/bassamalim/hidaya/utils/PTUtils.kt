@@ -21,40 +21,30 @@ object PTUtils {
 
     fun getTimes(
         context: Context,
-        loc: Location? = Keeper(context).retrieveLocation(),
+        pref: SharedPreferences = PrefUtils.getPreferences(context),
+        loc: Location? = Keeper(pref).retrieveLocation(),
         calendar: Calendar = Calendar.getInstance()
     ): Array<Calendar?>? {
         if (loc == null) return null
 
-        val pref = PrefUtils.getPreferences(context)
-
         val prayTimes = PrayTimes(pref)
-        val utcOffset = getUTCOffset(
-            pref,
-            DBUtils.getDB(context)
-        ).toDouble()
+        val utcOffset = getUTCOffset(pref = pref, db = DBUtils.getDB(context)).toDouble()
 
         return prayTimes.getPrayerTimes(loc.latitude, loc.longitude, utcOffset, calendar)
     }
 
     fun getStrTimes(
         context: Context,
-        loc: Location? = Keeper(context).retrieveLocation(),
+        pref: SharedPreferences = PrefUtils.getPreferences(context),
+        loc: Location? = Keeper(pref).retrieveLocation(),
         calendar: Calendar = Calendar.getInstance()
     ): ArrayList<String>? {
         if (loc == null) return null
 
-        val pref = PrefUtils.getPreferences(context)
-
         val prayTimes = PrayTimes(pref)
-        val utcOffset = getUTCOffset(
-            pref,
-            DBUtils.getDB(context)
-        ).toDouble()
+        val utcOffset = getUTCOffset(pref = pref, db = DBUtils.getDB(context)).toDouble()
 
-        return prayTimes.getStrPrayerTimes(
-            loc.latitude, loc.longitude, utcOffset, calendar
-        )
+        return prayTimes.getStrPrayerTimes(loc.latitude, loc.longitude, utcOffset, calendar)
     }
 
     fun getUTCOffset(

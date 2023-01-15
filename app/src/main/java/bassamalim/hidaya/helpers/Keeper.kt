@@ -1,30 +1,22 @@
 package bassamalim.hidaya.helpers
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.location.Location
-import androidx.preference.PreferenceManager
+import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.models.MyLocation
 import bassamalim.hidaya.utils.PrefUtils
 import com.google.gson.Gson
 
-class Keeper {
+class Keeper(
+    private var pref: SharedPreferences,
+    gLocation: Location? = null
+) {
 
-    private val context: Context
     private var gson = Gson()
-    private var pref: SharedPreferences
     private lateinit var locJson: String
 
-    constructor(context: Context) {
-        this.context = context
-        pref = PrefUtils.getPreferences(context)
-    }
-
-    constructor(context: Context, gLocation: Location) {
-        this.context = context
-        pref = PrefUtils.getPreferences(context)
-
-        storeLocation(gLocation)
+    init {
+        if (gLocation != null) storeLocation(gLocation)
     }
 
     /**
@@ -47,7 +39,7 @@ class Keeper {
      * @return The location object.
      */
     fun retrieveLocation(): Location? {
-        locJson = PrefUtils.getString(pref, "stored location", "")
+        locJson = PrefUtils.getString(pref, Prefs.StoredLocation)
         val myLocation = gson.fromJson(locJson, MyLocation::class.java)
         return if (myLocation == null) null
         else MyLocation.toLocation(myLocation)

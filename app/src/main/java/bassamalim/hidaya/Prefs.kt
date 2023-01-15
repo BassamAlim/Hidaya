@@ -1,28 +1,18 @@
 package bassamalim.hidaya
 
+import bassamalim.hidaya.enum.Language.ARABIC
+import bassamalim.hidaya.enum.LocationType.Auto
 import bassamalim.hidaya.enum.PID
+import bassamalim.hidaya.enum.Theme.LIGHT
+import bassamalim.hidaya.enum.TimeFormat.TWELVE
+import bassamalim.hidaya.enum.NotificationType.*
 
 sealed class Prefs(val key: String, val default: Any) {
-    object Language : Prefs(
-        "language_key",
-        bassamalim.hidaya.enum.Language.ARABIC.name
-    )
-    object NumeralsLanguage : Prefs(
-        "numerals_language_key",
-        bassamalim.hidaya.enum.Language.ARABIC.name
-    )
-    object TimeFormat : Prefs(
-        "time_format_key",
-        bassamalim.hidaya.enum.TimeFormat.TWELVE.name
-    )
-    object Theme : Prefs(
-        "theme_key",
-        bassamalim.hidaya.enum.Theme.LIGHT.name
-    )
-    object LocationType: Prefs(
-        "location_type",
-        bassamalim.hidaya.enum.LocationType.Auto.name
-    )
+    object Language : Prefs("language_key", ARABIC.name)
+    object NumeralsLanguage : Prefs("numerals_language_key", ARABIC.name)
+    object TimeFormat : Prefs("time_format_key", TWELVE.name)
+    object Theme : Prefs("theme_key", LIGHT.name)
+    object LocationType: Prefs("location_type", Auto.name)
     object FirstTime: Prefs("new_user", true)
     object LastDBVersion: Prefs("last_db_version", 1)
     object AthkarTextSize: Prefs("athkar_text_size_key", 15f)
@@ -33,22 +23,48 @@ sealed class Prefs(val key: String, val default: Any) {
     object FavoriteAthkar: Prefs("favorite_athkar", "")
     object FavoriteReciters: Prefs("favorite_reciters", "")
     object DateOffset: Prefs("date_offset", 0)
+    object CountryID: Prefs("country_id", -1)
     object CityID: Prefs("city_id", -1)
+    object StoredLocation: Prefs("stored_location", "")
     object SelectedSearchBooks: Prefs("selected_search_books", "")
     object BookSearcherMaxMatchesIndex: Prefs("books_searcher_max_matches_index", 0)
     object TodayWerdPage: Prefs("today_werd_page", 25)
     object WerdDone: Prefs("werd_done", false)
+    object ShowBooksTutorial: Prefs("show_books_activity_tutorial", false)
+    object ShowPrayersTutorial: Prefs("is_first_time_in_prayers", false)
     object PrayerTimesCalculationMethod: Prefs("prayer_times_calc_method_key", "MECCA")
     object PrayerTimesJuristicMethod: Prefs("juristic_method_key", "SHAFII")
     object PrayerTimesAdjustment: Prefs("high_lat_adjustment_key", "NONE")
     object TelawatPlaybackRecord: Prefs("telawat_playback_record", 0L)
     object QuranPagesRecord: Prefs("quran_pages_record", 0)
     data class BookChaptersFavs(val bookId: Int): Prefs(
-        "book${bookId}_favs",
-        ""
+        key = "book${bookId}_favs",
+        default = ""
     )
-    data class PrayerOffset(val pid: PID): Prefs(
-        "book${pid.name}_offset",
-        0
+    data class TimeOffset(val pid: PID): Prefs(
+        key = "${pid.name}_offset",
+        default = 0
+    )
+    data class NotificationType(val pid: PID): Prefs(
+        key = "${pid.name}_notification_type",
+        default = if (pid == PID.SUNRISE) None.name else Notification.name
+    )
+    data class NotifyExtraNotification(val pid: PID): Prefs(
+        key = "notify_${pid.name}",
+        default = true
+    )
+    data class ExtraNotificationHour(val pid: PID): Prefs(
+        key = "${pid.name}_hour",
+        default = when (pid) {
+            PID.MORNING -> 5
+            PID.EVENING -> 16
+            PID.DAILY_WERD -> 21
+            PID.FRIDAY_KAHF -> 13
+            else -> 0
+        }
+    )
+    data class ExtraNotificationMinute(val pid: PID): Prefs(
+        key = "${pid.name}_minute",
+        default = 0
     )
 }

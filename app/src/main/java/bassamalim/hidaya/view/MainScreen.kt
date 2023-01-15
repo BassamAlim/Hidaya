@@ -13,11 +13,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import bassamalim.hidaya.R
-import bassamalim.hidaya.activities.MainActivity
 import bassamalim.hidaya.dialogs.DateEditorDialog
 import bassamalim.hidaya.screens.*
 import bassamalim.hidaya.ui.components.BottomNavItem
@@ -103,23 +104,35 @@ fun MainUI(
 fun NavigationGraph(navController: NavHostController, padding: PaddingValues) {
     NavHost(
         navController,
-        startDestination = BottomNavItem.Home.screen_route,
+        startDestination = BottomNavItem.Home.route,
         modifier = Modifier.padding(padding)
     ) {
-        composable(BottomNavItem.Home.screen_route) {
-            HomeUI(this@MainActivity, pref, MainActivity.located, MainActivity.location)
+        composable(
+            route = BottomNavItem.Home.route,
+            arguments = listOf(
+                navArgument("is_located") { type = NavType.BoolType },
+                navArgument("coordinates") { type = NavType.FloatArrayType}
+            )
+        ) {
+            HomeUI(navController)
         }
-        composable(BottomNavItem.Prayers.screen_route) {
-            PrayersUI(this@MainActivity, pref, MainActivity.located, MainActivity.location)
+        composable(
+            route = BottomNavItem.Prayers.route,
+            arguments = listOf(
+                navArgument("is_located") { type = NavType.BoolType },
+                navArgument("coordinates") { type = NavType.FloatArrayType}
+            )
+        ) {
+            PrayersUI(navController)
         }
-        composable(BottomNavItem.Quran.screen_route) {
-            QuranUI()
+        composable(BottomNavItem.Quran.route) {
+            QuranUI(navController)
         }
-        composable(BottomNavItem.Athkar.screen_route) {
-            AthkarUI()
+        composable(BottomNavItem.Athkar.route) {
+            AthkarUI(navController)
         }
-        composable(BottomNavItem.More.screen_route) {
-            MoreUI()
+        composable(BottomNavItem.More.route) {
+            MoreUI(navController)
         }
     }
 }

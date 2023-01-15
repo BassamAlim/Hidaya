@@ -47,7 +47,7 @@ class NotificationReceiver : BroadcastReceiver() {
         Log.i(Global.TAG, "in notification receiver for $pid")
 
         val defaultType =
-            if (pid == PID.SHOROUQ) NotificationType.None
+            if (pid == PID.SUNRISE) NotificationType.None
             else NotificationType.Notification
         val typeName = PrefUtils.getString(pref, "$pid notification_type", defaultType.name)
         type = NotificationType.valueOf(typeName)
@@ -101,7 +101,7 @@ class NotificationReceiver : BroadcastReceiver() {
         builder.setTicker(context.resources.getString(R.string.app_name))
 
         var i = pid.ordinal
-        if (pid == PID.DUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+        if (pid == PID.DHUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
             i = 10
         builder.setContentTitle(context.resources.getStringArray(R.array.prayer_titles)[i])
         builder.setContentText(context.resources.getStringArray(R.array.prayer_subtitles)[i])

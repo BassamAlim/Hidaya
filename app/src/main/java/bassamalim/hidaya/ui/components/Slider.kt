@@ -41,7 +41,7 @@ fun MyValuedSlider(
     initialValue: Float,
     valueRange: ClosedFloatingPointRange<Float>,
     modifier: Modifier = Modifier,
-    progressMin: Int = 0,
+    progressMin: Float = 0f,
     sliderFraction: Float = 0.8F,
     enabled: Boolean = true,
     infinite: Boolean = false,
@@ -72,7 +72,7 @@ fun MyValuedSlider(
                 val progress = currentValue - progressMin
 
                 var progressStr = progress.toInt().toString()
-                if (progressMin != 0 && progress > 0) progressStr += "+"
+                if (progressMin != 0f && progress > 0f) progressStr += "+"
                 sliderText =
                     if (infinite && progress == valueRange.endInclusive)
                         context.getString(R.string.infinite)

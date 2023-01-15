@@ -89,4 +89,12 @@ class BooksVM @Inject constructor(
         )}
     }
 
+    fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {
+        _uiState.update { it.copy(
+            isTutorialDialogShown = false
+        )}
+
+        if (doNotShowAgain) repository.setDoNotShowAgain()
+    }
+
 }

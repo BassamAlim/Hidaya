@@ -70,7 +70,7 @@ class AthanService : Service() {
         builder.setTicker(resources.getString(R.string.app_name))
 
         var i = pid.ordinal
-        if (pid == PID.DUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+        if (pid == PID.DHUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
             i = 10
         builder.setContentTitle(resources.getStringArray(R.array.prayer_titles)[i])
         builder.setContentText(resources.getStringArray(R.array.prayer_subtitles)[i])

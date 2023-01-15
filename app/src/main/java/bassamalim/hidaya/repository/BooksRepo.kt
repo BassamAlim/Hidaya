@@ -2,6 +2,7 @@ package bassamalim.hidaya.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.BooksDB
 import bassamalim.hidaya.models.Book
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 class BooksRepo @Inject constructor(
     private val context: Context,
-    pref: SharedPreferences,
+    private val pref: SharedPreferences,
     private val db: AppDatabase,
     private val gson: Gson
 ) {
@@ -31,6 +32,12 @@ class BooksRepo @Inject constructor(
 
     fun getPath(itemId: Int): String {
         return "$prefix$itemId.json"
+    }
+
+    fun setDoNotShowAgain() {
+        pref.edit()
+            .putBoolean(Prefs.ShowBooksTutorial.key, false)
+            .apply()
     }
 
     fun download(item: BooksDB): FileDownloadTask {

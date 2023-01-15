@@ -48,7 +48,6 @@ class PrayTimes(
         lat: Double, lng: Double, tZone: Double = getDefaultTimeZone(),
         date: Calendar = Calendar.getInstance()
     ): Array<Calendar?> {
-
         setValues(
             lat, lng, tZone,
             date[Calendar.YEAR], date[Calendar.MONTH] + 1, date[Calendar.DATE]
@@ -76,7 +75,6 @@ class PrayTimes(
         lat: Double, lng: Double, tZone: Double = getDefaultTimeZone(),
         date: Calendar = Calendar.getInstance()
     ): ArrayList<String> {
-
         setValues(
             lat, lng, tZone,
             date[Calendar.YEAR], date[Calendar.MONTH] + 1, date[Calendar.DATE]
@@ -279,13 +277,13 @@ class PrayTimes(
 
     // Tune timings for adjustments (Set time offsets)
     private fun setOffsets() {
-        offsets[0] = PrefUtils.getInt(pref, Prefs.PrayerOffset(PID.FAJR))
-        offsets[1] = PrefUtils.getInt(pref, Prefs.PrayerOffset(PID.SHOROUQ))
-        offsets[2] = PrefUtils.getInt(pref, Prefs.PrayerOffset(PID.DUHR))
-        offsets[3] = PrefUtils.getInt(pref, Prefs.PrayerOffset(PID.ASR))
+        offsets[0] = PrefUtils.getInt(pref, Prefs.TimeOffset(PID.FAJR))
+        offsets[1] = PrefUtils.getInt(pref, Prefs.TimeOffset(PID.SUNRISE))
+        offsets[2] = PrefUtils.getInt(pref, Prefs.TimeOffset(PID.DHUHR))
+        offsets[3] = PrefUtils.getInt(pref, Prefs.TimeOffset(PID.ASR))
         // Skipping sunset
-        offsets[5] = PrefUtils.getInt(pref, Prefs.PrayerOffset(PID.MAGHRIB))
-        offsets[6] = PrefUtils.getInt(pref, Prefs.PrayerOffset(PID.ISHAA))
+        offsets[5] = PrefUtils.getInt(pref, Prefs.TimeOffset(PID.MAGHRIB))
+        offsets[6] = PrefUtils.getInt(pref, Prefs.TimeOffset(PID.ISHAA))
     }
 
     private fun tuneTimes(times: DoubleArray): DoubleArray {

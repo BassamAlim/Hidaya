@@ -90,13 +90,21 @@ object AppModule {
     ) = DateConverterRepo(context, preferences)
 
     @Provides @Singleton
-    fun provideHomeRepository() = HomeRepo()
+    fun provideHomeRepository(
+        context: Context,
+        preferences: SharedPreferences,
+        database: AppDatabase
+    ) = HomeRepo(context, preferences, database)
 
     @Provides @Singleton
     fun provideLocatorRepository() = LocatorRepo()
 
     @Provides @Singleton
-    fun providePrayersRepository() = PrayersRepo()
+    fun providePrayersRepository(
+        context: Context,
+        preferences: SharedPreferences,
+        database: AppDatabase
+    ) = PrayersRepo(context, preferences, database)
 
     @Provides @Singleton
     fun provideQiblaRepository() = QiblaRepo()

@@ -16,17 +16,21 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.ui.theme.nsp
 
-sealed class BottomNavItem(var icon: Int, var screen_route: String){
-    object Home: BottomNavItem(R.drawable.ic_home,"home")
-    object Prayers: BottomNavItem(R.drawable.ic_clock,"prayers")
-    object Quran: BottomNavItem(R.drawable.ic_bar_quran,"quran")
-    object Athkar: BottomNavItem(R.drawable.ic_duaa,"athkar")
-    object More: BottomNavItem(R.drawable.ic_more,"more")
+sealed class BottomNavItem(var route: String, var icon: Int){
+    object Home: BottomNavItem("home", R.drawable.ic_home)
+    object Prayers: BottomNavItem("prayers", R.drawable.ic_clock)
+    object Quran: BottomNavItem("quran", R.drawable.ic_bar_quran)
+    object Athkar: BottomNavItem("athkar", R.drawable.ic_duaa)
+    object More: BottomNavItem("more", R.drawable.ic_more)
+
+    fun withArgs(vararg args: String): String {
+        return route + args.joinToString(prefix = "/", separator = "/")
+    }
 }
 
 @Composable
 fun MyBottomNavigation(navController: NavController) {
-    val items = listOf(
+    val items = listOf(  // add arguments
         BottomNavItem.Home,
         BottomNavItem.Prayers,
         BottomNavItem.Quran,
@@ -69,9 +73,9 @@ fun MyBottomNavigation(navController: NavController) {
                 },
                 selectedContentColor = AppTheme.colors.secondary,
                 unselectedContentColor = AppTheme.colors.onPrimary,
-                selected = currentRoute == item.screen_route,
+                selected = currentRoute == item.route,
                 onClick = {
-                    navController.navigate(item.screen_route) {
+                    navController.navigate(item.route) {
                         navController.graph.startDestinationRoute?.let { screen_route ->
                             popUpTo(screen_route) {
                                 saveState = true

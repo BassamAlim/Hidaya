@@ -56,7 +56,7 @@ class PrayersWidget : AppWidgetProvider() {
 
         var j = 0
         for (i in 0..4) {
-            if (i == 1) j++  // To skip shorouq
+            if (i == 1) j++  // To skip sunrise
 
             result[i] =
                 "${prayerNames[j]}\n${LangUtils.translateNums(context, times[j], true)}"

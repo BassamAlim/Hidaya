@@ -69,8 +69,10 @@ fun BooksUI(
 
         TutorialDialog(
             textResId = R.string.books_activity_tips,
-            prefKey = "is_first_time_in_books_activity"
-        )
+            shown = state.isTutorialDialogShown
+        ) {
+            viewModel.onTutorialDialogDismiss(it)
+        }
 
         LaunchedEffect(state.shouldShowWaitMassage) {
             FileUtils.showWaitMassage(context)
