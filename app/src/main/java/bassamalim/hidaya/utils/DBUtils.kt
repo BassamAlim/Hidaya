@@ -3,7 +3,6 @@ package bassamalim.hidaya.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.preference.PreferenceManager
 import androidx.room.Room
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.database.AppDatabase

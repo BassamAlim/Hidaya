@@ -105,6 +105,12 @@ object AppModule {
     fun provideLocatorRepository() = LocatorRepo()
 
     @Provides @Singleton
+    fun provideMainRepository(
+        context: Context,
+        preferences: SharedPreferences
+    ) = MainRepo(context, preferences)
+
+    @Provides @Singleton
     fun providePrayersRepository(
         context: Context,
         preferences: SharedPreferences,

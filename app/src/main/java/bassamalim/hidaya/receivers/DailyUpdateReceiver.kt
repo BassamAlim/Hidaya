@@ -80,16 +80,16 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     private fun update(location: Location?) {
         var loc = location
         if (loc == null) {
-            loc = Keeper(context).retrieveLocation()
+            loc = Keeper(pref).retrieveLocation()
             if (loc == null) {
                 Log.e(Global.TAG, "No available location in DailyUpdate")
                 return
             }
         }
 
-        Keeper(context, loc)
+        Keeper(pref, loc)
 
-        val times = PTUtils.getTimes(context, loc)!!
+        val times = PTUtils.getTimes(pref, DBUtils.getDB(context))!!
 
         Alarms(context, times)
 
@@ -124,7 +124,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
     private fun pickWerd() {
         pref.edit()
-            .putInt("today_werd_page", Random().nextInt(Global.QURAN_PAGES) + 1)
+            .putInt("today_werd_page", Random().nextInt(Global.QURAN_PAGES) - 1)
             .putBoolean("werd_done", false)
             .apply()
     }

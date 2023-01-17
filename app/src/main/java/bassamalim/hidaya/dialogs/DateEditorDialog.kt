@@ -1,11 +1,7 @@
 package bassamalim.hidaya.dialogs
 
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -18,60 +14,17 @@ import bassamalim.hidaya.ui.components.MyDialog
 import bassamalim.hidaya.ui.components.MyImageButton
 import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
-import bassamalim.hidaya.utils.LangUtils
-import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
-import java.util.*
-
-class DateEditorDialog(
-
-) {
-
-
-
-    init {
-        offset = dateOffset.value
-
-        getDate()
-
-        updateTvs()
-    }
-
-
-    private fun getDate() {
-        val cal = UmmalquraCalendar()
-
-        val millisInDay = 1000 * 60 * 60 * 24
-        cal.timeInMillis = cal.timeInMillis + offset * millisInDay
-
-        calendar = cal
-    }
-
-    private fun updateTvs() {
-        val text =
-            "${calendar[Calendar.DATE]}/${calendar[Calendar.MONTH] + 1}/${calendar[Calendar.YEAR]}"
-        dateText.value =LangUtils.translateNums(context, text)
-
-        if (offset == 0) offsetText.value = context.getString(R.string.unchanged)
-        else {
-            var offsetStr = offset.toString()
-            if (offset > 0) offsetStr = "+$offsetStr"
-            offsetText.value = LangUtils.translateNums(context, offsetStr)
-        }
-    }
-
-}
-
 
 @Composable
-fun Dialog(
-    dateOffset: Int,
-    shown: Boolean
+fun DateEditorDialog(
+    shown: Boolean,
+    offsetText: String,
+    dateText: String,
+    onNextDay: () -> Unit,
+    onPreviousDay: () -> Unit,
+    onCancel: () -> Unit,
+    onSubmit: () -> Unit
 ) {
-    var calendar: UmmalquraCalendar
-    var offset = 0
-    val dateText = mutableStateOf("")
-    val offsetText = mutableStateOf("")
-
     MyDialog(shown) {
         Column(
             Modifier
@@ -87,9 +40,9 @@ fun Dialog(
             )
 
             MyText(
-                offsetText.value,
-                textColor = AppTheme.colors.accent,
-                fontSize = 22.sp
+                offsetText,
+                fontSize = 22.sp,
+                textColor = AppTheme.colors.accent
             )
 
             Row(
@@ -102,19 +55,15 @@ fun Dialog(
                 MyImageButton(
                     imageResId = R.drawable.ic_left_arrow
                 ) {
-                    offset--
-                    getDate()
-                    updateTvs()
+                    onPreviousDay()
                 }
 
-                MyText(dateText.value, fontSize = 22.sp)
+                MyText(dateText, fontSize = 22.sp)
 
                 MyImageButton(
                     imageResId = R.drawable.ic_right_arrow
                 ) {
-                    offset++
-                    getDate()
-                    updateTvs()
+                    onNextDay()
                 }
             }
 
@@ -125,19 +74,13 @@ fun Dialog(
                 MyButton(
                     text = stringResource(R.string.save)
                 ) {
-                    pref.edit()
-                        .putInt("date_offset", offset)
-                        .apply()
-
-                    shown.value = false
-
-                    dateOffset.value = offset
+                    onSubmit()
                 }
 
                 MyButton(
                     text = stringResource(R.string.cancel)
                 ) {
-                    shown.value = false
+                    onCancel()
                 }
             }
         }

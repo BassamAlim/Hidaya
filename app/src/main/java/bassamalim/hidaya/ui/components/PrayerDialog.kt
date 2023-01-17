@@ -1,4 +1,4 @@
-package bassamalim.hidaya.dialogs
+package bassamalim.hidaya.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -17,10 +17,6 @@ import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.enum.NotificationType
 import bassamalim.hidaya.enum.PID
-import bassamalim.hidaya.ui.components.MyClickableSurface
-import bassamalim.hidaya.ui.components.MyDialog
-import bassamalim.hidaya.ui.components.MyText
-import bassamalim.hidaya.ui.components.MyValuedSlider
 import bassamalim.hidaya.ui.theme.AppTheme
 
 @Composable

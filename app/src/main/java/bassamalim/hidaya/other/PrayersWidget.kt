@@ -1,5 +1,6 @@
 package bassamalim.hidaya.other
 
+import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
@@ -30,7 +31,7 @@ class PrayersWidget : AppWidgetProvider() {
     private fun updateAppWidget(
         context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int
     ) {
-        ActivityUtils.onActivityCreateSetLocale(context)
+        ActivityUtils.onActivityCreateSetLocale(context as Activity)
 
         val timesList = getTimesList(context) ?: return
 

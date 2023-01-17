@@ -147,6 +147,19 @@ fun Navigator(context: Context) {
             )
         }
 
+        composable(
+            route = Screen.Main.route,
+            arguments = listOf(
+                navArgument("is_located") { type = NavType.BoolType },
+                navArgument("coordinates") { type = NavType.FloatArrayType}
+            )
+        ) {
+            MainUI(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
+        }
+
         composable(Screen.Qibla.route) {
             QiblaUI(
                 navController = navController,

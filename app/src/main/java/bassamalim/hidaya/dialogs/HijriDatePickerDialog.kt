@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class HijriDatePickerDialog(
-    private val context: Context,
+    context: Context,
     private val shown: Boolean,
     private val selectionState: UmmalquraCalendar,
     private val onCancelClick: () -> Unit,

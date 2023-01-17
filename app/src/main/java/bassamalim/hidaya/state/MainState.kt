@@ -1,5 +1,10 @@
 package bassamalim.hidaya.state
 
 data class MainState(
-    val dateEditorShown: Boolean = false
+    val hijriDate: String = "",
+    val gregorianDate: String = "",
+    val dateEditorShown: Boolean = false,
+    val shouldShowLocationPermissionToast: Boolean = false,
+    val dateEditorOffsetText: String = "",
+    val dateEditorDateText: String = ""
 )

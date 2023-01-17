@@ -2,7 +2,6 @@ package bassamalim.hidaya.utils
 
 import android.app.Activity
 import android.content.Context
-import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.enum.Language
 import bassamalim.hidaya.enum.Theme

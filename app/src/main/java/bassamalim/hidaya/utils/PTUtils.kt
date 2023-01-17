@@ -20,15 +20,15 @@ import java.util.*
 object PTUtils {
 
     fun getTimes(
-        context: Context,
-        pref: SharedPreferences = PrefUtils.getPreferences(context),
+        pref: SharedPreferences,
+        db: AppDatabase,
         loc: Location? = Keeper(pref).retrieveLocation(),
         calendar: Calendar = Calendar.getInstance()
     ): Array<Calendar?>? {
         if (loc == null) return null
 
         val prayTimes = PrayTimes(pref)
-        val utcOffset = getUTCOffset(pref = pref, db = DBUtils.getDB(context)).toDouble()
+        val utcOffset = getUTCOffset(pref = pref, db = db).toDouble()
 
         return prayTimes.getPrayerTimes(loc.latitude, loc.longitude, utcOffset, calendar)
     }

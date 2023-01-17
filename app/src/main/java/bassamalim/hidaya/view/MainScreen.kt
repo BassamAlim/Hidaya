@@ -1,13 +1,16 @@
 package bassamalim.hidaya.view
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,7 +23,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import bassamalim.hidaya.R
 import bassamalim.hidaya.dialogs.DateEditorDialog
-import bassamalim.hidaya.screens.*
 import bassamalim.hidaya.ui.components.BottomNavItem
 import bassamalim.hidaya.ui.components.MyBottomNavigation
 import bassamalim.hidaya.ui.components.MyScaffold
@@ -35,6 +37,7 @@ fun MainUI(
     viewModel: MainVM = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
     val bottomNavController = rememberNavController()
 
     MyScaffold(
@@ -63,7 +66,7 @@ fun MainUI(
                         Column(
                             Modifier
                                 .fillMaxHeight()
-                                .clickable { state.dateEditorShown = true },
+                                .clickable { viewModel.showDateEditor() },
                             verticalArrangement = Arrangement.SpaceEvenly
                         ) {
                             Column(
@@ -72,17 +75,15 @@ fun MainUI(
                                     .padding(horizontal = 10.dp),
                                 horizontalAlignment = Alignment.End
                             ) {
-                                val content = getTodayScreenContent(dateOffset)
-
                                 MyText(
-                                    text = content[0],
+                                    text = state.hijriDate,
                                     fontSize = 16.nsp,
                                     fontWeight = FontWeight.Bold,
                                     textColor = AppTheme.colors.onPrimary
                                 )
 
                                 MyText(
-                                    text = content[1],
+                                    text = state.gregorianDate,
                                     fontSize = 16.nsp,
                                     textColor = AppTheme.colors.onPrimary
                                 )
@@ -96,7 +97,23 @@ fun MainUI(
     ) {
         NavigationGraph(navController, it)
 
-        DateEditorDialog(this, pref, dateOffset, dateEditorShown).Dialog()
+        DateEditorDialog(
+            shown = state.dateEditorShown,
+            offsetText = state.dateEditorOffsetText,
+            dateText = state.dateEditorDateText,
+            onNextDay = { viewModel.onDateEditorNextDay() },
+            onPreviousDay = { viewModel.onDateEditorPrevDay() },
+            onCancel = { viewModel.onDateEditorCancel() },
+            onSubmit = { viewModel.onDateEditorSubmit() }
+        )
+
+        LaunchedEffect(key1 = state.shouldShowLocationPermissionToast) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.give_location_permission_toast),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 }
 
@@ -114,7 +131,10 @@ fun NavigationGraph(navController: NavHostController, padding: PaddingValues) {
                 navArgument("coordinates") { type = NavType.FloatArrayType}
             )
         ) {
-            HomeUI(navController)
+            HomeUI(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
         }
         composable(
             route = BottomNavItem.Prayers.route,
@@ -123,16 +143,28 @@ fun NavigationGraph(navController: NavHostController, padding: PaddingValues) {
                 navArgument("coordinates") { type = NavType.FloatArrayType}
             )
         ) {
-            PrayersUI(navController)
+            PrayersUI(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
         }
         composable(BottomNavItem.Quran.route) {
-            QuranUI(navController)
+            QuranUI(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
         }
         composable(BottomNavItem.Athkar.route) {
-            AthkarUI(navController)
+            AthkarUI(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
         }
         composable(BottomNavItem.More.route) {
-            MoreUI(navController)
+            MoreUI(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
         }
     }
 }

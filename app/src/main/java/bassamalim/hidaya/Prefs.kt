@@ -40,6 +40,10 @@ sealed class Prefs(val key: String, val default: Any) {
     object PrayerTimesAdjustment: Prefs("high_lat_adjustment_key", "NONE")
     object TelawatPlaybackRecord: Prefs("telawat_playback_record", 0L)
     object QuranPagesRecord: Prefs("quran_pages_record", 0)
+    object AyaReciter: Prefs("aya_reciter", "13")
+    object AyaRepeat: Prefs("aya_repeat", 1)
+    object StopOnSuraEnd: Prefs("stop_on_sura_end", false)
+    object StopOnPageEnd: Prefs("stop_on_page_end", false)
     data class BookChaptersFavs(val bookId: Int): Prefs(
         key = "book${bookId}_favs",
         default = ""

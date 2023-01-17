@@ -12,6 +12,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.activities.AthkarViewer
 import bassamalim.hidaya.activities.QuranViewer
@@ -46,10 +47,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
         Log.i(Global.TAG, "in notification receiver for $pid")
 
-        val defaultType =
-            if (pid == PID.SUNRISE) NotificationType.None
-            else NotificationType.Notification
-        val typeName = PrefUtils.getString(pref, "$pid notification_type", defaultType.name)
+        val typeName = PrefUtils.getString(pref, Prefs.NotificationType(pid))
         type = NotificationType.valueOf(typeName)
 
         if (type != NotificationType.None) prepare()
@@ -136,11 +134,7 @@ class NotificationReceiver : BroadcastReceiver() {
             PID.DAILY_WERD -> {
                 intent = Intent(context, QuranViewer::class.java)
                 intent.action = "by_page"
-                intent.putExtra("page",
-                    PrefUtils.getInt(
-                        pref, "today_werd_page", Random().nextInt(Global.QURAN_PAGES-1)
-                    )
-                )
+                intent.putExtra("page", PrefUtils.getInt(pref, Prefs.TodayWerdPage))
             }
             PID.FRIDAY_KAHF -> {
                 intent = Intent(context, QuranViewer::class.java)
