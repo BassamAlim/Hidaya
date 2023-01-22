@@ -21,14 +21,14 @@ object DBUtils {
         context: Context,
         pref: SharedPreferences = PrefUtils.getPreferences(context)
     ) {
+        val lastVer = PrefUtils.getInt(pref, Prefs.LastDBVersion)
+        if (Global.dbVer > lastVer) reviveDB(context)
+
         try {  // if there is a problem in the db it will cause an error
             getDB(context).suarDao().getFavs()
         } catch (e: Exception) {
             reviveDB(context)
         }
-
-        val lastVer = PrefUtils.getInt(pref, Prefs.LastDBVersion)
-        if (Global.dbVer > lastVer) reviveDB(context)
     }
 
     fun reviveDB(context: Context) {

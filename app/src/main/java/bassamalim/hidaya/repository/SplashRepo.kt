@@ -9,12 +9,18 @@ import bassamalim.hidaya.utils.LocUtils
 import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 
-class LocatorRepo @Inject constructor(
-    private val pref: SharedPreferences,
+class SplashRepo @Inject constructor(
+    val pref: SharedPreferences,
     private val db: AppDatabase
 ) {
 
-    val language = PrefUtils.getString(pref, Prefs.Language)
+    fun getIsFirstTime() = PrefUtils.getBoolean(pref, Prefs.FirstTime)
+
+    fun getLocationType(): LocationType {
+        return LocationType.valueOf(
+            PrefUtils.getString(pref, Prefs.LocationType)
+        )
+    }
 
     fun setLocationType(type: LocationType) {
         pref.edit()

@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AthkarDB
-import bassamalim.hidaya.database.dbs.ThikrsDB
 import bassamalim.hidaya.enum.Language
 import bassamalim.hidaya.utils.PrefUtils
 import com.google.gson.Gson
@@ -16,9 +15,7 @@ class AthkarListRepo @Inject constructor(
     private val gson: Gson
 ) {
 
-    fun getLanguage(): Language {
-        return PrefUtils.getLanguage(pref)
-    }
+    fun getLanguage() = PrefUtils.getLanguage(pref)
 
     fun updateFavorites() {
         val favAthkar = db.athkarDao().getFavs()
@@ -36,9 +33,7 @@ class AthkarListRepo @Inject constructor(
         }
     }
 
-    fun getThikrs(thikrId: Int): List<ThikrsDB> {
-        return db.thikrsDao().getThikrs(thikrId)
-    }
+    fun getThikrs(thikrId: Int) = db.thikrsDao().getThikrs(thikrId)
 
     fun getName(language: Language, category: Int): String {
         return when (language) {

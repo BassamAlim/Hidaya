@@ -11,6 +11,7 @@ import bassamalim.hidaya.enum.NotificationType
 import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.receivers.NotificationReceiver
+import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.PTUtils
 import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
@@ -31,7 +32,7 @@ class Alarms {
         context = gContext
         pref = PrefUtils.getPreferences(context)
 
-        val times = PTUtils.getTimes(context) ?: return
+        val times = PTUtils.getTimes(pref, DBUtils.getDB(context)) ?: return
 
         if (pid.ordinal in 0..5) setPrayerAlarm(pid, times[pid.ordinal])
         else if (pid.ordinal in 6..9) setExtraAlarm(pid)

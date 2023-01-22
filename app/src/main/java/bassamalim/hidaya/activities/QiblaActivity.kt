@@ -54,15 +54,9 @@ class QiblaActivity : AppCompatActivity() {
     private var currentAzimuth = 0F
     private var distance = 0.0
     private var bearing = 0F
-    private var compassAngle = mutableStateOf(0F)
-    private var qiblaAngle = mutableStateOf(0F)
-    private var accuracyState = mutableStateOf(0)
-    private var onPoint = mutableStateOf(false)
-    private val dialogShown = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityUtils.myOnActivityCreated(this)
 
         val distanceStr: String
         if (MainActivity.located) {
@@ -142,133 +136,6 @@ class QiblaActivity : AppCompatActivity() {
         val x = cos(myLatRad) * sin(kaabaLatInRad) -
                 (sin(myLatRad) * cos(kaabaLatInRad) * cos(lngDiff))
         return ((Math.toDegrees(atan2(y, x)) + 360) % 360).toFloat()
-    }
-
-    @Composable
-    private fun UI(distanceStr: String) {
-        MyScaffold(stringResource(R.string.qibla)) {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(top = 20.dp, bottom = 100.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_check),
-                    contentDescription = "",
-                    tint = Color.Green,
-                    modifier = Modifier
-                        .alpha(if (onPoint.value) 1F else 0F)
-                )
-
-                Box(
-                    Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.compass),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .rotate(compassAngle.value)
-                            .padding(horizontal = 10.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.qibla_pointer),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .rotate(qiblaAngle.value)
-                            .padding(bottom = 26.dp)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_qibla_kaaba),
-                        contentDescription = ""
-                    )
-                }
-
-                Row(
-                    Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    MyText(
-                        text = when(accuracyState.value) {
-                            2 -> { stringResource(R.string.medium_accuracy_text) }
-                            0, 1 -> { stringResource(R.string.low_accuracy_text) }
-                            else -> { stringResource(R.string.high_accuracy_text) }
-                        },
-                        modifier = Modifier.padding(horizontal = 12.dp)
-                    )
-
-                    when (accuracyState.value) {
-                        0, 1 -> {
-                            MyIconBtn(
-                                iconId = R.drawable.ic_warning,
-                                description = stringResource(
-                                    id = R.string.accuracy_indicator_description
-                                ),
-                                tint = Color(0xFFE2574C)
-                            ) {
-                                dialogShown.value = true
-                            }
-                        }
-                        else -> {
-                            Box(
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .clip(CircleShape)
-                                    .background(
-                                        if (accuracyState.value == 2) Color(0xFF9FAA17)
-                                        else Color(0xFF1C8818)
-                                    )
-                            )
-                        }
-                    }
-                }
-
-                MyText(
-                    text = distanceStr,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                if (dialogShown.value) CalibrationDialog()
-            }
-        }
-    }
-
-    @Composable
-    private fun CalibrationDialog() {
-        MyDialog(dialogShown) {
-            Column(
-                Modifier.padding(vertical = 20.dp, horizontal = 30.dp)
-            ) {
-                val imageLoader = ImageLoader.Builder(this@QiblaActivity)
-                    .components {
-                        if (SDK_INT >= 28) add(ImageDecoderDecoder.Factory())
-                        else add(GifDecoder.Factory())
-                    }.build()
-
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        ImageRequest.Builder(this@QiblaActivity)
-                            .data(data = R.drawable.compass_calibration)
-                            .apply(block = { size(Size.ORIGINAL) }).build(),
-                        imageLoader = imageLoader
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                )
-
-                MyText(
-                    stringResource(R.string.qibla_warning),
-                    textColor = Color.Red
-                )
-            }
-        }
     }
 
 }

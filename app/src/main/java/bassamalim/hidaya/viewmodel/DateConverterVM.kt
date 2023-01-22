@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DateConverterVM @Inject constructor(
     app: Application,
-    repository: DateConverterRepo
+    private val repository: DateConverterRepo
 ): AndroidViewModel(app) {
 
     private val _uiState = MutableStateFlow(DateConverterState())
@@ -28,7 +28,6 @@ class DateConverterVM @Inject constructor(
     private val context = app.applicationContext
     val hijriCalendar = UmmalquraCalendar()
     private val gregorianCalendar = Calendar.getInstance()
-    private val pref = repository.getPreferences()
     private val hijriMonths = repository.getHijriMonths()
     private val gregorianMonths = repository.getGregorianMonths()
 
@@ -108,14 +107,22 @@ class DateConverterVM @Inject constructor(
     private fun display() {
         _uiState.update { it.copy(
             hijriValues = listOf(
-                LangUtils.translateNums(pref, hijriCalendar[Calendar.YEAR].toString()),
+                LangUtils.translateNums(
+                    repository.pref, hijriCalendar[Calendar.YEAR].toString()
+                ),
                 hijriMonths[hijriCalendar[Calendar.MONTH]],
-                LangUtils.translateNums(pref, hijriCalendar[Calendar.DATE].toString())
+                LangUtils.translateNums(
+                    repository.pref, hijriCalendar[Calendar.DATE].toString()
+                )
             ),
             gregorianValues = listOf(
-                LangUtils.translateNums(pref, gregorianCalendar[Calendar.YEAR].toString()),
+                LangUtils.translateNums(
+                    repository.pref, gregorianCalendar[Calendar.YEAR].toString()
+                ),
                 gregorianMonths[gregorianCalendar[Calendar.MONTH]],
-                LangUtils.translateNums(pref, gregorianCalendar[Calendar.DATE].toString())
+                LangUtils.translateNums(
+                    repository.pref, gregorianCalendar[Calendar.DATE].toString()
+                )
             )
         )}
     }

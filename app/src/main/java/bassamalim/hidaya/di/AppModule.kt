@@ -102,7 +102,16 @@ object AppModule {
     ) = HomeRepo(context, preferences, database)
 
     @Provides @Singleton
-    fun provideLocatorRepository() = LocatorRepo()
+    fun provideLocationPickerRepository(
+        preferences: SharedPreferences,
+        database: AppDatabase
+    ) = LocationPickerRepo(preferences, database)
+
+    @Provides @Singleton
+    fun provideLocatorRepository(
+        preferences: SharedPreferences,
+        database: AppDatabase
+    ) = LocatorRepo(preferences, database)
 
     @Provides @Singleton
     fun provideMainRepository(
@@ -148,6 +157,12 @@ object AppModule {
 
     @Provides @Singleton
     fun provideSettingsRepository() = SettingsRepo()
+
+    @Provides @Singleton
+    fun provideSplashRepository(
+        preferences: SharedPreferences,
+        database: AppDatabase
+    ) = SplashRepo(preferences, database)
 
     @Provides @Singleton
     fun provideTelawatClientRepository() = TelawatClientRepo()

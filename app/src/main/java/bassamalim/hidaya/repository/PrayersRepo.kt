@@ -9,6 +9,7 @@ import bassamalim.hidaya.enum.Language
 import bassamalim.hidaya.enum.LocationType
 import bassamalim.hidaya.enum.NotificationType
 import bassamalim.hidaya.enum.PID
+import bassamalim.hidaya.utils.LocUtils
 import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 
@@ -88,5 +89,7 @@ class PrayersRepo @Inject constructor(
             .putBoolean(Prefs.ShowPrayersTutorial.key, false)
             .apply()
     }
+
+    fun getLocation() = LocUtils.retrieveLocation(pref)
 
 }

@@ -9,8 +9,6 @@ class AboutRepo @Inject constructor(
     private val pref: SharedPreferences
 ) {
 
-    fun getLastUpdate(): String {
-        return PrefUtils.getString(pref, Prefs.LastDailyUpdate)
-    }
+    fun getLastUpdate() = PrefUtils.getString(pref, Prefs.LastDailyUpdate)
 
 }

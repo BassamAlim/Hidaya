@@ -24,11 +24,7 @@ class BookSearcherRepo @Inject constructor(
 
     private val prefix = "/Books/"
     private val books = db.booksDao().getAll()
-    private val language = getLanguage()
-
-    fun getLanguage(): Language {
-        return PrefUtils.getLanguage(pref)
-    }
+    private val language = PrefUtils.getLanguage(pref)
 
     fun getBookContents(): List<Book> {
         val dir = File(context.getExternalFilesDir(null).toString() + prefix)
@@ -67,9 +63,7 @@ class BookSearcherRepo @Inject constructor(
         return selections
     }
 
-    fun getMaxMatchesIndex(): Int {
-        return PrefUtils.getInt(pref, Prefs.BookSearcherMaxMatchesIndex)
-    }
+    fun getMaxMatchesIndex() = PrefUtils.getInt(pref, Prefs.BookSearcherMaxMatchesIndex)
 
     fun getMaxMatchesItems(): Array<String> {
         return if (language == Language.ENGLISH)

@@ -25,10 +25,9 @@ import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.TelawatDB
-import bassamalim.hidaya.dialogs.FilterDialog
 import bassamalim.hidaya.enum.DownloadState
 import bassamalim.hidaya.enum.ListType
-import bassamalim.hidaya.helpers.Keeper
+import bassamalim.hidaya.helpers.LocationKeeper
 import bassamalim.hidaya.models.Reciter
 import bassamalim.hidaya.models.Reciter.RecitationVersion
 import bassamalim.hidaya.ui.components.*
@@ -95,7 +94,7 @@ class TelawatActivity : ComponentActivity() {
     private fun onBack() {
         if (isTaskRoot) {
             val intent = Intent(this, MainActivity::class.java)
-            val location = Keeper(this).retrieveLocation()
+            val location = LocationKeeper(this).retrieveLocation()
             intent.putExtra("located", location != null)
             intent.putExtra("location", location)
             startActivity(intent)

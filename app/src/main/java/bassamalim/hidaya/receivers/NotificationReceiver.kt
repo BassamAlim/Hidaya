@@ -14,9 +14,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
-import bassamalim.hidaya.activities.AthkarViewer
-import bassamalim.hidaya.activities.QuranViewer
-import bassamalim.hidaya.activities.Splash
 import bassamalim.hidaya.enum.NotificationType
 import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.other.Global
@@ -118,6 +115,7 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun onClick(pid: PID?): PendingIntent {
         val intent: Intent
 
+        // replace with deep link and see if it can open the app
         when (pid) {
             PID.MORNING -> {
                 intent = Intent(context, AthkarViewer::class.java)

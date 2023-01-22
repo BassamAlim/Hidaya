@@ -12,10 +12,10 @@ import androidx.core.app.ActivityCompat
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.enum.LocationType
 import bassamalim.hidaya.helpers.Alarms
-import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.PrayersWidget
 import bassamalim.hidaya.utils.DBUtils
+import bassamalim.hidaya.utils.LocUtils
 import bassamalim.hidaya.utils.PTUtils
 import bassamalim.hidaya.utils.PrefUtils
 import com.google.android.gms.location.LocationServices
@@ -78,16 +78,14 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun update(location: Location?) {
-        var loc = location
-        if (loc == null) {
-            loc = Keeper(pref).retrieveLocation()
-            if (loc == null) {
+        if (location == null) {
+            val storedLoc = LocUtils.retrieveLocation(pref)
+            if (storedLoc == null) {
                 Log.e(Global.TAG, "No available location in DailyUpdate")
                 return
             }
         }
-
-        Keeper(pref, loc)
+        else LocUtils.storeLocation(pref, location)
 
         val times = PTUtils.getTimes(pref, DBUtils.getDB(context))!!
 

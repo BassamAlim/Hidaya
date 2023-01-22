@@ -26,13 +26,9 @@ class BooksRepo @Inject constructor(
     private val dir = File(context.getExternalFilesDir(null).toString() + prefix)
     val language = PrefUtils.getLanguage(pref)
 
-    fun getBooks(): List<BooksDB> {
-        return db.booksDao().getAll()
-    }
+    fun getBooks() = db.booksDao().getAll()
 
-    fun getPath(itemId: Int): String {
-        return "$prefix$itemId.json"
-    }
+    fun getPath(itemId: Int) = "$prefix$itemId.json"
 
     fun setDoNotShowAgain() {
         pref.edit()

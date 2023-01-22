@@ -11,7 +11,6 @@ import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.enum.TimeFormat
-import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.other.Global
 import java.text.SimpleDateFormat
@@ -22,7 +21,7 @@ object PTUtils {
     fun getTimes(
         pref: SharedPreferences,
         db: AppDatabase,
-        loc: Location? = Keeper(pref).retrieveLocation(),
+        loc: Location? = LocUtils.retrieveLocation(pref),
         calendar: Calendar = Calendar.getInstance()
     ): Array<Calendar?>? {
         if (loc == null) return null
@@ -36,7 +35,7 @@ object PTUtils {
     fun getStrTimes(
         context: Context,
         pref: SharedPreferences = PrefUtils.getPreferences(context),
-        loc: Location? = Keeper(pref).retrieveLocation(),
+        loc: Location? = LocUtils.retrieveLocation(pref),
         calendar: Calendar = Calendar.getInstance()
     ): ArrayList<String>? {
         if (loc == null) return null

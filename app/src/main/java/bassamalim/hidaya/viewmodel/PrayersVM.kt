@@ -1,18 +1,14 @@
 package bassamalim.hidaya.viewmodel
 
 import android.app.Application
-import android.location.Location
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.Screen
-import bassamalim.hidaya.activities.MainActivity
 import bassamalim.hidaya.enum.LocationType
 import bassamalim.hidaya.enum.NotificationType
 import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.helpers.Alarms
-import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.repository.PrayersRepo
 import bassamalim.hidaya.state.PrayersState
@@ -29,38 +25,37 @@ import javax.inject.Inject
 @HiltViewModel
 class PrayersVM @Inject constructor(
     app: Application,
-    private val repository: PrayersRepo,
-    savedStateHandle: SavedStateHandle
+    private val repository: PrayersRepo
 ): AndroidViewModel(app) {
 
-    private val isLocated = savedStateHandle.get<Boolean>("is_located") ?: false
-    private val coordinates =
-        savedStateHandle.get<FloatArray>("coordinates") ?: floatArrayOf(0f, 0f)
-
     private val context = app.applicationContext
-    private val location = Location("").apply {
-        latitude = coordinates[0].toDouble()
-        longitude = coordinates[1].toDouble()
-    }
+    private val location = repository.getLocation()
     private val prayTimes = PrayTimes(repository.pref)
     private val prayerNames = repository.getPrayerNames()
     private val calendar = Calendar.getInstance()
 
-    private val _uiState = MutableStateFlow(PrayersState(
-        locationName = getLocationName(),
-        prayerTexts = appendNames(getTimes()),
-        notificationTypeIconIDs = getNotificationTypeIconID(getNotificationTypes()),
-        timeOffsetTexts = formatTimeOffsets(getTimeOffsets()),
-        dateText = getDateText()
-    ))
+    private val _uiState = MutableStateFlow(PrayersState())
     val uiState = _uiState.asStateFlow()
 
     fun onStart() {
-        if (isLocated) goToToday()
+        goToToday()
+    }
+
+    private fun updateState(dateOffset: Int = 0) {
+        if (location != null) {
+            _uiState.update { it.copy(
+                locationName = getLocationName(),
+                prayerTexts = appendNames(getTimes()),
+                notificationTypeIconIDs = getNotificationTypeIconID(getNotificationTypes()),
+                timeOffsetTexts = formatTimeOffsets(getTimeOffsets()),
+                dateOffset = dateOffset,
+                dateText = getDateText()
+            )}
+        }
     }
 
     fun goToToday() {
-        getTimes()
+        updateState()
     }
 
     /**
@@ -74,18 +69,16 @@ class PrayersVM @Inject constructor(
         val utcOffset = PTUtils.getUTCOffset(repository.pref, repository.db)
 
         return prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, utcOffset.toDouble(), calendar
+            location!!.latitude, location.longitude, utcOffset.toDouble(), calendar
         )
     }
 
     private fun getLocationName(): String {
-        if (!isLocated) return ""
-
         var countryId = repository.getCountryID()
         var cityId = repository.getCityID()
 
         if (repository.getLocationType() == LocationType.Auto || countryId == -1 || cityId == -1) {
-            val closest = repository.getClosest(location.latitude, location.longitude)
+            val closest = repository.getClosest(location!!.latitude, location.longitude)
             countryId = closest.countryId
             cityId = closest.id
         }
@@ -97,7 +90,7 @@ class PrayersVM @Inject constructor(
     }
 
     fun previousDay() {
-        if (isLocated) {
+        if (location != null) {
             _uiState.update { it.copy(
                 dateOffset = it.dateOffset - 1,
                 dateText = getDateText()
@@ -106,7 +99,7 @@ class PrayersVM @Inject constructor(
     }
 
     fun nextDay() {
-        if (isLocated) {
+        if (location != null) {
             _uiState.update { it.copy(
                 dateOffset = it.dateOffset + 1,
                 dateText = getDateText()
@@ -182,7 +175,7 @@ class PrayersVM @Inject constructor(
     }
 
     fun onPrayerClick(pid: PID) {
-        if (isLocated) {
+        if (location != null) {
             _uiState.update { it.copy(
                 isSettingsDialogShown = true,
                 settingsDialogPID = pid
@@ -204,7 +197,7 @@ class PrayersVM @Inject constructor(
         )}
         repository.setNotificationType(_uiState.value.settingsDialogPID, notificationType)
 
-        Alarms(context, _uiState.value.settingsDialogPID)
+        updatePrayerTimeAlarms()
     }
 
     fun onTimeOffsetChange(timeOffset: Int) {
@@ -213,7 +206,7 @@ class PrayersVM @Inject constructor(
         )}
         repository.setTimeOffset(_uiState.value.settingsDialogPID, timeOffset)
 
-        Alarms(context, _uiState.value.settingsDialogPID)
+        updatePrayerTimeAlarms()
     }
 
     fun onSettingsDialogDismiss() {
@@ -221,7 +214,10 @@ class PrayersVM @Inject constructor(
             isSettingsDialogShown = false
         )}
 
-        Keeper(repository.pref, MainActivity.location!!)
+        updatePrayerTimeAlarms()
+    }
+
+    private fun updatePrayerTimeAlarms() {
         Alarms(context, _uiState.value.settingsDialogPID)
     }
 

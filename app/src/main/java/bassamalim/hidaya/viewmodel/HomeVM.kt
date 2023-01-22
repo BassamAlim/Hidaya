@@ -2,7 +2,6 @@ package bassamalim.hidaya.viewmodel
 
 import android.location.Location
 import android.os.CountDownTimer
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.Screen
@@ -20,19 +19,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeVM @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val repository: HomeRepo
 ): ViewModel() {
-
-    private val isLocated = savedStateHandle.get<Boolean>("is_located") ?: false
-    private val coordinates =
-        savedStateHandle.get<FloatArray>("coordinates") ?: floatArrayOf(0f, 0f)
 
     private val _uiState = MutableStateFlow(HomeState(
         telawatRecord = getTelawatRecord(),
         quranPagesRecord = getQuranPagesRecord(),
         todayWerdPage = getTodayWerdPage(),
-        isWerdDone = repository.isWerdDone()
+        isWerdDone = repository.getIsWerdDone()
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -53,13 +47,13 @@ class HomeVM @Inject constructor(
         private set
 
     fun onStart() {
-        if (isLocated) setupPrayersCard()
+        if (repository.getLocation() != null) setupPrayersCard()
 
         _uiState.update { it.copy(
             telawatRecord = getTelawatRecord(),
             quranPagesRecord = getQuranPagesRecord(),
             todayWerdPage = getTodayWerdPage(),
-            isWerdDone = repository.isWerdDone()
+            isWerdDone = repository.getIsWerdDone()
         )}
     }
 
@@ -77,11 +71,7 @@ class HomeVM @Inject constructor(
     }
 
     private fun setupPrayersCard() {
-        val location = Location("")
-        location.latitude = coordinates[0].toDouble()
-        location.longitude = coordinates[1].toDouble()
-
-        getTimes(location)
+        getTimes(repository.getLocation()!!)
         setupUpcomingPrayer()
     }
 

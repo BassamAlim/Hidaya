@@ -20,6 +20,7 @@ sealed class Screen(val route: String) {
     object Books: Screen("books")
     object BookViewer: Screen("book_viewer")
     object DateConverter: Screen("date_converter")
+    object LocationPicker: Screen("location_picker")
     object Locator: Screen("locator")
     object Main: Screen("main")
     object Qibla: Screen("qibla")
@@ -30,6 +31,7 @@ sealed class Screen(val route: String) {
     object QuranViewer: Screen("quran_viewer")
     object RadioClient: Screen("radio_client")
     object Settings: Screen("settings")
+    object Splash: Screen("splash")
     object TelawatClient: Screen("telawat_client")
     object Telawat: Screen("telawat")
     object TelawatSuar: Screen("telawat_suar")
@@ -135,10 +137,17 @@ fun Navigator(context: Context) {
             )
         }
 
+        composable(Screen.LocationPicker.route) {
+            LocationPickerUI(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
+        }
+
         composable(
             route = Screen.Locator.route,
             arguments = listOf(
-                navArgument("action") { type = NavType.StringType }
+                navArgument("type") { type = NavType.StringType }
             )
         ) {
             LocatorUI(
@@ -147,13 +156,7 @@ fun Navigator(context: Context) {
             )
         }
 
-        composable(
-            route = Screen.Main.route,
-            arguments = listOf(
-                navArgument("is_located") { type = NavType.BoolType },
-                navArgument("coordinates") { type = NavType.FloatArrayType}
-            )
-        ) {
+        composable(Screen.Main.route) {
             MainUI(
                 navController = navController,
                 viewModel = hiltViewModel()
@@ -211,6 +214,13 @@ fun Navigator(context: Context) {
 
         composable(Screen.Settings.route) {
             SettingsUI(
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
+        }
+
+        composable(Screen.Splash.route) {
+            SplashUI(
                 navController = navController,
                 viewModel = hiltViewModel()
             )

@@ -4,12 +4,10 @@ import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
-import bassamalim.hidaya.R
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.repository.AboutRepo
 import bassamalim.hidaya.state.AboutState
@@ -53,10 +51,9 @@ class AboutVM @Inject constructor(
 
         DBUtils.reviveDB(context)
 
-        Toast.makeText(
-            context, context.getString(R.string.database_rebuilt),
-            Toast.LENGTH_SHORT
-        ).show()
+        _uiState.update { it.copy(
+            shouldShowRebuiltToast = true
+        )}
     }
 
     fun quickUpdate() {

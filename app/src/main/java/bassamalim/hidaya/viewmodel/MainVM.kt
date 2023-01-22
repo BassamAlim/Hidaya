@@ -4,12 +4,9 @@ import android.app.Application
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.SavedStateHandle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.helpers.Alarms
-import bassamalim.hidaya.helpers.Keeper
 import bassamalim.hidaya.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.receivers.DeviceBootReceiver
 import bassamalim.hidaya.repository.MainRepo
@@ -30,13 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainVM @Inject constructor(
     app: Application,
-    savedStateHandle: SavedStateHandle,
     private val repository: MainRepo
 ): AndroidViewModel(app) {
-
-    private val isLocated = savedStateHandle.get<Boolean>("is_located") ?: false
-    private val coordinates =
-        savedStateHandle.get<FloatArray>("coordinates") ?: floatArrayOf(0f, 0f)
 
     private val _uiState = MutableStateFlow(MainState(
         hijriDate = getHijriDate(),
@@ -45,13 +37,9 @@ class MainVM @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     private val context = app.applicationContext
-    private val location = Location("")
     private var dateOffset = repository.getDateOffset()
 
     init {
-        location.latitude = coordinates[0].toDouble()
-        location.longitude = coordinates[1].toDouble()
-
         initFirebase()
 
         dailyUpdate()
@@ -79,12 +67,11 @@ class MainVM @Inject constructor(
     }
 
     private fun setAlarms() {
-        if (isLocated) {
-            Keeper(repository.pref, location)
+        val location = repository.getLocation()
+        if (location != null) {
             val times = PTUtils.getTimes(
                 repository.pref,
-                DBUtils.getDB(context),
-                location
+                DBUtils.getDB(context)
             )!!
             Alarms(context, times)
         }

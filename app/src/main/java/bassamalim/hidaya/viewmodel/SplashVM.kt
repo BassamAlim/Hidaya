@@ -2,19 +2,23 @@ package bassamalim.hidaya.viewmodel
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Application
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import bassamalim.hidaya.Screen
 import bassamalim.hidaya.enum.LocationType
-import bassamalim.hidaya.repository.LocatorRepo
-import bassamalim.hidaya.state.LocatorState
+import bassamalim.hidaya.repository.SplashRepo
+import bassamalim.hidaya.services.AthanService
+import bassamalim.hidaya.state.SplashState
+import bassamalim.hidaya.utils.ActivityUtils
+import bassamalim.hidaya.utils.DBUtils
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,23 +27,28 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class LocatorVM @Inject constructor(
+class SplashVM @Inject constructor(
     app: Application,
-    private val repository: LocatorRepo,
-    savedStateHandle: SavedStateHandle
+    private val repository: SplashRepo
 ): AndroidViewModel(app) {
 
-    private val type = savedStateHandle.get<String>("type") ?: "normal"
-
-    private val _uiState = MutableStateFlow(LocatorState(
-        showSkipLocationBtn = type == "initial"
-    ))
+    private val _uiState = MutableStateFlow(SplashState())
     val uiState = _uiState.asStateFlow()
 
     private val context = app.applicationContext
     private lateinit var navController: NavController
     private lateinit var locationRequestLauncher:
             ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
+
+    init {
+        // stop athan if it is running
+        context.stopService(Intent(context, AthanService::class.java))
+
+        DBUtils.testDB(context, repository.pref)
+
+        ActivityUtils.onActivityCreateSetTheme(context)
+        ActivityUtils.onActivityCreateSetLocale(context as Activity)
+    }
 
     fun provide(
         navController: NavController,
@@ -49,28 +58,58 @@ class LocatorVM @Inject constructor(
         this.locationRequestLauncher = locationRequestLauncher
     }
 
+    private fun getLocationAndLaunch() {
+        if (repository.getLocationType() == LocationType.Auto) {
+            if (granted()) locate()
+            else {
+                locationRequestLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
+            }
+        }
+        else launch(null)
+    }
+
+    fun enter() {
+        if (repository.getIsFirstTime()) welcome()
+        else getLocationAndLaunch()
+    }
+
+    private fun welcome() {
+        navController.navigate(Screen.Welcome.route) {
+            popUpTo(Screen.Welcome.route) {
+                inclusive = true
+            }
+        }
+    }
+
     private fun granted(): Boolean {
         return ActivityCompat.checkSelfPermission(
             context, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(
-                    context, Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
+        ) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     @SuppressLint("MissingPermission")
     private fun locate() {
         LocationServices.getFusedLocationProviderClient(context)
             .lastLocation.addOnSuccessListener { location: Location? ->
-                if (location != null) repository.storeLocation(location)
-
-                launch()
+                launch(location)
             }
 
         background()
     }
 
-    private fun launch() {
+    private fun launch(location: Location?) {
+        if (location != null) {
+            repository.storeLocation(location)
+        }
+
         navController.navigate(Screen.Main.route) {
             popUpTo(Screen.Main.route) {
                 inclusive = true
@@ -82,42 +121,16 @@ class LocatorVM @Inject constructor(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             ActivityCompat.checkSelfPermission(
                 context, Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED) {
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             _uiState.update { it.copy(
-                showAllowLocationToast = true
+                showAllowLocationToastShown = true
             )}
 
-            locationRequestLauncher.launch(arrayOf(
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ))
+            locationRequestLauncher.launch(
+                arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            )
         }
-    }
-
-    fun onLocateClick() {
-        repository.setLocationType(LocationType.Auto)
-
-        if (granted()) {
-            locate()
-            background()
-        }
-        else {
-            locationRequestLauncher.launch(arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ))
-        }
-    }
-
-    fun onChooseLocationClick() {
-        repository.setLocationType(LocationType.Manual)
-
-        navController.navigate(Screen.LocationPicker.route)
-    }
-
-    fun onSkipLocationClick() {
-        repository.setLocationType(LocationType.None)
-
-        launch()
     }
 
     fun onLocationRequestResult(result: Map<String, Boolean>) {
@@ -126,10 +139,13 @@ class LocatorVM @Inject constructor(
 
         if (result[Manifest.permission.ACCESS_FINE_LOCATION]!! &&
             result[Manifest.permission.ACCESS_COARSE_LOCATION]!!) {
+            repository.setLocationType(LocationType.Auto)
+
             locate()
+
             background()
         }
-        else launch()
+        else launch(null)
     }
 
 }

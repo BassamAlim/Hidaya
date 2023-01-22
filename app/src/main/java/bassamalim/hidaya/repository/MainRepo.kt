@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
+import bassamalim.hidaya.utils.LocUtils
 import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 
@@ -14,9 +15,7 @@ class MainRepo @Inject constructor(
 
     val numeralsLanguage = PrefUtils.getNumeralsLanguage(pref)
 
-    fun getDateOffset(): Int {
-        return PrefUtils.getInt(pref, Prefs.DateOffset)
-    }
+    fun getDateOffset() = PrefUtils.getInt(pref, Prefs.DateOffset)
 
     fun updateDateOffset(offset: Int) {
         pref.edit()
@@ -35,5 +34,7 @@ class MainRepo @Inject constructor(
     fun getGregorianMonths(): Array<String> {
         return context.resources.getStringArray(R.array.gregorian_months)
     }
+
+    fun getLocation() = LocUtils.retrieveLocation(pref)
 
 }

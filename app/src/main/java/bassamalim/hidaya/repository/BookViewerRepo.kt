@@ -15,9 +15,7 @@ class BookViewerRepo @Inject constructor(
     private val gson: Gson
 ) {
 
-    fun getTextSize(): Float {
-        return PrefUtils.getFloat(pref, Prefs.BooksTextSize)
-    }
+    fun getTextSize() = PrefUtils.getFloat(pref, Prefs.BooksTextSize)
 
     fun updateTextSize(textSize: Float) {
         pref.edit()

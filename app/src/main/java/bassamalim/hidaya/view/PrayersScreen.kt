@@ -19,7 +19,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.dialogs.PrayerDialog
 import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.state.PrayersState
 import bassamalim.hidaya.ui.components.*

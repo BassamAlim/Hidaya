@@ -16,11 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import bassamalim.hidaya.R
 import bassamalim.hidaya.dialogs.DateEditorDialog
 import bassamalim.hidaya.ui.components.BottomNavItem
@@ -124,25 +122,13 @@ fun NavigationGraph(navController: NavHostController, padding: PaddingValues) {
         startDestination = BottomNavItem.Home.route,
         modifier = Modifier.padding(padding)
     ) {
-        composable(
-            route = BottomNavItem.Home.route,
-            arguments = listOf(
-                navArgument("is_located") { type = NavType.BoolType },
-                navArgument("coordinates") { type = NavType.FloatArrayType}
-            )
-        ) {
+        composable(BottomNavItem.Home.route) {
             HomeUI(
                 navController = navController,
                 viewModel = hiltViewModel()
             )
         }
-        composable(
-            route = BottomNavItem.Prayers.route,
-            arguments = listOf(
-                navArgument("is_located") { type = NavType.BoolType },
-                navArgument("coordinates") { type = NavType.FloatArrayType}
-            )
-        ) {
+        composable(BottomNavItem.Prayers.route) {
             PrayersUI(
                 navController = navController,
                 viewModel = hiltViewModel()
