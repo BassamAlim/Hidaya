@@ -6,7 +6,10 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 
-class Compass(context: Context, private var listener: CompassListener) : SensorEventListener {
+class Compass(
+    context: Context,
+    private var listener: CompassListener
+) : SensorEventListener {
 
     private val sensorManager: SensorManager
     private val mSensor: Sensor

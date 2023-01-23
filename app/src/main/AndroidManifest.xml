@@ -29,24 +29,14 @@
         android:theme="@style/Theme.HidayaL">
 
         <activity
-            android:name=".activities.Splash"
-            android:exported="true"
-            android:theme="@style/SplashTheme">
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.TelawatClient"
-            android:launchMode="singleTop" />
+
         <activity
             android:name=".activities.TvActivity"
             android:exported="true">
@@ -54,12 +44,13 @@
                 <action android:name="com.google.android.youtube.api.service.START" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activities.TelawatClient"
+            android:launchMode="singleTop" />
         <activity
             android:name=".activities.RadioClient"
             android:launchMode="singleTop" />
-        <activity
-            android:name=".activities.LocationActivity"
-            android:exported="false" />
 
         <receiver android:name=".receivers.NotificationReceiver" />
         <receiver android:name=".receivers.DailyUpdateReceiver" />

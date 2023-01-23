@@ -1,6 +1,5 @@
 package bassamalim.hidaya
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -8,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import bassamalim.hidaya.utils.PrefUtils
 import bassamalim.hidaya.view.*
 
 sealed class Screen(val route: String) {
@@ -44,16 +42,11 @@ sealed class Screen(val route: String) {
 }
 
 @Composable
-fun Navigator(context: Context) {
-    val pref = PrefUtils.getPreferences(context)
-    val isFirstTime = PrefUtils.getBoolean(pref, Prefs.FirstTime)
-
+fun Navigator() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination =
-            if (isFirstTime) Screen.Welcome.route
-            else Screen.Main.route
+        startDestination = Screen.Splash.route
     ) {
         composable(
             Screen.About.route
