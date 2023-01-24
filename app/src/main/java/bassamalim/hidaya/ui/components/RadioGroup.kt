@@ -14,7 +14,7 @@ import bassamalim.hidaya.ui.theme.nsp
 @Composable
 fun RadioGroup(
     options: List<String>,
-    selection: MutableState<Int>,
+    selection: Int,
     modifier: Modifier = Modifier,
     onSelect: (Int) -> Unit
 ) {
@@ -27,11 +27,11 @@ fun RadioGroup(
             MyButton(
                 text = text,
                 textColor =
-                    if (index == selection.value) AppTheme.colors.accent
+                    if (index == selection) AppTheme.colors.accent
                     else AppTheme.colors.text,
                 innerPadding = PaddingValues(vertical = 10.dp),
                 modifier =
-                    if (index == selection.value)
+                    if (index == selection)
                         Modifier
                             .fillMaxWidth()
                             .padding(vertical = 10.dp, horizontal = 16.dp)
@@ -45,7 +45,6 @@ fun RadioGroup(
                             .fillMaxWidth()
                             .padding(vertical = 10.dp, horizontal = 16.dp)
             ) {
-                selection.value = index
                 onSelect(index)
             }
         }

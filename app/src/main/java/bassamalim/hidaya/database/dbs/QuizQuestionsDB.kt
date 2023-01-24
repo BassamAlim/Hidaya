@@ -11,6 +11,7 @@ class QuizQuestionsDB(
     @field:ColumnInfo(name = "question_text") private val questionText: String?,
     @field:ColumnInfo(name = "correct_answer_id") private val correctAnswerId: Int
 ) : Serializable {
+
     fun getQuestionId(): Int {
         return questionId
     }

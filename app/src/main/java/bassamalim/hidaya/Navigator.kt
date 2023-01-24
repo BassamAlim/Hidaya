@@ -170,7 +170,14 @@ fun Navigator() {
             )
         }
 
-        composable(Screen.QuizResult.route) {
+        composable(
+            route = Screen.QuizResult.route,
+            arguments = listOf(
+                navArgument("score") { type = NavType.IntType },
+                navArgument("questions") { type = NavType.StringArrayType },
+                navArgument("chosenAs") { type = NavType.IntArrayType }
+            )
+        ) {
             QuizResultUI(
                 navController = navController,
                 viewModel = hiltViewModel()

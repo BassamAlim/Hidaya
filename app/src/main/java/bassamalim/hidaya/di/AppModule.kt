@@ -127,13 +127,16 @@ object AppModule {
     ) = PrayersRepo(context, preferences, database)
 
     @Provides @Singleton
-    fun provideQiblaRepository() = QiblaRepo()
+    fun provideQiblaRepository(
+        preferences: SharedPreferences
+    ) = QiblaRepo(preferences)
 
     @Provides @Singleton
-    fun provideQuizLobbyRepository() = QuizLobbyRepo()
-
-    @Provides @Singleton
-    fun provideQuizRepository() = QuizRepo()
+    fun provideQuizRepository(
+        context: Context,
+        preferences: SharedPreferences,
+        database: AppDatabase
+    ) = QuizRepo(context, preferences, database)
 
     @Provides @Singleton
     fun provideQuizResultRepository() = QuizResultRepo()
