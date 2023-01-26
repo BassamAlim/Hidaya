@@ -47,6 +47,7 @@ import bassamalim.hidaya.ui.theme.uthmanic
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PrefUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
@@ -315,7 +316,7 @@ class QuranViewer : AppCompatActivity() {
 
                         MyText(
                             text = "${getString(R.string.page)} " +
-                                    LangUtils.translateNums(
+                                    translateNums(
                                         this@QuranViewer, currentPage.value.toString()
                                     ),
                             fontSize = 18.nsp,
@@ -325,7 +326,7 @@ class QuranViewer : AppCompatActivity() {
 
                         MyText(
                             text = "${getString(R.string.juz)} " +
-                                    LangUtils.translateNums(
+                                    translateNums(
                                         this@QuranViewer, currentJuz.toString()
                                     ),
                             fontSize = 18.nsp,

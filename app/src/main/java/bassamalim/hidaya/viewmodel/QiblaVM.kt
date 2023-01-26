@@ -11,6 +11,7 @@ import bassamalim.hidaya.helpers.Compass
 import bassamalim.hidaya.repository.QiblaRepo
 import bassamalim.hidaya.state.QiblaState
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,7 +40,7 @@ class QiblaVM @Inject constructor(
     init {
         if (location != null) {
             _uiState.update { it.copy(
-                distanceToKaaba = LangUtils.translateNums(
+                distanceToKaaba = translateNums(
                     repository.numeralsLanguage(),
                     getDistance().toString()
                 )

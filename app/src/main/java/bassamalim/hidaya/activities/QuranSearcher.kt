@@ -28,6 +28,7 @@ import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PrefUtils
 import java.util.regex.Pattern
 
@@ -191,20 +192,18 @@ class QuranSearcher : ComponentActivity() {
 
                                         MyText(
                                             "${stringResource(R.string.page)} " +
-                                                    LangUtils.translateNums(
+                                                    translateNums(
                                                         this@QuranSearcher,
-                                                        item.pageNum.toString(),
-                                                        false
+                                                        item.pageNum.toString()
                                                     )
                                         )
                                     }
 
                                     MyText(
                                         text = "${stringResource(R.string.aya_number)} " +
-                                            LangUtils.translateNums(
+                                            translateNums(
                                                 this@QuranSearcher,
-                                                item.ayaNum.toString(),
-                                                false
+                                                item.ayaNum.toString()
                                             ),
                                         modifier = Modifier.padding(6.dp)
                                     )

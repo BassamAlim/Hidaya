@@ -9,6 +9,7 @@ import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.repository.HomeRepo
 import bassamalim.hidaya.state.HomeState
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PTUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -140,7 +141,7 @@ class HomeVM @Inject constructor(
                 )
 
                 _uiState.update { it.copy(
-                    remainingTime = LangUtils.translateNums(
+                    remainingTime = translateNums(
                         numeralsLanguage = numeralsLanguage,
                         string = hms,
                         timeFormat = true
@@ -178,7 +179,7 @@ class HomeVM @Inject constructor(
         val minutes = millis / (60 * 1000) % 60
         val seconds = millis / 1000 % 60
 
-        return LangUtils.translateNums(
+        return translateNums(
             numeralsLanguage,
             String.format(
                 Locale.US, "%02d:%02d:%02d",
@@ -188,14 +189,14 @@ class HomeVM @Inject constructor(
     }
 
     private fun getQuranPagesRecord(): String {
-        return LangUtils.translateNums(
+        return translateNums(
             numeralsLanguage = numeralsLanguage,
             string = repository.getQuranPagesRecord().toString()
         )
     }
 
     private fun getTodayWerdPage(): String {
-        return LangUtils.translateNums(
+        return translateNums(
             numeralsLanguage = numeralsLanguage,
             string = repository.getTodayWerdPage().toString()
         )

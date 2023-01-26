@@ -8,6 +8,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.repository.DateConverterRepo
 import bassamalim.hidaya.state.DateConverterState
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -107,20 +108,20 @@ class DateConverterVM @Inject constructor(
     private fun display() {
         _uiState.update { it.copy(
             hijriValues = listOf(
-                LangUtils.translateNums(
+                translateNums(
                     repository.pref, hijriCalendar[Calendar.YEAR].toString()
                 ),
                 hijriMonths[hijriCalendar[Calendar.MONTH]],
-                LangUtils.translateNums(
+                translateNums(
                     repository.pref, hijriCalendar[Calendar.DATE].toString()
                 )
             ),
             gregorianValues = listOf(
-                LangUtils.translateNums(
+                translateNums(
                     repository.pref, gregorianCalendar[Calendar.YEAR].toString()
                 ),
                 gregorianMonths[gregorianCalendar[Calendar.MONTH]],
-                LangUtils.translateNums(
+                translateNums(
                     repository.pref, gregorianCalendar[Calendar.DATE].toString()
                 )
             )

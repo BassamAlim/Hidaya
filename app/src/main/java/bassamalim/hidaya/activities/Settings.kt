@@ -29,6 +29,7 @@ import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PTUtils
 import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
@@ -57,22 +58,22 @@ class Settings : ComponentActivity() {
     }
 
     private fun setSummaries() {
-        morningSummary.value = LangUtils.translateNums(this, PTUtils.formatTime(
+        morningSummary.value = translateNums(this, PTUtils.formatTime(
             this, "${PrefUtils.getInt(pref, "${PID.MORNING} hour", 5)}:" +
                     "${PrefUtils.getInt(pref, "${PID.MORNING} minute", 0)}"
         ), true)
 
-        eveningSummary.value = LangUtils.translateNums(this, PTUtils.formatTime(
+        eveningSummary.value = translateNums(this, PTUtils.formatTime(
             this, "${PrefUtils.getInt(pref, "${PID.EVENING} hour", 16)}:" +
                     "${PrefUtils.getInt(pref, "${PID.EVENING} minute", 0)}"
         ), true)
 
-        werdSummary.value = LangUtils.translateNums(this, PTUtils.formatTime(
+        werdSummary.value = translateNums(this, PTUtils.formatTime(
             this, "${PrefUtils.getInt(pref, "${PID.DAILY_WERD} hour", 21)}:" +
                     "${PrefUtils.getInt(pref, "${PID.DAILY_WERD} minute", 0)}"
         ), true)
 
-        kahfSummary.value = LangUtils.translateNums(this, PTUtils.formatTime(
+        kahfSummary.value = translateNums(this, PTUtils.formatTime(
             this, "${PrefUtils.getInt(pref, "${PID.FRIDAY_KAHF} hour", 13)}:" +
                     "${PrefUtils.getInt(pref, "${PID.FRIDAY_KAHF} minute", 0)}"
         ), true)
@@ -90,7 +91,7 @@ class Settings : ComponentActivity() {
 
         val timePicker = TimePickerDialog(this,
             { _: TimePicker?, hourOfDay: Int, minute: Int ->
-                summary.value = LangUtils.translateNums(this, PTUtils.formatTime(
+                summary.value = translateNums(this, PTUtils.formatTime(
                     this, "$hourOfDay:$minute"
                 ), true)
 
@@ -280,7 +281,7 @@ class Settings : ComponentActivity() {
 
                 // Time format
                 val timeFormatEntries = stringArrayResource(R.array.time_format_values).map {
-                    LangUtils.translateNums(context, it)
+                    translateNums(context, it)
                 }.toTypedArray()
                 ListPref(
                     pref = pref,

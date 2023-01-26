@@ -7,7 +7,7 @@ import bassamalim.hidaya.Screen
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB
 import bassamalim.hidaya.repository.QuizRepo
 import bassamalim.hidaya.state.QuizState
-import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -67,7 +67,7 @@ class QuizVM @Inject constructor(
         navController.navigate(
             Screen.QuizResult.withArgs(
                 score.toString(),
-                questions.toString(), //  as Serializable?
+                questions.map { q -> q.getQuestionId() }.toIntArray().toString(),
                 chosenAs.toString()
             )
         ) {
@@ -105,7 +105,7 @@ class QuizVM @Inject constructor(
 
         _uiState.update { it.copy(
             questionNumText =
-            "$questionStr ${LangUtils.translateNums(numeralsLanguage, (current + 1).toString())}",
+            "$questionStr ${translateNums(numeralsLanguage, (current + 1).toString())}",
             question = question.getQuestionText(),
             answers = answers.map { a -> a.answer_text!! },
             selection = chosenAs[current],

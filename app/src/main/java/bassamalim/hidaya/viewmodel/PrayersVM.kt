@@ -13,6 +13,7 @@ import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.repository.PrayersRepo
 import bassamalim.hidaya.state.PrayersState
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PTUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -113,12 +114,12 @@ class PrayersVM @Inject constructor(
             val hijri = UmmalquraCalendar()
             hijri.time = calendar.time
 
-            val year = LangUtils.translateNums(
-                repository.numeralsLanguage, hijri[Calendar.YEAR].toString(), false
+            val year = translateNums(
+                repository.numeralsLanguage, hijri[Calendar.YEAR].toString()
             )
             val month = repository.getHijriMonths()[hijri[Calendar.MONTH]]
-            val day = LangUtils.translateNums(
-                repository.numeralsLanguage, hijri[Calendar.DATE].toString(), false
+            val day = translateNums(
+                repository.numeralsLanguage, hijri[Calendar.DATE].toString()
             )
 
             "$day $month $year"
@@ -137,9 +138,9 @@ class PrayersVM @Inject constructor(
         offsets.forEach { offset ->
             result.add(
                 if (offset > 0)
-                    LangUtils.translateNums(repository.numeralsLanguage, "+$offset")
+                    translateNums(repository.numeralsLanguage, "+$offset")
                 else if (offset < 0)
-                    LangUtils.translateNums(repository.numeralsLanguage, offset.toString())
+                    translateNums(repository.numeralsLanguage, offset.toString())
                 else ""
             )
         }

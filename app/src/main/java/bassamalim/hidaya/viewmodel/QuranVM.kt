@@ -11,6 +11,7 @@ import bassamalim.hidaya.models.Sura
 import bassamalim.hidaya.repository.QuranRepo
 import bassamalim.hidaya.state.QuranState
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -66,7 +67,7 @@ class QuranVM @Inject constructor(
         else {
             "${repository.getBookmarkedPageStr()} " +
                     "${repository.getPageStr()} " +
-                    "${LangUtils.translateNums(
+                    "${translateNums(
                         repository.getNumeralsLanguage(), bookmarkedPage.toString()
                     )}, " +
                     "${repository.getSuraStr()} ${repository.getSuraNames()[bookmarkedSura]}"

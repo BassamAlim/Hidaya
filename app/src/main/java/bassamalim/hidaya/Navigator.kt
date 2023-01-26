@@ -174,7 +174,7 @@ fun Navigator() {
             route = Screen.QuizResult.route,
             arguments = listOf(
                 navArgument("score") { type = NavType.IntType },
-                navArgument("questions") { type = NavType.StringArrayType },
+                navArgument("questions") { type = NavType.IntArrayType },
                 navArgument("chosenAs") { type = NavType.IntArrayType }
             )
         ) {

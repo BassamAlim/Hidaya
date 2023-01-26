@@ -21,7 +21,7 @@ import bassamalim.hidaya.ui.components.MyImageButton
 import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.ui.theme.nsp
-import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PrefUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -82,14 +82,14 @@ class HijriDatePickerDialog(
                     ) {
                         // year
                         MyText(
-                            text = LangUtils.translateNums(pref, selected[0].toString()),
+                            text = translateNums(pref, selected[0].toString()),
                             fontSize = 18.sp,
                             textColor = AppTheme.colors.onPrimary
                         )
 
                         // main text
                         val mainText = "${weekDays[selected[3]]}$divider " +
-                                "${LangUtils.translateNums(pref, selected[2].toString())} " +
+                                "${translateNums(pref, selected[2].toString())} " +
                                 months[selected[1]]
                         MyText(
                             text = mainText,
@@ -124,7 +124,7 @@ class HijriDatePickerDialog(
                     val absMonth = minYear * 12 + pagerState.currentPage
                     MyText(
                         "${months[absMonth % 12]} " +
-                                LangUtils.translateNums(pref, (absMonth / 12).toString()),
+                                translateNums(pref, (absMonth / 12).toString()),
                         Modifier.width(150.dp)
                     )
 
@@ -214,7 +214,7 @@ class HijriDatePickerDialog(
                                         && value.toInt() == selected[2]
 
                                 MyText(
-                                    LangUtils.translateNums(pref, value),
+                                    translateNums(pref, value),
                                     textColor =
                                         if (isSelected) AppTheme.colors.onPrimary
                                         else AppTheme.colors.text,

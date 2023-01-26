@@ -13,6 +13,7 @@ import bassamalim.hidaya.repository.MainRepo
 import bassamalim.hidaya.state.MainState
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PTUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -97,14 +98,14 @@ class MainVM @Inject constructor(
 
         val hMonth = repository.getHijriMonths()[hijri[Calendar.MONTH]]
         val hijriStr = "$hDayName ${hijri[Calendar.DATE]} $hMonth ${hijri[Calendar.YEAR]}"
-        return LangUtils.translateNums(repository.numeralsLanguage, hijriStr)
+        return translateNums(repository.numeralsLanguage, hijriStr)
     }
 
     private fun getGregorianDate(): String {
         val gregorian = Calendar.getInstance()
         val mMonth = repository.getGregorianMonths()[gregorian[Calendar.MONTH]]
         val gregorianStr = "${gregorian[Calendar.DATE]} $mMonth ${gregorian[Calendar.YEAR]}"
-        return LangUtils.translateNums(repository.numeralsLanguage, gregorianStr)
+        return translateNums(repository.numeralsLanguage, gregorianStr)
     }
 
     private fun setupBootReceiver() {
@@ -131,7 +132,7 @@ class MainVM @Inject constructor(
         cal.timeInMillis = cal.timeInMillis + dateOffset * millisInDay
 
         // update tvs
-        val dateText = LangUtils.translateNums(
+        val dateText = translateNums(
             context,
             "${cal[Calendar.DATE]}/${cal[Calendar.MONTH] + 1}/${cal[Calendar.YEAR]}"
         )
@@ -140,7 +141,7 @@ class MainVM @Inject constructor(
         if (dateOffset != 0) {
             var offsetStr = dateOffset.toString()
             if (dateOffset > 0) offsetStr = "+$offsetStr"
-            offsetText = LangUtils.translateNums(context, offsetStr)
+            offsetText = translateNums(context, offsetStr)
         }
 
         _uiState.update { it.copy(

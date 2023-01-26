@@ -5,6 +5,7 @@ import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.enum.TimeFormat
 import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 import kotlin.math.*
@@ -87,7 +88,7 @@ class PrayTimes(
 
         val numeralsLanguage = PrefUtils.getNumeralsLanguage(pref)
         for (i in times.indices)
-            times[i] = LangUtils.translateNums(numeralsLanguage, times[i], true)
+            times[i] = translateNums(numeralsLanguage, times[i], true)
 
         return times
     }
