@@ -29,6 +29,7 @@ sealed class Prefs(val key: String, val default: Any) {
     object CityID: Prefs("city_id", -1)
     object SelectedSearchBooks: Prefs("selected_search_books", "")
     object BookSearcherMaxMatchesIndex: Prefs("books_searcher_max_matches_index", 0)
+    object QuranSearcherMaxMatchesIndex: Prefs("quran_searcher_max_matches_index", 0)
     object TodayWerdPage: Prefs("today_werd_page", 25)
     object WerdDone: Prefs("werd_done", false)
     object ShowBooksTutorial: Prefs("show_books_tutorial", false)

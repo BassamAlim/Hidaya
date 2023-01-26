@@ -71,7 +71,7 @@ class BookSearcherRepo @Inject constructor(
         else context.resources.getStringArray(R.array.searcher_matches)
     }
 
-    fun updateMaxMatchesIndex(index: Int) {
+    fun setMaxMatchesIndex(index: Int) {
         pref.edit()
             .putInt(Prefs.BookSearcherMaxMatchesIndex.key, index)
             .apply()

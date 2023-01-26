@@ -139,7 +139,10 @@ object AppModule {
     ) = QuizRepo(context, preferences, database)
 
     @Provides @Singleton
-    fun provideQuizResultRepository() = QuizResultRepo()
+    fun provideQuizResultRepository(
+        preferences: SharedPreferences,
+        database: AppDatabase
+    ) = QuizResultRepo(preferences, database)
 
     @Provides @Singleton
     fun provideQuranRepository(

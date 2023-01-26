@@ -23,12 +23,11 @@ class BookSearcherVM @Inject constructor(
     var searchText = mutableStateOf("")
         private set
     var bookSelections = repository.getBookSelections()
-    var maxMatchesIndex = mutableStateOf(repository.getMaxMatchesIndex())
-        private set
     var maxMatchesItems = repository.getMaxMatchesItems()
     val bookTitles = repository.getBookTitles()
 
     private val _uiState = MutableStateFlow(BookSearcherState(
+        maxMatches = maxMatchesItems[repository.getMaxMatchesIndex()].toInt(),
         filtered = bookSelections.contains(false)
     ))
     val uiState = _uiState.asStateFlow()
@@ -49,9 +48,11 @@ class BookSearcherVM @Inject constructor(
     }
 
     fun onMaxMatchesIndexChange(index: Int) {
-        maxMatchesIndex.value = index
+        _uiState.update { it.copy(
+            maxMatches = maxMatchesItems[index].toInt()
+        )}
 
-        repository.updateMaxMatchesIndex(index)
+        repository.setMaxMatchesIndex(index)
     }
 
     fun search(highlightColor: Color) {
@@ -91,7 +92,7 @@ class BookSearcherVM @Inject constructor(
                             )
                         )
 
-                        if (matches.size == maxMatchesItems[maxMatchesIndex.value].toInt()) {
+                        if (matches.size == _uiState.value.maxMatches) {
                             _uiState.update { it.copy(
                                 matches = matches,
                                 noResultsFound = false

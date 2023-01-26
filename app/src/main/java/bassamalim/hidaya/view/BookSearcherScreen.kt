@@ -14,7 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.dialogs.FilterDialog
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.viewmodel.BookSearcherVM
@@ -27,8 +26,6 @@ fun BookSearcherUI(
     val state by viewModel.uiState.collectAsState()
 
     MyScaffold(stringResource(R.string.books_searcher)) { padding ->
-        val highlightColor = AppTheme.colors.accent
-
         Column(
             Modifier
                 .fillMaxSize()
@@ -40,6 +37,8 @@ fun BookSearcherUI(
                 verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                val highlightColor = AppTheme.colors.accent
+
                 MyText(
                     text = stringResource(R.string.search_in_books),
                     modifier = Modifier.padding(vertical = 6.dp)
@@ -83,7 +82,9 @@ fun BookSearcherUI(
                     MyText(text = stringResource(R.string.max_num_of_marches))
 
                     MyDropDownMenu(
-                        selectedIndex = viewModel.maxMatchesIndex.value,
+                        selectedIndex = viewModel.maxMatchesItems.indexOf(
+                            state.maxMatches.toString()
+                        ),
                         items = viewModel.maxMatchesItems
                     ) { index ->
                         viewModel.onMaxMatchesIndexChange(index)
@@ -91,11 +92,12 @@ fun BookSearcherUI(
                 }
             }
 
-            if (state.noResultsFound)
+            if (state.noResultsFound) {
                 MyText(
                     text = stringResource(R.string.books_no_matches),
                     modifier = Modifier.padding(top = 100.dp)
                 )
+            }
             else {
                 MyLazyColumn(
                     lazyList = {
