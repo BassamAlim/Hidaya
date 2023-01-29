@@ -37,4 +37,6 @@ class MainRepo @Inject constructor(
 
     fun getLocation() = LocUtils.retrieveLocation(pref)
 
+    fun getUnchangedStr() = context.getString(R.string.unchanged)
+
 }

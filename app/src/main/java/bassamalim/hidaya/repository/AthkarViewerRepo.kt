@@ -16,7 +16,7 @@ class AthkarViewerRepo @Inject constructor(
 
     fun getTextSize() = PrefUtils.getInt(pref, Prefs.AthkarTextSize)
 
-    fun updateTextSize(textSize: Float) {
+    fun setTextSize(textSize: Float) {
         pref.edit()
             .putInt(Prefs.AthkarTextSize.key, textSize.toInt())
             .apply()

@@ -17,13 +17,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MoreVM @Inject constructor(
-    app: Application
+    private val app: Application
 ): AndroidViewModel(app) {
 
     private val _uiState = MutableStateFlow(MoreState())
     val uiState = _uiState.asStateFlow()
-
-    private val context = app.applicationContext
 
     fun gotoTelawat(navController: NavController) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -73,7 +71,9 @@ class MoreVM @Inject constructor(
             Uri.fromParts("mailto", Global.CONTACT_EMAIL, null)
         )
         intent.putExtra(Intent.EXTRA_SUBJECT, "Hidaya")
-        context.startActivity(Intent.createChooser(intent, "Choose an Email client :"))
+        app.applicationContext.startActivity(
+            Intent.createChooser(intent, "Choose an Email client :")
+        )
     }
 
     fun shareApp() {
@@ -81,7 +81,9 @@ class MoreVM @Inject constructor(
         sharingIntent.type = "text/plain"
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "App Share")
         sharingIntent.putExtra(Intent.EXTRA_TEXT, Global.PLAY_STORE_URL)
-        context.startActivity(Intent.createChooser(sharingIntent, "Share via"))
+        app.applicationContext.startActivity(
+            Intent.createChooser(sharingIntent, "Share via")
+        )
     }
 
     fun gotoAbout(navController: NavController) {

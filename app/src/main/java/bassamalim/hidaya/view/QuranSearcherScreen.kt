@@ -102,7 +102,7 @@ fun QuranSearcherUI(
                                     MyText(
                                         "${stringResource(R.string.page)} " +
                                                 translateNums(
-                                                    viewModel.pref,
+                                                    viewModel.numeralsLanguage,
                                                     item.pageNum.toString()
                                                 )
                                     )
@@ -111,7 +111,7 @@ fun QuranSearcherUI(
                                 MyText(
                                     text = "${stringResource(R.string.aya_number)} " +
                                             translateNums(
-                                                viewModel.pref,
+                                                viewModel.numeralsLanguage,
                                                 item.ayaNum.toString()
                                             ),
                                     modifier = Modifier.padding(6.dp)

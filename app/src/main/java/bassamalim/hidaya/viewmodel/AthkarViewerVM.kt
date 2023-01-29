@@ -63,7 +63,7 @@ class AthkarViewerVM @Inject constructor(
             textSize = textSize
         )}
 
-        repository.updateTextSize(textSize)
+        repository.setTextSize(textSize)
     }
 
     fun showInfoDialog(text: String) {

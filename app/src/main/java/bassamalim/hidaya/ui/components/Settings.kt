@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.PrefUtils
@@ -24,17 +25,15 @@ import bassamalim.hidaya.utils.PrefUtils
 fun ListPref(
     pref: SharedPreferences,
     titleResId: Int,
-    keyResId: Int,
+    prefObj: Prefs,
     iconResId: Int = -1,
     entries: Array<String>,
     values: Array<String>,
-    defaultValue: String,
     bgColor: Color = AppTheme.colors.surface,
     onSelection: () -> Unit = {}
 ) {
-    val key = stringResource(keyResId)
     var shown by remember { mutableStateOf(false) }
-    val initialValue = PrefUtils.getString(pref, stringResource(keyResId), defaultValue)
+    val initialValue = PrefUtils.getString(pref, prefObj)
     var selectedValue by remember { mutableStateOf(initialValue) }
 
     Box(
@@ -71,7 +70,7 @@ fun ListPref(
                 selectedValue = values[index]
 
                 pref.edit()
-                    .putString(key, values[index])
+                    .putString(prefObj.key, values[index])
                     .apply()
 
                 onSelection()
@@ -147,22 +146,20 @@ fun ListPref(
 @Composable
 fun SwitchPref(
     pref: SharedPreferences,
-    keyResId: Int,
+    prefObj: Prefs,
     titleResId: Int,
-    defaultValue: Boolean = true,
     summary: MutableState<String> = mutableStateOf(""),
     bgColor: Color = AppTheme.colors.surface,
     onSwitch: (Boolean) -> Unit = {}
 ) {
-    val key = stringResource(keyResId)
-    val initialValue = PrefUtils.getBoolean(pref, key, defaultValue)
+    val initialValue = PrefUtils.getBoolean(pref, prefObj)
     var checked by remember { mutableStateOf(initialValue) }
 
     val onCheckChange = {
         checked = !checked
 
         pref.edit()
-            .putBoolean(key, checked)
+            .putBoolean(prefObj.key, checked)
             .apply()
 
         onSwitch(checked)
@@ -207,16 +204,13 @@ fun SwitchPref(
 @Composable
 fun SliderPref(
     pref: SharedPreferences,
-    keyResId: Int,
+    prefObj: Prefs,
     titleResId: Int,
-    defaultValue: Int,
     valueRange: ClosedFloatingPointRange<Float>,
     infinite: Boolean = false,
     sliderFraction: Float = 0.8F,
     onValueChange: () -> Unit = {}
 ) {
-    val key = stringResource(keyResId)
-
     Column(
         Modifier
             .fillMaxWidth()
@@ -225,13 +219,13 @@ fun SliderPref(
         PreferenceTitle(titleResId)
 
         MyValuedSlider(
-            initialValue = PrefUtils.getInt(pref, key, defaultValue).toFloat(),
+            initialValue = PrefUtils.getInt(pref, prefObj).toFloat(),
             valueRange = valueRange,
             infinite = infinite,
             sliderFraction = sliderFraction,
             onValueChange = { value ->
                 pref.edit()
-                    .putInt(key, value.toInt())
+                    .putInt(prefObj.key, value.toInt())
                     .apply()
 
                 onValueChange()

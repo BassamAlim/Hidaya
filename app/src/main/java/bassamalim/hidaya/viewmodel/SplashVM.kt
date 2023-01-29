@@ -28,26 +28,27 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashVM @Inject constructor(
-    app: Application,
+    private val app: Application,
     private val repository: SplashRepo
 ): AndroidViewModel(app) {
 
     private val _uiState = MutableStateFlow(SplashState())
     val uiState = _uiState.asStateFlow()
 
-    private val context = app.applicationContext
     private lateinit var navController: NavController
     private lateinit var locationRequestLauncher:
             ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
 
     init {
+        val ctx = app.applicationContext
+
         // stop athan if it is running
-        context.stopService(Intent(context, AthanService::class.java))
+        ctx.stopService(Intent(ctx, AthanService::class.java))
 
-        DBUtils.testDB(context, repository.pref)
+        DBUtils.testDB(ctx, repository.pref)
 
-        ActivityUtils.onActivityCreateSetTheme(context)
-        ActivityUtils.onActivityCreateSetLocale(context as Activity)
+        ActivityUtils.onActivityCreateSetTheme(ctx)
+        ActivityUtils.onActivityCreateSetLocale(ctx as Activity)
     }
 
     fun provide(
@@ -87,17 +88,18 @@ class SplashVM @Inject constructor(
     }
 
     private fun granted(): Boolean {
+        val ctx = app.applicationContext
         return ActivityCompat.checkSelfPermission(
-            context, Manifest.permission.ACCESS_FINE_LOCATION
+            ctx, Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(
-            context, Manifest.permission.ACCESS_COARSE_LOCATION
+            ctx, Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
     @SuppressLint("MissingPermission")
     private fun locate() {
-        LocationServices.getFusedLocationProviderClient(context)
+        LocationServices.getFusedLocationProviderClient(app.applicationContext)
             .lastLocation.addOnSuccessListener { location: Location? ->
                 launch(location)
             }
@@ -120,7 +122,8 @@ class SplashVM @Inject constructor(
     private fun background() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             ActivityCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                app.applicationContext,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             _uiState.update { it.copy(

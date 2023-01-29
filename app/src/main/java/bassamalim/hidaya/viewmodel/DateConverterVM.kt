@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel
 import bassamalim.hidaya.R
 import bassamalim.hidaya.repository.DateConverterRepo
 import bassamalim.hidaya.state.DateConverterState
-import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.LangUtils.translateNums
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,14 +18,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DateConverterVM @Inject constructor(
-    app: Application,
+    private val app: Application,
     private val repository: DateConverterRepo
 ): AndroidViewModel(app) {
 
     private val _uiState = MutableStateFlow(DateConverterState())
     val uiState = _uiState.asStateFlow()
 
-    private val context = app.applicationContext
     val hijriCalendar = UmmalquraCalendar()
     private val gregorianCalendar = Calendar.getInstance()
     private val hijriMonths = repository.getHijriMonths()
@@ -50,8 +48,10 @@ class DateConverterVM @Inject constructor(
     }
 
     fun pickGregorian() {
+        val ctx = app.applicationContext
+
         val datePicker = DatePickerDialog(
-            context,
+            ctx,
             { _: DatePicker?, year: Int, month: Int, day: Int ->
                 val choice = Calendar.getInstance()
                 choice[Calendar.YEAR] = year
@@ -68,11 +68,11 @@ class DateConverterVM @Inject constructor(
         )
         datePicker.setButton(
             DatePickerDialog.BUTTON_POSITIVE,
-            context.getString(R.string.select), datePicker
+            ctx.getString(R.string.select), datePicker
         )
         datePicker.setButton(
             DatePickerDialog.BUTTON_NEGATIVE,
-            context.getString(R.string.cancel), datePicker
+            ctx.getString(R.string.cancel), datePicker
         )
         datePicker.show()
     }

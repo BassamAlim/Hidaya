@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class QuranSearcherRepo @Inject constructor(
     private val context: Context,
-    val pref: SharedPreferences,
+    private val pref: SharedPreferences,
     private val db: AppDatabase
 ) {
 

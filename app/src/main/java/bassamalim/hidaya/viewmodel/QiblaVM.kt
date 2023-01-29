@@ -10,7 +10,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.helpers.Compass
 import bassamalim.hidaya.repository.QiblaRepo
 import bassamalim.hidaya.state.QiblaState
-import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,14 +20,13 @@ import kotlin.math.*
 
 @HiltViewModel
 class QiblaVM @Inject constructor(
-    app: Application,
+    private val app: Application,
     private val repository: QiblaRepo
 ): AndroidViewModel(app) {
 
     private val _uiState = MutableStateFlow(QiblaState())
     val uiState = _uiState.asStateFlow()
 
-    private val context = app.applicationContext
     private val kaabaLat = 21.4224779
     private val kaabaLng = 39.8251832
     private val kaabaLatInRad = Math.toRadians(kaabaLat)
@@ -69,15 +67,16 @@ class QiblaVM @Inject constructor(
     }
 
     private fun setupCompass() {
-        val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val packageManager = context.packageManager
+        val ctx = app.applicationContext
+        val sensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val packageManager = ctx.packageManager
 
         // Checking features needed for Qibla
         if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null
             && sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null
             && packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)
             && packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS))
-            compass = Compass(context, object : Compass.CompassListener {
+            compass = Compass(ctx, object : Compass.CompassListener {
                 override fun onNewAzimuth(azimuth: Float) {
                     adjust(azimuth)
                     adjustNorthDial(azimuth)

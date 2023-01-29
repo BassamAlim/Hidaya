@@ -6,6 +6,7 @@ import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.enum.Theme.LIGHT
 import bassamalim.hidaya.enum.TimeFormat.TWELVE
 import bassamalim.hidaya.enum.NotificationType.*
+import bassamalim.hidaya.enum.QViewType
 
 sealed class Prefs(val key: String, val default: Any) {
     object BookmarkedSura: Prefs("bookmarked_sura", -1)
@@ -32,15 +33,18 @@ sealed class Prefs(val key: String, val default: Any) {
     object QuranSearcherMaxMatchesIndex: Prefs("quran_searcher_max_matches_index", 0)
     object TodayWerdPage: Prefs("today_werd_page", 25)
     object WerdDone: Prefs("werd_done", false)
-    object ShowBooksTutorial: Prefs("show_books_tutorial", false)
-    object ShowQuranTutorial: Prefs("show_quran_tutorial", false)
+    object ShowBooksTutorial: Prefs("show_books_tutorial", true)
+    object ShowQuranTutorial: Prefs("show_quran_tutorial", true)
+    object ShowQuranViewerTutorial: Prefs("show_quran_viewer_tutorial", true)
     object StoredLocation: Prefs("stored_location", "")
-    object ShowPrayersTutorial: Prefs("show_prayers_tutorial", false)
+    object ShowPrayersTutorial: Prefs("show_prayers_tutorial", true)
     object PrayerTimesCalculationMethod: Prefs("prayer_times_calc_method_key", "MECCA")
     object PrayerTimesJuristicMethod: Prefs("juristic_method_key", "SHAFII")
     object PrayerTimesAdjustment: Prefs("high_lat_adjustment_key", "NONE")
     object TelawatPlaybackRecord: Prefs("telawat_playback_record", 0L)
     object QuranPagesRecord: Prefs("quran_pages_record", 0)
+    object QuranTextSize: Prefs("quran_text_size", 30)
+    object QuranViewType: Prefs("quran_view_type", QViewType.Page.name)
     object AyaReciter: Prefs("aya_reciter", "13")
     object AyaRepeat: Prefs("aya_repeat", 1)
     object StopOnSuraEnd: Prefs("stop_on_sura_end", false)

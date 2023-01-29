@@ -22,7 +22,7 @@ class QuranSearcherVM @Inject constructor(
     private val repository: QuranSearcherRepo
 ): ViewModel() {
 
-    val pref = repository.pref
+    val numeralsLanguage = repository.numeralsLanguage
     private var allAyat = repository.getAyat()
     private var names =
         if (repository.language == Language.ENGLISH) repository.getSuraNamesEn()

@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -245,7 +244,7 @@ fun MyImageButton(
 
 @Composable
 fun MyPlayerBtn(
-    state: MutableState<Int>,
+    state: Int,
     modifier: Modifier = Modifier,
     size: Dp = 100.dp,
     padding: Dp = 5.dp,
@@ -259,13 +258,13 @@ fun MyPlayerBtn(
             .clip(CircleShape)
             .clickable { if (enabled) onClick() }
     ) {
-        if (state.value == PlaybackStateCompat.STATE_NONE ||
-            state.value == PlaybackStateCompat.STATE_BUFFERING)
+        if (state == PlaybackStateCompat.STATE_NONE ||
+            state == PlaybackStateCompat.STATE_BUFFERING)
             MyCircularProgressIndicator()
         else {
             Image(
                 painter = painterResource(
-                    if (state.value == PlaybackStateCompat.STATE_PLAYING) R.drawable.ic_player_pause
+                    if (state == PlaybackStateCompat.STATE_PLAYING) R.drawable.ic_player_pause
                     else R.drawable.ic_player_play
                 ),
                 contentDescription = stringResource(R.string.play_pause_btn_description),

@@ -153,7 +153,11 @@ object AppModule {
     ) = QuranRepo(context, preferences, database, gson)
 
     @Provides @Singleton
-    fun provideQuranSearcherRepository() = QuranSearcherRepo()
+    fun provideQuranSearcherRepository(
+        context: Context,
+        preferences: SharedPreferences,
+        database: AppDatabase
+    ) = QuranSearcherRepo(context, preferences, database)
 
     @Provides @Singleton
     fun provideQuranViewerRepository() = QuranViewerRepo()

@@ -12,7 +12,6 @@ import bassamalim.hidaya.receivers.DeviceBootReceiver
 import bassamalim.hidaya.repository.MainRepo
 import bassamalim.hidaya.state.MainState
 import bassamalim.hidaya.utils.DBUtils
-import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PTUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
@@ -27,7 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainVM @Inject constructor(
-    app: Application,
+    private val app: Application,
     private val repository: MainRepo
 ): AndroidViewModel(app) {
 
@@ -37,7 +36,6 @@ class MainVM @Inject constructor(
     ))
     val uiState = _uiState.asStateFlow()
 
-    private val context = app.applicationContext
     private var dateOffset = repository.getDateOffset()
 
     init {
@@ -68,13 +66,14 @@ class MainVM @Inject constructor(
     }
 
     private fun setAlarms() {
+        val ctx = app.applicationContext
         val location = repository.getLocation()
         if (location != null) {
             val times = PTUtils.getTimes(
                 repository.pref,
-                DBUtils.getDB(context)
+                DBUtils.getDB(ctx)
             )!!
-            Alarms(context, times)
+            Alarms(ctx, times)
         }
         else {
             _uiState.update { it.copy(
@@ -84,9 +83,10 @@ class MainVM @Inject constructor(
     }
 
     private fun dailyUpdate() {
-        val intent = Intent(context, DailyUpdateReceiver::class.java)
+        val ctx = app.applicationContext
+        val intent = Intent(ctx, DailyUpdateReceiver::class.java)
         intent.action = "daily"
-        context.sendBroadcast(intent)
+        ctx.sendBroadcast(intent)
     }
 
     private fun getHijriDate(): String {
@@ -109,8 +109,9 @@ class MainVM @Inject constructor(
     }
 
     private fun setupBootReceiver() {
-        context.packageManager.setComponentEnabledSetting(
-            ComponentName(context, DeviceBootReceiver::class.java),
+        val ctx = app.applicationContext
+        ctx.packageManager.setComponentEnabledSetting(
+            ComponentName(ctx, DeviceBootReceiver::class.java),
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
             PackageManager.DONT_KILL_APP
         )
@@ -133,15 +134,15 @@ class MainVM @Inject constructor(
 
         // update tvs
         val dateText = translateNums(
-            context,
+            repository.numeralsLanguage,
             "${cal[Calendar.DATE]}/${cal[Calendar.MONTH] + 1}/${cal[Calendar.YEAR]}"
         )
 
-        var offsetText = context.getString(R.string.unchanged)
+        var offsetText = repository.getUnchangedStr()
         if (dateOffset != 0) {
             var offsetStr = dateOffset.toString()
             if (dateOffset > 0) offsetStr = "+$offsetStr"
-            offsetText = translateNums(context, offsetStr)
+            offsetText = translateNums(repository.numeralsLanguage, offsetStr)
         }
 
         _uiState.update { it.copy(

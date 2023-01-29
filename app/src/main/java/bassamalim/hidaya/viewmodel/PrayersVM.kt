@@ -12,7 +12,6 @@ import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.repository.PrayersRepo
 import bassamalim.hidaya.state.PrayersState
-import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PTUtils
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
@@ -25,11 +24,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PrayersVM @Inject constructor(
-    app: Application,
+    private val app: Application,
     private val repository: PrayersRepo
 ): AndroidViewModel(app) {
 
-    private val context = app.applicationContext
     private val location = repository.getLocation()
     private val prayTimes = PrayTimes(repository.pref)
     private val prayerNames = repository.getPrayerNames()
@@ -219,7 +217,7 @@ class PrayersVM @Inject constructor(
     }
 
     private fun updatePrayerTimeAlarms() {
-        Alarms(context, _uiState.value.settingsDialogPID)
+        Alarms(app.applicationContext, _uiState.value.settingsDialogPID)
     }
 
 }

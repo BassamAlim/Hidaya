@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocatorVM @Inject constructor(
-    app: Application,
+    private val app: Application,
     private val repository: LocatorRepo,
     savedStateHandle: SavedStateHandle
 ): AndroidViewModel(app) {
@@ -36,7 +36,6 @@ class LocatorVM @Inject constructor(
     ))
     val uiState = _uiState.asStateFlow()
 
-    private val context = app.applicationContext
     private lateinit var navController: NavController
     private lateinit var locationRequestLauncher:
             ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
@@ -50,17 +49,18 @@ class LocatorVM @Inject constructor(
     }
 
     private fun granted(): Boolean {
+        val ctx = app.applicationContext
         return ActivityCompat.checkSelfPermission(
-            context, Manifest.permission.ACCESS_FINE_LOCATION
+            ctx, Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(
-                    context, Manifest.permission.ACCESS_COARSE_LOCATION
+                    ctx, Manifest.permission.ACCESS_COARSE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED
     }
 
     @SuppressLint("MissingPermission")
     private fun locate() {
-        LocationServices.getFusedLocationProviderClient(context)
+        LocationServices.getFusedLocationProviderClient(app.applicationContext)
             .lastLocation.addOnSuccessListener { location: Location? ->
                 if (location != null) repository.storeLocation(location)
 
@@ -81,7 +81,8 @@ class LocatorVM @Inject constructor(
     private fun background() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             ActivityCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                app.applicationContext,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED) {
             _uiState.update { it.copy(
                 showAllowLocationToast = true
