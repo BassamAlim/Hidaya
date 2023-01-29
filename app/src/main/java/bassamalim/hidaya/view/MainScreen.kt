@@ -20,11 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.dialogs.DateEditorDialog
-import bassamalim.hidaya.ui.components.BottomNavItem
-import bassamalim.hidaya.ui.components.MyBottomNavigation
-import bassamalim.hidaya.ui.components.MyScaffold
-import bassamalim.hidaya.ui.components.MyText
+import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.ui.theme.nsp
 import bassamalim.hidaya.viewmodel.MainVM

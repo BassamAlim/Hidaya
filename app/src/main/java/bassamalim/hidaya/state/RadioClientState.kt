@@ -1,5 +1,7 @@
 package bassamalim.hidaya.state
 
-data class RadioClientState(
+import android.support.v4.media.session.PlaybackStateCompat
 
+data class RadioClientState(
+    val btnState: Int = PlaybackStateCompat.STATE_NONE
 )

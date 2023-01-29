@@ -1,4 +1,4 @@
-package bassamalim.hidaya.dialogs
+package bassamalim.hidaya.other
 
 import android.content.Context
 import androidx.compose.foundation.background

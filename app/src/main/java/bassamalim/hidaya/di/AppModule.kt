@@ -7,6 +7,7 @@ import androidx.preference.PreferenceManager
 import androidx.room.Room
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.repository.*
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -39,8 +40,11 @@ object AppModule {
 //    fun provideResources(application: Application) =
 //        application.applicationContext.resources
 
+    fun provideRemoteConfig() = FirebaseRemoteConfig.getInstance()
+
     @Provides @Singleton
     fun provideGson() = Gson()
+
 
     @Provides @Singleton
     fun provideAboutRepository(pref: SharedPreferences) = AboutRepo(pref)
@@ -160,10 +164,16 @@ object AppModule {
     ) = QuranSearcherRepo(context, preferences, database)
 
     @Provides @Singleton
-    fun provideQuranViewerRepository() = QuranViewerRepo()
+    fun provideQuranViewerRepository(
+        preferences: SharedPreferences,
+        database: AppDatabase
+    ) = QuranViewerRepo(preferences, database)
 
     @Provides @Singleton
-    fun provideRadioClientRepository() = RadioClientRepo()
+    fun provideRadioClientRepository(
+        context: Context,
+        remoteConfig: FirebaseRemoteConfig
+    ) = RadioClientRepo(context, remoteConfig)
 
     @Provides @Singleton
     fun provideSettingsRepository() = SettingsRepo()

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.dialogs
+package bassamalim.hidaya.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -9,10 +9,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.ui.components.MyButton
-import bassamalim.hidaya.ui.components.MyDialog
-import bassamalim.hidaya.ui.components.MyImageButton
-import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
 
 @Composable

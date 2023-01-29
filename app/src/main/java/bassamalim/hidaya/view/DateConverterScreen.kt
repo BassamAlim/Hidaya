@@ -16,7 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.dialogs.HijriDatePickerDialog
+import bassamalim.hidaya.other.HijriDatePickerDialog
 import bassamalim.hidaya.ui.components.MyButton
 import bassamalim.hidaya.ui.components.MyScaffold
 import bassamalim.hidaya.ui.components.MyText
