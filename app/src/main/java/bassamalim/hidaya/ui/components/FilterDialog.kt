@@ -17,10 +17,10 @@ import bassamalim.hidaya.ui.theme.AppTheme
 
 @Composable
 fun FilterDialog(
+    shown: Boolean,
     title: String,
     itemTitles: List<String>,
     itemSelections: Array<Boolean>,
-    shown: Boolean,
     onDismiss: (Array<Boolean>) -> Unit
 ) {
     val selections = itemSelections.toMutableList()
