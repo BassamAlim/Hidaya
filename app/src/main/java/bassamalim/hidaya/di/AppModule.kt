@@ -176,7 +176,10 @@ object AppModule {
     ) = RadioClientRepo(context, remoteConfig)
 
     @Provides @Singleton
-    fun provideSettingsRepository() = SettingsRepo()
+    fun provideSettingsRepository(
+        context: Context,
+        preferences: SharedPreferences
+    ) = SettingsRepo(context, preferences)
 
     @Provides @Singleton
     fun provideSplashRepository(

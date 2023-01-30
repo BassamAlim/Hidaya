@@ -78,7 +78,7 @@ object PTUtils {
         Log.i(Global.TAG, "Canceled $PID Alarm")
     }
 
-    fun formatTime(context: Context, gStr: String): String {
+    fun formatTime(timeFormat: TimeFormat, gStr: String): String {
         var str = gStr
 
         val hour = "%d".format(str.split(':')[0].toInt())
@@ -90,8 +90,6 @@ object PTUtils {
         minute = "%02d".format(minute.toInt())
 
         str = "$hour:$minute"
-
-        val timeFormat = PrefUtils.getTimeFormat(PrefUtils.getPreferences(context))
 
         val h12Format = SimpleDateFormat("hh:mm aa", Locale.US)
         val h24Format = SimpleDateFormat("HH:mm", Locale.US)

@@ -148,7 +148,7 @@ fun SwitchPref(
     pref: SharedPreferences,
     prefObj: Prefs,
     titleResId: Int,
-    summary: MutableState<String> = mutableStateOf(""),
+    summary: String,
     bgColor: Color = AppTheme.colors.surface,
     onSwitch: (Boolean) -> Unit = {}
 ) {
@@ -196,7 +196,7 @@ fun SwitchPref(
                 )
             }
 
-            SummaryText(text = summary.value)
+            SummaryText(summary)
         }
     }
 }
