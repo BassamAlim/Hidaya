@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.ui.components.MyClickableText
 import bassamalim.hidaya.ui.components.MyDialog
 import bassamalim.hidaya.ui.components.MyImageButton

@@ -1,6 +1,6 @@
 package bassamalim.hidaya.state
 
-import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.models.Thikr
 
 data class AthkarViewerState(

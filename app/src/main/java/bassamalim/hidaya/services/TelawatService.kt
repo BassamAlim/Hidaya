@@ -1,5 +1,6 @@
 package bassamalim.hidaya.services
 
+import android.app.Activity
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -28,8 +29,10 @@ import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.preference.PreferenceManager
+import bassamalim.hidaya.MainActivity
+import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
-import bassamalim.hidaya.activities.TelawatClient
+import bassamalim.hidaya.Screen
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.models.Reciter
 import bassamalim.hidaya.other.Global
@@ -88,7 +91,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     override fun onCreate() {
         super.onCreate()
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetLocale(applicationContext as Activity)
 
         db = DBUtils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -678,8 +681,11 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun getContentIntent(): PendingIntent {
-        val intent = Intent(this, TelawatClient::class.java).setAction("back")
-            .putExtra("media_id", mediaId)
+        val intent = Intent(this, MainActivity::class.java)
+            .setAction("back")
+            .putExtra("start_route", Screen.TelawatClient.withArgs(
+                mediaId!!
+            ))
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
@@ -736,7 +742,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun updateDurationRecord(amount: Int) {
-        val old = PrefUtils.getLong(pref, "telawat_playback_record", 0L)
+        val old = PrefUtils.getLong(pref, Prefs.TelawatPlaybackRecord)
         val new = old + amount * 1000
 
         pref.edit()

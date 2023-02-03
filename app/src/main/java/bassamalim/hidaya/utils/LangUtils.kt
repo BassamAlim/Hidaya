@@ -2,7 +2,7 @@ package bassamalim.hidaya.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enums.Language
 
 object LangUtils {
 

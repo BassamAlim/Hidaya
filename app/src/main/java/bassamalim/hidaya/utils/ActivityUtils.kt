@@ -3,8 +3,8 @@ package bassamalim.hidaya.utils
 import android.app.Activity
 import android.content.Context
 import bassamalim.hidaya.R
-import bassamalim.hidaya.enum.Language
-import bassamalim.hidaya.enum.Theme
+import bassamalim.hidaya.enums.Language
+import bassamalim.hidaya.enums.Theme
 import java.util.*
 
 object ActivityUtils {

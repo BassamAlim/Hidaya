@@ -26,7 +26,7 @@ import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AyatDB
-import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.utils.DBUtils
 import bassamalim.hidaya.utils.PrefUtils

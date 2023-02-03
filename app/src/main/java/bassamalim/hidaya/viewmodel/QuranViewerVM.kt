@@ -17,8 +17,8 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInParent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import bassamalim.hidaya.enum.Language
-import bassamalim.hidaya.enum.QViewType.*
+import bassamalim.hidaya.enums.Language
+import bassamalim.hidaya.enums.QViewType.*
 import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.repository.QuranViewerRepo

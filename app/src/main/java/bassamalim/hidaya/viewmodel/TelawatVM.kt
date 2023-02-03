@@ -16,9 +16,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.Screen
 import bassamalim.hidaya.database.dbs.TelawatDB
-import bassamalim.hidaya.enum.DownloadState
-import bassamalim.hidaya.enum.Language
-import bassamalim.hidaya.enum.ListType
+import bassamalim.hidaya.enums.DownloadState
+import bassamalim.hidaya.enums.Language
+import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.Reciter
 import bassamalim.hidaya.repository.TelawatRepo
 import bassamalim.hidaya.state.TelawatState

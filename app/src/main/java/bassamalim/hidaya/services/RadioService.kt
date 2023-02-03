@@ -1,5 +1,6 @@
 package bassamalim.hidaya.services
 
+import android.app.Activity
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -31,8 +32,9 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
+import bassamalim.hidaya.MainActivity
 import bassamalim.hidaya.R
-import bassamalim.hidaya.activities.RadioClient
+import bassamalim.hidaya.Screen
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.utils.ActivityUtils
 import java.io.IOException
@@ -68,7 +70,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     override fun onCreate() {
         super.onCreate()
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetLocale(applicationContext as Activity)
 
         initSession()
         initPlayer()
@@ -427,7 +429,9 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun getContentIntent(): PendingIntent {
-        val intent = Intent(this, RadioClient::class.java).setAction("back")
+        val intent = Intent(this, MainActivity::class.java)
+        intent.action = "back"
+        intent.putExtra("start_route", Screen.RadioClient.route)
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 

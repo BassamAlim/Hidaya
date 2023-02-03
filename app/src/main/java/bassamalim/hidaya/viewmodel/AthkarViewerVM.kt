@@ -2,7 +2,7 @@ package bassamalim.hidaya.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.models.Thikr
 import bassamalim.hidaya.repository.AthkarViewerRepo
 import bassamalim.hidaya.state.AthkarViewerState

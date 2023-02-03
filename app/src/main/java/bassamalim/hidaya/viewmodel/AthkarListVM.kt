@@ -10,8 +10,8 @@ import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.Screen
 import bassamalim.hidaya.database.dbs.AthkarDB
-import bassamalim.hidaya.enum.Language
-import bassamalim.hidaya.enum.ListType
+import bassamalim.hidaya.enums.Language
+import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.AthkarItem
 import bassamalim.hidaya.repository.AthkarListRepo
 import bassamalim.hidaya.state.AthkarListState

@@ -10,7 +10,7 @@ import android.location.Location
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import bassamalim.hidaya.Prefs
-import bassamalim.hidaya.enum.LocationType
+import bassamalim.hidaya.enums.LocationType
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.other.PrayersWidget

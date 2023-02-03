@@ -6,7 +6,7 @@ import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.CityDB
 import bassamalim.hidaya.database.dbs.CountryDB
-import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.utils.LocUtils
 import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject

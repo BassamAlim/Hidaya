@@ -5,9 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.Screen
-import bassamalim.hidaya.enum.LocationType
-import bassamalim.hidaya.enum.NotificationType
-import bassamalim.hidaya.enum.PID
+import bassamalim.hidaya.enums.LocationType
+import bassamalim.hidaya.enums.NotificationType
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.repository.PrayersRepo

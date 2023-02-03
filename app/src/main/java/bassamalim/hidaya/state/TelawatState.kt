@@ -1,7 +1,7 @@
 package bassamalim.hidaya.state
 
-import bassamalim.hidaya.enum.DownloadState
-import bassamalim.hidaya.enum.ListType
+import bassamalim.hidaya.enums.DownloadState
+import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.Reciter
 
 data class TelawatState(

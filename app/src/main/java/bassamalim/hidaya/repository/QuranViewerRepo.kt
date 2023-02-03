@@ -3,7 +3,7 @@ package bassamalim.hidaya.repository
 import android.content.SharedPreferences
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.enum.QViewType
+import bassamalim.hidaya.enums.QViewType
 import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 

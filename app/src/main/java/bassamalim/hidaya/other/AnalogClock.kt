@@ -9,7 +9,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import bassamalim.hidaya.R
-import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.utils.PrefUtils
 import java.util.*
 import kotlin.math.cos

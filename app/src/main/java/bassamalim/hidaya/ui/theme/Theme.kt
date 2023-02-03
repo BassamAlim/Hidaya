@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalContext
+import bassamalim.hidaya.enums.Theme
 import bassamalim.hidaya.utils.PrefUtils
 
 object AppTheme {
@@ -25,15 +26,15 @@ object AppTheme {
 
 @Composable
 fun AppTheme(
-    theme: String = PrefUtils.getTheme(LocalContext.current),
+    theme: Theme = PrefUtils.getTheme(PrefUtils.getPreferences(LocalContext.current)),
     typography: AppTypography = AppTheme.typography,
     dimensions: AppDimensions = AppTheme.dimensions,
     content: @Composable () -> Unit
 ) {
 
     val colors = when (theme) {
-        "Dark" -> darkColors()
-        "Night" -> nightColors()
+        Theme.DARK -> darkColors()
+        Theme.NIGHT -> nightColors()
         else -> lightColors()
     }
 

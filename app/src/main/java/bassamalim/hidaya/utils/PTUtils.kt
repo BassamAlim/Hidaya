@@ -9,8 +9,8 @@ import android.location.Location
 import android.util.Log
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.enum.PID
-import bassamalim.hidaya.enum.TimeFormat
+import bassamalim.hidaya.enums.PID
+import bassamalim.hidaya.enums.TimeFormat
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.other.Global
 import java.text.SimpleDateFormat

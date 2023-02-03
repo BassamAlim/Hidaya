@@ -11,7 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.Screen
-import bassamalim.hidaya.enum.LocationType
+import bassamalim.hidaya.enums.LocationType
 import bassamalim.hidaya.repository.SplashRepo
 import bassamalim.hidaya.state.SplashState
 import com.google.android.gms.location.LocationServices

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.enum
+package bassamalim.hidaya.enums
 
 enum class NotificationType {
     Athan,

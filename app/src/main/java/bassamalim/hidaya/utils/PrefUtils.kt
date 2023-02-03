@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.Prefs
-import bassamalim.hidaya.enum.Language
-import bassamalim.hidaya.enum.Theme
-import bassamalim.hidaya.enum.TimeFormat
+import bassamalim.hidaya.enums.Language
+import bassamalim.hidaya.enums.Theme
+import bassamalim.hidaya.enums.TimeFormat
 
 object PrefUtils {
 

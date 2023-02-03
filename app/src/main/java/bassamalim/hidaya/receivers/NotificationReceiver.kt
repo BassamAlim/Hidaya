@@ -19,8 +19,8 @@ import bassamalim.hidaya.MainActivity
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.Screen
-import bassamalim.hidaya.enum.NotificationType
-import bassamalim.hidaya.enum.PID
+import bassamalim.hidaya.enums.NotificationType
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.services.AthanService
 import bassamalim.hidaya.utils.ActivityUtils

@@ -2,9 +2,8 @@ package bassamalim.hidaya.helpers
 
 import android.content.SharedPreferences
 import bassamalim.hidaya.Prefs
-import bassamalim.hidaya.enum.PID
-import bassamalim.hidaya.enum.TimeFormat
-import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.enums.PID
+import bassamalim.hidaya.enums.TimeFormat
 import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PrefUtils
 import java.util.*

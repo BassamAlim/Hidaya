@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
-import bassamalim.hidaya.enum.PID
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 

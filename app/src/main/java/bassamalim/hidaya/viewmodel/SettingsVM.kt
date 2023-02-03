@@ -5,7 +5,7 @@ import android.app.TimePickerDialog
 import android.os.Message
 import android.widget.TimePicker
 import androidx.lifecycle.AndroidViewModel
-import bassamalim.hidaya.enum.PID
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.repository.SettingsRepo
 import bassamalim.hidaya.state.SettingsState

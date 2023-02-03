@@ -1,7 +1,7 @@
 package bassamalim.hidaya.state
 
 import android.support.v4.media.session.PlaybackStateCompat
-import bassamalim.hidaya.enum.DownloadState
+import bassamalim.hidaya.enums.DownloadState
 
 data class TelawatClientState(
     val repeat: Int = PlaybackStateCompat.REPEAT_MODE_NONE,

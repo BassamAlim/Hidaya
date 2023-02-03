@@ -40,6 +40,7 @@ object AppModule {
 //    fun provideResources(application: Application) =
 //        application.applicationContext.resources
 
+    @Provides @Singleton
     fun provideRemoteConfig() = FirebaseRemoteConfig.getInstance()
 
     @Provides @Singleton

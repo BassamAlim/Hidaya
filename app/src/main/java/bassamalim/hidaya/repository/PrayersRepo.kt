@@ -5,10 +5,10 @@ import android.content.SharedPreferences
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.enum.Language
-import bassamalim.hidaya.enum.LocationType
-import bassamalim.hidaya.enum.NotificationType
-import bassamalim.hidaya.enum.PID
+import bassamalim.hidaya.enums.Language
+import bassamalim.hidaya.enums.LocationType
+import bassamalim.hidaya.enums.NotificationType
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.utils.LocUtils
 import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject

@@ -81,14 +81,16 @@ fun QuranSettingsDialog(
                 pref = pref,
                 prefObj = Prefs.StopOnSuraEnd,
                 titleResId = R.string.stop_on_sura_end,
-                bgColor = AppTheme.colors.background
+                bgColor = AppTheme.colors.background,
+                summary = ""
             )
 
             SwitchPref(
                 pref = pref,
                 prefObj = Prefs.StopOnPageEnd,
                 titleResId = R.string.stop_on_page_end,
-                bgColor = AppTheme.colors.background
+                bgColor = AppTheme.colors.background,
+                summary = ""
             )
 
             MyButton(

@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.Screen
 import bassamalim.hidaya.database.dbs.BooksDB
-import bassamalim.hidaya.enum.DownloadState
-import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enums.DownloadState
+import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.repository.BooksRepo
 import bassamalim.hidaya.state.BooksState

@@ -26,7 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.enum.QViewType.*
+import bassamalim.hidaya.enums.QViewType.*
 import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.state.QuranViewerState
 import bassamalim.hidaya.ui.components.*

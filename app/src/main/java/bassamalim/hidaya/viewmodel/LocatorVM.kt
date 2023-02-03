@@ -12,7 +12,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import bassamalim.hidaya.Screen
-import bassamalim.hidaya.enum.LocationType
+import bassamalim.hidaya.enums.LocationType
 import bassamalim.hidaya.repository.LocatorRepo
 import bassamalim.hidaya.state.LocatorState
 import com.google.android.gms.location.LocationServices

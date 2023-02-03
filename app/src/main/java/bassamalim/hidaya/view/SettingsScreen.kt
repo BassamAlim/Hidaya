@@ -21,7 +21,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
-import bassamalim.hidaya.enum.PID
+import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.state.SettingsState
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.utils.ActivityUtils

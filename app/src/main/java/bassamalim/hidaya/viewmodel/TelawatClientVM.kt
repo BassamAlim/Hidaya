@@ -20,7 +20,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import bassamalim.hidaya.Screen
-import bassamalim.hidaya.enum.DownloadState
+import bassamalim.hidaya.enums.DownloadState
 import bassamalim.hidaya.models.Reciter
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.repository.TelawatClientRepo

@@ -1,6 +1,6 @@
 package bassamalim.hidaya.state
 
-import bassamalim.hidaya.enum.PID
+import bassamalim.hidaya.enums.PID
 
 data class PrayersState(
     val locationName: String = "",

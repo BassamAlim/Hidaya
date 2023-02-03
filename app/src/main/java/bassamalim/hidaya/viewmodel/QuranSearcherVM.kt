@@ -6,7 +6,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.Screen
-import bassamalim.hidaya.enum.Language
+import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.models.QuranSearcherMatch
 import bassamalim.hidaya.repository.QuranSearcherRepo
 import bassamalim.hidaya.state.QuranSearcherState
