@@ -200,7 +200,14 @@ fun Navigator(startRoute: String?) {
             )
         }
 
-        composable(Screen.QuranViewer.route) {
+        composable(
+            route = Screen.QuranViewer.route,
+            arguments = listOf(
+                navArgument("type") { type = NavType.StringType },
+                navArgument("surah_id") { type = NavType.IntType },
+                navArgument("page") { type = NavType.IntType }
+            )
+        ) {
             QuranViewerUI(
                 navController = navController,
                 viewModel = hiltViewModel()
@@ -228,7 +235,13 @@ fun Navigator(startRoute: String?) {
             )
         }
 
-        composable(Screen.TelawatClient.route) {
+        composable(
+            route = Screen.TelawatClient.route,
+            arguments = listOf(
+                navArgument("action") { type = NavType.StringType },
+                navArgument("media_id") { type = NavType.StringType }
+            )
+        ) {
             TelawatClientUI(
                 navController = navController,
                 viewModel = hiltViewModel()
@@ -242,7 +255,13 @@ fun Navigator(startRoute: String?) {
             )
         }
 
-        composable(Screen.TelawatSuar.route) {
+        composable(
+            route = Screen.TelawatSuar.route,
+            arguments = listOf(
+                navArgument("reciter_id") { type = NavType.IntType },
+                navArgument("version_id") { type = NavType.IntType }
+            )
+        ) {
             TelawatSuarUI(
                 navController = navController,
                 viewModel = hiltViewModel()

@@ -202,10 +202,17 @@ object AppModule {
     ) = TelawatRepo(context, preferences, database, gson)
 
     @Provides @Singleton
-    fun provideTelawatSuarRepository() = TelawatSuarRepo()
+    fun provideTelawatSuarRepository(
+        preferences: SharedPreferences,
+        database: AppDatabase,
+        gson: Gson
+    ) = TelawatSuarRepo(preferences, database, gson)
 
     @Provides @Singleton
-    fun provideTvRepository() = TvRepo()
+    fun provideTvRepository(
+        context: Context,
+        remoteConfig: FirebaseRemoteConfig
+    ) = TvRepo(context, remoteConfig)
 
     @Provides @Singleton
     fun provideWelcomeRepository(
