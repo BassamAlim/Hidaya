@@ -57,7 +57,7 @@ class TelawatRepo @Inject constructor(
     fun updateFavorites() {
         val recitersJson = gson.toJson(db.telawatRecitersDao().getFavs())
         pref.edit()
-            .putString("favorite_reciters", recitersJson)
+            .putString(Prefs.FavoriteReciters.key, recitersJson)
             .apply()
     }
 

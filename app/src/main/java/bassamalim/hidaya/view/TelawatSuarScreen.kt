@@ -1,27 +1,26 @@
 package bassamalim.hidaya.view
 
-import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.enum.DownloadState
 import bassamalim.hidaya.models.ReciterSura
+import bassamalim.hidaya.state.TelawatSuarState
 import bassamalim.hidaya.ui.components.*
-import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.viewmodel.TelawatSuarVM
-import java.util.*
 
 @Composable
 fun TelawatSuarUI(
@@ -30,58 +29,64 @@ fun TelawatSuarUI(
 ) {
     val state by viewModel.uiState.collectAsState()
 
+    DisposableEffect(key1 = viewModel) {
+        viewModel.onStart()
+        onDispose { viewModel.onStop() }
+    }
+
     MyScaffold(
         state.title,
-        onBack = { onBack() }
+        onBack = { viewModel.onBackPressed(navController) }
     ) {
-        val textState = remember { mutableStateOf(TextFieldValue("")) }
         TabLayout(
-            pageNames = listOf(getString(R.string.all), getString(R.string.favorite), getString(
-                R.string.downloaded)),
+            pageNames = listOf(
+                stringResource(R.string.all),
+                stringResource(R.string.favorite),
+                stringResource(R.string.downloaded)
+            ),
             searchComponent = {
                 SearchComponent(
-                    value = textState,
+                    value = viewModel.searchText,
                     hint = stringResource(R.string.search),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-        ) { page ->
-            Tab(items = getItems(ActivityUtils.getListType(page)), textState)
+        ) { pageNum ->
+            viewModel.onListTypeChange(pageNum)
+
+            Tab(viewModel = viewModel, state = state, navController = navController)
         }
     }
 }
 
 @Composable
 private fun Tab(
-    items: List<ReciterSura>,
-    textState: MutableState<TextFieldValue>
+    viewModel: TelawatSuarVM,
+    state: TelawatSuarState,
+    navController: NavController
 ) {
     MyLazyColumn(
         lazyList = {
             items(
-                items = items.filter { item ->
-                    item.searchName.contains(textState.value.text, ignoreCase = true)
+                items = state.items.filter { item ->
+                    item.searchName.contains(viewModel.searchText, ignoreCase = true)
                 }
             ) { item ->
-                SuraCard(sura = item)
+                SuraCard(item, viewModel, state, navController)
             }
         }
     )
 }
 
 @Composable
-private fun SuraCard(sura: ReciterSura) {
+private fun SuraCard(
+    sura: ReciterSura,
+    viewModel: TelawatSuarVM,
+    state: TelawatSuarState,
+    navController: NavController
+) {
     MyClickableSurface(
-        onClick = {
-            val intent = Intent(this, TelawatClient::class.java)
-            intent.action = "start"
-            val rId = String.format(Locale.US, "%03d", reciterId)
-            val vId = String.format(Locale.US, "%02d", versionId)
-            val sId = String.format(Locale.US, "%03d", sura.num)
-            val mediaId = rId + vId + sId
-            intent.putExtra("media_id", mediaId)
-            startActivity(intent)
-        }
+        onClick = { viewModel.onItemClk(navController, sura) }
     ) {
         Row(
             Modifier
@@ -91,14 +96,12 @@ private fun SuraCard(sura: ReciterSura) {
             horizontalArrangement = Arrangement.Center
         ) {
             MyDownloadBtn(
-                state = downloadStates[sura.num],
-                path = "$prefix${sura.num}.mp3",
+                state = state.downloadStates[sura.num],
+                path = "${viewModel.prefix}${sura.num}.mp3",
                 size = 28.dp,
-                deleted = {
-                    downloadStates[sura.num] = DownloadState.NotDownloaded
-                }
+                deleted = { viewModel.onDelete(sura.num) }
             ) {
-                download(sura)
+                viewModel.onDownload(sura)
             }
 
             MyText(
@@ -108,16 +111,8 @@ private fun SuraCard(sura: ReciterSura) {
                     .padding(10.dp)
             )
 
-            MyFavBtn(favs[sura.num]) {
-                if (favs[sura.num] == 0) {
-                    favs[sura.num] = 1
-                    db.suarDao().setFav(sura.num, 1)
-                }
-                else if (favs[sura.num] == 1) {
-                    favs[sura.num] = 0
-                    db.suarDao().setFav(sura.num, 0)
-                }
-                updateFavorites()
+            MyFavBtn(state.favs[sura.num]) {
+                viewModel.onFavClk(sura.num)
             }
         }
     }
