@@ -42,11 +42,13 @@ sealed class Screen(val route: String) {
 }
 
 @Composable
-fun Navigator() {
+fun Navigator(startRoute: String?) {
+    val startDest = startRoute ?: Screen.Splash.route
+
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route
+        startDestination = startDest
     ) {
         composable(
             Screen.About.route

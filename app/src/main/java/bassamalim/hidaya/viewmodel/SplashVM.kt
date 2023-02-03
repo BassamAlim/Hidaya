@@ -2,9 +2,7 @@ package bassamalim.hidaya.viewmodel
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Application
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
@@ -15,10 +13,7 @@ import androidx.navigation.NavController
 import bassamalim.hidaya.Screen
 import bassamalim.hidaya.enum.LocationType
 import bassamalim.hidaya.repository.SplashRepo
-import bassamalim.hidaya.services.AthanService
 import bassamalim.hidaya.state.SplashState
-import bassamalim.hidaya.utils.ActivityUtils
-import bassamalim.hidaya.utils.DBUtils
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,18 +33,6 @@ class SplashVM @Inject constructor(
     private lateinit var navController: NavController
     private lateinit var locationRequestLauncher:
             ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
-
-    init {
-        val ctx = app.applicationContext
-
-        // stop athan if it is running
-        ctx.stopService(Intent(ctx, AthanService::class.java))
-
-        DBUtils.testDB(ctx, repository.pref)
-
-        ActivityUtils.onActivityCreateSetTheme(ctx)
-        ActivityUtils.onActivityCreateSetLocale(ctx as Activity)
-    }
 
     fun provide(
         navController: NavController,

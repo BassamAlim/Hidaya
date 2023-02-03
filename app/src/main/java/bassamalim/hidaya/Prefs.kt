@@ -44,6 +44,8 @@ sealed class Prefs(val key: String, val default: Any) {
     object PrayerTimesJuristicMethod: Prefs("juristic_method_key", "SHAFII")
     object PrayerTimesAdjustment: Prefs("high_lat_adjustment_key", "NONE")
     object TelawatPlaybackRecord: Prefs("telawat_playback_record", 0L)
+    object TelawatRepeatMode: Prefs("telawat_repeat_mode", 0)
+    object TelawatShuffleMode: Prefs("telawat_shuffle_mode", 0)
     object QuranPagesRecord: Prefs("quran_pages_record", 0)
     object QuranTextSize: Prefs("quran_text_size", 30)
     object QuranViewType: Prefs("quran_view_type", QViewType.Page.name)

@@ -1,19 +1,24 @@
 package bassamalim.hidaya.receivers
 
+import android.Manifest
 import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Build
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import bassamalim.hidaya.MainActivity
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
+import bassamalim.hidaya.Screen
 import bassamalim.hidaya.enum.NotificationType
 import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.other.Global
@@ -76,7 +81,12 @@ class NotificationReceiver : BroadcastReceiver() {
             )
         }
 
-        NotificationManagerCompat.from(context).notify(pid.ordinal, build())
+        if (ActivityCompat.checkSelfPermission(
+                context, Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            NotificationManagerCompat.from(context).notify(pid.ordinal, build())
+        }
     }
 
     private fun startService() {
@@ -113,34 +123,38 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun onClick(pid: PID?): PendingIntent {
-        val intent: Intent
+        val intent = Intent(context, MainActivity::class.java)
 
-        // replace with deep link and see if it can open the app
-        when (pid) {
+        val route: String = when (pid) {
             PID.MORNING -> {
-                intent = Intent(context, AthkarViewer::class.java)
-                intent.putExtra("category", 0)
-                intent.putExtra("thikr_id", 0)
-                intent.putExtra("title", "أذكار الصباح")
+                Screen.AthkarViewer.withArgs(
+                    0.toString(),
+                    0.toString(),
+                    "أذكار الصباح"
+                )
             }
             PID.EVENING -> {
-                intent = Intent(context, AthkarViewer::class.java)
-                intent.putExtra("category", 0)
-                intent.putExtra("thikr_id", 1)
-                intent.putExtra("title", "أذكار المساء")
+                Screen.AthkarViewer.withArgs(
+                    0.toString(),
+                    1.toString(),
+                    "أذكار المساء"
+                )
             }
             PID.DAILY_WERD -> {
-                intent = Intent(context, QuranViewer::class.java)
-                intent.action = "by_page"
-                intent.putExtra("page", PrefUtils.getInt(pref, Prefs.TodayWerdPage))
+                Screen.QuranViewer.withArgs(
+                    "by_page",
+                    PrefUtils.getInt(pref, Prefs.TodayWerdPage).toString(),
+                )
             }
             PID.FRIDAY_KAHF -> {
-                intent = Intent(context, QuranViewer::class.java)
-                intent.action = "by_surah"
-                intent.putExtra("surah_id", 17) // surat al-kahf
+                Screen.QuranViewer.withArgs(
+                    "by_sura",
+                    17.toString() // surat al-kahf
+                )
             }
-            else -> intent = Intent(context, Splash::class.java)
+            else -> Screen.Splash.route
         }
+        intent.putExtra("start_route", route)
 
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 

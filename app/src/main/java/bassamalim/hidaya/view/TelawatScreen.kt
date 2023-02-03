@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,6 +31,11 @@ fun TelawatUI(
     viewModel: TelawatVM = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+
+    DisposableEffect(key1 = viewModel) {
+        viewModel.onStart()
+        onDispose { viewModel.onStop() }
+    }
 
     MyScaffold(
         stringResource(R.string.recitations),

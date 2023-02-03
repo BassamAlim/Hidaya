@@ -188,10 +188,18 @@ object AppModule {
     ) = SplashRepo(preferences, database)
 
     @Provides @Singleton
-    fun provideTelawatClientRepository() = TelawatClientRepo()
+    fun provideTelawatClientRepository(
+        preferences: SharedPreferences,
+        database: AppDatabase
+    ) = TelawatClientRepo(preferences, database)
 
     @Provides @Singleton
-    fun provideTelawatRepository() = TelawatRepo()
+    fun provideTelawatRepository(
+        context: Context,
+        preferences: SharedPreferences,
+        database: AppDatabase,
+        gson: Gson
+    ) = TelawatRepo(context, preferences, database, gson)
 
     @Provides @Singleton
     fun provideTelawatSuarRepository() = TelawatSuarRepo()

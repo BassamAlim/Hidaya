@@ -1,7 +1,9 @@
 package bassamalim.hidaya.services
 
+import android.Manifest
 import android.app.*
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
@@ -11,10 +13,11 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import bassamalim.hidaya.MainActivity
 import bassamalim.hidaya.R
-import bassamalim.hidaya.activities.Splash
 import bassamalim.hidaya.enum.PID
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.utils.ActivityUtils
@@ -34,7 +37,7 @@ class AthanService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetLocale(applicationContext as Activity)
 
         createNotificationChannel()
         startForeground(243, build())
@@ -89,16 +92,18 @@ class AthanService : Service() {
 
     private fun getStopIntent(): PendingIntent {
         return PendingIntent.getService(
-            this, 11, Intent(this, AthanService::class.java)
-                .setAction(Global.STOP_ATHAN).setFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
+            this, 11,
+            Intent(this, AthanService::class.java)
+                .setAction(Global.STOP_ATHAN)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 
     private fun getStopAndOpenIntent(): PendingIntent {
         return PendingIntent.getActivity(
-            this, 12, Intent(this, Splash::class.java)
+            this, 12,
+            Intent(this, MainActivity::class.java)
                 .setAction(Global.STOP_ATHAN),
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -149,7 +154,13 @@ class AthanService : Service() {
             )
         }
 
-        NotificationManagerCompat.from(this).notify(pid.ordinal, build())
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            NotificationManagerCompat.from(this).notify(pid.ordinal, build())
+        }
     }
 
     override fun onBind(intent: Intent): IBinder {
