@@ -30,8 +30,6 @@ fun SplashUI(
         viewModel.onLocationRequestResult(permissions)
     }
 
-    println("HERE")
-
     LaunchedEffect(null) {
         viewModel.provide(navController, requestLauncher)
 
@@ -49,5 +47,6 @@ fun SplashUI(
 
     LaunchedEffect(null) {
         viewModel.enter()
+        println("HERE")
     }
 }

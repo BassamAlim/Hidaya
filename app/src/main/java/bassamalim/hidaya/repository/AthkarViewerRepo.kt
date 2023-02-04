@@ -14,7 +14,7 @@ class AthkarViewerRepo @Inject constructor(
 
     fun getLanguage() = PrefUtils.getLanguage(pref)
 
-    fun getTextSize() = PrefUtils.getInt(pref, Prefs.AthkarTextSize)
+    fun getTextSize() = PrefUtils.getFloat(pref, Prefs.AthkarTextSize)
 
     fun setTextSize(textSize: Float) {
         pref.edit()

@@ -11,29 +11,57 @@ import bassamalim.hidaya.view.*
 
 sealed class Screen(val route: String) {
     object About: Screen("about")
-    object AthkarList: Screen("athkar_list")
-    object AthkarViewer: Screen("athkar_viewer")
+
+    data class AthkarList(
+        val type: String, val category: String=""
+    ): Screen("athkar_list/$type/$category")
+
+    data class AthkarViewer(
+        val thikrId: String
+    ): Screen("athkar_viewer/$thikrId")
+
     object BookChapters: Screen("book_chapters")
+
     object BookSearcher: Screen("book_searcher")
+
     object Books: Screen("books")
+
     object BookViewer: Screen("book_viewer")
+
     object DateConverter: Screen("date_converter")
+
     object LocationPicker: Screen("location_picker")
+
     object Locator: Screen("locator")
+
     object Main: Screen("main")
+
     object Qibla: Screen("qibla")
+
     object QuizLobby: Screen("quiz_lobby")
+
     object QuizResult: Screen("quiz_result")
+
     object Quiz: Screen("quiz")
+
     object QuranSearcher: Screen("quran_searcher")
+
     object QuranViewer: Screen("quran_viewer")
+
     object RadioClient: Screen("radio_client")
+
     object Settings: Screen("settings")
+
     object Splash: Screen("splash")
+
     object TelawatClient: Screen("telawat_client")
+
     object Telawat: Screen("telawat")
+
     object TelawatSuar: Screen("telawat_suar")
+
     object Tv: Screen("tv")
+
     object Welcome: Screen("welcome")
 
     fun withArgs(vararg args: String): String {
@@ -43,7 +71,7 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun Navigator(startRoute: String?) {
-    val startDest = startRoute ?: Screen.Splash.route
+    val startDest = startRoute ?: Screen.Main.route
 
     val navController = rememberNavController()
     NavHost(
@@ -60,7 +88,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = Screen.AthkarList.route + "/{type}/{category}",
+            route = Screen.AthkarList("{type}", "{category}").route,
             arguments = listOf(
                 navArgument("type") { type = NavType.StringType },
                 navArgument("category") { type = NavType.IntType }
@@ -73,9 +101,9 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = Screen.AthkarViewer.route + "/{id}",
+            route = Screen.AthkarViewer("{thikr_id}").route,
             arguments = listOf(
-                navArgument("id") { type = NavType.IntType }
+                navArgument("thikr_id") { type = NavType.IntType }
             )
         ) {
             AthkarViewerUI(

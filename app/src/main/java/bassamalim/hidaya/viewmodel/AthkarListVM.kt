@@ -30,16 +30,15 @@ class AthkarListVM @Inject constructor(
     private val type = savedStateHandle.get<String>("type") ?: "all"
     private val category = savedStateHandle.get<Int>("category")?: 0
 
-    private val context = getApplication<Application>().applicationContext
     var searchText by mutableStateOf("")
         private set
     private val language = repository.getLanguage()
 
     private val _uiState = MutableStateFlow(AthkarListState(
-        title = when (ListType.valueOf(type)) {
-            ListType.Favorite -> context.getString(R.string.favorite_athkar)
-            ListType.Custom -> repository.getName(language, category)
-            else -> context.getString(R.string.all_athkar)
+        title = when (type) {
+            ListType.Favorite.name -> app.applicationContext.getString(R.string.favorite_athkar)
+            ListType.Custom.name -> repository.getName(language, category)
+            else -> app.applicationContext.getString(R.string.all_athkar)
         },
         items = getItems().filter { item ->
             item.name.contains(searchText, ignoreCase = true)
@@ -94,7 +93,11 @@ class AthkarListVM @Inject constructor(
 
     fun onItemClick(navController: NavController, item: AthkarItem) {
         // pass type and thikrId which is item.id
-        navController.navigate(Screen.AthkarViewer.withArgs(item.id.toString()))
+        navController.navigate(
+            Screen.AthkarViewer.withArgs(
+                item.id.toString()
+            )
+        )
     }
 
 }

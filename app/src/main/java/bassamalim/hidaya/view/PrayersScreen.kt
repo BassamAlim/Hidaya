@@ -79,8 +79,7 @@ fun PrayersUI(
         ) {
             PrayerCards(
                 viewModel = viewModel,
-                state = state,
-                times = state.prayerTexts
+                state = state
             )
         }
 
@@ -141,13 +140,13 @@ fun PrayersUI(
 }
 
 @Composable
-private fun PrayerCards(viewModel: PrayersVM, state: PrayersState, times: List<String>) {
-    for (i in times.indices) {
+private fun PrayerCards(viewModel: PrayersVM, state: PrayersState) {
+    for (i in state.prayerTexts.indices) {
         PrayerCard(
             viewModel = viewModel,
             state = state,
             number = i,
-            text = times[i]
+            text = state.prayerTexts[i]
         )
     }
 }

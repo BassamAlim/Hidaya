@@ -22,6 +22,8 @@ fun WelcomeUI(
     navController: NavController = rememberNavController(),
     viewModel: WelcomeVM = hiltViewModel()
 ) {
+    println("THere")
+
     Box(
         Modifier.background(AppTheme.colors.background)
     ) {

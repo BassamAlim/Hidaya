@@ -8,26 +8,19 @@ class AthkarVM : ViewModel() {
 
     fun onAllAthkarClick(navController: NavController) {
         navController.navigate(
-            Screen.AthkarList.withArgs(
-                "all"
-            )
+            Screen.AthkarList("all").route
         )
     }
 
     fun onFavoriteAthkarClick(navController: NavController) {
         navController.navigate(
-            Screen.AthkarList.withArgs(
-                "favorite"
-            )
+            Screen.AthkarList("favorite").route
         )
     }
 
     fun onCategoryClick(navController: NavController, category: Int) {
         navController.navigate(
-            Screen.AthkarList.withArgs(
-                "category",
-                category.toString()
-            )
+            Screen.AthkarList("category", category.toString()).route
         )
     }
 

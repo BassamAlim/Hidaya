@@ -8,7 +8,6 @@ import bassamalim.hidaya.Screen
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.repository.HomeRepo
 import bassamalim.hidaya.state.HomeState
-import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PTUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,14 +21,6 @@ import javax.inject.Inject
 class HomeVM @Inject constructor(
     private val repository: HomeRepo
 ): ViewModel() {
-
-    private val _uiState = MutableStateFlow(HomeState(
-        telawatRecord = getTelawatRecord(),
-        quranPagesRecord = getQuranPagesRecord(),
-        todayWerdPage = getTodayWerdPage(),
-        isWerdDone = repository.getIsWerdDone()
-    ))
-    val uiState = _uiState.asStateFlow()
 
     private val prayerNames = repository.getPrayerNames()
     private val numeralsLanguage = repository.getNumeralsLanguage()
@@ -46,6 +37,14 @@ class HomeVM @Inject constructor(
         private set
     var remaining = 0L
         private set
+
+    private val _uiState = MutableStateFlow(HomeState(
+        telawatRecord = getTelawatRecord(),
+        quranPagesRecord = getQuranPagesRecord(),
+        todayWerdPage = getTodayWerdPage(),
+        isWerdDone = repository.getIsWerdDone()
+    ))
+    val uiState = _uiState.asStateFlow()
 
     fun onStart() {
         if (repository.getLocation() != null) setupPrayersCard()

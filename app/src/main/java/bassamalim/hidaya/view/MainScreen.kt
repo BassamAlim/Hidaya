@@ -89,7 +89,7 @@ fun MainUI(
         },
         bottomBar = { MyBottomNavigation(bottomNavController) }
     ) {
-        NavigationGraph(navController, it)
+        NavigationGraph(navController, bottomNavController, it)
 
         DateEditorDialog(
             shown = state.dateEditorShown,
@@ -112,9 +112,13 @@ fun MainUI(
 }
 
 @Composable
-fun NavigationGraph(navController: NavHostController, padding: PaddingValues) {
+fun NavigationGraph(
+    navController: NavHostController,
+    bottomNavController: NavHostController,
+    padding: PaddingValues
+) {
     NavHost(
-        navController,
+        bottomNavController,
         startDestination = BottomNavItem.Home.route,
         modifier = Modifier.padding(padding)
     ) {
