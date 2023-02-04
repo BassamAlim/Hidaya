@@ -1,5 +1,6 @@
 package bassamalim.hidaya
 
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -9,71 +10,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import bassamalim.hidaya.view.*
 
-sealed class Screen(val route: String) {
-    object About: Screen("about")
-
-    data class AthkarList(
-        val type: String, val category: String=""
-    ): Screen("athkar_list/$type/$category")
-
-    data class AthkarViewer(
-        val thikrId: String
-    ): Screen("athkar_viewer/$thikrId")
-
-    object BookChapters: Screen("book_chapters")
-
-    object BookSearcher: Screen("book_searcher")
-
-    object Books: Screen("books")
-
-    object BookViewer: Screen("book_viewer")
-
-    object DateConverter: Screen("date_converter")
-
-    object LocationPicker: Screen("location_picker")
-
-    object Locator: Screen("locator")
-
-    object Main: Screen("main")
-
-    object Qibla: Screen("qibla")
-
-    object QuizLobby: Screen("quiz_lobby")
-
-    object QuizResult: Screen("quiz_result")
-
-    object Quiz: Screen("quiz")
-
-    object QuranSearcher: Screen("quran_searcher")
-
-    object QuranViewer: Screen("quran_viewer")
-
-    object RadioClient: Screen("radio_client")
-
-    object Settings: Screen("settings")
-
-    object Splash: Screen("splash")
-
-    object TelawatClient: Screen("telawat_client")
-
-    object Telawat: Screen("telawat")
-
-    object TelawatSuar: Screen("telawat_suar")
-
-    object Tv: Screen("tv")
-
-    object Welcome: Screen("welcome")
-
-    fun withArgs(vararg args: String): String {
-        return route + args.joinToString(prefix = "/", separator = "/")
-    }
-}
-
 @Composable
 fun Navigator(startRoute: String?) {
     val startDest = startRoute ?: Screen.Main.route
 
     val navController = rememberNavController()
+
     NavHost(
         navController = navController,
         startDestination = startDest
@@ -88,7 +30,9 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = Screen.AthkarList("{type}", "{category}").route,
+            route = Screen.AthkarList(
+                "{type}", "{category}"
+            ).route,
             arguments = listOf(
                 navArgument("type") { type = NavType.StringType },
                 navArgument("category") { type = NavType.IntType }
@@ -101,7 +45,9 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = Screen.AthkarViewer("{thikr_id}").route,
+            route = Screen.AthkarViewer(
+                "{thikr_id}"
+            ).route,
             arguments = listOf(
                 navArgument("thikr_id") { type = NavType.IntType }
             )
@@ -113,7 +59,9 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = Screen.BookChapters.route,
+            route = Screen.BookChapters(
+                "{book_id}", "{book_title}"
+            ).route,
             arguments = listOf(
                 navArgument("book_id") { type = NavType.IntType },
                 navArgument("book_title") { type = NavType.StringType }
@@ -140,7 +88,9 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = Screen.BookViewer.route,
+            route = Screen.BookViewer(
+                "{book_id}", "{book_title}", "{chapter_id}"
+            ).route,
             arguments = listOf(
                 navArgument("book_id") { type = NavType.IntType },
                 navArgument("book_title") { type = NavType.StringType },
@@ -168,7 +118,9 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = Screen.Locator.route,
+            route = Screen.Locator(
+                "{type}"
+            ).route,
             arguments = listOf(
                 navArgument("type") { type = NavType.StringType }
             )
@@ -201,7 +153,9 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = Screen.QuizResult.route,
+            route = Screen.QuizResult(
+                "{score}", "{questions}", "{chosenAs}"
+            ).route,
             arguments = listOf(
                 navArgument("score") { type = NavType.IntType },
                 navArgument("questions") { type = NavType.IntArrayType },
@@ -229,7 +183,9 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = Screen.QuranViewer.route,
+            route = Screen.QuranViewer(
+                "{type}", "{suraId}", "{page}"
+            ).route,
             arguments = listOf(
                 navArgument("type") { type = NavType.StringType },
                 navArgument("surah_id") { type = NavType.IntType },
@@ -243,10 +199,12 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(Screen.RadioClient.route) {
-            RadioClientUI(
-                navController = navController,
-                viewModel = hiltViewModel()
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                RadioClientUI(
+                    navController = navController,
+                    viewModel = hiltViewModel()
+                )
+            }
         }
 
         composable(Screen.Settings.route) {
@@ -264,16 +222,20 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = Screen.TelawatClient.route,
+            route = Screen.TelawatClient(
+                "{action}", "{media_id}"
+            ).route,
             arguments = listOf(
                 navArgument("action") { type = NavType.StringType },
                 navArgument("media_id") { type = NavType.StringType }
             )
         ) {
-            TelawatClientUI(
-                navController = navController,
-                viewModel = hiltViewModel()
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                TelawatClientUI(
+                    navController = navController,
+                    viewModel = hiltViewModel()
+                )
+            }
         }
 
         composable(Screen.Telawat.route) {
@@ -284,7 +246,9 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = Screen.TelawatSuar.route,
+            route = Screen.TelawatSuar(
+                "{reciter_id}", "{version_id}"
+            ).route,
             arguments = listOf(
                 navArgument("reciter_id") { type = NavType.IntType },
                 navArgument("version_id") { type = NavType.IntType }

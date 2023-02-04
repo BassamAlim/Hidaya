@@ -26,10 +26,10 @@ class SettingsVM @Inject constructor(
     private val repository: SettingsRepo
 ): AndroidViewModel(app) {
 
+    val pref = repository.pref
+
     private val _uiState = MutableStateFlow(SettingsState())
     val uiState = _uiState.asStateFlow()
-
-    val pref = repository.pref
 
     init {
         setSummaries()

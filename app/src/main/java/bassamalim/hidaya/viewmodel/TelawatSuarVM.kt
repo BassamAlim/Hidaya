@@ -169,10 +169,10 @@ class TelawatSuarVM @Inject constructor(
         val mediaId = rId + vId + sId
 
         navController.navigate(
-            Screen.TelawatClient.withArgs(
+            Screen.TelawatClient(
                 "start",
                 mediaId
-            )
+            ).route
         )
     }
 

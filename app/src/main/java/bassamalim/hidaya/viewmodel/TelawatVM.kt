@@ -37,6 +37,13 @@ class TelawatVM @Inject constructor(
     private val repository: TelawatRepo
 ): AndroidViewModel(app) {
 
+    var searchText by mutableStateOf("")
+        private set
+    val prefix = "/Telawat/"
+    private var continueListeningMediaId = ""
+    val rewayat = repository.getRewayat()
+    private val downloading = HashMap<Long, Pair<Int, Int>>()
+
     private val _uiState = MutableStateFlow(TelawatState(
         items = getItems(ListType.All),
         favs = repository.getFavs(),
@@ -44,13 +51,6 @@ class TelawatVM @Inject constructor(
         continueListeningText = repository.getNoLastPlayStr()
     ))
     val uiState = _uiState.asStateFlow()
-
-    var searchText by mutableStateOf("")
-        private set
-    val prefix = "/Telawat/"
-    private var continueListeningMediaId = ""
-    val rewayat = repository.getRewayat()
-    private val downloading = HashMap<Long, Pair<Int, Int>>()
 
     init {
         _uiState.update { it.copy(
@@ -255,10 +255,10 @@ class TelawatVM @Inject constructor(
     fun onContinueListeningClick(navController: NavController) {
         if (continueListeningMediaId.isNotEmpty()) {
             navController.navigate(
-                Screen.TelawatClient.withArgs(
+                Screen.TelawatClient(
                     "continue",
                     continueListeningMediaId
-                )
+                ).route
             )
         }
     }
@@ -306,10 +306,10 @@ class TelawatVM @Inject constructor(
 
     fun onVersionClick(reciterId: Int, versionId: Int, navController: NavController) {
         navController.navigate(
-            Screen.TelawatSuar.withArgs(
+            Screen.TelawatSuar(
                 reciterId.toString(),
                 versionId.toString()
-            )
+            ).route
         )
     }
 

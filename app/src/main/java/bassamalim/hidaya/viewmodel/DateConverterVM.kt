@@ -22,13 +22,13 @@ class DateConverterVM @Inject constructor(
     private val repository: DateConverterRepo
 ): AndroidViewModel(app) {
 
-    private val _uiState = MutableStateFlow(DateConverterState())
-    val uiState = _uiState.asStateFlow()
-
     val hijriCalendar = UmmalquraCalendar()
     private val gregorianCalendar = Calendar.getInstance()
     private val hijriMonths = repository.getHijriMonths()
     private val gregorianMonths = repository.getGregorianMonths()
+
+    private val _uiState = MutableStateFlow(DateConverterState())
+    val uiState = _uiState.asStateFlow()
 
     fun onHijriPickCancel() {
         _uiState.update { it.copy(

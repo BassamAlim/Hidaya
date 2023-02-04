@@ -16,9 +16,9 @@ class WelcomeVM @Inject constructor(
         repository.unsetFirstTime()
 
         navController.navigate(
-            Screen.Locator.withArgs(
+            Screen.Locator(
                 "initial"
-            )
+            ).route
         ) {
             popUpTo(Screen.Welcome.route) {
                 inclusive = true

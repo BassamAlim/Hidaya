@@ -20,14 +20,14 @@ class QuizVM @Inject constructor(
     private val repository: QuizRepo
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(QuizState())
-    val uiState = _uiState.asStateFlow()
-
     private val questionStr = repository.getQuestionStr()
     private val numeralsLanguage = repository.getNumeralsLanguage()
     private val questions = getQuestions()
     private val chosenAs = IntArray(10)
     private var current = 0
+
+    private val _uiState = MutableStateFlow(QuizState())
+    val uiState = _uiState.asStateFlow()
 
     init {
         Arrays.fill(chosenAs, -1)
@@ -65,13 +65,17 @@ class QuizVM @Inject constructor(
         val score = calculateScore()
 
         navController.navigate(
-            Screen.QuizResult.withArgs(
+            Screen.QuizResult(
                 score.toString(),
                 questions.map { q -> q.getQuestionId() }.toIntArray().toString(),
                 chosenAs.toString()
-            )
+            ).route
         ) {
-            popUpTo(Screen.QuizResult.route) {
+            popUpTo(
+                Screen.QuizResult(
+                    0.toString(), "", ""
+                ).route
+            ) {
                 inclusive = true
             }
         }

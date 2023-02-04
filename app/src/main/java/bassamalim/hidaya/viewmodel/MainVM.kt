@@ -30,13 +30,13 @@ class MainVM @Inject constructor(
     private val repository: MainRepo
 ): AndroidViewModel(app) {
 
+    private var dateOffset = repository.getDateOffset()
+
     private val _uiState = MutableStateFlow(MainState(
         hijriDate = getHijriDate(),
         gregorianDate = getGregorianDate()
     ))
     val uiState = _uiState.asStateFlow()
-
-    private var dateOffset = repository.getDateOffset()
 
     init {
         initFirebase()

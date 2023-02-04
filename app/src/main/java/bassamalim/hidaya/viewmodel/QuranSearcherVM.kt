@@ -98,10 +98,10 @@ class QuranSearcherVM @Inject constructor(
 
     fun onGotoPageClick(page: Int, navController: NavController) {
         navController.navigate(
-            Screen.QuranViewer.withArgs(
+            Screen.QuranViewer(
                 "by_page",
                 page.toString()
-            )
+            ).route
         )
     }
 

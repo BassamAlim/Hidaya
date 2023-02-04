@@ -49,7 +49,6 @@ class TelawatClientVM @Inject constructor(
     var reciterId = mediaId.substring(0, 3).toInt()
     var versionId = mediaId.substring(3, 5).toInt()
     var suraIdx = mediaId.substring(5).toInt()
-
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
@@ -285,11 +284,10 @@ class TelawatClientVM @Inject constructor(
         val ctx = app.applicationContext
         if ((ctx as Activity).isTaskRoot) {
             navController.navigate(
-                Screen.TelawatSuar.withArgs(
+                Screen.TelawatSuar(
                     reciterId.toString(),
-                    uiState.value.reciterName,
                     versionId.toString()
-                )
+                ).route
             ) {
                 popUpTo(Screen.Main.route) { inclusive = true }
             }

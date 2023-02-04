@@ -167,9 +167,9 @@ class PrayersVM @Inject constructor(
 
     fun onLocatorClick(navController: NavController) {
         navController.navigate(
-            Screen.Locator.withArgs(
+            Screen.Locator(
                 "normal"
-            )
+            ).route
         )
     }
 

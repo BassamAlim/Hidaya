@@ -22,16 +22,16 @@ class QuranVM @Inject constructor(
     private val repository: QuranRepo
 ): ViewModel() {
 
+    private val names = repository.getSuraNames()
+    var searchText by mutableStateOf("")
+        private set
+
     private val _uiState = MutableStateFlow(QuranState(
         bookmarkedPageText = getBookmarkedPageText(),
         items = getItems(ListType.All),
         favs = repository.getFavs()
     ))
     val uiState = _uiState.asStateFlow()
-
-    private val names = repository.getSuraNames()
-    var searchText by mutableStateOf("")
-        private set
 
     fun onStart() {
         _uiState.update { it.copy(
@@ -75,10 +75,10 @@ class QuranVM @Inject constructor(
 
     fun onSuraClick(suraID: Int, navController: NavController) {
         navController.navigate(
-            Screen.QuranViewer.withArgs(
+            Screen.QuranViewer(
                 "by_surah",
                 suraID.toString()
-            )
+            ).route
         )
     }
 
@@ -90,10 +90,10 @@ class QuranVM @Inject constructor(
         val bookmarkedPage = repository.getBookmarkedPage()
         if (bookmarkedPage != -1) {
             navController.navigate(
-                Screen.QuranViewer.withArgs(
+                Screen.QuranViewer(
                     "by_page",
                     bookmarkedPage.toString()
-                )
+                ).route
             )
         }
     }
@@ -124,10 +124,10 @@ class QuranVM @Inject constructor(
             val num = searchText.toInt()
             if (num in 1..604) {
                 navController.navigate(
-                    Screen.QuranViewer.withArgs(
+                    Screen.QuranViewer(
                         "by_page",
                         num.toString()
-                    )
+                    ).route
                 )
             }
             else {

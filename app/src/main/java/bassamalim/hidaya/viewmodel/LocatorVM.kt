@@ -31,14 +31,14 @@ class LocatorVM @Inject constructor(
 
     private val type = savedStateHandle.get<String>("type") ?: "normal"
 
+    private lateinit var navController: NavController
+    private lateinit var locationRequestLauncher:
+            ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
+
     private val _uiState = MutableStateFlow(LocatorState(
         showSkipLocationBtn = type == "initial"
     ))
     val uiState = _uiState.asStateFlow()
-
-    private lateinit var navController: NavController
-    private lateinit var locationRequestLauncher:
-            ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
 
     fun provide(
         navController: NavController,

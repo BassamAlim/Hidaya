@@ -21,6 +21,12 @@ class LocationPickerVM @Inject constructor(
     private val repository: LocationPickerRepo
 ): ViewModel() {
 
+    private var mode = 0
+    private var countryId = -1
+    val language = repository.language
+    var searchText by mutableStateOf("")
+        private set
+
     private val _uiState = MutableStateFlow(LocationPickerState(
         titleResId = R.string.choose_country,
         items = repository.getCountries().map { country ->
@@ -32,12 +38,6 @@ class LocationPickerVM @Inject constructor(
         }
     ))
     val uiState = _uiState.asStateFlow()
-
-    var searchText by mutableStateOf("")
-        private set
-    private var mode = 0
-    private var countryId = -1
-    val language = repository.language
 
     fun onBack(navController: NavController) {
         if (mode == 1) {

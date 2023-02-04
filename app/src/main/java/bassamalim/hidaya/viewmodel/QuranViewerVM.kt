@@ -57,17 +57,14 @@ class QuranViewerVM @Inject constructor(
     private var bookmarkedPage = repository.getBookmarkedPage()
     val pref = repository.pref
     val reciterNames = repository.getReciterNames()
-
     private lateinit var currentAyas: List<Ayah>
     private var lastRecordedPage = 0
     private var lastClickT = 0L
     private var lastClickedId = -1
     var scrollTo = -1F
         private set
-
     val selected = mutableStateOf<Ayah?>(null)
     var tracked = mutableStateOf<Ayah?>(null)
-
     private val playerState = mutableStateOf(PlaybackStateCompat.STATE_STOPPED)
     private var player: AyahPlayerService? = null
     private var serviceBound = false
@@ -159,7 +156,7 @@ class QuranViewerVM @Inject constructor(
 
             override fun nextPage() {
                 if (_uiState.value.pageNum < Global.QURAN_PAGES)
-                    onNextPage()
+                    updatePageState(_uiState.value.pageNum + 1)
             }
 
             override fun track(ayaId: Int) {
@@ -232,14 +229,6 @@ class QuranViewerVM @Inject constructor(
         }
     }
 
-    fun onNextPage() {
-        updatePageState(_uiState.value.pageNum + 1)
-    }
-
-    fun onPrevPage() {
-        if (_uiState.value.pageNum > 0)
-            updatePageState(_uiState.value.pageNum - 1)
-    }
 
     fun onBookmarkClick() {
         bookmarkedPage = _uiState.value.pageNum

@@ -24,9 +24,6 @@ class QiblaVM @Inject constructor(
     private val repository: QiblaRepo
 ): AndroidViewModel(app) {
 
-    private val _uiState = MutableStateFlow(QiblaState())
-    val uiState = _uiState.asStateFlow()
-
     private val kaabaLat = 21.4224779
     private val kaabaLng = 39.8251832
     private val kaabaLatInRad = Math.toRadians(kaabaLat)
@@ -34,6 +31,9 @@ class QiblaVM @Inject constructor(
     private val location = repository.getLocation()
     private var currentAzimuth = 0F
     private var bearing = 0F
+
+    private val _uiState = MutableStateFlow(QiblaState())
+    val uiState = _uiState.asStateFlow()
 
     init {
         if (location != null) {

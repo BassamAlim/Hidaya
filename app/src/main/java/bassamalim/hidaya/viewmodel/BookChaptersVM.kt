@@ -49,11 +49,13 @@ class BookChaptersVM @Inject constructor(
     }
 
     fun onItemClick(item: BookChapter, navController: NavController) {
-        navController.navigate(Screen.BookViewer.withArgs(
-            bookId.toString(),
-            item.title,
-            item.id.toString()
-        ))
+        navController.navigate(
+            Screen.BookViewer(
+                bookId.toString(),
+                item.title,
+                item.id.toString()
+            ).route
+        )
     }
 
     fun onFavClick(itemId: Int) {

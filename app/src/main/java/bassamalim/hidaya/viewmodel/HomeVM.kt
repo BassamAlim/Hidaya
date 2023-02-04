@@ -63,10 +63,10 @@ class HomeVM @Inject constructor(
 
     fun onGotoTodayWerdClick(navController: NavController) {
         navController.navigate(
-            Screen.QuranViewer.withArgs(
+            Screen.QuranViewer(
                 "by_page",
-                _uiState.value.todayWerdPage
-            )
+                page = _uiState.value.todayWerdPage
+            ).route
         )
     }
 

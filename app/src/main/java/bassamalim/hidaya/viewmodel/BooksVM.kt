@@ -22,12 +22,12 @@ class BooksVM @Inject constructor(
     private val repository: BooksRepo
 ): ViewModel() {
 
+    val downloadStates = mutableStateListOf<DownloadState>()
+
     private val _uiState = MutableStateFlow(BooksState(
         items = repository.getBooks()
     ))
     val uiState = _uiState.asStateFlow()
-
-    val downloadStates = mutableStateListOf<DownloadState>()
 
     fun onStart() {
         checkDownloads()
@@ -74,11 +74,13 @@ class BooksVM @Inject constructor(
     fun onItemClick(item: BooksDB, navController: NavController) {
         if (downloadStates[item.id] == DownloadState.NotDownloaded) download(item)
         else if (downloadStates[item.id] == DownloadState.Downloaded) {
-            navController.navigate(Screen.BookChapters.withArgs(
-                item.id.toString(),
-                if (repository.language == Language.ENGLISH) item.titleEn
-                else item.title
-            ))
+            navController.navigate(
+                Screen.BookChapters(
+                    item.id.toString(),
+                    if (repository.language == Language.ENGLISH) item.titleEn
+                    else item.title
+                ).route
+            )
         }
         else showWaitMassage()
     }

@@ -21,22 +21,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AboutVM @Inject constructor(
-    app: Application,
-    private val repository: AboutRepo
+    private val app: Application,
+    repository: AboutRepo
 ): AndroidViewModel(app) {
-
-    private val context = getApplication<Application>().applicationContext
-
-    private val _uiState = MutableStateFlow(AboutState())
-    val uiState = _uiState.asStateFlow()
 
     private var counter by mutableStateOf(0)
 
-    init {
-        _uiState.update { it.copy(
-            lastDailyUpdate = repository.getLastUpdate()
-        )}
-    }
+    private val _uiState = MutableStateFlow(AboutState(
+        lastDailyUpdate = repository.getLastUpdate()
+    ))
+    val uiState = _uiState.asStateFlow()
 
     private fun enableDevMode() {
         _uiState.update { it.copy(
@@ -45,11 +39,12 @@ class AboutVM @Inject constructor(
     }
 
     fun rebuildDatabase() {
-        context.deleteDatabase("HidayaDB")
+        val ctx = app.applicationContext
+        ctx.deleteDatabase("HidayaDB")
 
         Log.i(Global.TAG, "Database Rebuilt")
 
-        DBUtils.reviveDB(context)
+        DBUtils.reviveDB(ctx)
 
         _uiState.update { it.copy(
             shouldShowRebuiltToast = true
@@ -60,7 +55,7 @@ class AboutVM @Inject constructor(
         val url = FirebaseRemoteConfig.getInstance().getString(Global.UPDATE_URL)
         val i = Intent(Intent.ACTION_VIEW)
         i.data = Uri.parse(url)
-        context.startActivity(i)
+        app.applicationContext.startActivity(i)
     }
 
     fun onTitleClick() {

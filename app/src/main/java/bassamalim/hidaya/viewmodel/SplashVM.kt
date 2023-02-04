@@ -27,12 +27,12 @@ class SplashVM @Inject constructor(
     private val repository: SplashRepo
 ): AndroidViewModel(app) {
 
-    private val _uiState = MutableStateFlow(SplashState())
-    val uiState = _uiState.asStateFlow()
-
     private lateinit var navController: NavController
     private lateinit var locationRequestLauncher:
             ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
+
+    private val _uiState = MutableStateFlow(SplashState())
+    val uiState = _uiState.asStateFlow()
 
     fun provide(
         navController: NavController,
@@ -91,9 +91,7 @@ class SplashVM @Inject constructor(
     }
 
     private fun launch(location: Location?) {
-        if (location != null) {
-            repository.storeLocation(location)
-        }
+        if (location != null) repository.storeLocation(location)
 
         navController.navigate(Screen.Main.route) {
             popUpTo(Screen.Main.route) {
@@ -120,8 +118,7 @@ class SplashVM @Inject constructor(
     }
 
     fun onLocationRequestResult(result: Map<String, Boolean>) {
-        if (result.keys.contains(Manifest.permission.ACCESS_BACKGROUND_LOCATION))
-            return
+        if (result.keys.contains(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) return
 
         if (result[Manifest.permission.ACCESS_FINE_LOCATION]!! &&
             result[Manifest.permission.ACCESS_COARSE_LOCATION]!!) {

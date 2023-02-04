@@ -29,13 +29,13 @@ class RadioClientVM @Inject constructor(
     private val repository: RadioClientRepo
 ): AndroidViewModel(app) {
 
-    private val _uiState = MutableStateFlow(RadioClientState())
-    val uiState = _uiState.asStateFlow()
-
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
     private var url: String? = null
+
+    private val _uiState = MutableStateFlow(RadioClientState())
+    val uiState = _uiState.asStateFlow()
 
     init {
         getLinkAndConnect()

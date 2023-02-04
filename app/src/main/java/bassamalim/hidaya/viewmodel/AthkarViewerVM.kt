@@ -24,7 +24,7 @@ class AthkarViewerVM @Inject constructor(
 
     private val _uiState = MutableStateFlow(AthkarViewerState(
         title = repository.getTitle(id),
-        textSize = repository.getTextSize().toFloat(),
+        textSize = repository.getTextSize(),
         items = getItems()
     ))
     val uiState = _uiState.asStateFlow()
