@@ -88,13 +88,13 @@ fun QuranUI(
         vm.onTutorialDialogDismiss(it)
     }
 
-    if (st.shouldShowPageDNE) {
-        LaunchedEffect(null) {
-            Toast.makeText(
-                ctx,
-                ctx.getString(R.string.page_does_not_exist),
-                Toast.LENGTH_SHORT
-            ).show()
+    if (st.shouldShowPageDNE != 0) {
+        LaunchedEffect(st.shouldShowPageDNE) {
+                Toast.makeText(
+                    ctx,
+                    ctx.getString(R.string.page_does_not_exist),
+                    Toast.LENGTH_SHORT
+                ).show()
         }
     }
 

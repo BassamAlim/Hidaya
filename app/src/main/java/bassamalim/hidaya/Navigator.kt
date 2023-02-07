@@ -75,15 +75,15 @@ fun Navigator(startRoute: String?) {
 
         composable(Screen.BookSearcher.route) {
             BookSearcherUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
         composable(Screen.Books.route) {
             BooksUI(
                 navController = navController,
-                viewModel = hiltViewModel()
+                vm = hiltViewModel()
             )
         }
 
@@ -209,8 +209,8 @@ fun Navigator(startRoute: String?) {
 
         composable(Screen.Settings.route) {
             SettingsUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 

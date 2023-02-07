@@ -87,13 +87,13 @@ class BooksVM @Inject constructor(
 
     private fun showWaitMassage() {
         _uiState.update { it.copy(
-            shouldShowWaitMassage = true
+            shouldShowWait = _uiState.value.shouldShowWait + 1
         )}
     }
 
     fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {
         _uiState.update { it.copy(
-            isTutorialDialogShown = false
+            tutorialDialogShown = false
         )}
 
         if (doNotShowAgain) repository.setDoNotShowAgain()

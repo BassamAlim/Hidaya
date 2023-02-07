@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,7 +24,7 @@ fun FilterDialog(
     itemSelections: Array<Boolean>,
     onDismiss: (Array<Boolean>) -> Unit
 ) {
-    val selections = itemSelections.toMutableList()
+    val selections = itemSelections.toList().toMutableStateList()
 
     MyDialog(shown) {
         Column(

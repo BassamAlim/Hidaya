@@ -45,7 +45,10 @@ class BookChaptersVM @Inject constructor(
                 listType == ListType.Favorite && _uiState.value.favs[i] == 1)
                 items.add(BookChapter(chapter.chapterId, chapter.chapterTitle))
         }
-        return items
+
+        return if (searchText.isNotEmpty())
+            items.filter { it.title.contains(searchText, true) }
+        else items
     }
 
     fun onItemClick(item: BookChapter, navController: NavController) {
@@ -82,6 +85,8 @@ class BookChaptersVM @Inject constructor(
 
     fun onSearchTextChange(text: String) {
         searchText = text
+
+        getItems(_uiState.value.listType)
     }
 
 }

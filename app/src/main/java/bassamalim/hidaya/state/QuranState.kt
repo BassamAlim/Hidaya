@@ -7,5 +7,5 @@ data class QuranState(
     val items: List<Sura> = emptyList(),
     val favs: List<Int> = emptyList(),
     val isTutorialDialogShown: Boolean = false,
-    val shouldShowPageDNE: Boolean = false
+    val shouldShowPageDNE: Int = 0
 )

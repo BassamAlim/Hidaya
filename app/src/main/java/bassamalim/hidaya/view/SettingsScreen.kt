@@ -30,11 +30,11 @@ import bassamalim.hidaya.viewmodel.SettingsVM
 
 @Composable
 fun SettingsUI(
-    navController: NavController = rememberNavController(),
-    viewModel: SettingsVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: SettingsVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
+    val st by vm.uiState.collectAsState()
+    val ctx = LocalContext.current
 
     MyScaffold(
         stringResource(R.string.settings)
@@ -49,21 +49,21 @@ fun SettingsUI(
                     R.string.appearance,
                     Modifier.padding(top = 4.dp, bottom = 2.dp)
                 ) {
-                    AppearanceSettings(context, viewModel.pref)
+                    AppearanceSettings(ctx, vm.pref)
                 }
 
                 ExpandableCard(
                     R.string.extra_notifications,
                     Modifier.padding(vertical = 2.dp)
                 ) {
-                    ExtraNotificationsSettings(viewModel, state)
+                    ExtraNotificationsSettings(vm, st)
                 }
 
                 ExpandableCard(
                     R.string.prayer_time_settings,
                     Modifier.padding(vertical = 2.dp)
                 ) {
-                    PrayerTimesSettings(viewModel)
+                    PrayerTimesSettings(vm)
                 }
             }
         }

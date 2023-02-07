@@ -23,10 +23,6 @@ class QuranSearcherRepo @Inject constructor(
     fun getSuraNamesEn() = db.suarDao().getNamesEn()
 
     fun getMaxMatchesItems(): Array<String> {
-        return context.resources.getStringArray(R.array.searcher_matches)
-    }
-
-    fun getMaxMatchesItemsEn(): Array<String> {
         return context.resources.getStringArray(R.array.searcher_matches_en)
     }
 

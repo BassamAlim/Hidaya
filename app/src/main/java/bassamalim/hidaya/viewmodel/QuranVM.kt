@@ -144,7 +144,7 @@ class QuranVM @Inject constructor(
             }
             else {
                 _uiState.update { it.copy(
-                    shouldShowPageDNE = true
+                    shouldShowPageDNE = _uiState.value.shouldShowPageDNE + 1
                 )}
             }
         } catch (_: NumberFormatException) {}

@@ -49,6 +49,7 @@ object FileUtils {
     }
 
     fun getJsonFromDownloads(path: String): String {
+        println(path)
         var jsonStr = ""
 
         var fin: FileInputStream? = null
@@ -64,7 +65,7 @@ object FileUtils {
             e.printStackTrace()
         } finally {
             try {
-                fin!!.close()
+                fin?.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }

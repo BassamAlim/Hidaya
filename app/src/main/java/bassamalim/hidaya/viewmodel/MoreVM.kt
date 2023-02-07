@@ -23,46 +23,46 @@ class MoreVM @Inject constructor(
     private val _uiState = MutableStateFlow(MoreState())
     val uiState = _uiState.asStateFlow()
 
-    fun gotoTelawat(navController: NavController) {
+    fun gotoTelawat(nc: NavController) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            navController.navigate(Screen.Telawat.route)
+            nc.navigate(Screen.Telawat.route)
         else
             _uiState.update { it.copy(
-                shouldShowUnsupportedFeatureMassage = true
+                shouldShowUnsupported = true
             )}
     }
 
-    fun gotoQibla(navController: NavController) {
-        navController.navigate(Screen.Qibla.route)
+    fun gotoQibla(nc: NavController) {
+        nc.navigate(Screen.Qibla.route)
     }
 
-    fun gotoQuiz(navController: NavController) {
-        navController.navigate(Screen.Quiz.route)
+    fun gotoQuiz(nc: NavController) {
+        nc.navigate(Screen.QuizLobby.route)
     }
 
-    fun gotoBooks(navController: NavController) {
-        navController.navigate(Screen.Books.route)
+    fun gotoBooks(nc: NavController) {
+        nc.navigate(Screen.Books.route)
     }
 
-    fun gotoTV(navController: NavController) {
-        navController.navigate(Screen.Tv.route)
+    fun gotoTV(nc: NavController) {
+        nc.navigate(Screen.Tv.route)
     }
 
-    fun gotoRadio(navController: NavController) {
+    fun gotoRadio(nc: NavController) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            navController.navigate(Screen.RadioClient.route)
+            nc.navigate(Screen.RadioClient.route)
         else
             _uiState.update { it.copy(
-                shouldShowUnsupportedFeatureMassage = true
+                shouldShowUnsupported = true
             )}
     }
 
-    fun gotoDateConverter(navController: NavController) {
-        navController.navigate(Screen.DateConverter.route)
+    fun gotoDateConverter(nc: NavController) {
+        nc.navigate(Screen.DateConverter.route)
     }
 
-    fun gotoSettings(navController: NavController) {
-        navController.navigate(Screen.Settings.route)
+    fun gotoSettings(nc: NavController) {
+        nc.navigate(Screen.Settings.route)
     }
 
     fun contactMe() {
@@ -86,8 +86,8 @@ class MoreVM @Inject constructor(
         )
     }
 
-    fun gotoAbout(navController: NavController) {
-        navController.navigate(Screen.About.route)
+    fun gotoAbout(nc: NavController) {
+        nc.navigate(Screen.About.route)
     }
 
 }

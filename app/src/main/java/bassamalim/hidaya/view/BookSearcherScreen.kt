@@ -20,10 +20,10 @@ import bassamalim.hidaya.viewmodel.BookSearcherVM
 
 @Composable
 fun BookSearcherUI(
-    navController: NavController = rememberNavController(),
-    viewModel: BookSearcherVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: BookSearcherVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
 
     MyScaffold(stringResource(R.string.books_searcher)) { padding ->
         Column(
@@ -45,12 +45,13 @@ fun BookSearcherUI(
                 )
 
                 SearchComponent(
-                    value = viewModel.searchText.value,
+                    value = vm.searchText.value,
                     hint = stringResource(R.string.search),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 30.dp),
-                    onSubmit = { viewModel.search(highlightColor) }
+                    onValueChange = { vm.onSearchTextChange(it) },
+                    onSubmit = { vm.search(highlightColor) }
                 )
 
                 Row(
@@ -65,10 +66,10 @@ fun BookSearcherUI(
                         description = stringResource(R.string.filter_search_description),
                         size = 30.dp,
                         tint =
-                            if (state.filtered) AppTheme.colors.secondary
+                            if (st.filtered) AppTheme.colors.secondary
                             else AppTheme.colors.weakText
                     ) {
-                        viewModel.onFilterClick()
+                        vm.onFilterClick()
                     }
                 }
 
@@ -82,17 +83,17 @@ fun BookSearcherUI(
                     MyText(text = stringResource(R.string.max_num_of_marches))
 
                     MyDropDownMenu(
-                        selectedIndex = viewModel.maxMatchesItems.indexOf(
-                            state.maxMatches.toString()
+                        selectedIndex = vm.maxMatchesItems.indexOf(
+                            st.maxMatches.toString()
                         ),
-                        items = viewModel.maxMatchesItems
+                        items = vm.translatedMaxMatchesItems
                     ) { index ->
-                        viewModel.onMaxMatchesIndexChange(index)
+                        vm.onMaxMatchesIndexChange(index)
                     }
                 }
             }
 
-            if (state.noResultsFound) {
+            if (st.noResultsFound) {
                 MyText(
                     text = stringResource(R.string.books_no_matches),
                     modifier = Modifier.padding(top = 100.dp)
@@ -101,7 +102,7 @@ fun BookSearcherUI(
             else {
                 MyLazyColumn(
                     lazyList = {
-                        items(state.matches) { item ->
+                        items(st.matches) { item ->
                             MySurface {
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally
@@ -133,11 +134,11 @@ fun BookSearcherUI(
 
         FilterDialog(
             title = stringResource(R.string.choose_books),
-            itemTitles = viewModel.bookTitles,
-            itemSelections = viewModel.bookSelections,
-            shown = state.filterDialogShown
+            itemTitles = vm.bookTitles,
+            itemSelections = vm.bookSelections,
+            shown = st.filterDialogShown
         ) { selections ->
-            viewModel.onFilterDialogDismiss(selections)
+            vm.onFilterDialogDismiss(selections)
         }
     }
 }

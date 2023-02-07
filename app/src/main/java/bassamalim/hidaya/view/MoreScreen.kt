@@ -139,11 +139,14 @@ fun MoreUI(
         }
     }
 
-    LaunchedEffect(key1 = state.value.shouldShowUnsupportedFeatureMassage) {
-        Toast.makeText(
-            context,
-            context.getString(R.string.feature_not_supported),
-            Toast.LENGTH_SHORT
-        ).show()
+    if (state.value.shouldShowUnsupported) {
+        LaunchedEffect(null) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.feature_not_supported),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
+
 }

@@ -70,15 +70,9 @@
     </string-array>
 
     <string-array name="theme_values" translatable="false">
-        <item>Light</item>
-        <item>Dark</item>
-        <item>Night</item>
-    </string-array>
-
-    <string-array name="searcher_matches">
-        <item>١٠</item>
-        <item>٣٠</item>
-        <item>١٠٠</item>
+        <item>LIGHT</item>
+        <item>DARK</item>
+        <item>NIGHT</item>
     </string-array>
 
     <string-array name="searcher_matches_en">
@@ -169,8 +163,8 @@
     </string-array>
 
     <string-array name="languages_values" translatable="false">
-        <item>ar</item>
-        <item>en</item>
+        <item>ARABIC</item>
+        <item>ENGLISH</item>
     </string-array>
 
     <string-array name="week_days">
@@ -224,8 +218,8 @@
     </string-array>
 
     <string-array name="time_format_values" translatable="false">
-        <item>12h</item>
-        <item>24h</item>
+        <item>TWELVE</item>
+        <item>TWENTY_FOUR</item>
     </string-array>
 
     <string-array name="prayer_times_calc_method_entries">

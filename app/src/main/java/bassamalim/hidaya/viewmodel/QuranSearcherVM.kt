@@ -10,6 +10,7 @@ import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.models.QuranSearcherMatch
 import bassamalim.hidaya.repository.QuranSearcherRepo
 import bassamalim.hidaya.state.QuranSearcherState
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,22 +20,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuranSearcherVM @Inject constructor(
-    private val repository: QuranSearcherRepo
+    private val repo: QuranSearcherRepo
 ): ViewModel() {
 
-    val numeralsLanguage = repository.numeralsLanguage
-    private var allAyat = repository.getAyat()
+    val numeralsLanguage = repo.numeralsLanguage
+    private var allAyat = repo.getAyat()
     private var names =
-        if (repository.language == Language.ENGLISH) repository.getSuraNamesEn()
-        else repository.getSuraNames()
-    var maxMatchesItems =
-        if (repository.language == Language.ENGLISH) repository.getMaxMatchesItemsEn()
-        else repository.getMaxMatchesItems()
+        if (repo.language == Language.ENGLISH) repo.getSuraNamesEn()
+        else repo.getSuraNames()
+    var maxMatchesItems = repo.getMaxMatchesItems()
+    val translatedMaxMatchesItems = maxMatchesItems.map {
+        translateNums(numeralsLanguage, it)
+    }.toTypedArray()
     var searchText = ""
         private set
 
     private val _uiState = MutableStateFlow(QuranSearcherState(
-        maxMatches = maxMatchesItems[repository.getMaxMatchesIndex()].toInt()
+        maxMatches = maxMatchesItems[repo.getMaxMatchesIndex()].toInt()
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -93,7 +95,7 @@ class QuranSearcherVM @Inject constructor(
             maxMatches = maxMatchesItems[index].toInt()
         )}
 
-        repository.setMaxMatchesIndex(index)
+        repo.setMaxMatchesIndex(index)
     }
 
     fun onGotoPageClick(page: Int, navController: NavController) {

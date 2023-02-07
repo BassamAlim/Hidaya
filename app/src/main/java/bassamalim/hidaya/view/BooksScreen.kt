@@ -19,13 +19,13 @@ import bassamalim.hidaya.viewmodel.BooksVM
 @Composable
 fun BooksUI(
     navController: NavController = rememberNavController(),
-    viewModel: BooksVM = hiltViewModel()
+    vm: BooksVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
     val context = LocalContext.current
 
-    DisposableEffect(key1 = viewModel) {  // Like activity callbacks. Provides onStart, onStop, etc.
-        viewModel.onStart()
+    DisposableEffect(key1 = vm) {  // Like activity callbacks. Provides onStart, onStop, etc.
+        vm.onStart()
         onDispose {  /* here we call onStop if needed */  }
     }
 
@@ -36,14 +36,14 @@ fun BooksUI(
                 iconId = R.drawable.ic_quran_search,
                 description = stringResource(R.string.search_in_books)
             ) {
-                viewModel.onFabClick(navController)
+                vm.onFabClick(navController)
             }
         }
     ) {
         MyLazyColumn(
             Modifier.padding(vertical = 5.dp),
             lazyList = {
-                items(state.items) { item ->
+                items(st.items) { item ->
                     MyBtnSurface(
                         text = item.title,
                         innerVPadding = 15.dp,
@@ -51,17 +51,17 @@ fun BooksUI(
                         modifier = Modifier.padding(vertical = 2.dp),
                         iconBtn = {
                             MyDownloadBtn(
-                                state = viewModel.downloadStates[item.id],
-                                path = viewModel.getPath(item.id),
+                                state = vm.downloadStates[item.id],
+                                path = vm.getPath(item.id),
                                 modifier = Modifier.padding(end = 10.dp),
                                 size = 32.dp,
-                                deleted = { viewModel.onFileDeleted(item.id) }
+                                deleted = { vm.onFileDeleted(item.id) }
                             ) {
-                                viewModel.download(item)
+                                vm.download(item)
                             }
                         }
                     ) {
-                        viewModel.onItemClick(item, navController)
+                        vm.onItemClick(item, navController)
                     }
                 }
             }
@@ -69,13 +69,15 @@ fun BooksUI(
 
         TutorialDialog(
             textResId = R.string.books_activity_tips,
-            shown = state.isTutorialDialogShown
+            shown = st.tutorialDialogShown
         ) {
-            viewModel.onTutorialDialogDismiss(it)
+            vm.onTutorialDialogDismiss(it)
         }
 
-        LaunchedEffect(state.shouldShowWaitMassage) {
-            FileUtils.showWaitMassage(context)
+        if (st.shouldShowWait != 0) {
+            LaunchedEffect(st.shouldShowWait) {
+                FileUtils.showWaitMassage(context)
+            }
         }
     }
 }

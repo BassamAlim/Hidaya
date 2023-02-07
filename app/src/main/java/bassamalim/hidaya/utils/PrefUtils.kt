@@ -15,25 +15,15 @@ object PrefUtils {
     }
 
     fun getLanguage(pref: SharedPreferences): Language {
-        return when (getString(pref, Prefs.Language)) {
-            "en" -> Language.ENGLISH
-            else -> Language.ARABIC
-        }
+        return Language.valueOf(getString(pref, Prefs.Language))
     }
 
     fun getNumeralsLanguage(pref: SharedPreferences): Language {
-        return when (getString(pref, Prefs.NumeralsLanguage)) {
-            "en" -> Language.ENGLISH
-            else -> Language.ARABIC
-        }
+        return Language.valueOf(getString(pref, Prefs.NumeralsLanguage))
     }
 
     fun getTheme(pref: SharedPreferences): Theme {
-        return when (getString(pref, Prefs.Theme)) {
-            "Dark" -> Theme.DARK
-            "Night" -> Theme.NIGHT
-            else -> Theme.LIGHT
-        }
+        return Theme.valueOf(getString(pref, Prefs.Theme))
     }
 
     fun getTimeFormat(pref: SharedPreferences): TimeFormat {

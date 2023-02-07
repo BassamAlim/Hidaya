@@ -68,7 +68,7 @@ fun QuranSearcherUI(
                         selectedIndex = viewModel.maxMatchesItems.indexOf(
                             state.maxMatches.toString()
                         ),
-                        items = viewModel.maxMatchesItems
+                        items = viewModel.translatedMaxMatchesItems
                     ) { index ->
                         viewModel.onMaxMatchesIndexChange(index)
                     }

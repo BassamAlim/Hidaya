@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.models.BookSearcherMatch
 import bassamalim.hidaya.repository.BookSearcherRepo
 import bassamalim.hidaya.state.BookSearcherState
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,17 +18,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BookSearcherVM @Inject constructor(
-    private val repository: BookSearcherRepo
+    private val repo: BookSearcherRepo
 ): ViewModel() {
 
     var searchText = mutableStateOf("")
         private set
-    var bookSelections = repository.getBookSelections()
-    var maxMatchesItems = repository.getMaxMatchesItems()
-    val bookTitles = repository.getBookTitles()
+    var bookSelections = repo.getBookSelections()
+    val maxMatchesItems = repo.getMaxMatchesItems()
+    val translatedMaxMatchesItems = maxMatchesItems.map {
+        translateNums(repo.numeralsLanguage, it)
+    }.toTypedArray()
+    val bookTitles = repo.getBookTitles()
+    private var highlightColor: Color? = null
 
     private val _uiState = MutableStateFlow(BookSearcherState(
-        maxMatches = maxMatchesItems[repository.getMaxMatchesIndex()].toInt(),
+        maxMatches = maxMatchesItems[repo.getMaxMatchesIndex()].toInt(),
         filtered = bookSelections.contains(false)
     ))
     val uiState = _uiState.asStateFlow()
@@ -42,9 +47,11 @@ class BookSearcherVM @Inject constructor(
         bookSelections = selections
 
         _uiState.update { it.copy(
-            filtered = bookSelections.contains(false),
-            filterDialogShown = false
+            filterDialogShown = false,
+            filtered = bookSelections.contains(false)
         )}
+
+        highlightColor ?.let { search(it) }  // re-search if already searched
     }
 
     fun onMaxMatchesIndexChange(index: Int) {
@@ -52,15 +59,19 @@ class BookSearcherVM @Inject constructor(
             maxMatches = maxMatchesItems[index].toInt()
         )}
 
-        repository.setMaxMatchesIndex(index)
+        highlightColor ?.let { search(it) }  // re-search if already searched
+
+        repo.setMaxMatchesIndex(index)
     }
 
     fun search(highlightColor: Color) {
+        this.highlightColor = highlightColor
+
         val matches = ArrayList<BookSearcherMatch>()
 
-        val bookContents = repository.getBookContents()
+        val bookContents = repo.getBookContents()
         for (i in bookContents.indices) {
-            if (!bookSelections[i] || !repository.isDownloaded(i)) continue
+            if (!bookSelections[i] || !repo.isDownloaded(i)) continue
 
             val bookContent = bookContents[i]
             for (j in bookContent.chapters.indices) {
@@ -108,6 +119,10 @@ class BookSearcherVM @Inject constructor(
             matches = matches,
             noResultsFound = matches.isEmpty()
         )}
+    }
+
+    fun onSearchTextChange(text: String) {
+        searchText.value = text
     }
 
 }

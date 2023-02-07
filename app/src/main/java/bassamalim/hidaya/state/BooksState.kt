@@ -4,6 +4,6 @@ import bassamalim.hidaya.database.dbs.BooksDB
 
 data class BooksState(
     val items: List<BooksDB> = emptyList(),
-    val shouldShowWaitMassage: Boolean = false,
-    val isTutorialDialogShown: Boolean = false
+    val shouldShowWait: Int = 0,
+    val tutorialDialogShown: Boolean = false
 )
