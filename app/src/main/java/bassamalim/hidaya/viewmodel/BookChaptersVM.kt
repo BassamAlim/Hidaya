@@ -69,7 +69,9 @@ class BookChaptersVM @Inject constructor(
         repository.updateFavorites(bookId, mutableFavs.toList())
     }
 
-    fun onListTypeChange(pageNum: Int) {
+    fun onListTypeChange(pageNum: Int, currentPage: Int) {
+        if (pageNum != currentPage) return
+
         val listType = ListType.values()[pageNum]
 
         _uiState.update { it.copy(

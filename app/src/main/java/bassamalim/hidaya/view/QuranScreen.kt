@@ -23,14 +23,14 @@ import bassamalim.hidaya.viewmodel.QuranVM
 
 @Composable
 fun QuranUI(
-    navController: NavController = rememberNavController(),
-    viewModel: QuranVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: QuranVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
+    val st by vm.uiState.collectAsState()
+    val ctx = LocalContext.current
 
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
+    DisposableEffect(key1 = vm) {
+        vm.onStart()
         onDispose {}
     }
 
@@ -41,7 +41,7 @@ fun QuranUI(
                 iconId = R.drawable.ic_quran_search,
                 description = stringResource(R.string.search_in_quran)
             ) {
-                viewModel.onQuranSearcherClick(navController)
+                vm.onQuranSearcherClick(nc)
             }
         }
     ) {
@@ -49,13 +49,13 @@ fun QuranUI(
             Modifier.fillMaxSize()
         ) {
             MyButton(
-                text = state.bookmarkedPageText,
+                text = st.bookmarkedPageText,
                 fontSize = 18.sp,
                 textColor = AppTheme.colors.accent,
                 modifier = Modifier.fillMaxWidth(),
                 innerPadding = PaddingValues(vertical = 4.dp)
             ) {
-                viewModel.onBookmarkedPageClick(navController)
+                vm.onBookmarkedPageClick(nc)
             }
 
             TabLayout(
@@ -65,53 +65,52 @@ fun QuranUI(
                 ),
                 searchComponent = {
                     SearchComponent(
-                        value = viewModel.searchText,
+                        value = vm.searchText,
                         hint = stringResource(R.string.quran_query_hint),
                         modifier = Modifier.fillMaxWidth(),
-                        onSubmit = { viewModel.onSearchSubmit(navController) }
+                        onSubmit = { vm.onSearchSubmit(nc) }
                     ) {
-                        viewModel.onSearchTextChange(it)
+                        vm.onSearchTextChange(it)
                     }
                 }
-            ) { pageNum ->
-                viewModel.onListTypeChange(pageNum)
+            ) { page, currentPage ->
+                vm.onPageChange(page, currentPage)
 
-                Tab(
-                    viewModel = viewModel,
-                    state = state,
-                    navController = navController
-                )
+                Tab(vm, st, nc)
             }
         }
     }
 
     TutorialDialog(
         textResId = R.string.quran_fragment_tips,
-        shown = state.isTutorialDialogShown
+        shown = st.isTutorialDialogShown
     ) {
-        viewModel.onTutorialDialogDismiss(it)
+        vm.onTutorialDialogDismiss(it)
     }
 
-    LaunchedEffect(key1 = state.shouldShowPageDNE) {
-        Toast.makeText(
-            context,
-            context.getString(R.string.page_does_not_exist),
-            Toast.LENGTH_SHORT
-        ).show()
+    if (st.shouldShowPageDNE) {
+        LaunchedEffect(null) {
+            Toast.makeText(
+                ctx,
+                ctx.getString(R.string.page_does_not_exist),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
+
 }
 
 @Composable
 private fun Tab(
-    viewModel: QuranVM,
-    state: QuranState,
-    navController: NavController
+    vm: QuranVM,
+    st: QuranState,
+    nc: NavController
 ) {
     MyLazyColumn(
         lazyList = {
-            items(state.items) { item ->
+            items(st.items) { item ->
                 MyClickableSurface(
-                    onClick = { viewModel.onSuraClick(item.id, navController) }
+                    onClick = { vm.onSuraClick(item.id, nc) }
                 ) {
                     Row(
                         modifier = Modifier.padding(
@@ -135,8 +134,8 @@ private fun Tab(
                                 .padding(10.dp)
                         )
 
-                        MyFavBtn(state.favs[item.id]) {
-                            viewModel.onFavClick(item.id)
+                        MyFavBtn(st.favs[item.id]) {
+                            vm.onFavClick(item.id)
                         }
                     }
                 }

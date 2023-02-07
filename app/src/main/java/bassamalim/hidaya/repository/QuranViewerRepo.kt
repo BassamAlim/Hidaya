@@ -25,18 +25,8 @@ class QuranViewerRepo @Inject constructor(
     fun getViewType() = QViewType.valueOf(
         PrefUtils.getString(pref, Prefs.QuranViewType)
     )
-    fun setViewType(viewType: QViewType) {
-        pref.edit()
-            .putString(Prefs.QuranViewType.key, viewType.name)
-            .apply()
-    }
 
-    fun getTextSize() = PrefUtils.getInt(pref, Prefs.AthkarTextSize)
-    fun setTextSize(textSize: Float) {
-        pref.edit()
-            .putInt(Prefs.QuranTextSize.key, textSize.toInt())
-            .apply()
-    }
+    fun getTextSize() = PrefUtils.getFloat(pref, Prefs.QuranTextSize)
 
     fun getBookmarkedPage() = PrefUtils.getInt(pref, Prefs.BookmarkedPage)
     fun setBookmarkedPage(pageNum: Int, suraNum: Int) {

@@ -23,8 +23,8 @@ import bassamalim.hidaya.ui.theme.AppTheme
 fun PrayerDialog(
     shown: Boolean,
     pid: PID,
-    notificationTypes: List<NotificationType>,
-    offsets: List<Int>,
+    notificationType: NotificationType,
+    timeOffset: Int,
     onNotificationTypeChange: (NotificationType) -> Unit,
     onOffsetChange: (Int) -> Unit,
     onDismiss: () -> Unit
@@ -37,7 +37,7 @@ fun PrayerDialog(
         Pair(R.string.disable_notification, R.drawable.ic_block)
     )
     val offsetMin = 30f
-    val sliderProgress = offsets[pid.ordinal] + offsetMin
+    val sliderProgress = timeOffset + offsetMin
 
     MyDialog(
         shown,
@@ -62,7 +62,7 @@ fun PrayerDialog(
             CustomRadioGroup(
                 pid = pid,
                 options = notificationOptions,
-                selection = notificationTypes[pid.ordinal],
+                selection = notificationType,
                 onSelect = { selection -> onNotificationTypeChange(selection) }
             )
 

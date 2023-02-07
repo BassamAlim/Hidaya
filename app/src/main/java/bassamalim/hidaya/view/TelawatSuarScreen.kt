@@ -24,19 +24,19 @@ import bassamalim.hidaya.viewmodel.TelawatSuarVM
 
 @Composable
 fun TelawatSuarUI(
-    navController: NavController = rememberNavController(),
-    viewModel: TelawatSuarVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: TelawatSuarVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
 
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
-        onDispose { viewModel.onStop() }
+    DisposableEffect(key1 = vm) {
+        vm.onStart()
+        onDispose { vm.onStop() }
     }
 
     MyScaffold(
-        state.title,
-        onBack = { viewModel.onBackPressed(navController) }
+        st.title,
+        onBack = { vm.onBackPressed(nc) }
     ) {
         TabLayout(
             pageNames = listOf(
@@ -46,33 +46,33 @@ fun TelawatSuarUI(
             ),
             searchComponent = {
                 SearchComponent(
-                    value = viewModel.searchText,
+                    value = vm.searchText,
                     hint = stringResource(R.string.search),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-        ) { pageNum ->
-            viewModel.onListTypeChange(pageNum)
+        ) { page, currentPage ->
+            vm.onListTypeChange(page, currentPage)
 
-            Tab(viewModel = viewModel, state = state, navController = navController)
+            Tab(vm, st, nc)
         }
     }
 }
 
 @Composable
 private fun Tab(
-    viewModel: TelawatSuarVM,
-    state: TelawatSuarState,
-    navController: NavController
+    vm: TelawatSuarVM,
+    st: TelawatSuarState,
+    nc: NavController
 ) {
     MyLazyColumn(
         lazyList = {
             items(
-                items = state.items.filter { item ->
-                    item.searchName.contains(viewModel.searchText, ignoreCase = true)
+                items = st.items.filter { item ->
+                    item.searchName.contains(vm.searchText, ignoreCase = true)
                 }
             ) { item ->
-                SuraCard(item, viewModel, state, navController)
+                SuraCard(item, vm, st, nc)
             }
         }
     )

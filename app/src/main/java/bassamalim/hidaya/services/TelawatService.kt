@@ -682,10 +682,11 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun getContentIntent(): PendingIntent {
         val intent = Intent(this, MainActivity::class.java)
-            .setAction("back")
-            .putExtra("start_route", Screen.TelawatClient.withArgs(
-                mediaId!!
-            ))
+            .putExtra("start_route",
+                Screen.TelawatClient(
+                    "back", mediaId!!
+                ).route
+            )
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 

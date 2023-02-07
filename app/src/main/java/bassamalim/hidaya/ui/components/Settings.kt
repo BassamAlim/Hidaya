@@ -23,9 +23,9 @@ import bassamalim.hidaya.utils.PrefUtils
 
 @Composable
 fun ListPref(
-    pref: SharedPreferences,
+    sp: SharedPreferences,
     titleResId: Int,
-    prefObj: Prefs,
+    pref: Prefs,
     iconResId: Int = -1,
     entries: Array<String>,
     values: Array<String>,
@@ -33,7 +33,7 @@ fun ListPref(
     onSelection: () -> Unit = {}
 ) {
     var shown by remember { mutableStateOf(false) }
-    val initialValue = PrefUtils.getString(pref, prefObj)
+    val initialValue = PrefUtils.getString(sp, pref)
     var selectedValue by remember { mutableStateOf(initialValue) }
 
     Box(
@@ -50,13 +50,14 @@ fun ListPref(
                 .padding(vertical = 6.dp, horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (iconResId != -1)
+            if (iconResId != -1) {
                 Icon(
                     painter = painterResource(iconResId),
                     contentDescription = stringResource(titleResId),
                     Modifier.padding(end = 20.dp),
                     tint = AppTheme.colors.text
                 )
+            }
 
             Column {
                 PreferenceTitle(titleResId)
@@ -69,8 +70,8 @@ fun ListPref(
             val onSelect = { index: Int ->
                 selectedValue = values[index]
 
-                pref.edit()
-                    .putString(prefObj.key, values[index])
+                sp.edit()
+                    .putString(pref.key, values[index])
                     .apply()
 
                 onSelection()

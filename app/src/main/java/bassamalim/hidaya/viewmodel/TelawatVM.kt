@@ -45,15 +45,16 @@ class TelawatVM @Inject constructor(
     private val downloading = HashMap<Long, Pair<Int, Int>>()
 
     private val _uiState = MutableStateFlow(TelawatState(
-        items = getItems(ListType.All),
         favs = repository.getFavs(),
         selectedVersions = repository.getSelectedVersions(),
-        continueListeningText = repository.getNoLastPlayStr()
+        continueListeningText = repository.getNoLastPlayStr(),
+        downloadStates = getDownloadStates()
     ))
     val uiState = _uiState.asStateFlow()
 
     init {
         _uiState.update { it.copy(
+            items = getItems(ListType.All),
             isFiltered = _uiState.value.selectedVersions.any { bool -> !bool }
         )}
     }
@@ -82,7 +83,8 @@ class TelawatVM @Inject constructor(
     }
 
     fun onBackPressed(navController: NavController) {
-        val ctx = app.applicationContext
+        val ctx = navController.context
+
         if ((ctx as Activity).isTaskRoot) {
             navController.navigate(Screen.Main.route) {
                 popUpTo(Screen.Main.route) { inclusive = true }
@@ -243,8 +245,10 @@ class TelawatVM @Inject constructor(
         FileUtils.deleteDirRecursive(mainDir)
     }
 
-    fun onListTypeChange(pageNum: Int) {
-        val listType = ListType.values()[pageNum]
+    fun onListTypeChange(page: Int, currentPage: Int) {
+        if (page != currentPage) return
+
+        val listType = ListType.values()[page]
 
         _uiState.update { it.copy(
             listType = listType,

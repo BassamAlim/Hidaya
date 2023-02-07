@@ -101,13 +101,16 @@ fun MainUI(
             onSubmit = { viewModel.onDateEditorSubmit() }
         )
 
-        LaunchedEffect(key1 = state.shouldShowLocationPermissionToast) {
-            Toast.makeText(
-                context,
-                context.getString(R.string.give_location_permission_toast),
-                Toast.LENGTH_SHORT
-            ).show()
+        if (state.shouldShowLocationPermissionToast) {
+            LaunchedEffect(null) {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.give_location_permission_toast),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
+
     }
 }
 
@@ -131,13 +134,13 @@ fun NavigationGraph(
         composable(BottomNavItem.Prayers.route) {
             PrayersUI(
                 navController = navController,
-                viewModel = hiltViewModel()
+                vm = hiltViewModel()
             )
         }
         composable(BottomNavItem.Quran.route) {
             QuranUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
         composable(BottomNavItem.Athkar.route) {

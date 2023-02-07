@@ -27,29 +27,29 @@ import bassamalim.hidaya.viewmodel.TelawatVM
 
 @Composable
 fun TelawatUI(
-    navController: NavController = rememberNavController(),
-    viewModel: TelawatVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: TelawatVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
 
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
-        onDispose { viewModel.onStop() }
+    DisposableEffect(key1 = vm) {
+        vm.onStart()
+        onDispose { vm.onStop() }
     }
 
     MyScaffold(
         stringResource(R.string.recitations),
-        onBack = { viewModel.onBackPressed(navController) }
+        onBack = { vm.onBackPressed(nc) }
     ) {
         Column {
             MyButton(
-                text = state.continueListeningText,
+                text = st.continueListeningText,
                 fontSize = 18.sp,
                 textColor = AppTheme.colors.accent,
                 modifier = Modifier.fillMaxWidth(),
                 innerPadding = PaddingValues(vertical = 4.dp)
             ) {
-                viewModel.onContinueListeningClick(navController)
+                vm.onContinueListeningClick(nc)
             }
 
             TabLayout(
@@ -64,7 +64,7 @@ fun TelawatUI(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         SearchComponent(
-                            value = viewModel.searchText,
+                            value = vm.searchText,
                             hint = stringResource(R.string.search),
                             modifier = Modifier.weight(1F)
                         )
@@ -75,26 +75,26 @@ fun TelawatUI(
                             description = stringResource(R.string.filter_search_description),
                             size = 32.dp,
                             tint =
-                                if (state.isFiltered) AppTheme.colors.secondary
+                                if (st.isFiltered) AppTheme.colors.secondary
                                 else AppTheme.colors.weakText
                         ) {
-                            viewModel.onFilterClick()
+                            vm.onFilterClick()
                         }
                     }
                 }
-            ) { pageNum ->
-                viewModel.onListTypeChange(pageNum)
+            ) { page, currentPage ->
+                vm.onListTypeChange(page, currentPage)
 
-                Tab(viewModel, state, navController)
+                Tab(vm, st, nc)
             }
         }
 
         FilterDialog(
-            shown = state.filterDialogShown,
+            shown = st.filterDialogShown,
             title = stringResource(R.string.choose_rewaya),
-            itemTitles = viewModel.rewayat.toList(),
-            itemSelections = state.selectedVersions.toTypedArray(),
-            onDismiss = { viewModel.onFilterDialogDismiss(it) }
+            itemTitles = vm.rewayat.toList(),
+            itemSelections = st.selectedVersions.toTypedArray(),
+            onDismiss = { vm.onFilterDialogDismiss(it) }
         )
     }
 }

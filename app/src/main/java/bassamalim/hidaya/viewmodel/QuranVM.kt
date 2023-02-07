@@ -19,17 +19,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuranVM @Inject constructor(
-    private val repository: QuranRepo
+    private val repo: QuranRepo
 ): ViewModel() {
 
-    private val names = repository.getSuraNames()
+    private var listType = ListType.All
+    private val names = repo.getSuraNames()
     var searchText by mutableStateOf("")
         private set
 
     private val _uiState = MutableStateFlow(QuranState(
-        bookmarkedPageText = getBookmarkedPageText(),
-        items = getItems(ListType.All),
-        favs = repository.getFavs()
+        items = getItems(listType),
+        favs = repo.getFavs()
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -40,44 +40,48 @@ class QuranVM @Inject constructor(
     }
 
     private fun getItems(type: ListType): List<Sura> {
-        val surat = repository.getSuraStr()
+        val surat = repo.getSuraStr()
 
         val items = ArrayList<Sura>()
-        val suras = repository.getAllSuras()
+        val suras = repo.getAllSuras()
         for (i in suras.indices) {
             if (type == ListType.Favorite && _uiState.value.favs[i] == 0) continue
 
-            val sura = suras[i]
             items.add(
-                Sura(
-                    sura.sura_id, "$surat ${names[sura.sura_id]}",
-                    sura.search_name!!, sura.tanzeel
-                )
+                suras[i].let {
+                    Sura(
+                        it.sura_id, "$surat ${names[it.sura_id]}",
+                        it.search_name!!, it.tanzeel
+                    )
+                }
             )
         }
+
+        if (searchText.isNotEmpty())
+            return items.filter { it.searchName.contains(searchText, true) }
         return items
     }
 
     private fun getBookmarkedPageText(): String {
-        val bookmarkedSura = repository.getBookmarkedSura()
-        val bookmarkedPage = repository.getBookmarkedPage()
+        val bookmarkedSura = repo.getBookmarkedSura()
+        val bookmarkedPage = repo.getBookmarkedPage()
 
-        return if (bookmarkedPage == -1) return repository.getNoBookmarkedPageStr()
+        return if (bookmarkedPage == -1) repo.getNoBookmarkedPageStr()
         else {
-            "${repository.getBookmarkedPageStr()} " +
-                    "${repository.getPageStr()} " +
+            "${repo.getBookmarkedPageStr()} " +
+                    "${repo.getPageStr()} " +
                     "${translateNums(
-                        repository.getNumeralsLanguage(), bookmarkedPage.toString()
+                        repo.getNumeralsLanguage(), bookmarkedPage.toString()
                     )}, " +
-                    "${repository.getSuraStr()} ${repository.getSuraNames()[bookmarkedSura]}"
+                    "${repo.getSuraStr()} ${repo.getSuraNames()[bookmarkedSura]}"
         }
     }
 
-    fun onSuraClick(suraID: Int, navController: NavController) {
-        navController.navigate(
+    fun onSuraClick(suraId: Int, nc: NavController) {
+        nc.navigate(
             Screen.QuranViewer(
                 "by_surah",
-                suraID.toString()
+                suraId = suraId.toString()
             ).route
         )
     }
@@ -87,20 +91,24 @@ class QuranVM @Inject constructor(
     }
 
     fun onBookmarkedPageClick(navController: NavController) {
-        val bookmarkedPage = repository.getBookmarkedPage()
+        val bookmarkedPage = repo.getBookmarkedPage()
         if (bookmarkedPage != -1) {
             navController.navigate(
                 Screen.QuranViewer(
                     "by_page",
-                    bookmarkedPage.toString()
+                    page = bookmarkedPage.toString()
                 ).route
             )
         }
     }
 
-    fun onListTypeChange(pageNum: Int) {
+    fun onPageChange(page: Int, currentPage: Int) {
+        if (page != currentPage) return
+
+        listType = ListType.values()[page]
+
         _uiState.update { it.copy(
-            items = getItems(ListType.values()[pageNum])
+            items = getItems(listType)
         )}
     }
 
@@ -112,21 +120,25 @@ class QuranVM @Inject constructor(
             favs = mutableFavs
         )}
 
-        repository.updateFavorites(mutableFavs.toList())
+        repo.updateFavorites(mutableFavs.toList())
     }
 
     fun onSearchTextChange(text: String) {
         searchText = text
+
+        _uiState.update { it.copy(
+            items = getItems(listType)
+        )}
     }
 
-    fun onSearchSubmit(navController: NavController) {
+    fun onSearchSubmit(nc: NavController) {
         try {
             val num = searchText.toInt()
             if (num in 1..604) {
-                navController.navigate(
+                nc.navigate(
                     Screen.QuranViewer(
                         "by_page",
-                        num.toString()
+                        page = num.toString()
                     ).route
                 )
             }
@@ -143,7 +155,7 @@ class QuranVM @Inject constructor(
             isTutorialDialogShown = false
         )}
 
-        if (doNotShowAgain) repository.setDoNotShowAgain()
+        if (doNotShowAgain) repo.setDoNotShowAgain()
     }
 
 }

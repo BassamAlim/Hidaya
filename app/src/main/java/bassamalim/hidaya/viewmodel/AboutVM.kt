@@ -8,11 +8,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import bassamalim.hidaya.MainActivity
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.repository.AboutRepo
 import bassamalim.hidaya.state.AboutState
 import bassamalim.hidaya.utils.DBUtils
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,13 +22,13 @@ import javax.inject.Inject
 @HiltViewModel
 class AboutVM @Inject constructor(
     private val app: Application,
-    repository: AboutRepo
+    private val repo: AboutRepo
 ): AndroidViewModel(app) {
 
     private var counter by mutableStateOf(0)
 
     private val _uiState = MutableStateFlow(AboutState(
-        lastDailyUpdate = repository.getLastUpdate()
+        lastDailyUpdate = repo.getLastUpdate()
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -51,12 +51,14 @@ class AboutVM @Inject constructor(
         )}
     }
 
-    fun quickUpdate() {
-        val url = FirebaseRemoteConfig.getInstance().getString(Global.UPDATE_URL)
-        val i = Intent(Intent.ACTION_VIEW)
-        i.data = Uri.parse(url)
-        app.applicationContext.startActivity(i)
-    }
+    /*fun quickUpdate() {
+        val url = repo.getUpdateURL()
+        val intent = Intent(Intent.ACTION_VIEW)
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .setData(Uri.parse(url))
+
+        app.applicationContext.startActivity(intent)
+    }*/
 
     fun onTitleClick() {
         if (++counter == 5) enableDevMode()

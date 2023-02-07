@@ -33,9 +33,9 @@ import bassamalim.hidaya.viewmodel.AboutVM
 @Composable
 fun AboutUI(
     navController: NavController = rememberNavController(),
-    viewModel: AboutVM = hiltViewModel()
+    vm: AboutVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
     val context = LocalContext.current
 
     MyScaffold(stringResource(R.string.about)) {
@@ -56,7 +56,7 @@ fun AboutUI(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) {
-                        viewModel.onTitleClick()
+                        vm.onTitleClick()
                     }
             )
 
@@ -88,15 +88,15 @@ fun AboutUI(
                         stringResource(R.string.rebuild_database),
                         Modifier.align(Alignment.CenterHorizontally)
                     ) {
-                        viewModel.rebuildDatabase()
+                        vm.rebuildDatabase()
                     }
 
-                    MyButton(
+                    /*MyButton(
                         stringResource(R.string.quick_update),
                         Modifier.align(Alignment.CenterHorizontally)
                     ) {
-                        viewModel.quickUpdate()
-                    }
+                        vm.quickUpdate()
+                    }*/
 
                     MyText(
                         state.lastDailyUpdate,

@@ -41,14 +41,13 @@ import com.google.accompanist.pager.rememberPagerState
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun QuranViewerUI(
-    navController: NavController = rememberNavController(),
-    viewModel: QuranViewerVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: QuranViewerVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
 
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
-        onDispose { viewModel.onStop() }
+    DisposableEffect(key1 = vm) {
+        onDispose { vm.onStop() }
     }
 
     MyScaffold(
@@ -68,7 +67,7 @@ fun QuranViewerUI(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     MyText(
-                        text = "${stringResource(R.string.sura)} ${state.suraName}",
+                        text = "${stringResource(R.string.sura)} ${st.suraName}",
                         fontSize = 18.nsp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start,
@@ -78,8 +77,8 @@ fun QuranViewerUI(
                     MyText(
                         text = "${stringResource(R.string.page)} " +
                                 translateNums(
-                                    viewModel.numeralsLanguage,
-                                    state.pageNum.toString()
+                                    vm.numeralsLanguage,
+                                    st.pageNum.toString()
                                 ),
                         fontSize = 18.nsp,
                         fontWeight = FontWeight.Bold,
@@ -89,8 +88,8 @@ fun QuranViewerUI(
                     MyText(
                         text = "${stringResource(R.string.juz)} " +
                                 translateNums(
-                                    viewModel.numeralsLanguage,
-                                    state.juzNum.toString()
+                                    vm.numeralsLanguage,
+                                    st.juzNum.toString()
                                 ),
                         fontSize = 18.nsp,
                         fontWeight = FontWeight.Bold,
@@ -114,13 +113,13 @@ fun QuranViewerUI(
                     // Bookmark btn
                     MyIconBtn(
                         iconId =
-                            if (state.isBookmarked) R.drawable.ic_bookmarked
+                            if (st.isBookmarked) R.drawable.ic_bookmarked
                             else R.drawable.ic_bookmark,
                         description = stringResource(R.string.bookmark_page_button_description),
                         tint = AppTheme.colors.onPrimary,
                         size = 40.dp
                     ) {
-                        viewModel.onBookmarkClick()
+                        vm.onBookmarkClick()
                     }
 
                     Row {
@@ -128,23 +127,23 @@ fun QuranViewerUI(
                             imageResId = R.drawable.ic_aya_backward,
                             description = stringResource(R.string.rewind_btn_description)
                         ) {
-                            viewModel.onRewindClick()
+                            vm.onRewindClick()
                         }
 
                         MyPlayerBtn(
-                            state = state.playerState,
+                            state = st.playerState,
                             size = 50.dp,
                             padding = 5.dp,
                             modifier = Modifier.padding(horizontal = 10.dp)
                         ) {
-                            viewModel.onPlayPauseClick()
+                            vm.onPlayPauseClick()
                         }
 
                         MyImageButton(
                             imageResId = R.drawable.ic_aya_forward,
                             description = stringResource(R.string.fast_forward_btn_description)
                         ) {
-                            viewModel.onFastForwardClick()
+                            vm.onFastForwardClick()
                         }
                     }
 
@@ -155,13 +154,13 @@ fun QuranViewerUI(
                         tint = AppTheme.colors.onPrimary,
                         size = 44.dp
                     ) {
-                        viewModel.onSettingsClick()
+                        vm.onSettingsClick()
                     }
                 }
             }
         }
     ) {
-        val pagerState = rememberPagerState(viewModel.initialPage-1)
+        val pagerState = rememberPagerState(vm.initialPage-1)
         HorizontalPagerScreen(
             count = 604,
             pagerState = pagerState,
@@ -171,7 +170,7 @@ fun QuranViewerUI(
 
             val scrollState = rememberScrollState()
 
-            viewModel.onPageChange(pagerState.currentPage, page)
+            vm.onPageChange(pagerState.currentPage, page)
 
             Column(
                 Modifier
@@ -180,38 +179,38 @@ fun QuranViewerUI(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 val ayas =
-                    if (isCurrentPage) state.ayas
-                    else viewModel.buildPage(page + 1)
+                    if (isCurrentPage) st.ayas
+                    else vm.buildPage(page + 1)
 
-                if (state.viewType == List) ListItems(ayas, isCurrentPage, viewModel, state)
-                else PageItems(ayas, isCurrentPage, viewModel, state)
+                if (st.viewType == List) ListItems(ayas, isCurrentPage, vm, st)
+                else PageItems(ayas, isCurrentPage, vm, st)
 
                 if (page == pagerState.currentPage)
                     LaunchedEffect(null) {
-                        scrollState.animateScrollTo(viewModel.scrollTo.toInt())
-                        viewModel.onScrolled()
+                        scrollState.animateScrollTo(vm.scrollTo.toInt())
+                        vm.onScrolled()
                     }
             }
         }
     }
 
     TutorialDialog(
-        shown = state.tutorialDialogShown,
+        shown = st.tutorialDialogShown,
         textResId = R.string.quran_tips,
-        onDismiss = { doNotShowAgain -> viewModel.onTutorialDialogDismiss(doNotShowAgain) }
+        onDismiss = { doNotShowAgain -> vm.onTutorialDialogDismiss(doNotShowAgain) }
     )
 
     InfoDialog(
-        shown = state.infoDialogShown,
+        shown = st.infoDialogShown,
         title = stringResource(R.string.tafseer),
-        text = state.infoDialogText
+        text = st.infoDialogText
     )
 
     QuranSettingsDialog(
-        startState = state,
-        pref = viewModel.pref,
-        reciterNames = viewModel.reciterNames,
-        onDone = viewModel::onSettingsDialogDone  // :: gives the reference to the function
+        startState = st,
+        pref = vm.pref,
+        reciterNames = vm.reciterNames,
+        onDone = vm::onSettingsDialogDone  // :: gives the reference to the function
     )
 }
 
@@ -219,19 +218,19 @@ fun QuranViewerUI(
 private fun PageItems(
     ayas: List<Ayah>,
     isCurrentPage: Boolean,
-    viewModel: QuranViewerVM,
-    state: QuranViewerState
+    vm: QuranViewerVM,
+    st: QuranViewerState
 ) {
     var text = StringBuilder()
     var sequence = ArrayList<Ayah>()
     var lastSura = ayas[0].surahNum
 
-    NewSura(ayas[0], isCurrentPage, viewModel, state)
+    NewSura(ayas[0], isCurrentPage, vm, st)
     for (aya in ayas) {
         if (aya.surahNum != lastSura) {
-            PageItem(text = text.toString(), sequence = sequence, viewModel, state)
+            PageItem(text = text.toString(), sequence = sequence, vm, st)
 
-            NewSura(aya, isCurrentPage, viewModel, state)
+            NewSura(aya, isCurrentPage, vm, st)
 
             text = StringBuilder()
             sequence = ArrayList()
@@ -244,7 +243,7 @@ private fun PageItems(
 
         lastSura = aya.surahNum
     }
-    PageItem(text = text.toString(), sequence = sequence, viewModel, state)
+    PageItem(text = text.toString(), sequence = sequence, vm, st)
 }
 
 @Composable

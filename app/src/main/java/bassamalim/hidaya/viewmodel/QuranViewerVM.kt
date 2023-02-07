@@ -40,7 +40,7 @@ class QuranViewerVM @Inject constructor(
 ): AndroidViewModel(app) {
     
     private val type = savedStateHandle.get<String>("type") ?: "by_surah"
-    private var initialSuraId = savedStateHandle.get<Int>("surah_id") ?: 0
+    private var initialSuraId = savedStateHandle.get<Int>("sura_id") ?: 0
     private val page = savedStateHandle.get<Int>("page") ?: 0
 
     val numeralsLanguage = repository.numeralsLanguage
@@ -78,12 +78,9 @@ class QuranViewerVM @Inject constructor(
             else repository.getViewType(),
         textSize = repository.getTextSize(),
         isBookmarked = bookmarkedPage == initialPage,
+        ayas = buildPage(initialPage),
     ))
     val uiState = _uiState.asStateFlow()
-    
-    fun onStart() {
-        
-    }
 
     fun onStop() {
         player?.finish()
@@ -124,7 +121,7 @@ class QuranViewerVM @Inject constructor(
             pageNum = pageNumber,
             suraName = suraNames[suraNum],
             juzNum = ayatDB.first { aya -> aya.page == pageNumber }.jozz,
-            ayas = buildPage(pageNumber + 1),
+            ayas = buildPage(pageNumber),
             isBookmarked = bookmarkedPage == pageNumber
         )}
     }

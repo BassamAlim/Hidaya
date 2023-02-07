@@ -104,3 +104,14 @@ fun LocatorUI(
         ).show()
     }
 }
+
+@Composable
+fun RequestPermissions() {
+    val context = LocalContext.current
+    val requestLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+
+
+    }
+}

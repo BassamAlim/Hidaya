@@ -19,12 +19,12 @@ object ActivityUtils {
         return theme
     }
 
-    fun onActivityCreateSetLocale(activity: Activity): Language {
-        val language = PrefUtils.getLanguage(PrefUtils.getPreferences(activity))
+    fun onActivityCreateSetLocale(ctx: Context): Language {
+        val language = PrefUtils.getLanguage(PrefUtils.getPreferences(ctx))
 
         val locale = Locale(if (language == Language.ENGLISH) "en" else "ar")
         Locale.setDefault(locale)
-        val resources = activity.resources
+        val resources = ctx.resources
 
         val configuration = resources.configuration
         configuration.setLocale(locale)

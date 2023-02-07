@@ -25,36 +25,46 @@ import javax.inject.Inject
 @HiltViewModel
 class PrayersVM @Inject constructor(
     private val app: Application,
-    private val repository: PrayersRepo
+    private val repo: PrayersRepo
 ): AndroidViewModel(app) {
 
-    private val location = repository.getLocation()
-    private val prayTimes = PrayTimes(repository.pref)
-    private val prayerNames = repository.getPrayerNames()
+    val location = repo.getLocation()
+    private val prayTimes = PrayTimes(repo.pref)
+    private val prayerNames = repo.getPrayerNames()
     private val calendar = Calendar.getInstance()
+    private var dateOffset = 0
 
-    private val _uiState = MutableStateFlow(PrayersState())
+    private val _uiState = MutableStateFlow(PrayersState(
+        notificationTypes = repo.getNotificationTypes(),
+        timeOffsets = repo.getTimeOffsets()
+    ))
     val uiState = _uiState.asStateFlow()
+
+    init {
+        if (location != null) {
+            _uiState.update { it.copy(
+                locationName = getLocationName()
+            )}
+        }
+    }
 
     fun onStart() {
         goToToday()
     }
 
     private fun updateState(dateOffset: Int = 0) {
+        this.dateOffset = dateOffset
+
         if (location != null) {
             _uiState.update { it.copy(
-                locationName = getLocationName(),
                 prayerTexts = appendNames(getTimes()),
-                notificationTypeIconIDs = getNotificationTypeIconID(getNotificationTypes()),
-                timeOffsetTexts = formatTimeOffsets(getTimeOffsets()),
-                dateOffset = dateOffset,
                 dateText = getDateText()
             )}
         }
     }
 
     fun goToToday() {
-        updateState()
+        updateState(0)
     }
 
     /**
@@ -63,9 +73,9 @@ class PrayersVM @Inject constructor(
      */
     private fun getTimes(): List<String> {
         calendar.timeInMillis = System.currentTimeMillis()
-        calendar[Calendar.DATE] = calendar[Calendar.DATE] + _uiState.value.dateOffset
+        calendar[Calendar.DATE] = calendar[Calendar.DATE] + dateOffset
 
-        val utcOffset = PTUtils.getUTCOffset(repository.pref, repository.db)
+        val utcOffset = PTUtils.getUTCOffset(repo.pref, repo.db)
 
         return prayTimes.getStrPrayerTimes(
             location!!.latitude, location.longitude, utcOffset.toDouble(), calendar
@@ -73,51 +83,33 @@ class PrayersVM @Inject constructor(
     }
 
     private fun getLocationName(): String {
-        var countryId = repository.getCountryID()
-        var cityId = repository.getCityID()
+        var countryId = repo.getCountryID()
+        var cityId = repo.getCityID()
 
-        if (repository.getLocationType() == LocationType.Auto || countryId == -1 || cityId == -1) {
-            val closest = repository.getClosest(location!!.latitude, location.longitude)
+        if (repo.getLocationType() == LocationType.Auto || countryId == -1 || cityId == -1) {
+            val closest = repo.getClosest(location!!.latitude, location.longitude)
             countryId = closest.countryId
             cityId = closest.id
         }
 
-        val countryName = repository.getCountryName(countryId)
-        val cityName = repository.getCityName(cityId)
+        val countryName = repo.getCountryName(countryId)
+        val cityName = repo.getCityName(cityId)
 
         return "$countryName, $cityName"
     }
 
-    fun previousDay() {
-        if (location != null) {
-            _uiState.update { it.copy(
-                dateOffset = it.dateOffset - 1,
-                dateText = getDateText()
-            )}
-        }
-    }
-
-    fun nextDay() {
-        if (location != null) {
-            _uiState.update { it.copy(
-                dateOffset = it.dateOffset + 1,
-                dateText = getDateText()
-            )}
-        }
-    }
-
     private fun getDateText(): String {
-        return if (_uiState.value.dateOffset == 0) repository.getTodayText()
+        return if (dateOffset == 0) repo.getTodayText()
         else {
             val hijri = UmmalquraCalendar()
             hijri.time = calendar.time
 
             val year = translateNums(
-                repository.numeralsLanguage, hijri[Calendar.YEAR].toString()
+                repo.numeralsLanguage, hijri[Calendar.YEAR].toString()
             )
-            val month = repository.getHijriMonths()[hijri[Calendar.MONTH]]
+            val month = repo.getHijriMonths()[hijri[Calendar.MONTH]]
             val day = translateNums(
-                repository.numeralsLanguage, hijri[Calendar.DATE].toString()
+                repo.numeralsLanguage, hijri[Calendar.DATE].toString()
             )
 
             "$day $month $year"
@@ -130,40 +122,26 @@ class PrayersVM @Inject constructor(
         return result
     }
 
-    private fun formatTimeOffsets(offsets : List<Int>): List<String> {
-        val result = mutableListOf<String>()
-
-        offsets.forEach { offset ->
-            result.add(
-                if (offset > 0)
-                    translateNums(repository.numeralsLanguage, "+$offset")
-                else if (offset < 0)
-                    translateNums(repository.numeralsLanguage, offset.toString())
-                else ""
-            )
-        }
-
-        return result
+    fun formatTimeOffset(offset : Int): String {
+        return if (offset > 0)
+            translateNums(repo.numeralsLanguage, "+$offset")
+        else if (offset < 0)
+            translateNums(repo.numeralsLanguage, offset.toString())
+        else ""
     }
 
-    private fun getNotificationTypeIconID(types: List<NotificationType>): List<Int> {
-        val result = mutableListOf<Int>()
-        types.forEach { type ->
-            result.add(
-                when (type) {
-                    NotificationType.Athan -> R.drawable.ic_speaker
-                    NotificationType.Notification -> R.drawable.ic_sound
-                    NotificationType.Silent -> R.drawable.ic_silent
-                    NotificationType.None -> R.drawable.ic_block
-                }
-            )
+    fun getNotificationTypeIconID(type: NotificationType): Int {
+        return when (type) {
+            NotificationType.Athan -> R.drawable.ic_speaker
+            NotificationType.Notification -> R.drawable.ic_sound
+            NotificationType.Silent -> R.drawable.ic_silent
+            NotificationType.None -> R.drawable.ic_block
         }
-        return result
     }
 
-    fun getNotificationTypes() = repository.getNotificationTypes()
-
-    fun getTimeOffsets() = repository.getTimeOffsets()
+    private fun updatePrayerTimeAlarms() {
+        Alarms(app.applicationContext, _uiState.value.settingsDialogPID)
+    }
 
     fun onLocatorClick(navController: NavController) {
         navController.navigate(
@@ -182,28 +160,42 @@ class PrayersVM @Inject constructor(
         }
     }
 
+    fun onPreviousDayClk() {
+        updateState(dateOffset - 1)
+    }
+
+    fun onNextDayClk() {
+        updateState(dateOffset + 1)
+    }
+
     fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {
         _uiState.update { it.copy(
             isTutorialDialogShown = false
         )}
 
-        if (doNotShowAgain) repository.setDoNotShowAgain()
+        if (doNotShowAgain) repo.setDoNotShowAgain()
     }
 
     fun onNotificationTypeChange(notificationType: NotificationType) {
+        val types = _uiState.value.notificationTypes.toMutableList()
+        types[_uiState.value.settingsDialogPID.ordinal] = notificationType
         _uiState.update { it.copy(
-            notificationTypeIconIDs = getNotificationTypeIconID(repository.getNotificationTypes())
+            notificationTypes = types
         )}
-        repository.setNotificationType(_uiState.value.settingsDialogPID, notificationType)
+
+        repo.setNotificationType(_uiState.value.settingsDialogPID, notificationType)
 
         updatePrayerTimeAlarms()
     }
 
     fun onTimeOffsetChange(timeOffset: Int) {
+        val offsets = _uiState.value.timeOffsets.toMutableList()
+        offsets[_uiState.value.settingsDialogPID.ordinal] = timeOffset
         _uiState.update { it.copy(
-            timeOffsetTexts = formatTimeOffsets(repository.getTimeOffsets())
+            timeOffsets = offsets
         )}
-        repository.setTimeOffset(_uiState.value.settingsDialogPID, timeOffset)
+
+        repo.setTimeOffset(_uiState.value.settingsDialogPID, timeOffset)
 
         updatePrayerTimeAlarms()
     }
@@ -214,10 +206,6 @@ class PrayersVM @Inject constructor(
         )}
 
         updatePrayerTimeAlarms()
-    }
-
-    private fun updatePrayerTimeAlarms() {
-        Alarms(app.applicationContext, _uiState.value.settingsDialogPID)
     }
 
 }

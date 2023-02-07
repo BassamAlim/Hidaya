@@ -29,12 +29,12 @@ import bassamalim.hidaya.viewmodel.PrayersVM
 @Composable
 fun PrayersUI(
     navController: NavController = rememberNavController(),
-    viewModel: PrayersVM = hiltViewModel()
+    vm: PrayersVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
 
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
+    DisposableEffect(key1 = vm) {
+        vm.onStart()
         onDispose {}
     }
 
@@ -52,7 +52,7 @@ fun PrayersUI(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 MyText(
-                    text = state.locationName,
+                    text = st.locationName,
                     modifier = Modifier
                         .widthIn(1.dp, 300.dp)
                         .padding(start = 15.dp)
@@ -65,7 +65,7 @@ fun PrayersUI(
                     modifier = Modifier.padding(end = 8.dp),
                     size = 32.dp
                 ) {
-                    viewModel.onLocatorClick(navController)
+                    vm.onLocatorClick(navController)
                 }
             }
         }
@@ -78,8 +78,8 @@ fun PrayersUI(
             verticalArrangement = Arrangement.SpaceAround
         ) {
             PrayerCards(
-                viewModel = viewModel,
-                state = state
+                viewModel = vm,
+                state = st
             )
         }
 
@@ -98,15 +98,15 @@ fun PrayersUI(
                     description = stringResource(R.string.previous_day_button_description),
                     tint = AppTheme.colors.text
                 ) {
-                    viewModel.previousDay()
+                    vm.onPreviousDayClk()
                 }
 
                 MyClickableText(
-                    text = state.dateText,
+                    text = st.dateText,
                     fontSize = 24.sp,
                     innerPadding = PaddingValues(vertical = 3.dp, horizontal = 15.dp)
                 ) {
-                    viewModel.goToToday()
+                    vm.goToToday()
                 }
 
                 MyIconBtn(
@@ -114,28 +114,27 @@ fun PrayersUI(
                     description = stringResource(R.string.next_day_button_description),
                     tint = AppTheme.colors.text
                 ) {
-                    viewModel.nextDay()
+                    vm.onNextDayClk()
                 }
             }
         }
     }
 
     PrayerDialog(
-        shown = state.isSettingsDialogShown,
-        pid = state.settingsDialogPID,
-        notificationTypes = viewModel.getNotificationTypes(),
-        offsets = viewModel.getTimeOffsets(),
-        onNotificationTypeChange = { viewModel.onNotificationTypeChange(it) },
-        onOffsetChange = { viewModel.onTimeOffsetChange(it) }
-    ) {
-       viewModel.onSettingsDialogDismiss()
-    }
+        shown = st.isSettingsDialogShown,
+        pid = st.settingsDialogPID,
+        notificationType = st.notificationTypes[st.settingsDialogPID.ordinal],
+        timeOffset = st.timeOffsets[st.settingsDialogPID.ordinal],
+        onNotificationTypeChange = { vm.onNotificationTypeChange(it) },
+        onOffsetChange = { vm.onTimeOffsetChange(it) },
+        onDismiss = { vm.onSettingsDialogDismiss() }
+    )
 
     TutorialDialog(
         textResId = R.string.prayers_tips,
-        shown = state.isTutorialDialogShown
+        shown = st.isTutorialDialogShown
     ) {
-        viewModel.onTutorialDialogDismiss(it)
+        vm.onTutorialDialogDismiss(it)
     }
 }
 
@@ -143,7 +142,7 @@ fun PrayersUI(
 private fun PrayerCards(viewModel: PrayersVM, state: PrayersState) {
     for (i in state.prayerTexts.indices) {
         PrayerCard(
-            viewModel = viewModel,
+            vm = viewModel,
             state = state,
             number = i,
             text = state.prayerTexts[i]
@@ -152,9 +151,9 @@ private fun PrayerCards(viewModel: PrayersVM, state: PrayersState) {
 }
 
 @Composable
-private fun PrayerCard(viewModel: PrayersVM, state: PrayersState, number: Int, text: String) {
+private fun PrayerCard(vm: PrayersVM, state: PrayersState, number: Int, text: String) {
     MyClickableSurface(
-        onClick = { viewModel.onPrayerClick(PID.values()[number]) },
+        onClick = { vm.onPrayerClick(PID.values()[number]) },
         cornerRadius = 15.dp
     ) {
         Row(
@@ -171,17 +170,21 @@ private fun PrayerCard(viewModel: PrayersVM, state: PrayersState, number: Int, t
                 fontWeight = FontWeight.Bold
             )
 
-            Row {
-                // Delay
-                MyText(state.timeOffsetTexts[number])
+            if (vm.location != null) {
+                Row {
+                    // Delay
+                    MyText(vm.formatTimeOffset(state.timeOffsets[number]))
 
-                // Notification type
-                Icon(
-                    painter = painterResource(state.notificationTypeIconIDs[number]),
-                    contentDescription = stringResource(R.string.notification_image_description),
-                    tint = AppTheme.colors.accent,
-                    modifier = Modifier.size(35.dp)
-                )
+                    // Notification type
+                    Icon(
+                        painter = painterResource(
+                            vm.getNotificationTypeIconID(state.notificationTypes[number])
+                        ),
+                        contentDescription = stringResource(R.string.notification_image_description),
+                        tint = AppTheme.colors.accent,
+                        modifier = Modifier.size(35.dp)
+                    )
+                }
             }
         }
     }

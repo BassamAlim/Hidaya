@@ -47,6 +47,5 @@ fun SplashUI(
 
     LaunchedEffect(null) {
         viewModel.enter()
-        println("HERE")
     }
 }

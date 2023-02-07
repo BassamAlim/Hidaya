@@ -60,9 +60,9 @@ fun QuranSettingsDialog(
             CategoryTitle(titleResId = R.string.recitation_settings)
 
             ListPref(
-                pref = pref,
+                sp = pref,
                 titleResId = R.string.reciter,
-                prefObj = Prefs.AyaReciter,
+                pref = Prefs.AyaReciter,
                 iconResId = -1,
                 entries = reciterNames,
                 values = reciterIds,

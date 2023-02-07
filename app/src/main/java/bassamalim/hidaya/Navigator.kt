@@ -25,7 +25,7 @@ fun Navigator(startRoute: String?) {
         ) {
             AboutUI(
                 navController = navController,
-                viewModel = hiltViewModel()
+                vm = hiltViewModel()
             )
         }
 
@@ -154,12 +154,12 @@ fun Navigator(startRoute: String?) {
 
         composable(
             route = Screen.QuizResult(
-                "{score}", "{questions}", "{chosenAs}"
+                "{score}", "{questions}", "{chosen_As}"
             ).route,
             arguments = listOf(
                 navArgument("score") { type = NavType.IntType },
                 navArgument("questions") { type = NavType.IntArrayType },
-                navArgument("chosenAs") { type = NavType.IntArrayType }
+                navArgument("chosen_As") { type = NavType.IntArrayType }
             )
         ) {
             QuizResultUI(
@@ -184,17 +184,17 @@ fun Navigator(startRoute: String?) {
 
         composable(
             route = Screen.QuranViewer(
-                "{type}", "{suraId}", "{page}"
+                "{type}", "{sura_id}", "{page}"
             ).route,
             arguments = listOf(
                 navArgument("type") { type = NavType.StringType },
-                navArgument("surah_id") { type = NavType.IntType },
+                navArgument("sura_id") { type = NavType.IntType },
                 navArgument("page") { type = NavType.IntType }
             )
         ) {
             QuranViewerUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -240,8 +240,8 @@ fun Navigator(startRoute: String?) {
 
         composable(Screen.Telawat.route) {
             TelawatUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -255,8 +255,8 @@ fun Navigator(startRoute: String?) {
             )
         ) {
             TelawatSuarUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 

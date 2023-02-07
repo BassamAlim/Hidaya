@@ -35,8 +35,8 @@ fun BookChaptersUI(
                     viewModel.onSearchTextChange(it)
                 }
             }
-        ) { pageNum ->
-            viewModel.onListTypeChange(pageNum)
+        ) { page, currentPage ->
+            viewModel.onListTypeChange(page, currentPage)
 
             Tab(viewModel, state, navController)
         }

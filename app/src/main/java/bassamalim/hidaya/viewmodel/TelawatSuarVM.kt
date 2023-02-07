@@ -156,9 +156,11 @@ class TelawatSuarVM @Inject constructor(
         }
     }
 
-    fun onListTypeChange(listType: Int) {
+    fun onListTypeChange(page: Int, currentPage: Int) {
+        if (page != currentPage) return
+
         _uiState.update { it.copy(
-            items = getItems(ListType.values()[listType])
+            items = getItems(ListType.values()[page])
         )}
     }
 

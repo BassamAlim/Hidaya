@@ -10,7 +10,7 @@ data class QuranViewerState(
     val suraName: String = "",
     val ayas: List<Ayah> = emptyList(),
     val viewType: QViewType = QViewType.Page,
-    val textSize: Int = 15,
+    val textSize: Float = 15f,
     val playerState: Int = PlaybackStateCompat.STATE_STOPPED,
     val isBookmarked: Boolean = false,
     val infoDialogShown: Boolean = false,

@@ -46,9 +46,11 @@ object AppModule {
     @Provides @Singleton
     fun provideGson() = Gson()
 
-
     @Provides @Singleton
-    fun provideAboutRepository(pref: SharedPreferences) = AboutRepo(pref)
+    fun provideAboutRepository(
+        pref: SharedPreferences,
+        remoteConfig: FirebaseRemoteConfig
+    ) = AboutRepo(pref, remoteConfig)
 
     @Provides @Singleton
     fun provideAthkarListRepository(

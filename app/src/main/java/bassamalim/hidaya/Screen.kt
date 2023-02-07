@@ -4,7 +4,7 @@ sealed class Screen(val route: String) {
     object About: Screen("about")
 
     data class AthkarList(
-        val type: String, val category: String=""
+        val type: String, val category: String="-1"
     ): Screen("athkar_list/$type/$category")
 
     data class AthkarViewer(
@@ -46,7 +46,7 @@ sealed class Screen(val route: String) {
     object QuranSearcher: Screen("quran_searcher")
 
     data class QuranViewer(
-        val type: String, val suraId: String = "", val page: String = ""
+        val type: String, val suraId: String = "-1", val page: String = "-1"
     ): Screen("quran_viewer/$type/$suraId/$page")
 
     object RadioClient: Screen("radio_client")

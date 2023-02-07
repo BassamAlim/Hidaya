@@ -47,7 +47,7 @@ sealed class Prefs(val key: String, val default: Any) {
     object TelawatRepeatMode: Prefs("telawat_repeat_mode", 0)
     object TelawatShuffleMode: Prefs("telawat_shuffle_mode", 0)
     object QuranPagesRecord: Prefs("quran_pages_record", 0)
-    object QuranTextSize: Prefs("quran_text_size", 30)
+    object QuranTextSize: Prefs("quran_text_size", 30f)
     object QuranViewType: Prefs("quran_view_type", QViewType.Page.name)
     object AyaReciter: Prefs("aya_reciter", "13")
     object AyaRepeat: Prefs("aya_repeat", 1)

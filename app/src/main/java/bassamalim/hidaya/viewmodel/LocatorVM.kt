@@ -125,8 +125,9 @@ class LocatorVM @Inject constructor(
         if (result.keys.contains(Manifest.permission.ACCESS_BACKGROUND_LOCATION))
             return
 
-        if (result[Manifest.permission.ACCESS_FINE_LOCATION]!! &&
-            result[Manifest.permission.ACCESS_COARSE_LOCATION]!!) {
+        val fineLoc = result[Manifest.permission.ACCESS_FINE_LOCATION]
+        val coarseLoc = result[Manifest.permission.ACCESS_COARSE_LOCATION]
+        if (fineLoc != null && fineLoc && coarseLoc != null && coarseLoc) {
             locate()
             background()
         }

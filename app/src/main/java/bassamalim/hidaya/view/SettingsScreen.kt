@@ -77,9 +77,9 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
     ) {
         // Calculation method
         ListPref(
-            pref = viewModel.pref,
+            sp = viewModel.pref,
             titleResId = R.string.calculation_method_title,
-            prefObj = Prefs.PrayerTimesCalculationMethod,
+            pref = Prefs.PrayerTimesCalculationMethod,
             entries = stringArrayResource(R.array.prayer_times_calc_method_entries),
             values = stringArrayResource(R.array.prayer_times_calc_method_values)
         ) {
@@ -88,9 +88,9 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
 
         // Juristic method
         ListPref(
-            pref = viewModel.pref,
+            sp = viewModel.pref,
             titleResId = R.string.juristic_method_title,
-            prefObj = Prefs.PrayerTimesJuristicMethod,
+            pref = Prefs.PrayerTimesJuristicMethod,
             entries = stringArrayResource(R.array.juristic_method_entries),
             values = stringArrayResource(R.array.juristic_method_values)
         ) {
@@ -99,9 +99,9 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
 
         // High latitude adjustment
         ListPref(
-            pref = viewModel.pref,
+            sp = viewModel.pref,
             titleResId = R.string.high_lat_adjustment_title,
-            prefObj = Prefs.PrayerTimesAdjustment,
+            pref = Prefs.PrayerTimesAdjustment,
             entries = stringArrayResource(R.array.high_lat_adjustment_entries),
             values = stringArrayResource(R.array.high_lat_adjustment_values)
         ) {
@@ -163,9 +163,9 @@ fun AppearanceSettings(context: Context, pref: SharedPreferences) {
     ) {
         // Language
         ListPref(
-            pref = pref,
+            sp = pref,
             titleResId = R.string.language,
-            prefObj = Prefs.Language,
+            pref = Prefs.Language,
             iconResId = R.drawable.ic_translation,
             entries = stringArrayResource(R.array.language_entries),
             values = stringArrayResource(R.array.languages_values)
@@ -175,9 +175,9 @@ fun AppearanceSettings(context: Context, pref: SharedPreferences) {
 
         // Numerals language
         ListPref(
-            pref = pref,
+            sp = pref,
             titleResId = R.string.numerals_language,
-            prefObj = Prefs.NumeralsLanguage,
+            pref = Prefs.NumeralsLanguage,
             iconResId = R.drawable.ic_translation,
             entries = stringArrayResource(R.array.numerals_language_entries),
             values = stringArrayResource(R.array.languages_values)
@@ -190,9 +190,9 @@ fun AppearanceSettings(context: Context, pref: SharedPreferences) {
             LangUtils.translateNums(context, it)
         }.toTypedArray()
         ListPref(
-            pref = pref,
+            sp = pref,
             titleResId = R.string.time_format,
-            prefObj = Prefs.TimeFormat,
+            pref = Prefs.TimeFormat,
             iconResId = R.drawable.ic_time_format,
             entries = timeFormatEntries,
             values = stringArrayResource(R.array.time_format_values)
@@ -202,9 +202,9 @@ fun AppearanceSettings(context: Context, pref: SharedPreferences) {
 
         // Theme
         ListPref(
-            pref = pref,
+            sp = pref,
             titleResId = R.string.theme,
-            prefObj = Prefs.Theme,
+            pref = Prefs.Theme,
             iconResId = R.drawable.ic_theme,
             entries = stringArrayResource(R.array.themes_entries),
             values = stringArrayResource(R.array.theme_values)
