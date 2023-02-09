@@ -27,10 +27,10 @@ import bassamalim.hidaya.viewmodel.RadioClientVM
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RadioClientUI(
-    navController: NavController = rememberNavController(),
-    viewModel: RadioClientVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: RadioClientVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
 
     MyScaffold(stringResource(R.string.quran_radio)) {
         Column(
@@ -48,7 +48,7 @@ fun RadioClientUI(
             )
 
             MyPlayerBtn(state = state.btnState, padding = 10.dp) {
-                viewModel.onPlayPause()
+                vm.onPlayPause()
             }
         }
     }

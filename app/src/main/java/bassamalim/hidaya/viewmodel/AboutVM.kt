@@ -1,14 +1,11 @@
 package bassamalim.hidaya.viewmodel
 
 import android.app.Application
-import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
-import bassamalim.hidaya.MainActivity
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.repository.AboutRepo
 import bassamalim.hidaya.state.AboutState
@@ -22,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AboutVM @Inject constructor(
     private val app: Application,
-    private val repo: AboutRepo
+    repo: AboutRepo
 ): AndroidViewModel(app) {
 
     private var counter by mutableStateOf(0)
@@ -39,15 +36,14 @@ class AboutVM @Inject constructor(
     }
 
     fun rebuildDatabase() {
-        val ctx = app.applicationContext
-        ctx.deleteDatabase("HidayaDB")
+        app.deleteDatabase("HidayaDB")
 
         Log.i(Global.TAG, "Database Rebuilt")
 
-        DBUtils.reviveDB(ctx)
+        DBUtils.reviveDB(app)
 
         _uiState.update { it.copy(
-            shouldShowRebuiltToast = true
+            shouldShowRebuilt = _uiState.value.shouldShowRebuilt + 1
         )}
     }
 

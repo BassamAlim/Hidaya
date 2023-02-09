@@ -19,8 +19,8 @@ import bassamalim.hidaya.viewmodel.WelcomeVM
 
 @Composable
 fun WelcomeUI(
-    navController: NavController = rememberNavController(),
-    viewModel: WelcomeVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: WelcomeVM = hiltViewModel()
 ) {
     Box(
         Modifier.background(AppTheme.colors.background)
@@ -45,7 +45,7 @@ fun WelcomeUI(
                 innerPadding = PaddingValues(vertical = 2.dp, horizontal = 25.dp),
                 modifier = Modifier.padding(bottom = 10.dp)
             ) {
-                viewModel.save(navController)
+                vm.save(nc)
             }
         }
     }

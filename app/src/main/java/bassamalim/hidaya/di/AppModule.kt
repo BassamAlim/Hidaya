@@ -187,8 +187,9 @@ object AppModule {
     @Provides @Singleton
     fun provideSplashRepository(
         preferences: SharedPreferences,
-        database: AppDatabase
-    ) = SplashRepo(preferences, database)
+        database: AppDatabase,
+        remoteConfig: FirebaseRemoteConfig
+    ) = SplashRepo(preferences, database, remoteConfig)
 
     @Provides @Singleton
     fun provideTelawatClientRepository(
@@ -213,9 +214,8 @@ object AppModule {
 
     @Provides @Singleton
     fun provideTvRepository(
-        context: Context,
         remoteConfig: FirebaseRemoteConfig
-    ) = TvRepo(context, remoteConfig)
+    ) = TvRepo(remoteConfig)
 
     @Provides @Singleton
     fun provideWelcomeRepository(

@@ -26,10 +26,10 @@ import bassamalim.hidaya.viewmodel.QuizResultVM
 
 @Composable
 fun QuizResultUI(
-    navController: NavController = rememberNavController(),
-    viewModel: QuizResultVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: QuizResultVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
 
     MyScaffold(stringResource(R.string.quiz_result)) {
         Column(

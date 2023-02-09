@@ -23,10 +23,10 @@ import bassamalim.hidaya.viewmodel.AthkarViewerVM
 
 @Composable
 fun AthkarViewerUI(
-    navController: NavController = rememberNavController(),
-    viewModel: AthkarViewerVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: AthkarViewerVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
 
     MyScaffold(
         title = state.title,
@@ -34,7 +34,7 @@ fun AthkarViewerUI(
             MyReadingBottomBar(
                 textSize = state.textSize
             ) {
-                viewModel.onTextSizeChange(it)
+                vm.onTextSizeChange(it)
             }
         }
     ) {
@@ -43,7 +43,7 @@ fun AthkarViewerUI(
             lazyList = {
                 items(state.items) { item ->
                     ThikrCard(
-                        viewModel = viewModel,
+                        viewModel = vm,
                         thikr = item,
                         textSize = state.textSize
                     )
@@ -56,7 +56,7 @@ fun AthkarViewerUI(
             text = state.infoDialogText,
             shown = state.infoDialogShown
         ) {
-            viewModel.onInfoDialogDismiss()
+            vm.onInfoDialogDismiss()
         }
     }
 }

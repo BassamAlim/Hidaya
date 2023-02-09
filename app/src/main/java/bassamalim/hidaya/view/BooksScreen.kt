@@ -18,7 +18,7 @@ import bassamalim.hidaya.viewmodel.BooksVM
 
 @Composable
 fun BooksUI(
-    navController: NavController = rememberNavController(),
+    nc: NavController = rememberNavController(),
     vm: BooksVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsState()
@@ -36,7 +36,7 @@ fun BooksUI(
                 iconId = R.drawable.ic_quran_search,
                 description = stringResource(R.string.search_in_books)
             ) {
-                vm.onFabClick(navController)
+                vm.onFabClick(nc)
             }
         }
     ) {
@@ -61,7 +61,7 @@ fun BooksUI(
                             }
                         }
                     ) {
-                        vm.onItemClick(item, navController)
+                        vm.onItemClick(item, nc)
                     }
                 }
             }

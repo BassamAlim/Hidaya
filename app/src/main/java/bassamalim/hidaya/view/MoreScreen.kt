@@ -20,11 +20,11 @@ import bassamalim.hidaya.viewmodel.MoreVM
 
 @Composable
 fun MoreUI(
-    navController: NavController = rememberNavController(),
-    viewModel: MoreVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: MoreVM = hiltViewModel()
 ) {
-    val state = viewModel.uiState.collectAsState()
-    val context = LocalContext.current
+    val st = vm.uiState.collectAsState()
+    val ctx = LocalContext.current
 
     Column(
         Modifier
@@ -42,14 +42,14 @@ fun MoreUI(
                 textResId = R.string.recitations,
                 imageResId = R.drawable.ic_headphone
             ) {
-                viewModel.gotoTelawat(navController)
+                vm.gotoTelawat(nc)
             }
 
             MySquareButton(
                 textResId = R.string.qibla,
                 imageResId = R.drawable.ic_qibla_compass
             ) {
-                viewModel.gotoQibla(navController)
+                vm.gotoQibla(nc)
             }
         }
 
@@ -61,14 +61,14 @@ fun MoreUI(
                 textResId = R.string.quiz_title,
                 imageResId = R.drawable.ic_quiz
             ) {
-                viewModel.gotoQuiz(navController)
+                vm.gotoQuiz(nc)
             }
 
             MySquareButton(
                 textResId = R.string.hadeeth_books,
                 imageResId = R.drawable.ic_books
             ) {
-                viewModel.gotoBooks(navController)
+                vm.gotoBooks(nc)
             }
         }
 
@@ -80,14 +80,14 @@ fun MoreUI(
                 textResId = R.string.tv_channels,
                 imageResId = R.drawable.ic_television
             ) {
-                viewModel.gotoTV(navController)
+                vm.gotoTV(nc)
             }
 
             MySquareButton(
                 textResId = R.string.quran_radio,
                 imageResId = R.drawable.ic_radio
             ) {
-                viewModel.gotoRadio(navController)
+                vm.gotoRadio(nc)
             }
         }
 
@@ -99,11 +99,11 @@ fun MoreUI(
                 textResId = R.string.date_converter,
                 imageResId = R.drawable.ic_calendar
             ) {
-                viewModel.gotoDateConverter(navController)
+                vm.gotoDateConverter(nc)
             }
 
             MySquareButton(R.string.settings, R.drawable.ic_settings) {
-                viewModel.gotoSettings(navController)
+                vm.gotoSettings(nc)
             }
         }
 
@@ -115,14 +115,14 @@ fun MoreUI(
                 textResId = R.string.contact,
                 imageResId = R.drawable.ic_mail
             ) {
-                viewModel.contactMe()
+                vm.contactMe(ctx)
             }
 
             MySquareButton(
                 textResId = R.string.share_app,
                 imageResId = R.drawable.ic_share
             ) {
-                viewModel.shareApp()
+                vm.shareApp(ctx)
             }
         }
 
@@ -134,16 +134,16 @@ fun MoreUI(
                 textResId = R.string.about,
                 imageResId = R.drawable.ic_info
             ) {
-                viewModel.gotoAbout(navController)
+                vm.gotoAbout(nc)
             }
         }
     }
 
-    if (state.value.shouldShowUnsupported) {
+    if (st.value.shouldShowUnsupported) {
         LaunchedEffect(null) {
             Toast.makeText(
-                context,
-                context.getString(R.string.feature_not_supported),
+                ctx,
+                ctx.getString(R.string.feature_not_supported),
                 Toast.LENGTH_SHORT
             ).show()
         }

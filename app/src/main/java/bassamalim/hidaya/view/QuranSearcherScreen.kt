@@ -21,10 +21,10 @@ import bassamalim.hidaya.viewmodel.QuranSearcherVM
 
 @Composable
 fun QuranSearcherUI(
-    navController: NavController = rememberNavController(),
-    viewModel: QuranSearcherVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: QuranSearcherVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
 
     MyScaffold(stringResource(R.string.quran_searcher)) { padding ->
         Column(
@@ -43,13 +43,13 @@ fun QuranSearcherUI(
                 MyText(stringResource(R.string.search_for_quran_text))
 
                 SearchComponent(
-                    value = viewModel.searchText,
+                    value = vm.searchText,
                     hint = stringResource(R.string.search),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 30.dp)
                 ) {
-                    viewModel.onSearchValueChange(it, highlightColor)
+                    vm.onSearchValueChange(it, highlightColor)
                 }
 
                 Row(
@@ -65,12 +65,12 @@ fun QuranSearcherUI(
                     )
 
                     MyDropDownMenu(
-                        selectedIndex = viewModel.maxMatchesItems.indexOf(
+                        selectedIndex = vm.maxMatchesItems.indexOf(
                             state.maxMatches.toString()
                         ),
-                        items = viewModel.translatedMaxMatchesItems
+                        items = vm.translatedMaxMatchesItems
                     ) { index ->
-                        viewModel.onMaxMatchesIndexChange(index)
+                        vm.onMaxMatchesIndexChange(index)
                     }
                 }
             }
@@ -102,7 +102,7 @@ fun QuranSearcherUI(
                                     MyText(
                                         "${stringResource(R.string.page)} " +
                                                 translateNums(
-                                                    viewModel.numeralsLanguage,
+                                                    vm.numeralsLanguage,
                                                     item.pageNum.toString()
                                                 )
                                     )
@@ -111,7 +111,7 @@ fun QuranSearcherUI(
                                 MyText(
                                     text = "${stringResource(R.string.aya_number)} " +
                                             translateNums(
-                                                viewModel.numeralsLanguage,
+                                                vm.numeralsLanguage,
                                                 item.ayaNum.toString()
                                             ),
                                     modifier = Modifier.padding(6.dp)
@@ -132,7 +132,7 @@ fun QuranSearcherUI(
                                     innerPadding = PaddingValues(0.dp),
                                     modifier = Modifier.padding(bottom = 6.dp)
                                 ) {
-                                    viewModel.onGotoPageClick(item.pageNum, navController)
+                                    vm.onGotoPageClick(item.pageNum, nc)
                                 }
                             }
                         }

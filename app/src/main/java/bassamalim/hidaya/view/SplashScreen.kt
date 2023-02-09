@@ -18,20 +18,20 @@ import bassamalim.hidaya.viewmodel.SplashVM
 
 @Composable
 fun SplashUI(
-    navController: NavController = rememberNavController(),
-    viewModel: SplashVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: SplashVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
     val context = LocalContext.current
     val activity = context as Activity
     val requestLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        viewModel.onLocationRequestResult(permissions)
+        vm.onLocationRequestResult(permissions)
     }
 
     LaunchedEffect(null) {
-        viewModel.provide(navController, requestLauncher)
+        vm.provide(nc, requestLauncher)
 
         val splashScreen = activity.installSplashScreen()
         splashScreen.setKeepOnScreenCondition { true }
@@ -46,6 +46,6 @@ fun SplashUI(
     }
 
     LaunchedEffect(null) {
-        viewModel.enter()
+        vm.enter()
     }
 }

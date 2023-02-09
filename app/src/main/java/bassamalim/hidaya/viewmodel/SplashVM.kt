@@ -34,6 +34,10 @@ class SplashVM @Inject constructor(
     private val _uiState = MutableStateFlow(SplashState())
     val uiState = _uiState.asStateFlow()
 
+    init {
+        repository.fetchAndActivateRemoteConfig()
+    }
+
     fun provide(
         navController: NavController,
         locationRequestLauncher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>

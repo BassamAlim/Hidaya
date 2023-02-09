@@ -26,10 +26,10 @@ import bassamalim.hidaya.viewmodel.QuizVM
 
 @Composable
 fun QuizUI(
-    navController: NavController = rememberNavController(),
-    viewModel: QuizVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: QuizVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
 
     MyScaffold(
         title = state.questionNumText
@@ -62,7 +62,7 @@ fun QuizUI(
                     .heightIn(1.dp, 400.dp)
                     .verticalScroll(rememberScrollState())
             ) { index ->
-                viewModel.answered(index, navController)
+                vm.answered(index, nc)
             }
 
             Row(
@@ -80,7 +80,7 @@ fun QuizUI(
                     else AppTheme.colors.text,
                     innerPadding = PaddingValues(10.dp)
                 ) {
-                    viewModel.previousQ()
+                    vm.previousQ()
                 }
 
                 MyButton(
@@ -91,7 +91,7 @@ fun QuizUI(
                         else Grey,
                     innerPadding = PaddingValues(10.dp)
                 ) {
-                    viewModel.nextQ(navController)
+                    vm.nextQ(nc)
                 }
             }
         }

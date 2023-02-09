@@ -22,8 +22,8 @@ import bassamalim.hidaya.viewmodel.QuizLobbyVM
 
 @Composable
 fun QuizLobbyUI(
-    navController: NavController = rememberNavController(),
-    viewModel: QuizLobbyVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: QuizLobbyVM = hiltViewModel()
 ) {
     MyScaffold(stringResource(R.string.quiz_title)) {
         Column(
@@ -38,7 +38,7 @@ fun QuizLobbyUI(
                 fontWeight = FontWeight.Bold,
                 textColor = AppTheme.colors.accent
             ) {
-                viewModel.onStartQuizClick(navController)
+                vm.onStartQuizClick(nc)
             }
         }
     }

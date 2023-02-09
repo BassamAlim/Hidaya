@@ -31,20 +31,20 @@ import bassamalim.hidaya.viewmodel.TelawatClientVM
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TelawatClientUI(
-    navController: NavController = rememberNavController(),
-    viewModel: TelawatClientVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: TelawatClientVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
 
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
-        onDispose { viewModel.onStop() }
+    DisposableEffect(key1 = vm) {
+        vm.onStart()
+        onDispose { vm.onStop() }
     }
 
     MyScaffold(
         title = stringResource(R.string.recitations),
-        bottomBar = { BottomBar(viewModel, state) },
-        onBack = { viewModel.onBackPressed(navController) }
+        bottomBar = { BottomBar(vm, state) },
+        onBack = { vm.onBackPressed(nc) }
     ) {
         Column(
             Modifier
@@ -107,8 +107,8 @@ fun TelawatClientUI(
                     valueRange = 0F..state.duration.toFloat(),
                     modifier = Modifier.fillMaxWidth(0.7F),
                     enabled = state.controlsEnabled,
-                    onValueChangeFinished = { viewModel.onSliderChangeFinished() },
-                    onValueChange = { progress -> viewModel.onSliderChange(progress) }
+                    onValueChangeFinished = { vm.onSliderChangeFinished() },
+                    onValueChange = { progress -> vm.onSliderChange(progress) }
                 )
 
                 MyText(
@@ -129,7 +129,7 @@ fun TelawatClientUI(
                     description = stringResource(R.string.previous_day_button_description),
                     enabled = state.controlsEnabled
                 ) {
-                    viewModel.onPrevClk()
+                    vm.onPrevClk()
                 }
 
                 MyImageButton(
@@ -137,14 +137,14 @@ fun TelawatClientUI(
                     description = stringResource(R.string.rewind_btn_description),
                     enabled = state.controlsEnabled
                 ) {
-                    viewModel.onRewindClk()
+                    vm.onRewindClk()
                 }
 
                 MyPlayerBtn(
                     state = state.btnState,
                     enabled = state.controlsEnabled,
                 ) {
-                    viewModel.onPlayPauseClk()
+                    vm.onPlayPauseClk()
                 }
 
                 MyImageButton(
@@ -152,7 +152,7 @@ fun TelawatClientUI(
                     description = stringResource(R.string.fast_forward_btn_description),
                     enabled = state.controlsEnabled
                 ) {
-                    viewModel.onFastForwardClk()
+                    vm.onFastForwardClk()
                 }
 
                 MyImageButton(
@@ -160,7 +160,7 @@ fun TelawatClientUI(
                     description = stringResource(R.string.next_track_btn_description),
                     enabled = state.controlsEnabled
                 ) {
-                    viewModel.onNextClk()
+                    vm.onNextClk()
                 }
             }
         }

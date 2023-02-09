@@ -6,6 +6,6 @@ data class AboutState(
     val isDevModeOn: Boolean = false,
     val isDatabaseRebuilt: Boolean = false,
     val lastDailyUpdate: String = "",
-    val shouldShowRebuiltToast: Boolean = false,
+    val shouldShowRebuilt: Int = 0,
     val quickUpdateIntent: Intent? = null
 )

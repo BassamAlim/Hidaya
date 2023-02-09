@@ -18,10 +18,10 @@ import bassamalim.hidaya.viewmodel.AthkarListVM
 
 @Composable
 fun AthkarListUI(
-    navController: NavController = rememberNavController(),
-    viewModel: AthkarListVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: AthkarListVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
 
     MyScaffold(state.title) {
         Column(
@@ -31,7 +31,7 @@ fun AthkarListUI(
         ) {
 
             SearchComponent (
-                value = viewModel.searchText,
+                value = vm.searchText,
                 hint = stringResource(R.string.athkar_hint),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -43,11 +43,11 @@ fun AthkarListUI(
                             text = item.name,
                             iconBtn = {
                                 MyFavBtn(item.favorite.value) {
-                                    viewModel.onFavoriteCLick(item)
+                                    vm.onFavoriteCLick(item)
                                 }
                             }
                         ) {
-                            viewModel.onItemClick(navController, item)
+                            vm.onItemClick(nc, item)
                         }
                     }
                 }

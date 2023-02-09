@@ -22,18 +22,18 @@ import bassamalim.hidaya.viewmodel.BookViewerVM
 
 @Composable
 fun BookViewerUI(
-    navController: NavController = rememberNavController(),
-    viewModel: BookViewerVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: BookViewerVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
 
     MyScaffold(
-        title = viewModel.bookTitle,
+        title = vm.bookTitle,
         bottomBar = {
             MyReadingBottomBar(
                 textSize = state.textSize
             ) {
-                viewModel.onTextSizeChange(it)
+                vm.onTextSizeChange(it)
             }
         }
     ) {

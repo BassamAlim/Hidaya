@@ -20,16 +20,16 @@ import bassamalim.hidaya.viewmodel.LocationPickerVM
 
 @Composable
 fun LocationPickerUI(
-    navController: NavController = rememberNavController(),
-    viewModel: LocationPickerVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: LocationPickerVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
 
     MyScaffold(
         topBar = {
             MyTopBar(
                 title = stringResource(state.titleResId),
-                onBack = { viewModel.onBack(navController) }
+                onBack = { vm.onBack(nc) }
             )
         }
     ) {
@@ -40,7 +40,7 @@ fun LocationPickerUI(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SearchComponent(
-                value = viewModel.searchText,
+                value = vm.searchText,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 10.dp)
@@ -51,10 +51,10 @@ fun LocationPickerUI(
                     items(state.items) { item ->
                         MyButton(
                             text =
-                                if (viewModel.language == Language.ENGLISH) item.nameEn
+                                if (vm.language == Language.ENGLISH) item.nameEn
                                 else item.nameAr,
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { viewModel.onSelect(item.id, navController) }
+                            onClick = { vm.onSelect(item.id, nc) }
                         )
                     }
                 }

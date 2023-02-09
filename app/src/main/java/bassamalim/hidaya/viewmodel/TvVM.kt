@@ -1,43 +1,34 @@
 package bassamalim.hidaya.viewmodel
 
-import android.app.Activity
-import android.app.Application
-import android.view.WindowManager
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.repository.TvRepo
+import bassamalim.hidaya.state.TvState
 import com.google.android.youtube.player.YouTubePlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class TvVM @Inject constructor(
-    app: Application,
-    repository: TvRepo
-): AndroidViewModel(app) {
+    repo: TvRepo
+): ViewModel() {
 
-    var apiKey = ""
     private var ytPlayer: YouTubePlayer? = null
-    private var quranVidId = ""
-    private var sunnahVidId = ""
+    val apiKey = repo.getApiKey()
+    private val quranVidId = repo.getMakkahVidId()
+    private val sunnahVidId = repo.getMadinaVidId()
 
-    init {
-        (app.applicationContext as Activity).window.addFlags(
-            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-        )
-
-        repository.fetchInfo { apiKey, quranVidId, sunnahVidId ->
-            onInfoFetchSuccess(apiKey, quranVidId, sunnahVidId)
-        }
-    }
-
-    private fun onInfoFetchSuccess(apiKey: String, quranVidId: String, sunnahVidId: String) {
-        this.apiKey = apiKey
-        this.quranVidId = quranVidId
-        this.sunnahVidId = sunnahVidId
-    }
+    private val _uiState = MutableStateFlow(TvState())
+    val uiState = _uiState.asStateFlow()
 
     fun onInitializationSuccess(player: YouTubePlayer) {
         ytPlayer = player
+
+        _uiState.update { it.copy(
+            isLoading = false
+        )}
     }
 
     fun onQuranChannelClk() {

@@ -42,15 +42,15 @@ import coil.size.Size
 
 @Composable
 fun QiblaUI(
-    navController: NavController = rememberNavController(),
-    viewModel: QiblaVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: QiblaVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
     val context = LocalContext.current
 
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
-        onDispose { viewModel.onStop() }
+    DisposableEffect(key1 = vm) {
+        vm.onStart()
+        onDispose { vm.onStop() }
     }
 
     MyScaffold(stringResource(R.string.qibla)) {
@@ -121,7 +121,7 @@ fun QiblaUI(
                                 description = stringResource(R.string.accuracy_indicator_description),
                                 tint = Color(0xFFE2574C)
                             ) {
-                                viewModel.onAccuracyIndicatorClick()
+                                vm.onAccuracyIndicatorClick()
                             }
                         }
                         else -> {
@@ -155,7 +155,7 @@ fun QiblaUI(
                 )
             }
 
-            CalibrationDialog(context, viewModel, state)
+            CalibrationDialog(context, vm, state)
         }
     }
 }

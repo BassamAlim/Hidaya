@@ -27,10 +27,10 @@ import bassamalim.hidaya.viewmodel.MainVM
 
 @Composable
 fun MainUI(
-    navController: NavHostController = rememberNavController(),
-    viewModel: MainVM = hiltViewModel()
+    nc: NavHostController = rememberNavController(),
+    vm: MainVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
     val context = LocalContext.current
     val bottomNavController = rememberNavController()
 
@@ -60,7 +60,7 @@ fun MainUI(
                         Column(
                             Modifier
                                 .fillMaxHeight()
-                                .clickable { viewModel.showDateEditor() },
+                                .clickable { vm.showDateEditor() },
                             verticalArrangement = Arrangement.SpaceEvenly
                         ) {
                             Column(
@@ -89,16 +89,16 @@ fun MainUI(
         },
         bottomBar = { MyBottomNavigation(bottomNavController) }
     ) {
-        NavigationGraph(navController, bottomNavController, it)
+        NavigationGraph(nc, bottomNavController, it)
 
         DateEditorDialog(
             shown = state.dateEditorShown,
             offsetText = state.dateEditorOffsetText,
             dateText = state.dateEditorDateText,
-            onNextDay = { viewModel.onDateEditorNextDay() },
-            onPreviousDay = { viewModel.onDateEditorPrevDay() },
-            onCancel = { viewModel.onDateEditorCancel() },
-            onSubmit = { viewModel.onDateEditorSubmit() }
+            onNextDay = { vm.onDateEditorNextDay() },
+            onPreviousDay = { vm.onDateEditorPrevDay() },
+            onCancel = { vm.onDateEditorCancel() },
+            onSubmit = { vm.onDateEditorSubmit() }
         )
 
         if (state.shouldShowLocationPermissionToast) {
@@ -151,8 +151,8 @@ fun NavigationGraph(
         }
         composable(BottomNavItem.More.route) {
             MoreUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
     }

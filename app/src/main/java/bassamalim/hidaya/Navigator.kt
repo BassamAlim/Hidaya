@@ -24,7 +24,6 @@ fun Navigator(startRoute: String?) {
             Screen.About.route
         ) {
             AboutUI(
-                navController = navController,
                 vm = hiltViewModel()
             )
         }
@@ -39,8 +38,8 @@ fun Navigator(startRoute: String?) {
             )
         ) {
             AthkarListUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -53,8 +52,8 @@ fun Navigator(startRoute: String?) {
             )
         ) {
             AthkarViewerUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -68,8 +67,8 @@ fun Navigator(startRoute: String?) {
             )
         ) {
             BookChaptersUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -82,7 +81,7 @@ fun Navigator(startRoute: String?) {
 
         composable(Screen.Books.route) {
             BooksUI(
-                navController = navController,
+                nc = navController,
                 vm = hiltViewModel()
             )
         }
@@ -98,22 +97,21 @@ fun Navigator(startRoute: String?) {
             )
         ) {
             BookViewerUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
         composable(Screen.DateConverter.route) {
             DateConverterUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                vm = hiltViewModel()
             )
         }
 
         composable(Screen.LocationPicker.route) {
             LocationPickerUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -126,29 +124,29 @@ fun Navigator(startRoute: String?) {
             )
         ) {
             LocatorUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
         composable(Screen.Main.route) {
             MainUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
         composable(Screen.Qibla.route) {
             QiblaUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
         composable(Screen.QuizLobby.route) {
             QuizLobbyUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -163,22 +161,22 @@ fun Navigator(startRoute: String?) {
             )
         ) {
             QuizResultUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
         composable(Screen.Quiz.route) {
             QuizUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
         composable(Screen.QuranSearcher.route) {
             QuranSearcherUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -201,8 +199,8 @@ fun Navigator(startRoute: String?) {
         composable(Screen.RadioClient.route) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 RadioClientUI(
-                    navController = navController,
-                    viewModel = hiltViewModel()
+                    nc = navController,
+                    vm = hiltViewModel()
                 )
             }
         }
@@ -216,8 +214,8 @@ fun Navigator(startRoute: String?) {
 
         composable(Screen.Splash.route) {
             SplashUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -232,8 +230,8 @@ fun Navigator(startRoute: String?) {
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 TelawatClientUI(
-                    navController = navController,
-                    viewModel = hiltViewModel()
+                    nc = navController,
+                    vm = hiltViewModel()
                 )
             }
         }
@@ -262,15 +260,14 @@ fun Navigator(startRoute: String?) {
 
         composable(Screen.Tv.route) {
             TvUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                vm = hiltViewModel()
             )
         }
 
         composable(Screen.Welcome.route) {
             WelcomeUI(
-                navController = navController,
-                viewModel = hiltViewModel()
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
     }

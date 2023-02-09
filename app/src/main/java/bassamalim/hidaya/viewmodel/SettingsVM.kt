@@ -2,6 +2,7 @@ package bassamalim.hidaya.viewmodel
 
 import android.app.Application
 import android.app.TimePickerDialog
+import android.content.Context
 import android.os.Message
 import android.widget.TimePicker
 import androidx.lifecycle.AndroidViewModel
@@ -23,10 +24,10 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsVM @Inject constructor(
     private val app: Application,
-    private val repository: SettingsRepo
+    private val repo: SettingsRepo
 ): AndroidViewModel(app) {
 
-    val pref = repository.pref
+    val pref = repo.pref
 
     private val _uiState = MutableStateFlow(SettingsState())
     val uiState = _uiState.asStateFlow()
@@ -38,55 +39,55 @@ class SettingsVM @Inject constructor(
     private fun setSummaries() {
         _uiState.update { it.copy(
             morningSummary = translateNums(
-                repository.numeralsLanguage,
+                repo.numeralsLanguage,
                 formatTime(
-                    repository.timeFormat,
-                    repository.getTime(PID.MORNING)
+                    repo.timeFormat,
+                    repo.getTime(PID.MORNING)
                 ),
                 timeFormat = true
             ),
             eveningSummary = translateNums(
-                repository.numeralsLanguage,
+                repo.numeralsLanguage,
                 formatTime(
-                    repository.timeFormat,
-                    repository.getTime(PID.EVENING)
+                    repo.timeFormat,
+                    repo.getTime(PID.EVENING)
                 ),
                 timeFormat = true
             ),
             werdSummary = translateNums(
-                repository.numeralsLanguage,
+                repo.numeralsLanguage,
                 formatTime(
-                    repository.timeFormat,
-                    repository.getTime(PID.DAILY_WERD)
+                    repo.timeFormat,
+                    repo.getTime(PID.DAILY_WERD)
                 ),
                 timeFormat = true
             ),
             kahfSummary = translateNums(
-                repository.numeralsLanguage,
+                repo.numeralsLanguage,
                 formatTime(
-                    repository.timeFormat,
-                    repository.getTime(PID.FRIDAY_KAHF)
+                    repo.timeFormat,
+                    repo.getTime(PID.FRIDAY_KAHF)
                 ),
                 timeFormat = true
             ),
         )}
     }
 
-    fun onSwitch(checked: Boolean, pid: PID) {
-        if (checked) showTimePicker(pid)
+    fun onSwitch(ctx: Context, checked: Boolean, pid: PID) {
+        if (checked) showTimePicker(ctx, pid)
         else cancelAlarm(pid)
     }
 
-    private fun showTimePicker(pid: PID) {
+    private fun showTimePicker(ctx: Context, pid: PID) {
         val currentTime = Calendar.getInstance()
         val cHour = currentTime[Calendar.HOUR_OF_DAY]
         val cMinute = currentTime[Calendar.MINUTE]
 
         val timePicker = TimePickerDialog(
-            app.applicationContext, { _: TimePicker?, hourOfDay: Int, minute: Int ->
+            ctx, { _: TimePicker?, hourOfDay: Int, minute: Int ->
                 updateSummary(pid, hourOfDay, minute)
 
-                repository.setTime(pid, hourOfDay, minute)
+                repo.setTime(pid, hourOfDay, minute)
 
                 Alarms(app.applicationContext, pid)
             }, cHour, cMinute, false
@@ -94,15 +95,15 @@ class SettingsVM @Inject constructor(
 
         timePicker.setOnCancelListener { setSummaries() }
         timePicker.setOnDismissListener { setSummaries() }
-        timePicker.setTitle(repository.getTimePickerTitleStr())
+        timePicker.setTitle(repo.getTimePickerTitleStr())
         timePicker.setButton(
             TimePickerDialog.BUTTON_POSITIVE,
-            repository.getSelectStr(),
+            repo.getSelectStr(),
             null as Message?
         )
         timePicker.setButton(
             TimePickerDialog.BUTTON_NEGATIVE,
-            repository.getCancelStr(),
+            repo.getCancelStr(),
             null as Message?
         )
         timePicker.setCancelable(true)
@@ -113,9 +114,9 @@ class SettingsVM @Inject constructor(
         when (pid) {
             PID.MORNING -> _uiState.update { it.copy(
                 morningSummary = translateNums(
-                    repository.numeralsLanguage,
+                    repo.numeralsLanguage,
                     formatTime(
-                        repository.timeFormat,
+                        repo.timeFormat,
                         "$hour:$minute"
                     ),
                     true
@@ -123,9 +124,9 @@ class SettingsVM @Inject constructor(
             )}
             PID.EVENING -> _uiState.update { it.copy(
                 eveningSummary = translateNums(
-                    repository.numeralsLanguage,
+                    repo.numeralsLanguage,
                     formatTime(
-                        repository.timeFormat,
+                        repo.timeFormat,
                         "$hour:$minute"
                     ),
                     true
@@ -133,9 +134,9 @@ class SettingsVM @Inject constructor(
             )}
             PID.DAILY_WERD -> _uiState.update { it.copy(
                 werdSummary = translateNums(
-                    repository.numeralsLanguage,
+                    repo.numeralsLanguage,
                     formatTime(
-                        repository.timeFormat,
+                        repo.timeFormat,
                         "$hour:$minute"
                     ),
                     true
@@ -143,9 +144,9 @@ class SettingsVM @Inject constructor(
             )}
             PID.FRIDAY_KAHF -> _uiState.update { it.copy(
                 kahfSummary = translateNums(
-                    repository.numeralsLanguage,
+                    repo.numeralsLanguage,
                     formatTime(
-                        repository.timeFormat,
+                        repo.timeFormat,
                         "$hour:$minute"
                     ),
                     true

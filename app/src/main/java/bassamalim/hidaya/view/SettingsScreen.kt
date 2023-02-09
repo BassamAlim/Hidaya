@@ -112,46 +112,48 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
 
 @Composable
 private fun ExtraNotificationsSettings(
-    viewModel: SettingsVM,
-    state: SettingsState
+    vm: SettingsVM,
+    st: SettingsState
 ) {
+    val ctx = LocalContext.current
+
     Column(
         Modifier.padding(bottom = 10.dp)
     ) {
         SwitchPref(
-            pref = viewModel.pref,
+            pref = vm.pref,
             prefObj = Prefs.NotifyExtraNotification(PID.MORNING),
             titleResId = R.string.morning_athkar_title,
-            summary = state.morningSummary
+            summary = st.morningSummary
         ) { checked ->
-            viewModel.onSwitch(checked, PID.MORNING)
+            vm.onSwitch(ctx, checked, PID.MORNING)
         }
 
         SwitchPref(
-            pref = viewModel.pref,
+            pref = vm.pref,
             prefObj = Prefs.NotifyExtraNotification(PID.EVENING),
             titleResId = R.string.evening_athkar_title,
-            summary = state.eveningSummary
+            summary = st.eveningSummary
         ) { checked ->
-            viewModel.onSwitch(checked, PID.EVENING)
+            vm.onSwitch(ctx, checked, PID.EVENING)
         }
 
         SwitchPref(
-            pref = viewModel.pref,
+            pref = vm.pref,
             prefObj = Prefs.NotifyExtraNotification(PID.DAILY_WERD),
             titleResId = R.string.daily_werd_title,
-            summary = state.werdSummary
+            summary = st.werdSummary
         ) { checked ->
-            viewModel.onSwitch(checked, PID.DAILY_WERD)
+            vm.onSwitch(ctx, checked, PID.DAILY_WERD)
         }
 
         SwitchPref(
-            pref = viewModel.pref,
+            pref = vm.pref,
             prefObj = Prefs.NotifyExtraNotification(PID.FRIDAY_KAHF),
             titleResId = R.string.friday_kahf_title,
-            summary = state.kahfSummary
+            summary = st.kahfSummary
         ) { checked ->
-            viewModel.onSwitch(checked, PID.FRIDAY_KAHF)
+            vm.onSwitch(ctx, checked, PID.FRIDAY_KAHF)
         }
     }
 }

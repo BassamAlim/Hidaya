@@ -13,8 +13,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.other.HijriDatePickerDialog
 import bassamalim.hidaya.ui.components.MyButton
@@ -25,10 +23,10 @@ import bassamalim.hidaya.viewmodel.DateConverterVM
 
 @Composable
 fun DateConverterUI(
-    navController: NavController = rememberNavController(),
-    viewModel: DateConverterVM = hiltViewModel()
+    vm: DateConverterVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
+    val ctx = LocalContext.current
 
     MyScaffold(stringResource(R.string.date_converter)) {
         Column(
@@ -47,7 +45,7 @@ fun DateConverterUI(
                         .padding(vertical = 15.dp, horizontal = 30.dp),
                     innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp)
                 ) {
-                    viewModel.pickHijri()
+                    vm.onPickHijriClk()
                 }
 
                 MyButton(
@@ -58,23 +56,22 @@ fun DateConverterUI(
                         .padding(vertical = 15.dp, horizontal = 30.dp),
                     innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp)
                 ) {
-                    viewModel.pickGregorian()
+                    vm.onPickGregorianClk(ctx)
                 }
             }
 
-            ResultSpace(stringResource(R.string.hijri_date), state.hijriValues)
+            ResultSpace(stringResource(R.string.hijri_date), st.hijriValues)
 
-            ResultSpace(stringResource(R.string.gregorian_date), state.gregorianValues)
+            ResultSpace(stringResource(R.string.gregorian_date), st.gregorianValues)
         }
 
         HijriDatePickerDialog(
-            LocalContext.current,
-            state.hijriDatePickerShown,
-            viewModel.hijriCalendar,
-            onCancelClick = { viewModel.onHijriPickCancel() }
-        ) {
-            viewModel.onHijriPick(it)
-        }.MyHijriDatePickerDialog()
+            ctx,
+            st.hijriDatePickerShown,
+            vm.hijriCalendar,
+            onSelectClick = { vm.onHijriSelect(it) },
+            onCancelClick = { vm.onHijriPickCancel() },
+        ).MyHijriDatePickerDialog()
     }
 }
 

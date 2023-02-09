@@ -28,19 +28,19 @@ import bassamalim.hidaya.viewmodel.LocatorVM
 
 @Composable
 fun LocatorUI(
-    navController: NavController = rememberNavController(),
-    viewModel: LocatorVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: LocatorVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
     val context = LocalContext.current
     val requestLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        viewModel.onLocationRequestResult(permissions)
+        vm.onLocationRequestResult(permissions)
     }
 
     LaunchedEffect(null) {
-        viewModel.provide(navController, requestLauncher)
+        vm.provide(nc, requestLauncher)
     }
 
     Column(
@@ -69,7 +69,7 @@ fun LocatorUI(
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 30.dp)
             ) {
-                viewModel.onLocateClick()
+                vm.onLocateClick()
             }
 
             MyButton(
@@ -79,7 +79,7 @@ fun LocatorUI(
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 30.dp)
             ) {
-                viewModel.onChooseLocationClick()
+                vm.onChooseLocationClick()
             }
 
             if (state.showSkipLocationBtn) {
@@ -90,7 +90,7 @@ fun LocatorUI(
                         .fillMaxWidth()
                         .padding(vertical = 10.dp, horizontal = 30.dp)
                 ) {
-                    viewModel.onSkipLocationClick()
+                    vm.onSkipLocationClick()
                 }
             }
         }

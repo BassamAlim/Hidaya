@@ -21,8 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.components.MyButton
 import bassamalim.hidaya.ui.components.MyHorizontalDivider
@@ -32,11 +30,10 @@ import bassamalim.hidaya.viewmodel.AboutVM
 
 @Composable
 fun AboutUI(
-    navController: NavController = rememberNavController(),
     vm: AboutVM = hiltViewModel()
 ) {
-    val state by vm.uiState.collectAsState()
-    val context = LocalContext.current
+    val st by vm.uiState.collectAsState()
+    val ctx = LocalContext.current
 
     MyScaffold(stringResource(R.string.about)) {
         Column(
@@ -77,7 +74,7 @@ fun AboutUI(
             }
 
             AnimatedVisibility(
-                visible = state.isDevModeOn,
+                visible = st.isDevModeOn,
                 enter = expandVertically()
             ) {
                 Column(
@@ -99,7 +96,7 @@ fun AboutUI(
                     }*/
 
                     MyText(
-                        state.lastDailyUpdate,
+                        st.lastDailyUpdate,
                         Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(10.dp)
@@ -109,13 +106,14 @@ fun AboutUI(
         }
     }
 
-    LaunchedEffect(key1 = state.shouldShowRebuiltToast) {
-        Toast.makeText(
-            context, context.getString(R.string.database_rebuilt),
-            Toast.LENGTH_SHORT
-        ).show()
+    if (st.shouldShowRebuilt != 0) {
+        LaunchedEffect(key1 = st.shouldShowRebuilt) {
+            Toast.makeText(
+                ctx, ctx.getString(R.string.database_rebuilt),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
-
 }
 
 @Composable

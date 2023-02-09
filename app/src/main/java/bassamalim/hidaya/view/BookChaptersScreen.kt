@@ -15,10 +15,10 @@ import bassamalim.hidaya.viewmodel.BookChaptersVM
 
 @Composable
 fun BookChaptersUI(
-    navController: NavController = rememberNavController(),
-    viewModel: BookChaptersVM = hiltViewModel()
+    nc: NavController = rememberNavController(),
+    vm: BookChaptersVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
 
     MyScaffold(state.title) {
         TabLayout(
@@ -28,17 +28,17 @@ fun BookChaptersUI(
             ),
             searchComponent = {
                 SearchComponent(
-                    value = viewModel.searchText,
+                    value = vm.searchText,
                     hint = stringResource(R.string.search),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    viewModel.onSearchTextChange(it)
+                    vm.onSearchTextChange(it)
                 }
             }
         ) { page, currentPage ->
-            viewModel.onListTypeChange(page, currentPage)
+            vm.onListTypeChange(page, currentPage)
 
-            Tab(viewModel, state, navController)
+            Tab(vm, state, nc)
         }
     }
 }

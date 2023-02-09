@@ -1,10 +1,10 @@
 package bassamalim.hidaya.viewmodel
 
-import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.Screen
 import bassamalim.hidaya.other.Global
@@ -16,9 +16,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class MoreVM @Inject constructor(
-    private val app: Application
-): AndroidViewModel(app) {
+class MoreVM @Inject constructor(): ViewModel() {
 
     private val _uiState = MutableStateFlow(MoreState())
     val uiState = _uiState.asStateFlow()
@@ -65,23 +63,27 @@ class MoreVM @Inject constructor(
         nc.navigate(Screen.Settings.route)
     }
 
-    fun contactMe() {
-        val intent = Intent(
+    fun contactMe(ctx: Context) {
+        val contactIntent = Intent(
             Intent.ACTION_SENDTO,
             Uri.fromParts("mailto", Global.CONTACT_EMAIL, null)
         )
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Hidaya")
-        app.applicationContext.startActivity(
-            Intent.createChooser(intent, "Choose an Email client :")
+        contactIntent.putExtra(Intent.EXTRA_SUBJECT, "Hidaya")
+        contactIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        ctx.startActivity(
+            Intent.createChooser(
+                contactIntent,
+                "Choose an Email client :"
+            )
         )
     }
 
-    fun shareApp() {
+    fun shareApp(ctx: Context) {
         val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "App Share")
         sharingIntent.putExtra(Intent.EXTRA_TEXT, Global.PLAY_STORE_URL)
-        app.applicationContext.startActivity(
+        ctx.startActivity(
             Intent.createChooser(sharingIntent, "Share via")
         )
     }
