@@ -14,8 +14,8 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.*
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
@@ -40,12 +40,13 @@ import javax.inject.Inject
 class TelawatClientVM @Inject constructor(
     private val app: Application,
     savedStateHandle: SavedStateHandle,
-    private val repository: TelawatClientRepo
+    private val repo: TelawatClientRepo
 ): AndroidViewModel(app) {
 
     private val action = savedStateHandle.get<String>("action") ?: ""
     private val mediaId = savedStateHandle.get<String>("media_id") ?: ""
 
+    private lateinit var activity: Activity
     var reciterId = mediaId.substring(0, 3).toInt()
     var versionId = mediaId.substring(3, 5).toInt()
     var suraIdx = mediaId.substring(5).toInt()
@@ -53,13 +54,13 @@ class TelawatClientVM @Inject constructor(
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
     private lateinit var version: Reciter.RecitationVersion
-    private val surahNames = repository.getSuraNames()
+    private val surahNames = repo.getSuraNames()
     private var prefix = ""
-    private var duration = 0L
-    private var progress = 0L
+    var duration = 0L
+    var progress = 0L
 
     private val _uiState = MutableStateFlow(TelawatClientState(
-        reciterName = repository.getReciterName(reciterId)
+        reciterName = repo.getReciterName(reciterId)
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -67,19 +68,20 @@ class TelawatClientVM @Inject constructor(
         override fun onConnected() {
             if (mediaBrowser == null) return
 
-            val ctx = app.applicationContext
             // Get the token for the MediaSession
             val token = mediaBrowser!!.sessionToken
 
             // Create a MediaControllerCompat
-            val mediaController = MediaControllerCompat(ctx, token)
+            val mediaController = MediaControllerCompat(app, token)
 
             // Save the controller
-            MediaControllerCompat.setMediaController(ctx as Activity, mediaController)
+            MediaControllerCompat.setMediaController(
+                activity,
+                mediaController
+            )
 
             // Finish building the UI
             buildTransportControls()
-
 
             if (action != "back" &&
                 (controller.playbackState.state == STATE_NONE ||
@@ -105,38 +107,36 @@ class TelawatClientVM @Inject constructor(
 
     init {
         updateTrackState()
+    }
 
-        val ctx = app.applicationContext
+    fun onStart(activity: Activity) {
+        this.activity = activity
+
         mediaBrowser = MediaBrowserCompat(
-            ctx,
-            ComponentName(ctx, TelawatService::class.java),
+            app,
+            ComponentName(app, TelawatService::class.java),
             connectionCallbacks,
             null
         )
-    }
-
-    fun onStart() {
-        val ctx = app.applicationContext
-        val activity = ctx as Activity
 
         if (MediaControllerCompat.getMediaController(activity) == null)
             mediaBrowser?.connect()
 
         activity.volumeControlStream = AudioManager.STREAM_MUSIC
 
-        ctx.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        app.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
     fun onStop() {
         Log.i(Global.TAG, "in onStop of TelawatClient")
 
         try {
-            app.applicationContext.unregisterReceiver(onComplete)
+            app.unregisterReceiver(onComplete)
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         }
 
-        MediaControllerCompat.getMediaController(app.applicationContext as Activity)
+        MediaControllerCompat.getMediaController(activity)
             ?.unregisterCallback(controllerCallback)
 
         mediaBrowser?.disconnect()
@@ -150,13 +150,13 @@ class TelawatClientVM @Inject constructor(
 
     private fun checkDownload(): DownloadState {
         return if (
-            File("${app.applicationContext.getExternalFilesDir(null)}$prefix").exists())
+            File("${app.getExternalFilesDir(null)}$prefix").exists())
             DownloadState.Downloaded
         else DownloadState.NotDownloaded
     }
 
     private fun updateTrackState() {
-        version = repository.getVersion(reciterId, versionId).let {
+        version = repo.getVersion(reciterId, versionId).let {
             Reciter.RecitationVersion(
                 versionId, it.getUrl(), it.getRewaya(), it.getCount(), it.getSuras()
             )
@@ -165,9 +165,9 @@ class TelawatClientVM @Inject constructor(
         _uiState.update { it.copy(
             suraName = surahNames[suraIdx],
             versionName = version.rewaya,
-            reciterName = repository.getReciterName(reciterId),
-            repeat = repository.getRepeatMode(),
-            shuffle = repository.getShuffleMode(),
+            reciterName = repo.getReciterName(reciterId),
+            repeat = repo.getRepeatMode(),
+            shuffle = repo.getShuffleMode(),
             downloadState = DownloadState.Downloading
         )}
     }
@@ -199,7 +199,7 @@ class TelawatClientVM @Inject constructor(
     private fun buildTransportControls() {
         enableControls()
 
-        controller = MediaControllerCompat.getMediaController(app.applicationContext as Activity)
+        controller = MediaControllerCompat.getMediaController(activity)
         tc = controller.transportControls
 
         // Display the initial state
@@ -270,19 +270,17 @@ class TelawatClientVM @Inject constructor(
         val link = String.format(Locale.US, "%s/%03d.mp3", server, suraIdx + 1)
         val uri = Uri.parse(link)
 
-        val ctx = app.applicationContext
         val request = DownloadManager.Request(uri)
         request.setTitle(_uiState.value.suraName)
-        FileUtils.createDir(ctx, prefix)
-        request.setDestinationInExternalFilesDir(ctx, prefix, "${suraIdx}.mp3")
+        FileUtils.createDir(app, prefix)
+        request.setDestinationInExternalFilesDir(app, prefix, "${suraIdx}.mp3")
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
 
-        (ctx.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
+        (app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
     }
 
     fun onBackPressed(navController: NavController) {
-        val ctx = app.applicationContext
-        if ((ctx as Activity).isTaskRoot) {
+        if ((activity).isTaskRoot) {
             navController.navigate(
                 Screen.TelawatSuar(
                     reciterId.toString(),
@@ -292,7 +290,7 @@ class TelawatClientVM @Inject constructor(
                 popUpTo(Screen.Main.route) { inclusive = true }
             }
         }
-        else (ctx as ComponentActivity).onBackPressedDispatcher.onBackPressed()
+        else (activity as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
     }
 
     fun onPlayPauseClk() {
@@ -350,7 +348,7 @@ class TelawatClientVM @Inject constructor(
 
         tc.setRepeatMode(mode)
 
-        repository.setRepeatMode(mode)
+        repo.setRepeatMode(mode)
     }
 
     fun onShuffleClk() {
@@ -364,7 +362,7 @@ class TelawatClientVM @Inject constructor(
 
         tc.setShuffleMode(mode)
 
-        repository.setShuffleMode(mode)
+        repo.setShuffleMode(mode)
     }
 
     fun onDownloadClk() {

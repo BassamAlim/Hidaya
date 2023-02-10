@@ -1,5 +1,6 @@
 package bassamalim.hidaya.view
 
+import android.app.Activity
 import android.os.Build
 import android.support.v4.media.session.PlaybackStateCompat.*
 import androidx.annotation.RequiresApi
@@ -14,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,16 +36,17 @@ fun TelawatClientUI(
     nc: NavController = rememberNavController(),
     vm: TelawatClientVM = hiltViewModel()
 ) {
-    val state by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
+    val activity = LocalContext.current as Activity
 
     DisposableEffect(key1 = vm) {
-        vm.onStart()
+        vm.onStart(activity)
         onDispose { vm.onStop() }
     }
 
     MyScaffold(
         title = stringResource(R.string.recitations),
-        bottomBar = { BottomBar(vm, state) },
+        bottomBar = { BottomBar(vm, st) },
         onBack = { vm.onBackPressed(nc) }
     ) {
         Column(
@@ -68,21 +71,21 @@ fun TelawatClientUI(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     MyText(
-                        text = state.suraName,
+                        text = st.suraName,
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(vertical = 10.dp)
                     )
 
                     MyText(
-                        text = state.versionName,
+                        text = st.versionName,
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(vertical = 10.dp)
                     )
 
                     MyText(
-                        text = state.reciterName,
+                        text = st.reciterName,
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(vertical = 10.dp)
@@ -98,21 +101,21 @@ fun TelawatClientUI(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 MyText(
-                    text = state.progress,
+                    text = st.progress,
                     modifier = Modifier.padding(10.dp)
                 )
 
                 MySlider(
-                    value = state.progress.toFloat(),
-                    valueRange = 0F..state.duration.toFloat(),
+                    value = vm.progress.toFloat(),
+                    valueRange = 0F..vm.duration.toFloat(),
                     modifier = Modifier.fillMaxWidth(0.7F),
-                    enabled = state.controlsEnabled,
+                    enabled = st.controlsEnabled,
                     onValueChangeFinished = { vm.onSliderChangeFinished() },
                     onValueChange = { progress -> vm.onSliderChange(progress) }
                 )
 
                 MyText(
-                    text = state.duration,
+                    text = st.duration,
                     modifier = Modifier.padding(10.dp)
                 )
             }
@@ -127,7 +130,7 @@ fun TelawatClientUI(
                 MyImageButton(
                     imageResId = R.drawable.ic_player_previous,
                     description = stringResource(R.string.previous_day_button_description),
-                    enabled = state.controlsEnabled
+                    enabled = st.controlsEnabled
                 ) {
                     vm.onPrevClk()
                 }
@@ -135,14 +138,14 @@ fun TelawatClientUI(
                 MyImageButton(
                     imageResId = R.drawable.ic_backward,
                     description = stringResource(R.string.rewind_btn_description),
-                    enabled = state.controlsEnabled
+                    enabled = st.controlsEnabled
                 ) {
                     vm.onRewindClk()
                 }
 
                 MyPlayerBtn(
-                    state = state.btnState,
-                    enabled = state.controlsEnabled,
+                    state = st.btnState,
+                    enabled = st.controlsEnabled,
                 ) {
                     vm.onPlayPauseClk()
                 }
@@ -150,7 +153,7 @@ fun TelawatClientUI(
                 MyImageButton(
                     imageResId = R.drawable.ic_forward,
                     description = stringResource(R.string.fast_forward_btn_description),
-                    enabled = state.controlsEnabled
+                    enabled = st.controlsEnabled
                 ) {
                     vm.onFastForwardClk()
                 }
@@ -158,7 +161,7 @@ fun TelawatClientUI(
                 MyImageButton(
                     imageResId = R.drawable.ic_player_next,
                     description = stringResource(R.string.next_track_btn_description),
-                    enabled = state.controlsEnabled
+                    enabled = st.controlsEnabled
                 ) {
                     vm.onNextClk()
                 }

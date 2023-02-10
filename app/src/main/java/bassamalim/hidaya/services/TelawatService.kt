@@ -91,7 +91,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     override fun onCreate() {
         super.onCreate()
-        ActivityUtils.onActivityCreateSetLocale(applicationContext as Activity)
+        ActivityUtils.onActivityCreateSetLocale(applicationContext)
 
         db = DBUtils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)

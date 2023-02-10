@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -90,7 +90,7 @@ class TelawatVM @Inject constructor(
                 popUpTo(Screen.Main.route) { inclusive = true }
             }
         }
-        else (ctx as ComponentActivity).onBackPressedDispatcher.onBackPressed()
+        else (ctx as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
     }
 
     private fun getDownloadStates(): MutableList<MutableList<DownloadState>> {
