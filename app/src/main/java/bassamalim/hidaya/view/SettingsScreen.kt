@@ -16,11 +16,12 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
+import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.enums.PID
+import bassamalim.hidaya.enums.Theme
+import bassamalim.hidaya.enums.TimeFormat
 import bassamalim.hidaya.state.SettingsState
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.utils.ActivityUtils
@@ -29,7 +30,6 @@ import bassamalim.hidaya.viewmodel.SettingsVM
 
 @Composable
 fun SettingsUI(
-    nc: NavController = rememberNavController(),
     vm: SettingsVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsState()
@@ -169,7 +169,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
             pref = Prefs.Language,
             iconResId = R.drawable.ic_translation,
             entries = stringArrayResource(R.array.language_entries),
-            values = stringArrayResource(R.array.languages_values)
+            values = Language.values().map { it.name }.toTypedArray()
         ) {
             ActivityUtils.restartActivity(activity)
         }
@@ -181,7 +181,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
             pref = Prefs.NumeralsLanguage,
             iconResId = R.drawable.ic_translation,
             entries = stringArrayResource(R.array.numerals_language_entries),
-            values = stringArrayResource(R.array.languages_values)
+            values = Language.values().map { it.name }.toTypedArray()
         ) {
             ActivityUtils.restartActivity(activity)
         }
@@ -196,7 +196,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
             pref = Prefs.TimeFormat,
             iconResId = R.drawable.ic_time_format,
             entries = timeFormatEntries,
-            values = stringArrayResource(R.array.time_format_values)
+            values = TimeFormat.values().map { it.name }.toTypedArray()
         ) {
             ActivityUtils.restartActivity(activity)
         }
@@ -208,7 +208,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
             pref = Prefs.Theme,
             iconResId = R.drawable.ic_theme,
             entries = stringArrayResource(R.array.themes_entries),
-            values = stringArrayResource(R.array.theme_values)
+            values = Theme.values().map { it.name }.toTypedArray()
         ) {
             ActivityUtils.restartActivity(activity)
         }

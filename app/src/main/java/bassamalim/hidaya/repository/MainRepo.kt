@@ -1,7 +1,7 @@
 package bassamalim.hidaya.repository
 
-import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.utils.LocUtils
@@ -9,7 +9,7 @@ import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 
 class MainRepo @Inject constructor(
-    private val context: Context,
+    private val resources: Resources,
     val pref: SharedPreferences
 ) {
 
@@ -24,19 +24,19 @@ class MainRepo @Inject constructor(
     }
 
     fun getWeekDays(): Array<String> {
-        return context.resources.getStringArray(R.array.week_days)
+        return resources.getStringArray(R.array.week_days)
     }
 
     fun getHijriMonths(): Array<String> {
-        return context.resources.getStringArray(R.array.hijri_months)
+        return resources.getStringArray(R.array.hijri_months)
     }
 
     fun getGregorianMonths(): Array<String> {
-        return context.resources.getStringArray(R.array.gregorian_months)
+        return resources.getStringArray(R.array.gregorian_months)
     }
 
     fun getLocation() = LocUtils.retrieveLocation(pref)
 
-    fun getUnchangedStr() = context.getString(R.string.unchanged)
+    fun getUnchangedStr() = resources.getString(R.string.unchanged)
 
 }

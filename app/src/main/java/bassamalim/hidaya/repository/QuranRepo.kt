@@ -1,7 +1,7 @@
 package bassamalim.hidaya.repository
 
-import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
@@ -11,7 +11,7 @@ import com.google.gson.Gson
 import javax.inject.Inject
 
 class QuranRepo @Inject constructor(
-    private val context: Context,
+    private val resources: Resources,
     private val pref: SharedPreferences,
     private val db: AppDatabase,
     private val gson: Gson
@@ -45,10 +45,9 @@ class QuranRepo @Inject constructor(
             .apply()
     }
 
-    fun getSuraStr() = context.getString(R.string.sura)
-    fun getPageStr() = context.getString(R.string.page)
-    fun getNoBookmarkedPageStr() = context.getString(R.string.no_bookmarked_page)
-    fun getBookmarkedPageStr() = context.getString(R.string.bookmarked_page)
-
+    fun getSuraStr() = resources.getString(R.string.sura)
+    fun getPageStr() = resources.getString(R.string.page)
+    fun getNoBookmarkedPageStr() = resources.getString(R.string.no_bookmarked_page)
+    fun getBookmarkedPageStr() = resources.getString(R.string.bookmarked_page)
 
 }

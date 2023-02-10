@@ -8,8 +8,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
-import androidx.activity.ComponentActivity
-import androidx.compose.runtime.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
@@ -74,12 +76,13 @@ class TelawatSuarVM @Inject constructor(
     }
 
     fun onBackPressed(nc: NavController) {
-        if ((nc.context as Activity).isTaskRoot) {
+        val ctx = nc.context
+        if ((ctx as Activity).isTaskRoot) {
             nc.navigate(Screen.Telawat.route) {
                 popUpTo(Screen.Telawat.route) { inclusive = true }
             }
         }
-        else (app.applicationContext as ComponentActivity).onBackPressedDispatcher.onBackPressed()
+        else (ctx as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
     }
 
     private fun updateDownloads() {

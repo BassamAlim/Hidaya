@@ -1,7 +1,7 @@
 package bassamalim.hidaya.repository
 
-import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
@@ -10,7 +10,7 @@ import com.google.gson.Gson
 import javax.inject.Inject
 
 class TelawatRepo @Inject constructor(
-    private val context: Context,
+    private val resources: Resources,
     private val pref: SharedPreferences,
     private val db: AppDatabase,
     private val gson: Gson
@@ -24,10 +24,6 @@ class TelawatRepo @Inject constructor(
     fun getReciters() = db.telawatRecitersDao().getAll()
 
     fun getReciterTelawat(reciterId: Int) = db.telawatDao().getReciterTelawat(reciterId)
-
-    fun getRewayat(): Array<String> {
-        return context.resources.getStringArray(R.array.rewayat)
-    }
 
     fun getAllVersions() = db.telawatDao().all
 
@@ -61,14 +57,12 @@ class TelawatRepo @Inject constructor(
             .apply()
     }
 
-    fun getLastPlayStr(): String = context.getString(R.string.last_play)
+    fun getRewayat(): Array<String> = resources.getStringArray(R.array.rewayat)
 
-    fun getSuraStr(): String = context.getString(R.string.sura)
-
-    fun getForReciterStr(): String = context.getString(R.string.for_reciter)
-
-    fun getInRewayaOfStr(): String = context.getString(R.string.in_rewaya_of)
-
-    fun getNoLastPlayStr(): String = context.getString(R.string.no_last_play)
+    fun getLastPlayStr() = resources.getString(R.string.last_play)
+    fun getSuraStr() = resources.getString(R.string.sura)
+    fun getForReciterStr() = resources.getString(R.string.for_reciter)
+    fun getInRewayaOfStr() = resources.getString(R.string.in_rewaya_of)
+    fun getNoLastPlayStr() = resources.getString(R.string.no_last_play)
 
 }

@@ -128,7 +128,7 @@ fun NavigationGraph(
         composable(BottomNavItem.Home.route) {
             HomeUI(
                 navController = navController,
-                viewModel = hiltViewModel()
+                vm = hiltViewModel()
             )
         }
         composable(BottomNavItem.Prayers.route) {

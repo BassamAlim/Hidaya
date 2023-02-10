@@ -3,6 +3,7 @@ package bassamalim.hidaya.di
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import bassamalim.hidaya.database.AppDatabase
@@ -20,8 +21,16 @@ import javax.inject.Singleton
 object AppModule {
 
     @Provides @Singleton
-    fun providesApplicationContext(application: Application): Context =
-        application.applicationContext
+    fun provideApplicationContext(application: Application) =
+        application.applicationContext!!
+
+    @Provides @Singleton
+    fun provideResources(application: Application): Resources =
+        application.resources
+
+    @Provides @Singleton
+    fun providePreferences(application: Application) =
+        PreferenceManager.getDefaultSharedPreferences(application.applicationContext)!!
 
     @Provides @Singleton  // Sets how many instances of this dependency can be created
     fun provideDatabase(application: Application) =
@@ -32,19 +41,11 @@ object AppModule {
             .build()
 
     @Provides @Singleton
-    fun providePreferences(application: Application) =
-        PreferenceManager.getDefaultSharedPreferences(application.applicationContext)!!
-
-    // try it and see if you can change language
-//    @Provides @Singleton
-//    fun provideResources(application: Application) =
-//        application.applicationContext.resources
-
-    @Provides @Singleton
     fun provideRemoteConfig() = FirebaseRemoteConfig.getInstance()
 
     @Provides @Singleton
     fun provideGson() = Gson()
+
 
     @Provides @Singleton
     fun provideAboutRepository(
@@ -98,16 +99,16 @@ object AppModule {
 
     @Provides @Singleton
     fun provideDateConverterRepository(
-        context: Context,
+        resources: Resources,
         preferences: SharedPreferences
-    ) = DateConverterRepo(context, preferences)
+    ) = DateConverterRepo(resources, preferences)
 
     @Provides @Singleton
     fun provideHomeRepository(
-        context: Context,
+        resources: Resources,
         preferences: SharedPreferences,
         database: AppDatabase
-    ) = HomeRepo(context, preferences, database)
+    ) = HomeRepo(resources, preferences, database)
 
     @Provides @Singleton
     fun provideLocationPickerRepository(
@@ -123,16 +124,16 @@ object AppModule {
 
     @Provides @Singleton
     fun provideMainRepository(
-        context: Context,
+        resources: Resources,
         preferences: SharedPreferences
-    ) = MainRepo(context, preferences)
+    ) = MainRepo(resources, preferences)
 
     @Provides @Singleton
     fun providePrayersRepository(
-        context: Context,
+        resources: Resources,
         preferences: SharedPreferences,
         database: AppDatabase
-    ) = PrayersRepo(context, preferences, database)
+    ) = PrayersRepo(resources, preferences, database)
 
     @Provides @Singleton
     fun provideQiblaRepository(
@@ -141,10 +142,10 @@ object AppModule {
 
     @Provides @Singleton
     fun provideQuizRepository(
-        context: Context,
+        resources: Resources,
         preferences: SharedPreferences,
         database: AppDatabase
-    ) = QuizRepo(context, preferences, database)
+    ) = QuizRepo(resources, preferences, database)
 
     @Provides @Singleton
     fun provideQuizResultRepository(
@@ -154,18 +155,18 @@ object AppModule {
 
     @Provides @Singleton
     fun provideQuranRepository(
-        context: Context,
+        resources: Resources,
         preferences: SharedPreferences,
         database: AppDatabase,
         gson: Gson
-    ) = QuranRepo(context, preferences, database, gson)
+    ) = QuranRepo(resources, preferences, database, gson)
 
     @Provides @Singleton
     fun provideQuranSearcherRepository(
-        context: Context,
+        resources: Resources,
         preferences: SharedPreferences,
         database: AppDatabase
-    ) = QuranSearcherRepo(context, preferences, database)
+    ) = QuranSearcherRepo(resources, preferences, database)
 
     @Provides @Singleton
     fun provideQuranViewerRepository(
@@ -180,9 +181,9 @@ object AppModule {
 
     @Provides @Singleton
     fun provideSettingsRepository(
-        context: Context,
+        resources: Resources,
         preferences: SharedPreferences
-    ) = SettingsRepo(context, preferences)
+    ) = SettingsRepo(resources, preferences)
 
     @Provides @Singleton
     fun provideSplashRepository(
@@ -199,11 +200,11 @@ object AppModule {
 
     @Provides @Singleton
     fun provideTelawatRepository(
-        context: Context,
+        resources: Resources,
         preferences: SharedPreferences,
         database: AppDatabase,
         gson: Gson
-    ) = TelawatRepo(context, preferences, database, gson)
+    ) = TelawatRepo(resources, preferences, database, gson)
 
     @Provides @Singleton
     fun provideTelawatSuarRepository(

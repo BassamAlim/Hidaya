@@ -37,13 +37,13 @@ import bassamalim.hidaya.viewmodel.HomeVM
 @Composable
 fun HomeUI(
     navController: NavController = rememberNavController(),
-    viewModel: HomeVM = hiltViewModel()
+    vm: HomeVM = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
 
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
-        onDispose { viewModel.onStop() }
+    DisposableEffect(key1 = vm) {
+        vm.onStart()
+        onDispose { vm.onStop() }
     }
 
     Column(
@@ -70,7 +70,7 @@ fun HomeUI(
                     },
                     update = { view ->
                         // Update the view
-                        view.update(viewModel.pastTime, viewModel.upcomingTime, viewModel.remaining)
+                        view.update(vm.pastTime, vm.upcomingTime, vm.remaining)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -177,7 +177,7 @@ fun HomeUI(
                         textColor = AppTheme.colors.accent,
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     ) {
-                        viewModel.onGotoTodayWerdClick(navController)
+                        vm.onGotoTodayWerdClick(navController)
                     }
 
                     AnimatedVisibility(

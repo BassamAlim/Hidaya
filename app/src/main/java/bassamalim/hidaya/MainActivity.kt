@@ -4,6 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.LayoutDirection
+import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.services.AthanService
 import bassamalim.hidaya.ui.theme.AppTheme
@@ -24,7 +27,11 @@ class MainActivity : AppCompatActivity() {
 
         val startRoute = intent.getStringExtra("start_route")
         setContent {
-            AppTheme {
+            ActivityUtils.onActivityCreateSetLocale(LocalContext.current)
+
+            AppTheme(
+                direction = getDirection()
+            ) {
                 Navigator(startRoute)
             }
         }
@@ -34,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         DBUtils.testDB(this, PrefUtils.getPreferences(this))
 
         ActivityUtils.onActivityCreateSetTheme(this)
-        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetLocale(applicationContext)
     }
 
     private fun handleAction(action: String?) {
@@ -46,6 +53,14 @@ class MainActivity : AppCompatActivity() {
                 stopService(Intent(this, AthanService::class.java))
             }
         }
+    }
+
+    private fun getDirection(): LayoutDirection {
+        val pref = PrefUtils.getPreferences(this)
+        val language = PrefUtils.getLanguage(pref)
+
+        return if (language == Language.ENGLISH) LayoutDirection.Ltr
+        else LayoutDirection.Rtl
     }
 
 }

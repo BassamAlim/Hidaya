@@ -99,7 +99,7 @@ class PrayersVM @Inject constructor(
     }
 
     private fun getDateText(): String {
-        return if (dateOffset == 0) repo.getTodayText()
+        return if (dateOffset == 0) repo.getDayStr()
         else {
             val hijri = UmmalquraCalendar()
             hijri.time = calendar.time

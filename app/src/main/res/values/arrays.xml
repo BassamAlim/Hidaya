@@ -69,12 +69,6 @@
         <item>ليلي</item>
     </string-array>
 
-    <string-array name="theme_values" translatable="false">
-        <item>LIGHT</item>
-        <item>DARK</item>
-        <item>NIGHT</item>
-    </string-array>
-
     <string-array name="searcher_matches_en">
         <item>10</item>
         <item>30</item>
@@ -162,11 +156,6 @@
         <item>English</item>
     </string-array>
 
-    <string-array name="languages_values" translatable="false">
-        <item>ARABIC</item>
-        <item>ENGLISH</item>
-    </string-array>
-
     <string-array name="week_days">
         <item>الأحد</item>
         <item>الأثنين</item>
@@ -215,11 +204,6 @@
     <string-array name="time_format_entries">
         <item>١٢ ساعة</item>
         <item>٢٤ ساعة</item>
-    </string-array>
-
-    <string-array name="time_format_values" translatable="false">
-        <item>TWELVE</item>
-        <item>TWENTY_FOUR</item>
     </string-array>
 
     <string-array name="prayer_times_calc_method_entries">

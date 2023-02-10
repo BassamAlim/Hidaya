@@ -70,7 +70,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     override fun onCreate() {
         super.onCreate()
-        ActivityUtils.onActivityCreateSetLocale(applicationContext as Activity)
+        ActivityUtils.onActivityCreateSetLocale(applicationContext)
 
         initSession()
         initPlayer()

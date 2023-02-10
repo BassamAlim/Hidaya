@@ -1,7 +1,7 @@
 package bassamalim.hidaya.repository
 
-import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
@@ -9,7 +9,7 @@ import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 
 class QuranSearcherRepo @Inject constructor(
-    private val context: Context,
+    private val resources: Resources,
     private val pref: SharedPreferences,
     private val db: AppDatabase
 ) {
@@ -22,15 +22,13 @@ class QuranSearcherRepo @Inject constructor(
     fun getSuraNames() = db.suarDao().getNames()
     fun getSuraNamesEn() = db.suarDao().getNamesEn()
 
-    fun getMaxMatchesItems(): Array<String> {
-        return context.resources.getStringArray(R.array.searcher_matches_en)
-    }
-
     fun getMaxMatchesIndex() = PrefUtils.getInt(pref, Prefs.QuranSearcherMaxMatchesIndex)
     fun setMaxMatchesIndex(index: Int) {
         pref.edit()
             .putInt(Prefs.QuranSearcherMaxMatchesIndex.key, index)
             .apply()
     }
+
+    fun getMaxMatchesItems(): Array<String> = resources.getStringArray(R.array.searcher_matches_en)
 
 }

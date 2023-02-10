@@ -1,7 +1,7 @@
 package bassamalim.hidaya.repository
 
-import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
@@ -11,7 +11,7 @@ import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 
 class HomeRepo @Inject constructor(
-    private val context: Context,
+    private val resources: Resources,
     val pref: SharedPreferences,
     val db: AppDatabase
 ) {
@@ -19,7 +19,7 @@ class HomeRepo @Inject constructor(
     fun getIsWerdDone() = PrefUtils.getBoolean(pref, Prefs.WerdDone)
 
     fun getPrayerNames(): Array<String> {
-        return context.resources.getStringArray(R.array.prayer_names)
+        return resources.getStringArray(R.array.prayer_names)
     }
 
     fun getNumeralsLanguage(): Language {

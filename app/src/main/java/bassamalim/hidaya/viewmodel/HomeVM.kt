@@ -19,11 +19,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeVM @Inject constructor(
-    private val repository: HomeRepo
+    private val repo: HomeRepo
 ): ViewModel() {
 
-    private val prayerNames = repository.getPrayerNames()
-    private val numeralsLanguage = repository.getNumeralsLanguage()
+    private val prayerNames = repo.getPrayerNames()
+    private val numeralsLanguage = repo.getNumeralsLanguage()
     private var times: Array<Calendar?> = arrayOfNulls(6)
     private var formattedTimes: List<String> = arrayListOf()
     private var tomorrowFajr: Calendar = Calendar.getInstance()
@@ -42,18 +42,18 @@ class HomeVM @Inject constructor(
         telawatRecord = getTelawatRecord(),
         quranPagesRecord = getQuranPagesRecord(),
         todayWerdPage = getTodayWerdPage(),
-        isWerdDone = repository.getIsWerdDone()
+        isWerdDone = repo.getIsWerdDone()
     ))
     val uiState = _uiState.asStateFlow()
 
     fun onStart() {
-        if (repository.getLocation() != null) setupPrayersCard()
+        if (repo.getLocation() != null) setupPrayersCard()
 
         _uiState.update { it.copy(
             telawatRecord = getTelawatRecord(),
             quranPagesRecord = getQuranPagesRecord(),
             todayWerdPage = getTodayWerdPage(),
-            isWerdDone = repository.getIsWerdDone()
+            isWerdDone = repo.getIsWerdDone()
         )}
     }
 
@@ -71,17 +71,17 @@ class HomeVM @Inject constructor(
     }
 
     private fun setupPrayersCard() {
-        getTimes(repository.getLocation()!!)
+        getTimes(repo.getLocation()!!)
         setupUpcomingPrayer()
     }
 
     private fun getTimes(location: Location) {
         val utcOffset = PTUtils.getUTCOffset(
-            pref = repository.pref,
-            db = repository.db
+            pref = repo.pref,
+            db = repo.db
         )
 
-        val prayTimes = PrayTimes(repository.pref)
+        val prayTimes = PrayTimes(repo.pref)
 
         val today = Calendar.getInstance()
         times = prayTimes.getPrayerTimes(
@@ -172,7 +172,7 @@ class HomeVM @Inject constructor(
     }
 
     private fun getTelawatRecord(): String {
-        val millis = repository.getTelawatPlaybackRecord()
+        val millis = repo.getTelawatPlaybackRecord()
 
         val hours = millis / (60 * 60 * 1000) % 24
         val minutes = millis / (60 * 1000) % 60
@@ -190,14 +190,14 @@ class HomeVM @Inject constructor(
     private fun getQuranPagesRecord(): String {
         return translateNums(
             numeralsLanguage = numeralsLanguage,
-            string = repository.getQuranPagesRecord().toString()
+            string = repo.getQuranPagesRecord().toString()
         )
     }
 
     private fun getTodayWerdPage(): String {
         return translateNums(
             numeralsLanguage = numeralsLanguage,
-            string = repository.getTodayWerdPage().toString()
+            string = repo.getTodayWerdPage().toString()
         )
     }
 

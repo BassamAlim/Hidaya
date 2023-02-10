@@ -17,11 +17,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuizVM @Inject constructor(
-    private val repository: QuizRepo
+    private val repo: QuizRepo
 ): ViewModel() {
 
-    private val questionStr = repository.getQuestionStr()
-    private val numeralsLanguage = repository.getNumeralsLanguage()
+    private val questionStr = repo.getQuestionStr()
+    private val numeralsLanguage = repo.getNumeralsLanguage()
     private val questions = getQuestions()
     private val chosenAs = IntArray(10)
     private var current = 0
@@ -100,14 +100,14 @@ class QuizVM @Inject constructor(
     }
 
     private fun getQuestions(): MutableList<QuizQuestionsDB> {
-        val rawQuestions = repository.getQuestions().toMutableList()
+        val rawQuestions = repo.getQuestions().toMutableList()
         rawQuestions.shuffle()
         return rawQuestions.subList(0, 10)
     }
 
     private fun updateState() {
         val question = questions[current]
-        val answers = repository.getAnswers(question.getQuestionId())
+        val answers = repo.getAnswers(question.getQuestionId())
 
         _uiState.update { it.copy(
             questionNumText =

@@ -19,12 +19,15 @@ object ActivityUtils {
         return theme
     }
 
-    fun onActivityCreateSetLocale(ctx: Context): Language {
-        val language = PrefUtils.getLanguage(PrefUtils.getPreferences(ctx))
+    fun onActivityCreateSetLocale(context: Context): Language {
+        val language = PrefUtils.getLanguage(PrefUtils.getPreferences(context))
 
-        val locale = Locale(if (language == Language.ENGLISH) "en" else "ar")
+        val locale = Locale(
+            if (language == Language.ENGLISH) "en"
+            else "ar"
+        )
         Locale.setDefault(locale)
-        val resources = ctx.resources
+        val resources = context.resources
 
         val configuration = resources.configuration
         configuration.setLocale(locale)
@@ -36,9 +39,8 @@ object ActivityUtils {
     }
 
     fun restartActivity(activity: Activity) {
-        val intent = activity.intent
         activity.finish()
-        activity.startActivity(intent)
+        activity.startActivity(activity.intent)
     }
 
 }

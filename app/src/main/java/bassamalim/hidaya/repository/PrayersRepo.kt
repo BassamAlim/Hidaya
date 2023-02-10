@@ -1,7 +1,7 @@
 package bassamalim.hidaya.repository
 
-import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
@@ -14,7 +14,7 @@ import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 
 class PrayersRepo @Inject constructor(
-    private val context: Context,
+    private val resources: Resources,
     val pref: SharedPreferences,
     val db: AppDatabase
 ) {
@@ -32,10 +32,6 @@ class PrayersRepo @Inject constructor(
 
     fun getClosest(lat: Double, lon: Double) = db.cityDao().getClosest(lat, lon)
 
-    fun getPrayerNames(): Array<String> {
-        return context.resources.getStringArray(R.array.prayer_names)
-    }
-
     fun getCountryName(countryId: Int): String {
         return if (language == Language.ENGLISH) db.countryDao().getNameEn(countryId)
         else db.countryDao().getNameAr(countryId)
@@ -45,10 +41,6 @@ class PrayersRepo @Inject constructor(
         return if (language == Language.ENGLISH) db.cityDao().getCity(cityId).nameEn
         else db.cityDao().getCity(cityId).nameAr
     }
-
-    fun getTodayText() = context.getString(R.string.day)
-
-    fun getHijriMonths(): Array<String> = context.resources.getStringArray(R.array.hijri_months)
 
     fun getTimeOffsets(): List<Int> {
         return listOf(
@@ -91,5 +83,10 @@ class PrayersRepo @Inject constructor(
     }
 
     fun getLocation() = LocUtils.retrieveLocation(pref)
+
+    fun getHijriMonths(): Array<String> = resources.getStringArray(R.array.hijri_months)
+    fun getPrayerNames(): Array<String> = resources.getStringArray(R.array.prayer_names)
+
+    fun getDayStr() = resources.getString(R.string.day)
 
 }

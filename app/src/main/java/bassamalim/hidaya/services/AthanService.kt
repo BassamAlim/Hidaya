@@ -37,7 +37,7 @@ class AthanService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        ActivityUtils.onActivityCreateSetLocale(applicationContext as Activity)
+        ActivityUtils.onActivityCreateSetLocale(applicationContext)
 
         createNotificationChannel()
         startForeground(243, build())

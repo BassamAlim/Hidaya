@@ -29,6 +29,7 @@ class RadioClientVM @Inject constructor(
     repository: RadioClientRepo
 ): AndroidViewModel(app) {
 
+    private lateinit var activity: Activity
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
@@ -36,23 +37,6 @@ class RadioClientVM @Inject constructor(
 
     private val _uiState = MutableStateFlow(RadioClientState())
     val uiState = _uiState.asStateFlow()
-
-    init {
-        connect()
-    }
-
-    fun onStart() {
-        mediaBrowser?.connect()
-        (app.applicationContext as Activity).volumeControlStream = AudioManager.STREAM_MUSIC
-    }
-
-    fun onStop() {
-        MediaControllerCompat.getMediaController(
-            app.applicationContext as Activity
-        )?.unregisterCallback(controllerCallback)
-
-        mediaBrowser?.disconnect()
-    }
 
     private val connectionCallbacks: MediaBrowserCompat.ConnectionCallback =
         object : MediaBrowserCompat.ConnectionCallback() {
@@ -63,7 +47,6 @@ class RadioClientVM @Inject constructor(
                 // Create a MediaControllerCompat
                 val mediaController = MediaControllerCompat(app, token)
 
-                val activity = app.applicationContext as Activity
                 // Save the controller
                 MediaControllerCompat.setMediaController(activity, mediaController)
                 controller = MediaControllerCompat.getMediaController(activity)
@@ -98,14 +81,26 @@ class RadioClientVM @Inject constructor(
             }
         }
 
-    private fun connect() {
+    fun onStart(activity: Activity) {
+        this.activity = activity
+
         mediaBrowser = MediaBrowserCompat(
             app,
             ComponentName(app, RadioService::class.java),
             connectionCallbacks,
             null
         )
-        mediaBrowser!!.connect()
+        if (MediaControllerCompat.getMediaController(activity) == null)
+            mediaBrowser?.connect()
+
+        activity.volumeControlStream = AudioManager.STREAM_MUSIC
+    }
+
+    fun onStop() {
+        MediaControllerCompat.getMediaController(activity)
+            ?.unregisterCallback(controllerCallback)
+
+        mediaBrowser?.disconnect()
     }
 
     private var controllerCallback: MediaControllerCompat.Callback =

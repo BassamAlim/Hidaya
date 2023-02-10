@@ -213,7 +213,6 @@ fun Navigator(startRoute: String?) {
 
         composable(Screen.Settings.route) {
             SettingsUI(
-                nc = navController,
                 vm = hiltViewModel()
             )
         }

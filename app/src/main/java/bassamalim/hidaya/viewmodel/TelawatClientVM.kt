@@ -64,6 +64,10 @@ class TelawatClientVM @Inject constructor(
     ))
     val uiState = _uiState.asStateFlow()
 
+    init {
+        updateTrackState()
+    }
+
     private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             if (mediaBrowser == null) return
@@ -105,10 +109,6 @@ class TelawatClientVM @Inject constructor(
         }
     }
 
-    init {
-        updateTrackState()
-    }
-
     fun onStart(activity: Activity) {
         this.activity = activity
 
@@ -118,7 +118,6 @@ class TelawatClientVM @Inject constructor(
             connectionCallbacks,
             null
         )
-
         if (MediaControllerCompat.getMediaController(activity) == null)
             mediaBrowser?.connect()
 

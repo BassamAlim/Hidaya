@@ -1,7 +1,7 @@
 package bassamalim.hidaya.repository
 
-import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.enums.PID
@@ -9,7 +9,7 @@ import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 
 class SettingsRepo @Inject constructor(
-    private val context: Context,
+    private val resources: Resources,
     val pref: SharedPreferences
 ) {
 
@@ -28,16 +28,8 @@ class SettingsRepo @Inject constructor(
             .apply()
     }
 
-    fun getTimePickerTitleStr(): String {
-        return context.getString(R.string.time_picker_title)
-    }
-
-    fun getSelectStr(): String {
-        return context.getString(R.string.select)
-    }
-
-    fun getCancelStr(): String {
-        return context.getString(R.string.cancel)
-    }
+    fun getTimePickerTitleStr() = resources.getString(R.string.time_picker_title)
+    fun getSelectStr() = resources.getString(R.string.select)
+    fun getCancelStr() = resources.getString(R.string.cancel)
 
 }
