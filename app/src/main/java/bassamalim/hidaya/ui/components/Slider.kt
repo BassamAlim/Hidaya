@@ -51,13 +51,17 @@ fun MyValuedSlider(
     val context = LocalContext.current
     var currentValue by remember { mutableStateOf(initialValue) }
     var sliderText by remember {
-        mutableStateOf(translateNums(
-            context, (initialValue - progressMin).toInt().toString()
-        ))
+        mutableStateOf(
+            translateNums(
+                context, (initialValue - progressMin).toInt().toString()
+            )
+        )
     }
 
     Row(
-        modifier = modifier.fillMaxWidth().height(60.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(60.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

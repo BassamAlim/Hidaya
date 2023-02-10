@@ -9,6 +9,5 @@ data class QuizState(
     val selection: Int = -1,
     val prevBtnEnabled: Boolean = false,
     val nextBtnEnabled: Boolean = true,
-    val nextBtnTextResId: Int = R.string.next_question,
-    val allAnswered: Boolean = false
+    val nextBtnTextResId: Int = R.string.next_question
 )

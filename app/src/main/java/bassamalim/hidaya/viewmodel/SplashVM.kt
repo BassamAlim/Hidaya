@@ -24,10 +24,11 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashVM @Inject constructor(
     private val app: Application,
-    private val repository: SplashRepo
+    private val repo: SplashRepo
 ): AndroidViewModel(app) {
 
-    private lateinit var navController: NavController
+    val pref = repo.pref
+    private lateinit var nc: NavController
     private lateinit var locationRequestLauncher:
             ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
 
@@ -35,19 +36,21 @@ class SplashVM @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        repository.fetchAndActivateRemoteConfig()
+        repo.fetchAndActivateRemoteConfig()
     }
 
-    fun provide(
-        navController: NavController,
+    fun onStart(
+        nc: NavController,
         locationRequestLauncher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
     ) {
-        this.navController = navController
+        this.nc = nc
         this.locationRequestLauncher = locationRequestLauncher
+
+        enter()
     }
 
     private fun getLocationAndLaunch() {
-        if (repository.getLocationType() == LocationType.Auto) {
+        if (repo.getLocationType() == LocationType.Auto) {
             if (granted()) locate()
             else {
                 locationRequestLauncher.launch(
@@ -61,13 +64,13 @@ class SplashVM @Inject constructor(
         else launch(null)
     }
 
-    fun enter() {
-        if (repository.getIsFirstTime()) welcome()
+    private fun enter() {
+        if (repo.getIsFirstTime()) welcome()
         else getLocationAndLaunch()
     }
 
     private fun welcome() {
-        navController.navigate(Screen.Welcome.route) {
+        nc.navigate(Screen.Welcome.route) {
             popUpTo(Screen.Welcome.route) {
                 inclusive = true
             }
@@ -91,20 +94,20 @@ class SplashVM @Inject constructor(
                 launch(location)
             }
 
-        background()
+        requestBgLocPermission()
     }
 
     private fun launch(location: Location?) {
-        if (location != null) repository.storeLocation(location)
+        if (location != null) repo.storeLocation(location)
 
-        navController.navigate(Screen.Main.route) {
+        nc.navigate(Screen.Main.route) {
             popUpTo(Screen.Main.route) {
                 inclusive = true
             }
         }
     }
 
-    private fun background() {
+    private fun requestBgLocPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             ActivityCompat.checkSelfPermission(
                 app.applicationContext,
@@ -126,11 +129,11 @@ class SplashVM @Inject constructor(
 
         if (result[Manifest.permission.ACCESS_FINE_LOCATION]!! &&
             result[Manifest.permission.ACCESS_COARSE_LOCATION]!!) {
-            repository.setLocationType(LocationType.Auto)
+            repo.setLocationType(LocationType.Auto)
 
             locate()
 
-            background()
+            requestBgLocPermission()
         }
         else launch(null)
     }

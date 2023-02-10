@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,6 +30,7 @@ fun PrayerDialog(
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
+    var currentNotificationType by remember { mutableStateOf(notificationType) }
     val notificationOptions = listOf(
         Pair(R.string.athan_speaker, R.drawable.ic_speaker),
         Pair(R.string.enable_notification, R.drawable.ic_sound),
@@ -37,7 +38,7 @@ fun PrayerDialog(
         Pair(R.string.disable_notification, R.drawable.ic_block)
     )
     val offsetMin = 30f
-    val sliderProgress = timeOffset + offsetMin
+    var sliderProgress by remember { mutableStateOf(timeOffset + offsetMin) }
 
     MyDialog(
         shown,
@@ -62,8 +63,12 @@ fun PrayerDialog(
             CustomRadioGroup(
                 pid = pid,
                 options = notificationOptions,
-                selection = notificationType,
-                onSelect = { selection -> onNotificationTypeChange(selection) }
+                selection = currentNotificationType,
+                onSelect = { selection ->
+                    currentNotificationType = selection
+
+                    onNotificationTypeChange(selection)
+                }
             )
 
             MyText(
@@ -80,7 +85,11 @@ fun PrayerDialog(
                 modifier = Modifier.fillMaxWidth(),
                 progressMin = offsetMin,
                 sliderFraction = 0.875F,
-                onValueChange = { value -> onOffsetChange(value.toInt()) }
+                onValueChange = { value ->
+                    sliderProgress = value + offsetMin
+
+                    onOffsetChange(value.toInt())
+                }
             )
         }
     }
@@ -108,13 +117,13 @@ fun CustomRadioGroup(
                     MyClickableSurface(
                         padding = PaddingValues(vertical = 0.dp),
                         modifier =
-                        if (i == selection.ordinal)
-                            Modifier.border(
-                                width = 3.dp,
-                                color = AppTheme.colors.accent,
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                        else Modifier,
+                            if (i == selection.ordinal)
+                                Modifier.border(
+                                    width = 3.dp,
+                                    color = AppTheme.colors.accent,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                            else Modifier,
                         onClick = { onSelect(selection) }
                     ) {
                         Row(

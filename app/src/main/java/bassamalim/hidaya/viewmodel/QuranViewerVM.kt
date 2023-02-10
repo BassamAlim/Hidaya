@@ -18,7 +18,8 @@ import androidx.compose.ui.layout.positionInParent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import bassamalim.hidaya.enums.Language
-import bassamalim.hidaya.enums.QViewType.*
+import bassamalim.hidaya.enums.QViewType
+import bassamalim.hidaya.enums.QViewType.List
 import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.repository.QuranViewerRepo
@@ -30,12 +31,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import kotlin.collections.List
 
 @HiltViewModel
 class QuranViewerVM @Inject constructor(
     private val app: Application,
-    private val repository: QuranViewerRepo,
+    private val repo: QuranViewerRepo,
     savedStateHandle: SavedStateHandle
 ): AndroidViewModel(app) {
     
@@ -43,21 +43,20 @@ class QuranViewerVM @Inject constructor(
     private var initialSuraId = savedStateHandle.get<Int>("sura_id") ?: 0
     private val page = savedStateHandle.get<Int>("page") ?: 0
 
-    val numeralsLanguage = repository.numeralsLanguage
+    val numeralsLanguage = repo.numeralsLanguage
     var initialPage =
         if (type == "by_page") page
-        else repository.getPage(initialSuraId)
+        else repo.getPage(initialSuraId)
         private set
-    private val ayatDB = repository.getAyat()
     private val suraNames =
-        if (repository.language == Language.ENGLISH) repository.getSuraNamesEn()
-        else repository.getSuraNames()
+        if (repo.language == Language.ENGLISH) repo.getSuraNamesEn()
+        else repo.getSuraNames()
+    private val ayatDB = repo.getAyat()
     private val handler = Handler(Looper.getMainLooper())
     private var suraNum = 0
-    private var bookmarkedPage = repository.getBookmarkedPage()
-    val pref = repository.pref
-    val reciterNames = repository.getReciterNames()
-    private lateinit var currentAyas: List<Ayah>
+    private var bookmarkedPage = repo.getBookmarkedPage()
+    val pref = repo.pref
+    val reciterNames = repo.getReciterNames()
     private var lastRecordedPage = 0
     private var lastClickT = 0L
     private var lastClickedId = -1
@@ -74,9 +73,9 @@ class QuranViewerVM @Inject constructor(
     private val _uiState = MutableStateFlow(QuranViewerState(
         pageNum = initialPage,
         viewType =
-            if (repository.language == Language.ENGLISH) List
-            else repository.getViewType(),
-        textSize = repository.getTextSize(),
+            if (repo.language == Language.ENGLISH) List
+            else repo.getViewType(),
+        textSize = repo.getTextSize(),
         isBookmarked = bookmarkedPage == initialPage,
         ayas = buildPage(initialPage),
     ))
@@ -85,7 +84,7 @@ class QuranViewerVM @Inject constructor(
     fun onStop() {
         player?.finish()
         if (serviceBound) {
-            app.applicationContext.unbindService(serviceConnection)
+            app.unbindService(serviceConnection)
             player?.stopSelf()
         }
         player?.onDestroy()
@@ -132,17 +131,18 @@ class QuranViewerVM @Inject constructor(
     }
 
     private val runnable = Runnable {
-        if (_uiState.value.pageNum == lastRecordedPage) updateRecord()
+        if (_uiState.value.pageNum == lastRecordedPage)
+            updateRecord()
     }
 
     private fun updateRecord() {
-        val old = repository.getPagesRecord()
+        val old = repo.getPagesRecord()
         val new = old + 1
 
-        repository.setPagesRecord(new)
+        repo.setPagesRecord(new)
 
-        if (_uiState.value.pageNum == repository.getWerdPage())
-            repository.setWerdDone()
+        if (_uiState.value.pageNum == repo.getWerdPage())
+            repo.setWerdDone()
     }
 
     private fun setupPlayer() {
@@ -157,18 +157,17 @@ class QuranViewerVM @Inject constructor(
             }
 
             override fun track(ayaId: Int) {
-                val idx = currentAyas.indexOfFirst { aya -> aya.id == ayaId }
+                val idx = _uiState.value.ayas.indexOfFirst { aya -> aya.id == ayaId }
 
                 if (idx == -1) return  // not the same page
 
-                tracked.value = currentAyas[idx]
+                tracked.value = _uiState.value.ayas[idx]
             }
         }
 
-        val ctx = app.applicationContext
-        val playerIntent = Intent(ctx, AyahPlayerService::class.java)
-        ctx.startService(playerIntent)
-        ctx.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+        val playerIntent = Intent(app, AyahPlayerService::class.java)
+        app.startService(playerIntent)
+        app.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
     //Binding this Client to the AudioPlayer Service
@@ -181,7 +180,7 @@ class QuranViewerVM @Inject constructor(
             tc = player!!.transportControls
             serviceBound = true
 
-            if (selected.value == null) selected.value = currentAyas[0]
+            if (selected.value == null) selected.value = _uiState.value.ayas[0]
 
             player!!.setChosenPage(_uiState.value.pageNum)
             player!!.setCoordinator(uiListener!!)
@@ -215,8 +214,8 @@ class QuranViewerVM @Inject constructor(
         }
     }
 
-    fun onPageChange(pagerStatePage: Int, page: Int) {
-        if (pagerStatePage == page) {
+    fun onPageChange(currentPage: Int, page: Int) {
+        if (currentPage == page) {
             updatePageState(page + 1)
 
             if (page != lastRecordedPage) {
@@ -234,7 +233,7 @@ class QuranViewerVM @Inject constructor(
             isBookmarked = true
         )}
 
-        repository.setBookmarkedPage(_uiState.value.pageNum, suraNum)
+        repo.setBookmarkedPage(_uiState.value.pageNum, suraNum)
     }
 
     fun onPlayPauseClick() {
@@ -271,12 +270,11 @@ class QuranViewerVM @Inject constructor(
     }
 
     fun onAyaClick(ayaId: Int, offset: Int) {
-        val startIdx = currentAyas.indexOfFirst { it.id == ayaId }
+        val startIdx = _uiState.value.ayas.indexOfFirst { it.id == ayaId }
 
         val maxDuration = 1200
-        for (idx in startIdx until currentAyas.size) {
-            val aya = currentAyas[idx]
-
+        for (idx in startIdx until _uiState.value.ayas.size) {
+            val aya = _uiState.value.ayas[idx]
             if (offset < aya.end) {
                 // double click
                 if (aya.id == lastClickedId &&
@@ -320,15 +318,23 @@ class QuranViewerVM @Inject constructor(
             tutorialDialogShown = false
         )}
 
-        if (doNotShowAgain) repository.setDoNotShowTutorial()
+        if (doNotShowAgain) repo.setDoNotShowTutorial()
     }
 
-    fun onSettingsDialogDone() {
+    fun onInfoDialogDismiss() {
+        _uiState.update { it.copy(
+            infoDialogShown = false
+        )}
+    }
+
+    fun onSettingsDialogDismiss(viewType: QViewType) {
         _uiState.update { it.copy(
             settingsDialogShown = false,
-            viewType = repository.getViewType(),
-            textSize = repository.getTextSize()
+            viewType = viewType,
+            textSize = repo.getTextSize()
         )}
+
+        repo.setViewType(viewType)
     }
 
 }

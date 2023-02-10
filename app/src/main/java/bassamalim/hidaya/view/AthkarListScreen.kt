@@ -21,24 +21,25 @@ fun AthkarListUI(
     nc: NavController = rememberNavController(),
     vm: AthkarListVM = hiltViewModel()
 ) {
-    val state by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
 
-    MyScaffold(state.title) {
+    MyScaffold(st.title) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(it)
+                .padding(padding)
         ) {
 
             SearchComponent (
                 value = vm.searchText,
                 hint = stringResource(R.string.athkar_hint),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { vm.onSearchChange(it) }
             )
 
             MyLazyColumn(
                 lazyList = {
-                    items(state.items) { item ->
+                    items(st.items) { item ->
                         MyBtnSurface(
                             text = item.name,
                             iconBtn = {

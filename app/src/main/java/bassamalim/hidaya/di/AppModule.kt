@@ -54,10 +54,11 @@ object AppModule {
 
     @Provides @Singleton
     fun provideAthkarListRepository(
+        application: Application,
         preferences: SharedPreferences,
         database: AppDatabase,
         gson: Gson
-    ) = AthkarListRepo(preferences, database, gson)
+    ) = AthkarListRepo(application, preferences, database, gson)
 
     @Provides @Singleton
     fun provideAthkarViewerRepository(
@@ -174,9 +175,8 @@ object AppModule {
 
     @Provides @Singleton
     fun provideRadioClientRepository(
-        context: Context,
         remoteConfig: FirebaseRemoteConfig
-    ) = RadioClientRepo(context, remoteConfig)
+    ) = RadioClientRepo(remoteConfig)
 
     @Provides @Singleton
     fun provideSettingsRepository(

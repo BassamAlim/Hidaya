@@ -1,7 +1,9 @@
 package bassamalim.hidaya.repository
 
+import android.app.Application
 import android.content.SharedPreferences
 import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AthkarDB
 import bassamalim.hidaya.enums.Language
@@ -10,6 +12,7 @@ import com.google.gson.Gson
 import javax.inject.Inject
 
 class AthkarListRepo @Inject constructor(
+    private val app: Application,
     private val pref: SharedPreferences,
     private val db: AppDatabase,
     private val gson: Gson
@@ -45,5 +48,8 @@ class AthkarListRepo @Inject constructor(
     fun setFavorite(itemId: Int, value: Int) {
         db.athkarDao().setFav(itemId, value)
     }
+
+    fun getFavoriteAthkarStr() = app.getString(R.string.favorite_athkar)
+    fun getAllAthkarStr() = app.getString(R.string.all_athkar)
 
 }

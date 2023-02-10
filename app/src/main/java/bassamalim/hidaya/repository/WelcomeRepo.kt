@@ -5,7 +5,7 @@ import bassamalim.hidaya.Prefs
 import javax.inject.Inject
 
 class WelcomeRepo @Inject constructor(
-    private val pref: SharedPreferences
+    val pref: SharedPreferences
 ) {
 
     fun unsetFirstTime() {

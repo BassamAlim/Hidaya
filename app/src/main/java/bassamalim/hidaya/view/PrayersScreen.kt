@@ -28,7 +28,7 @@ import bassamalim.hidaya.viewmodel.PrayersVM
 
 @Composable
 fun PrayersUI(
-    navController: NavController = rememberNavController(),
+    nc: NavController = rememberNavController(),
     vm: PrayersVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsState()
@@ -65,7 +65,7 @@ fun PrayersUI(
                     modifier = Modifier.padding(end = 8.dp),
                     size = 32.dp
                 ) {
-                    vm.onLocatorClick(navController)
+                    vm.onLocatorClick(nc)
                 }
             }
         }
@@ -131,8 +131,8 @@ fun PrayersUI(
     )
 
     TutorialDialog(
-        textResId = R.string.prayers_tips,
-        shown = st.isTutorialDialogShown
+        shown = st.isTutorialDialogShown,
+        textResId = R.string.prayers_tips
     ) {
         vm.onTutorialDialogDismiss(it)
     }

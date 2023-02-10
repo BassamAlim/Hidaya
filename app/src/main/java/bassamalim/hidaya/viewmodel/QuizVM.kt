@@ -25,6 +25,7 @@ class QuizVM @Inject constructor(
     private val questions = getQuestions()
     private val chosenAs = IntArray(10)
     private var current = 0
+    private var allAnswered = false
 
     private val _uiState = MutableStateFlow(QuizState())
     val uiState = _uiState.asStateFlow()
@@ -41,18 +42,24 @@ class QuizVM @Inject constructor(
         updateState()
     }
 
-    fun answered(a: Int, navController: NavController) {
-        _uiState.update { it.copy(
-            selection = a,
-            allAnswered = !chosenAs.contains(-1)
-        )}
+    fun answered(a: Int, nc: NavController) {
+        chosenAs[current] = a
 
-        if (current != 9) nextQ(navController)
+        allAnswered = !chosenAs.contains(-1)
+
+        if (current == 9) {
+            _uiState.update { it.copy(
+                selection = a,
+                nextBtnEnabled = !(current == 9 && !allAnswered),
+                nextBtnTextResId = getNextBtnTextResId()
+            )}
+        }
+        else nextQ(nc)
     }
 
     fun nextQ(navController: NavController) {
         if (current == 9) {
-            if (_uiState.value.allAnswered) endQuiz(navController)
+            if (allAnswered) endQuiz(navController)
         }
         else ask(++current)
     }
@@ -67,13 +74,15 @@ class QuizVM @Inject constructor(
         navController.navigate(
             Screen.QuizResult(
                 score.toString(),
-                questions.map { q -> q.getQuestionId() }.toIntArray().toString(),
+                questions.map { q -> q.getQuestionId() }.toIntArray().contentToString(),
                 chosenAs.toString()
             ).route
         ) {
             popUpTo(
                 Screen.QuizResult(
-                    0.toString(), "", ""
+                    score.toString(),
+                    questions.map { q -> q.getQuestionId() }.toIntArray().contentToString(),
+                    chosenAs.toString()
                 ).route
             ) {
                 inclusive = true
@@ -100,13 +109,6 @@ class QuizVM @Inject constructor(
         val question = questions[current]
         val answers = repository.getAnswers(question.getQuestionId())
 
-        val nextBtnTextResId =
-            if (current == 9) {
-                if (_uiState.value.allAnswered) R.string.finish_quiz
-                else R.string.answer_all_questions
-            }
-            else R.string.next_question
-
         _uiState.update { it.copy(
             questionNumText =
             "$questionStr ${translateNums(numeralsLanguage, (current + 1).toString())}",
@@ -114,9 +116,17 @@ class QuizVM @Inject constructor(
             answers = answers.map { a -> a.answer_text!! },
             selection = chosenAs[current],
             prevBtnEnabled = current != 0,
-            nextBtnEnabled = !(current == 9 && !_uiState.value.allAnswered),
-            nextBtnTextResId = nextBtnTextResId
+            nextBtnEnabled = !(current == 9 && !allAnswered),
+            nextBtnTextResId = getNextBtnTextResId()
         )}
+    }
+
+    private fun getNextBtnTextResId(): Int {
+        return if (current == 9) {
+            if (allAnswered) R.string.finish_quiz
+            else R.string.answer_all_questions
+        }
+        else R.string.next_question
     }
 
 }

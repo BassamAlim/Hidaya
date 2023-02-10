@@ -29,10 +29,10 @@ fun QuizUI(
     nc: NavController = rememberNavController(),
     vm: QuizVM = hiltViewModel()
 ) {
-    val state by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
 
     MyScaffold(
-        title = state.questionNumText
+        title = st.questionNumText
     ) {
         Column(
             Modifier.fillMaxSize(),
@@ -48,7 +48,7 @@ fun QuizUI(
                 contentAlignment = Alignment.Center
             ) {
                 MyText(
-                    text = state.question,
+                    text = st.question,
                     fontSize = 28.sp,
                     textColor = AppTheme.colors.onPrimary,
                     modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
@@ -56,8 +56,8 @@ fun QuizUI(
             }
 
             RadioGroup(
-                options = state.answers,
-                selection = state.selection,
+                options = st.answers,
+                selection = st.selection,
                 modifier = Modifier
                     .heightIn(1.dp, 400.dp)
                     .verticalScroll(rememberScrollState())
@@ -76,18 +76,18 @@ fun QuizUI(
                 MyButton(
                     text = stringResource(R.string.previous_question),
                     textColor =
-                    if (state.prevBtnEnabled) Grey
-                    else AppTheme.colors.text,
+                        if (st.prevBtnEnabled) AppTheme.colors.text
+                        else Grey,
                     innerPadding = PaddingValues(10.dp)
                 ) {
                     vm.previousQ()
                 }
 
                 MyButton(
-                    text = stringResource(state.nextBtnTextResId),
+                    text = stringResource(st.nextBtnTextResId),
                     modifier = Modifier.sizeIn(maxWidth = 175.dp),
                     textColor =
-                        if (state.nextBtnEnabled) AppTheme.colors.text
+                        if (st.nextBtnEnabled) AppTheme.colors.text
                         else Grey,
                     innerPadding = PaddingValues(10.dp)
                 ) {

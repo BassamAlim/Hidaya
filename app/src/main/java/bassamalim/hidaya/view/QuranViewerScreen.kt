@@ -185,11 +185,12 @@ fun QuranViewerUI(
                 if (st.viewType == List) ListItems(ayas, isCurrentPage, vm, st)
                 else PageItems(ayas, isCurrentPage, vm, st)
 
-                if (page == pagerState.currentPage)
+                if (page == pagerState.currentPage) {
                     LaunchedEffect(null) {
                         scrollState.animateScrollTo(vm.scrollTo.toInt())
                         vm.onScrolled()
                     }
+                }
             }
         }
     }
@@ -203,14 +204,15 @@ fun QuranViewerUI(
     InfoDialog(
         shown = st.infoDialogShown,
         title = stringResource(R.string.tafseer),
-        text = st.infoDialogText
+        text = st.infoDialogText,
+        onDismiss = vm::onInfoDialogDismiss  // :: gives the reference to the function
     )
 
     QuranSettingsDialog(
         startState = st,
         pref = vm.pref,
         reciterNames = vm.reciterNames,
-        onDone = vm::onSettingsDialogDone  // :: gives the reference to the function
+        onDone = { vm.onSettingsDialogDismiss(it) }
     )
 }
 
@@ -250,8 +252,8 @@ private fun PageItems(
 private fun PageItem(
     text: String,
     sequence: List<Ayah>,
-    viewModel: QuranViewerVM,
-    state: QuranViewerState
+    vm: QuranViewerVM,
+    st: QuranViewerState
 ) {
     val annotatedString = buildAnnotatedString {
         append(text)
@@ -260,8 +262,8 @@ private fun PageItem(
             addStyle(
                 style = SpanStyle(
                     color =
-                        if (viewModel.selected.value == seqAya) AppTheme.colors.highlight
-                        else if (viewModel.tracked.value == seqAya) AppTheme.colors.track
+                        if (vm.selected.value == seqAya) AppTheme.colors.highlight
+                        else if (vm.tracked.value == seqAya) AppTheme.colors.track
                         else AppTheme.colors.strongText
                 ),
                 start = seqAya.start,
@@ -270,25 +272,25 @@ private fun PageItem(
         }
     }
 
-    Screen(annotatedString = annotatedString, ayaId = sequence[0].id, viewModel, state)
+    Screen(annotatedString = annotatedString, aya = sequence[0], vm, st)
 }
 
 @Composable
 private fun ListItems(
     ayas: List<Ayah>,
     isCurrentPage: Boolean,
-    viewModel: QuranViewerVM,
-    state: QuranViewerState
+    vm: QuranViewerVM,
+    st: QuranViewerState
 ) {
     for (aya in ayas) {
-        NewSura(aya, isCurrentPage, viewModel, state)
+        NewSura(aya, isCurrentPage, vm, st)
 
         val annotatedString = AnnotatedString(aya.text!!)
-        Screen(annotatedString, aya.id, viewModel, state)
+        Screen(annotatedString, aya, vm, st)
 
         MyText(
             text = aya.translation!!,
-            fontSize = (state.textSize - 5).sp,
+            fontSize = (st.textSize - 5).sp,
             modifier = Modifier.padding(6.dp)
         )
 
@@ -299,21 +301,21 @@ private fun ListItems(
 @Composable
 private fun Screen(
     annotatedString: AnnotatedString,
-    ayaId: Int,
-    viewModel: QuranViewerVM,
-    state: QuranViewerState
+    aya: Ayah,
+    vm: QuranViewerVM,
+    st: QuranViewerState
 ) {
     ClickableText(
         text = annotatedString,
         style = TextStyle(
             fontFamily = uthmanic,
-            fontSize = state.textSize.sp,
+            fontSize = st.textSize.sp,
             color = AppTheme.colors.strongText,
             textAlign = TextAlign.Center
         ),
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp),
         onClick = { offset ->
-            viewModel.onAyaClick(ayaId, offset)
+            vm.onAyaClick(aya.id, offset)
         }
     )
 }
@@ -322,13 +324,13 @@ private fun Screen(
 private fun NewSura(
     aya: Ayah,
     isCurrentPage: Boolean,
-    viewModel: QuranViewerVM,
-    state: QuranViewerState
+    vm: QuranViewerVM,
+    st: QuranViewerState
 ) {
     if (aya.ayahNum == 1) {
-        SuraHeader(aya, isCurrentPage, viewModel, state)
+        SuraHeader(aya, isCurrentPage, vm, st)
         // surat al-fatiha and At-Taubah
-        if (aya.surahNum != 1 && aya.surahNum != 9) Basmalah(state)
+        if (aya.surahNum != 1 && aya.surahNum != 9) Basmalah(st)
     }
 }
 
@@ -336,16 +338,16 @@ private fun NewSura(
 private fun SuraHeader(
     aya: Ayah,
     isCurrentPage: Boolean,
-    viewModel: QuranViewerVM,
-    state: QuranViewerState
+    vm: QuranViewerVM,
+    st: QuranViewerState
 ) {
     Box(
         Modifier
             .fillMaxWidth()
-            .height((state.textSize * 2.6).dp)
+            .height((st.textSize * 2.6).dp)
             .padding(top = 5.dp, bottom = 10.dp, start = 5.dp, end = 5.dp)
             .onGloballyPositioned { layoutCoordinates ->
-                viewModel.onSuraHeaderGloballyPositioned(aya, isCurrentPage, layoutCoordinates)
+                vm.onSuraHeaderGloballyPositioned(aya, isCurrentPage, layoutCoordinates)
             },
         contentAlignment = Alignment.Center
     ) {
@@ -358,7 +360,7 @@ private fun SuraHeader(
 
         MyText(
             text = aya.surahName,
-            fontSize = (state.textSize + 2).sp,
+            fontSize = (st.textSize + 2).sp,
             fontWeight = FontWeight.Bold,
             textColor = AppTheme.colors.onPrimary
         )

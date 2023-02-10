@@ -1,13 +1,11 @@
 package bassamalim.hidaya.viewmodel
 
-import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import bassamalim.hidaya.R
 import bassamalim.hidaya.Screen
 import bassamalim.hidaya.database.dbs.AthkarDB
 import bassamalim.hidaya.enums.Language
@@ -18,36 +16,34 @@ import bassamalim.hidaya.state.AthkarListState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class AthkarListVM @Inject constructor(
-    app: Application,
     savedStateHandle: SavedStateHandle,
-    private val repository: AthkarListRepo
-): AndroidViewModel(app) {
+    private val repo: AthkarListRepo
+): ViewModel() {
 
     private val type = savedStateHandle.get<String>("type") ?: "all"
     private val category = savedStateHandle.get<Int>("category")?: 0
 
     var searchText by mutableStateOf("")
         private set
-    private val language = repository.getLanguage()
+    private val language = repo.getLanguage()
 
     private val _uiState = MutableStateFlow(AthkarListState(
         title = when (type) {
-            ListType.Favorite.name -> app.applicationContext.getString(R.string.favorite_athkar)
-            ListType.Custom.name -> repository.getName(language, category)
-            else -> app.applicationContext.getString(R.string.all_athkar)
+            ListType.Favorite.name -> repo.getFavoriteAthkarStr()
+            ListType.Custom.name -> repo.getName(language, category)
+            else -> repo.getAllAthkarStr()
         },
-        items = getItems().filter { item ->
-            item.name.contains(searchText, ignoreCase = true)
-        }
+        items = getItems()
     ))
     val uiState = _uiState.asStateFlow()
 
     private fun getItems(): List<AthkarItem> {
-        val athkar = repository.getAthkar(type, category)
+        val athkar = repo.getAthkar(type, category)
         val items = ArrayList<AthkarItem>()
 
         for (i in athkar.indices) {
@@ -65,11 +61,14 @@ class AthkarListVM @Inject constructor(
                 )
             )
         }
-        return items
+
+        return if (searchText.isNotEmpty())
+            items.filter { it.name.contains(searchText, true) }
+        else items
     }
 
     private fun hasEn(thikr: AthkarDB): Boolean {
-        val ts = repository.getThikrs(thikr.id)
+        val ts = repo.getThikrs(thikr.id)
 
         for (i in ts.indices) {
             val t = ts[i]
@@ -80,15 +79,15 @@ class AthkarListVM @Inject constructor(
 
     fun onFavoriteCLick(item: AthkarItem) {
         if (item.favorite.value == 0) {
-            repository.setFavorite(item.id, 1)
+            repo.setFavorite(item.id, 1)
             item.favorite.value = 1
         }
         else {
-            repository.setFavorite(item.id, 0)
+            repo.setFavorite(item.id, 0)
             item.favorite.value = 0
         }
 
-        repository.updateFavorites()
+        repo.updateFavorites()
     }
 
     fun onItemClick(navController: NavController, item: AthkarItem) {
@@ -98,6 +97,14 @@ class AthkarListVM @Inject constructor(
                 item.id.toString()
             ).route
         )
+    }
+
+    fun onSearchChange(text: String) {
+        searchText = text
+
+        _uiState.update { it.copy(
+            items = getItems()
+        )}
     }
 
 }

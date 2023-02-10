@@ -26,19 +26,19 @@ import javax.inject.Inject
 @HiltViewModel
 class RadioClientVM @Inject constructor(
     private val app: Application,
-    private val repository: RadioClientRepo
+    repository: RadioClientRepo
 ): AndroidViewModel(app) {
 
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
-    private var url: String? = null
+    private val url = repository.getLink()
 
     private val _uiState = MutableStateFlow(RadioClientState())
     val uiState = _uiState.asStateFlow()
 
     init {
-        getLinkAndConnect()
+        connect()
     }
 
     fun onStart() {
@@ -54,39 +54,16 @@ class RadioClientVM @Inject constructor(
         mediaBrowser?.disconnect()
     }
 
-    private fun getLinkAndConnect() {
-        url = repository.getLink()
-        connect()
-    }
-
-    private fun connect() {
-        val ctx = app.applicationContext
-        mediaBrowser = MediaBrowserCompat(
-            ctx,
-            ComponentName(ctx, RadioService::class.java),
-            connectionCallbacks,
-            null
-        )
-        mediaBrowser!!.connect()
-    }
-
     private val connectionCallbacks: MediaBrowserCompat.ConnectionCallback =
         object : MediaBrowserCompat.ConnectionCallback() {
             override fun onConnected() {
-                if (url == null) {
-                    Log.e(Global.TAG, "URL is null in RadioClient")
-                    return
-                }
-
-                val ctx = app.applicationContext
-
                 // Get the token for the MediaSession
                 val token = mediaBrowser!!.sessionToken
 
                 // Create a MediaControllerCompat
-                val mediaController = MediaControllerCompat(ctx, token)
+                val mediaController = MediaControllerCompat(app, token)
 
-                val activity = ctx as Activity
+                val activity = app.applicationContext as Activity
                 // Save the controller
                 MediaControllerCompat.setMediaController(activity, mediaController)
                 controller = MediaControllerCompat.getMediaController(activity)
@@ -120,6 +97,16 @@ class RadioClientVM @Inject constructor(
                 )}
             }
         }
+
+    private fun connect() {
+        mediaBrowser = MediaBrowserCompat(
+            app,
+            ComponentName(app, RadioService::class.java),
+            connectionCallbacks,
+            null
+        )
+        mediaBrowser!!.connect()
+    }
 
     private var controllerCallback: MediaControllerCompat.Callback =
         object : MediaControllerCompat.Callback() {

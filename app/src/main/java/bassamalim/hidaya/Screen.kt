@@ -1,6 +1,7 @@
 package bassamalim.hidaya
 
 sealed class Screen(val route: String) {
+
     object About: Screen("about")
 
     data class AthkarList(
@@ -68,4 +69,5 @@ sealed class Screen(val route: String) {
     object Tv: Screen("tv")
 
     object Welcome: Screen("welcome")
+
 }

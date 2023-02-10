@@ -32,51 +32,54 @@ import javax.inject.Inject
 class TelawatSuarVM @Inject constructor(
     private val app: Application,
     savedStateHandle: SavedStateHandle,
-    private val repository: TelawatSuarRepo
+    private val repo: TelawatSuarRepo
 ): AndroidViewModel(app) {
 
     private val reciterId = savedStateHandle.get<Int>("reciter_id") ?: 0
     private val versionId = savedStateHandle.get<Int>("version_id") ?: 0
 
-    private val ver = repository.getVersion(reciterId, versionId)
+    private val ver = repo.getVersion(reciterId, versionId)
     val prefix = "/Telawat/${ver.getReciterId()}/${versionId}/"
-    private val suraNames = repository.getSuraNames()
-    private val searchNames = repository.getSearchNames()
+    private val suraNames = repo.getSuraNames()
+    private val searchNames = repo.getSearchNames()
     private val downloading = HashMap<Long, Int>()
     var searchText by mutableStateOf("")
         private set
 
     private val _uiState = MutableStateFlow(TelawatSuarState(
-        title = repository.getReciterName(reciterId),
+        title = repo.getReciterName(reciterId),
         items = getItems(ListType.All),
-        favs = repository.getFavs()
+        favs = repo.getFavs()
     ))
     val uiState = _uiState.asStateFlow()
+
+    init {
+        onStart()
+    }
 
     fun onStart() {
         updateDownloads()
 
-        app.applicationContext.registerReceiver(
+        app.registerReceiver(
             onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
     }
 
     fun onStop() {
         try {
-            app.applicationContext.unregisterReceiver(onComplete)
+            app.unregisterReceiver(onComplete)
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         }
     }
 
-    fun onBackPressed(navController: NavController) {
-        val ctx = app.applicationContext
-        if ((ctx as Activity).isTaskRoot) {
-            navController.navigate(Screen.Telawat.route) {
+    fun onBackPressed(nc: NavController) {
+        if ((nc.context as Activity).isTaskRoot) {
+            nc.navigate(Screen.Telawat.route) {
                 popUpTo(Screen.Telawat.route) { inclusive = true }
             }
         }
-        else (ctx as ComponentActivity).onBackPressedDispatcher.onBackPressed()
+        else (app.applicationContext as ComponentActivity).onBackPressedDispatcher.onBackPressed()
     }
 
     private fun updateDownloads() {
@@ -95,7 +98,7 @@ class TelawatSuarVM @Inject constructor(
 
     private fun isDownloaded(suraNum: Int): Boolean {
         return File(
-            "${app.applicationContext.getExternalFilesDir(null)}$prefix$suraNum.mp3"
+            "${app.getExternalFilesDir(null)}$prefix$suraNum.mp3"
         ).exists()
     }
 
@@ -110,12 +113,12 @@ class TelawatSuarVM @Inject constructor(
 
             items.add(ReciterSura(i, suraNames[i], searchNames[i]))
         }
-        return items
+
+        return if (searchText.isEmpty()) items
+        else items.filter { it.searchName.contains(searchText, true) }
     }
 
     private fun download(sura: ReciterSura) {
-        val ctx = app.applicationContext
-
         val states = _uiState.value.downloadStates.toMutableList()
         states[sura.num] = DownloadState.Downloading
         _uiState.update { it.copy(
@@ -128,11 +131,11 @@ class TelawatSuarVM @Inject constructor(
 
         val request = DownloadManager.Request(uri)
         request.setTitle(sura.searchName)
-        FileUtils.createDir(ctx, prefix)
-        request.setDestinationInExternalFilesDir(ctx, prefix, "${sura.num}.mp3")
+        FileUtils.createDir(app, prefix)
+        request.setDestinationInExternalFilesDir(app, prefix, "${sura.num}.mp3")
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
 
-        val downloadId = (ctx.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager)
+        val downloadId = (app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager)
             .enqueue(request)
         downloading[downloadId] = sura.num
     }
@@ -189,9 +192,9 @@ class TelawatSuarVM @Inject constructor(
             favs = favs
         )}
 
-        repository.setFav(suraNum, newFav)
+        repo.setFav(suraNum, newFav)
 
-        repository.updateFavorites()
+        repo.updateFavorites()
     }
 
     fun onDownload(sura: ReciterSura) {
@@ -203,6 +206,14 @@ class TelawatSuarVM @Inject constructor(
         states[suraNum] = DownloadState.NotDownloaded
         _uiState.update { it.copy(
             downloadStates = states
+        )}
+    }
+
+    fun onSearchChange(text: String) {
+        searchText = text
+
+        _uiState.update { it.copy(
+            items = getItems(ListType.All)
         )}
     }
 

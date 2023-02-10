@@ -9,11 +9,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WelcomeVM @Inject constructor(
-    private val repository: WelcomeRepo
+    private val repo: WelcomeRepo
 ): ViewModel() {
 
+    val pref = repo.pref
+
     fun save(navController: NavController) {
-        repository.unsetFirstTime()
+        repo.unsetFirstTime()
 
         navController.navigate(
             Screen.Locator(

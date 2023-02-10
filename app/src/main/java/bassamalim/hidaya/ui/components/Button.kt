@@ -74,6 +74,50 @@ fun MyButton(
 }
 
 @Composable
+fun MyHorizontalButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    colors: ButtonColors = ButtonDefaults.buttonColors(backgroundColor = AppTheme.colors.surface),
+    fontSize: TextUnit = 20.sp,
+    fontWeight: FontWeight = FontWeight.Normal,
+    textColor: Color = AppTheme.colors.text,
+    elevation: Int = 10,
+    enabled: Boolean = true,
+    innerPadding: PaddingValues = PaddingValues(6.dp),
+    image: @Composable () -> Unit = {},
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.padding(3.dp),
+        colors = colors,
+        shape = RoundedCornerShape(10.dp),
+        elevation =  ButtonDefaults.elevation(
+            defaultElevation = elevation.dp,
+            pressedElevation = (elevation + 5).dp,
+            disabledElevation = 0.dp
+        ),
+        enabled = enabled
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            image()
+
+            MyText(
+                text = text,
+                modifier = Modifier.padding(innerPadding),
+                fontSize = fontSize,
+                fontWeight = fontWeight,
+                textColor = textColor
+            )
+        }
+
+    }
+}
+
+@Composable
 fun MyIconBtn(
     iconId: Int,
     modifier: Modifier = Modifier,

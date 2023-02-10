@@ -25,6 +25,11 @@ class QuranViewerRepo @Inject constructor(
     fun getViewType() = QViewType.valueOf(
         PrefUtils.getString(pref, Prefs.QuranViewType)
     )
+    fun setViewType(viewType: QViewType) {
+        pref.edit()
+            .putString(Prefs.QuranViewType.key, viewType.name)
+            .apply()
+    }
 
     fun getTextSize() = PrefUtils.getFloat(pref, Prefs.QuranTextSize)
 

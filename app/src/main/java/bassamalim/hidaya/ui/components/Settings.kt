@@ -212,6 +212,8 @@ fun SliderPref(
     sliderFraction: Float = 0.8F,
     onValueChange: () -> Unit = {}
 ) {
+    var value by remember { mutableStateOf(PrefUtils.getFloat(pref, prefObj)) }
+
     Column(
         Modifier
             .fillMaxWidth()
@@ -220,13 +222,14 @@ fun SliderPref(
         PreferenceTitle(titleResId)
 
         MyValuedSlider(
-            initialValue = PrefUtils.getInt(pref, prefObj).toFloat(),
+            initialValue = value,
             valueRange = valueRange,
             infinite = infinite,
             sliderFraction = sliderFraction,
-            onValueChange = { value ->
+            onValueChange = { newValue -> value = newValue },
+            onValueChangeFinished = {
                 pref.edit()
-                    .putInt(prefObj.key, value.toInt())
+                    .putFloat(prefObj.key, value)
                     .apply()
 
                 onValueChange()

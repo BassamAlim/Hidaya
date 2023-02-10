@@ -140,7 +140,7 @@ class PrayersVM @Inject constructor(
     }
 
     private fun updatePrayerTimeAlarms() {
-        Alarms(app.applicationContext, _uiState.value.settingsDialogPID)
+        Alarms(app, _uiState.value.settingsDialogPID)
     }
 
     fun onLocatorClick(navController: NavController) {

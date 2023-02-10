@@ -1,7 +1,6 @@
 package bassamalim.hidaya.view
 
 import android.app.Activity
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +24,7 @@ import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.state.SettingsState
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.utils.ActivityUtils
-import bassamalim.hidaya.utils.LangUtils
+import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.viewmodel.SettingsVM
 
 @Composable
@@ -34,7 +33,7 @@ fun SettingsUI(
     vm: SettingsVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsState()
-    val ctx = LocalContext.current
+    val activity = LocalContext.current as Activity
 
     MyScaffold(
         stringResource(R.string.settings)
@@ -49,7 +48,7 @@ fun SettingsUI(
                     R.string.appearance,
                     Modifier.padding(top = 4.dp, bottom = 2.dp)
                 ) {
-                    AppearanceSettings(ctx, vm.pref)
+                    AppearanceSettings(activity, vm.pref)
                 }
 
                 ExpandableCard(
@@ -159,7 +158,7 @@ private fun ExtraNotificationsSettings(
 }
 
 @Composable
-fun AppearanceSettings(context: Context, pref: SharedPreferences) {
+fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
     Column(
         Modifier.padding(bottom = 10.dp)
     ) {
@@ -172,7 +171,7 @@ fun AppearanceSettings(context: Context, pref: SharedPreferences) {
             entries = stringArrayResource(R.array.language_entries),
             values = stringArrayResource(R.array.languages_values)
         ) {
-            ActivityUtils.restartActivity(context as Activity)
+            ActivityUtils.restartActivity(activity)
         }
 
         // Numerals language
@@ -184,12 +183,12 @@ fun AppearanceSettings(context: Context, pref: SharedPreferences) {
             entries = stringArrayResource(R.array.numerals_language_entries),
             values = stringArrayResource(R.array.languages_values)
         ) {
-            ActivityUtils.restartActivity(context as Activity)
+            ActivityUtils.restartActivity(activity)
         }
 
         // Time format
-        val timeFormatEntries = stringArrayResource(R.array.time_format_values).map {
-            LangUtils.translateNums(context, it)
+        val timeFormatEntries = stringArrayResource(R.array.time_format_entries).map {
+            translateNums(pref, it)
         }.toTypedArray()
         ListPref(
             sp = pref,
@@ -199,7 +198,7 @@ fun AppearanceSettings(context: Context, pref: SharedPreferences) {
             entries = timeFormatEntries,
             values = stringArrayResource(R.array.time_format_values)
         ) {
-            ActivityUtils.restartActivity(context as Activity)
+            ActivityUtils.restartActivity(activity)
         }
 
         // Theme
@@ -211,7 +210,7 @@ fun AppearanceSettings(context: Context, pref: SharedPreferences) {
             entries = stringArrayResource(R.array.themes_entries),
             values = stringArrayResource(R.array.theme_values)
         ) {
-            ActivityUtils.restartActivity(context as Activity)
+            ActivityUtils.restartActivity(activity)
         }
     }
 }

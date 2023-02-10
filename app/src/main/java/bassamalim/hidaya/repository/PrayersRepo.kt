@@ -26,9 +26,9 @@ class PrayersRepo @Inject constructor(
 
     fun getCityID() = PrefUtils.getInt(pref, Prefs.CityID)
 
-    fun getLocationType(): LocationType {
-        return LocationType.valueOf(PrefUtils.getString(pref, Prefs.LocationType))
-    }
+    fun getLocationType() = LocationType.valueOf(
+        PrefUtils.getString(pref, Prefs.LocationType)
+    )
 
     fun getClosest(lat: Double, lon: Double) = db.cityDao().getClosest(lat, lon)
 

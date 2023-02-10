@@ -3,24 +3,28 @@ package bassamalim.hidaya.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.Screen
+import bassamalim.hidaya.enums.ListType
 
 class AthkarVM : ViewModel() {
 
     fun onAllAthkarClick(navController: NavController) {
         navController.navigate(
-            Screen.AthkarList("all").route
+            Screen.AthkarList(ListType.All.name).route
         )
     }
 
     fun onFavoriteAthkarClick(navController: NavController) {
         navController.navigate(
-            Screen.AthkarList("favorite").route
+            Screen.AthkarList(ListType.Favorite.name).route
         )
     }
 
     fun onCategoryClick(navController: NavController, category: Int) {
         navController.navigate(
-            Screen.AthkarList("category", category.toString()).route
+            Screen.AthkarList(
+                ListType.Custom.name,
+                category.toString()
+            ).route
         )
     }
 

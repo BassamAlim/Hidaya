@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -48,7 +45,8 @@ fun TelawatSuarUI(
                 SearchComponent(
                     value = vm.searchText,
                     hint = stringResource(R.string.search),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    onValueChange = { vm.onSearchChange(it) }
                 )
             }
         ) { page, currentPage ->
@@ -67,11 +65,7 @@ private fun Tab(
 ) {
     MyLazyColumn(
         lazyList = {
-            items(
-                items = st.items.filter { item ->
-                    item.searchName.contains(vm.searchText, ignoreCase = true)
-                }
-            ) { item ->
+            items(st.items) { item ->
                 SuraCard(item, vm, st, nc)
             }
         }

@@ -6,12 +6,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
+import bassamalim.hidaya.enums.QViewType
 import bassamalim.hidaya.state.QuranViewerState
 import bassamalim.hidaya.ui.theme.AppTheme
 
@@ -20,9 +21,9 @@ fun QuranSettingsDialog(
     startState: QuranViewerState,
     pref: SharedPreferences,
     reciterNames: Array<String>,
-    onDone: () -> Unit
+    onDone: (QViewType) -> Unit
 ) {
-    val viewType = startState.viewType.ordinal
+    var viewType by remember { mutableStateOf(startState.viewType.ordinal) }
     val reciterIds = Array(reciterNames.size) { it.toString() }
 
     MyDialog(startState.settingsDialogShown) {
@@ -43,6 +44,8 @@ fun QuranSettingsDialog(
                 ),
                 selection = viewType,
                 onSelect = { selection ->
+                    viewType = selection
+
                     pref.edit()
                         .putString("quran_view_type", if (selection == 1) "list" else "page")
                         .apply()
@@ -73,7 +76,7 @@ fun QuranSettingsDialog(
                 pref = pref,
                 prefObj = Prefs.AyaRepeat,
                 titleResId = R.string.aya_repeat,
-                valueRange = 1F..11F,
+                valueRange = 1f..11f,
                 infinite = true
             )
 
@@ -97,7 +100,7 @@ fun QuranSettingsDialog(
                 text = stringResource(R.string.close),
                 Modifier.fillMaxWidth()
             ) {
-                onDone()
+                onDone(QViewType.values()[viewType])
             }
         }
     }

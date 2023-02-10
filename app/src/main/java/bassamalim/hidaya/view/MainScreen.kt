@@ -133,7 +133,7 @@ fun NavigationGraph(
         }
         composable(BottomNavItem.Prayers.route) {
             PrayersUI(
-                navController = navController,
+                nc = navController,
                 vm = hiltViewModel()
             )
         }

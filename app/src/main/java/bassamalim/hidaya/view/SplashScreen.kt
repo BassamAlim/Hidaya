@@ -1,15 +1,10 @@
 package bassamalim.hidaya.view
 
-import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -23,18 +18,18 @@ fun SplashUI(
 ) {
     val state by vm.uiState.collectAsState()
     val context = LocalContext.current
-    val activity = context as Activity
     val requestLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         vm.onLocationRequestResult(permissions)
     }
 
-    LaunchedEffect(null) {
-        vm.provide(nc, requestLauncher)
+    DisposableEffect(key1 = vm) {
+//        val splashScreen = activity.installSplashScreen()
+//        splashScreen.setKeepOnScreenCondition { false }
 
-        val splashScreen = activity.installSplashScreen()
-        splashScreen.setKeepOnScreenCondition { true }
+        vm.onStart(nc, requestLauncher)
+        onDispose {}
     }
 
     LaunchedEffect(key1 = state.showAllowLocationToastShown) {
@@ -43,9 +38,5 @@ fun SplashUI(
             context.getString(R.string.choose_allow_all_the_time),
             Toast.LENGTH_LONG
         ).show()
-    }
-
-    LaunchedEffect(null) {
-        vm.enter()
     }
 }

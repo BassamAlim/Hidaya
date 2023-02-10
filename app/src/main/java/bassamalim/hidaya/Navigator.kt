@@ -12,7 +12,7 @@ import bassamalim.hidaya.view.*
 
 @Composable
 fun Navigator(startRoute: String?) {
-    val startDest = startRoute ?: Screen.Main.route
+    val startDest = startRoute ?: Screen.Splash.route
 
     val navController = rememberNavController()
 
@@ -156,8 +156,14 @@ fun Navigator(startRoute: String?) {
             ).route,
             arguments = listOf(
                 navArgument("score") { type = NavType.IntType },
-                navArgument("questions") { type = NavType.IntArrayType },
-                navArgument("chosen_As") { type = NavType.IntArrayType }
+                navArgument("questions") {
+                    type = NavType.IntArrayType
+                    nullable = true
+                },
+                navArgument("chosen_As") {
+                    type = NavType.IntArrayType
+                    nullable = true
+                }
             )
         ) {
             QuizResultUI(
