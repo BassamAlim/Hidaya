@@ -91,6 +91,7 @@ class SplashVM @Inject constructor(
     private fun locate() {
         LocationServices.getFusedLocationProviderClient(app.applicationContext)
             .lastLocation.addOnSuccessListener { location: Location? ->
+
                 launch(location)
             }
 
@@ -115,7 +116,7 @@ class SplashVM @Inject constructor(
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             _uiState.update { it.copy(
-                showAllowLocationToastShown = true
+                allowBGLocShown = true
             )}
 
             locationRequestLauncher.launch(

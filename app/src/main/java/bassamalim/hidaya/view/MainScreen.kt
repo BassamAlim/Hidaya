@@ -1,16 +1,13 @@
 package bassamalim.hidaya.view
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,9 +27,8 @@ fun MainUI(
     nc: NavHostController = rememberNavController(),
     vm: MainVM = hiltViewModel()
 ) {
-    val state by vm.uiState.collectAsState()
-    val context = LocalContext.current
-    val bottomNavController = rememberNavController()
+    val st by vm.uiState.collectAsState()
+    val bottomNc = rememberNavController()
 
     MyScaffold(
         title = stringResource(R.string.app_name),
@@ -70,14 +66,14 @@ fun MainUI(
                                 horizontalAlignment = Alignment.End
                             ) {
                                 MyText(
-                                    text = state.hijriDate,
+                                    text = st.hijriDate,
                                     fontSize = 16.nsp,
                                     fontWeight = FontWeight.Bold,
                                     textColor = AppTheme.colors.onPrimary
                                 )
 
                                 MyText(
-                                    text = state.gregorianDate,
+                                    text = st.gregorianDate,
                                     fontSize = 16.nsp,
                                     textColor = AppTheme.colors.onPrimary
                                 )
@@ -87,30 +83,19 @@ fun MainUI(
                 }
             }
         },
-        bottomBar = { MyBottomNavigation(bottomNavController) }
+        bottomBar = { MyBottomNavigation(bottomNc) }
     ) {
-        NavigationGraph(nc, bottomNavController, it)
+        NavigationGraph(nc, bottomNc, it)
 
         DateEditorDialog(
-            shown = state.dateEditorShown,
-            offsetText = state.dateEditorOffsetText,
-            dateText = state.dateEditorDateText,
+            shown = st.dateEditorShown,
+            offsetText = st.dateEditorOffsetText,
+            dateText = st.dateEditorDateText,
             onNextDay = { vm.onDateEditorNextDay() },
             onPreviousDay = { vm.onDateEditorPrevDay() },
             onCancel = { vm.onDateEditorCancel() },
             onSubmit = { vm.onDateEditorSubmit() }
         )
-
-        if (state.shouldShowLocationPermissionToast) {
-            LaunchedEffect(null) {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.give_location_permission_toast),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
     }
 }
 

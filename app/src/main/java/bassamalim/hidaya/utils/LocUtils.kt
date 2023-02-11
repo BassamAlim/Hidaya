@@ -3,6 +3,7 @@ package bassamalim.hidaya.utils
 import android.content.SharedPreferences
 import android.location.Location
 import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.models.MyLocation
 import com.google.gson.Gson
 
 object LocUtils {
@@ -20,19 +21,23 @@ object LocUtils {
             .apply()
     }
 
-    fun storeLocation(pref: SharedPreferences, location: Location?) {
-        val json = Gson().toJson(location)
+    fun storeLocation(sp: SharedPreferences, location: Location?) {
+        val myLoc = MyLocation(location!!)
+        val json = Gson().toJson(myLoc)
 
-        pref.edit()
+        sp.edit()
             .putString(Prefs.StoredLocation.key, json)
             .apply()
     }
 
-    fun retrieveLocation(pref: SharedPreferences): Location? {
-        val json = PrefUtils.getString(pref, Prefs.StoredLocation)
+    fun retrieveLocation(sp: SharedPreferences): Location? {
+        val json = PrefUtils.getString(sp, Prefs.StoredLocation)
 
-        return if (json.isEmpty()) null
-        else Gson().fromJson(json, Location::class.java)
+        return if (json == "{}") null
+        else {
+            val myLoc = Gson().fromJson(json, MyLocation::class.java)
+            MyLocation.toLocation(myLoc)
+        }
     }
 
 }

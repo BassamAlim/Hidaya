@@ -16,7 +16,7 @@ fun SplashUI(
     nc: NavController = rememberNavController(),
     vm: SplashVM = hiltViewModel()
 ) {
-    val state by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
     val context = LocalContext.current
     val requestLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -32,11 +32,14 @@ fun SplashUI(
         onDispose {}
     }
 
-    LaunchedEffect(key1 = state.showAllowLocationToastShown) {
-        Toast.makeText(
-            context,
-            context.getString(R.string.choose_allow_all_the_time),
-            Toast.LENGTH_LONG
-        ).show()
+    if (st.allowBGLocShown) {
+        LaunchedEffect(null) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.choose_allow_all_the_time),
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
+
 }

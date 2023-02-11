@@ -252,5 +252,6 @@
     <string name="close">إغلاق</string>
     <string name="unchanged">بلا تغيير</string>
     <string name="today_werd">وِرد اليوم</string>
+    <string name="clk_to_locate">اضغط لتفعيل خدمات الموقع</string>
 
 </resources>

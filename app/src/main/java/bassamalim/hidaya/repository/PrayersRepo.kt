@@ -2,6 +2,7 @@ package bassamalim.hidaya.repository
 
 import android.content.SharedPreferences
 import android.content.res.Resources
+import android.location.Location
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
@@ -14,20 +15,20 @@ import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 
 class PrayersRepo @Inject constructor(
-    private val resources: Resources,
-    val pref: SharedPreferences,
+    private val res: Resources,
+    val sp: SharedPreferences,
     val db: AppDatabase
 ) {
 
-    val language = PrefUtils.getLanguage(pref)
-    val numeralsLanguage = PrefUtils.getNumeralsLanguage(pref)
+    val language = PrefUtils.getLanguage(sp)
+    val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
 
-    fun getCountryID() = PrefUtils.getInt(pref, Prefs.CountryID)
+    fun getCountryID() = PrefUtils.getInt(sp, Prefs.CountryID)
 
-    fun getCityID() = PrefUtils.getInt(pref, Prefs.CityID)
+    fun getCityID() = PrefUtils.getInt(sp, Prefs.CityID)
 
     fun getLocationType() = LocationType.valueOf(
-        PrefUtils.getString(pref, Prefs.LocationType)
+        PrefUtils.getString(sp, Prefs.LocationType)
     )
 
     fun getClosest(lat: Double, lon: Double) = db.cityDao().getClosest(lat, lon)
@@ -44,47 +45,48 @@ class PrayersRepo @Inject constructor(
 
     fun getNotificationTypes(): List<NotificationType> {
         return listOf(
-            NotificationType.valueOf(PrefUtils.getString(pref, Prefs.NotificationType(PID.FAJR))),
-            NotificationType.valueOf(PrefUtils.getString(pref, Prefs.NotificationType(PID.SUNRISE))),
-            NotificationType.valueOf(PrefUtils.getString(pref, Prefs.NotificationType(PID.DHUHR))),
-            NotificationType.valueOf(PrefUtils.getString(pref, Prefs.NotificationType(PID.ASR))),
-            NotificationType.valueOf(PrefUtils.getString(pref, Prefs.NotificationType(PID.MAGHRIB))),
-            NotificationType.valueOf(PrefUtils.getString(pref, Prefs.NotificationType(PID.ISHAA))),
+            NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.FAJR))),
+            NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.SUNRISE))),
+            NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.DHUHR))),
+            NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.ASR))),
+            NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.MAGHRIB))),
+            NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.ISHAA))),
         )
     }
     fun setNotificationType(pid: PID, type: NotificationType) {
-        pref.edit()
+        sp.edit()
             .putString(Prefs.NotificationType(pid).key, type.name)
             .apply()
     }
 
     fun getTimeOffsets(): List<Int> {
         return listOf(
-            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.FAJR)),
-            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.SUNRISE)),
-            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.DHUHR)),
-            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.ASR)),
-            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.MAGHRIB)),
-            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.ISHAA)),
+            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.FAJR)),
+            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.SUNRISE)),
+            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.DHUHR)),
+            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ASR)),
+            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.MAGHRIB)),
+            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ISHAA)),
         )
     }
     fun setTimeOffset(pid: PID, offset: Int) {
-        pref.edit()
+        sp.edit()
             .putInt(Prefs.TimeOffset(pid).key, offset)
             .apply()
     }
 
     fun setDoNotShowAgain() {
-        pref.edit()
+        sp.edit()
             .putBoolean(Prefs.ShowPrayersTutorial.key, false)
             .apply()
     }
 
-    fun getLocation() = LocUtils.retrieveLocation(pref)
+    fun getLocation(): Location? = LocUtils.retrieveLocation(sp)
 
-    fun getHijriMonths(): Array<String> = resources.getStringArray(R.array.hijri_months)
-    fun getPrayerNames(): Array<String> = resources.getStringArray(R.array.prayer_names)
+    fun getHijriMonths(): Array<String> = res.getStringArray(R.array.hijri_months)
+    fun getPrayerNames(): Array<String> = res.getStringArray(R.array.prayer_names)
 
-    fun getDayStr() = resources.getString(R.string.day)
+    fun getDayStr() = res.getString(R.string.day)
+    fun getClkToLocate() = res.getString(R.string.clk_to_locate)
 
 }

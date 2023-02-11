@@ -29,7 +29,7 @@ class PrayersVM @Inject constructor(
 ): AndroidViewModel(app) {
 
     val location = repo.getLocation()
-    private val prayTimes = PrayTimes(repo.pref)
+    private val prayTimes = PrayTimes(repo.sp)
     private val prayerNames = repo.getPrayerNames()
     private val calendar = Calendar.getInstance()
     private var dateOffset = 0
@@ -41,11 +41,11 @@ class PrayersVM @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        if (location != null) {
-            _uiState.update { it.copy(
-                locationName = getLocationName()
-            )}
-        }
+        _uiState.update { it.copy(
+            locationName =
+                if (location != null) getLocName()
+                else repo.getClkToLocate()
+        )}
     }
 
     fun onStart() {
@@ -75,14 +75,14 @@ class PrayersVM @Inject constructor(
         calendar.timeInMillis = System.currentTimeMillis()
         calendar[Calendar.DATE] = calendar[Calendar.DATE] + dateOffset
 
-        val utcOffset = PTUtils.getUTCOffset(repo.pref, repo.db)
+        val utcOffset = PTUtils.getUTCOffset(repo.sp, repo.db)
 
         return prayTimes.getStrPrayerTimes(
             location!!.latitude, location.longitude, utcOffset.toDouble(), calendar
         )
     }
 
-    private fun getLocationName(): String {
+    private fun getLocName(): String {
         var countryId = repo.getCountryID()
         var cityId = repo.getCityID()
 

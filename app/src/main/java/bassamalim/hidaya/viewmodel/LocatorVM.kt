@@ -25,13 +25,13 @@ import javax.inject.Inject
 @HiltViewModel
 class LocatorVM @Inject constructor(
     private val app: Application,
-    private val repository: LocatorRepo,
+    private val repo: LocatorRepo,
     savedStateHandle: SavedStateHandle
 ): AndroidViewModel(app) {
 
     private val type = savedStateHandle.get<String>("type") ?: "normal"
 
-    private lateinit var navController: NavController
+    private lateinit var nc: NavController
     private lateinit var locationRequestLauncher:
             ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
 
@@ -44,25 +44,15 @@ class LocatorVM @Inject constructor(
         navController: NavController,
         locationRequestLauncher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
     ) {
-        this.navController = navController
+        this.nc = navController
         this.locationRequestLauncher = locationRequestLauncher
-    }
-
-    private fun granted(): Boolean {
-        val ctx = app.applicationContext
-        return ActivityCompat.checkSelfPermission(
-            ctx, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(
-                    ctx, Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
     }
 
     @SuppressLint("MissingPermission")
     private fun locate() {
-        LocationServices.getFusedLocationProviderClient(app.applicationContext)
+        LocationServices.getFusedLocationProviderClient(app)
             .lastLocation.addOnSuccessListener { location: Location? ->
-                if (location != null) repository.storeLocation(location)
+                if (location != null) repo.storeLocation(location)
 
                 launch()
             }
@@ -71,7 +61,7 @@ class LocatorVM @Inject constructor(
     }
 
     private fun launch() {
-        navController.navigate(Screen.Main.route) {
+        nc.navigate(Screen.Main.route) {
             popUpTo(Screen.Main.route) {
                 inclusive = true
             }
@@ -81,7 +71,7 @@ class LocatorVM @Inject constructor(
     private fun background() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             ActivityCompat.checkSelfPermission(
-                app.applicationContext,
+                app,
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED) {
             _uiState.update { it.copy(
@@ -94,8 +84,17 @@ class LocatorVM @Inject constructor(
         }
     }
 
-    fun onLocateClick() {
-        repository.setLocationType(LocationType.Auto)
+    private fun granted(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            app, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    app, Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun onLocateClk() {
+        repo.setLocationType(LocationType.Auto)
 
         if (granted()) {
             locate()
@@ -109,14 +108,14 @@ class LocatorVM @Inject constructor(
         }
     }
 
-    fun onChooseLocationClick() {
-        repository.setLocationType(LocationType.Manual)
+    fun onChooseLocationClk() {
+        repo.setLocationType(LocationType.Manual)
 
-        navController.navigate(Screen.LocationPicker.route)
+        nc.navigate(Screen.LocationPicker.route)
     }
 
-    fun onSkipLocationClick() {
-        repository.setLocationType(LocationType.None)
+    fun onSkipLocationClk() {
+        repo.setLocationType(LocationType.None)
 
         launch()
     }

@@ -228,5 +228,6 @@
     <string name="close">Close</string>
     <string name="unchanged">Unchanged</string>
     <string name="today_werd">Today\'s werd</string>
+    <string name="clk_to_locate">Click to enable location</string>
 
 </resources>

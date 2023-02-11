@@ -29,15 +29,25 @@ class LocationPickerVM @Inject constructor(
 
     private val _uiState = MutableStateFlow(LocationPickerState(
         titleResId = R.string.choose_country,
-        items = repository.getCountries().map { country ->
+        items = getItems()
+    ))
+    val uiState = _uiState.asStateFlow()
+
+    private fun getItems(): List<LocationPickerItem> {
+        val countries = repository.getCountries().map { country ->
             LocationPickerItem(
                 id = country.id,
                 nameAr = country.nameAr,
                 nameEn = country.nameEn
             )
         }
-    ))
-    val uiState = _uiState.asStateFlow()
+
+        return if (searchText.isEmpty()) countries
+        else countries.filter { country ->
+            country.nameAr.contains(searchText, ignoreCase = true) or
+                    country.nameEn.contains(searchText, ignoreCase = true)
+        }
+    }
 
     fun onBack(navController: NavController) {
         if (mode == 1) {
@@ -81,6 +91,14 @@ class LocationPickerVM @Inject constructor(
                 }
             )}
         }
+    }
+
+    fun onSearchTextChange(text: String) {
+        searchText = text
+
+        _uiState.update { it.copy(
+            items = getItems()
+        )}
     }
 
 }

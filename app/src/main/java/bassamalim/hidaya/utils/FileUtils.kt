@@ -49,7 +49,6 @@ object FileUtils {
     }
 
     fun getJsonFromDownloads(path: String): String {
-        println(path)
         var jsonStr = ""
 
         var fin: FileInputStream? = null

@@ -69,7 +69,7 @@ fun LocatorUI(
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 30.dp)
             ) {
-                vm.onLocateClick()
+                vm.onLocateClk()
             }
 
             MyButton(
@@ -79,7 +79,7 @@ fun LocatorUI(
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 30.dp)
             ) {
-                vm.onChooseLocationClick()
+                vm.onChooseLocationClk()
             }
 
             if (state.showSkipLocationBtn) {
@@ -90,28 +90,20 @@ fun LocatorUI(
                         .fillMaxWidth()
                         .padding(vertical = 10.dp, horizontal = 30.dp)
                 ) {
-                    vm.onSkipLocationClick()
+                    vm.onSkipLocationClk()
                 }
             }
         }
     }
 
-    LaunchedEffect(key1 = state.showAllowLocationToast) {
-        Toast.makeText(
-            context,
-            context.getString(R.string.choose_allow_all_the_time),
-            Toast.LENGTH_LONG
-        ).show()
+    if (state.showAllowLocationToast) {
+        LaunchedEffect(null) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.choose_allow_all_the_time),
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
-}
 
-@Composable
-fun RequestPermissions() {
-    val context = LocalContext.current
-    val requestLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-
-
-    }
 }

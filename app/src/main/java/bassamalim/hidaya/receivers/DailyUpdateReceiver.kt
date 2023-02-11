@@ -87,7 +87,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         }
         else LocUtils.storeLocation(pref, location)
 
-        val times = PTUtils.getTimes(pref, DBUtils.getDB(context))!!
+        val times = PTUtils.getTimes(pref, DBUtils.getDB(context)) ?: return
 
         Alarms(context, times)
 

@@ -43,7 +43,8 @@ fun LocationPickerUI(
                 value = vm.searchText,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 10.dp)
+                    .padding(bottom = 10.dp),
+                onValueChange = { vm.onSearchTextChange(it) }
             )
 
             MyLazyColumn(

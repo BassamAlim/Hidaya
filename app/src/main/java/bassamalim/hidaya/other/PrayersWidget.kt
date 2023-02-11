@@ -7,7 +7,6 @@ import android.content.Context
 import android.widget.RemoteViews
 import bassamalim.hidaya.R
 import bassamalim.hidaya.utils.ActivityUtils
-import bassamalim.hidaya.utils.LangUtils
 import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PTUtils
 
@@ -30,9 +29,11 @@ class PrayersWidget : AppWidgetProvider() {
     }
 
     private fun updateAppWidget(
-        context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int
     ) {
-        ActivityUtils.onActivityCreateSetLocale(context as Activity)
+//        ActivityUtils.onActivityCreateSetLocale(context as Activity)
 
         val timesList = getTimesList(context) ?: return
 

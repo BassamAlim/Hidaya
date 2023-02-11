@@ -37,7 +37,7 @@ sealed class Prefs(val key: String, val default: Any) {
     object ShowBooksTutorial: Prefs("show_books_tutorial", true)
     object ShowQuranTutorial: Prefs("show_quran_tutorial", true)
     object ShowQuranViewerTutorial: Prefs("show_quran_viewer_tutorial", true)
-    object StoredLocation: Prefs("stored_location", "")
+    object StoredLocation: Prefs("stored_location", "{}")
     object SelectedRewayat: Prefs("selected_rewayat", "")
     object ShowPrayersTutorial: Prefs("show_prayers_tutorial", true)
     object PrayerTimesCalculationMethod: Prefs("prayer_times_calc_method_key", "MECCA")
