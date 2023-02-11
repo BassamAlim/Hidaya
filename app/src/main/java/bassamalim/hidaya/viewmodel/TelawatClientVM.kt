@@ -143,15 +143,17 @@ class TelawatClientVM @Inject constructor(
 
     private var onComplete = object : BroadcastReceiver() {
         override fun onReceive(ctx: Context, intent: Intent) {
-            checkDownload()
+            _uiState.update { it.copy(
+                downloadState = checkDownload()
+            )}
         }
     }
 
     private fun checkDownload(): DownloadState {
-        return if (
-            File("${app.getExternalFilesDir(null)}$prefix").exists())
+        return if (File("${app.getExternalFilesDir(null)}$prefix").exists())
             DownloadState.Downloaded
-        else DownloadState.NotDownloaded
+        else
+            DownloadState.NotDownloaded
     }
 
     private fun updateTrackState() {
@@ -167,7 +169,7 @@ class TelawatClientVM @Inject constructor(
             reciterName = repo.getReciterName(reciterId),
             repeat = repo.getRepeatMode(),
             shuffle = repo.getShuffleMode(),
-            downloadState = DownloadState.Downloading
+            downloadState = checkDownload()
         )}
     }
 
@@ -230,13 +232,13 @@ class TelawatClientVM @Inject constructor(
         suraIdx = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
         duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
 
+        prefix = "${"/Telawat/${reciterId}/${versionId}/"}$suraIdx.mp3"
+
         _uiState.update { it.copy(
             suraName = surahNames[suraIdx],
-            duration = formatTime(duration)
+            duration = formatTime(duration),
+            downloadState = checkDownload()
         )}
-
-        prefix = "${"/Telawat/${reciterId}/${versionId}/"}$suraIdx.mp3"
-        checkDownload()
     }
 
     private fun updatePbState(state: PlaybackStateCompat) {
@@ -279,7 +281,7 @@ class TelawatClientVM @Inject constructor(
     }
 
     fun onBackPressed(navController: NavController) {
-        if ((activity).isTaskRoot) {
+        if (activity.isTaskRoot) {
             navController.navigate(
                 Screen.TelawatSuar(
                     reciterId.toString(),

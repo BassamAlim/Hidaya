@@ -42,17 +42,6 @@ class PrayersRepo @Inject constructor(
         else db.cityDao().getCity(cityId).nameAr
     }
 
-    fun getTimeOffsets(): List<Int> {
-        return listOf(
-            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.FAJR)),
-            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.SUNRISE)),
-            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.DHUHR)),
-            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.ASR)),
-            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.MAGHRIB)),
-            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.ISHAA)),
-        )
-    }
-
     fun getNotificationTypes(): List<NotificationType> {
         return listOf(
             NotificationType.valueOf(PrefUtils.getString(pref, Prefs.NotificationType(PID.FAJR))),
@@ -63,13 +52,22 @@ class PrayersRepo @Inject constructor(
             NotificationType.valueOf(PrefUtils.getString(pref, Prefs.NotificationType(PID.ISHAA))),
         )
     }
-
     fun setNotificationType(pid: PID, type: NotificationType) {
         pref.edit()
             .putString(Prefs.NotificationType(pid).key, type.name)
             .apply()
     }
 
+    fun getTimeOffsets(): List<Int> {
+        return listOf(
+            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.FAJR)),
+            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.SUNRISE)),
+            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.DHUHR)),
+            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.ASR)),
+            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.MAGHRIB)),
+            PrefUtils.getInt(pref, Prefs.TimeOffset(PID.ISHAA)),
+        )
+    }
     fun setTimeOffset(pid: PID, offset: Int) {
         pref.edit()
             .putInt(Prefs.TimeOffset(pid).key, offset)

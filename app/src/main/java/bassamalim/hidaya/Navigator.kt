@@ -205,7 +205,6 @@ fun Navigator(startRoute: String?) {
         composable(Screen.RadioClient.route) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 RadioClientUI(
-                    nc = navController,
                     vm = hiltViewModel()
                 )
             }

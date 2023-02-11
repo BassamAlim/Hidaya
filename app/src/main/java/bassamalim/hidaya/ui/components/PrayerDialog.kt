@@ -30,7 +30,6 @@ fun PrayerDialog(
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
-    var currentNotificationType by remember { mutableStateOf(notificationType) }
     val notificationOptions = listOf(
         Pair(R.string.athan_speaker, R.drawable.ic_speaker),
         Pair(R.string.enable_notification, R.drawable.ic_sound),
@@ -38,7 +37,7 @@ fun PrayerDialog(
         Pair(R.string.disable_notification, R.drawable.ic_block)
     )
     val offsetMin = 30f
-    var sliderProgress by remember { mutableStateOf(timeOffset + offsetMin) }
+    val sliderProgress = timeOffset + offsetMin
 
     MyDialog(
         shown,
@@ -63,12 +62,8 @@ fun PrayerDialog(
             CustomRadioGroup(
                 pid = pid,
                 options = notificationOptions,
-                selection = currentNotificationType,
-                onSelect = { selection ->
-                    currentNotificationType = selection
-
-                    onNotificationTypeChange(selection)
-                }
+                selection = notificationType,
+                onSelect = { selection -> onNotificationTypeChange(selection) }
             )
 
             MyText(
@@ -85,11 +80,7 @@ fun PrayerDialog(
                 modifier = Modifier.fillMaxWidth(),
                 progressMin = offsetMin,
                 sliderFraction = 0.875F,
-                onValueChange = { value ->
-                    sliderProgress = value + offsetMin
-
-                    onOffsetChange(value.toInt())
-                }
+                onValueChange = { value -> onOffsetChange(value.toInt()) }
             )
         }
     }
@@ -124,7 +115,7 @@ fun CustomRadioGroup(
                                     shape = RoundedCornerShape(10.dp)
                                 )
                             else Modifier,
-                        onClick = { onSelect(selection) }
+                        onClick = { onSelect(NotificationType.values()[i]) }
                     ) {
                         Row(
                             Modifier

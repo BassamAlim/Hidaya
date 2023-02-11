@@ -58,26 +58,20 @@ class RadioClientVM @Inject constructor(
                 // Finish building the UI
                 buildTransportControls()
 
-                _uiState.update { it.copy(
-                    btnState = PlaybackStateCompat.STATE_STOPPED
-                )}
+                updatePbState(PlaybackStateCompat.STATE_STOPPED)
             }
 
             override fun onConnectionSuspended() {
                 Log.e(Global.TAG, "Connection suspended in RadioClient")
                 // The Service has crashed.
                 // Disable transport controls until it automatically reconnects
-                _uiState.update { it.copy(
-                    btnState = PlaybackStateCompat.STATE_NONE
-                )}
+                updatePbState(PlaybackStateCompat.STATE_NONE)
             }
 
             override fun onConnectionFailed() {
                 Log.e(Global.TAG, "Connection failed in RadioClient")
                 // The Service has refused our connection
-                _uiState.update { it.copy(
-                    btnState = PlaybackStateCompat.STATE_NONE
-                )}
+                updatePbState(PlaybackStateCompat.STATE_NONE)
             }
         }
 
@@ -110,25 +104,26 @@ class RadioClientVM @Inject constructor(
             override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
                 // To change the playback state inside the app when the user changes it
                 // from the notification
-                updatePbState(state)
+                updatePbState(state.state)
             }
         }
 
     private fun buildTransportControls() {
         // Display the initial state
-        updatePbState(controller.playbackState)
+        updatePbState(controller.playbackState.state)
 
         // Register a Callback to stay in sync
         controller.registerCallback(controllerCallback)
     }
 
-    private fun updatePbState(state: PlaybackStateCompat) {
-        when (state.state) {
+    private fun updatePbState(state: Int) {
+        when (state) {
             PlaybackStateCompat.STATE_PLAYING,
             PlaybackStateCompat.STATE_STOPPED,
-            PlaybackStateCompat.STATE_CONNECTING -> _uiState.update { it.copy(
-                btnState = state.state
-            )}
+            PlaybackStateCompat.STATE_CONNECTING ->
+                _uiState.update { it.copy(
+                    btnState = state
+                )}
             else -> {}
         }
     }
@@ -139,17 +134,11 @@ class RadioClientVM @Inject constructor(
             // test the current state and choose the action accordingly=
             if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
                 tc.pause()
-
-                _uiState.update { it.copy(
-                    btnState = PlaybackStateCompat.STATE_STOPPED
-                )}
+                updatePbState(PlaybackStateCompat.STATE_STOPPED)
             }
             else {
                 tc.play()
-
-                _uiState.update { it.copy(
-                    btnState = PlaybackStateCompat.STATE_PLAYING
-                )}
+                updatePbState(PlaybackStateCompat.STATE_PLAYING)
             }
         }
     }
