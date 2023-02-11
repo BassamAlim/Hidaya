@@ -12,18 +12,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.theme.AppTheme
 
 @Composable
 fun MyDialog(
     shown: Boolean,
+    easyDismiss: Boolean = true,
     onDismiss: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     if (shown) {
         Dialog(
-            onDismissRequest = { onDismiss() }
+            onDismissRequest = { onDismiss() },
+            properties = DialogProperties(
+                dismissOnBackPress = easyDismiss,
+                dismissOnClickOutside = easyDismiss
+            )
         ) {
             Surface(
                 color = Color.Transparent
@@ -49,7 +55,8 @@ fun InfoDialog(
     onDismiss: () -> Unit = {}
 ) {
     MyDialog(
-        shown = shown
+        shown = shown,
+        onDismiss = onDismiss
     ) {
         Column(
             Modifier.padding(top = 5.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)

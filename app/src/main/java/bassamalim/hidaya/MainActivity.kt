@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         ActivityUtils.onActivityCreateSetTheme(this)
         ActivityUtils.onActivityCreateSetLocale(this)
         ActivityUtils.onActivityCreateSetLocale(applicationContext)
+        ActivityUtils.onActivityCreateSetLocale(applicationContext)
 
         initFirebase()
 

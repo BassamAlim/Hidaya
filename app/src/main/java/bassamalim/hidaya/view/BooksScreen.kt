@@ -51,7 +51,7 @@ fun BooksUI(
                         modifier = Modifier.padding(vertical = 2.dp),
                         iconBtn = {
                             MyDownloadBtn(
-                                state = vm.downloadStates[item.id],
+                                state = st.downloadStates[item.id],
                                 path = vm.getPath(item.id),
                                 modifier = Modifier.padding(end = 10.dp),
                                 size = 32.dp,

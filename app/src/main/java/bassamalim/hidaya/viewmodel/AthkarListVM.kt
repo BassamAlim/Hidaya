@@ -25,7 +25,7 @@ class AthkarListVM @Inject constructor(
     private val repo: AthkarListRepo
 ): ViewModel() {
 
-    private val type = savedStateHandle.get<String>("type") ?: "all"
+    private val type = savedStateHandle.get<String>("type") ?: ListType.All.name
     private val category = savedStateHandle.get<Int>("category")?: 0
 
     var searchText by mutableStateOf("")
@@ -46,13 +46,12 @@ class AthkarListVM @Inject constructor(
         val athkar = repo.getAthkar(type, category)
         val items = ArrayList<AthkarItem>()
 
-        for (i in athkar.indices) {
-            val thikr = athkar[i]
-
-            if (language == Language.ENGLISH && !hasEn(thikr)) continue
+        val isEng = language == Language.ENGLISH
+        for (thikr in athkar) {
+            if (isEng && !hasEn(thikr)) continue
 
             val name =
-                if (language == Language.ENGLISH) thikr.name_en!!
+                if (isEng) thikr.name_en!!
                 else thikr.name!!
 
             items.add(
@@ -62,9 +61,8 @@ class AthkarListVM @Inject constructor(
             )
         }
 
-        return if (searchText.isNotEmpty())
-            items.filter { it.name.contains(searchText, true) }
-        else items
+        return if (searchText.isEmpty()) items
+        else items.filter { it.name.contains(searchText, true) }
     }
 
     private fun hasEn(thikr: AthkarDB): Boolean {

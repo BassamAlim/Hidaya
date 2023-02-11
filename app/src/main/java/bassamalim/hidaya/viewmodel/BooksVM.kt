@@ -1,7 +1,6 @@
 package bassamalim.hidaya.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.Screen
@@ -19,65 +18,84 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BooksVM @Inject constructor(
-    private val repository: BooksRepo
+    private val repo: BooksRepo
 ): ViewModel() {
 
-    val downloadStates = mutableStateListOf<DownloadState>()
-
     private val _uiState = MutableStateFlow(BooksState(
-        items = repository.getBooks()
+        items = repo.getBooks()
     ))
     val uiState = _uiState.asStateFlow()
 
+    init {
+        _uiState.update { it.copy(
+            downloadStates = getDownloadStates()
+        )}
+    }
+
     fun onStart() {
-        checkDownloads()
+        _uiState.update { it.copy(
+            downloadStates = getDownloadStates()
+        )}
     }
 
     fun getPath(itemId: Int): String {
-        return repository.getPath(itemId)
+        return repo.getPath(itemId)
     }
 
     fun onFileDeleted(itemId: Int) {
+        val downloadStates = _uiState.value.downloadStates.toMutableList()
         downloadStates[itemId] = DownloadState.NotDownloaded
+        _uiState.update { it.copy(
+            downloadStates = downloadStates
+        )}
     }
 
     fun onFabClick(navController: NavController) {
         navController.navigate(Screen.BookSearcher.route)
     }
 
-    private fun checkDownloads() {
-        downloadStates.clear()
+    private fun getDownloadStates(): ArrayList<DownloadState> {
+        val downloadStates = ArrayList<DownloadState>()
         for (book in _uiState.value.items) {
             downloadStates.add(
-                if (repository.isDownloaded(book.id)) {
-                    if (repository.isDownloading(book.id)) DownloadState.Downloading
+                if (repo.isDownloaded(book.id)) {
+                    if (repo.isDownloading(book.id)) DownloadState.Downloading
                     else DownloadState.Downloaded
                 }
                 else DownloadState.NotDownloaded
             )
         }
+        return downloadStates
     }
 
     fun download(item: BooksDB) {
+        val downloadStates = _uiState.value.downloadStates.toMutableList()
         downloadStates[item.id] = DownloadState.Downloading
+        _uiState.update { it.copy(
+            downloadStates = downloadStates
+        )}
 
-        val downloadTask = repository.download(item)
+        val downloadTask = repo.download(item)
+        downloadTask
+            .addOnSuccessListener {
+                Log.i(Global.TAG, "File download succeeded")
 
-        downloadTask.addOnSuccessListener {
-            Log.i(Global.TAG, "File download succeeded")
-            checkDownloads()
-        }.addOnFailureListener {
-            Log.e(Global.TAG, "File download failed")
-        }
+                _uiState.update { it.copy(
+                    downloadStates = getDownloadStates()
+                )}
+            }
+            .addOnFailureListener {
+                Log.e(Global.TAG, "File download failed")
+            }
     }
 
-    fun onItemClick(item: BooksDB, navController: NavController) {
-        if (downloadStates[item.id] == DownloadState.NotDownloaded) download(item)
-        else if (downloadStates[item.id] == DownloadState.Downloaded) {
-            navController.navigate(
+    fun onItemClick(item: BooksDB, nc: NavController) {
+        if (_uiState.value.downloadStates[item.id] == DownloadState.NotDownloaded) download(item)
+        else if (_uiState.value.downloadStates[item.id] == DownloadState.Downloaded) {
+            nc.navigate(
                 Screen.BookChapters(
                     item.id.toString(),
-                    if (repository.language == Language.ENGLISH) item.titleEn
+                    if (repo.language == Language.ENGLISH) item.titleEn
                     else item.title
                 ).route
             )
@@ -96,7 +114,7 @@ class BooksVM @Inject constructor(
             tutorialDialogShown = false
         )}
 
-        if (doNotShowAgain) repository.setDoNotShowAgain()
+        if (doNotShowAgain) repo.setDoNotShowAgain()
     }
 
 }

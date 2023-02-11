@@ -36,17 +36,17 @@ class BookSearcherRepo @Inject constructor(
             val jsonStr = FileUtils.getJsonFromDownloads(
                 context.getExternalFilesDir(null).toString() + prefix + i + ".json"
             )
-            val bookContent =
-                try {
-                    gson.fromJson(jsonStr, Book::class.java)
-                } catch (e: Exception) {
-                    Log.e(Global.TAG, "Error in json read in BookSearcher")
-                    e.printStackTrace()
-                    continue
-                }
 
-            bookContents.add(bookContent)
+            try {
+                val bookContent = gson.fromJson(jsonStr, Book::class.java)
+                if (bookContent != null) bookContents.add(bookContent)
+            } catch (e: Exception) {
+                Log.e(Global.TAG, "Error in json read in BookSearcher")
+                e.printStackTrace()
+                continue
+            }
         }
+
         return bookContents
     }
 

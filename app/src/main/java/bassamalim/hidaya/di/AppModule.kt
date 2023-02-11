@@ -30,12 +30,12 @@ object AppModule {
 
     @Provides @Singleton
     fun providePreferences(application: Application) =
-        PreferenceManager.getDefaultSharedPreferences(application.applicationContext)!!
+        PreferenceManager.getDefaultSharedPreferences(application)!!
 
     @Provides @Singleton  // Sets how many instances of this dependency can be created
     fun provideDatabase(application: Application) =
         Room.databaseBuilder(
-            application.applicationContext, AppDatabase::class.java, "HidayaDB"
+            application, AppDatabase::class.java, "HidayaDB"
         ).createFromAsset("databases/HidayaDB.db")
             .allowMainThreadQueries()
             .build()

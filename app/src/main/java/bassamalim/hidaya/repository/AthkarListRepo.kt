@@ -7,6 +7,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.database.dbs.AthkarDB
 import bassamalim.hidaya.enums.Language
+import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.utils.PrefUtils
 import com.google.gson.Gson
 import javax.inject.Inject
@@ -30,9 +31,9 @@ class AthkarListRepo @Inject constructor(
 
     fun getAthkar(type: String, category: Int): List<AthkarDB> {
         return when (type) {
-            "all" -> db.athkarDao().getAll()
-            "favorite" -> db.athkarDao().getFavorites()
-            else -> db.athkarDao().getList(category)
+            ListType.Favorite.name -> db.athkarDao().getFavorites()
+            ListType.Custom.name -> db.athkarDao().getList(category)
+            else -> db.athkarDao().getAll()
         }
     }
 
