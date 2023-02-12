@@ -8,15 +8,16 @@ import com.google.gson.Gson
 
 object LocUtils {
 
-    fun storeLocation(pref: SharedPreferences, latitude: Double, longitude: Double) {
+    fun storeLocation(sp: SharedPreferences, latitude: Double, longitude: Double) {
         val location = Location("").apply {
             this.latitude = latitude
             this.longitude = longitude
         }
 
-        val json = Gson().toJson(location)
+        val myLoc = MyLocation(location)
+        val json = Gson().toJson(myLoc)
 
-        pref.edit()
+        sp.edit()
             .putString(Prefs.StoredLocation.key, json)
             .apply()
     }

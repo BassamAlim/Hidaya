@@ -18,23 +18,33 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationPickerVM @Inject constructor(
-    private val repository: LocationPickerRepo
+    private val repo: LocationPickerRepo
 ): ViewModel() {
 
     private var mode = 0
     private var countryId = -1
-    val language = repository.language
+    val language = repo.language
     var searchText by mutableStateOf("")
         private set
 
     private val _uiState = MutableStateFlow(LocationPickerState(
-        titleResId = R.string.choose_country,
+        titleResId = getTitleResId(),
         items = getItems()
     ))
     val uiState = _uiState.asStateFlow()
 
+    private fun getTitleResId(): Int {
+        return if (mode == 0) R.string.choose_country
+        else R.string.choose_city
+    }
+
     private fun getItems(): List<LocationPickerItem> {
-        val countries = repository.getCountries().map { country ->
+        return if (mode == 0) getCountries()
+        else getCities()
+    }
+
+    private fun getCountries(): List<LocationPickerItem> {
+        val countries = repo.getCountries().map { country ->
             LocationPickerItem(
                 id = country.id,
                 nameAr = country.nameAr,
@@ -45,8 +55,22 @@ class LocationPickerVM @Inject constructor(
         return if (searchText.isEmpty()) countries
         else countries.filter { country ->
             country.nameAr.contains(searchText, ignoreCase = true) or
-                    country.nameEn.contains(searchText, ignoreCase = true)
+                    country.nameEn.contains(searchText, ignoreCase = true) }
+    }
+
+    private fun getCities(): List<LocationPickerItem> {
+        val cities = repo.getCities(countryId).map { city ->
+            LocationPickerItem(
+                id = city.id,
+                nameAr = city.nameAr,
+                nameEn = city.nameEn
+            )
         }
+
+        return if (searchText.isEmpty()) cities
+        else cities.filter { city ->
+            city.nameAr.contains(searchText, ignoreCase = true) or
+                    city.nameEn.contains(searchText, ignoreCase = true) }
     }
 
     fun onBack(navController: NavController) {
@@ -54,14 +78,8 @@ class LocationPickerVM @Inject constructor(
             mode = 0
 
             _uiState.update { it.copy(
-                titleResId = R.string.choose_country,
-                items = repository.getCountries().map { country ->
-                    LocationPickerItem(
-                        id = country.id,
-                        nameAr = country.nameAr,
-                        nameEn = country.nameEn
-                    )
-                }
+                titleResId = getTitleResId(),
+                items = getItems()
             )}
         }
         else navController.popBackStack()
@@ -69,7 +87,7 @@ class LocationPickerVM @Inject constructor(
 
     fun onSelect(id: Int, navController: NavController) {
         if (mode == 1) {
-            repository.storeLocation(countryId, id)
+            repo.storeLocation(countryId, id)
 
             navController.navigate(Screen.Main.route)
         }
@@ -81,14 +99,8 @@ class LocationPickerVM @Inject constructor(
             searchText = ""
 
             _uiState.update { it.copy(
-                titleResId = R.string.choose_city,
-                items = repository.getCities(id).map { city ->
-                    LocationPickerItem(
-                        id = city.id,
-                        nameAr = city.nameAr,
-                        nameEn = city.nameEn
-                    )
-                }
+                titleResId = getTitleResId(),
+                items = getItems()
             )}
         }
     }

@@ -23,12 +23,12 @@ fun LocationPickerUI(
     nc: NavController = rememberNavController(),
     vm: LocationPickerVM = hiltViewModel()
 ) {
-    val state by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
 
     MyScaffold(
         topBar = {
             MyTopBar(
-                title = stringResource(state.titleResId),
+                title = stringResource(st.titleResId),
                 onBack = { vm.onBack(nc) }
             )
         }
@@ -36,7 +36,7 @@ fun LocationPickerUI(
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp),
+                .padding(horizontal = 5.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SearchComponent(
@@ -49,7 +49,7 @@ fun LocationPickerUI(
 
             MyLazyColumn(
                 lazyList = {
-                    items(state.items) { item ->
+                    items(st.items) { item ->
                         MyButton(
                             text =
                                 if (vm.language == Language.ENGLISH) item.nameEn
