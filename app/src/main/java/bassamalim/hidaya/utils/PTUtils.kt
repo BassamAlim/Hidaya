@@ -9,6 +9,7 @@ import android.location.Location
 import android.util.Log
 import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.database.AppDatabase
+import bassamalim.hidaya.enums.LocationType
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.enums.TimeFormat
 import bassamalim.hidaya.helpers.PrayTimes
@@ -19,15 +20,15 @@ import java.util.*
 object PTUtils {
 
     fun getTimes(
-        pref: SharedPreferences,
+        sp: SharedPreferences,
         db: AppDatabase,
-        loc: Location? = LocUtils.retrieveLocation(pref),
+        loc: Location? = LocUtils.retrieveLocation(sp),
         calendar: Calendar = Calendar.getInstance()
     ): Array<Calendar?>? {
         if (loc == null) return null
 
-        val prayTimes = PrayTimes(pref)
-        val utcOffset = getUTCOffset(pref = pref, db = db).toDouble()
+        val prayTimes = PrayTimes(sp)
+        val utcOffset = getUTCOffset(sp, db).toDouble()
 
         return prayTimes.getPrayerTimes(loc.latitude, loc.longitude, utcOffset, calendar)
     }
@@ -41,19 +42,19 @@ object PTUtils {
         if (loc == null) return null
 
         val prayTimes = PrayTimes(pref)
-        val utcOffset = getUTCOffset(pref = pref, db = DBUtils.getDB(context)).toDouble()
+        val utcOffset = getUTCOffset(sp = pref, db = DBUtils.getDB(context)).toDouble()
 
         return prayTimes.getStrPrayerTimes(loc.latitude, loc.longitude, utcOffset, calendar)
     }
 
     fun getUTCOffset(
-        pref: SharedPreferences,
+        sp: SharedPreferences,
         db: AppDatabase
     ): Int {
-        when (PrefUtils.getString(pref, Prefs.LocationType)) {
-            "auto" -> return TimeZone.getDefault().getOffset(Date().time) / 3600000
-            "manual" -> {
-                val cityId = PrefUtils.getInt(pref, Prefs.CityID)
+        when (LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))) {
+            LocationType.Auto -> return TimeZone.getDefault().getOffset(Date().time) / 3600000
+            LocationType.Manual -> {
+                val cityId = PrefUtils.getInt(sp, Prefs.CityID)
 
                 if (cityId == -1) return 0
 
@@ -62,7 +63,7 @@ object PTUtils {
                 val timeZone = TimeZone.getTimeZone(timeZoneId)
                 return timeZone.getOffset(Date().time) / 3600000
             }
-            else -> return 0
+            LocationType.None -> return 0
         }
     }
 

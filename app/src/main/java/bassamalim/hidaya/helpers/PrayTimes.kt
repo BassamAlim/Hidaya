@@ -10,15 +10,15 @@ import java.util.*
 import kotlin.math.*
 
 class PrayTimes(
-    private val pref: SharedPreferences
+    private val sp: SharedPreferences
 ) {
 
-    private val timeFormat = PrefUtils.getTimeFormat(pref)
-    private val calcMethod = PrefUtils.getString(pref, Prefs.PrayerTimesCalculationMethod)
+    private val timeFormat = PrefUtils.getTimeFormat(sp)
+    private val calcMethod = PrefUtils.getString(sp, Prefs.PrayerTimesCalculationMethod)
     private var asrJuristic =
-        if (PrefUtils.getString(pref, Prefs.PrayerTimesJuristicMethod) == "HANAFI") 1
+        if (PrefUtils.getString(sp, Prefs.PrayerTimesJuristicMethod) == "HANAFI") 1
         else 0
-    private val adjustHighLats = PrefUtils.getString(pref, Prefs.PrayerTimesAdjustment)
+    private val adjustHighLats = PrefUtils.getString(sp, Prefs.PrayerTimesAdjustment)
 
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
     private var latitude = 0.0 // latitude
@@ -45,15 +45,18 @@ class PrayTimes(
     // -------------------- Interface Functions --------------------
     // returns prayer times in Calendar object
     fun getPrayerTimes(
-        lat: Double, lng: Double, tZone: Double = getDefaultTimeZone(),
+        lat: Double, lon: Double, tZone: Double = getDefaultTimeZone(),
         date: Calendar = Calendar.getInstance()
     ): Array<Calendar?> {
         setValues(
-            lat, lng, tZone,
+            lat, lon, tZone,
             date[Calendar.YEAR], date[Calendar.MONTH] + 1, date[Calendar.DATE]
         )
 
         val times = floatToTime24(computeDayTimes())
+
+        println(times[0])
+
         times.removeAt(4)  // removing sunset time
 
         val cals = arrayOfNulls<Calendar>(times.size)
@@ -67,6 +70,9 @@ class PrayTimes(
             cal[Calendar.MILLISECOND] = 0
             cals[i] = cal
         }
+
+        // add offsets
+
         return cals
     }
 
@@ -85,7 +91,7 @@ class PrayTimes(
             else floatToTime12(computeDayTimes())
         times.removeAt(4)  // removing sunset time
 
-        val numeralsLanguage = PrefUtils.getNumeralsLanguage(pref)
+        val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
         for (i in times.indices)
             times[i] = translateNums(numeralsLanguage, times[i], true)
 
@@ -192,7 +198,7 @@ class PrayTimes(
     // ---------------------- Compute Prayer Times -----------------------
     // compute prayer times at given julian date
     private fun computeDayTimes(): DoubleArray {
-        var times = doubleArrayOf(5.0, 6.0, 12.0, 13.0, 18.0, 18.0, 18.0) // default times
+        var times = doubleArrayOf(5.0, 6.0, 12.0, 13.0, 18.0, 18.0, 18.0)  // default times
         for (i in 1..numIterations) times = computeTimes(times)
         adjustTimes(times)
         tuneTimes(times)
@@ -237,7 +243,7 @@ class PrayTimes(
             times[0] = times[1] - fajrDiff
 
         // Adjust Isha
-        val ishaAngle: Double =
+        val ishaAngle =
             if (methodParams[calcMethod]?.get(3)?.toInt() == 0)
                 methodParams[calcMethod]?.get(4)!!.toDouble()
             else 18.0
@@ -247,7 +253,7 @@ class PrayTimes(
             times[6] = times[4] + ishaDiff
 
         // Adjust Maghrib
-        val maghribAngle: Double =
+        val maghribAngle =
             if (methodParams[calcMethod]?.get(1)?.toInt() == 0)
                 methodParams[calcMethod]?.get(2)!!.toDouble()
             else 4.0
@@ -277,13 +283,13 @@ class PrayTimes(
 
     // Tune timings for adjustments (Set time offsets)
     private fun setOffsets() {
-        offsets[0] = PrefUtils.getInt(pref, Prefs.TimeOffset(PID.FAJR))
-        offsets[1] = PrefUtils.getInt(pref, Prefs.TimeOffset(PID.SUNRISE))
-        offsets[2] = PrefUtils.getInt(pref, Prefs.TimeOffset(PID.DHUHR))
-        offsets[3] = PrefUtils.getInt(pref, Prefs.TimeOffset(PID.ASR))
+        offsets[0] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.FAJR))
+        offsets[1] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.SUNRISE))
+        offsets[2] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.DHUHR))
+        offsets[3] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ASR))
         // Skipping sunset
-        offsets[5] = PrefUtils.getInt(pref, Prefs.TimeOffset(PID.MAGHRIB))
-        offsets[6] = PrefUtils.getInt(pref, Prefs.TimeOffset(PID.ISHAA))
+        offsets[5] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.MAGHRIB))
+        offsets[6] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ISHAA))
     }
 
     private fun tuneTimes(times: DoubleArray): DoubleArray {

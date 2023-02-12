@@ -34,6 +34,7 @@ class QuranSearcherVM @Inject constructor(
     }.toTypedArray()
     var searchText = ""
         private set
+    private var highlightColor: Color? = null
 
     private val _uiState = MutableStateFlow(QuranSearcherState(
         maxMatches = maxMatchesItems[repo.getMaxMatchesIndex()].toInt()
@@ -41,6 +42,8 @@ class QuranSearcherVM @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun search(highlightColor: Color) {
+        this.highlightColor = highlightColor
+
         val matches = ArrayList<QuranSearcherMatch>()
 
         for (i in allAyat.indices) {
@@ -94,6 +97,8 @@ class QuranSearcherVM @Inject constructor(
         _uiState.update { it.copy(
             maxMatches = maxMatchesItems[index].toInt()
         )}
+
+        highlightColor ?.let { search(it) }  // re-search if already searched
 
         repo.setMaxMatchesIndex(index)
     }

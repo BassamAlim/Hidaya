@@ -12,26 +12,26 @@ import javax.inject.Inject
 
 class HomeRepo @Inject constructor(
     private val resources: Resources,
-    val pref: SharedPreferences,
+    val sp: SharedPreferences,
     val db: AppDatabase
 ) {
 
-    fun getIsWerdDone() = PrefUtils.getBoolean(pref, Prefs.WerdDone)
+    fun getIsWerdDone() = PrefUtils.getBoolean(sp, Prefs.WerdDone)
 
     fun getPrayerNames(): Array<String> {
         return resources.getStringArray(R.array.prayer_names)
     }
 
     fun getNumeralsLanguage(): Language {
-        return Language.valueOf(PrefUtils.getString(pref, Prefs.NumeralsLanguage))
+        return Language.valueOf(PrefUtils.getString(sp, Prefs.NumeralsLanguage))
     }
 
-    fun getTodayWerdPage() = PrefUtils.getInt(pref, Prefs.TodayWerdPage)
+    fun getTodayWerdPage() = PrefUtils.getInt(sp, Prefs.TodayWerdPage)
 
-    fun getQuranPagesRecord() = PrefUtils.getInt(pref, Prefs.QuranPagesRecord)
+    fun getQuranPagesRecord() = PrefUtils.getInt(sp, Prefs.QuranPagesRecord)
 
-    fun getTelawatPlaybackRecord() = PrefUtils.getLong(pref, Prefs.TelawatPlaybackRecord)
+    fun getTelawatPlaybackRecord() = PrefUtils.getLong(sp, Prefs.TelawatPlaybackRecord)
 
-    fun getLocation() = LocUtils.retrieveLocation(pref)
+    fun getLocation() = LocUtils.retrieveLocation(sp)
 
 }

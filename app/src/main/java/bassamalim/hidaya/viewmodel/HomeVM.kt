@@ -76,12 +76,9 @@ class HomeVM @Inject constructor(
     }
 
     private fun getTimes(location: Location) {
-        val utcOffset = PTUtils.getUTCOffset(
-            pref = repo.pref,
-            db = repo.db
-        )
+        val prayTimes = PrayTimes(repo.sp)
 
-        val prayTimes = PrayTimes(repo.pref)
+        val utcOffset = PTUtils.getUTCOffset(repo.sp, repo.db)
 
         val today = Calendar.getInstance()
         times = prayTimes.getPrayerTimes(

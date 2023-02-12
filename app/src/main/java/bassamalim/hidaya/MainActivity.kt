@@ -99,6 +99,7 @@ class MainActivity : AppCompatActivity() {
                 sp,
                 DBUtils.getDB(this)
             )!!
+
             Alarms(this, times)
         }
         else if (!sp.getBoolean(Prefs.FirstTime.key, true)) {
