@@ -55,8 +55,6 @@ class PrayTimes(
 
         val times = floatToTime24(computeDayTimes())
 
-        println(times[0])
-
         times.removeAt(4)  // removing sunset time
 
         val cals = arrayOfNulls<Calendar>(times.size)

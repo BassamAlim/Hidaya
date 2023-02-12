@@ -62,7 +62,7 @@ class LocatorVM @Inject constructor(
 
     private fun launch() {
         nc.navigate(Screen.Main.route) {
-            popUpTo(Screen.Main.route) {
+            popUpTo(Screen.Locator(type).route) {
                 inclusive = true
             }
         }

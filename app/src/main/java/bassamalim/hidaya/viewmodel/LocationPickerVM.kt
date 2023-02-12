@@ -85,11 +85,16 @@ class LocationPickerVM @Inject constructor(
         else navController.popBackStack()
     }
 
-    fun onSelect(id: Int, navController: NavController) {
+    fun onSelect(id: Int, nc: NavController) {
         if (mode == 1) {
             repo.storeLocation(countryId, id)
 
-            navController.navigate(Screen.Main.route)
+            nc.navigate(Screen.Main.route) {
+                popUpTo(Screen.LocationPicker.route) {
+                    inclusive = true
+                }
+            }
+            nc.backQueue.removeAt(nc.backQueue.size - 2)  // pop Locator from the back stack
         }
         else {
             countryId = id

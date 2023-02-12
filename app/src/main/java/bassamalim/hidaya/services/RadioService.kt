@@ -1,6 +1,5 @@
 package bassamalim.hidaya.services
 
-import android.app.Activity
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -82,10 +81,15 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
             Log.i(Global.TAG, "In onPlayFromMediaId of RadioClient")
             super.onPlayFromMediaId(mediaId, extras)
+
             if (staticUrl == null) {
                 staticUrl = mediaId
                 thread.start()    // get final URL
             }
+            else if (player.isPlaying)
+                updatePbState(PlaybackStateCompat.STATE_PLAYING, player.currentPosition)
+            else
+                updatePbState(PlaybackStateCompat.STATE_STOPPED, 0)
         }
 
         override fun onPlay() {
@@ -392,8 +396,6 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     // https://m.live.net.sa:1935/live/quransa/playlist.m3u8
 
     private val thread = Thread {
-        updatePbState(PlaybackStateCompat.STATE_BUFFERING, 0)
-
         try {    // A mechanism to handle redirects and get the final dynamic link
             val url = URL(staticUrl)
             val connection = url.openConnection() as HttpURLConnection
@@ -402,7 +404,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             dynamicUrl = secondURL.toString().replaceFirst("http:".toRegex(), "https:")
             Log.i(Global.TAG, "Dynamic Quran Radio URL: ${this.dynamicUrl}")
 
-            updatePbState(PlaybackStateCompat.STATE_PAUSED, 0)
+            updatePbState(PlaybackStateCompat.STATE_STOPPED, 0)
         } catch (e: IOException) {
             Log.e(Global.TAG, "Problem in RadioService player")
             e.printStackTrace()

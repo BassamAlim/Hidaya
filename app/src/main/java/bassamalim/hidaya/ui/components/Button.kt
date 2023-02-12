@@ -303,6 +303,7 @@ fun MyPlayerBtn(
             .clickable { if (enabled) onClick() }
     ) {
         if (state == PlaybackStateCompat.STATE_NONE ||
+            state == PlaybackStateCompat.STATE_CONNECTING ||
             state == PlaybackStateCompat.STATE_BUFFERING)
             MyCircularProgressIndicator()
         else {

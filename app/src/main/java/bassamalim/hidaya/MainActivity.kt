@@ -1,16 +1,25 @@
 package bassamalim.hidaya
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.location.Location
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.core.app.ActivityCompat
+import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.enums.Language
+import bassamalim.hidaya.enums.LocationType
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.receivers.DailyUpdateReceiver
@@ -18,6 +27,7 @@ import bassamalim.hidaya.receivers.DeviceBootReceiver
 import bassamalim.hidaya.services.AthanService
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.*
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,43 +36,23 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var sp: SharedPreferences
+    private lateinit var db: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sp = PrefUtils.getPreferences(this)
-
-        onLaunch()
+        init()
 
         handleAction(intent.action)
 
-        val startRoute = intent.getStringExtra("start_route")
-        setContent {
-            ActivityUtils.onActivityCreateSetLocale(LocalContext.current)
+        preLaunch()
 
-            AppTheme(
-                direction = getDirection()
-            ) {
-                Navigator(startRoute)
-            }
-        }
+        getLocationAndLaunch()
     }
 
-    private fun onLaunch() {
-        DBUtils.testDB(this, sp)
-
-        ActivityUtils.onActivityCreateSetTheme(this)
-        ActivityUtils.onActivityCreateSetLocale(this)
-        ActivityUtils.onActivityCreateSetLocale(applicationContext)
-        ActivityUtils.onActivityCreateSetLocale(applicationContext)
-
-        initFirebase()
-
-        dailyUpdate()
-
-        setAlarms()
-
-        setupBootReceiver()
+    private fun init() {
+        sp = PrefUtils.getPreferences(this)
+        db = DBUtils.getDB(this)
     }
 
     private fun handleAction(action: String?) {
@@ -76,11 +66,144 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun preLaunch() {
+        DBUtils.testDB(this, sp)
+
+        ActivityUtils.onActivityCreateSetTheme(this)
+        ActivityUtils.onActivityCreateSetLocale(this)
+        ActivityUtils.onActivityCreateSetTheme(applicationContext)
+        ActivityUtils.onActivityCreateSetLocale(applicationContext)
+    }
+
+    private fun getLocationAndLaunch() {
+        val locType = LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))
+        if (locType == LocationType.Auto) {
+            if (granted()) locate()
+            else {
+                permissionRequestLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
+            }
+        }
+        else storeLocation(null)
+    }
+
+    private val permissionRequestLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result ->
+        onPermissionRequestResult(result)
+    }
+
+    private fun onPermissionRequestResult(result: Map<String, Boolean>) {
+        if (result.keys.contains(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) return
+
+        val fineLoc = result[Manifest.permission.ACCESS_FINE_LOCATION]
+        val coarseLoc = result[Manifest.permission.ACCESS_COARSE_LOCATION]
+        if (fineLoc != null && fineLoc && coarseLoc != null && coarseLoc) {
+            sp.edit()
+                .putString(Prefs.LocationType.key, LocationType.Auto.name)
+                .apply()
+
+            locate()
+
+            requestBgLocPermission()
+        }
+        else storeLocation(null)
+    }
+
+    private fun requestBgLocPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            Toast.makeText(
+                this,
+                getString(R.string.choose_allow_all_the_time),
+                Toast.LENGTH_LONG
+            ).show()
+
+            permissionRequestLauncher.launch(
+                arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            )
+        }
+    }
+
+    private fun launch() {
+        val startRoute = intent.getStringExtra("start_route") ?: getStartRoute()
+        setContent {
+            ActivityUtils.onActivityCreateSetLocale(LocalContext.current)
+
+            AppTheme(
+                direction = getDirection()
+            ) {
+                Navigator(startRoute)
+            }
+        }
+    }
+
     private fun getDirection(): LayoutDirection {
         val language = PrefUtils.getLanguage(sp)
 
         return if (language == Language.ENGLISH) LayoutDirection.Ltr
         else LayoutDirection.Rtl
+    }
+
+    private fun postLaunch() {
+        initFirebase()
+
+        fetchAndActivateRemoteConfig()
+
+        dailyUpdate()
+
+        setAlarms()
+
+        setupBootReceiver()
+    }
+
+    private fun getStartRoute(): String {
+        return if (sp.getBoolean(Prefs.FirstTime.key, true)) Screen.Welcome.route
+        else Screen.Main.route
+    }
+
+    private fun granted(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun locate() {
+        LocationServices.getFusedLocationProviderClient(this)
+            .lastLocation.addOnSuccessListener { location: Location? ->
+                storeLocation(location)
+
+                launch()
+
+                postLaunch()
+            }
+
+        requestBgLocPermission()
+    }
+
+    private fun storeLocation(location: Location?) {
+        if (location == null) return
+
+        val closestCity = db.cityDao().getClosest(location.latitude, location.longitude)
+
+        sp.edit()
+            .putInt(Prefs.CountryID.key, closestCity.countryId)
+            .putInt(Prefs.CityID.key, closestCity.id)
+            .apply()
+
+        LocUtils.storeLocation(sp, location)
     }
 
     private fun initFirebase() {
@@ -92,14 +215,24 @@ class MainActivity : AppCompatActivity() {
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
     }
 
+    private fun fetchAndActivateRemoteConfig() {
+        FirebaseRemoteConfig.getInstance().fetchAndActivate()
+            .addOnCompleteListener {
+                if (it.isSuccessful) Log.i(Global.TAG, "RemoteConfig update Success")
+                else Log.e(Global.TAG, "RemoteConfig update Failed")
+            }
+    }
+
+    private fun dailyUpdate() {
+        val intent = Intent(this, DailyUpdateReceiver::class.java)
+        intent.action = "daily"
+        sendBroadcast(intent)
+    }
+
     private fun setAlarms() {
         val location = LocUtils.retrieveLocation(sp)
         if (location != null) {
-            val times = PTUtils.getTimes(
-                sp,
-                DBUtils.getDB(this)
-            )!!
-
+            val times = PTUtils.getTimes(sp, db)!!
             Alarms(this, times)
         }
         else if (!sp.getBoolean(Prefs.FirstTime.key, true)) {
@@ -109,12 +242,6 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
-    }
-
-    private fun dailyUpdate() {
-        val intent = Intent(this, DailyUpdateReceiver::class.java)
-        intent.action = "daily"
-        sendBroadcast(intent)
     }
 
     private fun setupBootReceiver() {

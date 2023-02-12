@@ -75,7 +75,7 @@ sealed class Prefs(val key: String, val default: Any) {
             PID.MORNING -> 5
             PID.EVENING -> 16
             PID.DAILY_WERD -> 21
-            PID.FRIDAY_KAHF -> 13
+            PID.FRIDAY_KAHF -> 10
             else -> 0
         }
     )

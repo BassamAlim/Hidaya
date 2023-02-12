@@ -118,8 +118,7 @@ class TelawatClientVM @Inject constructor(
             connectionCallbacks,
             null
         )
-        if (MediaControllerCompat.getMediaController(activity) == null)
-            mediaBrowser?.connect()
+        mediaBrowser?.connect()
 
         activity.volumeControlStream = AudioManager.STREAM_MUSIC
 
@@ -288,7 +287,9 @@ class TelawatClientVM @Inject constructor(
                     versionId.toString()
                 ).route
             ) {
-                popUpTo(Screen.Main.route) { inclusive = true }
+                popUpTo(Screen.TelawatClient(action, mediaId).route) {
+                    inclusive = true
+                }
             }
         }
         else (activity as AppCompatActivity).onBackPressedDispatcher.onBackPressed()

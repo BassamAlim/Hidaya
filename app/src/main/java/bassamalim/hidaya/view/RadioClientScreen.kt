@@ -30,7 +30,7 @@ import bassamalim.hidaya.viewmodel.RadioClientVM
 fun RadioClientUI(
     vm: RadioClientVM = hiltViewModel()
 ) {
-    val state by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
     val activity = LocalContext.current as Activity
 
     DisposableEffect(key1 = vm) {
@@ -53,7 +53,7 @@ fun RadioClientUI(
                 modifier = Modifier.padding(bottom = 50.dp)
             )
 
-            MyPlayerBtn(state = state.btnState, padding = 10.dp) {
+            MyPlayerBtn(state = st.btnState, padding = 10.dp) {
                 vm.onPlayPause()
             }
         }

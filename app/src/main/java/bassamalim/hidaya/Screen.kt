@@ -54,8 +54,6 @@ sealed class Screen(val route: String) {
 
     object Settings: Screen("settings")
 
-    object Splash: Screen("splash")
-
     data class TelawatClient(
         val action: String, val mediaId: String
     ): Screen("telawat_client/$action/$mediaId")

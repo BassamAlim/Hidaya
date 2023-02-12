@@ -65,7 +65,8 @@ class QuizVM @Inject constructor(
     }
 
     fun previousQ() {
-        if (current > 0) ask(--current)
+        if (current > 0)
+            ask(--current)
     }
 
     private fun endQuiz(navController: NavController) {
@@ -75,16 +76,10 @@ class QuizVM @Inject constructor(
             Screen.QuizResult(
                 score.toString(),
                 questions.map { q -> q.getQuestionId() }.toIntArray().contentToString(),
-                chosenAs.toString()
+                chosenAs.toTypedArray().contentToString()
             ).route
         ) {
-            popUpTo(
-                Screen.QuizResult(
-                    score.toString(),
-                    questions.map { q -> q.getQuestionId() }.toIntArray().contentToString(),
-                    chosenAs.toString()
-                ).route
-            ) {
+            popUpTo(Screen.Quiz.route) {
                 inclusive = true
             }
         }

@@ -1,6 +1,7 @@
 package bassamalim.hidaya
 
 import android.os.Build
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -9,10 +10,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import bassamalim.hidaya.view.*
+import com.google.gson.Gson
 
 @Composable
 fun Navigator(startRoute: String?) {
-    val startDest = startRoute ?: Screen.Splash.route
+    val startDest = startRoute ?: Screen.Main.route
 
     val navController = rememberNavController()
 
@@ -156,14 +158,8 @@ fun Navigator(startRoute: String?) {
             ).route,
             arguments = listOf(
                 navArgument("score") { type = NavType.IntType },
-                navArgument("questions") {
-                    type = NavType.IntArrayType
-                    nullable = true
-                },
-                navArgument("chosen_As") {
-                    type = NavType.IntArrayType
-                    nullable = true
-                }
+                navArgument("questions") { type = IntArrType },
+                navArgument("chosen_As") { type = IntArrType }
             )
         ) {
             QuizResultUI(
@@ -212,13 +208,6 @@ fun Navigator(startRoute: String?) {
 
         composable(Screen.Settings.route) {
             SettingsUI(
-                vm = hiltViewModel()
-            )
-        }
-
-        composable(Screen.Splash.route) {
-            SplashUI(
-                nc = navController,
                 vm = hiltViewModel()
             )
         }
@@ -274,5 +263,39 @@ fun Navigator(startRoute: String?) {
                 vm = hiltViewModel()
             )
         }
+    }
+}
+
+/*
+val IntArrayType = object : NavType<IntArray>(
+    isNullableAllowed = false
+) {
+    override fun put(bundle: Bundle, key: String, value: IntArray) {
+        bundle.putIntArray(key, value)
+    }
+    override fun get(bundle: Bundle, key: String): IntArray {
+        return bundle.getIntArray(key)!!
+    }
+
+    override fun parseValue(value: String): IntArray {
+        return Json.decodeFromString<IntArray>(value)
+    }
+
+    // Only required when using Navigation 2.4.0-alpha07 and lower
+    override val name = "SearchParameters"
+}*/
+
+
+val IntArrType: NavType<IntArray> = object : NavType<IntArray>(false) {
+    override fun put(bundle: Bundle, key: String, value: IntArray) {
+        bundle.putIntArray(key, value)
+    }
+
+    override fun get(bundle: Bundle, key: String): IntArray {
+        return bundle.getIntArray(key) as IntArray
+    }
+
+    override fun parseValue(value: String): IntArray {
+        return Gson().fromJson(value, IntArray::class.java)
     }
 }

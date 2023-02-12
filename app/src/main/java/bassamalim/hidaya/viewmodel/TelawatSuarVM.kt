@@ -79,7 +79,9 @@ class TelawatSuarVM @Inject constructor(
         val ctx = nc.context
         if ((ctx as Activity).isTaskRoot) {
             nc.navigate(Screen.Telawat.route) {
-                popUpTo(Screen.Telawat.route) { inclusive = true }
+                popUpTo(Screen.TelawatSuar(reciterId.toString(), versionId.toString()).route) {
+                    inclusive = true
+                }
             }
         }
         else (ctx as AppCompatActivity).onBackPressedDispatcher.onBackPressed()

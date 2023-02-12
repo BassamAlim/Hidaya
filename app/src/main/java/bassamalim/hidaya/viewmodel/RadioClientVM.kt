@@ -41,6 +41,8 @@ class RadioClientVM @Inject constructor(
     private val connectionCallbacks: MediaBrowserCompat.ConnectionCallback =
         object : MediaBrowserCompat.ConnectionCallback() {
             override fun onConnected() {
+                println("HERE")
+
                 // Get the token for the MediaSession
                 val token = mediaBrowser!!.sessionToken
 
@@ -57,8 +59,6 @@ class RadioClientVM @Inject constructor(
 
                 // Finish building the UI
                 buildTransportControls()
-
-                updatePbState(PlaybackStateCompat.STATE_STOPPED)
             }
 
             override fun onConnectionSuspended() {
@@ -78,14 +78,15 @@ class RadioClientVM @Inject constructor(
     fun onStart(activity: Activity) {
         this.activity = activity
 
+        updatePbState(PlaybackStateCompat.STATE_CONNECTING)
+
         mediaBrowser = MediaBrowserCompat(
             app,
             ComponentName(app, RadioService::class.java),
             connectionCallbacks,
             null
         )
-        if (MediaControllerCompat.getMediaController(activity) == null)
-            mediaBrowser?.connect()
+        mediaBrowser?.connect()
 
         activity.volumeControlStream = AudioManager.STREAM_MUSIC
     }
@@ -129,17 +130,15 @@ class RadioClientVM @Inject constructor(
     }
 
     fun onPlayPause() {
-        if (_uiState.value.btnState != PlaybackStateCompat.STATE_NONE) {
-            // Since this is a play/pause button
-            // test the current state and choose the action accordingly=
-            if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
-                tc.pause()
-                updatePbState(PlaybackStateCompat.STATE_STOPPED)
-            }
-            else {
-                tc.play()
-                updatePbState(PlaybackStateCompat.STATE_PLAYING)
-            }
+        // Since this is a play/pause button
+        // test the current state and choose the action accordingly=
+        if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
+            tc.pause()
+            updatePbState(PlaybackStateCompat.STATE_STOPPED)
+        }
+        else if (controller.playbackState.state == PlaybackStateCompat.STATE_STOPPED) {
+            tc.play()
+            updatePbState(PlaybackStateCompat.STATE_PLAYING)
         }
     }
 

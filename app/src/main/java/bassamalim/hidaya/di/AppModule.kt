@@ -20,7 +20,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)  // Sets how long does the dependencies live
 object AppModule {
 
-    @Provides @Singleton
+    @Provides @Singleton  // Sets how many instances of this dependency can be created
     fun provideApplicationContext(application: Application) =
         application.applicationContext!!
 
@@ -32,7 +32,7 @@ object AppModule {
     fun providePreferences(application: Application) =
         PreferenceManager.getDefaultSharedPreferences(application)!!
 
-    @Provides @Singleton  // Sets how many instances of this dependency can be created
+    @Provides @Singleton
     fun provideDatabase(application: Application) =
         Room.databaseBuilder(
             application, AppDatabase::class.java, "HidayaDB"
@@ -184,13 +184,6 @@ object AppModule {
         resources: Resources,
         preferences: SharedPreferences
     ) = SettingsRepo(resources, preferences)
-
-    @Provides @Singleton
-    fun provideSplashRepository(
-        preferences: SharedPreferences,
-        database: AppDatabase,
-        remoteConfig: FirebaseRemoteConfig
-    ) = SplashRepo(preferences, database, remoteConfig)
 
     @Provides @Singleton
     fun provideTelawatClientRepository(

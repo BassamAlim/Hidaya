@@ -148,7 +148,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     17.toString() // surat al-kahf
                 ).route
             }
-            else -> Screen.Splash.route
+            else -> Screen.Main.route
         }
         intent.putExtra("start_route", route)
 

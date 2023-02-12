@@ -87,7 +87,9 @@ class TelawatVM @Inject constructor(
 
         if ((ctx as Activity).isTaskRoot) {
             navController.navigate(Screen.Main.route) {
-                popUpTo(Screen.Main.route) { inclusive = true }
+                popUpTo(Screen.Telawat.route) {
+                    inclusive = true
+                }
             }
         }
         else (ctx as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
