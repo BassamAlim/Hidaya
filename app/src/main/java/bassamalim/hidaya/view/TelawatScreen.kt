@@ -65,7 +65,7 @@ fun TelawatUI(
                     ) {
                         SearchComponent(
                             value = vm.searchText,
-                            hint = stringResource(R.string.search),
+                            hint = stringResource(R.string.reciters_hint),
                             modifier = Modifier.weight(1F)
                         )
 

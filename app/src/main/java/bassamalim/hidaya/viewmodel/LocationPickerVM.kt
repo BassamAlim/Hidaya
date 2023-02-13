@@ -79,6 +79,7 @@ class LocationPickerVM @Inject constructor(
 
             _uiState.update { it.copy(
                 titleResId = getTitleResId(),
+                searchHintResId = R.string.country_hint,
                 items = getItems()
             )}
         }
@@ -105,6 +106,7 @@ class LocationPickerVM @Inject constructor(
 
             _uiState.update { it.copy(
                 titleResId = getTitleResId(),
+                searchHintResId = R.string.city_hint,
                 items = getItems()
             )}
         }

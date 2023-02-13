@@ -54,7 +54,6 @@ fun Navigator(startRoute: String?) {
             )
         ) {
             AthkarViewerUI(
-                nc = navController,
                 vm = hiltViewModel()
             )
         }
@@ -76,7 +75,6 @@ fun Navigator(startRoute: String?) {
 
         composable(Screen.BookSearcher.route) {
             BookSearcherUI(
-                nc = navController,
                 vm = hiltViewModel()
             )
         }
@@ -99,7 +97,6 @@ fun Navigator(startRoute: String?) {
             )
         ) {
             BookViewerUI(
-                nc = navController,
                 vm = hiltViewModel()
             )
         }
@@ -140,7 +137,6 @@ fun Navigator(startRoute: String?) {
 
         composable(Screen.Qibla.route) {
             QiblaUI(
-                nc = navController,
                 vm = hiltViewModel()
             )
         }
@@ -163,7 +159,6 @@ fun Navigator(startRoute: String?) {
             )
         ) {
             QuizResultUI(
-                nc = navController,
                 vm = hiltViewModel()
             )
         }
@@ -193,7 +188,6 @@ fun Navigator(startRoute: String?) {
             )
         ) {
             QuranViewerUI(
-                nc = navController,
                 vm = hiltViewModel()
             )
         }
@@ -266,26 +260,7 @@ fun Navigator(startRoute: String?) {
     }
 }
 
-/*
-val IntArrayType = object : NavType<IntArray>(
-    isNullableAllowed = false
-) {
-    override fun put(bundle: Bundle, key: String, value: IntArray) {
-        bundle.putIntArray(key, value)
-    }
-    override fun get(bundle: Bundle, key: String): IntArray {
-        return bundle.getIntArray(key)!!
-    }
-
-    override fun parseValue(value: String): IntArray {
-        return Json.decodeFromString<IntArray>(value)
-    }
-
-    // Only required when using Navigation 2.4.0-alpha07 and lower
-    override val name = "SearchParameters"
-}*/
-
-
+// custom nav type because the default one crashes
 val IntArrType: NavType<IntArray> = object : NavType<IntArray>(false) {
     override fun put(bundle: Bundle, key: String, value: IntArray) {
         bundle.putIntArray(key, value)

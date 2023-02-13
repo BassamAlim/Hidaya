@@ -37,7 +37,6 @@
 
     <!-- Buttons Text -->
     <string name="contact">Contact me</string>
-    <string name="all_thikrs">All athkar</string>
     <string name="day_and_night_thikrs">Day and knight athkar</string>
     <string name="prayers_thikrs">Prayers athkar</string>
     <string name="quran_thikrs">Quran Duas</string>
@@ -46,7 +45,6 @@
     <string name="actions_thikrs">Actions athkar</string>
     <string name="events_thikrs">Events duas</string>
     <string name="tv_channels">Live tv</string>
-    <string name="quick_update">Quick update</string>
     <string name="quran_channel">Quran channel</string>
     <string name="sunnah_channel">Sunnah channel</string>
     <string name="search_in_quran">Quran searcher</string>
@@ -154,10 +152,6 @@
     <string name="start_quiz">Start the quiz</string>
     <string name="quiz_result">Quiz result</string>
     <string name="continue_listening">Continue listening</string>
-    <string name="no_repeat">No repeat</string>
-    <string name="two_times">Twice</string>
-    <string name="three_times">3 times</string>
-    <string name="no_stop">Non-stop</string>
     <string name="execute">Done</string>
     <string name="cancel">Cancel</string>
     <string name="search_for_quran_text">Search for text in quran</string>
@@ -167,8 +161,6 @@
     <string name="no_matches">No matches found. Make sure you downloaded the books</string>
     <string name="books_no_matches">No matches found</string>
     <string name="hadeeth_books">Hadeeth books</string>
-    <string name="sahih_albokhari">Saheeh al-bokhari</string>
-    <string name="sahih_muslim">Saheeh moslim</string>
     <string name="hadeeth_source">Hadeeth books: from omo-alkitab site and al-dorar al sunniya site.</string>
     <string name="search_in_books">Search for text in books</string>
     <string name="books_searcher">Hadeeth searcher</string>

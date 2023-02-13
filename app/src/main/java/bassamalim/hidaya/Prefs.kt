@@ -2,11 +2,12 @@ package bassamalim.hidaya
 
 import bassamalim.hidaya.enums.Language.ARABIC
 import bassamalim.hidaya.enums.LocationType.Auto
+import bassamalim.hidaya.enums.NotificationType.None
+import bassamalim.hidaya.enums.NotificationType.Notification
 import bassamalim.hidaya.enums.PID
+import bassamalim.hidaya.enums.QViewType
 import bassamalim.hidaya.enums.Theme.LIGHT
 import bassamalim.hidaya.enums.TimeFormat.TWELVE
-import bassamalim.hidaya.enums.NotificationType.*
-import bassamalim.hidaya.enums.QViewType
 
 sealed class Prefs(val key: String, val default: Any) {
     object BookmarkedSura: Prefs("bookmarked_sura", -1)

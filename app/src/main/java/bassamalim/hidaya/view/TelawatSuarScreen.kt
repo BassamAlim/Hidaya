@@ -44,7 +44,7 @@ fun TelawatSuarUI(
             searchComponent = {
                 SearchComponent(
                     value = vm.searchText,
-                    hint = stringResource(R.string.search),
+                    hint = stringResource(R.string.suar_hint),
                     modifier = Modifier.fillMaxWidth(),
                     onValueChange = { vm.onSearchChange(it) }
                 )

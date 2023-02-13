@@ -16,8 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.models.QuizResultQuestion
 import bassamalim.hidaya.ui.components.*
@@ -26,7 +24,6 @@ import bassamalim.hidaya.viewmodel.QuizResultVM
 
 @Composable
 fun QuizResultUI(
-    nc: NavController = rememberNavController(),
     vm: QuizResultVM = hiltViewModel()
 ) {
     val state by vm.uiState.collectAsState()

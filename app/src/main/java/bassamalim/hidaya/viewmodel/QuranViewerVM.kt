@@ -44,6 +44,7 @@ class QuranViewerVM @Inject constructor(
     private val page = savedStateHandle.get<Int>("page") ?: 0
 
     val numeralsLanguage = repo.numeralsLanguage
+    val theme = repo.getTheme()
     var initialPage =
         if (type == "by_page") page
         else repo.getPage(initialSuraId)

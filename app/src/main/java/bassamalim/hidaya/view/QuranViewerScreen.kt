@@ -23,10 +23,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.enums.QViewType.*
+import bassamalim.hidaya.enums.Theme
 import bassamalim.hidaya.models.Ayah
 import bassamalim.hidaya.state.QuranViewerState
 import bassamalim.hidaya.ui.components.*
@@ -41,7 +40,6 @@ import com.google.accompanist.pager.rememberPagerState
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun QuranViewerUI(
-    nc: NavController = rememberNavController(),
     vm: QuranViewerVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsState()
@@ -352,7 +350,10 @@ private fun SuraHeader(
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(R.drawable.surah_header),
+            painter = painterResource(
+                if (vm.theme == Theme.LIGHT) R.drawable.surah_header_light
+                else R.drawable.surah_header
+            ),
             contentDescription = aya.surahName,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()

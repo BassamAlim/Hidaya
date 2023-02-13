@@ -22,10 +22,6 @@ sealed class BottomNavItem(var route: String, var icon: Int){
     object Quran: BottomNavItem("quran", R.drawable.ic_bar_quran)
     object Athkar: BottomNavItem("athkar", R.drawable.ic_duaa)
     object More: BottomNavItem("more", R.drawable.ic_more)
-
-    fun withArgs(vararg args: String): String {
-        return route + args.joinToString(prefix = "/", separator = "/")
-    }
 }
 
 @Composable

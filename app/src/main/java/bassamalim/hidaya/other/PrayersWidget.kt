@@ -1,12 +1,10 @@
 package bassamalim.hidaya.other
 
-import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.widget.RemoteViews
 import bassamalim.hidaya.R
-import bassamalim.hidaya.utils.ActivityUtils
 import bassamalim.hidaya.utils.LangUtils.translateNums
 import bassamalim.hidaya.utils.PTUtils
 

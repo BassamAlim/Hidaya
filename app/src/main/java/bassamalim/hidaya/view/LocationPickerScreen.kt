@@ -44,6 +44,7 @@ fun LocationPickerUI(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 10.dp),
+                hint = stringResource(st.searchHintResId),
                 onValueChange = { vm.onSearchTextChange(it) }
             )
 

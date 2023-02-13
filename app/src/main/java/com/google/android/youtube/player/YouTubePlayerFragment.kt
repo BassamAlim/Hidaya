@@ -65,7 +65,7 @@ open class YouTubePlayerSupportFragmentXKt : Fragment(), YouTubePlayer.Provider 
 
     override fun onSaveInstanceState(var1: Bundle) {
         super.onSaveInstanceState(var1)
-        val var2 = if (c != null && c is YouTubePlayerView) {
+        val var2 = if (c != null) {
             (c as YouTubePlayerView).e()
         } else b
         var1.putBundle("YouTubePlayerSupportFragment.KEY_PLAYER_VIEW_STATE", var2)
@@ -86,7 +86,7 @@ open class YouTubePlayerSupportFragmentXKt : Fragment(), YouTubePlayer.Provider 
     }
 
     override fun onDestroy() {
-        if (c != null && c is YouTubePlayerView) {
+        if (c != null) {
             val var1 = this.activity
             (c as YouTubePlayerView).b(var1 == null || var1.isFinishing)
         }

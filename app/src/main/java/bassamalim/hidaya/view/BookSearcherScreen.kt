@@ -11,8 +11,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
@@ -20,7 +18,6 @@ import bassamalim.hidaya.viewmodel.BookSearcherVM
 
 @Composable
 fun BookSearcherUI(
-    nc: NavController = rememberNavController(),
     vm: BookSearcherVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsState()

@@ -1,6 +1,5 @@
 package bassamalim.hidaya.services
 
-import android.app.Activity
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -267,16 +266,17 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp++
-            } while (temp < 114 && !version.suras.contains("," + (temp + 1) + ","))
+            } while (temp < Global.QURAN_SURAS &&
+                !version.suras.contains("," + (temp + 1) + ","))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
-                temp = random.nextInt(114)
+                temp = random.nextInt(Global.QURAN_SURAS)
             } while (!version.suras.contains("," + (temp + 1) + ","))
         }
 
-        if (temp < 114) {
+        if (temp < Global.QURAN_SURAS) {
             surahIndex = temp
             updateMetadata(false)
             updateNotification(true)
@@ -297,7 +297,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
-                temp = random.nextInt(114)
+                temp = random.nextInt(Global.QURAN_SURAS)
             } while (!version.suras.contains("," + (temp + 1) + ","))
         }
 

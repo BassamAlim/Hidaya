@@ -130,7 +130,7 @@ class PrayTimes(
         val q = fixAngle(280.459 + 0.98564736 * dd)
         val l = fixAngle(q + 1.915 * dSin(g) + 0.020 * dSin(2 * g))
 
-        // double R = 1.00014 - 0.01671 * [self dcos:g] - 0.00014 * [self dcos:
+        // double R = 1.00014 - 0.01671 * [self dCos:g] - 0.00014 * [self dCos:
         // (2*g)];
         val e = 23.439 - 0.00000036 * dd
         val d = dArcSin(dSin(e) * dSin(l))

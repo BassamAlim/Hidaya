@@ -49,9 +49,8 @@ object AppModule {
 
     @Provides @Singleton
     fun provideAboutRepository(
-        pref: SharedPreferences,
-        remoteConfig: FirebaseRemoteConfig
-    ) = AboutRepo(pref, remoteConfig)
+        pref: SharedPreferences
+    ) = AboutRepo(pref)
 
     @Provides @Singleton
     fun provideAthkarListRepository(

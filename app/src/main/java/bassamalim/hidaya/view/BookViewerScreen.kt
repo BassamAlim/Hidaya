@@ -12,8 +12,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.state.BookViewerState
 import bassamalim.hidaya.ui.components.*
@@ -22,7 +20,6 @@ import bassamalim.hidaya.viewmodel.BookViewerVM
 
 @Composable
 fun BookViewerUI(
-    nc: NavController = rememberNavController(),
     vm: BookViewerVM = hiltViewModel()
 ) {
     val state by vm.uiState.collectAsState()

@@ -16,20 +16,6 @@
     <string name="theme">السمة</string>
     <string name="prayer_time_settings">إعدادات أوقات الصلاة</string>
 
-    <!-- Preference Keys -->
-    <string name="morning_athkar_key" translatable="false">morning_athkar_key</string>
-    <string name="evening_athkar_key" translatable="false">night_athkar_key</string>
-    <string name="daily_werd_key" translatable="false">daily_werd_enable_key</string>
-    <string name="friday_kahf_key" translatable="false">friday_kahf_key</string>
-    <string name="quran_text_size_key" translatable="false">quran_text_size_key</string>
-    <string name="aya_reciter_key" translatable="false">aya_reciter_key</string>
-    <string name="aya_repeat_key" translatable="false">aya_repeat_key</string>
-    <string name="stop_on_sura_key" translatable="false">stop_on_sura_key</string>
-    <string name="stop_on_page_key" translatable="false">stop_on_page_key</string>
-    <string name="prayer_times_calc_method_key" translatable="false">prayer_times_calc_method_key</string>
-    <string name="juristic_method_key" translatable="false">juristic_method_key</string>
-    <string name="high_lat_adjustment_key" translatable="false">high_lat_adjustment_key</string>
-
     <!-- Preference Titles -->
     <string name="language" translatable="false">Language | اللغة</string>
     <string name="morning_athkar_title">إشعار أذكار الصباح</string>
@@ -44,21 +30,12 @@
     <string name="juristic_method_title">الطريقة الفقهية</string>
     <string name="high_lat_adjustment_title">التعديل لخطوط العرض المرتفعة</string>
 
-    <!-- Defaults -->
-    <string name="default_theme" translatable="false">Light</string>
-    <string name="default_language" translatable="false">ar</string>
-    <string name="default_time_format" translatable="false">12h</string>
-    <string name="default_prayer_times_calc_method" translatable="false">MECCA</string>
-    <string name="default_juristic_method" translatable="false">SHAFII</string>
-    <string name="default_high_lat_adjustment" translatable="false">NONE</string>
-
     <!-- TextViews Text -->
     <string name="telawat_time_record_title">مدة الاستماع للتلاوات</string>
     <string name="quran_pages_record_title">عدد صفحات القرآن المقروءة \n(مع التكرار)</string>
 
     <!-- Buttons Text -->
     <string name="contact">تواصل معي</string>
-    <string name="all_thikrs">جميع الأذكار</string>
     <string name="day_and_night_thikrs">أذكار اليوم والليلة</string>
     <string name="prayers_thikrs">أذكار الصلاة</string>
     <string name="quran_thikrs">أدعية المصحف</string>
@@ -67,7 +44,6 @@
     <string name="actions_thikrs">أذكار الأفعال</string>
     <string name="events_thikrs">أدعية الأحداث</string>
     <string name="tv_channels">بث مباشر</string>
-    <string name="quick_update">تحديث سريع</string>
     <string name="quran_channel">القرآن الكريم</string>
     <string name="sunnah_channel">السنة النبوية</string>
     <string name="search_in_quran">بحث المصحف</string>
@@ -177,10 +153,6 @@
     <string name="start_quiz">ابدأ الاختبار</string>
     <string name="quiz_result">نتيجة الاختبار</string>
     <string name="continue_listening">تابع الاستماع</string>
-    <string name="no_repeat">بدون تكرار</string>
-    <string name="two_times">مرتين</string>
-    <string name="three_times">ثلاث مرات</string>
-    <string name="no_stop">بدون توقف</string>
     <string name="execute">تنفيذ</string>
     <string name="cancel">إلغاء</string>
     <string name="search_for_quran_text">ابحث عن نص في المصحف</string>
@@ -190,8 +162,6 @@
     <string name="no_matches">لا توجد نتائج</string>
     <string name="books_no_matches">لا توجد نتائج. تأكد من تحميل الكتب</string>
     <string name="hadeeth_books">كتب الحديث</string>
-    <string name="sahih_albokhari">صحيح البخاري</string>
-    <string name="sahih_muslim">صحيح مسلم</string>
     <string name="search_in_books">ابحث عن نص في كتب الحديث</string>
     <string name="books_searcher">الباحث الحديثي</string>
     <string name="quran_searcher">الباحث القرآني</string>
