@@ -6,7 +6,6 @@ plugins {
     id 'com.google.firebase.firebase-perf'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
-//    id 'com.google.devtools.ksp' version '1.7.20-1.0.8'
 }
 
 android {
@@ -75,13 +74,6 @@ android {
         kotlinCompilerExtensionVersion "1.4.0"
     }
 
-    /*applicationVariants.all { variant ->
-        kotlin.sourceSets {
-            getByName(variant.name) {
-                kotlin.srcDir("build/generated/ksp/${variant.name}/kotlin")
-            }
-        }
-    }*/
 }
 
 dependencies {
@@ -148,10 +140,6 @@ dependencies {
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
 
     implementation 'com.github.msarhan:ummalqura-calendar:2.0.2'
-
-    // Compose-Destinations
-    // implementation 'io.github.raamcosta.compose-destinations:animations-core:1.7.30-beta'
-    // ksp 'io.github.raamcosta.compose-destinations:ksp:1.7.30-beta'
 
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }
