@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.ui.Screen
-import bassamalim.hidaya.database.dbs.BooksDB
+import bassamalim.hidaya.data.database.dbs.BooksDB
 import bassamalim.hidaya.enums.DownloadState
 import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.other.Global

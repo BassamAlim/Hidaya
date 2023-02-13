@@ -7,10 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import bassamalim.hidaya.ui.inFromBottom
-import bassamalim.hidaya.ui.outToBottom
-import bassamalim.hidaya.ui.inFromTop
-import bassamalim.hidaya.ui.outToTop
+import bassamalim.hidaya.ui.*
 import bassamalim.hidaya.view.*
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -20,7 +17,7 @@ import com.google.gson.Gson
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Navigator(startRoute: String?) {
-    val startDest = startRoute ?: bassamalim.hidaya.ui.Screen.Main.route
+    val startDest = startRoute ?: Screen.Main.route
 
     val navController = rememberAnimatedNavController()
 
@@ -29,7 +26,7 @@ fun Navigator(startRoute: String?) {
         startDestination = startDest
     ) {
         composable(
-            bassamalim.hidaya.ui.Screen.About.route
+            route = Screen.About.route
         ) {
             AboutUI(
                 vm = hiltViewModel()
@@ -37,7 +34,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.AthkarList(
+            route = Screen.AthkarList(
                 "{type}", "{category}"
             ).route,
             arguments = listOf(
@@ -50,13 +47,13 @@ fun Navigator(startRoute: String?) {
             popExitTransition = outToTop
         ) {
             AthkarListUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.AthkarViewer(
+            route = Screen.AthkarViewer(
                 "{thikr_id}"
             ).route,
             arguments = listOf(
@@ -73,7 +70,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.BookChapters(
+            route = Screen.BookChapters(
                 "{book_id}", "{book_title}"
             ).route,
             arguments = listOf(
@@ -86,13 +83,13 @@ fun Navigator(startRoute: String?) {
             popExitTransition = outToTop
         ) {
             BookChaptersUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.BookSearcher.route,
+            route = Screen.BookSearcher.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -104,20 +101,20 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.Books.route,
+            route = Screen.Books.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
             BooksUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.BookViewer(
+            route = Screen.BookViewer(
                 "{book_id}", "{book_title}", "{chapter_id}"
             ).route,
             arguments = listOf(
@@ -136,7 +133,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.DateConverter.route,
+            route = Screen.DateConverter.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -148,20 +145,20 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.LocationPicker.route,
+            route = Screen.LocationPicker.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
             LocationPickerUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.Locator(
+            route = Screen.Locator(
                 "{type}"
             ).route,
             arguments = listOf(
@@ -173,20 +170,26 @@ fun Navigator(startRoute: String?) {
             popExitTransition = outToTop
         ) {
             LocatorUI(
-                nc = navController,
-                vm = hiltViewModel()
-            )
-        }
-
-        composable(bassamalim.hidaya.ui.Screen.Main.route) {
-            MainUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.Qibla.route,
+            route = Screen.Main.route,
+            enterTransition = inFromBottom,
+            exitTransition = outToBottom,
+            popEnterTransition = inFromTop,
+            popExitTransition = outToTop
+        ) {
+            MainUI(
+                vm = hiltViewModel(),
+                nc = navController
+            )
+        }
+
+        composable(
+            route = Screen.Qibla.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -198,20 +201,20 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.QuizLobby.route,
+            route = Screen.QuizLobby.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
             QuizLobbyUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.QuizResult(
+            route = Screen.QuizResult(
                 "{score}", "{questions}", "{chosen_As}"
             ).route,
             arguments = listOf(
@@ -230,33 +233,33 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.Quiz.route,
+            route = Screen.Quiz.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
             QuizUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.QuranSearcher.route,
+            route = Screen.QuranSearcher.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
             QuranSearcherUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.QuranViewer(
+            route = Screen.QuranViewer(
                 "{type}", "{sura_id}", "{page}"
             ).route,
             arguments = listOf(
@@ -275,7 +278,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.RadioClient.route,
+            route = Screen.RadioClient.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -289,7 +292,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.Settings.route,
+            route = Screen.Settings.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -301,7 +304,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.TelawatClient(
+            route = Screen.TelawatClient(
                 "{action}", "{media_id}"
             ).route,
             arguments = listOf(
@@ -322,20 +325,20 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.Telawat.route,
+            route = Screen.Telawat.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
             TelawatUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.TelawatSuar(
+            route = Screen.TelawatSuar(
                 "{reciter_id}", "{version_id}"
             ).route,
             arguments = listOf(
@@ -348,13 +351,13 @@ fun Navigator(startRoute: String?) {
             popExitTransition = outToTop
         ) {
             TelawatSuarUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.Tv.route,
+            route = Screen.Tv.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -366,20 +369,19 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.ui.Screen.Welcome.route,
+            route = Screen.Welcome.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
             WelcomeUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
     }
 }
-
 
 
 // custom nav type because the default one crashes

@@ -5,7 +5,7 @@ import android.content.res.Resources
 import android.location.Location
 import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.R
-import bassamalim.hidaya.database.AppDatabase
+import bassamalim.hidaya.data.database.AppDatabase
 import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.enums.LocationType
 import bassamalim.hidaya.enums.NotificationType

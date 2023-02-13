@@ -2,7 +2,7 @@ package bassamalim.hidaya.repository
 
 import android.content.SharedPreferences
 import bassamalim.hidaya.data.Prefs
-import bassamalim.hidaya.database.AppDatabase
+import bassamalim.hidaya.data.database.AppDatabase
 import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 

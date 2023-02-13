@@ -363,7 +363,7 @@ private fun SuraHeader(
             text = aya.surahName,
             fontSize = (st.textSize + 2).sp,
             fontWeight = FontWeight.Bold,
-            textColor = AppTheme.colors.onPrimary
+            textColor = AppTheme.colors.strongText
         )
     }
 }

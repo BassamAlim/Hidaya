@@ -32,7 +32,7 @@ import bassamalim.hidaya.MainActivity
 import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.Screen
-import bassamalim.hidaya.database.AppDatabase
+import bassamalim.hidaya.data.database.AppDatabase
 import bassamalim.hidaya.models.Reciter
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.utils.ActivityUtils

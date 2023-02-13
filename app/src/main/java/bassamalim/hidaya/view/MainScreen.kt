@@ -115,7 +115,11 @@ fun NavigationGraph(
         modifier = Modifier.padding(padding)
     ) {
         composable(
-            route = BottomNavItem.Home.route
+            route = BottomNavItem.Home.route,
+            enterTransition = BottomNavEnter,
+            exitTransition = BottomNavExit,
+            popEnterTransition = BottomNavPopEnter,
+            popExitTransition = BottomNavPopExit
         ) {
             HomeUI(
                 nc = navController,
@@ -124,7 +128,11 @@ fun NavigationGraph(
         }
 
         composable(
-            route = BottomNavItem.Prayers.route
+            route = BottomNavItem.Prayers.route,
+            enterTransition = BottomNavEnter,
+            exitTransition = BottomNavExit,
+            popEnterTransition = BottomNavPopEnter,
+            popExitTransition = BottomNavPopExit
         ) {
             PrayersUI(
                 nc = navController,
@@ -133,7 +141,11 @@ fun NavigationGraph(
         }
 
         composable(
-            route = BottomNavItem.Quran.route
+            route = BottomNavItem.Quran.route,
+            enterTransition = BottomNavEnter,
+            exitTransition = BottomNavExit,
+            popEnterTransition = BottomNavPopEnter,
+            popExitTransition = BottomNavPopExit
         ) {
             QuranUI(
                 nc = navController,
@@ -142,7 +154,11 @@ fun NavigationGraph(
         }
 
         composable(
-            route = BottomNavItem.Athkar.route
+            route = BottomNavItem.Athkar.route,
+            enterTransition = BottomNavEnter,
+            exitTransition = BottomNavExit,
+            popEnterTransition = BottomNavPopEnter,
+            popExitTransition = BottomNavPopExit
         ) {
             AthkarUI(
                 navController = navController,
@@ -151,7 +167,11 @@ fun NavigationGraph(
         }
 
         composable(
-            route = BottomNavItem.More.route
+            route = BottomNavItem.More.route,
+            enterTransition = BottomNavEnter,
+            exitTransition = BottomNavExit,
+            popEnterTransition = BottomNavPopEnter,
+            popExitTransition = BottomNavPopExit
         ) {
             MoreUI(
                 nc = navController,

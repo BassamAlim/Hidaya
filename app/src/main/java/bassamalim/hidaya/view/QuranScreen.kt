@@ -25,8 +25,8 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun QuranUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: QuranVM = hiltViewModel()
+    vm: QuranVM = hiltViewModel(),
+    nc: NavController = rememberAnimatedNavController()
 ) {
     val st by vm.uiState.collectAsState()
     val ctx = LocalContext.current
@@ -112,6 +112,8 @@ private fun Tab(
         lazyList = {
             items(st.items) { item ->
                 MyClickableSurface(
+                    modifier = Modifier.padding(2.dp),
+                    elevation = 6.dp,
                     onClick = { vm.onSuraClick(item.id, nc) }
                 ) {
                     Row(

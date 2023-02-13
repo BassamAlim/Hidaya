@@ -8,7 +8,7 @@ import android.content.SharedPreferences
 import android.location.Location
 import android.util.Log
 import bassamalim.hidaya.data.Prefs
-import bassamalim.hidaya.database.AppDatabase
+import bassamalim.hidaya.data.database.AppDatabase
 import bassamalim.hidaya.enums.LocationType
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.enums.TimeFormat

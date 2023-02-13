@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.R
-import bassamalim.hidaya.database.AppDatabase
+import bassamalim.hidaya.data.database.AppDatabase
 import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.other.Global

@@ -1,8 +1,8 @@
 package bassamalim.hidaya.repository
 
 import android.content.SharedPreferences
-import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.database.dbs.QuizQuestionsDB
+import bassamalim.hidaya.data.database.AppDatabase
+import bassamalim.hidaya.data.database.dbs.QuizQuestionsDB
 import bassamalim.hidaya.utils.PrefUtils
 import javax.inject.Inject
 

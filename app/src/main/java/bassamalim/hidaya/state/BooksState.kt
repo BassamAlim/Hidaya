@@ -1,6 +1,6 @@
 package bassamalim.hidaya.state
 
-import bassamalim.hidaya.database.dbs.BooksDB
+import bassamalim.hidaya.data.database.dbs.BooksDB
 import bassamalim.hidaya.enums.DownloadState
 
 data class BooksState(

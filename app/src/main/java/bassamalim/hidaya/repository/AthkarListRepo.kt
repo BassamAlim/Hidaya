@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.SharedPreferences
 import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.R
-import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.database.dbs.AthkarDB
+import bassamalim.hidaya.data.database.AppDatabase
+import bassamalim.hidaya.data.database.dbs.AthkarDB
 import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.utils.PrefUtils

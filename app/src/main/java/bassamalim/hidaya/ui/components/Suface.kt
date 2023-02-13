@@ -48,6 +48,7 @@ fun MyClickableSurface(
     modifier: Modifier = Modifier,
     padding: PaddingValues = PaddingValues(vertical = 3.dp, horizontal = 8.dp),
     cornerRadius: Dp = 10.dp,
+    elevation: Dp = 8.dp,
     onClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -57,7 +58,7 @@ fun MyClickableSurface(
             .padding(padding),
         shape = RoundedCornerShape(cornerRadius),
         color = AppTheme.colors.surface,
-        elevation = 10.dp,
+        elevation = elevation,
     ) {
         Box(
             Modifier.clickable { onClick() }

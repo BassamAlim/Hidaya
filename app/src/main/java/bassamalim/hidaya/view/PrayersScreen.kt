@@ -30,8 +30,8 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PrayersUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: PrayersVM = hiltViewModel()
+    vm: PrayersVM = hiltViewModel(),
+    nc: NavController = rememberAnimatedNavController()
 ) {
     val st by vm.uiState.collectAsState()
 
@@ -155,8 +155,8 @@ private fun PrayerCards(viewModel: PrayersVM, state: PrayersState) {
 @Composable
 private fun PrayerCard(vm: PrayersVM, state: PrayersState, number: Int, text: String) {
     MyClickableSurface(
-        onClick = { vm.onPrayerClick(PID.values()[number]) },
-        cornerRadius = 15.dp
+        cornerRadius = 15.dp,
+        onClick = { vm.onPrayerClick(PID.values()[number]) }
     ) {
         Row(
             Modifier
@@ -168,8 +168,8 @@ private fun PrayerCard(vm: PrayersVM, state: PrayersState, number: Int, text: St
             // Prayer name
             MyText(
                 text,
-                fontSize = 33.nsp,
-                fontWeight = FontWeight.Bold
+                fontSize = 30.nsp,
+                fontWeight = FontWeight.Medium
             )
 
             if (vm.location != null) {

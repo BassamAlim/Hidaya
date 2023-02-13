@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import android.content.res.Resources
 import androidx.preference.PreferenceManager
 import androidx.room.Room
-import bassamalim.hidaya.database.AppDatabase
+import bassamalim.hidaya.data.database.AppDatabase
 import bassamalim.hidaya.repository.*
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson

@@ -24,8 +24,8 @@ import androidx.media.session.MediaButtonReceiver
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.R
-import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.database.dbs.AyatDB
+import bassamalim.hidaya.data.database.AppDatabase
+import bassamalim.hidaya.data.database.dbs.AyatDB
 import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.utils.DBUtils

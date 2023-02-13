@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
 import bassamalim.hidaya.data.Prefs
-import bassamalim.hidaya.database.AppDatabase
+import bassamalim.hidaya.data.database.AppDatabase
 import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.enums.LocationType
 import bassamalim.hidaya.helpers.Alarms

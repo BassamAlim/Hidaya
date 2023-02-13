@@ -3,8 +3,8 @@ package bassamalim.hidaya.repository
 import android.content.Context
 import android.content.SharedPreferences
 import bassamalim.hidaya.data.Prefs
-import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.database.dbs.BooksDB
+import bassamalim.hidaya.data.database.AppDatabase
+import bassamalim.hidaya.data.database.dbs.BooksDB
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.utils.FileUtils
 import bassamalim.hidaya.utils.PrefUtils

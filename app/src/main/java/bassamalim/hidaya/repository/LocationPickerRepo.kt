@@ -3,9 +3,9 @@ package bassamalim.hidaya.repository
 import android.content.SharedPreferences
 import android.location.Location
 import bassamalim.hidaya.data.Prefs
-import bassamalim.hidaya.database.AppDatabase
-import bassamalim.hidaya.database.dbs.CityDB
-import bassamalim.hidaya.database.dbs.CountryDB
+import bassamalim.hidaya.data.database.AppDatabase
+import bassamalim.hidaya.data.database.dbs.CityDB
+import bassamalim.hidaya.data.database.dbs.CountryDB
 import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.utils.LocUtils
 import bassamalim.hidaya.utils.PrefUtils

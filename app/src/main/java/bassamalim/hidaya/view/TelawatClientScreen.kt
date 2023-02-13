@@ -35,8 +35,8 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TelawatClientUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: TelawatClientVM = hiltViewModel()
+    vm: TelawatClientVM = hiltViewModel(),
+    nc: NavController = rememberAnimatedNavController()
 ) {
     val st by vm.uiState.collectAsState()
     val activity = LocalContext.current as Activity
@@ -104,7 +104,8 @@ fun TelawatClientUI(
             ) {
                 MyText(
                     text = st.progress,
-                    modifier = Modifier.padding(10.dp)
+                    modifier = Modifier.padding(10.dp),
+                    fontSize = 19.sp
                 )
 
                 MySlider(
@@ -118,7 +119,8 @@ fun TelawatClientUI(
 
                 MyText(
                     text = st.duration,
-                    modifier = Modifier.padding(10.dp)
+                    modifier = Modifier.padding(10.dp),
+                    fontSize = 19.sp
                 )
             }
 
