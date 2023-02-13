@@ -47,7 +47,8 @@ class MainActivity : AppCompatActivity() {
 
         preLaunch()
 
-        getLocationAndLaunch()
+        if (PrefUtils.getBoolean(sp, Prefs.FirstTime)) launch(Screen.Welcome.route)
+        else getLocationAndLaunch()
     }
 
     private fun init() {
@@ -133,15 +134,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun launch() {
-        val startRoute = intent.getStringExtra("start_route") ?: getStartRoute()
+    private fun launch(startRoute: String = Screen.Main.route) {
+        var navRoute = startRoute
+        val givenStartRoute = intent.getStringExtra("start_route")
+        if (givenStartRoute != null) navRoute = givenStartRoute
+
         setContent {
             ActivityUtils.onActivityCreateSetLocale(LocalContext.current)
 
             AppTheme(
                 direction = getDirection()
             ) {
-                Navigator(startRoute)
+                Navigator(navRoute)
             }
         }
     }
@@ -163,11 +167,6 @@ class MainActivity : AppCompatActivity() {
         setAlarms()
 
         setupBootReceiver()
-    }
-
-    private fun getStartRoute(): String {
-        return if (sp.getBoolean(Prefs.FirstTime.key, true)) Screen.Welcome.route
-        else Screen.Main.route
     }
 
     private fun granted(): Boolean {
