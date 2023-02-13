@@ -7,43 +7,28 @@ import androidx.compose.animation.core.tween
 import androidx.navigation.NavBackStackEntry
 import bassamalim.hidaya.ui.components.BottomNavItem
 
-/*sealed class AnimationPackage constructor(
-    val enter: (AnimatedContentScope<NavBackStackEntry>) -> EnterTransition,
-    val exit: (AnimatedContentScope<NavBackStackEntry>) -> ExitTransition,
-    val popEnter: (AnimatedContentScope<NavBackStackEntry>) -> EnterTransition,
-    val popExit: (AnimatedContentScope<NavBackStackEntry>) -> ExitTransition
-) {
-    object Vertical: AnimationPackage(
-        enter = inFromBottom,
-        exit = outToBottom,
-        popEnter = inFromTop,
-        popExit = outToTop
-    )
-}*/
-
-
-val inFromBottom = { an: AnimatedContentScope<NavBackStackEntry> ->
+val inFromBottom = { _: AnimatedContentScope<NavBackStackEntry> ->
     slideInVertically(
         initialOffsetY = { 1000 },
         animationSpec = tween(300)
     ) + fadeIn(animationSpec = tween(300))
 }
 
-val outToBottom = { an: AnimatedContentScope<NavBackStackEntry> ->
+val outToBottom = { _: AnimatedContentScope<NavBackStackEntry> ->
     slideOutVertically(
         targetOffsetY = { -500 },
         animationSpec = tween(300)
     ) + fadeOut(animationSpec = tween(300))
 }
 
-val inFromTop = { an: AnimatedContentScope<NavBackStackEntry> ->
+val inFromTop = { _: AnimatedContentScope<NavBackStackEntry> ->
     slideInVertically(
         initialOffsetY = { -1000 },
         animationSpec = tween(300)
     ) + fadeIn(animationSpec = tween(300))
 }
 
-val outToTop = { an: AnimatedContentScope<NavBackStackEntry> ->
+val outToTop = { _: AnimatedContentScope<NavBackStackEntry> ->
     slideOutVertically(
         targetOffsetY = { 500 },
         animationSpec = tween(300)
@@ -65,8 +50,8 @@ val BottomNavEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
     val fromWeight = bottomNavBarWeightMap[from] ?: 0
     val toWeight = bottomNavBarWeightMap[to] ?: 0
 
-    if (fromWeight < toWeight) inFromLeft
-    else inFromRight
+    if (fromWeight < toWeight) inFromLeftTransition
+    else inFromRightTransition
 }
 
 val BottomNavExit = { an: AnimatedContentScope<NavBackStackEntry> ->
@@ -75,8 +60,8 @@ val BottomNavExit = { an: AnimatedContentScope<NavBackStackEntry> ->
     val fromWeight = bottomNavBarWeightMap[from] ?: 0
     val toWeight = bottomNavBarWeightMap[to] ?: 0
 
-    if (fromWeight < toWeight) outToRight
-    else outToLeft
+    if (fromWeight < toWeight) outToRightTransition
+    else outToLeftTransition
 }
 
 val BottomNavPopEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
@@ -85,8 +70,8 @@ val BottomNavPopEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
     val fromWeight = bottomNavBarWeightMap[from] ?: 0
     val toWeight = bottomNavBarWeightMap[to] ?: 0
 
-    if (fromWeight < toWeight) inFromLeft
-    else inFromRight
+    if (fromWeight < toWeight) inFromLeftTransition
+    else inFromRightTransition
 }
 
 val BottomNavPopExit = { an: AnimatedContentScope<NavBackStackEntry> ->
@@ -95,26 +80,42 @@ val BottomNavPopExit = { an: AnimatedContentScope<NavBackStackEntry> ->
     val fromWeight = bottomNavBarWeightMap[from] ?: 0
     val toWeight = bottomNavBarWeightMap[to] ?: 0
 
-    if (fromWeight < toWeight) outToRight
-    else outToLeft
+    if (fromWeight < toWeight) outToRightTransition
+    else outToLeftTransition
 }
 
-val inFromRight = slideInHorizontally(
+val inFromRight = { _: AnimatedContentScope<NavBackStackEntry> ->
+    inFromRightTransition
+}
+
+val inFromLeft = { _: AnimatedContentScope<NavBackStackEntry> ->
+    inFromLeftTransition
+}
+
+val outToRight = { _: AnimatedContentScope<NavBackStackEntry> ->
+    outToRightTransition
+}
+
+val outToLeft = { _: AnimatedContentScope<NavBackStackEntry> ->
+    outToLeftTransition
+}
+
+val inFromRightTransition = slideInHorizontally(
     initialOffsetX = { 1000 },
     animationSpec = tween(300)
 ) + fadeIn(animationSpec = tween(300))
 
-val outToLeft = slideOutHorizontally(
+val outToLeftTransition = slideOutHorizontally(
     targetOffsetX = { -500 },
     animationSpec = tween(300)
 ) + fadeOut(animationSpec = tween(300))
 
-val inFromLeft = slideInHorizontally(
+val inFromLeftTransition = slideInHorizontally(
     initialOffsetX = { -1000 },
     animationSpec = tween(300)
 ) + fadeIn(animationSpec = tween(100))
 
-val outToRight = slideOutHorizontally(
+val outToRightTransition = slideOutHorizontally(
     targetOffsetX = { 500 },
     animationSpec = tween(300)
 ) + fadeOut(animationSpec = tween(300))

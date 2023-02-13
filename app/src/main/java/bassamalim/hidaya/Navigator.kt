@@ -222,10 +222,10 @@ fun Navigator(startRoute: String?) {
                 navArgument("questions") { type = IntArrType },
                 navArgument("chosen_As") { type = IntArrType }
             ),
-            enterTransition = inFromBottom,
-            exitTransition = outToBottom,
-            popEnterTransition = inFromTop,
-            popExitTransition = outToTop
+            enterTransition = inFromLeft,
+            exitTransition = outToLeft,
+            popEnterTransition = inFromRight,
+            popExitTransition = outToBottom
         ) {
             QuizResultUI(
                 vm = hiltViewModel()
