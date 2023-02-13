@@ -29,7 +29,7 @@ class PrayersVM @Inject constructor(
 ): AndroidViewModel(app) {
 
     val location = repo.getLocation()
-    private val prayTimes = PrayTimes(repo.sp)
+    private var prayTimes = PrayTimes(repo.sp)
     private val prayerNames = repo.getPrayerNames()
     private val calendar = Calendar.getInstance()
     private var dateOffset = 0
@@ -49,6 +49,8 @@ class PrayersVM @Inject constructor(
     }
 
     fun onStart() {
+        prayTimes = PrayTimes(repo.sp)  // to update in case of method changes
+
         goToToday()
     }
 

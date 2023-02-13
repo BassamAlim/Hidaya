@@ -67,16 +67,14 @@ class QiblaVM @Inject constructor(
     }
 
     private fun setupCompass() {
-        val ctx = app.applicationContext
-        val sensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        val packageManager = ctx.packageManager
+        val sensorManager = app.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
         // Checking features needed for Qibla
         if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null
             && sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null
-            && packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)
-            && packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS))
-            compass = Compass(ctx, object : Compass.CompassListener {
+            && app.packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)
+            && app.packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS))
+            compass = Compass(app, object : Compass.CompassListener {
                 override fun onNewAzimuth(azimuth: Float) {
                     adjust(azimuth)
                     adjustNorthDial(azimuth)

@@ -10,19 +10,19 @@ import javax.inject.Inject
 
 class SettingsRepo @Inject constructor(
     private val resources: Resources,
-    val pref: SharedPreferences
+    val sp: SharedPreferences
 ) {
 
-    val numeralsLanguage = PrefUtils.getNumeralsLanguage(pref)
-    val timeFormat = PrefUtils.getTimeFormat(pref)
+    val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
+    val timeFormat = PrefUtils.getTimeFormat(sp)
 
     fun getTime(pid: PID): String {
-        return "${PrefUtils.getInt(pref, Prefs.ExtraNotificationHour(pid))}:" +
-                "${PrefUtils.getInt(pref, Prefs.ExtraNotificationMinute(pid))}"
+        return "${PrefUtils.getInt(sp, Prefs.ExtraNotificationHour(pid))}:" +
+                "${PrefUtils.getInt(sp, Prefs.ExtraNotificationMinute(pid))}"
     }
 
     fun setTime(pid: PID, hour: Int, minute: Int) {
-        pref.edit()
+        sp.edit()
             .putInt(Prefs.ExtraNotificationHour(pid).key, hour)
             .putInt(Prefs.ExtraNotificationMinute(pid).key, minute)
             .apply()

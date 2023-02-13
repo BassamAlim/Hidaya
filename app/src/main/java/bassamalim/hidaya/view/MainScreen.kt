@@ -112,7 +112,7 @@ fun NavigationGraph(
     ) {
         composable(BottomNavItem.Home.route) {
             HomeUI(
-                navController = navController,
+                nc = navController,
                 vm = hiltViewModel()
             )
         }

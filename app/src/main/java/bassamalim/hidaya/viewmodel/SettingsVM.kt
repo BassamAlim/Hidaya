@@ -27,7 +27,7 @@ class SettingsVM @Inject constructor(
     private val repo: SettingsRepo
 ): AndroidViewModel(app) {
 
-    val pref = repo.pref
+    val sp = repo.sp
 
     private val _uiState = MutableStateFlow(SettingsState())
     val uiState = _uiState.asStateFlow()
@@ -89,7 +89,7 @@ class SettingsVM @Inject constructor(
 
                 repo.setTime(pid, hourOfDay, minute)
 
-                Alarms(app.applicationContext, pid)
+                Alarms(app, pid)
             }, cHour, cMinute, false
         )
 
@@ -156,15 +156,13 @@ class SettingsVM @Inject constructor(
         }
     }
 
-    fun resetPrayerTimes() {
-        val ctx = app.applicationContext
-
-        val prayerTimes = PTUtils.getTimes(pref, DBUtils.getDB(ctx))
-        if (prayerTimes != null) Alarms(ctx, prayerTimes)
+    private fun resetPrayerTimes() {
+        val prayerTimes = PTUtils.getTimes(sp, DBUtils.getDB(app))
+        if (prayerTimes != null) Alarms(app, prayerTimes)
     }
 
     private fun cancelAlarm(pid: PID) {
-        PTUtils.cancelAlarm(app.applicationContext, pid)
+        PTUtils.cancelAlarm(app, pid)
 
         when (pid) {
             PID.MORNING -> _uiState.update { it.copy(
@@ -181,6 +179,18 @@ class SettingsVM @Inject constructor(
             )}
             else -> {}
         }
+    }
+
+    fun onPrayerTimesCalculationMethodCh() {
+        resetPrayerTimes()
+    }
+
+    fun onPrayerTimesJuristicMethodCh() {
+        resetPrayerTimes()
+    }
+
+    fun onPrayerTimesHighLatAdjustmentCh() {
+        resetPrayerTimes()
     }
 
 }

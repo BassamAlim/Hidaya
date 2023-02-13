@@ -47,15 +47,6 @@ class AboutVM @Inject constructor(
         )}
     }
 
-    /*fun quickUpdate() {
-        val url = repo.getUpdateURL()
-        val intent = Intent(Intent.ACTION_VIEW)
-            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            .setData(Uri.parse(url))
-
-        app.applicationContext.startActivity(intent)
-    }*/
-
     fun onTitleClick() {
         if (++counter == 5) enableDevMode()
     }

@@ -36,10 +36,10 @@ import bassamalim.hidaya.viewmodel.HomeVM
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeUI(
-    navController: NavController = rememberNavController(),
+    nc: NavController = rememberNavController(),
     vm: HomeVM = hiltViewModel()
 ) {
-    val state by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
 
     DisposableEffect(key1 = vm) {
         vm.onStart()
@@ -78,14 +78,14 @@ fun HomeUI(
                 )
 
                 MyText(
-                    state.upcomingPrayerName,
+                    st.upcomingPrayerName,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(3.dp)
                 )
 
                 MyText(
-                    text = state.upcomingPrayerTime,
+                    text = st.upcomingPrayerTime,
                     fontSize = 24.sp,
                     modifier = Modifier.padding(3.dp)
                 )
@@ -93,7 +93,7 @@ fun HomeUI(
                 MyText(
                     text = String.format(
                         stringResource(R.string.remaining),
-                        state.remainingTime
+                        st.remainingTime
                     ),
                     fontSize = 24.sp,
                     modifier = Modifier.padding(top = 3.dp, bottom = 15.dp)
@@ -115,7 +115,7 @@ fun HomeUI(
                 )
 
                 MyText(
-                    state.telawatRecord,
+                    st.telawatRecord,
                     fontSize = 30.sp
                 )
             }
@@ -136,7 +136,7 @@ fun HomeUI(
                 )
 
                 MyText(
-                    state.quranPagesRecord,
+                    st.quranPagesRecord,
                     fontSize = 30.sp
                 )
             }
@@ -162,7 +162,7 @@ fun HomeUI(
                     )
 
                     MyText(
-                        "${stringResource(R.string.page)} ${state.todayWerdPage}",
+                        "${stringResource(R.string.page)} ${st.todayWerdPage}",
                         fontSize = 22.sp
                     )
                 }
@@ -177,11 +177,11 @@ fun HomeUI(
                         textColor = AppTheme.colors.accent,
                         modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                     ) {
-                        vm.onGotoTodayWerdClick(navController)
+                        vm.onGotoTodayWerdClick(nc)
                     }
 
                     AnimatedVisibility(
-                        visible = state.isWerdDone,
+                        visible = st.isWerdDone,
                         enter = scaleIn()
                     ) {
                         Icon(

@@ -68,7 +68,7 @@ class TelawatVM @Inject constructor(
             downloadStates = getDownloadStates()
         )}
 
-        app.applicationContext.registerReceiver(
+        app.registerReceiver(
             onComplete,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
@@ -76,7 +76,7 @@ class TelawatVM @Inject constructor(
 
     fun onStop() {
         try {
-            app.applicationContext.unregisterReceiver(onComplete)
+            app.unregisterReceiver(onComplete)
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         }
@@ -182,20 +182,18 @@ class TelawatVM @Inject constructor(
 
     private fun isDownloaded(suffix: String): Boolean {
         return File(
-            "${app.applicationContext.getExternalFilesDir(null)}$prefix$suffix"
+            "${app.getExternalFilesDir(null)}$prefix$suffix"
         ).exists()
     }
 
     private fun downloadVer(reciterId: Int, ver: Reciter.RecitationVersion) {
-        val ctx = app.applicationContext
-
         val downloadStates = _uiState.value.downloadStates.toMutableList()
         downloadStates[reciterId][ver.versionId] = DownloadState.Downloading
         _uiState.update { it.copy(
             downloadStates = downloadStates
         )}
 
-        val downloadManager = ctx.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val downloadManager = app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         var request: DownloadManager.Request
         var posted = false
         for (i in 0..113) {
@@ -206,8 +204,8 @@ class TelawatVM @Inject constructor(
                 request = DownloadManager.Request(uri)
                 request.setTitle("${repository.getReciterName(reciterId)} ${ver.rewaya}")
                 val suffix = "$prefix$reciterId/${ver.versionId}"
-                FileUtils.createDir(ctx, suffix)
-                request.setDestinationInExternalFilesDir(ctx, suffix, "$i.mp3")
+                FileUtils.createDir(app, suffix)
+                request.setDestinationInExternalFilesDir(app, suffix, "$i.mp3")
                 request.setNotificationVisibility(
                     DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
                 )
@@ -243,7 +241,7 @@ class TelawatVM @Inject constructor(
     }
 
     private fun clean() {
-        val mainDir = File("${app.applicationContext.getExternalFilesDir(null)}/Telawat/")
+        val mainDir = File("${app.getExternalFilesDir(null)}/Telawat/")
         FileUtils.deleteDirRecursive(mainDir)
     }
 

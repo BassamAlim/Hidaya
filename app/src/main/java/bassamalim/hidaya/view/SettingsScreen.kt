@@ -48,7 +48,7 @@ fun SettingsUI(
                     R.string.appearance,
                     Modifier.padding(top = 4.dp, bottom = 2.dp)
                 ) {
-                    AppearanceSettings(activity, vm.pref)
+                    AppearanceSettings(activity, vm.sp)
                 }
 
                 ExpandableCard(
@@ -76,36 +76,33 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
     ) {
         // Calculation method
         ListPref(
-            sp = viewModel.pref,
+            sp = viewModel.sp,
             titleResId = R.string.calculation_method_title,
             pref = Prefs.PrayerTimesCalculationMethod,
             entries = stringArrayResource(R.array.prayer_times_calc_method_entries),
-            values = stringArrayResource(R.array.prayer_times_calc_method_values)
-        ) {
-            viewModel.resetPrayerTimes()
-        }
+            values = stringArrayResource(R.array.prayer_times_calc_method_values),
+            onSelection = { viewModel.onPrayerTimesCalculationMethodCh() }
+        )
 
         // Juristic method
         ListPref(
-            sp = viewModel.pref,
+            sp = viewModel.sp,
             titleResId = R.string.juristic_method_title,
             pref = Prefs.PrayerTimesJuristicMethod,
             entries = stringArrayResource(R.array.juristic_method_entries),
-            values = stringArrayResource(R.array.juristic_method_values)
-        ) {
-            viewModel.resetPrayerTimes()
-        }
+            values = stringArrayResource(R.array.juristic_method_values),
+            onSelection = { viewModel.onPrayerTimesJuristicMethodCh() }
+        )
 
         // High latitude adjustment
         ListPref(
-            sp = viewModel.pref,
+            sp = viewModel.sp,
             titleResId = R.string.high_lat_adjustment_title,
             pref = Prefs.PrayerTimesAdjustment,
             entries = stringArrayResource(R.array.high_lat_adjustment_entries),
-            values = stringArrayResource(R.array.high_lat_adjustment_values)
-        ) {
-            viewModel.resetPrayerTimes()
-        }
+            values = stringArrayResource(R.array.high_lat_adjustment_values),
+            onSelection = { viewModel.onPrayerTimesHighLatAdjustmentCh() }
+        )
     }
 }
 
@@ -120,7 +117,7 @@ private fun ExtraNotificationsSettings(
         Modifier.padding(bottom = 10.dp)
     ) {
         SwitchPref(
-            pref = vm.pref,
+            pref = vm.sp,
             prefObj = Prefs.NotifyExtraNotification(PID.MORNING),
             titleResId = R.string.morning_athkar_title,
             summary = st.morningSummary
@@ -129,7 +126,7 @@ private fun ExtraNotificationsSettings(
         }
 
         SwitchPref(
-            pref = vm.pref,
+            pref = vm.sp,
             prefObj = Prefs.NotifyExtraNotification(PID.EVENING),
             titleResId = R.string.evening_athkar_title,
             summary = st.eveningSummary
@@ -138,7 +135,7 @@ private fun ExtraNotificationsSettings(
         }
 
         SwitchPref(
-            pref = vm.pref,
+            pref = vm.sp,
             prefObj = Prefs.NotifyExtraNotification(PID.DAILY_WERD),
             titleResId = R.string.daily_werd_title,
             summary = st.werdSummary
@@ -147,7 +144,7 @@ private fun ExtraNotificationsSettings(
         }
 
         SwitchPref(
-            pref = vm.pref,
+            pref = vm.sp,
             prefObj = Prefs.NotifyExtraNotification(PID.FRIDAY_KAHF),
             titleResId = R.string.friday_kahf_title,
             summary = st.kahfSummary
