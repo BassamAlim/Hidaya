@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.other.AnalogClock
 import bassamalim.hidaya.ui.components.MyClickableText
@@ -32,11 +31,12 @@ import bassamalim.hidaya.ui.components.MyText
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.ui.theme.Positive
 import bassamalim.hidaya.viewmodel.HomeVM
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeUI(
-    nc: NavController = rememberNavController(),
+    nc: NavController = rememberAnimatedNavController(),
     vm: HomeVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsState()

@@ -1,4 +1,4 @@
-package bassamalim.hidaya
+package bassamalim.hidaya.data
 
 import bassamalim.hidaya.enums.Language.ARABIC
 import bassamalim.hidaya.enums.LocationType.Auto

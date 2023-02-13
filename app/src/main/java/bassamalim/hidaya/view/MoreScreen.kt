@@ -1,6 +1,7 @@
 package bassamalim.hidaya.view
 
 import android.widget.Toast
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,14 +14,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.components.MySquareButton
 import bassamalim.hidaya.viewmodel.MoreVM
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MoreUI(
-    nc: NavController = rememberNavController(),
+    nc: NavController = rememberAnimatedNavController(),
     vm: MoreVM = hiltViewModel()
 ) {
     val st = vm.uiState.collectAsState()

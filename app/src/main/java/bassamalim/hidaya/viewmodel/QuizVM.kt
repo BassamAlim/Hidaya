@@ -3,7 +3,7 @@ package bassamalim.hidaya.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.Screen
+import bassamalim.hidaya.ui.Screen
 import bassamalim.hidaya.database.dbs.QuizQuestionsDB
 import bassamalim.hidaya.repository.QuizRepo
 import bassamalim.hidaya.state.QuizState

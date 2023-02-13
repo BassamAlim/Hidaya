@@ -2,7 +2,7 @@ package bassamalim.hidaya.repository
 
 import android.content.SharedPreferences
 import android.location.Location
-import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.enums.LocationType
 import bassamalim.hidaya.utils.LocUtils

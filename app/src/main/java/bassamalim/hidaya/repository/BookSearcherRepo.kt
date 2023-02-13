@@ -3,7 +3,7 @@ package bassamalim.hidaya.repository
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.R
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.enums.Language

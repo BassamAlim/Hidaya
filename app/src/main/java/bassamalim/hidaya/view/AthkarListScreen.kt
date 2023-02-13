@@ -1,5 +1,6 @@
 package bassamalim.hidaya.view
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,14 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.viewmodel.AthkarListVM
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AthkarListUI(
-    nc: NavController = rememberNavController(),
+    nc: NavController = rememberAnimatedNavController(),
     vm: AthkarListVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsState()

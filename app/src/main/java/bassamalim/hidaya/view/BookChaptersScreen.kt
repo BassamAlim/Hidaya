@@ -1,5 +1,6 @@
 package bassamalim.hidaya.view
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
@@ -7,15 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.state.BookChaptersState
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.viewmodel.BookChaptersVM
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun BookChaptersUI(
-    nc: NavController = rememberNavController(),
+    nc: NavController = rememberAnimatedNavController(),
     vm: BookChaptersVM = hiltViewModel()
 ) {
     val state by vm.uiState.collectAsState()

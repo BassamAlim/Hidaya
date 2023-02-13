@@ -1,7 +1,7 @@
 package bassamalim.hidaya.repository
 
 import android.content.SharedPreferences
-import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.data.Prefs
 import javax.inject.Inject
 
 class WelcomeRepo @Inject constructor(

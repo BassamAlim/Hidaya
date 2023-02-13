@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.room.Room
-import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.other.Global
 import com.google.gson.Gson

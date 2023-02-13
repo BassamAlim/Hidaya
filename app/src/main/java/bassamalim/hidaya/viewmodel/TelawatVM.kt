@@ -14,7 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import bassamalim.hidaya.Screen
+import bassamalim.hidaya.ui.Screen
 import bassamalim.hidaya.database.dbs.TelawatDB
 import bassamalim.hidaya.enums.DownloadState
 import bassamalim.hidaya.enums.Language

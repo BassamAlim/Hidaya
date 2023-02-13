@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.Screen
+import bassamalim.hidaya.ui.Screen
 import bassamalim.hidaya.models.LocationPickerItem
 import bassamalim.hidaya.repository.LocationPickerRepo
 import bassamalim.hidaya.state.LocationPickerState

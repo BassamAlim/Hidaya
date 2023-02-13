@@ -16,9 +16,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import bassamalim.hidaya.MainActivity
-import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.R
-import bassamalim.hidaya.Screen
+import bassamalim.hidaya.ui.Screen
 import bassamalim.hidaya.enums.NotificationType
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.other.Global

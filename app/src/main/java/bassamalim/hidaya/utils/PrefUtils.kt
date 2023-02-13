@@ -3,7 +3,7 @@ package bassamalim.hidaya.utils
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.enums.Theme
 import bassamalim.hidaya.enums.TimeFormat

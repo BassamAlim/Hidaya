@@ -9,7 +9,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.enums.LocationType
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.other.Global

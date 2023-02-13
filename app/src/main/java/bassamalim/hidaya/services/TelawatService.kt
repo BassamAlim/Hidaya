@@ -29,9 +29,9 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.MainActivity
-import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.R
-import bassamalim.hidaya.Screen
+import bassamalim.hidaya.ui.Screen
 import bassamalim.hidaya.database.AppDatabase
 import bassamalim.hidaya.models.Reciter
 import bassamalim.hidaya.other.Global

@@ -2,7 +2,7 @@ package bassamalim.hidaya.repository
 
 import android.content.Context
 import android.content.SharedPreferences
-import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.models.Book
 import bassamalim.hidaya.utils.FileUtils
 import bassamalim.hidaya.utils.PrefUtils

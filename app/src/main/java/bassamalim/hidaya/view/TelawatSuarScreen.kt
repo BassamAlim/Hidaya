@@ -1,5 +1,6 @@
 package bassamalim.hidaya.view
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,16 +13,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.models.ReciterSura
 import bassamalim.hidaya.state.TelawatSuarState
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.viewmodel.TelawatSuarVM
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TelawatSuarUI(
-    nc: NavController = rememberNavController(),
+    nc: NavController = rememberAnimatedNavController(),
     vm: TelawatSuarVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsState()

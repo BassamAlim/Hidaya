@@ -4,7 +4,7 @@ import android.location.Location
 import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import bassamalim.hidaya.Screen
+import bassamalim.hidaya.ui.Screen
 import bassamalim.hidaya.helpers.PrayTimes
 import bassamalim.hidaya.repository.HomeRepo
 import bassamalim.hidaya.state.HomeState

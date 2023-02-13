@@ -1,5 +1,6 @@
 package bassamalim.hidaya.view
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.TopAppBar
@@ -13,22 +14,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
+import bassamalim.hidaya.ui.*
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.ui.theme.nsp
 import bassamalim.hidaya.viewmodel.MainVM
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainUI(
-    nc: NavHostController = rememberNavController(),
+    nc: NavHostController = rememberAnimatedNavController(),
     vm: MainVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsState()
-    val bottomNc = rememberNavController()
+    val bottomNc = rememberAnimatedNavController()
 
     MyScaffold(
         title = stringResource(R.string.app_name),
@@ -99,42 +102,57 @@ fun MainUI(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
     bottomNavController: NavHostController,
     padding: PaddingValues
 ) {
-    NavHost(
+    AnimatedNavHost(
         bottomNavController,
         startDestination = BottomNavItem.Home.route,
         modifier = Modifier.padding(padding)
     ) {
-        composable(BottomNavItem.Home.route) {
+        composable(
+            route = BottomNavItem.Home.route
+        ) {
             HomeUI(
                 nc = navController,
                 vm = hiltViewModel()
             )
         }
-        composable(BottomNavItem.Prayers.route) {
+
+        composable(
+            route = BottomNavItem.Prayers.route
+        ) {
             PrayersUI(
                 nc = navController,
                 vm = hiltViewModel()
             )
         }
-        composable(BottomNavItem.Quran.route) {
+
+        composable(
+            route = BottomNavItem.Quran.route
+        ) {
             QuranUI(
                 nc = navController,
                 vm = hiltViewModel()
             )
         }
-        composable(BottomNavItem.Athkar.route) {
+
+        composable(
+            route = BottomNavItem.Athkar.route
+        ) {
             AthkarUI(
                 navController = navController,
                 viewModel = hiltViewModel()
             )
         }
-        composable(BottomNavItem.More.route) {
+
+        composable(
+            route = BottomNavItem.More.route
+        ) {
             MoreUI(
                 nc = navController,
                 vm = hiltViewModel()

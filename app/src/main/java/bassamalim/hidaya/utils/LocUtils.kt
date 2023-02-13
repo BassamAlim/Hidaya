@@ -2,7 +2,7 @@ package bassamalim.hidaya.utils
 
 import android.content.SharedPreferences
 import android.location.Location
-import bassamalim.hidaya.Prefs
+import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.models.MyLocation
 import com.google.gson.Gson
 

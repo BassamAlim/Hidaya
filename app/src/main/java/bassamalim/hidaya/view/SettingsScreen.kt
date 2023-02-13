@@ -16,8 +16,8 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import bassamalim.hidaya.Prefs
 import bassamalim.hidaya.R
+import bassamalim.hidaya.data.Prefs
 import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.enums.PID
 import bassamalim.hidaya.enums.Theme

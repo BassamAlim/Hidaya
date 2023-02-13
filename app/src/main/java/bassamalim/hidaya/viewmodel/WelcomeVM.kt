@@ -2,7 +2,7 @@ package bassamalim.hidaya.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import bassamalim.hidaya.Screen
+import bassamalim.hidaya.ui.Screen
 import bassamalim.hidaya.repository.WelcomeRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
