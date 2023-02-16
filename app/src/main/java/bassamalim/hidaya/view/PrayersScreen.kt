@@ -86,7 +86,7 @@ fun PrayersUI(
         }
 
         MySurface(
-            Modifier.padding(bottom = 5.dp)
+            Modifier.padding(bottom = 8.dp)
         ) {
             Row(
                 Modifier

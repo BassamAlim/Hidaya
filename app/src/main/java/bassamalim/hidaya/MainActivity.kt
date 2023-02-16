@@ -53,6 +53,12 @@ class MainActivity : AppCompatActivity() {
         else getLocationAndLaunch()
     }
 
+    private fun checkNeuralyzation() {
+        if (PrefUtils.getBoolean(sp, Prefs.Neuralyz)) {
+            ActivityUtils.clearAppData(this)
+        }
+    }
+
     private fun init() {
         sp = PrefUtils.getPreferences(this)
         db = DBUtils.getDB(this)

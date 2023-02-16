@@ -28,16 +28,17 @@ import bassamalim.hidaya.ui.theme.AppTheme
 @Composable
 fun MySurface(
     modifier: Modifier = Modifier,
+    padding: PaddingValues = PaddingValues(vertical = 6.dp, horizontal = 8.dp),
     cornerRadius: Dp = 10.dp,
     content: @Composable () -> Unit
 ) {
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 5.dp, horizontal = 8.dp),
+            .padding(padding),
         shape = RoundedCornerShape(cornerRadius),
         color = AppTheme.colors.surface,
-        elevation = 10.dp
+        elevation = 8.dp
     ) {
         content()
     }
@@ -48,7 +49,7 @@ fun MyClickableSurface(
     modifier: Modifier = Modifier,
     padding: PaddingValues = PaddingValues(vertical = 3.dp, horizontal = 8.dp),
     cornerRadius: Dp = 10.dp,
-    elevation: Dp = 8.dp,
+    elevation: Dp = 6.dp,
     onClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -81,10 +82,10 @@ fun MyBtnSurface(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 3.dp, horizontal = 8.dp),
+            .padding(vertical = 5.dp, horizontal = 8.dp),
         shape = RoundedCornerShape(10.dp),
         color = AppTheme.colors.surface,
-        elevation = 10.dp,
+        elevation = 6.dp,
         onClick = onClick
     ) {
         Row(

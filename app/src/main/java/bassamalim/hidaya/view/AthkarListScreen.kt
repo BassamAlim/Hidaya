@@ -48,10 +48,9 @@ fun AthkarListUI(
                                 MyFavBtn(item.favorite.value) {
                                     vm.onFavoriteCLick(item)
                                 }
-                            }
-                        ) {
-                            vm.onItemClick(nc, item)
-                        }
+                            },
+                            onClick = { vm.onItemClick(nc, item) }
+                        )
                     }
                 }
             )

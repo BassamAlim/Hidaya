@@ -30,7 +30,7 @@ import java.util.*
 class NotificationReceiver : BroadcastReceiver() {
 
     private lateinit var ctx: Context
-    private lateinit var pref: SharedPreferences
+    private lateinit var sp: SharedPreferences
     private lateinit var pid: PID
     private var isPrayer = false
     private var channelId = ""
@@ -39,7 +39,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         ctx = context.applicationContext
-        pref = PrefUtils.getPreferences(ctx)
+        sp = PrefUtils.getPreferences(ctx)
 
         ActivityUtils.onActivityCreateSetLocale(ctx)
 
@@ -49,7 +49,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
         Log.i(Global.TAG, "in notification receiver for $pid")
 
-        val typeName = PrefUtils.getString(pref, Prefs.NotificationType(pid))
+        val typeName = PrefUtils.getString(sp, Prefs.NotificationType(pid))
         type = NotificationType.valueOf(typeName)
 
         if (type != NotificationType.None) prepare()
@@ -139,7 +139,7 @@ class NotificationReceiver : BroadcastReceiver() {
             PID.DAILY_WERD -> {
                 Screen.QuranViewer(
                     "by_page",
-                    PrefUtils.getInt(pref, Prefs.TodayWerdPage).toString(),
+                    PrefUtils.getInt(sp, Prefs.TodayWerdPage).toString(),
                 ).route
             }
             PID.FRIDAY_KAHF -> {

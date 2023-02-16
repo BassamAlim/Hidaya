@@ -10,6 +10,7 @@ import bassamalim.hidaya.enums.Theme.LIGHT
 import bassamalim.hidaya.enums.TimeFormat.TWELVE
 
 sealed class Prefs(val key: String, val default: Any) {
+    object Neuralyz: Prefs("neuralyz", true)  // men in black memory wiper reference (remove after a while)
     object BookmarkedSura: Prefs("bookmarked_sura", -1)
     object Language : Prefs("language_key", ARABIC.name)
     object NumeralsLanguage : Prefs("numerals_language_key", ARABIC.name)
