@@ -53,12 +53,6 @@ class MainActivity : AppCompatActivity() {
         else getLocationAndLaunch()
     }
 
-    private fun checkNeuralyzation() {
-        if (PrefUtils.getBoolean(sp, Prefs.Neuralyz)) {
-            ActivityUtils.clearAppData(this)
-        }
-    }
-
     private fun init() {
         sp = PrefUtils.getPreferences(this)
         db = DBUtils.getDB(this)
@@ -78,7 +72,13 @@ class MainActivity : AppCompatActivity() {
     private fun preLaunch() {
         DBUtils.testDB(this, sp)
 
-        ActivityUtils.onActivityCreateSetTheme(this)
+        try {  // remove after a while
+            ActivityUtils.onActivityCreateSetTheme(this)
+        } catch (e: Exception) {
+            Log.e(Global.TAG, "Neuralyzing", e)
+            ActivityUtils.clearAppData(this)
+        }
+
         ActivityUtils.onActivityCreateSetLocale(this)
         ActivityUtils.onActivityCreateSetTheme(applicationContext)
         ActivityUtils.onActivityCreateSetLocale(applicationContext)

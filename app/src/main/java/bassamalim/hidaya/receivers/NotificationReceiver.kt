@@ -41,7 +41,12 @@ class NotificationReceiver : BroadcastReceiver() {
         ctx = context.applicationContext
         sp = PrefUtils.getPreferences(ctx)
 
-        ActivityUtils.onActivityCreateSetLocale(ctx)
+        try {  // remove after a while
+            ActivityUtils.onActivityCreateSetLocale(ctx)
+        } catch (e: Exception) {
+            Log.e(Global.TAG, "Neuralyzing", e)
+            ActivityUtils.clearAppData(ctx)
+        }
 
         pid = PID.valueOf(intent.getStringExtra("id")!!)
         time = intent.getLongExtra("time", 0L)
