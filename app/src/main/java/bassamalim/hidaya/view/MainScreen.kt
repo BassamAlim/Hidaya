@@ -116,10 +116,10 @@ fun NavigationGraph(
     ) {
         composable(
             route = BottomNavItem.Home.route,
-            enterTransition = BottomNavEnter,
-            exitTransition = BottomNavExit,
-            popEnterTransition = BottomNavPopEnter,
-            popExitTransition = BottomNavPopExit
+            enterTransition = TabEnter,
+            exitTransition = TabExit,
+            popEnterTransition = TabPopEnter,
+            popExitTransition = TabPopExit
         ) {
             HomeUI(
                 nc = navController,
@@ -129,10 +129,10 @@ fun NavigationGraph(
 
         composable(
             route = BottomNavItem.Prayers.route,
-            enterTransition = BottomNavEnter,
-            exitTransition = BottomNavExit,
-            popEnterTransition = BottomNavPopEnter,
-            popExitTransition = BottomNavPopExit
+            enterTransition = TabEnter,
+            exitTransition = TabExit,
+            popEnterTransition = TabPopEnter,
+            popExitTransition = TabPopExit
         ) {
             PrayersUI(
                 nc = navController,
@@ -142,10 +142,10 @@ fun NavigationGraph(
 
         composable(
             route = BottomNavItem.Quran.route,
-            enterTransition = BottomNavEnter,
-            exitTransition = BottomNavExit,
-            popEnterTransition = BottomNavPopEnter,
-            popExitTransition = BottomNavPopExit
+            enterTransition = TabEnter,
+            exitTransition = TabExit,
+            popEnterTransition = TabPopEnter,
+            popExitTransition = TabPopExit
         ) {
             QuranUI(
                 nc = navController,
@@ -155,10 +155,10 @@ fun NavigationGraph(
 
         composable(
             route = BottomNavItem.Athkar.route,
-            enterTransition = BottomNavEnter,
-            exitTransition = BottomNavExit,
-            popEnterTransition = BottomNavPopEnter,
-            popExitTransition = BottomNavPopExit
+            enterTransition = TabEnter,
+            exitTransition = TabExit,
+            popEnterTransition = TabPopEnter,
+            popExitTransition = TabPopExit
         ) {
             AthkarUI(
                 navController = navController,
@@ -168,10 +168,10 @@ fun NavigationGraph(
 
         composable(
             route = BottomNavItem.More.route,
-            enterTransition = BottomNavEnter,
-            exitTransition = BottomNavExit,
-            popEnterTransition = BottomNavPopEnter,
-            popExitTransition = BottomNavPopExit
+            enterTransition = TabEnter,
+            exitTransition = TabExit,
+            popEnterTransition = TabPopEnter,
+            popExitTransition = TabPopExit
         ) {
             MoreUI(
                 nc = navController,

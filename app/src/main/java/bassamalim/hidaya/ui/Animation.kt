@@ -9,30 +9,30 @@ import bassamalim.hidaya.ui.components.BottomNavItem
 
 val inFromBottom = { _: AnimatedContentScope<NavBackStackEntry> ->
     slideInVertically(
-        initialOffsetY = { 1000 },
+        initialOffsetY = { 500 },
         animationSpec = tween(300)
-    ) + fadeIn(animationSpec = tween(300))
+    ) + fadeIn(animationSpec = tween(200))
 }
 
 val outToBottom = { _: AnimatedContentScope<NavBackStackEntry> ->
     slideOutVertically(
         targetOffsetY = { -500 },
         animationSpec = tween(300)
-    ) + fadeOut(animationSpec = tween(300))
+    ) + fadeOut(animationSpec = tween(200))
 }
 
 val inFromTop = { _: AnimatedContentScope<NavBackStackEntry> ->
     slideInVertically(
-        initialOffsetY = { -1000 },
+        initialOffsetY = { -500 },
         animationSpec = tween(300)
-    ) + fadeIn(animationSpec = tween(300))
+    ) + fadeIn(animationSpec = tween(200))
 }
 
 val outToTop = { _: AnimatedContentScope<NavBackStackEntry> ->
     slideOutVertically(
         targetOffsetY = { 500 },
         animationSpec = tween(300)
-    ) + fadeOut(animationSpec = tween(300))
+    ) + fadeOut(animationSpec = tween(200))
 }
 
 
@@ -44,7 +44,7 @@ val bottomNavBarWeightMap = hashMapOf(
     BottomNavItem.More.route to 5
 )
 
-val BottomNavEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
+val TabEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
     val from = an.initialState.destination.route
     val to = an.targetState.destination.route
     val fromWeight = bottomNavBarWeightMap[from] ?: 0
@@ -54,7 +54,7 @@ val BottomNavEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
     else inFromRightTransition
 }
 
-val BottomNavExit = { an: AnimatedContentScope<NavBackStackEntry> ->
+val TabExit = { an: AnimatedContentScope<NavBackStackEntry> ->
     val from = an.initialState.destination.route
     val to = an.targetState.destination.route
     val fromWeight = bottomNavBarWeightMap[from] ?: 0
@@ -64,7 +64,7 @@ val BottomNavExit = { an: AnimatedContentScope<NavBackStackEntry> ->
     else outToLeftTransition
 }
 
-val BottomNavPopEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
+val TabPopEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
     val from = an.initialState.destination.route
     val to = an.targetState.destination.route
     val fromWeight = bottomNavBarWeightMap[from] ?: 0
@@ -74,7 +74,7 @@ val BottomNavPopEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
     else inFromRightTransition
 }
 
-val BottomNavPopExit = { an: AnimatedContentScope<NavBackStackEntry> ->
+val TabPopExit = { an: AnimatedContentScope<NavBackStackEntry> ->
     val from = an.initialState.destination.route
     val to = an.targetState.destination.route
     val fromWeight = bottomNavBarWeightMap[from] ?: 0

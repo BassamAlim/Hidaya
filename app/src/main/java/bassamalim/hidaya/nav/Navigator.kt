@@ -1,4 +1,4 @@
-package bassamalim.hidaya
+package bassamalim.hidaya.nav
 
 import android.os.Build
 import android.os.Bundle
@@ -17,7 +17,7 @@ import com.google.gson.Gson
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Navigator(startRoute: String?) {
-    val startDest = startRoute ?: bassamalim.hidaya.nav.Screen.Main.route
+    val startDest = startRoute ?: Screen.Main.route
 
     val navController = rememberAnimatedNavController()
 
@@ -26,7 +26,11 @@ fun Navigator(startRoute: String?) {
         startDestination = startDest
     ) {
         composable(
-            route = bassamalim.hidaya.nav.Screen.About.route
+            route = Screen.About.route,
+            enterTransition = inFromBottom,
+            exitTransition = outToBottom,
+            popEnterTransition = inFromTop,
+            popExitTransition = outToTop
         ) {
             AboutUI(
                 vm = hiltViewModel()
@@ -34,7 +38,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.AthkarList(
+            route = Screen.AthkarList(
                 "{type}", "{category}"
             ).route,
             arguments = listOf(
@@ -53,7 +57,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.AthkarViewer(
+            route = Screen.AthkarViewer(
                 "{thikr_id}"
             ).route,
             arguments = listOf(
@@ -70,7 +74,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.BookChapters(
+            route = Screen.BookChapters(
                 "{book_id}", "{book_title}"
             ).route,
             arguments = listOf(
@@ -89,7 +93,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.BookSearcher.route,
+            route = Screen.BookSearcher.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -101,7 +105,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.Books.route,
+            route = Screen.Books.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -114,7 +118,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.BookViewer(
+            route = Screen.BookViewer(
                 "{book_id}", "{book_title}", "{chapter_id}"
             ).route,
             arguments = listOf(
@@ -133,7 +137,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.DateConverter.route,
+            route = Screen.DateConverter.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -145,7 +149,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.LocationPicker.route,
+            route = Screen.LocationPicker.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -158,7 +162,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.Locator(
+            route = Screen.Locator(
                 "{type}"
             ).route,
             arguments = listOf(
@@ -176,7 +180,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.Main.route,
+            route = Screen.Main.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -189,7 +193,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.Qibla.route,
+            route = Screen.Qibla.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -201,7 +205,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.QuizLobby.route,
+            route = Screen.QuizLobby.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -214,7 +218,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.QuizResult(
+            route = Screen.QuizResult(
                 "{score}", "{questions}", "{chosen_As}"
             ).route,
             arguments = listOf(
@@ -233,7 +237,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.Quiz.route,
+            route = Screen.Quiz.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -246,7 +250,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.QuranSearcher.route,
+            route = Screen.QuranSearcher.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -259,7 +263,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.QuranViewer(
+            route = Screen.QuranViewer(
                 "{type}", "{sura_id}", "{page}"
             ).route,
             arguments = listOf(
@@ -278,7 +282,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.RadioClient.route,
+            route = Screen.RadioClient.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -292,7 +296,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.Settings.route,
+            route = Screen.Settings.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -304,7 +308,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.TelawatClient(
+            route = Screen.TelawatClient(
                 "{action}", "{media_id}"
             ).route,
             arguments = listOf(
@@ -325,7 +329,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.Telawat.route,
+            route = Screen.Telawat.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -338,7 +342,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.TelawatSuar(
+            route = Screen.TelawatSuar(
                 "{reciter_id}", "{version_id}"
             ).route,
             arguments = listOf(
@@ -357,7 +361,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.Tv.route,
+            route = Screen.Tv.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -369,7 +373,7 @@ fun Navigator(startRoute: String?) {
         }
 
         composable(
-            route = bassamalim.hidaya.nav.Screen.Welcome.route,
+            route = Screen.Welcome.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
