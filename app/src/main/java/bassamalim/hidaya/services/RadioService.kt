@@ -33,7 +33,7 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import bassamalim.hidaya.MainActivity
 import bassamalim.hidaya.R
-import bassamalim.hidaya.ui.Screen
+import bassamalim.hidaya.nav.Screen
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.utils.ActivityUtils
 import java.io.IOException

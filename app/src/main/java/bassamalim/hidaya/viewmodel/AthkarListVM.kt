@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import bassamalim.hidaya.ui.Screen
+import bassamalim.hidaya.nav.Screen
 import bassamalim.hidaya.data.database.dbs.AthkarDB
 import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.enums.ListType

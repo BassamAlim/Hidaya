@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.ui.Screen
+import bassamalim.hidaya.nav.Screen
 import bassamalim.hidaya.enums.LocationType
 import bassamalim.hidaya.enums.NotificationType
 import bassamalim.hidaya.enums.PID

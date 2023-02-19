@@ -26,7 +26,7 @@ import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.receivers.DeviceBootReceiver
 import bassamalim.hidaya.services.AthanService
-import bassamalim.hidaya.ui.Screen
+import bassamalim.hidaya.nav.Screen
 import bassamalim.hidaya.ui.theme.AppTheme
 import bassamalim.hidaya.utils.*
 import com.google.android.gms.location.LocationServices

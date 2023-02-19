@@ -6,7 +6,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import bassamalim.hidaya.ui.Screen
+import bassamalim.hidaya.nav.Screen
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.state.MoreState
 import dagger.hilt.android.lifecycle.HiltViewModel

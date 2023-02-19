@@ -1,4 +1,4 @@
-package bassamalim.hidaya.ui
+package bassamalim.hidaya.nav
 
 sealed class Screen(val route: String) {
 

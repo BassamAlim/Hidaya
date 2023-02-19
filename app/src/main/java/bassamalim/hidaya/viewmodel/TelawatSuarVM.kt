@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
-import bassamalim.hidaya.ui.Screen
+import bassamalim.hidaya.nav.Screen
 import bassamalim.hidaya.enums.DownloadState
 import bassamalim.hidaya.enums.ListType
 import bassamalim.hidaya.models.ReciterSura
