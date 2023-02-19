@@ -34,20 +34,21 @@ import javax.inject.Inject
 @HiltViewModel
 class TelawatVM @Inject constructor(
     private val app: Application,
-    private val repository: TelawatRepo
+    private val repo: TelawatRepo
 ): AndroidViewModel(app) {
 
+    private var listType = ListType.All
     var searchText by mutableStateOf("")
         private set
     val prefix = "/Telawat/"
     private var continueListeningMediaId = ""
-    val rewayat = repository.getRewayat()
+    val rewayat = repo.getRewayat()
     private val downloading = HashMap<Long, Pair<Int, Int>>()
 
     private val _uiState = MutableStateFlow(TelawatState(
-        favs = repository.getFavs(),
-        selectedVersions = repository.getSelectedVersions(),
-        continueListeningText = repository.getNoLastPlayStr(),
+        favs = repo.getFavs(),
+        selectedVersions = repo.getSelectedVersions(),
+        continueListeningText = repo.getNoLastPlayStr(),
         downloadStates = getDownloadStates()
     ))
     val uiState = _uiState.asStateFlow()
@@ -98,7 +99,7 @@ class TelawatVM @Inject constructor(
     private fun getDownloadStates(): MutableList<MutableList<DownloadState>> {
         val downloadStates = mutableListOf<MutableList<DownloadState>>()
 
-        for (telawa in repository.getAllVersions()) {  // all versions
+        for (telawa in repo.getAllVersions()) {  // all versions
             val state =
                 if (isDownloaded("${telawa.getReciterId()}/${telawa.getVersionId()}"))
                     DownloadState.Downloaded
@@ -114,7 +115,7 @@ class TelawatVM @Inject constructor(
     }
 
     private fun setupContinue() {
-        continueListeningMediaId = repository.getLastPlayedMediaId()
+        continueListeningMediaId = repo.getLastPlayedMediaId()
 
         if (continueListeningMediaId.isEmpty()) return
 
@@ -123,21 +124,21 @@ class TelawatVM @Inject constructor(
         val suraIndex = continueListeningMediaId.substring(5).toInt()
 
         val suraName =
-            if (repository.language == Language.ENGLISH) repository.getSuraNamesEn()
-            else repository.getSuraNames()
-        val reciterName = repository.getReciterName(reciterId)
-        val rewaya = repository.getRewaya(reciterId, versionId)
+            if (repo.language == Language.ENGLISH) repo.getSuraNamesEn()
+            else repo.getSuraNames()
+        val reciterName = repo.getReciterName(reciterId)
+        val rewaya = repo.getRewaya(reciterId, versionId)
 
         _uiState.update { it.copy(
-            continueListeningText = "${repository.getLastPlayStr()}: " +
-                    "${repository.getSuraStr()} ${suraName[suraIndex]} " +
-                    "${repository.getForReciterStr()} $reciterName " +
-                    "${repository.getInRewayaOfStr()} $rewaya"
+            continueListeningText = "${repo.getLastPlayStr()}: " +
+                    "${repo.getSuraStr()} ${suraName[suraIndex]} " +
+                    "${repo.getForReciterStr()} $reciterName " +
+                    "${repo.getInRewayaOfStr()} $rewaya"
         )}
     }
 
     private fun getItems(type: ListType): List<Reciter> {
-        val reciters = repository.getReciters()
+        val reciters = repo.getReciters()
 
         val items = ArrayList<Reciter>()
         for (i in reciters.indices) {
@@ -147,7 +148,7 @@ class TelawatVM @Inject constructor(
                 (type == ListType.Downloaded && !isDownloaded("${reciter.id}")))
                 continue
 
-            val versions = filterSelectedVersions(repository.getReciterTelawat(reciter.id))
+            val versions = filterSelectedVersions(repo.getReciterTelawat(reciter.id))
             val versionsList = ArrayList<Reciter.RecitationVersion>()
 
             versions.forEach { telawa ->
@@ -202,7 +203,7 @@ class TelawatVM @Inject constructor(
                 val uri = Uri.parse(link)
 
                 request = DownloadManager.Request(uri)
-                request.setTitle("${repository.getReciterName(reciterId)} ${ver.rewaya}")
+                request.setTitle("${repo.getReciterName(reciterId)} ${ver.rewaya}")
                 val suffix = "$prefix$reciterId/${ver.versionId}"
                 FileUtils.createDir(app, suffix)
                 request.setDestinationInExternalFilesDir(app, suffix, "$i.mp3")
@@ -245,13 +246,12 @@ class TelawatVM @Inject constructor(
         FileUtils.deleteDirRecursive(mainDir)
     }
 
-    fun onListTypeChange(page: Int, currentPage: Int) {
+    fun onPageChg(page: Int, currentPage: Int) {
         if (page != currentPage) return
 
-        val listType = ListType.values()[page]
+        listType = ListType.values()[page]
 
         _uiState.update { it.copy(
-            listType = listType,
             items = getItems(listType)
         )}
     }
@@ -267,7 +267,7 @@ class TelawatVM @Inject constructor(
         }
     }
 
-    fun onFilterClick() {
+    fun onFilterClk() {
         _uiState.update { it.copy(
             filterDialogShown = true
         )}
@@ -280,7 +280,7 @@ class TelawatVM @Inject constructor(
         )}
     }
 
-    fun onFavClick(reciterId: Int) {
+    fun onFavClk(reciterId: Int) {
         val newFav =
             if (_uiState.value.favs[reciterId] == 0) 1
             else 0
@@ -291,9 +291,9 @@ class TelawatVM @Inject constructor(
             favs = favs
         )}
 
-        repository.setFav(reciterId, newFav)
+        repo.setFav(reciterId, newFav)
 
-        repository.updateFavorites()
+        repo.updateFavorites()
     }
 
     fun onDeleted(reciterId: Int, versionId: Int) {
@@ -304,17 +304,25 @@ class TelawatVM @Inject constructor(
         )}
     }
 
-    fun onDownloadClick(reciterId: Int, version: Reciter.RecitationVersion) {
+    fun onDownloadClk(reciterId: Int, version: Reciter.RecitationVersion) {
         downloadVer(reciterId, version)
     }
 
-    fun onVersionClick(reciterId: Int, versionId: Int, navController: NavController) {
+    fun onVersionClk(reciterId: Int, versionId: Int, navController: NavController) {
         navController.navigate(
             Screen.TelawatSuar(
                 reciterId.toString(),
                 versionId.toString()
             ).route
         )
+    }
+
+    fun onSearchTextCh(text: String) {
+        searchText = text
+
+        _uiState.update { it.copy(
+            items = getItems(listType)
+        )}
     }
 
 }

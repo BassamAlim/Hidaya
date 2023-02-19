@@ -68,7 +68,8 @@ fun TelawatUI(
                         SearchComponent(
                             value = vm.searchText,
                             hint = stringResource(R.string.reciters_hint),
-                            modifier = Modifier.weight(1F)
+                            modifier = Modifier.weight(1F),
+                            onValueChange = { vm.onSearchTextCh(it) }
                         )
 
                         MyIconBtn(
@@ -80,12 +81,12 @@ fun TelawatUI(
                                 if (st.isFiltered) AppTheme.colors.secondary
                                 else AppTheme.colors.weakText
                         ) {
-                            vm.onFilterClick()
+                            vm.onFilterClk()
                         }
                     }
                 }
             ) { page, currentPage ->
-                vm.onListTypeChange(page, currentPage)
+                vm.onPageChg(page, currentPage)
 
                 Tab(vm, st, nc)
             }
@@ -150,7 +151,7 @@ private fun ReciterCard(
                 MyText(reciter.name, fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
                 MyFavBtn(state.favs[reciter.id]) {
-                    viewModel.onFavClick(reciter.id)
+                    viewModel.onFavClk(reciter.id)
                 }
             }
 
@@ -185,7 +186,7 @@ private fun VersionCard(
 
     Box(
         Modifier.clickable {
-            viewModel.onVersionClick(reciterId, version.versionId, navController)
+            viewModel.onVersionClk(reciterId, version.versionId, navController)
         }
     ) {
         Box(Modifier.padding(horizontal = 10.dp)) {
@@ -204,7 +205,7 @@ private fun VersionCard(
                     size = 28.dp,
                     deleted = { viewModel.onDeleted(reciterId, version.versionId) }
                 ) {
-                    viewModel.onDownloadClick(reciterId, version)
+                    viewModel.onDownloadClk(reciterId, version)
                 }
             }
         }

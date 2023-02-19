@@ -26,13 +26,13 @@ class BookChaptersVM @Inject constructor(
     private val bookId = savedStateHandle.get<Int>("book_id")?: 0
     private val bookTitle = savedStateHandle.get<String>("book_title")?: ""
 
+    private var listType = ListType.All
     private val book = repository.getBook(bookId)
     var searchText by mutableStateOf("")
         private set
 
     private val _uiState = MutableStateFlow(BookChaptersState(
         title = bookTitle,
-        items = getItems(ListType.All),
         favs = repository.getFavs(book)
     ))
     val uiState = _uiState.asStateFlow()
@@ -75,10 +75,9 @@ class BookChaptersVM @Inject constructor(
     fun onListTypeChange(pageNum: Int, currentPage: Int) {
         if (pageNum != currentPage) return
 
-        val listType = ListType.values()[pageNum]
+        listType = ListType.values()[pageNum]
 
         _uiState.update { it.copy(
-            listType = listType,
             items = getItems(listType)
         )}
     }
@@ -86,7 +85,7 @@ class BookChaptersVM @Inject constructor(
     fun onSearchTextChange(text: String) {
         searchText = text
 
-        getItems(_uiState.value.listType)
+        getItems(listType)
     }
 
 }

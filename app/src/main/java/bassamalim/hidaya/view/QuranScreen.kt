@@ -70,13 +70,12 @@ fun QuranUI(
                         value = vm.searchText,
                         hint = stringResource(R.string.quran_query_hint),
                         modifier = Modifier.fillMaxWidth(),
+                        onValueChange = { vm.onSearchTextChange(it) },
                         onSubmit = { vm.onSearchSubmit(nc) }
-                    ) {
-                        vm.onSearchTextChange(it)
-                    }
+                    )
                 }
             ) { page, currentPage ->
-                vm.onPageChange(page, currentPage)
+                vm.onPageChg(page, currentPage)
 
                 Tab(vm, st, nc)
             }

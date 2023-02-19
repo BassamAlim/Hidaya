@@ -52,7 +52,7 @@ fun TelawatSuarUI(
                 )
             }
         ) { page, currentPage ->
-            vm.onListTypeChange(page, currentPage)
+            vm.onPageChg(page, currentPage)
 
             Tab(vm, st, nc)
         }

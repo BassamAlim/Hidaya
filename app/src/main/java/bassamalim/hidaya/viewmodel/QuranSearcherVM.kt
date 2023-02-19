@@ -1,13 +1,16 @@
 package bassamalim.hidaya.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import bassamalim.hidaya.nav.Screen
 import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.models.QuranSearcherMatch
+import bassamalim.hidaya.nav.Screen
 import bassamalim.hidaya.repository.QuranSearcherRepo
 import bassamalim.hidaya.state.QuranSearcherState
 import bassamalim.hidaya.utils.LangUtils.translateNums
@@ -32,7 +35,7 @@ class QuranSearcherVM @Inject constructor(
     val translatedMaxMatchesItems = maxMatchesItems.map {
         translateNums(numeralsLanguage, it)
     }.toTypedArray()
-    var searchText = ""
+    var searchText by mutableStateOf("")
         private set
     private var highlightColor: Color? = null
 
@@ -41,7 +44,7 @@ class QuranSearcherVM @Inject constructor(
     ))
     val uiState = _uiState.asStateFlow()
 
-    fun search(highlightColor: Color) {
+    private fun search(highlightColor: Color) {
         this.highlightColor = highlightColor
 
         val matches = ArrayList<QuranSearcherMatch>()

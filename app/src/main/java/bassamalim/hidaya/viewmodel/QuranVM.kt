@@ -28,7 +28,6 @@ class QuranVM @Inject constructor(
         private set
 
     private val _uiState = MutableStateFlow(QuranState(
-        items = getItems(listType),
         favs = repo.getFavs()
     ))
     val uiState = _uiState.asStateFlow()
@@ -86,14 +85,14 @@ class QuranVM @Inject constructor(
         )
     }
 
-    fun onQuranSearcherClick(navController: NavController) {
-        navController.navigate(Screen.QuranSearcher.route)
+    fun onQuranSearcherClick(nc: NavController) {
+        nc.navigate(Screen.QuranSearcher.route)
     }
 
-    fun onBookmarkedPageClick(navController: NavController) {
+    fun onBookmarkedPageClick(nc: NavController) {
         val bookmarkedPage = repo.getBookmarkedPage()
         if (bookmarkedPage != -1) {
-            navController.navigate(
+            nc.navigate(
                 Screen.QuranViewer(
                     "by_page",
                     page = bookmarkedPage.toString()
@@ -102,7 +101,7 @@ class QuranVM @Inject constructor(
         }
     }
 
-    fun onPageChange(page: Int, currentPage: Int) {
+    fun onPageChg(page: Int, currentPage: Int) {
         if (page != currentPage) return
 
         listType = ListType.values()[page]

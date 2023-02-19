@@ -40,6 +40,7 @@ class TelawatSuarVM @Inject constructor(
     private val reciterId = savedStateHandle.get<Int>("reciter_id") ?: 0
     private val versionId = savedStateHandle.get<Int>("version_id") ?: 0
 
+    private var listType = ListType.All
     private val ver = repo.getVersion(reciterId, versionId)
     val prefix = "/Telawat/${ver.getReciterId()}/${versionId}/"
     private val suraNames = repo.getSuraNames()
@@ -50,7 +51,6 @@ class TelawatSuarVM @Inject constructor(
 
     private val _uiState = MutableStateFlow(TelawatSuarState(
         title = repo.getReciterName(reciterId),
-        items = getItems(ListType.All),
         favs = repo.getFavs()
     ))
     val uiState = _uiState.asStateFlow()
@@ -164,11 +164,13 @@ class TelawatSuarVM @Inject constructor(
         }
     }
 
-    fun onListTypeChange(page: Int, currentPage: Int) {
+    fun onPageChg(page: Int, currentPage: Int) {
         if (page != currentPage) return
 
+        listType = ListType.values()[page]
+
         _uiState.update { it.copy(
-            items = getItems(ListType.values()[page])
+            items = getItems(listType)
         )}
     }
 
@@ -218,7 +220,7 @@ class TelawatSuarVM @Inject constructor(
         searchText = text
 
         _uiState.update { it.copy(
-            items = getItems(ListType.All)
+            items = getItems(listType)
         )}
     }
 
