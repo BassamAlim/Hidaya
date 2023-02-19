@@ -144,13 +144,13 @@ class NotificationReceiver : BroadcastReceiver() {
             PID.DAILY_WERD -> {
                 Screen.QuranViewer(
                     "by_page",
-                    PrefUtils.getInt(sp, Prefs.TodayWerdPage).toString(),
+                    page = PrefUtils.getInt(sp, Prefs.TodayWerdPage).toString(),
                 ).route
             }
             PID.FRIDAY_KAHF -> {
                 Screen.QuranViewer(
                     "by_sura",
-                    17.toString() // surat al-kahf
+                    suraId = 17.toString() // surat al-kahf
                 ).route
             }
             else -> Screen.Main.route
