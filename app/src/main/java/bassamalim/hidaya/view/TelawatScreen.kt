@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
+import bassamalim.hidaya.enums.DownloadState
 import bassamalim.hidaya.models.Reciter
 import bassamalim.hidaya.state.TelawatState
 import bassamalim.hidaya.ui.components.*
@@ -104,18 +105,18 @@ fun TelawatUI(
 
 @Composable
 private fun Tab(
-    viewModel: TelawatVM,
-    state: TelawatState,
-    navController: NavController
+    vm: TelawatVM,
+    st: TelawatState,
+    nc: NavController
 ) {
     MyLazyColumn(
         lazyList = {
             items(
-                items = state.items.filter { item ->
-                    item.name.contains(viewModel.searchText, ignoreCase = true)
+                items = st.items.filter { item ->
+                    item.name.contains(vm.searchText, ignoreCase = true)
                 }
             ) { item ->
-                ReciterCard(reciter = item, viewModel, state, navController)
+                ReciterCard(reciter = item, vm, st, nc)
             }
         }
     )
@@ -124,9 +125,9 @@ private fun Tab(
 @Composable
 private fun ReciterCard(
     reciter: Reciter,
-    viewModel: TelawatVM,
-    state: TelawatState,
-    navController: NavController
+    vm: TelawatVM,
+    st: TelawatState,
+    nc: NavController
 ) {
     Surface(
         Modifier
@@ -150,8 +151,8 @@ private fun ReciterCard(
             ) {
                 MyText(reciter.name, fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
-                MyFavBtn(state.favs[reciter.id]) {
-                    viewModel.onFavClk(reciter.id)
+                MyFavBtn(st.favs[reciter.id]) {
+                    vm.onFavClk(reciter.id)
                 }
             }
 
@@ -164,9 +165,9 @@ private fun ReciterCard(
                     VersionCard(
                         reciterId = reciter.id,
                         version = version,
-                        viewModel = viewModel,
-                        state = state,
-                        navController = navController
+                        vm = vm,
+                        st = st,
+                        nc = nc
                     )
                 }
             }
@@ -178,15 +179,15 @@ private fun ReciterCard(
 private fun VersionCard(
     reciterId: Int,
     version: Reciter.RecitationVersion,
-    viewModel: TelawatVM,
-    state: TelawatState,
-    navController: NavController
+    vm: TelawatVM,
+    st: TelawatState,
+    nc: NavController
 ) {
     if (version.versionId != 0) MyHorizontalDivider()
 
     Box(
         Modifier.clickable {
-            viewModel.onVersionClk(reciterId, version.versionId, navController)
+            vm.onVersionClk(reciterId, version.versionId, nc)
         }
     ) {
         Box(Modifier.padding(horizontal = 10.dp)) {
@@ -200,12 +201,14 @@ private fun VersionCard(
                 MyText(text = version.rewaya, fontSize = 18.sp)
 
                 MyDownloadBtn(
-                    state = state.downloadStates[reciterId][version.versionId],
-                    path = "${viewModel.prefix}$reciterId/${version.versionId}",
+                    state =
+                        if (st.downloadStates.isEmpty()) DownloadState.NotDownloaded
+                        else st.downloadStates[reciterId][version.versionId],
+                    path = "${vm.prefix}$reciterId/${version.versionId}",
                     size = 28.dp,
-                    deleted = { viewModel.onDeleted(reciterId, version.versionId) }
+                    deleted = { vm.onDeleted(reciterId, version.versionId) }
                 ) {
-                    viewModel.onDownloadClk(reciterId, version)
+                    vm.onDownloadClk(reciterId, version)
                 }
             }
         }

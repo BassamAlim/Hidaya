@@ -14,23 +14,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AthkarViewerVM @Inject constructor(
-    private val repository: AthkarViewerRepo,
+    private val repo: AthkarViewerRepo,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     private val id = savedStateHandle.get<Int>("thikr_id") ?: 0
 
-    private val language = repository.getLanguage()
+    private val language = repo.getLanguage()
 
     private val _uiState = MutableStateFlow(AthkarViewerState(
-        title = repository.getTitle(id),
-        textSize = repository.getTextSize(),
+        title = repo.getTitle(id),
+        textSize = repo.getTextSize(),
         items = getItems()
     ))
     val uiState = _uiState.asStateFlow()
 
     private fun getItems(): List<Thikr> {
-        val thikrs = repository.getThikrs(id)
+        val thikrs = repo.getThikrs(id)
 
         val items = ArrayList<Thikr>()
         for (i in thikrs.indices) {
@@ -63,7 +63,7 @@ class AthkarViewerVM @Inject constructor(
             textSize = textSize
         )}
 
-        repository.setTextSize(textSize)
+        repo.setTextSize(textSize)
     }
 
     fun showInfoDialog(text: String) {

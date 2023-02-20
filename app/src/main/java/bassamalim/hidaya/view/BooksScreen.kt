@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
+import bassamalim.hidaya.enums.DownloadState
 import bassamalim.hidaya.ui.components.*
 import bassamalim.hidaya.utils.FileUtils
 import bassamalim.hidaya.viewmodel.BooksVM
@@ -24,7 +25,7 @@ fun BooksUI(
     vm: BooksVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsState()
-    val context = LocalContext.current
+    val ctx = LocalContext.current
 
     DisposableEffect(key1 = vm) {  // Like activity callbacks. Provides onStart, onStop, etc.
         vm.onStart()
@@ -36,10 +37,9 @@ fun BooksUI(
         fab = {
             MyFloatingActionButton(
                 iconId = R.drawable.ic_quran_search,
-                description = stringResource(R.string.search_in_books)
-            ) {
-                vm.onFabClick(nc)
-            }
+                description = stringResource(R.string.search_in_books),
+                onClick = { vm.onFabClick(nc) }
+            )
         }
     ) {
         MyLazyColumn(
@@ -53,32 +53,31 @@ fun BooksUI(
                         modifier = Modifier.padding(vertical = 2.dp),
                         iconBtn = {
                             MyDownloadBtn(
-                                state = st.downloadStates[item.id],
+                                state =
+                                    if (st.downloadStates.isEmpty()) DownloadState.NotDownloaded
+                                    else st.downloadStates[item.id],
                                 path = vm.getPath(item.id),
                                 modifier = Modifier.padding(end = 10.dp),
                                 size = 32.dp,
+                                download = { vm.onDownloadClk(item) },
                                 deleted = { vm.onFileDeleted(item.id) }
-                            ) {
-                                vm.download(item)
-                            }
-                        }
-                    ) {
-                        vm.onItemClick(item, nc)
-                    }
+                            )
+                        },
+                        onClick = { vm.onItemClick(item, nc) }
+                    )
                 }
             }
         )
 
         TutorialDialog(
             textResId = R.string.books_activity_tips,
-            shown = st.tutorialDialogShown
-        ) {
-            vm.onTutorialDialogDismiss(it)
-        }
+            shown = st.tutorialDialogShown,
+            onDismiss = { vm.onTutorialDialogDismiss(it) }
+        )
 
         if (st.shouldShowWait != 0) {
             LaunchedEffect(st.shouldShowWait) {
-                FileUtils.showWaitMassage(context)
+                FileUtils.showWaitMassage(ctx)
             }
         }
     }

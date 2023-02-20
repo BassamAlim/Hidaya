@@ -10,16 +10,17 @@ import com.google.gson.Gson
 import javax.inject.Inject
 
 class TelawatRepo @Inject constructor(
-    private val resources: Resources,
-    private val pref: SharedPreferences,
+    private val res: Resources,
+    private val sp: SharedPreferences,
     private val db: AppDatabase,
     private val gson: Gson
 ) {
 
-    val language = PrefUtils.getLanguage(pref)
+    val language = PrefUtils.getLanguage(sp)
 
     fun getFavs() = db.telawatRecitersDao().getFavs()
-    fun setFav(reciterId: Int, fav: Int) = db.telawatRecitersDao().setFav(reciterId, fav)
+    fun setFav(reciterId: Int, fav: Int) =
+        db.telawatRecitersDao().setFav(reciterId, fav)
 
     fun getReciters() = db.telawatRecitersDao().getAll()
 
@@ -38,7 +39,7 @@ class TelawatRepo @Inject constructor(
     fun getSelectedVersions(): MutableList<Boolean> {
         val selectedVersions = mutableListOf<Boolean>()
 
-        val json = PrefUtils.getString(pref, Prefs.SelectedRewayat)
+        val json = PrefUtils.getString(sp, Prefs.SelectedRewayat)
         if (json.isNotEmpty()) {
             val boolArr = gson.fromJson(json, BooleanArray::class.java)
             boolArr.forEach { bool -> selectedVersions.add(bool) }
@@ -48,21 +49,21 @@ class TelawatRepo @Inject constructor(
         return selectedVersions
     }
 
-    fun getLastPlayedMediaId() = PrefUtils.getString(pref, Prefs.LastPlayedMediaId)
+    fun getLastPlayedMediaId() = PrefUtils.getString(sp, Prefs.LastPlayedMediaId)
 
     fun updateFavorites() {
         val recitersJson = gson.toJson(db.telawatRecitersDao().getFavs())
-        pref.edit()
+        sp.edit()
             .putString(Prefs.FavoriteReciters.key, recitersJson)
             .apply()
     }
 
-    fun getRewayat(): Array<String> = resources.getStringArray(R.array.rewayat)
+    fun getRewayat(): Array<String> = res.getStringArray(R.array.rewayat)
 
-    fun getLastPlayStr() = resources.getString(R.string.last_play)
-    fun getSuraStr() = resources.getString(R.string.sura)
-    fun getForReciterStr() = resources.getString(R.string.for_reciter)
-    fun getInRewayaOfStr() = resources.getString(R.string.in_rewaya_of)
-    fun getNoLastPlayStr() = resources.getString(R.string.no_last_play)
+    fun getLastPlayStr() = res.getString(R.string.last_play)
+    fun getSuraStr() = res.getString(R.string.sura)
+    fun getForReciterStr() = res.getString(R.string.for_reciter)
+    fun getInRewayaOfStr() = res.getString(R.string.in_rewaya_of)
+    fun getNoLastPlayStr() = res.getString(R.string.no_last_play)
 
 }

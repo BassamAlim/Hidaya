@@ -26,14 +26,14 @@ import javax.inject.Inject
 @HiltViewModel
 class RadioClientVM @Inject constructor(
     private val app: Application,
-    repository: RadioClientRepo
+    repo: RadioClientRepo
 ): AndroidViewModel(app) {
 
     private lateinit var activity: Activity
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
-    private val url = repository.getLink()
+    private val url = repo.getLink()
 
     private val _uiState = MutableStateFlow(RadioClientState())
     val uiState = _uiState.asStateFlow()
@@ -41,8 +41,6 @@ class RadioClientVM @Inject constructor(
     private val connectionCallbacks: MediaBrowserCompat.ConnectionCallback =
         object : MediaBrowserCompat.ConnectionCallback() {
             override fun onConnected() {
-                println("HERE")
-
                 // Get the token for the MediaSession
                 val token = mediaBrowser!!.sessionToken
 
@@ -75,10 +73,7 @@ class RadioClientVM @Inject constructor(
             }
         }
 
-    fun onStart(activity: Activity) {
-        this.activity = activity
-
-        updatePbState(PlaybackStateCompat.STATE_CONNECTING)
+    private fun connect() {
 
         mediaBrowser = MediaBrowserCompat(
             app,
@@ -87,6 +82,18 @@ class RadioClientVM @Inject constructor(
             null
         )
         mediaBrowser?.connect()
+    }
+
+    private val connectionThread = Thread {
+        connect()
+    }
+
+    fun onStart(activity: Activity) {
+        this.activity = activity
+
+        updatePbState(PlaybackStateCompat.STATE_CONNECTING)
+
+        connect()
 
         activity.volumeControlStream = AudioManager.STREAM_MUSIC
     }

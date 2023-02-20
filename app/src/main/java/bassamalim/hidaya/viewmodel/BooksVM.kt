@@ -26,12 +26,6 @@ class BooksVM @Inject constructor(
     ))
     val uiState = _uiState.asStateFlow()
 
-    init {
-        _uiState.update { it.copy(
-            downloadStates = getDownloadStates()
-        )}
-    }
-
     fun onStart() {
         _uiState.update { it.copy(
             downloadStates = getDownloadStates()
@@ -68,13 +62,7 @@ class BooksVM @Inject constructor(
         return downloadStates
     }
 
-    fun download(item: BooksDB) {
-        val downloadStates = _uiState.value.downloadStates.toMutableList()
-        downloadStates[item.id] = DownloadState.Downloading
-        _uiState.update { it.copy(
-            downloadStates = downloadStates
-        )}
-
+    private fun download(item: BooksDB) {
         val downloadTask = repo.download(item)
         downloadTask
             .addOnSuccessListener {
@@ -107,6 +95,16 @@ class BooksVM @Inject constructor(
         _uiState.update { it.copy(
             shouldShowWait = _uiState.value.shouldShowWait + 1
         )}
+    }
+
+    fun onDownloadClk(item: BooksDB) {
+        val downloadStates = _uiState.value.downloadStates.toMutableList()
+        downloadStates[item.id] = DownloadState.Downloading
+        _uiState.update { it.copy(
+            downloadStates = downloadStates
+        )}
+
+        download(item)
     }
 
     fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {
