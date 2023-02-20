@@ -124,10 +124,10 @@ class TelawatSuarVM @Inject constructor(
     }
 
     private fun download(sura: ReciterSura) {
-        val states = _uiState.value.downloadStates.toMutableList()
-        states[sura.num] = DownloadState.Downloading
         _uiState.update { it.copy(
-            downloadStates = states
+            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+                this[sura.num] = DownloadState.Downloading
+            }
         )}
 
         val server = ver.getUrl()
@@ -151,10 +151,10 @@ class TelawatSuarVM @Inject constructor(
             try {
                 val id = downloading[downloadId]!!
 
-                val states = _uiState.value.downloadStates.toMutableList()
-                states[id] = DownloadState.Downloaded
                 _uiState.update { it.copy(
-                    downloadStates = states
+                    downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+                        this[id] = DownloadState.Downloaded
+                    }
                 )}
 
                 downloading.remove(downloadId)
@@ -193,10 +193,10 @@ class TelawatSuarVM @Inject constructor(
             if (_uiState.value.favs[suraNum] == 0) 1
             else 0
 
-        val favs = _uiState.value.favs.toMutableList()
-        favs[reciterId] = newFav
         _uiState.update { it.copy(
-            favs = favs
+            favs = _uiState.value.favs.toMutableList().apply {
+                this[reciterId] = newFav
+            }
         )}
 
         repo.setFav(suraNum, newFav)
@@ -209,10 +209,10 @@ class TelawatSuarVM @Inject constructor(
     }
 
     fun onDelete(suraNum: Int) {
-        val states = _uiState.value.downloadStates.toMutableList()
-        states[suraNum] = DownloadState.NotDownloaded
         _uiState.update { it.copy(
-            downloadStates = states
+            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+                this[suraNum] = DownloadState.NotDownloaded
+            }
         )}
     }
 

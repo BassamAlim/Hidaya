@@ -112,14 +112,13 @@ class QuranVM @Inject constructor(
     }
 
     fun onFavClick(itemId: Int) {
-        val mutableFavs = _uiState.value.favs.toMutableList()
-        mutableFavs[itemId] = if (mutableFavs[itemId] == 1) 0 else 1
-
         _uiState.update { it.copy(
-            favs = mutableFavs
+            favs = _uiState.value.favs.toMutableList().apply {
+                this[itemId] = if (this[itemId] == 1) 0 else 1
+            }
         )}
 
-        repo.updateFavorites(mutableFavs.toList())
+        repo.updateFavorites(_uiState.value.favs.toList())
     }
 
     fun onSearchTextChange(text: String) {

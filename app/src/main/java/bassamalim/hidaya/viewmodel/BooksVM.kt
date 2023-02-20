@@ -37,15 +37,15 @@ class BooksVM @Inject constructor(
     }
 
     fun onFileDeleted(itemId: Int) {
-        val downloadStates = _uiState.value.downloadStates.toMutableList()
-        downloadStates[itemId] = DownloadState.NotDownloaded
         _uiState.update { it.copy(
-            downloadStates = downloadStates
+            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+                this[itemId] = DownloadState.NotDownloaded
+            }
         )}
     }
 
-    fun onFabClick(navController: NavController) {
-        navController.navigate(Screen.BookSearcher.route)
+    fun onFabClick(nc: NavController) {
+        nc.navigate(Screen.BookSearcher.route)
     }
 
     private fun getDownloadStates(): ArrayList<DownloadState> {
@@ -98,10 +98,10 @@ class BooksVM @Inject constructor(
     }
 
     fun onDownloadClk(item: BooksDB) {
-        val downloadStates = _uiState.value.downloadStates.toMutableList()
-        downloadStates[item.id] = DownloadState.Downloading
         _uiState.update { it.copy(
-            downloadStates = downloadStates
+            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+                this[item.id] = DownloadState.Downloading
+            }
         )}
 
         download(item)

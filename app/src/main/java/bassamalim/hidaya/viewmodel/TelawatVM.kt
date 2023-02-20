@@ -223,12 +223,12 @@ class TelawatVM @Inject constructor(
             try {
                 val ids = downloading[downloadId]!!
 
-                val downloadStates = _uiState.value.downloadStates.toMutableList()
-                val innerStates = downloadStates[ids.first].toMutableList()
-                innerStates[ids.second] = DownloadState.Downloaded
-                downloadStates[ids.first] = innerStates
                 _uiState.update { it.copy(
-                    downloadStates = downloadStates
+                    downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+                        val innerStates = this[ids.first].toMutableList()
+                        innerStates[ids.second] = DownloadState.Downloaded
+                        this[ids.first] = innerStates
+                    }
                 )}
 
                 downloading.remove(downloadId)
@@ -296,22 +296,22 @@ class TelawatVM @Inject constructor(
     }
 
     fun onDeleted(reciterId: Int, versionId: Int) {
-        val downloadStates = _uiState.value.downloadStates.toMutableList()
-        val innerStates = downloadStates[reciterId].toMutableList()
-        innerStates[versionId] = DownloadState.NotDownloaded
-        downloadStates[reciterId] = innerStates
         _uiState.update { it.copy(
-            downloadStates = downloadStates
+            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+                val innerStates = this[reciterId].toMutableList()
+                innerStates[versionId] = DownloadState.NotDownloaded
+                this[reciterId] = innerStates
+            }
         )}
     }
 
     fun onDownloadClk(reciterId: Int, version: Reciter.RecitationVersion) {
-        val downloadStates = _uiState.value.downloadStates.toMutableList()
-        val innerStates = downloadStates[reciterId].toMutableList()
-        innerStates[version.versionId] = DownloadState.Downloading
-        downloadStates[reciterId] = innerStates
         _uiState.update { it.copy(
-            downloadStates = downloadStates
+            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+                val innerStates = this[reciterId].toMutableList()
+                innerStates[version.versionId] = DownloadState.Downloading
+                this[reciterId] = innerStates
+            }
         )}
 
         downloadVer(reciterId, version)

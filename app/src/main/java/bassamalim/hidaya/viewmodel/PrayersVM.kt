@@ -179,10 +179,10 @@ class PrayersVM @Inject constructor(
     }
 
     fun onNotificationTypeChange(notificationType: NotificationType) {
-        val types = _uiState.value.notificationTypes.toMutableList()
-        types[_uiState.value.settingsDialogPID.ordinal] = notificationType
         _uiState.update { it.copy(
-            notificationTypes = types
+            notificationTypes = _uiState.value.notificationTypes.toMutableList().apply {
+                this[_uiState.value.settingsDialogPID.ordinal] = notificationType
+            }
         )}
 
         repo.setNotificationType(_uiState.value.settingsDialogPID, notificationType)
@@ -191,10 +191,10 @@ class PrayersVM @Inject constructor(
     }
 
     fun onTimeOffsetChange(timeOffset: Int) {
-        val offsets = _uiState.value.timeOffsets.toMutableList()
-        offsets[_uiState.value.settingsDialogPID.ordinal] = timeOffset
         _uiState.update { it.copy(
-            timeOffsets = offsets
+            timeOffsets = _uiState.value.timeOffsets.toMutableList().apply {
+                this[_uiState.value.settingsDialogPID.ordinal] = timeOffset
+            }
         )}
 
         repo.setTimeOffset(_uiState.value.settingsDialogPID, timeOffset)
