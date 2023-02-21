@@ -130,7 +130,7 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun onClick(pid: PID?): PendingIntent {
         val intent = Intent(ctx, MainActivity::class.java)
 
-        val route: String = when (pid) {
+        val route = when (pid) {
             PID.MORNING -> {
                 Screen.AthkarViewer(
                     0.toString(),
@@ -144,7 +144,7 @@ class NotificationReceiver : BroadcastReceiver() {
             PID.DAILY_WERD -> {
                 Screen.QuranViewer(
                     "by_page",
-                    page = PrefUtils.getInt(sp, Prefs.TodayWerdPage).toString(),
+                    page = PrefUtils.getInt(sp, Prefs.TodayWerdPage).toString()
                 ).route
             }
             PID.FRIDAY_KAHF -> {

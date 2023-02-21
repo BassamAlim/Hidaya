@@ -31,8 +31,6 @@ class PrayersWidget : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int
     ) {
-//        ActivityUtils.onActivityCreateSetLocale(context as Activity)
-
         val timesList = getTimesList(context) ?: return
 
         // Construct the RemoteViews object

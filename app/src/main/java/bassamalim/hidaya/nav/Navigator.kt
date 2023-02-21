@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+
 package bassamalim.hidaya.nav
 
 import android.os.Build
@@ -5,6 +7,7 @@ import android.os.Bundle
 import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import bassamalim.hidaya.ui.*
@@ -14,13 +17,21 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.gson.Gson
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Navigator(startRoute: String?) {
-    val startDest = startRoute ?: Screen.Main.route
-
+fun Navigator(thenTo: String? = null, shouldWelcome: Boolean = false) {
     val navController = rememberAnimatedNavController()
 
+    val startDest =
+        if (shouldWelcome) Screen.Welcome.route
+        else Screen.Main.route
+
+    NavGraph(navController, startDest)
+
+    if (thenTo != null) navController.navigate(thenTo)
+}
+
+@Composable
+fun NavGraph(navController: NavHostController, startDest: String) {
     AnimatedNavHost(
         navController = navController,
         startDestination = startDest

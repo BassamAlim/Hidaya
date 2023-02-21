@@ -23,7 +23,6 @@ import bassamalim.hidaya.enums.Language
 import bassamalim.hidaya.enums.LocationType
 import bassamalim.hidaya.helpers.Alarms
 import bassamalim.hidaya.nav.Navigator
-import bassamalim.hidaya.nav.Screen
 import bassamalim.hidaya.other.Global
 import bassamalim.hidaya.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.receivers.DeviceBootReceiver
@@ -40,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var sp: SharedPreferences
     private lateinit var db: AppDatabase
+    private var shouldWelcome = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +50,9 @@ class MainActivity : AppCompatActivity() {
 
         preLaunch()
 
-        if (PrefUtils.getBoolean(sp, Prefs.FirstTime)) launch(Screen.Welcome.route)
+        shouldWelcome = PrefUtils.getBoolean(sp, Prefs.FirstTime)
+
+        if (shouldWelcome) launch()
         else getLocationAndLaunch()
     }
 
@@ -143,10 +145,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun launch(startRoute: String = Screen.Main.route) {
-        var navRoute = startRoute
-        val givenStartRoute = intent.getStringExtra("start_route")
-        if (givenStartRoute != null) navRoute = givenStartRoute
+    private fun launch() {
+        val navRoute = intent.getStringExtra("start_route")
 
         setContent {
             ActivityUtils.onActivityCreateSetLocale(LocalContext.current)
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
             AppTheme(
                 direction = getDirection()
             ) {
-                Navigator(navRoute)
+                Navigator(navRoute, shouldWelcome)
             }
         }
     }
