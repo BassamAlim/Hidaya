@@ -29,7 +29,7 @@
         android:theme="@style/Theme.HidayaL">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".core.MainActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -41,17 +41,17 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".receivers.NotificationReceiver" />
-        <receiver android:name=".receivers.DailyUpdateReceiver" />
+        <receiver android:name=".core.receivers.NotificationReceiver" />
+        <receiver android:name=".core.receivers.DailyUpdateReceiver" />
         <receiver
-            android:name=".receivers.DeviceBootReceiver"
+            android:name=".core.receivers.DeviceBootReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".other.PrayersWidget"
+            android:name=".core.other.PrayersWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -70,13 +70,13 @@
         </receiver>
 
         <service
-            android:name=".services.AthanService"
+            android:name=".core.services.AthanService"
             android:enabled="true"
             android:excludeFromRecents="true"
             android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="false" />
         <service
-            android:name=".services.TelawatService"
+            android:name=".core.services.TelawatService"
             android:exported="true"
             android:permission="none">
             <intent-filter>
@@ -85,7 +85,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".services.RadioService"
+            android:name=".core.services.RadioService"
             android:exported="true"
             android:permission="none">
             <intent-filter>
@@ -93,7 +93,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".services.AyahPlayerService"
+            android:name=".core.services.AyahPlayerService"
             android:exported="true"
             android:permission="none"/>
 

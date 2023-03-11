@@ -1,0 +1,34 @@
+package bassamalim.hidaya.features.settings
+
+import android.content.SharedPreferences
+import android.content.res.Resources
+import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.utils.PrefUtils
+import javax.inject.Inject
+
+class SettingsRepo @Inject constructor(
+    private val resources: Resources,
+    val sp: SharedPreferences
+) {
+
+    val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
+    val timeFormat = PrefUtils.getTimeFormat(sp)
+
+    fun getTime(pid: PID): String {
+        return "${PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.ExtraNotificationHour(pid))}:" +
+                "${PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.ExtraNotificationMinute(pid))}"
+    }
+
+    fun setTime(pid: PID, hour: Int, minute: Int) {
+        sp.edit()
+            .putInt(bassamalim.hidaya.core.data.Prefs.ExtraNotificationHour(pid).key, hour)
+            .putInt(bassamalim.hidaya.core.data.Prefs.ExtraNotificationMinute(pid).key, minute)
+            .apply()
+    }
+
+    fun getTimePickerTitleStr() = resources.getString(R.string.time_picker_title)
+    fun getSelectStr() = resources.getString(R.string.select)
+    fun getCancelStr() = resources.getString(R.string.cancel)
+
+}
