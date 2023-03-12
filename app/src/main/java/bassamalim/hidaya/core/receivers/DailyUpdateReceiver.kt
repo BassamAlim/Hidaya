@@ -34,10 +34,10 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         sp = PrefUtils.getPreferences(ctx)
 
         if ((intent.action == "daily" && needed()) || intent.action == "boot") {
-            when (LocationType.valueOf(PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.LocationType))) {
+            when (LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))) {
                 LocationType.Auto -> locate()
                 LocationType.Manual -> {
-                    val cityId = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.CityID)
+                    val cityId = PrefUtils.getInt(sp, Prefs.CityID)
                     if (cityId == -1) return
                     val city = DBUtils.getDB(ctx).cityDao().getCity(cityId)
 
@@ -58,7 +58,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private fun needed(): Boolean {
-        return PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.LastDailyUpdateDay) != now[Calendar.DATE]
+        return PrefUtils.getInt(sp, Prefs.LastDailyUpdateDay) != now[Calendar.DATE]
     }
 
     private fun locate() {

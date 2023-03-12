@@ -51,10 +51,10 @@ object PTUtils {
         sp: SharedPreferences,
         db: AppDatabase
     ): Int {
-        when (LocationType.valueOf(PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.LocationType))) {
+        when (LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))) {
             LocationType.Auto -> return TimeZone.getDefault().getOffset(Date().time) / 3600000
             LocationType.Manual -> {
-                val cityId = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.CityID)
+                val cityId = PrefUtils.getInt(sp, Prefs.CityID)
 
                 if (cityId == -1) return 0
 

@@ -14,16 +14,16 @@ object PrefUtils {
         PreferenceManager.getDefaultSharedPreferences(context)
 
     fun getLanguage(sp: SharedPreferences) =
-        Language.valueOf(getString(sp, bassamalim.hidaya.core.data.Prefs.Language))
+        Language.valueOf(getString(sp, Prefs.Language))
 
     fun getNumeralsLanguage(sp: SharedPreferences) =
-        Language.valueOf(getString(sp, bassamalim.hidaya.core.data.Prefs.NumeralsLanguage))
+        Language.valueOf(getString(sp, Prefs.NumeralsLanguage))
 
     fun getTheme(sp: SharedPreferences) =
-        Theme.valueOf(getString(sp, bassamalim.hidaya.core.data.Prefs.Theme))
+        Theme.valueOf(getString(sp, Prefs.Theme))
 
     fun getTimeFormat(sp: SharedPreferences) =
-        TimeFormat.valueOf(getString(sp, bassamalim.hidaya.core.data.Prefs.TimeFormat))
+        TimeFormat.valueOf(getString(sp, Prefs.TimeFormat))
 
     /**
      * Created as a fail safe in case the data type of the preference is changed
@@ -38,7 +38,7 @@ object PrefUtils {
 
     fun getString(
         sp: SharedPreferences,
-        pref: bassamalim.hidaya.core.data.Prefs
+        pref: Prefs
     ): String {
         val key = pref.key
         val default = pref.default as String
@@ -55,7 +55,7 @@ object PrefUtils {
 
     fun getInt(
         sp: SharedPreferences,
-        pref: bassamalim.hidaya.core.data.Prefs
+        pref: Prefs
     ): Int {
         val key = pref.key
         val default = pref.default as Int
@@ -72,7 +72,7 @@ object PrefUtils {
 
     fun getFloat(
         sp: SharedPreferences,
-        pref: bassamalim.hidaya.core.data.Prefs
+        pref: Prefs
     ): Float {
         val key = pref.key
         val default = pref.default as Float
@@ -89,7 +89,7 @@ object PrefUtils {
 
     fun getBoolean(
         sp: SharedPreferences,
-        pref: bassamalim.hidaya.core.data.Prefs
+        pref: Prefs
     ): Boolean {
         val key = pref.key
         val default = pref.default as Boolean
@@ -106,7 +106,7 @@ object PrefUtils {
 
     fun getLong(
         sp: SharedPreferences,
-        pref: bassamalim.hidaya.core.data.Prefs
+        pref: Prefs
     ): Long {
         val key = pref.key
         val default = pref.default as Long

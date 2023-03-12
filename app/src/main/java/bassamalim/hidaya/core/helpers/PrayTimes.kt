@@ -14,11 +14,11 @@ class PrayTimes(
 ) {
 
     private val timeFormat = PrefUtils.getTimeFormat(sp)
-    private val calcMethod = PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.PrayerTimesCalculationMethod)
+    private val calcMethod = PrefUtils.getString(sp, Prefs.PrayerTimesCalculationMethod)
     private var asrJuristic =
-        if (PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.PrayerTimesJuristicMethod) == "HANAFI") 1
+        if (PrefUtils.getString(sp, Prefs.PrayerTimesJuristicMethod) == "HANAFI") 1
         else 0
-    private val adjustHighLats = PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.PrayerTimesAdjustment)
+    private val adjustHighLats = PrefUtils.getString(sp, Prefs.PrayerTimesAdjustment)
 
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
     private var latitude = 0.0 // latitude
@@ -281,13 +281,13 @@ class PrayTimes(
 
     // Tune timings for adjustments (Set time offsets)
     private fun setOffsets() {
-        offsets[0] = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TimeOffset(PID.FAJR))
-        offsets[1] = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TimeOffset(PID.SUNRISE))
-        offsets[2] = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TimeOffset(PID.DHUHR))
-        offsets[3] = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TimeOffset(PID.ASR))
+        offsets[0] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.FAJR))
+        offsets[1] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.SUNRISE))
+        offsets[2] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.DHUHR))
+        offsets[3] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ASR))
         // Skipping sunset
-        offsets[5] = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TimeOffset(PID.MAGHRIB))
-        offsets[6] = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TimeOffset(PID.ISHAA))
+        offsets[5] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.MAGHRIB))
+        offsets[6] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ISHAA))
     }
 
     private fun tuneTimes(times: DoubleArray): DoubleArray {

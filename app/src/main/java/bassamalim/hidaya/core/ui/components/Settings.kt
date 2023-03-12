@@ -25,7 +25,7 @@ import bassamalim.hidaya.core.utils.PrefUtils
 fun ListPref(
     sp: SharedPreferences,
     titleResId: Int,
-    pref: bassamalim.hidaya.core.data.Prefs,
+    pref: Prefs,
     iconResId: Int = -1,
     entries: Array<String>,
     values: Array<String>,
@@ -147,7 +147,7 @@ fun ListPref(
 @Composable
 fun SwitchPref(
     pref: SharedPreferences,
-    prefObj: bassamalim.hidaya.core.data.Prefs,
+    prefObj: Prefs,
     titleResId: Int,
     summary: String,
     bgColor: Color = AppTheme.colors.surface,
@@ -205,7 +205,7 @@ fun SwitchPref(
 @Composable
 fun SliderPref(
     pref: SharedPreferences,
-    prefObj: bassamalim.hidaya.core.data.Prefs,
+    prefObj: Prefs,
     titleResId: Int,
     valueRange: ClosedFloatingPointRange<Float>,
     infinite: Boolean = false,

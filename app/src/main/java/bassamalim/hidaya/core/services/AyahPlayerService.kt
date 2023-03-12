@@ -295,7 +295,7 @@ class AyahPlayerService : Service(),
         override fun onPlayFromMediaId(givenMediaId: String, extras: Bundle) {
             Log.i(Global.TAG, "In onPlayFromMediaId of AyahPlayerService")
 
-            reciterId = PrefUtils.getString(pref, bassamalim.hidaya.core.data.Prefs.AyaReciter).toInt()
+            reciterId = PrefUtils.getString(pref, Prefs.AyaReciter).toInt()
 
             val initialize = lastPlayedIdx == -1
 
@@ -435,7 +435,7 @@ class AyahPlayerService : Service(),
             if (lastPlayedIdx + 1 < allAyas.size) preparePlayer(p2, lastPlayedIdx + 1)
         }
 
-        reciterId = PrefUtils.getString(pref, bassamalim.hidaya.core.data.Prefs.AyaReciter).toInt()
+        reciterId = PrefUtils.getString(pref, Prefs.AyaReciter).toInt()
         updateMetadata(true) // For the duration
 
         refresh()
@@ -445,7 +445,7 @@ class AyahPlayerService : Service(),
         val p1 = players[index(mp)]
         val p2 = players[oIndex(mp)]
 
-        val repeat = PrefUtils.getInt(pref, bassamalim.hidaya.core.data.Prefs.AyaRepeat)
+        val repeat = PrefUtils.getInt(pref, Prefs.AyaRepeat)
         if (repeat == 11) {
             preparePlayer(p1, lastPlayedIdx)
             p2.reset()
@@ -661,7 +661,7 @@ class AyahPlayerService : Service(),
     private fun preparePlayer(player: MediaPlayer, ayaIdx: Int) {
         val aya = allAyas[ayaIdx]
 
-        if (PrefUtils.getBoolean(pref, bassamalim.hidaya.core.data.Prefs.StopOnSuraEnd)
+        if (PrefUtils.getBoolean(pref, Prefs.StopOnSuraEnd)
             && aya.sura_num != chosenSurah) {
             if (surahEnding) stopPlaying()
             else surahEnding = true
@@ -748,7 +748,7 @@ class AyahPlayerService : Service(),
 
     private fun ended() {
         val quranPages = 604
-        if (PrefUtils.getBoolean(pref, bassamalim.hidaya.core.data.Prefs.StopOnPageEnd)) stopPlaying()
+        if (PrefUtils.getBoolean(pref, Prefs.StopOnPageEnd)) stopPlaying()
         else if (currentPage < quranPages && lastPlayedIdx + 1 == allAyas.size) {
             coordinator.nextPage()
 
@@ -765,7 +765,7 @@ class AyahPlayerService : Service(),
     }
 
     private fun getUri(ayah: AyatDB): Uri {
-        val choice = PrefUtils.getString(pref, bassamalim.hidaya.core.data.Prefs.AyaReciter).toInt()
+        val choice = PrefUtils.getString(pref, Prefs.AyaReciter).toInt()
         val sources = db.ayatTelawaDao().getReciter(choice)
 
         var uri = "https://www.everyayah.com/data/"
@@ -807,11 +807,11 @@ class AyahPlayerService : Service(),
     }
 
     private fun updateDurationRecord(amount: Int) {
-        val old = PrefUtils.getLong(pref, bassamalim.hidaya.core.data.Prefs.TelawatPlaybackRecord)
+        val old = PrefUtils.getLong(pref, Prefs.TelawatPlaybackRecord)
         val new = old + amount * 1000
 
         pref.edit()
-            .putLong(bassamalim.hidaya.core.data.Prefs.TelawatPlaybackRecord.key, new)
+            .putLong(Prefs.TelawatPlaybackRecord.key, new)
             .apply()
 
         updateRecordCounter = 0

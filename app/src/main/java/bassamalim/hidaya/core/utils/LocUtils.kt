@@ -18,7 +18,7 @@ object LocUtils {
         val json = Gson().toJson(myLoc)
 
         sp.edit()
-            .putString(bassamalim.hidaya.core.data.Prefs.StoredLocation.key, json)
+            .putString(Prefs.StoredLocation.key, json)
             .apply()
     }
 
@@ -27,12 +27,12 @@ object LocUtils {
         val json = Gson().toJson(myLoc)
 
         sp.edit()
-            .putString(bassamalim.hidaya.core.data.Prefs.StoredLocation.key, json)
+            .putString(Prefs.StoredLocation.key, json)
             .apply()
     }
 
     fun retrieveLocation(sp: SharedPreferences): Location? {
-        val json = PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.StoredLocation)
+        val json = PrefUtils.getString(sp, Prefs.StoredLocation)
 
         return if (json == "{}") null
         else {
