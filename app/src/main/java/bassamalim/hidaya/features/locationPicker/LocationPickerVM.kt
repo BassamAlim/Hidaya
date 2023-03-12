@@ -95,7 +95,10 @@ class LocationPickerVM @Inject constructor(
                     inclusive = true
                 }
             }
-            nc.backQueue.removeAt(nc.backQueue.size - 2)  // pop Locator from the back stack
+            nc.popBackStack(
+                Screen.Locator("normal").route,
+                true
+            )
         }
         else {
             countryId = id

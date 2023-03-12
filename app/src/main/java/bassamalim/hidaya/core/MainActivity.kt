@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
@@ -50,9 +51,11 @@ class MainActivity : AppCompatActivity() {
 
         preLaunch()
 
-        shouldWelcome = PrefUtils.getBoolean(sp, bassamalim.hidaya.core.data.Prefs.FirstTime)
-
-        if (shouldWelcome) launch()
+        shouldWelcome = PrefUtils.getBoolean(sp, Prefs.FirstTime)
+        if (shouldWelcome) {
+            launch()
+            postLaunch()
+        }
         else getLocationAndLaunch()
     }
 
@@ -89,7 +92,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getLocationAndLaunch() {
-        val locType = LocationType.valueOf(PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.LocationType))
+        val locType = LocationType.valueOf(
+            PrefUtils.getString(sp, Prefs.LocationType)
+        )
         if (locType == LocationType.Auto) {
             if (granted()) locate()
             else {
@@ -101,7 +106,10 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
-        else storeLocation(null)
+        else {
+            launch()
+            postLaunch()
+        }
     }
 
     private val permissionRequestLauncher = registerForActivityResult(
@@ -117,14 +125,17 @@ class MainActivity : AppCompatActivity() {
         val coarseLoc = result[Manifest.permission.ACCESS_COARSE_LOCATION]
         if (fineLoc != null && fineLoc && coarseLoc != null && coarseLoc) {
             sp.edit()
-                .putString(bassamalim.hidaya.core.data.Prefs.LocationType.key, LocationType.Auto.name)
+                .putString(Prefs.LocationType.key, LocationType.Auto.name)
                 .apply()
 
             locate()
 
             requestBgLocPermission()
         }
-        else storeLocation(null)
+        else {
+            launch()
+            postLaunch()
+        }
     }
 
     private fun requestBgLocPermission() {
@@ -208,8 +219,8 @@ class MainActivity : AppCompatActivity() {
         val closestCity = db.cityDao().getClosest(location.latitude, location.longitude)
 
         sp.edit()
-            .putInt(bassamalim.hidaya.core.data.Prefs.CountryID.key, closestCity.countryId)
-            .putInt(bassamalim.hidaya.core.data.Prefs.CityID.key, closestCity.id)
+            .putInt(Prefs.CountryID.key, closestCity.countryId)
+            .putInt(Prefs.CityID.key, closestCity.id)
             .apply()
 
         LocUtils.storeLocation(sp, location)
@@ -244,7 +255,7 @@ class MainActivity : AppCompatActivity() {
             val times = PTUtils.getTimes(sp, db)!!
             Alarms(this, times)
         }
-        else if (!sp.getBoolean(bassamalim.hidaya.core.data.Prefs.FirstTime.key, true)) {
+        else if (!sp.getBoolean(Prefs.FirstTime.key, true)) {
             Toast.makeText(
                 this,
                 getString(R.string.give_location_permission_toast),
