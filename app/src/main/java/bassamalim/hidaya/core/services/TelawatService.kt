@@ -30,6 +30,7 @@ import androidx.media.session.MediaButtonReceiver
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.core.MainActivity
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.models.Reciter
@@ -742,7 +743,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun updateDurationRecord(amount: Int) {
-        val old = PrefUtils.getLong(pref, bassamalim.hidaya.core.data.Prefs.TelawatPlaybackRecord)
+        val old = PrefUtils.getLong(pref, Prefs.TelawatPlaybackRecord)
         val new = old + amount * 1000
 
         pref.edit()

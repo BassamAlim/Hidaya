@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.athkar
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
@@ -15,7 +15,6 @@ import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyButton
 import bassamalim.hidaya.core.ui.components.MySquareButton
-import bassamalim.hidaya.features.athkar.AthkarVM
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 @OptIn(ExperimentalAnimationApi::class)

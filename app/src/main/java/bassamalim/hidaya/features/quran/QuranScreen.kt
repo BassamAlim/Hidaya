@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.quran
 
 import android.widget.Toast
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -16,10 +16,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.features.quran.QuranState
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.features.quran.QuranVM
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 @OptIn(ExperimentalAnimationApi::class)

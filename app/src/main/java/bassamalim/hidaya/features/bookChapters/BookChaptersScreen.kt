@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.bookChapters
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,9 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.features.bookChapters.BookChaptersState
 import bassamalim.hidaya.core.ui.components.*
-import bassamalim.hidaya.features.bookChapters.BookChaptersVM
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 @OptIn(ExperimentalAnimationApi::class)

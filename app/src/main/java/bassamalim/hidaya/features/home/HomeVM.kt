@@ -36,14 +36,7 @@ class HomeVM @Inject constructor(
     var remaining = 0L
         private set
 
-    private val _uiState = MutableStateFlow(
-        HomeState(
-        telawatRecord = getTelawatRecord(),
-        quranPagesRecord = getQuranPagesRecord(),
-        todayWerdPage = getTodayWerdPage(),
-        isWerdDone = repo.getIsWerdDone()
-    )
-    )
+    private val _uiState = MutableStateFlow(HomeState())
     val uiState = _uiState.asStateFlow()
 
     fun onStart() {

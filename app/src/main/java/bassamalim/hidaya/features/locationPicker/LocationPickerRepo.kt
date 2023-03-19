@@ -2,6 +2,7 @@ package bassamalim.hidaya.features.locationPicker
 
 import android.content.SharedPreferences
 import android.location.Location
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.CityDB
 import bassamalim.hidaya.core.data.database.dbs.CountryDB
@@ -15,7 +16,7 @@ class LocationPickerRepo @Inject constructor(
     val db: AppDatabase
 ) {
 
-    val language = Language.valueOf(PrefUtils.getString(pref, bassamalim.hidaya.core.data.Prefs.Language))
+    val language = Language.valueOf(PrefUtils.getString(pref, Prefs.Language))
 
     fun getCountries(): List<CountryDB> {
         return db.countryDao().getAll().sortedBy { countryDB: CountryDB ->
@@ -33,8 +34,8 @@ class LocationPickerRepo @Inject constructor(
         val city = db.cityDao().getCity(cityId)
 
         pref.edit()
-            .putInt(bassamalim.hidaya.core.data.Prefs.CountryID.key, countryId)
-            .putInt(bassamalim.hidaya.core.data.Prefs.CityID.key, cityId)
+            .putInt(Prefs.CountryID.key, countryId)
+            .putInt(Prefs.CityID.key, cityId)
             .apply()
 
         val location = Location("")

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.athkarList
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column

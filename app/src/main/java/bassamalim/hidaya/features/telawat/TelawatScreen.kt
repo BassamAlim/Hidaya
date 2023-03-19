@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.telawat
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
@@ -21,10 +21,8 @@ import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.Reciter
-import bassamalim.hidaya.features.telawat.TelawatState
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.features.telawat.TelawatVM
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 @OptIn(ExperimentalAnimationApi::class)

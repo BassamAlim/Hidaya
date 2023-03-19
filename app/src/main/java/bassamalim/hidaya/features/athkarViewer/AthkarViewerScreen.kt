@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.athkarViewer
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
@@ -17,7 +17,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.Thikr
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.features.athkarViewer.AthkarViewerVM
 
 @Composable
 fun AthkarViewerUI(

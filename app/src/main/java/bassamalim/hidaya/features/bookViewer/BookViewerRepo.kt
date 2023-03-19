@@ -2,6 +2,7 @@ package bassamalim.hidaya.features.bookViewer
 
 import android.content.Context
 import android.content.SharedPreferences
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.core.utils.PrefUtils
@@ -14,11 +15,11 @@ class BookViewerRepo @Inject constructor(
     private val gson: Gson
 ) {
 
-    fun getTextSize() = PrefUtils.getFloat(pref, bassamalim.hidaya.core.data.Prefs.BooksTextSize)
+    fun getTextSize() = PrefUtils.getFloat(pref, Prefs.BooksTextSize)
 
     fun updateTextSize(textSize: Float) {
         pref.edit()
-            .putFloat(bassamalim.hidaya.core.data.Prefs.BooksTextSize.key, textSize)
+            .putFloat(Prefs.BooksTextSize.key, textSize)
             .apply()
     }
 

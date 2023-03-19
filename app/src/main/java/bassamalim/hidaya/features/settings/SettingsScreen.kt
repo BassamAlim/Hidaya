@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.settings
 
 import android.app.Activity
 import android.content.SharedPreferences
@@ -17,15 +17,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
-import bassamalim.hidaya.features.settings.SettingsState
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.settings.SettingsVM
 
 @Composable
 fun SettingsUI(
@@ -77,7 +76,7 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
         ListPref(
             sp = viewModel.sp,
             titleResId = R.string.calculation_method_title,
-            pref = bassamalim.hidaya.core.data.Prefs.PrayerTimesCalculationMethod,
+            pref = Prefs.PrayerTimesCalculationMethod,
             entries = stringArrayResource(R.array.prayer_times_calc_method_entries),
             values = stringArrayResource(R.array.prayer_times_calc_method_values),
             onSelection = { viewModel.onPrayerTimesCalculationMethodCh() }
@@ -87,7 +86,7 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
         ListPref(
             sp = viewModel.sp,
             titleResId = R.string.juristic_method_title,
-            pref = bassamalim.hidaya.core.data.Prefs.PrayerTimesJuristicMethod,
+            pref = Prefs.PrayerTimesJuristicMethod,
             entries = stringArrayResource(R.array.juristic_method_entries),
             values = stringArrayResource(R.array.juristic_method_values),
             onSelection = { viewModel.onPrayerTimesJuristicMethodCh() }
@@ -97,7 +96,7 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
         ListPref(
             sp = viewModel.sp,
             titleResId = R.string.high_lat_adjustment_title,
-            pref = bassamalim.hidaya.core.data.Prefs.PrayerTimesAdjustment,
+            pref = Prefs.PrayerTimesAdjustment,
             entries = stringArrayResource(R.array.high_lat_adjustment_entries),
             values = stringArrayResource(R.array.high_lat_adjustment_values),
             onSelection = { viewModel.onPrayerTimesHighLatAdjustmentCh() }
@@ -117,7 +116,7 @@ private fun ExtraNotificationsSettings(
     ) {
         SwitchPref(
             pref = vm.sp,
-            prefObj = bassamalim.hidaya.core.data.Prefs.NotifyExtraNotification(PID.MORNING),
+            prefObj = Prefs.NotifyExtraNotification(PID.MORNING),
             titleResId = R.string.morning_athkar_title,
             summary = st.morningSummary
         ) { checked ->
@@ -126,7 +125,7 @@ private fun ExtraNotificationsSettings(
 
         SwitchPref(
             pref = vm.sp,
-            prefObj = bassamalim.hidaya.core.data.Prefs.NotifyExtraNotification(PID.EVENING),
+            prefObj = Prefs.NotifyExtraNotification(PID.EVENING),
             titleResId = R.string.evening_athkar_title,
             summary = st.eveningSummary
         ) { checked ->
@@ -135,7 +134,7 @@ private fun ExtraNotificationsSettings(
 
         SwitchPref(
             pref = vm.sp,
-            prefObj = bassamalim.hidaya.core.data.Prefs.NotifyExtraNotification(PID.DAILY_WERD),
+            prefObj = Prefs.NotifyExtraNotification(PID.DAILY_WERD),
             titleResId = R.string.daily_werd_title,
             summary = st.werdSummary
         ) { checked ->
@@ -144,7 +143,7 @@ private fun ExtraNotificationsSettings(
 
         SwitchPref(
             pref = vm.sp,
-            prefObj = bassamalim.hidaya.core.data.Prefs.NotifyExtraNotification(PID.FRIDAY_KAHF),
+            prefObj = Prefs.NotifyExtraNotification(PID.FRIDAY_KAHF),
             titleResId = R.string.friday_kahf_title,
             summary = st.kahfSummary
         ) { checked ->
@@ -162,7 +161,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
         ListPref(
             sp = pref,
             titleResId = R.string.language,
-            pref = bassamalim.hidaya.core.data.Prefs.Language,
+            pref = Prefs.Language,
             iconResId = R.drawable.ic_translation,
             entries = stringArrayResource(R.array.language_entries),
             values = Language.values().map { it.name }.toTypedArray()
@@ -174,7 +173,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
         ListPref(
             sp = pref,
             titleResId = R.string.numerals_language,
-            pref = bassamalim.hidaya.core.data.Prefs.NumeralsLanguage,
+            pref = Prefs.NumeralsLanguage,
             iconResId = R.drawable.ic_translation,
             entries = stringArrayResource(R.array.numerals_language_entries),
             values = Language.values().map { it.name }.toTypedArray()
@@ -189,7 +188,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
         ListPref(
             sp = pref,
             titleResId = R.string.time_format,
-            pref = bassamalim.hidaya.core.data.Prefs.TimeFormat,
+            pref = Prefs.TimeFormat,
             iconResId = R.drawable.ic_time_format,
             entries = timeFormatEntries,
             values = TimeFormat.values().map { it.name }.toTypedArray()
@@ -201,7 +200,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
         ListPref(
             sp = pref,
             titleResId = R.string.theme,
-            pref = bassamalim.hidaya.core.data.Prefs.Theme,
+            pref = Prefs.Theme,
             iconResId = R.drawable.ic_theme,
             entries = stringArrayResource(R.array.themes_entries),
             values = Theme.values().map { it.name }.toTypedArray()

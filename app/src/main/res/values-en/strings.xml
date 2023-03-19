@@ -13,7 +13,6 @@
     <!-- Preference Categories -->
     <string name="extra_notifications">Extra reminders</string>
     <string name="page_preferences">Page preferences</string>
-    <string name="recitation_preferences">Recitation preferences</string>
     <string name="appearance">Appearance</string>
     <string name="theme">Theme</string>
     <string name="prayer_time_settings">Prayer times settings</string>
@@ -58,24 +57,18 @@
     <string name="rejected">Decline\nUse the app without prayer times and qibla direction</string>
 
     <!-- Descriptions -->
-    <string name="qibla_view_description">Qibla direction</string>
-    <string name="bingo_view_description">Correct direction</string>
-    <string name="back_description">Back</string>
     <string name="shuffle_description">Shuffle</string>
     <string name="download_description">Download</string>
     <string name="repeat_description">Repeat</string>
     <string name="notification_image_description">Current alert type</string>
-    <string name="compass_calibration_gif_description">Recalibrate compass</string>
     <string name="accuracy_indicator_description">Accuracy</string>
     <string name="app_widget_description">App widget</string>
     <string name="previous_day_button_description">Previous day</string>
     <string name="next_day_button_description">Next day</string>
-    <string name="previous_track_btn_description">Previous track</string>
     <string name="next_track_btn_description">Next track</string>
     <string name="rewind_btn_description">Rewind</string>
     <string name="play_pause_btn_description">Play/Pause</string>
     <string name="fast_forward_btn_description">Fast forward</string>
-    <string name="fav_btn_description">Add to favorites</string>
     <string name="tanzeel_view_description">Sura nuzool location</string>
     <string name="bookmark_page_button_description">Save Page</string>
     <string name="filter_search_description">Filter search</string>
@@ -121,7 +114,6 @@
     <!-- Toasts -->
     <string name="give_location_permission_toast">Location can not be accessed, give the app location permission to calculate prayer times and qibla</string>
     <string name="location_permission_for_qibla">Location permission is needed to calculate qibla direction</string>
-    <string name="vip_welcome">Welcome to the VIP section</string>
     <string name="database_rebuilt">Database rebuilt</string>
     <string name="wait_for_download">Wait for the download to finish</string>
     <string name="feature_not_supported">Your device does not support this feature</string>
@@ -129,7 +121,6 @@
     <string name="playback_failed">Playback failed</string>
     <string name="choose_allow_all_the_time">Choose \"Allow all the time\" to keep the prayer times and qibla direction accurate</string>
     <string name="recitation_not_available">This aya\'s recitation is not available for the selected reciter</string>
-    <string name="incorrect_day">Incorrect day</string>
 
     <string name="athan_speaker">Athan</string>
     <string name="enable_notification">Sound notification</string>
@@ -139,9 +130,7 @@
     <string name="low_accuracy_text">Accuracy is low .. Please re-calibrate the device</string>
     <string name="medium_accuracy_text">Accuracy is moderate</string>
     <string name="high_accuracy_text">Accuracy is good</string>
-    <string name="continue_reading">Continue reading</string>
     <string name="recitation_settings">Recitation preferences</string>
-    <string name="choose_reciter">Choose the reciter</string>
     <string name="qibla_warning">Move your device away from metal objects</string>
     <string name="thanks">Thank you for using Hidaya</string>
     <string name="recitations">Recitations</string>
@@ -151,11 +140,8 @@
     <string name="quiz_title">Religious quiz</string>
     <string name="start_quiz">Start the quiz</string>
     <string name="quiz_result">Quiz result</string>
-    <string name="continue_listening">Continue listening</string>
-    <string name="execute">Done</string>
     <string name="cancel">Cancel</string>
     <string name="search_for_quran_text">Search for text in quran</string>
-    <string name="text">Text</string>
     <string name="go_to_page">Go to page</string>
     <string name="max_num_of_marches">Maximum number of matches</string>
     <string name="no_matches">No matches found. Make sure you downloaded the books</string>
@@ -181,7 +167,6 @@
     <string name="selected_books">Selected books</string>
     <string name="choose_rewaya">Choose rewaya\'s</string>
     <string name="save">Save</string>
-    <string name="finish">Done</string>
     <string name="select">Select</string>
     <string name="select_all">Select all</string>
     <string name="unselect_all">Unselect all</string>
@@ -192,8 +177,6 @@
     <string name="bookmarked_page">Bookmarked page:  </string>
     <string name="distance_unit">km</string>
     <string name="time_picker_title">Pick reminder time</string>
-    <string name="at_morning">am</string>
-    <string name="at_evening">pm</string>
     <string name="finish_quiz">Finish quiz</string>
     <string name="answer_all_questions">Answer all questions</string>
     <string name="your_score_is">Your score is</string>
@@ -203,14 +186,9 @@
     <string name="stop_athan">Stop athan</string>
     <string name="for_reciter">for reciter</string>
     <string name="in_rewaya_of">in the rewaya of</string>
-    <string name="downloading">Downloading</string>
-    <string name="sura_number">Sura number</string>
-    <string name="page_number">Page number</string>
     <string name="aya_number">Aya number</string>
-    <string name="page_view">Page</string>
     <string name="list_view">List</string>
     <string name="display_method">View Method</string>
-    <string name="download">download</string>
     <string name="qibla">Qibla</string>
     <string name="numerals_language">Numerals language</string>
     <string name="choose_country">Choose country</string>

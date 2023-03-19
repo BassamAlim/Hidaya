@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.bookSearcher
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
@@ -14,7 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.features.bookSearcher.BookSearcherVM
 
 @Composable
 fun BookSearcherUI(

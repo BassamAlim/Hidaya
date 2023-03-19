@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.room.Room
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.other.Global
 import com.google.gson.Gson
@@ -20,7 +21,7 @@ object DBUtils {
         context: Context,
         pref: SharedPreferences = PrefUtils.getPreferences(context)
     ) {
-        val lastVer = PrefUtils.getInt(pref, bassamalim.hidaya.core.data.Prefs.LastDBVersion)
+        val lastVer = PrefUtils.getInt(pref, Prefs.LastDBVersion)
         if (Global.dbVer > lastVer) reviveDB(context)
 
         try {  // if there is a problem in the db it will cause an error
@@ -37,9 +38,9 @@ object DBUtils {
 
         val db = getDB(context)
 
-        val surasJson = PrefUtils.getString(pref, bassamalim.hidaya.core.data.Prefs.FavoriteSuras)
-        val recitersJson = PrefUtils.getString(pref, bassamalim.hidaya.core.data.Prefs.FavoriteReciters)
-        val athkarJson = PrefUtils.getString(pref, bassamalim.hidaya.core.data.Prefs.FavoriteAthkar)
+        val surasJson = PrefUtils.getString(pref, Prefs.FavoriteSuras)
+        val recitersJson = PrefUtils.getString(pref, Prefs.FavoriteReciters)
+        val athkarJson = PrefUtils.getString(pref, Prefs.FavoriteAthkar)
 
         val gson = Gson()
 
@@ -65,7 +66,7 @@ object DBUtils {
         }
 
         pref.edit()
-            .putInt(bassamalim.hidaya.core.data.Prefs.LastDBVersion.key, Global.dbVer)
+            .putInt(Prefs.LastDBVersion.key, Global.dbVer)
             .apply()
 
         Log.i(Global.TAG, "Database Revived")

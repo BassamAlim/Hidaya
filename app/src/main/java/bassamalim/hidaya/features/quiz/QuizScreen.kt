@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.quiz
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background

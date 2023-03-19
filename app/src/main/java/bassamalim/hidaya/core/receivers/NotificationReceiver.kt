@@ -17,6 +17,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import bassamalim.hidaya.core.MainActivity
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
@@ -53,7 +54,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
         Log.i(Global.TAG, "in notification receiver for $pid")
 
-        val typeName = PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.NotificationType(pid))
+        val typeName = PrefUtils.getString(sp, Prefs.NotificationType(pid))
         type = NotificationType.valueOf(typeName)
 
         if (type != NotificationType.None) prepare()
@@ -143,7 +144,7 @@ class NotificationReceiver : BroadcastReceiver() {
             PID.DAILY_WERD -> {
                 Screen.QuranViewer(
                     "by_page",
-                    page = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TodayWerdPage).toString()
+                    page = PrefUtils.getInt(sp, Prefs.WerdPage).toString()
                 ).route
             }
             PID.FRIDAY_KAHF -> {

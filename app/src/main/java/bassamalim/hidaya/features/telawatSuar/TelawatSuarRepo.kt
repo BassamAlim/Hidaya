@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.telawatSuar
 
 import android.content.SharedPreferences
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import com.google.gson.Gson
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class TelawatSuarRepo @Inject constructor(
     fun updateFavorites() {
         val surasJson = gson.toJson(db.suarDao().getFavs())
         pref.edit()
-            .putString(bassamalim.hidaya.core.data.Prefs.FavoriteSuras.key, surasJson)
+            .putString(Prefs.FavoriteSuras.key, surasJson)
             .apply()
     }
 

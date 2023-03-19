@@ -11,7 +11,6 @@
     <!-- Preference Categories -->
     <string name="extra_notifications">الإشعارات الإضافية</string>
     <string name="page_preferences">إعدادات الصفحة</string>
-    <string name="recitation_preferences">إعدادات التلاوة</string>
     <string name="appearance">المظهر</string>
     <string name="theme">السمة</string>
     <string name="prayer_time_settings">إعدادات أوقات الصلاة</string>
@@ -57,24 +56,18 @@
     <string name="rejected">غير موافق\nاستخدام التطبيق بدون أوقات الصلاة والقِبلة</string>
 
     <!-- Descriptions -->
-    <string name="qibla_view_description">اتجاه القبلة</string>
-    <string name="bingo_view_description">اتجاه صحيح</string>
-    <string name="back_description">العودة</string>
     <string name="shuffle_description">تشغيل عشوائي</string>
     <string name="download_description">تحميل</string>
     <string name="repeat_description">تكرار</string>
     <string name="notification_image_description">نوع التنبيه</string>
-    <string name="compass_calibration_gif_description">معايرة اتجاه القبلة</string>
     <string name="accuracy_indicator_description">دقة القياس</string>
     <string name="app_widget_description">تطبيق مصغر</string>
     <string name="previous_day_button_description">اليوم السابق</string>
     <string name="next_day_button_description">اليوم التالي</string>
-    <string name="previous_track_btn_description">السابق</string>
     <string name="next_track_btn_description">التالي</string>
     <string name="rewind_btn_description">عودة</string>
     <string name="play_pause_btn_description">اوقف/اكمل التشغيل</string>
     <string name="fast_forward_btn_description">تقدم</string>
-    <string name="fav_btn_description">إضافة الى المفضلة</string>
     <string name="tanzeel_view_description">مكان نزول السورة</string>
     <string name="bookmark_page_button_description">حفظ الصفحة</string>
     <string name="filter_search_description">تصفية البحث</string>
@@ -120,7 +113,6 @@
     <!-- Toasts -->
     <string name="give_location_permission_toast">لا يمكن الوصول للموقع، يرجى إعطاء أذن الوصول للموقع لحساب أوقات الصلاة والقبلة</string>
     <string name="location_permission_for_qibla">يجب السماح بالوصول للموقع لحساب اتجاه القبلة</string>
-    <string name="vip_welcome">مرحبا بك في قسم الشخصيات المهمة</string>
     <string name="database_rebuilt">تمت إعادة بناء قاعدة البيانات</string>
     <string name="wait_for_download">انتظر حتى يكتمل التحميل</string>
     <string name="feature_not_supported">جهازك لا يدعم هذه الميزة</string>
@@ -128,7 +120,6 @@
     <string name="playback_failed">فشل التشغيل</string>
     <string name="choose_allow_all_the_time">اختر \"السماح طوال الوقت\" لإبقاء أوقات الصلاة وإتجاه القبلة دقيقة</string>
     <string name="recitation_not_available">لا يتوفر تسجيل الآية لهذا القارئ</string>
-    <string name="incorrect_day">اليوم غير صحيح</string>
 
     <string name="athan_speaker">أذان</string>
     <string name="enable_notification">إشعار مسموع</string>
@@ -138,9 +129,7 @@
     <string name="low_accuracy_text">الدقة ضعيفة … يرجى معايرة الجهاز</string>
     <string name="medium_accuracy_text">الدقة متوسطة</string>
     <string name="high_accuracy_text">الدقة جيدة</string>
-    <string name="continue_reading">اكمل القراءة</string>
     <string name="recitation_settings">إعدادات التلاوة</string>
-    <string name="choose_reciter">اختر القارئ</string>
     <string name="qibla_warning">أبعد جهازك عن الاجسام المعدنية</string>
     <string name="thanks">شكرا لاستخدامكم تطبيق هِداية</string>
     <string name="tafseer_source">التفسير: التفسير الميسر من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
@@ -152,11 +141,8 @@
     <string name="quiz_title">اختبر معلوماتك</string>
     <string name="start_quiz">ابدأ الاختبار</string>
     <string name="quiz_result">نتيجة الاختبار</string>
-    <string name="continue_listening">تابع الاستماع</string>
-    <string name="execute">تنفيذ</string>
     <string name="cancel">إلغاء</string>
     <string name="search_for_quran_text">ابحث عن نص في المصحف</string>
-    <string name="text">النص</string>
     <string name="go_to_page">الانتقال إلى الصفحة</string>
     <string name="max_num_of_marches">اقصى عدد من النتائج</string>
     <string name="no_matches">لا توجد نتائج</string>
@@ -181,20 +167,16 @@
     <string name="selected_books">الكتب المشمولة</string>
     <string name="choose_rewaya">اختر الروايات</string>
     <string name="save">حفظ</string>
-    <string name="finish">إنهاء</string>
     <string name="select">اختيار</string>
     <string name="select_all">تحديد الكل</string>
     <string name="unselect_all">إلغاء تحديد الكل</string>
     <string name="do_not_show_again">لا تظهر مرة اخرى</string>
-    <string name="language_picker_title" translatable="false">Pick the language اختر اللغة</string>
     <string name="all_athkar">جميع الأذكار</string>
     <string name="favorite_athkar">الأذكار المفضلة</string>
     <string name="no_bookmarked_page">لا يوجد صفحة محفوظة</string>
     <string name="bookmarked_page">الصفحة المحفوظة:  </string>
     <string name="distance_unit">كم</string>
     <string name="time_picker_title">اختر وقت الإشعار</string>
-    <string name="at_morning">صباحاً</string>
-    <string name="at_evening">مساءاً</string>
     <string name="finish_quiz">إنهاء الإختبار</string>
     <string name="answer_all_questions">أجب على جميع الاسئلة</string>
     <string name="your_score_is">نتيجتك هي</string>
@@ -204,15 +186,10 @@
     <string name="stop_athan">إيقاف الأذان</string>
     <string name="for_reciter">للقارئ</string>
     <string name="in_rewaya_of">برواية</string>
-    <string name="downloading">جاري تحميل</string>
-    <string name="sura_number">سورة رقم</string>
-    <string name="page_number">صفحة رقم</string>
     <string name="aya_number">آية رقم</string>
     <string name="basmalah" translatable="false">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</string>
-    <string name="page_view">صفحة</string>
     <string name="list_view">قائمة</string>
     <string name="display_method">طريقة العرض</string>
-    <string name="download">تحميل</string>
     <string name="qibla">القبلة</string>
     <string name="numerals_language">لغة الأرقام</string>
     <string name="choose_country">اختر البلد</string>

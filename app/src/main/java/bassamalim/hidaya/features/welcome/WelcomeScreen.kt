@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.welcome
 
 import android.app.Activity
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -17,7 +17,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.features.welcome.WelcomeVM
+import bassamalim.hidaya.features.settings.AppearanceSettings
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 @OptIn(ExperimentalAnimationApi::class)

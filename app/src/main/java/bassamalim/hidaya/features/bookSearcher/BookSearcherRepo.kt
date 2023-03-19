@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Book
@@ -52,7 +53,7 @@ class BookSearcherRepo @Inject constructor(
     fun getBookSelections(): Array<Boolean> {
         val selections = Array(books.size) { true }
 
-        val json = PrefUtils.getString(pref, bassamalim.hidaya.core.data.Prefs.SelectedSearchBooks)
+        val json = PrefUtils.getString(pref, Prefs.SelectedSearchBooks)
         if (json.isNotEmpty()) {
             val boolArr =  gson.fromJson(json, BooleanArray::class.java)
             boolArr.forEachIndexed { index, bool ->
@@ -63,7 +64,7 @@ class BookSearcherRepo @Inject constructor(
         return selections
     }
 
-    fun getMaxMatchesIndex() = PrefUtils.getInt(pref, bassamalim.hidaya.core.data.Prefs.BookSearcherMaxMatchesIndex)
+    fun getMaxMatchesIndex() = PrefUtils.getInt(pref, Prefs.BookSearcherMaxMatchesIndex)
 
     fun getMaxMatchesItems(): Array<String> {
         return context.resources.getStringArray(R.array.searcher_matches_en)
@@ -71,7 +72,7 @@ class BookSearcherRepo @Inject constructor(
 
     fun setMaxMatchesIndex(index: Int) {
         pref.edit()
-            .putInt(bassamalim.hidaya.core.data.Prefs.BookSearcherMaxMatchesIndex.key, index)
+            .putInt(Prefs.BookSearcherMaxMatchesIndex.key, index)
             .apply()
     }
 

@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.athkarViewer
 
 import android.content.SharedPreferences
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.utils.PrefUtils
@@ -13,11 +14,11 @@ class AthkarViewerRepo @Inject constructor(
 
     fun getLanguage() = PrefUtils.getLanguage(pref)
 
-    fun getTextSize() = PrefUtils.getFloat(pref, bassamalim.hidaya.core.data.Prefs.AthkarTextSize)
+    fun getTextSize() = PrefUtils.getFloat(pref, Prefs.AthkarTextSize)
 
     fun setTextSize(textSize: Float) {
         pref.edit()
-            .putInt(bassamalim.hidaya.core.data.Prefs.AthkarTextSize.key, textSize.toInt())
+            .putInt(Prefs.AthkarTextSize.key, textSize.toInt())
             .apply()
     }
 

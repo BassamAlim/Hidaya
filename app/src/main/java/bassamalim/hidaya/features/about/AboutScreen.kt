@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.about
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -26,7 +26,6 @@ import bassamalim.hidaya.core.ui.components.MyButton
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.features.about.AboutVM
 
 @Composable
 fun AboutUI(

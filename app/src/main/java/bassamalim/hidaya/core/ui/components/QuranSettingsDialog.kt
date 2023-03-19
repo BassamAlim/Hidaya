@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.enums.QViewType
 import bassamalim.hidaya.features.quranViewer.QuranViewerState
 import bassamalim.hidaya.core.ui.theme.AppTheme
@@ -53,7 +54,7 @@ fun QuranSettingsDialog(
 
             SliderPref(
                 pref = pref,
-                prefObj = bassamalim.hidaya.core.data.Prefs.QuranTextSize,
+                prefObj = Prefs.QuranTextSize,
                 titleResId = R.string.text_size_title,
                 valueRange = 20F..50F
             )
@@ -64,7 +65,7 @@ fun QuranSettingsDialog(
             ListPref(
                 sp = pref,
                 titleResId = R.string.reciter,
-                pref = bassamalim.hidaya.core.data.Prefs.AyaReciter,
+                pref = Prefs.AyaReciter,
                 iconResId = -1,
                 entries = reciterNames,
                 values = reciterIds,
@@ -73,7 +74,7 @@ fun QuranSettingsDialog(
 
             SliderPref(
                 pref = pref,
-                prefObj = bassamalim.hidaya.core.data.Prefs.AyaRepeat,
+                prefObj = Prefs.AyaRepeat,
                 titleResId = R.string.aya_repeat,
                 valueRange = 1f..11f,
                 infinite = true
@@ -81,7 +82,7 @@ fun QuranSettingsDialog(
 
             SwitchPref(
                 pref = pref,
-                prefObj = bassamalim.hidaya.core.data.Prefs.StopOnSuraEnd,
+                prefObj = Prefs.StopOnSuraEnd,
                 titleResId = R.string.stop_on_sura_end,
                 bgColor = AppTheme.colors.background,
                 summary = ""
@@ -89,7 +90,7 @@ fun QuranSettingsDialog(
 
             SwitchPref(
                 pref = pref,
-                prefObj = bassamalim.hidaya.core.data.Prefs.StopOnPageEnd,
+                prefObj = Prefs.StopOnPageEnd,
                 titleResId = R.string.stop_on_page_end,
                 bgColor = AppTheme.colors.background,
                 summary = ""

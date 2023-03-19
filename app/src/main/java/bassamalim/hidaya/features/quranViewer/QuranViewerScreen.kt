@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.quranViewer
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -27,13 +27,11 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.QViewType.*
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.models.Ayah
-import bassamalim.hidaya.features.quranViewer.QuranViewerState
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.quranViewer.QuranViewerVM
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 

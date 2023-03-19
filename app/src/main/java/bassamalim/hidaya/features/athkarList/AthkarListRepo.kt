@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.athkarList
 import android.app.Application
 import android.content.SharedPreferences
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.AthkarDB
 import bassamalim.hidaya.core.enums.Language
@@ -24,7 +25,7 @@ class AthkarListRepo @Inject constructor(
         val favAthkar = db.athkarDao().getFavs()
         val athkarJson = gson.toJson(favAthkar)
         pref.edit()
-            .putString(bassamalim.hidaya.core.data.Prefs.FavoriteAthkar.key, athkarJson)
+            .putString(Prefs.FavoriteAthkar.key, athkarJson)
             .apply()
     }
 

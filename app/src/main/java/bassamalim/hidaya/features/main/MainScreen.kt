@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.main
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
@@ -19,7 +19,11 @@ import bassamalim.hidaya.core.ui.*
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.features.main.MainVM
+import bassamalim.hidaya.features.home.HomeUI
+import bassamalim.hidaya.features.more.MoreUI
+import bassamalim.hidaya.features.prayers.PrayersUI
+import bassamalim.hidaya.features.athkar.AthkarUI
+import bassamalim.hidaya.features.quran.QuranUI
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController

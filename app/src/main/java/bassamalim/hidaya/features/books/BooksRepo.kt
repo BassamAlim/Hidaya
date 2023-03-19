@@ -2,6 +2,7 @@ package bassamalim.hidaya.features.books
 
 import android.content.Context
 import android.content.SharedPreferences
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.BooksDB
 import bassamalim.hidaya.core.models.Book
@@ -29,11 +30,11 @@ class BooksRepo @Inject constructor(
 
     fun getPath(itemId: Int) = "$prefix$itemId.json"
 
-    fun getShowTutorial() = PrefUtils.getBoolean(sp, bassamalim.hidaya.core.data.Prefs.ShowBooksTutorial)
+    fun getShowTutorial() = PrefUtils.getBoolean(sp, Prefs.ShowBooksTutorial)
 
     fun setDoNotShowAgain() {
         sp.edit()
-            .putBoolean(bassamalim.hidaya.core.data.Prefs.ShowBooksTutorial.key, false)
+            .putBoolean(Prefs.ShowBooksTutorial.key, false)
             .apply()
     }
 

@@ -2,6 +2,7 @@ package bassamalim.hidaya.features.locator
 
 import android.content.SharedPreferences
 import android.location.Location
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.utils.LocUtils
@@ -13,11 +14,11 @@ class LocatorRepo @Inject constructor(
     private val db: AppDatabase
 ) {
 
-    val language = PrefUtils.getString(pref, bassamalim.hidaya.core.data.Prefs.Language)
+    val language = PrefUtils.getString(pref, Prefs.Language)
 
     fun setLocationType(type: LocationType) {
         pref.edit()
-            .putString(bassamalim.hidaya.core.data.Prefs.LocationType.key, type.name)
+            .putString(Prefs.LocationType.key, type.name)
             .apply()
     }
 
@@ -25,8 +26,8 @@ class LocatorRepo @Inject constructor(
         val closestCity = db.cityDao().getClosest(location.latitude, location.longitude)
 
         pref.edit()
-            .putInt(bassamalim.hidaya.core.data.Prefs.CountryID.key, closestCity.countryId)
-            .putInt(bassamalim.hidaya.core.data.Prefs.CityID.key, closestCity.id)
+            .putInt(Prefs.CountryID.key, closestCity.countryId)
+            .putInt(Prefs.CityID.key, closestCity.id)
             .apply()
 
         LocUtils.storeLocation(pref, location)

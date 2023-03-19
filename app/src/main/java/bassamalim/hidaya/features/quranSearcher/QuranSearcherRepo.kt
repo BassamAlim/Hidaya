@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.quranSearcher
 import android.content.SharedPreferences
 import android.content.res.Resources
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.utils.PrefUtils
 import javax.inject.Inject
@@ -21,10 +22,10 @@ class QuranSearcherRepo @Inject constructor(
     fun getSuraNames() = db.suarDao().getNames()
     fun getSuraNamesEn() = db.suarDao().getNamesEn()
 
-    fun getMaxMatchesIndex() = PrefUtils.getInt(pref, bassamalim.hidaya.core.data.Prefs.QuranSearcherMaxMatchesIndex)
+    fun getMaxMatchesIndex() = PrefUtils.getInt(pref, Prefs.QuranSearcherMaxMatchesIndex)
     fun setMaxMatchesIndex(index: Int) {
         pref.edit()
-            .putInt(bassamalim.hidaya.core.data.Prefs.QuranSearcherMaxMatchesIndex.key, index)
+            .putInt(Prefs.QuranSearcherMaxMatchesIndex.key, index)
             .apply()
     }
 

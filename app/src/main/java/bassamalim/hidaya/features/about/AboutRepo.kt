@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.about
 
 import android.content.SharedPreferences
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.utils.PrefUtils
 import javax.inject.Inject
 
@@ -9,6 +10,6 @@ class AboutRepo @Inject constructor(
 ) {
 
     fun getLastUpdate() =
-        PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.LastDailyUpdate)
+        PrefUtils.getString(sp, Prefs.DailyUpdateRecord)
 
 }

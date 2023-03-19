@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.radio
 
 import android.app.Activity
 import android.os.Build

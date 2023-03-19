@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.settings
 import android.content.SharedPreferences
 import android.content.res.Resources
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.utils.PrefUtils
 import javax.inject.Inject
@@ -16,14 +17,14 @@ class SettingsRepo @Inject constructor(
     val timeFormat = PrefUtils.getTimeFormat(sp)
 
     fun getTime(pid: PID): String {
-        return "${PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.ExtraNotificationHour(pid))}:" +
-                "${PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.ExtraNotificationMinute(pid))}"
+        return "${PrefUtils.getInt(sp, Prefs.ExtraNotificationHour(pid))}:" +
+                "${PrefUtils.getInt(sp, Prefs.ExtraNotificationMinute(pid))}"
     }
 
     fun setTime(pid: PID, hour: Int, minute: Int) {
         sp.edit()
-            .putInt(bassamalim.hidaya.core.data.Prefs.ExtraNotificationHour(pid).key, hour)
-            .putInt(bassamalim.hidaya.core.data.Prefs.ExtraNotificationMinute(pid).key, minute)
+            .putInt(Prefs.ExtraNotificationHour(pid).key, hour)
+            .putInt(Prefs.ExtraNotificationMinute(pid).key, minute)
             .apply()
     }
 

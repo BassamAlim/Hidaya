@@ -63,13 +63,12 @@ class QuranViewerVM @Inject constructor(
     val selected = mutableStateOf<Ayah?>(null)
     var tracked = mutableStateOf<Ayah?>(null)
     private val playerState = mutableStateOf(PlaybackStateCompat.STATE_STOPPED)
-    private var player: AyahPlayerService? = null
+    private var binder :AyahPlayerService.LocalBinder? = null
     private var serviceBound = false
     private var tc: MediaControllerCompat.TransportControls? = null
     private var uiListener: AyahPlayerService.Coordinator? = null
 
-    private val _uiState = MutableStateFlow(
-        QuranViewerState(
+    private val _uiState = MutableStateFlow(QuranViewerState(
         pageNum = initialPage,
         viewType =
             if (repo.language == Language.ENGLISH) QViewType.List
@@ -78,141 +77,20 @@ class QuranViewerVM @Inject constructor(
         isBookmarked = bookmarkedPage == initialPage,
         ayas = buildPage(initialPage),
         tutorialDialogShown = repo.getShowTutorial()
-    )
-    )
+    ))
     val uiState = _uiState.asStateFlow()
 
+    fun onStart() {
+
+    }
+
     fun onStop() {
-        player?.finish()
         if (serviceBound) {
             app.unbindService(serviceConnection)
-            player?.stopSelf()
-        }
-        player?.onDestroy()
-        handler.removeCallbacks(runnable)
-    }
-
-    fun buildPage(pageNumber: Int): ArrayList<Ayah> {
-        val ayas = ArrayList<Ayah>()
-
-        // get page start
-        var counter = ayatDB.indexOfFirst { aya -> aya.page == pageNumber }
-        do {
-            val aya = ayatDB[counter]
-            val suraNum = aya.sura_num // starts from 1
-            val ayaNum = aya.aya_num
-
-            ayas.add(
-                Ayah(
-                    aya.id, aya.jozz, suraNum, ayaNum, suraNames[suraNum - 1],
-                    "${aya.aya_text} ", aya.aya_translation_en, aya.aya_tafseer
-                )
-            )
-
-            counter++
-        } while (counter != Global.QURAN_AYAS && ayatDB[counter].page == pageNumber)
-
-        return ayas
-    }
-
-    private fun updatePageState(pageNumber: Int) {
-        suraNum = ayatDB.first { aya -> aya.page == pageNumber }.sura_num - 1
-        _uiState.update { it.copy(
-            pageNum = pageNumber,
-            suraName = suraNames[suraNum],
-            juzNum = ayatDB.first { aya -> aya.page == pageNumber }.jozz,
-            ayas = buildPage(pageNumber),
-            isBookmarked = bookmarkedPage == pageNumber
-        )}
-    }
-
-    private fun checkPage() {
-        lastRecordedPage = _uiState.value.pageNum
-        handler.postDelayed(runnable, 40000)
-    }
-
-    private val runnable = Runnable {
-        if (_uiState.value.pageNum == lastRecordedPage)
-            updateRecord()
-    }
-
-    private fun updateRecord() {
-        val old = repo.getPagesRecord()
-        val new = old + 1
-
-        repo.setPagesRecord(new)
-
-        if (_uiState.value.pageNum == repo.getWerdPage())
-            repo.setWerdDone()
-    }
-
-    private fun setupPlayer() {
-        uiListener = object : AyahPlayerService.Coordinator {
-            override fun onUiUpdate(state: Int) {
-                updateButton(state)
-            }
-
-            override fun nextPage() {
-                if (_uiState.value.pageNum < Global.QURAN_PAGES)
-                    updatePageState(_uiState.value.pageNum + 1)
-            }
-
-            override fun track(ayaId: Int) {
-                val idx = _uiState.value.ayas.indexOfFirst { aya -> aya.id == ayaId }
-
-                if (idx == -1) return  // not the same page
-
-                tracked.value = _uiState.value.ayas[idx]
-            }
-        }
-
-        val playerIntent = Intent(app, AyahPlayerService::class.java)
-        app.startService(playerIntent)
-        app.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-    }
-
-    //Binding this Client to the AudioPlayer Service
-    private val serviceConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            Log.i(Global.TAG, "In onServiceConnected")
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            val binder = service as AyahPlayerService.LocalBinder
-            player = binder.service
-            tc = player!!.transportControls
-            serviceBound = true
-
-            if (selected.value == null) selected.value = _uiState.value.ayas[0]
-
-            player!!.setChosenPage(_uiState.value.pageNum)
-            player!!.setCoordinator(uiListener!!)
-            player!!.setChosenSurah(selected.value!!.surahNum)
-
-            requestPlay(selected.value!!.id)
-
-            selected.value = null
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
             serviceBound = false
         }
-    }
 
-    private fun requestPlay(ayahId: Int) {
-        val bundle = Bundle()
-        Executors.newSingleThreadExecutor().execute {
-            tc!!.playFromMediaId(ayahId.toString(), bundle)
-        }
-    }
-
-    private fun updateButton(state: Int) {
-        when (state) {
-            PlaybackStateCompat.STATE_NONE,
-            PlaybackStateCompat.STATE_PAUSED,
-            PlaybackStateCompat.STATE_STOPPED,
-            PlaybackStateCompat.STATE_PLAYING,
-            PlaybackStateCompat.STATE_BUFFERING -> playerState.value = state
-            else -> {}
-        }
+        handler.removeCallbacks(runnable)
     }
 
     fun onPageChange(currentPage: Int, page: Int) {
@@ -226,7 +104,6 @@ class QuranViewerVM @Inject constructor(
         }
     }
 
-
     fun onBookmarkClick() {
         bookmarkedPage = _uiState.value.pageNum
 
@@ -238,30 +115,31 @@ class QuranViewerVM @Inject constructor(
     }
 
     fun onPlayPauseClick() {
-        if (player == null) {
+        val playerService = binder?.service
+        if (playerService == null) {
             updateButton(PlaybackStateCompat.STATE_BUFFERING)
             setupPlayer()
         }
-        else if (player!!.getState() == PlaybackStateCompat.STATE_PLAYING) {
+        else if (playerService.getState() == PlaybackStateCompat.STATE_PLAYING) {
             updateButton(PlaybackStateCompat.STATE_PAUSED)
-            player!!.transportControls.pause()
+            playerService.transportControls.pause()
         }
-        else if (player!!.getState() == PlaybackStateCompat.STATE_PAUSED) {
+        else if (playerService.getState() == PlaybackStateCompat.STATE_PAUSED) {
             updateButton(PlaybackStateCompat.STATE_BUFFERING)
-            if (selected.value == null) player!!.transportControls.play()
+            if (selected.value == null) playerService.transportControls.play()
             else {
-                player!!.setChosenSurah(selected.value!!.surahNum)
+                playerService.setChosenSurah(selected.value!!.surahNum)
                 requestPlay(selected.value!!.id)
             }
         }
     }
 
     fun onRewindClick() {
-        player?.transportControls?.skipToPrevious()
+        binder?.service?.transportControls?.skipToPrevious()
     }
 
     fun onFastForwardClick() {
-        player?.transportControls?.skipToNext()
+        binder?.service?.transportControls?.skipToNext()
     }
 
     fun onSettingsClick() {
@@ -336,6 +214,128 @@ class QuranViewerVM @Inject constructor(
         )}
 
         repo.setViewType(viewType)
+    }
+
+    fun buildPage(pageNumber: Int): ArrayList<Ayah> {
+        val ayas = ArrayList<Ayah>()
+
+        // get page start
+        var counter = ayatDB.indexOfFirst { aya -> aya.page == pageNumber }
+        do {
+            val aya = ayatDB[counter]
+            val suraNum = aya.sura_num // starts from 1
+            val ayaNum = aya.aya_num
+
+            ayas.add(
+                Ayah(
+                    aya.id, aya.jozz, suraNum, ayaNum, suraNames[suraNum - 1],
+                    "${aya.aya_text} ", aya.aya_translation_en, aya.aya_tafseer
+                )
+            )
+
+            counter++
+        } while (counter != Global.QURAN_AYAS && ayatDB[counter].page == pageNumber)
+
+        return ayas
+    }
+
+    private fun updatePageState(pageNumber: Int) {
+        suraNum = ayatDB.first { aya -> aya.page == pageNumber }.sura_num - 1
+        _uiState.update { it.copy(
+            pageNum = pageNumber,
+            suraName = suraNames[suraNum],
+            juzNum = ayatDB.first { aya -> aya.page == pageNumber }.jozz,
+            ayas = buildPage(pageNumber),
+            isBookmarked = bookmarkedPage == pageNumber
+        )}
+    }
+
+    private fun checkPage() {
+        lastRecordedPage = _uiState.value.pageNum
+        handler.postDelayed(runnable, 40000)
+    }
+
+    private val runnable = Runnable {
+        if (_uiState.value.pageNum == lastRecordedPage)
+            updateRecords()
+    }
+
+    private fun updateRecords() {
+        val old = repo.getPagesRecord()
+        val new = old + 1
+
+        repo.setPagesRecord(new)
+
+        if (_uiState.value.pageNum == repo.getWerdPage())
+            repo.setWerdDone()
+    }
+
+    private fun setupPlayer() {
+        uiListener = object : AyahPlayerService.Coordinator {
+            override fun onUiUpdate(state: Int) {
+                updateButton(state)
+            }
+
+            override fun nextPage() {
+                if (_uiState.value.pageNum < Global.QURAN_PAGES)
+                    updatePageState(_uiState.value.pageNum + 1)
+            }
+
+            override fun track(ayaId: Int) {
+                val idx = _uiState.value.ayas.indexOfFirst { aya -> aya.id == ayaId }
+
+                if (idx == -1) return  // not the same page
+
+                tracked.value = _uiState.value.ayas[idx]
+            }
+        }
+
+        val playerIntent = Intent(app, AyahPlayerService::class.java)
+        app.startService(playerIntent)
+        app.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    //Binding this Client to the AudioPlayer Service
+    private val serviceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            Log.i(Global.TAG, "In onServiceConnected")
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            binder = service as AyahPlayerService.LocalBinder
+            val playerService = binder?.service
+            tc = playerService!!.transportControls
+            serviceBound = true
+
+            if (selected.value == null) selected.value = _uiState.value.ayas[0]
+
+            playerService.setChosenPage(_uiState.value.pageNum)
+            playerService.setCoordinator(uiListener!!)
+            playerService.setChosenSurah(selected.value!!.surahNum)
+
+            requestPlay(selected.value!!.id)
+
+            selected.value = null
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            serviceBound = false
+        }
+    }
+
+    private fun requestPlay(ayahId: Int) {
+        Executors.newSingleThreadExecutor().execute {
+            tc!!.playFromMediaId(ayahId.toString(), Bundle())
+        }
+    }
+
+    private fun updateButton(state: Int) {
+        when (state) {
+            PlaybackStateCompat.STATE_NONE,
+            PlaybackStateCompat.STATE_PAUSED,
+            PlaybackStateCompat.STATE_STOPPED,
+            PlaybackStateCompat.STATE_PLAYING,
+            PlaybackStateCompat.STATE_BUFFERING -> playerState.value = state
+            else -> {}
+        }
     }
 
 }

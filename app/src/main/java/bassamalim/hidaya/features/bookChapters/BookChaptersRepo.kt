@@ -2,6 +2,7 @@ package bassamalim.hidaya.features.bookChapters
 
 import android.content.Context
 import android.content.SharedPreferences
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.core.utils.PrefUtils
@@ -23,7 +24,7 @@ class BookChaptersRepo @Inject constructor(
     }
 
     fun getFavs(book: Book): List<Int> {
-        val favsStr = PrefUtils.getString(pref, bassamalim.hidaya.core.data.Prefs.BookChaptersFavs(book.bookInfo.bookId))
+        val favsStr = PrefUtils.getString(pref, Prefs.BookChaptersFavs(book.bookInfo.bookId))
         return if (favsStr.isNotEmpty())
             gson.fromJson(favsStr, IntArray::class.java).toList()
         else {
@@ -36,7 +37,7 @@ class BookChaptersRepo @Inject constructor(
     fun updateFavorites(bookId: Int, favs: List<Int>) {
         val json = gson.toJson(favs.toIntArray())
         pref.edit()
-            .putString(bassamalim.hidaya.core.data.Prefs.BookChaptersFavs(bookId).key, json)
+            .putString(Prefs.BookChaptersFavs(bookId).key, json)
             .apply()
     }
 

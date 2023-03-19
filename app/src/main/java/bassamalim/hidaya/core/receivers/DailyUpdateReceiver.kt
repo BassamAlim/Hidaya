@@ -52,7 +52,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
             pickWerd()
         }
-        else Log.i(Global.TAG, "dead intent walking in daily update receiver")
+        else Log.i(Global.TAG, "dead intent in daily update receiver")
 
         setTomorrow()
     }
@@ -81,7 +81,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         if (location == null) {
             val storedLoc = LocUtils.retrieveLocation(sp)
             if (storedLoc == null) {
-                Log.e(Global.TAG, "No available location in DailyUpdate")
+                Log.e(Global.TAG, "no available location in DailyUpdate")
                 return
             }
         }
@@ -115,15 +115,15 @@ class DailyUpdateReceiver : BroadcastReceiver() {
             "/${now[Calendar.DATE]}" + " ${now[Calendar.HOUR_OF_DAY]}:${now[Calendar.MINUTE]}"
 
         sp.edit()
-            .putInt("last_day", now[Calendar.DATE])
-            .putString("last_daily_update", str)
+            .putInt(Prefs.LastDailyUpdateDay.key, now[Calendar.DATE])
+            .putString(Prefs.DailyUpdateRecord.key, str)
             .apply()
     }
 
     private fun pickWerd() {
         sp.edit()
-            .putInt("today_werd_page", Random().nextInt(Global.QURAN_PAGES) - 1)
-            .putBoolean("werd_done", false)
+            .putInt(Prefs.WerdPage.key, Random().nextInt(Global.QURAN_PAGES) - 1)
+            .putBoolean(Prefs.WerdDone.key, false)
             .apply()
     }
 

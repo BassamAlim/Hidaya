@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.more
 
 import android.widget.Toast
 import androidx.compose.animation.ExperimentalAnimationApi

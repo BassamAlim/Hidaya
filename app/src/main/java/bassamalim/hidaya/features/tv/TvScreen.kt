@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.tv
 
 import android.content.Context
 import android.util.Log
@@ -23,7 +23,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.features.tv.TvVM
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerSupportFragmentXKt

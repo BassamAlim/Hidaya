@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.main
 import android.content.SharedPreferences
 import android.content.res.Resources
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.utils.PrefUtils
 import javax.inject.Inject
 
@@ -13,11 +14,11 @@ class MainRepo @Inject constructor(
 
     val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
 
-    fun getDateOffset() = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.DateOffset)
+    fun getDateOffset() = PrefUtils.getInt(sp, Prefs.DateOffset)
 
     fun updateDateOffset(offset: Int) {
         sp.edit()
-            .putInt(bassamalim.hidaya.core.data.Prefs.DateOffset.key, offset)
+            .putInt(Prefs.DateOffset.key, offset)
             .apply()
     }
 

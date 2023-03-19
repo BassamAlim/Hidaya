@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.telawat
 import android.content.SharedPreferences
 import android.content.res.Resources
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.utils.PrefUtils
 import com.google.gson.Gson
@@ -38,7 +39,7 @@ class TelawatRepo @Inject constructor(
     fun getSelectedVersions(): MutableList<Boolean> {
         val selectedVersions = mutableListOf<Boolean>()
 
-        val json = PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.SelectedRewayat)
+        val json = PrefUtils.getString(sp, Prefs.SelectedRewayat)
         if (json.isNotEmpty()) {
             val boolArr = gson.fromJson(json, BooleanArray::class.java)
             boolArr.forEach { bool -> selectedVersions.add(bool) }
@@ -48,12 +49,12 @@ class TelawatRepo @Inject constructor(
         return selectedVersions
     }
 
-    fun getLastPlayedMediaId() = PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.LastPlayedMediaId)
+    fun getLastPlayedMediaId() = PrefUtils.getString(sp, Prefs.LastPlayedMediaId)
 
     fun updateFavorites() {
         val recitersJson = gson.toJson(db.telawatRecitersDao().getFavs())
         sp.edit()
-            .putString(bassamalim.hidaya.core.data.Prefs.FavoriteReciters.key, recitersJson)
+            .putString(Prefs.FavoriteReciters.key, recitersJson)
             .apply()
     }
 

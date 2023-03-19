@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.quizResult
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,7 +20,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.QuizResultQuestion
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.features.quizResult.QuizResultVM
 
 @Composable
 fun QuizResultUI(

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.content.res.Resources
 import android.location.Location
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
@@ -22,12 +23,12 @@ class PrayersRepo @Inject constructor(
     val language = PrefUtils.getLanguage(sp)
     val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
 
-    fun getCountryID() = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.CountryID)
+    fun getCountryID() = PrefUtils.getInt(sp, Prefs.CountryID)
 
-    fun getCityID() = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.CityID)
+    fun getCityID() = PrefUtils.getInt(sp, Prefs.CityID)
 
     fun getLocationType() = LocationType.valueOf(
-        PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.LocationType)
+        PrefUtils.getString(sp, Prefs.LocationType)
     )
 
     fun getClosest(lat: Double, lon: Double) = db.cityDao().getClosest(lat, lon)
@@ -44,43 +45,43 @@ class PrayersRepo @Inject constructor(
 
     fun getNotificationTypes(): List<NotificationType> {
         return listOf(
-            NotificationType.valueOf(PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.NotificationType(PID.FAJR))),
-            NotificationType.valueOf(PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.NotificationType(PID.SUNRISE))),
-            NotificationType.valueOf(PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.NotificationType(PID.DHUHR))),
-            NotificationType.valueOf(PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.NotificationType(PID.ASR))),
-            NotificationType.valueOf(PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.NotificationType(PID.MAGHRIB))),
-            NotificationType.valueOf(PrefUtils.getString(sp, bassamalim.hidaya.core.data.Prefs.NotificationType(PID.ISHAA))),
+            NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.FAJR))),
+            NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.SUNRISE))),
+            NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.DHUHR))),
+            NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.ASR))),
+            NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.MAGHRIB))),
+            NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.ISHAA))),
         )
     }
     fun setNotificationType(pid: PID, type: NotificationType) {
         sp.edit()
-            .putString(bassamalim.hidaya.core.data.Prefs.NotificationType(pid).key, type.name)
+            .putString(Prefs.NotificationType(pid).key, type.name)
             .apply()
     }
 
     fun getTimeOffsets(): List<Int> {
         return listOf(
-            PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TimeOffset(PID.FAJR)),
-            PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TimeOffset(PID.SUNRISE)),
-            PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TimeOffset(PID.DHUHR)),
-            PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TimeOffset(PID.ASR)),
-            PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TimeOffset(PID.MAGHRIB)),
-            PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.TimeOffset(PID.ISHAA)),
+            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.FAJR)),
+            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.SUNRISE)),
+            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.DHUHR)),
+            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ASR)),
+            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.MAGHRIB)),
+            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ISHAA)),
         )
     }
     fun setTimeOffset(pid: PID, offset: Int) {
         sp.edit()
-            .putInt(bassamalim.hidaya.core.data.Prefs.TimeOffset(pid).key, offset)
+            .putInt(Prefs.TimeOffset(pid).key, offset)
             .apply()
     }
 
     fun setDoNotShowAgain() {
         sp.edit()
-            .putBoolean(bassamalim.hidaya.core.data.Prefs.ShowPrayersTutorial.key, false)
+            .putBoolean(Prefs.ShowPrayersTutorial.key, false)
             .apply()
     }
 
-    fun getShowTutorial() = PrefUtils.getBoolean(sp, bassamalim.hidaya.core.data.Prefs.ShowPrayersTutorial)
+    fun getShowTutorial() = PrefUtils.getBoolean(sp, Prefs.ShowPrayersTutorial)
 
     fun getLocation(): Location? = LocUtils.retrieveLocation(sp)
 

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.view
+package bassamalim.hidaya.features.dateConverter
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -19,7 +19,6 @@ import bassamalim.hidaya.core.ui.components.MyButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.features.dateConverter.DateConverterVM
 
 @Composable
 fun DateConverterUI(

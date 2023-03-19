@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.quran
 import android.content.SharedPreferences
 import android.content.res.Resources
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.utils.PrefUtils
@@ -18,9 +19,9 @@ class QuranRepo @Inject constructor(
 
     fun getNumeralsLanguage() = PrefUtils.getNumeralsLanguage(sp)
 
-    fun getBookmarkedPage() = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.BookmarkedPage)
+    fun getBookmarkedPage() = PrefUtils.getInt(sp, Prefs.BookmarkedPage)
 
-    fun getBookmarkedSura() = PrefUtils.getInt(sp, bassamalim.hidaya.core.data.Prefs.BookmarkedSura)
+    fun getBookmarkedSura() = PrefUtils.getInt(sp, Prefs.BookmarkedSura)
 
     fun getAllSuras() = db.suarDao().getAll()
 
@@ -34,15 +35,15 @@ class QuranRepo @Inject constructor(
     fun updateFavorites(favs: List<Int>) {
         val json = gson.toJson(favs.toIntArray())
         sp.edit()
-            .putString(bassamalim.hidaya.core.data.Prefs.FavoriteSuras.key, json)
+            .putString(Prefs.FavoriteSuras.key, json)
             .apply()
     }
 
-    fun getShowTutorial() = PrefUtils.getBoolean(sp, bassamalim.hidaya.core.data.Prefs.ShowQuranTutorial)
+    fun getShowTutorial() = PrefUtils.getBoolean(sp, Prefs.ShowQuranTutorial)
 
     fun setDoNotShowAgain() {
         sp.edit()
-            .putBoolean(bassamalim.hidaya.core.data.Prefs.ShowQuranTutorial.key, false)
+            .putBoolean(Prefs.ShowQuranTutorial.key, false)
             .apply()
     }
 

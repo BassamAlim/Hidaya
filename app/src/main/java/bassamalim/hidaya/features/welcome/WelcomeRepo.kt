@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.welcome
 
 import android.content.SharedPreferences
+import bassamalim.hidaya.core.data.Prefs
 import javax.inject.Inject
 
 class WelcomeRepo @Inject constructor(
@@ -9,7 +10,7 @@ class WelcomeRepo @Inject constructor(
 
     fun unsetFirstTime() {
         pref.edit()
-            .putBoolean(bassamalim.hidaya.core.data.Prefs.FirstTime.key, false)
+            .putBoolean(Prefs.FirstTime.key, false)
             .apply()
     }
 
