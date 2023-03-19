@@ -793,7 +793,6 @@ class AyahPlayerService : Service(),
 
     fun finish() {
         releasePlayers()
-        wifiLock.release()
     }
 
     private fun index(mp: MediaPlayer): Int {
@@ -850,6 +849,8 @@ class AyahPlayerService : Service(),
         handler.removeCallbacks(runnable)
 
         releasePlayers()
+
+        wifiLock.release()
 
         removeAudioFocus()
 
