@@ -14,10 +14,7 @@ import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.helpers.Alarms
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.other.PrayersWidget
-import bassamalim.hidaya.core.utils.DBUtils
-import bassamalim.hidaya.core.utils.LocUtils
-import bassamalim.hidaya.core.utils.PTUtils
-import bassamalim.hidaya.core.utils.PrefUtils
+import bassamalim.hidaya.core.utils.*
 import com.google.android.gms.location.LocationServices
 import java.util.*
 
@@ -32,6 +29,13 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
         ctx = context
         sp = PrefUtils.getPreferences(ctx)
+
+        try {  // remove after a while
+            ActivityUtils.onActivityCreateSetLocale(ctx)
+        } catch (e: Exception) {
+            Log.e(Global.TAG, "Neuralyzing", e)
+            ActivityUtils.clearAppData(ctx)
+        }
 
         if ((intent.action == "daily" && needed()) || intent.action == "boot") {
             when (LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))) {

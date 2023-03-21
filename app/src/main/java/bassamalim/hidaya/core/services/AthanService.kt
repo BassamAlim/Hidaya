@@ -40,11 +40,12 @@ class AthanService : Service() {
         ActivityUtils.onActivityCreateSetLocale(applicationContext)
 
         createNotificationChannel()
-        startForeground(243, build())
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         pid = PID.valueOf(intent?.getStringExtra("pid")!!)
+
+        startForeground(243, build())
 
         Log.i(Global.TAG, "In athan service for $pid")
 
