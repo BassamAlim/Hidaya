@@ -17,12 +17,10 @@ class MainVM @Inject constructor(
 
     private var dateOffset = repo.getDateOffset()
 
-    private val _uiState = MutableStateFlow(
-        MainState(
+    private val _uiState = MutableStateFlow(MainState(
         hijriDate = getHijriDate(),
         gregorianDate = getGregorianDate()
-    )
-    )
+    ))
     val uiState = _uiState.asStateFlow()
 
     init {

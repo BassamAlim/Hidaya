@@ -32,22 +32,15 @@ class PrayersVM @Inject constructor(
     private val calendar = Calendar.getInstance()
     private var dateOffset = 0
 
-    private val _uiState = MutableStateFlow(
-        PrayersState(
+    private val _uiState = MutableStateFlow(PrayersState(
         notificationTypes = repo.getNotificationTypes(),
         timeOffsets = repo.getTimeOffsets(),
-        tutorialDialogShown = repo.getShowTutorial()
-    )
-    )
+        tutorialDialogShown = repo.getShowTutorial(),
+        locationName =
+            if (location != null) getLocName()
+            else repo.getClkToLocate()
+    ))
     val uiState = _uiState.asStateFlow()
-
-    init {
-        _uiState.update { it.copy(
-            locationName =
-                if (location != null) getLocName()
-                else repo.getClkToLocate()
-        )}
-    }
 
     fun onStart() {
         prayTimes = PrayTimes(repo.sp)  // to update in case of method changes

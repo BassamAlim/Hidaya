@@ -25,12 +25,10 @@ class QuranVM @Inject constructor(
     var searchText by mutableStateOf("")
         private set
 
-    private val _uiState = MutableStateFlow(
-        QuranState(
+    private val _uiState = MutableStateFlow(QuranState(
         favs = repo.getFavs(),
         tutorialDialogShown = repo.getShowTutorial()
-    )
-    )
+    ))
     val uiState = _uiState.asStateFlow()
 
     fun onStart() {
