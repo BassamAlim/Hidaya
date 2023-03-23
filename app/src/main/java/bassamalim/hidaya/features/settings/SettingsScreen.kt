@@ -78,9 +78,8 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
             titleResId = R.string.calculation_method_title,
             pref = Prefs.PrayerTimesCalculationMethod,
             entries = stringArrayResource(R.array.prayer_times_calc_method_entries),
-            values = stringArrayResource(R.array.prayer_times_calc_method_values),
-            onSelection = { viewModel.onPrayerTimesCalculationMethodCh() }
-        )
+            values = stringArrayResource(R.array.prayer_times_calc_method_values)
+        ) { viewModel.onPrayerTimesCalculationMethodCh() }
 
         // Juristic method
         ListPref(
@@ -88,9 +87,8 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
             titleResId = R.string.juristic_method_title,
             pref = Prefs.PrayerTimesJuristicMethod,
             entries = stringArrayResource(R.array.juristic_method_entries),
-            values = stringArrayResource(R.array.juristic_method_values),
-            onSelection = { viewModel.onPrayerTimesJuristicMethodCh() }
-        )
+            values = stringArrayResource(R.array.juristic_method_values)
+        ) { viewModel.onPrayerTimesJuristicMethodCh() }
 
         // High latitude adjustment
         ListPref(
@@ -98,9 +96,8 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
             titleResId = R.string.high_lat_adjustment_title,
             pref = Prefs.PrayerTimesAdjustment,
             entries = stringArrayResource(R.array.high_lat_adjustment_entries),
-            values = stringArrayResource(R.array.high_lat_adjustment_values),
-            onSelection = { viewModel.onPrayerTimesHighLatAdjustmentCh() }
-        )
+            values = stringArrayResource(R.array.high_lat_adjustment_values)
+        ) { viewModel.onPrayerTimesHighLatAdjustmentCh() }
     }
 }
 
@@ -115,8 +112,8 @@ private fun ExtraNotificationsSettings(
         Modifier.padding(bottom = 10.dp)
     ) {
         SwitchPref(
-            pref = vm.sp,
-            prefObj = Prefs.NotifyExtraNotification(PID.MORNING),
+            sp = vm.sp,
+            pref = Prefs.NotifyExtraNotification(PID.MORNING),
             titleResId = R.string.morning_athkar_title,
             summary = st.morningSummary
         ) { checked ->
@@ -124,8 +121,8 @@ private fun ExtraNotificationsSettings(
         }
 
         SwitchPref(
-            pref = vm.sp,
-            prefObj = Prefs.NotifyExtraNotification(PID.EVENING),
+            sp = vm.sp,
+            pref = Prefs.NotifyExtraNotification(PID.EVENING),
             titleResId = R.string.evening_athkar_title,
             summary = st.eveningSummary
         ) { checked ->
@@ -133,8 +130,8 @@ private fun ExtraNotificationsSettings(
         }
 
         SwitchPref(
-            pref = vm.sp,
-            prefObj = Prefs.NotifyExtraNotification(PID.DAILY_WERD),
+            sp = vm.sp,
+            pref = Prefs.NotifyExtraNotification(PID.DAILY_WERD),
             titleResId = R.string.daily_werd_title,
             summary = st.werdSummary
         ) { checked ->
@@ -142,8 +139,8 @@ private fun ExtraNotificationsSettings(
         }
 
         SwitchPref(
-            pref = vm.sp,
-            prefObj = Prefs.NotifyExtraNotification(PID.FRIDAY_KAHF),
+            sp = vm.sp,
+            pref = Prefs.NotifyExtraNotification(PID.FRIDAY_KAHF),
             titleResId = R.string.friday_kahf_title,
             summary = st.kahfSummary
         ) { checked ->

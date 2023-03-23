@@ -27,8 +27,8 @@ fun ListPref(
     titleResId: Int,
     pref: Prefs,
     iconResId: Int = -1,
-    entries: Array<String>,
-    values: Array<String>,
+    entries: List<String>,
+    values: List<IntRange>,
     bgColor: Color = AppTheme.colors.surface,
     onSelection: () -> Unit = {}
 ) {
@@ -146,21 +146,21 @@ fun ListPref(
 
 @Composable
 fun SwitchPref(
-    pref: SharedPreferences,
-    prefObj: Prefs,
+    sp: SharedPreferences,
+    pref: Prefs,
     titleResId: Int,
     summary: String,
     bgColor: Color = AppTheme.colors.surface,
     onSwitch: (Boolean) -> Unit = {}
 ) {
-    val initialValue = PrefUtils.getBoolean(pref, prefObj)
+    val initialValue = PrefUtils.getBoolean(sp, pref)
     var checked by remember { mutableStateOf(initialValue) }
 
     val onCheckChange = {
         checked = !checked
 
-        pref.edit()
-            .putBoolean(prefObj.key, checked)
+        sp.edit()
+            .putBoolean(pref.key, checked)
             .apply()
 
         onSwitch(checked)
@@ -204,15 +204,15 @@ fun SwitchPref(
 
 @Composable
 fun SliderPref(
-    pref: SharedPreferences,
-    prefObj: Prefs,
+    sp: SharedPreferences,
+    pref: Prefs,
     titleResId: Int,
     valueRange: ClosedFloatingPointRange<Float>,
     infinite: Boolean = false,
     sliderFraction: Float = 0.8F,
     onValueChange: () -> Unit = {}
 ) {
-    var value by remember { mutableStateOf(PrefUtils.getFloat(pref, prefObj)) }
+    var value by remember { mutableStateOf(PrefUtils.getFloat(sp, pref)) }
 
     Column(
         Modifier
@@ -228,8 +228,8 @@ fun SliderPref(
             sliderFraction = sliderFraction,
             onValueChange = { newValue -> value = newValue },
             onValueChangeFinished = {
-                pref.edit()
-                    .putFloat(prefObj.key, value)
+                sp.edit()
+                    .putFloat(pref.key, value)
                     .apply()
 
                 onValueChange()

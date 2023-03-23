@@ -32,6 +32,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.features.quranSettings.QuranSettingsDlg
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 
@@ -204,11 +205,9 @@ fun QuranViewerUI(
         onDismiss = vm::onInfoDialogDismiss  // :: gives the reference to the function
     )
 
-    QuranSettingsDialog(
-        startState = st,
-        pref = vm.pref,
-        reciterNames = vm.reciterNames,
-        onDone = { vm.onSettingsDialogDismiss(it) }
+    QuranSettingsDlg(
+        shown = st.settingsDialogShown,
+        mainOnDone = { vm.onSettingsDialogDismiss() }
     )
 }
 

@@ -54,7 +54,6 @@ class QuranViewerVM @Inject constructor(
     private var suraNum = 0
     private var bookmarkedPage = repo.getBookmarkedPage()
     val pref = repo.sp
-    val reciterNames = repo.getReciterNames()
     private var lastRecordedPage = 0
     private var lastClickT = 0L
     private var lastClickedId = -1
@@ -205,14 +204,12 @@ class QuranViewerVM @Inject constructor(
         )}
     }
 
-    fun onSettingsDialogDismiss(viewType: QViewType) {
+    fun onSettingsDialogDismiss() {
         _uiState.update { it.copy(
             settingsDialogShown = false,
-            viewType = viewType,
+            viewType = repo.getViewType(),
             textSize = repo.getTextSize()
         )}
-
-        repo.setViewType(viewType)
     }
 
     fun buildPage(pageNumber: Int): ArrayList<Ayah> {

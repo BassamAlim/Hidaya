@@ -1,32 +1,29 @@
-package bassamalim.hidaya.core.ui.components
+package bassamalim.hidaya.features.quranSettings
 
-import android.content.SharedPreferences
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
-import bassamalim.hidaya.core.enums.QViewType
-import bassamalim.hidaya.features.quranViewer.QuranViewerState
+import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun QuranSettingsDialog(
-    startState: QuranViewerState,
-    pref: SharedPreferences,
-    reciterNames: Array<String>,
-    onDone: (QViewType) -> Unit
+fun QuranSettingsDlg(
+    vm: QuranSettingsVM = hiltViewModel(),
+    shown: Boolean,
+    mainOnDone: () -> Unit
 ) {
-    var viewType by remember { mutableStateOf(startState.viewType.ordinal) }
-    val reciterIds = Array(reciterNames.size) { it.toString() }
-
-    MyDialog(startState.settingsDialogShown) {
+    MyDialog(
+        shown = shown
+    ) {
         Column(
             Modifier
                 .fillMaxWidth()
@@ -42,19 +39,15 @@ fun QuranSettingsDialog(
                     stringResource(R.string.page),
                     stringResource(R.string.list_view)
                 ),
-                selection = viewType,
+                initialSelection = vm.viewType.ordinal,
                 onSelect = { selection ->
-                    viewType = selection
-
-                    pref.edit()
-                        .putString("quran_view_type", if (selection == 1) "list" else "page")
-                        .apply()
+                    vm.onViewTypeCh(selection)
                 }
             )
 
             SliderPref(
-                pref = pref,
-                prefObj = Prefs.QuranTextSize,
+                sp = vm.sp,
+                pref = Prefs.QuranTextSize,
                 titleResId = R.string.text_size_title,
                 valueRange = 20F..50F
             )
@@ -63,34 +56,34 @@ fun QuranSettingsDialog(
             CategoryTitle(titleResId = R.string.recitation_settings)
 
             ListPref(
-                sp = pref,
+                sp = vm.sp,
                 titleResId = R.string.reciter,
                 pref = Prefs.AyaReciter,
                 iconResId = -1,
-                entries = reciterNames,
-                values = reciterIds,
+                entries = vm.reciterNames,
+                values = vm.reciterIds,
                 bgColor = AppTheme.colors.background
             )
 
             SliderPref(
-                pref = pref,
-                prefObj = Prefs.AyaRepeat,
+                sp = vm.sp,
+                pref = Prefs.AyaRepeat,
                 titleResId = R.string.aya_repeat,
                 valueRange = 1f..11f,
                 infinite = true
             )
 
             SwitchPref(
-                pref = pref,
-                prefObj = Prefs.StopOnSuraEnd,
+                sp = vm.sp,
+                pref = Prefs.StopOnSuraEnd,
                 titleResId = R.string.stop_on_sura_end,
                 bgColor = AppTheme.colors.background,
                 summary = ""
             )
 
             SwitchPref(
-                pref = pref,
-                prefObj = Prefs.StopOnPageEnd,
+                sp = vm.sp,
+                pref = Prefs.StopOnPageEnd,
                 titleResId = R.string.stop_on_page_end,
                 bgColor = AppTheme.colors.background,
                 summary = ""
@@ -100,7 +93,7 @@ fun QuranSettingsDialog(
                 text = stringResource(R.string.close),
                 Modifier.fillMaxWidth()
             ) {
-                onDone(QViewType.values()[viewType])
+                vm.onDone(mainOnDone)
             }
         }
     }
