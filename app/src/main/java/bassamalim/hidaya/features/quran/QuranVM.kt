@@ -1,13 +1,10 @@
 package bassamalim.hidaya.features.quran
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.Sura
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,10 +17,7 @@ class QuranVM @Inject constructor(
     private val repo: QuranRepo
 ): ViewModel() {
 
-    private var listType = ListType.All
-    private val names = repo.getSuraNames()
-    var searchText by mutableStateOf("")
-        private set
+    private val suraNames = repo.getSuraNames()
 
     private val _uiState = MutableStateFlow(QuranState(
         favs = repo.getFavs(),
@@ -37,7 +31,7 @@ class QuranVM @Inject constructor(
         )}
     }
 
-    private fun getItems(type: ListType): List<Sura> {
+    fun getItems(type: ListType): List<Sura> {
         val surat = repo.getSuraStr()
 
         val items = ArrayList<Sura>()
@@ -48,16 +42,19 @@ class QuranVM @Inject constructor(
             items.add(
                 suras[i].let {
                     Sura(
-                        it.sura_id, "$surat ${names[it.sura_id]}",
+                        it.sura_id, "$surat ${suraNames[it.sura_id]}",
                         it.search_name!!, it.tanzeel
                     )
                 }
             )
         }
 
-        if (searchText.isNotEmpty())
-            return items.filter { it.searchName.contains(searchText, true) }
-        return items
+        return if (_uiState.value.searchText.isEmpty()) items
+        else {
+            items.filter {
+                it.searchName.contains(_uiState.value.searchText, true)
+            }
+        }
     }
 
     private fun getBookmarkedPageText(): String {
@@ -100,16 +97,6 @@ class QuranVM @Inject constructor(
         }
     }
 
-    fun onPageChg(page: Int, currentPage: Int) {
-        if (page != currentPage) return
-
-        listType = ListType.values()[page]
-
-        _uiState.update { it.copy(
-            items = getItems(listType)
-        )}
-    }
-
     fun onFavClick(itemId: Int) {
         _uiState.update { it.copy(
             favs = _uiState.value.favs.toMutableList().apply {
@@ -117,20 +104,19 @@ class QuranVM @Inject constructor(
             }
         )}
 
+        repo.setFav(itemId, _uiState.value.favs[itemId])
         repo.updateFavorites(_uiState.value.favs.toList())
     }
 
     fun onSearchTextChange(text: String) {
-        searchText = text
-
         _uiState.update { it.copy(
-            items = getItems(listType)
+            searchText = text
         )}
     }
 
     fun onSearchSubmit(nc: NavController) {
         try {
-            val num = searchText.toInt()
+            val num = _uiState.value.searchText.toInt()
             if (num in 1..604) {
                 nc.navigate(
                     Screen.QuranViewer(
