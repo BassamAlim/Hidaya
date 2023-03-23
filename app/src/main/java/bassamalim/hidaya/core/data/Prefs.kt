@@ -51,7 +51,7 @@ sealed class Prefs(val key: String, val default: Any) {
     object QuranTextSize: Prefs("quran_text_size", 30f)
     object QuranViewType: Prefs("quran_view_type", QViewType.Page.name)
     object AyaReciter: Prefs("aya_reciter", "13")
-    object AyaRepeat: Prefs("aya_repeat", 1)
+    object AyaRepeat: Prefs("aya_repeat", 1f)  // float to use in slider
     object StopOnSuraEnd: Prefs("stop_on_sura_end", false)
     object StopOnPageEnd: Prefs("stop_on_page_end", false)
     data class BookChaptersFavs(val bookId: Int): Prefs(

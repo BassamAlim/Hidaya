@@ -62,7 +62,6 @@ class QuranViewerVM @Inject constructor(
         private set
     val selected = mutableStateOf<Ayah?>(null)
     var tracked = mutableStateOf<Ayah?>(null)
-    private val playerState = mutableStateOf(PlaybackStateCompat.STATE_STOPPED)
     private var binder :AyahPlayerService.LocalBinder? = null
     private var serviceBound = false
     private var tc: MediaControllerCompat.TransportControls? = null
@@ -128,7 +127,7 @@ class QuranViewerVM @Inject constructor(
             updateButton(PlaybackStateCompat.STATE_BUFFERING)
             if (selected.value == null) playerService.transportControls.play()
             else {
-                playerService.setChosenSurah(selected.value!!.surahNum)
+                playerService.setChosenSura(selected.value!!.surahNum)
                 requestPlay(selected.value!!.id)
             }
         }
@@ -309,7 +308,7 @@ class QuranViewerVM @Inject constructor(
 
             playerService.setChosenPage(_uiState.value.pageNum)
             playerService.setCoordinator(uiListener!!)
-            playerService.setChosenSurah(selected.value!!.surahNum)
+            playerService.setChosenSura(selected.value!!.surahNum)
 
             requestPlay(selected.value!!.id)
 
@@ -333,7 +332,11 @@ class QuranViewerVM @Inject constructor(
             PlaybackStateCompat.STATE_PAUSED,
             PlaybackStateCompat.STATE_STOPPED,
             PlaybackStateCompat.STATE_PLAYING,
-            PlaybackStateCompat.STATE_BUFFERING -> playerState.value = state
+            PlaybackStateCompat.STATE_BUFFERING -> {
+                _uiState.update { it.copy(
+                    playerState = state
+                )}
+            }
             else -> {}
         }
     }
