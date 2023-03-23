@@ -27,8 +27,8 @@ fun ListPref(
     titleResId: Int,
     pref: Prefs,
     iconResId: Int = -1,
-    entries: List<String>,
-    values: List<IntRange>,
+    entries: Array<String>,
+    values: Array<String>,
     bgColor: Color = AppTheme.colors.surface,
     onSelection: () -> Unit = {}
 ) {

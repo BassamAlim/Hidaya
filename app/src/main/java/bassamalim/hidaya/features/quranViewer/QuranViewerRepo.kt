@@ -12,8 +12,9 @@ class QuranViewerRepo @Inject constructor(
     private val db: AppDatabase
 ) {
 
-    val language = PrefUtils.getLanguage(sp)
-    val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
+    fun getLanguage() = PrefUtils.getLanguage(sp)
+
+    fun getNumeralsLanguage() = PrefUtils.getNumeralsLanguage(sp)
 
     fun getTheme() = PrefUtils.getTheme(sp)
 

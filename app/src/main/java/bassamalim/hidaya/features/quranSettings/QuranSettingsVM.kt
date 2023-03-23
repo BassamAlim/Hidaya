@@ -12,7 +12,7 @@ class QuranSettingsVM @Inject constructor(
 
     val sp = repo.sp
     val reciterNames = repo.getReciterNames()
-    val reciterIds = listOf(reciterNames.indices)
+    val reciterIds = Array(reciterNames.size) { idx -> idx.toString() }
     var viewType = repo.getViewType()
 
     fun onViewTypeCh(type: Int) {

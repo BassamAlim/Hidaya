@@ -25,6 +25,7 @@ import bassamalim.hidaya.features.quiz.QuizRepo
 import bassamalim.hidaya.features.quizResult.QuizResultRepo
 import bassamalim.hidaya.features.quran.QuranRepo
 import bassamalim.hidaya.features.quranSearcher.QuranSearcherRepo
+import bassamalim.hidaya.features.quranSettings.QuranSettingsRepo
 import bassamalim.hidaya.features.quranViewer.QuranViewerRepo
 import bassamalim.hidaya.features.radio.RadioClientRepo
 import bassamalim.hidaya.features.settings.SettingsRepo
@@ -191,6 +192,12 @@ object AppModule {
         preferences: SharedPreferences,
         database: AppDatabase
     ) = QuranSearcherRepo(resources, preferences, database)
+
+    @Provides @Singleton
+    fun provideQuranSettingsRepository(
+        preferences: SharedPreferences,
+        database: AppDatabase
+    ) = QuranSettingsRepo(preferences, database)
 
     @Provides @Singleton
     fun provideQuranViewerRepository(

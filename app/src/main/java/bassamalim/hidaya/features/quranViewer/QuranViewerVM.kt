@@ -40,14 +40,15 @@ class QuranViewerVM @Inject constructor(
     private var initialSuraId = savedStateHandle.get<Int>("sura_id") ?: 0
     private val page = savedStateHandle.get<Int>("page") ?: 0
 
-    val numeralsLanguage = repo.numeralsLanguage
+    val language = repo.getLanguage()
+    val numeralsLanguage = repo.getNumeralsLanguage()
     val theme = repo.getTheme()
     var initialPage =
         if (type == "by_page") page
         else repo.getPage(initialSuraId)
         private set
     private val suraNames =
-        if (repo.language == Language.ENGLISH) repo.getSuraNamesEn()
+        if (language == Language.ENGLISH) repo.getSuraNamesEn()
         else repo.getSuraNames()
     private val ayatDB = repo.getAyat()
     private val handler = Handler(Looper.getMainLooper())
@@ -69,7 +70,7 @@ class QuranViewerVM @Inject constructor(
     private val _uiState = MutableStateFlow(QuranViewerState(
         pageNum = initialPage,
         viewType =
-            if (repo.language == Language.ENGLISH) QViewType.List
+            if (language == Language.ENGLISH) QViewType.List
             else repo.getViewType(),
         textSize = repo.getTextSize(),
         isBookmarked = bookmarkedPage == initialPage,

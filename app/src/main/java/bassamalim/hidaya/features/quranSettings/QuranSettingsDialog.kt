@@ -60,7 +60,7 @@ fun QuranSettingsDlg(
                 titleResId = R.string.reciter,
                 pref = Prefs.AyaReciter,
                 iconResId = -1,
-                entries = vm.reciterNames,
+                entries = vm.reciterNames.toTypedArray(),
                 values = vm.reciterIds,
                 bgColor = AppTheme.colors.background
             )

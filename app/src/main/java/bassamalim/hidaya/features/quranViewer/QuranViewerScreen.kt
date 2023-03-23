@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.QViewType.*
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.models.Ayah
@@ -283,11 +284,13 @@ private fun ListItems(
         val annotatedString = AnnotatedString(aya.text!!)
         Screen(annotatedString, aya, vm, st)
 
-        MyText(
-            text = aya.translation!!,
-            fontSize = (st.textSize - 5).sp,
-            modifier = Modifier.padding(6.dp)
-        )
+        if (vm.language != Language.ARABIC) {
+            MyText(
+                text = aya.translation!!,
+                fontSize = (st.textSize - 5).sp,
+                modifier = Modifier.padding(6.dp)
+            )
+        }
 
         MyHorizontalDivider()
     }
