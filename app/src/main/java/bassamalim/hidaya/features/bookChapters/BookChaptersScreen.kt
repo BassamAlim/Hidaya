@@ -9,6 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.models.BookChapter
 import bassamalim.hidaya.core.ui.components.*
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
@@ -18,9 +19,9 @@ fun BookChaptersUI(
     nc: NavController = rememberAnimatedNavController(),
     vm: BookChaptersVM = hiltViewModel()
 ) {
-    val state by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsState()
 
-    MyScaffold(state.title) {
+    MyScaffold(st.title) {
         TabLayout(
             pageNames = listOf(
                 stringResource(R.string.all),
@@ -28,17 +29,15 @@ fun BookChaptersUI(
             ),
             searchComponent = {
                 SearchComponent(
-                    value = vm.searchText,
+                    value = st.searchText,
                     hint = stringResource(R.string.search),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     vm.onSearchTextChange(it)
                 }
             }
-        ) { page, currentPage ->
-            vm.onListTypeChange(page, currentPage)
-
-            Tab(vm, state, nc)
+        ) { page ->
+            Tab(vm, st, nc, vm.getItems(page))
         }
     }
 }
@@ -47,11 +46,12 @@ fun BookChaptersUI(
 private fun Tab(
     viewModel: BookChaptersVM,
     state: BookChaptersState,
-    navController: NavController
+    navController: NavController,
+    items: List<BookChapter>
 ) {
     MyLazyColumn(
         lazyList = {
-            items(state.items) { item ->
+            items(items) { item ->
                 MyBtnSurface(
                     text = item.title,
                     iconBtn = {

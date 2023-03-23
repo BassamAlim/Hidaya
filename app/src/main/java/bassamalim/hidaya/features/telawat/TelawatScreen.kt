@@ -65,7 +65,7 @@ fun TelawatUI(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         SearchComponent(
-                            value = vm.searchText,
+                            value = st.searchText,
                             hint = stringResource(R.string.reciters_hint),
                             modifier = Modifier.weight(1F),
                             onValueChange = { vm.onSearchTextCh(it) }
@@ -84,10 +84,8 @@ fun TelawatUI(
                         }
                     }
                 }
-            ) { page, currentPage ->
-                vm.onPageChg(page, currentPage)
-
-                Tab(vm, st, nc)
+            ) { page ->
+                Tab(vm, st, nc, vm.getItems(page))
             }
         }
 
@@ -105,15 +103,12 @@ fun TelawatUI(
 private fun Tab(
     vm: TelawatVM,
     st: TelawatState,
-    nc: NavController
+    nc: NavController,
+    items: List<Reciter>
 ) {
     MyLazyColumn(
         lazyList = {
-            items(
-                items = st.items.filter { item ->
-                    item.name.contains(vm.searchText, ignoreCase = true)
-                }
-            ) { item ->
+            items(items) { item ->
                 ReciterCard(reciter = item, vm, st, nc)
             }
         }

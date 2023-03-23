@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
@@ -74,11 +73,8 @@ fun QuranUI(
                         onSubmit = { vm.onSearchSubmit(nc) }
                     )
                 }
-            ) { page, _ ->
-                val listType = ListType.values()[page]
-                val items = vm.getItems(listType)
-
-                Tab(vm, st, nc, items)
+            ) { page ->
+                Tab(vm, st, nc, vm.getItems(page))
             }
         }
     }

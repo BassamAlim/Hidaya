@@ -31,13 +31,15 @@ class QuranVM @Inject constructor(
         )}
     }
 
-    fun getItems(type: ListType): List<Sura> {
+    fun getItems(page: Int): List<Sura> {
+        val listType = ListType.values()[page]
+
         val surat = repo.getSuraStr()
 
         val items = ArrayList<Sura>()
         val suras = repo.getAllSuras()
         for (i in suras.indices) {
-            if (type == ListType.Favorite && _uiState.value.favs[i] == 0) continue
+            if (listType == ListType.Favorite && _uiState.value.favs[i] == 0) continue
 
             items.add(
                 suras[i].let {
@@ -50,10 +52,8 @@ class QuranVM @Inject constructor(
         }
 
         return if (_uiState.value.searchText.isEmpty()) items
-        else {
-            items.filter {
-                it.searchName.contains(_uiState.value.searchText, true)
-            }
+        else items.filter {
+            it.searchName.contains(_uiState.value.searchText, true)
         }
     }
 
