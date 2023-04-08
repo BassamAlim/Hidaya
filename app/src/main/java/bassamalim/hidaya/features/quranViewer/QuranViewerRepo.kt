@@ -12,8 +12,9 @@ class QuranViewerRepo @Inject constructor(
     private val db: AppDatabase
 ) {
 
-    val language = PrefUtils.getLanguage(sp)
-    val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
+    fun getLanguage() = PrefUtils.getLanguage(sp)
+
+    fun getNumeralsLanguage() = PrefUtils.getNumeralsLanguage(sp)
 
     fun getTheme() = PrefUtils.getTheme(sp)
 
@@ -27,11 +28,6 @@ class QuranViewerRepo @Inject constructor(
     fun getViewType() = QViewType.valueOf(
         PrefUtils.getString(sp, Prefs.QuranViewType)
     )
-    fun setViewType(viewType: QViewType) {
-        sp.edit()
-            .putString(Prefs.QuranViewType.key, viewType.name)
-            .apply()
-    }
 
     fun getShowTutorial() = PrefUtils.getBoolean(sp, Prefs.ShowQuranViewerTutorial)
 
@@ -65,7 +61,5 @@ class QuranViewerRepo @Inject constructor(
             .putBoolean(Prefs.ShowQuranViewerTutorial.key, false)
             .apply()
     }
-
-    fun getReciterNames() = db.ayatRecitersDao().getNames().toTypedArray()
 
 }

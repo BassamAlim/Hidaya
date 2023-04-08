@@ -22,8 +22,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.preference.PreferenceManager
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.AyatDB
 import bassamalim.hidaya.core.enums.Language
@@ -31,6 +31,7 @@ import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.DBUtils
 import bassamalim.hidaya.core.utils.PrefUtils
 import java.util.*
+import kotlin.math.roundToInt
 
 class AyahPlayerService : Service(),
     OnCompletionListener, OnPreparedListener, OnErrorListener, OnAudioFocusChangeListener {
@@ -294,6 +295,7 @@ class AyahPlayerService : Service(),
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(givenMediaId: String, extras: Bundle) {
             Log.i(Global.TAG, "In onPlayFromMediaId of AyahPlayerService")
+            println(givenMediaId)
 
             reciterId = PrefUtils.getString(pref, Prefs.AyaReciter).toInt()
 
@@ -445,7 +447,7 @@ class AyahPlayerService : Service(),
         val p1 = players[index(mp)]
         val p2 = players[oIndex(mp)]
 
-        val repeat = PrefUtils.getInt(pref, Prefs.AyaRepeat)
+        val repeat = PrefUtils.getFloat(pref, Prefs.AyaRepeat).roundToInt()
         if (repeat == 11) {
             preparePlayer(p1, lastPlayedIdx)
             p2.reset()
@@ -632,8 +634,8 @@ class AyahPlayerService : Service(),
                 MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
             )
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, suarNames[aya.sura_num])
-            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, suarNames[aya.sura_num])
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, suarNames[aya.sura_num-1])
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, suarNames[aya.sura_num-1])
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterNames[reciterId])
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterNames[reciterId])
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, aya.aya_num.toString())
@@ -783,8 +785,8 @@ class AyahPlayerService : Service(),
         this.currentPage = currentPage
     }
 
-    fun setChosenSurah(chosenSurah: Int) {
-        this.chosenSurah = chosenSurah
+    fun setChosenSura(chosenSura: Int) {
+        this.chosenSurah = chosenSura
     }
 
     private fun o(i: Int): Int {

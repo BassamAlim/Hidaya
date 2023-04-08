@@ -9,17 +9,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.data.database.dbs.TelawatDB
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.FileUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,9 +32,6 @@ class TelawatVM @Inject constructor(
     private val repo: TelawatRepo
 ): AndroidViewModel(app) {
 
-    private var listType = ListType.All
-    var searchText by mutableStateOf("")
-        private set
     val prefix = "/Telawat/"
     private var continueListeningMediaId = ""
     val rewayat = repo.getRewayat()
@@ -46,13 +40,11 @@ class TelawatVM @Inject constructor(
         if (repo.language == Language.ENGLISH) repo.getSuraNamesEn()
         else repo.getSuraNames()
 
-    private val _uiState = MutableStateFlow(
-        TelawatState(
+    private val _uiState = MutableStateFlow(TelawatState(
         favs = repo.getFavs(),
         selectedVersions = repo.getSelectedVersions(),
         continueListeningText = repo.getNoLastPlayStr()
-    )
-    )
+    ))
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -67,7 +59,6 @@ class TelawatVM @Inject constructor(
         clean()
 
         _uiState.update { it.copy(
-            items = getItems(listType),
             downloadStates = getDownloadStates()
         )}
 
@@ -137,15 +128,17 @@ class TelawatVM @Inject constructor(
         )}
     }
 
-    private fun getItems(type: ListType): List<Reciter> {
+    fun getItems(page: Int): List<Reciter> {
+        val listType = ListType.values()[page]
+
         val reciters = repo.getReciters()
 
         val items = ArrayList<Reciter>()
         for (i in reciters.indices) {
             val reciter = reciters[i]
 
-            if ((type == ListType.Favorite && _uiState.value.favs[i] == 0) ||
-                (type == ListType.Downloaded && !isDownloaded("${reciter.id}")))
+            if ((listType == ListType.Favorite && _uiState.value.favs[i] == 0) ||
+                (listType == ListType.Downloaded && !isDownloaded("${reciter.id}")))
                 continue
 
             val versions = filterSelectedVersions(repo.getReciterTelawat(reciter.id))
@@ -161,7 +154,11 @@ class TelawatVM @Inject constructor(
             }
             items.add(Reciter(reciter.id, reciter.name!!, versionsList))
         }
-        return items
+
+        return if (_uiState.value.searchText.isEmpty()) items
+        else items.filter { reciter ->
+            reciter.name.contains(_uiState.value.searchText, true)
+        }
     }
 
     private fun filterSelectedVersions(versions: List<TelawatDB>): List<TelawatDB> {
@@ -245,16 +242,6 @@ class TelawatVM @Inject constructor(
         FileUtils.deleteDirRecursive(mainDir)
     }
 
-    fun onPageChg(page: Int, currentPage: Int) {
-        if (page != currentPage) return
-
-        listType = ListType.values()[page]
-
-        _uiState.update { it.copy(
-            items = getItems(listType)
-        )}
-    }
-
     fun onContinueListeningClick(navController: NavController) {
         if (continueListeningMediaId.isNotEmpty()) {
             navController.navigate(
@@ -327,10 +314,8 @@ class TelawatVM @Inject constructor(
     }
 
     fun onSearchTextCh(text: String) {
-        searchText = text
-
         _uiState.update { it.copy(
-            items = getItems(listType)
+            searchText = text
         )}
     }
 

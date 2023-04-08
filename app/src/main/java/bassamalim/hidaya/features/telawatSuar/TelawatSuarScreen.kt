@@ -43,16 +43,14 @@ fun TelawatSuarUI(
             ),
             searchComponent = {
                 SearchComponent(
-                    value = vm.searchText,
+                    value = st.searchText,
                     hint = stringResource(R.string.suar_hint),
                     modifier = Modifier.fillMaxWidth(),
                     onValueChange = { vm.onSearchChange(it) }
                 )
             }
-        ) { page, currentPage ->
-            vm.onPageChg(page, currentPage)
-
-            Tab(vm, st, nc)
+        ) { page ->
+            Tab(vm, st, nc, vm.getItems(page))
         }
     }
 }
@@ -61,11 +59,12 @@ fun TelawatSuarUI(
 private fun Tab(
     vm: TelawatSuarVM,
     st: TelawatSuarState,
-    nc: NavController
+    nc: NavController,
+    items: List<ReciterSura>
 ) {
     MyLazyColumn(
         lazyList = {
-            items(st.items) { item ->
+            items(items) { item ->
                 SuraCard(item, vm, st, nc)
             }
         }

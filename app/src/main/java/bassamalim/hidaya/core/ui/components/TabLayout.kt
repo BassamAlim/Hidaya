@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 fun TabLayout(
     pageNames: List<String>,
     searchComponent: @Composable () -> Unit = {},
-    tabsContent: @Composable (Int, Int) -> Unit
+    tabsContent: @Composable (Int) -> Unit
 ) {
     val pagerState = rememberPagerState()
 
@@ -101,7 +101,7 @@ fun Tabs(
 fun ColumnScope.TabsContent(
     count: Int,
     pagerState: PagerState,
-    content: @Composable (Int, Int) -> Unit
+    content: @Composable (Int) -> Unit
 ) {
     // creating horizontal pager for our tab layout.
     HorizontalPager(
@@ -110,6 +110,6 @@ fun ColumnScope.TabsContent(
         verticalAlignment = Alignment.Top,
         modifier = Modifier.weight(1F)
     ) { page ->
-        content(page, pagerState.currentPage)
+        content(page)
     }
 }

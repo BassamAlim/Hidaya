@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -65,17 +66,15 @@ fun QuranUI(
                 ),
                 searchComponent = {
                     SearchComponent(
-                        value = vm.searchText,
+                        value = st.searchText,
                         hint = stringResource(R.string.quran_query_hint),
                         modifier = Modifier.fillMaxWidth(),
                         onValueChange = { vm.onSearchTextChange(it) },
                         onSubmit = { vm.onSearchSubmit(nc) }
                     )
                 }
-            ) { page, currentPage ->
-                vm.onPageChg(page, currentPage)
-
-                Tab(vm, st, nc)
+            ) { page ->
+                Tab(vm, st, nc, vm.getItems(page))
             }
         }
     }
@@ -103,11 +102,12 @@ fun QuranUI(
 private fun Tab(
     vm: QuranVM,
     st: QuranState,
-    nc: NavController
+    nc: NavController,
+    items: List<Sura>
 ) {
     MyLazyColumn(
         lazyList = {
-            items(st.items) { item ->
+            items(items) { item ->
                 MyClickableSurface(
                     modifier = Modifier.padding(2.dp),
                     elevation = 6.dp,

@@ -32,6 +32,10 @@ class QuranRepo @Inject constructor(
 
     fun getFavs() = db.suarDao().getFavs()
 
+    fun setFav(suraId: Int, fav: Int) {
+        db.suarDao().setFav(suraId, fav)
+    }
+
     fun updateFavorites(favs: List<Int>) {
         val json = gson.toJson(favs.toIntArray())
         sp.edit()

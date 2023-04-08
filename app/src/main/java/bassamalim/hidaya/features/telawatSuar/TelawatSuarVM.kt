@@ -9,16 +9,13 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.ReciterSura
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.FileUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,21 +35,16 @@ class TelawatSuarVM @Inject constructor(
     private val reciterId = savedStateHandle.get<Int>("reciter_id") ?: 0
     private val versionId = savedStateHandle.get<Int>("version_id") ?: 0
 
-    private var listType = ListType.All
     private val ver = repo.getVersion(reciterId, versionId)
     val prefix = "/Telawat/${ver.getReciterId()}/${versionId}/"
     private val suraNames = repo.getSuraNames()
     private val searchNames = repo.getSearchNames()
     private val downloading = HashMap<Long, Int>()
-    var searchText by mutableStateOf("")
-        private set
 
-    private val _uiState = MutableStateFlow(
-        TelawatSuarState(
+    private val _uiState = MutableStateFlow(TelawatSuarState(
         title = repo.getReciterName(reciterId),
         favs = repo.getFavs()
-    )
-    )
+    ))
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -107,20 +99,24 @@ class TelawatSuarVM @Inject constructor(
         ).exists()
     }
 
-    private fun getItems(type: ListType): List<ReciterSura> {
+    fun getItems(page: Int): List<ReciterSura> {
+        val listType = ListType.values()[page]
+
         val items = ArrayList<ReciterSura>()
         val availableSuras = ver.getSuras()
         for (i in 0..113) {
             if (!availableSuras.contains(",${(i + 1)},") ||
-                (type == ListType.Favorite && _uiState.value.favs[i] == 0) ||
-                (type == ListType.Downloaded && !isDownloaded(i))
+                (listType == ListType.Favorite && _uiState.value.favs[i] == 0) ||
+                (listType == ListType.Downloaded && !isDownloaded(i))
             ) continue
 
             items.add(ReciterSura(i, suraNames[i], searchNames[i]))
         }
 
-        return if (searchText.isEmpty()) items
-        else items.filter { it.searchName.contains(searchText, true) }
+        return if (_uiState.value.searchText.isEmpty()) items
+        else items.filter {
+            it.searchName.contains(_uiState.value.searchText, true)
+        }
     }
 
     private fun download(sura: ReciterSura) {
@@ -162,16 +158,6 @@ class TelawatSuarVM @Inject constructor(
                 updateDownloads()
             }
         }
-    }
-
-    fun onPageChg(page: Int, currentPage: Int) {
-        if (page != currentPage) return
-
-        listType = ListType.values()[page]
-
-        _uiState.update { it.copy(
-            items = getItems(listType)
-        )}
     }
 
     fun onItemClk(navController: NavController, sura: ReciterSura) {
@@ -217,10 +203,8 @@ class TelawatSuarVM @Inject constructor(
     }
 
     fun onSearchChange(text: String) {
-        searchText = text
-
         _uiState.update { it.copy(
-            items = getItems(listType)
+            searchText = text
         )}
     }
 

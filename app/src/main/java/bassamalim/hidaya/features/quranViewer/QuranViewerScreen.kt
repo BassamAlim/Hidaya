@@ -24,14 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.QViewType.*
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.models.Ayah
+import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.features.quranSettings.QuranSettingsDlg
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 
@@ -158,7 +161,7 @@ fun QuranViewerUI(
     ) {
         val pagerState = rememberPagerState(vm.initialPage-1)
         HorizontalPagerScreen(
-            count = 604,
+            count = Global.QURAN_PAGES,
             pagerState = pagerState,
             modifier = Modifier.padding(it)
         ) { page ->
@@ -204,11 +207,9 @@ fun QuranViewerUI(
         onDismiss = vm::onInfoDialogDismiss  // :: gives the reference to the function
     )
 
-    QuranSettingsDialog(
-        startState = st,
-        pref = vm.pref,
-        reciterNames = vm.reciterNames,
-        onDone = { vm.onSettingsDialogDismiss(it) }
+    QuranSettingsDlg(
+        shown = st.settingsDialogShown,
+        mainOnDone = { vm.onSettingsDialogDismiss() }
     )
 }
 
@@ -284,11 +285,13 @@ private fun ListItems(
         val annotatedString = AnnotatedString(aya.text!!)
         Screen(annotatedString, aya, vm, st)
 
-        MyText(
-            text = aya.translation!!,
-            fontSize = (st.textSize - 5).sp,
-            modifier = Modifier.padding(6.dp)
-        )
+        if (vm.language != Language.ARABIC) {
+            MyText(
+                text = aya.translation!!,
+                fontSize = (st.textSize - 5).sp,
+                modifier = Modifier.padding(6.dp)
+            )
+        }
 
         MyHorizontalDivider()
     }

@@ -40,21 +40,21 @@ class QuranViewerVM @Inject constructor(
     private var initialSuraId = savedStateHandle.get<Int>("sura_id") ?: 0
     private val page = savedStateHandle.get<Int>("page") ?: 0
 
-    val numeralsLanguage = repo.numeralsLanguage
+    val language = repo.getLanguage()
+    val numeralsLanguage = repo.getNumeralsLanguage()
     val theme = repo.getTheme()
     var initialPage =
         if (type == "by_page") page
         else repo.getPage(initialSuraId)
         private set
     private val suraNames =
-        if (repo.language == Language.ENGLISH) repo.getSuraNamesEn()
+        if (language == Language.ENGLISH) repo.getSuraNamesEn()
         else repo.getSuraNames()
     private val ayatDB = repo.getAyat()
     private val handler = Handler(Looper.getMainLooper())
     private var suraNum = 0
     private var bookmarkedPage = repo.getBookmarkedPage()
     val pref = repo.sp
-    val reciterNames = repo.getReciterNames()
     private var lastRecordedPage = 0
     private var lastClickT = 0L
     private var lastClickedId = -1
@@ -62,7 +62,6 @@ class QuranViewerVM @Inject constructor(
         private set
     val selected = mutableStateOf<Ayah?>(null)
     var tracked = mutableStateOf<Ayah?>(null)
-    private val playerState = mutableStateOf(PlaybackStateCompat.STATE_STOPPED)
     private var binder :AyahPlayerService.LocalBinder? = null
     private var serviceBound = false
     private var tc: MediaControllerCompat.TransportControls? = null
@@ -71,7 +70,7 @@ class QuranViewerVM @Inject constructor(
     private val _uiState = MutableStateFlow(QuranViewerState(
         pageNum = initialPage,
         viewType =
-            if (repo.language == Language.ENGLISH) QViewType.List
+            if (language == Language.ENGLISH) QViewType.List
             else repo.getViewType(),
         textSize = repo.getTextSize(),
         isBookmarked = bookmarkedPage == initialPage,
@@ -128,7 +127,7 @@ class QuranViewerVM @Inject constructor(
             updateButton(PlaybackStateCompat.STATE_BUFFERING)
             if (selected.value == null) playerService.transportControls.play()
             else {
-                playerService.setChosenSurah(selected.value!!.surahNum)
+                playerService.setChosenSura(selected.value!!.surahNum)
                 requestPlay(selected.value!!.id)
             }
         }
@@ -206,14 +205,12 @@ class QuranViewerVM @Inject constructor(
         )}
     }
 
-    fun onSettingsDialogDismiss(viewType: QViewType) {
+    fun onSettingsDialogDismiss() {
         _uiState.update { it.copy(
             settingsDialogShown = false,
-            viewType = viewType,
+            viewType = repo.getViewType(),
             textSize = repo.getTextSize()
         )}
-
-        repo.setViewType(viewType)
     }
 
     fun buildPage(pageNumber: Int): ArrayList<Ayah> {
@@ -309,7 +306,7 @@ class QuranViewerVM @Inject constructor(
 
             playerService.setChosenPage(_uiState.value.pageNum)
             playerService.setCoordinator(uiListener!!)
-            playerService.setChosenSurah(selected.value!!.surahNum)
+            playerService.setChosenSura(selected.value!!.surahNum)
 
             requestPlay(selected.value!!.id)
 
@@ -333,7 +330,11 @@ class QuranViewerVM @Inject constructor(
             PlaybackStateCompat.STATE_PAUSED,
             PlaybackStateCompat.STATE_STOPPED,
             PlaybackStateCompat.STATE_PLAYING,
-            PlaybackStateCompat.STATE_BUFFERING -> playerState.value = state
+            PlaybackStateCompat.STATE_BUFFERING -> {
+                _uiState.update { it.copy(
+                    playerState = state
+                )}
+            }
             else -> {}
         }
     }
