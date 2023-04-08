@@ -6,7 +6,7 @@ Originally developed with Java/XML, then migrated to Kotlin/Jetpack Compose.
 Get it from Google Play:
 https://play.google.com/store/apps/details?id=bassamalim.hidaya
 
-Features:
+## Features
 - Prayer times, using your current location or a location of your choice
 - Athkar
 - Quran with Tafseer and audio Recitations
@@ -23,9 +23,7 @@ Features:
 - Choose between many themes
 - and much more
 
-License
-----
-
+## License
 All code found in this repository is licensed under GPL v3
 Copyright (C) 2023  Bassam Alim
 
@@ -43,21 +41,33 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-Screenshots
-----
-
-![Samsung Galaxy S10 Screenshot 0](https://user-images.githubusercontent.com/65797540/174458415-47cbedb6-9906-4218-bf2e-57b004aeb987.png)
-
-![Samsung Galaxy S10 Screenshot 1](https://user-images.githubusercontent.com/65797540/174458438-06c5ef32-1786-41b5-974a-ca462b77bcb0.png)
-
-![Samsung Galaxy S10 Screenshot 2](https://user-images.githubusercontent.com/65797540/174458470-9b400a2e-d70a-483f-9e52-16b041340661.png)
-
-![Samsung Galaxy S10 Screenshot 3](https://user-images.githubusercontent.com/65797540/174458487-b77e8c5e-c2e1-4c40-a195-eef01da25336.png)
-
-![Samsung Galaxy S10 Screenshot 4](https://user-images.githubusercontent.com/65797540/174458505-9a48be0d-db70-4a29-9ad6-973930487676.png)
-
-![Samsung Galaxy S10 Screenshot 5](https://user-images.githubusercontent.com/65797540/174458531-07ff19b8-5d33-46a0-8cbd-3b9876f4c710.png)
-
-![Samsung Galaxy S10 Screenshot 6](https://user-images.githubusercontent.com/65797540/174458545-e6aff2c3-6e38-421c-b3f3-8673ef843e15.png)
-
-![Samsung Galaxy S10 Screenshot 7](https://user-images.githubusercontent.com/65797540/174458566-69f1e1ac-9c77-4730-a362-6581f644e090.png)
+## Screenshots
+<table>
+  <tr>
+    <td>
+      <img src="https://user-images.githubusercontent.com/65797540/230193129-76e1c3bd-74a4-47d1-8be2-4c46c30946e4.png">
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/65797540/230193216-4abbb1d3-5af0-43a2-bbd1-f365ee435bb4.png">
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/65797540/230193256-5e808d52-9b3e-4791-8be8-7e262c11f5ca.png">
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://user-images.githubusercontent.com/65797540/230193301-9cbdce8c-cb22-4f9e-88ba-204716f6e9f6.png">
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/65797540/230193354-223032ed-1bf0-4c6b-9f00-cf1bc36cd49e.png">
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/65797540/230193396-419f10b2-6e29-4af0-9d35-fcde354b0a9a.png">
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://user-images.githubusercontent.com/65797540/230193459-88910ddd-3a11-4c89-a9b0-3c5cf79de09d.png">
+    </td>
+  </tr>
+</table>
