@@ -1,9 +1,13 @@
 package bassamalim.hidaya.features.bookSearcher
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -11,15 +15,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.*
+import bassamalim.hidaya.core.ui.components.FilterDialog
+import bassamalim.hidaya.core.ui.components.MyDropDownMenu
+import bassamalim.hidaya.core.ui.components.MyIconBtn
+import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MySurface
+import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun BookSearcherUI(
     vm: BookSearcherVM = hiltViewModel()
 ) {
-    val st by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(stringResource(R.string.books_searcher)) { padding ->
         Column(

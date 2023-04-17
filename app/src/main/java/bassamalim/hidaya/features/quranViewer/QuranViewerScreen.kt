@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.QViewType.*
@@ -43,7 +44,7 @@ import com.google.accompanist.pager.rememberPagerState
 fun QuranViewerUI(
     vm: QuranViewerVM = hiltViewModel()
 ) {
-    val st by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsStateWithLifecycle()
 
     DisposableEffect(key1 = vm) {
         onDispose { vm.onStop() }

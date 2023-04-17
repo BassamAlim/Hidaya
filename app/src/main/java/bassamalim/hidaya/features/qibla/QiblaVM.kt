@@ -7,7 +7,6 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import androidx.lifecycle.AndroidViewModel
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.helpers.Compass
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,9 +54,8 @@ class QiblaVM @Inject constructor(
     }
 
     fun onStart() {
-        if (location != null) {
-            compass!!.start()
-        }
+        if (location != null)
+            compass?.start()
     }
 
     fun onStop() {

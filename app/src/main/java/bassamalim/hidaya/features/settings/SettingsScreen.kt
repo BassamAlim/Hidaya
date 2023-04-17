@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -16,13 +15,18 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
-import bassamalim.hidaya.core.ui.components.*
+import bassamalim.hidaya.core.ui.components.ExpandableCard
+import bassamalim.hidaya.core.ui.components.ListPref
+import bassamalim.hidaya.core.ui.components.MyFatColumn
+import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.SwitchPref
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 
@@ -30,7 +34,7 @@ import bassamalim.hidaya.core.utils.LangUtils.translateNums
 fun SettingsUI(
     vm: SettingsVM = hiltViewModel()
 ) {
-    val st by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
 
     MyScaffold(

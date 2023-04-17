@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.Sura
@@ -27,7 +28,7 @@ fun QuranUI(
     vm: QuranVM = hiltViewModel(),
     nc: NavController = rememberAnimatedNavController()
 ) {
-    val st by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
 
     DisposableEffect(key1 = vm) {

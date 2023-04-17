@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,18 +18,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyPlayerBtn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.features.radio.RadioClientVM
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RadioClientUI(
     vm: RadioClientVM = hiltViewModel()
 ) {
-    val st by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
 
     DisposableEffect(key1 = vm) {

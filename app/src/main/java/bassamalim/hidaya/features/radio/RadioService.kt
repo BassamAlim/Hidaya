@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.services
+package bassamalim.hidaya.features.radio
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -31,7 +31,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
-import bassamalim.hidaya.core.MainActivity
+import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
@@ -63,8 +63,8 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     companion object {
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
         private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
-        private const val ACTION_PLAY_PAUSE = "bassamalim.hidaya.core.services.RadioService.playpause"
-        private const val ACTION_STOP = "bassamalim.hidaya.core.services.RadioService.stop"
+        private const val ACTION_PLAY_PAUSE = "bassamalim.hidaya.features.radio.RadioService.playpause"
+        private const val ACTION_STOP = "bassamalim.hidaya.features.radio.RadioService.stop"
     }
 
     override fun onCreate() {
@@ -431,7 +431,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun getContentIntent(): PendingIntent {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, Activity::class.java)
         intent.action = "back"
         intent.putExtra("start_route", Screen.RadioClient.route)
 

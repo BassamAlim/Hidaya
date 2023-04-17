@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.services
+package bassamalim.hidaya.features.quranViewer
 
 import android.app.*
 import android.content.*
@@ -72,11 +72,11 @@ class AyahPlayerService : Service(),
     private var surahEnding = false
     private var resume = true
     private var channelId = "channel ID"
-    private val actionPLAY = "bassamalim.hidaya.core.services.AyahPlayerService.PLAY"
-    private val actionPAUSE = "bassamalim.hidaya.core.services.AyahPlayerService.PAUSE"
-    private val actionNEXT = "bassamalim.hidaya.core.services.AyahPlayerService.NEXT"
-    private val actionPREV = "bassamalim.hidaya.core.services.AyahPlayerService.PREVIOUS"
-    private val actionSTOP = "bassamalim.hidaya.core.services.AyahPlayerService.STOP"
+    private val actionPLAY = "bassamalim.hidaya.features.quranViewer.AyahPlayerService.PLAY"
+    private val actionPAUSE = "bassamalim.hidaya.features.quranViewer.AyahPlayerService.PAUSE"
+    private val actionNEXT = "bassamalim.hidaya.features.quranViewer.AyahPlayerService.NEXT"
+    private val actionPREV = "bassamalim.hidaya.features.quranViewer.AyahPlayerService.PREVIOUS"
+    private val actionSTOP = "bassamalim.hidaya.features.quranViewer.AyahPlayerService.STOP"
 
     inner class LocalBinder : Binder() {
         val service: AyahPlayerService

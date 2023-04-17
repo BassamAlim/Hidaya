@@ -29,7 +29,7 @@
         android:theme="@style/Theme.HidayaL">
 
         <activity
-            android:name=".core.MainActivity"
+            android:name=".core.Activity"
             android:exported="true"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -71,12 +71,11 @@
 
         <service
             android:name=".core.services.AthanService"
-            android:enabled="true"
             android:excludeFromRecents="true"
             android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="false" />
         <service
-            android:name=".core.services.TelawatService"
+            android:name=".features.telawatClient.TelawatService"
             android:exported="true"
             android:permission="none">
             <intent-filter>
@@ -85,7 +84,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".core.services.RadioService"
+            android:name=".features.radio.RadioService"
             android:exported="true"
             android:permission="none">
             <intent-filter>
@@ -93,7 +92,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".core.services.AyahPlayerService"
+            android:name=".features.quranViewer.AyahPlayerService"
             android:exported="true"
             android:permission="none"/>
 

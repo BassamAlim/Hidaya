@@ -106,11 +106,11 @@ class QuranSearcherVM @Inject constructor(
         repo.setMaxMatchesIndex(index)
     }
 
-    fun onGotoPageClick(page: Int, navController: NavController) {
-        navController.navigate(
+    fun onGotoPageClick(page: Int, nc: NavController) {
+        nc.navigate(
             Screen.QuranViewer(
-                "by_page",
-                page.toString()
+                type = "by_page",
+                page = page.toString()
             ).route
         )
     }

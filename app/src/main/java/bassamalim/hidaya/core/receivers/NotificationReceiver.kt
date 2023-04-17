@@ -15,7 +15,7 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import bassamalim.hidaya.core.MainActivity
+import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.nav.Screen
@@ -95,14 +95,14 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun startService() {
-        val serviceIntent = Intent(ctx, AthanService::class.java)
-        serviceIntent.action = Global.PLAY_ATHAN
-        serviceIntent.putExtra("pid", pid.name)
-        serviceIntent.putExtra("time", time)
+        val intent = Intent(ctx, AthanService::class.java)
+        intent.action = Global.PLAY_ATHAN
+        intent.putExtra("pid", pid.name)
+        intent.putExtra("time", time)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            ctx.startForegroundService(serviceIntent)
-        else ctx.startService(serviceIntent)
+            ctx.startForegroundService(intent)
+        else ctx.startService(intent)
     }
 
     private fun build(): Notification {
@@ -128,7 +128,7 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun onClick(pid: PID?): PendingIntent {
-        val intent = Intent(ctx, MainActivity::class.java)
+        val intent = Intent(ctx, Activity::class.java)
 
         val route = when (pid) {
             PID.MORNING -> {

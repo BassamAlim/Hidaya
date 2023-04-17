@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,16 +12,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.*
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
+import bassamalim.hidaya.features.athkar.AthkarUI
 import bassamalim.hidaya.features.home.HomeUI
 import bassamalim.hidaya.features.more.MoreUI
 import bassamalim.hidaya.features.prayers.PrayersUI
-import bassamalim.hidaya.features.athkar.AthkarUI
 import bassamalim.hidaya.features.quran.QuranUI
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -34,7 +34,7 @@ fun MainUI(
     nc: NavHostController = rememberAnimatedNavController(),
     vm: MainVM = hiltViewModel()
 ) {
-    val st by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsStateWithLifecycle()
     val bottomNc = rememberAnimatedNavController()
 
     MyScaffold(

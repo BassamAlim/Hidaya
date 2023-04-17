@@ -32,6 +32,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
         try {  // remove after a while
             ActivityUtils.onActivityCreateSetLocale(ctx)
+            LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))
         } catch (e: Exception) {
             Log.e(Global.TAG, "Neuralyzing", e)
             ActivityUtils.clearAppData(ctx)

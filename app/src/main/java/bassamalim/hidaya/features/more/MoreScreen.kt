@@ -7,16 +7,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
-import bassamalim.hidaya.features.more.MoreVM
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -25,7 +25,7 @@ fun MoreUI(
     nc: NavController = rememberAnimatedNavController(),
     vm: MoreVM = hiltViewModel()
 ) {
-    val st = vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
 
     Column(
@@ -141,7 +141,7 @@ fun MoreUI(
         }
     }
 
-    if (st.value.shouldShowUnsupported) {
+    if (st.shouldShowUnsupported) {
         LaunchedEffect(null) {
             Toast.makeText(
                 ctx,

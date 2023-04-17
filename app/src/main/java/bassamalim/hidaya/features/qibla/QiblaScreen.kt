@@ -4,12 +4,19 @@ import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyIconBtn
@@ -40,8 +48,8 @@ import coil.size.Size
 fun QiblaUI(
     vm: QiblaVM = hiltViewModel()
 ) {
-    val state by vm.uiState.collectAsState()
-    val context = LocalContext.current
+    val st by vm.uiState.collectAsStateWithLifecycle()
+    val ctx = LocalContext.current
 
     DisposableEffect(key1 = vm) {
         vm.onStart()
@@ -56,12 +64,12 @@ fun QiblaUI(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            if (!state.error) {
+            if (!st.error) {
                 Icon(
                     painter = painterResource(R.drawable.ic_check),
                     contentDescription = "",
                     tint = Color.Green,
-                    modifier = Modifier.alpha(if (state.isOnPoint) 1F else 0F)
+                    modifier = Modifier.alpha(if (st.isOnPoint) 1F else 0F)
                 )
 
                 Box(
@@ -73,14 +81,14 @@ fun QiblaUI(
                         painter = painterResource(id = R.drawable.compass),
                         contentDescription = "",
                         modifier = Modifier
-                            .rotate(state.compassAngle)
+                            .rotate(st.compassAngle)
                             .padding(horizontal = 10.dp)
                     )
                     Image(
                         painter = painterResource(id = R.drawable.qibla_pointer),
                         contentDescription = "",
                         modifier = Modifier
-                            .rotate(state.qiblaAngle)
+                            .rotate(st.qiblaAngle)
                             .padding(bottom = 26.dp)
                     )
                     Image(
@@ -95,7 +103,7 @@ fun QiblaUI(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     MyText(
-                        text = when (state.accuracy) {
+                        text = when (st.accuracy) {
                             2 -> {
                                 stringResource(R.string.medium_accuracy_text)
                             }
@@ -109,7 +117,7 @@ fun QiblaUI(
                         modifier = Modifier.padding(horizontal = 12.dp)
                     )
 
-                    when (state.accuracy) {
+                    when (st.accuracy) {
                         0, 1 -> {
                             MyIconBtn(
                                 iconId = R.drawable.ic_warning,
@@ -125,7 +133,7 @@ fun QiblaUI(
                                     .size(16.dp)
                                     .clip(CircleShape)
                                     .background(
-                                        if (state.accuracy == 2) Color(0xFF9FAA17)
+                                        if (st.accuracy == 2) Color(0xFF9FAA17)
                                         else Color(0xFF1C8818)
                                     )
                             )
@@ -136,7 +144,7 @@ fun QiblaUI(
                 MyText(
                     text = String.format(
                         stringResource(R.string.distance_to_kaaba),
-                        "${state.distanceToKaaba} ${stringResource(R.string.distance_unit)}"
+                        "${st.distanceToKaaba} ${stringResource(R.string.distance_unit)}"
                     ),
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
@@ -144,13 +152,13 @@ fun QiblaUI(
             }
             else {
                 MyText(
-                    text = stringResource(state.errorMassageResId),
+                    text = stringResource(st.errorMassageResId),
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
 
-            CalibrationDialog(context, vm, state)
+            CalibrationDialog(ctx, vm, st)
         }
     }
 }

@@ -1,14 +1,17 @@
 package bassamalim.hidaya.core.services
 
 import android.Manifest
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -16,24 +19,20 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import bassamalim.hidaya.core.MainActivity
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
-import java.util.*
+import java.util.Calendar
 
 class AthanService : Service() {
 
-    private val iBinder = LocalBinder()
     private lateinit var pid: PID
     private var channelId = ""
-    private lateinit var mediaPlayer: MediaPlayer
+    private var mediaPlayer: MediaPlayer? = null
 
-    inner class LocalBinder : Binder() {
-        val service: AthanService
-            get() = this@AthanService
-    }
+    override fun onBind(intent: Intent): IBinder? { return null }  // Not used
 
     override fun onCreate() {
         super.onCreate()
@@ -43,6 +42,11 @@ class AthanService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == Global.STOP_ATHAN) {
+            onDestroy()
+            return START_NOT_STICKY
+        }
+
         pid = PID.valueOf(intent?.getStringExtra("pid")!!)
 
         startForeground(243, build())
@@ -104,7 +108,7 @@ class AthanService : Service() {
     private fun getStopAndOpenIntent(): PendingIntent {
         return PendingIntent.getActivity(
             this, 12,
-            Intent(this, MainActivity::class.java)
+            Intent(this, Activity::class.java)
                 .setAction(Global.STOP_ATHAN),
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -128,13 +132,13 @@ class AthanService : Service() {
         Log.i(Global.TAG, "Playing Athan")
 
         mediaPlayer = MediaPlayer.create(this, R.raw.athan1)
-        mediaPlayer.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
-        mediaPlayer.setAudioAttributes(
+        mediaPlayer!!.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+        mediaPlayer!!.setAudioAttributes(
             AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build()
         )
-        mediaPlayer.setOnPreparedListener { mediaPlayer.start() }
-        mediaPlayer.setOnCompletionListener {
+        mediaPlayer!!.setOnPreparedListener { mediaPlayer?.start() }
+        mediaPlayer!!.setOnCompletionListener {
             showReminderNotification()
             onDestroy()
         }
@@ -164,17 +168,13 @@ class AthanService : Service() {
         }
     }
 
-    override fun onBind(intent: Intent): IBinder {
-        return iBinder
-    }
-
     override fun onDestroy() {
         super.onDestroy()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) stopForeground(STOP_FOREGROUND_REMOVE)
         else stopForeground(true)
 
-        mediaPlayer.stop()
+        mediaPlayer?.stop()
 
         stopSelf()
     }

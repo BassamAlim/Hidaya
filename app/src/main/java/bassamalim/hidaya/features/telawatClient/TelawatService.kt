@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.services
+package bassamalim.hidaya.features.telawatClient
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -28,7 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.preference.PreferenceManager
-import bassamalim.hidaya.core.MainActivity
+import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.nav.Screen
@@ -81,11 +81,11 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     companion object {
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
         private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
-        private const val ACTION_PLAY = "bassamalim.hidaya.core.services.TelawatService.PLAY"
-        private const val ACTION_PAUSE = "bassamalim.hidaya.core.services.TelawatService.PAUSE"
-        private const val ACTION_NEXT = "bassamalim.hidaya.core.services.TelawatService.NEXT"
-        private const val ACTION_PREV = "bassamalim.hidaya.core.services.TelawatService.PREVIOUS"
-        private const val ACTION_STOP = "bassamalim.hidaya.core.services.TelawatService.STOP"
+        private const val ACTION_PLAY = "bassamalim.hidaya.features.telawatClient.TelawatService.PLAY"
+        private const val ACTION_PAUSE = "bassamalim.hidaya.features.telawatClient.TelawatService.PAUSE"
+        private const val ACTION_NEXT = "bassamalim.hidaya.features.telawatClient.TelawatService.NEXT"
+        private const val ACTION_PREV = "bassamalim.hidaya.features.telawatClient.TelawatService.PREVIOUS"
+        private const val ACTION_STOP = "bassamalim.hidaya.features.telawatClient.TelawatService.STOP"
     }
 
     override fun onCreate() {
@@ -116,13 +116,15 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             if (givenMediaId != mediaId || playType == "continue") {
                 mediaId = givenMediaId
 
-                mediaSession.setSessionActivity(getContentIntent())
-
                 reciterId = givenMediaId.substring(0, 3).toInt()
                 versionId = givenMediaId.substring(3, 5).toInt()
                 surahIndex = givenMediaId.substring(5).toInt()
                 reciterName = extras.getString("reciter_name")!!
-                version = extras.getSerializable("version") as Reciter.RecitationVersion
+                version =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                        extras.getSerializable("version", Reciter.RecitationVersion::class.java)!!
+                    else
+                        extras.getSerializable("version") as Reciter.RecitationVersion
 
                 if (playType == "continue") continueFrom = pref.getInt("last_telawa_progress", 0)
 
@@ -138,6 +140,8 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         override fun onPlay() {
             Log.i(Global.TAG, "In onPlay of TelawatService")
+
+            if (mediaId == null) return  // bandage for an error
 
             buildNotification()
 
@@ -681,7 +685,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun getContentIntent(): PendingIntent {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, Activity::class.java)
             .putExtra("start_route",
                 Screen.TelawatClient(
                     "back", mediaId!!

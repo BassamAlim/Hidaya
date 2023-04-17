@@ -21,7 +21,6 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.QViewType
 import bassamalim.hidaya.core.models.Ayah
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.services.AyahPlayerService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -62,7 +61,7 @@ class QuranViewerVM @Inject constructor(
         private set
     val selected = mutableStateOf<Ayah?>(null)
     var tracked = mutableStateOf<Ayah?>(null)
-    private var binder :AyahPlayerService.LocalBinder? = null
+    private var binder : AyahPlayerService.LocalBinder? = null
     private var serviceBound = false
     private var tc: MediaControllerCompat.TransportControls? = null
     private var uiListener: AyahPlayerService.Coordinator? = null

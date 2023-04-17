@@ -18,7 +18,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.features.quizLobby.QuizLobbyVM
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 @OptIn(ExperimentalAnimationApi::class)

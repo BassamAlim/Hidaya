@@ -36,7 +36,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class Activity : AppCompatActivity() {
 
     private lateinit var sp: SharedPreferences
     private lateinit var db: AppDatabase

@@ -23,7 +23,6 @@ import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.Reciter
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.services.TelawatService
 import bassamalim.hidaya.core.utils.FileUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,11 +56,9 @@ class TelawatClientVM @Inject constructor(
     var duration = 0L
     var progress = 0L
 
-    private val _uiState = MutableStateFlow(
-        TelawatClientState(
+    private val _uiState = MutableStateFlow(TelawatClientState(
         reciterName = repo.getReciterName(reciterId)
-    )
-    )
+    ))
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -292,7 +289,8 @@ class TelawatClientVM @Inject constructor(
                 }
             }
         }
-        else (activity as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
+        else
+            (activity as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
     }
 
     fun onPlayPauseClk() {

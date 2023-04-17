@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyButton
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
@@ -31,7 +32,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 fun AboutUI(
     vm: AboutVM = hiltViewModel()
 ) {
-    val st by vm.uiState.collectAsState()
+    val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
 
     MyScaffold(stringResource(R.string.about)) {

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyButton
@@ -32,8 +32,8 @@ fun LocatorUI(
     nc: NavController = rememberAnimatedNavController(),
     vm: LocatorVM = hiltViewModel()
 ) {
-    val state by vm.uiState.collectAsState()
-    val context = LocalContext.current
+    val st by vm.uiState.collectAsStateWithLifecycle()
+    val ctx = LocalContext.current
     val requestLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -83,7 +83,7 @@ fun LocatorUI(
                 vm.onChooseLocationClk()
             }
 
-            if (state.showSkipLocationBtn) {
+            if (st.showSkipLocationBtn) {
                 MyButton(
                     text = stringResource(R.string.rejected),
                     fontSize = 22.sp,
@@ -97,11 +97,11 @@ fun LocatorUI(
         }
     }
 
-    if (state.showAllowLocationToast) {
+    if (st.showAllowLocationToast) {
         LaunchedEffect(null) {
             Toast.makeText(
-                context,
-                context.getString(R.string.choose_allow_all_the_time),
+                ctx,
+                ctx.getString(R.string.choose_allow_all_the_time),
                 Toast.LENGTH_LONG
             ).show()
         }

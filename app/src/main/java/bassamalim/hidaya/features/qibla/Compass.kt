@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.helpers
+package bassamalim.hidaya.features.qibla
 
 import android.content.Context
 import android.hardware.Sensor
