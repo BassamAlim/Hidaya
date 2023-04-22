@@ -4,7 +4,11 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
@@ -14,7 +18,11 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiManager.WifiLock
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.PowerManager
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -28,19 +36,20 @@ import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.preference.PreferenceManager
-import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.Prefs
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
 import bassamalim.hidaya.core.utils.PrefUtils
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.util.*
+import java.util.Locale
+import java.util.Random
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {

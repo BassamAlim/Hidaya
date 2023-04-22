@@ -2,8 +2,8 @@ package bassamalim.hidaya.features.athkar
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.enums.ListType
+import bassamalim.hidaya.core.nav.Screen
 
 class AthkarVM : ViewModel() {
 

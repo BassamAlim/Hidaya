@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
@@ -18,7 +17,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Composable
 fun BookChaptersUI(
     nc: NavController = rememberAnimatedNavController(),
-    vm: BookChaptersVM = hiltViewModel()
+    vm: BookChaptersVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 

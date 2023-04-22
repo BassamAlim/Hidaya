@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.QuizResultQuestion
@@ -34,7 +33,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun QuizResultUI(
-    vm: QuizResultVM = hiltViewModel()
+    vm: QuizResultVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 

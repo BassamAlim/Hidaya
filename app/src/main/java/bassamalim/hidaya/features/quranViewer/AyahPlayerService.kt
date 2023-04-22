@@ -1,17 +1,33 @@
 package bassamalim.hidaya.features.quranViewer
 
-import android.app.*
-import android.content.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
 import android.media.MediaPlayer
-import android.media.MediaPlayer.*
+import android.media.MediaPlayer.OnCompletionListener
+import android.media.MediaPlayer.OnErrorListener
+import android.media.MediaPlayer.OnPreparedListener
 import android.net.Uri
 import android.net.wifi.WifiManager
-import android.os.*
+import android.os.Binder
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
+import android.os.PowerManager
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -30,7 +46,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.DBUtils
 import bassamalim.hidaya.core.utils.PrefUtils
-import java.util.*
+import java.util.Locale
 import kotlin.math.roundToInt
 
 class AyahPlayerService : Service(),

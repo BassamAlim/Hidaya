@@ -3,10 +3,10 @@ package bassamalim.hidaya.features.books
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.data.database.dbs.BooksDB
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

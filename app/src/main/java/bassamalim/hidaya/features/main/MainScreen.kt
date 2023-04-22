@@ -32,7 +32,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Composable
 fun MainUI(
     nc: NavHostController = rememberAnimatedNavController(),
-    vm: MainVM = hiltViewModel()
+    vm: MainVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val bottomNc = rememberAnimatedNavController()

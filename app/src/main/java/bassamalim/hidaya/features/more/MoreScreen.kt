@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
@@ -23,7 +22,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Composable
 fun MoreUI(
     nc: NavController = rememberAnimatedNavController(),
-    vm: MoreVM = hiltViewModel()
+    vm: MoreVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current

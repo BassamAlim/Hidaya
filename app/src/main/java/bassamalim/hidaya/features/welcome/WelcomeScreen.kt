@@ -11,7 +11,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyButton
@@ -24,7 +23,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Composable
 fun WelcomeUI(
     nc: NavController = rememberAnimatedNavController(),
-    vm: WelcomeVM = hiltViewModel()
+    vm: WelcomeVM
 ) {
     val activity = LocalContext.current as Activity
 

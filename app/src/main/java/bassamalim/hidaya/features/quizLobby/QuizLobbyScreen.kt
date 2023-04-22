@@ -12,7 +12,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyButton
@@ -24,7 +23,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Composable
 fun QuizLobbyUI(
     nc: NavController = rememberAnimatedNavController(),
-    vm: QuizLobbyVM = hiltViewModel()
+    vm: QuizLobbyVM
 ) {
     MyScaffold(stringResource(R.string.quiz_title)) {
         Column(

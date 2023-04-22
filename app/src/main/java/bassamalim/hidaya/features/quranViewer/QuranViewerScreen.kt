@@ -42,7 +42,7 @@ import com.google.accompanist.pager.rememberPagerState
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun QuranViewerUI(
-    vm: QuranViewerVM = hiltViewModel()
+    vm: QuranViewerVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -209,6 +209,7 @@ fun QuranViewerUI(
     )
 
     QuranSettingsDlg(
+        vm = hiltViewModel(),
         shown = st.settingsDialogShown,
         mainOnDone = { vm.onSettingsDialogDismiss() }
     )

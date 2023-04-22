@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyButton
@@ -21,7 +20,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Composable
 fun AthkarUI(
     navController: NavController = rememberAnimatedNavController(),
-    viewModel: AthkarVM = hiltViewModel()
+    viewModel: AthkarVM
 ) {
     Column(
         Modifier

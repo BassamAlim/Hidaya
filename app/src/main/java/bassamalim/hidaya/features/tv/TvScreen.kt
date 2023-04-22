@@ -5,7 +5,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
@@ -18,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
-import androidx.hilt.navigation.compose.hiltViewModel
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
@@ -29,7 +32,7 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragmentXKt
 
 @Composable
 fun TvUI(
-    vm: TvVM = hiltViewModel()
+    vm: TvVM
 ) {
     val ctx = LocalContext.current
 

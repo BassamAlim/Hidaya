@@ -1,10 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'com.google.firebase.firebase-perf'
-    id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
 }
 
@@ -57,16 +57,15 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     buildFeatures {
-        viewBinding true
         compose true
     }
 
@@ -77,9 +76,7 @@ android {
 }
 
 dependencies {
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
+    // AndroidX
     implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.core:core-splashscreen:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -102,13 +99,13 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-viewbinding:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.runtime:runtime:$compose_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.foundation:foundation-layout:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
-
+    // Google
     implementation 'com.google.accompanist:accompanist-systemuicontroller:0.28.0'
     implementation 'com.google.accompanist:accompanist-pager:0.28.0'
     implementation 'com.google.accompanist:accompanist-pager-indicators:0.28.0'
@@ -127,19 +124,18 @@ dependencies {
     implementation 'com.google.firebase:firebase-inappmessaging-display'
     implementation 'com.google.firebase:firebase-perf'
     implementation 'com.google.firebase:firebase-storage-ktx'
-
-    //Dagger - Hilt
+    // Hilt
     implementation('com.google.dagger:hilt-android:2.45')
     kapt('com.google.dagger:hilt-android-compiler:2.45')
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
-
+    // Other
     implementation 'io.coil-kt:coil-compose:2.2.2'
     implementation 'io.coil-kt:coil-gif:2.2.2'
     testImplementation 'junit:junit:4.13.2'
-
+    // jar Files
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
-
+    // GitHub
     implementation 'com.github.msarhan:ummalqura-calendar:2.0.2'
-
+    // Temporary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

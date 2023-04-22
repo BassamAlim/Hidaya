@@ -20,7 +20,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
@@ -36,7 +35,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Composable
 fun HomeUI(
     nc: NavController = rememberAnimatedNavController(),
-    vm: HomeVM = hiltViewModel()
+    vm: HomeVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 

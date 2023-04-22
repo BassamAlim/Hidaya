@@ -85,8 +85,8 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             AthkarListUI(
-                vm = hiltViewModel(),
-                nc = navController
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -121,8 +121,8 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             BookChaptersUI(
-                vm = hiltViewModel(),
-                nc = navController
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -146,8 +146,8 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             BooksUI(
-                vm = hiltViewModel(),
-                nc = navController
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -190,8 +190,8 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             LocationPickerUI(
-                vm = hiltViewModel(),
-                nc = navController
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -208,8 +208,8 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             LocatorUI(
-                vm = hiltViewModel(),
-                nc = navController
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -221,8 +221,8 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             MainUI(
-                vm = hiltViewModel(),
-                nc = navController
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -246,8 +246,8 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             QuizLobbyUI(
-                vm = hiltViewModel(),
-                nc = navController
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -278,8 +278,8 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             QuizUI(
-                vm = hiltViewModel(),
-                nc = navController
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -291,8 +291,8 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             QuranSearcherUI(
-                vm = hiltViewModel(),
-                nc = navController
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -370,8 +370,8 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             TelawatUI(
-                vm = hiltViewModel(),
-                nc = navController
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -389,8 +389,8 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             TelawatSuarUI(
-                vm = hiltViewModel(),
-                nc = navController
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
 
@@ -414,8 +414,8 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             WelcomeUI(
-                vm = hiltViewModel(),
-                nc = navController
+                nc = navController,
+                vm = hiltViewModel()
             )
         }
     }

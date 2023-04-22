@@ -11,8 +11,8 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.enums.LocationType
+import bassamalim.hidaya.core.nav.Screen
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

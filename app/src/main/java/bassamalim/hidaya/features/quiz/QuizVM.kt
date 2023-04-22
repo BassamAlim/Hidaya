@@ -3,14 +3,14 @@ package bassamalim.hidaya.features.quiz
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.data.database.dbs.QuizQuestionsDB
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.util.*
+import java.util.Arrays
 import javax.inject.Inject
 
 @HiltViewModel

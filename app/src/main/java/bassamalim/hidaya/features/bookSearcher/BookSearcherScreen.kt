@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.FilterDialog
@@ -29,7 +28,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun BookSearcherUI(
-    vm: BookSearcherVM = hiltViewModel()
+    vm: BookSearcherVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 

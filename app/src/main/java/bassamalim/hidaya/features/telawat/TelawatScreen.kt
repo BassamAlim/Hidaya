@@ -15,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
@@ -29,7 +28,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Composable
 fun TelawatUI(
     nc: NavController = rememberAnimatedNavController(),
-    vm: TelawatVM = hiltViewModel()
+    vm: TelawatVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
