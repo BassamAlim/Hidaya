@@ -34,20 +34,27 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class Activity : AppCompatActivity() {
 
-    private lateinit var sp: SharedPreferences
-    private lateinit var db: AppDatabase
+    @Inject lateinit var sp: SharedPreferences
+    @Inject lateinit var db: AppDatabase
     private var shouldWelcome = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        init()
-
         handleAction(intent.action)
+
+        try {  // remove after a while
+            ActivityUtils.onActivityCreateSetLocale(this)
+            LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))
+        } catch (e: Exception) {
+            Log.e(Global.TAG, "Neuralyzing", e)
+            ActivityUtils.clearAppData(this)
+        }
 
         preLaunch()
 
@@ -57,11 +64,6 @@ class Activity : AppCompatActivity() {
             postLaunch()
         }
         else getLocationAndLaunch()
-    }
-
-    private fun init() {
-        sp = PrefUtils.getPreferences(this)
-        db = DBUtils.getDB(this)
     }
 
     private fun handleAction(action: String?) {
@@ -76,14 +78,7 @@ class Activity : AppCompatActivity() {
     }
 
     private fun preLaunch() {
-        DBUtils.testDB(this, sp)
-
-        try {  // remove after a while
-            ActivityUtils.onActivityCreateSetTheme(this)
-        } catch (e: Exception) {
-            Log.e(Global.TAG, "Neuralyzing", e)
-            ActivityUtils.clearAppData(this)
-        }
+        DBUtils.testDB(this, sp, db)
 
         ActivityUtils.onActivityCreateSetLocale(this)
         ActivityUtils.onActivityCreateSetTheme(this)
@@ -98,12 +93,10 @@ class Activity : AppCompatActivity() {
         if (locType == LocationType.Auto) {
             if (granted()) locate()
             else {
-                permissionRequestLauncher.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
-                )
+                permissionRequestLauncher.launch(arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ))
             }
         }
         else {

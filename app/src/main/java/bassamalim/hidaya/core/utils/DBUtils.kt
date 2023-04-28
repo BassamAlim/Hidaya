@@ -18,29 +18,30 @@ object DBUtils {
     }
 
     fun testDB(
-        context: Context,
-        pref: SharedPreferences = PrefUtils.getPreferences(context)
+        ctx: Context,
+        sp: SharedPreferences,
+        db: AppDatabase
     ) {
-        val lastVer = PrefUtils.getInt(pref, Prefs.LastDBVersion)
-        if (Global.dbVer > lastVer) reviveDB(context)
+        val lastVer = PrefUtils.getInt(sp, Prefs.LastDBVersion)
+        if (Global.dbVer > lastVer) reviveDB(ctx, sp, db)
 
         try {  // if there is a problem in the db it will cause an error
-            getDB(context).suarDao().getFavs()
+            db.suarDao().getFavs()
         } catch (e: Exception) {
-            reviveDB(context)
+            reviveDB(ctx, sp, db)
         }
     }
 
-    fun reviveDB(context: Context) {
-        val pref = PrefUtils.getPreferences(context)
+    fun reviveDB(
+        ctx: Context,
+        sp: SharedPreferences = PrefUtils.getPreferences(ctx),
+        db: AppDatabase = getDB(ctx)
+    ) {
+        ctx.deleteDatabase("HidayaDB")
 
-        context.deleteDatabase("HidayaDB")
-
-        val db = getDB(context)
-
-        val surasJson = PrefUtils.getString(pref, Prefs.FavoriteSuras)
-        val recitersJson = PrefUtils.getString(pref, Prefs.FavoriteReciters)
-        val athkarJson = PrefUtils.getString(pref, Prefs.FavoriteAthkar)
+        val surasJson = PrefUtils.getString(sp, Prefs.FavoriteSuras)
+        val recitersJson = PrefUtils.getString(sp, Prefs.FavoriteReciters)
+        val athkarJson = PrefUtils.getString(sp, Prefs.FavoriteAthkar)
 
         val gson = Gson()
 
@@ -65,7 +66,7 @@ object DBUtils {
             }
         }
 
-        pref.edit()
+        sp.edit()
             .putInt(Prefs.LastDBVersion.key, Global.dbVer)
             .apply()
 
