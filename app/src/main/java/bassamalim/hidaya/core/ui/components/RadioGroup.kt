@@ -23,26 +23,26 @@ fun RadioGroup(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         options.forEachIndexed { index, text ->
-            MyButton(
+            MySquareButton(
                 text = text,
                 textColor =
-                    if (index == selection) AppTheme.colors.accent
-                    else AppTheme.colors.text,
+                if (index == selection) AppTheme.colors.accent
+                else AppTheme.colors.text,
                 innerPadding = PaddingValues(vertical = 10.dp),
                 modifier =
-                    if (index == selection)
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp, horizontal = 16.dp)
-                            .border(
-                                width = 3.dp,
-                                color = AppTheme.colors.accent,
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                    else
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp, horizontal = 16.dp)
+                if (index == selection)
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp, horizontal = 16.dp)
+                        .border(
+                            width = 3.dp,
+                            color = AppTheme.colors.accent,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                else
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp, horizontal = 16.dp)
             ) {
                 onSelect(index)
             }
@@ -66,27 +66,27 @@ fun HorizontalRadioGroup(
             .padding(vertical = 10.dp),
     ) {
         options.forEachIndexed { index, text ->
-            MyButton(
+            MySquareButton(
                 text = text,
                 fontSize = 20.nsp,
                 textColor =
-                    if (index == state) AppTheme.colors.accent
-                    else AppTheme.colors.text,
+                if (index == state) AppTheme.colors.accent
+                else AppTheme.colors.text,
                 innerPadding = PaddingValues(vertical = 1.dp),
                 modifier =
-                    if (index == state)
-                        Modifier
-                            .weight(1F)
-                            .padding(horizontal = 5.dp)
-                            .border(
-                                width = 3.dp,
-                                color = AppTheme.colors.accent,
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                    else
-                        Modifier
-                            .weight(1F)
-                            .padding(horizontal = 5.dp),
+                if (index == state)
+                    Modifier
+                        .weight(1F)
+                        .padding(horizontal = 5.dp)
+                        .border(
+                            width = 3.dp,
+                            color = AppTheme.colors.accent,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                else
+                    Modifier
+                        .weight(1F)
+                        .padding(horizontal = 5.dp),
                 onClick = {
                     state = index
 

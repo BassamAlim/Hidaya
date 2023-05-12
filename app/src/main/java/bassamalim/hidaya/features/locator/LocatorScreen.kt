@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyButton
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
@@ -60,7 +60,7 @@ fun LocatorUI(
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            MyButton(
+            MySquareButton(
                 text = stringResource(R.string.locate),
                 fontSize = 22.sp,
                 colors = ButtonDefaults.buttonColors(backgroundColor = AppTheme.colors.accent),
@@ -72,7 +72,7 @@ fun LocatorUI(
                 vm.onLocateClk()
             }
 
-            MyButton(
+            MySquareButton(
                 text = stringResource(R.string.choose_manually),
                 fontSize = 22.sp,
                 modifier = Modifier
@@ -83,7 +83,7 @@ fun LocatorUI(
             }
 
             if (st.showSkipLocationBtn) {
-                MyButton(
+                MySquareButton(
                     text = stringResource(R.string.rejected),
                     fontSize = 22.sp,
                     modifier = Modifier

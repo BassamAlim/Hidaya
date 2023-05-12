@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyButton
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.features.settings.AppearanceSettings
@@ -44,7 +44,7 @@ fun WelcomeUI(
 
             AppearanceSettings(activity, vm.pref)
 
-            MyButton(
+            MySquareButton(
                 text = stringResource(R.string.save),
                 fontSize = 24.sp,
                 innerPadding = PaddingValues(vertical = 2.dp, horizontal = 25.dp),

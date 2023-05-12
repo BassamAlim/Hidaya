@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyButton
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -31,7 +31,7 @@ fun QuizLobbyUI(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            MyButton(
+            MySquareButton(
                 text = stringResource(R.string.start_quiz),
                 innerPadding = PaddingValues(vertical = 10.dp, horizontal = 25.dp),
                 fontSize = 24.sp,

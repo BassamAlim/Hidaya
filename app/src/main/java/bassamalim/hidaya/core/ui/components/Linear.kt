@@ -8,11 +8,13 @@ import androidx.compose.ui.Modifier
 @Composable
 fun MyFatColumn(
     modifier: Modifier = Modifier,
+    verticalArrangement: Arrangement.Vertical = Arrangement.SpaceEvenly,
+    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.SpaceEvenly,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = verticalArrangement,
+        horizontalAlignment = horizontalAlignment,
         modifier = modifier.fillMaxWidth()
     ) {
         content()
@@ -22,11 +24,13 @@ fun MyFatColumn(
 @Composable
 fun MyRow(
     modifier: Modifier = Modifier,
+    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceEvenly,
     content: @Composable RowScope.() -> Unit
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = verticalAlignment,
+        horizontalArrangement = horizontalArrangement,
         modifier = modifier
     ) {
         content()

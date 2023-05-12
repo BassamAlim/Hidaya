@@ -30,6 +30,7 @@ class HomeVM @Inject constructor(
     private var timer: CountDownTimer? = null
     private var upcomingPrayer = 0
     private var tomorrow = false
+    private var counterCounter = 0
     var pastTime = 0L
         private set
     var upcomingTime = 0L
@@ -62,6 +63,10 @@ class HomeVM @Inject constructor(
                 page = _uiState.value.todayWerdPage
             ).route
         )
+    }
+
+    fun gotoLeaderboard(navController: NavController) {
+        navController.navigate(Screen.Leaderboard.route)
     }
 
     private fun setupPrayersCard() {
@@ -148,7 +153,9 @@ class HomeVM @Inject constructor(
             }
 
             override fun onFinish() {
-                setupUpcomingPrayer()
+                counterCounter++
+                if (counterCounter < 5)
+                    setupPrayersCard()
             }
         }.start()
     }

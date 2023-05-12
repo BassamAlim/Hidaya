@@ -16,6 +16,7 @@ import bassamalim.hidaya.features.bookViewer.BookViewerRepo
 import bassamalim.hidaya.features.books.BooksRepo
 import bassamalim.hidaya.features.dateConverter.DateConverterRepo
 import bassamalim.hidaya.features.home.HomeRepo
+import bassamalim.hidaya.features.leaderboard.LeaderboardRepo
 import bassamalim.hidaya.features.locationPicker.LocationPickerRepo
 import bassamalim.hidaya.features.locator.LocatorRepo
 import bassamalim.hidaya.features.main.MainRepo
@@ -34,6 +35,7 @@ import bassamalim.hidaya.features.telawat.TelawatRepo
 import bassamalim.hidaya.features.telawatClient.TelawatClientRepo
 import bassamalim.hidaya.features.telawatSuar.TelawatSuarRepo
 import bassamalim.hidaya.features.welcome.WelcomeRepo
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
 import dagger.Module
@@ -65,6 +67,9 @@ object AppModule {
         ).createFromAsset("databases/HidayaDB.db")
             .allowMainThreadQueries()
             .build()
+
+    @Provides @Singleton
+    fun provideFirestore() = FirebaseFirestore.getInstance()
 
     @Provides @Singleton
     fun provideRemoteConfig() = FirebaseRemoteConfig.getInstance()
@@ -134,6 +139,13 @@ object AppModule {
         preferences: SharedPreferences,
         database: AppDatabase
     ) = HomeRepo(resources, preferences, database)
+
+    @Provides @Singleton
+    fun provideLeaderboardRepository(
+        resources: Resources,
+        preferences: SharedPreferences,
+        firestore: FirebaseFirestore
+    ) = LeaderboardRepo(resources, preferences, firestore)
 
     @Provides @Singleton
     fun provideLocationPickerRepository(

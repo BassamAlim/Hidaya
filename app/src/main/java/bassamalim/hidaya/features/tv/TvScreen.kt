@@ -55,7 +55,7 @@ fun TvUI(
             ) {
                 MyHorizontalButton(
                     text = stringResource(R.string.quran_channel),
-                    image = {
+                    icon = {
                         Image(
                             painter = painterResource(R.mipmap.ic_quran_channel),
                             contentDescription = stringResource(R.string.quran_channel)
@@ -68,7 +68,7 @@ fun TvUI(
 
                 MyHorizontalButton(
                     text = stringResource(R.string.sunnah_channel),
-                    image = {
+                    icon = {
                         Image(
                             painter = painterResource(R.mipmap.ic_sunnah_channel),
                             contentDescription = stringResource(R.string.quran_channel)

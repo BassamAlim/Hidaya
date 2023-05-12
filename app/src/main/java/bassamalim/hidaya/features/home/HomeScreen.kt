@@ -5,8 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -25,16 +23,18 @@ import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.other.AnalogClock
 import bassamalim.hidaya.core.ui.components.MyClickableText
+import bassamalim.hidaya.core.ui.components.MyColumn
+import bassamalim.hidaya.core.ui.components.MyHorizontalButton
+import bassamalim.hidaya.core.ui.components.MyParentColumn
+import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.Positive
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeUI(
-    nc: NavController = rememberAnimatedNavController(),
+    nc: NavController,
     vm: HomeVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
@@ -44,67 +44,81 @@ fun HomeUI(
         onDispose { vm.onStop() }
     }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+    MyParentColumn {
+        UpcomingPrayerCard(vm, st)
+
+        RecordsCard(vm, st, nc)
+
+        TodayWerdCard(vm, st, nc)
+    }
+}
+
+@Composable
+fun UpcomingPrayerCard(
+    vm: HomeVM,
+    st: HomeState
+) {
+    MySurface(
+        Modifier.padding(top = 3.dp)
     ) {
-        MySurface(
-            Modifier.padding(top = 3.dp)
+        Column(
+            Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AndroidView(
-                    factory = { context ->
-                        val view = LayoutInflater.from(context).inflate(
-                            R.layout.clock_view, null, false
-                        ) as AnalogClock
-                        // do whatever you want...
-                        view // return the view
-                    },
-                    update = { view ->
-                        // Update the view
-                        view.update(vm.pastTime, vm.upcomingTime, vm.remaining)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 10.dp)
-                )
+            AndroidView(
+                factory = { context ->
+                    val view = LayoutInflater.from(context).inflate(
+                        R.layout.clock_view, null, false
+                    ) as AnalogClock
+                    // do whatever you want...
+                    view // return the view
+                },
+                update = { view ->
+                    // Update the view
+                    view.update(vm.pastTime, vm.upcomingTime, vm.remaining)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp)
+            )
 
-                MyText(
-                    st.upcomingPrayerName,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(3.dp)
-                )
+            MyText(
+                st.upcomingPrayerName,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(3.dp)
+            )
 
-                MyText(
-                    text = st.upcomingPrayerTime,
-                    fontSize = 24.sp,
-                    modifier = Modifier.padding(3.dp)
-                )
+            MyText(
+                text = st.upcomingPrayerTime,
+                fontSize = 24.sp,
+                modifier = Modifier.padding(3.dp)
+            )
 
-                MyText(
-                    text = String.format(
-                        stringResource(R.string.remaining),
-                        st.remainingTime
-                    ),
-                    fontSize = 24.sp,
-                    modifier = Modifier.padding(top = 3.dp, bottom = 15.dp)
-                )
-            }
+            MyText(
+                text = String.format(
+                    stringResource(R.string.remaining),
+                    st.remainingTime
+                ),
+                fontSize = 24.sp,
+                modifier = Modifier.padding(top = 3.dp, bottom = 15.dp)
+            )
         }
+    }
+}
 
-        MySurface {
-            Row(
+@Composable
+fun RecordsCard(
+    vm: HomeVM,
+    st: HomeState,
+    nc: NavController
+) {
+    MySurface {
+        MyColumn {
+            MyRow(
                 Modifier
                     .fillMaxWidth()
                     .padding(vertical = 14.dp, horizontal = 20.dp),
-                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 MyText(
@@ -117,14 +131,11 @@ fun HomeUI(
                     fontSize = 30.sp
                 )
             }
-        }
 
-        MySurface {
-            Row(
+            MyRow(
                 Modifier
                     .fillMaxWidth()
                     .padding(vertical = 14.dp, horizontal = 20.dp),
-                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 MyText(
@@ -138,57 +149,81 @@ fun HomeUI(
                     fontSize = 30.sp
                 )
             }
-        }
 
-        MySurface(
-            Modifier.padding(bottom = 3.dp)
-        ) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 14.dp, horizontal = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            MyHorizontalButton(
+                text = stringResource(R.string.leaderboard),
+                textColor = AppTheme.colors.accent,
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_leaderboard),
+                        contentDescription = stringResource(R.string.leaderboard),
+                        tint = AppTheme.colors.accent
+                    )
+                },
+                middlePadding = PaddingValues(vertical = 6.dp, horizontal = 8.dp),
+                elevation = 0
             ) {
-                Row(
-                    Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    MyText(
-                        stringResource(R.string.today_werd),
-                        fontSize = 22.sp
-                    )
+                vm.gotoLeaderboard(nc)
+            }
+        }
+    }
+}
 
-                    MyText(
-                        "${stringResource(R.string.page)} ${st.todayWerdPage}",
-                        fontSize = 22.sp
-                    )
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun TodayWerdCard(
+    vm: HomeVM,
+    st: HomeState,
+    nc: NavController
+) {
+    MySurface(
+        Modifier.padding(bottom = 3.dp)
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 14.dp, horizontal = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                MyText(
+                    stringResource(R.string.today_werd),
+                    fontSize = 22.sp
+                )
+
+                MyText(
+                    "${stringResource(R.string.page)} ${st.todayWerdPage}",
+                    fontSize = 22.sp
+                )
+            }
+
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                MyClickableText(
+                    stringResource(R.string.go_to_page),
+                    textColor = AppTheme.colors.accent,
+                    modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
+                ) {
+                    vm.onGotoTodayWerdClick(nc)
                 }
 
-                Row(
-                    Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceAround
+                AnimatedVisibility(
+                    visible = st.isWerdDone,
+                    enter = scaleIn()
                 ) {
-                    MyClickableText(
-                        stringResource(R.string.go_to_page),
-                        textColor = AppTheme.colors.accent,
-                        modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
-                    ) {
-                        vm.onGotoTodayWerdClick(nc)
-                    }
-
-                    AnimatedVisibility(
-                        visible = st.isWerdDone,
-                        enter = scaleIn()
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_check),
-                            contentDescription = stringResource(R.string.already_read_description),
-                            tint = Positive,
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
+                    Icon(
+                        painter = painterResource(R.drawable.ic_check),
+                        contentDescription = stringResource(R.string.already_read_description),
+                        tint = Positive,
+                        modifier = Modifier.size(40.dp)
+                    )
                 }
             }
         }

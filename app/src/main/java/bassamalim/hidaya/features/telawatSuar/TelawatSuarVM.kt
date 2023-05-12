@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
@@ -76,7 +76,7 @@ class TelawatSuarVM @Inject constructor(
                 }
             }
         }
-        else (ctx as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
+        else (ctx as ComponentActivity).onBackPressedDispatcher.onBackPressed()
     }
 
     private fun updateDownloads() {
@@ -181,7 +181,7 @@ class TelawatSuarVM @Inject constructor(
 
         _uiState.update { it.copy(
             favs = _uiState.value.favs.toMutableList().apply {
-                this[reciterId] = newFav
+                this[suraNum] = newFav
             }
         )}
 

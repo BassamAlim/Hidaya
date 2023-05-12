@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.other.HijriDatePickerDialog
-import bassamalim.hidaya.core.ui.components.MyButton
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
@@ -41,7 +41,7 @@ fun DateConverterUI(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column {
-                MyButton(
+                MySquareButton(
                     text = stringResource(R.string.pick_hijri_date),
                     fontSize = 22.sp,
                     modifier = Modifier
@@ -52,7 +52,7 @@ fun DateConverterUI(
                     vm.onPickHijriClk()
                 }
 
-                MyButton(
+                MySquareButton(
                     text = stringResource(R.string.pick_gregorian_date),
                     fontSize = 22.sp,
                     modifier = Modifier

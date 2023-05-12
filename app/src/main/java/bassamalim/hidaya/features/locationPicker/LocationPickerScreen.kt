@@ -51,10 +51,10 @@ fun LocationPickerUI(
             MyLazyColumn(
                 lazyList = {
                     items(st.items) { item ->
-                        MyButton(
+                        MySquareButton(
                             text =
-                                if (vm.language == Language.ENGLISH) item.nameEn
-                                else item.nameAr,
+                            if (vm.language == Language.ENGLISH) item.nameEn
+                            else item.nameAr,
                             modifier = Modifier.fillMaxWidth(),
                             onClick = { vm.onSelect(item.id, nc) }
                         )

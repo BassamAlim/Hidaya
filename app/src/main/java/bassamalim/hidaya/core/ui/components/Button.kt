@@ -4,10 +4,27 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonColors
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -30,7 +47,85 @@ import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.utils.FileUtils
 
 @Composable
-fun MyButton(
+fun PrimaryPillBtn(
+    text: String,
+    modifier: Modifier = Modifier,
+    widthPercent: Float = 0.75f,
+    tint: Color = AppTheme.colors.accent,
+    textColor: Color = AppTheme.colors.strongText,
+    fontSize: TextUnit = 22.sp,
+    enabled: Boolean = true,
+    padding: PaddingValues = PaddingValues(vertical = 16.dp),
+    innerPadding: PaddingValues = PaddingValues(vertical = 3.dp),
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth(widthPercent)
+            .padding(padding),
+        shape = RoundedCornerShape(30.dp),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = tint
+        ),
+        elevation =  ButtonDefaults.elevation(
+            defaultElevation = 10.dp,
+            pressedElevation = 15.dp,
+            disabledElevation = 0.dp
+        ),
+        enabled = enabled
+    ) {
+        MyText(
+            text = text,
+            modifier = Modifier.padding(innerPadding),
+            fontSize = fontSize,
+            fontWeight = FontWeight.Bold,
+            textColor = textColor
+        )
+    }
+}
+
+@Composable
+fun SecondaryPillBtn(
+    text: String,
+    modifier: Modifier = Modifier,
+    widthPercent: Float = 0.65f,
+    tint: Color = AppTheme.colors.surface,
+    textColor: Color = AppTheme.colors.text,
+    fontSize: TextUnit = 20.sp,
+    enabled: Boolean = true,
+    padding: PaddingValues = PaddingValues(vertical = 10.dp),
+    innerPadding: PaddingValues = PaddingValues(vertical = 4.dp),
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth(widthPercent)
+            .padding(padding),
+        shape = RoundedCornerShape(30.dp),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = tint
+        ),
+        elevation =  ButtonDefaults.elevation(
+            defaultElevation = 10.dp,
+            pressedElevation = 15.dp,
+            disabledElevation = 0.dp
+        ),
+        enabled = enabled
+    ) {
+        MyText(
+            text = text,
+            modifier = Modifier.padding(innerPadding),
+            fontSize = fontSize,
+            fontWeight = FontWeight.Bold,
+            textColor = textColor
+        )
+    }
+}
+
+@Composable
+fun MySquareButton(
     text: String,
     modifier: Modifier = Modifier,
     colors: ButtonColors = ButtonDefaults.buttonColors(backgroundColor = AppTheme.colors.surface),
@@ -83,8 +178,8 @@ fun MyHorizontalButton(
     textColor: Color = AppTheme.colors.text,
     elevation: Int = 10,
     enabled: Boolean = true,
-    innerPadding: PaddingValues = PaddingValues(6.dp),
-    image: @Composable () -> Unit = {},
+    middlePadding: PaddingValues = PaddingValues(6.dp),
+    icon: @Composable () -> Unit = {},
     onClick: () -> Unit
 ) {
     Button(
@@ -103,17 +198,17 @@ fun MyHorizontalButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            image()
+            icon()
+
+            Spacer(modifier = Modifier.padding(middlePadding))
 
             MyText(
                 text = text,
-                modifier = Modifier.padding(innerPadding),
                 fontSize = fontSize,
                 fontWeight = fontWeight,
                 textColor = textColor
             )
         }
-
     }
 }
 
@@ -192,7 +287,7 @@ fun MySquareButton(
     imageResId: Int,
     onClick: () -> Unit
 ) {
-    MyButton(
+    MySquareButton(
         text = stringResource(textResId),
         fontSize = 18.nsp,
         modifier = Modifier

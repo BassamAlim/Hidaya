@@ -126,7 +126,7 @@ fun ListPref(
                                 }
                             }
 
-                            MyButton(
+                            MySquareButton(
                                 stringResource(R.string.cancel),
                                 colors = ButtonDefaults.buttonColors(
                                     backgroundColor = AppTheme.colors.background

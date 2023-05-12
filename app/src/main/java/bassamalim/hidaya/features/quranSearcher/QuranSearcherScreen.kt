@@ -136,7 +136,7 @@ fun MatchItem(item: QuranSearcherMatch, vm: QuranSearcherVM, nc: NavController) 
                 modifier = Modifier.padding(6.dp)
             )
 
-            MyButton(
+            MySquareButton(
                 text = stringResource(R.string.go_to_page),
                 textColor = AppTheme.colors.accent,
                 elevation = 0,

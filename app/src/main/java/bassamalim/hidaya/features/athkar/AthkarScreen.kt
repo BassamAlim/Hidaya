@@ -12,7 +12,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyButton
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
@@ -90,7 +89,7 @@ fun AthkarUI(
 
 @Composable
 private fun LargeBtn(textResId: Int, onClick: () -> Unit) {
-    MyButton(
+    MySquareButton(
         text = stringResource(textResId),
         modifier = Modifier
             .fillMaxWidth()

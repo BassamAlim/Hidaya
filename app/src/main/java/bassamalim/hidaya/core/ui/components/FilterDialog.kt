@@ -73,7 +73,7 @@ fun FilterDialog(
                 )
             }
 
-            MyButton(
+            MySquareButton(
                 text = stringResource(R.string.select),
                 modifier = Modifier.padding(horizontal = 10.dp)
             ) {

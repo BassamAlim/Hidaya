@@ -49,7 +49,7 @@ fun QuranUI(
         Column(
             Modifier.fillMaxSize()
         ) {
-            MyButton(
+            MySquareButton(
                 text = st.bookmarkedPageText,
                 fontSize = 18.sp,
                 textColor = AppTheme.colors.accent,

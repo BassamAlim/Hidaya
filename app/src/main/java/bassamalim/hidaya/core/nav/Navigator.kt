@@ -19,6 +19,7 @@ import bassamalim.hidaya.features.bookSearcher.BookSearcherUI
 import bassamalim.hidaya.features.bookViewer.BookViewerUI
 import bassamalim.hidaya.features.books.BooksUI
 import bassamalim.hidaya.features.dateConverter.DateConverterUI
+import bassamalim.hidaya.features.leaderboard.LeaderboardUI
 import bassamalim.hidaya.features.locationPicker.LocationPickerUI
 import bassamalim.hidaya.features.locator.LocatorUI
 import bassamalim.hidaya.features.main.MainUI
@@ -178,6 +179,18 @@ fun NavGraph(navController: NavHostController, startDest: String) {
             popExitTransition = outToTop
         ) {
             DateConverterUI(
+                vm = hiltViewModel()
+            )
+        }
+
+        composable(
+            route = Screen.Leaderboard.route,
+            enterTransition = inFromBottom,
+            exitTransition = outToBottom,
+            popEnterTransition = inFromTop,
+            popExitTransition = outToTop
+        ) {
+            LeaderboardUI(
                 vm = hiltViewModel()
             )
         }

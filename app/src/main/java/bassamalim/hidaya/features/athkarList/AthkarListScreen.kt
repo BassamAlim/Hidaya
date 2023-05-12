@@ -29,7 +29,6 @@ fun AthkarListUI(
                 .fillMaxWidth()
                 .padding(padding)
         ) {
-
             SearchComponent (
                 value = vm.searchText,
                 hint = stringResource(R.string.athkar_hint),

@@ -14,7 +14,7 @@ import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.ui.components.CategoryTitle
 import bassamalim.hidaya.core.ui.components.HorizontalRadioGroup
 import bassamalim.hidaya.core.ui.components.ListPref
-import bassamalim.hidaya.core.ui.components.MyButton
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyText
@@ -96,7 +96,7 @@ fun QuranSettingsDlg(
                 summary = ""
             )
 
-            MyButton(
+            MySquareButton(
                 text = stringResource(R.string.close),
                 Modifier.fillMaxWidth()
             ) {

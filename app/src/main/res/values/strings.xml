@@ -200,5 +200,11 @@
     <string name="unchanged">بلا تغيير</string>
     <string name="today_werd">وِرد اليوم</string>
     <string name="clk_to_locate">اضغط لتفعيل خدمات الموقع</string>
+    <string name="leaderboard">لائحة المتصدرين</string>
+    <string name="your_position">مركزك</string>
+    <string name="user">مستخدم</string>
+    <string name="pages">صفحة</string>
+    <string name="by_reading">حسب القراءة</string>
+    <string name="by_listening">حسب الاستماع</string>
 
 </resources>

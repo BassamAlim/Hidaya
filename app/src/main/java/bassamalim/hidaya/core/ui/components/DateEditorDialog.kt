@@ -67,13 +67,13 @@ fun DateEditorDialog(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                MyButton(
+                MySquareButton(
                     text = stringResource(R.string.save)
                 ) {
                     onSubmit()
                 }
 
-                MyButton(
+                MySquareButton(
                     text = stringResource(R.string.cancel)
                 ) {
                     onCancel()

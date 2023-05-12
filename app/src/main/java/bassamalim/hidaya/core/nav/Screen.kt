@@ -26,6 +26,8 @@ sealed class Screen(val route: String) {
 
     object DateConverter: Screen("date_converter")
 
+    object Leaderboard: Screen("leaderboard")
+
     object LocationPicker: Screen("location_picker")
 
     data class Locator(

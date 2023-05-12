@@ -61,7 +61,8 @@ class QuranVM @Inject constructor(
         val bookmarkedSura = repo.getBookmarkedSura()
         val bookmarkedPage = repo.getBookmarkedPage()
 
-        return if (bookmarkedPage == -1) repo.getNoBookmarkedPageStr()
+        return if (bookmarkedPage == -1 || bookmarkedSura == -1)
+            repo.getNoBookmarkedPageStr()
         else {
             "${repo.getBookmarkedPageStr()} " +
                     "${repo.getPageStr()} " +

@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyButton
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.RadioGroup
@@ -73,7 +73,7 @@ fun QuizUI(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                MyButton(
+                MySquareButton(
                     text = stringResource(R.string.previous_question),
                     textColor =
                         if (st.prevBtnEnabled) AppTheme.colors.text
@@ -83,7 +83,7 @@ fun QuizUI(
                     vm.previousQ()
                 }
 
-                MyButton(
+                MySquareButton(
                     text = stringResource(st.nextBtnTextResId),
                     modifier = Modifier.sizeIn(maxWidth = 175.dp),
                     textColor =

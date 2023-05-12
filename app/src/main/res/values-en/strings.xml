@@ -199,5 +199,11 @@
     <string name="unchanged">Unchanged</string>
     <string name="today_werd">Today\'s werd</string>
     <string name="clk_to_locate">Click to enable location</string>
+    <string name="leaderboard">Leaderboard</string>
+    <string name="your_position">Your Position</string>
+    <string name="user">User</string>
+    <string name="pages">Pages</string>
+    <string name="by_reading">By reading</string>
+    <string name="by_listening">By listening</string>
 
 </resources>

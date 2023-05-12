@@ -42,7 +42,7 @@ fun TelawatUI(
         onBack = { vm.onBackPressed(nc) }
     ) {
         Column {
-            MyButton(
+            MySquareButton(
                 text = st.continueListeningText,
                 fontSize = 18.sp,
                 textColor = AppTheme.colors.accent,
