@@ -61,16 +61,16 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
-    }
+//    kotlinOptions {
+//        jvmTarget = '17'
+//    }
 
     buildFeatures {
         compose true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion "1.4.4"
+        kotlinCompilerExtensionVersion "1.4.6"
     }
 
 }
@@ -78,7 +78,7 @@ android {
 dependencies {
     // AndroidX
     implementation 'androidx.core:core-ktx:1.10.0'
-    implementation 'androidx.core:core-splashscreen:1.0.0'
+    implementation 'androidx.core:core-splashscreen:1.0.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation "androidx.activity:activity:$activity_version"
     implementation "androidx.activity:activity-compose:$activity_version"
@@ -111,7 +111,7 @@ dependencies {
     implementation 'com.google.accompanist:accompanist-pager-indicators:0.28.0'
     implementation 'com.google.accompanist:accompanist-navigation-animation:0.29.2-rc'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:31.2.3')

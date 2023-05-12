@@ -23,7 +23,7 @@ class LeaderboardVM @Inject constructor(
 ): AndroidViewModel(app) {
 
     private val deviceId = getDeviceId(app)
-    private var userId = -1
+    private var remoteUserRecord: UserRecord? = null
     private var items = mutableListOf<LeaderboardItem>()
 
     private val _uiState = MutableStateFlow(LeaderboardState())
@@ -31,26 +31,14 @@ class LeaderboardVM @Inject constructor(
 
     init {
         viewModelScope.launch {
-            if (!repo.deviceRegistered(deviceId)) repo.registerDevice(deviceId)
+            remoteUserRecord = repo.getRemoteUserRecord(deviceId)
+            if (remoteUserRecord == null) remoteUserRecord = repo.registerDevice(deviceId)
             else {
-                val remoteRecord = repo.getRemoteUserRecord(deviceId)
                 val localRecord = repo.getLocalRecord()
-                syncUserRecords(localRecord, remoteRecord)
+                syncUserRecords(localRecord, remoteUserRecord!!)
             }
 
-            userId = repo.getUserId(deviceId)
-
-            fillData()
-
-            _uiState.update { it.copy(
-                userId = "${repo.userStr} $userId",
-                loading = false
-            )}
-        }
-    }
-
-    private fun fillData() {
-        viewModelScope.launch {
+            // fill items
             repo.getRanks().map {
                 items.add(
                     LeaderboardItem(
@@ -60,6 +48,11 @@ class LeaderboardVM @Inject constructor(
                     )
                 )
             }
+
+            _uiState.update { it.copy(
+                userId = "${repo.userStr} ${remoteUserRecord!!.userId}",
+                loading = false
+            )}
         }
     }
 
@@ -78,7 +71,7 @@ class LeaderboardVM @Inject constructor(
 
     private fun getUserPosition(): String {
         return (items.indexOfFirst {
-            it.userId == "${repo.userStr} $userId"
+            it.userId == "${repo.userStr} ${remoteUserRecord!!.userId}"
         } + 1).toString()
     }
 

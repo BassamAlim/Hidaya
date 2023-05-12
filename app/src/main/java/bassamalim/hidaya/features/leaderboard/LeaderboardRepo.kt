@@ -41,37 +41,25 @@ class LeaderboardRepo @Inject constructor(
             .apply()
     }
 
-    suspend fun getUserId(deviceId: String): Int {
-        var userId = -1
+    /*
+    * Returns user record if the device is registered in the database, otherwise null
+    */
+    suspend fun getRemoteUserRecord(deviceId: String): UserRecord? {
+        var record: UserRecord? = null
 
         firestore.collection("Leaderboard")
-            .whereEqualTo("device_id", deviceId)
+            .document(deviceId)
             .get()
             .addOnSuccessListener { result ->
-                val data = result.documents.first().data
-                userId = data!!["user_id"].toString().toInt()
-            }
-            .addOnFailureListener { exception ->
-                println("Error getting documents: $exception")
-            }
-            .await()
+                val data = result.data
+                if (data != null) {
+                    record = UserRecord(
+                        userId = data["user_id"].toString().toInt(),
+                        readingRecord = data["reading_record"].toString().toInt(),
+                        listeningRecord = data["listening_record"].toString().toLong()
+                    )
+                }
 
-        return userId
-    }
-
-    suspend fun getRemoteUserRecord(deviceId: String): UserRecord {
-        var record = UserRecord(0, 0, 0)
-
-        firestore.collection("Leaderboard")
-            .whereEqualTo("device_id", deviceId)
-            .get()
-            .addOnSuccessListener { result ->
-                val data = result.documents.first().data
-                record = UserRecord(
-                    userId = data!!["user_id"].toString().toInt(),
-                    readingRecord = data["reading_record"].toString().toInt(),
-                    listeningRecord = data["listening_record"].toString().toLong()
-                )
                 println("Data retrieved successfully!")
             }
             .addOnFailureListener { exception ->
@@ -84,27 +72,18 @@ class LeaderboardRepo @Inject constructor(
 
     suspend fun setRemoteUserRecord(deviceId: String, record: UserRecord) {
         firestore.collection("Leaderboard")
-            .whereEqualTo("device_id", deviceId)
-            .get()
-            .addOnSuccessListener { result ->
-                val data = result.documents.first().data
-                firestore.collection("Leaderboard")
-                    .document(data!!["user_id"].toString())
-                    .update(
-                        mapOf(
-                            "reading_record" to record.readingRecord,
-                            "listening_record" to record.listeningRecord
-                        )
-                    )
-                    .addOnSuccessListener {
-                        println("DocumentSnapshot successfully updated!")
-                    }
-                    .addOnFailureListener { e ->
-                        println("Error updating document: $e")
-                    }
+            .document(deviceId)
+            .set(
+                mapOf(
+                    "reading_record" to record.readingRecord,
+                    "listening_record" to record.listeningRecord
+                )
+            )
+            .addOnSuccessListener {
+                println("DocumentSnapshot successfully updated!")
             }
-            .addOnFailureListener { exception ->
-                println("Error getting documents: $exception")
+            .addOnFailureListener { e ->
+                println("Error getting documents: $e")
             }
             .await()
     }
@@ -134,29 +113,20 @@ class LeaderboardRepo @Inject constructor(
         return items
     }
 
-    suspend fun deviceRegistered(deviceId: String): Boolean {
-        var registered = true
+    suspend fun registerDevice(deviceId: String): UserRecord {
+        println("registerDevice()")
 
-        firestore.collection("Leaderboard")
-            .whereEqualTo("device_id", deviceId)
-            .get()
-            .addOnSuccessListener { result ->
-                registered = !result.isEmpty
-            }
-            .addOnFailureListener { exception ->
-                println("Error getting documents: $exception")
-            }
-            .await()
-
-        return registered
-    }
-
-    suspend fun registerDevice(deviceId: String) {
         val localRecord = getLocalRecord()
         val userId = getLargestUserId() + 1
+        val remoteUserRecord = UserRecord(
+            userId = userId,
+            readingRecord = localRecord.readingRecord,
+            listeningRecord = localRecord.listeningRecord
+        )
 
         firestore.collection("Leaderboard")
-            .add(
+            .document(deviceId)
+            .set(
                 mapOf(
                     "device_id" to deviceId,
                     "user_id" to userId,
@@ -171,6 +141,8 @@ class LeaderboardRepo @Inject constructor(
                 println("Error writing document: $e")
             }
             .await()
+
+        return remoteUserRecord
     }
 
     private suspend fun getLargestUserId(): Int {
@@ -181,7 +153,8 @@ class LeaderboardRepo @Inject constructor(
             .limit(1)
             .get()
             .addOnSuccessListener { result ->
-                max = result.documents.first().data!!["user_id"].toString().toInt()
+                if (result.documents.isNotEmpty())
+                    max = result.documents.first().data!!["user_id"].toString().toInt()
 
                 println("Data retrieved successfully!")
             }
