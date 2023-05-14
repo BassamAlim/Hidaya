@@ -32,8 +32,9 @@ class LeaderboardVM @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val response = repo.getRemoteUserRecord(deviceId)
-            when (response) {
+            when (
+                val response = repo.getRemoteUserRecord(deviceId)
+            ) {
                 is Response.Success -> {
                     remoteUserRecord = response.data
 
