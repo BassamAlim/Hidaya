@@ -3,10 +3,12 @@ package bassamalim.hidaya.core.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -99,6 +101,20 @@ fun MyClickableText(
                 textAlign = textAlign,
                 lineHeight = fontSize * 1.4
             )
+        )
+    }
+}
+
+@Composable
+fun ErrorScreen(message: String) {
+    Box(
+        Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        MyText(
+            message,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
         )
     }
 }

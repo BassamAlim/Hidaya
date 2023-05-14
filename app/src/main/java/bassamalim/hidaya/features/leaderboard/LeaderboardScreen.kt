@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.ErrorScreen
 import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
@@ -35,6 +36,7 @@ fun LeaderboardUI(
 
     MyScaffold(stringResource(R.string.leaderboard)) {
         if (st.loading) LoadingScreen()
+        else if (st.errorMessage.isNotEmpty()) ErrorScreen(st.errorMessage)
         else {
             TabLayout(
                 pageNames = listOf(

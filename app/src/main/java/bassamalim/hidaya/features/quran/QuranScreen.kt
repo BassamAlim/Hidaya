@@ -36,7 +36,8 @@ fun QuranUI(
     }
 
     MyScaffold(
-        topBar = {},
+        title = "",
+        topBar = {},  // override the default top bar
         fab = {
             MyFloatingActionButton(
                 iconId = R.drawable.ic_quran_search,

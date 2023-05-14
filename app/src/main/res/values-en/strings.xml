@@ -205,5 +205,6 @@
     <string name="pages">Pages</string>
     <string name="by_reading">By reading</string>
     <string name="by_listening">By listening</string>
+    <string name="error_fetching_data">Error fetching data</string>
 
 </resources>

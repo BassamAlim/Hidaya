@@ -26,6 +26,7 @@ fun LocationPickerUI(
     val st by vm.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(
+        title = "",
         topBar = {
             MyTopBar(
                 title = stringResource(st.titleResId),

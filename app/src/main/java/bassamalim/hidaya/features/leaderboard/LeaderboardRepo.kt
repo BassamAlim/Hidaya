@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.content.res.Resources
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
+import bassamalim.hidaya.core.data.Response
 import bassamalim.hidaya.core.utils.PrefUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -18,6 +19,7 @@ class LeaderboardRepo @Inject constructor(
 
     val userStr = res.getString(R.string.user)
     val pagesStr = res.getString(R.string.pages)
+    val errorFetchingDataStr = res.getString(R.string.error_fetching_data)
 
     val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
 
@@ -44,21 +46,26 @@ class LeaderboardRepo @Inject constructor(
     /*
     * Returns user record if the device is registered in the database, otherwise null
     */
-    suspend fun getRemoteUserRecord(deviceId: String): UserRecord? {
-        var record: UserRecord? = null
+    suspend fun getRemoteUserRecord(deviceId: String): Response<UserRecord> {
+        var response : Response<UserRecord> = Response.Error("Error fetching data")
 
         firestore.collection("Leaderboard")
             .document(deviceId)
             .get()
             .addOnSuccessListener { result ->
-                val data = result.data
-                if (data != null) {
-                    record = UserRecord(
-                        userId = data["user_id"].toString().toInt(),
-                        readingRecord = data["reading_record"].toString().toInt(),
-                        listeningRecord = data["listening_record"].toString().toLong()
-                    )
-                }
+                response =
+                    if (result.data == null) Response.Error("Error fetching data")
+                    else if (result.data!!.isEmpty()) Response.Error("Device not registered")
+                    else {
+                        val data = result.data!!
+                        Response.Success(
+                            UserRecord(
+                                userId = data["user_id"].toString().toInt(),
+                                readingRecord = data["reading_record"].toString().toInt(),
+                                listeningRecord = data["listening_record"].toString().toLong()
+                            )
+                        )
+                    }
 
                 println("Data retrieved successfully!")
             }
@@ -67,7 +74,7 @@ class LeaderboardRepo @Inject constructor(
             }
             .await()
 
-        return record
+        return response
     }
 
     suspend fun setRemoteUserRecord(deviceId: String, record: UserRecord) {
@@ -128,7 +135,6 @@ class LeaderboardRepo @Inject constructor(
             .document(deviceId)
             .set(
                 mapOf(
-                    "device_id" to deviceId,
                     "user_id" to userId,
                     "reading_record" to localRecord.readingRecord,
                     "listening_record" to localRecord.listeningRecord

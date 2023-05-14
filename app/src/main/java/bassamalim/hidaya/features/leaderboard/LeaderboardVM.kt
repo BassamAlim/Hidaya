@@ -6,6 +6,7 @@ import android.content.Context
 import android.provider.Settings
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import bassamalim.hidaya.core.data.Response
 import bassamalim.hidaya.core.utils.LangUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,28 +32,43 @@ class LeaderboardVM @Inject constructor(
 
     init {
         viewModelScope.launch {
-            remoteUserRecord = repo.getRemoteUserRecord(deviceId)
-            if (remoteUserRecord == null) remoteUserRecord = repo.registerDevice(deviceId)
+            val response = repo.getRemoteUserRecord(deviceId)
+            when (response) {
+                is Response.Success -> {
+                    remoteUserRecord = response.data
+
+                    val localRecord = repo.getLocalRecord()
+                    syncUserRecords(localRecord, remoteUserRecord!!)
+                }
+                is Response.Error -> {
+                    if (response.message == "Device not registered")
+                        remoteUserRecord = repo.registerDevice(deviceId)
+                }
+            }
+
+            if (remoteUserRecord == null) {
+                _uiState.update { it.copy(
+                    errorMessage = repo.errorFetchingDataStr,
+                    loading = false
+                )}
+            }
             else {
-                val localRecord = repo.getLocalRecord()
-                syncUserRecords(localRecord, remoteUserRecord!!)
-            }
-
-            // fill items
-            repo.getRanks().map {
-                items.add(
-                    LeaderboardItem(
-                        userId = "${repo.userStr} ${it.userId}",
-                        readingRecord = "${it.readingRecord} ${repo.pagesStr}",
-                        listeningRecord = formatTelawatTime(it.listeningRecord)
+                // fill items
+                repo.getRanks().map {
+                    items.add(
+                        LeaderboardItem(
+                            userId = "${repo.userStr} ${it.userId}",
+                            readingRecord = "${it.readingRecord} ${repo.pagesStr}",
+                            listeningRecord = formatTelawatTime(it.listeningRecord)
+                        )
                     )
-                )
-            }
+                }
 
-            _uiState.update { it.copy(
-                userId = "${repo.userStr} ${remoteUserRecord!!.userId}",
-                loading = false
-            )}
+                _uiState.update { it.copy(
+                    userId = "${repo.userStr} ${remoteUserRecord!!.userId}",
+                    loading = false
+                )}
+            }
         }
     }
 
