@@ -82,6 +82,7 @@ class LeaderboardRepo @Inject constructor(
             .document(deviceId)
             .set(
                 mapOf(
+                    "user_id" to record.userId,
                     "reading_record" to record.readingRecord,
                     "listening_record" to record.listeningRecord
                 )
