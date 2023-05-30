@@ -7,5 +7,6 @@ data class HomeState(
     val telawatRecord: String = "",
     val quranPagesRecord: String = "",
     val todayWerdPage: String = "25",
-    val isWerdDone: Boolean = false
+    val isWerdDone: Boolean = false,
+    val leaderboardEnabled: Boolean = false
 )

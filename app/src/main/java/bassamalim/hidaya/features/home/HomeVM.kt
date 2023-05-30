@@ -1,26 +1,38 @@
 package bassamalim.hidaya.features.home
 
+import android.annotation.SuppressLint
+import android.app.Application
+import android.content.Context
 import android.location.Location
 import android.os.CountDownTimer
-import androidx.lifecycle.ViewModel
+import android.provider.Settings
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import bassamalim.hidaya.core.data.Response
 import bassamalim.hidaya.core.helpers.PrayTimes
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.core.utils.PTUtils
+import bassamalim.hidaya.features.leaderboard.UserRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.math.max
 
 @HiltViewModel
 class HomeVM @Inject constructor(
+    app: Application,
     private val repo: HomeRepo
-): ViewModel() {
+): AndroidViewModel(app) {
 
+    private val deviceId = getDeviceId(app)
+    private var latestUserRecord = repo.getLocalRecord()
     private val prayerNames = repo.getPrayerNames()
     private val numeralsLanguage = repo.getNumeralsLanguage()
     private var times: Array<Calendar?> = arrayOfNulls(6)
@@ -41,12 +53,24 @@ class HomeVM @Inject constructor(
     private val _uiState = MutableStateFlow(HomeState())
     val uiState = _uiState.asStateFlow()
 
+    init {
+        updateUserRecords()
+    }
+
+    @SuppressLint("HardwareIds")
+    private fun getDeviceId(context: Context): String {
+        return Settings.Secure.getString(
+            context.contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
+    }
+
     fun onStart() {
         if (repo.getLocation() != null) setupPrayersCard()
 
         _uiState.update { it.copy(
-            telawatRecord = getTelawatRecord(),
-            quranPagesRecord = getQuranPagesRecord(),
+            telawatRecord = formatTelawatTime(repo.getTelawatPlaybackRecord()),
+            quranPagesRecord = formatQuranPagesRecord(repo.getQuranPagesRecord()),
             todayWerdPage = getTodayWerdPage(),
             isWerdDone = repo.getIsWerdDone()
         )}
@@ -66,7 +90,13 @@ class HomeVM @Inject constructor(
     }
 
     fun gotoLeaderboard(navController: NavController) {
-        navController.navigate(Screen.Leaderboard.route)
+        navController.navigate(
+            Screen.Leaderboard(
+                latestUserRecord.userId.toString(),
+                latestUserRecord.readingRecord.toString(),
+                latestUserRecord.listeningRecord.toString()
+            ).route
+        )
     }
 
     private fun setupPrayersCard() {
@@ -169,9 +199,61 @@ class HomeVM @Inject constructor(
         return -1
     }
 
-    private fun getTelawatRecord(): String {
-        val millis = repo.getTelawatPlaybackRecord()
+    private fun getTodayWerdPage(): String {
+        return translateNums(
+            numeralsLanguage = numeralsLanguage,
+            string = repo.getTodayWerdPage().toString()
+        )
+    }
 
+    private fun updateUserRecords() {
+        viewModelScope.launch {
+            when (
+                val response = repo.getRemoteUserRecord(deviceId)
+            ) {
+                is Response.Success -> {
+                    val remoteUserRecord = response.data
+
+                    syncUserRecords(remoteUserRecord!!)
+                }
+                is Response.Error -> {
+                    if (response.message == "Device not registered") {
+                        latestUserRecord = repo.registerDevice(deviceId)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun syncUserRecords(remoteRecord: UserRecord) {
+        val localRecord = latestUserRecord.copy()
+
+        latestUserRecord = UserRecord(
+            userId = remoteRecord.userId,
+            readingRecord = max(localRecord.readingRecord, remoteRecord.readingRecord),
+            listeningRecord = max(localRecord.listeningRecord, remoteRecord.listeningRecord)
+        )
+
+        if (latestUserRecord.readingRecord > remoteRecord.readingRecord ||
+            latestUserRecord.listeningRecord > remoteRecord.listeningRecord) {
+            viewModelScope.launch {
+                repo.setRemoteUserRecord(deviceId, latestUserRecord)
+            }
+        }
+
+        if (latestUserRecord.readingRecord > localRecord.readingRecord)
+            repo.setLocalQuranRecord(latestUserRecord.readingRecord)
+        if (latestUserRecord.listeningRecord > localRecord.listeningRecord)
+            repo.setLocalTelawatRecord(latestUserRecord.listeningRecord)
+
+        _uiState.update { it.copy(
+            quranPagesRecord = formatQuranPagesRecord(latestUserRecord.readingRecord),
+            telawatRecord = formatTelawatTime(latestUserRecord.listeningRecord),
+            leaderboardEnabled = true
+        )}
+    }
+
+    private fun formatTelawatTime(millis: Long): String {
         val hours = millis / (60 * 60 * 1000) % 24
         val minutes = millis / (60 * 1000) % 60
         val seconds = millis / 1000 % 60
@@ -185,17 +267,10 @@ class HomeVM @Inject constructor(
         )
     }
 
-    private fun getQuranPagesRecord(): String {
+    private fun formatQuranPagesRecord(num: Int): String {
         return translateNums(
             numeralsLanguage = numeralsLanguage,
-            string = repo.getQuranPagesRecord().toString()
-        )
-    }
-
-    private fun getTodayWerdPage(): String {
-        return translateNums(
-            numeralsLanguage = numeralsLanguage,
-            string = repo.getTodayWerdPage().toString()
+            string = num.toString()
         )
     }
 

@@ -161,7 +161,8 @@ fun RecordsCard(
                     )
                 },
                 middlePadding = PaddingValues(vertical = 6.dp, horizontal = 8.dp),
-                elevation = 0
+                elevation = 0,
+                enabled = st.leaderboardEnabled
             ) {
                 vm.gotoLeaderboard(nc)
             }

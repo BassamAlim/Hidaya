@@ -137,8 +137,9 @@ object AppModule {
     fun provideHomeRepository(
         resources: Resources,
         preferences: SharedPreferences,
-        database: AppDatabase
-    ) = HomeRepo(resources, preferences, database)
+        database: AppDatabase,
+        firestore: FirebaseFirestore
+    ) = HomeRepo(resources, preferences, database, firestore)
 
     @Provides @Singleton
     fun provideLeaderboardRepository(

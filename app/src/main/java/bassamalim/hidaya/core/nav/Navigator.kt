@@ -184,7 +184,14 @@ fun NavGraph(navController: NavHostController, startDest: String) {
         }
 
         composable(
-            route = Screen.Leaderboard.route,
+            route = Screen.Leaderboard(
+                "{user_id}", "{reading_record}", "{listening_record}"
+            ).route,
+            arguments = listOf(
+                navArgument("user_id") { type = NavType.IntType },
+                navArgument("reading_record") { type = NavType.IntType },
+                navArgument("listening_record") { type = NavType.LongType }
+            ),
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,

@@ -26,7 +26,9 @@ sealed class Screen(val route: String) {
 
     object DateConverter: Screen("date_converter")
 
-    object Leaderboard: Screen("leaderboard")
+    data class Leaderboard(
+        val userId:String, val readingRecord: String, val listeningRecord: String
+    ): Screen("leaderboard/$userId/$readingRecord/$listeningRecord")
 
     object LocationPicker: Screen("location_picker")
 
