@@ -16,8 +16,8 @@ android {
         applicationId "bassamalim.hidaya"
         minSdk 23
         targetSdk 33
-        versionCode 219
-        versionName '2.1.9'
+        versionCode 220
+        versionName '2.2.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -137,5 +137,5 @@ dependencies {
     // GitHub
     implementation 'com.github.msarhan:ummalqura-calendar:2.0.2'
     // Temporary
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }
