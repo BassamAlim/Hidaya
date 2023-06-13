@@ -46,24 +46,30 @@ class Activity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        handleAction(intent.action)
+        val isFirstLaunch = savedInstanceState == null
 
-        try {  // remove after a while
-            ActivityUtils.onActivityCreateSetLocale(this)
-            LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))
-        } catch (e: Exception) {
-            Log.e(Global.TAG, "Neuralyzing", e)
-            ActivityUtils.clearAppData(this)
+        if (isFirstLaunch) {
+            handleAction(intent.action)
+
+            try {  // remove after a while
+                ActivityUtils.onActivityCreateSetLocale(this)
+                LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))
+            } catch (e: Exception) {
+                Log.e(Global.TAG, "Neuralyzing", e)
+                ActivityUtils.clearAppData(this)
+            }
         }
 
-        preLaunch()
+        preLaunch(isFirstLaunch)
 
-        shouldWelcome = PrefUtils.getBoolean(sp, Prefs.FirstTime)
-        if (shouldWelcome) {
-            launch()
-            postLaunch()
+        if (isFirstLaunch) {
+            if (shouldWelcome) {
+                launch()
+                postLaunch()
+            }
+            else getLocationAndLaunch()
         }
-        else getLocationAndLaunch()
+        else launch()
     }
 
     private fun handleAction(action: String?) {
@@ -77,8 +83,9 @@ class Activity : ComponentActivity() {
         }
     }
 
-    private fun preLaunch() {
-        DBUtils.testDB(this, sp, db)
+    private fun preLaunch(firstLaunch: Boolean = false) {
+        if (firstLaunch)
+            DBUtils.testDB(this, sp, db)
 
         ActivityUtils.onActivityCreateSetLocale(this)
         ActivityUtils.onActivityCreateSetTheme(this)
@@ -123,7 +130,7 @@ class Activity : ComponentActivity() {
 
             locate()
 
-            requestBgLocPermission()
+            requestBackgroundLocationPermission()
         }
         else {
             launch()
@@ -131,7 +138,7 @@ class Activity : ComponentActivity() {
         }
     }
 
-    private fun requestBgLocPermission() {
+    private fun requestBackgroundLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             ActivityCompat.checkSelfPermission(
                 this,
@@ -203,7 +210,7 @@ class Activity : ComponentActivity() {
                 postLaunch()
             }
 
-        requestBgLocPermission()
+        requestBackgroundLocationPermission()
     }
 
     private fun storeLocation(location: Location?) {

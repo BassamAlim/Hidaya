@@ -1,9 +1,9 @@
 package bassamalim.hidaya.features.tv
 
 import androidx.lifecycle.ViewModel
-import com.google.android.youtube.player.YouTubePlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 
 @HiltViewModel
 class TvVM @Inject constructor(
@@ -11,7 +11,6 @@ class TvVM @Inject constructor(
 ): ViewModel() {
 
     private var ytPlayer: YouTubePlayer? = null
-    val apiKey = repo.getApiKey()
     private val quranVidId = repo.getMakkahVidId()
     private val sunnahVidId = repo.getMadinaVidId()
 
@@ -20,12 +19,12 @@ class TvVM @Inject constructor(
     }
 
     fun onQuranChannelClk() {
-        ytPlayer?.loadVideo(quranVidId)
+        ytPlayer?.loadVideo(quranVidId, 0f)
         ytPlayer?.play()
     }
 
     fun onSunnahChannelClk() {
-        ytPlayer?.loadVideo(sunnahVidId)
+        ytPlayer?.loadVideo(sunnahVidId, 0f)
         ytPlayer?.play()
     }
 

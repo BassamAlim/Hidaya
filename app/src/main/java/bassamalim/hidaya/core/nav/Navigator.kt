@@ -42,7 +42,10 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.gson.Gson
 
 @Composable
-fun Navigator(thenTo: String? = null, shouldWelcome: Boolean = false) {
+fun Navigator(
+    thenTo: String? = null,
+    shouldWelcome: Boolean = false
+) {
     val navController = rememberAnimatedNavController()
 
     val startDest =
@@ -55,7 +58,10 @@ fun Navigator(thenTo: String? = null, shouldWelcome: Boolean = false) {
 }
 
 @Composable
-fun NavGraph(navController: NavHostController, startDest: String) {
+fun NavGraph(
+    navController: NavHostController,
+    startDest: String
+) {
     AnimatedNavHost(
         navController = navController,
         startDestination = startDest

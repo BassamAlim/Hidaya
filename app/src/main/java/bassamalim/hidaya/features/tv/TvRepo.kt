@@ -7,10 +7,8 @@ class TvRepo @Inject constructor(
     private val remoteConfig: FirebaseRemoteConfig
 ) {
 
-    fun getApiKey(): String = remoteConfig.getString("yt_api_key")
+    fun getMakkahVidId() = remoteConfig.getString("makkah_url")
 
-    fun getMakkahVidId(): String = remoteConfig.getString("makkah_url")
-
-    fun getMadinaVidId(): String = remoteConfig.getString("madina_url")
+    fun getMadinaVidId() = remoteConfig.getString("madina_url")
 
 }

@@ -3,16 +3,10 @@ package bassamalim.hidaya.features.tv
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -20,15 +14,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.commit
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
+import bassamalim.hidaya.core.ui.components.MyParentColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import com.google.android.youtube.player.YouTubeInitializationResult
-import com.google.android.youtube.player.YouTubePlayer
-import com.google.android.youtube.player.YouTubePlayerSupportFragmentXKt
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
 @Composable
 fun TvUI(
@@ -39,19 +34,13 @@ fun TvUI(
     KeepScreenOn()
 
     MyScaffold(stringResource(R.string.tv_channels)) {
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(it)
+        MyParentColumn(
+            Modifier.padding(it)
         ) {
             YoutubeScreen(ctx, vm)
 
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .weight(1F),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+            MyColumn(
+                modifier = Modifier.padding(top = 100.dp)
             ) {
                 MyHorizontalButton(
                     text = stringResource(R.string.quran_channel),
@@ -61,7 +50,7 @@ fun TvUI(
                             contentDescription = stringResource(R.string.quran_channel)
                         )
                     },
-                    modifier = Modifier.padding(bottom = 20.dp)
+                    modifier = Modifier.padding(bottom = 50.dp)
                 ) {
                     vm.onQuranChannelClk()
                 }
@@ -73,8 +62,7 @@ fun TvUI(
                             painter = painterResource(R.mipmap.ic_sunnah_channel),
                             contentDescription = stringResource(R.string.quran_channel)
                         )
-                    },
-                    modifier = Modifier.padding(top = 20.dp)
+                    }
                 ) {
                     vm.onSunnahChannelClk()
                 }
@@ -84,42 +72,37 @@ fun TvUI(
 }
 
 @Composable
-fun YoutubeScreen(ctx: Context, viewModel: TvVM) {
+fun YoutubeScreen(
+    ctx: Context,
+    vm: TvVM
+) {
     AndroidView(factory = {
-        val fragment = YouTubePlayerSupportFragmentXKt().apply {
-            initialize(viewModel.apiKey,
-                object : YouTubePlayer.OnInitializedListener {
-                    override fun onInitializationSuccess(
-                        provider: YouTubePlayer.Provider,
-                        player: YouTubePlayer,
-                        wasRestored: Boolean
-                    ) {
-                        viewModel.onInitializationSuccess(player)
-                    }
+        val view = YouTubePlayerView(it)
+        view.addYouTubePlayerListener(
+            object : AbstractYouTubePlayerListener() {
+                override fun onReady(youTubePlayer: YouTubePlayer) {
+                    super.onReady(youTubePlayer)
 
-                    override fun onInitializationFailure(
-                        provider: YouTubePlayer.Provider,
-                        result: YouTubeInitializationResult
-                    ) {
-                        Log.e(Global.TAG, java.lang.String.valueOf(result))
+                    vm.onInitializationSuccess(youTubePlayer)
+                }
 
-                        Toast.makeText(
-                            ctx,
-                            getString(R.string.playback_failed),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                })
-        }
+                override fun onError(
+                    youTubePlayer: YouTubePlayer,
+                    error: PlayerConstants.PlayerError
+                ) {
+                    super.onError(youTubePlayer, error)
 
-        (ctx as AppCompatActivity).supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            add(R.id.fragment_container_view_tag, fragment)
-        }
+                    Log.e(Global.TAG, java.lang.String.valueOf(error))
 
-        FragmentContainerView(it).apply {
-            id = R.id.fragment_container_view_tag
-        }
+                    Toast.makeText(
+                        ctx,
+                        ctx.getString(R.string.playback_failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        )
+        view
     })
 }
 

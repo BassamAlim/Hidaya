@@ -22,11 +22,9 @@ class AboutVM @Inject constructor(
 
     private var counter by mutableStateOf(0)
 
-    private val _uiState = MutableStateFlow(
-        AboutState(
+    private val _uiState = MutableStateFlow(AboutState(
         lastDailyUpdate = repo.getLastUpdate()
-    )
-    )
+    ))
     val uiState = _uiState.asStateFlow()
 
     private fun enableDevMode() {

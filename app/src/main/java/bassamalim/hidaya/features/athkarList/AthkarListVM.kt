@@ -88,9 +88,9 @@ class AthkarListVM @Inject constructor(
         repo.updateFavorites()
     }
 
-    fun onItemClick(navController: NavController, item: AthkarItem) {
+    fun onItemClick(nc: NavController, item: AthkarItem) {
         // pass type and thikrId which is item.id
-        navController.navigate(
+        nc.navigate(
             Screen.AthkarViewer(
                 item.id.toString()
             ).route
