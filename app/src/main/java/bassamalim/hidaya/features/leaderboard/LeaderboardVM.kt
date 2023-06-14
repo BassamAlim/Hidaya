@@ -26,21 +26,28 @@ class LeaderboardVM @Inject constructor(
         listeningRecord = savedStateHandle.get<Long>("listening_record") ?: 0L
     )
 
-    private var items = mutableListOf<LeaderboardItem>()
+    private lateinit var items: MutableList<LeaderboardItem>
 
     private val _uiState = MutableStateFlow(LeaderboardState())
     val uiState = _uiState.asStateFlow()
 
     init {
+        fillRanks()
+    }
+
+    private fun fillRanks() {
         viewModelScope.launch {
             if (userRecord.userId == -1) {
+                println("Error: User ID is -1")
+
                 _uiState.update { it.copy(
                     errorMessage = repo.errorFetchingDataStr,
                     loading = false
                 )}
             }
             else {
-                // fill items
+                items = mutableListOf()
+
                 repo.getRanks().map {
                     items.add(
                         LeaderboardItem(

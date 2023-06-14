@@ -20,28 +20,23 @@ class LeaderboardRepo @Inject constructor(
     val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
 
     suspend fun getRanks(): List<UserRecord> {
-        val items = mutableListOf<UserRecord>()
-
-        firestore.collection("Leaderboard")
+        return firestore.collection("Leaderboard")
             .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    items.add(
-                        UserRecord(
-                            userId = document.data["user_id"].toString().toInt(),
-                            readingRecord = document.data["reading_record"].toString().toInt(),
-                            listeningRecord = document.data["listening_record"].toString().toLong()
-                        )
-                    )
-                }
-                println("Data retrieved successfully!")
-            }
-            .addOnFailureListener { exception ->
-                println("Error getting documents: $exception")
-            }
             .await()
-
-        return items
+            .let { result ->
+                try {
+                    result.documents.map { document ->
+                        UserRecord(
+                            userId = document.data!!["user_id"].toString().toInt(),
+                            readingRecord = document.data!!["reading_record"].toString().toInt(),
+                            listeningRecord = document.data!!["listening_record"].toString().toLong()
+                        )
+                    }
+                } catch (e: Exception) {
+                    println("Error getting documents: ${e.message}")
+                    listOf()
+                }
+            }
     }
 
 }

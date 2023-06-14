@@ -78,7 +78,7 @@ fun MyClickableText(
     text: String,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 20.sp,
-    textColor: Color = AppTheme.colors.text,
+    textColor: Color = AppTheme.colors.accent,
     fontWeight: FontWeight = FontWeight.Normal,
     textAlign: TextAlign = TextAlign.Center,
     fontFamily: FontFamily = tajwal,

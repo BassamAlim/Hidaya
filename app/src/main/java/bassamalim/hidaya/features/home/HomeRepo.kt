@@ -64,17 +64,13 @@ class HomeRepo @Inject constructor(
             .apply()
     }
 
-    /*
-    * Returns user record if the device is registered in the database, otherwise null
-    */
     suspend fun getRemoteUserRecord(deviceId: String): Response<UserRecord> {
-        var response : Response<UserRecord> = Response.Error("Error fetching data")
-
-        firestore.collection("Leaderboard")
-            .document(deviceId)
-            .get()
-            .addOnSuccessListener { result ->
-                response =
+        return try {
+            firestore.collection("Leaderboard")
+                .document(deviceId)
+                .get()
+                .await()
+                .let { result ->
                     if (result.data == null) Response.Error("Error fetching data")
                     else if (result.data!!.isEmpty()) Response.Error("Device not registered")
                     else {
@@ -87,15 +83,11 @@ class HomeRepo @Inject constructor(
                             )
                         )
                     }
-
-                println("Data retrieved successfully!")
-            }
-            .addOnFailureListener { exception ->
-                println("Error getting documents: $exception")
-            }
-            .await()
-
-        return response
+                }
+        } catch (e: Exception) {
+            println("Error getting documents: $e")
+            Response.Error("Error fetching data")
+        }
     }
 
     suspend fun setRemoteUserRecord(deviceId: String, record: UserRecord) {

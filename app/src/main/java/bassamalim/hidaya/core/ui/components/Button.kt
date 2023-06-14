@@ -183,7 +183,9 @@ fun MyHorizontalButton(
     onClick: () -> Unit
 ) {
     Button(
-        onClick = onClick,
+        onClick = {
+            if (enabled) onClick()
+        },
         modifier = modifier.padding(3.dp),
         colors = colors,
         shape = RoundedCornerShape(10.dp),
@@ -191,8 +193,7 @@ fun MyHorizontalButton(
             defaultElevation = elevation.dp,
             pressedElevation = (elevation + 5).dp,
             disabledElevation = 0.dp
-        ),
-        enabled = enabled
+        )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -206,7 +207,7 @@ fun MyHorizontalButton(
                 text = text,
                 fontSize = fontSize,
                 fontWeight = fontWeight,
-                textColor = textColor
+                textColor = if (enabled) textColor else Color.Gray
             )
         }
     }

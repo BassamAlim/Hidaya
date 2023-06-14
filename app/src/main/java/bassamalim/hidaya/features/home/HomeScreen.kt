@@ -11,6 +11,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -157,7 +158,9 @@ fun RecordsCard(
                     Icon(
                         painter = painterResource(R.drawable.ic_leaderboard),
                         contentDescription = stringResource(R.string.leaderboard),
-                        tint = AppTheme.colors.accent
+                        tint =
+                            if (st.leaderboardEnabled) AppTheme.colors.accent
+                            else Color.Gray
                     )
                 },
                 middlePadding = PaddingValues(vertical = 6.dp, horizontal = 8.dp),

@@ -36,6 +36,7 @@ import bassamalim.hidaya.features.telawatClient.TelawatClientRepo
 import bassamalim.hidaya.features.telawatSuar.TelawatSuarRepo
 import bassamalim.hidaya.features.welcome.WelcomeRepo
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
 import dagger.Module
@@ -69,7 +70,15 @@ object AppModule {
             .build()
 
     @Provides @Singleton
-    fun provideFirestore() = FirebaseFirestore.getInstance()
+    fun provideFirestore(): FirebaseFirestore {
+        val db = FirebaseFirestore.getInstance()
+
+        db.firestoreSettings = FirebaseFirestoreSettings.Builder()
+            .setPersistenceEnabled(false)
+            .build()
+
+        return db
+    }
 
     @Provides @Singleton
     fun provideRemoteConfig() = FirebaseRemoteConfig.getInstance()
