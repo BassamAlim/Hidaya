@@ -38,7 +38,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
             ActivityUtils.clearAppData(ctx)
         }
 
-        if ((intent.action == "daily" && needed()) || intent.action == "boot") {
+        if ((intent.action == "daily" && notUpdatedToday()) || intent.action == "boot") {
             when (LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))) {
                 LocationType.Auto -> locate()
                 LocationType.Manual -> {
@@ -62,7 +62,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         setTomorrow()
     }
 
-    private fun needed(): Boolean {
+    private fun notUpdatedToday(): Boolean {
         return PrefUtils.getInt(sp, Prefs.LastDailyUpdateDay) != now[Calendar.DATE]
     }
 
@@ -127,7 +127,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
     private fun pickWerd() {
         sp.edit()
-            .putInt(Prefs.WerdPage.key, Random().nextInt(Global.QURAN_PAGES) - 1)
+            .putInt(Prefs.WerdPage.key, Random().nextInt(Global.QURAN_PAGES))
             .putBoolean(Prefs.WerdDone.key, false)
             .apply()
     }

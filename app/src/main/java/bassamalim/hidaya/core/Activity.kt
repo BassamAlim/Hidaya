@@ -22,7 +22,6 @@ import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
-import bassamalim.hidaya.core.helpers.Alarms
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
@@ -185,7 +184,7 @@ class Activity : ComponentActivity() {
 
         dailyUpdate()
 
-        setAlarms()
+        checkLocation()
 
         setupBootReceiver()
     }
@@ -249,13 +248,9 @@ class Activity : ComponentActivity() {
         sendBroadcast(intent)
     }
 
-    private fun setAlarms() {
+    private fun checkLocation() {
         val location = LocUtils.retrieveLocation(sp)
-        if (location != null) {
-            val times = PTUtils.getTimes(sp, db)!!
-            Alarms(this, times)
-        }
-        else if (!sp.getBoolean(Prefs.FirstTime.key, true)) {
+        if (location == null && !sp.getBoolean(Prefs.FirstTime.key, true)) {
             Toast.makeText(
                 this,
                 getString(R.string.give_location_permission_toast),

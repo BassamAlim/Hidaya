@@ -165,6 +165,10 @@ class NotificationReceiver : BroadcastReceiver() {
         )
     }
 
+    private fun setNotificationDone() {
+
+    }
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             channelId = ctx.resources.getStringArray(R.array.channel_ids)[pid.ordinal]
