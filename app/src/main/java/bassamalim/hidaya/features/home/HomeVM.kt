@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.location.Location
+import android.net.ConnectivityManager
 import android.os.CountDownTimer
 import android.provider.Settings
 import androidx.lifecycle.AndroidViewModel
@@ -24,6 +25,7 @@ import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.max
+
 
 @HiltViewModel
 class HomeVM @Inject constructor(
@@ -54,7 +56,9 @@ class HomeVM @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        updateUserRecords()
+        if (isInternetConnected(app)) {
+            updateUserRecords()
+        }
     }
 
     @SuppressLint("HardwareIds")
@@ -213,12 +217,15 @@ class HomeVM @Inject constructor(
             ) {
                 is Response.Success -> {
                     val remoteUserRecord = response.data
-
                     syncUserRecords(remoteUserRecord!!)
                 }
                 is Response.Error -> {
                     if (response.message == "Device not registered") {
                         latestUserRecord = repo.registerDevice(deviceId)
+
+                        _uiState.update { it.copy(
+                            leaderboardEnabled = true
+                        )}
                     }
                 }
             }
@@ -272,6 +279,13 @@ class HomeVM @Inject constructor(
             numeralsLanguage = numeralsLanguage,
             string = num.toString()
         )
+    }
+
+    private fun isInternetConnected(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return connectivityManager.activeNetwork != null &&
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork) != null
     }
 
 }

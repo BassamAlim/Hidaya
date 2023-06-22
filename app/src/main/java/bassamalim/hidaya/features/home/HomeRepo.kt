@@ -71,8 +71,9 @@ class HomeRepo @Inject constructor(
                 .get()
                 .await()
                 .let { result ->
-                    if (result.data == null) Response.Error("Error fetching data")
-                    else if (result.data!!.isEmpty()) Response.Error("Device not registered")
+                    if (result.data == null) {
+                        Response.Error("Device not registered")
+                    }
                     else {
                         val data = result.data!!
                         Response.Success(
