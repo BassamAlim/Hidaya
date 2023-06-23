@@ -1,11 +1,19 @@
 package bassamalim.hidaya.features.quran
 
 import android.widget.Toast
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -13,19 +21,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.Sura
-import bassamalim.hidaya.core.ui.components.*
+import bassamalim.hidaya.core.ui.components.MyClickableSurface
+import bassamalim.hidaya.core.ui.components.MyFavBtn
+import bassamalim.hidaya.core.ui.components.MyFloatingActionButton
+import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MySquareButton
+import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.SearchComponent
+import bassamalim.hidaya.core.ui.components.TabLayout
+import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
+@Destination
 @Composable
 fun QuranUI(
-    vm: QuranVM,
-    nc: NavController = rememberAnimatedNavController()
+    vm: QuranVM = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -43,7 +61,7 @@ fun QuranUI(
                 iconId = R.drawable.ic_quran_search,
                 description = stringResource(R.string.search_in_quran)
             ) {
-                vm.onQuranSearcherClick(nc)
+                vm.onQuranSearcherClick(navigator)
             }
         }
     ) {
@@ -57,7 +75,7 @@ fun QuranUI(
                 modifier = Modifier.fillMaxWidth(),
                 innerPadding = PaddingValues(vertical = 4.dp)
             ) {
-                vm.onBookmarkedPageClick(nc)
+                vm.onBookmarkedPageClick(navigator)
             }
 
             TabLayout(
@@ -71,11 +89,11 @@ fun QuranUI(
                         hint = stringResource(R.string.quran_query_hint),
                         modifier = Modifier.fillMaxWidth(),
                         onValueChange = { vm.onSearchTextChange(it) },
-                        onSubmit = { vm.onSearchSubmit(nc) }
+                        onSubmit = { vm.onSearchSubmit(navigator) }
                     )
                 }
             ) { page ->
-                Tab(vm, st, nc, vm.getItems(page))
+                Tab(vm, st, navigator, vm.getItems(page))
             }
         }
     }
@@ -103,7 +121,7 @@ fun QuranUI(
 private fun Tab(
     vm: QuranVM,
     st: QuranState,
-    nc: NavController,
+    navigator: DestinationsNavigator,
     items: List<Sura>
 ) {
     MyLazyColumn(
@@ -112,7 +130,7 @@ private fun Tab(
                 MyClickableSurface(
                     modifier = Modifier.padding(2.dp),
                     elevation = 6.dp,
-                    onClick = { vm.onSuraClick(item.id, nc) }
+                    onClick = { vm.onSuraClick(item.id, navigator) }
                 ) {
                     Row(
                         modifier = Modifier.padding(

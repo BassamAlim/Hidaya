@@ -43,7 +43,25 @@ class PrayersRepo @Inject constructor(
         else db.cityDao().getCity(cityId).nameAr
     }
 
-    fun getNotificationTypes(): List<NotificationType> {
+    fun getPrayersData(): List<PrayerData> {
+        val prayerNames = getPrayerNames()
+        val notificationTypes = getNotificationTypes()
+        val timeOffsets = getTimeOffsets()
+        val reminderOffsets = getReminderOffsets()
+
+        return PID.values().mapIndexed { idx, pid ->
+            PrayerData(
+                pid = pid,
+                name = prayerNames[idx],
+                time = "",
+                notificationType = notificationTypes[idx],
+                timeOffset = timeOffsets[idx],
+                reminderOffset = reminderOffsets[idx]
+            )
+        }
+    }
+
+    private fun getNotificationTypes(): List<NotificationType> {
         return listOf(
             NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.FAJR))),
             NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.SUNRISE))),
@@ -59,19 +77,25 @@ class PrayersRepo @Inject constructor(
             .apply()
     }
 
-    fun getTimeOffsets(): List<Int> {
-        return listOf(
-            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.FAJR)),
-            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.SUNRISE)),
-            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.DHUHR)),
-            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ASR)),
-            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.MAGHRIB)),
-            PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ISHAA)),
-        )
+    private fun getTimeOffsets(): List<Int> {
+        return PID.values().map { pid ->
+            PrefUtils.getInt(sp, Prefs.TimeOffset(pid))
+        }
     }
     fun setTimeOffset(pid: PID, offset: Int) {
         sp.edit()
             .putInt(Prefs.TimeOffset(pid).key, offset)
+            .apply()
+    }
+
+    private fun getReminderOffsets(): List<Int> {
+        return PID.values().map { pid ->
+            PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
+        }
+    }
+    fun setReminderOffset(pid: PID, offset: Int) {
+        sp.edit()
+            .putInt(Prefs.ReminderOffset(pid).key, offset)
             .apply()
     }
 
@@ -86,7 +110,7 @@ class PrayersRepo @Inject constructor(
     fun getLocation(): Location? = LocUtils.retrieveLocation(sp)
 
     fun getHijriMonths(): Array<String> = res.getStringArray(R.array.hijri_months)
-    fun getPrayerNames(): Array<String> = res.getStringArray(R.array.prayer_names)
+    private fun getPrayerNames(): Array<String> = res.getStringArray(R.array.prayer_names)
 
     fun getDayStr() = res.getString(R.string.day)
     fun getClkToLocate() = res.getString(R.string.clk_to_locate)

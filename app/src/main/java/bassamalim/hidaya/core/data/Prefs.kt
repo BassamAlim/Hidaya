@@ -132,6 +132,11 @@ sealed class Prefs(val key: String, val default: Any) {
         default = 0
     )
 
+    data class ReminderOffset(val pid: PID): Prefs(
+        key = "${pid.name}_reminder_offset",
+        default = 0
+    )
+
     object WerdPage: Prefs("werd_page", 25)
 
     object WerdDone: Prefs("werd_done", false)

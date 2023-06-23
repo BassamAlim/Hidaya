@@ -1,7 +1,6 @@
 package bassamalim.hidaya.features.welcome
 
 import android.app.Activity
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -11,19 +10,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.features.settings.AppearanceSettings
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
+@Destination
 @Composable
 fun WelcomeUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: WelcomeVM
+    vm: WelcomeVM = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     val activity = LocalContext.current as Activity
 
@@ -50,7 +50,7 @@ fun WelcomeUI(
                 innerPadding = PaddingValues(vertical = 2.dp, horizontal = 25.dp),
                 modifier = Modifier.padding(bottom = 10.dp)
             ) {
-                vm.save(nc)
+                vm.save(navigator)
             }
         }
     }

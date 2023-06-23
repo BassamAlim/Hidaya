@@ -10,7 +10,9 @@ import bassamalim.hidaya.core.data.database.dbs.AthkarDB
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.AthkarItem
-import bassamalim.hidaya.core.nav.Screen
+import bassamalim.hidaya.features.destinations.AthkarViewerUIDestination
+import bassamalim.hidaya.features.navArgs
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,27 +25,24 @@ class AthkarListVM @Inject constructor(
     private val repo: AthkarListRepo
 ): ViewModel() {
 
-    private val type = savedStateHandle.get<String>("type") ?: ListType.All.name
-    private val category = savedStateHandle.get<Int>("category")?: 0
+    private val args = savedStateHandle.navArgs<AthkarListArgs>()
 
     var searchText by mutableStateOf("")
         private set
     private val language = repo.getLanguage()
 
-    private val _uiState = MutableStateFlow(
-        AthkarListState(
-        title = when (type) {
-            ListType.Favorite.name -> repo.getFavoriteAthkarStr()
-            ListType.Custom.name -> repo.getName(language, category)
+    private val _uiState = MutableStateFlow(AthkarListState(
+        title = when (args.type) {
+            ListType.Favorite -> repo.getFavoriteAthkarStr()
+            ListType.Custom -> repo.getName(language, args.category)
             else -> repo.getAllAthkarStr()
         },
         items = getItems()
-    )
-    )
+    ))
     val uiState = _uiState.asStateFlow()
 
     private fun getItems(): List<AthkarItem> {
-        val athkar = repo.getAthkar(type, category)
+        val athkar = repo.getAthkar(args.type, args.category)
         val items = ArrayList<AthkarItem>()
 
         val isEng = language == Language.ENGLISH
@@ -88,13 +87,12 @@ class AthkarListVM @Inject constructor(
         repo.updateFavorites()
     }
 
-    fun onItemClick(nc: NavController, item: AthkarItem) {
-        // pass type and thikrId which is item.id
-        nc.navigate(
-            Screen.AthkarViewer(
-                item.id.toString()
-            ).route
-        )
+    fun onItemClick(navigator: DestinationsNavigator, item: AthkarItem) {
+//        navigator.navigate(
+//            AthkarViewerUIDestination(
+//                thikrId = item.id
+//            ).route
+//        )
     }
 
     fun onSearchChange(text: String) {

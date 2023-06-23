@@ -3,7 +3,6 @@ package bassamalim.hidaya.features.locator
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ButtonDefaults
@@ -16,20 +15,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
+@Destination(navArgsDelegate = LocatorArgs::class)
 @Composable
 fun LocatorUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: LocatorVM
+    vm: LocatorVM = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -40,7 +40,7 @@ fun LocatorUI(
     }
 
     LaunchedEffect(null) {
-        vm.provide(nc, requestLauncher)
+        vm.provide(navigator, requestLauncher)
     }
 
     Column(

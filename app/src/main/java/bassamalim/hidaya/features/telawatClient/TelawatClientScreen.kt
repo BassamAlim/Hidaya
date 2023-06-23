@@ -4,7 +4,6 @@ import android.app.Activity
 import android.os.Build
 import android.support.v4.media.session.PlaybackStateCompat.*
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -20,20 +19,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
+@Destination(navArgsDelegate = TelawatClientArgs::class)
 @Composable
 fun TelawatClientUI(
-    vm: TelawatClientVM,
-    nc: NavController = rememberAnimatedNavController()
+    vm: TelawatClientVM = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
@@ -46,7 +46,7 @@ fun TelawatClientUI(
     MyScaffold(
         title = stringResource(R.string.recitations),
         bottomBar = { BottomBar(vm, st) },
-        onBack = { vm.onBackPressed(nc) }
+        onBack = { vm.onBackPressed(navigator) }
     ) {
         Column(
             Modifier

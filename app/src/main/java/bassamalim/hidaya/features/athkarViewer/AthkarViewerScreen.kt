@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.Thikr
@@ -31,10 +32,12 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
+import com.ramcosta.composedestinations.annotation.Destination
 
+@Destination(navArgsDelegate = AthkarViewerArgs::class,)
 @Composable
 fun AthkarViewerUI(
-    vm: AthkarViewerVM
+    vm: AthkarViewerVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 

@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.books
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
@@ -9,19 +8,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.utils.FileUtils
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
+@Destination
 @Composable
 fun BooksUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: BooksVM
+    vm: BooksVM = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -37,7 +37,7 @@ fun BooksUI(
             MyFloatingActionButton(
                 iconId = R.drawable.ic_quran_search,
                 description = stringResource(R.string.search_in_books),
-                onClick = { vm.onFabClick(nc) }
+                onClick = { vm.onFabClick(navigator) }
             )
         }
     ) {
@@ -62,7 +62,7 @@ fun BooksUI(
                                 deleted = { vm.onFileDeleted(item.id) }
                             )
                         },
-                        onClick = { vm.onItemClick(item, nc) }
+                        onClick = { vm.onItemClick(item, navigator) }
                     )
                 }
             }

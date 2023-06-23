@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.locationPicker
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,17 +10,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.ui.components.*
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.spec.DestinationStyle
 
-@OptIn(ExperimentalAnimationApi::class)
+@Destination(style = DestinationStyle.Dialog::class)
 @Composable
 fun LocationPickerUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: LocationPickerVM
+    vm: LocationPickerVM = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -30,7 +31,7 @@ fun LocationPickerUI(
         topBar = {
             MyTopBar(
                 title = stringResource(st.titleResId),
-                onBack = { vm.onBack(nc) }
+                onBack = { vm.onBack(navigator) }
             )
         }
     ) {
@@ -57,7 +58,7 @@ fun LocationPickerUI(
                             if (vm.language == Language.ENGLISH) item.nameEn
                             else item.nameAr,
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { vm.onSelect(item.id, nc) }
+                            onClick = { vm.onSelect(item.id, navigator) }
                         )
                     }
                 }

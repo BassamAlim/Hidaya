@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.ui.components.CategoryTitle
@@ -21,10 +22,13 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SliderPref
 import bassamalim.hidaya.core.ui.components.SwitchPref
 import bassamalim.hidaya.core.ui.theme.AppTheme
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.spec.DestinationStyle
 
+@Destination(style = DestinationStyle.Dialog::class)
 @Composable
 fun QuranSettingsDlg(
-    vm: QuranSettingsVM,
+    vm: QuranSettingsVM = hiltViewModel(),
     shown: Boolean,
     mainOnDone: () -> Unit
 ) {

@@ -29,10 +29,10 @@ class AthkarListRepo @Inject constructor(
             .apply()
     }
 
-    fun getAthkar(type: String, category: Int): List<AthkarDB> {
+    fun getAthkar(type: ListType, category: Int): List<AthkarDB> {
         return when (type) {
-            ListType.Favorite.name -> db.athkarDao().getFavorites()
-            ListType.Custom.name -> db.athkarDao().getList(category)
+            ListType.Favorite -> db.athkarDao().getFavorites()
+            ListType.Custom -> db.athkarDao().getList(category)
             else -> db.athkarDao().getAll()
         }
     }

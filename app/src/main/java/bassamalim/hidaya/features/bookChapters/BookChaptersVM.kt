@@ -2,10 +2,10 @@ package bassamalim.hidaya.features.bookChapters
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.BookChapter
-import bassamalim.hidaya.core.nav.Screen
+import bassamalim.hidaya.features.destinations.BookViewerUIDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,13 +46,13 @@ class BookChaptersVM @Inject constructor(
         }
     }
 
-    fun onItemClick(item: BookChapter, navController: NavController) {
-        navController.navigate(
-            Screen.BookViewer(
-                bookId.toString(),
+    fun onItemClick(item: BookChapter, navigator: DestinationsNavigator) {
+        navigator.navigate(
+            BookViewerUIDestination(
+                bookId,
                 item.title,
-                item.id.toString()
-            ).route
+                item.id
+            )
         )
     }
 

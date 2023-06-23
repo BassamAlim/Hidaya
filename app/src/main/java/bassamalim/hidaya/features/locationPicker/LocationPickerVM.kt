@@ -4,10 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.LocationPickerItem
-import bassamalim.hidaya.core.nav.Screen
+import bassamalim.hidaya.features.destinations.PrayersUIDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -73,7 +73,7 @@ class LocationPickerVM @Inject constructor(
                     city.nameEn.contains(searchText, ignoreCase = true) }
     }
 
-    fun onBack(navController: NavController) {
+    fun onBack(navigator: DestinationsNavigator) {
         if (mode == 1) {
             mode = 0
 
@@ -83,22 +83,24 @@ class LocationPickerVM @Inject constructor(
                 items = getItems()
             )}
         }
-        else navController.popBackStack()
+        else navigator.popBackStack()
     }
 
-    fun onSelect(id: Int, nc: NavController) {
+    fun onSelect(id: Int, navigator: DestinationsNavigator) {
         if (mode == 1) {
             repo.storeLocation(countryId, id)
 
-            nc.navigate(Screen.Main.route) {
-                popUpTo(Screen.LocationPicker.route) {
-                    inclusive = true
-                }
-            }
-            nc.popBackStack(
-                Screen.Locator("normal").route,
-                true
-            )
+            navigator.navigate(PrayersUIDestination)
+            // TODO
+//            nc.navigate(Screen.Main.route) {
+//                popUpTo(Screen.LocationPicker.route) {
+//                    inclusive = true
+//                }
+//            }
+//            nc.popBackStack(
+//                Screen.Locator("normal").route,
+//                true
+//            )
         }
         else {
             countryId = id

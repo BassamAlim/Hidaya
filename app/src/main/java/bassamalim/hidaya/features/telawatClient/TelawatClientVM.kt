@@ -18,12 +18,12 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.Reciter
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.FileUtils
+import bassamalim.hidaya.features.destinations.TelawatSuarUIDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -276,18 +276,25 @@ class TelawatClientVM @Inject constructor(
         (app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
     }
 
-    fun onBackPressed(navController: NavController) {
+    fun onBackPressed(navigator: DestinationsNavigator) {
         if (activity.isTaskRoot) {
-            navController.navigate(
-                Screen.TelawatSuar(
-                    reciterId.toString(),
-                    versionId.toString()
-                ).route
-            ) {
-                popUpTo(Screen.TelawatClient(action, mediaId).route) {
-                    inclusive = true
-                }
-            }
+            navigator.navigate(
+                TelawatSuarUIDestination(
+                    reciterId = reciterId,
+                    versionId = versionId
+                )
+            )
+            // TODO
+//            navController.navigate(
+//                Screen.TelawatSuar(
+//                    reciterId.toString(),
+//                    versionId.toString()
+//                ).route
+//            ) {
+//                popUpTo(Screen.TelawatClient(action, mediaId).route) {
+//                    inclusive = true
+//                }
+//            }
         }
         else
             (activity as AppCompatActivity).onBackPressedDispatcher.onBackPressed()

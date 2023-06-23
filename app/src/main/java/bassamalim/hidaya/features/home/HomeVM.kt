@@ -9,13 +9,14 @@ import android.os.CountDownTimer
 import android.provider.Settings
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.data.Response
 import bassamalim.hidaya.core.helpers.PrayTimes
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.core.utils.PTUtils
+import bassamalim.hidaya.features.destinations.LeaderboardUIDestination
+import bassamalim.hidaya.features.destinations.QuranViewerUIDestination
 import bassamalim.hidaya.features.leaderboard.UserRecord
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +26,6 @@ import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.max
-
 
 @HiltViewModel
 class HomeVM @Inject constructor(
@@ -84,22 +84,22 @@ class HomeVM @Inject constructor(
         timer?.cancel()
     }
 
-    fun onGotoTodayWerdClick(navController: NavController) {
-        navController.navigate(
-            Screen.QuranViewer(
-                "by_page",
-                page = _uiState.value.todayWerdPage
-            ).route
+    fun onGotoTodayWerdClick(navigator: DestinationsNavigator) {
+        navigator.navigate(
+            QuranViewerUIDestination(
+                type = "by_page",
+                pageNum = _uiState.value.todayWerdPage.toInt()
+            )
         )
     }
 
-    fun gotoLeaderboard(navController: NavController) {
-        navController.navigate(
-            Screen.Leaderboard(
-                latestUserRecord.userId.toString(),
-                latestUserRecord.readingRecord.toString(),
-                latestUserRecord.listeningRecord.toString()
-            ).route
+    fun gotoLeaderboard(navigator: DestinationsNavigator) {
+        navigator.navigate(
+            LeaderboardUIDestination(
+                userId = latestUserRecord.userId,
+                readingRecord = latestUserRecord.readingRecord,
+                listeningRecord = latestUserRecord.listeningRecord
+            )
         )
     }
 

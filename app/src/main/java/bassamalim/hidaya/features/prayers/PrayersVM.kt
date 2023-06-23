@@ -2,17 +2,17 @@ package bassamalim.hidaya.features.prayers
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.helpers.Alarms
 import bassamalim.hidaya.core.helpers.PrayTimes
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.core.utils.PTUtils
+import bassamalim.hidaya.features.destinations.LocatorUIDestination
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,13 +28,11 @@ class PrayersVM @Inject constructor(
 
     val location = repo.getLocation()
     private var prayTimes = PrayTimes(repo.sp)
-    private val prayerNames = repo.getPrayerNames()
     private val calendar = Calendar.getInstance()
     private var dateOffset = 0
 
     private val _uiState = MutableStateFlow(PrayersState(
-        notificationTypes = repo.getNotificationTypes(),
-        timeOffsets = repo.getTimeOffsets(),
+        prayersData = repo.getPrayersData(),
         tutorialDialogShown = repo.getShowTutorial(),
         locationName =
             if (location != null) getLocName()
@@ -48,19 +46,24 @@ class PrayersVM @Inject constructor(
         goToToday()
     }
 
+    fun goToToday() {
+        updateState(0)
+    }
+
     private fun updateState(dateOffset: Int = 0) {
         this.dateOffset = dateOffset
 
         if (location != null) {
+            val times = getTimes()
+            val prayersData = _uiState.value.prayersData.mapIndexed { idx, data ->
+                data.copy(time = times[idx])
+            }
+
             _uiState.update { it.copy(
-                prayerTexts = appendNames(getTimes()),
+                prayersData = prayersData,
                 dateText = getDateText()
             )}
         }
-    }
-
-    fun goToToday() {
-        updateState(0)
     }
 
     /**
@@ -112,12 +115,6 @@ class PrayersVM @Inject constructor(
         }
     }
 
-    private fun appendNames(times: List<String>): List<String> {
-        val result = mutableListOf<String>()
-        for (i in times.indices) result.add("${prayerNames[i]}: ${times[i]}")
-        return result
-    }
-
     fun formatTimeOffset(offset : Int): String {
         return if (offset > 0)
             translateNums(repo.numeralsLanguage, "+$offset")
@@ -139,11 +136,11 @@ class PrayersVM @Inject constructor(
         Alarms(app, _uiState.value.settingsDialogPID)
     }
 
-    fun onLocatorClick(navController: NavController) {
-        navController.navigate(
-            Screen.Locator(
-                "normal"
-            ).route
+    fun onLocatorClick(navigator: DestinationsNavigator) {
+        navigator.navigate(
+            LocatorUIDestination(
+                type = "normal"
+            )
         )
     }
 
@@ -173,10 +170,13 @@ class PrayersVM @Inject constructor(
     }
 
     fun onNotificationTypeChange(notificationType: NotificationType) {
+        val prayerNum = _uiState.value.settingsDialogPID.ordinal
         _uiState.update { it.copy(
-            notificationTypes = _uiState.value.notificationTypes.toMutableList().apply {
-                this[_uiState.value.settingsDialogPID.ordinal] = notificationType
-            }
+            prayersData = it.prayersData.toMutableList().apply {
+                this[prayerNum] = it.prayersData[prayerNum].copy(
+                    notificationType = notificationType
+                )
+            }.toList()
         )}
 
         repo.setNotificationType(_uiState.value.settingsDialogPID, notificationType)
@@ -185,13 +185,31 @@ class PrayersVM @Inject constructor(
     }
 
     fun onTimeOffsetChange(timeOffset: Int) {
+        val prayerNum = _uiState.value.settingsDialogPID.ordinal
         _uiState.update { it.copy(
-            timeOffsets = _uiState.value.timeOffsets.toMutableList().apply {
-                this[_uiState.value.settingsDialogPID.ordinal] = timeOffset
-            }
+            prayersData = it.prayersData.toMutableList().apply {
+                this[prayerNum] = it.prayersData[prayerNum].copy(
+                    timeOffset = timeOffset
+                )
+            }.toList()
         )}
 
         repo.setTimeOffset(_uiState.value.settingsDialogPID, timeOffset)
+
+        updatePrayerTimeAlarms()
+    }
+
+    fun onReminderOffsetChange(reminderOffset: Int) {
+        val prayerNum = _uiState.value.settingsDialogPID.ordinal
+        _uiState.update { it.copy(
+            prayersData = it.prayersData.toMutableList().apply {
+                this[prayerNum] = it.prayersData[prayerNum].copy(
+                    reminderOffset = reminderOffset
+                )
+            }.toList()
+        )}
+
+        repo.setReminderOffset(_uiState.value.settingsDialogPID, reminderOffset)
 
         updatePrayerTimeAlarms()
     }

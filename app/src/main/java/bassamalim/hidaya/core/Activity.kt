@@ -22,13 +22,13 @@ import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
-import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.*
+import bassamalim.hidaya.features.main.MainUI
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
@@ -165,7 +165,8 @@ class Activity : ComponentActivity() {
             AppTheme(
                 direction = getDirection()
             ) {
-                Navigator(navRoute, shouldWelcome)
+                MainUI()
+//                Navigator(navRoute, shouldWelcome)
             }
         }
     }

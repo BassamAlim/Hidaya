@@ -1,8 +1,8 @@
 package bassamalim.hidaya.features.welcome
 
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
-import bassamalim.hidaya.core.nav.Screen
+import bassamalim.hidaya.features.destinations.LocatorUIDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -13,14 +13,20 @@ class WelcomeVM @Inject constructor(
 
     val pref = repo.pref
 
-    fun save(navController: NavController) {
+    fun save(navigator: DestinationsNavigator) {
         repo.unsetFirstTime()
 
-        navController.navigate(Screen.Locator("initial").route) {
-            popUpTo(Screen.Welcome.route) {
-                inclusive = true
-            }
-        }
+        navigator.navigate(
+            LocatorUIDestination(
+                type = "initial"
+            )
+        )
+        // TODO
+//        navController.navigate(Screen.Locator("initial").route) {
+//            popUpTo(Screen.Welcome.route) {
+//                inclusive = true
+//            }
+//        }
     }
 
 }

@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.quizLobby
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,18 +11,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
+@Destination
 @Composable
 fun QuizLobbyUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: QuizLobbyVM
+    vm: QuizLobbyVM = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     MyScaffold(stringResource(R.string.quiz_title)) {
         Column(
@@ -38,7 +38,7 @@ fun QuizLobbyUI(
                 fontWeight = FontWeight.Bold,
                 textColor = AppTheme.colors.accent
             ) {
-                vm.onStartQuizClick(nc)
+                vm.onStartQuizClick(navigator)
             }
         }
     }

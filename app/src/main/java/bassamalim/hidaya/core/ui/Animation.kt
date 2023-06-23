@@ -5,7 +5,7 @@ package bassamalim.hidaya.core.ui
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.navigation.NavBackStackEntry
-import bassamalim.hidaya.core.ui.components.BottomNavItem
+import bassamalim.hidaya.features.main.BottomNavDestination
 
 val inFromBottom = { _: AnimatedContentScope<NavBackStackEntry> ->
     slideInVertically(
@@ -35,20 +35,15 @@ val outToTop = { _: AnimatedContentScope<NavBackStackEntry> ->
     ) + fadeOut(animationSpec = tween(200))
 }
 
-
-val bottomNavBarWeightMap = hashMapOf(
-    BottomNavItem.Home.route to 1,
-    BottomNavItem.Prayers.route to 2,
-    BottomNavItem.Quran.route to 3,
-    BottomNavItem.Athkar.route to 4,
-    BottomNavItem.More.route to 5
-)
-
 val TabEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
     val from = an.initialState.destination.route
     val to = an.targetState.destination.route
-    val fromWeight = bottomNavBarWeightMap[from] ?: 0
-    val toWeight = bottomNavBarWeightMap[to] ?: 0
+    val fromWeight = BottomNavDestination.values().indexOf(
+        BottomNavDestination.values().find { it.direction.route == from }
+    )
+    val toWeight = BottomNavDestination.values().indexOf(
+        BottomNavDestination.values().find { it.direction.route == to }
+    )
 
     if (fromWeight < toWeight) inFromLeftTransition
     else inFromRightTransition
@@ -57,8 +52,12 @@ val TabEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
 val TabExit = { an: AnimatedContentScope<NavBackStackEntry> ->
     val from = an.initialState.destination.route
     val to = an.targetState.destination.route
-    val fromWeight = bottomNavBarWeightMap[from] ?: 0
-    val toWeight = bottomNavBarWeightMap[to] ?: 0
+    val fromWeight = BottomNavDestination.values().indexOf(
+        BottomNavDestination.values().find { it.direction.route == from }
+    )
+    val toWeight = BottomNavDestination.values().indexOf(
+        BottomNavDestination.values().find { it.direction.route == to }
+    )
 
     if (fromWeight < toWeight) outToRightTransition
     else outToLeftTransition
@@ -67,8 +66,12 @@ val TabExit = { an: AnimatedContentScope<NavBackStackEntry> ->
 val TabPopEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
     val from = an.initialState.destination.route
     val to = an.targetState.destination.route
-    val fromWeight = bottomNavBarWeightMap[from] ?: 0
-    val toWeight = bottomNavBarWeightMap[to] ?: 0
+    val fromWeight = BottomNavDestination.values().indexOf(
+        BottomNavDestination.values().find { it.direction.route == from }
+    )
+    val toWeight = BottomNavDestination.values().indexOf(
+        BottomNavDestination.values().find { it.direction.route == to }
+    )
 
     if (fromWeight < toWeight) inFromLeftTransition
     else inFromRightTransition
@@ -77,8 +80,12 @@ val TabPopEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
 val TabPopExit = { an: AnimatedContentScope<NavBackStackEntry> ->
     val from = an.initialState.destination.route
     val to = an.targetState.destination.route
-    val fromWeight = bottomNavBarWeightMap[from] ?: 0
-    val toWeight = bottomNavBarWeightMap[to] ?: 0
+    val fromWeight = BottomNavDestination.values().indexOf(
+        BottomNavDestination.values().find { it.direction.route == from }
+    )
+    val toWeight = BottomNavDestination.values().indexOf(
+        BottomNavDestination.values().find { it.direction.route == to }
+    )
 
     if (fromWeight < toWeight) outToRightTransition
     else outToLeftTransition

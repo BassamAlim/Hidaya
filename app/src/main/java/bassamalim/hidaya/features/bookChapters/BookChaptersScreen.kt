@@ -1,23 +1,29 @@
 package bassamalim.hidaya.features.bookChapters
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.BookChapter
-import bassamalim.hidaya.core.ui.components.*
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import bassamalim.hidaya.core.ui.components.MyBtnSurface
+import bassamalim.hidaya.core.ui.components.MyFavBtn
+import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.SearchComponent
+import bassamalim.hidaya.core.ui.components.TabLayout
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
+@Destination(navArgsDelegate = BookChaptersArgs::class)
 @Composable
 fun BookChaptersUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: BookChaptersVM
+    vm: BookChaptersVM = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -37,7 +43,7 @@ fun BookChaptersUI(
                 }
             }
         ) { page ->
-            Tab(vm, st, nc, vm.getItems(page))
+            Tab(vm, st, navigator, vm.getItems(page))
         }
     }
 }
@@ -46,7 +52,7 @@ fun BookChaptersUI(
 private fun Tab(
     viewModel: BookChaptersVM,
     state: BookChaptersState,
-    navController: NavController,
+    navigator: DestinationsNavigator,
     items: List<BookChapter>
 ) {
     MyLazyColumn(
@@ -60,7 +66,7 @@ private fun Tab(
                         }
                     }
                 ) {
-                    viewModel.onItemClick(item, navController)
+                    viewModel.onItemClick(item, navigator)
                 }
             }
         }

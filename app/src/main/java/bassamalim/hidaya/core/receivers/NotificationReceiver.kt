@@ -18,7 +18,6 @@ import androidx.core.app.NotificationManagerCompat
 import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.other.Global
@@ -130,32 +129,32 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun onClick(pid: PID?): PendingIntent {
         val intent = Intent(ctx, Activity::class.java)
 
-        val route = when (pid) {
-            PID.MORNING -> {
-                Screen.AthkarViewer(
-                    0.toString(),
-                ).route
-            }
-            PID.EVENING -> {
-                Screen.AthkarViewer(
-                    1.toString(),
-                ).route
-            }
-            PID.DAILY_WERD -> {
-                Screen.QuranViewer(
-                    "by_page",
-                    page = PrefUtils.getInt(sp, Prefs.WerdPage).toString()
-                ).route
-            }
-            PID.FRIDAY_KAHF -> {
-                Screen.QuranViewer(
-                    "by_sura",
-                    suraId = 17.toString() // surat al-kahf
-                ).route
-            }
-            else -> Screen.Main.route
-        }
-        intent.putExtra("start_route", route)
+//        val route = when (pid) {
+//            PID.MORNING -> {
+//                Screen.AthkarViewer(
+//                    0.toString(),
+//                ).route
+//            }
+//            PID.EVENING -> {
+//                Screen.AthkarViewer(
+//                    1.toString(),
+//                ).route
+//            }
+//            PID.DAILY_WERD -> {
+//                Screen.QuranViewer(
+//                    "by_page",
+//                    page = PrefUtils.getInt(sp, Prefs.WerdPage).toString()
+//                ).route
+//            }
+//            PID.FRIDAY_KAHF -> {
+//                Screen.QuranViewer(
+//                    "by_sura",
+//                    suraId = 17.toString() // surat al-kahf
+//                ).route
+//            }
+//            else -> Screen.Main.route
+//        }
+//        intent.putExtra("start_route", route)
 
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 

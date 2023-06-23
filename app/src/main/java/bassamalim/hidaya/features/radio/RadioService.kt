@@ -33,7 +33,6 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import java.io.IOException
@@ -433,7 +432,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private fun getContentIntent(): PendingIntent {
         val intent = Intent(this, Activity::class.java)
         intent.action = "back"
-        intent.putExtra("start_route", Screen.RadioClient.route)
+//        intent.putExtra("start_route", Screen.RadioClient.route)
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 

@@ -11,12 +11,13 @@ import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.ReciterSura
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.FileUtils
+import bassamalim.hidaya.features.destinations.TelawatClientUIDestination
+import bassamalim.hidaya.features.destinations.TelawatSuarUIDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -67,16 +68,22 @@ class TelawatSuarVM @Inject constructor(
         }
     }
 
-    fun onBackPressed(nc: NavController) {
-        val ctx = nc.context
-        if ((ctx as Activity).isTaskRoot) {
-            nc.navigate(Screen.Telawat.route) {
-                popUpTo(Screen.TelawatSuar(reciterId.toString(), versionId.toString()).route) {
-                    inclusive = true
-                }
-            }
+    fun onBackPressed(navigator: DestinationsNavigator) {
+        if ((app as Activity).isTaskRoot) {
+            navigator.navigate(
+                TelawatSuarUIDestination(
+                    reciterId = reciterId,
+                    versionId = versionId
+                )
+            )
+            // TODO
+//            nc.navigate(Screen.Telawat.route) {
+//                popUpTo(Screen.TelawatSuar(reciterId.toString(), versionId.toString()).route) {
+//                    inclusive = true
+//                }
+//            }
         }
-        else (ctx as ComponentActivity).onBackPressedDispatcher.onBackPressed()
+        else (app as ComponentActivity).onBackPressedDispatcher.onBackPressed()
     }
 
     private fun updateDownloads() {
@@ -160,17 +167,17 @@ class TelawatSuarVM @Inject constructor(
         }
     }
 
-    fun onItemClk(navController: NavController, sura: ReciterSura) {
+    fun onItemClk(navigator: DestinationsNavigator, sura: ReciterSura) {
         val rId = String.format(Locale.US, "%03d", reciterId)
         val vId = String.format(Locale.US, "%02d", versionId)
         val sId = String.format(Locale.US, "%03d", sura.num)
         val mediaId = rId + vId + sId
 
-        navController.navigate(
-            Screen.TelawatClient(
-                "start",
-                mediaId
-            ).route
+        navigator.navigate(
+            TelawatClientUIDestination(
+                action = "start",
+                mediaId = mediaId
+            )
         )
     }
 

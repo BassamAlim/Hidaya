@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.athkarList
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,17 +8,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.*
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import bassamalim.hidaya.core.ui.components.MyBtnSurface
+import bassamalim.hidaya.core.ui.components.MyFavBtn
+import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.SearchComponent
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
+@Destination(navArgsDelegate = AthkarListArgs::class)
 @Composable
 fun AthkarListUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: AthkarListVM
+    vm: AthkarListVM = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -46,7 +50,7 @@ fun AthkarListUI(
                                     vm.onFavoriteCLick(item)
                                 }
                             },
-                            onClick = { vm.onItemClick(nc, item) }
+                            onClick = { vm.onItemClick(navigator, item) }
                         )
                     }
                 }

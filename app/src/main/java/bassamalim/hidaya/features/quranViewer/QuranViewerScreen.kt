@@ -38,11 +38,13 @@ import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quranSettings.QuranSettingsDlg
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
+import com.ramcosta.composedestinations.annotation.Destination
 
 @OptIn(ExperimentalPagerApi::class)
+@Destination(navArgsDelegate = QuranViewerArgs::class)
 @Composable
 fun QuranViewerUI(
-    vm: QuranViewerVM
+    vm: QuranViewerVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 

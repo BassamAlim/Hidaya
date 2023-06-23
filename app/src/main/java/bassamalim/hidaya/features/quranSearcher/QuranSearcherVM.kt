@@ -7,11 +7,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranSearcherMatch
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.features.destinations.QuranViewerUIDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,11 +37,9 @@ class QuranSearcherVM @Inject constructor(
         private set
     private var highlightColor: Color? = null
 
-    private val _uiState = MutableStateFlow(
-        QuranSearcherState(
+    private val _uiState = MutableStateFlow(QuranSearcherState(
         maxMatches = maxMatchesItems[repo.getMaxMatchesIndex()].toInt()
-    )
-    )
+    ))
     val uiState = _uiState.asStateFlow()
 
     private fun search(highlightColor: Color) {
@@ -106,12 +104,12 @@ class QuranSearcherVM @Inject constructor(
         repo.setMaxMatchesIndex(index)
     }
 
-    fun onGotoPageClick(page: Int, nc: NavController) {
-        nc.navigate(
-            Screen.QuranViewer(
+    fun onGotoPageClick(page: Int, navigator: DestinationsNavigator) {
+        navigator.navigate(
+            QuranViewerUIDestination(
                 type = "by_page",
-                page = page.toString()
-            ).route
+                pageNum = page
+            )
         )
     }
 

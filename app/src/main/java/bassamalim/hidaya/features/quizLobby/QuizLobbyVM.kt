@@ -1,16 +1,16 @@
 package bassamalim.hidaya.features.quizLobby
 
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
-import bassamalim.hidaya.core.nav.Screen
+import bassamalim.hidaya.features.destinations.QuizUIDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class QuizLobbyVM @Inject constructor(): ViewModel() {
 
-    fun onStartQuizClick(navController: NavController) {
-        navController.navigate(Screen.Quiz.route)
+    fun onStartQuizClick(navigator: DestinationsNavigator) {
+        navigator.navigate(QuizUIDestination)
     }
 
 }

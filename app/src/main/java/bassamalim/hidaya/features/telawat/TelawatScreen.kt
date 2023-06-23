@@ -1,8 +1,13 @@
 package bassamalim.hidaya.features.telawat
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -15,20 +20,31 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.Reciter
-import bassamalim.hidaya.core.ui.components.*
+import bassamalim.hidaya.core.ui.components.FilterDialog
+import bassamalim.hidaya.core.ui.components.MyDownloadBtn
+import bassamalim.hidaya.core.ui.components.MyFavBtn
+import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
+import bassamalim.hidaya.core.ui.components.MyIconBtn
+import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MySquareButton
+import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.SearchComponent
+import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
+@Destination
 @Composable
 fun TelawatUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: TelawatVM
+    vm: TelawatVM = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -39,7 +55,7 @@ fun TelawatUI(
 
     MyScaffold(
         stringResource(R.string.recitations),
-        onBack = { vm.onBackPressed(nc) }
+        onBack = { vm.onBackPressed(navigator) }
     ) {
         Column {
             MySquareButton(
@@ -49,7 +65,7 @@ fun TelawatUI(
                 modifier = Modifier.fillMaxWidth(),
                 innerPadding = PaddingValues(vertical = 4.dp)
             ) {
-                vm.onContinueListeningClick(nc)
+                vm.onContinueListeningClick(navigator)
             }
 
             TabLayout(
@@ -84,7 +100,7 @@ fun TelawatUI(
                     }
                 }
             ) { page ->
-                Tab(vm, st, nc, vm.getItems(page))
+                Tab(vm, st, navigator, vm.getItems(page))
             }
         }
 
@@ -102,13 +118,13 @@ fun TelawatUI(
 private fun Tab(
     vm: TelawatVM,
     st: TelawatState,
-    nc: NavController,
+    navigator: DestinationsNavigator,
     items: List<Reciter>
 ) {
     MyLazyColumn(
         lazyList = {
             items(items) { item ->
-                ReciterCard(reciter = item, vm, st, nc)
+                ReciterCard(reciter = item, vm, st, navigator)
             }
         }
     )
@@ -119,7 +135,7 @@ private fun ReciterCard(
     reciter: Reciter,
     vm: TelawatVM,
     st: TelawatState,
-    nc: NavController
+    navigator: DestinationsNavigator
 ) {
     Surface(
         Modifier
@@ -159,7 +175,7 @@ private fun ReciterCard(
                         version = version,
                         vm = vm,
                         st = st,
-                        nc = nc
+                        navigator = navigator
                     )
                 }
             }
@@ -173,13 +189,13 @@ private fun VersionCard(
     version: Reciter.RecitationVersion,
     vm: TelawatVM,
     st: TelawatState,
-    nc: NavController
+    navigator: DestinationsNavigator
 ) {
     if (version.versionId != 0) MyHorizontalDivider()
 
     Box(
         Modifier.clickable {
-            vm.onVersionClk(reciterId, version.versionId, nc)
+            vm.onVersionClk(reciterId, version.versionId, navigator)
         }
     ) {
         Box(Modifier.padding(horizontal = 10.dp)) {

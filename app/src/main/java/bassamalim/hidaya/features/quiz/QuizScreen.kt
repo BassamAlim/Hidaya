@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.quiz
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,22 +11,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.RadioGroup
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.Grey
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
+@Destination
 @Composable
 fun QuizUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: QuizVM
+    vm: QuizVM = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -62,7 +62,7 @@ fun QuizUI(
                     .heightIn(1.dp, 400.dp)
                     .verticalScroll(rememberScrollState())
             ) { index ->
-                vm.answered(index, nc)
+                vm.answered(index, navigator)
             }
 
             Row(
@@ -91,7 +91,7 @@ fun QuizUI(
                         else Grey,
                     innerPadding = PaddingValues(10.dp)
                 ) {
-                    vm.nextQ(nc)
+                    vm.nextQ(navigator)
                 }
             }
         }

@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.main
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.TopAppBar
@@ -19,23 +18,17 @@ import bassamalim.hidaya.core.ui.*
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.features.athkar.AthkarUI
-import bassamalim.hidaya.features.home.HomeUI
-import bassamalim.hidaya.features.more.MoreUI
-import bassamalim.hidaya.features.prayers.PrayersUI
-import bassamalim.hidaya.features.quran.QuranUI
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import bassamalim.hidaya.features.NavGraphs
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.rememberNavHostEngine
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainUI(
-    nc: NavHostController = rememberAnimatedNavController(),
-    vm: MainVM
+    vm: MainVM = hiltViewModel()
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
-    val bottomNc = rememberAnimatedNavController()
+    val engine = rememberNavHostEngine()
+    val navController = engine.rememberNavController()
 
     MyScaffold(
         title = stringResource(R.string.app_name),
@@ -90,9 +83,12 @@ fun MainUI(
                 }
             }
         },
-        bottomBar = { MyBottomNavigation(bottomNc) }
+        bottomBar = { BottomBar(navController) }
     ) {
-        NavigationGraph(nc, bottomNc, it)
+        NavigationGraph(
+            navController = navController,
+            padding = it
+        )
 
         DateEditorDialog(
             shown = st.dateEditorShown,
@@ -106,81 +102,14 @@ fun MainUI(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
-    bottomNavController: NavHostController,
     padding: PaddingValues
 ) {
-    AnimatedNavHost(
-        bottomNavController,
-        startDestination = BottomNavItem.Home.route,
+    DestinationsNavHost(
+        navGraph = NavGraphs.root,
+        navController = navController,
         modifier = Modifier.padding(padding)
-    ) {
-        composable(
-            route = BottomNavItem.Home.route,
-            enterTransition = TabEnter,
-            exitTransition = TabExit,
-            popEnterTransition = TabPopEnter,
-            popExitTransition = TabPopExit
-        ) {
-            HomeUI(
-                nc = navController,
-                vm = hiltViewModel()
-            )
-        }
-
-        composable(
-            route = BottomNavItem.Prayers.route,
-            enterTransition = TabEnter,
-            exitTransition = TabExit,
-            popEnterTransition = TabPopEnter,
-            popExitTransition = TabPopExit
-        ) {
-            PrayersUI(
-                nc = navController,
-                vm = hiltViewModel()
-            )
-        }
-
-        composable(
-            route = BottomNavItem.Quran.route,
-            enterTransition = TabEnter,
-            exitTransition = TabExit,
-            popEnterTransition = TabPopEnter,
-            popExitTransition = TabPopExit
-        ) {
-            QuranUI(
-                nc = navController,
-                vm = hiltViewModel()
-            )
-        }
-
-        composable(
-            route = BottomNavItem.Athkar.route,
-            enterTransition = TabEnter,
-            exitTransition = TabExit,
-            popEnterTransition = TabPopEnter,
-            popExitTransition = TabPopExit
-        ) {
-            AthkarUI(
-                navController = navController,
-                viewModel = hiltViewModel()
-            )
-        }
-
-        composable(
-            route = BottomNavItem.More.route,
-            enterTransition = TabEnter,
-            exitTransition = TabExit,
-            popEnterTransition = TabPopEnter,
-            popExitTransition = TabPopExit
-        ) {
-            MoreUI(
-                nc = navController,
-                vm = hiltViewModel()
-            )
-        }
-    }
+    )
 }

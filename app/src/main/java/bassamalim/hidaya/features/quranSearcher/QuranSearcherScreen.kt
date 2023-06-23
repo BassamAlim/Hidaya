@@ -1,7 +1,12 @@
 package bassamalim.hidaya.features.quranSearcher
 
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -10,20 +15,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.QuranSearcherMatch
-import bassamalim.hidaya.core.ui.components.*
+import bassamalim.hidaya.core.ui.components.MyDropDownMenu
+import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MySquareButton
+import bassamalim.hidaya.core.ui.components.MySurface
+import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
+@Destination
 @Composable
 fun QuranSearcherUI(
-    nc: NavController = rememberAnimatedNavController(),
-    vm: QuranSearcherVM
+    vm: QuranSearcherVM = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -85,7 +97,7 @@ fun QuranSearcherUI(
             else {
                 MyLazyColumn(lazyList = {
                     items(st.matches) { item ->
-                        MatchItem(item, vm, nc)
+                        MatchItem(item, vm, navigator)
                     }
                 })
             }
@@ -94,7 +106,11 @@ fun QuranSearcherUI(
 }
 
 @Composable
-fun MatchItem(item: QuranSearcherMatch, vm: QuranSearcherVM, nc: NavController) {
+fun MatchItem(
+    item: QuranSearcherMatch,
+    vm: QuranSearcherVM,
+    navigator: DestinationsNavigator
+) {
     MySurface {
         Column(
             Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
@@ -143,7 +159,7 @@ fun MatchItem(item: QuranSearcherMatch, vm: QuranSearcherVM, nc: NavController) 
                 innerPadding = PaddingValues(0.dp),
                 modifier = Modifier.padding(bottom = 6.dp)
             ) {
-                vm.onGotoPageClick(item.pageNum, nc)
+                vm.onGotoPageClick(item.pageNum, navigator)
             }
         }
     }

@@ -41,7 +41,6 @@ import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.models.Reciter
-import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
@@ -695,11 +694,11 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun getContentIntent(): PendingIntent {
         val intent = Intent(this, Activity::class.java)
-            .putExtra("start_route",
-                Screen.TelawatClient(
-                    "back", mediaId!!
-                ).route
-            )
+//            .putExtra("start_route",
+//                Screen.TelawatClient(
+//                    "back", mediaId!!
+//                ).route
+//            )
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
