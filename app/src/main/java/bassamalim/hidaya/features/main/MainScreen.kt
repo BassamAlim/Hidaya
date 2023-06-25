@@ -166,7 +166,7 @@ fun NavigationGraph(
         ) {
             AthkarUI(
                 viewModel = hiltViewModel(),
-                navController = navController
+                nc = navController
             )
         }
 

@@ -5,7 +5,7 @@ package bassamalim.hidaya.core.ui
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.navigation.NavBackStackEntry
-import bassamalim.hidaya.core.ui.components.BottomNavItem
+import bassamalim.hidaya.features.main.BottomNavItem
 
 val inFromBottom = { _: AnimatedContentScope<NavBackStackEntry> ->
     slideInVertically(
