@@ -32,11 +32,11 @@ import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.Positive
+import bassamalim.hidaya.features.main.BottomNavGraph
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@RootNavGraph(start = true)
+@BottomNavGraph(start = true)
 @Destination
 @Composable
 fun HomeUI(

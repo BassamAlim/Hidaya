@@ -1,8 +1,8 @@
 package bassamalim.hidaya.features.quizResult
 
-data class QuizResultArgs(
+data class QuizResultNavArgs(
     val score: Int,
-    val questions: IntArray,
+    val questionIds: IntArray,
     val chosenAnswers: IntArray
 ) {
 
@@ -10,10 +10,10 @@ data class QuizResultArgs(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as QuizResultArgs
+        other as QuizResultNavArgs
 
         if (score != other.score) return false
-        if (!questions.contentEquals(other.questions)) return false
+        if (!questionIds.contentEquals(other.questionIds)) return false
         if (!chosenAnswers.contentEquals(other.chosenAnswers)) return false
 
         return true
@@ -21,7 +21,7 @@ data class QuizResultArgs(
 
     override fun hashCode(): Int {
         var result = score
-        result = 31 * result + questions.contentHashCode()
+        result = 31 * result + questionIds.contentHashCode()
         result = 31 * result + chosenAnswers.contentHashCode()
         return result
     }

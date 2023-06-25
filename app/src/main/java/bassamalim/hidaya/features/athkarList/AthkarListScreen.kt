@@ -19,7 +19,7 @@ import bassamalim.hidaya.core.ui.components.SearchComponent
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination(navArgsDelegate = AthkarListArgs::class)
+@Destination(navArgsDelegate = AthkarListNavArgs::class)
 @Composable
 fun AthkarListUI(
     vm: AthkarListVM = hiltViewModel(),

@@ -41,7 +41,7 @@ enum class BottomNavDestination(
 @Composable
 fun BottomBar(navController: NavController) {
     val currentDestination = navController.appCurrentDestinationAsState().value
-        ?: NavGraphs.root.startAppDestination
+        ?: NavGraphs.bottom.startAppDestination
 
     BottomNavigation(
         backgroundColor = AppTheme.colors.primary,

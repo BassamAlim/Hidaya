@@ -19,7 +19,7 @@ import bassamalim.hidaya.core.ui.components.TabLayout
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination(navArgsDelegate = BookChaptersArgs::class)
+@Destination(navArgsDelegate = BookChaptersNavArgs::class)
 @Composable
 fun BookChaptersUI(
     vm: BookChaptersVM = hiltViewModel(),

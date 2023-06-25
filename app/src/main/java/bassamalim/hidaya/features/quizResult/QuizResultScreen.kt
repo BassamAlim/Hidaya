@@ -33,7 +33,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import com.ramcosta.composedestinations.annotation.Destination
 
-@Destination(navArgsDelegate = QuizResultArgs::class)
+@Destination(navArgsDelegate = QuizResultNavArgs::class)
 @Composable
 fun QuizResultUI(
     vm: QuizResultVM = hiltViewModel()

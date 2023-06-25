@@ -17,6 +17,7 @@ import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.features.destinations.TelawatClientUIDestination
 import bassamalim.hidaya.features.destinations.TelawatSuarUIDestination
+import bassamalim.hidaya.features.navArgs
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,17 +34,16 @@ class TelawatSuarVM @Inject constructor(
     private val repo: TelawatSuarRepo
 ): AndroidViewModel(app) {
 
-    private val reciterId = savedStateHandle.get<Int>("reciter_id") ?: 0
-    private val versionId = savedStateHandle.get<Int>("version_id") ?: 0
+    private val navArgs = savedStateHandle.navArgs<TelawatSuarNavArgs>()
 
-    private val ver = repo.getVersion(reciterId, versionId)
-    val prefix = "/Telawat/${ver.getReciterId()}/${versionId}/"
+    private val ver = repo.getVersion(navArgs.reciterId, navArgs.versionId)
+    val prefix = "/Telawat/${ver.getReciterId()}/${navArgs.versionId}/"
     private val suraNames = repo.getSuraNames()
     private val searchNames = repo.getSearchNames()
     private val downloading = HashMap<Long, Int>()
 
     private val _uiState = MutableStateFlow(TelawatSuarState(
-        title = repo.getReciterName(reciterId),
+        title = repo.getReciterName(navArgs.reciterId),
         favs = repo.getFavs()
     ))
     val uiState = _uiState.asStateFlow()
@@ -72,8 +72,8 @@ class TelawatSuarVM @Inject constructor(
         if ((app as Activity).isTaskRoot) {
             navigator.navigate(
                 TelawatSuarUIDestination(
-                    reciterId = reciterId,
-                    versionId = versionId
+                    reciterId = navArgs.reciterId,
+                    versionId = navArgs.versionId
                 )
             )
             // TODO
@@ -168,8 +168,8 @@ class TelawatSuarVM @Inject constructor(
     }
 
     fun onItemClk(navigator: DestinationsNavigator, sura: ReciterSura) {
-        val rId = String.format(Locale.US, "%03d", reciterId)
-        val vId = String.format(Locale.US, "%02d", versionId)
+        val rId = String.format(Locale.US, "%03d", navArgs.reciterId)
+        val vId = String.format(Locale.US, "%02d", navArgs.versionId)
         val sId = String.format(Locale.US, "%03d", sura.num)
         val mediaId = rId + vId + sId
 

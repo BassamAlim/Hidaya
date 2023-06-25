@@ -34,7 +34,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import com.ramcosta.composedestinations.annotation.Destination
 
-@Destination(navArgsDelegate = AthkarViewerArgs::class,)
+@Destination(navArgsDelegate = AthkarViewerNavArgs::class,)
 @Composable
 fun AthkarViewerUI(
     vm: AthkarViewerVM = hiltViewModel()

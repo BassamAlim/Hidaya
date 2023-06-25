@@ -41,7 +41,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.ramcosta.composedestinations.annotation.Destination
 
 @OptIn(ExperimentalPagerApi::class)
-@Destination(navArgsDelegate = QuranViewerArgs::class)
+@Destination(navArgsDelegate = QuranViewerNavArgs::class)
 @Composable
 fun QuranViewerUI(
     vm: QuranViewerVM = hiltViewModel()

@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.features.navArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,11 +21,7 @@ class LeaderboardVM @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): AndroidViewModel(app) {
 
-    private val userRecord = UserRecord(
-        userId = savedStateHandle.get<Int>("user_id") ?: -1,
-        readingRecord = savedStateHandle.get<Int>("reading_record") ?: 0,
-        listeningRecord = savedStateHandle.get<Long>("listening_record") ?: 0L
-    )
+    private val userRecord = savedStateHandle.navArgs<UserRecord>()
 
     private lateinit var items: MutableList<LeaderboardItem>
 

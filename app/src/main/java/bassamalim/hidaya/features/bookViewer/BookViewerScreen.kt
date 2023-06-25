@@ -21,7 +21,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import com.ramcosta.composedestinations.annotation.Destination
 
-@Destination(navArgsDelegate = BookViewerArgs::class)
+@Destination(navArgsDelegate = BookViewerNavArgs::class)
 @Composable
 fun BookViewerUI(
     vm: BookViewerVM = hiltViewModel()
@@ -29,7 +29,7 @@ fun BookViewerUI(
     val st by vm.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(
-        title = vm.bookTitle,
+        title = st.bookTitle,
         bottomBar = {
             MyReadingBottomBar(
                 textSize = st.textSize

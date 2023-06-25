@@ -49,10 +49,9 @@ class PrayersRepo @Inject constructor(
         val timeOffsets = getTimeOffsets()
         val reminderOffsets = getReminderOffsets()
 
-        return PID.values().mapIndexed { idx, pid ->
+        return prayerNames.mapIndexed { idx, name ->
             PrayerData(
-                pid = pid,
-                name = prayerNames[idx],
+                name = name,
                 time = "",
                 notificationType = notificationTypes[idx],
                 timeOffset = timeOffsets[idx],

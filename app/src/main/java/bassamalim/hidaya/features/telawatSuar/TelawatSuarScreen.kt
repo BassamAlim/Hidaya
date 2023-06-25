@@ -27,7 +27,7 @@ import bassamalim.hidaya.core.ui.components.TabLayout
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination(navArgsDelegate = TelawatSuarArgs::class)
+@Destination(navArgsDelegate = TelawatSuarNavArgs::class)
 @Composable
 fun TelawatSuarUI(
     vm: TelawatSuarVM = hiltViewModel(),

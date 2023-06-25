@@ -29,7 +29,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Destination(navArgsDelegate = TelawatClientArgs::class)
+@Destination(navArgsDelegate = TelawatClientNavArgs::class)
 @Composable
 fun TelawatClientUI(
     vm: TelawatClientVM = hiltViewModel(),

@@ -73,7 +73,7 @@ class QuizVM @Inject constructor(
         navigator.navigate(
             QuizResultUIDestination(
                 score = score,
-                questions = questions.map { q -> q.getQuestionId() }.toIntArray(),
+                questionIds = questions.map { q -> q.getQuestionId() }.toIntArray(),
                 chosenAnswers = chosenAs
             )
         )

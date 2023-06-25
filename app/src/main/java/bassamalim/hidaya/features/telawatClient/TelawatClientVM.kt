@@ -23,6 +23,7 @@ import bassamalim.hidaya.core.models.Reciter
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.features.destinations.TelawatSuarUIDestination
+import bassamalim.hidaya.features.navArgs
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,13 +41,12 @@ class TelawatClientVM @Inject constructor(
     private val repo: TelawatClientRepo
 ): AndroidViewModel(app) {
 
-    private val action = savedStateHandle.get<String>("action") ?: ""
-    private val mediaId = savedStateHandle.get<String>("media_id") ?: ""
+    private val navArgs = savedStateHandle.navArgs<TelawatClientNavArgs>()
 
     private lateinit var activity: Activity
-    var reciterId = mediaId.substring(0, 3).toInt()
-    var versionId = mediaId.substring(3, 5).toInt()
-    var suraIdx = mediaId.substring(5).toInt()
+    var reciterId = navArgs.mediaId.substring(0, 3).toInt()
+    var versionId = navArgs.mediaId.substring(3, 5).toInt()
+    var suraIdx = navArgs.mediaId.substring(5).toInt()
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
@@ -84,9 +84,9 @@ class TelawatClientVM @Inject constructor(
             // Finish building the UI
             buildTransportControls()
 
-            if (action != "back" &&
+            if (navArgs.action != "back" &&
                 (controller.playbackState.state == STATE_NONE ||
-                        mediaId != controller.metadata.getString(
+                        navArgs.mediaId != controller.metadata.getString(
                     MediaMetadataCompat.METADATA_KEY_MEDIA_ID
                 )))
                 sendPlayRequest()
@@ -172,12 +172,12 @@ class TelawatClientVM @Inject constructor(
     private fun sendPlayRequest() {
         // Pass media data
         val bundle = Bundle()
-        bundle.putString("play_type", action)
+        bundle.putString("play_type", navArgs.action)
         bundle.putString("reciter_name", _uiState.value.reciterName)
         bundle.putSerializable("version", version)
 
         // Start Playback
-        tc.playFromMediaId(mediaId, bundle)
+        tc.playFromMediaId(navArgs.mediaId, bundle)
     }
 
     private fun enableControls() {

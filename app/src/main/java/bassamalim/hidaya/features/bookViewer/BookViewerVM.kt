@@ -2,6 +2,7 @@ package bassamalim.hidaya.features.bookViewer
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import bassamalim.hidaya.features.navArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,16 +15,13 @@ class BookViewerVM @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val bookId = savedStateHandle.get<Int>("book_id") ?: 0
-    val bookTitle = savedStateHandle.get<String>("book_title") ?: ""
-    private val chapterId = savedStateHandle.get<Int>("chapter_id") ?: 0
+    private val navArgs = savedStateHandle.navArgs<BookViewerNavArgs>()
 
-    private val _uiState = MutableStateFlow(
-        BookViewerState(
+    private val _uiState = MutableStateFlow(BookViewerState(
+        bookTitle = navArgs.bookTitle,
         textSize = repository.getTextSize(),
-        items = repository.getDoors(bookId, chapterId).toList()
-    )
-    )
+        items = repository.getDoors(navArgs.bookId, navArgs.chapterId).toList()
+    ))
     val uiState = _uiState.asStateFlow()
 
     fun onTextSizeChange(textSize: Float) {

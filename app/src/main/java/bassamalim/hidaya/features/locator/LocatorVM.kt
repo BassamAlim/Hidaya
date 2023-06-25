@@ -13,6 +13,7 @@ import androidx.lifecycle.SavedStateHandle
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.features.destinations.LocationPickerUIDestination
 import bassamalim.hidaya.features.destinations.PrayersUIDestination
+import bassamalim.hidaya.features.navArgs
 import com.google.android.gms.location.LocationServices
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,14 +29,14 @@ class LocatorVM @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): AndroidViewModel(app) {
 
-    private val type = savedStateHandle.get<String>("type") ?: "normal"
+    private val navArgs = savedStateHandle.navArgs<LocatorNavArgs>()
 
     private lateinit var navigator: DestinationsNavigator
     private lateinit var locationRequestLauncher:
             ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
 
     private val _uiState = MutableStateFlow(LocatorState(
-        showSkipLocationBtn = type == "initial"
+        showSkipLocationBtn = navArgs.type == "initial"
     ))
     val uiState = _uiState.asStateFlow()
 

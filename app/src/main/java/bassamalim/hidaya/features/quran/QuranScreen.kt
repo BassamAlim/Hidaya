@@ -36,9 +36,11 @@ import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
+import bassamalim.hidaya.features.main.BottomNavGraph
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@BottomNavGraph
 @Destination
 @Composable
 fun QuranUI(

@@ -1,5 +1,5 @@
 package bassamalim.hidaya.features.locator
 
-data class LocatorArgs(
+data class LocatorNavArgs(
     val type: String
 )

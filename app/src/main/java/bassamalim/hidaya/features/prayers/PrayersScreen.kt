@@ -35,9 +35,11 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
+import bassamalim.hidaya.features.main.BottomNavGraph
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@BottomNavGraph
 @Destination
 @Composable
 fun PrayersUI(

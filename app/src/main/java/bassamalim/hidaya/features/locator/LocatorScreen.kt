@@ -25,7 +25,7 @@ import bassamalim.hidaya.core.ui.theme.nsp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination(navArgsDelegate = LocatorArgs::class)
+@Destination(navArgsDelegate = LocatorNavArgs::class)
 @Composable
 fun LocatorUI(
     vm: LocatorVM = hiltViewModel(),

@@ -17,9 +17,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
+import bassamalim.hidaya.features.main.BottomNavGraph
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@BottomNavGraph
 @Destination
 @Composable
 fun AthkarUI(

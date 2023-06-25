@@ -1,6 +1,6 @@
 package bassamalim.hidaya.features.bookChapters
 
-data class BookChaptersArgs(
+data class BookChaptersNavArgs(
     val bookId: Int,
     val bookTitle: String
 )

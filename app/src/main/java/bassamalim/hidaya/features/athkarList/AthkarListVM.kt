@@ -5,12 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.data.database.dbs.AthkarDB
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.AthkarItem
-import bassamalim.hidaya.features.destinations.AthkarViewerUIDestination
 import bassamalim.hidaya.features.navArgs
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,16 +23,16 @@ class AthkarListVM @Inject constructor(
     private val repo: AthkarListRepo
 ): ViewModel() {
 
-    private val args = savedStateHandle.navArgs<AthkarListArgs>()
+    private val navArgs = savedStateHandle.navArgs<AthkarListNavArgs>()
 
     var searchText by mutableStateOf("")
         private set
     private val language = repo.getLanguage()
 
     private val _uiState = MutableStateFlow(AthkarListState(
-        title = when (args.type) {
+        title = when (navArgs.type) {
             ListType.Favorite -> repo.getFavoriteAthkarStr()
-            ListType.Custom -> repo.getName(language, args.category)
+            ListType.Custom -> repo.getName(language, navArgs.category)
             else -> repo.getAllAthkarStr()
         },
         items = getItems()
@@ -42,7 +40,7 @@ class AthkarListVM @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     private fun getItems(): List<AthkarItem> {
-        val athkar = repo.getAthkar(args.type, args.category)
+        val athkar = repo.getAthkar(navArgs.type, navArgs.category)
         val items = ArrayList<AthkarItem>()
 
         val isEng = language == Language.ENGLISH
