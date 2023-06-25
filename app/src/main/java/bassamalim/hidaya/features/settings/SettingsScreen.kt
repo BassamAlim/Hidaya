@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
@@ -29,12 +28,10 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.SwitchPref
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import com.ramcosta.composedestinations.annotation.Destination
 
-@Destination
 @Composable
 fun SettingsUI(
-    vm: SettingsVM = hiltViewModel()
+    vm: SettingsVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity

@@ -17,19 +17,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyPlayerBtn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
-import com.ramcosta.composedestinations.annotation.Destination
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Destination
 @Composable
 fun RadioClientUI(
-    vm: RadioClientVM = hiltViewModel()
+    vm: RadioClientVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity

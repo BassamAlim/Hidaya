@@ -6,7 +6,7 @@ plugins {
     id 'com.google.firebase.crashlytics'
     id 'com.google.firebase.firebase-perf'
     id 'com.google.dagger.hilt.android'
-    id("com.google.devtools.ksp") version "1.8.20-1.0.11"
+//    id("com.google.devtools.ksp") version "1.8.20-1.0.11"
 }
 
 android {
@@ -126,8 +126,8 @@ dependencies {
     kapt('com.google.dagger:hilt-android-compiler:2.45')
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
     // Destinations
-    implementation 'io.github.raamcosta.compose-destinations:animations-core:1.8.42-beta'
-    ksp 'io.github.raamcosta.compose-destinations:ksp:1.8.42-beta'
+//    implementation 'io.github.raamcosta.compose-destinations:animations-core:1.8.42-beta'
+//    ksp 'io.github.raamcosta.compose-destinations:ksp:1.8.42-beta'
     // Other
     implementation 'io.coil-kt:coil-compose:2.2.2'
     implementation 'io.coil-kt:coil-gif:2.2.2'

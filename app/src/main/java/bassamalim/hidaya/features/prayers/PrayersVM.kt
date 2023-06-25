@@ -2,17 +2,17 @@ package bassamalim.hidaya.features.prayers
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.helpers.Alarms
 import bassamalim.hidaya.core.helpers.PrayTimes
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.core.utils.PTUtils
-import bassamalim.hidaya.features.destinations.LocatorUIDestination
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -136,11 +136,11 @@ class PrayersVM @Inject constructor(
         Alarms(app, _uiState.value.settingsDialogPID)
     }
 
-    fun onLocatorClick(navigator: DestinationsNavigator) {
-        navigator.navigate(
-            LocatorUIDestination(
+    fun onLocatorClick(navController: NavController) {
+        navController.navigate(
+            Screen.Locator(
                 type = "normal"
-            )
+            ).route
         )
     }
 

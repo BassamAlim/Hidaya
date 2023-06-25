@@ -5,17 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.features.destinations.AboutUIDestination
-import bassamalim.hidaya.features.destinations.BooksUIDestination
-import bassamalim.hidaya.features.destinations.DateConverterUIDestination
-import bassamalim.hidaya.features.destinations.QiblaUIDestination
-import bassamalim.hidaya.features.destinations.QuizLobbyUIDestination
-import bassamalim.hidaya.features.destinations.RadioClientUIDestination
-import bassamalim.hidaya.features.destinations.SettingsUIDestination
-import bassamalim.hidaya.features.destinations.TelawatUIDestination
-import bassamalim.hidaya.features.destinations.TvUIDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,50 +20,46 @@ class MoreVM @Inject constructor(): ViewModel() {
     private val _uiState = MutableStateFlow(MoreState())
     val uiState = _uiState.asStateFlow()
 
-    fun gotoTelawat(navigator: DestinationsNavigator) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            navigator.navigate(TelawatUIDestination)
-        }
-        else {
+    fun gotoTelawat(nc: NavController) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            nc.navigate(Screen.Telawat.route)
+        else
             _uiState.update { it.copy(
                 shouldShowUnsupported = true
             )}
-        }
     }
 
-    fun gotoQibla(navigator: DestinationsNavigator) {
-        navigator.navigate(QiblaUIDestination)
+    fun gotoQibla(nc: NavController) {
+        nc.navigate(Screen.Qibla.route)
     }
 
-    fun gotoQuiz(navigator: DestinationsNavigator) {
-        navigator.navigate(QuizLobbyUIDestination)
+    fun gotoQuiz(nc: NavController) {
+        nc.navigate(Screen.QuizLobby.route)
     }
 
-    fun gotoBooks(navigator: DestinationsNavigator) {
-        navigator.navigate(BooksUIDestination)
+    fun gotoBooks(nc: NavController) {
+        nc.navigate(Screen.Books.route)
     }
 
-    fun gotoTV(navigator: DestinationsNavigator) {
-        navigator.navigate(TvUIDestination)
+    fun gotoTV(nc: NavController) {
+        nc.navigate(Screen.Tv.route)
     }
 
-    fun gotoRadio(navigator: DestinationsNavigator) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            navigator.navigate(RadioClientUIDestination)
-        }
-        else {
+    fun gotoRadio(nc: NavController) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            nc.navigate(Screen.RadioClient.route)
+        else
             _uiState.update { it.copy(
                 shouldShowUnsupported = true
             )}
-        }
     }
 
-    fun gotoDateConverter(navigator: DestinationsNavigator) {
-        navigator.navigate(DateConverterUIDestination)
+    fun gotoDateConverter(nc: NavController) {
+        nc.navigate(Screen.DateConverter.route)
     }
 
-    fun gotoSettings(navigator: DestinationsNavigator) {
-        navigator.navigate(SettingsUIDestination)
+    fun gotoSettings(nc: NavController) {
+        nc.navigate(Screen.Settings.route)
     }
 
     fun contactMe(ctx: Context) {
@@ -99,8 +87,8 @@ class MoreVM @Inject constructor(): ViewModel() {
         )
     }
 
-    fun gotoAbout(navigator: DestinationsNavigator) {
-        navigator.navigate(AboutUIDestination)
+    fun gotoAbout(nc: NavController) {
+        nc.navigate(Screen.About.route)
     }
 
 }

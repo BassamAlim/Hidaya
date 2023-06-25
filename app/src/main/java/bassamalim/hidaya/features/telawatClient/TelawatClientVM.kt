@@ -18,13 +18,12 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.FileUtils
-import bassamalim.hidaya.features.destinations.TelawatSuarUIDestination
-import bassamalim.hidaya.features.navArgs
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,12 +40,13 @@ class TelawatClientVM @Inject constructor(
     private val repo: TelawatClientRepo
 ): AndroidViewModel(app) {
 
-    private val navArgs = savedStateHandle.navArgs<TelawatClientNavArgs>()
+    private val action = savedStateHandle.get<String>("action") ?: ""
+    private val mediaId = savedStateHandle.get<String>("media_id") ?: ""
 
     private lateinit var activity: Activity
-    var reciterId = navArgs.mediaId.substring(0, 3).toInt()
-    var versionId = navArgs.mediaId.substring(3, 5).toInt()
-    var suraIdx = navArgs.mediaId.substring(5).toInt()
+    var reciterId = mediaId.substring(0, 3).toInt()
+    var versionId = mediaId.substring(3, 5).toInt()
+    var suraIdx = mediaId.substring(5).toInt()
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
@@ -84,9 +84,9 @@ class TelawatClientVM @Inject constructor(
             // Finish building the UI
             buildTransportControls()
 
-            if (navArgs.action != "back" &&
+            if (action != "back" &&
                 (controller.playbackState.state == STATE_NONE ||
-                        navArgs.mediaId != controller.metadata.getString(
+                        mediaId != controller.metadata.getString(
                     MediaMetadataCompat.METADATA_KEY_MEDIA_ID
                 )))
                 sendPlayRequest()
@@ -172,12 +172,12 @@ class TelawatClientVM @Inject constructor(
     private fun sendPlayRequest() {
         // Pass media data
         val bundle = Bundle()
-        bundle.putString("play_type", navArgs.action)
+        bundle.putString("play_type", action)
         bundle.putString("reciter_name", _uiState.value.reciterName)
         bundle.putSerializable("version", version)
 
         // Start Playback
-        tc.playFromMediaId(navArgs.mediaId, bundle)
+        tc.playFromMediaId(mediaId, bundle)
     }
 
     private fun enableControls() {
@@ -276,25 +276,18 @@ class TelawatClientVM @Inject constructor(
         (app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
     }
 
-    fun onBackPressed(navigator: DestinationsNavigator) {
+    fun onBackPressed(navController: NavController) {
         if (activity.isTaskRoot) {
-            navigator.navigate(
-                TelawatSuarUIDestination(
-                    reciterId = reciterId,
-                    versionId = versionId
-                )
-            )
-            // TODO
-//            navController.navigate(
-//                Screen.TelawatSuar(
-//                    reciterId.toString(),
-//                    versionId.toString()
-//                ).route
-//            ) {
-//                popUpTo(Screen.TelawatClient(action, mediaId).route) {
-//                    inclusive = true
-//                }
-//            }
+            navController.navigate(
+                Screen.TelawatSuar(
+                    reciterId.toString(),
+                    versionId.toString()
+                ).route
+            ) {
+                popUpTo(Screen.TelawatClient(action, mediaId).route) {
+                    inclusive = true
+                }
+            }
         }
         else
             (activity as AppCompatActivity).onBackPressedDispatcher.onBackPressed()

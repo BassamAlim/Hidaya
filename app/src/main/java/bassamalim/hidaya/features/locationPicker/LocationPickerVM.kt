@@ -4,10 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.LocationPickerItem
-import bassamalim.hidaya.features.destinations.PrayersUIDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import bassamalim.hidaya.core.nav.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,9 +27,9 @@ class LocationPickerVM @Inject constructor(
 
     private val _uiState = MutableStateFlow(
         LocationPickerState(
-        titleResId = getTitleResId(),
-        items = getItems()
-    )
+            titleResId = getTitleResId(),
+            items = getItems()
+        )
     )
     val uiState = _uiState.asStateFlow()
 
@@ -73,7 +73,7 @@ class LocationPickerVM @Inject constructor(
                     city.nameEn.contains(searchText, ignoreCase = true) }
     }
 
-    fun onBack(navigator: DestinationsNavigator) {
+    fun onBack(navController: NavController) {
         if (mode == 1) {
             mode = 0
 
@@ -83,24 +83,22 @@ class LocationPickerVM @Inject constructor(
                 items = getItems()
             )}
         }
-        else navigator.popBackStack()
+        else navController.popBackStack()
     }
 
-    fun onSelect(id: Int, navigator: DestinationsNavigator) {
+    fun onSelect(id: Int, nc: NavController) {
         if (mode == 1) {
             repo.storeLocation(countryId, id)
 
-            navigator.navigate(PrayersUIDestination)
-            // TODO
-//            nc.navigate(Screen.Main.route) {
-//                popUpTo(Screen.LocationPicker.route) {
-//                    inclusive = true
-//                }
-//            }
-//            nc.popBackStack(
-//                Screen.Locator("normal").route,
-//                true
-//            )
+            nc.navigate(Screen.Main.route) {
+                popUpTo(Screen.LocationPicker.route) {
+                    inclusive = true
+                }
+            }
+            nc.popBackStack(
+                Screen.Locator("normal").route,
+                true
+            )
         }
         else {
             countryId = id

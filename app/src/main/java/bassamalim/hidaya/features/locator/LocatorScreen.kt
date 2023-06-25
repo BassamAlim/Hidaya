@@ -4,7 +4,11 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,21 +19,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination(navArgsDelegate = LocatorNavArgs::class)
 @Composable
 fun LocatorUI(
-    vm: LocatorVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: LocatorVM,
+    nc: NavController
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -40,7 +41,7 @@ fun LocatorUI(
     }
 
     LaunchedEffect(null) {
-        vm.provide(navigator, requestLauncher)
+        vm.provide(nc, requestLauncher)
     }
 
     Column(

@@ -8,20 +8,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.utils.FileUtils
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination
 @Composable
 fun BooksUI(
-    vm: BooksVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: BooksVM,
+    nc: NavController
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -37,7 +34,7 @@ fun BooksUI(
             MyFloatingActionButton(
                 iconId = R.drawable.ic_quran_search,
                 description = stringResource(R.string.search_in_books),
-                onClick = { vm.onFabClick(navigator) }
+                onClick = { vm.onFabClick(nc) }
             )
         }
     ) {
@@ -62,7 +59,7 @@ fun BooksUI(
                                 deleted = { vm.onFileDeleted(item.id) }
                             )
                         },
-                        onClick = { vm.onItemClick(item, navigator) }
+                        onClick = { vm.onItemClick(item, nc) }
                     )
                 }
             }

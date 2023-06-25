@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.core.models.QuizResultQuestion
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.navArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,15 +15,19 @@ class QuizResultVM @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
-    private val navArgs = savedStateHandle.navArgs<QuizResultNavArgs>()
+    private val score = savedStateHandle.get<Int>("score") ?: 0
+    private val questionIds = savedStateHandle.get<IntArray>("questions") ?: intArrayOf()
+    private val chosenAs = savedStateHandle.get<IntArray>("chosenAs") ?: IntArray(10)
 
-    private val questions = repository.getQuestions(navArgs.questionIds)
+    private val questions = repository.getQuestions(questionIds)
 
-    private val _uiState = MutableStateFlow(QuizResultState(
-        score = translateNums(repository.numeralsLanguage, (navArgs.score * 10).toString()),
-        questions = getQuestionItems(),
-        chosenAs = navArgs.chosenAnswers.toList()
-    ))
+    private val _uiState = MutableStateFlow(
+        QuizResultState(
+            score = translateNums(repository.numeralsLanguage, (score * 10).toString()),
+            questions = getQuestionItems(),
+            chosenAs = chosenAs.toList()
+        )
+    )
     val uiState = _uiState.asStateFlow()
 
     private fun getQuestionItems(): List<QuizResultQuestion> {
@@ -34,7 +37,7 @@ class QuizResultVM @Inject constructor(
 
             QuizResultQuestion(
                 i, questions[i].getQuestionText(), questions[i].getCorrectAnswerId(),
-                navArgs.chosenAnswers[i], answersText
+                chosenAs[i], answersText
             )
         }
     }

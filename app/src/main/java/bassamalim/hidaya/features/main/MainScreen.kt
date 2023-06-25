@@ -1,15 +1,8 @@
 package bassamalim.hidaya.features.main
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,30 +14,28 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.DateEditorDialog
-import bassamalim.hidaya.core.ui.components.MyHorizontalButton
-import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.*
+import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.features.NavGraphs
-import bassamalim.hidaya.features.destinations.AboutUIDestination
-import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import bassamalim.hidaya.features.athkar.AthkarUI
+import bassamalim.hidaya.features.home.HomeUI
+import bassamalim.hidaya.features.more.MoreUI
+import bassamalim.hidaya.features.prayers.PrayersUI
+import bassamalim.hidaya.features.quran.QuranUI
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
-@RootNavGraph(start = true)
-@Destination
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainUI(
-    vm: MainVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: MainVM,
+    nc: NavHostController = rememberAnimatedNavController()
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
-    val navController = rememberNavController()
+    val bottomNc = rememberAnimatedNavController()
 
     MyScaffold(
         title = stringResource(R.string.app_name),
@@ -68,10 +59,6 @@ fun MainUI(
                             stringResource(R.string.app_name),
                             textColor = AppTheme.colors.onPrimary
                         )
-                        
-                        MyHorizontalButton(text = "HERE") {
-                            navigator.navigate(AboutUIDestination)
-                        }
 
                         Column(
                             Modifier
@@ -102,13 +89,10 @@ fun MainUI(
                     }
                 }
             }
-        },// TODO
-        bottomBar = { BottomBar(navController) }
+        },
+        bottomBar = { MyBottomNavigation(bottomNc) }
     ) {
-        BottomNavigationGraph(
-            navController = navController,
-            padding = it
-        )
+        NavigationGraph(nc, bottomNc, it)
 
         DateEditorDialog(
             shown = st.dateEditorShown,
@@ -122,14 +106,81 @@ fun MainUI(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun BottomNavigationGraph(
+fun NavigationGraph(
     navController: NavHostController,
+    bottomNavController: NavHostController,
     padding: PaddingValues
 ) {
-    DestinationsNavHost(
-        navGraph = NavGraphs.bottom,
-        navController = navController,
+    AnimatedNavHost(
+        bottomNavController,
+        startDestination = BottomNavItem.Home.route,
         modifier = Modifier.padding(padding)
-    )
+    ) {
+        composable(
+            route = BottomNavItem.Home.route,
+            enterTransition = TabEnter,
+            exitTransition = TabExit,
+            popEnterTransition = TabPopEnter,
+            popExitTransition = TabPopExit
+        ) {
+            HomeUI(
+                nc = navController,
+                vm = hiltViewModel()
+            )
+        }
+
+        composable(
+            route = BottomNavItem.Prayers.route,
+            enterTransition = TabEnter,
+            exitTransition = TabExit,
+            popEnterTransition = TabPopEnter,
+            popExitTransition = TabPopExit
+        ) {
+            PrayersUI(
+                vm = hiltViewModel(),
+                nc = navController
+            )
+        }
+
+        composable(
+            route = BottomNavItem.Quran.route,
+            enterTransition = TabEnter,
+            exitTransition = TabExit,
+            popEnterTransition = TabPopEnter,
+            popExitTransition = TabPopExit
+        ) {
+            QuranUI(
+                vm = hiltViewModel(),
+                nc = navController
+            )
+        }
+
+        composable(
+            route = BottomNavItem.Athkar.route,
+            enterTransition = TabEnter,
+            exitTransition = TabExit,
+            popEnterTransition = TabPopEnter,
+            popExitTransition = TabPopExit
+        ) {
+            AthkarUI(
+                viewModel = hiltViewModel(),
+                navController = navController
+            )
+        }
+
+        composable(
+            route = BottomNavItem.More.route,
+            enterTransition = TabEnter,
+            exitTransition = TabExit,
+            popEnterTransition = TabPopEnter,
+            popExitTransition = TabPopExit
+        ) {
+            MoreUI(
+                vm = hiltViewModel(),
+                nc = navController
+            )
+        }
+    }
 }

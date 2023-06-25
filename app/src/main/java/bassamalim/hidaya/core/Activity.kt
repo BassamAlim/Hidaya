@@ -14,36 +14,24 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.*
-import bassamalim.hidaya.features.NavGraphs
-import bassamalim.hidaya.features.destinations.WelcomeUIDestination
-import bassamalim.hidaya.features.main.MainUI
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
-import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.rememberNavHostEngine
-import com.ramcosta.composedestinations.spec.NavHostEngine
-import com.ramcosta.composedestinations.spec.Route
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -169,28 +157,15 @@ class Activity : ComponentActivity() {
     }
 
     private fun launch() {
-//        val targetDestination = intent.getStringExtra("start_route")
-//        val startRoute =
-//            if (shouldWelcome) WelcomeUIDestination.route
-//            else MainUIDestination.route
+        val navRoute = intent.getStringExtra("start_route")
 
-        // TODO
         setContent {
-//            val engine = rememberNavHostEngine()
-            val navController = rememberNavController()
-
             ActivityUtils.onActivityCreateSetLocale(LocalContext.current)
 
             AppTheme(
                 direction = getDirection()
             ) {
-                DestinationsNavHost(
-                    navGraph = NavGraphs.root,
-                    navController = navController
-                )
-
-//                if (targetDestination != null)
-//                    navController.navigate(route = targetDestination)
+                Navigator(navRoute, shouldWelcome)
             }
         }
     }

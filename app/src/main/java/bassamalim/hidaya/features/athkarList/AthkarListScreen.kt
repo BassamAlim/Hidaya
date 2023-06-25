@@ -8,22 +8,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyBtnSurface
 import bassamalim.hidaya.core.ui.components.MyFavBtn
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.SearchComponent
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination(navArgsDelegate = AthkarListNavArgs::class)
 @Composable
 fun AthkarListUI(
-    vm: AthkarListVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: AthkarListVM,
+    nc: NavController
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -50,7 +47,7 @@ fun AthkarListUI(
                                     vm.onFavoriteCLick(item)
                                 }
                             },
-                            onClick = { vm.onItemClick(navigator, item) }
+                            onClick = { vm.onItemClick(nc, item) }
                         )
                     }
                 }

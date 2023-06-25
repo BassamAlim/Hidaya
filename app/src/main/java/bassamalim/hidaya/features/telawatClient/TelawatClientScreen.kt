@@ -19,21 +19,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Destination(navArgsDelegate = TelawatClientNavArgs::class)
 @Composable
 fun TelawatClientUI(
-    vm: TelawatClientVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: TelawatClientVM,
+    nc: NavController
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
@@ -46,7 +43,7 @@ fun TelawatClientUI(
     MyScaffold(
         title = stringResource(R.string.recitations),
         bottomBar = { BottomBar(vm, st) },
-        onBack = { vm.onBackPressed(navigator) }
+        onBack = { vm.onBackPressed(nc) }
     ) {
         Column(
             Modifier

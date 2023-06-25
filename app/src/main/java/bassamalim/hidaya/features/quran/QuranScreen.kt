@@ -21,8 +21,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
@@ -36,16 +36,11 @@ import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.features.main.BottomNavGraph
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@BottomNavGraph
-@Destination
 @Composable
 fun QuranUI(
-    vm: QuranVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: QuranVM,
+    nc: NavController
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -63,7 +58,7 @@ fun QuranUI(
                 iconId = R.drawable.ic_quran_search,
                 description = stringResource(R.string.search_in_quran)
             ) {
-                vm.onQuranSearcherClick(navigator)
+                vm.onQuranSearcherClick(nc)
             }
         }
     ) {
@@ -77,7 +72,7 @@ fun QuranUI(
                 modifier = Modifier.fillMaxWidth(),
                 innerPadding = PaddingValues(vertical = 4.dp)
             ) {
-                vm.onBookmarkedPageClick(navigator)
+                vm.onBookmarkedPageClick(nc)
             }
 
             TabLayout(
@@ -91,11 +86,11 @@ fun QuranUI(
                         hint = stringResource(R.string.quran_query_hint),
                         modifier = Modifier.fillMaxWidth(),
                         onValueChange = { vm.onSearchTextChange(it) },
-                        onSubmit = { vm.onSearchSubmit(navigator) }
+                        onSubmit = { vm.onSearchSubmit(nc) }
                     )
                 }
             ) { page ->
-                Tab(vm, st, navigator, vm.getItems(page))
+                Tab(vm, st, nc, vm.getItems(page))
             }
         }
     }
@@ -123,7 +118,7 @@ fun QuranUI(
 private fun Tab(
     vm: QuranVM,
     st: QuranState,
-    navigator: DestinationsNavigator,
+    nc: NavController,
     items: List<Sura>
 ) {
     MyLazyColumn(
@@ -132,7 +127,7 @@ private fun Tab(
                 MyClickableSurface(
                     modifier = Modifier.padding(2.dp),
                     elevation = 6.dp,
-                    onClick = { vm.onSuraClick(item.id, navigator) }
+                    onClick = { vm.onSuraClick(item.id, nc) }
                 ) {
                     Row(
                         modifier = Modifier.padding(

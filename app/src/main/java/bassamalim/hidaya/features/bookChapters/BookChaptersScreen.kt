@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.BookChapter
 import bassamalim.hidaya.core.ui.components.MyBtnSurface
@@ -16,14 +16,11 @@ import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination(navArgsDelegate = BookChaptersNavArgs::class)
 @Composable
 fun BookChaptersUI(
-    vm: BookChaptersVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: BookChaptersVM,
+    nc: NavController
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -43,7 +40,7 @@ fun BookChaptersUI(
                 }
             }
         ) { page ->
-            Tab(vm, st, navigator, vm.getItems(page))
+            Tab(vm, st, nc, vm.getItems(page))
         }
     }
 }
@@ -52,7 +49,7 @@ fun BookChaptersUI(
 private fun Tab(
     viewModel: BookChaptersVM,
     state: BookChaptersState,
-    navigator: DestinationsNavigator,
+    nc: NavController,
     items: List<BookChapter>
 ) {
     MyLazyColumn(
@@ -66,7 +63,7 @@ private fun Tab(
                         }
                     }
                 ) {
-                    viewModel.onItemClick(item, navigator)
+                    viewModel.onItemClick(item, nc)
                 }
             }
         }

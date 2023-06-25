@@ -10,16 +10,14 @@ import android.content.IntentFilter
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
+import androidx.navigation.NavController
 import bassamalim.hidaya.core.data.database.dbs.TelawatDB
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.FileUtils
-import bassamalim.hidaya.features.destinations.HomeUIDestination
-import bassamalim.hidaya.features.destinations.TelawatClientUIDestination
-import bassamalim.hidaya.features.destinations.TelawatSuarUIDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -78,17 +76,17 @@ class TelawatVM @Inject constructor(
         }
     }
 
-    fun onBackPressed(navigator: DestinationsNavigator) {
-        if ((app as Activity).isTaskRoot) {
-            navigator.navigate(HomeUIDestination)
-            // TODO
-//            navController.navigate(Screen.Main.route) {
-//                popUpTo(Screen.Telawat.route) {
-//                    inclusive = true
-//                }
-//            }
+    fun onBackPressed(navController: NavController) {
+        val ctx = navController.context
+
+        if ((ctx as Activity).isTaskRoot) {
+            navController.navigate(Screen.Main.route) {
+                popUpTo(Screen.Telawat.route) {
+                    inclusive = true
+                }
+            }
         }
-        else (app as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
+        else (ctx as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
     }
 
     private fun getDownloadStates(): List<List<DownloadState>> {
@@ -244,13 +242,13 @@ class TelawatVM @Inject constructor(
         FileUtils.deleteDirRecursive(mainDir)
     }
 
-    fun onContinueListeningClick(navigator: DestinationsNavigator) {
+    fun onContinueListeningClick(navController: NavController) {
         if (continueListeningMediaId.isNotEmpty()) {
-            navigator.navigate(
-                TelawatClientUIDestination(
-                    action = "continue",
-                    mediaId = continueListeningMediaId
-                )
+            navController.navigate(
+                Screen.TelawatClient(
+                    "continue",
+                    continueListeningMediaId
+                ).route
             )
         }
     }
@@ -306,12 +304,12 @@ class TelawatVM @Inject constructor(
         downloadVer(reciterId, version)
     }
 
-    fun onVersionClk(reciterId: Int, versionId: Int, navigator: DestinationsNavigator) {
-        navigator.navigate(
-            TelawatSuarUIDestination(
-                reciterId = reciterId,
-                versionId = versionId
-            )
+    fun onVersionClk(reciterId: Int, versionId: Int, navController: NavController) {
+        navController.navigate(
+            Screen.TelawatSuar(
+                reciterId.toString(),
+                versionId.toString()
+            ).route
         )
     }
 

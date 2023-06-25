@@ -21,7 +21,6 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.QViewType
 import bassamalim.hidaya.core.models.Ayah
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.features.navArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,16 +35,17 @@ class QuranViewerVM @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): AndroidViewModel(app) {
 
-    private val navArgs = savedStateHandle.navArgs<QuranViewerNavArgs>()
+    private val type = savedStateHandle.get<String>("type") ?: "by_surah"
+    private var initialSuraId = savedStateHandle.get<Int>("sura_id") ?: 0
+    private val page = savedStateHandle.get<Int>("page") ?: 0
 
     val language = repo.getLanguage()
     val numeralsLanguage = repo.getNumeralsLanguage()
     val theme = repo.getTheme()
     var initialPage =
-        if (navArgs.type == "by_page") navArgs.pageNum
-        else repo.getPage(navArgs.suraId)
+        if (type == "by_page") page
+        else repo.getPage(initialSuraId)
         private set
-    private var initialSuraId = navArgs.suraId
     private val suraNames =
         if (language == Language.ENGLISH) repo.getSuraNamesEn()
         else repo.getSuraNames()
@@ -69,8 +69,8 @@ class QuranViewerVM @Inject constructor(
     private val _uiState = MutableStateFlow(QuranViewerState(
         pageNum = initialPage,
         viewType =
-            if (language == Language.ENGLISH) QViewType.List
-            else repo.getViewType(),
+        if (language == Language.ENGLISH) QViewType.List
+        else repo.getViewType(),
         textSize = repo.getTextSize(),
         isBookmarked = bookmarkedPage == initialPage,
         ayas = buildPage(initialPage),

@@ -1,58 +1,78 @@
 package bassamalim.hidaya.features.main
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.features.NavGraphs
-import bassamalim.hidaya.features.appCurrentDestinationAsState
-import bassamalim.hidaya.features.destinations.AthkarUIDestination
-import bassamalim.hidaya.features.destinations.HomeUIDestination
-import bassamalim.hidaya.features.destinations.MoreUIDestination
-import bassamalim.hidaya.features.destinations.PrayersUIDestination
-import bassamalim.hidaya.features.destinations.QuranUIDestination
-import bassamalim.hidaya.features.startAppDestination
-import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 
-enum class BottomNavDestination(
-    val direction: DirectionDestinationSpec,
-    val icon: Int,
-    @StringRes val label: Int
-) {
-    Home(HomeUIDestination, R.drawable.ic_home, R.string.title_home),
-    Prayers(PrayersUIDestination, R.drawable.ic_clock, R.string.title_prayers),
-    Quran(QuranUIDestination, R.drawable.ic_bar_quran, R.string.title_quran),
-    Athkar(AthkarUIDestination, R.drawable.ic_duaa, R.string.title_athkar),
-    More(MoreUIDestination, R.drawable.ic_more, R.string.title_more)
+sealed class BottomNavItem(var route: String, var icon: Int){
+    object Home: BottomNavItem("home", R.drawable.ic_home)
+    object Prayers: BottomNavItem("prayers", R.drawable.ic_clock)
+    object Quran: BottomNavItem("quran", R.drawable.ic_bar_quran)
+    object Athkar: BottomNavItem("athkar", R.drawable.ic_duaa)
+    object More: BottomNavItem("more", R.drawable.ic_more)
 }
 
 @Composable
-fun BottomBar(navController: NavController) {
-    val currentDestination = navController.appCurrentDestinationAsState().value
-        ?: NavGraphs.bottom.startAppDestination
+fun MyBottomNavigation(navController: NavController) {
+    val items = listOf(  // add arguments
+        BottomNavItem.Home,
+        BottomNavItem.Prayers,
+        BottomNavItem.Quran,
+        BottomNavItem.Athkar,
+        BottomNavItem.More
+    )
+    val titles = listOf(
+        stringResource(R.string.title_home),
+        stringResource(R.string.title_prayers),
+        stringResource(R.string.title_quran),
+        stringResource(R.string.title_athkar),
+        stringResource(R.string.title_more),
+    )
 
     BottomNavigation(
         backgroundColor = AppTheme.colors.primary,
-        contentColor = Color.Green,
+        contentColor = AppTheme.colors.secondary,
         elevation = 12.dp
     ) {
-        BottomNavDestination.values().forEach { destination ->
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route
+
+        items.forEachIndexed { index, item ->
             BottomNavigationItem(
-                selected = currentDestination == destination.direction,
+                label = {
+                    MyText(
+                        titles[index],
+                        fontSize = 9.nsp,
+                        textColor = AppTheme.colors.secondary,
+                        softWrap = false
+                    )
+                },
+                alwaysShowLabel = false,
+                icon = {
+                    Icon(
+                        painter = painterResource(id = item.icon),
+                        contentDescription = titles[index],
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                selectedContentColor = AppTheme.colors.secondary,
+                unselectedContentColor = AppTheme.colors.onPrimary,
+                selected = currentRoute == item.route,
                 onClick = {
-                    navController.navigate(destination.direction.route) {
+                    navController.navigate(item.route) {
                         navController.graph.startDestinationRoute?.let { screen_route ->
                             popUpTo(screen_route) {
                                 saveState = true
@@ -61,25 +81,7 @@ fun BottomBar(navController: NavController) {
                         launchSingleTop = true
                         restoreState = true
                     }
-                },
-                label = {
-                    MyText(
-                        stringResource(destination.label),
-                        fontSize = 12.nsp,
-                        textColor = AppTheme.colors.accent,
-                        softWrap = false
-                    )
-                },
-                alwaysShowLabel = false,
-                icon = {
-                    Icon(
-                        painter = painterResource(destination.icon),
-                        contentDescription = stringResource(destination.label),
-                        modifier = Modifier.size(24.dp)
-                    )
-                },
-                selectedContentColor = AppTheme.colors.accent,
-                unselectedContentColor = AppTheme.colors.onPrimary
+                }
             )
         }
     }

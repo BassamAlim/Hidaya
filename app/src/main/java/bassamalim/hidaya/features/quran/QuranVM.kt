@@ -1,12 +1,11 @@
 package bassamalim.hidaya.features.quran
 
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.Sura
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.destinations.QuranSearcherUIDestination
-import bassamalim.hidaya.features.destinations.QuranViewerUIDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -74,27 +73,27 @@ class QuranVM @Inject constructor(
         }
     }
 
-    fun onSuraClick(suraId: Int, navigator: DestinationsNavigator) {
-        navigator.navigate(
-            QuranViewerUIDestination(
-                type = "by_surah",
-                suraId = suraId
-            )
+    fun onSuraClick(suraId: Int, nc: NavController) {
+        nc.navigate(
+            Screen.QuranViewer(
+                "by_surah",
+                suraId = suraId.toString()
+            ).route
         )
     }
 
-    fun onQuranSearcherClick(navigator: DestinationsNavigator) {
-        navigator.navigate(QuranSearcherUIDestination)
+    fun onQuranSearcherClick(nc: NavController) {
+        nc.navigate(Screen.QuranSearcher.route)
     }
 
-    fun onBookmarkedPageClick(navigator: DestinationsNavigator) {
+    fun onBookmarkedPageClick(nc: NavController) {
         val bookmarkedPage = repo.getBookmarkedPage()
         if (bookmarkedPage != -1) {
-            navigator.navigate(
-                QuranViewerUIDestination(
-                    type = "by_page",
-                    pageNum = bookmarkedPage
-                )
+            nc.navigate(
+                Screen.QuranViewer(
+                    "by_page",
+                    page = bookmarkedPage.toString()
+                ).route
             )
         }
     }
@@ -116,15 +115,15 @@ class QuranVM @Inject constructor(
         )}
     }
 
-    fun onSearchSubmit(navigator: DestinationsNavigator) {
+    fun onSearchSubmit(nc: NavController) {
         try {
             val num = _uiState.value.searchText.toInt()
             if (num in 1..604) {
-                navigator.navigate(
-                    QuranViewerUIDestination(
-                        type = "by_page",
-                        pageNum = num
-                    )
+                nc.navigate(
+                    Screen.QuranViewer(
+                        "by_page",
+                        page = num.toString()
+                    ).route
                 )
             }
             else {

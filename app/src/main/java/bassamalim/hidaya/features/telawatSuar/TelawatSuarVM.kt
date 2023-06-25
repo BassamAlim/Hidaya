@@ -11,14 +11,12 @@ import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.ReciterSura
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.FileUtils
-import bassamalim.hidaya.features.destinations.TelawatClientUIDestination
-import bassamalim.hidaya.features.destinations.TelawatSuarUIDestination
-import bassamalim.hidaya.features.navArgs
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,16 +32,17 @@ class TelawatSuarVM @Inject constructor(
     private val repo: TelawatSuarRepo
 ): AndroidViewModel(app) {
 
-    private val navArgs = savedStateHandle.navArgs<TelawatSuarNavArgs>()
+    private val reciterId = savedStateHandle.get<Int>("reciter_id") ?: 0
+    private val versionId = savedStateHandle.get<Int>("version_id") ?: 0
 
-    private val ver = repo.getVersion(navArgs.reciterId, navArgs.versionId)
-    val prefix = "/Telawat/${ver.getReciterId()}/${navArgs.versionId}/"
+    private val ver = repo.getVersion(reciterId, versionId)
+    val prefix = "/Telawat/${ver.getReciterId()}/${versionId}/"
     private val suraNames = repo.getSuraNames()
     private val searchNames = repo.getSearchNames()
     private val downloading = HashMap<Long, Int>()
 
     private val _uiState = MutableStateFlow(TelawatSuarState(
-        title = repo.getReciterName(navArgs.reciterId),
+        title = repo.getReciterName(reciterId),
         favs = repo.getFavs()
     ))
     val uiState = _uiState.asStateFlow()
@@ -68,22 +67,16 @@ class TelawatSuarVM @Inject constructor(
         }
     }
 
-    fun onBackPressed(navigator: DestinationsNavigator) {
-        if ((app as Activity).isTaskRoot) {
-            navigator.navigate(
-                TelawatSuarUIDestination(
-                    reciterId = navArgs.reciterId,
-                    versionId = navArgs.versionId
-                )
-            )
-            // TODO
-//            nc.navigate(Screen.Telawat.route) {
-//                popUpTo(Screen.TelawatSuar(reciterId.toString(), versionId.toString()).route) {
-//                    inclusive = true
-//                }
-//            }
+    fun onBackPressed(nc: NavController) {
+        val ctx = nc.context
+        if ((ctx as Activity).isTaskRoot) {
+            nc.navigate(Screen.Telawat.route) {
+                popUpTo(Screen.TelawatSuar(reciterId.toString(), versionId.toString()).route) {
+                    inclusive = true
+                }
+            }
         }
-        else (app as ComponentActivity).onBackPressedDispatcher.onBackPressed()
+        else (ctx as ComponentActivity).onBackPressedDispatcher.onBackPressed()
     }
 
     private fun updateDownloads() {
@@ -167,17 +160,17 @@ class TelawatSuarVM @Inject constructor(
         }
     }
 
-    fun onItemClk(navigator: DestinationsNavigator, sura: ReciterSura) {
-        val rId = String.format(Locale.US, "%03d", navArgs.reciterId)
-        val vId = String.format(Locale.US, "%02d", navArgs.versionId)
+    fun onItemClk(navController: NavController, sura: ReciterSura) {
+        val rId = String.format(Locale.US, "%03d", reciterId)
+        val vId = String.format(Locale.US, "%02d", versionId)
         val sId = String.format(Locale.US, "%03d", sura.num)
         val mediaId = rId + vId + sId
 
-        navigator.navigate(
-            TelawatClientUIDestination(
-                action = "start",
-                mediaId = mediaId
-            )
+        navController.navigate(
+            Screen.TelawatClient(
+                "start",
+                mediaId
+            ).route
         )
     }
 

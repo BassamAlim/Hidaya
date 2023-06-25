@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
@@ -19,12 +18,10 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import com.ramcosta.composedestinations.annotation.Destination
 
-@Destination(navArgsDelegate = BookViewerNavArgs::class)
 @Composable
 fun BookViewerUI(
-    vm: BookViewerVM = hiltViewModel()
+    vm: BookViewerVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 

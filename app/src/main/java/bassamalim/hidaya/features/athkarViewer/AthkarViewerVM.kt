@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Thikr
-import bassamalim.hidaya.features.navArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,19 +16,21 @@ class AthkarViewerVM @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val navArgs = savedStateHandle.navArgs<AthkarViewerNavArgs>()
+    private val id = savedStateHandle.get<Int>("thikr_id") ?: 0
 
     private val language = repo.getLanguage()
 
-    private val _uiState = MutableStateFlow(AthkarViewerState(
-        title = repo.getTitle(navArgs.thikrId),
-        textSize = repo.getTextSize(),
-        items = getItems()
-    ))
+    private val _uiState = MutableStateFlow(
+        AthkarViewerState(
+            title = repo.getTitle(id),
+            textSize = repo.getTextSize(),
+            items = getItems()
+        )
+    )
     val uiState = _uiState.asStateFlow()
 
     private fun getItems(): List<Thikr> {
-        val thikrs = repo.getThikrs(navArgs.thikrId)
+        val thikrs = repo.getThikrs(id)
 
         val items = ArrayList<Thikr>()
         for (i in thikrs.indices) {

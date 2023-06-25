@@ -20,8 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.Reciter
@@ -37,14 +37,11 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination
 @Composable
 fun TelawatUI(
-    vm: TelawatVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: TelawatVM,
+    nc: NavController
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -55,7 +52,7 @@ fun TelawatUI(
 
     MyScaffold(
         stringResource(R.string.recitations),
-        onBack = { vm.onBackPressed(navigator) }
+        onBack = { vm.onBackPressed(nc) }
     ) {
         Column {
             MySquareButton(
@@ -65,7 +62,7 @@ fun TelawatUI(
                 modifier = Modifier.fillMaxWidth(),
                 innerPadding = PaddingValues(vertical = 4.dp)
             ) {
-                vm.onContinueListeningClick(navigator)
+                vm.onContinueListeningClick(nc)
             }
 
             TabLayout(
@@ -100,7 +97,7 @@ fun TelawatUI(
                     }
                 }
             ) { page ->
-                Tab(vm, st, navigator, vm.getItems(page))
+                Tab(vm, st, nc, vm.getItems(page))
             }
         }
 
@@ -118,13 +115,13 @@ fun TelawatUI(
 private fun Tab(
     vm: TelawatVM,
     st: TelawatState,
-    navigator: DestinationsNavigator,
+    nc: NavController,
     items: List<Reciter>
 ) {
     MyLazyColumn(
         lazyList = {
             items(items) { item ->
-                ReciterCard(reciter = item, vm, st, navigator)
+                ReciterCard(reciter = item, vm, st, nc)
             }
         }
     )
@@ -135,7 +132,7 @@ private fun ReciterCard(
     reciter: Reciter,
     vm: TelawatVM,
     st: TelawatState,
-    navigator: DestinationsNavigator
+    nc: NavController
 ) {
     Surface(
         Modifier
@@ -175,7 +172,7 @@ private fun ReciterCard(
                         version = version,
                         vm = vm,
                         st = st,
-                        navigator = navigator
+                        nc = nc
                     )
                 }
             }
@@ -189,13 +186,13 @@ private fun VersionCard(
     version: Reciter.RecitationVersion,
     vm: TelawatVM,
     st: TelawatState,
-    navigator: DestinationsNavigator
+    nc: NavController
 ) {
     if (version.versionId != 0) MyHorizontalDivider()
 
     Box(
         Modifier.clickable {
-            vm.onVersionClk(reciterId, version.versionId, navigator)
+            vm.onVersionClk(reciterId, version.versionId, nc)
         }
     ) {
         Box(Modifier.padding(horizontal = 10.dp)) {

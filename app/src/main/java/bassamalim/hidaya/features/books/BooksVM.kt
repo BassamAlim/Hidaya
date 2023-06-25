@@ -2,13 +2,12 @@ package bassamalim.hidaya.features.books
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import bassamalim.hidaya.core.data.database.dbs.BooksDB
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.features.destinations.BookChaptersUIDestination
-import bassamalim.hidaya.features.destinations.BookSearcherUIDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,10 +19,12 @@ class BooksVM @Inject constructor(
     private val repo: BooksRepo
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(BooksState(
-        items = repo.getBooks(),
-        tutorialDialogShown = repo.getShowTutorial()
-    ))
+    private val _uiState = MutableStateFlow(
+        BooksState(
+            items = repo.getBooks(),
+            tutorialDialogShown = repo.getShowTutorial()
+        )
+    )
     val uiState = _uiState.asStateFlow()
 
     fun onStart() {
@@ -44,8 +45,8 @@ class BooksVM @Inject constructor(
         )}
     }
 
-    fun onFabClick(navigator: DestinationsNavigator) {
-        navigator.navigate(BookSearcherUIDestination)
+    fun onFabClick(nc: NavController) {
+        nc.navigate(Screen.BookSearcher.route)
     }
 
     private fun getDownloadStates(): ArrayList<DownloadState> {
@@ -77,15 +78,15 @@ class BooksVM @Inject constructor(
             }
     }
 
-    fun onItemClick(item: BooksDB, navigator: DestinationsNavigator) {
+    fun onItemClick(item: BooksDB, nc: NavController) {
         if (_uiState.value.downloadStates[item.id] == DownloadState.NotDownloaded) download(item)
         else if (_uiState.value.downloadStates[item.id] == DownloadState.Downloaded) {
-            navigator.navigate(
-                BookChaptersUIDestination(
-                    bookId = item.id,
-                    bookTitle = if (repo.language == Language.ENGLISH) item.titleEn
+            nc.navigate(
+                Screen.BookChapters(
+                    item.id.toString(),
+                    if (repo.language == Language.ENGLISH) item.titleEn
                     else item.title
-                )
+                ).route
             )
         }
         else showWaitMassage()

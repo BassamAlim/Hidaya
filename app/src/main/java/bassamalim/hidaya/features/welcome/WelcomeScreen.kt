@@ -10,20 +10,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.features.settings.AppearanceSettings
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination
 @Composable
 fun WelcomeUI(
-    vm: WelcomeVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: WelcomeVM,
+    nc: NavController
 ) {
     val activity = LocalContext.current as Activity
 
@@ -50,7 +47,7 @@ fun WelcomeUI(
                 innerPadding = PaddingValues(vertical = 2.dp, horizontal = 25.dp),
                 modifier = Modifier.padding(bottom = 10.dp)
             ) {
-                vm.save(navigator)
+                vm.save(nc)
             }
         }
     }

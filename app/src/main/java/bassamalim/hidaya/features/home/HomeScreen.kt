@@ -19,8 +19,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.other.AnalogClock
 import bassamalim.hidaya.core.ui.components.MyClickableText
@@ -32,16 +32,11 @@ import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.Positive
-import bassamalim.hidaya.features.main.BottomNavGraph
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@BottomNavGraph(start = true)
-@Destination
 @Composable
 fun HomeUI(
-    vm: HomeVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: HomeVM,
+    nc: NavController
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -53,9 +48,9 @@ fun HomeUI(
     MyParentColumn {
         UpcomingPrayerCard(vm, st)
 
-        RecordsCard(vm, st, navigator)
+        RecordsCard(vm, st, nc)
 
-        TodayWerdCard(vm, st, navigator)
+        TodayWerdCard(vm, st, nc)
     }
 }
 
@@ -117,7 +112,7 @@ fun UpcomingPrayerCard(
 fun RecordsCard(
     vm: HomeVM,
     st: HomeState,
-    navigator: DestinationsNavigator
+    nc: NavController
 ) {
     MySurface {
         MyColumn {
@@ -172,7 +167,7 @@ fun RecordsCard(
                 elevation = 0,
                 enabled = st.leaderboardEnabled
             ) {
-                vm.gotoLeaderboard(navigator)
+                vm.gotoLeaderboard(nc)
             }
         }
     }
@@ -183,7 +178,7 @@ fun RecordsCard(
 fun TodayWerdCard(
     vm: HomeVM,
     st: HomeState,
-    navigator: DestinationsNavigator
+    nc: NavController
 ) {
     MySurface(
         Modifier.padding(bottom = 3.dp)
@@ -220,7 +215,7 @@ fun TodayWerdCard(
                     textColor = AppTheme.colors.accent,
                     modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                 ) {
-                    vm.onGotoTodayWerdClick(navigator)
+                    vm.onGotoTodayWerdClick(nc)
                 }
 
                 AnimatedVisibility(

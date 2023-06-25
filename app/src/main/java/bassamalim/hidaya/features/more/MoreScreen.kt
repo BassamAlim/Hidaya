@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.more
 
 import android.widget.Toast
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,20 +12,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
-import bassamalim.hidaya.features.main.BottomNavGraph
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
-@BottomNavGraph
-@Destination
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MoreUI(
-    vm: MoreVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: MoreVM,
+    nc: NavController = rememberAnimatedNavController()
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -45,14 +43,14 @@ fun MoreUI(
                 textResId = R.string.recitations,
                 imageResId = R.drawable.ic_headphone
             ) {
-                vm.gotoTelawat(navigator)
+                vm.gotoTelawat(nc)
             }
 
             MySquareButton(
                 textResId = R.string.qibla,
                 imageResId = R.drawable.ic_qibla_compass
             ) {
-                vm.gotoQibla(navigator)
+                vm.gotoQibla(nc)
             }
         }
 
@@ -64,14 +62,14 @@ fun MoreUI(
                 textResId = R.string.quiz_title,
                 imageResId = R.drawable.ic_quiz
             ) {
-                vm.gotoQuiz(navigator)
+                vm.gotoQuiz(nc)
             }
 
             MySquareButton(
                 textResId = R.string.hadeeth_books,
                 imageResId = R.drawable.ic_books
             ) {
-                vm.gotoBooks(navigator)
+                vm.gotoBooks(nc)
             }
         }
 
@@ -83,14 +81,14 @@ fun MoreUI(
                 textResId = R.string.tv_channels,
                 imageResId = R.drawable.ic_television
             ) {
-                vm.gotoTV(navigator)
+                vm.gotoTV(nc)
             }
 
             MySquareButton(
                 textResId = R.string.quran_radio,
                 imageResId = R.drawable.ic_radio
             ) {
-                vm.gotoRadio(navigator)
+                vm.gotoRadio(nc)
             }
         }
 
@@ -102,11 +100,11 @@ fun MoreUI(
                 textResId = R.string.date_converter,
                 imageResId = R.drawable.ic_calendar
             ) {
-                vm.gotoDateConverter(navigator)
+                vm.gotoDateConverter(nc)
             }
 
             MySquareButton(R.string.settings, R.drawable.ic_settings) {
-                vm.gotoSettings(navigator)
+                vm.gotoSettings(nc)
             }
         }
 
@@ -137,7 +135,7 @@ fun MoreUI(
                 textResId = R.string.about,
                 imageResId = R.drawable.ic_info
             ) {
-                vm.gotoAbout(navigator)
+                vm.gotoAbout(nc)
             }
         }
     }

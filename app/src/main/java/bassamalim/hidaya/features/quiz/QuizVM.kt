@@ -1,11 +1,11 @@
 package bassamalim.hidaya.features.quiz
 
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.database.dbs.QuizQuestionsDB
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.destinations.QuizResultUIDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,7 +40,7 @@ class QuizVM @Inject constructor(
         updateState()
     }
 
-    fun answered(a: Int, navigator: DestinationsNavigator) {
+    fun answered(a: Int, nc: NavController) {
         chosenAs[current] = a
 
         allAnswered = !chosenAs.contains(-1)
@@ -52,12 +52,12 @@ class QuizVM @Inject constructor(
                 nextBtnTextResId = getNextBtnTextResId()
             )}
         }
-        else nextQ(navigator)
+        else nextQ(nc)
     }
 
-    fun nextQ(navigator: DestinationsNavigator) {
+    fun nextQ(navController: NavController) {
         if (current == 9) {
-            if (allAnswered) endQuiz(navigator)
+            if (allAnswered) endQuiz(navController)
         }
         else ask(++current)
     }
@@ -67,28 +67,20 @@ class QuizVM @Inject constructor(
             ask(--current)
     }
 
-    private fun endQuiz(navigator: DestinationsNavigator) {
+    private fun endQuiz(navController: NavController) {
         val score = calculateScore()
 
-        navigator.navigate(
-            QuizResultUIDestination(
-                score = score,
-                questionIds = questions.map { q -> q.getQuestionId() }.toIntArray(),
-                chosenAnswers = chosenAs
-            )
-        )
-        // TODO
-//        navController.navigate(
-//            Screen.QuizResult(
-//                score.toString(),
-//                questions.map { q -> q.getQuestionId() }.toIntArray().contentToString(),
-//                chosenAs.toTypedArray().contentToString()
-//            ).route
-//        ) {
-//            popUpTo(Screen.Quiz.route) {
-//                inclusive = true
-//            }
-//        }
+        navController.navigate(
+            Screen.QuizResult(
+                score.toString(),
+                questions.map { q -> q.getQuestionId() }.toIntArray().contentToString(),
+                chosenAs.toTypedArray().contentToString()
+            ).route
+        ) {
+            popUpTo(Screen.Quiz.route) {
+                inclusive = true
+            }
+        }
     }
 
     private fun calculateScore(): Int {

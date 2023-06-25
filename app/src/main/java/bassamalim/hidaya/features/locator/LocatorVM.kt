@@ -10,12 +10,10 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.LocationType
-import bassamalim.hidaya.features.destinations.LocationPickerUIDestination
-import bassamalim.hidaya.features.destinations.PrayersUIDestination
-import bassamalim.hidaya.features.navArgs
+import bassamalim.hidaya.core.nav.Screen
 import com.google.android.gms.location.LocationServices
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,22 +27,22 @@ class LocatorVM @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): AndroidViewModel(app) {
 
-    private val navArgs = savedStateHandle.navArgs<LocatorNavArgs>()
+    private val type = savedStateHandle.get<String>("type") ?: "normal"
 
-    private lateinit var navigator: DestinationsNavigator
+    private lateinit var nc: NavController
     private lateinit var locationRequestLauncher:
             ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
 
     private val _uiState = MutableStateFlow(LocatorState(
-        showSkipLocationBtn = navArgs.type == "initial"
+        showSkipLocationBtn = type == "initial"
     ))
     val uiState = _uiState.asStateFlow()
 
     fun provide(
-        navigator: DestinationsNavigator,
+        navController: NavController,
         locationRequestLauncher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
     ) {
-        this.navigator = navigator
+        this.nc = navController
         this.locationRequestLauncher = locationRequestLauncher
     }
 
@@ -61,13 +59,11 @@ class LocatorVM @Inject constructor(
     }
 
     private fun launch() {
-        navigator.navigate(PrayersUIDestination)
-        // TODO
-//        nc.navigate(Screen.Main.route) {
-//            popUpTo(Screen.Locator(type).route) {
-//                inclusive = true
-//            }
-//        }
+        nc.navigate(Screen.Main.route) {
+            popUpTo(Screen.Locator(type).route) {
+                inclusive = true
+            }
+        }
     }
 
     private fun background() {
@@ -113,7 +109,7 @@ class LocatorVM @Inject constructor(
     fun onChooseLocationClk() {
         repo.setLocationType(LocationType.Manual)
 
-        navigator.navigate(LocationPickerUIDestination)
+        nc.navigate(Screen.LocationPicker.route)
     }
 
     fun onSkipLocationClk() {

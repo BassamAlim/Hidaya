@@ -12,8 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
@@ -24,14 +24,11 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination(navArgsDelegate = TelawatSuarNavArgs::class)
 @Composable
 fun TelawatSuarUI(
-    vm: TelawatSuarVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: TelawatSuarVM,
+    nc: NavController
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -42,7 +39,7 @@ fun TelawatSuarUI(
 
     MyScaffold(
         st.title,
-        onBack = { vm.onBackPressed(navigator) }
+        onBack = { vm.onBackPressed(nc) }
     ) {
         TabLayout(
             pageNames = listOf(
@@ -59,7 +56,7 @@ fun TelawatSuarUI(
                 )
             }
         ) { page ->
-            Tab(vm, st, navigator, vm.getItems(page))
+            Tab(vm, st, nc, vm.getItems(page))
         }
     }
 }
@@ -68,13 +65,13 @@ fun TelawatSuarUI(
 private fun Tab(
     vm: TelawatSuarVM,
     st: TelawatSuarState,
-    navigator: DestinationsNavigator,
+    nc: NavController,
     items: List<ReciterSura>
 ) {
     MyLazyColumn(
         lazyList = {
             items(items) { item ->
-                SuraCard(item, vm, st, navigator)
+                SuraCard(item, vm, st, nc)
             }
         }
     )
@@ -85,10 +82,10 @@ private fun SuraCard(
     sura: ReciterSura,
     viewModel: TelawatSuarVM,
     state: TelawatSuarState,
-    navigator: DestinationsNavigator
+    nc: NavController
 ) {
     MyClickableSurface(
-        onClick = { viewModel.onItemClk(navigator, sura) }
+        onClick = { viewModel.onItemClk(nc, sura) }
     ) {
         Row(
             Modifier

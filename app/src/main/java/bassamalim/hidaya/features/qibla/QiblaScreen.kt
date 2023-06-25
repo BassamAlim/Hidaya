@@ -30,7 +30,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyDialog
@@ -43,12 +42,10 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import coil.size.Size
-import com.ramcosta.composedestinations.annotation.Destination
 
-@Destination
 @Composable
 fun QiblaUI(
-    vm: QiblaVM = hiltViewModel()
+    vm: QiblaVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -166,7 +163,11 @@ fun QiblaUI(
 }
 
 @Composable
-private fun CalibrationDialog(context: Context, viewModel: QiblaVM, state: QiblaState) {
+private fun CalibrationDialog(
+    context: Context,
+    viewModel: QiblaVM,
+    state: QiblaState
+) {
     MyDialog(
         shown = state.calibrationDialogShown,
         onDismiss = { viewModel.onCalibrationDialogDismiss() },

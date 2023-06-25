@@ -2,11 +2,10 @@ package bassamalim.hidaya.features.bookChapters
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.BookChapter
-import bassamalim.hidaya.features.destinations.BookViewerUIDestination
-import bassamalim.hidaya.features.navArgs
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import bassamalim.hidaya.core.nav.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,12 +18,13 @@ class BookChaptersVM @Inject constructor(
     private val repository: BookChaptersRepo
 ): ViewModel() {
 
-    private val navArgs = savedStateHandle.navArgs<BookChaptersNavArgs>()
+    private val bookId = savedStateHandle.get<Int>("book_id")?: 0
+    private val bookTitle = savedStateHandle.get<String>("book_title")?: ""
 
-    private val book = repository.getBook(navArgs.bookId)
+    private val book = repository.getBook(bookId)
 
     private val _uiState = MutableStateFlow(BookChaptersState(
-        title = navArgs.bookTitle,
+        title = bookTitle,
         favs = repository.getFavs(book)
     ))
     val uiState = _uiState.asStateFlow()
@@ -46,13 +46,13 @@ class BookChaptersVM @Inject constructor(
         }
     }
 
-    fun onItemClick(item: BookChapter, navigator: DestinationsNavigator) {
-        navigator.navigate(
-            BookViewerUIDestination(
-                navArgs.bookId,
+    fun onItemClick(item: BookChapter, navController: NavController) {
+        navController.navigate(
+            Screen.BookViewer(
+                bookId.toString(),
                 item.title,
-                item.id
-            )
+                item.id.toString()
+            ).route
         )
     }
 
@@ -63,7 +63,7 @@ class BookChaptersVM @Inject constructor(
             }
         )}
 
-        repository.updateFavorites(navArgs.bookId, _uiState.value.favs.toList())
+        repository.updateFavorites(bookId, _uiState.value.favs.toList())
     }
 
     fun onSearchTextChange(text: String) {

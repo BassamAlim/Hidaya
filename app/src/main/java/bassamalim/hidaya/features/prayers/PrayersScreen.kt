@@ -22,8 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
@@ -35,16 +35,11 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.features.main.BottomNavGraph
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@BottomNavGraph
-@Destination
 @Composable
 fun PrayersUI(
-    vm: PrayersVM = hiltViewModel(),
-    navigator: DestinationsNavigator
+    vm: PrayersVM,
+    nc: NavController
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -56,7 +51,7 @@ fun PrayersUI(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LocationCard(vm, st, navigator)
+        LocationCard(vm, st, nc)
 
         PrayersSpace(vm, st)
 
@@ -84,7 +79,7 @@ fun PrayersUI(
 private fun LocationCard(
     vm: PrayersVM,
     st: PrayersState,
-    navigator: DestinationsNavigator
+    nc: NavController
 ) {
     MySurface(
         Modifier.padding(top = 5.dp)
@@ -110,7 +105,7 @@ private fun LocationCard(
                 modifier = Modifier.padding(end = 8.dp),
                 size = 32.dp
             ) {
-                vm.onLocatorClick(navigator)
+                vm.onLocatorClick(nc)
             }
         }
     }
