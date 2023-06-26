@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.Reciter
@@ -40,8 +39,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun TelawatUI(
-    vm: TelawatVM,
-    nc: NavController
+    vm: TelawatVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -52,7 +50,7 @@ fun TelawatUI(
 
     MyScaffold(
         stringResource(R.string.recitations),
-        onBack = { vm.onBackPressed(nc) }
+        onBack = { vm.onBackPressed() }
     ) {
         Column {
             MySquareButton(
@@ -62,7 +60,7 @@ fun TelawatUI(
                 modifier = Modifier.fillMaxWidth(),
                 innerPadding = PaddingValues(vertical = 4.dp)
             ) {
-                vm.onContinueListeningClick(nc)
+                vm.onContinueListeningClick()
             }
 
             TabLayout(
@@ -97,7 +95,7 @@ fun TelawatUI(
                     }
                 }
             ) { page ->
-                Tab(vm, st, nc, vm.getItems(page))
+                Tab(vm, st, vm.getItems(page))
             }
         }
 
@@ -115,13 +113,12 @@ fun TelawatUI(
 private fun Tab(
     vm: TelawatVM,
     st: TelawatState,
-    nc: NavController,
     items: List<Reciter>
 ) {
     MyLazyColumn(
         lazyList = {
             items(items) { item ->
-                ReciterCard(reciter = item, vm, st, nc)
+                ReciterCard(reciter = item, vm, st)
             }
         }
     )
@@ -131,8 +128,7 @@ private fun Tab(
 private fun ReciterCard(
     reciter: Reciter,
     vm: TelawatVM,
-    st: TelawatState,
-    nc: NavController
+    st: TelawatState
 ) {
     Surface(
         Modifier
@@ -171,8 +167,7 @@ private fun ReciterCard(
                         reciterId = reciter.id,
                         version = version,
                         vm = vm,
-                        st = st,
-                        nc = nc
+                        st = st
                     )
                 }
             }
@@ -185,14 +180,13 @@ private fun VersionCard(
     reciterId: Int,
     version: Reciter.RecitationVersion,
     vm: TelawatVM,
-    st: TelawatState,
-    nc: NavController
+    st: TelawatState
 ) {
     if (version.versionId != 0) MyHorizontalDivider()
 
     Box(
         Modifier.clickable {
-            vm.onVersionClk(reciterId, version.versionId, nc)
+            vm.onVersionClk(reciterId, version.versionId)
         }
     ) {
         Box(Modifier.padding(horizontal = 10.dp)) {

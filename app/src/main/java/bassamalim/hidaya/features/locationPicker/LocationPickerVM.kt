@@ -4,9 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.LocationPickerItem
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationPickerVM @Inject constructor(
-    private val repo: LocationPickerRepo
+    private val repo: LocationPickerRepo,
+    private val navigator: Navigator
 ): ViewModel() {
 
     private var mode = 0
@@ -73,7 +74,7 @@ class LocationPickerVM @Inject constructor(
                     city.nameEn.contains(searchText, ignoreCase = true) }
     }
 
-    fun onBack(navController: NavController) {
+    fun onBack() {
         if (mode == 1) {
             mode = 0
 
@@ -83,20 +84,20 @@ class LocationPickerVM @Inject constructor(
                 items = getItems()
             )}
         }
-        else navController.popBackStack()
+        else navigator.popBackStack()
     }
 
-    fun onSelect(id: Int, nc: NavController) {
+    fun onSelect(id: Int) {
         if (mode == 1) {
             repo.storeLocation(countryId, id)
 
-            nc.navigate(Screen.Main.route) {
+            navigator.navigate(Screen.Main) {
                 popUpTo(Screen.LocationPicker.route) {
                     inclusive = true
                 }
             }
-            nc.popBackStack(
-                Screen.Locator("normal").route,
+            navigator.popBackStack(
+                Screen.Locator("normal"),
                 true
             )
         }

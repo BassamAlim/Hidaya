@@ -14,14 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
 
 @Composable
 fun AthkarUI(
-    viewModel: AthkarVM,
-    nc: NavController
+    vm: AthkarVM
 ) {
     Column(
         Modifier
@@ -32,11 +30,11 @@ fun AthkarUI(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LargeBtn(R.string.all_athkar) {
-            viewModel.onAllAthkarClick(nc)
+            vm.onAllAthkarClick()
         }
 
         LargeBtn(R.string.favorite_athkar) {
-            viewModel.onFavoriteAthkarClick(nc)
+            vm.onFavoriteAthkarClick()
         }
 
         Row(
@@ -44,10 +42,10 @@ fun AthkarUI(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             MySquareButton(R.string.day_and_night_thikrs, R.drawable.ic_day_and_night) {
-                viewModel.onCategoryClick(nc, category = 0)
+                vm.onCategoryClick(category = 0)
             }
             MySquareButton(R.string.prayers_thikrs, R.drawable.ic_praying) {
-                viewModel.onCategoryClick(nc, category = 1)
+                vm.onCategoryClick(category = 1)
             }
         }
 
@@ -56,10 +54,10 @@ fun AthkarUI(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             MySquareButton(R.string.quran_thikrs, R.drawable.ic_closed_quran) {
-                viewModel.onCategoryClick(nc, category = 2)
+                vm.onCategoryClick(category = 2)
             }
             MySquareButton(R.string.actions_thikrs, R.drawable.ic_actions) {
-                viewModel.onCategoryClick(nc, category = 3)
+                vm.onCategoryClick(category = 3)
             }
         }
 
@@ -68,10 +66,10 @@ fun AthkarUI(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             MySquareButton(R.string.events_thikrs, R.drawable.ic_events) {
-                viewModel.onCategoryClick(nc, category = 4)
+                vm.onCategoryClick(category = 4)
             }
             MySquareButton(R.string.emotion_thikrs, R.drawable.ic_emotion) {
-                viewModel.onCategoryClick(nc, category = 5)
+                vm.onCategoryClick(category = 5)
             }
         }
 
@@ -80,10 +78,10 @@ fun AthkarUI(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             MySquareButton(R.string.places_thikrs, R.drawable.ic_going_out) {
-                viewModel.onCategoryClick(nc, category = 6)
+                vm.onCategoryClick(category = 6)
             }
             MySquareButton(R.string.title_more, R.drawable.ic_duaa_moon) {
-                viewModel.onCategoryClick(nc, category = 7)
+                vm.onCategoryClick(category = 7)
             }
         }
     }

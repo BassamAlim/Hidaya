@@ -10,12 +10,12 @@ import android.content.IntentFilter
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.data.database.dbs.TelawatDB
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.FileUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TelawatVM @Inject constructor(
     private val app: Application,
-    private val repo: TelawatRepo
+    private val repo: TelawatRepo,
+    private val navigator: Navigator
 ): AndroidViewModel(app) {
 
     val prefix = "/Telawat/"
@@ -76,11 +77,11 @@ class TelawatVM @Inject constructor(
         }
     }
 
-    fun onBackPressed(navController: NavController) {
-        val ctx = navController.context
+    fun onBackPressed() {
+        val ctx = navigator.getContext()
 
         if ((ctx as Activity).isTaskRoot) {
-            navController.navigate(Screen.Main.route) {
+            navigator.navigate(Screen.Main) {
                 popUpTo(Screen.Telawat.route) {
                     inclusive = true
                 }
@@ -242,13 +243,13 @@ class TelawatVM @Inject constructor(
         FileUtils.deleteDirRecursive(mainDir)
     }
 
-    fun onContinueListeningClick(navController: NavController) {
+    fun onContinueListeningClick() {
         if (continueListeningMediaId.isNotEmpty()) {
-            navController.navigate(
+            navigator.navigate(
                 Screen.TelawatClient(
                     "continue",
                     continueListeningMediaId
-                ).route
+                )
             )
         }
     }
@@ -304,12 +305,12 @@ class TelawatVM @Inject constructor(
         downloadVer(reciterId, version)
     }
 
-    fun onVersionClk(reciterId: Int, versionId: Int, navController: NavController) {
-        navController.navigate(
+    fun onVersionClk(reciterId: Int, versionId: Int) {
+        navigator.navigate(
             Screen.TelawatSuar(
                 reciterId.toString(),
                 versionId.toString()
-            ).route
+            )
         )
     }
 

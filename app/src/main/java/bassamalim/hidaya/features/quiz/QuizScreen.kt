@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySquareButton
@@ -32,8 +31,7 @@ import bassamalim.hidaya.core.ui.theme.Grey
 
 @Composable
 fun QuizUI(
-    vm: QuizVM,
-    nc: NavController
+    vm: QuizVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -68,7 +66,7 @@ fun QuizUI(
                     .heightIn(1.dp, 400.dp)
                     .verticalScroll(rememberScrollState())
             ) { index ->
-                vm.answered(index, nc)
+                vm.answered(index)
             }
 
             Row(
@@ -97,7 +95,7 @@ fun QuizUI(
                         else Grey,
                     innerPadding = PaddingValues(10.dp)
                 ) {
-                    vm.nextQ(nc)
+                    vm.nextQ()
                 }
             }
         }

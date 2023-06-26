@@ -11,7 +11,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySquareButton
@@ -19,8 +18,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun QuizLobbyUI(
-    vm: QuizLobbyVM,
-    nc: NavController
+    vm: QuizLobbyVM
 ) {
     MyScaffold(stringResource(R.string.quiz_title)) {
         Column(
@@ -35,7 +33,7 @@ fun QuizLobbyUI(
                 fontWeight = FontWeight.Bold,
                 textColor = AppTheme.colors.accent
             ) {
-                vm.onStartQuizClick(nc)
+                vm.onStartQuizClick()
             }
         }
     }

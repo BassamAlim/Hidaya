@@ -2,9 +2,9 @@ package bassamalim.hidaya.features.bookChapters
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.BookChapter
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class BookChaptersVM @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: BookChaptersRepo
+    private val repository: BookChaptersRepo,
+    private val navigator: Navigator
 ): ViewModel() {
 
     private val bookId = savedStateHandle.get<Int>("book_id")?: 0
@@ -46,13 +47,13 @@ class BookChaptersVM @Inject constructor(
         }
     }
 
-    fun onItemClick(item: BookChapter, navController: NavController) {
-        navController.navigate(
+    fun onItemClick(item: BookChapter) {
+        navigator.navigate(
             Screen.BookViewer(
                 bookId.toString(),
                 item.title,
                 item.id.toString()
-            ).route
+            )
         )
     }
 

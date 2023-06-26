@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.QuranSearcherMatch
 import bassamalim.hidaya.core.ui.components.MyDropDownMenu
@@ -31,8 +30,7 @@ import bassamalim.hidaya.core.utils.LangUtils.translateNums
 
 @Composable
 fun QuranSearcherUI(
-    vm: QuranSearcherVM,
-    nc: NavController
+    vm: QuranSearcherVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -94,7 +92,7 @@ fun QuranSearcherUI(
             else {
                 MyLazyColumn(lazyList = {
                     items(st.matches) { item ->
-                        MatchItem(item, vm, nc)
+                        MatchItem(item, vm)
                     }
                 })
             }
@@ -105,8 +103,7 @@ fun QuranSearcherUI(
 @Composable
 fun MatchItem(
     item: QuranSearcherMatch,
-    vm: QuranSearcherVM,
-    nc: NavController
+    vm: QuranSearcherVM
 ) {
     MySurface {
         Column(
@@ -156,7 +153,7 @@ fun MatchItem(
                 innerPadding = PaddingValues(0.dp),
                 modifier = Modifier.padding(bottom = 6.dp)
             ) {
-                vm.onGotoPageClick(item.pageNum, nc)
+                vm.onGotoPageClick(item.pageNum)
             }
         }
     }

@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.other.AnalogClock
 import bassamalim.hidaya.core.ui.components.MyClickableText
@@ -35,8 +34,7 @@ import bassamalim.hidaya.core.ui.theme.Positive
 
 @Composable
 fun HomeUI(
-    vm: HomeVM,
-    nc: NavController
+    vm: HomeVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -48,9 +46,9 @@ fun HomeUI(
     MyParentColumn {
         UpcomingPrayerCard(vm, st)
 
-        RecordsCard(vm, st, nc)
+        RecordsCard(vm, st)
 
-        TodayWerdCard(vm, st, nc)
+        TodayWerdCard(vm, st)
     }
 }
 
@@ -111,8 +109,7 @@ fun UpcomingPrayerCard(
 @Composable
 fun RecordsCard(
     vm: HomeVM,
-    st: HomeState,
-    nc: NavController
+    st: HomeState
 ) {
     MySurface {
         MyColumn {
@@ -167,7 +164,7 @@ fun RecordsCard(
                 elevation = 0,
                 enabled = st.leaderboardEnabled
             ) {
-                vm.gotoLeaderboard(nc)
+                vm.gotoLeaderboard()
             }
         }
     }
@@ -177,8 +174,7 @@ fun RecordsCard(
 @Composable
 fun TodayWerdCard(
     vm: HomeVM,
-    st: HomeState,
-    nc: NavController
+    st: HomeState
 ) {
     MySurface(
         Modifier.padding(bottom = 3.dp)
@@ -215,7 +211,7 @@ fun TodayWerdCard(
                     textColor = AppTheme.colors.accent,
                     modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
                 ) {
-                    vm.onGotoTodayWerdClick(nc)
+                    vm.onGotoTodayWerdClick()
                 }
 
                 AnimatedVisibility(

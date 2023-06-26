@@ -9,9 +9,9 @@ import android.os.CountDownTimer
 import android.provider.Settings
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.data.Response
 import bassamalim.hidaya.core.helpers.PrayTimes
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.core.utils.PTUtils
@@ -30,7 +30,8 @@ import kotlin.math.max
 @HiltViewModel
 class HomeVM @Inject constructor(
     app: Application,
-    private val repo: HomeRepo
+    private val repo: HomeRepo,
+    private val navigator: Navigator
 ): AndroidViewModel(app) {
 
     private val deviceId = getDeviceId(app)
@@ -84,22 +85,22 @@ class HomeVM @Inject constructor(
         timer?.cancel()
     }
 
-    fun onGotoTodayWerdClick(navController: NavController) {
-        navController.navigate(
+    fun onGotoTodayWerdClick() {
+        navigator.navigate(
             Screen.QuranViewer(
                 "by_page",
                 page = _uiState.value.todayWerdPage
-            ).route
+            )
         )
     }
 
-    fun gotoLeaderboard(navController: NavController) {
-        navController.navigate(
+    fun gotoLeaderboard() {
+        navigator.navigate(
             Screen.Leaderboard(
                 latestUserRecord.userId.toString(),
                 latestUserRecord.readingRecord.toString(),
                 latestUserRecord.listeningRecord.toString()
-            ).route
+            )
         )
     }
 

@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.BookChapter
 import bassamalim.hidaya.core.ui.components.MyBtnSurface
@@ -19,8 +18,7 @@ import bassamalim.hidaya.core.ui.components.TabLayout
 
 @Composable
 fun BookChaptersUI(
-    vm: BookChaptersVM,
-    nc: NavController
+    vm: BookChaptersVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -40,7 +38,7 @@ fun BookChaptersUI(
                 }
             }
         ) { page ->
-            Tab(vm, st, nc, vm.getItems(page))
+            Tab(vm, st, vm.getItems(page))
         }
     }
 }
@@ -49,7 +47,6 @@ fun BookChaptersUI(
 private fun Tab(
     viewModel: BookChaptersVM,
     state: BookChaptersState,
-    nc: NavController,
     items: List<BookChapter>
 ) {
     MyLazyColumn(
@@ -63,7 +60,7 @@ private fun Tab(
                         }
                     }
                 ) {
-                    viewModel.onItemClick(item, nc)
+                    viewModel.onItemClick(item)
                 }
             }
         }

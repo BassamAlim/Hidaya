@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
@@ -21,8 +20,7 @@ import bassamalim.hidaya.core.ui.components.SearchComponent
 
 @Composable
 fun LocationPickerUI(
-    vm: LocationPickerVM,
-    nc: NavController
+    vm: LocationPickerVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -31,7 +29,7 @@ fun LocationPickerUI(
         topBar = {
             MyTopBar(
                 title = stringResource(st.titleResId),
-                onBack = { vm.onBack(nc) }
+                onBack = { vm.onBack() }
             )
         }
     ) {
@@ -58,7 +56,7 @@ fun LocationPickerUI(
                             if (vm.language == Language.ENGLISH) item.nameEn
                             else item.nameAr,
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { vm.onSelect(item.id, nc) }
+                            onClick = { vm.onSelect(item.id) }
                         )
                     }
                 }

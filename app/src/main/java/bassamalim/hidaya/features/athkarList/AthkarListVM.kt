@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.data.database.dbs.AthkarDB
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.AthkarItem
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AthkarListVM @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repo: AthkarListRepo
+    private val repo: AthkarListRepo,
+    private val navigator: Navigator
 ): ViewModel() {
 
     private val type = savedStateHandle.get<String>("type") ?: ListType.All.name
@@ -88,12 +89,12 @@ class AthkarListVM @Inject constructor(
         repo.updateFavorites()
     }
 
-    fun onItemClick(nc: NavController, item: AthkarItem) {
+    fun onItemClick(item: AthkarItem) {
         // pass type and thikrId which is item.id
-        nc.navigate(
+        navigator.navigate(
             Screen.AthkarViewer(
                 item.id.toString()
-            ).route
+            )
         )
     }
 

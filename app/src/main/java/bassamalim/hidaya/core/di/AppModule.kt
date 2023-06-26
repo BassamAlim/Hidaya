@@ -7,6 +7,7 @@ import android.content.res.Resources
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.about.AboutRepo
 import bassamalim.hidaya.features.athkarList.AthkarListRepo
 import bassamalim.hidaya.features.athkarViewer.AthkarViewerRepo
@@ -86,6 +87,9 @@ object AppModule {
 
     @Provides @Singleton
     fun provideGson() = Gson()
+
+    @Provides @Singleton
+    fun provideNavigator() = Navigator()
 
 
     @Provides @Singleton

@@ -2,10 +2,10 @@ package bassamalim.hidaya.features.prayerSetting
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
+import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
-import com.google.gson.Gson
+import bassamalim.hidaya.core.nav.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class PrayerSettingVM @Inject constructor(
     savedStateHandle: SavedStateHandle,
     repo: PrayerSettingsRepo,
-    private val gson: Gson
+    private val navigator: Navigator
 ): ViewModel() {
 
     private val pid = PID.valueOf(savedStateHandle.get<String>("pid") ?: "")
@@ -28,6 +28,13 @@ class PrayerSettingVM @Inject constructor(
         reminderOffset = repo.getReminderOffset(pid)
     ))
     val uiState = _uiState.asStateFlow()
+
+    val notificationTypeOptions = listOf(
+        Pair(R.string.athan_speaker, R.drawable.ic_speaker),
+        Pair(R.string.enable_notification, R.drawable.ic_sound),
+        Pair(R.string.silent_notification, R.drawable.ic_silent),
+        Pair(R.string.disable_notification, R.drawable.ic_block)
+    )
 
     fun onNotificationTypeChange(notificationType: NotificationType) {
         _uiState.update { it.copy(
@@ -47,20 +54,25 @@ class PrayerSettingVM @Inject constructor(
         )}
     }
 
-    fun onDismiss(nc: NavController) {
+    fun onSave() {
         val prayerSettings = PrayerSettings(
             pid = pid,
             notificationType = uiState.value.notificationType,
             timeOffset = uiState.value.timeOffset,
             reminderOffset = uiState.value.reminderOffset
         )
-        val prayerSettingsJson = gson.toJson(prayerSettings)
 
-        nc.previousBackStackEntry
-            ?.savedStateHandle
-            ?.set("prayer_settings", prayerSettingsJson)
+        navigator.navigateBackWithResult(
+            key = "prayer_settings",
+            data = prayerSettings
+        )
+    }
 
-        nc.popBackStack()
+    fun onDismiss() {
+        navigator.navigateBackWithResult(
+            key = "prayer_settings",
+            data = null
+        )
     }
 
 }

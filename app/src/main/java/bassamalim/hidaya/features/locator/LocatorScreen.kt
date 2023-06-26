@@ -20,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
@@ -29,8 +28,7 @@ import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
 fun LocatorUI(
-    vm: LocatorVM,
-    nc: NavController
+    vm: LocatorVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -41,7 +39,7 @@ fun LocatorUI(
     }
 
     LaunchedEffect(null) {
-        vm.provide(nc, requestLauncher)
+        vm.provide(requestLauncher)
     }
 
     Column(

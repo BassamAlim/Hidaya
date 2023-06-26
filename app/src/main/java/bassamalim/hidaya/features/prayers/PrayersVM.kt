@@ -2,20 +2,18 @@ package bassamalim.hidaya.features.prayers
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.helpers.Alarms
 import bassamalim.hidaya.core.helpers.PrayTimes
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.core.utils.PTUtils
 import bassamalim.hidaya.features.prayerSetting.PrayerSettings
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
-import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,12 +24,10 @@ import javax.inject.Inject
 @HiltViewModel
 class PrayersVM @Inject constructor(
     private val app: Application,
-    private val savedStateHandle: SavedStateHandle,
     private val repo: PrayersRepo,
-    private val gson: Gson
+    private val navigator: Navigator
 ): AndroidViewModel(app) {
 
-    private lateinit var nc: NavController
     val location = repo.getLocation()
     private var prayTimes = PrayTimes(repo.sp)
     private val calendar = Calendar.getInstance()
@@ -46,9 +42,7 @@ class PrayersVM @Inject constructor(
     ))
     val uiState = _uiState.asStateFlow()
 
-    fun onStart(nc: NavController) {
-        this.nc = nc
-
+    fun onStart() {
         prayTimes = PrayTimes(repo.sp)  // to update in case of method changes
 
         goToToday()
@@ -140,47 +134,45 @@ class PrayersVM @Inject constructor(
         }
     }
 
-    fun onLocatorClick(navController: NavController) {
-        navController.navigate(
+    fun onLocatorClick() {
+        navigator.navigate(
             Screen.Locator(
                 type = "normal"
-            ).route
+            )
         )
     }
 
-    fun showSettingsDialog(nc: NavController, pid: PID) {
+    fun showSettingsDialog(pid: PID) {
         if (location != null) {
-            nc.navigate(
-                Screen.PrayerSettings(
+            navigator.navigateForResult(
+                destination = Screen.PrayerSettings(
                     pid.name
-                ).route
-            )
+                ),
+                key = "prayer_settings"
+            ) { result ->
+                println("Result: $result")
 
-            onSettingsDialogDismiss(pid)
+                if (result != null) {
+                    onSettingsDialogSaved(pid, result as PrayerSettings)
+                }
+            }
         }
     }
 
-    private fun onSettingsDialogDismiss(pid: PID) {
+    private fun onSettingsDialogSaved(pid: PID, settings: PrayerSettings) {
         val prayerNum = pid.ordinal
 
-        val prayerSettingsJson = savedStateHandle.get<String>("prayer_settings")
-        println("here")
-        prayerSettingsJson?.let {
-            println("there")
-            val prayerSettings = gson.fromJson(it, PrayerSettings::class.java)
+        _uiState.update { oldState -> oldState.copy(
+            prayersData = oldState.prayersData.toMutableList().apply {
+                this[prayerNum] = oldState.prayersData[prayerNum].copy(
+                    settings = settings
+                )
+            }.toList()
+        )}
 
-            _uiState.update { oldState -> oldState.copy(
-                prayersData = oldState.prayersData.toMutableList().apply {
-                    this[prayerNum] = oldState.prayersData[prayerNum].copy(
-                        settings = prayerSettings
-                    )
-                }.toList()
-            )}
+        repo.updatePrayerSettings(pid, settings)
 
-            repo.updatePrayerSettings(pid, prayerSettings)
-
-            updatePrayerTimeAlarms(pid)
-        }
+        updatePrayerTimeAlarms(pid)
     }
 
     fun onPreviousDayClk() {

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,51 +15,55 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class MoreVM @Inject constructor(): ViewModel() {
+class MoreVM @Inject constructor(
+    private val navigator: Navigator
+): ViewModel() {
 
     private val _uiState = MutableStateFlow(MoreState())
     val uiState = _uiState.asStateFlow()
 
-    fun gotoTelawat(nc: NavController) {
+    fun gotoTelawat() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            nc.navigate(Screen.Telawat.route)
-        else
+            navigator.navigate(Screen.Telawat)
+        else {
             _uiState.update { it.copy(
                 shouldShowUnsupported = true
             )}
+        }
     }
 
-    fun gotoQibla(nc: NavController) {
-        nc.navigate(Screen.Qibla.route)
+    fun gotoQibla() {
+        navigator.navigate(Screen.Qibla)
     }
 
-    fun gotoQuiz(nc: NavController) {
-        nc.navigate(Screen.QuizLobby.route)
+    fun gotoQuiz() {
+        navigator.navigate(Screen.QuizLobby)
     }
 
-    fun gotoBooks(nc: NavController) {
-        nc.navigate(Screen.Books.route)
+    fun gotoBooks() {
+        navigator.navigate(Screen.Books)
     }
 
-    fun gotoTV(nc: NavController) {
-        nc.navigate(Screen.Tv.route)
+    fun gotoTV() {
+        navigator.navigate(Screen.Tv)
     }
 
-    fun gotoRadio(nc: NavController) {
+    fun gotoRadio() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            nc.navigate(Screen.RadioClient.route)
-        else
+            navigator.navigate(Screen.RadioClient)
+        else {
             _uiState.update { it.copy(
                 shouldShowUnsupported = true
             )}
+        }
     }
 
-    fun gotoDateConverter(nc: NavController) {
-        nc.navigate(Screen.DateConverter.route)
+    fun gotoDateConverter() {
+        navigator.navigate(Screen.DateConverter)
     }
 
-    fun gotoSettings(nc: NavController) {
-        nc.navigate(Screen.Settings.route)
+    fun gotoSettings() {
+        navigator.navigate(Screen.Settings)
     }
 
     fun contactMe(ctx: Context) {
@@ -87,8 +91,8 @@ class MoreVM @Inject constructor(): ViewModel() {
         )
     }
 
-    fun gotoAbout(nc: NavController) {
-        nc.navigate(Screen.About.route)
+    fun gotoAbout() {
+        navigator.navigate(Screen.About)
     }
 
 }

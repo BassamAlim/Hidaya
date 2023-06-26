@@ -1,9 +1,9 @@
 package bassamalim.hidaya.features.quiz
 
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.database.dbs.QuizQuestionsDB
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuizVM @Inject constructor(
-    private val repo: QuizRepo
+    private val repo: QuizRepo,
+    private val navigator: Navigator
 ): ViewModel() {
 
     private val questionStr = repo.getQuestionStr()
@@ -40,7 +41,7 @@ class QuizVM @Inject constructor(
         updateState()
     }
 
-    fun answered(a: Int, nc: NavController) {
+    fun answered(a: Int) {
         chosenAs[current] = a
 
         allAnswered = !chosenAs.contains(-1)
@@ -52,12 +53,12 @@ class QuizVM @Inject constructor(
                 nextBtnTextResId = getNextBtnTextResId()
             )}
         }
-        else nextQ(nc)
+        else nextQ()
     }
 
-    fun nextQ(navController: NavController) {
+    fun nextQ() {
         if (current == 9) {
-            if (allAnswered) endQuiz(navController)
+            if (allAnswered) endQuiz()
         }
         else ask(++current)
     }
@@ -67,15 +68,15 @@ class QuizVM @Inject constructor(
             ask(--current)
     }
 
-    private fun endQuiz(navController: NavController) {
+    private fun endQuiz() {
         val score = calculateScore()
 
-        navController.navigate(
+        navigator.navigate(
             Screen.QuizResult(
                 score.toString(),
                 questions.map { q -> q.getQuestionId() }.toIntArray().contentToString(),
                 chosenAs.toTypedArray().contentToString()
-            ).route
+            )
         ) {
             popUpTo(Screen.Quiz.route) {
                 inclusive = true

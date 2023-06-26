@@ -31,11 +31,10 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainUI(
-    vm: MainVM,
-    nc: NavHostController = rememberAnimatedNavController()
+    vm: MainVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
-    val bottomNc = rememberAnimatedNavController()
+    val bottomNavController = rememberAnimatedNavController()
 
     MyScaffold(
         title = stringResource(R.string.app_name),
@@ -90,9 +89,9 @@ fun MainUI(
                 }
             }
         },
-        bottomBar = { MyBottomNavigation(bottomNc) }
+        bottomBar = { MyBottomNavigation(bottomNavController) }
     ) {
-        NavigationGraph(nc, bottomNc, it)
+        NavigationGraph(bottomNavController, it)
 
         DateEditorDialog(
             shown = st.dateEditorShown,
@@ -109,7 +108,6 @@ fun MainUI(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun NavigationGraph(
-    navController: NavHostController,
     bottomNavController: NavHostController,
     padding: PaddingValues
 ) {
@@ -126,8 +124,7 @@ fun NavigationGraph(
             popExitTransition = TabPopExit
         ) {
             HomeUI(
-                nc = navController,
-                vm = hiltViewModel()
+                hiltViewModel()
             )
         }
 
@@ -139,8 +136,7 @@ fun NavigationGraph(
             popExitTransition = TabPopExit
         ) {
             PrayersUI(
-                vm = hiltViewModel(),
-                nc = navController
+                hiltViewModel()
             )
         }
 
@@ -152,8 +148,7 @@ fun NavigationGraph(
             popExitTransition = TabPopExit
         ) {
             QuranUI(
-                vm = hiltViewModel(),
-                nc = navController
+                hiltViewModel()
             )
         }
 
@@ -165,8 +160,7 @@ fun NavigationGraph(
             popExitTransition = TabPopExit
         ) {
             AthkarUI(
-                viewModel = hiltViewModel(),
-                nc = navController
+                hiltViewModel()
             )
         }
 
@@ -178,8 +172,7 @@ fun NavigationGraph(
             popExitTransition = TabPopExit
         ) {
             MoreUI(
-                vm = hiltViewModel(),
-                nc = navController
+                hiltViewModel()
             )
         }
     }

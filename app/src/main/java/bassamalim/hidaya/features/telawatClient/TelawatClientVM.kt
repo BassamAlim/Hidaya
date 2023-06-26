@@ -18,9 +18,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.FileUtils
@@ -37,7 +37,8 @@ import javax.inject.Inject
 class TelawatClientVM @Inject constructor(
     private val app: Application,
     savedStateHandle: SavedStateHandle,
-    private val repo: TelawatClientRepo
+    private val repo: TelawatClientRepo,
+    private val navigator: Navigator
 ): AndroidViewModel(app) {
 
     private val action = savedStateHandle.get<String>("action") ?: ""
@@ -276,13 +277,13 @@ class TelawatClientVM @Inject constructor(
         (app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
     }
 
-    fun onBackPressed(navController: NavController) {
+    fun onBackPressed() {
         if (activity.isTaskRoot) {
-            navController.navigate(
+            navigator.navigate(
                 Screen.TelawatSuar(
                     reciterId.toString(),
                     versionId.toString()
-                ).route
+                )
             ) {
                 popUpTo(Screen.TelawatClient(action, mediaId).route) {
                     inclusive = true

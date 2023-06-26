@@ -7,9 +7,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranSearcherMatch
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuranSearcherVM @Inject constructor(
-    private val repo: QuranSearcherRepo
+    private val repo: QuranSearcherRepo,
+    private val navigator: Navigator
 ): ViewModel() {
 
     val numeralsLanguage = repo.numeralsLanguage
@@ -104,12 +105,12 @@ class QuranSearcherVM @Inject constructor(
         repo.setMaxMatchesIndex(index)
     }
 
-    fun onGotoPageClick(page: Int, nc: NavController) {
-        nc.navigate(
+    fun onGotoPageClick(page: Int) {
+        navigator.navigate(
             Screen.QuranViewer(
                 type = "by_page",
                 page = page.toString()
-            ).route
+            )
         )
     }
 

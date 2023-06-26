@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
@@ -38,22 +37,21 @@ import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
 fun PrayersUI(
-    vm: PrayersVM,
-    nc: NavController
+    vm: PrayersVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
     DisposableEffect(key1 = vm) {
-        vm.onStart(nc)
+        vm.onStart()
         onDispose {}
     }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LocationCard(vm, st, nc)
+        LocationCard(vm, st)
 
-        PrayersSpace(vm, st, nc)
+        PrayersSpace(vm, st)
 
         DayCard(vm, st)
     }
@@ -68,8 +66,7 @@ fun PrayersUI(
 @Composable
 private fun LocationCard(
     vm: PrayersVM,
-    st: PrayersState,
-    nc: NavController
+    st: PrayersState
 ) {
     MySurface(
         Modifier.padding(top = 5.dp)
@@ -95,7 +92,7 @@ private fun LocationCard(
                 modifier = Modifier.padding(end = 8.dp),
                 size = 32.dp
             ) {
-                vm.onLocatorClick(nc)
+                vm.onLocatorClick()
             }
         }
     }
@@ -104,8 +101,7 @@ private fun LocationCard(
 @Composable
 private fun ColumnScope.PrayersSpace(
     vm: PrayersVM,
-    st: PrayersState,
-    nc: NavController
+    st: PrayersState
 ) {
     Column(
         Modifier
@@ -115,7 +111,7 @@ private fun ColumnScope.PrayersSpace(
         verticalArrangement = Arrangement.SpaceAround
     ) {
         st.prayersData.forEachIndexed { i, data ->
-            PrayerSpace(vm, st, nc, i, data)
+            PrayerSpace(vm, st, i, data)
 
         }
     }
@@ -125,7 +121,6 @@ private fun ColumnScope.PrayersSpace(
 private fun PrayerSpace(
     vm: PrayersVM,
     st: PrayersState,
-    nc: NavController,
     idx: Int,
     data: PrayerData
 ) {
@@ -133,7 +128,6 @@ private fun PrayerSpace(
         PrayerCard(
             vm = vm,
             st = st,
-            nc = nc,
             number = idx,
             data = data
         )
@@ -150,13 +144,12 @@ private fun PrayerSpace(
 private fun PrayerCard(
     vm: PrayersVM,
     st: PrayersState,
-    nc: NavController,
     number: Int,
     data: PrayerData
 ) {
     MyClickableSurface(
         cornerRadius = 15.dp,
-        onClick = { vm.showSettingsDialog(nc, PID.values()[number]) }
+        onClick = { vm.showSettingsDialog(PID.values()[number]) }
     ) {
         Row(
             Modifier

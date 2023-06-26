@@ -9,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyBtnSurface
 import bassamalim.hidaya.core.ui.components.MyFavBtn
@@ -19,8 +18,7 @@ import bassamalim.hidaya.core.ui.components.SearchComponent
 
 @Composable
 fun AthkarListUI(
-    vm: AthkarListVM,
-    nc: NavController
+    vm: AthkarListVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -47,7 +45,7 @@ fun AthkarListUI(
                                     vm.onFavoriteCLick(item)
                                 }
                             },
-                            onClick = { vm.onItemClick(nc, item) }
+                            onClick = { vm.onItemClick(item) }
                         )
                     }
                 }

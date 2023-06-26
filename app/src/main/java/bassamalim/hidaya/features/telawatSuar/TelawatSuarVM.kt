@@ -11,10 +11,10 @@ import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.ReciterSura
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.FileUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +29,8 @@ import javax.inject.Inject
 class TelawatSuarVM @Inject constructor(
     private val app: Application,
     savedStateHandle: SavedStateHandle,
-    private val repo: TelawatSuarRepo
+    private val repo: TelawatSuarRepo,
+    private val navigator: Navigator
 ): AndroidViewModel(app) {
 
     private val reciterId = savedStateHandle.get<Int>("reciter_id") ?: 0
@@ -67,10 +68,11 @@ class TelawatSuarVM @Inject constructor(
         }
     }
 
-    fun onBackPressed(nc: NavController) {
-        val ctx = nc.context
+    fun onBackPressed() {
+        val ctx = navigator.getContext()
+
         if ((ctx as Activity).isTaskRoot) {
-            nc.navigate(Screen.Telawat.route) {
+            navigator.navigate(Screen.Telawat) {
                 popUpTo(Screen.TelawatSuar(reciterId.toString(), versionId.toString()).route) {
                     inclusive = true
                 }
@@ -160,17 +162,17 @@ class TelawatSuarVM @Inject constructor(
         }
     }
 
-    fun onItemClk(navController: NavController, sura: ReciterSura) {
+    fun onItemClk(sura: ReciterSura) {
         val rId = String.format(Locale.US, "%03d", reciterId)
         val vId = String.format(Locale.US, "%02d", versionId)
         val sId = String.format(Locale.US, "%03d", sura.num)
         val mediaId = rId + vId + sId
 
-        navController.navigate(
+        navigator.navigate(
             Screen.TelawatClient(
                 "start",
                 mediaId
-            ).route
+            )
         )
     }
 

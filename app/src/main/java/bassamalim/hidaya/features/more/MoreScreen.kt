@@ -1,7 +1,6 @@
 package bassamalim.hidaya.features.more
 
 import android.widget.Toast
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,16 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MoreUI(
-    vm: MoreVM,
-    nc: NavController = rememberAnimatedNavController()
+    vm: MoreVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -43,14 +38,14 @@ fun MoreUI(
                 textResId = R.string.recitations,
                 imageResId = R.drawable.ic_headphone
             ) {
-                vm.gotoTelawat(nc)
+                vm.gotoTelawat()
             }
 
             MySquareButton(
                 textResId = R.string.qibla,
                 imageResId = R.drawable.ic_qibla_compass
             ) {
-                vm.gotoQibla(nc)
+                vm.gotoQibla()
             }
         }
 
@@ -62,14 +57,14 @@ fun MoreUI(
                 textResId = R.string.quiz_title,
                 imageResId = R.drawable.ic_quiz
             ) {
-                vm.gotoQuiz(nc)
+                vm.gotoQuiz()
             }
 
             MySquareButton(
                 textResId = R.string.hadeeth_books,
                 imageResId = R.drawable.ic_books
             ) {
-                vm.gotoBooks(nc)
+                vm.gotoBooks()
             }
         }
 
@@ -81,14 +76,14 @@ fun MoreUI(
                 textResId = R.string.tv_channels,
                 imageResId = R.drawable.ic_television
             ) {
-                vm.gotoTV(nc)
+                vm.gotoTV()
             }
 
             MySquareButton(
                 textResId = R.string.quran_radio,
                 imageResId = R.drawable.ic_radio
             ) {
-                vm.gotoRadio(nc)
+                vm.gotoRadio()
             }
         }
 
@@ -100,11 +95,11 @@ fun MoreUI(
                 textResId = R.string.date_converter,
                 imageResId = R.drawable.ic_calendar
             ) {
-                vm.gotoDateConverter(nc)
+                vm.gotoDateConverter()
             }
 
             MySquareButton(R.string.settings, R.drawable.ic_settings) {
-                vm.gotoSettings(nc)
+                vm.gotoSettings()
             }
         }
 
@@ -135,7 +130,7 @@ fun MoreUI(
                 textResId = R.string.about,
                 imageResId = R.drawable.ic_info
             ) {
-                vm.gotoAbout(nc)
+                vm.gotoAbout()
             }
         }
     }

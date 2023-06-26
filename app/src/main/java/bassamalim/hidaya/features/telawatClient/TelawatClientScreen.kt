@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.components.*
@@ -29,8 +28,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TelawatClientUI(
-    vm: TelawatClientVM,
-    nc: NavController
+    vm: TelawatClientVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
@@ -43,7 +41,7 @@ fun TelawatClientUI(
     MyScaffold(
         title = stringResource(R.string.recitations),
         bottomBar = { BottomBar(vm, st) },
-        onBack = { vm.onBackPressed(nc) }
+        onBack = { vm.onBackPressed() }
     ) {
         Column(
             Modifier

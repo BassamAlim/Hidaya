@@ -22,7 +22,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
@@ -35,24 +34,17 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun PrayerSettingsDialog(
-    vm: PrayerSettingVM,
-    nc: NavController
+    vm: PrayerSettingVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
-    val context = LocalContext.current
-    val notificationOptions = listOf(
-        Pair(R.string.athan_speaker, R.drawable.ic_speaker),
-        Pair(R.string.enable_notification, R.drawable.ic_sound),
-        Pair(R.string.silent_notification, R.drawable.ic_silent),
-        Pair(R.string.disable_notification, R.drawable.ic_block)
-    )
+    val ctx = LocalContext.current
     val offsetMin = 30f
     val sliderProgress = st.timeOffset + offsetMin
 
     MyDialog(
         shown = true,
-        onDismiss = { vm.onDismiss(nc) }
+        onDismiss = { vm.onDismiss() }
     ) {
         Column(
             Modifier
@@ -63,7 +55,7 @@ fun PrayerSettingsDialog(
             MyText(
                 String.format(
                     stringResource(R.string.settings_of),
-                    context.resources.getStringArray(R.array.prayer_names)[st.pid.ordinal]
+                    ctx.resources.getStringArray(R.array.prayer_names)[st.pid.ordinal]
                 ),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
@@ -71,8 +63,8 @@ fun PrayerSettingsDialog(
             )
 
             CustomRadioGroup(
+                vm = vm,
                 pid = st.pid,
-                options = notificationOptions,
                 selection = st.notificationType,
                 onSelect = { selection -> vm.onNotificationTypeChange(selection) }
             )
@@ -96,7 +88,7 @@ fun PrayerSettingsDialog(
 
             MyHorizontalButton(
                 text = stringResource(R.string.save),
-                onClick = { vm.onDismiss(nc) }
+                onClick = { vm.onSave() }
             )
         }
     }
@@ -104,8 +96,8 @@ fun PrayerSettingsDialog(
 
 @Composable
 private fun CustomRadioGroup(
+    vm: PrayerSettingVM,
     pid: PID,
-    options: List<Pair<Int, Int>>,
     selection: NotificationType,
     onSelect: (NotificationType) -> Unit
 ) {
@@ -114,7 +106,7 @@ private fun CustomRadioGroup(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth(),
     ) {
-        options.forEachIndexed { i, pair ->
+        vm.notificationTypeOptions.forEachIndexed { i, pair ->
             if (!(pid == PID.SUNRISE && i == 0)) {
                 val text = stringResource(pair.first)
 

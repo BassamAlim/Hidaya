@@ -22,6 +22,7 @@ import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
+import bassamalim.hidaya.core.nav.Navigation
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
@@ -40,6 +41,7 @@ class Activity : ComponentActivity() {
 
     @Inject lateinit var sp: SharedPreferences
     @Inject lateinit var db: AppDatabase
+    @Inject lateinit var navigator: Navigator
     private var shouldWelcome = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -165,7 +167,7 @@ class Activity : ComponentActivity() {
             AppTheme(
                 direction = getDirection()
             ) {
-                Navigator(navRoute, shouldWelcome)
+                Navigation(navigator, navRoute, shouldWelcome)
             }
         }
     }

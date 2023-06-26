@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
@@ -27,8 +26,7 @@ import bassamalim.hidaya.core.ui.components.TabLayout
 
 @Composable
 fun TelawatSuarUI(
-    vm: TelawatSuarVM,
-    nc: NavController
+    vm: TelawatSuarVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -39,7 +37,7 @@ fun TelawatSuarUI(
 
     MyScaffold(
         st.title,
-        onBack = { vm.onBackPressed(nc) }
+        onBack = { vm.onBackPressed() }
     ) {
         TabLayout(
             pageNames = listOf(
@@ -56,7 +54,7 @@ fun TelawatSuarUI(
                 )
             }
         ) { page ->
-            Tab(vm, st, nc, vm.getItems(page))
+            Tab(vm, st, vm.getItems(page))
         }
     }
 }
@@ -65,13 +63,12 @@ fun TelawatSuarUI(
 private fun Tab(
     vm: TelawatSuarVM,
     st: TelawatSuarState,
-    nc: NavController,
     items: List<ReciterSura>
 ) {
     MyLazyColumn(
         lazyList = {
             items(items) { item ->
-                SuraCard(item, vm, st, nc)
+                SuraCard(item, vm, st)
             }
         }
     )
@@ -81,11 +78,10 @@ private fun Tab(
 private fun SuraCard(
     sura: ReciterSura,
     viewModel: TelawatSuarVM,
-    state: TelawatSuarState,
-    nc: NavController
+    state: TelawatSuarState
 ) {
     MyClickableSurface(
-        onClick = { viewModel.onItemClk(nc, sura) }
+        onClick = { viewModel.onItemClk(sura) }
     ) {
         Row(
             Modifier

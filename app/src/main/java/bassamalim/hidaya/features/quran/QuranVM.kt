@@ -1,9 +1,9 @@
 package bassamalim.hidaya.features.quran
 
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.Sura
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuranVM @Inject constructor(
-    private val repo: QuranRepo
+    private val repo: QuranRepo,
+    private val navigator: Navigator
 ): ViewModel() {
 
     private val suraNames = repo.getSuraNames()
@@ -73,27 +74,27 @@ class QuranVM @Inject constructor(
         }
     }
 
-    fun onSuraClick(suraId: Int, nc: NavController) {
-        nc.navigate(
+    fun onSuraClick(suraId: Int) {
+        navigator.navigate(
             Screen.QuranViewer(
                 "by_surah",
                 suraId = suraId.toString()
-            ).route
+            )
         )
     }
 
-    fun onQuranSearcherClick(nc: NavController) {
-        nc.navigate(Screen.QuranSearcher.route)
+    fun onQuranSearcherClick() {
+        navigator.navigate(Screen.QuranSearcher)
     }
 
-    fun onBookmarkedPageClick(nc: NavController) {
+    fun onBookmarkedPageClick() {
         val bookmarkedPage = repo.getBookmarkedPage()
         if (bookmarkedPage != -1) {
-            nc.navigate(
+            navigator.navigate(
                 Screen.QuranViewer(
                     "by_page",
                     page = bookmarkedPage.toString()
-                ).route
+                )
             )
         }
     }
@@ -115,15 +116,15 @@ class QuranVM @Inject constructor(
         )}
     }
 
-    fun onSearchSubmit(nc: NavController) {
+    fun onSearchSubmit() {
         try {
             val num = _uiState.value.searchText.toInt()
             if (num in 1..604) {
-                nc.navigate(
+                navigator.navigate(
                     Screen.QuranViewer(
                         "by_page",
                         page = num.toString()
-                    ).route
+                    )
                 )
             }
             else {

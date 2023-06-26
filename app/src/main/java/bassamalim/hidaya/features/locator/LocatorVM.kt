@@ -10,8 +10,8 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.NavController
 import bassamalim.hidaya.core.enums.LocationType
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,13 +23,13 @@ import javax.inject.Inject
 @HiltViewModel
 class LocatorVM @Inject constructor(
     private val app: Application,
+    savedStateHandle: SavedStateHandle,
     private val repo: LocatorRepo,
-    savedStateHandle: SavedStateHandle
+    private val navigator: Navigator
 ): AndroidViewModel(app) {
 
     private val type = savedStateHandle.get<String>("type") ?: "normal"
 
-    private lateinit var nc: NavController
     private lateinit var locationRequestLauncher:
             ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
 
@@ -39,10 +39,8 @@ class LocatorVM @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun provide(
-        navController: NavController,
         locationRequestLauncher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
     ) {
-        this.nc = navController
         this.locationRequestLauncher = locationRequestLauncher
     }
 
@@ -59,7 +57,7 @@ class LocatorVM @Inject constructor(
     }
 
     private fun launch() {
-        nc.navigate(Screen.Main.route) {
+        navigator.navigate(Screen.Main) {
             popUpTo(Screen.Locator(type).route) {
                 inclusive = true
             }
@@ -109,7 +107,7 @@ class LocatorVM @Inject constructor(
     fun onChooseLocationClk() {
         repo.setLocationType(LocationType.Manual)
 
-        nc.navigate(Screen.LocationPicker.route)
+        navigator.navigate(Screen.LocationPicker)
     }
 
     fun onSkipLocationClk() {

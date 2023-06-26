@@ -2,23 +2,29 @@ package bassamalim.hidaya.features.books
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
-import bassamalim.hidaya.core.ui.components.*
+import bassamalim.hidaya.core.ui.components.MyBtnSurface
+import bassamalim.hidaya.core.ui.components.MyDownloadBtn
+import bassamalim.hidaya.core.ui.components.MyFloatingActionButton
+import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.utils.FileUtils
 
 @Composable
 fun BooksUI(
-    vm: BooksVM,
-    nc: NavController
+    vm: BooksVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -34,7 +40,7 @@ fun BooksUI(
             MyFloatingActionButton(
                 iconId = R.drawable.ic_quran_search,
                 description = stringResource(R.string.search_in_books),
-                onClick = { vm.onFabClick(nc) }
+                onClick = { vm.onFabClick() }
             )
         }
     ) {
@@ -59,7 +65,7 @@ fun BooksUI(
                                 deleted = { vm.onFileDeleted(item.id) }
                             )
                         },
-                        onClick = { vm.onItemClick(item, nc) }
+                        onClick = { vm.onItemClick(item) }
                     )
                 }
             }

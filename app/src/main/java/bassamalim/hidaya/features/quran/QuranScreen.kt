@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
@@ -39,8 +38,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun QuranUI(
-    vm: QuranVM,
-    nc: NavController
+    vm: QuranVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -58,7 +56,7 @@ fun QuranUI(
                 iconId = R.drawable.ic_quran_search,
                 description = stringResource(R.string.search_in_quran)
             ) {
-                vm.onQuranSearcherClick(nc)
+                vm.onQuranSearcherClick()
             }
         }
     ) {
@@ -72,7 +70,7 @@ fun QuranUI(
                 modifier = Modifier.fillMaxWidth(),
                 innerPadding = PaddingValues(vertical = 4.dp)
             ) {
-                vm.onBookmarkedPageClick(nc)
+                vm.onBookmarkedPageClick()
             }
 
             TabLayout(
@@ -86,11 +84,11 @@ fun QuranUI(
                         hint = stringResource(R.string.quran_query_hint),
                         modifier = Modifier.fillMaxWidth(),
                         onValueChange = { vm.onSearchTextChange(it) },
-                        onSubmit = { vm.onSearchSubmit(nc) }
+                        onSubmit = { vm.onSearchSubmit() }
                     )
                 }
             ) { page ->
-                Tab(vm, st, nc, vm.getItems(page))
+                Tab(vm, st, vm.getItems(page))
             }
         }
     }
@@ -118,7 +116,6 @@ fun QuranUI(
 private fun Tab(
     vm: QuranVM,
     st: QuranState,
-    nc: NavController,
     items: List<Sura>
 ) {
     MyLazyColumn(
@@ -127,7 +124,7 @@ private fun Tab(
                 MyClickableSurface(
                     modifier = Modifier.padding(2.dp),
                     elevation = 6.dp,
-                    onClick = { vm.onSuraClick(item.id, nc) }
+                    onClick = { vm.onSuraClick(item.id) }
                 ) {
                     Row(
                         modifier = Modifier.padding(
