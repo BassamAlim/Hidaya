@@ -20,6 +20,7 @@ import bassamalim.hidaya.features.leaderboard.LeaderboardRepo
 import bassamalim.hidaya.features.locationPicker.LocationPickerRepo
 import bassamalim.hidaya.features.locator.LocatorRepo
 import bassamalim.hidaya.features.main.MainRepo
+import bassamalim.hidaya.features.prayerSetting.PrayerSettingsRepo
 import bassamalim.hidaya.features.prayers.PrayersRepo
 import bassamalim.hidaya.features.qibla.QiblaRepo
 import bassamalim.hidaya.features.quiz.QuizRepo
@@ -181,6 +182,12 @@ object AppModule {
         preferences: SharedPreferences,
         database: AppDatabase
     ) = PrayersRepo(resources, preferences, database)
+
+    @Provides @Singleton
+    fun providePrayerSettingsRepository(
+        resources: Resources,
+        preferences: SharedPreferences
+    ) = PrayerSettingsRepo(resources, preferences)
 
     @Provides @Singleton
     fun provideQiblaRepository(

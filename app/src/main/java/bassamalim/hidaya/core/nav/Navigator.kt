@@ -23,6 +23,7 @@ import bassamalim.hidaya.features.leaderboard.LeaderboardUI
 import bassamalim.hidaya.features.locationPicker.LocationPickerUI
 import bassamalim.hidaya.features.locator.LocatorUI
 import bassamalim.hidaya.features.main.MainUI
+import bassamalim.hidaya.features.prayerSetting.PrayerSettingsDialog
 import bassamalim.hidaya.features.qibla.QiblaUI
 import bassamalim.hidaya.features.quiz.QuizUI
 import bassamalim.hidaya.features.quizLobby.QuizLobbyUI
@@ -92,8 +93,8 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             AthkarListUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
@@ -128,8 +129,8 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             BookChaptersUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
@@ -153,8 +154,8 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             BooksUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
@@ -216,8 +217,8 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             LocationPickerUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
@@ -234,8 +235,8 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             LocatorUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
@@ -247,8 +248,26 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             MainUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
+            )
+        }
+
+        composable(
+            route = Screen.PrayerSettings(
+                "{pid}"
+            ).route,
+            arguments = listOf(
+                navArgument("pid") { type = NavType.StringType },
+            ),
+            enterTransition = inFromBottom,
+            exitTransition = outToBottom,
+            popEnterTransition = inFromTop,
+            popExitTransition = outToTop
+        ) {
+            PrayerSettingsDialog(
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
@@ -272,8 +291,8 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             QuizLobbyUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
@@ -304,8 +323,8 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             QuizUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
@@ -317,8 +336,8 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             QuranSearcherUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
@@ -382,8 +401,8 @@ fun NavGraph(
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 TelawatClientUI(
-                    nc = navController,
-                    vm = hiltViewModel()
+                    vm = hiltViewModel(),
+                    nc = navController
                 )
             }
         }
@@ -396,8 +415,8 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             TelawatUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
@@ -415,8 +434,8 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             TelawatSuarUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
 
@@ -440,8 +459,8 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             WelcomeUI(
-                nc = navController,
-                vm = hiltViewModel()
+                vm = hiltViewModel(),
+                nc = navController
             )
         }
     }

@@ -44,7 +44,7 @@ fun PrayersUI(
     val st by vm.uiState.collectAsStateWithLifecycle()
 
     DisposableEffect(key1 = vm) {
-        vm.onStart()
+        vm.onStart(nc)
         onDispose {}
     }
 
@@ -53,20 +53,10 @@ fun PrayersUI(
     ) {
         LocationCard(vm, st, nc)
 
-        PrayersSpace(vm, st)
+        PrayersSpace(vm, st, nc)
 
         DayCard(vm, st)
     }
-
-//    PrayerDialog(
-//        shown = st.settingsDialogShown,
-//        pid = st.settingsDialogPID,
-//        notificationType = st.notificationTypes[st.settingsDialogPID.ordinal],
-//        timeOffset = st.timeOffsets[st.settingsDialogPID.ordinal],
-//        onNotificationTypeChange = { vm.onNotificationTypeChange(it) },
-//        onOffsetChange = { vm.onTimeOffsetChange(it) },
-//        onDismiss = { vm.onSettingsDialogDismiss() }
-//    )
 
     TutorialDialog(
         shown = st.tutorialDialogShown,
@@ -114,7 +104,8 @@ private fun LocationCard(
 @Composable
 private fun ColumnScope.PrayersSpace(
     vm: PrayersVM,
-    st: PrayersState
+    st: PrayersState,
+    nc: NavController
 ) {
     Column(
         Modifier
@@ -124,7 +115,7 @@ private fun ColumnScope.PrayersSpace(
         verticalArrangement = Arrangement.SpaceAround
     ) {
         st.prayersData.forEachIndexed { i, data ->
-            PrayerSpace(vm, st, i, data)
+            PrayerSpace(vm, st, nc, i, data)
 
         }
     }
@@ -134,6 +125,7 @@ private fun ColumnScope.PrayersSpace(
 private fun PrayerSpace(
     vm: PrayersVM,
     st: PrayersState,
+    nc: NavController,
     idx: Int,
     data: PrayerData
 ) {
@@ -141,6 +133,7 @@ private fun PrayerSpace(
         PrayerCard(
             vm = vm,
             st = st,
+            nc = nc,
             number = idx,
             data = data
         )
@@ -157,16 +150,16 @@ private fun PrayerSpace(
 private fun PrayerCard(
     vm: PrayersVM,
     st: PrayersState,
+    nc: NavController,
     number: Int,
     data: PrayerData
 ) {
     MyClickableSurface(
         cornerRadius = 15.dp,
-        onClick = { vm.onPrayerClick(PID.values()[number]) }
+        onClick = { vm.showSettingsDialog(nc, PID.values()[number]) }
     ) {
         Row(
             Modifier
-                .fillMaxWidth()
                 .padding(vertical = 12.dp, horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -181,12 +174,12 @@ private fun PrayerCard(
             if (vm.location != null) {
                 Row {
                     // Delay
-                    MyText(vm.formatTimeOffset(data.timeOffset))
+                    MyText(vm.formatTimeOffset(data.settings.timeOffset))
 
                     // Notification type
                     Icon(
                         painter = painterResource(
-                            vm.getNotificationTypeIconID(data.notificationType)
+                            vm.getNotificationTypeIconID(data.settings.notificationType)
                         ),
                         contentDescription = stringResource(R.string.notification_image_description),
                         tint = AppTheme.colors.accent,
@@ -204,7 +197,24 @@ private fun ReminderCard(
     st: PrayersState,
     idx: Int
 ) {
+    MyClickableSurface(
+        cornerRadius = 15.dp,
+        onClick = { vm.onReminderClk(PID.values()[idx]) }
+    ) {
+        if (vm.location != null) {
+            Row {
+                MyText(vm.formatTimeOffset(st.prayersData[idx].settings.reminderOffset))
 
+                Icon(
+                    painter = painterResource(R.drawable.ic_add_reminder),
+                    contentDescription = stringResource(R.string.notification_image_description),
+                    tint =
+                        if (st.prayersData[idx].settings.reminderOffset == 0) AppTheme.colors.text
+                        else AppTheme.colors.accent
+                )
+            }
+        }
+    }
 }
 
 @Composable

@@ -12,6 +12,7 @@ import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.utils.LocUtils
 import bassamalim.hidaya.core.utils.PrefUtils
+import bassamalim.hidaya.features.prayerSetting.PrayerSettings
 import javax.inject.Inject
 
 class PrayersRepo @Inject constructor(
@@ -53,11 +54,22 @@ class PrayersRepo @Inject constructor(
             PrayerData(
                 name = name,
                 time = "",
-                notificationType = notificationTypes[idx],
-                timeOffset = timeOffsets[idx],
-                reminderOffset = reminderOffsets[idx]
+                settings = PrayerSettings(
+                    pid = PID.values()[idx],
+                    notificationType = notificationTypes[idx],
+                    timeOffset = timeOffsets[idx],
+                    reminderOffset = reminderOffsets[idx]
+                )
             )
         }
+    }
+
+    fun updatePrayerSettings(pid: PID, prayerSettings: PrayerSettings) {
+        sp.edit()
+            .putString(Prefs.NotificationType(pid).key, prayerSettings.notificationType.name)
+            .putInt(Prefs.TimeOffset(pid).key, prayerSettings.timeOffset)
+            .putInt(Prefs.ReminderOffset(pid).key, prayerSettings.reminderOffset)
+            .apply()
     }
 
     private fun getNotificationTypes(): List<NotificationType> {
@@ -70,32 +82,17 @@ class PrayersRepo @Inject constructor(
             NotificationType.valueOf(PrefUtils.getString(sp, Prefs.NotificationType(PID.ISHAA))),
         )
     }
-    fun setNotificationType(pid: PID, type: NotificationType) {
-        sp.edit()
-            .putString(Prefs.NotificationType(pid).key, type.name)
-            .apply()
-    }
 
     private fun getTimeOffsets(): List<Int> {
         return PID.values().map { pid ->
             PrefUtils.getInt(sp, Prefs.TimeOffset(pid))
         }
     }
-    fun setTimeOffset(pid: PID, offset: Int) {
-        sp.edit()
-            .putInt(Prefs.TimeOffset(pid).key, offset)
-            .apply()
-    }
 
     private fun getReminderOffsets(): List<Int> {
         return PID.values().map { pid ->
             PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
         }
-    }
-    fun setReminderOffset(pid: PID, offset: Int) {
-        sp.edit()
-            .putInt(Prefs.ReminderOffset(pid).key, offset)
-            .apply()
     }
 
     fun setDoNotShowAgain() {
