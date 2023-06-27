@@ -38,8 +38,6 @@ class LeaderboardVM @Inject constructor(
     private fun fillRanks() {
         viewModelScope.launch {
             if (userRecord.userId == -1) {
-                println("Error: User ID is -1")
-
                 _uiState.update { it.copy(
                     errorMessage = repo.errorFetchingDataStr,
                     loading = false

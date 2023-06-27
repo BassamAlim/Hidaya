@@ -2,11 +2,13 @@ package bassamalim.hidaya.features.home
 
 import android.content.SharedPreferences
 import android.content.res.Resources
+import android.util.Log
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.Response
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.LocUtils
 import bassamalim.hidaya.core.utils.PrefUtils
 import bassamalim.hidaya.features.leaderboard.UserRecord
@@ -86,7 +88,7 @@ class HomeRepo @Inject constructor(
                     }
                 }
         } catch (e: Exception) {
-            println("Error getting documents: $e")
+            Log.e(Global.TAG, "Error getting documents: $e")
             Response.Error("Error fetching data")
         }
     }
@@ -102,10 +104,10 @@ class HomeRepo @Inject constructor(
                 )
             )
             .addOnSuccessListener {
-                println("DocumentSnapshot successfully updated!")
+                Log.i(Global.TAG, "DocumentSnapshot successfully updated!")
             }
             .addOnFailureListener { e ->
-                println("Error getting documents: $e")
+                Log.e(Global.TAG, "Error getting documents: $e")
             }
             .await()
     }
@@ -129,10 +131,10 @@ class HomeRepo @Inject constructor(
                 )
             )
             .addOnSuccessListener {
-                println("DocumentSnapshot successfully written!")
+                Log.i(Global.TAG, "DocumentSnapshot successfully written!")
             }
             .addOnFailureListener { e ->
-                println("Error writing document: $e")
+                Log.e(Global.TAG, "Error writing document: $e")
             }
             .await()
 
@@ -150,10 +152,10 @@ class HomeRepo @Inject constructor(
                 if (result.documents.isNotEmpty())
                     max = result.documents.first().data!!["user_id"].toString().toInt()
 
-                println("Data retrieved successfully!")
+                Log.i(Global.TAG, "Data retrieved successfully!")
             }
             .addOnFailureListener { exception ->
-                println("Error getting documents: $exception")
+                Log.e(Global.TAG, "Error getting documents: $exception")
             }
             .await()
 

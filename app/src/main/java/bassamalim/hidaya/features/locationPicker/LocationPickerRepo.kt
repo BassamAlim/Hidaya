@@ -1,12 +1,12 @@
 package bassamalim.hidaya.features.locationPicker
 
 import android.content.SharedPreferences
-import android.location.Location
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.CityDB
 import bassamalim.hidaya.core.data.database.dbs.CountryDB
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.utils.LocUtils
 import bassamalim.hidaya.core.utils.PrefUtils
 import javax.inject.Inject
@@ -30,19 +30,23 @@ class LocationPickerRepo @Inject constructor(
         else db.cityDao().getTopAr(countryId, "").toList()
     }
 
+    fun getCity(cityId: Int) = db.cityDao().getCity(cityId)
+
     fun storeLocation(countryId: Int, cityId: Int) {
-        val city = db.cityDao().getCity(cityId)
+        val city = getCity(cityId)
 
         pref.edit()
             .putInt(Prefs.CountryID.key, countryId)
             .putInt(Prefs.CityID.key, cityId)
             .apply()
 
-        val location = Location("")
-        location.latitude = city.latitude
-        location.longitude = city.longitude
-
         LocUtils.storeLocation(pref, city.latitude, city.longitude)
+    }
+
+    fun setLocationType(type: LocationType) {
+        pref.edit()
+            .putString(Prefs.LocationType.key, type.name)
+            .apply()
     }
 
 }

@@ -2,7 +2,9 @@ package bassamalim.hidaya.features.leaderboard
 
 import android.content.SharedPreferences
 import android.content.res.Resources
+import android.util.Log
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.PrefUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -33,7 +35,8 @@ class LeaderboardRepo @Inject constructor(
                         )
                     }
                 } catch (e: Exception) {
-                    println("Error getting documents: ${e.message}")
+                    Log.i(Global.TAG, "Error getting documents: ${e.message}")
+
                     listOf()
                 }
             }

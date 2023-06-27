@@ -29,6 +29,8 @@ class Navigator {
 
     fun popBackStack() {
         navController?.popBackStack()
+
+        if (!callbacks.isEmpty()) callbacks.pop()
     }
 
     fun popBackStack(destination: Screen, inclusive: Boolean = false) {

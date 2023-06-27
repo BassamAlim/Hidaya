@@ -109,6 +109,6 @@ class PrayersRepo @Inject constructor(
     private fun getPrayerNames(): Array<String> = res.getStringArray(R.array.prayer_names)
 
     fun getDayStr() = res.getString(R.string.day)
-    fun getClkToLocate() = res.getString(R.string.clk_to_locate)
+    fun getClkToLocateStr() = res.getString(R.string.clk_to_locate)
 
 }

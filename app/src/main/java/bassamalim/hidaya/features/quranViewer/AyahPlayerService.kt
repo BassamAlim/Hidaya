@@ -311,7 +311,6 @@ class AyahPlayerService : Service(),
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(givenMediaId: String, extras: Bundle) {
             Log.i(Global.TAG, "In onPlayFromMediaId of AyahPlayerService")
-            println(givenMediaId)
 
             reciterId = PrefUtils.getString(pref, Prefs.AyaReciter).toInt()
 

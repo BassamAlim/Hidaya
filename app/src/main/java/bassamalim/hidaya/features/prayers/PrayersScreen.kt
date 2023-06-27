@@ -93,7 +93,7 @@ private fun LocationCard(
                 modifier = Modifier.padding(end = 8.dp),
                 size = 32.dp
             ) {
-                vm.onLocatorClick()
+                vm.onLocatorClk()
             }
         }
     }
@@ -149,7 +149,7 @@ private fun RowScope.PrayerCard(
         modifier = Modifier.weight(1f),
         cornerRadius = 15.dp,
         padding = PaddingValues(vertical = 3.dp, horizontal = 4.dp),
-        onClick = { vm.showSettingsDialog(PID.values()[idx]) }
+        onClick = { vm.onPrayerCardClk(PID.values()[idx]) }
     ) {
         MyRow(
             modifier = Modifier
@@ -199,7 +199,7 @@ private fun ReminderCard(
         modifier = Modifier.fillMaxWidth(0.19f),
         cornerRadius = 15.dp,
         padding = PaddingValues(horizontal = 3.dp),
-        onClick = { vm.showReminderDialog(PID.values()[idx]) }
+        onClick = { vm.onReminderCardClk(PID.values()[idx]) }
     ) {
         if (vm.location != null) {
             MyRow(
@@ -256,7 +256,7 @@ private fun DayCard(
                 textColor = AppTheme.colors.text,
                 innerPadding = PaddingValues(vertical = 3.dp, horizontal = 15.dp)
             ) {
-                vm.goToToday()
+                vm.onTodayClk()
             }
 
             MyIconBtn(

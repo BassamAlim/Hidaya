@@ -6,6 +6,7 @@ import android.app.Application
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
+import android.os.Bundle
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
@@ -44,24 +45,55 @@ class LocatorVM @Inject constructor(
         this.locationRequestLauncher = locationRequestLauncher
     }
 
+    fun onLocateClk() {
+        if (granted()) {
+            locate()
+            background()
+        }
+        else {
+            locationRequestLauncher.launch(arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ))
+        }
+    }
+
+    fun onChooseLocationClk() {
+        navigator.navigateForResult(
+            Screen.LocationPicker
+        ) { result ->
+            if (result != null) {
+                launch(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                        result.getParcelable("location", Location::class.java)
+                    else
+                        result.getParcelable("location")
+                )
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private fun locate() {
         LocationServices.getFusedLocationProviderClient(app)
             .lastLocation.addOnSuccessListener { location: Location? ->
-                if (location != null) repo.storeLocation(location)
+                if (location != null) {
+                    repo.setLocationType(LocationType.Auto)
+                    repo.storeLocation(location)
+                }
 
-                launch()
+                launch(location)
             }
 
         background()
     }
 
-    private fun launch() {
-        navigator.navigate(Screen.Main) {
-            popUpTo(Screen.Locator(type).route) {
-                inclusive = true
+    private fun launch(location: Location?) {
+        navigator.navigateBackWithResult(
+            Bundle().apply {
+                putParcelable("location", location)
             }
-        }
+        )
     }
 
     private fun background() {
@@ -89,31 +121,10 @@ class LocatorVM @Inject constructor(
                 ) == PackageManager.PERMISSION_GRANTED
     }
 
-    fun onLocateClk() {
-        repo.setLocationType(LocationType.Auto)
-
-        if (granted()) {
-            locate()
-            background()
-        }
-        else {
-            locationRequestLauncher.launch(arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ))
-        }
-    }
-
-    fun onChooseLocationClk() {
-        repo.setLocationType(LocationType.Manual)
-
-        navigator.navigate(Screen.LocationPicker)
-    }
-
     fun onSkipLocationClk() {
         repo.setLocationType(LocationType.None)
 
-        launch()
+        launch(null)
     }
 
     fun onLocationRequestResult(result: Map<String, Boolean>) {
@@ -126,7 +137,7 @@ class LocatorVM @Inject constructor(
             locate()
             background()
         }
-        else launch()
+        else launch(null)
     }
 
 }

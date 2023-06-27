@@ -58,8 +58,6 @@ fun LeaderboardUI(
                         items = vm.getSortedItems(rankBy),
                         rankType = rankBy
                     )
-
-                    println("Items: ${vm.getSortedItems(rankBy)}")
                 }
             }
         }
