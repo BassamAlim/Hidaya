@@ -52,7 +52,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
         when (intent.action) {
             "prayer" -> handlePrayer()
-            "remind" -> handleReminder()
+            "reminder" -> handleReminder()
             "extra" -> handleExtra()
         }
     }
