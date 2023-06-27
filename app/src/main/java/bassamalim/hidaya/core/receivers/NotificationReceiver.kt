@@ -20,6 +20,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.utils.ActivityUtils
@@ -31,9 +32,8 @@ class NotificationReceiver : BroadcastReceiver() {
     private lateinit var ctx: Context
     private lateinit var sp: SharedPreferences
     private lateinit var pid: PID
-    private var isPrayer = false
+    private var notificationId = 0
     private var channelId = ""
-    private var type = NotificationType.None
     private var time = 0L
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -49,26 +49,71 @@ class NotificationReceiver : BroadcastReceiver() {
 
         pid = PID.valueOf(intent.getStringExtra("id")!!)
         time = intent.getLongExtra("time", 0L)
-        isPrayer = intent.action == "prayer"
 
-        Log.i(Global.TAG, "in notification receiver for $pid")
-
-        val typeName = PrefUtils.getString(sp, Prefs.NotificationType(pid))
-        type = NotificationType.valueOf(typeName)
-
-        if (type != NotificationType.None) prepare()
-    }
-
-    private fun prepare() {
-        val max = time + 120000
-        if (System.currentTimeMillis() <= max) {
-            if (type == NotificationType.Athan) startService()
-            else showNotification()
+        when (intent.action) {
+            "prayer" -> handlePrayer()
+            "remind" -> handleReminder()
+            "extra" -> handleExtra()
         }
-        else Log.i(Global.TAG, "$pid Passed")
     }
 
-    private fun showNotification() {
+    private fun handlePrayer() {
+        Log.i(Global.TAG, "in notification receiver for $pid prayer")
+
+        notificationId = pid.ordinal
+
+        val notificationType = NotificationType.valueOf(
+            PrefUtils.getString(sp, Prefs.NotificationType(pid))
+        )
+
+        if (notificationType != NotificationType.None && isOnTime()) {
+            if (notificationType == NotificationType.Athan) startService()
+            else showNotification(true, notificationType)
+        }
+    }
+
+    private fun handleReminder() {
+        Log.i(Global.TAG, "in notification receiver for $pid reminder")
+
+        notificationId = pid.ordinal + 10
+        val offset = PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
+        val subtitle = getReminderSubtitle(pid, offset)
+
+        if (isOnTime()) showNotification(false, subtitle = subtitle)
+    }
+
+    private fun getReminderSubtitle(pid: PID, offset: Int): String {
+        return String.format(
+            format =
+                if (offset < 0) ctx.resources.getString(R.string.reminder_before)
+                else ctx.resources.getString(R.string.reminder_after),
+           ctx.resources.getStringArray(R.array.prayer_names)[pid.ordinal],
+            offset.toString().removeSurrounding("-")
+        )
+    }
+
+    private fun handleExtra() {
+        Log.i(Global.TAG, "in notification receiver for $pid extra")
+
+        notificationId = pid.ordinal
+
+        val notificationType = NotificationType.valueOf(
+            PrefUtils.getString(sp, Prefs.NotificationType(pid))
+        )
+
+        if (isOnTime()) showNotification(false, notificationType)
+    }
+
+    private fun isOnTime(): Boolean {
+        val max = time + 120000
+        return System.currentTimeMillis() <= max
+    }
+
+    private fun showNotification(
+        isPrayer: Boolean,
+        notificationType: NotificationType = NotificationType.Notification,
+        subtitle: String? = null
+    ) {
         createNotificationChannel()
 
         if (isPrayer && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -87,9 +132,9 @@ class NotificationReceiver : BroadcastReceiver() {
 
         if (ActivityCompat.checkSelfPermission(
                 ctx, Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            NotificationManagerCompat.from(ctx).notify(pid.ordinal, build())
+            ) == PackageManager.PERMISSION_GRANTED) {
+            val notification = build(notificationType, subtitle)
+            NotificationManagerCompat.from(ctx).notify(notificationId, notification)
         }
     }
 
@@ -101,10 +146,14 @@ class NotificationReceiver : BroadcastReceiver() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             ctx.startForegroundService(intent)
-        else ctx.startService(intent)
+        else
+            ctx.startService(intent)
     }
 
-    private fun build(): Notification {
+    private fun build(
+        notificationType: NotificationType,
+        subtitle: String?
+    ): Notification {
         val builder = NotificationCompat.Builder(ctx, channelId)
         builder.setSmallIcon(R.drawable.ic_athan)
         builder.setTicker(ctx.resources.getString(R.string.app_name))
@@ -113,7 +162,10 @@ class NotificationReceiver : BroadcastReceiver() {
         if (pid == PID.DHUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
             i = 10
         builder.setContentTitle(ctx.resources.getStringArray(R.array.prayer_titles)[i])
-        builder.setContentText(ctx.resources.getStringArray(R.array.prayer_subtitles)[i])
+        if (subtitle == null)
+            builder.setContentText(ctx.resources.getStringArray(R.array.prayer_subtitles)[i])
+        else
+            builder.setContentText(subtitle)
 
         builder.priority = NotificationCompat.PRIORITY_MAX
         builder.setAutoCancel(true)
@@ -121,7 +173,8 @@ class NotificationReceiver : BroadcastReceiver() {
         builder.color = ctx.getColor(R.color.surface_M)
         builder.setContentIntent(onClick(pid))
 
-        if (type == NotificationType.Silent) builder.setSilent(true)
+        if (notificationType == NotificationType.Silent)
+            builder.setSilent(true)
 
         return builder.build()
     }
@@ -129,32 +182,32 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun onClick(pid: PID?): PendingIntent {
         val intent = Intent(ctx, Activity::class.java)
 
-//        val route = when (pid) {
-//            PID.MORNING -> {
-//                Screen.AthkarViewer(
-//                    0.toString(),
-//                ).route
-//            }
-//            PID.EVENING -> {
-//                Screen.AthkarViewer(
-//                    1.toString(),
-//                ).route
-//            }
-//            PID.DAILY_WERD -> {
-//                Screen.QuranViewer(
-//                    "by_page",
-//                    page = PrefUtils.getInt(sp, Prefs.WerdPage).toString()
-//                ).route
-//            }
-//            PID.FRIDAY_KAHF -> {
-//                Screen.QuranViewer(
-//                    "by_sura",
-//                    suraId = 17.toString() // surat al-kahf
-//                ).route
-//            }
-//            else -> Screen.Main.route
-//        }
-//        intent.putExtra("start_route", route)
+        val route = when (pid) {
+            PID.MORNING -> {
+                Screen.AthkarViewer(
+                    0.toString(),
+                ).route
+            }
+            PID.EVENING -> {
+                Screen.AthkarViewer(
+                    1.toString(),
+                ).route
+            }
+            PID.DAILY_WERD -> {
+                Screen.QuranViewer(
+                    "by_page",
+                    page = PrefUtils.getInt(sp, Prefs.WerdPage).toString()
+                ).route
+            }
+            PID.FRIDAY_KAHF -> {
+                Screen.QuranViewer(
+                    "by_sura",
+                    suraId = 17.toString() // surat al-kahf
+                ).route
+            }
+            else -> Screen.Main.route
+        }
+        intent.putExtra("start_route", route)
 
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
@@ -164,14 +217,10 @@ class NotificationReceiver : BroadcastReceiver() {
         )
     }
 
-    private fun setNotificationDone() {
-
-    }
-
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channelId = ctx.resources.getStringArray(R.array.channel_ids)[pid.ordinal]
-            val name = ctx.resources.getStringArray(R.array.reminders)[pid.ordinal]
+            channelId = ctx.resources.getStringArray(R.array.channel_ids)[notificationId]
+            val name = ctx.resources.getStringArray(R.array.reminders)[notificationId]
 
             val importance = NotificationManager.IMPORTANCE_HIGH
             val notificationChannel = NotificationChannel(channelId, name, importance)

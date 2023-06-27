@@ -106,6 +106,8 @@
     <string name="settings_of">%s Settings</string>
     <string name="reminder_of">%s Extra reminder</string>
     <string name="distance_to_kaaba">Distance to Kaaba: %s</string>
+    <string name="reminder_before">%s in %s minutes</string>
+    <string name="reminder_after">%s %s minutes ago</string>
 
     <!-- Sources -->
     <string name="quran_source">Quran: from King Fahd Glorious Quran Printing Complex.</string>

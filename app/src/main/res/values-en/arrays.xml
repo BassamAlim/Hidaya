@@ -21,6 +21,12 @@
         <item>Daily werd</item>
         <item>Surat al-Kahf lights up between two fridays</item>
         <item>Friday prayer</item>
+        <item>Fajr reminder</item>
+        <item>Sunrise reminder</item>
+        <item>Duhr reminder</item>
+        <item>Asr reminder</item>
+        <item>Maghrib reminder</item>
+        <item>Ishaa reminder</item>
     </string-array>
 
     <string-array name="prayer_subtitles">
@@ -48,6 +54,12 @@
         <item>Morning and evening athkar reminders</item>
         <item>Daily werd reminder</item>
         <item>Surat al-Kahf reminder</item>
+        <item>Prayer reminder</item>
+        <item>Prayer reminder</item>
+        <item>Prayer reminder</item>
+        <item>Prayer reminder</item>
+        <item>Prayer reminder</item>
+        <item>Prayer reminder</item>
     </string-array>
 
     <string-array name="themes_entries">

@@ -20,7 +20,13 @@
         <item>أذكار المساء</item>
         <item>الوِرد اليومي</item>
         <item>سورة الكهف نور ما بين الجمعتين</item>
-        <item>صلاة الجمعة</item>
+        <item>تذكير الجمعة</item>
+        <item>تذكير الفجر</item>
+        <item>تذكير الشروق</item>
+        <item>تذكير الظهر</item>
+        <item>تذكير العصر</item>
+        <item>تذكير المغرب</item>
+        <item>تذكير العشاء</item>
     </string-array>
 
     <string-array name="prayer_subtitles">
@@ -48,6 +54,12 @@
         <item>إشعارات أذكار الصباح والمساء</item>
         <item>إشعار الوِرد اليومي</item>
         <item>إشعار سورة الكهف</item>
+        <item>تذكير الصلاة</item>
+        <item>تذكير الصلاة</item>
+        <item>تذكير الصلاة</item>
+        <item>تذكير الصلاة</item>
+        <item>تذكير الصلاة</item>
+        <item>تذكير الصلاة</item>
     </string-array>
     
     <string-array name="channel_ids" translatable="false">
@@ -61,6 +73,12 @@
         <item>morning_and_evening</item>
         <item>werd</item>
         <item>friday_kahf</item>
+        <item>reminder</item>
+        <item>reminder</item>
+        <item>reminder</item>
+        <item>reminder</item>
+        <item>reminder</item>
+        <item>reminder</item>
     </string-array>
 
     <string-array name="themes_entries">

@@ -105,6 +105,8 @@
     <string name="settings_of">إعدادات %s</string>
     <string name="reminder_of">تنبيه إضافي ل%s</string>
     <string name="distance_to_kaaba">المسافة الى الكعبة: %s</string>
+    <string name="reminder_before">%s بعد %s دقيقة</string>
+    <string name="reminder_after">%s منذ %s دقيقة</string>
 
     <!-- Sources -->
     <string name="quran_source">المصحف: من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>

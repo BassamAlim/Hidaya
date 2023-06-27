@@ -34,7 +34,7 @@ class Alarms {
 
         val times = PTUtils.getTimes(pref, DBUtils.getDB(context)) ?: return
 
-        if (pid.ordinal in 0..5) setPrayerAlarm(pid, times[pid.ordinal])
+        if (pid.ordinal in 0..5) setPrayerAlarm(pid, times[pid.ordinal]!!)
         else if (pid.ordinal in 6..9) setExtraAlarm(pid)
     }
 
@@ -43,16 +43,18 @@ class Alarms {
      */
     private fun setAll(times: Array<Calendar?>) {
         setPrayerAlarms(times)
+        setReminders(times)
         setExtraAlarms()
     }
 
     private fun setPrayerAlarms(times: Array<Calendar?>) {
         Log.i(Global.TAG, "in set prayer alarms")
+
         val pidValues = PID.values()
         for (i in times.indices) {
             val pid = pidValues[i]
             if (PrefUtils.getString(pref, Prefs.NotificationType(pid)) != NotificationType.None.name)
-                setPrayerAlarm(pid, times[i])
+                setPrayerAlarm(pid, times[i]!!)
         }
     }
 
@@ -61,10 +63,10 @@ class Alarms {
      *
      * @param pid the ID of the prayer
      */
-    private fun setPrayerAlarm(pid: PID, time: Calendar?) {
+    private fun setPrayerAlarm(pid: PID, time: Calendar) {
         Log.i(Global.TAG, "in set alarm for: $pid")
 
-        val millis = time!!.timeInMillis
+        val millis = time.timeInMillis
         if (System.currentTimeMillis() <= millis) {
             val intent = Intent(context, NotificationReceiver::class.java)
             if (pid == PID.SUNRISE) intent.action = "extra"
@@ -83,6 +85,41 @@ class Alarms {
             Log.i(Global.TAG, "alarm $pid set")
         }
         else Log.i(Global.TAG, "$pid Passed")
+    }
+
+    private fun setReminders(times: Array<Calendar?>) {
+        Log.i(Global.TAG, "in set reminders")
+
+        val pidValues = PID.values()
+        for (i in times.indices) {
+            val pid = pidValues[i]
+            val offset = PrefUtils.getInt(pref, Prefs.ReminderOffset(pid))
+            setReminder(pid, times[i]!!, offset)
+        }
+    }
+
+    private fun setReminder(pid: PID, time: Calendar, offset: Int) {
+        Log.i(Global.TAG, "in set reminder for: $pid")
+
+        val millis = time.timeInMillis + offset * 60 * 1000
+        if (System.currentTimeMillis() <= millis) {
+            val intent = Intent(context, NotificationReceiver::class.java).apply {
+                action = "reminder"
+                putExtra("id", pid.name)
+                putExtra("time", millis)
+            }
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, pid.ordinal, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
+
+            Log.i(Global.TAG, "reminder $pid set")
+        }
+        else Log.i(Global.TAG, "reminder $pid Passed")
     }
 
     /**
