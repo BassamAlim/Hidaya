@@ -26,11 +26,13 @@ import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.PrefUtils
 import java.util.*
+import kotlin.math.abs
 
 class NotificationReceiver : BroadcastReceiver() {
 
     private lateinit var ctx: Context
     private lateinit var sp: SharedPreferences
+    private lateinit var action: String
     private lateinit var pid: PID
     private var notificationId = 0
     private var channelId = ""
@@ -50,6 +52,7 @@ class NotificationReceiver : BroadcastReceiver() {
         pid = PID.valueOf(intent.getStringExtra("id")!!)
         time = intent.getLongExtra("time", 0L)
 
+        action = intent.action!!
         when (intent.action) {
             "prayer" -> handlePrayer()
             "reminder" -> handleReminder()
@@ -76,20 +79,7 @@ class NotificationReceiver : BroadcastReceiver() {
         Log.i(Global.TAG, "in notification receiver for $pid reminder")
 
         notificationId = pid.ordinal + 10
-        val offset = PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
-        val subtitle = getReminderSubtitle(pid, offset)
-
-        if (isOnTime()) showNotification(false, subtitle = subtitle)
-    }
-
-    private fun getReminderSubtitle(pid: PID, offset: Int): String {
-        return String.format(
-            format =
-                if (offset < 0) ctx.resources.getString(R.string.reminder_before)
-                else ctx.resources.getString(R.string.reminder_after),
-           ctx.resources.getStringArray(R.array.prayer_names)[pid.ordinal],
-            offset.toString().removeSurrounding("-")
-        )
+        if (isOnTime()) showNotification(false)
     }
 
     private fun handleExtra() {
@@ -112,7 +102,6 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun showNotification(
         isPrayer: Boolean,
         notificationType: NotificationType = NotificationType.Notification,
-        subtitle: String? = null
     ) {
         createNotificationChannel()
 
@@ -133,7 +122,7 @@ class NotificationReceiver : BroadcastReceiver() {
         if (ActivityCompat.checkSelfPermission(
                 ctx, Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED) {
-            val notification = build(notificationType, subtitle)
+            val notification = build(notificationType)
             NotificationManagerCompat.from(ctx).notify(notificationId, notification)
         }
     }
@@ -151,21 +140,14 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun build(
-        notificationType: NotificationType,
-        subtitle: String?
+        notificationType: NotificationType
     ): Notification {
         val builder = NotificationCompat.Builder(ctx, channelId)
         builder.setSmallIcon(R.drawable.ic_athan)
         builder.setTicker(ctx.resources.getString(R.string.app_name))
 
-        var i = pid.ordinal
-        if (pid == PID.DHUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
-            i = 10
-        builder.setContentTitle(ctx.resources.getStringArray(R.array.prayer_titles)[i])
-        if (subtitle == null)
-            builder.setContentText(ctx.resources.getStringArray(R.array.prayer_subtitles)[i])
-        else
-            builder.setContentText(subtitle)
+        builder.setContentTitle(getTitle())
+        builder.setContentText(getSubtitle())
 
         builder.priority = NotificationCompat.PRIORITY_MAX
         builder.setAutoCancel(true)
@@ -177,6 +159,37 @@ class NotificationReceiver : BroadcastReceiver() {
             builder.setSilent(true)
 
         return builder.build()
+    }
+
+    private fun getTitle(): String {
+        val idx = if (action == "reminder") notificationId + 1 else notificationId
+        return ctx.resources.getStringArray(R.array.prayer_titles)[idx]
+    }
+
+    private fun getSubtitle(): String {
+        return if (action == "reminder") {
+            val offset = PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
+            getReminderSubtitle(pid, offset)
+        }
+        else {
+            val idx =
+                if (pid == PID.DHUHR &&
+                    Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+                    10
+                else
+                    pid.ordinal
+            ctx.resources.getStringArray(R.array.prayer_subtitles)[idx]
+        }
+    }
+
+    private fun getReminderSubtitle(pid: PID, offset: Int): String {
+        return String.format(
+            format =
+            if (offset < 0) ctx.resources.getString(R.string.reminder_before)
+            else ctx.resources.getString(R.string.reminder_after),
+            ctx.resources.getStringArray(R.array.prayer_names)[pid.ordinal],
+            abs(offset) // to remove - sign
+        )
     }
 
     private fun onClick(pid: PID?): PendingIntent {
