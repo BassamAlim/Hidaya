@@ -211,5 +211,8 @@
     <string name="by_reading">By reading</string>
     <string name="by_listening">By listening</string>
     <string name="error_fetching_data">Error fetching data</string>
+    <string name="jumuah_title">Friday prayer</string>
+    <string name="jumuah_subtitle">It\'s friday prayer second athan time</string>
+    <string name="jumuah_reminder_title">Friday prayer reminder</string>
 
 </resources>

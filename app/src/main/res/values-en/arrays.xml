@@ -19,8 +19,7 @@
         <item>Morning athkar</item>
         <item>Evening athkar</item>
         <item>Daily werd</item>
-        <item>Surat al-Kahf lights up between two fridays</item>
-        <item>Friday prayer</item>
+        <item>Surat al-Kahf</item>
         <item>Fajr reminder</item>
         <item>Sunrise reminder</item>
         <item>Duhr reminder</item>
@@ -40,7 +39,6 @@
         <item>Click to read evening athkar</item>
         <item>Click to read today\'s quran page</item>
         <item>Click to read surat al-Kahf</item>
-        <item>It\'s friday prayer second athan time</item>
     </string-array>
 
     <string-array name="reminders">

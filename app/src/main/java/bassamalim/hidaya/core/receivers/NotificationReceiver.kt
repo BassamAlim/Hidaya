@@ -162,34 +162,30 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun getTitle(): String {
-        val idx = if (action == "reminder") notificationId + 1 else notificationId
-        return ctx.resources.getStringArray(R.array.prayer_titles)[idx]
+        return if (pid == PID.DHUHR &&
+            Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
+            if (action == "reminder") ctx.resources.getString(R.string.jumuah_reminder_title)
+            else ctx.resources.getString(R.string.jumuah_title)
+        }
+        else ctx.resources.getStringArray(R.array.prayer_titles)[notificationId]
     }
 
     private fun getSubtitle(): String {
-        return if (action == "reminder") {
-            val offset = PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
-            getReminderSubtitle(pid, offset)
+        return if (pid == PID.DHUHR &&
+            Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
+            if (action == "reminder") {
+                val offset = PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
+                String.format(
+                    format =
+                        if (offset < 0) ctx.resources.getString(R.string.reminder_before)
+                        else ctx.resources.getString(R.string.reminder_after),
+                    ctx.resources.getStringArray(R.array.prayer_names)[pid.ordinal],
+                    abs(offset) // to remove - sign
+                )
+            }
+            else ctx.resources.getString(R.string.jumuah_subtitle)
         }
-        else {
-            val idx =
-                if (pid == PID.DHUHR &&
-                    Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
-                    10
-                else
-                    pid.ordinal
-            ctx.resources.getStringArray(R.array.prayer_subtitles)[idx]
-        }
-    }
-
-    private fun getReminderSubtitle(pid: PID, offset: Int): String {
-        return String.format(
-            format =
-            if (offset < 0) ctx.resources.getString(R.string.reminder_before)
-            else ctx.resources.getString(R.string.reminder_after),
-            ctx.resources.getStringArray(R.array.prayer_names)[pid.ordinal],
-            abs(offset) // to remove - sign
-        )
+        else ctx.resources.getStringArray(R.array.prayer_subtitles)[notificationId]
     }
 
     private fun onClick(pid: PID?): PendingIntent {

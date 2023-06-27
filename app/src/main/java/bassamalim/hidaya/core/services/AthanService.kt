@@ -77,11 +77,8 @@ class AthanService : Service() {
         builder.setSmallIcon(R.drawable.ic_athan)
         builder.setTicker(resources.getString(R.string.app_name))
 
-        var i = pid.ordinal
-        if (pid == PID.DHUHR && Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
-            i = 10
-        builder.setContentTitle(resources.getStringArray(R.array.prayer_titles)[i])
-        builder.setContentText(resources.getStringArray(R.array.prayer_subtitles)[i])
+        builder.setContentTitle(getTitle())
+        builder.setContentText(getSubtitle())
 
         builder.addAction(0, getString(R.string.stop_athan), getStopIntent())
         builder.clearActions()
@@ -93,6 +90,22 @@ class AthanService : Service() {
         builder.color = getColor(R.color.surface_M)
 
         return builder.build()
+    }
+
+    private fun getTitle(): String {
+        return if (pid == PID.DHUHR &&
+            Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
+            resources.getString(R.string.jumuah_title)
+        }
+        else resources.getStringArray(R.array.prayer_titles)[pid.ordinal]
+    }
+
+    private fun getSubtitle(): String {
+        return if (pid == PID.DHUHR &&
+            Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
+            resources.getString(R.string.jumuah_subtitle)
+        }
+        else resources.getStringArray(R.array.prayer_subtitles)[pid.ordinal]
     }
 
     private fun getStopIntent(): PendingIntent {

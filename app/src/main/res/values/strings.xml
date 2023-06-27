@@ -212,5 +212,8 @@
     <string name="by_reading">حسب القراءة</string>
     <string name="by_listening">حسب الاستماع</string>
     <string name="error_fetching_data">حدث خطأ أثناء جلب البيانات</string>
+    <string name="jumuah_title">صلاة الجمعة</string>
+    <string name="jumuah_subtitle">حان موعد الأذان الثاني لصلاة الجمعة</string>
+    <string name="jumuah_reminder_title">تذكير صلاة الجمعة</string>
 
 </resources>
