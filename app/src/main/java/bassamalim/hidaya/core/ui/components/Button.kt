@@ -199,9 +199,11 @@ fun MyHorizontalButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            icon()
+            if (icon != {}) {
+                icon()
 
-            Spacer(modifier = Modifier.padding(middlePadding))
+                Spacer(modifier = Modifier.padding(middlePadding))
+            }
 
             MyText(
                 text = text,

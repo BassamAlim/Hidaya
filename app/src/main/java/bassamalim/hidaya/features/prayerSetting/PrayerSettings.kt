@@ -9,7 +9,7 @@ data class PrayerSettings(
     val pid: PID,
     val notificationType: NotificationType,
     val timeOffset: Int,
-    val reminderOffset: Int
+    val reminderOffset: Int = 0
 ): Parcelable {
 
     constructor(parcel: Parcel) : this(

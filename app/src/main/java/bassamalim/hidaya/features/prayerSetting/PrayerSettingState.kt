@@ -5,7 +5,7 @@ import bassamalim.hidaya.core.enums.PID
 
 data class PrayerSettingState(
     val pid: PID,
+    val prayerName: String,
     val notificationType: NotificationType,
-    val timeOffset: Int,
-    val reminderOffset: Int
+    val timeOffset: Int
 )

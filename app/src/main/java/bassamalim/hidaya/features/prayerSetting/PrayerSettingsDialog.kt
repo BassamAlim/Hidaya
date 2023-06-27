@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +28,7 @@ import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
+import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.MyValuedSlider
 import bassamalim.hidaya.core.ui.theme.AppTheme
@@ -37,10 +38,6 @@ fun PrayerSettingsDialog(
     vm: PrayerSettingVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
-
-    val ctx = LocalContext.current
-    val offsetMin = 30f
-    val sliderProgress = st.timeOffset + offsetMin
 
     MyDialog(
         shown = true,
@@ -53,10 +50,7 @@ fun PrayerSettingsDialog(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MyText(
-                String.format(
-                    stringResource(R.string.settings_of),
-                    ctx.resources.getStringArray(R.array.prayer_names)[st.pid.ordinal]
-                ),
+                String.format(stringResource(R.string.settings_of), st.prayerName),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 5.dp, bottom = 20.dp)
@@ -78,18 +72,19 @@ fun PrayerSettingsDialog(
             )
 
             MyValuedSlider(
-                initialValue = sliderProgress,
+                initialValue = st.timeOffset + vm.offsetMin,
                 valueRange = 0F..60F,
                 modifier = Modifier.fillMaxWidth(),
-                progressMin = offsetMin,
+                progressMin = vm.offsetMin,
                 sliderFraction = 0.875F,
                 onValueChange = { value -> vm.onTimeOffsetChange(value.toInt()) }
             )
 
-            MyHorizontalButton(
-                text = stringResource(R.string.save),
-                onClick = { vm.onSave() }
-            )
+            MyRow {
+                SaveBtn(vm)
+
+                CancelBtn(vm)
+            }
         }
     }
 }
@@ -148,4 +143,24 @@ private fun CustomRadioGroup(
             }
         }
     }
+}
+
+@Composable
+private fun RowScope.SaveBtn(vm: PrayerSettingVM) {
+    MyHorizontalButton(
+        text = stringResource(R.string.save),
+        fontSize = 24.sp,
+        modifier = Modifier.weight(1f),
+        onClick = { vm.onSave() }
+    )
+}
+
+@Composable
+private fun RowScope.CancelBtn(vm: PrayerSettingVM) {
+    MyHorizontalButton(
+        text = stringResource(R.string.cancel),
+        fontSize = 24.sp,
+        modifier = Modifier.weight(1f),
+        onClick = { vm.onDismiss() }
+    )
 }

@@ -76,7 +76,7 @@ fun MyValuedSlider(
                 val progress = currentValue - progressMin
 
                 var progressStr = progress.toInt().toString()
-                if (progressMin != 0f && progress > 0f) progressStr += "+"
+                if (progressMin != 0f && progress.toInt() > 0) progressStr += "+"
                 sliderText =
                     if (infinite && progress == valueRange.endInclusive)
                         context.getString(R.string.infinite)

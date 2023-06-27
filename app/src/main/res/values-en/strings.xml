@@ -61,6 +61,7 @@
     <string name="download_description">Download</string>
     <string name="repeat_description">Repeat</string>
     <string name="notification_image_description">Current alert type</string>
+    <string name="reminder_image_description">Extra reminder</string>
     <string name="accuracy_indicator_description">Accuracy</string>
     <string name="app_widget_description">App widget</string>
     <string name="previous_day_button_description">Previous day</string>
@@ -103,6 +104,7 @@
     <!-- Formats -->
     <string name="remaining">Remaining: %1$s</string>
     <string name="settings_of">%s Settings</string>
+    <string name="reminder_of">%s Extra reminder</string>
     <string name="distance_to_kaaba">Distance to Kaaba: %s</string>
 
     <!-- Sources -->
@@ -127,6 +129,7 @@
     <string name="silent_notification">Silent notification</string>
     <string name="disable_notification">Disable</string>
     <string name="adjust_prayer_notification_time">Edit time (minute)</string>
+    <string name="reminder_time">Reminder time (minute)</string>
     <string name="low_accuracy_text">Accuracy is low .. Please re-calibrate the device</string>
     <string name="medium_accuracy_text">Accuracy is moderate</string>
     <string name="high_accuracy_text">Accuracy is good</string>

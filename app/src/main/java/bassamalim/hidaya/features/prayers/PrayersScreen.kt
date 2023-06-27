@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -112,7 +113,6 @@ private fun ColumnScope.PrayersSpace(
     ) {
         st.prayersData.forEachIndexed { i, data ->
             PrayerSpace(vm, st, i, data)
-
         }
     }
 }
@@ -127,47 +127,52 @@ private fun PrayerSpace(
     MyRow {
         PrayerCard(
             vm = vm,
-            st = st,
-            number = idx,
+            idx = idx,
             data = data
         )
 
         ReminderCard(
             vm = vm,
-            st = st,
-            idx = idx
+            idx = idx,
+            reminderOffset = data.settings.reminderOffset
         )
     }
 }
 
 @Composable
-private fun PrayerCard(
+private fun RowScope.PrayerCard(
     vm: PrayersVM,
-    st: PrayersState,
-    number: Int,
+    idx: Int,
     data: PrayerData
 ) {
     MyClickableSurface(
+        modifier = Modifier.weight(1f),
         cornerRadius = 15.dp,
-        onClick = { vm.showSettingsDialog(PID.values()[number]) }
+        padding = PaddingValues(vertical = 3.dp, horizontal = 4.dp),
+        onClick = { vm.showSettingsDialog(PID.values()[idx]) }
     ) {
-        Row(
-            Modifier
-                .padding(vertical = 12.dp, horizontal = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+        MyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp, horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Prayer name
             MyText(
                 data.getText(),
-                fontSize = 30.nsp,
+                fontSize = 29.nsp,
                 fontWeight = FontWeight.Medium
             )
 
             if (vm.location != null) {
-                Row {
-                    // Delay
-                    MyText(vm.formatTimeOffset(data.settings.timeOffset))
+                MyRow {
+                    // Time offset
+                    if (data.settings.timeOffset != 0) {
+                        MyText(
+                            vm.formatOffset(data.settings.timeOffset),
+                            textColor = AppTheme.colors.accent,
+                            modifier = Modifier.padding(end = 3.dp)
+                        )
+                    }
 
                     // Notification type
                     Icon(
@@ -176,7 +181,7 @@ private fun PrayerCard(
                         ),
                         contentDescription = stringResource(R.string.notification_image_description),
                         tint = AppTheme.colors.accent,
-                        modifier = Modifier.size(35.dp)
+                        modifier = Modifier.size(32.dp)
                     )
                 }
             }
@@ -187,23 +192,35 @@ private fun PrayerCard(
 @Composable
 private fun ReminderCard(
     vm: PrayersVM,
-    st: PrayersState,
-    idx: Int
+    idx: Int,
+    reminderOffset: Int
 ) {
     MyClickableSurface(
+        modifier = Modifier.fillMaxWidth(0.19f),
         cornerRadius = 15.dp,
-        onClick = { vm.onReminderClk(PID.values()[idx]) }
+        padding = PaddingValues(horizontal = 3.dp),
+        onClick = { vm.showReminderDialog(PID.values()[idx]) }
     ) {
         if (vm.location != null) {
-            Row {
-                MyText(vm.formatTimeOffset(st.prayersData[idx].settings.reminderOffset))
+            MyRow(
+                Modifier.padding(vertical = 19.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                if (reminderOffset != 0) {
+                    MyText(
+                        vm.formatOffset(reminderOffset),
+                        textColor = AppTheme.colors.accent,
+                        modifier = Modifier.padding(end = 3.dp)
+                    )
+                }
 
                 Icon(
                     painter = painterResource(R.drawable.ic_add_reminder),
                     contentDescription = stringResource(R.string.notification_image_description),
                     tint =
-                        if (st.prayersData[idx].settings.reminderOffset == 0) AppTheme.colors.text
-                        else AppTheme.colors.accent
+                        if (reminderOffset == 0) AppTheme.colors.text
+                        else AppTheme.colors.accent,
+                    modifier = Modifier.size(32.dp)
                 )
             }
         }

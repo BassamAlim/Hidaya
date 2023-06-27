@@ -21,6 +21,7 @@ import bassamalim.hidaya.features.leaderboard.LeaderboardRepo
 import bassamalim.hidaya.features.locationPicker.LocationPickerRepo
 import bassamalim.hidaya.features.locator.LocatorRepo
 import bassamalim.hidaya.features.main.MainRepo
+import bassamalim.hidaya.features.prayerReminder.PrayerReminderRepo
 import bassamalim.hidaya.features.prayerSetting.PrayerSettingsRepo
 import bassamalim.hidaya.features.prayers.PrayersRepo
 import bassamalim.hidaya.features.qibla.QiblaRepo
@@ -186,6 +187,12 @@ object AppModule {
         preferences: SharedPreferences,
         database: AppDatabase
     ) = PrayersRepo(resources, preferences, database)
+
+    @Provides @Singleton
+    fun providePrayerReminderRepository(
+        resources: Resources,
+        preferences: SharedPreferences
+    ) = PrayerReminderRepo(resources, preferences)
 
     @Provides @Singleton
     fun providePrayerSettingsRepository(

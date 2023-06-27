@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.prayers
 
 import android.app.Application
+import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.LocationType
@@ -117,12 +118,9 @@ class PrayersVM @Inject constructor(
         }
     }
 
-    fun formatTimeOffset(offset : Int): String {
-        return if (offset > 0)
-            translateNums(repo.numeralsLanguage, "+$offset")
-        else if (offset < 0)
-            translateNums(repo.numeralsLanguage, offset.toString())
-        else ""
+    fun formatOffset(offset : Int): String {
+        return if (offset < 0) translateNums(repo.numeralsLanguage, offset.toString())
+        else translateNums(repo.numeralsLanguage, "+$offset")
     }
 
     fun getNotificationTypeIconID(type: NotificationType): Int {
@@ -147,13 +145,19 @@ class PrayersVM @Inject constructor(
             navigator.navigateForResult(
                 destination = Screen.PrayerSettings(
                     pid.name
-                ),
-                key = "prayer_settings"
+                )
             ) { result ->
-                println("Result: $result")
-
                 if (result != null) {
-                    onSettingsDialogSaved(pid, result as PrayerSettings)
+                    onSettingsDialogSaved(
+                        pid = pid,
+                        settings =
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                result.getParcelable("prayer_settings", PrayerSettings::class.java)!!
+                            }
+                            else {
+                                result.getParcelable("prayer_settings")!!
+                            }
+                    )
                 }
             }
         }
@@ -165,12 +169,50 @@ class PrayersVM @Inject constructor(
         _uiState.update { oldState -> oldState.copy(
             prayersData = oldState.prayersData.toMutableList().apply {
                 this[prayerNum] = oldState.prayersData[prayerNum].copy(
-                    settings = settings
+                    settings = oldState.prayersData[prayerNum].settings.copy(
+                        notificationType = settings.notificationType,
+                        timeOffset = settings.timeOffset
+                    )
                 )
             }.toList()
         )}
 
-        repo.updatePrayerSettings(pid, settings)
+        repo.updatePrayerSettings(pid, _uiState.value.prayersData[prayerNum].settings)
+
+        updatePrayerTimeAlarms(pid)
+    }
+
+    fun showReminderDialog(pid: PID) {
+        if (location != null) {
+            navigator.navigateForResult(
+                destination = Screen.PrayerReminder(
+                    pid.name
+                )
+            ) { result ->
+                if (result != null) {
+                    onReminderDialogSaved(
+                        pid = pid,
+                        offset = result.getInt("offset")
+                    )
+                }
+            }
+        }
+    }
+
+    private fun onReminderDialogSaved(pid: PID, offset: Int) {
+        val prayerNum = pid.ordinal
+
+        _uiState.update { oldState -> oldState.copy(
+            prayersData = oldState.prayersData.toMutableList().apply {
+                this[prayerNum] = oldState.prayersData[prayerNum].copy(
+                    settings = oldState.prayersData[prayerNum].settings.copy(
+                        reminderOffset = offset
+                    )
+                )
+            }.toList()
+        )}
+
+        repo.updatePrayerSettings(pid, _uiState.value.prayersData[prayerNum].settings)
 
         updatePrayerTimeAlarms(pid)
     }
@@ -189,10 +231,6 @@ class PrayersVM @Inject constructor(
         )}
 
         if (doNotShowAgain) repo.setDoNotShowAgain()
-    }
-
-    fun onReminderClk(pid: PID) {
-
     }
 
     private fun updatePrayerTimeAlarms(pid: PID) {

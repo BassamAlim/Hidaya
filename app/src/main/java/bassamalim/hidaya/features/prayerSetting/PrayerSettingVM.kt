@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.prayerSetting
 
+import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.R
@@ -23,12 +24,13 @@ class PrayerSettingVM @Inject constructor(
 
     private val _uiState = MutableStateFlow(PrayerSettingState(
         pid = pid,
+        prayerName = repo.getPrayerName(pid),
         notificationType = repo.getNotificationType(pid),
-        timeOffset = repo.getTimeOffset(pid),
-        reminderOffset = repo.getReminderOffset(pid)
+        timeOffset = repo.getTimeOffset(pid)
     ))
     val uiState = _uiState.asStateFlow()
 
+    val offsetMin = 30f
     val notificationTypeOptions = listOf(
         Pair(R.string.athan_speaker, R.drawable.ic_speaker),
         Pair(R.string.enable_notification, R.drawable.ic_sound),
@@ -48,29 +50,22 @@ class PrayerSettingVM @Inject constructor(
         )}
     }
 
-    fun onReminderOffsetChange(reminderOffset: Int) {
-        _uiState.update { it.copy(
-            reminderOffset = reminderOffset
-        )}
-    }
-
     fun onSave() {
         val prayerSettings = PrayerSettings(
             pid = pid,
             notificationType = uiState.value.notificationType,
-            timeOffset = uiState.value.timeOffset,
-            reminderOffset = uiState.value.reminderOffset
+            timeOffset = uiState.value.timeOffset
         )
 
         navigator.navigateBackWithResult(
-            key = "prayer_settings",
-            data = prayerSettings
+            data = Bundle().apply {
+                putParcelable("prayer_settings", prayerSettings)
+            }
         )
     }
 
     fun onDismiss() {
         navigator.navigateBackWithResult(
-            key = "prayer_settings",
             data = null
         )
     }

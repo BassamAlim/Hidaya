@@ -54,15 +54,14 @@ fun MyClickableSurface(
     content: @Composable () -> Unit
 ) {
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(padding),
+        modifier = modifier.padding(padding),
         shape = RoundedCornerShape(cornerRadius),
         color = AppTheme.colors.surface,
         elevation = elevation,
     ) {
         Box(
-            Modifier.clickable { onClick() }
+            Modifier.clickable { onClick() },
+            contentAlignment = Alignment.Center
         ) {
             content()
         }

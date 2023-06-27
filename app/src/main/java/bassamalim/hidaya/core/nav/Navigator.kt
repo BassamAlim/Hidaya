@@ -1,12 +1,13 @@
 package bassamalim.hidaya.core.nav
 
-import android.os.Parcelable
+import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
+import java.util.Stack
 
 class Navigator {
 
-    private val callbacks = mutableMapOf<String, (Parcelable?) -> Unit>()
+    private val callbacks = Stack<(Bundle?) -> Unit>()
     private var navController: NavController? = null
 
     fun setController(navController: NavController) {
@@ -36,17 +37,15 @@ class Navigator {
 
     fun navigateForResult(
         destination: Screen,
-        key: String,
-        onResult: (Parcelable?) -> Unit
+        onResult: (Bundle?) -> Unit
     ) {
         navController?.navigate(destination.route)
 
-        callbacks[key] = onResult
+        callbacks.push(onResult)
     }
 
-    fun navigateBackWithResult(key: String, data: Parcelable?) {
-        callbacks[key]?.invoke(data)
-        callbacks.remove(key)
+    fun navigateBackWithResult(data: Bundle?) {
+        callbacks.pop()?.invoke(data)
 
         navController?.popBackStack()
     }

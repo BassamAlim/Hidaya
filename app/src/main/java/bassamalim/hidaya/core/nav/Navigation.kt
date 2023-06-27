@@ -25,6 +25,7 @@ import bassamalim.hidaya.features.leaderboard.LeaderboardUI
 import bassamalim.hidaya.features.locationPicker.LocationPickerUI
 import bassamalim.hidaya.features.locator.LocatorUI
 import bassamalim.hidaya.features.main.MainUI
+import bassamalim.hidaya.features.prayerReminder.PrayerReminderDialog
 import bassamalim.hidaya.features.prayerSetting.PrayerSettingsDialog
 import bassamalim.hidaya.features.qibla.QiblaUI
 import bassamalim.hidaya.features.quiz.QuizUI
@@ -253,6 +254,19 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             MainUI(
+                hiltViewModel()
+            )
+        }
+
+        dialog(
+            route = Screen.PrayerReminder(
+                "{pid}"
+            ).route,
+            arguments = listOf(
+                navArgument("pid") { type = NavType.StringType }
+            )
+        ) {
+            PrayerReminderDialog(
                 hiltViewModel()
             )
         }
