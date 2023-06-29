@@ -74,7 +74,6 @@ class DailyUpdateReceiver : BroadcastReceiver() {
                 ctx, Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-
             LocationServices.getFusedLocationProviderClient(ctx)
                 .lastLocation.addOnSuccessListener {
                     location: Location? -> update(location)

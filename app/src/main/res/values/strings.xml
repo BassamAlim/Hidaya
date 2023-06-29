@@ -99,6 +99,7 @@
     <string name="juz">جزء</string>
     <string name="search">ابحث</string>
     <string name="question">سؤال</string>
+    <string name="jumuah">جمعة</string>
 
     <!-- Formats -->
     <string name="remaining">متبقي: %1$s</string>

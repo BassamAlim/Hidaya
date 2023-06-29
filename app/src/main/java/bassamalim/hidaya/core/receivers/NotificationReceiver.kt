@@ -171,21 +171,25 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun getSubtitle(): String {
-        return if (pid == PID.DHUHR &&
-            Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
-            if (action == "reminder") {
-                val offset = PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
-                String.format(
-                    format =
-                        if (offset < 0) ctx.resources.getString(R.string.reminder_before)
-                        else ctx.resources.getString(R.string.reminder_after),
-                    ctx.resources.getStringArray(R.array.prayer_names)[pid.ordinal],
-                    abs(offset) // to remove - sign
-                )
-            }
-            else ctx.resources.getString(R.string.jumuah_subtitle)
+        return if (action == "reminder") {
+            val offset = PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
+            String.format(
+                format =
+                if (offset < 0) ctx.resources.getString(R.string.reminder_before)
+                else ctx.resources.getString(R.string.reminder_after),
+                if (pid == PID.DHUHR &&
+                    Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+                    ctx.resources.getString(R.string.jumuah)
+                else ctx.resources.getStringArray(R.array.prayer_names)[pid.ordinal],
+                abs(offset) // to remove - sign
+            )
         }
-        else ctx.resources.getStringArray(R.array.prayer_subtitles)[notificationId]
+        else {
+            if (pid == PID.DHUHR &&
+                Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+                ctx.resources.getString(R.string.jumuah_subtitle)
+            else ctx.resources.getStringArray(R.array.prayer_subtitles)[notificationId]
+        }
     }
 
     private fun onClick(pid: PID?): PendingIntent {

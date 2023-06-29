@@ -2,6 +2,7 @@ package bassamalim.hidaya.features.locationPicker
 
 import android.location.Location
 import android.os.Bundle
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,9 +12,11 @@ import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.models.LocationPickerItem
 import bassamalim.hidaya.core.nav.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,6 +25,8 @@ class LocationPickerVM @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
+    private lateinit var coroutineScope: CoroutineScope
+    private lateinit var lazyListState: LazyListState
     private var mode = 0
     private var countryId = -1
     val language = repo.language
@@ -33,6 +38,11 @@ class LocationPickerVM @Inject constructor(
         items = getItems()
     ))
     val uiState = _uiState.asStateFlow()
+
+    fun onStart(coroutineScope: CoroutineScope, lazyListState: LazyListState) {
+        this.coroutineScope = coroutineScope
+        this.lazyListState = lazyListState
+    }
 
     fun onSelect(id: Int) {
         if (mode == 1) {
@@ -64,6 +74,10 @@ class LocationPickerVM @Inject constructor(
                 searchHintResId = R.string.city_hint,
                 items = getItems()
             )}
+
+            coroutineScope.launch {
+                lazyListState.animateScrollToItem(0)
+            }
         }
     }
 
@@ -125,7 +139,8 @@ class LocationPickerVM @Inject constructor(
         return if (searchText.isEmpty()) cities
         else cities.filter { city ->
             city.nameAr.contains(searchText, ignoreCase = true) or
-                    city.nameEn.contains(searchText, ignoreCase = true) }
+                    city.nameEn.contains(searchText, ignoreCase = true)
+        }
     }
 
 }

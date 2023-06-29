@@ -100,6 +100,7 @@
     <string name="juz">Juz</string>
     <string name="search">Search</string>
     <string name="question">Question</string>
+    <string name="jumuah">Jumuah</string>
 
     <!-- Formats -->
     <string name="remaining">Remaining: %1$s</string>

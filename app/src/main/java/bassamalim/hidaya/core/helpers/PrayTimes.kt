@@ -42,6 +42,17 @@ class PrayTimes(
         setOffsets()
     }
 
+    // Tune timings for adjustments (Set time offsets)
+    private fun setOffsets() {
+        offsets[0] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.FAJR))
+        offsets[1] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.SUNRISE))
+        offsets[2] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.DHUHR))
+        offsets[3] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ASR))
+        // Skipping sunset
+        offsets[5] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.MAGHRIB))
+        offsets[6] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ISHAA))
+    }
+
     // -------------------- Interface Functions --------------------
     // returns prayer times in Calendar object
     fun getPrayerTimes(
@@ -96,6 +107,16 @@ class PrayTimes(
         return times
     }
 
+    private fun setValues(
+        lat: Double, lng: Double, tZone: Double, year: Int, month: Int, day: Int
+    ) {
+        latitude = lat
+        longitude = lng
+        timeZone = tZone
+        jDate = julianDate(year, month, day)
+        jDate -= lng / (15.0 * 24.0)
+    }
+
     // ---------------------- Time-Zone Functions -----------------------
     // compute local time-zone for a specific date
     private fun getDefaultTimeZone(): Double {
@@ -119,10 +140,64 @@ class PrayTimes(
                 ) - 1524.5
     }
 
-    // ---------------------- Calculation Functions -----------------------
-    // References:
-    // http://www.ummah.net/astronomy/saltime
-    // http://aa.usno.navy.mil/faq/docs/SunApprox.html
+    // compute prayer times at given julian date
+    private fun computeDayTimes(): DoubleArray {
+        var times = doubleArrayOf(5.0, 6.0, 12.0, 13.0, 18.0, 18.0, 18.0)  // default times
+        for (i in 1..numIterations) times = computeTimes(times)
+        adjustTimes(times)
+        tuneTimes(times)
+        return times
+    }
+
+    // compute prayer times at given julian date
+    private fun computeTimes(times: DoubleArray): DoubleArray {
+        val t = dayPortion(times)
+        val fajr = computeTime(180 - (methodParams[calcMethod]!![0]), t[0])
+        val sunrise = computeTime(180 - 0.833, t[1])
+        val dhuhr = computeMidDay(t[2])
+        val asr = computeAsr((1 + asrJuristic).toDouble(), t[3])
+        val sunset = computeTime(0.833, t[4])
+        val maghrib = computeTime(methodParams[calcMethod]!![2], t[5])
+        val isha = computeTime(methodParams[calcMethod]!![4], t[6])
+        return doubleArrayOf(fajr, sunrise, dhuhr, asr, sunset, maghrib, isha)
+    }
+
+    // compute the time of Asr
+    // Shafii: step=1, Hanafi: step=2
+    private fun computeAsr(step: Double, t: Double): Double {
+        val d = sunDeclination(jDate + t)
+        val g = -dArcCot(step + dTan(abs(latitude - d)))
+        return computeTime(g, t)
+    }
+
+    // compute time for a given angle G
+    // Error here in some cases such as poland (v = NaN)
+    private fun computeTime(G: Double, t: Double): Double {
+        val d = sunDeclination(jDate + t)
+        val z = computeMidDay(t)
+        val beg = -dSin(G) - dSin(d) * dSin(latitude)
+        val mid = dCos(d) * dCos(latitude)
+        println("Its: ${beg / mid} , $beg, $mid")
+        val v = dArcCos(beg / mid) / 15.0
+        return z + if (G > 90) -v else v
+    }
+
+    // compute declination angle of sun
+    private fun sunDeclination(jd: Double): Double {
+        return sunPosition(jd)[0]
+    }
+
+    // compute mid-day (Dhuhr, Zawal) time
+    private fun computeMidDay(gT: Double): Double {
+        val t = equationOfTime(jDate + gT)
+        return fixHour(12 - t)
+    }
+
+    // compute equation of time
+    private fun equationOfTime(jd: Double): Double {
+        return sunPosition(jd)[1]
+    }
+
     // compute declination angle of sun and equation of time
     private fun sunPosition(jd: Double): DoubleArray {
         val dd = jd - 2451545
@@ -141,79 +216,6 @@ class PrayTimes(
         sPosition[0] = d
         sPosition[1] = eqT
         return sPosition
-    }
-
-    // compute equation of time
-    private fun equationOfTime(jd: Double): Double {
-        return sunPosition(jd)[1]
-    }
-
-    // compute declination angle of sun
-    private fun sunDeclination(jd: Double): Double {
-        return sunPosition(jd)[0]
-    }
-
-    // compute mid-day (Dhuhr, Zawal) time
-    private fun computeMidDay(gT: Double): Double {
-        val t = equationOfTime(jDate + gT)
-        return fixHour(12 - t)
-    }
-
-    // compute time for a given angle G
-    private fun computeTime(G: Double, t: Double): Double {
-        val d = sunDeclination(jDate + t)
-        val z = computeMidDay(t)
-        val beg = -dSin(G) - dSin(d) * dSin(latitude)
-        val mid = dCos(d) * dCos(latitude)
-        val v = dArcCos(beg / mid) / 15.0
-        return z + if (G > 90) -v else v
-    }
-
-    // compute the time of Asr
-    // Shafii: step=1, Hanafi: step=2
-    private fun computeAsr(step: Double, t: Double): Double {
-        val d = sunDeclination(jDate + t)
-        val g = -dArcCot(step + dTan(abs(latitude - d)))
-        return computeTime(g, t)
-    }
-
-    // ---------------------- Misc Functions -----------------------
-    // compute the difference between two times
-    private fun timeDiff(time1: Double, time2: Double): Double {
-        return fixHour(time2 - time1)
-    }
-
-    private fun setValues(
-        lat: Double, lng: Double, tZone: Double, year: Int, month: Int, day: Int
-    ) {
-        latitude = lat
-        longitude = lng
-        timeZone = tZone
-        jDate = julianDate(year, month, day)
-        jDate -= lng / (15.0 * 24.0)
-    }
-
-    // ---------------------- Compute Prayer Times -----------------------
-    // compute prayer times at given julian date
-    private fun computeDayTimes(): DoubleArray {
-        var times = doubleArrayOf(5.0, 6.0, 12.0, 13.0, 18.0, 18.0, 18.0)  // default times
-        for (i in 1..numIterations) times = computeTimes(times)
-        adjustTimes(times)
-        tuneTimes(times)
-        return times
-    }
-
-    // compute prayer times at given julian date
-    private fun computeTimes(times: DoubleArray): DoubleArray {
-        val t = dayPortion(times)
-        val fajr = computeTime(180 - (methodParams[calcMethod]?.get(0)!!), t[0])
-        val sunrise = computeTime(180 - 0.833, t[1])
-        val dhuhr = computeMidDay(t[2])
-        val asr = computeAsr((1 + asrJuristic).toDouble(), t[3])
-        val sunset = computeTime(0.833, t[4])
-        val maghrib = computeTime(methodParams[calcMethod]?.get(2)!!, t[5])
-        val isha = computeTime(methodParams[calcMethod]?.get(4)!!, t[6])
-        return doubleArrayOf(fajr, sunrise, dhuhr, asr, sunset, maghrib, isha)
     }
 
     // adjust times in a prayer time array
@@ -263,6 +265,11 @@ class PrayTimes(
         return times
     }
 
+    // compute the difference between two times
+    private fun timeDiff(time1: Double, time2: Double): Double {
+        return fixHour(time2 - time1)
+    }
+
     // convert hours to day portions
     private fun dayPortion(times: DoubleArray): DoubleArray {
         for (i in 0..6) times[i] = times[i] / 24
@@ -277,17 +284,6 @@ class PrayTimes(
             "ANGLE_BASED" -> angle / 60.0
             else -> 0.0
         }
-    }
-
-    // Tune timings for adjustments (Set time offsets)
-    private fun setOffsets() {
-        offsets[0] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.FAJR))
-        offsets[1] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.SUNRISE))
-        offsets[2] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.DHUHR))
-        offsets[3] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ASR))
-        // Skipping sunset
-        offsets[5] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.MAGHRIB))
-        offsets[6] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ISHAA))
     }
 
     private fun tuneTimes(times: DoubleArray): DoubleArray {
@@ -358,16 +354,6 @@ class PrayTimes(
         return a
     }
 
-    // radian to degree
-    private fun radiansToDegrees(alpha: Double): Double {
-        return alpha * 180.0 / Math.PI
-    }
-
-    // degree to radian
-    private fun degreesToRadians(alpha: Double): Double {
-        return alpha * Math.PI / 180.0
-    }
-
     // degree sin
     private fun dSin(d: Double): Double {
         return sin(degreesToRadians(d))
@@ -401,6 +387,14 @@ class PrayTimes(
     // degree arcCot
     private fun dArcCot(x: Double): Double {
         return radiansToDegrees(atan2(1.0, x))
+    }
+
+    private fun radiansToDegrees(alpha: Double): Double {
+        return alpha * 180.0 / Math.PI
+    }
+
+    private fun degreesToRadians(alpha: Double): Double {
+        return alpha * Math.PI / 180.0
     }
 
 }

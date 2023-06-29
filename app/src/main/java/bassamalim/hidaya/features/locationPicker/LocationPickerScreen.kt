@@ -4,8 +4,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,6 +26,13 @@ fun LocationPickerUI(
     vm: LocationPickerVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
+    val lazyListState = rememberLazyListState()
+
+    DisposableEffect(key1 = vm) {
+        vm.onStart(coroutineScope, lazyListState)
+        onDispose {}
+    }
 
     MyScaffold(
         title = "",
@@ -49,6 +59,7 @@ fun LocationPickerUI(
             )
 
             MyLazyColumn(
+                state = lazyListState,
                 lazyList = {
                     items(st.items) { item ->
                         MySquareButton(
