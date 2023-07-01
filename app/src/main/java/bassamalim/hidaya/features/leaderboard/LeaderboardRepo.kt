@@ -17,7 +17,6 @@ class LeaderboardRepo @Inject constructor(
 ) {
 
     val userStr = res.getString(R.string.user)
-    val pagesStr = res.getString(R.string.pages)
     val errorFetchingDataStr = res.getString(R.string.error_fetching_data)
     val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
 

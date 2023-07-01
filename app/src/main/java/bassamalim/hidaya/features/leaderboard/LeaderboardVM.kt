@@ -16,8 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LeaderboardVM @Inject constructor(
     app: Application,
-    private val repo: LeaderboardRepo,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val repo: LeaderboardRepo
 ): AndroidViewModel(app) {
 
     private val userRecord = UserRecord(
@@ -25,7 +25,6 @@ class LeaderboardVM @Inject constructor(
         readingRecord = savedStateHandle.get<Int>("reading_record") ?: 0,
         listeningRecord = savedStateHandle.get<Long>("listening_record") ?: 0L
     )
-
     private lateinit var items: MutableList<LeaderboardItem>
 
     private val _uiState = MutableStateFlow(LeaderboardState())
@@ -50,7 +49,7 @@ class LeaderboardVM @Inject constructor(
                     items.add(
                         LeaderboardItem(
                             userId = "${repo.userStr} ${it.userId}",
-                            readingRecord = "${it.readingRecord} ${repo.pagesStr}",
+                            readingRecord = it.readingRecord,
                             listeningRecord = formatTelawatTime(it.listeningRecord)
                         )
                     )
@@ -65,19 +64,13 @@ class LeaderboardVM @Inject constructor(
     }
 
     fun getSortedItems(rankType: RankType): List<LeaderboardItem> {
-        when (rankType) {
-            RankType.BY_READING -> items.sortByDescending { it.readingRecord }
-            RankType.BY_LISTENING -> items.sortByDescending { it.listeningRecord }
+        return when (rankType) {
+            RankType.BY_READING -> items.sortedByDescending { it.readingRecord }
+            RankType.BY_LISTENING -> items.sortedByDescending { it.listeningRecord }
         }
-
-        _uiState.update { it.copy(
-            userPosition = getUserPosition()
-        )}
-
-        return items
     }
 
-    private fun getUserPosition(): String {
+    fun getUserPosition(items: List<LeaderboardItem>): String {
         return (items.indexOfFirst {
             it.userId == "${repo.userStr} ${userRecord.userId}"
         } + 1).toString()

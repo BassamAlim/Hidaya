@@ -177,7 +177,6 @@ class PrayTimes(
         val z = computeMidDay(t)
         val beg = -dSin(G) - dSin(d) * dSin(latitude)
         val mid = dCos(d) * dCos(latitude)
-        println("Its: ${beg / mid} , $beg, $mid")
         val v = dArcCos(beg / mid) / 15.0
         return z + if (G > 90) -v else v
     }

@@ -45,17 +45,18 @@ fun LeaderboardUI(
                 )
             ) { page ->
                 val rankBy = RankType.values()[page]
+                val items = vm.getSortedItems(rankBy)
 
                 MyColumn {
                     UserPositionCard(
                         userId = st.userId,
-                        userPosition = st.userPosition
+                        userPosition = vm.getUserPosition(items)
                     )
 
                     MyHorizontalDivider(thickness = 1.dp)
 
                     UsersList(
-                        items = vm.getSortedItems(rankBy),
+                        items = items,
                         rankType = rankBy
                     )
                 }
@@ -176,7 +177,7 @@ fun ItemCard(
 
             MyText(
                 text = when (rankType) {
-                    RankType.BY_READING -> item.readingRecord
+                    RankType.BY_READING -> "${item.readingRecord} ${stringResource(R.string.pages)}"
                     RankType.BY_LISTENING -> item.listeningRecord
                 },
                 fontWeight = FontWeight.Bold,

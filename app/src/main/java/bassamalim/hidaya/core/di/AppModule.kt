@@ -73,15 +73,7 @@ object AppModule {
             .build()
 
     @Provides @Singleton
-    fun provideFirestore(): FirebaseFirestore {
-        val db = FirebaseFirestore.getInstance()
-
-        db.firestoreSettings = FirebaseFirestoreSettings.Builder()
-            .setPersistenceEnabled(false)
-            .build()
-
-        return db
-    }
+    fun provideFirestore() = FirebaseFirestore.getInstance()
 
     @Provides @Singleton
     fun provideRemoteConfig() = FirebaseRemoteConfig.getInstance()
