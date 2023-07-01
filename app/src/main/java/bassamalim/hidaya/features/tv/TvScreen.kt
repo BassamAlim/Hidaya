@@ -20,6 +20,7 @@ import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
 import bassamalim.hidaya.core.ui.components.MyParentColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.utils.ActivityUtils
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -76,6 +77,9 @@ fun YoutubeScreen(
     ctx: Context,
     vm: TvVM
 ) {
+    // a fix because locale changes when displaying YouTubePlayerView for some reason
+    ActivityUtils.onActivityCreateSetLocale(ctx)
+
     AndroidView(factory = {
         val view = YouTubePlayerView(it)
         view.addYouTubePlayerListener(
