@@ -103,13 +103,26 @@ class QuranViewerVM @Inject constructor(
     }
 
     fun onBookmarkClick() {
-        bookmarkedPage = _uiState.value.pageNum
+        if (_uiState.value.isBookmarked) {
+            bookmarkedPage = -1
+
+            repo.setBookmarkedPage(
+                pageNum = _uiState.value.pageNum,
+                suraNum = -1
+            )
+        }
+        else {
+            bookmarkedPage = _uiState.value.pageNum
+
+            repo.setBookmarkedPage(
+                pageNum = _uiState.value.pageNum,
+                suraNum = suraNum
+            )
+        }
 
         _uiState.update { it.copy(
-            isBookmarked = true
+            isBookmarked = !_uiState.value.isBookmarked
         )}
-
-        repo.setBookmarkedPage(_uiState.value.pageNum, suraNum)
     }
 
     fun onPlayPauseClick() {
