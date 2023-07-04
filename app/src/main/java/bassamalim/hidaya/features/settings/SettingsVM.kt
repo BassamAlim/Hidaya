@@ -76,6 +76,18 @@ class SettingsVM @Inject constructor(
         else cancelAlarm(pid)
     }
 
+    fun onPrayerTimesCalculationMethodCh() {
+        resetPrayerTimes()
+    }
+
+    fun onPrayerTimesJuristicMethodCh() {
+        resetPrayerTimes()
+    }
+
+    fun onPrayerTimesHighLatAdjustmentCh() {
+        resetPrayerTimes()
+    }
+
     private fun showTimePicker(ctx: Context, pid: PID) {
         val currentTime = Calendar.getInstance()
         val cHour = currentTime[Calendar.HOUR_OF_DAY]
@@ -154,11 +166,6 @@ class SettingsVM @Inject constructor(
         }
     }
 
-    private fun resetPrayerTimes() {
-        val prayerTimes = PTUtils.getTimes(sp, DBUtils.getDB(app))
-        if (prayerTimes != null) Alarms(app, prayerTimes)
-    }
-
     private fun cancelAlarm(pid: PID) {
         PTUtils.cancelAlarm(app, pid)
 
@@ -179,16 +186,9 @@ class SettingsVM @Inject constructor(
         }
     }
 
-    fun onPrayerTimesCalculationMethodCh() {
-        resetPrayerTimes()
-    }
-
-    fun onPrayerTimesJuristicMethodCh() {
-        resetPrayerTimes()
-    }
-
-    fun onPrayerTimesHighLatAdjustmentCh() {
-        resetPrayerTimes()
+    private fun resetPrayerTimes() {
+        val prayerTimes = PTUtils.getTimes(sp, DBUtils.getDB(app))
+        if (prayerTimes != null) Alarms(app, prayerTimes)
     }
 
 }

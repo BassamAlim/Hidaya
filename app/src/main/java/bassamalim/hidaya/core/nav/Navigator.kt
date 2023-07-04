@@ -47,7 +47,7 @@ class Navigator {
     }
 
     fun navigateBackWithResult(data: Bundle?) {
-        callbacks.pop()?.invoke(data)
+        if (!callbacks.isEmpty()) callbacks.pop()?.invoke(data)
 
         navController?.popBackStack()
     }

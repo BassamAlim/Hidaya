@@ -15,13 +15,13 @@ class WelcomeVM @Inject constructor(
     val pref = repo.pref
 
     fun save() {
-        repo.unsetFirstTime()
-
         navigator.navigate(Screen.Locator("initial")) {
             popUpTo(Screen.Welcome.route) {
                 inclusive = true
             }
         }
+
+        repo.unsetFirstTime()
     }
 
 }

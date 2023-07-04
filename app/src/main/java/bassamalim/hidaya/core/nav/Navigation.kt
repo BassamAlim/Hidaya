@@ -6,7 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -53,11 +53,11 @@ fun Navigation(
 ) {
     val navController = rememberAnimatedNavController()
 
-    DisposableEffect(key1 = navController) {
+    LaunchedEffect(key1 = navController) {  // maybe should be DisposableEffect
         navigator.setController(navController)
-        onDispose {
-            navigator.clear()
-        }
+//        onDispose {
+//            navigator.clear()
+//        }
     }
 
     val startDest =

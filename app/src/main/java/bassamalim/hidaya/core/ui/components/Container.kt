@@ -47,14 +47,24 @@ fun MyParentColumn(
 @Composable
 fun MyColumn(
     modifier: Modifier = Modifier,
+    widthFraction: Float = 1f,
+    fillMaxWidth: Boolean = true,
     alignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     arrangement: Arrangement.Vertical = Arrangement.SpaceEvenly,
+    scrollable: Boolean = false,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    var modifier = modifier
+    if (fillMaxWidth)
+        modifier = modifier.fillMaxWidth(widthFraction)
+
+    if (scrollable)
+        modifier = modifier.verticalScroll(rememberScrollState())
+
     Column(
         verticalArrangement = arrangement,
         horizontalAlignment = alignment,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
     ) {
         content()
     }

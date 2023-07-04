@@ -1,18 +1,17 @@
 package bassamalim.hidaya.features.more
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.MyColumn
+import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySquareButton
 
 @Composable
@@ -22,18 +21,11 @@ fun MoreUI(
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(top = 5.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.SpaceEvenly,
-        horizontalAlignment = Alignment.CenterHorizontally
+    MyColumn(
+        Modifier.padding(top = 5.dp),
+        scrollable = true
     ) {
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
+        MyRow {
             MySquareButton(
                 textResId = R.string.recitations,
                 imageResId = R.drawable.ic_headphone
@@ -49,10 +41,7 @@ fun MoreUI(
             }
         }
 
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
+        MyRow {
             MySquareButton(
                 textResId = R.string.quiz_title,
                 imageResId = R.drawable.ic_quiz
@@ -68,10 +57,7 @@ fun MoreUI(
             }
         }
 
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
+        MyRow {
             MySquareButton(
                 textResId = R.string.tv_channels,
                 imageResId = R.drawable.ic_television
@@ -87,10 +73,7 @@ fun MoreUI(
             }
         }
 
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
+        MyRow {
             MySquareButton(
                 textResId = R.string.date_converter,
                 imageResId = R.drawable.ic_calendar
@@ -103,10 +86,7 @@ fun MoreUI(
             }
         }
 
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
+        MyRow {
             MySquareButton(
                 textResId = R.string.contact,
                 imageResId = R.drawable.ic_mail
@@ -122,10 +102,7 @@ fun MoreUI(
             }
         }
 
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
+        MyRow {
             MySquareButton(
                 textResId = R.string.about,
                 imageResId = R.drawable.ic_info

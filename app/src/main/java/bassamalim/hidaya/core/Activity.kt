@@ -48,6 +48,8 @@ class Activity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        shouldWelcome = PrefUtils.getBoolean(sp, Prefs.FirstTime)
+
         val isFirstLaunch = savedInstanceState == null
 
         if (isFirstLaunch) {
@@ -63,7 +65,6 @@ class Activity : ComponentActivity() {
         }
 
         preLaunch(isFirstLaunch)
-
         if (isFirstLaunch) {
             if (shouldWelcome) {
                 launch()
@@ -168,7 +169,11 @@ class Activity : ComponentActivity() {
             AppTheme(
                 direction = getDirection()
             ) {
-                Navigation(navigator, navRoute, shouldWelcome)
+                Navigation(
+                    navigator = navigator,
+                    thenTo = navRoute,
+                    shouldWelcome = shouldWelcome
+                )
             }
         }
     }

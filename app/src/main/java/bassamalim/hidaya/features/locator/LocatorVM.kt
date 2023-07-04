@@ -89,11 +89,20 @@ class LocatorVM @Inject constructor(
     }
 
     private fun launch(location: Location?) {
-        navigator.navigateBackWithResult(
-            Bundle().apply {
-                putParcelable("location", location)
+        if (type == "initial") {
+            navigator.navigate(Screen.Main) {
+                popUpTo(Screen.Locator("{type}").route) {  // works like this for some reason
+                    inclusive = true
+                }
             }
-        )
+        }
+        else if (type == "normal") {
+            navigator.navigateBackWithResult(
+                Bundle().apply {
+                    putParcelable("location", location)
+                }
+            )
+        }
     }
 
     private fun background() {
