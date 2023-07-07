@@ -45,8 +45,8 @@ class QuranVM @Inject constructor(
             items.add(
                 suar[i].let {
                     Sura(
-                        it.sura_id, "$surat ${suraNames[it.sura_id]}",
-                        it.search_name!!, it.tanzeel
+                        it.suraId, "$surat ${suraNames[it.suraId]}",
+                        it.searchName!!, it.tanzeel
                     )
                 }
             )

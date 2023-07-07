@@ -232,13 +232,13 @@ class QuranViewerVM @Inject constructor(
         var counter = ayatDB.indexOfFirst { aya -> aya.page == pageNumber }
         do {
             val aya = ayatDB[counter]
-            val suraNum = aya.sura_num // starts from 1
-            val ayaNum = aya.aya_num
+            val suraNum = aya.suraNum // starts from 1
+            val ayaNum = aya.ayaNum
 
             ayat.add(
                 Aya(
-                    aya.id, aya.jozz, suraNum, suraNames[suraNum - 1], ayaNum,
-                    "${aya.aya_text} ", aya.aya_translation_en, aya.aya_tafseer
+                    aya.id, aya.juz, suraNum, suraNames[suraNum - 1], ayaNum,
+                    "${aya.ayaText} ", aya.translationEn, aya.tafseer
                 )
             )
 
@@ -249,11 +249,11 @@ class QuranViewerVM @Inject constructor(
     }
 
     private fun updatePageState(pageNumber: Int) {
-        suraNum = ayatDB.first { aya -> aya.page == pageNumber }.sura_num - 1
+        suraNum = ayatDB.first { aya -> aya.page == pageNumber }.suraNum - 1
         _uiState.update { it.copy(
             pageNum = pageNumber,
             suraName = suraNames[suraNum],
-            juzNum = ayatDB.first { aya -> aya.page == pageNumber }.jozz,
+            juzNum = ayatDB.first { aya -> aya.page == pageNumber }.juz,
             ayat = buildPage(pageNumber),
             isBookmarked = bookmarkedPage == pageNumber
         )}

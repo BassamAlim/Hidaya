@@ -50,7 +50,7 @@ class QuranSearcherVM @Inject constructor(
 
         for (i in allAyat.indices) {
             val a = allAyat[i]
-            val string = a.aya_text_emlaey
+            val string = a.clearAyaText
 
             val matcher = Pattern.compile(searchText).matcher(string)
             if (matcher.find()) {
@@ -68,8 +68,8 @@ class QuranSearcherVM @Inject constructor(
 
                 matches.add(
                     QuranSearcherMatch(
-                        a.sura_num, a.aya_num, names[a.sura_num-1], a.page,
-                        annotatedString, a.aya_tafseer
+                        a.suraNum, a.ayaNum, names[a.suraNum-1], a.page,
+                        annotatedString, a.tafseer
                     )
                 )
 

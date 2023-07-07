@@ -649,12 +649,12 @@ class AyaPlayerService : Service(),
                 MediaMetadataCompat.METADATA_KEY_ART,
                 BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
             )
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, suarNames[aya.sura_num-1])
-            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, suarNames[aya.sura_num-1])
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, suarNames[aya.suraNum-1])
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, suarNames[aya.suraNum-1])
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterNames[reciterId])
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterNames[reciterId])
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, aya.aya_num.toString())
-            .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, aya.aya_num.toLong())
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, aya.ayaNum.toString())
+            .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, aya.ayaNum.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
                 (if (duration) player.duration else 0).toLong()
             )
@@ -679,7 +679,7 @@ class AyaPlayerService : Service(),
         val aya = allAyat[ayaIdx]
 
         if (PrefUtils.getBoolean(pref, Prefs.StopOnSuraEnd)
-            && aya.sura_num != chosenSura) {
+            && aya.suraNum != chosenSura) {
             if (suraEnding) stopPlaying()
             else suraEnding = true
             return
@@ -787,7 +787,7 @@ class AyaPlayerService : Service(),
 
         var uri = "https://www.everyayah.com/data/"
         uri += sources[0].source
-        uri += String.format(Locale.US, "%03d%03d.mp3", aya.sura_num, aya.aya_num)
+        uri += String.format(Locale.US, "%03d%03d.mp3", aya.suraNum, aya.ayaNum)
 
         return Uri.parse(uri)
     }
