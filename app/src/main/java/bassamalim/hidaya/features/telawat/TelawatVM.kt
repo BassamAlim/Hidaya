@@ -95,15 +95,15 @@ class TelawatVM @Inject constructor(
 
         for (telawa in repo.getAllVersions()) {  // all versions
             val state =
-                if (isDownloaded("${telawa.getReciterId()}/${telawa.getVersionId()}"))
+                if (isDownloaded("${telawa.reciter_id}/${telawa.version_id}"))
                     DownloadState.Downloaded
                 else
                     DownloadState.NotDownloaded
 
-            if (telawa.getReciterId() == downloadStates.size)
+            if (telawa.reciter_id == downloadStates.size)
                 downloadStates.add(mutableListOf(state))
             else
-                downloadStates[telawa.getReciterId()].add(state)
+                downloadStates[telawa.reciter_id].add(state)
         }
 
         return downloadStates
@@ -148,8 +148,8 @@ class TelawatVM @Inject constructor(
             versions.forEach { telawa ->
                 versionsList.add(
                     Reciter.RecitationVersion(
-                        telawa.getVersionId(), telawa.getUrl(), telawa.getRewaya(),
-                        telawa.getCount(), telawa.getSuar()
+                        telawa.version_id, telawa.url, telawa.rewaya,
+                        telawa.count, telawa.suras
                     )
                 )
             }
@@ -169,7 +169,7 @@ class TelawatVM @Inject constructor(
         for (i in versions.indices) {
             for (j in rewayat.indices) {
                 if (_uiState.value.selectedVersions[j]
-                    && versions[i].getRewaya().startsWith(rewayat[j])) {
+                    && versions[i].rewaya.startsWith(rewayat[j])) {
                     selected.add(versions[i])
                     break
                 }

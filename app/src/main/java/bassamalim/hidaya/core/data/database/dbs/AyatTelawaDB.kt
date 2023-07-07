@@ -16,7 +16,7 @@ import androidx.room.ForeignKey
     )]
 )
 data class AyatTelawaDB(
-    @field:ColumnInfo(name = "rec_id") val recId: Int,
+    @field:ColumnInfo(name = "rec_id") val reciterId: Int,
     @field:ColumnInfo(name = "rate") val rate: Int,
     @field:ColumnInfo(name = "source") val source: String?
 )
