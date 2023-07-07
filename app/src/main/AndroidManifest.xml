@@ -92,7 +92,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".features.quranViewer.AyahPlayerService"
+            android:name=".features.quranViewer.AyaPlayerService"
             android:exported="true"
             android:permission="none"/>
 

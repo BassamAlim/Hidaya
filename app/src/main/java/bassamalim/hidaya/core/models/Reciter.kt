@@ -12,6 +12,6 @@ data class Reciter(
         val server: String,
         val rewaya: String,
         val count: Int,
-        val suras: String
+        val suar: String
     ) : Serializable
 }

@@ -23,7 +23,7 @@ object DBUtils {
         db: AppDatabase
     ) {
         val lastVer = PrefUtils.getInt(sp, Prefs.LastDBVersion)
-        if (Global.dbVer > lastVer) reviveDB(ctx, sp, db)
+        if (Global.DB_VERSION > lastVer) reviveDB(ctx, sp, db)
 
         try {  // if there is a problem in the db it will cause an error
             db.suarDao().getFavs()
@@ -39,15 +39,15 @@ object DBUtils {
     ) {
         ctx.deleteDatabase("HidayaDB")
 
-        val surasJson = PrefUtils.getString(sp, Prefs.FavoriteSuras)
+        val suarJson = PrefUtils.getString(sp, Prefs.FavoriteSuar)
         val recitersJson = PrefUtils.getString(sp, Prefs.FavoriteReciters)
         val athkarJson = PrefUtils.getString(sp, Prefs.FavoriteAthkar)
 
         val gson = Gson()
 
-        if (surasJson.isNotEmpty()) {
-            val favSuras = gson.fromJson(surasJson, IntArray::class.java)
-            for (i in favSuras.indices) db.suarDao().setFav(i, favSuras[i])
+        if (suarJson.isNotEmpty()) {
+            val favSuar = gson.fromJson(suarJson, IntArray::class.java)
+            for (i in favSuar.indices) db.suarDao().setFav(i, favSuar[i])
         }
 
         if (recitersJson.isNotEmpty()) {
@@ -67,7 +67,7 @@ object DBUtils {
         }
 
         sp.edit()
-            .putInt(Prefs.LastDBVersion.key, Global.dbVer)
+            .putInt(Prefs.LastDBVersion.key, Global.DB_VERSION)
             .apply()
 
         Log.i(Global.TAG, "Database Revived")

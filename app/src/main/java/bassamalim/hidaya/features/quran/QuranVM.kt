@@ -38,12 +38,12 @@ class QuranVM @Inject constructor(
         val surat = repo.getSuraStr()
 
         val items = ArrayList<Sura>()
-        val suras = repo.getAllSuras()
-        for (i in suras.indices) {
+        val suar = repo.getAllSuar()
+        for (i in suar.indices) {
             if (listType == ListType.Favorite && _uiState.value.favs[i] == 0) continue
 
             items.add(
-                suras[i].let {
+                suar[i].let {
                     Sura(
                         it.sura_id, "$surat ${suraNames[it.sura_id]}",
                         it.search_name!!, it.tanzeel
@@ -77,7 +77,7 @@ class QuranVM @Inject constructor(
     fun onSuraClick(suraId: Int) {
         navigator.navigate(
             Screen.QuranViewer(
-                "by_surah",
+                "by_sura",
                 suraId = suraId.toString()
             )
         )

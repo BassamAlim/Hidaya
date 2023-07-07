@@ -2,12 +2,12 @@ package bassamalim.hidaya.core.models
 
 import java.io.Serializable
 
-data class Ayah(
+data class Aya(
     var id: Int,
     var juz: Int,
-    val surahNum: Int,
-    val ayahNum: Int,
-    val surahName: String,
+    val suraNum: Int,
+    val suraName: String,
+    val ayaNum: Int,
     var text: String?,
     var translation: String?,
     val tafseer: String

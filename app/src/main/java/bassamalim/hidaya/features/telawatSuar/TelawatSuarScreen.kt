@@ -100,7 +100,7 @@ private fun SuraCard(
             }
 
             MyText(
-                text = sura.surahName,
+                text = sura.suraName,
                 modifier = Modifier
                     .weight(1F)
                     .padding(10.dp)

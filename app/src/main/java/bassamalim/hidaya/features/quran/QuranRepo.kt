@@ -23,7 +23,7 @@ class QuranRepo @Inject constructor(
 
     fun getBookmarkedSura() = PrefUtils.getInt(sp, Prefs.BookmarkedSura)
 
-    fun getAllSuras() = db.suarDao().getAll()
+    fun getAllSuar() = db.suarDao().getAll()
 
     fun getSuraNames(): List<String> {
         return if (PrefUtils.getLanguage(sp) == Language.ENGLISH) db.suarDao().getNamesEn()
@@ -39,7 +39,7 @@ class QuranRepo @Inject constructor(
     fun updateFavorites(favs: List<Int>) {
         val json = gson.toJson(favs.toIntArray())
         sp.edit()
-            .putString(Prefs.FavoriteSuras.key, json)
+            .putString(Prefs.FavoriteSuar.key, json)
             .apply()
     }
 

@@ -20,7 +20,7 @@ class QuranViewerRepo @Inject constructor(
 
     fun getPage(suraId: Int) = db.suarDao().getPage(suraId)
 
-    fun getAyat() = db.ayahDao().getAll()
+    fun getAyat() = db.ayatDao().getAll()
 
     fun getSuraNames() = db.suarDao().getNames()
     fun getSuraNamesEn() = db.suarDao().getNamesEn()

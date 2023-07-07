@@ -191,7 +191,7 @@ class TelawatVM @Inject constructor(
         var posted = false
         val suraStr = repo.getSuraStr()
         for (i in 0..113) {
-            if (ver.suras.contains("," + (i + 1) + ",")) {
+            if (ver.suar.contains("," + (i + 1) + ",")) {
                 val link = String.format(Locale.US, "%s/%03d.mp3", ver.server, i + 1)
                 val uri = Uri.parse(link)
 

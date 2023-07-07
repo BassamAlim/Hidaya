@@ -17,7 +17,7 @@ class QuranSearcherRepo @Inject constructor(
     val language = PrefUtils.getLanguage(pref)
     val numeralsLanguage = PrefUtils.getNumeralsLanguage(pref)
 
-    fun getAyat() = db.ayahDao().getAll()
+    fun getAyat() = db.ayatDao().getAll()
 
     fun getSuraNames() = db.suarDao().getNames()
     fun getSuraNamesEn() = db.suarDao().getNamesEn()

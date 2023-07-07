@@ -14,7 +14,7 @@ import bassamalim.hidaya.core.data.database.dbs.*
     version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun ayahDao(): AyatDao
+    abstract fun ayatDao(): AyatDao
     abstract fun suarDao(): SuarDao
     abstract fun booksDao(): BooksDao
     abstract fun athkarCategoryDao(): AthkarCategoryDao

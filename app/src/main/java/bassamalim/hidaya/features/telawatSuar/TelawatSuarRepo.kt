@@ -26,9 +26,9 @@ class TelawatSuarRepo @Inject constructor(
     fun setFav(suraNum: Int, value: Int) = db.suarDao().setFav(suraNum, value)
 
     fun updateFavorites() {
-        val surasJson = gson.toJson(db.suarDao().getFavs())
+        val suarJson = gson.toJson(db.suarDao().getFavs())
         pref.edit()
-            .putString(Prefs.FavoriteSuras.key, surasJson)
+            .putString(Prefs.FavoriteSuar.key, suarJson)
             .apply()
     }
 

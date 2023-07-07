@@ -54,7 +54,7 @@ sealed class Prefs(val key: String, val default: Any) {
         default = 0
     )
 
-    object FavoriteSuras: Prefs("favorite_suras", "")
+    object FavoriteSuar: Prefs("favorite_suar", "")
 
     object FavoriteAthkar: Prefs("favorite_athkar", "")
 

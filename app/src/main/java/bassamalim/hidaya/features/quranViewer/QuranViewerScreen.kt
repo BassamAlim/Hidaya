@@ -28,7 +28,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.QViewType.*
 import bassamalim.hidaya.core.enums.Theme
-import bassamalim.hidaya.core.models.Ayah
+import bassamalim.hidaya.core.models.Aya
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.ui.components.*
 import bassamalim.hidaya.core.ui.theme.AppTheme
@@ -39,7 +39,6 @@ import bassamalim.hidaya.features.quranSettings.QuranSettingsDlg
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun QuranViewerUI(
     vm: QuranViewerVM
@@ -53,146 +52,13 @@ fun QuranViewerUI(
     MyScaffold(
         title = "",
         backgroundColor = AppTheme.colors.quranBG,
-        topBar = {
-            TopAppBar(
-                backgroundColor = AppTheme.colors.primary,
-                elevation = 8.dp,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    MyText(
-                        text = "${stringResource(R.string.sura)} ${st.suraName}",
-                        fontSize = 18.nsp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Start,
-                        textColor = AppTheme.colors.onPrimary
-                    )
-
-                    MyText(
-                        text = "${stringResource(R.string.page)} " +
-                                translateNums(
-                                    vm.numeralsLanguage,
-                                    st.pageNum.toString()
-                                ),
-                        fontSize = 18.nsp,
-                        fontWeight = FontWeight.Bold,
-                        textColor = AppTheme.colors.onPrimary
-                    )
-
-                    MyText(
-                        text = "${stringResource(R.string.juz)} " +
-                                translateNums(
-                                    vm.numeralsLanguage,
-                                    st.juzNum.toString()
-                                ),
-                        fontSize = 18.nsp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.End,
-                        textColor = AppTheme.colors.onPrimary
-                    )
-                }
-            }
-        },
-        bottomBar = {
-            BottomAppBar(
-                backgroundColor = AppTheme.colors.primary
-            ) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    // Bookmark btn
-                    MyIconBtn(
-                        iconId =
-                            if (st.isBookmarked) R.drawable.ic_bookmarked
-                            else R.drawable.ic_bookmark,
-                        description = stringResource(R.string.bookmark_page_button_description),
-                        tint = AppTheme.colors.onPrimary,
-                        size = 40.dp
-                    ) {
-                        vm.onBookmarkClick()
-                    }
-
-                    Row {
-                        MyImageButton(
-                            imageResId = R.drawable.ic_aya_backward,
-                            description = stringResource(R.string.rewind_btn_description)
-                        ) {
-                            vm.onRewindClick()
-                        }
-
-                        MyPlayerBtn(
-                            state = st.playerState,
-                            size = 50.dp,
-                            padding = 5.dp,
-                            modifier = Modifier.padding(horizontal = 10.dp)
-                        ) {
-                            vm.onPlayPauseClick()
-                        }
-
-                        MyImageButton(
-                            imageResId = R.drawable.ic_aya_forward,
-                            description = stringResource(R.string.fast_forward_btn_description)
-                        ) {
-                            vm.onFastForwardClick()
-                        }
-                    }
-
-                    // Preferences btn
-                    MyIconBtn(
-                        iconId = R.drawable.ic_preferences,
-                        description = stringResource(R.string.settings),
-                        tint = AppTheme.colors.onPrimary,
-                        size = 44.dp
-                    ) {
-                        vm.onSettingsClick()
-                    }
-                }
-            }
-        }
+        topBar = { TopBar(vm, st) },
+        bottomBar = { BottomBar(vm, st) }
     ) {
-        val pagerState = rememberPagerState(vm.initialPage-1)
-        HorizontalPagerScreen(
-            count = Global.QURAN_PAGES,
-            pagerState = pagerState,
-            modifier = Modifier.padding(it)
-        ) { page ->
-            val isCurrentPage = page == pagerState.currentPage
-
-            val scrollState = rememberScrollState()
-
-            vm.onPageChange(pagerState.currentPage, page)
-
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                val ayas =
-                    if (isCurrentPage) st.ayas
-                    else vm.buildPage(page + 1)
-
-                if (st.viewType == List) ListItems(ayas, isCurrentPage, vm, st)
-                else PageItems(ayas, isCurrentPage, vm, st)
-
-                if (page == pagerState.currentPage) {
-                    LaunchedEffect(null) {
-                        scrollState.animateScrollTo(vm.scrollTo.toInt())
-                        vm.onScrolled()
-                    }
-                }
-            }
-        }
+        PageContent(
+            vm, st,
+            padding = it
+        )
     }
 
     TutorialDialog(
@@ -216,19 +82,182 @@ fun QuranViewerUI(
 }
 
 @Composable
+private fun TopBar(
+    vm: QuranViewerVM,
+    st: QuranViewerState
+) {
+    TopAppBar(
+        backgroundColor = AppTheme.colors.primary,
+        elevation = 8.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Sura name
+            MyText(
+                text = "${stringResource(R.string.sura)} ${st.suraName}",
+                fontSize = 18.nsp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start,
+                textColor = AppTheme.colors.onPrimary
+            )
+
+            // Page number
+            MyText(
+                text = "${stringResource(R.string.page)} " +
+                        translateNums(
+                            vm.numeralsLanguage,
+                            st.pageNum.toString()
+                        ),
+                fontSize = 18.nsp,
+                fontWeight = FontWeight.Bold,
+                textColor = AppTheme.colors.onPrimary
+            )
+
+            // Juz number
+            MyText(
+                text = "${stringResource(R.string.juz)} " +
+                        translateNums(
+                            vm.numeralsLanguage,
+                            st.juzNum.toString()
+                        ),
+                fontSize = 18.nsp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.End,
+                textColor = AppTheme.colors.onPrimary
+            )
+        }
+    }
+}
+
+@Composable
+private fun BottomBar(
+    vm: QuranViewerVM,
+    st: QuranViewerState
+) {
+    BottomAppBar(
+        backgroundColor = AppTheme.colors.primary
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Bookmark btn
+            MyIconBtn(
+                iconId =
+                    if (st.isBookmarked) R.drawable.ic_bookmarked
+                    else R.drawable.ic_bookmark,
+                description = stringResource(R.string.bookmark_page_button_description),
+                tint = AppTheme.colors.onPrimary,
+                size = 40.dp
+            ) {
+                vm.onBookmarkClick()
+            }
+
+            Row {
+                // Rewind btn
+                MyImageButton(
+                    imageResId = R.drawable.ic_aya_backward,
+                    description = stringResource(R.string.rewind_btn_description)
+                ) {
+                    vm.onRewindClick()
+                }
+
+                // Play/Pause btn
+                MyPlayerBtn(
+                    state = st.playerState,
+                    size = 50.dp,
+                    padding = 5.dp,
+                    modifier = Modifier.padding(horizontal = 10.dp)
+                ) {
+                    vm.onPlayPauseClick()
+                }
+
+                // Fast Forward btn
+                MyImageButton(
+                    imageResId = R.drawable.ic_aya_forward,
+                    description = stringResource(R.string.fast_forward_btn_description)
+                ) {
+                    vm.onFastForwardClick()
+                }
+            }
+
+            // Preference btn
+            MyIconBtn(
+                iconId = R.drawable.ic_preferences,
+                description = stringResource(R.string.settings),
+                tint = AppTheme.colors.onPrimary,
+                size = 44.dp
+            ) {
+                vm.onSettingsClick()
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+private fun PageContent(
+    vm: QuranViewerVM,
+    st: QuranViewerState,
+    padding: PaddingValues
+) {
+    val pagerState = rememberPagerState(vm.initialPage-1)
+    HorizontalPagerScreen(
+        count = Global.QURAN_PAGES,
+        pagerState = pagerState,
+        modifier = Modifier.padding(padding)
+    ) { page ->
+        val isCurrentPage = page == pagerState.currentPage
+        val scrollState = rememberScrollState()
+
+        vm.onPageChange(pagerState.currentPage, page)
+
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val ayat =
+                if (isCurrentPage) st.ayat
+                else vm.buildPage(page + 1)
+
+            if (st.viewType == List) ListItems(ayat, isCurrentPage, vm, st)
+            else PageItems(ayat, isCurrentPage, vm, st)
+
+            if (isCurrentPage) {
+                LaunchedEffect(null) {
+                    scrollState.animateScrollTo(vm.scrollTo.toInt())
+                    vm.onScrolled()
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun PageItems(
-    ayas: List<Ayah>,
+    ayat: List<Aya>,
     isCurrentPage: Boolean,
     vm: QuranViewerVM,
     st: QuranViewerState
 ) {
     var text = StringBuilder()
-    var sequence = ArrayList<Ayah>()
-    var lastSura = ayas[0].surahNum
+    var sequence = ArrayList<Aya>()
+    var lastSura = ayat[0].suraNum
 
-    NewSura(ayas[0], isCurrentPage, vm, st)
-    for (aya in ayas) {
-        if (aya.surahNum != lastSura) {
+    NewSura(ayat[0], isCurrentPage, vm, st)
+    for (aya in ayat) {
+        if (aya.suraNum != lastSura) {
             PageItem(text = text.toString(), sequence = sequence, vm, st)
 
             NewSura(aya, isCurrentPage, vm, st)
@@ -242,7 +271,7 @@ private fun PageItems(
         aya.end = text.length
         sequence.add(aya)
 
-        lastSura = aya.surahNum
+        lastSura = aya.suraNum
     }
     PageItem(text = text.toString(), sequence = sequence, vm, st)
 }
@@ -250,7 +279,7 @@ private fun PageItems(
 @Composable
 private fun PageItem(
     text: String,
-    sequence: List<Ayah>,
+    sequence: List<Aya>,
     vm: QuranViewerVM,
     st: QuranViewerState
 ) {
@@ -276,12 +305,12 @@ private fun PageItem(
 
 @Composable
 private fun ListItems(
-    ayas: List<Ayah>,
+    ayat: List<Aya>,
     isCurrentPage: Boolean,
     vm: QuranViewerVM,
     st: QuranViewerState
 ) {
-    for (aya in ayas) {
+    for (aya in ayat) {
         NewSura(aya, isCurrentPage, vm, st)
 
         val annotatedString = AnnotatedString(aya.text!!)
@@ -302,7 +331,7 @@ private fun ListItems(
 @Composable
 private fun Screen(
     annotatedString: AnnotatedString,
-    aya: Ayah,
+    aya: Aya,
     vm: QuranViewerVM,
     st: QuranViewerState
 ) {
@@ -323,21 +352,21 @@ private fun Screen(
 
 @Composable
 private fun NewSura(
-    aya: Ayah,
+    aya: Aya,
     isCurrentPage: Boolean,
     vm: QuranViewerVM,
     st: QuranViewerState
 ) {
-    if (aya.ayahNum == 1) {
+    if (aya.ayaNum == 1) {
         SuraHeader(aya, isCurrentPage, vm, st)
         // surat al-fatiha and At-Taubah
-        if (aya.surahNum != 1 && aya.surahNum != 9) Basmalah(st)
+        if (aya.suraNum != 1 && aya.suraNum != 9) Basmalah(st)
     }
 }
 
 @Composable
 private fun SuraHeader(
-    aya: Ayah,
+    aya: Aya,
     isCurrentPage: Boolean,
     vm: QuranViewerVM,
     st: QuranViewerState
@@ -354,16 +383,16 @@ private fun SuraHeader(
     ) {
         Image(
             painter = painterResource(
-                if (vm.theme == Theme.LIGHT) R.drawable.surah_header_light
-                else R.drawable.surah_header
+                if (vm.theme == Theme.LIGHT) R.drawable.sura_header_light
+                else R.drawable.sura_header
             ),
-            contentDescription = aya.surahName,
+            contentDescription = aya.suraName,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()
         )
 
         MyText(
-            text = aya.surahName,
+            text = aya.suraName,
             fontSize = (st.textSize + 2).sp,
             fontWeight = FontWeight.Bold,
             textColor = AppTheme.colors.strongText

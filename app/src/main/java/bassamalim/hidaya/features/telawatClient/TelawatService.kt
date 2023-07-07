@@ -278,17 +278,17 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp++
-            } while (temp < Global.QURAN_SURAS &&
-                !version.suras.contains("," + (temp + 1) + ","))
+            } while (temp < Global.QURAN_SUAR &&
+                !version.suar.contains("," + (temp + 1) + ","))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
-                temp = random.nextInt(Global.QURAN_SURAS)
-            } while (!version.suras.contains("," + (temp + 1) + ","))
+                temp = random.nextInt(Global.QURAN_SUAR)
+            } while (!version.suar.contains("," + (temp + 1) + ","))
         }
 
-        if (temp < Global.QURAN_SURAS) {
+        if (temp < Global.QURAN_SUAR) {
             surahIndex = temp
             updateMetadata(false)
             updateNotification(true)
@@ -304,13 +304,13 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp--
-            } while (temp >= 0 && !version.suras.contains("," + (temp + 1) + ","))
+            } while (temp >= 0 && !version.suar.contains("," + (temp + 1) + ","))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
-                temp = random.nextInt(Global.QURAN_SURAS)
-            } while (!version.suras.contains("," + (temp + 1) + ","))
+                temp = random.nextInt(Global.QURAN_SUAR)
+            } while (!version.suar.contains("," + (temp + 1) + ","))
         }
 
         if (temp >= 0) {

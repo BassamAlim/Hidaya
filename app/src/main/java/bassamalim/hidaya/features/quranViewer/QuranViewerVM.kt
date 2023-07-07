@@ -19,7 +19,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.QViewType
-import bassamalim.hidaya.core.models.Ayah
+import bassamalim.hidaya.core.models.Aya
 import bassamalim.hidaya.core.other.Global
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +35,7 @@ class QuranViewerVM @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): AndroidViewModel(app) {
 
-    private val type = savedStateHandle.get<String>("type") ?: "by_surah"
+    private val type = savedStateHandle.get<String>("type") ?: "by_sura"
     private var initialSuraId = savedStateHandle.get<Int>("sura_id") ?: 0
     private val page = savedStateHandle.get<Int>("page") ?: 0
 
@@ -59,21 +59,21 @@ class QuranViewerVM @Inject constructor(
     private var lastClickedId = -1
     var scrollTo = -1F
         private set
-    val selected = mutableStateOf<Ayah?>(null)
-    var tracked = mutableStateOf<Ayah?>(null)
-    private var binder : AyahPlayerService.LocalBinder? = null
+    val selected = mutableStateOf<Aya?>(null)
+    var tracked = mutableStateOf<Aya?>(null)
+    private var binder : AyaPlayerService.LocalBinder? = null
     private var serviceBound = false
     private var tc: MediaControllerCompat.TransportControls? = null
-    private var uiListener: AyahPlayerService.Coordinator? = null
+    private var uiListener: AyaPlayerService.Coordinator? = null
 
     private val _uiState = MutableStateFlow(QuranViewerState(
         pageNum = initialPage,
         viewType =
-        if (language == Language.ENGLISH) QViewType.List
-        else repo.getViewType(),
+            if (language == Language.ENGLISH) QViewType.List
+            else repo.getViewType(),
         textSize = repo.getTextSize(),
         isBookmarked = bookmarkedPage == initialPage,
-        ayas = buildPage(initialPage),
+        ayat = buildPage(initialPage),
         tutorialDialogShown = repo.getShowTutorial()
     ))
     val uiState = _uiState.asStateFlow()
@@ -139,7 +139,7 @@ class QuranViewerVM @Inject constructor(
             updateButton(PlaybackStateCompat.STATE_BUFFERING)
             if (selected.value == null) playerService.transportControls.play()
             else {
-                playerService.setChosenSura(selected.value!!.surahNum)
+                playerService.setChosenSura(selected.value!!.suraNum)
                 requestPlay(selected.value!!.id)
             }
         }
@@ -160,11 +160,11 @@ class QuranViewerVM @Inject constructor(
     }
 
     fun onAyaClick(ayaId: Int, offset: Int) {
-        val startIdx = _uiState.value.ayas.indexOfFirst { it.id == ayaId }
+        val startIdx = _uiState.value.ayat.indexOfFirst { it.id == ayaId }
 
         val maxDuration = 1200
-        for (idx in startIdx until _uiState.value.ayas.size) {
-            val aya = _uiState.value.ayas[idx]
+        for (idx in startIdx until _uiState.value.ayat.size) {
+            val aya = _uiState.value.ayat[idx]
             if (offset < aya.end) {
                 // double click
                 if (aya.id == lastClickedId &&
@@ -189,11 +189,11 @@ class QuranViewerVM @Inject constructor(
     }
 
     fun onSuraHeaderGloballyPositioned(
-        aya: Ayah,
+        aya: Aya,
         isCurrentPage: Boolean,
         layoutCoordinates: LayoutCoordinates
     ) {
-        if (isCurrentPage && scrollTo == -1F && aya.surahNum == initialSuraId+1) {
+        if (isCurrentPage && scrollTo == -1F && aya.suraNum == initialSuraId+1) {
             scrollTo = layoutCoordinates.positionInParent().y - 13
             initialSuraId = -1
         }
@@ -225,8 +225,8 @@ class QuranViewerVM @Inject constructor(
         )}
     }
 
-    fun buildPage(pageNumber: Int): ArrayList<Ayah> {
-        val ayas = ArrayList<Ayah>()
+    fun buildPage(pageNumber: Int): ArrayList<Aya> {
+        val ayat = ArrayList<Aya>()
 
         // get page start
         var counter = ayatDB.indexOfFirst { aya -> aya.page == pageNumber }
@@ -235,17 +235,17 @@ class QuranViewerVM @Inject constructor(
             val suraNum = aya.sura_num // starts from 1
             val ayaNum = aya.aya_num
 
-            ayas.add(
-                Ayah(
-                    aya.id, aya.jozz, suraNum, ayaNum, suraNames[suraNum - 1],
+            ayat.add(
+                Aya(
+                    aya.id, aya.jozz, suraNum, suraNames[suraNum - 1], ayaNum,
                     "${aya.aya_text} ", aya.aya_translation_en, aya.aya_tafseer
                 )
             )
 
             counter++
-        } while (counter != Global.QURAN_AYAS && ayatDB[counter].page == pageNumber)
+        } while (counter != Global.QURAN_AYAT && ayatDB[counter].page == pageNumber)
 
-        return ayas
+        return ayat
     }
 
     private fun updatePageState(pageNumber: Int) {
@@ -254,7 +254,7 @@ class QuranViewerVM @Inject constructor(
             pageNum = pageNumber,
             suraName = suraNames[suraNum],
             juzNum = ayatDB.first { aya -> aya.page == pageNumber }.jozz,
-            ayas = buildPage(pageNumber),
+            ayat = buildPage(pageNumber),
             isBookmarked = bookmarkedPage == pageNumber
         )}
     }
@@ -280,7 +280,7 @@ class QuranViewerVM @Inject constructor(
     }
 
     private fun setupPlayer() {
-        uiListener = object : AyahPlayerService.Coordinator {
+        uiListener = object : AyaPlayerService.Coordinator {
             override fun onUiUpdate(state: Int) {
                 updateButton(state)
             }
@@ -291,15 +291,15 @@ class QuranViewerVM @Inject constructor(
             }
 
             override fun track(ayaId: Int) {
-                val idx = _uiState.value.ayas.indexOfFirst { aya -> aya.id == ayaId }
+                val idx = _uiState.value.ayat.indexOfFirst { aya -> aya.id == ayaId }
 
                 if (idx == -1) return  // not the same page
 
-                tracked.value = _uiState.value.ayas[idx]
+                tracked.value = _uiState.value.ayat[idx]
             }
         }
 
-        val playerIntent = Intent(app, AyahPlayerService::class.java)
+        val playerIntent = Intent(app, AyaPlayerService::class.java)
         app.startService(playerIntent)
         app.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
@@ -309,16 +309,16 @@ class QuranViewerVM @Inject constructor(
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             Log.i(Global.TAG, "In onServiceConnected")
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            binder = service as AyahPlayerService.LocalBinder
+            binder = service as AyaPlayerService.LocalBinder
             val playerService = binder?.service
             tc = playerService!!.transportControls
             serviceBound = true
 
-            if (selected.value == null) selected.value = _uiState.value.ayas[0]
+            if (selected.value == null) selected.value = _uiState.value.ayat[0]
 
             playerService.setChosenPage(_uiState.value.pageNum)
             playerService.setCoordinator(uiListener!!)
-            playerService.setChosenSura(selected.value!!.surahNum)
+            playerService.setChosenSura(selected.value!!.suraNum)
 
             requestPlay(selected.value!!.id)
 
@@ -330,9 +330,9 @@ class QuranViewerVM @Inject constructor(
         }
     }
 
-    private fun requestPlay(ayahId: Int) {
+    private fun requestPlay(ayaId: Int) {
         Executors.newSingleThreadExecutor().execute {
-            tc!!.playFromMediaId(ayahId.toString(), Bundle())
+            tc!!.playFromMediaId(ayaId.toString(), Bundle())
         }
     }
 
