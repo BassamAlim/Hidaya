@@ -19,5 +19,5 @@ interface TelawatVersionsDao {
         "SELECT suras FROM telawat_versions " +
                 "WHERE reciter_id = :reciter_id AND version_id = :version_id"
     )
-    fun getSuras(reciter_id: Int, version_id: Int): String
+    fun getSuar(reciter_id: Int, version_id: Int): String
 }
