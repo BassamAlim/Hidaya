@@ -149,7 +149,7 @@ class TelawatVM @Inject constructor(
                 versionsList.add(
                     Reciter.RecitationVersion(
                         telawa.getVersionId(), telawa.getUrl(), telawa.getRewaya(),
-                        telawa.getCount(), telawa.getSuras()
+                        telawa.getCount(), telawa.getSuar()
                     )
                 )
             }

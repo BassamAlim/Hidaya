@@ -37,7 +37,7 @@ class TelawatSuarVM @Inject constructor(
     private val versionId = savedStateHandle.get<Int>("version_id") ?: 0
 
     private val ver = repo.getVersion(reciterId, versionId)
-    val prefix = "/Telawat/${ver.getReciterId()}/${versionId}/"
+    val prefix = "/Telawat/${ver.reciterId}/${versionId}/"
     private val suraNames = repo.getSuraNames()
     private val searchNames = repo.getSearchNames()
     private val downloading = HashMap<Long, Int>()
@@ -105,9 +105,9 @@ class TelawatSuarVM @Inject constructor(
         val listType = ListType.values()[page]
 
         val items = ArrayList<ReciterSura>()
-        val availableSuras = ver.getSuras()
+        val availableSuar = ver.suras!!
         for (i in 0..113) {
-            if (!availableSuras.contains(",${(i + 1)},") ||
+            if (!availableSuar.contains(",${(i + 1)},") ||
                 (listType == ListType.Favorite && _uiState.value.favs[i] == 0) ||
                 (listType == ListType.Downloaded && !isDownloaded(i))
             ) continue
@@ -128,7 +128,7 @@ class TelawatSuarVM @Inject constructor(
             }
         )}
 
-        val server = ver.getUrl()
+        val server = ver.url!!
         val link = String.format(Locale.US, "%s/%03d.mp3", server, sura.num + 1)
         val uri = Uri.parse(link)
 

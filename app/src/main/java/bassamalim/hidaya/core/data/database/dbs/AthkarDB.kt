@@ -15,7 +15,7 @@ import androidx.room.PrimaryKey
         onDelete = ForeignKey.SET_DEFAULT
     )]
 )
-class AthkarDB(
+data class AthkarDB(
     @field:ColumnInfo(name = "athkar_id") @field:PrimaryKey val id: Int,
     @field:ColumnInfo(name = "athkar_name") val name: String?,
     @field:ColumnInfo(name = "athkar_name_en") val name_en: String?,

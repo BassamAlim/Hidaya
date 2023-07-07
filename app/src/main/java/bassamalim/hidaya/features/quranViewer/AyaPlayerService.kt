@@ -786,7 +786,7 @@ class AyaPlayerService : Service(),
         val sources = db.ayatTelawaDao().getReciter(choice)
 
         var uri = "https://www.everyayah.com/data/"
-        uri += sources[0].getSource()
+        uri += sources[0].source
         uri += String.format(Locale.US, "%03d%03d.mp3", aya.sura_num, aya.aya_num)
 
         return Uri.parse(uri)

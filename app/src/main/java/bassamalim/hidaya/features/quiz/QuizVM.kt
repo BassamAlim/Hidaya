@@ -74,7 +74,7 @@ class QuizVM @Inject constructor(
         navigator.navigate(
             Screen.QuizResult(
                 score.toString(),
-                questions.map { q -> q.getQuestionId() }.toIntArray().contentToString(),
+                questions.map { q -> q.questionId }.toIntArray().contentToString(),
                 chosenAs.toTypedArray().contentToString()
             )
         ) {
@@ -87,7 +87,7 @@ class QuizVM @Inject constructor(
     private fun calculateScore(): Int {
         var score = 0
         questions.forEachIndexed { i, q ->
-            if (chosenAs[i] == q.getCorrectAnswerId())
+            if (chosenAs[i] == q.correctAnswerId)
                 score++
         }
         return score
@@ -101,12 +101,12 @@ class QuizVM @Inject constructor(
 
     private fun updateState() {
         val question = questions[current]
-        val answers = repo.getAnswers(question.getQuestionId())
+        val answers = repo.getAnswers(question.questionId)
 
         _uiState.update { it.copy(
             questionNumText =
             "$questionStr ${translateNums(numeralsLanguage, (current + 1).toString())}",
-            question = question.getQuestionText(),
+            question = question.questionText!!,
             answers = answers.map { a -> a.answer_text!! },
             selection = chosenAs[current],
             prevBtnEnabled = current != 0,

@@ -15,20 +15,8 @@ import androidx.room.ForeignKey
         onDelete = ForeignKey.SET_DEFAULT
     )]
 )
-class AyatTelawaDB(
-    @field:ColumnInfo(name = "rec_id") private val recId: Int,
-    @field:ColumnInfo(name = "rate") private val rate: Int,
-    @field:ColumnInfo(name = "source") private val source: String?
-) {
-    fun getRecId(): Int {
-        return recId
-    }
-
-    fun getRate(): Int {
-        return rate
-    }
-
-    fun getSource(): String {
-        return source!!
-    }
-}
+data class AyatTelawaDB(
+    @field:ColumnInfo(name = "rec_id") val recId: Int,
+    @field:ColumnInfo(name = "rate") val rate: Int,
+    @field:ColumnInfo(name = "source") val source: String?
+)

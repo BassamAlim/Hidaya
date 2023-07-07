@@ -74,7 +74,7 @@ class TelawatDB(
         return count
     }
 
-    fun getSuras(): String {
+    fun getSuar(): String {
         return suras
     }
 }

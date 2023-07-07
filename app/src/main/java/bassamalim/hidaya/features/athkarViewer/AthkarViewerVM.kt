@@ -36,22 +36,20 @@ class AthkarViewerVM @Inject constructor(
         for (i in thikrs.indices) {
             val t = thikrs[i]
 
-            if (language == Language.ENGLISH &&
-                (t.getTextEn() == null || t.getTextEn()!!.isEmpty()))
-                continue
+            if (language == Language.ENGLISH && t.textEn.isNullOrEmpty()) continue
 
             if (language == Language.ENGLISH)
                 items.add(
                     Thikr(
-                        t.getThikrId(), t.getTitleEn(), t.getTextEn()!!, t.getTextEnTranslation(),
-                        t.getFadlEn(), t.getReferenceEn(), t.getRepetitionEn()
+                        t.thikrId, t.titleEn, t.textEn!!, t.textEnTranslation,
+                        t.fadlEn, t.referenceEn, t.repetitionEn
                     )
                 )
             else
                 items.add(
-                    Thikr(t.getThikrId(), t.getTitle(), t.getText()!!,
-                        t.getTextEnTranslation(), t.getFadl(), t.getReference(),
-                        t.getRepetition()
+                    Thikr(t.thikrId, t.title, t.text!!,
+                        t.textEnTranslation, t.fadl, t.reference,
+                        t.repetition
                     )
                 )
         }

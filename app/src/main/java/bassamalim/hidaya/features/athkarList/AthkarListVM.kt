@@ -71,7 +71,7 @@ class AthkarListVM @Inject constructor(
 
         for (i in thikrsSrc.indices) {
             val t = thikrsSrc[i]
-            if (t.getTextEn() != null && t.getTextEn()!!.length > 1) return true
+            if (t.textEn != null && t.textEn.length > 1) return true
         }
         return false
     }

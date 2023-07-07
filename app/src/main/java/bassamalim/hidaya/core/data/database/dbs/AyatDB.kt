@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "ayat")
-class AyatDB(
+data class AyatDB(
     @field:ColumnInfo(name = "id") @field:PrimaryKey val id: Int,
     @field:ColumnInfo(name = "jozz") val jozz: Int,
     @field:ColumnInfo(name = "sura_no") val sura_num: Int,

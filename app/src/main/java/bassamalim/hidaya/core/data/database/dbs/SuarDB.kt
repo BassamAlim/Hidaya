@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "suar")
-class SuarDB(
+data class SuarDB(
     @field:ColumnInfo(name = "sura_id") @field:PrimaryKey val sura_id: Int,
     @field:ColumnInfo(name = "sura_name") val sura_name: String?,
     @field:ColumnInfo(name = "sura_name_en") val sura_name_en: String?,
