@@ -74,13 +74,13 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private val intentFilter: IntentFilter = IntentFilter()
     private lateinit var audioFocusRequest: AudioFocusRequest
     private lateinit var wifiLock: WifiLock
-    private lateinit var surahNames: List<String>
+    private lateinit var suraNames: List<String>
     private var mediaId: String? = null
     private var reciterName: String? = null
     private lateinit var playType: String
     private var reciterId = 0
     private var versionId = 0
-    private var surahIndex = 0
+    private var suraIndex = 0
     private lateinit var version: Reciter.RecitationVersion
     private var shuffle = 0
     private var continueFrom = 0
@@ -126,7 +126,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
                 reciterId = givenMediaId.substring(0, 3).toInt()
                 versionId = givenMediaId.substring(3, 5).toInt()
-                surahIndex = givenMediaId.substring(5).toInt()
+                suraIndex = givenMediaId.substring(5).toInt()
                 reciterName = extras.getString("reciter_name")!!
                 version =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
@@ -173,7 +173,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                     player.start()
                     refresh()
                 }
-                else startPlaying(surahIndex)
+                else startPlaying(suraIndex)
 
                 updatePbState(
                     PlaybackStateCompat.STATE_PLAYING, controller.playbackState.bufferedPosition
@@ -266,7 +266,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private fun playOther() {
         mediaSession.isActive = true
         // start the player
-        startPlaying(surahIndex)
+        startPlaying(suraIndex)
 
         // Update state
         updatePbState(PlaybackStateCompat.STATE_PLAYING, controller.playbackState.bufferedPosition)
@@ -274,7 +274,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun skipToNext() {
-        var temp = surahIndex
+        var temp = suraIndex
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp++
@@ -289,10 +289,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         }
 
         if (temp < Global.QURAN_SUAR) {
-            surahIndex = temp
+            suraIndex = temp
             updateMetadata(false)
             updateNotification(true)
-            startPlaying(surahIndex)
+            startPlaying(suraIndex)
             updatePbState(
                 PlaybackStateCompat.STATE_PLAYING, controller.playbackState.bufferedPosition
             )
@@ -300,7 +300,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun skipToPrevious() {
-        var temp = surahIndex
+        var temp = suraIndex
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp--
@@ -314,10 +314,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         }
 
         if (temp >= 0) {
-            surahIndex = temp
+            suraIndex = temp
             updateMetadata(false)
             updateNotification(true)
-            startPlaying(surahIndex)
+            startPlaying(suraIndex)
             updatePbState(
                 PlaybackStateCompat.STATE_PLAYING, controller.playbackState.bufferedPosition
             )
@@ -517,12 +517,12 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
             )
             .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, surahNames[surahIndex])
-            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, surahNames[surahIndex])
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, suraNames[suraIndex])
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, suraNames[suraIndex])
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterName!!)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName!!)
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, version.rewaya)
-            .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, surahIndex.toLong())
+            .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, suraIndex.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version.count.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
                 (if (duration) player.duration else 0).toLong()
@@ -641,12 +641,12 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         }
     }
 
-    private fun startPlaying(surah: Int) {
+    private fun startPlaying(sura: Int) {
         player.reset()
 
-        if (tryOffline(surah)) return
+        if (tryOffline(sura)) return
 
-        val text = String.format(Locale.US, "%s/%03d.mp3", version.server, surah + 1)
+        val text = String.format(Locale.US, "%s/%03d.mp3", version.server, sura + 1)
 
         try {
             player.setDataSource(applicationContext, Uri.parse(text))
@@ -657,9 +657,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         }
     }
 
-    private fun tryOffline(surah: Int): Boolean {
+    private fun tryOffline(sura: Int): Boolean {
         val path = (getExternalFilesDir(null).toString() + "/Telawat/" + reciterId
-                + "/" + version.versionId + "/" + surah + ".mp3")
+                + "/" + version.versionId + "/" + sura + ".mp3")
 
         return try {
             player.setDataSource(path)
@@ -689,7 +689,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun getSuraNames() {
-        surahNames = db.suarDao().getNames()
+        suraNames = db.suarDao().getNames()
     }
 
     private fun getContentIntent(): PendingIntent {

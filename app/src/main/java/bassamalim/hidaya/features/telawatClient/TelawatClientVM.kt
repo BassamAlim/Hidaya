@@ -52,7 +52,7 @@ class TelawatClientVM @Inject constructor(
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
     private lateinit var version: Reciter.RecitationVersion
-    private val surahNames = repo.getSuraNames()
+    private val suraNames = repo.getSuraNames()
     private var prefix = ""
     var duration = 0L
     var progress = 0L
@@ -161,7 +161,7 @@ class TelawatClientVM @Inject constructor(
         }
 
         _uiState.update { it.copy(
-            suraName = surahNames[suraIdx],
+            suraName = suraNames[suraIdx],
             versionName = version.rewaya,
             reciterName = repo.getReciterName(reciterId),
             repeat = repo.getRepeatMode(),
@@ -232,7 +232,7 @@ class TelawatClientVM @Inject constructor(
         prefix = "${"/Telawat/${reciterId}/${versionId}/"}$suraIdx.mp3"
 
         _uiState.update { it.copy(
-            suraName = surahNames[suraIdx],
+            suraName = suraNames[suraIdx],
             duration = formatTime(duration),
             downloadState = checkDownload()
         )}
