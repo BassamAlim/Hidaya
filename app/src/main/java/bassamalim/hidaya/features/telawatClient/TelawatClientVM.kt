@@ -156,7 +156,7 @@ class TelawatClientVM @Inject constructor(
     private fun updateTrackState() {
         version = repo.getVersion(reciterId, versionId).let {
             Reciter.RecitationVersion(
-                versionId, it.url!!, it.rewaya!!, it.count, it.suras!!
+                versionId, it.url!!, it.rewaya!!, it.count, it.suar!!
             )
         }
 

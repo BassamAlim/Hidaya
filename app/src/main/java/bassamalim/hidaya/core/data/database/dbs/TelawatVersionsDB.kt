@@ -21,5 +21,5 @@ data class TelawatVersionsDB(
     @field:ColumnInfo(name = "rewaya") val rewaya: String?,
     @field:ColumnInfo(name = "url") val url: String?,
     @field:ColumnInfo(name = "count") val count: Int,
-    @field:ColumnInfo(name = "suras") val suras: String?
+    @field:ColumnInfo(name = "suar") val suar: String?
 )

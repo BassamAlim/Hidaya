@@ -7,5 +7,5 @@ data class TelawatDB(
     val rewaya: String,
     val url: String,
     val count: Int,
-    val suras: String
+    val suar: String
 )

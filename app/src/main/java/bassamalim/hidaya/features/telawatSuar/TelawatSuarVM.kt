@@ -105,7 +105,7 @@ class TelawatSuarVM @Inject constructor(
         val listType = ListType.values()[page]
 
         val items = ArrayList<ReciterSura>()
-        val availableSuar = ver.suras!!
+        val availableSuar = ver.suar!!
         for (i in 0..113) {
             if (!availableSuar.contains(",${(i + 1)},") ||
                 (listType == ListType.Favorite && _uiState.value.favs[i] == 0) ||

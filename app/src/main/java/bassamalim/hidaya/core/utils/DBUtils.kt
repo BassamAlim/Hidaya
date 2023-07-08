@@ -17,18 +17,19 @@ object DBUtils {
             .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
     }
 
-    fun testDB(
+    fun needsRevival(
         ctx: Context,
         sp: SharedPreferences,
         db: AppDatabase
-    ) {
+    ): Boolean {
         val lastVer = PrefUtils.getInt(sp, Prefs.LastDBVersion)
         if (Global.DB_VERSION > lastVer) reviveDB(ctx, sp, db)
 
-        try {  // if there is a problem in the db it will cause an error
+        return try {  // if there is a problem in the db it will cause an error
             db.suarDao().getFavs()
+            false
         } catch (e: Exception) {
-            reviveDB(ctx, sp, db)
+            true
         }
     }
 
