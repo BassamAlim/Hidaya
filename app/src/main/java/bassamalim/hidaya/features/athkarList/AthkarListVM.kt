@@ -67,10 +67,10 @@ class AthkarListVM @Inject constructor(
     }
 
     private fun hasEn(thikr: AthkarDB): Boolean {
-        val thikrsSrc = repo.getThikrs(thikr.id)
+        val thikrParts = repo.getThikrParts(thikr.id)
 
-        for (i in thikrsSrc.indices) {
-            val t = thikrsSrc[i]
+        for (i in thikrParts.indices) {
+            val t = thikrParts[i]
             if (t.textEn != null && t.textEn.length > 1) return true
         }
         return false

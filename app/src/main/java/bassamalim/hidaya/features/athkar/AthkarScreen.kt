@@ -41,10 +41,10 @@ fun AthkarUI(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            MySquareButton(R.string.day_and_night_thikrs, R.drawable.ic_day_and_night) {
+            MySquareButton(R.string.day_and_night_athkar, R.drawable.ic_day_and_night) {
                 vm.onCategoryClick(category = 0)
             }
-            MySquareButton(R.string.prayers_thikrs, R.drawable.ic_praying) {
+            MySquareButton(R.string.prayers_athkar, R.drawable.ic_praying) {
                 vm.onCategoryClick(category = 1)
             }
         }
@@ -53,10 +53,10 @@ fun AthkarUI(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            MySquareButton(R.string.quran_thikrs, R.drawable.ic_closed_quran) {
+            MySquareButton(R.string.quran_athkar, R.drawable.ic_closed_quran) {
                 vm.onCategoryClick(category = 2)
             }
-            MySquareButton(R.string.actions_thikrs, R.drawable.ic_actions) {
+            MySquareButton(R.string.actions_athkar, R.drawable.ic_actions) {
                 vm.onCategoryClick(category = 3)
             }
         }
@@ -65,10 +65,10 @@ fun AthkarUI(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            MySquareButton(R.string.events_thikrs, R.drawable.ic_events) {
+            MySquareButton(R.string.events_athkar, R.drawable.ic_events) {
                 vm.onCategoryClick(category = 4)
             }
-            MySquareButton(R.string.emotion_thikrs, R.drawable.ic_emotion) {
+            MySquareButton(R.string.emotion_athkar, R.drawable.ic_emotion) {
                 vm.onCategoryClick(category = 5)
             }
         }
@@ -77,7 +77,7 @@ fun AthkarUI(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            MySquareButton(R.string.places_thikrs, R.drawable.ic_going_out) {
+            MySquareButton(R.string.places_athkar, R.drawable.ic_going_out) {
                 vm.onCategoryClick(category = 6)
             }
             MySquareButton(R.string.title_more, R.drawable.ic_duaa_moon) {

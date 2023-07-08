@@ -29,6 +29,6 @@ class AthkarViewerRepo @Inject constructor(
         }
     }
 
-    fun getThikrs(id: Int) = db.athkarPartsDao().getThikrParts(id)
+    fun getThikrParts(id: Int) = db.athkarPartsDao().getThikrParts(id)
 
 }

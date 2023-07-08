@@ -36,14 +36,14 @@
 
     <!-- Buttons Text -->
     <string name="contact">Contact me</string>
-    <string name="day_and_night_thikrs">Day and knight athkar</string>
-    <string name="prayers_thikrs">Prayers athkar</string>
-    <string name="quran_thikrs">Quran Duas</string>
-    <string name="places_thikrs">Places athkar</string>
-    <string name="emotion_thikrs">Status athkar</string>
-    <string name="actions_thikrs">Actions athkar</string>
-    <string name="events_thikrs">Events duas</string>
-    <string name="tv_channels">Live tv</string>
+    <string name="day_and_night_athkar">Day and Night Athkar</string>
+    <string name="prayers_athkar">Prayers Athkar</string>
+    <string name="quran_athkar">Quran Duas</string>
+    <string name="places_athkar">Places Athkar</string>
+    <string name="emotion_athkar">Status Athkar</string>
+    <string name="actions_athkar">Actions Athkar</string>
+    <string name="events_athkar">Events Duas</string>
+    <string name="tv_channels">Live TV</string>
     <string name="quran_channel">Quran channel</string>
     <string name="sunnah_channel">Sunnah channel</string>
     <string name="search_in_quran">Quran searcher</string>

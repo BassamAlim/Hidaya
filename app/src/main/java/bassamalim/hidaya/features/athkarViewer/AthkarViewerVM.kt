@@ -30,11 +30,11 @@ class AthkarViewerVM @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     private fun getItems(): List<Thikr> {
-        val thikrs = repo.getThikrs(id)
+        val thikrParts = repo.getThikrParts(id)
 
         val items = ArrayList<Thikr>()
-        for (i in thikrs.indices) {
-            val t = thikrs[i]
+        for (i in thikrParts.indices) {
+            val t = thikrParts[i]
 
             if (language == Language.ENGLISH && t.textEn.isNullOrEmpty()) continue
 
