@@ -49,7 +49,6 @@ class QuranViewerRepo @Inject constructor(
     }
 
     fun getWerdPage() = PrefUtils.getInt(sp, Prefs.WerdPage)
-
     fun setWerdDone() {
         sp.edit()
             .putBoolean(Prefs.WerdDone.key, true)
