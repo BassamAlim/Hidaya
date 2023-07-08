@@ -18,8 +18,8 @@ import androidx.room.ForeignKey
 data class TelawatVersionsDB(
     @field:ColumnInfo(name = "reciter_id") val reciterId: Int,
     @field:ColumnInfo(name = "version_id") val versionId: Int,
-    @field:ColumnInfo(name = "rewaya") val rewaya: String?,
-    @field:ColumnInfo(name = "url") val url: String?,
+    @field:ColumnInfo(name = "rewaya") val rewaya: String,
+    @field:ColumnInfo(name = "url") val url: String,
     @field:ColumnInfo(name = "count") val count: Int,
-    @field:ColumnInfo(name = "suar") val suar: String?
+    @field:ColumnInfo(name = "suar") val suar: String
 )

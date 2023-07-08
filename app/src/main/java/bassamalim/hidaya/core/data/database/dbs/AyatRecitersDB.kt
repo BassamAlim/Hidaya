@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "ayat_reciters")
 data class AyatRecitersDB(
     @field:ColumnInfo(name = "rec_id") @field:PrimaryKey val reciterId: Int,
-    @field:ColumnInfo(name = "rec_name") val reciterName: String?
+    @field:ColumnInfo(name = "name") val reciterName: String
 )

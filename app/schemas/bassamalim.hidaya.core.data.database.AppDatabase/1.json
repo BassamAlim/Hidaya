@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "937656746116515c9a21e50990b2680b",
+    "identityHash": "dd988147cd259922be596281a396eb5a",
     "entities": [
       {
         "tableName": "ayat",
@@ -74,35 +74,35 @@
       },
       {
         "tableName": "suar",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sura_id` INTEGER NOT NULL, `sura_name` TEXT, `sura_name_en` TEXT, `search_name` TEXT, `search_name_en` TEXT, `tanzeel` INTEGER NOT NULL, `start_page` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, PRIMARY KEY(`sura_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `name_en` TEXT NOT NULL, `clear_name` TEXT NOT NULL, `clear_name_en` TEXT, `tanzeel` INTEGER NOT NULL, `start_page` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "suraId",
-            "columnName": "sura_id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "suraName",
-            "columnName": "sura_name",
+            "columnName": "name",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "suraNameEn",
-            "columnName": "sura_name_en",
+            "columnName": "name_en",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "searchName",
-            "columnName": "search_name",
+            "columnName": "clear_name",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "searchNameEn",
-            "columnName": "search_name_en",
+            "columnName": "clear_name_en",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -128,7 +128,7 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "sura_id"
+            "id"
           ]
         },
         "indices": [],
@@ -387,7 +387,7 @@
       },
       {
         "tableName": "ayat_reciters",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rec_id` INTEGER NOT NULL, `rec_name` TEXT, PRIMARY KEY(`rec_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rec_id` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`rec_id`))",
         "fields": [
           {
             "fieldPath": "reciterId",
@@ -397,9 +397,9 @@
           },
           {
             "fieldPath": "reciterName",
-            "columnName": "rec_name",
+            "columnName": "name",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -413,7 +413,7 @@
       },
       {
         "tableName": "ayat_telawa",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rec_id` INTEGER NOT NULL, `rate` INTEGER NOT NULL, `source` TEXT, PRIMARY KEY(`rec_id`, `rate`), FOREIGN KEY(`rec_id`) REFERENCES `ayat_reciters`(`rec_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rec_id` INTEGER NOT NULL, `rate` INTEGER NOT NULL, `source` TEXT NOT NULL, PRIMARY KEY(`rec_id`, `rate`), FOREIGN KEY(`rec_id`) REFERENCES `ayat_reciters`(`rec_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
         "fields": [
           {
             "fieldPath": "reciterId",
@@ -431,7 +431,7 @@
             "fieldPath": "source",
             "columnName": "source",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -458,7 +458,7 @@
       },
       {
         "tableName": "telawat_reciters",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reciter_id` INTEGER NOT NULL, `reciter_name` TEXT, `favorite` INTEGER NOT NULL, PRIMARY KEY(`reciter_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reciter_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `favorite` INTEGER NOT NULL, PRIMARY KEY(`reciter_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -468,9 +468,9 @@
           },
           {
             "fieldPath": "name",
-            "columnName": "reciter_name",
+            "columnName": "name",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "favorite",
@@ -490,7 +490,7 @@
       },
       {
         "tableName": "telawat_versions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reciter_id` INTEGER NOT NULL, `version_id` INTEGER NOT NULL, `rewaya` TEXT, `url` TEXT, `count` INTEGER NOT NULL, `suar` TEXT, PRIMARY KEY(`reciter_id`, `version_id`), FOREIGN KEY(`reciter_id`) REFERENCES `telawat_reciters`(`reciter_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reciter_id` INTEGER NOT NULL, `version_id` INTEGER NOT NULL, `rewaya` TEXT NOT NULL, `url` TEXT NOT NULL, `count` INTEGER NOT NULL, `suar` TEXT NOT NULL, PRIMARY KEY(`reciter_id`, `version_id`), FOREIGN KEY(`reciter_id`) REFERENCES `telawat_reciters`(`reciter_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
         "fields": [
           {
             "fieldPath": "reciterId",
@@ -508,13 +508,13 @@
             "fieldPath": "rewaya",
             "columnName": "rewaya",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "url",
             "columnName": "url",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "count",
@@ -526,7 +526,7 @@
             "fieldPath": "suar",
             "columnName": "suar",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -585,7 +585,7 @@
       },
       {
         "tableName": "quiz_answers",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`answer_id` INTEGER NOT NULL, `answer_text` TEXT, `question_id` INTEGER NOT NULL, PRIMARY KEY(`question_id`, `answer_id`), FOREIGN KEY(`question_id`) REFERENCES `quiz_questions`(`question_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`answer_id` INTEGER NOT NULL, `text` TEXT NOT NULL, `question_id` INTEGER NOT NULL, PRIMARY KEY(`question_id`, `answer_id`), FOREIGN KEY(`question_id`) REFERENCES `quiz_questions`(`question_id`) ON UPDATE CASCADE ON DELETE SET DEFAULT )",
         "fields": [
           {
             "fieldPath": "answerId",
@@ -595,9 +595,9 @@
           },
           {
             "fieldPath": "answerText",
-            "columnName": "answer_text",
+            "columnName": "text",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "questionId",
@@ -720,7 +720,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '937656746116515c9a21e50990b2680b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dd988147cd259922be596281a396eb5a')"
     ]
   }
 }

@@ -17,6 +17,6 @@ import androidx.room.ForeignKey
 )
 data class QuizAnswersDB(
     @field:ColumnInfo(name = "answer_id") val answerId: Int,
-    @field:ColumnInfo(name = "answer_text") val answerText: String?,
+    @field:ColumnInfo(name = "text") val answerText: String,
     @field:ColumnInfo(name = "question_id") val questionId: Int
 )

@@ -9,6 +9,6 @@ interface AyatRecitersDao {
     @Query("SELECT * FROM ayat_reciters")
     fun getAll(): List<AyatRecitersDB>
 
-    @Query("SELECT rec_name FROM ayat_reciters")
+    @Query("SELECT name FROM ayat_reciters")
     fun getNames(): List<String>
 }
