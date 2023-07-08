@@ -16,8 +16,8 @@ interface CityDao {
     @Query("SELECT * FROM cities WHERE id = :id")
     fun getCity(id: Int): CityDB
 
-    @Query("SELECT *, MIN(ABS(latitude - :gLat) + ABS(longitude - :gLng)) FROM cities")
-    fun getClosest(gLat: Double, gLng: Double): CityDB
+    @Query("SELECT *, MIN(ABS(latitude - :lat) + ABS(longitude - :lon)) FROM cities")
+    fun getClosest(lat: Double, lon: Double): CityDB
 
     /*@Query("SELECT *, MIN(POWER(POWER(ABS(latitude - :gLat), 2.0) + POWER(ABS(longitude - :gLng), 2.0), 0.5)) FROM cities")
     fun getClosest(gLat: Double, gLng: Double): CityDB*/
