@@ -17,7 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
-import androidx.room.Room
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
@@ -88,7 +87,7 @@ class Activity : ComponentActivity() {
     }
 
     private fun preLaunch(firstLaunch: Boolean = false) {
-        if (firstLaunch) testAndReviveDB()
+        if (firstLaunch) testDB()
 
         ActivityUtils.onActivityCreateSetLocale(this)
         ActivityUtils.onActivityCreateSetTheme(this)
@@ -96,7 +95,7 @@ class Activity : ComponentActivity() {
         ActivityUtils.onActivityCreateSetTheme(applicationContext)
     }
 
-    private fun testAndReviveDB() {
+    private fun testDB() {
         if (DBUtils.needsRevival(this, sp, db))
             DBUtils.reviveDB(this, sp, db)
     }
