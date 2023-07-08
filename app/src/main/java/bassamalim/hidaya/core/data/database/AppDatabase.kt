@@ -7,7 +7,7 @@ import bassamalim.hidaya.core.data.database.dbs.*
 
 @Database(
     entities = [AyatDB::class, SuarDB::class, BooksDB::class,
-        AthkarCategoryDB::class, AthkarDB::class, ThikrsDB::class,
+        AthkarCategoryDB::class, AthkarDB::class, AthkarPartsDB::class,
         AyatRecitersDB::class, AyatTelawaDB::class, TelawatRecitersDB::class,
         TelawatVersionsDB::class, QuizQuestionsDB::class, QuizAnswersDB::class,
                CountryDB::class, CityDB::class],
@@ -19,7 +19,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun booksDao(): BooksDao
     abstract fun athkarCategoryDao(): AthkarCategoryDao
     abstract fun athkarDao(): AthkarDao
-    abstract fun thikrsDao(): ThikrsDao
+    abstract fun athkarPartsDao(): AthkarPartsDao
     abstract fun ayatRecitersDao(): AyatRecitersDao
     abstract fun ayatTelawaDao(): AyatTelawaDao
     abstract fun telawatRecitersDao(): TelawatRecitersDao

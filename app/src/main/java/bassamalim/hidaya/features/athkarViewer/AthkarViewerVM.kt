@@ -41,13 +41,13 @@ class AthkarViewerVM @Inject constructor(
             if (language == Language.ENGLISH)
                 items.add(
                     Thikr(
-                        t.thikrId, t.titleEn, t.textEn!!, t.textEnTranslation,
+                        t.partId, t.titleEn, t.textEn!!, t.textEnTranslation,
                         t.fadlEn, t.referenceEn, t.repetitionEn
                     )
                 )
             else
                 items.add(
-                    Thikr(t.thikrId, t.title, t.text!!,
+                    Thikr(t.partId, t.title, t.text!!,
                         t.textEnTranslation, t.fadl, t.reference,
                         t.repetition
                     )

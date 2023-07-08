@@ -37,7 +37,7 @@ class AthkarListRepo @Inject constructor(
         }
     }
 
-    fun getThikrs(thikrId: Int) = db.thikrsDao().getThikrs(thikrId)
+    fun getThikrs(thikrId: Int) = db.athkarPartsDao().getThikrParts(thikrId)
 
     fun getName(language: Language, category: Int): String {
         return when (language) {
