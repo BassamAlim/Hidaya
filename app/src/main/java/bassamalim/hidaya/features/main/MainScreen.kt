@@ -1,8 +1,15 @@
 package bassamalim.hidaya.features.main
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,9 +21,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.*
-import bassamalim.hidaya.core.ui.components.*
+import bassamalim.hidaya.core.ui.TabEnter
+import bassamalim.hidaya.core.ui.TabExit
+import bassamalim.hidaya.core.ui.TabPopEnter
+import bassamalim.hidaya.core.ui.TabPopExit
+import bassamalim.hidaya.core.ui.components.DateEditorDialog
+import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.features.athkar.AthkarUI
@@ -24,17 +39,13 @@ import bassamalim.hidaya.features.home.HomeUI
 import bassamalim.hidaya.features.more.MoreUI
 import bassamalim.hidaya.features.prayers.PrayersUI
 import bassamalim.hidaya.features.quran.QuranUI
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainUI(
     vm: MainVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
-    val bottomNavController = rememberAnimatedNavController()
+    val bottomNavController = rememberNavController()
 
     MyScaffold(
         title = stringResource(R.string.app_name),
@@ -105,13 +116,12 @@ fun MainUI(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun NavigationGraph(
     bottomNavController: NavHostController,
     padding: PaddingValues
 ) {
-    AnimatedNavHost(
+    NavHost(
         bottomNavController,
         startDestination = BottomNavItem.Home.route,
         modifier = Modifier.padding(padding)

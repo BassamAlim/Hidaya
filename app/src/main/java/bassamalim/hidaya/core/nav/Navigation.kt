@@ -1,18 +1,24 @@
-@file:OptIn(ExperimentalAnimationApi::class)
-
 package bassamalim.hidaya.core.nav
 
 import android.os.Build
 import android.os.Bundle
-import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import bassamalim.hidaya.core.ui.*
+import bassamalim.hidaya.core.ui.inFromBottom
+import bassamalim.hidaya.core.ui.inFromLeft
+import bassamalim.hidaya.core.ui.inFromRight
+import bassamalim.hidaya.core.ui.inFromTop
+import bassamalim.hidaya.core.ui.outToBottom
+import bassamalim.hidaya.core.ui.outToLeft
+import bassamalim.hidaya.core.ui.outToTop
 import bassamalim.hidaya.features.about.AboutUI
 import bassamalim.hidaya.features.athkarList.AthkarListUI
 import bassamalim.hidaya.features.athkarViewer.AthkarViewerUI
@@ -40,9 +46,6 @@ import bassamalim.hidaya.features.telawatClient.TelawatClientUI
 import bassamalim.hidaya.features.telawatSuar.TelawatSuarUI
 import bassamalim.hidaya.features.tv.TvUI
 import bassamalim.hidaya.features.welcome.WelcomeUI
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.gson.Gson
 
 @Composable
@@ -51,7 +54,7 @@ fun Navigation(
     thenTo: String? = null,
     shouldWelcome: Boolean = false
 ) {
-    val navController = rememberAnimatedNavController()
+    val navController = rememberNavController()
 
     LaunchedEffect(key1 = navController) {  // maybe should be DisposableEffect
         navigator.setController(navController)
@@ -74,7 +77,7 @@ fun NavGraph(
     navController: NavHostController,
     startDest: String
 ) {
-    AnimatedNavHost(
+    NavHost(
         navController = navController,
         startDestination = startDest
     ) {

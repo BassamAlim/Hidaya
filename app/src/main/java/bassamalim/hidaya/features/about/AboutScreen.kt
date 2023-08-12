@@ -85,10 +85,9 @@ fun AboutUI(
                 ) {
                     MySquareButton(
                         stringResource(R.string.rebuild_database),
-                        Modifier.align(Alignment.CenterHorizontally)
-                    ) {
-                        vm.rebuildDatabase()
-                    }
+                        Modifier.align(Alignment.CenterHorizontally),
+                        onClick = { vm.rebuildDatabase() }
+                    )
 
                     /*MyButton(
                         stringResource(R.string.quick_update),

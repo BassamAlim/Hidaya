@@ -10,14 +10,14 @@ plugins {
 
 android {
     namespace 'bassamalim.hidaya'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "bassamalim.hidaya"
         minSdk 23
-        targetSdk 33
-        versionCode 225
-        versionName '2.2.5'
+        targetSdk 34
+        versionCode 226
+        versionName '2.2.6'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -78,15 +78,15 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation "androidx.activity:activity:$activity_version"
     implementation "androidx.activity:activity-compose:$activity_version"
-    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
-    implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("androidx.navigation:navigation-compose:2.7.0")
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
-    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.preference:preference:1.2.1'
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
     implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
     implementation "androidx.media:media:1.6.0"
-    implementation("androidx.glance:glance-appwidget:1.0.0-beta01")
+    implementation("androidx.glance:glance-appwidget:1.0.0-rc01")
     implementation 'androidx.room:room-runtime:2.5.2'
     kapt 'androidx.room:room-compiler:2.5.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -105,12 +105,11 @@ dependencies {
     implementation 'com.google.accompanist:accompanist-systemuicontroller:0.28.0'
     implementation 'com.google.accompanist:accompanist-pager:0.28.0'
     implementation 'com.google.accompanist:accompanist-pager-indicators:0.28.0'
-    implementation 'com.google.accompanist:accompanist-navigation-animation:0.30.1'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:31.2.3')
+    implementation platform('com.google.firebase:firebase-bom:32.2.2')
     implementation 'com.google.firebase:firebase-config'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-crashlytics'
@@ -121,13 +120,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf'
     implementation 'com.google.firebase:firebase-storage-ktx'
     // Hilt
-    implementation('com.google.dagger:hilt-android:2.45')
-    kapt('com.google.dagger:hilt-android-compiler:2.45')
+    implementation('com.google.dagger:hilt-android:2.47')
+    kapt('com.google.dagger:hilt-android-compiler:2.47')
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
     // Other
-    implementation 'io.coil-kt:coil-compose:2.2.2'
-    implementation 'io.coil-kt:coil-gif:2.2.2'
-    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.0.0")
+    implementation 'io.coil-kt:coil-compose:2.4.0'
+    implementation 'io.coil-kt:coil-gif:2.4.0'
+    implementation('com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0')
     testImplementation 'junit:junit:4.13.2'
     // jar Files
     implementation files('libs/YouTubeAndroidPlayerApi.jar')

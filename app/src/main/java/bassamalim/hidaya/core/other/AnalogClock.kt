@@ -124,12 +124,12 @@ class AnalogClock(
         numeralsPaint.textSize = if (language == Language.ENGLISH) size * 0.065F else size * 0.08F
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         calendar.timeInMillis = System.currentTimeMillis()
 
-        drawTeeth(canvas!!)
+        drawTeeth(canvas)
         drawNumerals(canvas)
         drawHands(canvas)
         if (pastTime != -1L) drawBetweenArc(canvas)

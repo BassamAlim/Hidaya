@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalAnimationApi::class)
-
 package bassamalim.hidaya.core.ui
 
 import androidx.compose.animation.*
@@ -7,28 +5,28 @@ import androidx.compose.animation.core.tween
 import androidx.navigation.NavBackStackEntry
 import bassamalim.hidaya.features.main.BottomNavItem
 
-val inFromBottom = { _: AnimatedContentScope<NavBackStackEntry> ->
+val inFromBottom = { _: AnimatedContentTransitionScope<NavBackStackEntry> ->
     slideInVertically(
         initialOffsetY = { 500 },
         animationSpec = tween(300)
     ) + fadeIn(animationSpec = tween(200))
 }
 
-val outToBottom = { _: AnimatedContentScope<NavBackStackEntry> ->
+val outToBottom = { _: AnimatedContentTransitionScope<NavBackStackEntry> ->
     slideOutVertically(
         targetOffsetY = { -500 },
         animationSpec = tween(300)
     ) + fadeOut(animationSpec = tween(200))
 }
 
-val inFromTop = { _: AnimatedContentScope<NavBackStackEntry> ->
+val inFromTop = { _: AnimatedContentTransitionScope<NavBackStackEntry> ->
     slideInVertically(
         initialOffsetY = { -500 },
         animationSpec = tween(300)
     ) + fadeIn(animationSpec = tween(200))
 }
 
-val outToTop = { _: AnimatedContentScope<NavBackStackEntry> ->
+val outToTop = { _: AnimatedContentTransitionScope<NavBackStackEntry> ->
     slideOutVertically(
         targetOffsetY = { 500 },
         animationSpec = tween(300)
@@ -44,7 +42,7 @@ val bottomNavBarWeightMap = hashMapOf(
     BottomNavItem.More.route to 5
 )
 
-val TabEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
+val TabEnter = { an: AnimatedContentTransitionScope<NavBackStackEntry> ->
     val from = an.initialState.destination.route
     val to = an.targetState.destination.route
     val fromWeight = bottomNavBarWeightMap[from] ?: 0
@@ -54,7 +52,7 @@ val TabEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
     else inFromRightTransition
 }
 
-val TabExit = { an: AnimatedContentScope<NavBackStackEntry> ->
+val TabExit = { an: AnimatedContentTransitionScope<NavBackStackEntry> ->
     val from = an.initialState.destination.route
     val to = an.targetState.destination.route
     val fromWeight = bottomNavBarWeightMap[from] ?: 0
@@ -64,7 +62,7 @@ val TabExit = { an: AnimatedContentScope<NavBackStackEntry> ->
     else outToLeftTransition
 }
 
-val TabPopEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
+val TabPopEnter = { an: AnimatedContentTransitionScope<NavBackStackEntry> ->
     val from = an.initialState.destination.route
     val to = an.targetState.destination.route
     val fromWeight = bottomNavBarWeightMap[from] ?: 0
@@ -74,7 +72,7 @@ val TabPopEnter = { an: AnimatedContentScope<NavBackStackEntry> ->
     else inFromRightTransition
 }
 
-val TabPopExit = { an: AnimatedContentScope<NavBackStackEntry> ->
+val TabPopExit = { an: AnimatedContentTransitionScope<NavBackStackEntry> ->
     val from = an.initialState.destination.route
     val to = an.targetState.destination.route
     val fromWeight = bottomNavBarWeightMap[from] ?: 0
@@ -84,19 +82,19 @@ val TabPopExit = { an: AnimatedContentScope<NavBackStackEntry> ->
     else outToLeftTransition
 }
 
-val inFromRight = { _: AnimatedContentScope<NavBackStackEntry> ->
+val inFromRight = { _: AnimatedContentTransitionScope<NavBackStackEntry> ->
     inFromRightTransition
 }
 
-val inFromLeft = { _: AnimatedContentScope<NavBackStackEntry> ->
+val inFromLeft = { _: AnimatedContentTransitionScope<NavBackStackEntry> ->
     inFromLeftTransition
 }
 
-val outToRight = { _: AnimatedContentScope<NavBackStackEntry> ->
+val outToRight = { _: AnimatedContentTransitionScope<NavBackStackEntry> ->
     outToRightTransition
 }
 
-val outToLeft = { _: AnimatedContentScope<NavBackStackEntry> ->
+val outToLeft = { _: AnimatedContentTransitionScope<NavBackStackEntry> ->
     outToLeftTransition
 }
 

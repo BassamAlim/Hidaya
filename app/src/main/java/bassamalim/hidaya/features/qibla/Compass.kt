@@ -12,8 +12,8 @@ class Compass(
 ) : SensorEventListener {
 
     private val sensorManager: SensorManager
-    private val mSensor: Sensor
-    private val aSensor: Sensor
+    private val mSensor: Sensor?
+    private val aSensor: Sensor?
     private val aData = FloatArray(3)
     private val mData = FloatArray(3)
     private val myR = FloatArray(9)
