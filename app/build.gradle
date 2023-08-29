@@ -16,8 +16,8 @@ android {
         applicationId "bassamalim.hidaya"
         minSdk 23
         targetSdk 34
-        versionCode 226
-        versionName '2.2.6'
+        versionCode 227
+        versionName '2.2.7'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -78,8 +78,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation "androidx.activity:activity:$activity_version"
     implementation "androidx.activity:activity-compose:$activity_version"
-    implementation("androidx.navigation:navigation-compose:2.7.0")
-    implementation 'androidx.navigation:navigation-ui-ktx:2.7.0'
+    implementation("androidx.navigation:navigation-compose:2.7.1")
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
     implementation 'androidx.preference:preference:1.2.1'
