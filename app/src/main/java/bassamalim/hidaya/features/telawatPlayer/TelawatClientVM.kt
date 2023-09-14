@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.telawatClient
+package bassamalim.hidaya.features.telawatPlayer
 
 import android.app.Activity
 import android.app.Application
@@ -156,7 +156,7 @@ class TelawatClientVM @Inject constructor(
     private fun updateTrackState() {
         version = repo.getVersion(reciterId, versionId).let {
             Reciter.RecitationVersion(
-                versionId, it.url!!, it.rewaya!!, it.count, it.suar!!
+                versionId, it.url, it.rewaya, it.count, it.suar
             )
         }
 
@@ -242,6 +242,7 @@ class TelawatClientVM @Inject constructor(
         progress = state.position
 
         _uiState.update { it.copy(
+            btnState = state.state,
             progress = formatTime(progress),
             secondaryProgress = state.bufferedPosition
         )}

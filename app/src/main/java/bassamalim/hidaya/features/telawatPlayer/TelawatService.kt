@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.telawatClient
+package bassamalim.hidaya.features.telawatPlayer
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -53,6 +53,19 @@ import java.util.Random
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
+    private val id = 333
+    private val handler: Handler = Handler(Looper.getMainLooper())
+    private val intentFilter: IntentFilter = IntentFilter()
+    private lateinit var pref: SharedPreferences
+    private lateinit var db: AppDatabase
+    private lateinit var notificationManager: NotificationManager
+    private lateinit var notificationBuilder: NotificationCompat.Builder
+    private lateinit var notification: Notification
+    private lateinit var player: MediaPlayer
+    private lateinit var am: AudioManager
+    private lateinit var audioFocusRequest: AudioFocusRequest
+    private lateinit var wifiLock: WifiLock
+    private lateinit var suraNames: List<String>
     private lateinit var playAction: NotificationCompat.Action
     private lateinit var pauseAction: NotificationCompat.Action
     private lateinit var nextAction: NotificationCompat.Action
@@ -61,27 +74,14 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private lateinit var stateBuilder: PlaybackStateCompat.Builder
     private lateinit var controller: MediaControllerCompat
     private lateinit var mediaMetadata: MediaMetadataCompat
+    private lateinit var playType: String
+    private lateinit var version: Reciter.RecitationVersion
     private var channelId = "channel ID"
-    private val id = 333
-    private lateinit var pref: SharedPreferences
-    private lateinit var db: AppDatabase
-    private val handler: Handler = Handler(Looper.getMainLooper())
-    private lateinit var notificationManager: NotificationManager
-    private lateinit var notificationBuilder: NotificationCompat.Builder
-    private lateinit var notification: Notification
-    private lateinit var player: MediaPlayer
-    private lateinit var am: AudioManager
-    private val intentFilter: IntentFilter = IntentFilter()
-    private lateinit var audioFocusRequest: AudioFocusRequest
-    private lateinit var wifiLock: WifiLock
-    private lateinit var suraNames: List<String>
     private var mediaId: String? = null
     private var reciterName: String? = null
-    private lateinit var playType: String
     private var reciterId = 0
     private var versionId = 0
     private var suraIndex = 0
-    private lateinit var version: Reciter.RecitationVersion
     private var shuffle = 0
     private var continueFrom = 0
     private var updateRecordCounter = 0
@@ -89,11 +89,11 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     companion object {
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
         private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
-        private const val ACTION_PLAY = "bassamalim.hidaya.features.telawatClient.TelawatService.PLAY"
-        private const val ACTION_PAUSE = "bassamalim.hidaya.features.telawatClient.TelawatService.PAUSE"
-        private const val ACTION_NEXT = "bassamalim.hidaya.features.telawatClient.TelawatService.NEXT"
-        private const val ACTION_PREV = "bassamalim.hidaya.features.telawatClient.TelawatService.PREVIOUS"
-        private const val ACTION_STOP = "bassamalim.hidaya.features.telawatClient.TelawatService.STOP"
+        private const val ACTION_PLAY = "bassamalim.hidaya.features.telawatPlayer.TelawatService.PLAY"
+        private const val ACTION_PAUSE = "bassamalim.hidaya.features.telawatPlayer.TelawatService.PAUSE"
+        private const val ACTION_NEXT = "bassamalim.hidaya.features.telawatPlayer.TelawatService.NEXT"
+        private const val ACTION_PREV = "bassamalim.hidaya.features.telawatPlayer.TelawatService.PREVIOUS"
+        private const val ACTION_STOP = "bassamalim.hidaya.features.telawatPlayer.TelawatService.STOP"
     }
 
     override fun onCreate() {
@@ -438,7 +438,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             .setSubText(description.description)
             .setLargeIcon(description.iconBitmap)
             // Enable launching the player by clicking the notification
-            .setContentIntent(controller.sessionActivity)
+            .setContentIntent(getContentIntent())
             // Stop the service when the notification is swiped away
             .setDeleteIntent(
                 MediaButtonReceiver.buildMediaButtonPendingIntent(
@@ -557,10 +557,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private fun updateNotification(playing: Boolean) {
         if (playing)
             notificationBuilder.clearActions()
-            .addAction(prevAction).addAction(pauseAction).addAction(nextAction)
+                .addAction(prevAction).addAction(pauseAction).addAction(nextAction)
         else
             notificationBuilder.clearActions()
-            .addAction(prevAction).addAction(playAction).addAction(nextAction)
+                .addAction(prevAction).addAction(playAction).addAction(nextAction)
 
         notification = notificationBuilder.build()
         notificationManager.notify(id, notification)
@@ -693,7 +693,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     }
 
     private fun getContentIntent(): PendingIntent {
-        val intent = Intent(this, Activity::class.java)
+        val intent = Intent(this, Activity::class.java).apply {
+            action = Global.GO_TO_TELAWA
+            putExtra("media_id", mediaId)
+        }
 //            .putExtra("start_route",
 //                Screen.TelawatClient(
 //                    "back", mediaId!!

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.telawatClient
+package bassamalim.hidaya.features.telawatPlayer
 
 import android.app.Activity
 import android.os.Build

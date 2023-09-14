@@ -25,6 +25,7 @@ import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.helpers.Alarms
 import bassamalim.hidaya.core.nav.Navigation
 import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver
@@ -44,11 +45,13 @@ class Activity : ComponentActivity() {
     @Inject lateinit var db: AppDatabase
     @Inject lateinit var navigator: Navigator
     private var shouldWelcome = false
+    private var startRoute: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         shouldWelcome = PrefUtils.getBoolean(sp, Prefs.FirstTime)
+        startRoute = intent.getStringExtra("start_route")
 
         val isFirstLaunch = savedInstanceState == null
 
@@ -82,6 +85,12 @@ class Activity : ComponentActivity() {
             Global.STOP_ATHAN -> {
                 // stop athan if it is running
                 stopService(Intent(this, AthanService::class.java))
+            }
+            Global.GO_TO_TELAWA -> {
+                startRoute = Screen.TelawatClient(
+                    "back",
+                    intent.getStringExtra("media_id")!!
+                ).route
             }
         }
     }
@@ -165,8 +174,6 @@ class Activity : ComponentActivity() {
     }
 
     private fun launch() {
-        val navRoute = intent.getStringExtra("start_route")
-
         setContent {
             ActivityUtils.onActivityCreateSetLocale(LocalContext.current)
 
@@ -175,7 +182,7 @@ class Activity : ComponentActivity() {
             ) {
                 Navigation(
                     navigator = navigator,
-                    thenTo = navRoute,
+                    thenTo = startRoute,
                     shouldWelcome = shouldWelcome
                 )
             }

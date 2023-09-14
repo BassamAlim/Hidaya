@@ -35,11 +35,10 @@ import bassamalim.hidaya.features.radio.RadioClientRepo
 import bassamalim.hidaya.features.settings.SettingsRepo
 import bassamalim.hidaya.features.tv.TvRepo
 import bassamalim.hidaya.features.telawat.TelawatRepo
-import bassamalim.hidaya.features.telawatClient.TelawatClientRepo
+import bassamalim.hidaya.features.telawatPlayer.TelawatClientRepo
 import bassamalim.hidaya.features.telawatSuar.TelawatSuarRepo
 import bassamalim.hidaya.features.welcome.WelcomeRepo
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
 import dagger.Module

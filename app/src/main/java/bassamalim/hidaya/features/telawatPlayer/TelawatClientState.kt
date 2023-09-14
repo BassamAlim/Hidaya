@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.telawatClient
+package bassamalim.hidaya.features.telawatPlayer
 
 import android.support.v4.media.session.PlaybackStateCompat
 import bassamalim.hidaya.core.enums.DownloadState

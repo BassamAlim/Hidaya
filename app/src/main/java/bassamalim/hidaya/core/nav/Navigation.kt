@@ -42,7 +42,7 @@ import bassamalim.hidaya.features.quranViewer.QuranViewerUI
 import bassamalim.hidaya.features.radio.RadioClientUI
 import bassamalim.hidaya.features.settings.SettingsUI
 import bassamalim.hidaya.features.telawat.TelawatUI
-import bassamalim.hidaya.features.telawatClient.TelawatClientUI
+import bassamalim.hidaya.features.telawatPlayer.TelawatClientUI
 import bassamalim.hidaya.features.telawatSuar.TelawatSuarUI
 import bassamalim.hidaya.features.tv.TvUI
 import bassamalim.hidaya.features.welcome.WelcomeUI
