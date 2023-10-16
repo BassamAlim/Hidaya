@@ -556,7 +556,18 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private fun updatePbState(state: Int, buffered: Long) {
         stateBuilder.setState(state, player.currentPosition.toLong(), 1F)
-            .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+            .setActions(
+                PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                        PlaybackStateCompat.ACTION_PLAY or
+                        PlaybackStateCompat.ACTION_PAUSE or
+                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                        PlaybackStateCompat.ACTION_STOP or
+                        PlaybackStateCompat.ACTION_SEEK_TO or
+                        PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
+                        PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE or
+                        PlaybackStateCompat.ACTION_SEEK_TO
+            )
             .setBufferedPosition(buffered)
 
         mediaSession.setPlaybackState(stateBuilder.build())
