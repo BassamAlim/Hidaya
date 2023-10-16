@@ -14,10 +14,12 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.*
 import android.util.Log
+import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.Reciter
 import bassamalim.hidaya.core.nav.Navigator
@@ -33,6 +35,7 @@ import java.util.*
 import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.O)
+@OptIn(UnstableApi::class)
 @HiltViewModel
 class TelawatClientVM @Inject constructor(
     private val app: Application,
