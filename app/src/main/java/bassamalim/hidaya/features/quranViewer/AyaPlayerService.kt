@@ -86,7 +86,7 @@ class AyaPlayerService : Service(),
     private var currentPage = -1
     private var updateRecordCounter = 0
     private var suraEnding = false
-    private var resume = true
+    private var doNotResume = false
     private var channelId = "channel ID"
     private val actionPLAY = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.PLAY"
     private val actionPAUSE = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.PAUSE"
@@ -314,6 +314,8 @@ class AyaPlayerService : Service(),
 
             reciterId = PrefUtils.getString(pref, Prefs.AyaReciter).toInt()
 
+            doNotResume = lastPlayedIdx == -1 || givenMediaId.toInt() != allAyat[lastPlayedIdx].id
+
             val initialize = lastPlayedIdx == -1
 
             lastPlayedIdx = allAyat.indexOfFirst { aya -> aya.id == givenMediaId.toInt() }
@@ -323,7 +325,6 @@ class AyaPlayerService : Service(),
                 startService(Intent(applicationContext, AyaPlayerService::class.java))
                 updateMetadata(false)
             }
-            else resume = false
 
             onPlay()
         }
@@ -353,7 +354,7 @@ class AyaPlayerService : Service(),
             wifiLock.acquire()
 
             // start the player (custom call)
-            if (getState() == PlaybackStateCompat.STATE_PAUSED && resume) {
+            if (getState() == PlaybackStateCompat.STATE_PAUSED && !doNotResume) {
                 resume()
                 refresh()
             }
@@ -367,12 +368,12 @@ class AyaPlayerService : Service(),
         override fun onPause() {
             Log.i(Global.TAG, "In onPause of AyaPlayerService")
 
+            // pause the player
+            pause()
+
             // Update metadata and state
             updatePbState(PlaybackStateCompat.STATE_PAUSED)
             updateNotification(false)
-
-            // pause the player
-            pause()
 
             updateDurationRecord(updateRecordCounter)
 
@@ -434,11 +435,15 @@ class AyaPlayerService : Service(),
      * @param ayaIdx The aya to start playing from.
      */
     private fun playNew(ayaIdx: Int) {
+        Log.i(Global.TAG, "In playNew of AyaPlayerService")
+
         resetPlayers()
 
         timesPlayed = 1
 
         preparePlayer(players[0], ayaIdx)
+
+        doNotResume = false
     }
 
     override fun onPrepared(mp: MediaPlayer) {
@@ -447,6 +452,11 @@ class AyaPlayerService : Service(),
 
         if (p2.isPlaying) p2.setNextMediaPlayer(p1)
         else {
+            if (getState() == PlaybackStateCompat.STATE_PAUSED) {
+                Log.i(Global.TAG, "Paused in onPrepared of AyaPlayerService")
+                return
+            }
+
             p1.start()
             coordinator.track(allAyat[lastPlayedIdx].id)
             if (lastPlayedIdx + 1 < allAyat.size) preparePlayer(p2, lastPlayedIdx + 1)
@@ -500,6 +510,8 @@ class AyaPlayerService : Service(),
     }
 
     override fun onError(mp: MediaPlayer, what: Int, extra: Int): Boolean {
+        Log.e(Global.TAG, "In onError of AyaPlayerService: $what, $extra")
+
         // Not found
         Toast.makeText(
             this,
@@ -752,7 +764,6 @@ class AyaPlayerService : Service(),
                 pausedPlayer = i
             }
         }
-        resume = true
     }
 
     /**

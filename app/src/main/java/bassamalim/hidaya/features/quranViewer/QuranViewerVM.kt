@@ -137,7 +137,9 @@ class QuranViewerVM @Inject constructor(
         }
         else if (playerService.getState() == PlaybackStateCompat.STATE_PAUSED) {
             updateButton(PlaybackStateCompat.STATE_BUFFERING)
-            if (selected.value == null) playerService.transportControls.play()
+            if (selected.value == null) {
+                playerService.transportControls.play()
+            }
             else {
                 playerService.setChosenSura(selected.value!!.suraNum)
                 requestPlay(selected.value!!.id)
