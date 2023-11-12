@@ -144,6 +144,7 @@ class QuranViewerVM @Inject constructor(
                 playerService.setChosenSura(selected.value!!.suraNum)
                 requestPlay(selected.value!!.id)
             }
+            selected.value = null
         }
     }
 
