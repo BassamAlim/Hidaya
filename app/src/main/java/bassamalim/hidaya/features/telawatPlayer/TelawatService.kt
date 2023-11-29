@@ -55,7 +55,8 @@ import java.io.IOException
 import java.util.Locale
 import java.util.Random
 
-@UnstableApi @RequiresApi(api = Build.VERSION_CODES.O)
+@UnstableApi
+@RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private val id = 333
@@ -413,29 +414,28 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         intentFilter.addAction(ACTION_PREV)
         intentFilter.addAction(ACTION_STOP)
 
-        val pkg = packageName
         val flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         playAction = NotificationCompat.Action(
             R.drawable.ic_play_arrow, "Play", PendingIntent.getBroadcast(
-                this, id, Intent(ACTION_PLAY).setPackage(pkg), flags)
+                this, id, Intent(ACTION_PLAY).setPackage(packageName), flags)
         )
 
         pauseAction = NotificationCompat.Action(
             R.drawable.ic_baseline_pause, "Pause", PendingIntent.getBroadcast(
-                this, id, Intent(ACTION_PAUSE).setPackage(pkg), flags
+                this, id, Intent(ACTION_PAUSE).setPackage(packageName), flags
             )
         )
 
         nextAction = NotificationCompat.Action(
             R.drawable.ic_skip_next, "next", PendingIntent.getBroadcast(
-                this, id, Intent(ACTION_NEXT).setPackage(pkg), flags
+                this, id, Intent(ACTION_NEXT).setPackage(packageName), flags
             )
         )
 
         prevAction = NotificationCompat.Action(
             R.drawable.ic_skip_previous, "previous", PendingIntent.getBroadcast(
-                this, id, Intent(ACTION_PREV).setPackage(pkg), flags
+                this, id, Intent(ACTION_PREV).setPackage(packageName), flags
             )
         )
     }

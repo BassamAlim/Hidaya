@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.quranViewer
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -44,8 +46,10 @@ fun QuranViewerUI(
     vm: QuranViewerVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
+    val activity = LocalContext.current as Activity
 
     DisposableEffect(key1 = vm) {
+        vm.onStart(activity)
         onDispose { vm.onStop() }
     }
 
@@ -228,7 +232,7 @@ private fun PageContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val ayat =
-                if (isCurrentPage) st.ayat
+                if (isCurrentPage) st.pageAyat
                 else vm.buildPage(page + 1)
 
             if (st.viewType == List) ListItems(ayat, isCurrentPage, vm, st)
@@ -290,8 +294,8 @@ private fun PageItem(
             addStyle(
                 style = SpanStyle(
                     color =
-                        if (vm.selected.value == seqAya) AppTheme.colors.highlight
-                        else if (vm.tracked.value == seqAya) AppTheme.colors.track
+                        if (st.selectedAya == seqAya) AppTheme.colors.highlight
+                        else if (st.trackedAya == seqAya) AppTheme.colors.track
                         else AppTheme.colors.strongText
                 ),
                 start = seqAya.start,

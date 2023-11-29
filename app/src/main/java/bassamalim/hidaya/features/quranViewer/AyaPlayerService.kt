@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -15,28 +14,23 @@ import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
-import android.media.MediaPlayer
-import android.media.MediaPlayer.OnCompletionListener
-import android.media.MediaPlayer.OnErrorListener
-import android.media.MediaPlayer.OnPreparedListener
-import android.net.Uri
 import android.net.wifi.WifiManager
-import android.os.Binder
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.IBinder
 import android.os.Looper
-import android.os.PowerManager
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
-import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
+import androidx.media3.common.util.UnstableApi
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
@@ -44,27 +38,23 @@ import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.AyatDB
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
 import bassamalim.hidaya.core.utils.PrefUtils
-import java.util.Locale
-import kotlin.math.roundToInt
 
-class AyaPlayerService : Service(),
-    OnCompletionListener, OnPreparedListener, OnErrorListener, OnAudioFocusChangeListener {
+@UnstableApi
+@RequiresApi(api = Build.VERSION_CODES.O)
+class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
-    private val iBinder = LocalBinder()
     private val intentFilter = IntentFilter()
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var players: Array<MediaPlayer>
-    private lateinit var player: MediaPlayer
+    private lateinit var apm: AlternatingPlayersManager
     private lateinit var wifiLock: WifiManager.WifiLock
     private lateinit var db: AppDatabase
     private lateinit var pref: SharedPreferences
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var audioFocusRequest: AudioFocusRequest
     private lateinit var controller: MediaControllerCompat
-    lateinit var transportControls: MediaControllerCompat.TransportControls
-    private lateinit var allAyat: List<AyatDB>
     private lateinit var audioManager: AudioManager
     private lateinit var stateBuilder: PlaybackStateCompat.Builder
     private lateinit var mediaMetadata: MediaMetadataCompat
@@ -75,70 +65,190 @@ class AyaPlayerService : Service(),
     private lateinit var pauseAction: NotificationCompat.Action
     private lateinit var nextAction: NotificationCompat.Action
     private lateinit var prevAction: NotificationCompat.Action
+    private lateinit var ayat: List<AyatDB>
     private lateinit var reciterNames: List<String>
     private lateinit var suarNames: List<String>
     private val notificationId = 101
-    private var lastPlayedIdx = -1
     private var reciterId = -1
-    private var pausedPlayer = -1
-    private var chosenSura = -1
-    private var timesPlayed = 1
-    private var currentPage = -1
     private var updateRecordCounter = 0
-    private var suraEnding = false
-    private var doNotResume = false
     private var channelId = "channel ID"
-    private val actionPLAY = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.PLAY"
-    private val actionPAUSE = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.PAUSE"
-    private val actionNEXT = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.NEXT"
-    private val actionPREV = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.PREVIOUS"
-    private val actionSTOP = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.STOP"
 
-    inner class LocalBinder : Binder() {
-        val service: AyaPlayerService
-            get() = this@AyaPlayerService
+    companion object {
+        private const val MY_MEDIA_ROOT_ID = "media_root_id"
+        private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
+        private const val ACTION_PLAY = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.PLAY"
+        private const val ACTION_PAUSE = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.PAUSE"
+        private const val ACTION_NEXT = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.NEXT"
+        private const val ACTION_PREV = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.PREVIOUS"
+        private const val ACTION_STOP = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.STOP"
     }
 
-    private lateinit var coordinator: Coordinator
-    interface Coordinator {
-        fun onUiUpdate(state: Int)
-        fun nextPage()
+    interface PlayerCallback {
+        fun getPbState(): Int
+        fun setPbState(state: Int)
         fun track(ayaId: Int)
-    }
-    fun setCoordinator(coordinator: Coordinator) {
-        this.coordinator = coordinator
     }
 
     override fun onCreate() {
         super.onCreate()
-        // Perform one-time setup procedures
 
+        // perform one-time setup procedures
+        ActivityUtils.onActivityCreateSetLocale(applicationContext)
+
+        pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         db = DBUtils.getDB(this)
-        pref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        initSession()
-        initPlayers()
-        setupActions()
-
-        allAyat = db.ayatDao().getAll()
+        ayat = db.ayatDao().getAll()
         reciterNames = db.ayatRecitersDao().getNames()
         suarNames =
             if (PrefUtils.getLanguage(pref) == Language.ENGLISH) db.suarDao().getNamesEn()
             else db.suarDao().getNames()
 
+        initSession()
+        initAPM()
+        setupActions()
+
         initMetadata()
     }
 
-    //The system calls this method when an activity, requests the service be started
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        //Handle Intent action from MediaSession.TransportControls
         MediaButtonReceiver.handleIntent(mediaSession, intent)
-
-        return START_NOT_STICKY
+        return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onBind(intent: Intent): IBinder {
-        return iBinder
+    val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
+        override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
+            Log.i(Global.TAG, "In onPlayFromMediaId of AyaPlayerService")
+
+            reciterId = PrefUtils.getString(pref, Prefs.AyaReciter).toInt()
+
+            if (apm.isNotInitialized()) {
+                // Start the service
+                startService(Intent(applicationContext, AyaPlayerService::class.java))
+            }
+
+            // Set the session active (and update metadata and state)
+            mediaSession.isActive = true
+
+            val ayaId = mediaId.toInt()
+
+            buildNotification()
+
+            // Put the service in the foreground, post notification
+            startForeground(notificationId, notification)
+
+            wifiLock.acquire()
+
+            updatePbState(PlaybackStateCompat.STATE_PLAYING)
+            updateNotification(true)
+            updateMetadata(ayaId, false)
+
+            // Request audio focus for playback, this registers the afChangeListener
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && audioManager.requestAudioFocus(audioFocusRequest)
+                != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                return
+
+            // Register Receiver
+            registerReceiver(receiver, intentFilter)
+
+            apm.playFromMediaId(ayaIdx = ayaId-1)
+        }
+
+        // used as onResume
+        override fun onPlay() {
+            Log.i(Global.TAG, "In onPlay of AyaPlayerService")
+
+            if (apm.isNotInitialized()) {
+                // Start the service
+                startService(Intent(applicationContext, AyaPlayerService::class.java))
+            }
+
+            // Set the session active (and update metadata and state)
+            mediaSession.isActive = true
+
+            buildNotification()
+
+            // Put the service in the foreground, post notification
+            startForeground(notificationId, notification)
+
+            wifiLock.acquire()
+
+            updatePbState(PlaybackStateCompat.STATE_PLAYING)
+            updateNotification(true)
+
+            // Request audio focus for playback, this registers the afChangeListener
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && audioManager.requestAudioFocus(audioFocusRequest)
+                != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                return
+
+            // Register Receiver
+            registerReceiver(receiver, intentFilter)
+
+            apm.play()
+        }
+
+        override fun onPause() {
+            Log.i(Global.TAG, "In onPause of AyaPlayerService")
+
+            // Update metadata and state
+            updatePbState(PlaybackStateCompat.STATE_PAUSED)
+            updateNotification(false)
+
+            // pause the player
+            apm.pause()
+
+            // Update metadata and state
+
+            updateDurationRecord(updateRecordCounter)
+
+            handler.removeCallbacks(runnable)
+            abandonAudioFocus()
+
+            // Take the service out of the foreground, retain the notification
+            stopForeground()
+        }
+
+        override fun onStop() {
+            Log.i(Global.TAG, "In onStop of AyaPlayerService")
+
+            updatePbState(PlaybackStateCompat.STATE_STOPPED)
+
+            handler.removeCallbacks(runnable)
+            abandonAudioFocus()
+            unregisterReceiver()
+            if (wifiLock.isHeld) wifiLock.release()
+
+            updateDurationRecord(updateRecordCounter)
+
+            apm.release()
+
+            stopSelf()    // Stop the service
+            mediaSession.isActive = false    // Set the session inactive
+            stopForeground()
+        }
+
+        override fun onSkipToNext() {
+            super.onSkipToNext()
+            apm.nextAya()
+        }
+
+        override fun onSkipToPrevious() {
+            super.onSkipToPrevious()
+            apm.previousAya()
+        }
+
+        override fun onSeekTo(pos: Long) {
+            super.onSeekTo(pos)
+            apm.seekTo(pos)
+            updatePbState(getState())
+        }
+
+        override fun onSetRepeatMode(repeatMode: Int) {
+            super.onSetRepeatMode(repeatMode)
+            apm.setIsLooping(repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE)
+        }
     }
 
     private fun initSession() {
@@ -147,29 +257,40 @@ class AyaPlayerService : Service(),
 
         // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
         stateBuilder = PlaybackStateCompat.Builder().setActions(
-            PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
+            PlaybackStateCompat.ACTION_PLAY
+                    or PlaybackStateCompat.ACTION_PLAY_PAUSE
         )
         mediaSession.setPlaybackState(stateBuilder.build())
 
         // callback() has methods that handle callbacks from a media controller
         mediaSession.setCallback(callback)
 
-        //set MediaSession -> ready to receive media commands
-        mediaSession.isActive = true
-
-        //Get MediaSessions transport controls
-        transportControls = mediaSession.controller.transportControls
+        // Set the session's token so that client activities can communicate with it.
+        sessionToken = mediaSession.sessionToken
     }
 
     /**
      * Initialize the two media players and the wifi lock
      */
-    private fun initPlayers() {
-        players = arrayOf(MediaPlayer(), MediaPlayer())
-        player = players[0]
+    private fun initAPM() {
+        apm = AlternatingPlayersManager(
+            ctx = this,
+            sp = pref,
+            db = db,
+            callback = object : PlayerCallback {
+                override fun setPbState(state: Int) {
+                    updatePbState(state)
+                }
 
-        players[0].setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
-        players[1].setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+                override fun getPbState(): Int {
+                    return controller.playbackState.state
+                }
+
+                override fun track(ayaId: Int) {
+                    updateMetadata(ayaId, false)
+                }
+            }
+        )
 
         wifiLock =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
@@ -186,7 +307,7 @@ class AyaPlayerService : Service(),
             .setUsage(AudioAttributes.USAGE_MEDIA)
             .build()
 
-        player.setAudioAttributes(attrs)
+        apm.setAudioAttributes(attrs)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
@@ -194,49 +315,42 @@ class AyaPlayerService : Service(),
                 .setAudioAttributes(attrs)
                 .build()
         }
-
-        players.map { mediaPlayer ->
-            mediaPlayer.setOnPreparedListener(this)
-            mediaPlayer.setOnCompletionListener(this)
-            mediaPlayer.setOnErrorListener(this)
-        }
     }
 
     private fun setupActions() {
         intentFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
-        intentFilter.addAction(actionPLAY)
-        intentFilter.addAction(actionPAUSE)
-        intentFilter.addAction(actionNEXT)
-        intentFilter.addAction(actionPREV)
-        intentFilter.addAction(actionSTOP)
+        intentFilter.addAction(ACTION_PLAY)
+        intentFilter.addAction(ACTION_PAUSE)
+        intentFilter.addAction(ACTION_NEXT)
+        intentFilter.addAction(ACTION_PREV)
+        intentFilter.addAction(ACTION_STOP)
 
-        val pkg = packageName
         val flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         playAction = NotificationCompat.Action(
             R.drawable.ic_play_arrow, "Play", PendingIntent.getBroadcast(
                 this@AyaPlayerService, notificationId,
-                Intent(actionPLAY).setPackage(pkg), flags)
+                Intent(ACTION_PLAY).setPackage(packageName), flags)
         )
 
         pauseAction = NotificationCompat.Action(
             R.drawable.ic_baseline_pause, "Pause", PendingIntent.getBroadcast(
                 this@AyaPlayerService, notificationId,
-                Intent(actionPAUSE).setPackage(pkg), flags
+                Intent(ACTION_PAUSE).setPackage(packageName), flags
             )
         )
 
         nextAction = NotificationCompat.Action(
-            R.drawable.ic_skip_next, "next", PendingIntent.getBroadcast(
+            R.drawable.ic_skip_next, "Next", PendingIntent.getBroadcast(
                 this@AyaPlayerService, notificationId,
-                Intent(actionNEXT).setPackage(pkg), flags
+                Intent(ACTION_NEXT).setPackage(packageName), flags
             )
         )
 
         prevAction = NotificationCompat.Action(
-            R.drawable.ic_skip_previous, "previous", PendingIntent.getBroadcast(
+            R.drawable.ic_skip_previous, "Previous", PendingIntent.getBroadcast(
                 this@AyaPlayerService, notificationId,
-                Intent(actionPREV).setPackage(pkg), flags
+                Intent(ACTION_PREV).setPackage(packageName), flags
             )
         )
     }
@@ -308,225 +422,6 @@ class AyaPlayerService : Service(),
         }
     }
 
-    val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
-        override fun onPlayFromMediaId(givenMediaId: String, extras: Bundle) {
-            Log.i(Global.TAG, "In onPlayFromMediaId of AyaPlayerService")
-
-            reciterId = PrefUtils.getString(pref, Prefs.AyaReciter).toInt()
-
-            doNotResume = lastPlayedIdx == -1 || givenMediaId.toInt() != allAyat[lastPlayedIdx].id
-
-            val initialize = lastPlayedIdx == -1
-
-            lastPlayedIdx = allAyat.indexOfFirst { aya -> aya.id == givenMediaId.toInt() }
-
-            if (initialize) {
-                // Start the service
-                startService(Intent(applicationContext, AyaPlayerService::class.java))
-                updateMetadata(false)
-            }
-
-            onPlay()
-        }
-
-        override fun onPlay() {
-            Log.i(Global.TAG, "In onPlay of AyaPlayerService")
-
-            buildNotification()
-
-            coordinator.onUiUpdate(PlaybackStateCompat.STATE_PLAYING)
-            updateNotification(true)
-
-            // Request audio focus for playback, this registers the afChangeListener
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                && audioManager.requestAudioFocus(audioFocusRequest)
-                != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                return
-
-            // Set the session active  (and update metadata and state)
-            mediaSession.isActive = true
-            // Put the service in the foreground, post notification
-            startForeground(notificationId, notification)
-
-            // Register Receiver
-            registerReceiver(receiver, intentFilter)
-
-            wifiLock.acquire()
-
-            // start the player (custom call)
-            if (getState() == PlaybackStateCompat.STATE_PAUSED && !doNotResume) {
-                resume()
-                refresh()
-            }
-            else playNew(lastPlayedIdx)
-
-            updatePbState(PlaybackStateCompat.STATE_PLAYING)
-            coordinator.onUiUpdate(PlaybackStateCompat.STATE_PLAYING)
-            updateNotification(true)
-        }
-
-        override fun onPause() {
-            Log.i(Global.TAG, "In onPause of AyaPlayerService")
-
-            // pause the player
-            pause()
-
-            // Update metadata and state
-            updatePbState(PlaybackStateCompat.STATE_PAUSED)
-            updateNotification(false)
-
-            updateDurationRecord(updateRecordCounter)
-
-            handler.removeCallbacks(runnable)
-            removeAudioFocus()
-
-            // Take the service out of the foreground, retain the notification
-            stopForeground()
-
-            coordinator.onUiUpdate(PlaybackStateCompat.STATE_PAUSED)
-        }
-
-        override fun onStop() {
-            Log.i(Global.TAG, "In onStop of AyaPlayerService")
-
-            coordinator.onUiUpdate(PlaybackStateCompat.STATE_PAUSED)
-            updatePbState(PlaybackStateCompat.STATE_STOPPED)
-
-            handler.removeCallbacks(runnable)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                audioManager.abandonAudioFocusRequest(audioFocusRequest) // Abandon audio focus
-            unregisterReceiver()
-            if (wifiLock.isHeld) wifiLock.release()
-
-            updateDurationRecord(updateRecordCounter)
-
-            releasePlayers()
-
-            stopSelf()    // Stop the service
-            mediaSession.isActive = false    // Set the session inactive
-            stopForeground()
-        }
-
-        override fun onSkipToNext() {
-            super.onSkipToNext()
-            nextAya()
-        }
-
-        override fun onSkipToPrevious() {
-            super.onSkipToPrevious()
-            previousAya()
-        }
-
-        override fun onSeekTo(pos: Long) {
-            super.onSeekTo(pos)
-            player.seekTo(pos.toInt())
-            updatePbState(getState())
-        }
-
-        override fun onSetRepeatMode(repeatMode: Int) {
-            super.onSetRepeatMode(repeatMode)
-            player.isLooping = repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE
-        }
-    }
-
-    /**
-     * The function's purpose is to prepare the first player to play the given `aya`.
-     *
-     * @param ayaIdx The aya to start playing from.
-     */
-    private fun playNew(ayaIdx: Int) {
-        Log.i(Global.TAG, "In playNew of AyaPlayerService")
-
-        resetPlayers()
-
-        timesPlayed = 1
-
-        preparePlayer(players[0], ayaIdx)
-
-        doNotResume = false
-    }
-
-    override fun onPrepared(mp: MediaPlayer) {
-        val p1 = players[index(mp)]
-        val p2 = players[oIndex(mp)]
-
-        if (p2.isPlaying) p2.setNextMediaPlayer(p1)
-        else {
-            if (getState() == PlaybackStateCompat.STATE_PAUSED) {
-                Log.i(Global.TAG, "Paused in onPrepared of AyaPlayerService")
-                return
-            }
-
-            p1.start()
-            coordinator.track(allAyat[lastPlayedIdx].id)
-            if (lastPlayedIdx + 1 < allAyat.size) preparePlayer(p2, lastPlayedIdx + 1)
-        }
-
-        reciterId = PrefUtils.getString(pref, Prefs.AyaReciter).toInt()
-        updateMetadata(true) // For the duration
-
-        refresh()
-    }
-
-    override fun onCompletion(mp: MediaPlayer) {
-        val p1 = players[index(mp)]
-        val p2 = players[oIndex(mp)]
-
-        val repeat = PrefUtils.getFloat(pref, Prefs.AyaRepeat).roundToInt()
-        if (repeat == 11) {
-            preparePlayer(p1, lastPlayedIdx)
-            p2.reset()
-            timesPlayed = 1
-        }
-        else if (timesPlayed < repeat) {
-            preparePlayer(p1, lastPlayedIdx)
-            p2.reset()
-            timesPlayed++
-        }
-        else {
-            timesPlayed = 1
-            if (getState() == PlaybackStateCompat.STATE_PAUSED) {
-                if (lastPlayedIdx < allAyat.size) {
-                    val newAyaIdx = lastPlayedIdx + 1
-                    val newAya = allAyat[newAyaIdx]
-                    coordinator.track(newAya.id)
-                    if (newAya.id < allAyat.size) preparePlayer(p1, newAyaIdx)
-                    lastPlayedIdx = newAyaIdx
-                }
-                else ended()
-            }
-            else if (lastPlayedIdx < allAyat.size + 1) {
-                val newAyaIdx = lastPlayedIdx + 1
-                val newAya = allAyat[newAyaIdx]
-                coordinator.track(newAya.id)
-                val newerAyaIdx = newAyaIdx + 1
-                lastPlayedIdx = newAyaIdx
-                if (newAya.id < allAyat.size) preparePlayer(p1, newerAyaIdx)
-            }
-            else ended()
-        }
-
-        updateDurationRecord(updateRecordCounter)
-    }
-
-    override fun onError(mp: MediaPlayer, what: Int, extra: Int): Boolean {
-        Log.e(Global.TAG, "In onError of AyaPlayerService: $what, $extra")
-
-        // Not found
-        Toast.makeText(
-            this,
-            getString(R.string.recitation_not_available),
-            Toast.LENGTH_SHORT
-        ).show()
-
-        updatePbState(PlaybackStateCompat.STATE_STOPPED)
-        coordinator.onUiUpdate(PlaybackStateCompat.STATE_PAUSED)
-
-        getUri(allAyat[lastPlayedIdx])
-
-        return true
-    }
-
     private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
@@ -534,23 +429,23 @@ class AyaPlayerService : Service(),
                     Log.i(Global.TAG, "In ACTION_BECOMING_NOISY")
                     callback.onPause()
                 }
-                actionPLAY -> {
+                ACTION_PLAY -> {
                     Log.i(Global.TAG, "In ACTION_PLAY")
                     callback.onPlay()
                 }
-                actionPAUSE -> {
+                ACTION_PAUSE -> {
                     Log.i(Global.TAG, "In ACTION_PAUSE")
                     callback.onPause()
                 }
-                actionNEXT -> {
+                ACTION_NEXT -> {
                     Log.i(Global.TAG, "In ACTION_NEXT")
-                    nextAya()
+                    apm.nextAya()
                 }
-                actionPREV -> {
+                ACTION_PREV -> {
                     Log.i(Global.TAG, "In ACTION_PREV")
-                    previousAya()
+                    apm.previousAya()
                 }
-                actionSTOP -> {
+                ACTION_STOP -> {
                     Log.i(Global.TAG, "In ACTION_STOP")
                     callback.onStop()
                 }
@@ -585,26 +480,21 @@ class AyaPlayerService : Service(),
     private fun updatePbState(state: Int) {
         var currentPosition = 0L
         try {
-            currentPosition = player.currentPosition.toLong()
-        } catch (_: IllegalStateException) {}
+            currentPosition = apm.getCurrentPosition().toLong()
+        } catch (_: Exception) {}
 
         stateBuilder.setState(state, currentPosition, 1F)
             .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
-            .setBufferedPosition(controller.playbackState.bufferedPosition)
         mediaSession.setPlaybackState(stateBuilder.build())
     }
 
     override fun onAudioFocusChange(focusChange: Int) {
         when (focusChange) {
             AudioManager.AUDIOFOCUS_GAIN -> {
-                players[0].setVolume(1.0f, 1.0f)
-                players[1].setVolume(1.0f, 1.0f)
+                apm.setVolume(1.0f)
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                if (getState() == PlaybackStateCompat.STATE_PLAYING) {
-                    players[0].setVolume(0.3f, 0.3f)
-                    players[1].setVolume(0.3f, 0.3f)
-                }
+                if (getState() == PlaybackStateCompat.STATE_PLAYING) apm.setVolume(0.3f)
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS -> {
                 if (getState() == PlaybackStateCompat.STATE_PLAYING) callback.onPause()
@@ -612,7 +502,7 @@ class AyaPlayerService : Service(),
         }
     }
 
-    private fun removeAudioFocus(): Boolean {
+    private fun abandonAudioFocus(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             AudioManager.AUDIOFOCUS_REQUEST_GRANTED ==
                     audioManager.abandonAudioFocusRequest(audioFocusRequest)
@@ -645,8 +535,8 @@ class AyaPlayerService : Service(),
         )
     }
 
-    private fun updateMetadata(duration: Boolean) {
-        val aya = allAyat[lastPlayedIdx]
+    private fun updateMetadata(ayaId: Int = apm.ayaIdx, duration: Boolean) {
+        val aya = getAya(ayaId)
 
         mediaMetadata = MediaMetadataCompat.Builder()
             .putBitmap(    //Notification icon in card
@@ -668,170 +558,29 @@ class AyaPlayerService : Service(),
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, aya.ayaNum.toString())
             .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, aya.ayaNum.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
-                (if (duration) player.duration else 0).toLong()
+                (if (duration) apm.getDuration() else 0).toLong()
             )
             .build()
+//            .apply {
+//                bundle.putInt("page_num", page)
+//            }
 
         mediaSession.setMetadata(mediaMetadata)
-    }
-
-    /**
-     * It checks if the user wants the player to stop on the end of the sura and the given aya is
-     * from a new sura, meaning the sura is ending
-     * if so it checks the flag that says that there is no more ayat to prepare
-     * if so it stops playing
-     * if not it sets the flag to no more ayat
-     * if not it prepares the player by resetting it and setting the data source and calling
-     * MediaPlayer's prepare()
-     *
-     * @param player The MediaPlayer object that will be used to play the audio.
-     * @param ayaIdx the aya to play
-     */
-    private fun preparePlayer(player: MediaPlayer, ayaIdx: Int) {
-        val aya = allAyat[ayaIdx]
-
-        if (PrefUtils.getBoolean(pref, Prefs.StopOnSuraEnd)
-            && aya.suraNum != chosenSura) {
-            if (suraEnding) stopPlaying()
-            else suraEnding = true
-            return
-        }
-
-        player.reset()
-
-        val uri: Uri
-        try {
-            uri = getUri(aya)
-            player.setDataSource(applicationContext, uri)
-            player.prepareAsync()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.e(Global.TAG, "Reciter not found in ayat telawa")
-        }
-    }
-
-    /**
-     * If the player is playing and there is a next aya
-     * prepare the next aya and reset the other player
-     */
-    fun nextAya() {
-        if (getState() != PlaybackStateCompat.STATE_PLAYING
-            || lastPlayedIdx + 2 > allAyat.size)
-            return
-
-        lastPlayedIdx++
-        coordinator.track(allAyat[lastPlayedIdx].id)
-
-        for (i in 0..1) {
-            if (players[i].isPlaying) {
-                preparePlayer(players[i], lastPlayedIdx)
-                players[o(i)].reset()
-                break
-            }
-        }
-
-        updateMetadata(false)
-    }
-
-    /**
-     * If the player is playing and there is a previous aya
-     * prepare the next aya and reset the other player
-     */
-    fun previousAya() {
-        if (getState() != PlaybackStateCompat.STATE_PLAYING || lastPlayedIdx - 1 < 0) return
-
-        lastPlayedIdx--
-        coordinator.track(allAyat[lastPlayedIdx].id)
-
-        for (i in 0..1) {
-            if (players[i].isPlaying) {
-                preparePlayer(players[i], lastPlayedIdx)
-                players[o(i)].reset()
-                break
-            }
-        }
-
-        updateMetadata(false)
-    }
-
-    /**
-     * Pause the two players
-     */
-    private fun pause() {
-        for (i in 0..1) {
-            if (players[i].isPlaying) {
-                players[i].pause()
-                pausedPlayer = i
-            }
-        }
-    }
-
-    /**
-     * Resume the last player that was playing.
-     */
-    fun resume() {
-        if (pausedPlayer != -1) players[pausedPlayer].start()
-        pausedPlayer = -1
-    }
-
-    private fun ended() {
-        val quranPages = 604
-        if (PrefUtils.getBoolean(pref, Prefs.StopOnPageEnd)) stopPlaying()
-        else if (currentPage < quranPages && lastPlayedIdx + 1 == allAyat.size) {
-            coordinator.nextPage()
-
-            callback.onPlayFromMediaId("0", null)
-        }
-    }
-
-    private fun stopPlaying() {
-        updatePbState(PlaybackStateCompat.STATE_STOPPED)
-        coordinator.onUiUpdate(PlaybackStateCompat.STATE_PAUSED)
-
-        resetPlayers()
-        releasePlayers()
-    }
-
-    private fun getUri(aya: AyatDB): Uri {
-        val choice = PrefUtils.getString(pref, Prefs.AyaReciter).toInt()
-        val sources = db.ayatTelawaDao().getReciter(choice)
-
-        var uri = "https://www.everyayah.com/data/"
-        uri += sources[0].source
-        uri += String.format(Locale.US, "%03d%03d.mp3", aya.suraNum, aya.ayaNum)
-
-        return Uri.parse(uri)
     }
 
     fun getState(): Int {
         return controller.playbackState.state
     }
 
-    fun setChosenPage(currentPage: Int) {
-        this.currentPage = currentPage
-    }
+    private fun getAya(id: Int) = ayat[id-1]
 
-    fun setChosenSura(chosenSura: Int) {
-        this.chosenSura = chosenSura
-    }
-
-    private fun o(i: Int): Int {
-        return (i + 1) % 2
-    }
-
-    fun finish() {
-        releasePlayers()
-    }
-
-    private fun index(mp: MediaPlayer): Int {
-        return if (mp == players[0]) 0
-        else 1
-    }
-
-    private fun oIndex(mp: MediaPlayer): Int {
-        return if (mp == players[0]) 1
-        else 0
-    }
+//    fun setChosenPage(currentPage: Int) {
+//        this.page = currentPage
+//    }
+//
+//    fun setChosenSura(chosenSura: Int) {
+//        this.sura = chosenSura
+//    }
 
     private fun updateDurationRecord(amount: Int) {
         val old = PrefUtils.getLong(pref, Prefs.TelawatPlaybackRecord)
@@ -844,14 +593,44 @@ class AyaPlayerService : Service(),
         updateRecordCounter = 0
     }
 
-    private fun resetPlayers() {
-        players[0].reset()
-        players[1].reset()
+    override fun onGetRoot(
+        clientPackageName: String, clientUid: Int, rootHints: Bundle?
+    ): BrowserRoot {
+        // (Optional) Control the level of access for the specified package name.
+        return if (allowBrowsing(clientPackageName, clientUid)) {
+            // Returns a root ID that clients can use with onLoadChildren() to retrieve
+            // the content hierarchy.
+            BrowserRoot(AyaPlayerService.MY_MEDIA_ROOT_ID, null)
+        } else {
+            // Clients can connect, but this BrowserRoot is an empty hierarchy
+            // so onLoadChildren returns nothing. This disables the ability to browse for content.
+            BrowserRoot(AyaPlayerService.MY_EMPTY_MEDIA_ROOT_ID, null)
+        }
     }
 
-    private fun releasePlayers() {
-        players[0].release()
-        players[1].release()
+    override fun onLoadChildren(
+        parentId: String, result: Result<List<MediaBrowserCompat.MediaItem?>?>
+    ) {
+        /*//  Browsing not allowed
+        if (TextUtils.equals(MY_EMPTY_MEDIA_ROOT_ID, parentMediaId)) {
+            result.sendResult(null);
+            return;
+        }
+        // Assume for example that the music catalog is already loaded/cached.
+        List<MediaItem> mediaItems = new ArrayList<>();
+        // Check if this is the root menu:
+        if (MY_MEDIA_ROOT_ID.equals(parentMediaId)) {
+            // Build the MediaItem objects for the top level,
+            // and put them in the mediaItems list...
+        } else {
+            // Examine the passed parentMediaId to see which submenu we're at,
+            // and put the children of that menu in the mediaItems list...
+        }
+        result.sendResult(mediaItems);*/
+    }
+
+    private fun allowBrowsing(clientPackageName: String, clientUid: Int): Boolean {
+        return true
     }
 
     private fun stopForeground() {
@@ -876,11 +655,11 @@ class AyaPlayerService : Service(),
 
         handler.removeCallbacks(runnable)
 
-        releasePlayers()
+        apm.release()
 
         wifiLock.release()
 
-        removeAudioFocus()
+        abandonAudioFocus()
 
         unregisterReceiver()
     }

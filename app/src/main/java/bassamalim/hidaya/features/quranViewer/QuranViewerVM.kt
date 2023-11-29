@@ -1,22 +1,28 @@
 package bassamalim.hidaya.features.quranViewer
 
+import android.app.Activity
 import android.app.Application
 import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.IBinder
 import android.os.Looper
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import android.widget.Toast
+import androidx.annotation.OptIn
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInParent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.media3.common.util.UnstableApi
+import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.QViewType
 import bassamalim.hidaya.core.models.Aya
@@ -39,6 +45,7 @@ class QuranViewerVM @Inject constructor(
     private var initialSuraId = savedStateHandle.get<Int>("sura_id") ?: 0
     private val page = savedStateHandle.get<Int>("page") ?: 0
 
+    private lateinit var activity: Activity
     val language = repo.getLanguage()
     val numeralsLanguage = repo.getNumeralsLanguage()
     val theme = repo.getTheme()
@@ -49,7 +56,7 @@ class QuranViewerVM @Inject constructor(
     private val suraNames =
         if (language == Language.ENGLISH) repo.getSuraNamesEn()
         else repo.getSuraNames()
-    private val ayatDB = repo.getAyat()
+    private val ayat = repo.getAyat()
     private val handler = Handler(Looper.getMainLooper())
     private var suraNum = 0
     private var bookmarkedPage = repo.getBookmarkedPage()
@@ -59,12 +66,9 @@ class QuranViewerVM @Inject constructor(
     private var lastClickedId = -1
     var scrollTo = -1F
         private set
-    val selected = mutableStateOf<Aya?>(null)
-    var tracked = mutableStateOf<Aya?>(null)
-    private var binder : AyaPlayerService.LocalBinder? = null
-    private var serviceBound = false
-    private var tc: MediaControllerCompat.TransportControls? = null
-    private var uiListener: AyaPlayerService.Coordinator? = null
+    private var mediaBrowser: MediaBrowserCompat? = null
+    private lateinit var controller: MediaControllerCompat
+    private lateinit var tc: MediaControllerCompat.TransportControls
 
     private val _uiState = MutableStateFlow(QuranViewerState(
         pageNum = initialPage,
@@ -73,20 +77,21 @@ class QuranViewerVM @Inject constructor(
             else repo.getViewType(),
         textSize = repo.getTextSize(),
         isBookmarked = bookmarkedPage == initialPage,
-        ayat = buildPage(initialPage),
+        pageAyat = buildPage(initialPage),
         tutorialDialogShown = repo.getShowTutorial()
     ))
     val uiState = _uiState.asStateFlow()
 
-    fun onStart() {
-
+    fun onStart(activity: Activity) {
+        this.activity = activity
     }
 
     fun onStop() {
-        if (serviceBound) {
-            app.unbindService(serviceConnection)
-            serviceBound = false
-        }
+        MediaControllerCompat.getMediaController(activity)
+            ?.unregisterCallback(controllerCallback)
+
+        mediaBrowser?.disconnect()
+        mediaBrowser = null
 
         handler.removeCallbacks(runnable)
     }
@@ -126,34 +131,43 @@ class QuranViewerVM @Inject constructor(
     }
 
     fun onPlayPauseClick() {
-        val playerService = binder?.service
-        if (playerService == null) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            Toast.makeText(
+                activity,
+                activity.getString(R.string.feature_not_supported),
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        if (mediaBrowser == null) {
             updateButton(PlaybackStateCompat.STATE_BUFFERING)
             setupPlayer()
         }
-        else if (playerService.getState() == PlaybackStateCompat.STATE_PLAYING) {
+        else if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
             updateButton(PlaybackStateCompat.STATE_PAUSED)
-            playerService.transportControls.pause()
+            tc.pause()
         }
-        else if (playerService.getState() == PlaybackStateCompat.STATE_PAUSED) {
+        else if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED) {
             updateButton(PlaybackStateCompat.STATE_BUFFERING)
-            if (selected.value == null) {
-                playerService.transportControls.play()
+            if (_uiState.value.selectedAya == null) {
+                tc.play()
             }
             else {
-                playerService.setChosenSura(selected.value!!.suraNum)
-                requestPlay(selected.value!!.id)
+                requestPlay(_uiState.value.selectedAya!!.id)
             }
-            selected.value = null
+            _uiState.update { it.copy(
+                selectedAya = null
+            )}
         }
     }
 
     fun onRewindClick() {
-        binder?.service?.transportControls?.skipToPrevious()
+        tc.rewind()
     }
 
     fun onFastForwardClick() {
-        binder?.service?.transportControls?.skipToNext()
+        tc.fastForward()
     }
 
     fun onSettingsClick() {
@@ -163,16 +177,18 @@ class QuranViewerVM @Inject constructor(
     }
 
     fun onAyaClick(ayaId: Int, offset: Int) {
-        val startIdx = _uiState.value.ayat.indexOfFirst { it.id == ayaId }
+        val startIdx = _uiState.value.pageAyat.indexOfFirst { it.id == ayaId }
 
         val maxDuration = 1200
-        for (idx in startIdx until _uiState.value.ayat.size) {
-            val aya = _uiState.value.ayat[idx]
+        for (idx in startIdx until _uiState.value.pageAyat.size) {
+            val aya = _uiState.value.pageAyat[idx]
             if (offset < aya.end) {
                 // double click
                 if (aya.id == lastClickedId &&
                     System.currentTimeMillis() < lastClickT + maxDuration) {
-                    selected.value = null
+                    _uiState.update { it.copy(
+                        selectedAya = null
+                    )}
 
                     _uiState.update { it.copy(
                         infoDialogShown = true,
@@ -180,8 +196,16 @@ class QuranViewerVM @Inject constructor(
                     )}
                 }
                 else {  // single click
-                    if (selected.value == aya) selected.value = null
-                    else selected.value = aya
+                    if (_uiState.value.selectedAya == aya) {
+                        _uiState.update { it.copy(
+                            selectedAya = null
+                        )}
+                    }
+                    else {
+                        _uiState.update { it.copy(
+                            selectedAya = aya
+                        )}
+                    }
                 }
 
                 lastClickedId = aya.id
@@ -229,16 +253,16 @@ class QuranViewerVM @Inject constructor(
     }
 
     fun buildPage(pageNumber: Int): ArrayList<Aya> {
-        val ayat = ArrayList<Aya>()
+        val pageAyat = ArrayList<Aya>()
 
         // get page start
-        var counter = ayatDB.indexOfFirst { aya -> aya.page == pageNumber }
+        var counter = ayat.indexOfFirst { aya -> aya.page == pageNumber }
         do {
-            val aya = ayatDB[counter]
+            val aya = ayat[counter]
             val suraNum = aya.suraNum // starts from 1
             val ayaNum = aya.ayaNum
 
-            ayat.add(
+            pageAyat.add(
                 Aya(
                     aya.id, aya.juz, suraNum, suraNames[suraNum - 1], ayaNum,
                     "${aya.ayaText} ", aya.translationEn, aya.tafseer
@@ -246,18 +270,18 @@ class QuranViewerVM @Inject constructor(
             )
 
             counter++
-        } while (counter != Global.QURAN_AYAT && ayatDB[counter].page == pageNumber)
+        } while (counter != Global.QURAN_AYAT && ayat[counter].page == pageNumber)
 
-        return ayat
+        return pageAyat
     }
 
     private fun updatePageState(pageNumber: Int) {
-        suraNum = ayatDB.first { aya -> aya.page == pageNumber }.suraNum - 1
+        suraNum = ayat.first { aya -> aya.page == pageNumber }.suraNum - 1
         _uiState.update { it.copy(
             pageNum = pageNumber,
             suraName = suraNames[suraNum],
-            juzNum = ayatDB.first { aya -> aya.page == pageNumber }.juz,
-            ayat = buildPage(pageNumber),
+            juzNum = ayat.first { aya -> aya.page == pageNumber }.juz,
+            pageAyat = buildPage(pageNumber),
             isBookmarked = bookmarkedPage == pageNumber
         )}
     }
@@ -282,60 +306,101 @@ class QuranViewerVM @Inject constructor(
             repo.setWerdDone()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    @OptIn(UnstableApi::class)
     private fun setupPlayer() {
-        uiListener = object : AyaPlayerService.Coordinator {
-            override fun onUiUpdate(state: Int) {
-                updateButton(state)
-            }
+        mediaBrowser = MediaBrowserCompat(
+            app,
+            ComponentName(app, AyaPlayerService::class.java),
+            connectionCallbacks,
+            null
+        )
+        mediaBrowser?.connect()
 
-            override fun nextPage() {
-                if (_uiState.value.pageNum < Global.QURAN_PAGES)
-                    updatePageState(_uiState.value.pageNum + 1)
-            }
-
-            override fun track(ayaId: Int) {
-                val idx = _uiState.value.ayat.indexOfFirst { aya -> aya.id == ayaId }
-
-                if (idx == -1) return  // not the same page
-
-                tracked.value = _uiState.value.ayat[idx]
-            }
-        }
-
-        val playerIntent = Intent(app, AyaPlayerService::class.java)
-        app.startService(playerIntent)
-        app.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+        activity.volumeControlStream = AudioManager.STREAM_MUSIC
     }
 
-    //Binding this Client to the AudioPlayer Service
-    private val serviceConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+    fun track(ayaId: Int) {
+        val idx = _uiState.value.pageAyat.indexOfFirst { aya -> aya.id == ayaId }
+
+        if (idx == -1) return  // not the same page
+
+        _uiState.update { it.copy(
+            trackedAya = _uiState.value.pageAyat[idx]
+        )}
+    }
+
+    private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
+        override fun onConnected() {
             Log.i(Global.TAG, "In onServiceConnected")
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            binder = service as AyaPlayerService.LocalBinder
-            val playerService = binder?.service
-            tc = playerService!!.transportControls
-            serviceBound = true
 
-            if (selected.value == null) selected.value = _uiState.value.ayat[0]
+            if (mediaBrowser == null) return
 
-            playerService.setChosenPage(_uiState.value.pageNum)
-            playerService.setCoordinator(uiListener!!)
-            playerService.setChosenSura(selected.value!!.suraNum)
+            // Create a MediaControllerCompat
+            val mediaController = MediaControllerCompat(app, mediaBrowser!!.sessionToken)
 
-            requestPlay(selected.value!!.id)
+            // Save the controller
+            MediaControllerCompat.setMediaController(activity, mediaController)
 
-            selected.value = null
+            if (_uiState.value.selectedAya == null) {
+                _uiState.update { it.copy(
+                    selectedAya = _uiState.value.pageAyat[0]
+                )}
+            }
+
+            // Finish building the UI
+            buildTransportControls()
+
+            requestPlay(_uiState.value.selectedAya!!.id)
         }
 
-        override fun onServiceDisconnected(name: ComponentName) {
-            serviceBound = false
+        override fun onConnectionSuspended() {
+            Log.e(Global.TAG, "Connection suspended in TelawatClient")
+            // The Service has crashed.
         }
+
+        override fun onConnectionFailed() {
+            Log.e(Global.TAG, "Connection failed in TelawatClient")
+            // The Service has refused our connection
+        }
+    }
+
+    private var controllerCallback = object : MediaControllerCompat.Callback() {
+        override fun onMetadataChanged(metadata: MediaMetadataCompat) {
+            // To change the metadata inside the app when the user changes it from the notification
+            track(metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt())
+
+            val pageNumber = metadata.bundle.getInt("page_num")
+            if (pageNumber == _uiState.value.pageNum + 1)  // next page
+                updatePageState(_uiState.value.pageNum + 1)
+        }
+
+        override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
+            // To change the playback state inside the app when the user changes it
+            // from the notification
+            updateButton(state.state)
+        }
+
+        override fun onSessionDestroyed() {
+            mediaBrowser?.disconnect()
+        }
+    }
+
+    private fun buildTransportControls() {
+        controller = MediaControllerCompat.getMediaController(activity)
+        tc = controller.transportControls
+
+        // Register a Callback to stay in sync
+        controller.registerCallback(controllerCallback)
     }
 
     private fun requestPlay(ayaId: Int) {
         Executors.newSingleThreadExecutor().execute {
-            tc!!.playFromMediaId(ayaId.toString(), Bundle())
+            tc.playFromMediaId(ayaId.toString(), Bundle())
+
+            _uiState.update { it.copy(
+                selectedAya = null
+            )}
         }
     }
 

@@ -94,7 +94,11 @@
         <service
             android:name=".features.quranViewer.AyaPlayerService"
             android:exported="true"
-            android:permission="none"/>
+            android:permission="none">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
 
         <meta-data
             android:name="firebase_performance_logcat_enabled"
