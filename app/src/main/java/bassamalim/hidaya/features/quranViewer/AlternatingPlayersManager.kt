@@ -57,18 +57,13 @@ class AlternatingPlayersManager(
 
         aps[idx].state = PlayerState.PREPARED
 
-        when (aps[oIdx].state) {
-            PlayerState.NONE, PlayerState.COMPLETED -> {  // First time
-                mp.start()
-                aps[idx].state = PlayerState.PLAYING
-                player = idx
-                callback.track(ayaId = aps[idx].ayaIdx+1)
+        if (aps[oIdx].state == PlayerState.NONE || aps[oIdx].state == PlayerState.COMPLETED) {
+            aps[idx].state = PlayerState.PLAYING
+            player = idx
+            aps[idx].mp.start()
+            callback.track(ayaId = aps[idx].ayaIdx+1)
 
-                prepareNext(idx)
-            }
-            else -> {
-
-            }
+            prepareNext(idx)
         }
     }
 
@@ -78,21 +73,16 @@ class AlternatingPlayersManager(
         val idx = idx(mp)
         val oIdx = oIdx(mp)
 
-        when (aps[oIdx].state) {
-            PlayerState.PREPARED -> {
-                aps[oIdx].mp.start()
-                aps[oIdx].state = PlayerState.PLAYING
-                player = oIdx
-                callback.track(ayaId = aps[idx].ayaIdx+2)  // +1 for next aya, and +1 for idx to id
+        aps[idx].state = PlayerState.COMPLETED
 
-                prepareNext(idx)
-            }
-            else -> {
+        if (aps[oIdx].state == PlayerState.PREPARED) {
+            aps[oIdx].state = PlayerState.PLAYING
+            player = oIdx
+            aps[oIdx].mp.start()
+            callback.track(ayaId = aps[idx].ayaIdx+2)  // +1 for next aya, and +1 for idx to id
 
-            }
+            prepareNext(oIdx)
         }
-
-        callback.track(ayaId = aps[idx(mp)].ayaIdx+1)
     }
 
     override fun onError(mp: MediaPlayer, what: Int, extra: Int): Boolean {
