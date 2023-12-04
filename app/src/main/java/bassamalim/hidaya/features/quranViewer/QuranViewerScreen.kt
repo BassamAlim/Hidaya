@@ -172,7 +172,7 @@ private fun BottomBar(
                     imageResId = R.drawable.ic_aya_backward,
                     description = stringResource(R.string.rewind_btn_description)
                 ) {
-                    vm.onRewindClick()
+                    vm.onPreviousAyaClk()
                 }
 
                 // Play/Pause btn
@@ -190,7 +190,7 @@ private fun BottomBar(
                     imageResId = R.drawable.ic_aya_forward,
                     description = stringResource(R.string.fast_forward_btn_description)
                 ) {
-                    vm.onFastForwardClick()
+                    vm.onNextAyaClk()
                 }
             }
 

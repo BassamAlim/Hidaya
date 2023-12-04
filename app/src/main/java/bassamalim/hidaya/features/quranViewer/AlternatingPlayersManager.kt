@@ -96,6 +96,8 @@ class AlternatingPlayersManager(
 
         reset()
 
+        callback.setPbState(PlaybackStateCompat.STATE_STOPPED)
+
         return true
     }
 
@@ -124,11 +126,13 @@ class AlternatingPlayersManager(
     }
 
     fun previousAya() {
-
+        if (ayaIdx > 0)
+            playNew(ayaIdx - 1)
     }
 
     fun nextAya() {
-
+        if (ayaIdx < ayat.size - 1)
+            playNew(ayaIdx + 1)
     }
 
     fun getCurrentPosition() = aps[player].mp.currentPosition
@@ -140,8 +144,6 @@ class AlternatingPlayersManager(
             ap.mp.reset()
             ap.state = PlayerState.NONE
         }
-
-        callback.setPbState(PlaybackStateCompat.STATE_STOPPED)
     }
 
     fun isNotInitialized(): Boolean {

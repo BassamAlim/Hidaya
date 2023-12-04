@@ -16,7 +16,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInParent
 import androidx.lifecycle.AndroidViewModel
@@ -162,12 +161,12 @@ class QuranViewerVM @Inject constructor(
         }
     }
 
-    fun onRewindClick() {
-        tc.rewind()
+    fun onPreviousAyaClk() {
+        tc.skipToPrevious()
     }
 
-    fun onFastForwardClick() {
-        tc.fastForward()
+    fun onNextAyaClk() {
+        tc.skipToNext()
     }
 
     fun onSettingsClick() {

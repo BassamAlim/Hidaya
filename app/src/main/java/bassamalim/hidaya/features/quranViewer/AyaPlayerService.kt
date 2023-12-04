@@ -230,7 +230,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         }
 
         override fun onSkipToNext() {
-            super.onSkipToNext()
+//            super.onSkipToNext()
             apm.nextAya()
         }
 
