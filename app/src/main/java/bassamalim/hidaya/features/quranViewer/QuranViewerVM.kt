@@ -20,19 +20,24 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInParent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.QViewType
 import bassamalim.hidaya.core.models.Aya
 import bassamalim.hidaya.core.other.Global
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
+@kotlin.OptIn(ExperimentalPagerApi::class)
 @HiltViewModel
 class QuranViewerVM @Inject constructor(
     private val app: Application,
@@ -57,6 +62,7 @@ class QuranViewerVM @Inject constructor(
         else repo.getSuraNames()
     private val ayat = repo.getAyat()
     private val handler = Handler(Looper.getMainLooper())
+    private lateinit var pagerState: PagerState
     private var suraNum = 0
     private var bookmarkedPage = repo.getBookmarkedPage()
     val pref = repo.sp
@@ -95,11 +101,15 @@ class QuranViewerVM @Inject constructor(
         handler.removeCallbacks(runnable)
     }
 
-    fun onPageChange(currentPage: Int, page: Int) {
-        if (currentPage == page) {
-            updatePageState(page + 1)
+    fun setPagerState(pagerState: PagerState) {
+        this.pagerState = pagerState
+    }
 
-            if (page != lastRecordedPage) {
+    fun onPageChange(currentPageIdx: Int, pageIdx: Int) {
+        if (currentPageIdx == pageIdx) {
+            updatePageState(pageIdx + 1) // page number = page index + 1
+
+            if (pageIdx != lastRecordedPage) {
                 handler.removeCallbacks(runnable)
                 checkPage()
             }
@@ -369,9 +379,12 @@ class QuranViewerVM @Inject constructor(
             // To change the metadata inside the app when the user changes it from the notification
             track(metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt())
 
-            val pageNumber = metadata.bundle.getInt("page_num")
-            if (pageNumber == _uiState.value.pageNum + 1)  // next page
-                updatePageState(_uiState.value.pageNum + 1)
+            val pageNum = metadata.getLong("page_num").toInt()
+            if (pageNum != _uiState.value.pageNum) {
+                viewModelScope.launch {
+                    pagerState.scrollToPage(pageNum - 1)
+                }
+            }
         }
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {

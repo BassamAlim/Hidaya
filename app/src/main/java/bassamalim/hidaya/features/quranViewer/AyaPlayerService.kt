@@ -186,7 +186,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
             // Register Receiver
             registerReceiver(receiver, intentFilter)
 
-            apm.play()
+            apm.resume()
         }
 
         override fun onPause() {
@@ -560,10 +560,8 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
                 (if (duration) apm.getDuration() else 0).toLong()
             )
+            .putLong("page_num", aya.page.toLong())
             .build()
-//            .apply {
-//                bundle.putInt("page_num", page)
-//            }
 
         mediaSession.setMetadata(mediaMetadata)
     }
@@ -573,14 +571,6 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
     }
 
     private fun getAya(id: Int) = ayat[id-1]
-
-//    fun setChosenPage(currentPage: Int) {
-//        this.page = currentPage
-//    }
-//
-//    fun setChosenSura(chosenSura: Int) {
-//        this.sura = chosenSura
-//    }
 
     private fun updateDurationRecord(amount: Int) {
         val old = PrefUtils.getLong(pref, Prefs.TelawatPlaybackRecord)

@@ -34,7 +34,7 @@ class AlternatingPlayersManager(
 ) : OnPreparedListener, OnCompletionListener, OnErrorListener {
 
     private val aps = arrayOf(AlternatePlayer(MediaPlayer()), AlternatePlayer(MediaPlayer()))
-    private var player = 0
+    private var playerIdx = 0
     private val ayat = db.ayatDao().getAll()
     var ayaIdx = -1
     private var isPaused = false
@@ -52,36 +52,31 @@ class AlternatingPlayersManager(
     override fun onPrepared(mp: MediaPlayer) {
         Log.d(Global.TAG, "in onPrepared")
 
-        val idx = idx(mp)
-        val oIdx = oIdx(mp)
+        val thisPlayerIdx = idx(mp)
+        val thatPlayerIdx = oIdx(mp)
 
-        aps[idx].state = PlayerState.PREPARED
+        aps[thisPlayerIdx].state = PlayerState.PREPARED
 
-        if (aps[oIdx].state == PlayerState.NONE || aps[oIdx].state == PlayerState.COMPLETED) {
-            aps[idx].state = PlayerState.PLAYING
-            player = idx
-            aps[idx].mp.start()
-            callback.track(ayaId = aps[idx].ayaIdx+1)
+        if (aps[thatPlayerIdx].state == PlayerState.NONE
+            || aps[thatPlayerIdx].state == PlayerState.COMPLETED) {
+            play(playerIdx = thisPlayerIdx, ayaIdx = aps[thisPlayerIdx].ayaIdx)
 
-            prepareNext(idx)
+            prepareNext(thisPlayerIdx)
         }
     }
 
     override fun onCompletion(mp: MediaPlayer) {
         Log.d(Global.TAG, "in onCompletion")
 
-        val idx = idx(mp)
-        val oIdx = oIdx(mp)
+        val thisPlayerIdx = idx(mp)
+        val thatPlayerIdx = oIdx(mp)
 
-        aps[idx].state = PlayerState.COMPLETED
+        aps[thisPlayerIdx].state = PlayerState.COMPLETED
 
-        if (aps[oIdx].state == PlayerState.PREPARED) {
-            aps[oIdx].state = PlayerState.PLAYING
-            player = oIdx
-            aps[oIdx].mp.start()
-            callback.track(ayaId = aps[idx].ayaIdx+2)  // +1 for next aya, and +1 for idx to id
+        if (aps[thatPlayerIdx].state == PlayerState.PREPARED) {
+            play(playerIdx = thatPlayerIdx, ayaIdx = aps[thatPlayerIdx].ayaIdx)
 
-            prepareNext(oIdx)
+            prepareNext(thatPlayerIdx)
         }
     }
 
@@ -108,21 +103,21 @@ class AlternatingPlayersManager(
         callback.setPbState(PlaybackStateCompat.STATE_PLAYING)
     }
 
-    fun play() {
-        resume()
+    fun resume() {
+        aps[playerIdx].mp.start()
 
         callback.setPbState(PlaybackStateCompat.STATE_PLAYING)
     }
 
     fun pause() {
-        aps[player].mp.pause()
+        aps[playerIdx].mp.pause()
 
         isPaused = true
         callback.setPbState(PlaybackStateCompat.STATE_PAUSED)
     }
 
     fun seekTo(pos: Long) {
-        aps[player].mp.seekTo(pos.toInt())
+        aps[playerIdx].mp.seekTo(pos.toInt())
     }
 
     fun previousAya() {
@@ -135,9 +130,9 @@ class AlternatingPlayersManager(
             playNew(ayaIdx + 1)
     }
 
-    fun getCurrentPosition() = aps[player].mp.currentPosition
+    fun getCurrentPosition() = aps[playerIdx].mp.currentPosition
 
-    fun getDuration() = aps[player].mp.duration
+    fun getDuration() = aps[playerIdx].mp.duration
 
     private fun reset() {
         aps.map { ap ->
@@ -188,8 +183,12 @@ class AlternatingPlayersManager(
         prepareFirst(ayaIdx)
     }
 
-    private fun resume() {
-        aps[player].mp.start()
+    private fun play(playerIdx: Int, ayaIdx: Int) {
+        aps[playerIdx].state = PlayerState.PLAYING
+        this.playerIdx = playerIdx
+        this.ayaIdx = ayaIdx
+        aps[playerIdx].mp.start()
+        callback.track(ayaId = ayaIdx+1)
     }
 
     private fun prepareFirst(ayaIdx: Int) {
@@ -227,7 +226,7 @@ class AlternatingPlayersManager(
     private fun shouldContinue(currentAya: Int): Boolean {
         val newAya = currentAya + 1
         return newAya < ayat.size
-                && aps[player].repeated < getRepeat()
+                && aps[playerIdx].repeated < getRepeat()
                 && !(PrefUtils.getBoolean(sp, Prefs.StopOnSuraEnd) && ayat[currentAya].suraNum != ayat[newAya].suraNum)
                 && !(PrefUtils.getBoolean(sp, Prefs.StopOnPageEnd) && ayat[currentAya].page != ayat[newAya].page)
     }

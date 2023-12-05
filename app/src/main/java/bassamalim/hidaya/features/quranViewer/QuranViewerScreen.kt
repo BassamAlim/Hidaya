@@ -215,15 +215,17 @@ private fun PageContent(
     padding: PaddingValues
 ) {
     val pagerState = rememberPagerState(vm.initialPage-1)
+    vm.setPagerState(pagerState)
+
     HorizontalPagerScreen(
         count = Global.QURAN_PAGES,
         pagerState = pagerState,
         modifier = Modifier.padding(padding)
-    ) { page ->
-        val isCurrentPage = page == pagerState.currentPage
+    ) { pageIdx ->
+        val isCurrentPage = pageIdx == pagerState.currentPage
         val scrollState = rememberScrollState()
 
-        vm.onPageChange(pagerState.currentPage, page)
+        vm.onPageChange(pagerState.currentPage, pageIdx)
 
         Column(
             Modifier
@@ -233,7 +235,7 @@ private fun PageContent(
         ) {
             val ayat =
                 if (isCurrentPage) st.pageAyat
-                else vm.buildPage(page + 1)
+                else vm.buildPage(pageIdx + 1)
 
             if (st.viewType == List) ListItems(ayat, isCurrentPage, vm, st)
             else PageItems(ayat, isCurrentPage, vm, st)
