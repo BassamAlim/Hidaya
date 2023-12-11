@@ -227,8 +227,10 @@ class AlternatingPlayersManager(
         val newAya = currentAya + 1
         return newAya < ayat.size
                 && aps[playerIdx].repeated < getRepeat()
-                && !(PrefUtils.getBoolean(sp, Prefs.StopOnSuraEnd) && ayat[currentAya].suraNum != ayat[newAya].suraNum)
-                && !(PrefUtils.getBoolean(sp, Prefs.StopOnPageEnd) && ayat[currentAya].page != ayat[newAya].page)
+                && !(PrefUtils.getBoolean(sp, Prefs.StopOnSuraEnd)
+                && ayat[currentAya].suraNum != ayat[newAya].suraNum)
+                && !(PrefUtils.getBoolean(sp, Prefs.StopOnPageEnd)
+                && ayat[currentAya].page != ayat[newAya].page)
     }
 
     private fun getUri(aya: AyatDB): Uri {

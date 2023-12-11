@@ -528,7 +528,6 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "")
                 .putText(MediaMetadataCompat.METADATA_KEY_TITLE, "")
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "")
-                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, "")
                 .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 0)
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, "")
                 .build()
@@ -555,8 +554,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, suarNames[aya.suraNum-1])
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterNames[reciterId])
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterNames[reciterId])
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, aya.ayaNum.toString())
-            .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, aya.ayaNum.toLong())
+            .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, aya.id.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
                 (if (duration) apm.getDuration() else 0).toLong()
             )

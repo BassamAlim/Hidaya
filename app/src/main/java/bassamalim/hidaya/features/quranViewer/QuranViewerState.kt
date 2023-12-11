@@ -9,7 +9,7 @@ data class QuranViewerState(
     val juzNum: Int = 0,
     val suraName: String = "",
     val pageAyat: List<Aya> = emptyList(),
-    val trackedAya: Aya? = null,
+    val trackedAyaId: Int = -1,
     val selectedAya: Aya? = null,
     val viewType: QViewType = QViewType.Page,
     val textSize: Float = 15f,

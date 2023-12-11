@@ -297,7 +297,7 @@ private fun PageItem(
                 style = SpanStyle(
                     color =
                         if (st.selectedAya == seqAya) AppTheme.colors.highlight
-                        else if (st.trackedAya == seqAya) AppTheme.colors.track
+                        else if (st.trackedAyaId == seqAya.id) AppTheme.colors.track
                         else AppTheme.colors.strongText
                 ),
                 start = seqAya.start,

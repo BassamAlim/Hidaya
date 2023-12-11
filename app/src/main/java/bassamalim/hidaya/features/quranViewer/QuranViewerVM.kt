@@ -330,12 +330,8 @@ class QuranViewerVM @Inject constructor(
     }
 
     fun track(ayaId: Int) {
-        val idx = _uiState.value.pageAyat.indexOfFirst { aya -> aya.id == ayaId }
-
-        if (idx == -1) return  // not the same page
-
         _uiState.update { it.copy(
-            trackedAya = _uiState.value.pageAyat[idx]
+            trackedAyaId = ayaId
         )}
     }
 
@@ -376,7 +372,6 @@ class QuranViewerVM @Inject constructor(
 
     private var controllerCallback = object : MediaControllerCompat.Callback() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat) {
-            // To change the metadata inside the app when the user changes it from the notification
             track(metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt())
 
             val pageNum = metadata.getLong("page_num").toInt()
