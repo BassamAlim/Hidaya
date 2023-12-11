@@ -53,7 +53,7 @@ class AlternatingPlayersManager(
         Log.d(Global.TAG, "in onPrepared")
 
         val thisPlayerIdx = idx(mp)
-        val thatPlayerIdx = oIdx(mp)
+        val thatPlayerIdx = nxtIdx(mp)
 
         aps[thisPlayerIdx].state = PlayerState.PREPARED
 
@@ -69,14 +69,20 @@ class AlternatingPlayersManager(
         Log.d(Global.TAG, "in onCompletion")
 
         val thisPlayerIdx = idx(mp)
-        val thatPlayerIdx = oIdx(mp)
+        val thatPlayerIdx = nxtIdx(mp)
 
         aps[thisPlayerIdx].state = PlayerState.COMPLETED
 
-        if (aps[thatPlayerIdx].state == PlayerState.PREPARED) {
-            play(playerIdx = thatPlayerIdx, ayaIdx = aps[thatPlayerIdx].ayaIdx)
+        when (aps[thatPlayerIdx].state) {
+            PlayerState.PREPARED -> {
+                play(playerIdx = thatPlayerIdx, ayaIdx = aps[thatPlayerIdx].ayaIdx)
 
-            prepareNext(thatPlayerIdx)
+                prepareNext(thatPlayerIdx)
+            }
+            PlayerState.STOPPED -> {
+                callback.setPbState(PlaybackStateCompat.STATE_STOPPED)
+            }
+            else -> {}
         }
     }
 
@@ -199,7 +205,9 @@ class AlternatingPlayersManager(
         val currentAya = aps[current].ayaIdx
 
         if (shouldContinue(currentAya))
-            prepare(ap = o(current), ayaIdx = currentAya + 1)
+            prepare(ap = nxt(current), ayaIdx = currentAya + 1)
+        else
+            aps[nxt(current)].state = PlayerState.STOPPED
     }
 
     private fun prepare(ap: Int, ayaIdx: Int) {
@@ -244,16 +252,8 @@ class AlternatingPlayersManager(
         return Uri.parse(uri)
     }
 
-    private fun o(i: Int) = (i + 1) % 2
-
-    private fun idx(mp: MediaPlayer): Int {
-        return if (mp == aps[0].mp) 0
-        else 1
-    }
-
-    private fun oIdx(mp: MediaPlayer): Int {
-        return if (mp == aps[0].mp) 1
-        else 0
-    }
+    private fun nxt(i: Int) = (i + 1) % aps.size
+    private fun idx(mp: MediaPlayer) = aps.indexOf(aps.find { ap -> ap.mp == mp })
+    private fun nxtIdx(mp: MediaPlayer) = nxt(idx(mp))
 
 }

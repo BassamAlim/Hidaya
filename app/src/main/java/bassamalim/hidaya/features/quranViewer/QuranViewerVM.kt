@@ -329,12 +329,6 @@ class QuranViewerVM @Inject constructor(
         activity.volumeControlStream = AudioManager.STREAM_MUSIC
     }
 
-    fun track(ayaId: Int) {
-        _uiState.update { it.copy(
-            trackedAyaId = ayaId
-        )}
-    }
-
     private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             Log.i(Global.TAG, "In onServiceConnected")
@@ -372,7 +366,9 @@ class QuranViewerVM @Inject constructor(
 
     private var controllerCallback = object : MediaControllerCompat.Callback() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat) {
-            track(metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt())
+            _uiState.update { it.copy(
+                trackedAyaId = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
+            )}
 
             val pageNum = metadata.getLong("page_num").toInt()
             if (pageNum != _uiState.value.pageNum) {
@@ -386,6 +382,12 @@ class QuranViewerVM @Inject constructor(
             // To change the playback state inside the app when the user changes it
             // from the notification
             updateButton(state.state)
+
+            if (state.state == PlaybackStateCompat.STATE_STOPPED) {
+                _uiState.update { it.copy(
+                    trackedAyaId = 0
+                )}
+            }
         }
 
         override fun onSessionDestroyed() {
