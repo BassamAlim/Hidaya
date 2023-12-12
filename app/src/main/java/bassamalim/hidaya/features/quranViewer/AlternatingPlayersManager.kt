@@ -30,10 +30,11 @@ class AlternatingPlayersManager(
     private val ctx: Context,
     private val sp: SharedPreferences,
     private val db: AppDatabase,
-    private val callback: AyaPlayerService.PlayerCallback
+    private val callback: PlayerCallback
 ) : OnPreparedListener, OnCompletionListener, OnErrorListener {
 
-    private val aps = arrayOf(AlternatePlayer(MediaPlayer()), AlternatePlayer(MediaPlayer()))
+    private val NUMBER_OF_PLAYERS = 2
+    private val aps = Array(NUMBER_OF_PLAYERS) { AlternatePlayer(MediaPlayer()) }
     private var playerIdx = 0
     private val ayat = db.ayatDao().getAll()
     var ayaIdx = -1
@@ -79,8 +80,10 @@ class AlternatingPlayersManager(
 
                 prepareNext(thatPlayerIdx)
             }
-            PlayerState.STOPPED -> {
-                callback.setPbState(PlaybackStateCompat.STATE_STOPPED)
+            PlayerState.STOPPED -> {  // finished
+                callback.updatePbState(PlaybackStateCompat.STATE_STOPPED)
+
+                reset()
             }
             else -> {}
         }
@@ -97,29 +100,31 @@ class AlternatingPlayersManager(
 
         reset()
 
-        callback.setPbState(PlaybackStateCompat.STATE_STOPPED)
+        callback.updatePbState(PlaybackStateCompat.STATE_STOPPED)
 
         return true
     }
 
     fun playFromMediaId(ayaIdx: Int) {
+        Log.d(Global.TAG, "in playFromMediaId in AlternatingPlayersManager with ayaIdx: $ayaIdx")
+
         if (ayaIdx != this.ayaIdx) playNew(ayaIdx)
         else if (isPaused) resume()
 
-        callback.setPbState(PlaybackStateCompat.STATE_PLAYING)
+        callback.updatePbState(PlaybackStateCompat.STATE_PLAYING)
     }
 
     fun resume() {
         aps[playerIdx].mp.start()
 
-        callback.setPbState(PlaybackStateCompat.STATE_PLAYING)
+        callback.updatePbState(PlaybackStateCompat.STATE_PLAYING)
     }
 
     fun pause() {
         aps[playerIdx].mp.pause()
 
         isPaused = true
-        callback.setPbState(PlaybackStateCompat.STATE_PAUSED)
+        callback.updatePbState(PlaybackStateCompat.STATE_PAUSED)
     }
 
     fun seekTo(pos: Long) {
@@ -160,7 +165,7 @@ class AlternatingPlayersManager(
             ap.state = PlayerState.NONE
         }
 
-        callback.setPbState(PlaybackStateCompat.STATE_STOPPED)
+        callback.updatePbState(PlaybackStateCompat.STATE_STOPPED)
     }
 
     fun setAudioAttributes(audioAttributes: AudioAttributes) {
@@ -252,7 +257,7 @@ class AlternatingPlayersManager(
         return Uri.parse(uri)
     }
 
-    private fun nxt(i: Int) = (i + 1) % aps.size
+    private fun nxt(i: Int) = (i + 1) % NUMBER_OF_PLAYERS
     private fun idx(mp: MediaPlayer) = aps.indexOf(aps.find { ap -> ap.mp == mp })
     private fun nxtIdx(mp: MediaPlayer) = nxt(idx(mp))
 

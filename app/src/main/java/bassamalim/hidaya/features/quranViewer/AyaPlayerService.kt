@@ -45,7 +45,7 @@ import bassamalim.hidaya.core.utils.PrefUtils
 
 @UnstableApi
 @RequiresApi(api = Build.VERSION_CODES.O)
-class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
+class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, PlayerCallback {
 
     private val intentFilter = IntentFilter()
     private val handler = Handler(Looper.getMainLooper())
@@ -84,12 +84,6 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         private const val ACTION_STOP = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.STOP"
     }
 
-    interface PlayerCallback {
-        fun getPbState(): Int
-        fun setPbState(state: Int)
-        fun track(ayaId: Int)
-    }
-
     override fun onCreate() {
         super.onCreate()
 
@@ -121,6 +115,8 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
             Log.i(Global.TAG, "In onPlayFromMediaId of AyaPlayerService")
 
+            val ayaId = mediaId.toInt()
+
             reciterId = PrefUtils.getString(pref, Prefs.AyaReciter).toInt()
 
             if (apm.isNotInitialized()) {
@@ -128,10 +124,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
                 startService(Intent(applicationContext, AyaPlayerService::class.java))
             }
 
-            // Set the session active (and update metadata and state)
             mediaSession.isActive = true
-
-            val ayaId = mediaId.toInt()
 
             buildNotification()
 
@@ -165,7 +158,6 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
                 startService(Intent(applicationContext, AyaPlayerService::class.java))
             }
 
-            // Set the session active (and update metadata and state)
             mediaSession.isActive = true
 
             buildNotification()
@@ -243,7 +235,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         override fun onSeekTo(pos: Long) {
             super.onSeekTo(pos)
             apm.seekTo(pos)
-            updatePbState(getState())
+            updatePbState(getPbState())
         }
 
         override fun onSetRepeatMode(repeatMode: Int) {
@@ -278,19 +270,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
             ctx = this,
             sp = pref,
             db = db,
-            callback = object : PlayerCallback {
-                override fun setPbState(state: Int) {
-                    updatePbState(state)
-                }
-
-                override fun getPbState(): Int {
-                    return controller.playbackState.state
-                }
-
-                override fun track(ayaId: Int) {
-                    updateMetadata(ayaId, true)
-                }
-            }
+            callback = this
         )
 
         wifiLock =
@@ -316,6 +296,25 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
                 .setAudioAttributes(attrs)
                 .build()
         }
+    }
+
+    override fun updatePbState(state: Int) {
+        var currentPosition = 0L
+        try {
+            currentPosition = apm.getCurrentPosition().toLong()
+        } catch (_: Exception) {}
+
+        stateBuilder.setState(state, currentPosition, 1F)
+            .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+        mediaSession.setPlaybackState(stateBuilder.build())
+    }
+
+    override fun getPbState(): Int {
+        return controller.playbackState.state
+    }
+
+    override fun track(ayaId: Int) {
+        updateMetadata(ayaId, true)
     }
 
     private fun setupActions() {
@@ -467,26 +466,16 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
     }
 
     private val runnable = Runnable {
-        if (getState() == PlaybackStateCompat.STATE_PLAYING) refresh()
+        if (getPbState() == PlaybackStateCompat.STATE_PLAYING)
+            refresh()
     }
 
     private fun refresh() {
-        updatePbState(getState())
+        updatePbState(getPbState())
 
         if (updateRecordCounter++ == 10) updateDurationRecord(updateRecordCounter)
 
         handler.postDelayed(runnable, 1000)
-    }
-
-    private fun updatePbState(state: Int) {
-        var currentPosition = 0L
-        try {
-            currentPosition = apm.getCurrentPosition().toLong()
-        } catch (_: Exception) {}
-
-        stateBuilder.setState(state, currentPosition, 1F)
-            .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
-        mediaSession.setPlaybackState(stateBuilder.build())
     }
 
     override fun onAudioFocusChange(focusChange: Int) {
@@ -495,10 +484,12 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
                 apm.setVolume(1.0f)
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                if (getState() == PlaybackStateCompat.STATE_PLAYING) apm.setVolume(0.3f)
+                if (getPbState() == PlaybackStateCompat.STATE_PLAYING)
+                    apm.setVolume(0.3f)
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS -> {
-                if (getState() == PlaybackStateCompat.STATE_PLAYING) callback.onPause()
+                if (getPbState() == PlaybackStateCompat.STATE_PLAYING)
+                    callback.onPause()
             }
         }
     }
@@ -563,10 +554,6 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
             .build()
 
         mediaSession.setMetadata(mediaMetadata)
-    }
-
-    fun getState(): Int {
-        return controller.playbackState.state
     }
 
     private fun getAya(id: Int) = ayat[id-1]

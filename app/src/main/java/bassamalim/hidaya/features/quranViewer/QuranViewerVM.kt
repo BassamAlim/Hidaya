@@ -153,21 +153,38 @@ class QuranViewerVM @Inject constructor(
             updateButton(PlaybackStateCompat.STATE_BUFFERING)
             setupPlayer()
         }
-        else if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
-            updateButton(PlaybackStateCompat.STATE_PAUSED)
-            tc.pause()
-        }
-        else if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED) {
-            updateButton(PlaybackStateCompat.STATE_BUFFERING)
-            if (_uiState.value.selectedAya == null) {
-                tc.play()
+        else {
+            when (controller.playbackState.state) {
+                PlaybackStateCompat.STATE_PLAYING -> {
+                    updateButton(PlaybackStateCompat.STATE_PAUSED)
+                    tc.pause()
+                }
+                PlaybackStateCompat.STATE_PAUSED -> {
+                    updateButton(PlaybackStateCompat.STATE_BUFFERING)
+
+                    if (_uiState.value.selectedAya == null) {
+                        tc.play()
+
+                        _uiState.update { it.copy(
+                            selectedAya = null
+                        )}
+                    }
+                    else
+                        requestPlay(_uiState.value.selectedAya!!.id)
+                }
+                PlaybackStateCompat.STATE_STOPPED -> {
+                    updateButton(PlaybackStateCompat.STATE_BUFFERING)
+
+                    if (_uiState.value.selectedAya == null) {
+                        _uiState.update { it.copy(
+                            selectedAya = _uiState.value.pageAyat[0]
+                        )}
+                    }
+
+                    requestPlay(_uiState.value.selectedAya!!.id)
+                }
+                else -> {}
             }
-            else {
-                requestPlay(_uiState.value.selectedAya!!.id)
-            }
-            _uiState.update { it.copy(
-                selectedAya = null
-            )}
         }
     }
 
@@ -385,7 +402,7 @@ class QuranViewerVM @Inject constructor(
 
             if (state.state == PlaybackStateCompat.STATE_STOPPED) {
                 _uiState.update { it.copy(
-                    trackedAyaId = 0
+                    trackedAyaId = -1
                 )}
             }
         }
