@@ -237,11 +237,6 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
             apm.seekTo(pos)
             updatePbState(getPbState())
         }
-
-        override fun onSetRepeatMode(repeatMode: Int) {
-            super.onSetRepeatMode(repeatMode)
-            apm.setIsLooping(repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE)
-        }
     }
 
     private fun initSession() {
