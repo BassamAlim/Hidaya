@@ -25,8 +25,6 @@ import java.util.Locale
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
-// TODO: handle repeat
-
 @UnstableApi
 @RequiresApi(Build.VERSION_CODES.O)
 class AlternatingPlayersManager(
