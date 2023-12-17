@@ -11,6 +11,8 @@ import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import kotlin.math.floor
+import kotlin.math.roundToInt
 
 @Composable
 fun MySlider(
@@ -52,9 +54,12 @@ fun MyValuedSlider(
     var currentValue by remember { mutableStateOf(initialValue) }
     var sliderText by remember {
         mutableStateOf(
-            translateNums(
-                context, (initialValue - progressMin).toInt().toString()
-            )
+            if (infinite && (currentValue - progressMin) == valueRange.endInclusive)
+                context.getString(R.string.infinite)
+            else
+                translateNums(
+                    context, (initialValue - progressMin).toInt().toString()
+                )
         )
     }
 
@@ -75,7 +80,7 @@ fun MyValuedSlider(
 
                 val progress = currentValue - progressMin
 
-                var progressStr = progress.toInt().toString()
+                var progressStr = floor(progress).toInt().toString()
                 if (progressMin != 0f && progress.toInt() > 0) progressStr += "+"
                 sliderText =
                     if (infinite && progress == valueRange.endInclusive)

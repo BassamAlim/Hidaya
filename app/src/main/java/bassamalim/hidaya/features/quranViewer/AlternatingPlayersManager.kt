@@ -22,6 +22,7 @@ import bassamalim.hidaya.core.data.database.dbs.AyatDB
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.PrefUtils
 import java.util.Locale
+import kotlin.math.floor
 import kotlin.math.roundToInt
 
 // TODO: handle repeat
@@ -53,32 +54,38 @@ class AlternatingPlayersManager(
     }
 
     override fun onPrepared(mp: MediaPlayer) {
-        Log.d(Global.TAG, "in onPrepared")
-
         val currentPlayerIdx = idx(mp)
+        val prvPlayerIdx = prvIdx(mp)
         val nxtPlayerIdx = nxtIdx(mp)
+        Log.d(Global.TAG, "in onPrepared with playerIdx: $currentPlayerIdx and ayaIdx: ${aps[currentPlayerIdx].ayaIdx}")
 
         aps[currentPlayerIdx].state = PlayerState.PREPARED
 
-        if (aps[nxtPlayerIdx].state == PlayerState.NONE
-            || aps[nxtPlayerIdx].state == PlayerState.COMPLETED) {
-            play(playerIdx = currentPlayerIdx, ayaIdx = aps[currentPlayerIdx].ayaIdx)
+        if (aps[prvPlayerIdx].state == PlayerState.NONE
+            || aps[prvPlayerIdx].state == PlayerState.COMPLETED) {
+            // check
+            if (!isOtherPlayerPlaying())
+                play(playerIdx = currentPlayerIdx, ayaIdx = aps[currentPlayerIdx].ayaIdx)
+        }
 
-            if (shouldStop(aps[currentPlayerIdx].ayaIdx + 1))
-                aps[nxtPlayerIdx].state = PlayerState.STOPPED
-            else
+        if (shouldStop(currentAya = aps[currentPlayerIdx].ayaIdx, jumpSize = 1))
+            aps[nxtPlayerIdx].state = PlayerState.STOPPED
+        else {
+            if (!isOtherPlayerPreparing()
+                && (aps[nxtPlayerIdx].state == PlayerState.NONE
+                        || aps[nxtPlayerIdx].state == PlayerState.COMPLETED)) {
                 prepare(  // prepare next
-                    ap = nxt(currentPlayerIdx),
+                    playerIdx = nxt(currentPlayerIdx),
                     ayaIdx = aps[currentPlayerIdx].ayaIdx + 1
                 )
+            }
         }
     }
 
     override fun onCompletion(mp: MediaPlayer) {
-        Log.d(Global.TAG, "in onCompletion")
-
         val currentPlayerIdx = idx(mp)
         val nxtPlayerIdx = nxtIdx(mp)
+        Log.d(Global.TAG, "in onCompletion with playerIdx: $currentPlayerIdx and ayaIdx: ${aps[currentPlayerIdx].ayaIdx}")
 
         aps[currentPlayerIdx].state = PlayerState.COMPLETED
         aps[currentPlayerIdx].repeated++
@@ -88,22 +95,24 @@ class AlternatingPlayersManager(
         else {
             when (aps[nxtPlayerIdx].state) {
                 PlayerState.PREPARED -> {
-                    play(playerIdx = nxtPlayerIdx, ayaIdx = aps[nxtPlayerIdx].ayaIdx)
-
-                    if (shouldStop(aps[currentPlayerIdx].ayaIdx + NUMBER_OF_PLAYERS))
-                        aps[currentPlayerIdx].state = PlayerState.STOPPED
-                    else
-                        prepare(
-                            ap = currentPlayerIdx,
-                            ayaIdx = aps[currentPlayerIdx].ayaIdx + NUMBER_OF_PLAYERS
-                        )
+                    if (!isOtherPlayerPlaying())
+                        play(playerIdx = nxtPlayerIdx, ayaIdx = aps[nxtPlayerIdx].ayaIdx)
                 }
                 PlayerState.STOPPED -> {  // finished
                     callback.updatePbState(PlaybackStateCompat.STATE_STOPPED)
-
-                    reset()
                 }
                 else -> {}
+            }
+
+            if (shouldStop(currentAya = aps[currentPlayerIdx].ayaIdx, jumpSize = NUMBER_OF_PLAYERS))
+                aps[currentPlayerIdx].state = PlayerState.STOPPED
+            else {
+                if (!isOtherPlayerPreparing()) {
+                    prepare(
+                        playerIdx = currentPlayerIdx,
+                        ayaIdx = aps[currentPlayerIdx].ayaIdx + NUMBER_OF_PLAYERS
+                    )
+                }
             }
         }
     }
@@ -204,7 +213,7 @@ class AlternatingPlayersManager(
 
         reset()
 
-        prepare(ap = 0, ayaIdx = ayaIdx)  // prepare first
+        prepare(playerIdx = 0, ayaIdx = ayaIdx)  // prepare first
     }
 
     private fun play(playerIdx: Int, ayaIdx: Int) {
@@ -215,16 +224,17 @@ class AlternatingPlayersManager(
         callback.track(ayaId = ayaIdx+1)
     }
 
-    private fun prepare(ap: Int, ayaIdx: Int) {
-        aps[ap].state = PlayerState.PREPARING
-        aps[ap].ayaIdx = ayaIdx
+    private fun prepare(playerIdx: Int, ayaIdx: Int) {
+        aps[playerIdx].state = PlayerState.PREPARING
+        aps[playerIdx].ayaIdx = ayaIdx
+        aps[playerIdx].repeated = 0
 
         val uri: Uri
         try {
-            aps[ap].mp.reset()
+            aps[playerIdx].mp.reset()
             uri = getUri(ayat[ayaIdx])
-            aps[ap].mp.setDataSource(ctx, uri)
-            aps[ap].mp.prepareAsync()
+            aps[playerIdx].mp.setDataSource(ctx, uri)
+            aps[playerIdx].mp.prepareAsync()
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(Global.TAG, "Reciter not found in ayat telawa")
@@ -232,20 +242,34 @@ class AlternatingPlayersManager(
     }
 
     private fun getRepeat(): Int {
-        val repeat = PrefUtils.getFloat(sp, Prefs.AyaRepeat).roundToInt()
+        val repeat = floor(PrefUtils.getFloat(sp, Prefs.AyaRepeat)).toInt()
         return if (repeat == 11) Int.MAX_VALUE else repeat
     }
 
     private fun shouldRepeat(playerIdx: Int): Boolean {
+        Log.d(Global.TAG, "Repeat: ${getRepeat()}")
         return aps[playerIdx].repeated < getRepeat()
     }
 
-    private fun shouldStop(targetAya: Int): Boolean {
+    private fun isOtherPlayerPlaying(): Boolean {
+        return aps.map { ap ->
+            ap.state == PlayerState.PLAYING
+        }.contains(true)
+    }
+
+    private fun isOtherPlayerPreparing(): Boolean {
+        return aps.map { ap ->
+            ap.state == PlayerState.PREPARING
+        }.contains(true)
+    }
+
+    private fun shouldStop(currentAya: Int, jumpSize: Int): Boolean {
+        val targetAya = currentAya + jumpSize
         return targetAya >= ayat.size
                 || (PrefUtils.getBoolean(sp, Prefs.StopOnSuraEnd)
-                && ayat[targetAya].suraNum != ayat[targetAya].suraNum)
+                && ayat[currentAya].suraNum != ayat[targetAya].suraNum)
                 || (PrefUtils.getBoolean(sp, Prefs.StopOnPageEnd)
-                && ayat[targetAya].page != ayat[targetAya].page)
+                && ayat[currentAya].page != ayat[targetAya].page)
     }
 
     private fun getUri(aya: AyatDB): Uri {
@@ -259,8 +283,10 @@ class AlternatingPlayersManager(
         return Uri.parse(uri)
     }
 
-    private fun nxt(i: Int) = (i + 1) % NUMBER_OF_PLAYERS
+    private fun prv(current: Int) = if (current == 0) NUMBER_OF_PLAYERS - 1 else current - 1
+    private fun nxt(current: Int) = (current + 1) % NUMBER_OF_PLAYERS
     private fun idx(mp: MediaPlayer) = aps.indexOf(aps.find { ap -> ap.mp == mp })
+    private fun prvIdx(mp: MediaPlayer) = prv(idx(mp))
     private fun nxtIdx(mp: MediaPlayer) = nxt(idx(mp))
 
 }
