@@ -21,12 +21,6 @@ android {
         versionName '2.2.9'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
-        }
     }
 
     signingConfigs {
@@ -74,67 +68,67 @@ android {
 
 dependencies {
     // AndroidX
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.core:core-splashscreen:1.0.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation "androidx.activity:activity-ktx:$activity_version"
-    implementation "androidx.activity:activity-compose:$activity_version"
-    implementation("androidx.navigation:navigation-compose:2.7.3")
-    implementation 'androidx.navigation:navigation-ui-ktx:2.7.3'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
-    implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
-    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.2"
-    implementation "androidx.media:media:1.6.0"
-    implementation("androidx.media3:media3-ui:1.2.0-alpha02")
-    implementation("androidx.media3:media3-common:1.1.1")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.activity:activity-ktx:$activity_version")
+    implementation("androidx.activity:activity-compose:$activity_version")
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation("androidx.media:media:1.7.0")
+    implementation("androidx.media3:media3-ui:1.2.0")
+    implementation("androidx.media3:media3-common:1.2.0")
     implementation("androidx.glance:glance-appwidget:1.0.0")
-    implementation 'androidx.room:room-runtime:2.5.2'
-    ksp("androidx.room:room-compiler:2.5.2")
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation("androidx.room:room-runtime:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     // Compose
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.ui:ui-viewbinding:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-    implementation "androidx.compose.runtime:runtime:$compose_version"
-    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-    implementation "androidx.compose.foundation:foundation:$compose_version"
-    implementation "androidx.compose.foundation:foundation-layout:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
+    implementation("androidx.compose.ui:ui:$compose_version")
+    implementation("androidx.compose.ui:ui-viewbinding:$compose_version")
+    implementation("androidx.compose.ui:ui-tooling-preview:$compose_version")
+    debugImplementation("androidx.compose.ui:ui-tooling:$compose_version")
+    implementation("androidx.compose.runtime:runtime:$compose_version")
+    implementation("androidx.compose.runtime:runtime-livedata:$compose_version")
+    implementation("androidx.compose.foundation:foundation:$compose_version")
+    implementation("androidx.compose.foundation:foundation-layout:$compose_version")
+    implementation("androidx.compose.material:material:$compose_version")
     // Google
-    implementation 'com.google.accompanist:accompanist-systemuicontroller:0.28.0'
-    implementation 'com.google.accompanist:accompanist-pager:0.28.0'
-    implementation 'com.google.accompanist:accompanist-pager-indicators:0.28.0'
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
+    implementation("com.google.accompanist:accompanist-pager:0.28.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.material:material:1.11.0")
+    implementation("com.google.code.gson:gson:2.10.1")
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:32.2.2')
-    implementation 'com.google.firebase:firebase-config'
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-auth'
-    implementation 'com.google.firebase:firebase-firestore'
-    implementation 'com.google.firebase:firebase-messaging'
-    implementation 'com.google.firebase:firebase-inappmessaging-display'
-    implementation 'com.google.firebase:firebase-perf'
-    implementation 'com.google.firebase:firebase-storage-ktx'
+    implementation platform("com.google.firebase:firebase-bom:32.2.2")
+    implementation("com.google.firebase:firebase-config")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-inappmessaging-display")
+    implementation("com.google.firebase:firebase-perf")
+    implementation("com.google.firebase:firebase-storage-ktx")
     // Hilt
-    implementation('com.google.dagger:hilt-android:2.47')
-    kapt('com.google.dagger:hilt-android-compiler:2.47')
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     // Other
-    implementation 'io.coil-kt:coil-compose:2.4.0'
-    implementation 'io.coil-kt:coil-gif:2.4.0'
-    implementation('com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0')
-    testImplementation 'junit:junit:4.13.2'
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-gif:2.4.0")
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
+    testImplementation("junit:junit:4.13.2")
     // jar Files
-    implementation files('libs/YouTubeAndroidPlayerApi.jar')
+    implementation files("libs/YouTubeAndroidPlayerApi.jar")
     // GitHub
-    implementation 'com.github.msarhan:ummalqura-calendar:2.0.2'
+    implementation("com.github.msarhan:ummalqura-calendar:2.0.2")
     // Temporary
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+//    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.7")
 }
