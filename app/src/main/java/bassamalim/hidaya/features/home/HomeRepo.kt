@@ -112,9 +112,13 @@ class HomeRepo @Inject constructor(
             .await()
     }
 
-    suspend fun registerDevice(deviceId: String): UserRecord {
+    suspend fun registerDevice(deviceId: String): UserRecord? {
         val localRecord = getLocalRecord()
-        val userId = getLargestUserId() + 1
+
+        val largestUserId = getLargestUserId()
+        if (largestUserId == null) return null
+
+        val userId = largestUserId + 1
         val remoteUserRecord = UserRecord(
             userId = userId,
             readingRecord = localRecord.readingRecord,
@@ -141,8 +145,8 @@ class HomeRepo @Inject constructor(
         return remoteUserRecord
     }
 
-    private suspend fun getLargestUserId(): Int {
-        var max = 0
+    private suspend fun getLargestUserId(): Int? {
+        var max: Int? = null
 
         firestore.collection("Leaderboard")
             .orderBy("user_id", Query.Direction.DESCENDING)

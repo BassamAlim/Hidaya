@@ -222,11 +222,14 @@ class HomeVM @Inject constructor(
                 }
                 is Response.Error -> {
                     if (response.message == "Device not registered") {
-                        latestUserRecord = repo.registerDevice(deviceId)
+                        val remoteUserRecord = repo.registerDevice(deviceId)
+                        if (remoteUserRecord != null) {
+                            latestUserRecord = remoteUserRecord
 
-                        _uiState.update { it.copy(
-                            leaderboardEnabled = true
-                        )}
+                            _uiState.update { it.copy(
+                                leaderboardEnabled = true
+                            )}
+                        }
                     }
                 }
             }
