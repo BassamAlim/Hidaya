@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.other.HijriDatePickerDialog
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
@@ -68,14 +67,6 @@ fun DateConverterUI(
 
             ResultSpace(stringResource(R.string.gregorian_date), st.gregorianValues)
         }
-
-        HijriDatePickerDialog(
-            ctx,
-            st.hijriDatePickerShown,
-            vm.hijriCalendar,
-            onSelectClick = { vm.onHijriSelect(it) },
-            onCancelClick = { vm.onHijriPickCancel() },
-        ).MyHijriDatePickerDialog()
     }
 }
 

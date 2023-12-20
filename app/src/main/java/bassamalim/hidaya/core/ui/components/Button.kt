@@ -365,6 +365,7 @@ fun MyDownloadBtn(
 @Composable
 fun MyImageButton(
     imageResId: Int,
+    size: Dp = 24.dp,
     description: String = "",
     enabled: Boolean = true,
     padding: Dp = 14.dp,
@@ -379,7 +380,9 @@ fun MyImageButton(
         Image(
             painter = painterResource(imageResId),
             contentDescription = description,
-            modifier = Modifier.padding(padding)
+            modifier = Modifier
+                .size(size)
+                .padding(padding)
         )
     }
 }

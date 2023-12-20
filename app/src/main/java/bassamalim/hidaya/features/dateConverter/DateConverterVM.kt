@@ -2,9 +2,12 @@ package bassamalim.hidaya.features.dateConverter
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.os.Build
 import android.widget.DatePicker
 import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DateConverterVM @Inject constructor(
-    private val repo: DateConverterRepo
+    private val repo: DateConverterRepo,
+    private val navigator: Navigator
 ): ViewModel() {
 
     var hijriCalendar = UmmalquraCalendar()
@@ -56,26 +60,30 @@ class DateConverterVM @Inject constructor(
     }
 
     fun onPickHijriClk() {
-        _uiState.update { it.copy(
-            hijriDatePickerShown = true
-        )}
+        val dateStr = "${hijriCalendar[Calendar.YEAR]}" +
+                "-${hijriCalendar[Calendar.MONTH] + 1}" +
+                "-${hijriCalendar[Calendar.DATE]}"
+
+        navigator.navigateForResult(
+            Screen.HijriDatePicker(dateStr)
+        ) { result ->
+            if (result != null) {
+                val date =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                        result.getSerializable("selected_date", UmmalquraCalendar::class.java)
+                    else
+                        result.getSerializable("selected_date") as UmmalquraCalendar
+
+                onHijriSelected(date!!)
+            }
+        }
     }
 
-    fun onHijriSelect(pickedHijri: UmmalquraCalendar) {
-        _uiState.update { it.copy(
-            hijriDatePickerShown = false
-        )}
-
-        hijriCalendar = pickedHijri
-        gregorianCalendar = hijriToGregorian(pickedHijri)
+    fun onHijriSelected(pickedHijriDate: UmmalquraCalendar) {
+        hijriCalendar = pickedHijriDate
+        gregorianCalendar = hijriToGregorian(pickedHijriDate)
 
         display()
-    }
-
-    fun onHijriPickCancel() {
-        _uiState.update { it.copy(
-            hijriDatePickerShown = false
-        )}
     }
 
     private fun gregorianToHijri(gregorian: Calendar): Calendar {

@@ -26,6 +26,10 @@ sealed class Screen(val route: String) {
 
     object DateConverter: Screen("date_converter")
 
+    data class HijriDatePicker(
+        val initialDate: String
+    ): Screen("hijri_date_picker/$initialDate")
+
     data class Leaderboard(
         val userId:String, val readingRecord: String, val listeningRecord: String
     ): Screen("leaderboard/$userId/$readingRecord/$listeningRecord")

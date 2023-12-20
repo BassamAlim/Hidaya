@@ -27,6 +27,7 @@ import bassamalim.hidaya.features.bookSearcher.BookSearcherUI
 import bassamalim.hidaya.features.bookViewer.BookViewerUI
 import bassamalim.hidaya.features.books.BooksUI
 import bassamalim.hidaya.features.dateConverter.DateConverterUI
+import bassamalim.hidaya.features.hijriDatePicker.HijriDatePickerDialog
 import bassamalim.hidaya.features.leaderboard.LeaderboardUI
 import bassamalim.hidaya.features.locationPicker.LocationPickerUI
 import bassamalim.hidaya.features.locator.LocatorUI
@@ -197,6 +198,16 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             DateConverterUI(
+                hiltViewModel()
+            )
+        }
+
+        dialog(
+            route = Screen.HijriDatePicker(
+                "{initial_date}"
+            ).route,
+        ) {
+            HijriDatePickerDialog(
                 hiltViewModel()
             )
         }

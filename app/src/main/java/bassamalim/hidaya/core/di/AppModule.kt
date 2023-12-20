@@ -16,6 +16,7 @@ import bassamalim.hidaya.features.bookSearcher.BookSearcherRepo
 import bassamalim.hidaya.features.bookViewer.BookViewerRepo
 import bassamalim.hidaya.features.books.BooksRepo
 import bassamalim.hidaya.features.dateConverter.DateConverterRepo
+import bassamalim.hidaya.features.hijriDatePicker.HijriDatePickerRepo
 import bassamalim.hidaya.features.home.HomeRepo
 import bassamalim.hidaya.features.leaderboard.LeaderboardRepo
 import bassamalim.hidaya.features.locationPicker.LocationPickerRepo
@@ -277,5 +278,11 @@ object AppModule {
     fun provideWelcomeRepository(
         preferences: SharedPreferences
     ) = WelcomeRepo(preferences)
+
+    @Provides @Singleton
+    fun provideHijriDatePickerRepository(
+        resources: Resources,
+        preferences: SharedPreferences
+    ) = HijriDatePickerRepo(resources, preferences)
 
 }
