@@ -38,7 +38,7 @@ fun MyDropDownMenu(
                 modifier = Modifier.padding(horizontal = 5.dp)
             )
 
-            MyIconBtn(
+            MyIconButton(
                 imageVector =
                     if (expanded) Icons.Default.KeyboardArrowUp
                     else Icons.Default.KeyboardArrowDown,

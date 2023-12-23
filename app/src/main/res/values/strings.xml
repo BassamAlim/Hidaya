@@ -66,6 +66,7 @@
     <string name="previous_day_button_description">اليوم السابق</string>
     <string name="next_day_button_description">اليوم التالي</string>
     <string name="next_track_btn_description">التالي</string>
+    <string name="previous_track_btn_description">السابق</string>
     <string name="rewind_btn_description">عودة</string>
     <string name="play_pause_btn_description">اوقف/اكمل التشغيل</string>
     <string name="fast_forward_btn_description">تقدم</string>

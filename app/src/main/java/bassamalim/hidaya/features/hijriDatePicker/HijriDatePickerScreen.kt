@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalPagerApi::class)
-
 package bassamalim.hidaya.features.hijriDatePicker
 
 import androidx.compose.foundation.background
@@ -20,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -32,8 +29,9 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyClickableText
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyDialog
-import bassamalim.hidaya.core.ui.components.MyImageButton
+import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
@@ -45,6 +43,7 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import java.util.Calendar
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HijriDatePickerDialog(
     vm: HijriDatePickerVM
@@ -79,6 +78,7 @@ fun HijriDatePickerDialog(
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun TopArea(
     vm: HijriDatePickerVM,
@@ -95,14 +95,16 @@ private fun TopArea(
         ) {
             // year
             Box(
-                Modifier.clickable { vm.onYearSelectorToggled() }
+                Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .clickable { vm.onYearSelectorToggled() }
             ) {
                 MyText(
                     text = translateNums(
                         vm.numeralsLanguage,
                         ((vm.minYear * 12 + pagerState.currentPage) / 12).toString()
                     ),
-                    modifier = Modifier.padding(4.dp),
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
                     fontSize = 19.sp,
                     textColor = AppTheme.colors.onPrimary,
                 )
@@ -110,7 +112,7 @@ private fun TopArea(
 
             // main text
             MyText(
-                text = "${vm.weekDays[st.selected[Calendar.DAY_OF_WEEK]]}${vm.divider} " +
+                text = "${vm.weekDays[st.selected[Calendar.DAY_OF_WEEK]-1]} " +
                         "${translateNums(vm.numeralsLanguage, st.selected[Calendar.DATE].toString())} " +
                         vm.months[st.selected[Calendar.MONTH]],
                 fontSize = 22.nsp,
@@ -130,17 +132,15 @@ private fun DayMonthSelector(
 ) {
     MyColumn {
         // month selector
-        Row(
+        MyRow(
             Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
+                .padding(vertical = 10.dp)
         ) {
-            MyImageButton(
-                R.drawable.ic_left_arrow,
-                size = 60.dp,
-                padding = 20.dp,
+            MyIconButton(
+                iconId = R.drawable.ic_left_arrow,
+                size = 16.dp,
+                tint = AppTheme.colors.onPrimary,
                 onClick = { vm.onPrevMonthClk() }
             )
 
@@ -152,10 +152,10 @@ private fun DayMonthSelector(
                 Modifier.width(150.dp)
             )
 
-            MyImageButton(
-                R.drawable.ic_right_arrow,
-                size = 60.dp,
-                padding = 20.dp,
+            MyIconButton(
+                iconId = R.drawable.ic_right_arrow,
+                size = 16.dp,
+                tint = AppTheme.colors.onPrimary,
                 onClick = { vm.onNextMonthClk() }
             )
         }

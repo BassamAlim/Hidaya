@@ -298,14 +298,14 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         playPauseAction =
             if (playing) {
                 NotificationCompat.Action(
-                    R.drawable.ic_baseline_pause, "play_pause", PendingIntent.getBroadcast(
+                    R.drawable.ic_pause, "play_pause", PendingIntent.getBroadcast(
                         this, id, Intent(ACTION_PLAY_PAUSE).setPackage(packageName), flags
                     )
                 )
             }
             else {
                 NotificationCompat.Action(
-                    R.drawable.ic_play_arrow, "play_pause", PendingIntent.getBroadcast(
+                    R.drawable.ic_play, "play_pause", PendingIntent.getBroadcast(
                         this, id, Intent(ACTION_PLAY_PAUSE).setPackage(packageName), flags
                     )
                 )
@@ -378,7 +378,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         playPauseAction = NotificationCompat.Action(
-            R.drawable.ic_play_arrow, "play_pause", PendingIntent.getBroadcast(
+            R.drawable.ic_play, "play_pause", PendingIntent.getBroadcast(
                 this, id, Intent(ACTION_PLAY_PAUSE).setPackage(pkg), flags
             )
         )

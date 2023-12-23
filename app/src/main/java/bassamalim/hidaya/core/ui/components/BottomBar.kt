@@ -27,7 +27,7 @@ fun MyReadingBottomBar(
                 .fillMaxSize()
                 .padding(horizontal = 30.dp)
         ) {
-            MyIconBtn(
+            MyIconButton(
                 iconId = R.drawable.ic_text_size,
                 tint = AppTheme.colors.onPrimary,
                 size = 38.dp,

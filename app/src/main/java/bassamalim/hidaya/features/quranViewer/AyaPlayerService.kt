@@ -19,7 +19,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -323,13 +322,13 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         val flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         playAction = NotificationCompat.Action(
-            R.drawable.ic_play_arrow, "Play", PendingIntent.getBroadcast(
+            R.drawable.ic_play, "Play", PendingIntent.getBroadcast(
                 this@AyaPlayerService, notificationId,
                 Intent(ACTION_PLAY).setPackage(packageName), flags)
         )
 
         pauseAction = NotificationCompat.Action(
-            R.drawable.ic_baseline_pause, "Pause", PendingIntent.getBroadcast(
+            R.drawable.ic_pause, "Pause", PendingIntent.getBroadcast(
                 this@AyaPlayerService, notificationId,
                 Intent(ACTION_PAUSE).setPackage(packageName), flags
             )

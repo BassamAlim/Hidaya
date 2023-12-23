@@ -14,6 +14,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -87,79 +88,75 @@ fun TelawatClientUI(
                 }
             }
 
-            Row(
+            Column(
                 Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(0.95f)
+                    .clip(RoundedCornerShape(10))
                     .background(AppTheme.colors.weakPrimary),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                MyText(
-                    text = st.progress,
-                    modifier = Modifier.padding(10.dp),
-                    fontSize = 19.sp
-                )
-
-                MySlider(
-                    value = vm.progress.toFloat(),
-                    valueRange = 0F..vm.duration.toFloat(),
-                    modifier = Modifier.fillMaxWidth(0.7F),
-                    enabled = st.controlsEnabled,
-                    onValueChangeFinished = { vm.onSliderChangeFinished() },
-                    onValueChange = { progress -> vm.onSliderChange(progress) }
-                )
-
-                MyText(
-                    text = st.duration,
-                    modifier = Modifier.padding(10.dp),
-                    fontSize = 19.sp
-                )
-            }
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .background(AppTheme.colors.weakPrimary),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                MyImageButton(
-                    imageResId = R.drawable.ic_player_previous,
-                    description = stringResource(R.string.previous_day_button_description),
-                    enabled = st.controlsEnabled
+                MyRow(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp)
                 ) {
-                    vm.onPrevClk()
+                    MyText(
+                        text = st.progress,
+                        modifier = Modifier.padding(10.dp),
+                        fontSize = 19.sp
+                    )
+
+                    MySlider(
+                        value = vm.progress.toFloat(),
+                        valueRange = 0F..vm.duration.toFloat(),
+                        modifier = Modifier.fillMaxWidth(0.7F),
+                        enabled = st.controlsEnabled,
+                        onValueChangeFinished = { vm.onSliderChangeFinished() },
+                        onValueChange = { progress -> vm.onSliderChange(progress) }
+                    )
+
+                    MyText(
+                        text = st.duration,
+                        modifier = Modifier.padding(10.dp),
+                        fontSize = 19.sp
+                    )
                 }
 
-                MyImageButton(
-                    imageResId = R.drawable.ic_backward,
-                    description = stringResource(R.string.rewind_btn_description),
-                    enabled = st.controlsEnabled
+                MyRow(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp, bottom = 5.dp)
                 ) {
-                    vm.onRewindClk()
-                }
+                    MyIconButton(
+                        iconId = R.drawable.ic_previous_track,
+                        description = stringResource(R.string.previous_track_btn_description),
+                        isEnabled = st.controlsEnabled,
+                        size = 40.dp,
+                        innerPadding = 20.dp,
+                        tint = AppTheme.colors.accent,
+                        onClick = { vm.onPrevClk() }
+                    )
 
-                MyPlayerBtn(
-                    state = st.btnState,
-                    enabled = st.controlsEnabled,
-                ) {
-                    vm.onPlayPauseClk()
-                }
+                    MyIconPlayerBtn(
+                        state = st.btnState,
+                        modifier = Modifier.padding(10.dp),
+                        enabled = st.controlsEnabled,
+                        playIcon = R.drawable.ic_circle_play,
+                        pauseIcon = R.drawable.ic_circle_pause,
+                        tint = AppTheme.colors.accent,
+                        onClick = { vm.onPlayPauseClk() }
+                    )
 
-                MyImageButton(
-                    imageResId = R.drawable.ic_forward,
-                    description = stringResource(R.string.fast_forward_btn_description),
-                    enabled = st.controlsEnabled
-                ) {
-                    vm.onFastForwardClk()
-                }
-
-                MyImageButton(
-                    imageResId = R.drawable.ic_player_next,
-                    description = stringResource(R.string.next_track_btn_description),
-                    enabled = st.controlsEnabled
-                ) {
-                    vm.onNextClk()
+                    MyIconButton(
+                        iconId = R.drawable.ic_next_track,
+                        description = stringResource(R.string.next_track_btn_description),
+                        isEnabled = st.controlsEnabled,
+                        size = 40.dp,
+                        innerPadding = 20.dp,
+                        tint = AppTheme.colors.accent,
+                        onClick = { vm.onNextClk() }
+                    )
                 }
             }
         }
@@ -177,38 +174,36 @@ private fun BottomBar(viewModel: TelawatClientVM, state: TelawatClientState) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            MyIconBtn(
+            MyIconButton(
                 iconId = R.drawable.ic_repeat,
                 description = stringResource(R.string.repeat_description),
+                innerPadding = 10.dp,
                 tint =
                     if (state.repeat == REPEAT_MODE_ONE) AppTheme.colors.secondary
-                    else AppTheme.colors.onPrimary
-            ) {
-                viewModel.onRepeatClk()
-            }
+                    else AppTheme.colors.onPrimary,
+                onClick = { viewModel.onRepeatClk() }
+            )
 
             MyDownloadBtn(
                 state = state.downloadState,
                 path = "${"/Telawat/${viewModel.reciterId}/${viewModel.versionId}/"}${viewModel.suraIdx}.mp3",
-                size = 28.dp,
+                innerPadding = 10.dp,
                 tint =
-                if (state.downloadState == DownloadState.Downloaded)
-                    AppTheme.colors.secondary
-                else AppTheme.colors.onPrimary,
-                deleted = { viewModel.onDelete() }
-            ) {
-                viewModel.onDownloadClk()
-            }
+                    if (state.downloadState == DownloadState.Downloaded) AppTheme.colors.secondary
+                    else AppTheme.colors.onPrimary,
+                deleted = { viewModel.onDeleteClk() },
+                download = { viewModel.onDownloadClk() }
+            )
 
-            MyIconBtn(
+            MyIconButton(
                 iconId = R.drawable.ic_shuffle,
                 description = stringResource(R.string.shuffle_description),
+                innerPadding = 10.dp,
                 tint =
                     if (state.shuffle == SHUFFLE_MODE_ALL) AppTheme.colors.secondary
-                    else AppTheme.colors.onPrimary
-            ) {
-                viewModel.onShuffleClk()
-            }
+                    else AppTheme.colors.onPrimary,
+                onClick = { viewModel.onShuffleClk() }
+            )
         }
     }
 }

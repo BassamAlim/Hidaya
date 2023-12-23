@@ -2,6 +2,11 @@ package bassamalim.hidaya.core.ui.components
 
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.activity.ComponentActivity
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -216,47 +221,67 @@ fun MyHorizontalButton(
 }
 
 @Composable
-fun MyIconBtn(
+fun MyIconButton(
     iconId: Int,
     modifier: Modifier = Modifier,
     size: Dp = 24.dp,
+    innerPadding: Dp = 6.dp,
     description: String = "",
     tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
+    isEnabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    IconButton(
-        onClick = onClick,
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = modifier
+            .clip(CircleShape)
+            .clickable { if (isEnabled) onClick() }
     ) {
-        Icon(
-            painter = painterResource(id = iconId),
-            tint = tint,
-            contentDescription = description,
-            modifier = Modifier.size(size)
-        )
+        Box(
+            Modifier.padding(innerPadding)
+        ) {
+            Icon(
+                painter = painterResource(id = iconId),
+                contentDescription = description,
+                modifier = Modifier.size(size),
+                tint = tint,
+            )
+        }
     }
 }
 
 @Composable
-fun MyIconBtn(
+fun MyIconButton(
     imageVector: ImageVector,
+    modifier: Modifier = Modifier,
+    size: Dp = 24.dp,
+    padding: Dp = 6.dp,
     description: String = "",
     tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
+    isEnabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    IconButton(
-        onClick = onClick
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .clip(CircleShape)
+            .clickable { if (isEnabled) onClick() }
     ) {
-        Icon(
-            imageVector = imageVector,
-            tint = tint,
-            contentDescription = description
-        )
+        Box(
+            Modifier.padding(padding)
+        ) {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = description,
+                modifier = Modifier.size(size),
+                tint = tint,
+            )
+        }
     }
 }
 
 @Composable
-fun MyBackBtn(onClick: (() -> Unit)? = null) {
+fun MyBackButton(onClick: (() -> Unit)? = null) {
     val context = LocalContext.current
 
     Row(
@@ -316,7 +341,7 @@ fun MyFavBtn(
         if (fav == 1) R.drawable.ic_star
         else R.drawable.ic_star_outline
 
-    MyIconBtn(
+    MyIconButton(
         iconId = iconId,
         description = "Favorite",
         onClick = onClick,
@@ -331,6 +356,7 @@ fun MyDownloadBtn(
     path: String,
     modifier: Modifier = Modifier,
     size: Dp = 26.dp,
+    innerPadding: Dp = 6.dp,
     tint: Color = AppTheme.colors.accent,
     deleted: () -> Unit,
     download: () -> Unit
@@ -338,25 +364,28 @@ fun MyDownloadBtn(
     val context = LocalContext.current
 
     Box(
-        modifier.size(size),
+        modifier,
         contentAlignment = Alignment.Center
     ) {
-        if (state == DownloadState.Downloading) MyCircularProgressIndicator(Modifier.size(size))
+        if (state == DownloadState.Downloading)
+            MyCircularProgressIndicator(Modifier.size(size))
         else {
-            MyIconBtn(
+            MyIconButton(
                 iconId =
                     if (state == DownloadState.Downloaded) R.drawable.ic_downloaded
                     else R.drawable.ic_download,
                 description = stringResource(R.string.download_description),
+                size = size,
+                innerPadding = innerPadding,
                 tint = tint,
-                size = size
-            ) {
-                if (state == DownloadState.Downloaded) {
-                    deleted()
-                    FileUtils.deleteFile(context, path)
+                onClick = {
+                    if (state == DownloadState.Downloaded) {
+                        deleted()
+                        FileUtils.deleteFile(context, path)
+                    }
+                    else download()
                 }
-                else download()
-            }
+            )
         }
     }
 
@@ -365,9 +394,8 @@ fun MyDownloadBtn(
 @Composable
 fun MyImageButton(
     imageResId: Int,
-    size: Dp = 24.dp,
     description: String = "",
-    enabled: Boolean = true,
+    isEnabled: Boolean = true,
     padding: Dp = 14.dp,
     onClick: () -> Unit
 ) {
@@ -375,25 +403,26 @@ fun MyImageButton(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .clip(CircleShape)
-            .clickable { if (enabled) onClick() }
+            .clickable { if (isEnabled) onClick() }
     ) {
         Image(
             painter = painterResource(imageResId),
             contentDescription = description,
-            modifier = Modifier
-                .size(size)
-                .padding(padding)
+            modifier = Modifier.padding(padding)
         )
     }
 }
 
 @Composable
-fun MyPlayerBtn(
+fun MyIconPlayerBtn(
     state: Int,
     modifier: Modifier = Modifier,
-    size: Dp = 100.dp,
-    padding: Dp = 5.dp,
+    size: Dp = 80.dp,
+    padding: Dp = 0.dp,
     enabled: Boolean = true,
+    playIcon: Int = R.drawable.ic_play,
+    pauseIcon: Int = R.drawable.ic_pause,
+    tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
     onClick: () -> Unit
 ) {
     Box(
@@ -403,19 +432,29 @@ fun MyPlayerBtn(
             .clip(CircleShape)
             .clickable { if (enabled) onClick() }
     ) {
-        if (state == PlaybackStateCompat.STATE_NONE ||
-            state == PlaybackStateCompat.STATE_CONNECTING ||
-            state == PlaybackStateCompat.STATE_BUFFERING)
-            MyCircularProgressIndicator()
-        else {
-            Image(
-                painter = painterResource(
-                    if (state == PlaybackStateCompat.STATE_PLAYING) R.drawable.ic_player_pause
-                    else R.drawable.ic_player_play
-                ),
-                contentDescription = stringResource(R.string.play_pause_btn_description),
-                modifier = Modifier.padding(padding)
-            )
+        AnimatedContent(
+            targetState = state,
+            label = "",
+            transitionSpec = {
+                scaleIn(animationSpec = tween(durationMillis = 200)) togetherWith
+                        scaleOut(animationSpec = tween(durationMillis = 200))
+            }
+        ) { state ->
+            if (state == PlaybackStateCompat.STATE_NONE ||
+                state == PlaybackStateCompat.STATE_CONNECTING ||
+                state == PlaybackStateCompat.STATE_BUFFERING)
+                MyCircularProgressIndicator()
+            else {
+                Icon(
+                    painter = painterResource(
+                        if (state == PlaybackStateCompat.STATE_PLAYING) pauseIcon
+                        else playIcon
+                    ),
+                    contentDescription = stringResource(R.string.play_pause_btn_description),
+                    modifier = Modifier.padding(padding),
+                    tint = tint
+                )
+            }
         }
     }
 }
@@ -425,11 +464,12 @@ fun MyCloseBtn(
     modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
-    MyIconBtn(
+    MyIconButton(
         iconId = R.drawable.ic_close,
         modifier = modifier,
         description = stringResource(R.string.close),
-        onClick = onClose,
-        tint = AppTheme.colors.text
+        innerPadding = 10.dp,
+        tint = AppTheme.colors.text,
+        onClick = onClose
     )
 }

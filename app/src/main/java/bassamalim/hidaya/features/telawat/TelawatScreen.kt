@@ -28,7 +28,7 @@ import bassamalim.hidaya.core.ui.components.FilterDialog
 import bassamalim.hidaya.core.ui.components.MyDownloadBtn
 import bassamalim.hidaya.core.ui.components.MyFavBtn
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
-import bassamalim.hidaya.core.ui.components.MyIconBtn
+import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySquareButton
@@ -81,7 +81,7 @@ fun TelawatUI(
                             onValueChange = { vm.onSearchTextCh(it) }
                         )
 
-                        MyIconBtn(
+                        MyIconButton(
                             iconId = R.drawable.ic_filter,
                             modifier = Modifier.padding(end = 10.dp),
                             description = stringResource(R.string.filter_search_description),
@@ -182,18 +182,19 @@ private fun VersionCard(
     vm: TelawatVM,
     st: TelawatState
 ) {
-    if (version.versionId != 0) MyHorizontalDivider()
+    if (version.versionId != 0)
+        MyHorizontalDivider()
 
     Box(
         Modifier.clickable {
             vm.onVersionClk(reciterId, version.versionId)
         }
     ) {
-        Box(Modifier.padding(horizontal = 10.dp)) {
+        Box(Modifier.padding(start = 10.dp)) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 15.dp, bottom = 15.dp, start = 10.dp, end = 10.dp),
+                    .padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -205,10 +206,9 @@ private fun VersionCard(
                         else st.downloadStates[reciterId][version.versionId],
                     path = "${vm.prefix}$reciterId/${version.versionId}",
                     size = 28.dp,
-                    deleted = { vm.onDeleted(reciterId, version.versionId) }
-                ) {
-                    vm.onDownloadClk(reciterId, version)
-                }
+                    deleted = { vm.onDeleteClk(reciterId, version.versionId) },
+                    download = { vm.onDownloadClk(reciterId, version) }
+                )
             }
         }
     }

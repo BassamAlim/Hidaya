@@ -37,8 +37,7 @@ fun DateEditorDialog(
 
             MyText(
                 offsetText,
-                fontSize = 22.sp,
-                textColor = AppTheme.colors.accent
+                fontSize = 22.sp
             )
 
             Row(
@@ -48,19 +47,22 @@ fun DateEditorDialog(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                MyImageButton(
-                    imageResId = R.drawable.ic_left_arrow
-                ) {
-                    onPreviousDay()
-                }
+                MyIconButton(
+                    iconId = R.drawable.ic_left_arrow,
+                    tint = AppTheme.colors.text,
+                    onClick = { onPreviousDay() }
+                )
 
-                MyText(dateText, fontSize = 22.sp)
+                MyText(
+                    dateText,
+                    fontSize = 22.sp
+                )
 
-                MyImageButton(
-                    imageResId = R.drawable.ic_right_arrow
-                ) {
-                    onNextDay()
-                }
+                MyIconButton(
+                    iconId = R.drawable.ic_right_arrow,
+                    tint = AppTheme.colors.text,
+                    onClick = { onNextDay() }
+                )
             }
 
             Row(

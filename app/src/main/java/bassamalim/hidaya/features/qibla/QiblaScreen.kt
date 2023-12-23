@@ -33,9 +33,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyDialog
-import bassamalim.hidaya.core.ui.components.MyIconBtn
+import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.theme.AppTheme
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
@@ -113,15 +114,16 @@ fun QiblaUI(
                                 stringResource(R.string.high_accuracy_text)
                             }
                         },
-                        modifier = Modifier.padding(horizontal = 12.dp)
+                        modifier = Modifier.padding(horizontal = 8.dp)
                     )
 
                     when (st.accuracy) {
                         0, 1 -> {
-                            MyIconBtn(
+                            MyIconButton(
                                 iconId = R.drawable.ic_warning,
                                 description = stringResource(R.string.accuracy_indicator_description),
-                                tint = Color(0xFFE2574C)
+                                innerPadding = 16.dp,
+                                tint = bassamalim.hidaya.core.ui.theme.Negative
                             ) {
                                 vm.onAccuracyIndicatorClick()
                             }
@@ -195,7 +197,7 @@ private fun CalibrationDialog(
 
             MyText(
                 stringResource(R.string.qibla_warning),
-                textColor = Color.Red
+                textColor = bassamalim.hidaya.core.ui.theme.Negative
             )
         }
     }

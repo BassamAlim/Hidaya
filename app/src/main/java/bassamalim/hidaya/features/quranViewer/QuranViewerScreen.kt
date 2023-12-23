@@ -155,54 +155,54 @@ private fun BottomBar(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             // Bookmark btn
-            MyIconBtn(
+            MyIconButton(
                 iconId =
                     if (st.isBookmarked) R.drawable.ic_bookmarked
                     else R.drawable.ic_bookmark,
                 description = stringResource(R.string.bookmark_page_button_description),
                 tint = AppTheme.colors.onPrimary,
-                size = 40.dp
-            ) {
-                vm.onBookmarkClick()
-            }
+                size = 40.dp,
+                onClick = { vm.onBookmarkClick() }
+            )
 
-            Row {
+            MyRow {
                 // Rewind btn
-                MyImageButton(
-                    imageResId = R.drawable.ic_aya_backward,
-                    description = stringResource(R.string.rewind_btn_description)
-                ) {
-                    vm.onPreviousAyaClk()
-                }
+                MyIconButton(
+                    iconId = R.drawable.ic_skip_previous,
+                    description = stringResource(R.string.rewind_btn_description),
+                    size = 40.dp,
+                    tint = AppTheme.colors.onPrimary,
+                    onClick = { vm.onPreviousAyaClk() }
+                )
 
                 // Play/Pause btn
-                MyPlayerBtn(
+                MyIconPlayerBtn(
                     state = st.playerState,
                     size = 50.dp,
                     padding = 5.dp,
-                    modifier = Modifier.padding(horizontal = 10.dp)
-                ) {
-                    vm.onPlayPauseClick()
-                }
+                    modifier = Modifier.padding(horizontal = 4.dp),
+                    tint = AppTheme.colors.onPrimary,
+                    onClick = { vm.onPlayPauseClick() }
+                )
 
                 // Fast Forward btn
-                MyImageButton(
-                    imageResId = R.drawable.ic_aya_forward,
-                    description = stringResource(R.string.fast_forward_btn_description)
-                ) {
-                    vm.onNextAyaClk()
-                }
+                MyIconButton(
+                    iconId = R.drawable.ic_skip_next,
+                    description = stringResource(R.string.fast_forward_btn_description),
+                    size = 40.dp,
+                    tint = AppTheme.colors.onPrimary,
+                    onClick = { vm.onNextAyaClk() }
+                )
             }
 
             // Preference btn
-            MyIconBtn(
+            MyIconButton(
                 iconId = R.drawable.ic_preferences,
                 description = stringResource(R.string.settings),
                 tint = AppTheme.colors.onPrimary,
-                size = 44.dp
-            ) {
-                vm.onSettingsClick()
-            }
+                size = 44.dp,
+                onClick = { vm.onSettingsClick() }
+            )
         }
     }
 }

@@ -156,7 +156,7 @@ class PrayersVM @Inject constructor(
         updateState(dateOffset - 1)
     }
 
-    fun onTodayClk() {
+    fun onDateClk() {
         updateState(0)
     }
 

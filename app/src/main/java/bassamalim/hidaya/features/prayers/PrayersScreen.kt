@@ -28,7 +28,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyClickableText
-import bassamalim.hidaya.core.ui.components.MyIconBtn
+import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
@@ -86,7 +86,7 @@ private fun LocationCard(
                     .padding(start = 15.dp)
             )
 
-            MyIconBtn(
+            MyIconButton(
                 iconId = R.drawable.ic_location,
                 description = stringResource(R.string.locate),
                 tint = AppTheme.colors.text,
@@ -242,30 +242,31 @@ private fun DayCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            MyIconBtn(
+            MyIconButton(
                 iconId = R.drawable.ic_left_arrow,
                 description = stringResource(R.string.previous_day_button_description),
-                tint = AppTheme.colors.text
-            ) {
-                vm.onPreviousDayClk()
-            }
+                modifier = Modifier.padding(2.dp),
+                innerPadding = 10.dp,
+                tint = AppTheme.colors.text,
+                onClick = { vm.onPreviousDayClk() }
+            )
 
             MyClickableText(
                 text = st.dateText,
                 fontSize = 24.sp,
                 textColor = AppTheme.colors.text,
-                innerPadding = PaddingValues(vertical = 3.dp, horizontal = 15.dp)
-            ) {
-                vm.onTodayClk()
-            }
+                innerPadding = PaddingValues(vertical = 3.dp, horizontal = 15.dp),
+                onClick = { vm.onDateClk() }
+            )
 
-            MyIconBtn(
+            MyIconButton(
                 iconId = R.drawable.ic_right_arrow,
                 description = stringResource(R.string.next_day_button_description),
-                tint = AppTheme.colors.text
-            ) {
-                vm.onNextDayClk()
-            }
+                modifier = Modifier.padding(2.dp),
+                innerPadding = 10.dp,
+                tint = AppTheme.colors.text,
+                onClick = { vm.onNextDayClk() }
+            )
         }
     }
 }

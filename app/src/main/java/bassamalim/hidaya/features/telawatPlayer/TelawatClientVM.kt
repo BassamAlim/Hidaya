@@ -315,14 +315,6 @@ class TelawatClientVM @Inject constructor(
         }
     }
 
-    fun onFastForwardClk() {
-        tc.fastForward()
-    }
-
-    fun onRewindClk() {
-        tc.rewind()
-    }
-
     fun onPrevClk() {
         tc.skipToPrevious()
     }
@@ -374,7 +366,7 @@ class TelawatClientVM @Inject constructor(
         download()
     }
 
-    fun onDelete() {
+    fun onDeleteClk() {
         _uiState.update { it.copy(
             downloadState = DownloadState.NotDownloaded
         )}

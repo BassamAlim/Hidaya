@@ -283,7 +283,7 @@ class TelawatVM @Inject constructor(
         repo.updateFavorites()
     }
 
-    fun onDeleted(reciterId: Int, versionId: Int) {
+    fun onDeleteClk(reciterId: Int, versionId: Int) {
         _uiState.update { it.copy(
             downloadStates = _uiState.value.downloadStates.toMutableList().apply {
                 val innerStates = this[reciterId].toMutableList()

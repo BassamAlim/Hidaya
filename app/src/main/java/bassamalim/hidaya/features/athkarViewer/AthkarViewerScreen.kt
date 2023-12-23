@@ -24,7 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.Thikr
 import bassamalim.hidaya.core.ui.components.InfoDialog
-import bassamalim.hidaya.core.ui.components.MyIconBtn
+import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyReadingBottomBar
 import bassamalim.hidaya.core.ui.components.MyScaffold
@@ -127,9 +127,11 @@ private fun ThikrCard(
                 if (viewModel.shouldShowReference(thikr)) {
                     Divider()
 
-                    MyIconBtn(
+                    MyIconButton(
                         iconId = R.drawable.ic_help,
                         description = stringResource(R.string.source_btn_description),
+                        modifier = Modifier.padding(2.dp),
+                        innerPadding = 6.dp,
                         tint = AppTheme.colors.text,
                         size = 26.dp
                     ) {

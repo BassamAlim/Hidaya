@@ -18,7 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.FilterDialog
 import bassamalim.hidaya.core.ui.components.MyDropDownMenu
-import bassamalim.hidaya.core.ui.components.MyIconBtn
+import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
@@ -68,7 +68,7 @@ fun BookSearcherUI(
                 ) {
                     MyText(stringResource(R.string.selected_books))
 
-                    MyIconBtn(
+                    MyIconButton(
                         iconId = R.drawable.ic_filter,
                         description = stringResource(R.string.filter_search_description),
                         size = 30.dp,

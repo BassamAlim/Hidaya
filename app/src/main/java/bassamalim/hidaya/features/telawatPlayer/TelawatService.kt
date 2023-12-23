@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
@@ -25,7 +24,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -33,12 +31,10 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.ui.PlayerNotificationManager
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
@@ -49,7 +45,6 @@ import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
 import bassamalim.hidaya.core.utils.PrefUtils
-import okhttp3.internal.notify
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.Locale
@@ -233,24 +228,6 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             stopForeground()    // Take the service out of the foreground
         }
 
-        override fun onFastForward() {
-            super.onFastForward()
-            player.seekTo(player.currentPosition + 10000)
-            updatePbState(
-                controller.playbackState.state,
-                controller.playbackState.bufferedPosition
-            )
-        }
-
-        override fun onRewind() {
-            super.onRewind()
-            player.seekTo(player.currentPosition - 10000)
-            updatePbState(
-                controller.playbackState.state,
-                controller.playbackState.bufferedPosition
-            )
-        }
-
         override fun onSkipToNext() {
             super.onSkipToNext()
             skipToNext()
@@ -417,12 +394,12 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         val flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         playAction = NotificationCompat.Action(
-            R.drawable.ic_play_arrow, "Play", PendingIntent.getBroadcast(
+            R.drawable.ic_play, "Play", PendingIntent.getBroadcast(
                 this, id, Intent(ACTION_PLAY).setPackage(packageName), flags)
         )
 
         pauseAction = NotificationCompat.Action(
-            R.drawable.ic_baseline_pause, "Pause", PendingIntent.getBroadcast(
+            R.drawable.ic_pause, "Pause", PendingIntent.getBroadcast(
                 this, id, Intent(ACTION_PAUSE).setPackage(packageName), flags
             )
         )
