@@ -274,7 +274,6 @@ private fun PageItems(
             PageItem(
                 text = text.toString(),
                 sequence = sequence,
-                isCurrentPage = isCurrentPage,
                 vm, st
             )
 
@@ -294,7 +293,6 @@ private fun PageItems(
     PageItem(
         text = text.toString(),
         sequence = sequence,
-        isCurrentPage = isCurrentPage,
         vm, st
     )
 }
@@ -303,7 +301,6 @@ private fun PageItems(
 private fun PageItem(
     text: String,
     sequence: List<Aya>,
-    isCurrentPage: Boolean,
     vm: QuranViewerVM,
     st: QuranViewerState
 ) {
@@ -327,7 +324,6 @@ private fun PageItem(
     PageViewScreen(
         annotatedString = annotatedString,
         aya = sequence[0],
-        isCurrentPage = isCurrentPage,
         vm, st
     )
 }
@@ -363,7 +359,6 @@ private fun ListItems(
 private fun PageViewScreen(
     annotatedString: AnnotatedString,
     aya: Aya,
-    isCurrentPage: Boolean,
     vm: QuranViewerVM,
     st: QuranViewerState
 ) {
