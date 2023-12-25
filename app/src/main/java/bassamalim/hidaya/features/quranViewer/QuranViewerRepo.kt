@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.quranViewer
 import android.content.SharedPreferences
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.enums.QViewType
+import bassamalim.hidaya.core.enums.QuranViewTypes
 import bassamalim.hidaya.core.utils.PrefUtils
 import javax.inject.Inject
 
@@ -18,14 +18,16 @@ class QuranViewerRepo @Inject constructor(
 
     fun getTheme() = PrefUtils.getTheme(sp)
 
-    fun getPage(suraId: Int) = db.suarDao().getPage(suraId)
+    fun getSuraPageNum(suraId: Int) = db.suarDao().getSuraPageNum(suraId)
+
+    fun getAyaPageNum(ayaId: Int) = db.ayatDao().getAyaPageNum(ayaId)
 
     fun getAyat() = db.ayatDao().getAll()
 
     fun getSuraNames() = db.suarDao().getNames()
     fun getSuraNamesEn() = db.suarDao().getNamesEn()
 
-    fun getViewType() = QViewType.valueOf(
+    fun getViewType() = QuranViewTypes.valueOf(
         PrefUtils.getString(sp, Prefs.QuranViewType)
     )
 

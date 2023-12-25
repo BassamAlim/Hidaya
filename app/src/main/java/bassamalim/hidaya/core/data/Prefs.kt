@@ -5,7 +5,7 @@ import bassamalim.hidaya.core.enums.LocationType.Auto
 import bassamalim.hidaya.core.enums.NotificationType.None
 import bassamalim.hidaya.core.enums.NotificationType.Notification
 import bassamalim.hidaya.core.enums.PID
-import bassamalim.hidaya.core.enums.QViewType
+import bassamalim.hidaya.core.enums.QuranViewTypes
 import bassamalim.hidaya.core.enums.Theme.LIGHT
 import bassamalim.hidaya.core.enums.TimeFormat.TWELVE
 
@@ -97,7 +97,7 @@ sealed class Prefs(val key: String, val default: Any) {
 
     object QuranTextSize: Prefs("quran_text_size", 30f)
 
-    object QuranViewType: Prefs("quran_view_type", QViewType.Page.name)
+    object QuranViewType: Prefs("quran_view_type", QuranViewTypes.Page.name)
 
     object StopOnSuraEnd: Prefs("stop_on_sura_end", false)
 

@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.quranSettings
 
 import androidx.lifecycle.ViewModel
-import bassamalim.hidaya.core.enums.QViewType
+import bassamalim.hidaya.core.enums.QuranViewTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -16,7 +16,7 @@ class QuranSettingsVM @Inject constructor(
     var viewType = repo.getViewType()
 
     fun onViewTypeCh(type: Int) {
-        viewType = QViewType.values()[type]
+        viewType = QuranViewTypes.values()[type]
 
         repo.setViewType(viewType)
     }

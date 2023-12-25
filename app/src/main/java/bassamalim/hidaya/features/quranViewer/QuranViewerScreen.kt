@@ -28,7 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.QViewType.*
+import bassamalim.hidaya.core.enums.QuranViewTypes.*
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.models.Aya
 import bassamalim.hidaya.core.other.Global
@@ -39,17 +39,21 @@ import bassamalim.hidaya.core.ui.theme.uthmanic
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quranSettings.QuranSettingsDlg
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun QuranViewerUI(
     vm: QuranViewerVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
+    val pagerState = rememberPagerState(vm.initialPageNum-1)
+    val coroutineScope = rememberCoroutineScope()
 
     DisposableEffect(key1 = vm) {
-        vm.onStart(activity)
+        vm.onStart(activity, pagerState, coroutineScope)
         onDispose { vm.onStop() }
     }
 
@@ -61,6 +65,7 @@ fun QuranViewerUI(
     ) {
         PageContent(
             vm, st,
+            pagerState = pagerState,
             padding = it
         )
     }
@@ -212,10 +217,9 @@ private fun BottomBar(
 private fun PageContent(
     vm: QuranViewerVM,
     st: QuranViewerState,
+    pagerState: PagerState,
     padding: PaddingValues
 ) {
-    val pagerState = rememberPagerState(vm.initialPage-1)
-    vm.setPagerState(pagerState)
 
     HorizontalPagerScreen(
         count = Global.QURAN_PAGES,
@@ -224,6 +228,8 @@ private fun PageContent(
     ) { pageIdx ->
         val isCurrentPage = pageIdx == pagerState.currentPage
         val scrollState = rememberScrollState()
+
+        if (isCurrentPage) vm.setScrollState(scrollState)
 
         vm.onPageChange(pagerState.currentPage, pageIdx)
 
@@ -240,7 +246,7 @@ private fun PageContent(
             if (st.viewType == List) ListItems(ayat, isCurrentPage, vm, st)
             else PageItems(ayat, isCurrentPage, vm, st)
 
-            if (isCurrentPage) {
+            if (isCurrentPage && vm.scrollTo > 0f) {
                 LaunchedEffect(null) {
                     scrollState.animateScrollTo(vm.scrollTo.toInt())
                     vm.onScrolled()
@@ -261,12 +267,18 @@ private fun PageItems(
     var sequence = ArrayList<Aya>()
     var lastSura = ayat[0].suraNum
 
-    NewSura(ayat[0], isCurrentPage, vm, st)
+    if (ayat[0].ayaNum == 1) NewSura(ayat[0], isCurrentPage, vm, st)
+
     for (aya in ayat) {
         if (aya.suraNum != lastSura) {
-            PageItem(text = text.toString(), sequence = sequence, vm, st)
+            PageItem(
+                text = text.toString(),
+                sequence = sequence,
+                isCurrentPage = isCurrentPage,
+                vm, st
+            )
 
-            NewSura(aya, isCurrentPage, vm, st)
+            if (aya.ayaNum == 1) NewSura(aya, isCurrentPage, vm, st)
 
             text = StringBuilder()
             sequence = ArrayList()
@@ -279,13 +291,19 @@ private fun PageItems(
 
         lastSura = aya.suraNum
     }
-    PageItem(text = text.toString(), sequence = sequence, vm, st)
+    PageItem(
+        text = text.toString(),
+        sequence = sequence,
+        isCurrentPage = isCurrentPage,
+        vm, st
+    )
 }
 
 @Composable
 private fun PageItem(
     text: String,
     sequence: List<Aya>,
+    isCurrentPage: Boolean,
     vm: QuranViewerVM,
     st: QuranViewerState
 ) {
@@ -306,7 +324,12 @@ private fun PageItem(
         }
     }
 
-    Screen(annotatedString = annotatedString, aya = sequence[0], vm, st)
+    PageViewScreen(
+        annotatedString = annotatedString,
+        aya = sequence[0],
+        isCurrentPage = isCurrentPage,
+        vm, st
+    )
 }
 
 @Composable
@@ -317,10 +340,11 @@ private fun ListItems(
     st: QuranViewerState
 ) {
     for (aya in ayat) {
-        NewSura(aya, isCurrentPage, vm, st)
+        if (aya.ayaNum == 1)
+            NewSura(aya, isCurrentPage, vm, st)
 
         val annotatedString = AnnotatedString(aya.text!!)
-        Screen(annotatedString, aya, vm, st)
+        ListViewScreen(annotatedString, aya, isCurrentPage, vm, st)
 
         if (vm.language != Language.ARABIC) {
             MyText(
@@ -330,14 +354,16 @@ private fun ListItems(
             )
         }
 
-        MyHorizontalDivider()
+        if (aya.ayaNum != ayat.last().ayaNum)
+            MyHorizontalDivider()
     }
 }
 
 @Composable
-private fun Screen(
+private fun PageViewScreen(
     annotatedString: AnnotatedString,
     aya: Aya,
+    isCurrentPage: Boolean,
     vm: QuranViewerVM,
     st: QuranViewerState
 ) {
@@ -349,9 +375,40 @@ private fun Screen(
             color = AppTheme.colors.strongText,
             textAlign = TextAlign.Center
         ),
-        modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp),
+        modifier = Modifier
+            .padding(vertical = 4.dp, horizontal = 6.dp),
         onClick = { offset ->
-            vm.onAyaClick(aya.id, offset)
+            vm.onAyaScreenClick(aya.id, offset)
+        }
+    )
+}
+
+@Composable
+private fun ListViewScreen(
+    annotatedString: AnnotatedString,
+    aya: Aya,
+    isCurrentPage: Boolean,
+    vm: QuranViewerVM,
+    st: QuranViewerState
+) {
+    ClickableText(
+        text = annotatedString,
+        style = TextStyle(
+            fontFamily = uthmanic,
+            fontSize = st.textSize.sp,
+            color =
+                if (st.selectedAya == aya) AppTheme.colors.highlight
+                else if (st.trackedAyaId == aya.id) AppTheme.colors.track
+                else AppTheme.colors.strongText,
+            textAlign = TextAlign.Center
+        ),
+        modifier = Modifier
+            .padding(vertical = 4.dp, horizontal = 6.dp)
+            .onGloballyPositioned { layoutCoordinates ->
+                vm.onAyaGloballyPositioned(aya, isCurrentPage, layoutCoordinates)
+            },
+        onClick = { offset ->
+            vm.onAyaScreenClick(aya.id, offset)
         }
     )
 }
@@ -363,11 +420,9 @@ private fun NewSura(
     vm: QuranViewerVM,
     st: QuranViewerState
 ) {
-    if (aya.ayaNum == 1) {
-        SuraHeader(aya, isCurrentPage, vm, st)
-        // surat al-fatiha and At-Taubah
-        if (aya.suraNum != 1 && aya.suraNum != 9) Basmalah(st)
-    }
+    SuraHeader(aya, isCurrentPage, vm, st)
+    // surat al-fatiha and At-Taubah
+    if (aya.suraNum != 1 && aya.suraNum != 9) Basmalah(st)
 }
 
 @Composable

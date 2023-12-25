@@ -16,6 +16,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInParent
 import androidx.lifecycle.AndroidViewModel
@@ -24,12 +25,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.QViewType
+import bassamalim.hidaya.core.enums.QuranViewTypes
 import bassamalim.hidaya.core.models.Aya
 import bassamalim.hidaya.core.other.Global
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -45,24 +47,29 @@ class QuranViewerVM @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): AndroidViewModel(app) {
 
-    private val type = savedStateHandle.get<String>("type") ?: "by_sura"
-    private var initialSuraId = savedStateHandle.get<Int>("sura_id") ?: 0
-    private val page = savedStateHandle.get<Int>("page") ?: 0
+    private val targetType = QuranTarget.valueOf(
+        savedStateHandle.get<String>("target_type") ?: QuranTarget.SURA.name
+    )
+    private var targetValue = savedStateHandle.get<Int>("target_value") ?: 0
 
     private lateinit var activity: Activity
+    private lateinit var coroutineScope: CoroutineScope
+    private lateinit var pagerState: PagerState
+    private lateinit var scrollState: ScrollState
     val language = repo.getLanguage()
     val numeralsLanguage = repo.getNumeralsLanguage()
     val theme = repo.getTheme()
-    var initialPage =
-        if (type == "by_page") page
-        else repo.getPage(initialSuraId)
+    var initialPageNum = when (targetType) {
+        QuranTarget.PAGE -> targetValue
+        QuranTarget.SURA -> repo.getSuraPageNum(targetValue)
+        QuranTarget.AYA -> repo.getAyaPageNum(targetValue)
+    }
         private set
     private val suraNames =
         if (language == Language.ENGLISH) repo.getSuraNamesEn()
         else repo.getSuraNames()
     private val ayat = repo.getAyat()
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var pagerState: PagerState
     private var suraNum = 0
     private var bookmarkedPage = repo.getBookmarkedPage()
     val pref = repo.sp
@@ -74,21 +81,32 @@ class QuranViewerVM @Inject constructor(
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
+    private val ayaPositions = mutableMapOf<Int, Float>()
 
     private val _uiState = MutableStateFlow(QuranViewerState(
-        pageNum = initialPage,
+        pageNum = initialPageNum,
         viewType =
-            if (language == Language.ENGLISH) QViewType.List
+            if (language == Language.ENGLISH) QuranViewTypes.List
             else repo.getViewType(),
         textSize = repo.getTextSize(),
-        isBookmarked = bookmarkedPage == initialPage,
-        pageAyat = buildPage(initialPage),
+        isBookmarked = bookmarkedPage == initialPageNum,
+        pageAyat = buildPage(initialPageNum),
         tutorialDialogShown = repo.getShowTutorial()
     ))
     val uiState = _uiState.asStateFlow()
 
-    fun onStart(activity: Activity) {
+    init {
+        if (targetType == QuranTarget.AYA) {
+            _uiState.update { it.copy(
+                selectedAya = _uiState.value.pageAyat.first { it.id == targetValue }
+            )}
+        }
+    }
+
+    fun onStart(activity: Activity, pagerState: PagerState, coroutineScope: CoroutineScope) {
         this.activity = activity
+        this.pagerState = pagerState
+        this.coroutineScope = coroutineScope
     }
 
     fun onStop() {
@@ -99,10 +117,6 @@ class QuranViewerVM @Inject constructor(
         mediaBrowser = null
 
         handler.removeCallbacks(runnable)
-    }
-
-    fun setPagerState(pagerState: PagerState) {
-        this.pagerState = pagerState
     }
 
     fun onPageChange(currentPageIdx: Int, pageIdx: Int) {
@@ -202,43 +216,49 @@ class QuranViewerVM @Inject constructor(
         )}
     }
 
-    fun onAyaClick(ayaId: Int, offset: Int) {
-        val startIdx = _uiState.value.pageAyat.indexOfFirst { it.id == ayaId }
-
+    fun onAyaScreenClick(ayaId: Int, offset: Int) {
         val maxDuration = 1200
-        for (idx in startIdx until _uiState.value.pageAyat.size) {
-            val aya = _uiState.value.pageAyat[idx]
-            if (offset < aya.end) {
-                // double click
-                if (aya.id == lastClickedId &&
-                    System.currentTimeMillis() < lastClickT + maxDuration) {
-                    _uiState.update { it.copy(
-                        selectedAya = null
-                    )}
 
-                    _uiState.update { it.copy(
-                        infoDialogShown = true,
-                        infoDialogText = aya.tafseer
-                    )}
+        var aya: Aya? = null
+        when (_uiState.value.viewType) {
+            QuranViewTypes.Page -> {
+                val startIdx = _uiState.value.pageAyat.indexOfFirst { it.id == ayaId }
+                for (idx in startIdx until _uiState.value.pageAyat.size) {
+                    val a = _uiState.value.pageAyat[idx]
+                    if (offset < a.end)
+                        aya = a
                 }
-                else {  // single click
-                    if (_uiState.value.selectedAya == aya) {
-                        _uiState.update { it.copy(
-                            selectedAya = null
-                        )}
-                    }
-                    else {
-                        _uiState.update { it.copy(
-                            selectedAya = aya
-                        )}
-                    }
-                }
+            }
+            QuranViewTypes.List -> aya = _uiState.value.pageAyat.find { it.id == ayaId }
+        }
 
-                lastClickedId = aya.id
-                lastClickT = System.currentTimeMillis()
-                break
+        // double click
+        if (aya?.id == lastClickedId
+            && System.currentTimeMillis() < lastClickT + maxDuration) {
+            _uiState.update { it.copy(
+                selectedAya = null
+            )}
+
+            _uiState.update { it.copy(
+                infoDialogShown = true,
+                infoDialogText = aya.tafseer
+            )}
+        }
+        else {  // single click
+            if (_uiState.value.selectedAya == aya) {
+                _uiState.update { it.copy(
+                    selectedAya = null
+                )}
+            }
+            else {
+                _uiState.update { it.copy(
+                    selectedAya = aya
+                )}
             }
         }
+
+        lastClickedId = aya?.id ?: -1
+        lastClickT = System.currentTimeMillis()
     }
 
     fun onSuraHeaderGloballyPositioned(
@@ -246,10 +266,24 @@ class QuranViewerVM @Inject constructor(
         isCurrentPage: Boolean,
         layoutCoordinates: LayoutCoordinates
     ) {
-        if (isCurrentPage && scrollTo == -1F && aya.suraNum == initialSuraId+1) {
+        if (
+            isCurrentPage
+            && scrollTo == -1F
+            && targetType == QuranTarget.SURA
+            && aya.suraNum == targetValue+1
+            ) {
             scrollTo = layoutCoordinates.positionInParent().y - 13
-            initialSuraId = -1
         }
+    }
+
+    fun onAyaGloballyPositioned(
+        aya: Aya,
+        isCurrentPage: Boolean,
+        layoutCoordinates: LayoutCoordinates
+    ) {
+        val screenHeight = app.resources.displayMetrics.heightPixels
+        if (isCurrentPage && _uiState.value.viewType == QuranViewTypes.List)
+            ayaPositions[aya.id] = layoutCoordinates.positionInParent().y - screenHeight / 3f
     }
 
     fun onScrolled() {
@@ -278,6 +312,10 @@ class QuranViewerVM @Inject constructor(
         )}
     }
 
+    fun setScrollState(scrollState: ScrollState) {
+        this.scrollState = scrollState
+    }
+
     fun buildPage(pageNumber: Int): ArrayList<Aya> {
         val pageAyat = ArrayList<Aya>()
 
@@ -290,8 +328,14 @@ class QuranViewerVM @Inject constructor(
 
             pageAyat.add(
                 Aya(
-                    aya.id, aya.juz, suraNum, suraNames[suraNum - 1], ayaNum,
-                    "${aya.ayaText} ", aya.translationEn, aya.tafseer
+                    id = aya.id,
+                    juz = aya.juz,
+                    suraNum = suraNum,
+                    suraName = suraNames[suraNum - 1],
+                    ayaNum = ayaNum,
+                    text = "${aya.ayaText} ",
+                    translation = aya.translationEn,
+                    tafseer = aya.tafseer
                 )
             )
 
@@ -386,6 +430,13 @@ class QuranViewerVM @Inject constructor(
             _uiState.update { it.copy(
                 trackedAyaId = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
             )}
+            if (_uiState.value.viewType == QuranViewTypes.List) {
+                coroutineScope.launch {
+                    Log.d(Global.TAG, "Scrolling to ${_uiState.value.trackedAyaId} at ${ayaPositions[_uiState.value.trackedAyaId]}")
+                    if (ayaPositions[_uiState.value.trackedAyaId] != null)
+                        scrollState.animateScrollTo(ayaPositions[_uiState.value.trackedAyaId]!!.toInt())
+                }
+            }
 
             val pageNum = metadata.getLong("page_num").toInt()
             if (pageNum != _uiState.value.pageNum) {

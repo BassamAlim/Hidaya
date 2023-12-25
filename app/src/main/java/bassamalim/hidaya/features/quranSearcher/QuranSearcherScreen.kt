@@ -153,7 +153,7 @@ fun MatchItem(
                 innerPadding = PaddingValues(0.dp),
                 modifier = Modifier.padding(bottom = 6.dp)
             ) {
-                vm.onGotoPageClick(item.pageNum)
+                vm.onGotoPageClick(item)
             }
         }
     }

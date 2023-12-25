@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.quranSearcher
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,7 +12,9 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranSearcherMatch
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
+import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.features.quranViewer.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -68,8 +71,12 @@ class QuranSearcherVM @Inject constructor(
 
                 matches.add(
                     QuranSearcherMatch(
-                        a.suraNum, a.ayaNum, names[a.suraNum-1], a.page,
-                        annotatedString, a.tafseer
+                        id = a.id,
+                        ayaNum = a.ayaNum,
+                        suraName = names[a.suraNum-1],
+                        pageNum = a.page,
+                        text = annotatedString,
+                        tafseer = a.tafseer
                     )
                 )
 
@@ -105,11 +112,11 @@ class QuranSearcherVM @Inject constructor(
         repo.setMaxMatchesIndex(index)
     }
 
-    fun onGotoPageClick(page: Int) {
+    fun onGotoPageClick(aya: QuranSearcherMatch) {
         navigator.navigate(
             Screen.QuranViewer(
-                type = "by_page",
-                page = page.toString()
+                targetType = QuranTarget.AYA.name,
+                targetValue = aya.id.toString()
             )
         )
     }

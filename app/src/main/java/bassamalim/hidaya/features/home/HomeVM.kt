@@ -16,6 +16,7 @@ import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.core.utils.PTUtils
 import bassamalim.hidaya.features.leaderboard.UserRecord
+import bassamalim.hidaya.features.quranViewer.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -88,8 +89,8 @@ class HomeVM @Inject constructor(
     fun onGotoTodayWerdClick() {
         navigator.navigate(
             Screen.QuranViewer(
-                "by_page",
-                page = _uiState.value.todayWerdPage
+                targetType = QuranTarget.PAGE.name,
+                targetValue = _uiState.value.todayWerdPage
             )
         )
     }

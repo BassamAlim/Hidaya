@@ -1,6 +1,6 @@
 package bassamalim.hidaya.core.enums
 
-enum class QViewType {
+enum class QuranViewTypes {
     Page,
     List
 }

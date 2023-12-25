@@ -6,6 +6,7 @@ import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.features.quranViewer.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -77,8 +78,8 @@ class QuranVM @Inject constructor(
     fun onSuraClick(suraId: Int) {
         navigator.navigate(
             Screen.QuranViewer(
-                "by_sura",
-                suraId = suraId.toString()
+                targetType = QuranTarget.SURA.name,
+                targetValue = suraId.toString()
             )
         )
     }
@@ -92,8 +93,8 @@ class QuranVM @Inject constructor(
         if (bookmarkedPage != -1) {
             navigator.navigate(
                 Screen.QuranViewer(
-                    "by_page",
-                    page = bookmarkedPage.toString()
+                    targetType = QuranTarget.PAGE.name,
+                    targetValue = bookmarkedPage.toString()
                 )
             )
         }
@@ -122,8 +123,8 @@ class QuranVM @Inject constructor(
             if (num in 1..604) {
                 navigator.navigate(
                     Screen.QuranViewer(
-                        "by_page",
-                        page = num.toString()
+                        targetType = QuranTarget.PAGE.name,
+                        targetValue = num.toString()
                     )
                 )
             }

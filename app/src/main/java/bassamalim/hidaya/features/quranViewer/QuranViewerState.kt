@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.quranViewer
 
 import android.support.v4.media.session.PlaybackStateCompat
-import bassamalim.hidaya.core.enums.QViewType
+import bassamalim.hidaya.core.enums.QuranViewTypes
 import bassamalim.hidaya.core.models.Aya
 
 data class QuranViewerState(
@@ -11,7 +11,7 @@ data class QuranViewerState(
     val pageAyat: List<Aya> = emptyList(),
     val trackedAyaId: Int = -1,
     val selectedAya: Aya? = null,
-    val viewType: QViewType = QViewType.Page,
+    val viewType: QuranViewTypes = QuranViewTypes.Page,
     val textSize: Float = 15f,
     val playerState: Int = PlaybackStateCompat.STATE_STOPPED,
     val isBookmarked: Boolean = false,

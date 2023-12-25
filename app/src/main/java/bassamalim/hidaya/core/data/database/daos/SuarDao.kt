@@ -34,5 +34,5 @@ interface SuarDao {
     fun getFavs(): List<Int>
 
     @Query("SELECT start_page FROM suar WHERE id = :index")
-    fun getPage(index: Int): Int
+    fun getSuraPageNum(index: Int): Int
 }

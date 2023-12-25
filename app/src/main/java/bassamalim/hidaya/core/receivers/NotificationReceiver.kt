@@ -25,6 +25,7 @@ import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.PrefUtils
+import bassamalim.hidaya.features.quranViewer.QuranTarget
 import java.util.*
 import kotlin.math.abs
 
@@ -208,14 +209,14 @@ class NotificationReceiver : BroadcastReceiver() {
             }
             PID.DAILY_WERD -> {
                 Screen.QuranViewer(
-                    "by_page",
-                    page = PrefUtils.getInt(sp, Prefs.WerdPage).toString()
+                    targetType = QuranTarget.PAGE.name,
+                    targetValue = PrefUtils.getInt(sp, Prefs.WerdPage).toString()
                 ).route
             }
             PID.FRIDAY_KAHF -> {
                 Screen.QuranViewer(
-                    "by_sura",
-                    suraId = 17.toString() // surat al-kahf
+                    targetType = QuranTarget.SURA.name,
+                    targetValue = 17.toString() // surat al-kahf
                 ).route
             }
             else -> Screen.Main.route

@@ -367,12 +367,11 @@ fun NavGraph(
 
         composable(
             route = Screen.QuranViewer(
-                "{type}", "{sura_id}", "{page}"
+                "{target_type}", "{target_value}"
             ).route,
             arguments = listOf(
-                navArgument("type") { type = NavType.StringType },
-                navArgument("sura_id") { type = NavType.IntType },
-                navArgument("page") { type = NavType.IntType }
+                navArgument("target_type") { type = NavType.StringType },
+                navArgument("target_value") { type = NavType.IntType },
             ),
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
