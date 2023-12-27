@@ -70,8 +70,12 @@ sealed class Prefs(val key: String, val default: Any) {
 
     object LastDBVersion: Prefs("last_db_version", 1)
 
-    object LastPlayedMediaId: Prefs("last_played_media_id", "")
+    data class LastNotificationDate(val pid: PID): Prefs(
+        key = "last_${pid.name}_notification_date",
+        default = 0
+    )
 
+    object LastPlayedMediaId: Prefs("last_played_media_id", "")
 
     object NumeralsLanguage : Prefs("numerals_language_key", ARABIC.name)
 

@@ -53,6 +53,11 @@ class NotificationReceiver : BroadcastReceiver() {
         pid = PID.valueOf(intent.getStringExtra("id")!!)
         time = intent.getLongExtra("time", 0L)
 
+        if (!isOnTime() || isAlreadyNotified()) {
+            Log.i(Global.TAG, "notification receiver: not on time or already notified")
+            return
+        }
+
         action = intent.action!!
         when (intent.action) {
             "prayer" -> handlePrayer()
@@ -70,7 +75,7 @@ class NotificationReceiver : BroadcastReceiver() {
             PrefUtils.getString(sp, Prefs.NotificationType(pid))
         )
 
-        if (notificationType != NotificationType.None && isOnTime()) {
+        if (notificationType != NotificationType.None) {
             if (notificationType == NotificationType.Athan) startService()
             else showNotification(true, notificationType)
         }
@@ -80,7 +85,7 @@ class NotificationReceiver : BroadcastReceiver() {
         Log.i(Global.TAG, "in notification receiver for $pid reminder")
 
         notificationId = pid.ordinal + 10
-        if (isOnTime()) showNotification(false)
+        showNotification(false)
     }
 
     private fun handleExtra() {
@@ -92,12 +97,17 @@ class NotificationReceiver : BroadcastReceiver() {
             PrefUtils.getString(sp, Prefs.NotificationType(pid))
         )
 
-        if (isOnTime()) showNotification(false, notificationType)
+        showNotification(false, notificationType)
     }
 
     private fun isOnTime(): Boolean {
         val max = time + 120000
         return System.currentTimeMillis() <= max
+    }
+
+    private fun isAlreadyNotified(): Boolean {
+        val lastDate = PrefUtils.getInt(sp, Prefs.LastNotificationDate(pid))
+        return lastDate == Calendar.getInstance()[Calendar.DAY_OF_YEAR]
     }
 
     private fun showNotification(
@@ -126,6 +136,8 @@ class NotificationReceiver : BroadcastReceiver() {
             val notification = build(notificationType)
             NotificationManagerCompat.from(ctx).notify(notificationId, notification)
         }
+
+        markAsNotified()
     }
 
     private fun startService() {
@@ -243,6 +255,15 @@ class NotificationReceiver : BroadcastReceiver() {
             val notificationManager = ctx.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(notificationChannel)
         }
+    }
+
+    private fun markAsNotified() {
+        sp.edit()
+            .putInt(
+                Prefs.LastNotificationDate(pid).key,
+                Calendar.getInstance()[Calendar.DAY_OF_YEAR]
+            )
+            .apply()
     }
 
 }
