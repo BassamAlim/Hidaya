@@ -289,13 +289,13 @@ private fun PageItems(
                 aya.text!!
             else {  // reverse aya number if below android 13 (because of a bug)
                 val text = aya.text!!
-                val reversed_num = text
+                val reversedNum = text
                     .split(" ")
                     .last()
                     .dropLast(1)
                     .reversed()
-                val rest = text.dropLast(reversed_num.length + 1)
-                "$rest$reversed_num "
+                val rest = text.dropLast(reversedNum.length + 1)
+                "$rest$reversedNum "
             }
         text.append(ayaText)
         aya.end = text.length
@@ -352,7 +352,21 @@ private fun ListItems(
         if (aya.ayaNum == 1)
             NewSura(aya, isCurrentPage, vm, st)
 
-        val annotatedString = AnnotatedString(aya.text!!)
+        val ayaText =
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
+                aya.text!!
+            else {  // reverse aya number if below android 13 (because of a bug)
+                val text = aya.text!!
+                val reversedNum = text
+                    .split(" ")
+                    .last()
+                    .dropLast(1)
+                    .reversed()
+                val rest = text.dropLast(reversedNum.length + 1)
+                "$rest$reversedNum "
+            }
+
+        val annotatedString = AnnotatedString(ayaText)
         ListViewScreen(annotatedString, aya, isCurrentPage, vm, st)
 
         if (vm.language != Language.ARABIC) {
