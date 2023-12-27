@@ -20,7 +20,7 @@ val tajwal = FontFamily(
     Font(R.font.tajawal_black, weight = FontWeight.Black),
 )
 
-val uthmanic = FontFamily(Font(R.font.uthmanic_hafs1_ver18))
+val uthmanic = FontFamily(Font(R.font.uthmanic_hafs_v22))
 
 data class AppTypography(
     val h1: TextStyle = TextStyle(

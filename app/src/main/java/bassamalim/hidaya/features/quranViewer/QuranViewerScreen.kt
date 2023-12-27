@@ -284,7 +284,20 @@ private fun PageItems(
         }
 
         aya.start = text.length
-        text.append(aya.text)
+        val ayaText =
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
+                aya.text!!
+            else {  // reverse aya number if below android 13 (because of a bug)
+                val text = aya.text!!
+                val reversed_num = text
+                    .split(" ")
+                    .last()
+                    .dropLast(1)
+                    .reversed()
+                val rest = text.dropLast(reversed_num.length + 1)
+                "$rest$reversed_num "
+            }
+        text.append(ayaText)
         aya.end = text.length
         sequence.add(aya)
 
