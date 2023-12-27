@@ -72,7 +72,7 @@ sealed class Prefs(val key: String, val default: Any) {
 
     data class LastNotificationDate(val pid: PID): Prefs(
         key = "last_${pid.name}_notification_date",
-        default = 0
+        default = -1
     )
 
     object LastPlayedMediaId: Prefs("last_played_media_id", "")
