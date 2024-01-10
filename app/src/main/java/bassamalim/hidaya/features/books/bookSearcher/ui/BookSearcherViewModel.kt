@@ -35,8 +35,13 @@ class BookSearcherViewModel @Inject constructor(
         domain.getMaxMatches()
     ) { state, bookSelections, maxMatches ->
         state.copy(
-            bookSelections = bookSelections,
-            maxMatches = maxMatches,
+            matches = domain.search(
+                searchText = state.searchText,
+                bookSelections = bookSelections,
+                maxMatches = maxMatches,
+                language = language,
+                highlightColor = highlightColor!!
+            ),
             filtered = bookSelections.containsValue(false)
         )
     }.onStart {
@@ -59,20 +64,6 @@ class BookSearcherViewModel @Inject constructor(
         }
     }
 
-    fun onStart() {
-        highlightColor?.let {
-            viewModelScope.launch {
-                domain.search(
-                    searchText = _uiState.value.searchText,
-                    bookSelections = _uiState.value.bookSelections,
-                    maxMatches = _uiState.value.maxMatches,
-                    language = language,
-                    highlightColor = it
-                )
-            }
-        }  // re-search if already searched
-    }
-
     fun onSearch(highlightColor: Color, bookSelections: Map<Int, Boolean>) {
         this.highlightColor = highlightColor
 
@@ -81,6 +72,7 @@ class BookSearcherViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(
+                searched = true,
                 matches = domain.search(
                     searchText = it.searchText,
                     bookSelections = bookSelections,
@@ -99,16 +91,6 @@ class BookSearcherViewModel @Inject constructor(
     fun onMaxMatchesIndexChange(newValue: Int) {
         viewModelScope.launch {
             domain.setMaxMatches(newValue)
-
-            highlightColor?.let {
-                domain.search(
-                    searchText = _uiState.value.searchText,
-                    bookSelections = _uiState.value.bookSelections,
-                    maxMatches = _uiState.value.maxMatches,
-                    language = language,
-                    highlightColor = it
-                )
-            }  // re-search if already searched
         }
     }
 

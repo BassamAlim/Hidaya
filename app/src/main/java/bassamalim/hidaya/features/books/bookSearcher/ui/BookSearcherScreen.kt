@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,13 +31,6 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 @Composable
 fun BookSearcherScreen(viewModel: BookSearcherViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    if (state.isLoading) return
-
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
-        onDispose {}
-    }
 
     MyScaffold(stringResource(R.string.books_searcher)) { padding ->
         Column(
@@ -129,10 +121,7 @@ private fun SearchArea(
 }
 
 @Composable
-private fun BooksFilter(
-    isFiltered: Boolean,
-    onFilterClick: () -> Unit
-) {
+private fun BooksFilter(isFiltered: Boolean, onFilterClick: () -> Unit) {
     Row(
         Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -153,9 +142,7 @@ private fun BooksFilter(
 }
 
 @Composable
-private fun ResultsList(
-    matches: List<BookSearcherMatch>
-) {
+private fun ResultsList(matches: List<BookSearcherMatch>) {
     MyLazyColumn(
         lazyList = {
             items(matches) { item ->

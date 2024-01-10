@@ -4,6 +4,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.TimeFormat
+import bassamalim.hidaya.core.helpers.PrayTimes
 import bassamalim.hidaya.core.helpers.PrayerTimeCalculator
 import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.Location
@@ -20,11 +21,28 @@ object PrayerTimeUtils {
         timeZoneId: String = "",
         location: Location,
         calendar: Calendar = Calendar.getInstance()
-    ) = PrayerTimeCalculator(settings).getPrayerTimes(
-        coordinates = Coordinates(location.coordinates.latitude, location.coordinates.longitude),
-        utcOffset = getUTCOffset(location.type, timeZoneId).toDouble(),
-        calendar = calendar
-    )
+    ): SortedMap<Prayer, Calendar?> {
+        val coordinates = Coordinates(location.coordinates.latitude, location.coordinates.longitude)
+        val utcOffset = getUTCOffset(location.type, timeZoneId).toDouble()
+        println("in getPrayerTimes: coordinates: $coordinates, utcOffset: $utcOffset, calendar: $calendar")
+
+        val times1 = PrayerTimeCalculator(settings).getPrayerTimes(
+            coordinates = coordinates,
+            utcOffset = utcOffset,
+            calendar = calendar
+        )
+        println("in getPrayerTimes: times1: $times1")
+
+        val times2 = PrayTimes(settings).getPrayerTimes(
+            lat = location.coordinates.latitude,
+            lon = location.coordinates.longitude,
+            tZone = utcOffset,
+            date = calendar
+        )
+        println("in getPrayerTimes: times2: ${times2.contentToString()}")
+
+        return times1
+    }
 
     fun formatPrayerTimes(
         prayerTimes: SortedMap<Prayer, Calendar?>,

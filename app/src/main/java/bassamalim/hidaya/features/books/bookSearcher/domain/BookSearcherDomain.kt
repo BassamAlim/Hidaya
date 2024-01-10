@@ -26,7 +26,6 @@ class BookSearcherDomain @Inject constructor(
         val matches = mutableListOf<BookSearcherMatch>()
 
         val bookContents = booksRepository.getBookContents(language)
-        println("bookSelections = $bookSelections")
         for ((bookId, bookContent) in bookContents) {
             if (!bookSelections[bookId]!! || !booksRepository.isDownloaded(bookId))
                 continue

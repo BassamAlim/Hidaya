@@ -92,17 +92,14 @@ class PrayerTimeCalculator(
 
     // ---------------------- Julian Date Functions -----------------------
     // calculate julian date from a calendar date
-    private fun getJulianDate(
-        calendar: Calendar,
-        longitude: Double
-    ): Double {
+    private fun getJulianDate(calendar: Calendar, longitude: Double): Double {
         var year = calendar[Calendar.YEAR]
         var month = calendar[Calendar.MONTH] + 1
-        val day = calendar[Calendar.DATE]
         if (month <= 2) {
             year -= 1
             month += 12
         }
+        val day = calendar[Calendar.DATE]
 
         val a = floor(year / 100.0)
         val b = 2 - a + floor(a / 4.0)
@@ -190,12 +187,7 @@ class PrayerTimeCalculator(
 
     // compute the time of Asr
     // Shafii: step=1, Hanafi: step=2
-    private fun computeAsr(
-        step: Double,
-        t: Double,
-        latitude: Double,
-        julianDate: Double
-    ): Double {
+    private fun computeAsr(step: Double, t: Double, latitude: Double, julianDate: Double): Double {
         val d = sunDeclination(julianDate + t)
         val g = -degreeArcCot(step + degreeTan(abs(latitude - d)))
         return computeTime(g = g, t = t, latitude = latitude, julianDate = julianDate)
@@ -203,12 +195,7 @@ class PrayerTimeCalculator(
 
     // compute time for a given angle G
     // Error here in some cases such as poland (v = NaN)
-    private fun computeTime(
-        g: Double,
-        t: Double,
-        latitude: Double,
-        julianDate: Double
-    ): Double {
+    private fun computeTime(g: Double, t: Double, latitude: Double, julianDate: Double): Double {
         val d = sunDeclination(julianDate + t)
         val z = computeMidDay(gT = t, julianDate = julianDate)
         val beg = -degreeSin(g) - degreeSin(d) * degreeSin(latitude)
@@ -218,8 +205,7 @@ class PrayerTimeCalculator(
     }
 
     // compute declination angle of sun
-    private fun sunDeclination(jd: Double) =
-        sunPosition(jd)[0]
+    private fun sunDeclination(jd: Double) = sunPosition(jd)[0]
 
     // compute mid-day (Dhuhr, Zawal) time
     private fun computeMidDay(gT: Double, julianDate: Double): Double {
@@ -228,8 +214,7 @@ class PrayerTimeCalculator(
     }
 
     // compute equation of time
-    private fun equationOfTime(jd: Double) =
-        sunPosition(jd)[1]
+    private fun equationOfTime(jd: Double) = sunPosition(jd)[1]
 
     // compute declination angle of sun and equation of time
     private fun sunPosition(jd: Double): DoubleArray {
@@ -281,9 +266,7 @@ class PrayerTimeCalculator(
     }
 
     // adjust Fajr, ishaa and Maghrib for locations in higher latitudes
-    private fun adjustHighLatTimes(
-        times: SortedMap<Prayer, Double>
-    ): SortedMap<Prayer, Double> {
+    private fun adjustHighLatTimes(times: SortedMap<Prayer, Double>): SortedMap<Prayer, Double> {
         val nightTime = timeDiff(times[SUNSET]!!, times[SUNRISE]!!) // sunset to sunrise
 
         // Adjust Fajr
