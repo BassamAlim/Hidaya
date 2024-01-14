@@ -34,7 +34,7 @@ class QuranVM @Inject constructor(
     }
 
     fun getItems(page: Int): List<Sura> {
-        val listType = ListType.values()[page]
+        val listType = ListType.entries[page]
 
         val surat = repo.getSuraStr()
 
@@ -47,7 +47,7 @@ class QuranVM @Inject constructor(
                 suar[i].let {
                     Sura(
                         it.suraId, "$surat ${suraNames[it.suraId]}",
-                        it.searchName!!, it.tanzeel
+                        it.searchName, it.tanzeel
                     )
                 }
             )

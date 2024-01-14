@@ -111,10 +111,10 @@ class TelawatSuarVM @Inject constructor(
     }
 
     fun getItems(page: Int): List<ReciterSura> {
-        val listType = ListType.values()[page]
+        val listType = ListType.entries[page]
 
         val items = ArrayList<ReciterSura>()
-        val availableSuar = ver.suar!!
+        val availableSuar = ver.suar
         for (i in 0..113) {
             if (!availableSuar.contains(",${(i + 1)},") ||
                 (listType == ListType.Favorite && _uiState.value.favs[i] == 0) ||
@@ -137,7 +137,7 @@ class TelawatSuarVM @Inject constructor(
             }
         )}
 
-        val server = ver.url!!
+        val server = ver.url
         val link = String.format(Locale.US, "%s/%03d.mp3", server, sura.num + 1)
         val uri = Uri.parse(link)
 

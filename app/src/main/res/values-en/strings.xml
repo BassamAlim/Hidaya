@@ -216,5 +216,6 @@
     <string name="jumuah_subtitle">It\'s friday prayer second athan time</string>
     <string name="jumuah_reminder_title">Friday prayer reminder</string>
     <string name="previous_track_btn_description">Previous track</string>
+    <string name="location_failed">Location Selection Failed</string>
 
 </resources>

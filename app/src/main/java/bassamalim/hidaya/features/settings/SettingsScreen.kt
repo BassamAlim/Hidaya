@@ -164,7 +164,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
             pref = Prefs.Language,
             iconResId = R.drawable.ic_translation,
             entries = stringArrayResource(R.array.language_entries),
-            values = Language.values().map { it.name }.toTypedArray()
+            values = Language.entries.map { it.name }.toTypedArray()
         ) {
             ActivityUtils.restartActivity(activity)
         }
@@ -176,7 +176,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
             pref = Prefs.NumeralsLanguage,
             iconResId = R.drawable.ic_translation,
             entries = stringArrayResource(R.array.numerals_language_entries),
-            values = Language.values().map { it.name }.toTypedArray()
+            values = Language.entries.map { it.name }.toTypedArray()
         ) {
             ActivityUtils.restartActivity(activity)
         }
@@ -191,7 +191,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
             pref = Prefs.TimeFormat,
             iconResId = R.drawable.ic_time_format,
             entries = timeFormatEntries,
-            values = TimeFormat.values().map { it.name }.toTypedArray()
+            values = TimeFormat.entries.map { it.name }.toTypedArray()
         ) {
             ActivityUtils.restartActivity(activity)
         }
@@ -203,7 +203,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
             pref = Prefs.Theme,
             iconResId = R.drawable.ic_theme,
             entries = stringArrayResource(R.array.themes_entries),
-            values = Theme.values().map { it.name }.toTypedArray()
+            values = Theme.entries.map { it.name }.toTypedArray()
         ) {
             ActivityUtils.restartActivity(activity)
         }

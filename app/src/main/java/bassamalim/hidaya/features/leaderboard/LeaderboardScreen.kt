@@ -44,7 +44,7 @@ fun LeaderboardUI(
                     stringResource(R.string.by_listening)
                 )
             ) { page ->
-                val rankBy = RankType.values()[page]
+                val rankBy = RankType.entries[page]
                 val items = vm.getSortedItems(rankBy)
 
                 MyColumn {

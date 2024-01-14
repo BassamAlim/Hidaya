@@ -31,7 +31,7 @@ class BookChaptersVM @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun getItems(page: Int): List<BookChapter> {
-        val listType = ListType.values()[page]
+        val listType = ListType.entries[page]
 
         val items = ArrayList<BookChapter>()
         for (i in book.chapters.indices) {

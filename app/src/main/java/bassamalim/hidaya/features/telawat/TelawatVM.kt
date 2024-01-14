@@ -138,7 +138,7 @@ class TelawatVM @Inject constructor(
     }
 
     fun getItems(page: Int): List<Reciter> {
-        val listType = ListType.values()[page]
+        val listType = ListType.entries[page]
 
         val reciters = repo.getReciters()
 
@@ -161,7 +161,7 @@ class TelawatVM @Inject constructor(
                     )
                 )
             }
-            items.add(Reciter(reciter.id, reciter.name!!, versionsList))
+            items.add(Reciter(reciter.id, reciter.name, versionsList))
         }
 
         return if (_uiState.value.searchText.isEmpty()) items

@@ -56,7 +56,7 @@ class Alarms {
     private fun setPrayerAlarms(times: Array<Calendar?>) {
         Log.i(Global.TAG, "in set prayer alarms")
 
-        val pidValues = PID.values()  // replace with .entries which is stored and not generated each time
+        val pidValues = PID.entries.toTypedArray()
         for (i in times.indices) {
             val pid = pidValues[i]
             if (PrefUtils.getString(sp, Prefs.NotificationType(pid)) != NotificationType.None.name)
@@ -96,7 +96,7 @@ class Alarms {
     private fun setReminders(times: Array<Calendar?>) {
         Log.i(Global.TAG, "in set reminders")
 
-        val pidValues = PID.values()
+        val pidValues = PID.entries.toTypedArray()
         for (i in times.indices) {
             val pid = pidValues[i]
             val offset = PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))

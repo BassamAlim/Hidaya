@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.prayers
 import android.app.Application
 import android.location.Location
 import android.os.Build
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.LocationType
@@ -68,7 +69,12 @@ class PrayersVM @Inject constructor(
     }
 
     private fun onLocationSet(location: Location?) {
-        if (location != null) this.location = location
+        if (location == null) {
+            Toast.makeText(app, repo.locationFailedStr, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        this.location = location
 
         _uiState.update { oldState -> oldState.copy(
             locationName = getLocationName()
@@ -208,7 +214,7 @@ class PrayersVM @Inject constructor(
     }
 
     private fun getDateText(): String {
-        return if (dateOffset == 0) repo.getDayStr()
+        return if (dateOffset == 0) repo.dayStr
         else {
             val hijri = UmmalquraCalendar()
             hijri.time = calendar.time

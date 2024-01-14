@@ -16,7 +16,7 @@ class QuranSettingsVM @Inject constructor(
     var viewType = repo.getViewType()
 
     fun onViewTypeCh(type: Int) {
-        viewType = QuranViewTypes.values()[type]
+        viewType = QuranViewTypes.entries.toTypedArray()[type]
 
         repo.setViewType(viewType)
     }

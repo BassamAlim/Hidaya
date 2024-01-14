@@ -24,6 +24,12 @@ class PrayersRepo @Inject constructor(
     val language = PrefUtils.getLanguage(sp)
     val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
 
+    val dayStr = res.getString(R.string.day)
+    val locationFailedStr = res.getString(R.string.location_failed)
+    fun getClkToLocateStr() = res.getString(R.string.clk_to_locate)
+    fun getHijriMonths(): Array<String> = res.getStringArray(R.array.hijri_months)
+    private fun getPrayerNames(): Array<String> = res.getStringArray(R.array.prayer_names)
+
     fun getCountryID() = PrefUtils.getInt(sp, Prefs.CountryID)
 
     fun getCityID() = PrefUtils.getInt(sp, Prefs.CityID)
@@ -55,7 +61,7 @@ class PrayersRepo @Inject constructor(
                 name = name,
                 time = "",
                 settings = PrayerSettings(
-                    pid = PID.values()[idx],
+                    pid = PID.entries[idx],
                     notificationType = notificationTypes[idx],
                     timeOffset = timeOffsets[idx],
                     reminderOffset = reminderOffsets[idx]
@@ -84,13 +90,13 @@ class PrayersRepo @Inject constructor(
     }
 
     private fun getTimeOffsets(): List<Int> {
-        return PID.values().map { pid ->
+        return PID.entries.map { pid ->
             PrefUtils.getInt(sp, Prefs.TimeOffset(pid))
         }
     }
 
     private fun getReminderOffsets(): List<Int> {
-        return PID.values().map { pid ->
+        return PID.entries.map { pid ->
             PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
         }
     }
@@ -104,11 +110,5 @@ class PrayersRepo @Inject constructor(
     fun getShowTutorial() = PrefUtils.getBoolean(sp, Prefs.ShowPrayersTutorial)
 
     fun getLocation(): Location? = LocUtils.retrieveLocation(sp)
-
-    fun getHijriMonths(): Array<String> = res.getStringArray(R.array.hijri_months)
-    private fun getPrayerNames(): Array<String> = res.getStringArray(R.array.prayer_names)
-
-    fun getDayStr() = res.getString(R.string.day)
-    fun getClkToLocateStr() = res.getString(R.string.clk_to_locate)
 
 }

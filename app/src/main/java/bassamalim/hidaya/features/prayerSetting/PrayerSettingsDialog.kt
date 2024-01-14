@@ -118,7 +118,7 @@ private fun CustomRadioGroup(
                                 shape = RoundedCornerShape(10.dp)
                             )
                         else Modifier,
-                        onClick = { onSelect(NotificationType.values()[i]) }
+                        onClick = { onSelect(NotificationType.entries[i]) }
                     ) {
                         Row(
                             Modifier

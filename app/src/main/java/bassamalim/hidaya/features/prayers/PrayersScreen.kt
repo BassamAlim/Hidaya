@@ -149,7 +149,7 @@ private fun RowScope.PrayerCard(
         modifier = Modifier.weight(1f),
         cornerRadius = 15.dp,
         padding = PaddingValues(vertical = 3.dp, horizontal = 4.dp),
-        onClick = { vm.onPrayerCardClk(PID.values()[idx]) }
+        onClick = { vm.onPrayerCardClk(PID.entries[idx]) }
     ) {
         MyRow(
             modifier = Modifier
@@ -199,7 +199,7 @@ private fun ReminderCard(
         modifier = Modifier.fillMaxWidth(0.19f),
         cornerRadius = 15.dp,
         padding = PaddingValues(horizontal = 3.dp),
-        onClick = { vm.onReminderCardClk(PID.values()[idx]) }
+        onClick = { vm.onReminderCardClk(PID.entries[idx]) }
     ) {
         if (vm.location != null) {
             MyRow(
