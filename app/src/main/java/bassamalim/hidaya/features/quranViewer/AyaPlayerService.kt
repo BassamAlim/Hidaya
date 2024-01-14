@@ -627,7 +627,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
 
         apm.release()
 
-        wifiLock.release()
+        if (wifiLock.isHeld) wifiLock.release()
 
         abandonAudioFocus()
 
