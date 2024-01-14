@@ -79,8 +79,8 @@ class QuranViewerVM @Inject constructor(
     var scrollTo = -1F
         private set
     private var mediaBrowser: MediaBrowserCompat? = null
-    private lateinit var controller: MediaControllerCompat
-    private lateinit var tc: MediaControllerCompat.TransportControls
+    private var controller: MediaControllerCompat? = null
+    private var tc: MediaControllerCompat.TransportControls? = null
     private val ayaPositions = mutableMapOf<Int, Float>()
 
     private val _uiState = MutableStateFlow(QuranViewerState(
@@ -168,16 +168,16 @@ class QuranViewerVM @Inject constructor(
             setupPlayer()
         }
         else {
-            when (controller.playbackState.state) {
+            when (controller!!.playbackState.state) {
                 PlaybackStateCompat.STATE_PLAYING -> {
                     updateButton(PlaybackStateCompat.STATE_PAUSED)
-                    tc.pause()
+                    tc!!.pause()
                 }
                 PlaybackStateCompat.STATE_PAUSED -> {
                     updateButton(PlaybackStateCompat.STATE_BUFFERING)
 
                     if (_uiState.value.selectedAya == null) {
-                        tc.play()
+                        tc!!.play()
 
                         _uiState.update { it.copy(
                             selectedAya = null
@@ -203,11 +203,11 @@ class QuranViewerVM @Inject constructor(
     }
 
     fun onPreviousAyaClk() {
-        tc.skipToPrevious()
+        tc?.skipToPrevious()
     }
 
     fun onNextAyaClk() {
-        tc.skipToNext()
+        tc?.skipToNext()
     }
 
     fun onSettingsClick() {
@@ -465,15 +465,15 @@ class QuranViewerVM @Inject constructor(
 
     private fun buildTransportControls() {
         controller = MediaControllerCompat.getMediaController(activity)
-        tc = controller.transportControls
+        tc = controller!!.transportControls
 
         // Register a Callback to stay in sync
-        controller.registerCallback(controllerCallback)
+        controller?.registerCallback(controllerCallback)
     }
 
     private fun requestPlay(ayaId: Int) {
         Executors.newSingleThreadExecutor().execute {
-            tc.playFromMediaId(ayaId.toString(), Bundle())
+            tc?.playFromMediaId(ayaId.toString(), Bundle())
 
             _uiState.update { it.copy(
                 selectedAya = null
