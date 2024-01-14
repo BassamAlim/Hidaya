@@ -163,7 +163,7 @@ class QuranViewerVM @Inject constructor(
             return
         }
 
-        if (mediaBrowser == null) {
+        if (mediaBrowser == null || controller == null) {
             updateButton(PlaybackStateCompat.STATE_BUFFERING)
             setupPlayer()
         }
