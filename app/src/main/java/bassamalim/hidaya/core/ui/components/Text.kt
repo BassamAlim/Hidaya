@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +44,10 @@ fun MyText(
             color = textColor,
             fontWeight = fontWeight,
             textAlign = textAlign,
-            lineHeight = fontSize * 1.4
+            lineHeight = fontSize * 1.4,
+            platformStyle = PlatformTextStyle(
+                includeFontPadding = true
+            )
         ),
         softWrap = softWrap
     )
@@ -69,6 +73,9 @@ fun MyText(
             fontWeight = fontWeight,
             textAlign = textAlign,
             lineHeight = fontSize * 1.4,
+            platformStyle = PlatformTextStyle(
+                includeFontPadding = true
+            )
         )
     )
 }

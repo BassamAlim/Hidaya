@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package bassamalim.hidaya.features.hijriDatePicker
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -37,13 +43,8 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 import java.util.Calendar
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HijriDatePickerDialog(
     vm: HijriDatePickerVM
@@ -51,7 +52,8 @@ fun HijriDatePickerDialog(
     val st by vm.uiState.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(
         initialPage = (st.selected[Calendar.YEAR] - vm.minYear) * 12
-                + st.selected[Calendar.MONTH]
+                + st.selected[Calendar.MONTH],
+        pageCount = { (vm.maxYear - vm.minYear + 1) * 12 }
     )
     val coroutineScope = rememberCoroutineScope()
 
@@ -78,7 +80,6 @@ fun HijriDatePickerDialog(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun TopArea(
     vm: HijriDatePickerVM,
@@ -123,7 +124,6 @@ private fun TopArea(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun DayMonthSelector(
     vm: HijriDatePickerVM,
@@ -176,7 +176,6 @@ private fun DayMonthSelector(
 
         // days grid
         HorizontalPager(
-            count = (vm.maxYear - vm.minYear + 1) * 12,
             state = pagerState,
             modifier = Modifier
                 .fillMaxWidth()

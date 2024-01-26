@@ -1,14 +1,33 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package bassamalim.hidaya.features.quranViewer
 
 import android.app.Activity
+import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -32,24 +51,33 @@ import bassamalim.hidaya.core.enums.QuranViewTypes.*
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.models.Aya
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.ui.components.*
+import bassamalim.hidaya.core.ui.components.InfoDialog
+import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
+import bassamalim.hidaya.core.ui.components.MyIconButton
+import bassamalim.hidaya.core.ui.components.MyIconPlayerBtn
+import bassamalim.hidaya.core.ui.components.MyRow
+import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quranSettings.QuranSettingsDlg
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.last
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun QuranViewerUI(
     vm: QuranViewerVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
-    val pagerState = rememberPagerState(vm.initialPageNum-1)
+    val pagerState = rememberPagerState(
+        initialPage = vm.initialPageNum - 1,
+        pageCount = { Global.QURAN_PAGES }
+    )
     val coroutineScope = rememberCoroutineScope()
 
     DisposableEffect(key1 = vm) {
@@ -212,7 +240,6 @@ private fun BottomBar(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun PageContent(
     vm: QuranViewerVM,
@@ -220,11 +247,11 @@ private fun PageContent(
     pagerState: PagerState,
     padding: PaddingValues
 ) {
-
-    HorizontalPagerScreen(
-        count = Global.QURAN_PAGES,
-        pagerState = pagerState,
-        modifier = Modifier.padding(padding)
+    HorizontalPager(
+        state = pagerState,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
     ) { pageIdx ->
         val isCurrentPage = pageIdx == pagerState.currentPage
         val scrollState = rememberScrollState()
@@ -263,7 +290,7 @@ private fun PageItems(
     vm: QuranViewerVM,
     st: QuranViewerState
 ) {
-    var text = StringBuilder()
+    var sequenceText = StringBuilder()
     var sequence = ArrayList<Aya>()
     var lastSura = ayat[0].suraNum
 
@@ -272,18 +299,18 @@ private fun PageItems(
     for (aya in ayat) {
         if (aya.suraNum != lastSura) {
             PageItem(
-                text = text.toString(),
+                text = sequenceText.toString(),
                 sequence = sequence,
                 vm, st
             )
 
             if (aya.ayaNum == 1) NewSura(aya, isCurrentPage, vm, st)
 
-            text = StringBuilder()
+            sequenceText = StringBuilder()
             sequence = ArrayList()
         }
 
-        aya.start = text.length
+        aya.start = sequenceText.length
         val ayaText =
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
                 aya.text!!
@@ -297,14 +324,16 @@ private fun PageItems(
                 val rest = text.dropLast(reversedNum.length + 1)
                 "$rest$reversedNum "
             }
-        text.append(ayaText)
-        aya.end = text.length
+        sequenceText.append(ayaText)
+        aya.end = sequenceText.length
         sequence.add(aya)
+
+        Log.d(Global.TAG, "ID: ${aya.id}, Start: ${aya.start}, End: ${aya.end}")
 
         lastSura = aya.suraNum
     }
     PageItem(
-        text = text.toString(),
+        text = sequenceText.toString(),
         sequence = sequence,
         vm, st
     )
@@ -336,7 +365,7 @@ private fun PageItem(
 
     PageViewScreen(
         annotatedString = annotatedString,
-        aya = sequence[0],
+        firstAya = sequence[0],
         vm, st
     )
 }
@@ -385,7 +414,7 @@ private fun ListItems(
 @Composable
 private fun PageViewScreen(
     annotatedString: AnnotatedString,
-    aya: Aya,
+    firstAya: Aya,
     vm: QuranViewerVM,
     st: QuranViewerState
 ) {
@@ -397,11 +426,8 @@ private fun PageViewScreen(
             color = AppTheme.colors.strongText,
             textAlign = TextAlign.Center
         ),
-        modifier = Modifier
-            .padding(vertical = 4.dp, horizontal = 6.dp),
-        onClick = { offset ->
-            vm.onAyaScreenClick(aya.id, offset)
-        }
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp),
+        onClick = { offset -> vm.onAyaScreenClick(firstAya.id, offset) }
     )
 }
 

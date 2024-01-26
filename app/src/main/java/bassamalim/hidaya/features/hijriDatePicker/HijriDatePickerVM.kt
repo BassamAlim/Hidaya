@@ -1,14 +1,15 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package bassamalim.hidaya.features.hijriDatePicker
 
 import android.os.Bundle
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.PagerState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,6 @@ import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
-@OptIn(ExperimentalPagerApi::class)
 class HijriDatePickerVM @Inject constructor(
     savedStateHandle: SavedStateHandle,
     repo: HijriDatePickerRepo,
@@ -37,9 +37,6 @@ class HijriDatePickerVM @Inject constructor(
     private lateinit var coroutineScope: CoroutineScope
     val minYear = now[Calendar.YEAR] - 100
     val maxYear = now[Calendar.YEAR] + 100
-    val divider =
-        if (repo.language == Language.ENGLISH) ","
-        else "،"
 
     private val _uiState = MutableStateFlow(HijriDatePickerState())
     val uiState = _uiState.asStateFlow()
@@ -124,10 +121,6 @@ class HijriDatePickerVM @Inject constructor(
             }
         }
         return grid
-    }
-
-    fun getMainText() {
-
     }
 
 }

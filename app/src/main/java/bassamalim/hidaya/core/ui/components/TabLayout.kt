@@ -1,7 +1,13 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package bassamalim.hidaya.core.ui.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
@@ -13,17 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import com.google.accompanist.pager.*
+import com.google.accompanist.pager.pagerTabIndicatorOffset
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TabLayout(
     pageNames: List<String>,
     searchComponent: @Composable () -> Unit = {},
     tabsContent: @Composable (Int) -> Unit
 ) {
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(pageCount = { pageNames.size })
 
     Column {
         Tabs(
@@ -34,14 +39,12 @@ fun TabLayout(
         searchComponent()
 
         TabsContent(
-            count = pageNames.size,
             pagerState = pagerState,
             content = tabsContent
         )
     }
 }
 
-@ExperimentalPagerApi
 @Composable
 fun Tabs(
     pagerState: PagerState,
@@ -96,16 +99,13 @@ fun Tabs(
 }
 
 // creating a tab content method in which we will be displaying the individual page of our tab.
-@ExperimentalPagerApi
 @Composable
 fun ColumnScope.TabsContent(
-    count: Int,
     pagerState: PagerState,
     content: @Composable (Int) -> Unit
 ) {
     // creating horizontal pager for our tab layout.
     HorizontalPager(
-        count = count,
         state = pagerState,
         verticalAlignment = Alignment.Top,
         modifier = Modifier.weight(1F)

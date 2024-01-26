@@ -16,7 +16,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInParent
 import androidx.lifecycle.AndroidViewModel
@@ -28,8 +30,6 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.QuranViewTypes
 import bassamalim.hidaya.core.models.Aya
 import bassamalim.hidaya.core.other.Global
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
-@kotlin.OptIn(ExperimentalPagerApi::class)
+@kotlin.OptIn(ExperimentalFoundationApi::class)
 @HiltViewModel
 class QuranViewerVM @Inject constructor(
     private val app: Application,
@@ -225,8 +225,10 @@ class QuranViewerVM @Inject constructor(
                 val startIdx = _uiState.value.pageAyat.indexOfFirst { it.id == ayaId }
                 for (idx in startIdx until _uiState.value.pageAyat.size) {
                     val a = _uiState.value.pageAyat[idx]
-                    if (offset < a.end)
+                    if (offset < a.end) {
                         aya = a
+                        break
+                    }
                 }
             }
             QuranViewTypes.List -> aya = _uiState.value.pageAyat.find { it.id == ayaId }
