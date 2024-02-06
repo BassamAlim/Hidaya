@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.quranViewer
 
+import android.app.DownloadManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -142,8 +143,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
                 != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 return
 
-            // Register Receiver
-            registerReceiver(receiver, intentFilter)
+            registerReceiver()
 
             apm.playFromMediaId(ayaIdx = ayaId-1)
         }
@@ -175,8 +175,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
                 != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 return
 
-            // Register Receiver
-            registerReceiver(receiver, intentFilter)
+            registerReceiver()
 
             apm.resume()
         }
@@ -561,6 +560,13 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
             .apply()
 
         updateRecordCounter = 0
+    }
+
+    private fun registerReceiver() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
+        else
+            registerReceiver(receiver, intentFilter)
     }
 
     override fun onGetRoot(

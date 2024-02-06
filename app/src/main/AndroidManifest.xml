@@ -80,6 +80,7 @@
         <service
             android:name=".features.telawatPlayer.TelawatService"
             android:exported="true"
+            android:foregroundServiceType="mediaPlayback"
             android:permission="none">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
@@ -89,6 +90,7 @@
         <service
             android:name=".features.radio.RadioService"
             android:exported="true"
+            android:foregroundServiceType="mediaPlayback"
             android:permission="none">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
@@ -97,6 +99,7 @@
         <service
             android:name=".features.quranViewer.AyaPlayerService"
             android:exported="true"
+            android:foregroundServiceType="mediaPlayback"
             android:permission="none">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />

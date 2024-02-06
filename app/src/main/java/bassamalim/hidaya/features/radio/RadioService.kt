@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ServiceInfo
 import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
@@ -113,7 +114,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 updateNotification(true)
 
                 // Register Receiver
-                registerReceiver(receiver, intentFilter)
+                registerReceiver()
                 // Put the service in the foreground, post notification
                 startForeground(id, notification)
 
@@ -422,6 +423,13 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(notificationChannel)
         }
+    }
+
+    private fun registerReceiver() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
+        else
+            registerReceiver(receiver, intentFilter)
     }
 
     private fun stopForeground() {
