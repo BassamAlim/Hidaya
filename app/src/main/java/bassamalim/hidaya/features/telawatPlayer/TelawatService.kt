@@ -40,6 +40,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.models.Reciter
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
@@ -96,6 +97,39 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         private const val ACTION_PREV = "bassamalim.hidaya.features.telawatPlayer.TelawatService.PREVIOUS"
         private const val ACTION_STOP = "bassamalim.hidaya.features.telawatPlayer.TelawatService.STOP"
     }
+
+    private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.action) {
+                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
+                    Log.i(Global.TAG, "In ACTION_BECOMING_NOISY")
+                    callback.onPause()
+                }
+                ACTION_PLAY -> {
+                    Log.i(Global.TAG, "In ACTION_PLAY")
+                    callback.onPlay()
+                }
+                ACTION_PAUSE -> {
+                    Log.i(Global.TAG, "In ACTION_PAUSE")
+                    callback.onPause()
+                }
+                ACTION_NEXT -> {
+                    Log.i(Global.TAG, "In ACTION_NEXT")
+                    skipToNext()
+                }
+                ACTION_PREV -> {
+                    Log.i(Global.TAG, "In ACTION_PREV")
+                    skipToPrevious()
+                }
+                ACTION_STOP -> {
+                    Log.i(Global.TAG, "In ACTION_STOP")
+                    callback.onStop()
+                }
+            }
+        }
+    }
+
+    private val receiverManager = ReceiverManager(this, receiver, intentFilter)
 
     override fun onCreate() {
         super.onCreate()
@@ -163,8 +197,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 // Set the session active  (and update metadata and state)
                 mediaSession.isActive = true
 
-                // Register Receiver
-                registerReceiver(receiver, intentFilter)
+                receiverManager.register()
                 // Put the service in the foreground, post notification
                 startForeground(id, notification)
 
@@ -215,7 +248,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
             handler.removeCallbacks(runnable)
             am.abandonAudioFocusRequest(audioFocusRequest)    // Abandon audio focus
-            unregisterReceiver()
+            receiverManager.unregister()
             if (wifiLock.isHeld) wifiLock.release()
 
             saveForLater(player.currentPosition)
@@ -332,37 +365,6 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 if (player.isPlaying) player.setVolume(0.3f, 0.3f)
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS ->
                 if (player.isPlaying) callback.onPause()
-        }
-    }
-
-    private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when (intent.action) {
-                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
-                    Log.i(Global.TAG, "In ACTION_BECOMING_NOISY")
-                    callback.onPause()
-                }
-                ACTION_PLAY -> {
-                    Log.i(Global.TAG, "In ACTION_PLAY")
-                    callback.onPlay()
-                }
-                ACTION_PAUSE -> {
-                    Log.i(Global.TAG, "In ACTION_PAUSE")
-                    callback.onPause()
-                }
-                ACTION_NEXT -> {
-                    Log.i(Global.TAG, "In ACTION_NEXT")
-                    skipToNext()
-                }
-                ACTION_PREV -> {
-                    Log.i(Global.TAG, "In ACTION_PREV")
-                    skipToPrevious()
-                }
-                ACTION_STOP -> {
-                    Log.i(Global.TAG, "In ACTION_STOP")
-                    callback.onStop()
-                }
-            }
         }
     }
 
@@ -780,12 +782,6 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             .apply()
 
         updateRecordCounter = 0
-    }
-
-    private fun unregisterReceiver() {
-        try {
-            unregisterReceiver(receiver)
-        } catch (_: IllegalArgumentException) {}
     }
 
     private fun stopForeground() {

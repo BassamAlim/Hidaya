@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.quranViewer
 
-import android.app.DownloadManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -38,6 +37,7 @@ import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.AyatDB
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
@@ -83,6 +83,39 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         private const val ACTION_PREV = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.PREVIOUS"
         private const val ACTION_STOP = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.STOP"
     }
+
+    private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.action) {
+                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
+                    Log.i(Global.TAG, "In ACTION_BECOMING_NOISY")
+                    callback.onPause()
+                }
+                ACTION_PLAY -> {
+                    Log.i(Global.TAG, "In ACTION_PLAY")
+                    callback.onPlay()
+                }
+                ACTION_PAUSE -> {
+                    Log.i(Global.TAG, "In ACTION_PAUSE")
+                    callback.onPause()
+                }
+                ACTION_NEXT -> {
+                    Log.i(Global.TAG, "In ACTION_NEXT")
+                    apm.nextAya()
+                }
+                ACTION_PREV -> {
+                    Log.i(Global.TAG, "In ACTION_PREV")
+                    apm.previousAya()
+                }
+                ACTION_STOP -> {
+                    Log.i(Global.TAG, "In ACTION_STOP")
+                    callback.onStop()
+                }
+            }
+        }
+    }
+
+    private val receiverManager = ReceiverManager(this, receiver, intentFilter)
 
     override fun onCreate() {
         super.onCreate()
@@ -143,7 +176,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
                 != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 return
 
-            registerReceiver()
+            receiverManager.register()
 
             apm.playFromMediaId(ayaIdx = ayaId-1)
         }
@@ -175,7 +208,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
                 != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 return
 
-            registerReceiver()
+            receiverManager.register()
 
             apm.resume()
         }
@@ -208,7 +241,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
 
             handler.removeCallbacks(runnable)
             abandonAudioFocus()
-            unregisterReceiver()
+            receiverManager.unregister()
             if (wifiLock.isHeld) wifiLock.release()
 
             updateDurationRecord(updateRecordCounter)
@@ -415,37 +448,6 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         }
     }
 
-    private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when (intent.action) {
-                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
-                    Log.i(Global.TAG, "In ACTION_BECOMING_NOISY")
-                    callback.onPause()
-                }
-                ACTION_PLAY -> {
-                    Log.i(Global.TAG, "In ACTION_PLAY")
-                    callback.onPlay()
-                }
-                ACTION_PAUSE -> {
-                    Log.i(Global.TAG, "In ACTION_PAUSE")
-                    callback.onPause()
-                }
-                ACTION_NEXT -> {
-                    Log.i(Global.TAG, "In ACTION_NEXT")
-                    apm.nextAya()
-                }
-                ACTION_PREV -> {
-                    Log.i(Global.TAG, "In ACTION_PREV")
-                    apm.previousAya()
-                }
-                ACTION_STOP -> {
-                    Log.i(Global.TAG, "In ACTION_STOP")
-                    callback.onStop()
-                }
-            }
-        }
-    }
-
     private fun updateNotification(playing: Boolean) {
         if (playing)
             notificationBuilder.clearActions()
@@ -562,13 +564,6 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         updateRecordCounter = 0
     }
 
-    private fun registerReceiver() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
-        else
-            registerReceiver(receiver, intentFilter)
-    }
-
     override fun onGetRoot(
         clientPackageName: String, clientUid: Int, rootHints: Bundle?
     ): BrowserRoot {
@@ -614,12 +609,6 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         else stopForeground(false)
     }
 
-    private fun unregisterReceiver() {
-        try {
-            unregisterReceiver(receiver)
-        } catch (_: IllegalArgumentException) {}
-    }
-
     override fun onUnbind(intent: Intent?): Boolean {
         Log.i(Global.TAG, "In onUnbind of AyaPlayerService")
         updateDurationRecord(updateRecordCounter)
@@ -637,7 +626,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
 
         abandonAudioFocus()
 
-        unregisterReceiver()
+        receiverManager.unregister()
     }
 
 }
