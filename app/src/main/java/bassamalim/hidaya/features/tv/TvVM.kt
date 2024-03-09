@@ -16,6 +16,7 @@ class TvVM @Inject constructor(
 
     fun onInitializationSuccess(player: YouTubePlayer) {
         ytPlayer = player
+        ytPlayer?.loadVideo(quranVidId, 0f)  // Load Makkah video by default
     }
 
     fun onQuranChannelClk() {

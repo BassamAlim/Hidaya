@@ -202,7 +202,9 @@ class TelawatSuarVM @Inject constructor(
     }
 
     fun onDownload(sura: ReciterSura) {
-        download(sura)
+        Thread {
+            download(sura)
+        }.start()
     }
 
     fun onDelete(suraNum: Int) {

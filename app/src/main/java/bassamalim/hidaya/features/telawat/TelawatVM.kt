@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.data.database.dbs.TelawatDB
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
@@ -23,6 +24,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Locale
 import javax.inject.Inject
@@ -310,7 +312,9 @@ class TelawatVM @Inject constructor(
             }
         )}
 
-        downloadVer(reciterId, version)
+        Thread {
+            downloadVer(reciterId, version)
+        }.start()
     }
 
     fun onVersionClk(reciterId: Int, versionId: Int) {
