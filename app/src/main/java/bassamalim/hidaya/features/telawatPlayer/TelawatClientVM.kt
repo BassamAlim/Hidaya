@@ -373,7 +373,9 @@ class TelawatClientVM @Inject constructor(
     }
 
     fun onDownloadClk() {
-        download()
+        Thread {
+            download()
+        }.start()
     }
 
     fun onDeleteClk() {
