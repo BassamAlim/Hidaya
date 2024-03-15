@@ -29,7 +29,8 @@ class QuranVM @Inject constructor(
 
     fun onStart() {
         _uiState.update { it.copy(
-            bookmarkedPageText = getBookmarkedPageText()
+            bookmarkedPageText = getBookmarkedPageText(),
+            favs = repo.getFavs()
         )}
     }
 

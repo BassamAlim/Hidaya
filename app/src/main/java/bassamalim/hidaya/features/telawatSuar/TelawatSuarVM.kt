@@ -10,6 +10,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import androidx.activity.ComponentActivity
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -124,7 +125,14 @@ class TelawatSuarVM @Inject constructor(
                 (listType == ListType.Downloaded && !isDownloaded(i))
             ) continue
 
-            items.add(ReciterSura(i, suraNames[i], searchNames[i]))
+            items.add(
+                ReciterSura(
+                    num = i,
+                    suraName = suraNames[i],
+                    searchName = searchNames[i],
+                    fav = mutableIntStateOf(favs[i]),
+                )
+            )
         }
 
         return if (_uiState.value.searchText.isEmpty()) items

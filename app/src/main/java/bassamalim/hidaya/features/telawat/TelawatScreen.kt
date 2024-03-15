@@ -56,7 +56,6 @@ fun TelawatUI(
             MySquareButton(
                 text = st.continueListeningText,
                 fontSize = 18.sp,
-                textColor = AppTheme.colors.accent,
                 modifier = Modifier.fillMaxWidth(),
                 innerPadding = PaddingValues(vertical = 4.dp)
             ) {
