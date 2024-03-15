@@ -231,7 +231,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             // Add an app icon and set its accent color
             // Be careful about the color
-            .setSmallIcon(R.drawable.launcher_foreground)
+            .setSmallIcon(R.drawable.small_launcher_foreground)
             .setColorized(true)
             .setColor(resources.getColor(R.color.surface_M, theme))
             // Add buttons
@@ -275,7 +275,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         //lock screen icon for pre lollipop
         metadataBuilder.putBitmap(
             MediaMetadataCompat.METADATA_KEY_ART,
-            BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
+            BitmapFactory.decodeResource(resources, R.drawable.small_launcher_foreground)
         )
 
         metadataBuilder.putText(

@@ -12,11 +12,15 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.other.Global
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -71,7 +75,6 @@ class RadioClientVM @Inject constructor(
         }
 
     private fun connect() {
-
         mediaBrowser = MediaBrowserCompat(
             app,
             ComponentName(app, RadioService::class.java),
@@ -79,10 +82,6 @@ class RadioClientVM @Inject constructor(
             null
         )
         mediaBrowser?.connect()
-    }
-
-    private val connectionThread = Thread {
-        connect()
     }
 
     fun onStart(activity: Activity) {

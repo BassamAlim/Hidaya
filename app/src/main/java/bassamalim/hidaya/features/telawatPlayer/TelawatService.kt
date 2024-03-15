@@ -449,7 +449,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             // Make the transport controls visible on the lockscreen
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             // Add an app icon and set its accent color (Be careful about the color)
-            .setSmallIcon(R.drawable.launcher_foreground)
+            .setSmallIcon(R.drawable.small_launcher_foreground)
             .setColor(ContextCompat.getColor(this, R.color.surface_M))
             // Add buttons
             .addAction(prevAction).addAction(pauseAction).addAction(nextAction)
@@ -489,7 +489,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 )
                 .putBitmap(    //lock screen icon for pre lollipop
                     MediaMetadataCompat.METADATA_KEY_ART,
-                    BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
+                    BitmapFactory.decodeResource(resources, R.drawable.small_launcher_foreground)
                 )
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "")
                 .putText(MediaMetadataCompat.METADATA_KEY_TITLE, "")
@@ -514,7 +514,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             )
             .putBitmap(    //lock screen icon for pre lollipop
                 MediaMetadataCompat.METADATA_KEY_ART,
-                BitmapFactory.decodeResource(resources, R.drawable.launcher_foreground)
+                BitmapFactory.decodeResource(resources, R.drawable.small_launcher_foreground)
             )
             .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, suraNames[suraIndex])
