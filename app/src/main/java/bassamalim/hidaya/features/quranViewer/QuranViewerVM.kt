@@ -398,8 +398,14 @@ class QuranViewerVM @Inject constructor(
 
             if (mediaBrowser == null) return
 
-            // Create a MediaControllerCompat
-            val mediaController = MediaControllerCompat(app, mediaBrowser!!.sessionToken)
+            val mediaController: MediaControllerCompat?
+            try {
+                // Create a MediaControllerCompat
+                mediaController = MediaControllerCompat(app, mediaBrowser!!.sessionToken)
+            } catch (e: IllegalStateException) {
+                Log.e(Global.TAG, "Error in TelawatClient: ${e.message}")
+                return
+            }
 
             // Save the controller
             MediaControllerCompat.setMediaController(activity, mediaController)
