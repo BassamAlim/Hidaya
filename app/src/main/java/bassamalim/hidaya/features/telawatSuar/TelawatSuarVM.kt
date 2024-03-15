@@ -52,10 +52,6 @@ class TelawatSuarVM @Inject constructor(
     ))
     val uiState = _uiState.asStateFlow()
 
-    init {
-//        onStart()
-    }
-
     fun onStart() {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { it.copy(

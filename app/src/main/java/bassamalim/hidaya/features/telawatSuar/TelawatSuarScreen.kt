@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyDownloadBtn
@@ -77,11 +78,11 @@ private fun Tab(
 @Composable
 private fun SuraCard(
     sura: ReciterSura,
-    viewModel: TelawatSuarVM,
-    state: TelawatSuarState
+    vm: TelawatSuarVM,
+    st: TelawatSuarState
 ) {
     MyClickableSurface(
-        onClick = { viewModel.onItemClk(sura) }
+        onClick = { vm.onItemClk(sura) }
     ) {
         Row(
             Modifier
@@ -91,13 +92,14 @@ private fun SuraCard(
             horizontalArrangement = Arrangement.Center
         ) {
             MyDownloadBtn(
-                state = state.downloadStates[sura.num],
-                path = "${viewModel.prefix}${sura.num}.mp3",
+                state =
+                    if (st.downloadStates.isEmpty()) DownloadState.NotDownloaded
+                    else st.downloadStates[sura.num],
+                path = "${vm.prefix}${sura.num}.mp3",
                 size = 28.dp,
-                deleted = { viewModel.onDelete(sura.num) }
-            ) {
-                viewModel.onDownload(sura)
-            }
+                deleted = { vm.onDelete(sura.num) },
+                download = { vm.onDownload(sura) }
+            )
 
             MyText(
                 text = sura.suraName,
@@ -106,9 +108,10 @@ private fun SuraCard(
                     .padding(10.dp)
             )
 
-            MyFavBtn(state.favs[sura.num]) {
-                viewModel.onFavClk(sura.num)
-            }
+            MyFavBtn(
+                fav = st.favs[sura.num],
+                onClick = { vm.onFavClk(sura.num) }
+            )
         }
     }
 }
