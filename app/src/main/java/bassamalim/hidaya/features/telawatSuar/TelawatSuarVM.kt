@@ -12,6 +12,7 @@ import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.ReciterSura
@@ -19,9 +20,11 @@ import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.FileUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Locale
 import javax.inject.Inject
@@ -50,11 +53,15 @@ class TelawatSuarVM @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        onStart()
+//        onStart()
     }
 
     fun onStart() {
-        updateDownloads()
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update { it.copy(
+                downloadStates = getDownloadStates()
+            )}
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             app.registerReceiver(
@@ -90,8 +97,9 @@ class TelawatSuarVM @Inject constructor(
         else (ctx as ComponentActivity).onBackPressedDispatcher.onBackPressed()
     }
 
-    private fun updateDownloads() {
+    private fun getDownloadStates(): ArrayList<DownloadState> {
         val states = ArrayList<DownloadState>()
+
         for (i in 0..113) {
             states.add(
                 if (isDownloaded(i)) DownloadState.Downloaded
@@ -99,9 +107,7 @@ class TelawatSuarVM @Inject constructor(
             )
         }
 
-        _uiState.update { it.copy(
-            downloadStates = states
-        )}
+        return states
     }
 
     private fun isDownloaded(suraNum: Int): Boolean {
@@ -166,7 +172,9 @@ class TelawatSuarVM @Inject constructor(
 
                 downloading.remove(downloadId)
             } catch (e: RuntimeException) {
-                updateDownloads()
+                _uiState.update { it.copy(
+                    downloadStates = getDownloadStates()
+                )}
             }
         }
     }

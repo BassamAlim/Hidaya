@@ -10,6 +10,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.data.database.dbs.TelawatDB
@@ -21,6 +22,7 @@ import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.FileUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -45,7 +47,6 @@ class TelawatVM @Inject constructor(
         else repo.getSuraNames()
 
     private val _uiState = MutableStateFlow(TelawatState(
-        favs = repo.getFavs(),
         selectedVersions = repo.getSelectedVersions(),
         continueListeningText = repo.getNoLastPlayStr()
     ))
@@ -62,9 +63,11 @@ class TelawatVM @Inject constructor(
 
         clean()
 
-        _uiState.update { it.copy(
-            downloadStates = getDownloadStates()
-        )}
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update { it.copy(
+                downloadStates = getDownloadStates()
+            )}
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             app.registerReceiver(
@@ -144,11 +147,13 @@ class TelawatVM @Inject constructor(
 
         val reciters = repo.getReciters()
 
+        val favs = repo.getFavs()
+
         val items = ArrayList<Reciter>()
         for (i in reciters.indices) {
             val reciter = reciters[i]
 
-            if ((listType == ListType.Favorite && _uiState.value.favs[i] == 0) ||
+            if ((listType == ListType.Favorite && favs[i] == 0) ||
                 (listType == ListType.Downloaded && !isDownloaded("${reciter.id}")))
                 continue
 
@@ -163,7 +168,15 @@ class TelawatVM @Inject constructor(
                     )
                 )
             }
-            items.add(Reciter(reciter.id, reciter.name, versionsList))
+
+            items.add(
+                Reciter(
+                    id = reciter.id,
+                    name = reciter.name,
+                    versions = versionsList,
+                    fav = mutableIntStateOf(favs[i])
+                )
+            )
         }
 
         return if (_uiState.value.searchText.isEmpty()) items
@@ -249,8 +262,10 @@ class TelawatVM @Inject constructor(
     }
 
     private fun clean() {
-        val mainDir = File("${app.getExternalFilesDir(null)}/Telawat/")
-        FileUtils.deleteDirRecursive(mainDir)
+        viewModelScope.launch {
+            val mainDir = File("${app.getExternalFilesDir(null)}/Telawat/")
+            FileUtils.deleteDirRecursive(mainDir)
+        }
     }
 
     fun onContinueListeningClick() {
@@ -277,17 +292,7 @@ class TelawatVM @Inject constructor(
         )}
     }
 
-    fun onFavClk(reciterId: Int) {
-        val newFav =
-            if (_uiState.value.favs[reciterId] == 0) 1
-            else 0
-
-        val favs = _uiState.value.favs.toMutableList()
-        favs[reciterId] = newFav
-        _uiState.update { it.copy(
-            favs = favs
-        )}
-
+    fun onFavClk(reciterId: Int, newFav: Int) {
         repo.setFav(reciterId, newFav)
 
         repo.updateFavorites()

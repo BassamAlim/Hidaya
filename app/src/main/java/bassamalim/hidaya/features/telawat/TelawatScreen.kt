@@ -152,8 +152,9 @@ private fun ReciterCard(
             ) {
                 MyText(reciter.name, fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
-                MyFavBtn(st.favs[reciter.id]) {
-                    vm.onFavClk(reciter.id)
+                MyFavBtn(reciter.fav.value) {
+                    reciter.fav.value = (reciter.fav.value + 1) % 2
+                    vm.onFavClk(reciter.id, reciter.fav.value)
                 }
             }
 
