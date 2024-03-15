@@ -47,8 +47,7 @@ class TelawatSuarVM @Inject constructor(
     private val downloading = HashMap<Long, Int>()
 
     private val _uiState = MutableStateFlow(TelawatSuarState(
-        title = repo.getReciterName(reciterId),
-        favs = repo.getFavs()
+        title = repo.getReciterName(reciterId)
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -115,11 +114,13 @@ class TelawatSuarVM @Inject constructor(
     fun getItems(page: Int): List<ReciterSura> {
         val listType = ListType.entries[page]
 
+        val favs = repo.getFavs()
+
         val items = ArrayList<ReciterSura>()
         val availableSuar = ver.suar
         for (i in 0..113) {
             if (!availableSuar.contains(",${(i + 1)},") ||
-                (listType == ListType.Favorite && _uiState.value.favs[i] == 0) ||
+                (listType == ListType.Favorite && favs[i] == 0) ||
                 (listType == ListType.Downloaded && !isDownloaded(i))
             ) continue
 
@@ -189,17 +190,7 @@ class TelawatSuarVM @Inject constructor(
         )
     }
 
-    fun onFavClk(suraNum: Int) {
-        val newFav =
-            if (_uiState.value.favs[suraNum] == 0) 1
-            else 0
-
-        _uiState.update { it.copy(
-            favs = _uiState.value.favs.toMutableList().apply {
-                this[suraNum] = newFav
-            }
-        )}
-
+    fun onFavClk(suraNum: Int, newFav: Int) {
         repo.setFav(suraNum, newFav)
 
         repo.updateFavorites()

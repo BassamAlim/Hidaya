@@ -109,8 +109,11 @@ private fun SuraCard(
             )
 
             MyFavBtn(
-                fav = st.favs[sura.num],
-                onClick = { vm.onFavClk(sura.num) }
+                fav = sura.fav.value,
+                onClick = {
+                    sura.fav.value = (sura.fav.value + 1) % 2
+                    vm.onFavClk(sura.num, sura.fav.value)
+                }
             )
         }
     }
