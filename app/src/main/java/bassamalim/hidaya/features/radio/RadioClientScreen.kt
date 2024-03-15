@@ -90,9 +90,9 @@ private fun PlayPauseBtn(
                         scaleOut(animationSpec = tween(durationMillis = 200))
             }
         ) { state ->
-            if (state == PlaybackStateCompat.STATE_NONE ||
-                state == PlaybackStateCompat.STATE_CONNECTING ||
-                state == PlaybackStateCompat.STATE_BUFFERING)
+            if (state == PlaybackStateCompat.STATE_NONE
+                || state == PlaybackStateCompat.STATE_CONNECTING
+                || state == PlaybackStateCompat.STATE_BUFFERING)
                 MyCircularProgressIndicator()
             else {
                 Image(

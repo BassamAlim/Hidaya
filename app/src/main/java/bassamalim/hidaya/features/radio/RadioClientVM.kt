@@ -124,6 +124,7 @@ class RadioClientVM @Inject constructor(
         when (state) {
             PlaybackStateCompat.STATE_PLAYING,
             PlaybackStateCompat.STATE_STOPPED,
+            PlaybackStateCompat.STATE_PAUSED,
             PlaybackStateCompat.STATE_CONNECTING ->
                 _uiState.update { it.copy(
                     btnState = state
@@ -133,13 +134,17 @@ class RadioClientVM @Inject constructor(
     }
 
     fun onPlayPause() {
+        Log.d(Global.TAG, "Playing the radio0 ${controller.playbackState.state}")
         // Since this is a play/pause button
         // test the current state and choose the action accordingly=
         if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
+            Log.d(Global.TAG, "Playing the radio1")
             tc.pause()
             updatePbState(PlaybackStateCompat.STATE_STOPPED)
         }
-        else if (controller.playbackState.state == PlaybackStateCompat.STATE_STOPPED) {
+        else if (controller.playbackState.state == PlaybackStateCompat.STATE_STOPPED
+            || controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED) {
+            Log.d(Global.TAG, "Playing the radio2")
             tc.play()
             updatePbState(PlaybackStateCompat.STATE_PLAYING)
         }
