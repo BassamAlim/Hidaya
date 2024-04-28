@@ -63,8 +63,8 @@ sealed class Screen(val route: String) {
     data class QuizResult(
         val score: String,
         val questions: String,
-        val chosenAs: String
-    ): Screen("quiz_result/$score/$questions/$chosenAs")
+        val chosenAnswers: String
+    ): Screen("quiz_result/$score/$questions/$chosenAnswers")
 
     object Quiz: Screen("quiz")
 

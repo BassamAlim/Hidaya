@@ -324,12 +324,12 @@ fun NavGraph(
 
         composable(
             route = Screen.QuizResult(
-                "{score}", "{questions}", "{chosen_As}"
+                "{score}", "{questions}", "{chosen_answers}"
             ).route,
             arguments = listOf(
                 navArgument("score") { type = NavType.IntType },
                 navArgument("questions") { type = IntArrType },
-                navArgument("chosen_As") { type = IntArrType }
+                navArgument("chosen_answers") { type = IntArrType }
             ),
             enterTransition = inFromLeft,
             exitTransition = outToLeft,

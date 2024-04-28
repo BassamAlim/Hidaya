@@ -75,7 +75,7 @@ class QuizVM @Inject constructor(
             Screen.QuizResult(
                 score.toString(),
                 questions.map { q -> q.questionId }.toIntArray().contentToString(),
-                chosenAs.toTypedArray().contentToString()
+                chosenAs.toTypedArray().toIntArray().contentToString()
             )
         ) {
             popUpTo(Screen.Quiz.route) {
@@ -107,7 +107,7 @@ class QuizVM @Inject constructor(
             questionNumText =
             "$questionStr ${translateNums(numeralsLanguage, (current + 1).toString())}",
             question = question.questionText!!,
-            answers = answers.map { a -> a.answerText!! },
+            answers = answers.map { a -> a.answerText },
             selection = chosenAs[current],
             prevBtnEnabled = current != 0,
             nextBtnEnabled = !(current == 9 && !allAnswered),

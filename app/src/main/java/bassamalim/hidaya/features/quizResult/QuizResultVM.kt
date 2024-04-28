@@ -17,7 +17,7 @@ class QuizResultVM @Inject constructor(
 
     private val score = savedStateHandle.get<Int>("score") ?: 0
     private val questionIds = savedStateHandle.get<IntArray>("questions") ?: intArrayOf()
-    private val chosenAs = savedStateHandle.get<IntArray>("chosenAs") ?: IntArray(10)
+    private val chosenAnswers = savedStateHandle.get<IntArray>("chosen_answers") ?: intArrayOf()
 
     private val questions = repository.getQuestions(questionIds)
 
@@ -25,7 +25,7 @@ class QuizResultVM @Inject constructor(
         QuizResultState(
             score = translateNums(repository.numeralsLanguage, (score * 10).toString()),
             questions = getQuestionItems(),
-            chosenAs = chosenAs.toList()
+            chosenAs = chosenAnswers.toList()
         )
     )
     val uiState = _uiState.asStateFlow()
@@ -37,7 +37,7 @@ class QuizResultVM @Inject constructor(
 
             QuizResultQuestion(
                 i, questions[i].questionText!!, questions[i].correctAnswerId,
-                chosenAs[i], answersText
+                chosenAnswers[i], answersText
             )
         }
     }

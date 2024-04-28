@@ -119,15 +119,15 @@ private fun Answer(ansNum: Int, ansText: String, correctAns: Int, chosenAns: Int
     ) {
         MyText(text = ansText, fontSize = 18.sp)
 
-        Image(
-            painter = painterResource(
-                if (ansNum == correctAns) R.drawable.ic_check
-                else R.drawable.ic_wrong
-            ),
-            contentDescription = "",
-            Modifier
-                .size(25.dp)
-                .alpha(if (ansNum == chosenAns || ansNum == correctAns) 1F else 0F)
-        )
+        if (ansNum == chosenAns || ansNum == correctAns) {
+            Image(
+                painter = painterResource(
+                    if (ansNum == correctAns) R.drawable.ic_check
+                    else R.drawable.ic_wrong
+                ),
+                contentDescription = "",
+                Modifier.size(25.dp)
+            )
+        }
     }
 }
