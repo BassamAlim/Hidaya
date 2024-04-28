@@ -14,6 +14,7 @@
     <string name="appearance">المظهر</string>
     <string name="theme">السمة</string>
     <string name="prayer_time_settings">إعدادات أوقات الصلاة</string>
+    <string name="athan_settings">إعدادات الأذان</string>
 
     <!-- Preference Titles -->
     <string name="language" translatable="false">Language | اللغة</string>
@@ -218,5 +219,6 @@
     <string name="jumuah_subtitle">حان موعد الأذان الثاني لصلاة الجمعة</string>
     <string name="jumuah_reminder_title">تذكير صلاة الجمعة</string>
     <string name="location_failed">فشل تحديد الموقع</string>
+    <string name="athan_voice">المؤذن</string>
 
 </resources>

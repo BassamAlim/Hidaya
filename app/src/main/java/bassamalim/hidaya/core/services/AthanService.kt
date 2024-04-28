@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
@@ -21,13 +22,17 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
+import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
+import bassamalim.hidaya.core.utils.PrefUtils
 import java.util.Calendar
+import javax.inject.Inject
 
 class AthanService : Service() {
 
+    @Inject lateinit var sp: SharedPreferences
     private lateinit var pid: PID
     private var channelId = ""
     private var mediaPlayer: MediaPlayer? = null
@@ -144,7 +149,8 @@ class AthanService : Service() {
     private fun play() {
         Log.i(Global.TAG, "Playing Athan")
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.athan1)
+        val athanVoice = getAthanVoice()
+        mediaPlayer = MediaPlayer.create(this, athanVoice)
         mediaPlayer!!.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
         mediaPlayer!!.setAudioAttributes(
             AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -154,6 +160,16 @@ class AthanService : Service() {
         mediaPlayer!!.setOnCompletionListener {
             showReminderNotification()
             onDestroy()
+        }
+    }
+
+    private fun getAthanVoice(): Int {
+        val athanVoice = PrefUtils.getString(sp, Prefs.AthanVoice)
+        return when(athanVoice.toInt()) {
+            1 -> R.raw.athan1
+            2 -> R.raw.athan2
+            3 -> R.raw.athan3
+            else -> R.raw.athan1
         }
     }
 

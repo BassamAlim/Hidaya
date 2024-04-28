@@ -65,89 +65,14 @@ fun SettingsUI(
                 ) {
                     PrayerTimesSettings(vm)
                 }
+
+                ExpandableCard(
+                    R.string.athan_settings,
+                    Modifier.padding(vertical = 2.dp)
+                ) {
+                    AthanSettings(vm.sp)
+                }
             }
-        }
-    }
-}
-
-@Composable
-private fun PrayerTimesSettings(viewModel: SettingsVM) {
-    Column(
-        Modifier.padding(bottom = 10.dp)
-    ) {
-        // Calculation method
-        ListPref(
-            sp = viewModel.sp,
-            titleResId = R.string.calculation_method_title,
-            pref = Prefs.PrayerTimesCalculationMethod,
-            entries = stringArrayResource(R.array.prayer_times_calc_method_entries),
-            values = stringArrayResource(R.array.prayer_times_calc_method_values)
-        ) { viewModel.onPrayerTimesCalculationMethodCh() }
-
-        // Juristic method
-        ListPref(
-            sp = viewModel.sp,
-            titleResId = R.string.juristic_method_title,
-            pref = Prefs.PrayerTimesJuristicMethod,
-            entries = stringArrayResource(R.array.juristic_method_entries),
-            values = stringArrayResource(R.array.juristic_method_values)
-        ) { viewModel.onPrayerTimesJuristicMethodCh() }
-
-        // High latitude adjustment
-        ListPref(
-            sp = viewModel.sp,
-            titleResId = R.string.high_lat_adjustment_title,
-            pref = Prefs.PrayerTimesAdjustment,
-            entries = stringArrayResource(R.array.high_lat_adjustment_entries),
-            values = stringArrayResource(R.array.high_lat_adjustment_values)
-        ) { viewModel.onPrayerTimesHighLatAdjustmentCh() }
-    }
-}
-
-@Composable
-private fun ExtraNotificationsSettings(
-    vm: SettingsVM,
-    st: SettingsState
-) {
-    val ctx = LocalContext.current
-
-    Column(
-        Modifier.padding(bottom = 10.dp)
-    ) {
-        SwitchPref(
-            sp = vm.sp,
-            pref = Prefs.NotifyExtraNotification(PID.MORNING),
-            titleResId = R.string.morning_athkar_title,
-            summary = st.morningSummary
-        ) { checked ->
-            vm.onSwitch(ctx, checked, PID.MORNING)
-        }
-
-        SwitchPref(
-            sp = vm.sp,
-            pref = Prefs.NotifyExtraNotification(PID.EVENING),
-            titleResId = R.string.evening_athkar_title,
-            summary = st.eveningSummary
-        ) { checked ->
-            vm.onSwitch(ctx, checked, PID.EVENING)
-        }
-
-        SwitchPref(
-            sp = vm.sp,
-            pref = Prefs.NotifyExtraNotification(PID.DAILY_WERD),
-            titleResId = R.string.daily_werd_title,
-            summary = st.werdSummary
-        ) { checked ->
-            vm.onSwitch(ctx, checked, PID.DAILY_WERD)
-        }
-
-        SwitchPref(
-            sp = vm.sp,
-            pref = Prefs.NotifyExtraNotification(PID.FRIDAY_KAHF),
-            titleResId = R.string.friday_kahf_title,
-            summary = st.kahfSummary
-        ) { checked ->
-            vm.onSwitch(ctx, checked, PID.FRIDAY_KAHF)
         }
     }
 }
@@ -207,5 +132,105 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
         ) {
             ActivityUtils.restartActivity(activity)
         }
+    }
+}
+
+@Composable
+private fun ExtraNotificationsSettings(
+    vm: SettingsVM,
+    st: SettingsState
+) {
+    val ctx = LocalContext.current
+
+    Column(
+        Modifier.padding(bottom = 10.dp)
+    ) {
+        SwitchPref(
+            sp = vm.sp,
+            pref = Prefs.NotifyExtraNotification(PID.MORNING),
+            titleResId = R.string.morning_athkar_title,
+            summary = st.morningSummary
+        ) { checked ->
+            vm.onSwitch(ctx, checked, PID.MORNING)
+        }
+
+        SwitchPref(
+            sp = vm.sp,
+            pref = Prefs.NotifyExtraNotification(PID.EVENING),
+            titleResId = R.string.evening_athkar_title,
+            summary = st.eveningSummary
+        ) { checked ->
+            vm.onSwitch(ctx, checked, PID.EVENING)
+        }
+
+        SwitchPref(
+            sp = vm.sp,
+            pref = Prefs.NotifyExtraNotification(PID.DAILY_WERD),
+            titleResId = R.string.daily_werd_title,
+            summary = st.werdSummary
+        ) { checked ->
+            vm.onSwitch(ctx, checked, PID.DAILY_WERD)
+        }
+
+        SwitchPref(
+            sp = vm.sp,
+            pref = Prefs.NotifyExtraNotification(PID.FRIDAY_KAHF),
+            titleResId = R.string.friday_kahf_title,
+            summary = st.kahfSummary
+        ) { checked ->
+            vm.onSwitch(ctx, checked, PID.FRIDAY_KAHF)
+        }
+    }
+}
+
+@Composable
+private fun PrayerTimesSettings(viewModel: SettingsVM) {
+    Column(
+        Modifier.padding(bottom = 10.dp)
+    ) {
+        // Calculation method
+        ListPref(
+            sp = viewModel.sp,
+            titleResId = R.string.calculation_method_title,
+            pref = Prefs.PrayerTimesCalculationMethod,
+            entries = stringArrayResource(R.array.prayer_times_calc_method_entries),
+            values = stringArrayResource(R.array.prayer_times_calc_method_values)
+        ) { viewModel.onPrayerTimesCalculationMethodCh() }
+
+        // Juristic method
+        ListPref(
+            sp = viewModel.sp,
+            titleResId = R.string.juristic_method_title,
+            pref = Prefs.PrayerTimesJuristicMethod,
+            entries = stringArrayResource(R.array.juristic_method_entries),
+            values = stringArrayResource(R.array.juristic_method_values)
+        ) { viewModel.onPrayerTimesJuristicMethodCh() }
+
+        // High latitude adjustment
+        ListPref(
+            sp = viewModel.sp,
+            titleResId = R.string.high_lat_adjustment_title,
+            pref = Prefs.PrayerTimesAdjustment,
+            entries = stringArrayResource(R.array.high_lat_adjustment_entries),
+            values = stringArrayResource(R.array.high_lat_adjustment_values)
+        ) { viewModel.onPrayerTimesHighLatAdjustmentCh() }
+    }
+}
+
+@Composable
+private fun AthanSettings(
+    sp: SharedPreferences
+) {
+    Column(
+        Modifier.padding(bottom = 10.dp)
+    ) {
+        ListPref(
+            sp = sp,
+            titleResId = R.string.athan_voice,
+            pref = Prefs.AthanVoice,
+            iconResId = R.drawable.ic_speaker,
+            entries = stringArrayResource(R.array.athan_voices_entries),
+            values = stringArrayResource(R.array.athan_voices_entries).mapIndexed { i, _ -> (i+1).toString() }.toTypedArray()
+        )
     }
 }

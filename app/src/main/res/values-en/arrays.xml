@@ -179,4 +179,10 @@
         <item>Angle based</item>
     </string-array>
 
+    <string-array name="athan_voices_entries">
+        <item>Mecca Athan</item>
+        <item>Abdul-basit Abdul-samad</item>
+        <item>Mishary Rashid Al-Afasy</item>
+    </string-array>
+
 </resources>

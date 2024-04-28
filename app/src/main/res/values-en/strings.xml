@@ -16,6 +16,7 @@
     <string name="appearance">Appearance</string>
     <string name="theme">Theme</string>
     <string name="prayer_time_settings">Prayer times settings</string>
+    <string name="athan_settings">Athan Settings</string>
 
     <!-- Preference Titles -->
     <string name="morning_athkar_title">Morning athkar reminder</string>
@@ -217,5 +218,6 @@
     <string name="jumuah_reminder_title">Friday prayer reminder</string>
     <string name="previous_track_btn_description">Previous track</string>
     <string name="location_failed">Location Selection Failed</string>
+    <string name="athan_voice">Athan Voice</string>
 
 </resources>

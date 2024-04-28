@@ -266,4 +266,10 @@
         <item>ANGLE_BASED</item>
     </string-array>
 
+    <string-array name="athan_voices_entries">
+        <item>أذان الحرم المكي</item>
+        <item>عبدالباسط عبدالصمد</item>
+        <item>مشاري راشد العفاسي</item>
+    </string-array>
+
 </resources>

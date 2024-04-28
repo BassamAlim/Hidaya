@@ -11,6 +11,8 @@ import bassamalim.hidaya.core.enums.TimeFormat.TWELVE
 
 sealed class Prefs(val key: String, val default: Any) {
 
+    object AthanVoice : Prefs("athan_voice", "1")
+
     object AthkarTextSize: Prefs("athkar_text_size_key", 15f)
 
     object AyaReciter: Prefs("aya_reciter", "13")
