@@ -2,9 +2,11 @@ package bassamalim.hidaya.features.quran
 
 import android.content.SharedPreferences
 import android.content.res.Resources
+import android.util.Log
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.database.dbs.SuarDB
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.utils.PrefUtils
 import com.google.gson.Gson
@@ -23,7 +25,11 @@ class QuranRepo @Inject constructor(
 
     fun getBookmarkedSura() = PrefUtils.getInt(sp, Prefs.BookmarkedSura)
 
-    fun getAllSuar() = db.suarDao().getAll()
+    fun getAllSuar(): List<SuarDB> {
+        val suar = db.suarDao().getAll()
+        Log.d("FromMeToMe", "getAllSuar: $suar")
+        return suar
+    }
 
     fun getSuraNames(): List<String> {
         return if (PrefUtils.getLanguage(sp) == Language.ENGLISH) db.suarDao().getNamesEn()

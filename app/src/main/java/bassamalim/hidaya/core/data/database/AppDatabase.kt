@@ -9,7 +9,7 @@ import bassamalim.hidaya.core.data.database.dbs.*
     entities = [AyatDB::class, SuarDB::class, BooksDB::class,
         AthkarCategoryDB::class, AthkarDB::class, AthkarPartsDB::class,
         AyatRecitersDB::class, AyatTelawaDB::class, TelawatRecitersDB::class,
-        TelawatVersionsDB::class, QuizQuestionsDB::class, QuizAnswersDB::class,
+        TelawatRewayatDB::class, QuizQuestionsDB::class, QuizAnswersDB::class,
                CountryDB::class, CityDB::class],
     version = 1
 )
@@ -23,7 +23,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun ayatRecitersDao(): AyatRecitersDao
     abstract fun ayatTelawaDao(): AyatTelawaDao
     abstract fun telawatRecitersDao(): TelawatRecitersDao
-    abstract fun telawatVersionsDao(): TelawatVersionsDao
+    abstract fun telawatRewayatDao(): TelawatRewayatDao
     abstract fun telawatDao(): TelawatDao
     abstract fun quizQuestionDao(): QuizQuestionsDao
     abstract fun quizAnswerDao(): QuizAnswersDao

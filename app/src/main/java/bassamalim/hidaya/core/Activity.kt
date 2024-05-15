@@ -76,6 +76,8 @@ class Activity : ComponentActivity() {
             else getLocationAndLaunch()
         }
         else launch()
+
+        DBUtils.reviveDB(this, sp, db)
     }
 
     private fun handleAction(action: String?) {

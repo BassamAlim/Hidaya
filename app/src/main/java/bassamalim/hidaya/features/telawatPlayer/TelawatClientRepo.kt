@@ -13,10 +13,10 @@ class TelawatClientRepo @Inject constructor(
 
     fun getSuraNames() = db.suarDao().getNames()
 
-    fun getReciterName(reciterId: Int) = db.telawatRecitersDao().getName(reciterId)
+    fun getReciterName(reciterId: Int) = db.telawatRecitersDao().getNameAr(reciterId)
 
     fun getVersion(reciterId: Int, versionId: Int) =
-        db.telawatVersionsDao().getVersion(reciterId, versionId)
+        db.telawatRewayatDao().getVersion(reciterId, versionId)
 
     fun getRepeatMode() = PrefUtils.getInt(pref, Prefs.TelawatRepeatMode)
     fun setRepeatMode(mode: Int) {

@@ -118,7 +118,7 @@ class TelawatSuarVM @Inject constructor(
         val favs = repo.getFavs()
 
         val items = ArrayList<ReciterSura>()
-        val availableSuar = ver.suar
+        val availableSuar = ver.surahList
         for (i in 0..113) {
             if (!availableSuar.contains(",${(i + 1)},") ||
                 (listType == ListType.Favorite && favs[i] == 0) ||

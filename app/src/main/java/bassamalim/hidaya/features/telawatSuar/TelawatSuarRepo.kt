@@ -16,10 +16,10 @@ class TelawatSuarRepo @Inject constructor(
 
     fun getSearchNames() = db.suarDao().getSearchNames()
 
-    fun getReciterName(id: Int) = db.telawatRecitersDao().getName(id)
+    fun getReciterName(id: Int) = db.telawatRecitersDao().getNameAr(id)
 
     fun getVersion(reciterId: Int, versionId: Int) =
-        db.telawatVersionsDao().getVersion(reciterId, versionId)
+        db.telawatRewayatDao().getVersion(reciterId, versionId)
 
     fun getFavs() = db.suarDao().getFavs()
 

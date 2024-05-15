@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -108,7 +109,7 @@ class TelawatVM @Inject constructor(
 
         for (telawa in repo.getAllVersions()) {  // all versions
             val state =
-                if (isDownloaded("${telawa.reciter_id}/${telawa.version_id}"))
+                if (isDownloaded("${telawa.reciter_id}/${telawa.rewayah_id}"))
                     DownloadState.Downloaded
                 else
                     DownloadState.NotDownloaded
@@ -125,11 +126,13 @@ class TelawatVM @Inject constructor(
     private fun setupContinue() {
         continueListeningMediaId = repo.getLastPlayedMediaId()
 
-        if (continueListeningMediaId.isEmpty()) return
+        if (continueListeningMediaId.isEmpty() || continueListeningMediaId == "00000000") return  // added the second part to prevent errors due to change in db
+        Log.d("TelawatVM", "continueListeningMediaId: $continueListeningMediaId")
 
         val reciterId = continueListeningMediaId.substring(0, 3).toInt()
         val versionId = continueListeningMediaId.substring(3, 5).toInt()
         val suraIndex = continueListeningMediaId.substring(5).toInt()
+        Log.d("TelawatVM", "reciterId: $reciterId, versionId: $versionId, suraIndex: $suraIndex")
 
         val reciterName = repo.getReciterName(reciterId)
         val rewaya = repo.getRewaya(reciterId, versionId)
@@ -163,8 +166,8 @@ class TelawatVM @Inject constructor(
             versions.forEach { telawa ->
                 versionsList.add(
                     Reciter.RecitationVersion(
-                        telawa.version_id, telawa.url, telawa.rewaya,
-                        telawa.count, telawa.suar
+                        telawa.rewayah_id, telawa.rewayah_url, telawa.rewayah_name_ar,
+                        telawa.rewayah_surah_total, telawa.rewayah_surah_list
                     )
                 )
             }
@@ -192,7 +195,7 @@ class TelawatVM @Inject constructor(
         for (i in versions.indices) {
             for (j in rewayat.indices) {
                 if (_uiState.value.selectedVersions[j]
-                    && versions[i].rewaya.startsWith(rewayat[j])) {
+                    && versions[i].rewayah_name_ar.startsWith(rewayat[j])) {
                     selected.add(versions[i])
                     break
                 }

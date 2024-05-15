@@ -29,9 +29,9 @@ class TelawatRepo @Inject constructor(
     fun getAllVersions() = db.telawatDao().all
 
     fun getRewaya(reciterId: Int, versionId: Int): String =
-        db.telawatVersionsDao().getVersion(reciterId, versionId).rewaya!!
+        db.telawatRewayatDao().getVersion(reciterId, versionId).nameAr
 
-    fun getReciterName(reciterId: Int) = db.telawatRecitersDao().getName(reciterId)
+    fun getReciterName(reciterId: Int) = db.telawatRecitersDao().getNameAr(reciterId)
 
     fun getSuraNames() = db.suarDao().getNames()
     fun getSuraNamesEn() = db.suarDao().getNamesEn()
