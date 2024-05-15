@@ -18,12 +18,11 @@ object DBUtils {
     }
 
     fun needsRevival(
-        ctx: Context,
         sp: SharedPreferences,
         db: AppDatabase
     ): Boolean {
         val lastVer = PrefUtils.getInt(sp, Prefs.LastDBVersion)
-        if (Global.DB_VERSION > lastVer) reviveDB(ctx, sp, db)
+        if (Global.DB_VERSION > lastVer) return true
 
         return try {  // if there is a problem in the db it will cause an error
             db.suarDao().getFavs()
@@ -39,6 +38,12 @@ object DBUtils {
         db: AppDatabase = getDB(ctx)
     ) {
         ctx.deleteDatabase("HidayaDB")
+
+        val db = Room.databaseBuilder(
+            ctx, AppDatabase::class.java, "HidayaDB"
+        ).createFromAsset("databases/HidayaDB.db")
+            .allowMainThreadQueries()
+            .build()
 
         val suarJson = PrefUtils.getString(sp, Prefs.FavoriteSuar)
         val recitersJson = PrefUtils.getString(sp, Prefs.FavoriteReciters)

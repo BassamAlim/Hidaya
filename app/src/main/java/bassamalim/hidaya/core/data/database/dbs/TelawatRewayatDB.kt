@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 
 @Entity(
     tableName = "telawat_rewayat",
-    primaryKeys = ["id", "reciter_id"],
+    primaryKeys = ["reciter_id", "id"],
     foreignKeys = [ForeignKey(
         entity = TelawatRecitersDB::class,
         parentColumns = arrayOf("id"),

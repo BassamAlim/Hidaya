@@ -98,7 +98,7 @@ class Activity : ComponentActivity() {
     }
 
     private fun preLaunch(firstLaunch: Boolean = false) {
-        if (firstLaunch) testDB()
+//        if (firstLaunch) testDB()
 
         ActivityUtils.onActivityCreateSetLocale(this)
         ActivityUtils.onActivityCreateSetTheme(this)
@@ -107,8 +107,8 @@ class Activity : ComponentActivity() {
     }
 
     private fun testDB() {
-        if (DBUtils.needsRevival(this, sp, db))
-            DBUtils.reviveDB(this, sp, db)
+        if (DBUtils.needsRevival(sp, db))
+            DBUtils.reviveDB(this, sp)
     }
 
     private fun getLocationAndLaunch() {
