@@ -6,6 +6,7 @@ import bassamalim.hidaya.core.data.database.dbs.SuarDB
 
 @Dao
 interface SuarDao {
+
     @Query("SELECT * FROM suar")
     fun getAll(): List<SuarDB>
 
@@ -35,4 +36,5 @@ interface SuarDao {
 
     @Query("SELECT start_page FROM suar WHERE id = :index")
     fun getSuraPageNum(index: Int): Int
+
 }

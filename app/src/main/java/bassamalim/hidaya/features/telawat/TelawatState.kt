@@ -4,7 +4,7 @@ import bassamalim.hidaya.core.enums.DownloadState
 
 data class TelawatState(
     val continueListeningText: String = "",
-    val downloadStates: List<List<DownloadState>> = emptyList(),
+    val downloadStates: Map<Int, DownloadState> = emptyMap(),
     val selectedVersions: List<Boolean> = emptyList(),
     val searchText: String = "",
     val isFiltered: Boolean = false,

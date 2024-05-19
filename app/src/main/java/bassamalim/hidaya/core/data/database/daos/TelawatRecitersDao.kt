@@ -6,6 +6,7 @@ import bassamalim.hidaya.core.data.database.dbs.TelawatRecitersDB
 
 @Dao
 interface TelawatRecitersDao {
+
     @Query("SELECT * FROM telawat_reciters")
     fun getAll(): List<TelawatRecitersDB>
 
@@ -29,4 +30,5 @@ interface TelawatRecitersDao {
 
     @Query("SELECT favorite FROM telawat_reciters")
     fun getFavs(): List<Int>
+
 }

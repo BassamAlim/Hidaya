@@ -6,6 +6,7 @@ import bassamalim.hidaya.core.data.database.dbs.AyatTelawaDB
 
 @Dao
 interface AyatTelawaDao {
+
     @get:Query("SELECT * FROM ayat_telawa")
     val all: List<AyatTelawaDB>
 
@@ -14,4 +15,5 @@ interface AyatTelawaDao {
 
     @get:Query("SELECT COUNT(*) FROM ayat_telawa")
     val size: Int
+
 }

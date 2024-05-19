@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -162,8 +163,9 @@ private fun ReciterCard(
             Column(
                 Modifier.fillMaxWidth()
             ) {
-                for (version in reciter.versions) {
+                reciter.versions.forEachIndexed { idx, version ->
                     VersionCard(
+                        idx,
                         reciterId = reciter.id,
                         version = version,
                         vm = vm,
@@ -177,12 +179,13 @@ private fun ReciterCard(
 
 @Composable
 private fun VersionCard(
+    idx: Int,
     reciterId: Int,
     version: Reciter.RecitationVersion,
     vm: TelawatVM,
     st: TelawatState
 ) {
-    if (version.versionId != 0)
+    if (idx != 0)
         MyHorizontalDivider()
 
     Box(
@@ -198,15 +201,20 @@ private fun VersionCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                MyText(text = version.rewaya, fontSize = 18.sp)
+                MyText(
+                    text = version.rewaya,
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.weight(1F)
+                )
 
                 MyDownloadBtn(
                     state =
                         if (st.downloadStates.isEmpty()) DownloadState.NotDownloaded
-                        else st.downloadStates[reciterId][version.versionId],
+                        else st.downloadStates[version.versionId]!!,
                     path = "${vm.prefix}$reciterId/${version.versionId}",
                     size = 28.dp,
-                    deleted = { vm.onDeleteClk(reciterId, version.versionId) },
+                    deleted = { vm.onDeleteClk(version.versionId) },
                     download = { vm.onDownloadClk(reciterId, version) }
                 )
             }

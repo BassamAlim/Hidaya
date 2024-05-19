@@ -6,6 +6,7 @@ import bassamalim.hidaya.core.data.database.dbs.AthkarDB
 
 @Dao
 interface AthkarDao {
+
     @Query("SELECT * FROM athkar")
     fun getAll(): List<AthkarDB>
 
@@ -32,4 +33,5 @@ interface AthkarDao {
 
     @Query("SELECT favorite FROM athkar")
     fun getFavs(): List<Int>
+
 }

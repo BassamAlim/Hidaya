@@ -6,6 +6,7 @@ import bassamalim.hidaya.core.data.database.dbs.AthkarCategoryDB
 
 @Dao
 interface AthkarCategoryDao {
+
     @Query("SELECT * FROM athkar_categories")
     fun getAll(): List<AthkarCategoryDB>
 
@@ -14,4 +15,5 @@ interface AthkarCategoryDao {
 
     @Query("SELECT category_name_en FROM athkar_categories WHERE category_id = :id")
     fun getNameEn(id: Int): String
+
 }

@@ -42,7 +42,7 @@ class TelawatVM @Inject constructor(
     val prefix = "/Telawat/"
     private var continueListeningMediaId = ""
     val rewayat = repo.getRewayat()
-    private val downloading = HashMap<Long, Pair<Int, Int>>()
+    private val downloading = HashMap<Long, Int>()
     private val suraNames =
         if (repo.language == Language.ENGLISH) repo.getSuraNamesEn()
         else repo.getSuraNames()
@@ -104,20 +104,15 @@ class TelawatVM @Inject constructor(
         else (ctx as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
     }
 
-    private fun getDownloadStates(): List<List<DownloadState>> {
-        val downloadStates = mutableListOf<MutableList<DownloadState>>()
+    private fun getDownloadStates(): Map<Int, DownloadState> {
+        val downloadStates = mutableMapOf<Int, DownloadState>()
 
-        for (telawa in repo.getAllVersions()) {  // all versions
-            val state =
+        for (telawa in repo.getAllVersions()) {
+            downloadStates[telawa.rewayah_id] =
                 if (isDownloaded("${telawa.reciter_id}/${telawa.rewayah_id}"))
                     DownloadState.Downloaded
                 else
                     DownloadState.NotDownloaded
-
-            if (telawa.reciter_id == downloadStates.size)
-                downloadStates.add(mutableListOf(state))
-            else
-                downloadStates[telawa.reciter_id].add(state)
         }
 
         return downloadStates
@@ -166,8 +161,13 @@ class TelawatVM @Inject constructor(
             versions.forEach { telawa ->
                 versionsList.add(
                     Reciter.RecitationVersion(
-                        telawa.rewayah_id, telawa.rewayah_url, telawa.rewayah_name_ar,
-                        telawa.rewayah_surah_total, telawa.rewayah_surah_list
+                        versionId = telawa.rewayah_id,
+                        server = telawa.rewayah_url,
+                        rewaya =
+                            if (repo.language == Language.ARABIC) telawa.rewayah_name_ar
+                            else telawa.rewayah_name_en,
+                        count = telawa.rewayah_surah_total,
+                        suar = telawa.rewayah_surah_list
                     )
                 )
             }
@@ -175,7 +175,9 @@ class TelawatVM @Inject constructor(
             items.add(
                 Reciter(
                     id = reciter.id,
-                    name = reciter.name,
+                    name =
+                        if (repo.language == Language.ARABIC) reciter.nameAr
+                        else reciter.nameEn,
                     versions = versionsList,
                     fav = mutableIntStateOf(favs[i])
                 )
@@ -234,7 +236,7 @@ class TelawatVM @Inject constructor(
 
                 val downloadId = downloadManager.enqueue(request)
                 if (!posted) {
-                    downloading[downloadId] = Pair(reciterId, ver.versionId)
+                    downloading[downloadId] = ver.versionId
                     posted = true
                 }
             }
@@ -245,13 +247,10 @@ class TelawatVM @Inject constructor(
         override fun onReceive(ctxt: Context, intent: Intent) {
             val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             try {
-                val ids = downloading[downloadId]!!
-
+                val versionId = downloading[downloadId]!!
                 _uiState.update { it.copy(
-                    downloadStates = _uiState.value.downloadStates.toMutableList().apply {
-                        val innerStates = this[ids.first].toMutableList()
-                        innerStates[ids.second] = DownloadState.Downloaded
-                        this[ids.first] = innerStates
+                    downloadStates = _uiState.value.downloadStates.toMutableMap().apply {
+                        this[versionId] = DownloadState.Downloaded
                     }
                 )}
 
@@ -301,22 +300,18 @@ class TelawatVM @Inject constructor(
         repo.updateFavorites()
     }
 
-    fun onDeleteClk(reciterId: Int, versionId: Int) {
+    fun onDeleteClk(versionId: Int) {
         _uiState.update { it.copy(
-            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
-                val innerStates = this[reciterId].toMutableList()
-                innerStates[versionId] = DownloadState.NotDownloaded
-                this[reciterId] = innerStates
+            downloadStates = _uiState.value.downloadStates.toMutableMap().apply {
+                this[versionId] = DownloadState.NotDownloaded
             }
         )}
     }
 
     fun onDownloadClk(reciterId: Int, version: Reciter.RecitationVersion) {
         _uiState.update { it.copy(
-            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
-                val innerStates = this[reciterId].toMutableList()
-                innerStates[version.versionId] = DownloadState.Downloading
-                this[reciterId] = innerStates
+            downloadStates = _uiState.value.downloadStates.toMutableMap().apply {
+                this[reciterId] = DownloadState.Downloading
             }
         )}
 

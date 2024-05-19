@@ -13,5 +13,4 @@ interface QuizQuestionsDao {
     @Query("SELECT * FROM quiz_questions WHERE question_id = :id")
     fun getQuestion(id: Int): QuizQuestionsDB
 
-
 }

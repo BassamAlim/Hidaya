@@ -6,6 +6,7 @@ import bassamalim.hidaya.core.data.database.dbs.TelawatRewayatDB
 
 @Dao
 interface TelawatRewayatDao {
+
     @get:Query("SELECT * FROM telawat_rewayat")
     val all: List<TelawatRewayatDB>
 
@@ -22,4 +23,5 @@ interface TelawatRewayatDao {
         "WHERE reciter_id = :reciterId AND id = :versionId"
     )
     fun getSuar(reciterId: Int, versionId: Int): String
+
 }
