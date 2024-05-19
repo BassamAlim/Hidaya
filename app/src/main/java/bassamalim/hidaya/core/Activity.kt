@@ -76,8 +76,6 @@ class Activity : ComponentActivity() {
             else getLocationAndLaunch()
         }
         else launch()
-
-        DBUtils.reviveDB(this, sp, db)
     }
 
     private fun handleAction(action: String?) {
@@ -98,17 +96,13 @@ class Activity : ComponentActivity() {
     }
 
     private fun preLaunch(firstLaunch: Boolean = false) {
-//        if (firstLaunch) testDB()
+        if (firstLaunch && DBUtils.needsRevival(sp, db))
+            DBUtils.reviveDB(this, sp)
 
         ActivityUtils.onActivityCreateSetLocale(this)
         ActivityUtils.onActivityCreateSetTheme(this)
         ActivityUtils.onActivityCreateSetLocale(applicationContext)
         ActivityUtils.onActivityCreateSetTheme(applicationContext)
-    }
-
-    private fun testDB() {
-        if (DBUtils.needsRevival(sp, db))
-            DBUtils.reviveDB(this, sp)
     }
 
     private fun getLocationAndLaunch() {
