@@ -120,7 +120,6 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
     override fun onCreate() {
         super.onCreate()
 
-        // perform one-time setup procedures
         ActivityUtils.onActivityCreateSetLocale(applicationContext)
 
         pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -135,7 +134,6 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         initSession()
         initAPM()
         setupActions()
-
         initMetadata()
     }
 
@@ -276,8 +274,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
 
         // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
         stateBuilder = PlaybackStateCompat.Builder().setActions(
-            PlaybackStateCompat.ACTION_PLAY
-                    or PlaybackStateCompat.ACTION_PLAY_PAUSE
+            PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
         )
         mediaSession.setPlaybackState(stateBuilder.build())
 
@@ -331,7 +328,15 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         } catch (_: Exception) {}
 
         stateBuilder.setState(state, currentPosition, 1F)
-            .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+            .setActions(
+                PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        or PlaybackStateCompat.ACTION_PLAY
+                        or PlaybackStateCompat.ACTION_PAUSE
+                        or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                        or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                        or PlaybackStateCompat.ACTION_SEEK_TO
+                        or PlaybackStateCompat.ACTION_STOP
+            )
         mediaSession.setPlaybackState(stateBuilder.build())
     }
 
@@ -354,29 +359,46 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         val flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         playAction = NotificationCompat.Action(
-            R.drawable.ic_play, "Play", PendingIntent.getBroadcast(
-                this@AyaPlayerService, notificationId,
-                Intent(ACTION_PLAY).setPackage(packageName), flags)
+            R.drawable.ic_play,
+            "Play",
+            PendingIntent.getBroadcast(
+                this,
+                notificationId,
+                Intent(ACTION_PLAY).setPackage(packageName),
+                flags
+            )
         )
 
         pauseAction = NotificationCompat.Action(
-            R.drawable.ic_pause, "Pause", PendingIntent.getBroadcast(
-                this@AyaPlayerService, notificationId,
-                Intent(ACTION_PAUSE).setPackage(packageName), flags
+            R.drawable.ic_pause,
+            "Pause",
+            PendingIntent.getBroadcast(
+                this,
+                notificationId,
+                Intent(ACTION_PAUSE).setPackage(packageName),
+                flags
             )
         )
 
         nextAction = NotificationCompat.Action(
-            R.drawable.ic_skip_next, "Next", PendingIntent.getBroadcast(
-                this@AyaPlayerService, notificationId,
-                Intent(ACTION_NEXT).setPackage(packageName), flags
+            R.drawable.ic_skip_next,
+            "Next",
+            PendingIntent.getBroadcast(
+                this,
+                notificationId,
+                Intent(ACTION_NEXT).setPackage(packageName),
+                flags
             )
         )
 
         prevAction = NotificationCompat.Action(
-            R.drawable.ic_skip_previous, "Previous", PendingIntent.getBroadcast(
-                this@AyaPlayerService, notificationId,
-                Intent(ACTION_PREV).setPackage(packageName), flags
+            R.drawable.ic_skip_previous,
+            "Previous",
+            PendingIntent.getBroadcast(
+                this,
+                notificationId,
+                Intent(ACTION_PREV).setPackage(packageName),
+                flags
             )
         )
     }

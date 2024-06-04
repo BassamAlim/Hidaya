@@ -55,7 +55,7 @@ import java.util.Random
 @RequiresApi(api = Build.VERSION_CODES.O)
 class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
-    private val id = 333
+    private val notificationId = 333
     private val handler: Handler = Handler(Looper.getMainLooper())
     private val intentFilter: IntentFilter = IntentFilter()
     private lateinit var pref: SharedPreferences
@@ -133,17 +133,18 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     override fun onCreate() {
         super.onCreate()
+
         ActivityUtils.onActivityCreateSetLocale(applicationContext)
 
-        db = DBUtils.getDB(this)
         pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        db = DBUtils.getDB(this)
 
         getSuraNames()
 
         initSession()
-        setupActions()
         initPlayer()
-        initMediaSessionMetadata()
+        setupActions()
+        initMetadata()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -199,7 +200,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
                 receiverManager.register()
                 // Put the service in the foreground, post notification
-                startForeground(id, notification)
+                startForeground(notificationId, notification)
 
                 // start the player (custom call)
                 if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED
@@ -396,25 +397,46 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         val flags = PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
         playAction = NotificationCompat.Action(
-            R.drawable.ic_play, "Play", PendingIntent.getBroadcast(
-                this, id, Intent(ACTION_PLAY).setPackage(packageName), flags)
+            R.drawable.ic_play,
+            "Play",
+            PendingIntent.getBroadcast(
+                this,
+                notificationId,
+                Intent(ACTION_PLAY).setPackage(packageName),
+                flags
+            )
         )
 
         pauseAction = NotificationCompat.Action(
-            R.drawable.ic_pause, "Pause", PendingIntent.getBroadcast(
-                this, id, Intent(ACTION_PAUSE).setPackage(packageName), flags
+            R.drawable.ic_pause,
+            "Pause",
+            PendingIntent.getBroadcast(
+                this,
+                notificationId,
+                Intent(ACTION_PAUSE).setPackage(packageName),
+                flags
             )
         )
 
         nextAction = NotificationCompat.Action(
-            R.drawable.ic_skip_next, "next", PendingIntent.getBroadcast(
-                this, id, Intent(ACTION_NEXT).setPackage(packageName), flags
+            R.drawable.ic_skip_next,
+            "Next",
+            PendingIntent.getBroadcast(
+                this,
+                notificationId,
+                Intent(ACTION_NEXT).setPackage(packageName),
+                flags
             )
         )
 
         prevAction = NotificationCompat.Action(
-            R.drawable.ic_skip_previous, "previous", PendingIntent.getBroadcast(
-                this, id, Intent(ACTION_PREV).setPackage(packageName), flags
+            R.drawable.ic_skip_previous,
+            "Previous",
+            PendingIntent.getBroadcast(
+                this,
+                notificationId,
+                Intent(ACTION_PREV).setPackage(packageName),
+                flags
             )
         )
     }
@@ -473,10 +495,10 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         notification = notificationBuilder.build()
 
         // Display the notification and place the service in the foreground
-        startForeground(id, notification)
+        startForeground(notificationId, notification)
     }
 
-    private fun initMediaSessionMetadata() {
+    private fun initMetadata() {
         mediaSession.setMetadata(
             MediaMetadataCompat.Builder()
                 .putBitmap(    //Notification icon in card
@@ -536,16 +558,15 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private fun updatePbState(state: Int, buffered: Long) {
         stateBuilder.setState(state, player.currentPosition.toLong(), 1F)
             .setActions(
-                PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                        PlaybackStateCompat.ACTION_PLAY or
-                        PlaybackStateCompat.ACTION_PAUSE or
-                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                        PlaybackStateCompat.ACTION_STOP or
-                        PlaybackStateCompat.ACTION_SEEK_TO or
-                        PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
-                        PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE or
-                        PlaybackStateCompat.ACTION_SEEK_TO
+                PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        or PlaybackStateCompat.ACTION_PLAY
+                        or PlaybackStateCompat.ACTION_PAUSE
+                        or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                        or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                        or PlaybackStateCompat.ACTION_STOP
+                        or PlaybackStateCompat.ACTION_SEEK_TO
+                        or PlaybackStateCompat.ACTION_SET_REPEAT_MODE
+                        or PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
             )
             .setBufferedPosition(buffered)
 
@@ -576,7 +597,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 .addAction(prevAction).addAction(playAction).addAction(nextAction)
 
         notification = notificationBuilder.build()
-        notificationManager.notify(id, notification)
+        notificationManager.notify(notificationId, notification)
     }
 
     private fun initPlayer() {
@@ -713,11 +734,6 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
             action = Global.GO_TO_TELAWA
             putExtra("media_id", mediaId)
         }
-//            .putExtra("start_route",
-//                Screen.TelawatClient(
-//                    "back", mediaId!!
-//                ).route
-//            )
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 

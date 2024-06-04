@@ -290,7 +290,12 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
         val stateBuilder: PlaybackStateCompat.Builder = PlaybackStateCompat.Builder()
 
         stateBuilder.setState(state, position.toLong(), 1F)
-            .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+            .setActions(
+                PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        or PlaybackStateCompat.ACTION_PLAY
+                        or PlaybackStateCompat.ACTION_PAUSE
+                        or PlaybackStateCompat.ACTION_SEEK_TO
+            )
 
         mediaSession.setPlaybackState(stateBuilder.build())
     }

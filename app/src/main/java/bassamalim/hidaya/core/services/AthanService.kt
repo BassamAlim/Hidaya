@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 class AthanService : Service() {
 
-    @Inject lateinit var sp: SharedPreferences
+    private lateinit var sp: SharedPreferences
     private lateinit var pid: PID
     private var channelId = ""
     private var mediaPlayer: MediaPlayer? = null
@@ -42,6 +42,8 @@ class AthanService : Service() {
     override fun onCreate() {
         super.onCreate()
         ActivityUtils.onActivityCreateSetLocale(applicationContext)
+
+        sp = PrefUtils.getPreferences(applicationContext)
 
         createNotificationChannel()
     }
