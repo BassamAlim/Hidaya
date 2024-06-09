@@ -17,29 +17,22 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 
-sealed class BottomNavItem(var route: String, var icon: Int){
-    object Home: BottomNavItem("home", R.drawable.ic_home)
-    object Prayers: BottomNavItem("prayers", R.drawable.ic_clock)
-    object Quran: BottomNavItem("quran", R.drawable.ic_bar_quran)
-    object Athkar: BottomNavItem("athkar", R.drawable.ic_duaa)
-    object More: BottomNavItem("more", R.drawable.ic_more)
+sealed class BottomNavItem(var route: String, var titleRId: Int, var icon: Int) {
+    data object Home: BottomNavItem("home", R.string.title_home, R.drawable.ic_home)
+    data object Prayers: BottomNavItem("prayers", R.string.title_prayers, R.drawable.ic_clock)
+    data object Quran: BottomNavItem("quran", R.string.title_quran, R.drawable.ic_bar_quran)
+    data object Athkar: BottomNavItem("athkar", R.string.title_athkar, R.drawable.ic_duaa)
+    data object More: BottomNavItem("more", R.string.title_more, R.drawable.ic_more)
 }
 
 @Composable
 fun MyBottomNavigation(navController: NavController) {
-    val items = listOf(  // add arguments
+    val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Prayers,
         BottomNavItem.Quran,
         BottomNavItem.Athkar,
         BottomNavItem.More
-    )
-    val titles = listOf(
-        stringResource(R.string.title_home),
-        stringResource(R.string.title_prayers),
-        stringResource(R.string.title_quran),
-        stringResource(R.string.title_athkar),
-        stringResource(R.string.title_more),
     )
 
     BottomNavigation(
@@ -49,12 +42,14 @@ fun MyBottomNavigation(navController: NavController) {
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
+        
+        items.forEach { item ->
+            val title = stringResource(item.titleRId)
 
-        items.forEachIndexed { index, item ->
             BottomNavigationItem(
                 label = {
                     MyText(
-                        titles[index],
+                        title,
                         fontSize = 9.nsp,
                         textColor = AppTheme.colors.secondary,
                         softWrap = false
@@ -64,7 +59,7 @@ fun MyBottomNavigation(navController: NavController) {
                 icon = {
                     Icon(
                         painter = painterResource(id = item.icon),
-                        contentDescription = titles[index],
+                        contentDescription = title,
                         modifier = Modifier.size(24.dp)
                     )
                 },
@@ -73,8 +68,8 @@ fun MyBottomNavigation(navController: NavController) {
                 selected = currentRoute == item.route,
                 onClick = {
                     navController.navigate(item.route) {
-                        navController.graph.startDestinationRoute?.let { screen_route ->
-                            popUpTo(screen_route) {
+                        navController.graph.startDestinationRoute?.let { screenRoute ->
+                            popUpTo(screenRoute) {
                                 saveState = true
                             }
                         }

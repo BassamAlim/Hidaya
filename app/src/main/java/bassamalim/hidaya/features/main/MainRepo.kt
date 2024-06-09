@@ -9,10 +9,12 @@ import javax.inject.Inject
 
 class MainRepo @Inject constructor(
     private val res: Resources,
-    val sp: SharedPreferences
+    private val sp: SharedPreferences
 ) {
 
     val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
+
+    val unchangedStr = res.getString(R.string.unchanged)
 
     fun getDateOffset() = PrefUtils.getInt(sp, Prefs.DateOffset)
 
@@ -25,7 +27,5 @@ class MainRepo @Inject constructor(
     fun getWeekDays(): Array<String> = res.getStringArray(R.array.week_days)
     fun getHijriMonths(): Array<String> = res.getStringArray(R.array.hijri_months)
     fun getGregorianMonths(): Array<String> = res.getStringArray(R.array.gregorian_months)
-
-    fun getUnchangedStr() = res.getString(R.string.unchanged)
 
 }

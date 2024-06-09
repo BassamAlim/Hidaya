@@ -15,11 +15,10 @@ class MainVM @Inject constructor(
     private val repo: MainRepo
 ): ViewModel() {
 
-    private var dateOffset = repo.getDateOffset()
-
     private val _uiState = MutableStateFlow(MainState(
         hijriDate = getHijriDate(),
-        gregorianDate = getGregorianDate()
+        gregorianDate = getGregorianDate(),
+        dateOffset = repo.getDateOffset()
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -38,7 +37,7 @@ class MainVM @Inject constructor(
         val hDayName = repo.getWeekDays()[hijri[Calendar.DAY_OF_WEEK] - 1]
 
         val millisInDay = 1000 * 60 * 60 * 24
-        hijri.timeInMillis = hijri.timeInMillis + dateOffset * millisInDay
+        hijri.timeInMillis += _uiState.value.dateOffset * millisInDay
 
         val hMonth = repo.getHijriMonths()[hijri[Calendar.MONTH]]
         val hijriStr = "$hDayName ${hijri[Calendar.DATE]} $hMonth ${hijri[Calendar.YEAR]}"
@@ -53,34 +52,32 @@ class MainVM @Inject constructor(
     }
 
     fun onDateEditorNextDay() {
-        dateOffset++
-        updateDateEditor()
+        updateDateEditor(newDateOffset = _uiState.value.dateOffset + 1)
     }
 
     fun onDateEditorPrevDay() {
-        dateOffset--
-        updateDateEditor()
+        updateDateEditor(newDateOffset = _uiState.value.dateOffset - 1)
     }
 
-    private fun updateDateEditor() {
+    private fun updateDateEditor(newDateOffset: Int = _uiState.value.dateOffset) {
         val cal = UmmalquraCalendar()
         val millisInDay = 1000 * 60 * 60 * 24
-        cal.timeInMillis = cal.timeInMillis + dateOffset * millisInDay
+        cal.timeInMillis += newDateOffset * millisInDay
 
-        // update tvs
         val dateText = translateNums(
             repo.numeralsLanguage,
             "${cal[Calendar.DATE]}/${cal[Calendar.MONTH] + 1}/${cal[Calendar.YEAR]}"
         )
 
-        var offsetText = repo.getUnchangedStr()
-        if (dateOffset != 0) {
-            var offsetStr = dateOffset.toString()
-            if (dateOffset > 0) offsetStr = "+$offsetStr"
+        var offsetText = repo.unchangedStr
+        if (newDateOffset != 0) {
+            var offsetStr = newDateOffset.toString()
+            if (newDateOffset > 0) offsetStr = "+$offsetStr"
             offsetText = translateNums(repo.numeralsLanguage, offsetStr)
         }
 
         _uiState.update { it.copy(
+            dateOffset = newDateOffset,
             dateEditorOffsetText = offsetText,
             dateEditorDateText = dateText
         )}
@@ -93,7 +90,7 @@ class MainVM @Inject constructor(
             dateEditorShown = false
         )}
 
-        repo.updateDateOffset(dateOffset)
+        repo.updateDateOffset(_uiState.value.dateOffset)
     }
 
     fun onDateEditorCancel() {

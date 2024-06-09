@@ -49,57 +49,7 @@ fun MainUI(
 
     MyScaffold(
         title = stringResource(R.string.app_name),
-        topBar = {
-            TopAppBar(
-                backgroundColor = AppTheme.colors.primary,
-                elevation = 8.dp,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Box(
-                    Modifier.fillMaxSize()
-                ) {
-                    Row(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        MyText(
-                            stringResource(R.string.app_name),
-                            textColor = AppTheme.colors.onPrimary
-                        )
-
-                        Column(
-                            Modifier
-                                .fillMaxHeight()
-                                .clickable { vm.showDateEditor() },
-                            verticalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            Column(
-                                Modifier
-                                    .fillMaxHeight()
-                                    .padding(horizontal = 10.dp),
-                                horizontalAlignment = Alignment.End
-                            ) {
-                                MyText(
-                                    text = st.hijriDate,
-                                    fontSize = 16.nsp,
-                                    fontWeight = FontWeight.Bold,
-                                    textColor = AppTheme.colors.onPrimary
-                                )
-
-                                MyText(
-                                    text = st.gregorianDate,
-                                    fontSize = 16.nsp,
-                                    textColor = AppTheme.colors.onPrimary
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        },
+        topBar = { TopBar(vm, st) },
         bottomBar = { MyBottomNavigation(bottomNavController) }
     ) {
         NavigationGraph(bottomNavController, it)
@@ -113,6 +63,65 @@ fun MainUI(
             onCancel = { vm.onDateEditorCancel() },
             onSubmit = { vm.onDateEditorSubmit() }
         )
+    }
+}
+
+@Composable
+private fun TopBar(
+    vm: MainVM,
+    st: MainState
+) {
+    TopAppBar(
+        backgroundColor = AppTheme.colors.primary,
+        elevation = 8.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Box(
+            Modifier.fillMaxSize()
+        ) {
+            Row(
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // App name
+                MyText(
+                    stringResource(R.string.app_name),
+                    textColor = AppTheme.colors.onPrimary
+                )
+
+                Column(
+                    Modifier
+                        .fillMaxHeight()
+                        .clickable { vm.showDateEditor() },
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Column(
+                        Modifier
+                            .fillMaxHeight()
+                            .padding(horizontal = 10.dp),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        // Hijri date
+                        MyText(
+                            text = st.hijriDate,
+                            fontSize = 16.nsp,
+                            fontWeight = FontWeight.Bold,
+                            textColor = AppTheme.colors.onPrimary
+                        )
+
+                        // Gregorian date
+                        MyText(
+                            text = st.gregorianDate,
+                            fontSize = 16.nsp,
+                            textColor = AppTheme.colors.onPrimary
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 

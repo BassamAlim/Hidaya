@@ -31,7 +31,6 @@ fun LocatorUI(
     vm: LocatorVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
-    val ctx = LocalContext.current
     val requestLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -49,6 +48,7 @@ fun LocatorUI(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Disclaimer
         MyText(
             text = stringResource(R.string.disclaimer),
             fontSize = 26.nsp,
@@ -59,6 +59,7 @@ fun LocatorUI(
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Locate button
             MySquareButton(
                 text = stringResource(R.string.locate),
                 fontSize = 22.sp,
@@ -71,6 +72,7 @@ fun LocatorUI(
                 vm.onLocateClk()
             }
 
+            // Choose manually button
             MySquareButton(
                 text = stringResource(R.string.choose_manually),
                 fontSize = 22.sp,
@@ -81,6 +83,7 @@ fun LocatorUI(
                 vm.onChooseLocationClk()
             }
 
+            // Skip button
             if (st.showSkipLocationBtn) {
                 MySquareButton(
                     text = stringResource(R.string.rejected),
@@ -95,14 +98,18 @@ fun LocatorUI(
         }
     }
 
-    if (st.showAllowLocationToast) {
-        LaunchedEffect(null) {
-            Toast.makeText(
-                ctx,
-                ctx.getString(R.string.choose_allow_all_the_time),
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
+    if (st.showAllowLocationToast)
+        LocationToast()
+}
 
+@Composable
+private fun LocationToast() {
+    val ctx = LocalContext.current
+    LaunchedEffect(null) {
+        Toast.makeText(
+            ctx,
+            ctx.getString(R.string.choose_allow_all_the_time),
+            Toast.LENGTH_LONG
+        ).show()
+    }
 }

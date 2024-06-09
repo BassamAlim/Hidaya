@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.more
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -112,14 +113,17 @@ fun MoreUI(
         }
     }
 
-    if (st.shouldShowUnsupported) {
-        LaunchedEffect(null) {
-            Toast.makeText(
-                ctx,
-                ctx.getString(R.string.feature_not_supported),
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
+    if (st.shouldShowUnsupported)
+        UnsupportedFeatureToast(ctx)
+}
 
+@Composable
+private fun UnsupportedFeatureToast(ctx: Context) {
+    LaunchedEffect(null) {
+        Toast.makeText(
+            ctx,
+            ctx.getString(R.string.feature_not_supported),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
 }

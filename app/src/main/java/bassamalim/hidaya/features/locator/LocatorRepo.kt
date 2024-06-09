@@ -10,14 +10,14 @@ import bassamalim.hidaya.core.utils.PrefUtils
 import javax.inject.Inject
 
 class LocatorRepo @Inject constructor(
-    private val pref: SharedPreferences,
+    private val sp: SharedPreferences,
     private val db: AppDatabase
 ) {
 
-    val language = PrefUtils.getString(pref, Prefs.Language)
+    val language = PrefUtils.getString(sp, Prefs.Language)
 
     fun setLocationType(type: LocationType) {
-        pref.edit()
+        sp.edit()
             .putString(Prefs.LocationType.key, type.name)
             .apply()
     }
@@ -25,12 +25,12 @@ class LocatorRepo @Inject constructor(
     fun storeLocation(location: Location) {
         val closestCity = db.cityDao().getClosest(location.latitude, location.longitude)
 
-        pref.edit()
+        sp.edit()
             .putInt(Prefs.CountryID.key, closestCity.countryId)
             .putInt(Prefs.CityID.key, closestCity.id)
             .apply()
 
-        LocUtils.storeLocation(pref, location)
+        LocUtils.storeLocation(sp, location)
     }
 
 }
