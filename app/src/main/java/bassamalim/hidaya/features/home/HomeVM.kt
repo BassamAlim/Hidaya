@@ -117,20 +117,32 @@ class HomeVM @Inject constructor(
 
         val today = Calendar.getInstance()
         times = prayTimes.getPrayerTimes(
-            location.latitude, location.longitude, utcOffset.toDouble(), today
+            lat = location.latitude,
+            lon = location.longitude,
+            tZone = utcOffset.toDouble(),
+            date = today
         )
         formattedTimes = prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, utcOffset.toDouble(), today
+            lat = location.latitude,
+            lng = location.longitude,
+            tZone = utcOffset.toDouble(),
+            date = today
         )
 
         val tomorrow = Calendar.getInstance()
         tomorrow[Calendar.DATE]++
         tomorrowFajr = prayTimes.getPrayerTimes(
-            location.latitude, location.longitude, utcOffset.toDouble(), tomorrow
+            lat = location.latitude,
+            lon = location.longitude,
+            tZone = utcOffset.toDouble(),
+            date = tomorrow
         )[0]!!
         tomorrowFajr[Calendar.DATE]++
         formattedTomorrowFajr = prayTimes.getStrPrayerTimes(
-            location.latitude, location.longitude, utcOffset.toDouble(), tomorrow
+            lat = location.latitude,
+            lng = location.longitude,
+            tZone = utcOffset.toDouble(),
+            date = tomorrow
         )[0]
     }
 
@@ -149,8 +161,8 @@ class HomeVM @Inject constructor(
         _uiState.update { it.copy(
             upcomingPrayerName = prayerNames[upcomingPrayer],
             upcomingPrayerTime =
-            if (tomorrow) formattedTomorrowFajr
-            else formattedTimes[upcomingPrayer]
+                if (tomorrow) formattedTomorrowFajr
+                else formattedTimes[upcomingPrayer]
         )}
 
         count(till)
