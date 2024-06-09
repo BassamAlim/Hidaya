@@ -4,84 +4,104 @@ import android.Manifest
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import bassamalim.hidaya.core.data.Prefs
+import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.helpers.Alarms
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.other.PrayersWidget
-import bassamalim.hidaya.core.utils.*
+import bassamalim.hidaya.core.utils.ActivityUtils
+import bassamalim.hidaya.core.utils.DBUtils
+import bassamalim.hidaya.core.utils.LocUtils
+import bassamalim.hidaya.core.utils.PTUtils
+import bassamalim.hidaya.core.utils.PrefUtils
 import com.google.android.gms.location.LocationServices
-import java.util.*
+import java.util.Calendar
+import java.util.Random
 
 class DailyUpdateReceiver : BroadcastReceiver() {
-
-    private lateinit var ctx: Context
-    private lateinit var sp: SharedPreferences
-    private var now = Calendar.getInstance()
 
     override fun onReceive(context: Context, intent: Intent) {
         Log.i(Global.TAG, "in DailyUpdateReceiver")
 
-        ctx = context
-        sp = PrefUtils.getPreferences(ctx)
+        val sp = PrefUtils.getPreferences(context)
+        val db = DBUtils.getDB(context)
 
-        try {  // remove after a while
-            ActivityUtils.onActivityCreateSetLocale(ctx)
-            LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))
-        } catch (e: Exception) {
-            Log.e(Global.TAG, "Neuralyzing", e)
-            ActivityUtils.clearAppData(ctx)
-        }
+        ActivityUtils.bootstrapApp(
+            context = context,
+            sp = sp,
+            db = db,
+            isFirstLaunch = true
+        )
 
-        if ((intent.action == "daily" && notUpdatedToday()) || intent.action == "boot") {
+        val now = Calendar.getInstance()
+        if ((intent.action == "daily" && notUpdatedToday(sp, now)) || intent.action == "boot") {
             when (LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))) {
-                LocationType.Auto -> locate()
+                LocationType.Auto -> locate(context, sp, db, now)
                 LocationType.Manual -> {
                     val cityId = PrefUtils.getInt(sp, Prefs.CityID)
                     if (cityId == -1) return
-                    val city = DBUtils.getDB(ctx).cityDao().getCity(cityId)
+                    val city = db.cityDao().getCity(cityId)
 
                     val location = Location("")
                     location.latitude = city.latitude
                     location.longitude = city.longitude
 
-                    update(location)
+                    update(context, sp, db, location, now)
                 }
                 LocationType.None -> return
             }
 
-            pickWerd()
+            pickWerd(sp)
         }
         else Log.i(Global.TAG, "dead intent in daily update receiver")
 
-        setTomorrow()
+        setTomorrow(context)
     }
 
-    private fun notUpdatedToday(): Boolean {
+    private fun notUpdatedToday(
+        sp: SharedPreferences,
+        now: Calendar
+    ): Boolean {
         return PrefUtils.getInt(sp, Prefs.LastDailyUpdateDay) != now[Calendar.DATE]
     }
 
-    private fun locate() {
+    private fun locate(
+        context: Context,
+        sp: SharedPreferences,
+        db: AppDatabase,
+        now: Calendar
+    ) {
         if (ActivityCompat.checkSelfPermission(
-                ctx, Manifest.permission.ACCESS_FINE_LOCATION
+                context, Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(
-                ctx, Manifest.permission.ACCESS_COARSE_LOCATION
+                context, Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            LocationServices.getFusedLocationProviderClient(ctx)
+            LocationServices.getFusedLocationProviderClient(context)
                 .lastLocation.addOnSuccessListener {
-                    location: Location? -> update(location)
+                    location: Location? -> update(context, sp, db, location, now)
             }
         }
     }
 
-    private fun update(location: Location?) {
+    private fun update(
+        context: Context,
+        sp: SharedPreferences,
+        db: AppDatabase,
+        location: Location?,
+        now: Calendar
+    ) {
         if (location == null) {
             val storedLoc = LocUtils.retrieveLocation(sp)
             if (storedLoc == null) {
@@ -91,30 +111,33 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         }
         else LocUtils.storeLocation(sp, location)
 
-        val times = PTUtils.getTimes(sp, DBUtils.getDB(ctx)) ?: return
+        val times = PTUtils.getTimes(sp, db) ?: return
 
-        Alarms(ctx, times)
+        Alarms(context, times)
 
-        updateWidget(times)
+        updateWidget(context, times)
 
-        updated()
+        updated(sp, now)
     }
 
-    private fun updateWidget(times: Array<Calendar?>) {
-        val intent = Intent(ctx, PrayersWidget::class.java)
+    private fun updateWidget(
+        context: Context,
+        times: Array<Calendar?>
+    ) {
+        val intent = Intent(context, PrayersWidget::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
         intent.putExtra("times", times)
 
-        val ids = AppWidgetManager.getInstance(ctx.applicationContext).getAppWidgetIds(
-            ComponentName(ctx.applicationContext, PrayersWidget::class.java)
+        val ids = AppWidgetManager.getInstance(context.applicationContext).getAppWidgetIds(
+            ComponentName(context.applicationContext, PrayersWidget::class.java)
         )
 
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
 
-        ctx.sendBroadcast(intent)
+        context.sendBroadcast(intent)
     }
 
-    private fun updated() {
+    private fun updated(sp: SharedPreferences, now: Calendar) {
         val str = "Last Daily Update: ${now[Calendar.YEAR]}/${now[Calendar.MONTH] + 1}" +
             "/${now[Calendar.DATE]}" + " ${now[Calendar.HOUR_OF_DAY]}:${now[Calendar.MINUTE]}"
 
@@ -124,15 +147,15 @@ class DailyUpdateReceiver : BroadcastReceiver() {
             .apply()
     }
 
-    private fun pickWerd() {
+    private fun pickWerd(sp: SharedPreferences) {
         sp.edit()
             .putInt(Prefs.WerdPage.key, Random().nextInt(Global.QURAN_PAGES))
             .putBoolean(Prefs.WerdDone.key, false)
             .apply()
     }
 
-    private fun setTomorrow() {
-        val intent = Intent(ctx.applicationContext, DailyUpdateReceiver::class.java)
+    private fun setTomorrow(context: Context) {
+        val intent = Intent(context.applicationContext, DailyUpdateReceiver::class.java)
         intent.action = "daily"
 
         val time = Calendar.getInstance()
@@ -141,12 +164,12 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         time[Calendar.MINUTE] = Global.DAILY_UPDATE_MINUTE
 
         val pendIntent = PendingIntent.getBroadcast(
-            ctx.applicationContext, 1210, intent,
+            context.applicationContext, 1210, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val alarm =
-            ctx.applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarm = context.applicationContext
+            .getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time.timeInMillis, pendIntent)
     }
 

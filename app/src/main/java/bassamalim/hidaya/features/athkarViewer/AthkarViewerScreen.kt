@@ -42,18 +42,18 @@ fun AthkarViewerUI(
         title = st.title,
         bottomBar = {
             MyReadingBottomBar(
-                textSize = st.textSize
-            ) {
-                vm.onTextSizeChange(it)
-            }
+                textSize = st.textSize,
+                onSeek = { vm.onTextSizeChange(it) }
+            )
         }
     ) {
+        // athkar list
         MyLazyColumn(
             modifier = Modifier.padding(it),
             lazyList = {
                 items(st.items) { item ->
                     ThikrCard(
-                        viewModel = vm,
+                        vm = vm,
                         thikr = item,
                         textSize = st.textSize
                     )
@@ -61,19 +61,19 @@ fun AthkarViewerUI(
             }
         )
 
+        // source dialog
         InfoDialog(
             title = stringResource(R.string.reference),
             text = st.infoDialogText,
-            shown = st.infoDialogShown
-        ) {
-            vm.onInfoDialogDismiss()
-        }
+            shown = st.infoDialogShown,
+            onDismiss = { vm.onInfoDialogDismiss() }
+        )
     }
 }
 
 @Composable
 private fun ThikrCard(
-    viewModel: AthkarViewerVM,
+    vm: AthkarViewerVM,
     thikr: Thikr,
     textSize: Float
 ) {
@@ -91,14 +91,17 @@ private fun ThikrCard(
                 Modifier.weight(1F),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (viewModel.shouldShowTitle(thikr))
+                // title
+                if (vm.shouldShowTitle(thikr)) {
                     MyText(
                         text = thikr.title!!,
                         modifier = Modifier.padding(10.dp),
                         fontSize = (textSize + textSizeMargin).sp,
                         fontWeight = FontWeight.Bold
                     )
+                }
 
+                // text
                 MyText(
                     text = thikr.text,
                     modifier = Modifier.padding(10.dp),
@@ -106,14 +109,17 @@ private fun ThikrCard(
                     textColor = AppTheme.colors.strongText
                 )
 
-                if (viewModel.shouldShowTranslation(thikr))
+                // translation
+                if (vm.shouldShowTranslation(thikr)) {
                     MyText(
                         text = thikr.textTranslation!!,
                         modifier = Modifier.padding(10.dp),
                         fontSize = (textSize + textSizeMargin).sp
                     )
+                }
 
-                if (viewModel.shouldShowFadl(thikr)) {
+                // fadl
+                if (vm.shouldShowFadl(thikr)) {
                     Divider()
 
                     MyText(
@@ -124,7 +130,8 @@ private fun ThikrCard(
                     )
                 }
 
-                if (viewModel.shouldShowReference(thikr)) {
+                // reference
+                if (vm.shouldShowReference(thikr)) {
                     Divider()
 
                     MyIconButton(
@@ -135,12 +142,13 @@ private fun ThikrCard(
                         tint = AppTheme.colors.text,
                         size = 26.dp
                     ) {
-                        viewModel.showInfoDialog(thikr.reference!!)
+                        vm.showInfoDialog(thikr.reference!!)
                     }
                 }
             }
 
-            if (viewModel.shouldShowRepetition(thikr)) {
+            // repetition
+            if (vm.shouldShowRepetition(thikr)) {
                 Divider(
                     modifier = Modifier
                         .fillMaxHeight()

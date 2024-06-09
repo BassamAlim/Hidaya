@@ -34,7 +34,7 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.features.athkar.AthkarUI
+import bassamalim.hidaya.features.athkar.AthkarScreen
 import bassamalim.hidaya.features.home.HomeUI
 import bassamalim.hidaya.features.more.MoreUI
 import bassamalim.hidaya.features.prayers.PrayersUI
@@ -169,7 +169,7 @@ fun NavigationGraph(
             popEnterTransition = TabPopEnter,
             popExitTransition = TabPopExit
         ) {
-            AthkarUI(
+            AthkarScreen(
                 hiltViewModel()
             )
         }

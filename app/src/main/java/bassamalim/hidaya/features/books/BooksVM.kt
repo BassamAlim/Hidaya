@@ -20,12 +20,10 @@ class BooksVM @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        BooksState(
-            items = repo.getBooks(),
-            tutorialDialogShown = repo.getShowTutorial()
-        )
-    )
+    private val _uiState = MutableStateFlow(BooksState(
+        items = repo.getBooks(),
+        tutorialDialogShown = repo.getShowTutorial()
+    ))
     val uiState = _uiState.asStateFlow()
 
     fun onStart() {
@@ -34,9 +32,7 @@ class BooksVM @Inject constructor(
         )}
     }
 
-    fun getPath(itemId: Int): String {
-        return repo.getPath(itemId)
-    }
+    fun getPath(itemId: Int) = repo.getPath(itemId)
 
     fun onFileDeleted(itemId: Int) {
         _uiState.update { it.copy(

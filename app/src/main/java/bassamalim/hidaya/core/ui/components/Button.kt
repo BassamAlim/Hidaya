@@ -3,8 +3,8 @@ package bassamalim.hidaya.core.ui.components
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.activity.ComponentActivity
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.scaleIn
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image

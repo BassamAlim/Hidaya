@@ -23,7 +23,6 @@ import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.PrefUtils
 import java.util.Locale
 import kotlin.math.floor
-import kotlin.math.roundToInt
 
 @UnstableApi
 @RequiresApi(Build.VERSION_CODES.O)

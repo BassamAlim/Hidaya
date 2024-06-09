@@ -7,7 +7,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.PagerState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel

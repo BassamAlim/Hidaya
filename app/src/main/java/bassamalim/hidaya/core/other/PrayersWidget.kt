@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.widget.RemoteViews
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.core.utils.PTUtils
 
@@ -14,6 +15,10 @@ class PrayersWidget : AppWidgetProvider() {
         context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
+        ActivityUtils.bootstrapApp(
+            context = context,
+            isFirstLaunch = true
+        )
         // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) updateAppWidget(context, appWidgetManager, appWidgetId)
     }

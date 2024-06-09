@@ -4,12 +4,43 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.util.Log
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.Prefs
+import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.Theme
+import bassamalim.hidaya.core.other.Global
 import java.util.Locale
 
 object ActivityUtils {
+
+    fun bootstrapApp(
+        context: Context,
+        applicationContext: Context = context.applicationContext,
+        sp: SharedPreferences = PrefUtils.getPreferences(context),
+        db: AppDatabase = DBUtils.getDB(context),
+        isFirstLaunch: Boolean = false
+    ) {
+        onActivityCreateSetLocale(context)
+        onActivityCreateSetTheme(context)
+        onActivityCreateSetLocale(applicationContext)
+        onActivityCreateSetTheme(applicationContext)
+
+        if (isFirstLaunch) {
+            try {  // remove after a while
+                LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))
+            } catch (e: Exception) {
+                Log.e(Global.TAG, "Neuralyzing", e)
+                clearAppData(context)
+            }
+
+            if (DBUtils.needsRevival(sp, db))
+                DBUtils.reviveDB(context, sp)
+        }
+    }
 
     fun onActivityCreateSetTheme(context: Context) {
         when (PrefUtils.getTheme(PrefUtils.getPreferences(context))) {
@@ -38,9 +69,7 @@ object ActivityUtils {
 
     fun restartActivity(activity: Activity) {
         activity.apply {
-            startActivity(
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            )
+            startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
             finish()
         }
     }

@@ -50,9 +50,9 @@ class BookChaptersVM @Inject constructor(
     fun onItemClick(item: BookChapter) {
         navigator.navigate(
             Screen.BookViewer(
-                bookId.toString(),
-                item.title,
-                item.id.toString()
+                bookId = bookId.toString(),
+                bookTitle = item.title,
+                chapterId = item.id.toString()
             )
         )
     }

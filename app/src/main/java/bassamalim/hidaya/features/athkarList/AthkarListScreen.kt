@@ -17,7 +17,7 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.SearchComponent
 
 @Composable
-fun AthkarListUI(
+fun AthkarListScreen(
     vm: AthkarListVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
@@ -28,28 +28,44 @@ fun AthkarListUI(
                 .fillMaxWidth()
                 .padding(padding)
         ) {
-            SearchComponent (
-                value = vm.searchText,
-                hint = stringResource(R.string.athkar_hint),
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = { vm.onSearchChange(it) }
-            )
+            SearchBar(vm, st)
 
-            MyLazyColumn(
-                lazyList = {
-                    items(st.items) { item ->
-                        MyBtnSurface(
-                            text = item.name,
-                            iconBtn = {
-                                MyFavBtn(item.favorite.value) {
-                                    vm.onFavoriteCLick(item)
-                                }
-                            },
-                            onClick = { vm.onItemClick(item) }
-                        )
-                    }
-                }
-            )
+            AthkarList(vm, st)
         }
     }
+}
+
+@Composable
+private fun SearchBar(
+    vm: AthkarListVM,
+    st: AthkarListState
+) {
+    SearchComponent (
+        value = st.searchText,
+        hint = stringResource(R.string.athkar_hint),
+        modifier = Modifier.fillMaxWidth(),
+        onValueChange = { vm.onSearchChange(it) }
+    )
+}
+
+@Composable
+private fun AthkarList(
+    vm: AthkarListVM,
+    st: AthkarListState
+) {
+    MyLazyColumn(
+        lazyList = {
+            items(st.items) { item ->
+                MyBtnSurface(
+                    text = item.name,
+                    iconBtn = {
+                        MyFavBtn(item.favorite.value) {
+                            vm.onFavoriteCLick(item)
+                        }
+                    },
+                    onClick = { vm.onItemClick(item) }
+                )
+            }
+        }
+    )
 }

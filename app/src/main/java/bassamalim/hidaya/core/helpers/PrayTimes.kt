@@ -6,8 +6,17 @@ import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.core.utils.PrefUtils
-import java.util.*
-import kotlin.math.*
+import java.util.Calendar
+import java.util.TimeZone
+import kotlin.math.abs
+import kotlin.math.acos
+import kotlin.math.asin
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.floor
+import kotlin.math.roundToInt
+import kotlin.math.sin
+import kotlin.math.tan
 
 class PrayTimes(
     private val sp: SharedPreferences

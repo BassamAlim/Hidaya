@@ -6,6 +6,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,89 +32,67 @@ import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 
 @Composable
-fun AboutUI(
+fun AboutScreen(
     vm: AboutVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
-    val ctx = LocalContext.current
 
-    MyScaffold(stringResource(R.string.about)) {
+    MyScaffold(title = stringResource(R.string.about)) {
         Column(
             Modifier
                 .fillMaxSize()
                 .padding(it)
                 .padding(horizontal = 5.dp)
         ) {
-            MyText(
-                text = stringResource(R.string.thanks),
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(top = 15.dp, bottom = 20.dp)
-                    .align(Alignment.CenterHorizontally)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        vm.onTitleClick()
-                    }
-            )
+            ThankYouMessage(vm)
 
-            Column(
-                Modifier
-                    .weight(1F)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Source(R.string.quran_source)
-                MyHorizontalDivider()
-                Source(R.string.tafseer_source)
-                MyHorizontalDivider()
-                Source(R.string.hadeeth_source)
-                MyHorizontalDivider()
-                Source(R.string.athkar_source)
-                MyHorizontalDivider()
-                Source(R.string.quiz_source)
-            }
+            SourcesList()
 
-            AnimatedVisibility(
-                visible = st.isDevModeOn,
-                enter = expandVertically()
-            ) {
-                Column(
-                    Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    MySquareButton(
-                        stringResource(R.string.rebuild_database),
-                        Modifier.align(Alignment.CenterHorizontally),
-                        onClick = { vm.rebuildDatabase() }
-                    )
-
-                    /*MyButton(
-                        stringResource(R.string.quick_update),
-                        Modifier.align(Alignment.CenterHorizontally)
-                    ) {
-                        vm.quickUpdate()
-                    }*/
-
-                    MyText(
-                        st.lastDailyUpdate,
-                        Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(10.dp)
-                    )
-                }
-            }
+            HiddenArea(vm, st)
         }
     }
 
+    // show a toast when the database is rebuilt
     if (st.shouldShowRebuilt != 0) {
-        LaunchedEffect(key1 = st.shouldShowRebuilt) {
-            Toast.makeText(
-                ctx, ctx.getString(R.string.database_rebuilt),
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        DatabaseRebuiltToast(st)
+    }
+}
+
+@Composable
+private fun ColumnScope.ThankYouMessage(
+    vm: AboutVM
+) {
+    MyText(
+        text = stringResource(R.string.thanks),
+        fontSize = 25.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .padding(top = 15.dp, bottom = 20.dp)
+            .align(Alignment.CenterHorizontally)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = vm::onTitleClick
+            )
+    )
+}
+
+@Composable
+private fun ColumnScope.SourcesList() {
+    Column(
+        Modifier
+            .weight(1F)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Source(R.string.quran_source)
+        MyHorizontalDivider()
+        Source(R.string.tafseer_source)
+        MyHorizontalDivider()
+        Source(R.string.hadeeth_source)
+        MyHorizontalDivider()
+        Source(R.string.athkar_source)
+        MyHorizontalDivider()
+        Source(R.string.quiz_source)
     }
 }
 
@@ -125,4 +104,49 @@ private fun Source(textResId: Int) {
         fontSize = 22.sp,
         textAlign = TextAlign.Start
     )
+}
+
+@Composable
+private fun ColumnScope.HiddenArea(
+    vm: AboutVM,
+    st: AboutState
+) {
+    AnimatedVisibility(
+        visible = st.isDevModeOn,
+        enter = expandVertically()
+    ) {
+        Column(
+            Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // rebuild database button
+            MySquareButton(
+                stringResource(R.string.rebuild_database),
+                Modifier.align(Alignment.CenterHorizontally),
+                onClick = { vm.rebuildDatabase() }
+            )
+
+            // last daily update text
+            MyText(
+                st.lastDailyUpdate,
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(10.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun DatabaseRebuiltToast(
+    st: AboutState
+) {
+    val ctx = LocalContext.current
+
+    LaunchedEffect(key1 = st.shouldShowRebuilt) {
+        Toast.makeText(
+            ctx, ctx.getString(R.string.database_rebuilt),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
 }

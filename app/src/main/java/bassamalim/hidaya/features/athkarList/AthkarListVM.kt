@@ -1,8 +1,6 @@
 package bassamalim.hidaya.features.athkarList
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.core.data.database.dbs.AthkarDB
@@ -27,20 +25,16 @@ class AthkarListVM @Inject constructor(
     private val type = savedStateHandle.get<String>("type") ?: ListType.All.name
     private val category = savedStateHandle.get<Int>("category")?: 0
 
-    var searchText by mutableStateOf("")
-        private set
     private val language = repo.getLanguage()
 
-    private val _uiState = MutableStateFlow(
-        AthkarListState(
-            title = when (type) {
-                ListType.Favorite.name -> repo.getFavoriteAthkarStr()
-                ListType.Custom.name -> repo.getName(language, category)
-                else -> repo.getAllAthkarStr()
-            },
-            items = getItems()
-        )
-    )
+    private val _uiState = MutableStateFlow(AthkarListState(
+        title = when (type) {
+            ListType.Favorite.name -> repo.getFavoriteAthkarStr()
+            ListType.Custom.name -> repo.getName(language, category)
+            else -> repo.getAllAthkarStr()
+        },
+        items = getItems()
+    ))
     val uiState = _uiState.asStateFlow()
 
     private fun getItems(): List<AthkarItem> {
@@ -57,13 +51,16 @@ class AthkarListVM @Inject constructor(
 
             items.add(
                 AthkarItem(
-                    thikr.id, thikr.category_id, name, mutableStateOf(thikr.favorite)
+                    id = thikr.id,
+                    category_id = thikr.category_id,
+                    name = name,
+                    favorite = mutableIntStateOf(thikr.favorite)
                 )
             )
         }
 
-        return if (searchText.isEmpty()) items
-        else items.filter { it.name.contains(searchText, true) }
+        return if (_uiState.value.searchText.isEmpty()) items
+        else items.filter { it.name.contains(_uiState.value.searchText, true) }
     }
 
     private fun hasEn(thikr: AthkarDB): Boolean {
@@ -90,19 +87,17 @@ class AthkarListVM @Inject constructor(
     }
 
     fun onItemClick(item: AthkarItem) {
-        // pass type and thikrId which is item.id
         navigator.navigate(
             Screen.AthkarViewer(
-                item.id.toString()
+                thikrId = item.id.toString()
             )
         )
     }
 
     fun onSearchChange(text: String) {
-        searchText = text
-
         _uiState.update { it.copy(
-            items = getItems()
+            items = getItems(),
+            searchText = text
         )}
     }
 

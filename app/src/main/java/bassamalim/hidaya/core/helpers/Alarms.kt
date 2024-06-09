@@ -14,7 +14,7 @@ import bassamalim.hidaya.core.receivers.NotificationReceiver
 import bassamalim.hidaya.core.utils.DBUtils
 import bassamalim.hidaya.core.utils.PTUtils
 import bassamalim.hidaya.core.utils.PrefUtils
-import java.util.*
+import java.util.Calendar
 
 class Alarms {
 

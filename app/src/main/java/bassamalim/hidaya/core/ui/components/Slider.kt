@@ -1,9 +1,16 @@
 package bassamalim.hidaya.core.ui.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -12,7 +19,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import kotlin.math.floor
-import kotlin.math.roundToInt
 
 @Composable
 fun MySlider(

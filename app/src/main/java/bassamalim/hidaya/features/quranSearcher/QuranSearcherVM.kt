@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.quranSearcher
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,7 +11,6 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranSearcherMatch
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quranViewer.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel

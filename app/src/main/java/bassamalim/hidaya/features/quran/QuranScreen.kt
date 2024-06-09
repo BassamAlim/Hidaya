@@ -34,7 +34,6 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.components.TutorialDialog
-import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun QuranUI(

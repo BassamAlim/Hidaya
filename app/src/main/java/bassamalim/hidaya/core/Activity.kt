@@ -31,7 +31,11 @@ import bassamalim.hidaya.core.receivers.DailyUpdateReceiver
 import bassamalim.hidaya.core.receivers.DeviceBootReceiver
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.core.utils.*
+import bassamalim.hidaya.core.utils.ActivityUtils
+import bassamalim.hidaya.core.utils.DBUtils
+import bassamalim.hidaya.core.utils.LocUtils
+import bassamalim.hidaya.core.utils.PTUtils
+import bassamalim.hidaya.core.utils.PrefUtils
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
@@ -55,20 +59,17 @@ class Activity : ComponentActivity() {
 
         val isFirstLaunch = savedInstanceState == null
 
+        ActivityUtils.bootstrapApp(
+            context = this,
+            applicationContext = applicationContext,
+            sp = sp,
+            db = db,
+            isFirstLaunch = isFirstLaunch
+        )
+
         if (isFirstLaunch) {
             handleAction(intent.action)
 
-            try {  // remove after a while
-                ActivityUtils.onActivityCreateSetLocale(this)
-                LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))
-            } catch (e: Exception) {
-                Log.e(Global.TAG, "Neuralyzing", e)
-                ActivityUtils.clearAppData(this)
-            }
-        }
-
-        preLaunch(isFirstLaunch)
-        if (isFirstLaunch) {
             if (shouldWelcome) {
                 launch()
                 postLaunch()

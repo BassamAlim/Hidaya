@@ -1,7 +1,11 @@
 package bassamalim.hidaya.core.receivers
 
 import android.Manifest
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -15,8 +19,8 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
@@ -26,7 +30,7 @@ import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.PrefUtils
 import bassamalim.hidaya.features.quranViewer.QuranTarget
-import java.util.*
+import java.util.Calendar
 import kotlin.math.abs
 
 class NotificationReceiver : BroadcastReceiver() {

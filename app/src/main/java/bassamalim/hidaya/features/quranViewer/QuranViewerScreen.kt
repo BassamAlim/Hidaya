@@ -64,9 +64,7 @@ import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quranSettings.QuranSettingsDlg
-import kotlin.collections.ArrayList
 import kotlin.collections.List
-import kotlin.collections.last
 
 @Composable
 fun QuranViewerUI(

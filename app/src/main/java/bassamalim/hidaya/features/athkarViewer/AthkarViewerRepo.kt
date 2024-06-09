@@ -8,16 +8,16 @@ import bassamalim.hidaya.core.utils.PrefUtils
 import javax.inject.Inject
 
 class AthkarViewerRepo @Inject constructor(
-    private val pref: SharedPreferences,
+    private val sp: SharedPreferences,
     private val db: AppDatabase
 ) {
 
-    fun getLanguage() = PrefUtils.getLanguage(pref)
+    fun getLanguage() = PrefUtils.getLanguage(sp)
 
-    fun getTextSize() = PrefUtils.getFloat(pref, Prefs.AthkarTextSize)
+    fun getTextSize() = PrefUtils.getFloat(sp, Prefs.AthkarTextSize)
 
     fun setTextSize(textSize: Float) {
-        pref.edit()
+        sp.edit()
             .putInt(Prefs.AthkarTextSize.key, textSize.toInt())
             .apply()
     }

@@ -2,11 +2,18 @@ package bassamalim.hidaya.features.telawatPlayer
 
 import android.app.Activity
 import android.os.Build
-import android.support.v4.media.session.PlaybackStateCompat.*
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomAppBar
 import androidx.compose.runtime.Composable
@@ -23,7 +30,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
-import bassamalim.hidaya.core.ui.components.*
+import bassamalim.hidaya.core.ui.components.MyDownloadBtn
+import bassamalim.hidaya.core.ui.components.MyIconButton
+import bassamalim.hidaya.core.ui.components.MyIconPlayerBtn
+import bassamalim.hidaya.core.ui.components.MyRow
+import bassamalim.hidaya.core.ui.components.MyScaffold
+import bassamalim.hidaya.core.ui.components.MySlider
+import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @RequiresApi(Build.VERSION_CODES.O)

@@ -32,10 +32,9 @@ fun BookChaptersUI(
                 SearchComponent(
                     value = st.searchText,
                     hint = stringResource(R.string.search),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    vm.onSearchTextChange(it)
-                }
+                    modifier = Modifier.fillMaxWidth(),
+                    onValueChange = { vm.onSearchTextChange(it) }
+                )
             }
         ) { page ->
             Tab(vm, st, vm.getItems(page))
@@ -45,8 +44,8 @@ fun BookChaptersUI(
 
 @Composable
 private fun Tab(
-    viewModel: BookChaptersVM,
-    state: BookChaptersState,
+    vm: BookChaptersVM,
+    st: BookChaptersState,
     items: List<BookChapter>
 ) {
     MyLazyColumn(
@@ -55,12 +54,12 @@ private fun Tab(
                 MyBtnSurface(
                     text = item.title,
                     iconBtn = {
-                        MyFavBtn(state.favs[item.id]) {
-                            viewModel.onFavClick(item.id)
+                        MyFavBtn(st.favs[item.id]) {
+                            vm.onFavClick(item.id)
                         }
                     }
                 ) {
-                    viewModel.onItemClick(item)
+                    vm.onItemClick(item)
                 }
             }
         }

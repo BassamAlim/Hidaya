@@ -18,7 +18,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
 
 @Composable
-fun AthkarUI(
+fun AthkarScreen(
     vm: AthkarVM
 ) {
     Column(
@@ -29,10 +29,11 @@ fun AthkarUI(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // all athkar button
         LargeBtn(R.string.all_athkar) {
             vm.onAllAthkarClick()
         }
-
+        // favorite athkar button
         LargeBtn(R.string.favorite_athkar) {
             vm.onFavoriteAthkarClick()
         }
@@ -41,9 +42,11 @@ fun AthkarUI(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+            // day and night athkar button
             MySquareButton(R.string.day_and_night_athkar, R.drawable.ic_day_and_night) {
                 vm.onCategoryClick(category = 0)
             }
+            // prayer athkar button
             MySquareButton(R.string.prayers_athkar, R.drawable.ic_praying) {
                 vm.onCategoryClick(category = 1)
             }
@@ -53,9 +56,11 @@ fun AthkarUI(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+            // quran athkar button
             MySquareButton(R.string.quran_athkar, R.drawable.ic_closed_quran) {
                 vm.onCategoryClick(category = 2)
             }
+            // actions athkar button
             MySquareButton(R.string.actions_athkar, R.drawable.ic_actions) {
                 vm.onCategoryClick(category = 3)
             }
@@ -65,9 +70,11 @@ fun AthkarUI(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+            // events athkar button
             MySquareButton(R.string.events_athkar, R.drawable.ic_events) {
                 vm.onCategoryClick(category = 4)
             }
+            // emotion athkar button
             MySquareButton(R.string.emotion_athkar, R.drawable.ic_emotion) {
                 vm.onCategoryClick(category = 5)
             }
@@ -77,9 +84,11 @@ fun AthkarUI(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+            // places athkar button
             MySquareButton(R.string.places_athkar, R.drawable.ic_going_out) {
                 vm.onCategoryClick(category = 6)
             }
+            // more athkar button
             MySquareButton(R.string.title_more, R.drawable.ic_duaa_moon) {
                 vm.onCategoryClick(category = 7)
             }

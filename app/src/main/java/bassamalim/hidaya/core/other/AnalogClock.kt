@@ -11,7 +11,7 @@ import android.view.View
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.utils.PrefUtils
-import java.util.*
+import java.util.Calendar
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin

@@ -19,8 +19,8 @@ import bassamalim.hidaya.core.ui.inFromTop
 import bassamalim.hidaya.core.ui.outToBottom
 import bassamalim.hidaya.core.ui.outToLeft
 import bassamalim.hidaya.core.ui.outToTop
-import bassamalim.hidaya.features.about.AboutUI
-import bassamalim.hidaya.features.athkarList.AthkarListUI
+import bassamalim.hidaya.features.about.AboutScreen
+import bassamalim.hidaya.features.athkarList.AthkarListScreen
 import bassamalim.hidaya.features.athkarViewer.AthkarViewerUI
 import bassamalim.hidaya.features.bookChapters.BookChaptersUI
 import bassamalim.hidaya.features.bookSearcher.BookSearcherUI
@@ -89,7 +89,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            AboutUI(
+            AboutScreen(
                 hiltViewModel()
             )
         }
@@ -107,7 +107,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            AthkarListUI(
+            AthkarListScreen(
                 hiltViewModel()
             )
         }

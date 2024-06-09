@@ -28,7 +28,6 @@ import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.PrefUtils
 import java.util.Calendar
-import javax.inject.Inject
 
 class AthanService : Service() {
 

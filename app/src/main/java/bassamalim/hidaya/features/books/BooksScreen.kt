@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.database.dbs.BooksDB
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.components.MyBtnSurface
 import bassamalim.hidaya.core.ui.components.MyDownloadBtn
@@ -27,11 +28,10 @@ fun BooksUI(
     vm: BooksVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
-    val ctx = LocalContext.current
 
-    DisposableEffect(key1 = vm) {  // Like activity callbacks. Provides onStart, onStop, etc.
+    DisposableEffect(key1 = vm) {
         vm.onStart()
-        onDispose {  /* here we call onStop if needed */  }
+        onDispose {}
     }
 
     MyScaffold(
@@ -44,33 +44,17 @@ fun BooksUI(
             )
         }
     ) {
+        // books list
         MyLazyColumn(
             Modifier.padding(vertical = 5.dp),
             lazyList = {
                 items(st.items) { item ->
-                    MyBtnSurface(
-                        text = item.title,
-                        innerVPadding = 15.dp,
-                        fontSize = 22.sp,
-                        modifier = Modifier.padding(vertical = 2.dp),
-                        iconBtn = {
-                            MyDownloadBtn(
-                                state =
-                                    if (st.downloadStates.isEmpty()) DownloadState.NotDownloaded
-                                    else st.downloadStates[item.id],
-                                path = vm.getPath(item.id),
-                                modifier = Modifier.padding(end = 10.dp),
-                                size = 32.dp,
-                                download = { vm.onDownloadClk(item) },
-                                deleted = { vm.onFileDeleted(item.id) }
-                            )
-                        },
-                        onClick = { vm.onItemClick(item) }
-                    )
+                    BookCard(vm, st, item)
                 }
             }
         )
 
+        // tutorial dialog
         TutorialDialog(
             textResId = R.string.books_activity_tips,
             shown = st.tutorialDialogShown,
@@ -78,9 +62,44 @@ fun BooksUI(
         )
 
         if (st.shouldShowWait != 0) {
-            LaunchedEffect(st.shouldShowWait) {
-                FileUtils.showWaitMassage(ctx)
-            }
+            WaitMessage(st)
         }
+    }
+}
+
+@Composable
+private fun BookCard(
+    vm: BooksVM,
+    st: BooksState,
+    item: BooksDB
+) {
+    MyBtnSurface(
+        text = item.title,
+        innerVPadding = 15.dp,
+        fontSize = 22.sp,
+        modifier = Modifier.padding(vertical = 2.dp),
+        iconBtn = {
+            MyDownloadBtn(
+                state =
+                if (st.downloadStates.isEmpty()) DownloadState.NotDownloaded
+                else st.downloadStates[item.id],
+                path = vm.getPath(item.id),
+                modifier = Modifier.padding(end = 10.dp),
+                size = 32.dp,
+                download = { vm.onDownloadClk(item) },
+                deleted = { vm.onFileDeleted(item.id) }
+            )
+        },
+        onClick = { vm.onItemClick(item) }
+    )
+}
+
+@Composable
+private fun WaitMessage(
+    st: BooksState
+) {
+    val ctx = LocalContext.current
+    LaunchedEffect(st.shouldShowWait) {
+        FileUtils.showWaitMassage(ctx)
     }
 }

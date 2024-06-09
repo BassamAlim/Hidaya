@@ -27,8 +27,8 @@ class AthkarVM @Inject constructor(
     fun onCategoryClick(category: Int) {
         navigator.navigate(
             Screen.AthkarList(
-                ListType.Custom.name,
-                category.toString()
+                type = ListType.Custom.name,
+                category = category.toString()
             )
         )
     }

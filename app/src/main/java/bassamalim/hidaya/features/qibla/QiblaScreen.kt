@@ -36,7 +36,6 @@ import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.theme.AppTheme
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder

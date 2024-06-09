@@ -20,13 +20,11 @@ class AthkarViewerVM @Inject constructor(
 
     private val language = repo.getLanguage()
 
-    private val _uiState = MutableStateFlow(
-        AthkarViewerState(
-            title = repo.getTitle(id),
-            textSize = repo.getTextSize(),
-            items = getItems()
-        )
-    )
+    private val _uiState = MutableStateFlow(AthkarViewerState(
+        title = repo.getTitle(id),
+        textSize = repo.getTextSize(),
+        items = getItems()
+    ))
     val uiState = _uiState.asStateFlow()
 
     private fun getItems(): List<Thikr> {
@@ -41,15 +39,25 @@ class AthkarViewerVM @Inject constructor(
             if (language == Language.ENGLISH)
                 items.add(
                     Thikr(
-                        t.partId, t.titleEn, t.textEn!!, t.textEnTranslation,
-                        t.fadlEn, t.referenceEn, t.repetitionEn
+                        id = t.partId,
+                        title = t.titleEn,
+                        text = t.textEn!!,
+                        textTranslation = t.textEnTranslation,
+                        fadl = t.fadlEn,
+                        reference = t.referenceEn,
+                        repetition = t.repetitionEn
                     )
                 )
             else
                 items.add(
-                    Thikr(t.partId, t.title, t.text!!,
-                        t.textEnTranslation, t.fadl, t.reference,
-                        t.repetition
+                    Thikr(
+                        id = t.partId,
+                        title = t.title,
+                        text = t.text!!,
+                        textTranslation = t.textEnTranslation,
+                        fadl = t.fadl,
+                        reference = t.reference,
+                        repetition = t.repetition
                     )
                 )
         }
@@ -77,25 +85,15 @@ class AthkarViewerVM @Inject constructor(
         )}
     }
 
-    fun shouldShowTitle(thikr: Thikr): Boolean {
-        return !thikr.title.isNullOrEmpty()
-    }
+    fun shouldShowTitle(thikr: Thikr) = !thikr.title.isNullOrEmpty()
 
-    fun shouldShowTranslation(thikr: Thikr): Boolean {
-        return language != Language.ARABIC
-                && !thikr.textTranslation.isNullOrEmpty()
-    }
+    fun shouldShowTranslation(thikr: Thikr) =
+        language != Language.ARABIC && !thikr.textTranslation.isNullOrEmpty()
 
-    fun shouldShowFadl(thikr: Thikr): Boolean {
-        return !thikr.fadl.isNullOrEmpty()
-    }
+    fun shouldShowFadl(thikr: Thikr) = !thikr.fadl.isNullOrEmpty()
 
-    fun shouldShowReference(thikr: Thikr): Boolean {
-        return !thikr.reference.isNullOrEmpty()
-    }
+    fun shouldShowReference(thikr: Thikr) = !thikr.reference.isNullOrEmpty()
 
-    fun shouldShowRepetition(thikr: Thikr): Boolean {
-        return thikr.repetition != "1"
-    }
+    fun shouldShowRepetition(thikr: Thikr) = thikr.repetition != "1"
 
 }

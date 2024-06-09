@@ -1,9 +1,9 @@
 package bassamalim.hidaya.features.tv
 
 import androidx.lifecycle.ViewModel
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 
 @HiltViewModel
 class TvVM @Inject constructor(

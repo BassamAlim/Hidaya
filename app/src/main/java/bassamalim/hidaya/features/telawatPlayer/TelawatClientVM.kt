@@ -3,7 +3,11 @@ package bassamalim.hidaya.features.telawatPlayer
 import android.app.Activity
 import android.app.Application
 import android.app.DownloadManager
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
@@ -12,7 +16,13 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.support.v4.media.session.PlaybackStateCompat.*
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
@@ -31,7 +41,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.io.File
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.O)
