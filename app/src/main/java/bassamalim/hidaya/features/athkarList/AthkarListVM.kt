@@ -25,14 +25,9 @@ class AthkarListVM @Inject constructor(
     private val type = savedStateHandle.get<String>("type") ?: ListType.All.name
     private val category = savedStateHandle.get<Int>("category")?: 0
 
-    private val language = repo.getLanguage()
-
     private val _uiState = MutableStateFlow(AthkarListState(
-        title = when (type) {
-            ListType.Favorite.name -> repo.getFavoriteAthkarStr()
-            ListType.Custom.name -> repo.getName(language, category)
-            else -> repo.getAllAthkarStr()
-        },
+        language = repo.getLanguage(),
+        listType = ListType.valueOf(type),
         items = getItems()
     ))
     val uiState = _uiState.asStateFlow()
@@ -41,7 +36,7 @@ class AthkarListVM @Inject constructor(
         val athkar = repo.getAthkar(type, category)
         val items = ArrayList<AthkarItem>()
 
-        val isEng = language == Language.ENGLISH
+        val isEng = _uiState.value.language == Language.ENGLISH
         for (thikr in athkar) {
             if (isEng && !hasEn(thikr)) continue
 
@@ -100,5 +95,7 @@ class AthkarListVM @Inject constructor(
             searchText = text
         )}
     }
+
+    fun getName() = repo.getName(_uiState.value.language, category)
 
 }

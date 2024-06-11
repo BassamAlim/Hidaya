@@ -1,11 +1,14 @@
 package bassamalim.hidaya.features.books
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -16,11 +19,13 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.database.dbs.BooksDB
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.components.MyBtnSurface
-import bassamalim.hidaya.core.ui.components.MyDownloadBtn
+import bassamalim.hidaya.core.ui.components.MyCircularProgressIndicator
 import bassamalim.hidaya.core.ui.components.MyFloatingActionButton
+import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.TutorialDialog
+import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.FileUtils
 
 @Composable
@@ -79,19 +84,41 @@ private fun BookCard(
         fontSize = 22.sp,
         modifier = Modifier.padding(vertical = 2.dp),
         iconBtn = {
-            MyDownloadBtn(
+            DownloadBtn(
                 state =
-                if (st.downloadStates.isEmpty()) DownloadState.NotDownloaded
-                else st.downloadStates[item.id],
-                path = vm.getPath(item.id),
-                modifier = Modifier.padding(end = 10.dp),
-                size = 32.dp,
-                download = { vm.onDownloadClk(item) },
-                deleted = { vm.onFileDeleted(item.id) }
+                    if (st.downloadStates.isEmpty()) DownloadState.NotDownloaded
+                    else st.downloadStates[item.id],
+                onClick = { vm.onDownloadButtonClick(item) }
             )
         },
         onClick = { vm.onItemClick(item) }
     )
+}
+
+@Composable
+fun DownloadBtn(
+    state: DownloadState,
+    onClick: () -> Unit,
+) {
+    Box(
+        Modifier.padding(end = 10.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        if (state == DownloadState.Downloading)
+            MyCircularProgressIndicator(Modifier.size(32.dp))
+        else {
+            MyIconButton(
+                iconId =
+                    if (state == DownloadState.Downloaded) R.drawable.ic_downloaded
+                    else R.drawable.ic_download,
+                description = stringResource(R.string.download_description),
+                size = 32.dp,
+                innerPadding = 6.dp,
+                tint = AppTheme.colors.accent,
+                onClick = onClick
+            )
+        }
+    }
 }
 
 @Composable

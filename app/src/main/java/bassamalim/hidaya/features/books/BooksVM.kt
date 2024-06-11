@@ -1,13 +1,15 @@
 package bassamalim.hidaya.features.books
 
+import android.app.Application
 import android.util.Log
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import bassamalim.hidaya.core.data.database.dbs.BooksDB
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.utils.FileUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,12 +18,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BooksVM @Inject constructor(
+    app: Application,
     private val repo: BooksRepo,
     private val navigator: Navigator
-): ViewModel() {
+): AndroidViewModel(app) {
 
     private val _uiState = MutableStateFlow(BooksState(
         items = repo.getBooks(),
+        language = repo.getLanguage(),
         tutorialDialogShown = repo.getShowTutorial()
     ))
     val uiState = _uiState.asStateFlow()
@@ -32,7 +36,7 @@ class BooksVM @Inject constructor(
         )}
     }
 
-    fun getPath(itemId: Int) = repo.getPath(itemId)
+    fun getPath(itemId: Int) = "${repo.prefix}$itemId.json"
 
     fun onFileDeleted(itemId: Int) {
         _uiState.update { it.copy(
@@ -61,6 +65,12 @@ class BooksVM @Inject constructor(
     }
 
     private fun download(item: BooksDB) {
+        _uiState.update { it.copy(
+            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+                this[item.id] = DownloadState.Downloading
+            }
+        )}
+
         val downloadTask = repo.download(item)
         downloadTask
             .addOnSuccessListener {
@@ -80,9 +90,10 @@ class BooksVM @Inject constructor(
         else if (_uiState.value.downloadStates[item.id] == DownloadState.Downloaded) {
             navigator.navigate(
                 Screen.BookChapters(
-                    item.id.toString(),
-                    if (repo.language == Language.ENGLISH) item.titleEn
-                    else item.title
+                    bookId = item.id.toString(),
+                    bookTitle =
+                        if (_uiState.value.language == Language.ENGLISH) item.titleEn
+                        else item.title
                 )
             )
         }
@@ -95,14 +106,19 @@ class BooksVM @Inject constructor(
         )}
     }
 
-    fun onDownloadClk(item: BooksDB) {
-        _uiState.update { it.copy(
-            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
-                this[item.id] = DownloadState.Downloading
-            }
-        )}
+    fun onDownloadButtonClick(item: BooksDB) {
+        val state =
+            if (_uiState.value.downloadStates.isEmpty()) DownloadState.NotDownloaded
+            else _uiState.value.downloadStates[item.id]
 
-        download(item)
+        if (state == DownloadState.Downloaded) {
+            onFileDeleted(item.id)
+            FileUtils.deleteFile(
+                context = getApplication(),
+                path = getPath(item.id)
+            )
+        }
+        else download(item)
     }
 
     fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {

@@ -1,8 +1,6 @@
 package bassamalim.hidaya.features.athkarList
 
-import android.app.Application
 import android.content.SharedPreferences
-import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.AthkarDB
@@ -13,18 +11,17 @@ import com.google.gson.Gson
 import javax.inject.Inject
 
 class AthkarListRepo @Inject constructor(
-    private val app: Application,
-    private val pref: SharedPreferences,
+    private val sp: SharedPreferences,
     private val db: AppDatabase,
     private val gson: Gson
 ) {
 
-    fun getLanguage() = PrefUtils.getLanguage(pref)
+    fun getLanguage() = PrefUtils.getLanguage(sp)
 
     fun updateFavorites() {
         val favAthkar = db.athkarDao().getFavs()
         val athkarJson = gson.toJson(favAthkar)
-        pref.edit()
+        sp.edit()
             .putString(Prefs.FavoriteAthkar.key, athkarJson)
             .apply()
     }
@@ -37,7 +34,8 @@ class AthkarListRepo @Inject constructor(
         }
     }
 
-    fun getThikrParts(thikrId: Int) = db.athkarPartsDao().getThikrParts(thikrId)
+    fun getThikrParts(thikrId: Int) =
+        db.athkarPartsDao().getThikrParts(thikrId)
 
     fun getName(language: Language, category: Int): String {
         return when (language) {
@@ -49,8 +47,5 @@ class AthkarListRepo @Inject constructor(
     fun setFavorite(itemId: Int, value: Int) {
         db.athkarDao().setFav(itemId, value)
     }
-
-    fun getFavoriteAthkarStr() = app.getString(R.string.favorite_athkar)
-    fun getAllAthkarStr() = app.getString(R.string.all_athkar)
 
 }

@@ -5,7 +5,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.database.dbs.QuizQuestionsDB
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,14 +18,12 @@ class QuizVM @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private val questionStr = repo.getQuestionStr()
-    private val numeralsLanguage = repo.getNumeralsLanguage()
     private val questions = getQuestions()
     private val chosenAs = IntArray(10)
-    private var current = 0
-    private var allAnswered = false
 
-    private val _uiState = MutableStateFlow(QuizState())
+    private val _uiState = MutableStateFlow(QuizState(
+        numeralsLanguage = repo.getNumeralsLanguage()
+    ))
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -36,36 +33,41 @@ class QuizVM @Inject constructor(
     }
 
     private fun ask(num: Int) {
-        current = num
+        _uiState.update { it.copy(
+            questionIdx = num
+        )}
 
         updateState()
     }
 
     fun answered(a: Int) {
-        chosenAs[current] = a
+        chosenAs[_uiState.value.questionIdx] = a
 
-        allAnswered = !chosenAs.contains(-1)
+        _uiState.update { it.copy(
+            allAnswered = !chosenAs.contains(-1)
+        )}
 
-        if (current == 9) {
+        if (_uiState.value.questionIdx == 9) {
             _uiState.update { it.copy(
                 selection = a,
-                nextBtnEnabled = !(current == 9 && !allAnswered),
-                nextBtnTextResId = getNextBtnTextResId()
+                nextBtnEnabled = !(_uiState.value.questionIdx == 9 && !_uiState.value.allAnswered),
             )}
         }
         else nextQ()
     }
 
     fun nextQ() {
-        if (current == 9) {
-            if (allAnswered) endQuiz()
+        if (_uiState.value.questionIdx == 9) {
+            if (_uiState.value.allAnswered) endQuiz()
         }
-        else ask(++current)
+        else {
+            ask(_uiState.value.questionIdx + 1)
+        }
     }
 
     fun previousQ() {
-        if (current > 0)
-            ask(--current)
+        if (_uiState.value.questionIdx > 0)
+            ask(_uiState.value.questionIdx - 1)
     }
 
     private fun endQuiz() {
@@ -73,9 +75,9 @@ class QuizVM @Inject constructor(
 
         navigator.navigate(
             Screen.QuizResult(
-                score.toString(),
-                questions.map { q -> q.questionId }.toIntArray().contentToString(),
-                chosenAs.toTypedArray().toIntArray().contentToString()
+                score = score.toString(),
+                questions = questions.map { q -> q.questionId }.toIntArray().contentToString(),
+                chosenAnswers = chosenAs.toTypedArray().toIntArray().contentToString()
             )
         ) {
             popUpTo(Screen.Quiz.route) {
@@ -100,27 +102,16 @@ class QuizVM @Inject constructor(
     }
 
     private fun updateState() {
-        val question = questions[current]
+        val question = questions[_uiState.value.questionIdx]
         val answers = repo.getAnswers(question.questionId)
 
         _uiState.update { it.copy(
-            questionNumText =
-            "$questionStr ${translateNums(numeralsLanguage, (current + 1).toString())}",
             question = question.questionText!!,
             answers = answers.map { a -> a.answerText },
-            selection = chosenAs[current],
-            prevBtnEnabled = current != 0,
-            nextBtnEnabled = !(current == 9 && !allAnswered),
-            nextBtnTextResId = getNextBtnTextResId()
+            selection = chosenAs[_uiState.value.questionIdx],
+            prevBtnEnabled = _uiState.value.questionIdx != 0,
+            nextBtnEnabled = !(_uiState.value.questionIdx == 9 && !_uiState.value.allAnswered),
         )}
-    }
-
-    private fun getNextBtnTextResId(): Int {
-        return if (current == 9) {
-            if (allAnswered) R.string.finish_quiz
-            else R.string.answer_all_questions
-        }
-        else R.string.next_question
     }
 
 }

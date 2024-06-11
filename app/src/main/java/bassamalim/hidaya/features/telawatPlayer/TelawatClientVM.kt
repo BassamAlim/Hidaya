@@ -305,8 +305,8 @@ class TelawatClientVM @Inject constructor(
         if (activity.isTaskRoot) {
             navigator.navigate(
                 Screen.TelawatSuar(
-                    reciterId.toString(),
-                    versionId.toString()
+                    reciterId = reciterId.toString(),
+                    versionId = versionId.toString()
                 )
             ) {
                 popUpTo(Screen.TelawatClient(action, mediaId).route) {

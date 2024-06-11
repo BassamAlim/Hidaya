@@ -274,8 +274,8 @@ class TelawatVM @Inject constructor(
         if (continueListeningMediaId.isNotEmpty()) {
             navigator.navigate(
                 Screen.TelawatClient(
-                    "continue",
-                    continueListeningMediaId
+                    action = "continue",
+                    mediaId = continueListeningMediaId
                 )
             )
         }
@@ -323,8 +323,8 @@ class TelawatVM @Inject constructor(
     fun onVersionClk(reciterId: Int, versionId: Int) {
         navigator.navigate(
             Screen.TelawatSuar(
-                reciterId.toString(),
-                versionId.toString()
+                reciterId = reciterId.toString(),
+                versionId = versionId.toString()
             )
         )
     }

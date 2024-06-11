@@ -26,7 +26,8 @@ class BookChaptersVM @Inject constructor(
 
     private val _uiState = MutableStateFlow(BookChaptersState(
         title = bookTitle,
-        favs = repository.getFavs(book)
+        favs = repository.getFavs(book),
+        language = repository.getLanguage()
     ))
     val uiState = _uiState.asStateFlow()
 

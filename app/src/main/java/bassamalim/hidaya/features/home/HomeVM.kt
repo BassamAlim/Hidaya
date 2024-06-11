@@ -98,9 +98,9 @@ class HomeVM @Inject constructor(
     fun gotoLeaderboard() {
         navigator.navigate(
             Screen.Leaderboard(
-                latestUserRecord.userId.toString(),
-                latestUserRecord.readingRecord.toString(),
-                latestUserRecord.listeningRecord.toString()
+                userId = latestUserRecord.userId.toString(),
+                readingRecord = latestUserRecord.readingRecord.toString(),
+                listeningRecord = latestUserRecord.listeningRecord.toString()
             )
         )
     }

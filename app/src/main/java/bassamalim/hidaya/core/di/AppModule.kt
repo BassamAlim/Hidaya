@@ -92,11 +92,10 @@ object AppModule {
 
     @Provides @Singleton
     fun provideAthkarListRepository(
-        application: Application,
         preferences: SharedPreferences,
         database: AppDatabase,
         gson: Gson
-    ) = AthkarListRepo(application, preferences, database, gson)
+    ) = AthkarListRepo(preferences, database, gson)
 
     @Provides @Singleton
     fun provideAthkarViewerRepository(
@@ -199,10 +198,9 @@ object AppModule {
 
     @Provides @Singleton
     fun provideQuizRepository(
-        resources: Resources,
         preferences: SharedPreferences,
         database: AppDatabase
-    ) = QuizRepo(resources, preferences, database)
+    ) = QuizRepo(preferences, database)
 
     @Provides @Singleton
     fun provideQuizResultRepository(

@@ -10,21 +10,21 @@ import com.google.gson.Gson
 import javax.inject.Inject
 
 class BookChaptersRepo @Inject constructor(
-    private val context: Context,
-    private val pref: SharedPreferences,
+    private val ctx: Context,
+    private val sp: SharedPreferences,
     private val gson: Gson
 ) {
 
-    val language = PrefUtils.getLanguage(pref)
+    fun getLanguage() = PrefUtils.getLanguage(sp)
 
     fun getBook(bookId: Int): Book {
-        val path = context.getExternalFilesDir(null).toString() + "/Books/" + bookId + ".json"
+        val path = ctx.getExternalFilesDir(null).toString() + "/Books/" + bookId + ".json"
         val jsonStr = FileUtils.getJsonFromDownloads(path)
         return gson.fromJson(jsonStr, Book::class.java)
     }
 
     fun getFavs(book: Book): List<Int> {
-        val favsStr = PrefUtils.getString(pref, Prefs.BookChaptersFavs(book.bookInfo.bookId))
+        val favsStr = PrefUtils.getString(sp, Prefs.BookChaptersFavs(book.bookInfo.bookId))
         return if (favsStr.isNotEmpty())
             gson.fromJson(favsStr, IntArray::class.java).toList()
         else {
@@ -36,7 +36,7 @@ class BookChaptersRepo @Inject constructor(
 
     fun updateFavorites(bookId: Int, favs: List<Int>) {
         val json = gson.toJson(favs.toIntArray())
-        pref.edit()
+        sp.edit()
             .putString(Prefs.BookChaptersFavs(bookId).key, json)
             .apply()
     }

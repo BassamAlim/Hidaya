@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.ui.components.MyBtnSurface
 import bassamalim.hidaya.core.ui.components.MyFavBtn
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
@@ -22,7 +23,13 @@ fun AthkarListScreen(
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
-    MyScaffold(st.title) { padding ->
+    MyScaffold(
+        title = when (st.listType) {
+            ListType.Favorite -> stringResource(R.string.favorite_athkar)
+            ListType.Custom -> vm.getName()
+            else -> stringResource(R.string.all_athkar)
+        }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()

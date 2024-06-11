@@ -22,13 +22,11 @@ class BooksRepo @Inject constructor(
     private val gson: Gson
 ) {
 
-    private val prefix = "/Books/"
-    private val dir = File(ctx.getExternalFilesDir(null).toString() + prefix)
-    val language = PrefUtils.getLanguage(sp)
+    val prefix = "/Books/"
+
+    fun getLanguage() = PrefUtils.getLanguage(sp)
 
     fun getBooks() = db.booksDao().getAll()
-
-    fun getPath(itemId: Int) = "$prefix$itemId.json"
 
     fun getShowTutorial() = PrefUtils.getBoolean(sp, Prefs.ShowBooksTutorial)
 
@@ -43,7 +41,7 @@ class BooksRepo @Inject constructor(
         // Create a storage reference from our app
         val storageRef = storage.reference
         // Create a reference with an initial file path and name
-        val fileRef = storageRef.child("Books/${item.id}.json")
+        val fileRef = storageRef.child("${prefix.substring(1)}${item.id}.json")
 
         FileUtils.createDir(ctx, prefix)
         val file = File("${ctx.getExternalFilesDir(null)}/$prefix/${fileRef.name}")
@@ -53,6 +51,7 @@ class BooksRepo @Inject constructor(
     }
 
     fun isDownloaded(id: Int): Boolean {
+        val dir = File(ctx.getExternalFilesDir(null).toString() + prefix)
         if (!dir.exists()) return false
 
         val files = dir.listFiles()
@@ -69,7 +68,7 @@ class BooksRepo @Inject constructor(
     }
 
     fun isDownloading(id: Int): Boolean {
-        val path = ctx.getExternalFilesDir(null).toString() + "/Books/" + id + ".json"
+        val path = ctx.getExternalFilesDir(null).toString() + prefix + id + ".json"
 
         val jsonStr = FileUtils.getJsonFromDownloads(path)
         return try {

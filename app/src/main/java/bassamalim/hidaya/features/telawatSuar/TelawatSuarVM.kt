@@ -192,8 +192,8 @@ class TelawatSuarVM @Inject constructor(
 
         navigator.navigate(
             Screen.TelawatClient(
-                "start",
-                mediaId
+                action = "start",
+                mediaId = mediaId
             )
         )
     }
