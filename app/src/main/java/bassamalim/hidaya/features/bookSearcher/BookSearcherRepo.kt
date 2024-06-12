@@ -16,25 +16,30 @@ import java.io.File
 import javax.inject.Inject
 
 class BookSearcherRepo @Inject constructor(
-    private val context: Context,
-    private val pref: SharedPreferences,
+    private val ctx: Context,
+    private val sp: SharedPreferences,
     private val db: AppDatabase,
     private val gson: Gson
 ) {
 
     private val prefix = "/Books/"
-    private val books = db.booksDao().getAll()
-    private val language = PrefUtils.getLanguage(pref)
-    val numeralsLanguage = PrefUtils.getNumeralsLanguage(pref)
+
+    fun getLanguage() = PrefUtils.getLanguage(sp)
+
+    fun getNumeralsLanguage() = PrefUtils.getNumeralsLanguage(sp)
+
+    private fun getBooks() = db.booksDao().getAll()
 
     fun getBookContents(): List<Book> {
-        val dir = File(context.getExternalFilesDir(null).toString() + prefix)
+        val dir = File(ctx.getExternalFilesDir(null).toString() + prefix)
         if (!dir.exists()) return emptyList()
+
+        val books = getBooks()
 
         val bookContents = ArrayList<Book>()
         for (i in books.indices) {
             val jsonStr = FileUtils.getJsonFromDownloads(
-                context.getExternalFilesDir(null).toString() + prefix + i + ".json"
+                ctx.getExternalFilesDir(null).toString() + prefix + i + ".json"
             )
 
             try {
@@ -51,9 +56,10 @@ class BookSearcherRepo @Inject constructor(
     }
 
     fun getBookSelections(): Array<Boolean> {
+        val books = getBooks()
         val selections = Array(books.size) { true }
 
-        val json = PrefUtils.getString(pref, Prefs.SelectedSearchBooks)
+        val json = PrefUtils.getString(sp, Prefs.SelectedSearchBooks)
         if (json.isNotEmpty()) {
             val boolArr =  gson.fromJson(json, BooleanArray::class.java)
             boolArr.forEachIndexed { index, bool ->
@@ -64,25 +70,25 @@ class BookSearcherRepo @Inject constructor(
         return selections
     }
 
-    fun getMaxMatchesIndex() = PrefUtils.getInt(pref, Prefs.BookSearcherMaxMatchesIndex)
+    fun getMaxMatchesIndex() = PrefUtils.getInt(sp, Prefs.BookSearcherMaxMatchesIndex)
 
     fun getMaxMatchesItems(): Array<String> {
-        return context.resources.getStringArray(R.array.searcher_matches_en)
+        return ctx.resources.getStringArray(R.array.searcher_matches_en)
     }
 
     fun setMaxMatchesIndex(index: Int) {
-        pref.edit()
+        sp.edit()
             .putInt(Prefs.BookSearcherMaxMatchesIndex.key, index)
             .apply()
     }
 
-    fun getBookTitles(): List<String> {
+    fun getBookTitles(language: Language): List<String> {
         return if (language == Language.ENGLISH) db.booksDao().getTitlesEn()
         else db.booksDao().getTitles()
     }
 
     fun isDownloaded(id: Int): Boolean {
-        val dir = File(context.getExternalFilesDir(null).toString() + "/Books/")
+        val dir = File(ctx.getExternalFilesDir(null).toString() + prefix)
         if (!dir.exists()) return false
 
         val files = dir.listFiles()

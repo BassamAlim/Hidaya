@@ -1,12 +1,10 @@
 package bassamalim.hidaya.features.bookSearcher
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.core.models.BookSearcherMatch
-import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,23 +17,25 @@ class BookSearcherVM @Inject constructor(
     private val repo: BookSearcherRepo
 ): ViewModel() {
 
-    var searchText = mutableStateOf("")
-        private set
     var bookSelections = repo.getBookSelections()
-    val maxMatchesItems = repo.getMaxMatchesItems()
-    val translatedMaxMatchesItems = maxMatchesItems.map {
-        translateNums(repo.numeralsLanguage, it)
-    }.toTypedArray()
-    val bookTitles = repo.getBookTitles()
+    val bookTitles: List<String>
     private var highlightColor: Color? = null
 
-    private val _uiState = MutableStateFlow(
-        BookSearcherState(
-        maxMatches = maxMatchesItems[repo.getMaxMatchesIndex()].toInt(),
-        filtered = bookSelections.contains(false)
-    )
-    )
+    private val _uiState = MutableStateFlow(BookSearcherState(
+        maxMatchesItems = repo.getMaxMatchesItems(),
+        filtered = bookSelections.contains(false),
+        language = repo.getLanguage(),
+        numeralsLanguage = repo.getNumeralsLanguage()
+    ))
     val uiState = _uiState.asStateFlow()
+
+    init {
+        bookTitles = repo.getBookTitles(_uiState.value.language)
+
+        _uiState.update { it.copy(
+            maxMatches = it.maxMatchesItems[repo.getMaxMatchesIndex()].toInt(),
+        )}
+    }
 
     fun onFilterClick() {
         _uiState.update { it.copy(
@@ -51,15 +51,15 @@ class BookSearcherVM @Inject constructor(
             filtered = bookSelections.contains(false)
         )}
 
-        highlightColor ?.let { search(it) }  // re-search if already searched
+        highlightColor?.let { search(it) }  // re-search if already searched
     }
 
     fun onMaxMatchesIndexChange(index: Int) {
         _uiState.update { it.copy(
-            maxMatches = maxMatchesItems[index].toInt()
+            maxMatches = it.maxMatchesItems[index].toInt()
         )}
 
-        highlightColor ?.let { search(it) }  // re-search if already searched
+        highlightColor?.let { search(it) }  // re-search if already searched
 
         repo.setMaxMatchesIndex(index)
     }
@@ -81,7 +81,7 @@ class BookSearcherVM @Inject constructor(
                     val door = chapter.doors[k]
                     val doorText = door.text
 
-                    val matcher = Pattern.compile(searchText.value).matcher(doorText)
+                    val matcher = Pattern.compile(_uiState.value.searchText).matcher(doorText)
                     if (matcher.find()) {
                         val annotatedString = buildAnnotatedString {
                             append(doorText)
@@ -97,9 +97,13 @@ class BookSearcherVM @Inject constructor(
 
                         matches.add(
                             BookSearcherMatch(
-                                i, bookContent.bookInfo.bookTitle,
-                                j, chapter.chapterTitle,
-                                k, door.doorTitle, annotatedString
+                                bookId = i,
+                                bookTitle = bookContent.bookInfo.bookTitle,
+                                chapterId = j,
+                                chapterTitle = chapter.chapterTitle,
+                                doorId = k,
+                                doorTitle = door.doorTitle,
+                                text = annotatedString
                             )
                         )
 
@@ -122,7 +126,9 @@ class BookSearcherVM @Inject constructor(
     }
 
     fun onSearchTextChange(text: String) {
-        searchText.value = text
+        _uiState.update { it.copy(
+            searchText = text
+        )}
     }
 
 }
