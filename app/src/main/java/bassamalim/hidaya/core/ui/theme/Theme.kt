@@ -6,6 +6,8 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.preference.PreferenceManager
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.Theme
 
 object AppTheme {
@@ -27,7 +29,9 @@ object AppTheme {
 
 @Composable
 fun AppTheme(
-    theme: Theme = preferencesDS.getTheme(preferencesDS.getPreferences(LocalContext.current)),
+    theme: Theme = PreferencesDataSource(
+        PreferenceManager.getDefaultSharedPreferences(LocalContext.current)
+    ).getTheme(),
     typography: AppTypography = AppTheme.typography,
     dimensions: AppDimensions = AppTheme.dimensions,
     direction: LayoutDirection = LayoutDirection.Rtl,

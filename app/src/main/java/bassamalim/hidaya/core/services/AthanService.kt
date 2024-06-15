@@ -7,7 +7,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
@@ -20,9 +19,11 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
@@ -30,7 +31,7 @@ import java.util.Calendar
 
 class AthanService : Service() {
 
-    private lateinit var sp: SharedPreferences
+    private lateinit var preferencesDS: PreferencesDataSource
     private lateinit var pid: PID
     private var channelId = ""
     private var mediaPlayer: MediaPlayer? = null
@@ -41,7 +42,9 @@ class AthanService : Service() {
         super.onCreate()
         ActivityUtils.onActivityCreateSetLocale(applicationContext)
 
-        sp = preferencesDS.getPreferences(applicationContext)
+        preferencesDS = PreferencesDataSource(
+            PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        )
 
         createNotificationChannel()
     }

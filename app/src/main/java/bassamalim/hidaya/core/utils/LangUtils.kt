@@ -1,51 +1,11 @@
 package bassamalim.hidaya.core.utils
 
-import android.content.Context
-import android.content.SharedPreferences
 import bassamalim.hidaya.core.enums.Language
 
 object LangUtils {
 
     private val enNums = arrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
     private val arNums = arrayOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
-
-    fun translateNums(
-        context: Context,
-        string: String,
-        timeFormat: Boolean = false
-    ) : String {
-        val numeralsLanguage = preferencesDS.getNumeralsLanguage(preferencesDS.getPreferences(context))
-
-        val str = if (timeFormat) cleanup(string, numeralsLanguage) else string
-
-        return if (arNums.contains(string[0])) {
-            if (numeralsLanguage == Language.ARABIC) str
-            else arToEn(str)
-        }
-        else {
-            if (numeralsLanguage == Language.ENGLISH) str
-            else enToAr(str)
-        }
-    }
-
-    fun translateNums(
-        pref: SharedPreferences,
-        string: String,
-        timeFormat: Boolean = false
-    ) : String {
-        val numeralsLanguage = preferencesDS.getNumeralsLanguage(pref)
-
-        val str = if (timeFormat) cleanup(string, numeralsLanguage) else string
-
-        return if (arNums.contains(string[0])) {
-            if (numeralsLanguage == Language.ARABIC) str
-            else arToEn(str)
-        }
-        else {
-            if (numeralsLanguage == Language.ENGLISH) str
-            else enToAr(str)
-        }
-    }
 
     fun translateNums(
         numeralsLanguage: Language,

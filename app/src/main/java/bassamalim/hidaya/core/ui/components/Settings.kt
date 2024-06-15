@@ -1,6 +1,5 @@
 package bassamalim.hidaya.core.ui.components
 
-import android.content.SharedPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +23,7 @@ import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,11 +39,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun ListPref(
-    sp: SharedPreferences,
+    preferencesDS: PreferencesDataSource,
     titleResId: Int,
     pref: Preference,
     iconResId: Int = -1,
@@ -90,9 +91,7 @@ fun ListPref(
             val onSelect = { index: Int ->
                 selectedValue = values[index]
 
-                sp.edit()
-                    .putString(pref.key, values[index])
-                    .apply()
+                preferencesDS.setString(pref, values[index])
 
                 onSelection()
             }
@@ -166,7 +165,7 @@ fun ListPref(
 
 @Composable
 fun SwitchPref(
-    sp: SharedPreferences,
+    preferencesDS: PreferencesDataSource,
     pref: Preference,
     titleResId: Int,
     summary: String,
@@ -179,9 +178,7 @@ fun SwitchPref(
     val onCheckChange = {
         checked = !checked
 
-        sp.edit()
-            .putBoolean(pref.key, checked)
-            .apply()
+        preferencesDS.setBoolean(pref, checked)
 
         onSwitch(checked)
     }
@@ -224,7 +221,7 @@ fun SwitchPref(
 
 @Composable
 fun SliderPref(
-    sp: SharedPreferences,
+    preferencesDS: PreferencesDataSource,
     pref: Preference,
     titleResId: Int,
     valueRange: ClosedFloatingPointRange<Float>,
@@ -232,7 +229,7 @@ fun SliderPref(
     sliderFraction: Float = 0.8F,
     onValueChange: () -> Unit = {}
 ) {
-    var value by remember { mutableStateOf(preferencesDS.getFloat(pref)) }
+    var value by remember { mutableFloatStateOf(preferencesDS.getFloat(pref)) }
 
     Column(
         Modifier
@@ -248,9 +245,7 @@ fun SliderPref(
             sliderFraction = sliderFraction,
             onValueChange = { newValue -> value = newValue },
             onValueChangeFinished = {
-                sp.edit()
-                    .putFloat(pref.key, value)
-                    .apply()
+                preferencesDS.setFloat(pref, value)
 
                 onValueChange()
             }
