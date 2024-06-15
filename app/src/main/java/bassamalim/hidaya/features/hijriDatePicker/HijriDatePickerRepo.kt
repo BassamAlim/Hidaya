@@ -1,26 +1,28 @@
 package bassamalim.hidaya.features.hijriDatePicker
 
-import android.content.SharedPreferences
 import android.content.res.Resources
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.utils.PrefUtils
 import javax.inject.Inject
 
 class HijriDatePickerRepo @Inject constructor(
-    resources: Resources,
-    pref: SharedPreferences
+    private val resources: Resources,
+    private val preferencesDS: PreferencesDataSource
 ) {
 
-    val language = PrefUtils.getLanguage(pref)
+    private val language = preferencesDS.getLanguage()
+    fun getLanguage() = language
 
-    val numeralsLanguage = PrefUtils.getNumeralsLanguage(pref)
+    fun getNumeralsLanguage() = preferencesDS.getNumeralsLanguage()
 
-    val months = resources.getStringArray(R.array.hijri_months) as Array<String>
+    fun getMonths() =
+        resources.getStringArray(R.array.hijri_months) as Array<String>
 
-    val weekDays = resources.getStringArray(R.array.week_days) as Array<String>
+    fun getWeekDays() =
+        resources.getStringArray(R.array.week_days) as Array<String>
 
-    val weekDaysAbb =
+    fun getWeekDaysAbb() =
         if (language == Language.ENGLISH) listOf("S", "M", "T", "W", "T", "F", "S")
         else listOf("أ", "إ", "ث", "أ", "خ", "ج", "س")
 

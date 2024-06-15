@@ -4,11 +4,12 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.util.Log
+import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.Theme
@@ -20,7 +21,9 @@ object ActivityUtils {
     fun bootstrapApp(
         context: Context,
         applicationContext: Context = context.applicationContext,
-        sp: SharedPreferences = PrefUtils.getPreferences(context),
+        preferencesDS: PreferencesDataSource = PreferencesDataSource(
+            PreferenceManager.getDefaultSharedPreferences(context)
+        ),
         db: AppDatabase = DBUtils.getDB(context),
         isFirstLaunch: Boolean = false
     ) {
@@ -31,27 +34,37 @@ object ActivityUtils {
 
         if (isFirstLaunch) {
             try {  // remove after a while
-                LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))
+                LocationType.valueOf(preferencesDS.getString(Preference.LocationType))
             } catch (e: Exception) {
                 Log.e(Global.TAG, "Neuralyzing", e)
                 clearAppData(context)
             }
 
-            if (DBUtils.needsRevival(sp, db))
-                DBUtils.reviveDB(context, sp)
+            if (DBUtils.needsRevival(preferencesDS, db))
+                DBUtils.reviveDB(context, preferencesDS)
         }
     }
 
-    fun onActivityCreateSetTheme(context: Context) {
-        when (PrefUtils.getTheme(PrefUtils.getPreferences(context))) {
+    fun onActivityCreateSetTheme(
+        context: Context,
+        preferencesDS: PreferencesDataSource = PreferencesDataSource(
+            PreferenceManager.getDefaultSharedPreferences(context)
+        )
+    ) {
+        when (preferencesDS.getTheme()) {
             Theme.LIGHT -> context.setTheme(R.style.Theme_HidayaL)
             Theme.DARK -> context.setTheme(R.style.Theme_HidayaM)
             Theme.NIGHT -> context.setTheme(R.style.Theme_HidayaN)
         }
     }
 
-    fun onActivityCreateSetLocale(context: Context) {
-        val language = PrefUtils.getLanguage(PrefUtils.getPreferences(context))
+    fun onActivityCreateSetLocale(
+        context: Context,
+        preferencesDS: PreferencesDataSource = PreferencesDataSource(
+            PreferenceManager.getDefaultSharedPreferences(context)
+        )
+    ) {
+        val language = preferencesDS.getLanguage()
 
         val locale = Locale(
             if (language == Language.ENGLISH) "en"

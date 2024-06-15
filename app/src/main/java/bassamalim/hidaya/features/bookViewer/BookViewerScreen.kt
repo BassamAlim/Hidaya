@@ -20,7 +20,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun BookViewerUI(
+fun BookViewerScreen(
     vm: BookViewerVM
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()

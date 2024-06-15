@@ -1,13 +1,12 @@
 package bassamalim.hidaya.features.books
 
 import android.content.Context
-import android.content.SharedPreferences
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.BooksDB
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.utils.FileUtils
-import bassamalim.hidaya.core.utils.PrefUtils
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.ktx.storage
@@ -17,23 +16,22 @@ import javax.inject.Inject
 
 class BooksRepo @Inject constructor(
     private val ctx: Context,
-    private val sp: SharedPreferences,
+    private val preferencesDS: PreferencesDataSource,
     private val db: AppDatabase,
     private val gson: Gson
 ) {
 
-    val prefix = "/Books/"
+    private val prefix = "/Books/"
 
-    fun getLanguage() = PrefUtils.getLanguage(sp)
+    fun getLanguage() = preferencesDS.getLanguage()
 
     fun getBooks() = db.booksDao().getAll()
 
-    fun getShowTutorial() = PrefUtils.getBoolean(sp, Prefs.ShowBooksTutorial)
+    fun getShowTutorial() =
+        preferencesDS.getBoolean(Preference.ShowBooksTutorial)
 
     fun setDoNotShowAgain() {
-        sp.edit()
-            .putBoolean(Prefs.ShowBooksTutorial.key, false)
-            .apply()
+        preferencesDS.setBoolean(Preference.ShowBooksTutorial, false)
     }
 
     fun download(item: BooksDB): FileDownloadTask {

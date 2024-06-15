@@ -38,15 +38,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.Prefs
+import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.core.utils.PrefUtils
 
 @Composable
 fun ListPref(
     sp: SharedPreferences,
     titleResId: Int,
-    pref: Prefs,
+    pref: Preference,
     iconResId: Int = -1,
     entries: Array<String>,
     values: Array<String>,
@@ -54,7 +53,7 @@ fun ListPref(
     onSelection: () -> Unit = {}
 ) {
     var shown by remember { mutableStateOf(false) }
-    val initialValue = PrefUtils.getString(sp, pref)
+    val initialValue = preferencesDS.getString(pref)
     var selectedValue by remember { mutableStateOf(initialValue) }
 
     Box(
@@ -168,13 +167,13 @@ fun ListPref(
 @Composable
 fun SwitchPref(
     sp: SharedPreferences,
-    pref: Prefs,
+    pref: Preference,
     titleResId: Int,
     summary: String,
     bgColor: Color = AppTheme.colors.surface,
     onSwitch: (Boolean) -> Unit = {}
 ) {
-    val initialValue = PrefUtils.getBoolean(sp, pref)
+    val initialValue = preferencesDS.getBoolean(pref)
     var checked by remember { mutableStateOf(initialValue) }
 
     val onCheckChange = {
@@ -226,14 +225,14 @@ fun SwitchPref(
 @Composable
 fun SliderPref(
     sp: SharedPreferences,
-    pref: Prefs,
+    pref: Preference,
     titleResId: Int,
     valueRange: ClosedFloatingPointRange<Float>,
     infinite: Boolean = false,
     sliderFraction: Float = 0.8F,
     onValueChange: () -> Unit = {}
 ) {
-    var value by remember { mutableStateOf(PrefUtils.getFloat(sp, pref)) }
+    var value by remember { mutableStateOf(preferencesDS.getFloat(pref)) }
 
     Column(
         Modifier

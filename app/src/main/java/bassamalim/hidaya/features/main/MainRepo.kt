@@ -1,31 +1,30 @@
 package bassamalim.hidaya.features.main
 
-import android.content.SharedPreferences
 import android.content.res.Resources
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.Prefs
-import bassamalim.hidaya.core.utils.PrefUtils
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import javax.inject.Inject
 
 class MainRepo @Inject constructor(
     private val res: Resources,
-    private val sp: SharedPreferences
+    private val preferencesDS: PreferencesDataSource
 ) {
 
-    val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
+    fun getNumeralsLanguage() = preferencesDS.getNumeralsLanguage()
 
     val unchangedStr = res.getString(R.string.unchanged)
 
-    fun getDateOffset() = PrefUtils.getInt(sp, Prefs.DateOffset)
+    fun getDateOffset() = preferencesDS.getInt(Preference.DateOffset)
 
     fun updateDateOffset(offset: Int) {
-        sp.edit()
-            .putInt(Prefs.DateOffset.key, offset)
-            .apply()
+        preferencesDS.setInt(Preference.DateOffset, offset)
     }
 
     fun getWeekDays(): Array<String> = res.getStringArray(R.array.week_days)
+
     fun getHijriMonths(): Array<String> = res.getStringArray(R.array.hijri_months)
+
     fun getGregorianMonths(): Array<String> = res.getStringArray(R.array.gregorian_months)
 
 }

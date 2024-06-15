@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.Prefs
+import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.Theme
@@ -86,7 +86,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
         ListPref(
             sp = pref,
             titleResId = R.string.language,
-            pref = Prefs.Language,
+            pref = Preference.Language,
             iconResId = R.drawable.ic_translation,
             entries = stringArrayResource(R.array.language_entries),
             values = Language.entries.map { it.name }.toTypedArray()
@@ -98,7 +98,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
         ListPref(
             sp = pref,
             titleResId = R.string.numerals_language,
-            pref = Prefs.NumeralsLanguage,
+            pref = Preference.NumeralsLanguage,
             iconResId = R.drawable.ic_translation,
             entries = stringArrayResource(R.array.numerals_language_entries),
             values = Language.entries.map { it.name }.toTypedArray()
@@ -113,7 +113,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
         ListPref(
             sp = pref,
             titleResId = R.string.time_format,
-            pref = Prefs.TimeFormat,
+            pref = Preference.TimeFormat,
             iconResId = R.drawable.ic_time_format,
             entries = timeFormatEntries,
             values = TimeFormat.entries.map { it.name }.toTypedArray()
@@ -125,7 +125,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
         ListPref(
             sp = pref,
             titleResId = R.string.theme,
-            pref = Prefs.Theme,
+            pref = Preference.Theme,
             iconResId = R.drawable.ic_theme,
             entries = stringArrayResource(R.array.themes_entries),
             values = Theme.entries.map { it.name }.toTypedArray()
@@ -147,7 +147,7 @@ private fun ExtraNotificationsSettings(
     ) {
         SwitchPref(
             sp = vm.sp,
-            pref = Prefs.NotifyExtraNotification(PID.MORNING),
+            pref = Preference.NotifyExtraNotification(PID.MORNING),
             titleResId = R.string.morning_athkar_title,
             summary = st.morningSummary
         ) { checked ->
@@ -156,7 +156,7 @@ private fun ExtraNotificationsSettings(
 
         SwitchPref(
             sp = vm.sp,
-            pref = Prefs.NotifyExtraNotification(PID.EVENING),
+            pref = Preference.NotifyExtraNotification(PID.EVENING),
             titleResId = R.string.evening_athkar_title,
             summary = st.eveningSummary
         ) { checked ->
@@ -165,7 +165,7 @@ private fun ExtraNotificationsSettings(
 
         SwitchPref(
             sp = vm.sp,
-            pref = Prefs.NotifyExtraNotification(PID.DAILY_WERD),
+            pref = Preference.NotifyExtraNotification(PID.DAILY_WERD),
             titleResId = R.string.daily_werd_title,
             summary = st.werdSummary
         ) { checked ->
@@ -174,7 +174,7 @@ private fun ExtraNotificationsSettings(
 
         SwitchPref(
             sp = vm.sp,
-            pref = Prefs.NotifyExtraNotification(PID.FRIDAY_KAHF),
+            pref = Preference.NotifyExtraNotification(PID.FRIDAY_KAHF),
             titleResId = R.string.friday_kahf_title,
             summary = st.kahfSummary
         ) { checked ->
@@ -192,7 +192,7 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
         ListPref(
             sp = viewModel.sp,
             titleResId = R.string.calculation_method_title,
-            pref = Prefs.PrayerTimesCalculationMethod,
+            pref = Preference.PrayerTimesCalculationMethod,
             entries = stringArrayResource(R.array.prayer_times_calc_method_entries),
             values = stringArrayResource(R.array.prayer_times_calc_method_values)
         ) { viewModel.onPrayerTimesCalculationMethodCh() }
@@ -201,7 +201,7 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
         ListPref(
             sp = viewModel.sp,
             titleResId = R.string.juristic_method_title,
-            pref = Prefs.PrayerTimesJuristicMethod,
+            pref = Preference.PrayerTimesJuristicMethod,
             entries = stringArrayResource(R.array.juristic_method_entries),
             values = stringArrayResource(R.array.juristic_method_values)
         ) { viewModel.onPrayerTimesJuristicMethodCh() }
@@ -210,7 +210,7 @@ private fun PrayerTimesSettings(viewModel: SettingsVM) {
         ListPref(
             sp = viewModel.sp,
             titleResId = R.string.high_lat_adjustment_title,
-            pref = Prefs.PrayerTimesAdjustment,
+            pref = Preference.PrayerTimesAdjustment,
             entries = stringArrayResource(R.array.high_lat_adjustment_entries),
             values = stringArrayResource(R.array.high_lat_adjustment_values)
         ) { viewModel.onPrayerTimesHighLatAdjustmentCh() }
@@ -227,7 +227,7 @@ private fun AthanSettings(
         ListPref(
             sp = sp,
             titleResId = R.string.athan_voice,
-            pref = Prefs.AthanVoice,
+            pref = Preference.AthanVoice,
             iconResId = R.drawable.ic_speaker,
             entries = stringArrayResource(R.array.athan_voices_entries),
             values = stringArrayResource(R.array.athan_voices_entries).mapIndexed { i, _ -> (i+1).toString() }.toTypedArray()

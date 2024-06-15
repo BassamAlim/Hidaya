@@ -1,33 +1,29 @@
 package bassamalim.hidaya.features.athkarViewer
 
-import android.content.SharedPreferences
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.utils.PrefUtils
 import javax.inject.Inject
 
 class AthkarViewerRepo @Inject constructor(
-    private val sp: SharedPreferences,
+    private val preferencesDS: PreferencesDataSource,
     private val db: AppDatabase
 ) {
 
-    fun getLanguage() = PrefUtils.getLanguage(sp)
+    fun getLanguage() = preferencesDS.getLanguage()
 
-    fun getTextSize() = PrefUtils.getFloat(sp, Prefs.AthkarTextSize)
+    fun getTextSize() = preferencesDS.getFloat(Preference.AthkarTextSize)
 
     fun setTextSize(textSize: Float) {
-        sp.edit()
-            .putInt(Prefs.AthkarTextSize.key, textSize.toInt())
-            .apply()
+        preferencesDS.setInt(Preference.AthkarTextSize, textSize.toInt())
     }
 
-    fun getTitle(id: Int): String {
-        return when(getLanguage()) {
+    fun getTitle(id: Int): String =
+        when(getLanguage()) {
             Language.ARABIC -> db.athkarDao().getName(id)
             Language.ENGLISH -> db.athkarDao().getNameEn(id)
         }
-    }
 
     fun getThikrParts(id: Int) = db.athkarPartsDao().getThikrParts(id)
 

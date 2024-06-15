@@ -1,21 +1,20 @@
 package bassamalim.hidaya.features.bookChapters
 
 import android.content.Context
-import android.content.SharedPreferences
-import bassamalim.hidaya.core.data.Prefs
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.utils.FileUtils
-import bassamalim.hidaya.core.utils.PrefUtils
 import com.google.gson.Gson
 import javax.inject.Inject
 
 class BookChaptersRepo @Inject constructor(
     private val ctx: Context,
-    private val sp: SharedPreferences,
+    private val preferencesDS: PreferencesDataSource,
     private val gson: Gson
 ) {
 
-    fun getLanguage() = PrefUtils.getLanguage(sp)
+    fun getLanguage() = preferencesDS.getLanguage()
 
     fun getBook(bookId: Int): Book {
         val path = ctx.getExternalFilesDir(null).toString() + "/Books/" + bookId + ".json"
@@ -24,7 +23,7 @@ class BookChaptersRepo @Inject constructor(
     }
 
     fun getFavs(book: Book): List<Int> {
-        val favsStr = PrefUtils.getString(sp, Prefs.BookChaptersFavs(book.bookInfo.bookId))
+        val favsStr = preferencesDS.getString(Preference.BookChaptersFavs(book.bookInfo.bookId))
         return if (favsStr.isNotEmpty())
             gson.fromJson(favsStr, IntArray::class.java).toList()
         else {
@@ -36,9 +35,7 @@ class BookChaptersRepo @Inject constructor(
 
     fun updateFavorites(bookId: Int, favs: List<Int>) {
         val json = gson.toJson(favs.toIntArray())
-        sp.edit()
-            .putString(Prefs.BookChaptersFavs(bookId).key, json)
-            .apply()
+        preferencesDS.setString(Preference.BookChaptersFavs(bookId), json)
     }
 
 }

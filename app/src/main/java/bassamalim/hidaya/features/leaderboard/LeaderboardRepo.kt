@@ -1,24 +1,24 @@
 package bassamalim.hidaya.features.leaderboard
 
-import android.content.SharedPreferences
 import android.content.res.Resources
 import android.util.Log
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.utils.PrefUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class LeaderboardRepo @Inject constructor(
-    res: Resources,
-    sp: SharedPreferences,
+    private val res: Resources,
+    private val preferencesDS: PreferencesDataSource,
     private val firestore: FirebaseFirestore
 ) {
 
     val userStr = res.getString(R.string.user)
     val errorFetchingDataStr = res.getString(R.string.error_fetching_data)
-    val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
+
+    fun getNumeralsLanguage() = preferencesDS.getNumeralsLanguage()
 
     suspend fun getRanks(): List<UserRecord> {
         return firestore.collection("Leaderboard")

@@ -10,7 +10,6 @@ import android.util.TypedValue
 import android.view.View
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.utils.PrefUtils
 import java.util.Calendar
 import kotlin.math.cos
 import kotlin.math.min
@@ -48,7 +47,7 @@ class AnalogClock(
     init {
         setupPaint()
 
-        language = PrefUtils.getNumeralsLanguage(PrefUtils.getPreferences(context))
+        language = preferencesDS.getNumeralsLanguage(preferencesDS.getPreferences(context))
 
         numerals =
             if (language == Language.ENGLISH) context.resources.getStringArray(R.array.numerals_en)

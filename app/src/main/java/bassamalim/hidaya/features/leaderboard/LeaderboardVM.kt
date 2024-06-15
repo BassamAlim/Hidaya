@@ -82,7 +82,7 @@ class LeaderboardVM @Inject constructor(
         val seconds = millis / 1000 % 60
 
         return translateNums(
-            repo.numeralsLanguage,
+            repo.getNumeralsLanguage,
             String.format(
                 Locale.US, "%02d:%02d:%02d",
                 hours, minutes, seconds

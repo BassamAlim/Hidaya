@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
@@ -18,8 +17,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.helpers.Alarms
@@ -35,7 +35,6 @@ import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
 import bassamalim.hidaya.core.utils.LocUtils
 import bassamalim.hidaya.core.utils.PTUtils
-import bassamalim.hidaya.core.utils.PrefUtils
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
@@ -45,7 +44,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class Activity : ComponentActivity() {
 
-    @Inject lateinit var sp: SharedPreferences
+    @Inject lateinit var preferencesDS: PreferencesDataSource
     @Inject lateinit var db: AppDatabase
     @Inject lateinit var navigator: Navigator
     private var shouldWelcome = false
@@ -54,7 +53,7 @@ class Activity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        shouldWelcome = PrefUtils.getBoolean(sp, Prefs.FirstTime)
+        shouldWelcome = preferencesDS.getBoolean(Preference.FirstTime)
         startRoute = intent.getStringExtra("start_route")
 
         val isFirstLaunch = savedInstanceState == null
@@ -62,7 +61,7 @@ class Activity : ComponentActivity() {
         ActivityUtils.bootstrapApp(
             context = this,
             applicationContext = applicationContext,
-            sp = sp,
+            preferencesDS = preferencesDS,
             db = db,
             isFirstLaunch = isFirstLaunch
         )
@@ -97,8 +96,8 @@ class Activity : ComponentActivity() {
     }
 
     private fun preLaunch(firstLaunch: Boolean = false) {
-        if (firstLaunch && DBUtils.needsRevival(sp, db))
-            DBUtils.reviveDB(this, sp)
+        if (firstLaunch && DBUtils.needsRevival(preferencesDS = preferencesDS, db = db))
+            DBUtils.reviveDB(ctx = this, preferencesDS = preferencesDS)
 
         ActivityUtils.onActivityCreateSetLocale(this)
         ActivityUtils.onActivityCreateSetTheme(this)
@@ -107,9 +106,7 @@ class Activity : ComponentActivity() {
     }
 
     private fun getLocationAndLaunch() {
-        val locType = LocationType.valueOf(
-            PrefUtils.getString(sp, Prefs.LocationType)
-        )
+        val locType = LocationType.valueOf(preferencesDS.getString(Preference.LocationType))
         if (locType == LocationType.Auto) {
             if (granted()) locate()
             else {
@@ -137,9 +134,7 @@ class Activity : ComponentActivity() {
         val fineLoc = result[Manifest.permission.ACCESS_FINE_LOCATION]
         val coarseLoc = result[Manifest.permission.ACCESS_COARSE_LOCATION]
         if (fineLoc != null && fineLoc && coarseLoc != null && coarseLoc) {
-            sp.edit()
-                .putString(Prefs.LocationType.key, LocationType.Auto.name)
-                .apply()
+            preferencesDS.setString(Preference.LocationType, LocationType.Auto.name)
 
             locate()
 
@@ -187,7 +182,7 @@ class Activity : ComponentActivity() {
     }
 
     private fun getDirection(): LayoutDirection {
-        val language = PrefUtils.getLanguage(sp)
+        val language = preferencesDS.getLanguage()
 
         return if (language == Language.ENGLISH) LayoutDirection.Ltr
         else LayoutDirection.Rtl
@@ -233,12 +228,15 @@ class Activity : ComponentActivity() {
 
         val closestCity = db.cityDao().getClosest(location.latitude, location.longitude)
 
-        sp.edit()
-            .putInt(Prefs.CountryID.key, closestCity.countryId)
-            .putInt(Prefs.CityID.key, closestCity.id)
-            .apply()
+        preferencesDS.setInt(Preference.CountryID, closestCity.countryId)
+        preferencesDS.setInt(Preference.CityID, closestCity.id)
 
-        LocUtils.storeLocation(sp, location)
+        LocUtils.storeLocation(
+            location = location,
+            locationPreferenceSetter = { json ->
+                preferencesDS.setString(Preference.StoredLocation, json)
+            }
+        )
     }
 
     private fun initFirebase() {
@@ -265,12 +263,12 @@ class Activity : ComponentActivity() {
     }
 
     private fun setAlarms() {
-        val location = LocUtils.retrieveLocation(sp)
+        val location = LocUtils.retrieveLocation(preferencesDS.getString(Preference.StoredLocation))
         if (location != null) {
-            val times = PTUtils.getTimes(sp, db)!!
+            val times = PTUtils.getTimes(preferencesDS, db)!!
             Alarms(this, times)
         }
-        else if (!sp.getBoolean(Prefs.FirstTime.key, true)) {
+        else if (!preferencesDS.getBoolean(Preference.FirstTime)) {
             Toast.makeText(
                 this,
                 getString(R.string.give_location_permission_toast),

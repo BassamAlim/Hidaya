@@ -1,27 +1,29 @@
 package bassamalim.hidaya.core.utils
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
+import androidx.preference.PreferenceManager
 import androidx.room.Room
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.other.Global
 import com.google.gson.Gson
 import java.util.*
 
 object DBUtils {
 
-    fun getDB(context: Context): AppDatabase {
-        return Room.databaseBuilder(context, AppDatabase::class.java, "HidayaDB")
-            .createFromAsset("databases/HidayaDB.db").allowMainThreadQueries().build()
-    }
+    fun getDB(context: Context): AppDatabase =
+        Room.databaseBuilder(context, AppDatabase::class.java, "HidayaDB")
+            .createFromAsset("databases/HidayaDB.db")
+            .allowMainThreadQueries()
+            .build()
 
     fun needsRevival(
-        sp: SharedPreferences,
+        preferencesDS: PreferencesDataSource,
         db: AppDatabase
     ): Boolean {
-        val lastVer = PrefUtils.getInt(sp, Prefs.LastDBVersion)
+        val lastVer = preferencesDS.getInt(Preference.LastDBVersion)
         if (Global.DB_VERSION > lastVer) return true
 
         return try {  // if there is a problem in the db it will cause an error
@@ -34,20 +36,16 @@ object DBUtils {
 
     fun reviveDB(
         ctx: Context,
-        sp: SharedPreferences = PrefUtils.getPreferences(ctx),
+        preferencesDS: PreferencesDataSource = PreferencesDataSource(
+            PreferenceManager.getDefaultSharedPreferences(ctx)
+        ),
         db: AppDatabase = getDB(ctx)
     ) {
         ctx.deleteDatabase("HidayaDB")
 
-        val db = Room.databaseBuilder(
-            ctx, AppDatabase::class.java, "HidayaDB"
-        ).createFromAsset("databases/HidayaDB.db")
-            .allowMainThreadQueries()
-            .build()
-
-        val suarJson = PrefUtils.getString(sp, Prefs.FavoriteSuar)
-        val recitersJson = PrefUtils.getString(sp, Prefs.FavoriteReciters)
-        val athkarJson = PrefUtils.getString(sp, Prefs.FavoriteAthkar)
+        val suarJson = preferencesDS.getString(Preference.FavoriteSuar)
+        val recitersJson = preferencesDS.getString(Preference.FavoriteReciters)
+        val athkarJson = preferencesDS.getString(Preference.FavoriteAthkar)
 
         val gson = Gson()
 
@@ -72,9 +70,7 @@ object DBUtils {
             }
         }
 
-        sp.edit()
-            .putInt(Prefs.LastDBVersion.key, Global.DB_VERSION)
-            .apply()
+        preferencesDS.setInt(Preference.LastDBVersion, Global.DB_VERSION)
 
         Log.i(Global.TAG, "Database Revived")
     }

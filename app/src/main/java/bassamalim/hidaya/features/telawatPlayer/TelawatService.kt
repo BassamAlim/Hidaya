@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
@@ -38,14 +37,14 @@ import androidx.media3.common.util.UnstableApi
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.models.Reciter
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
-import bassamalim.hidaya.core.utils.PrefUtils
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.Locale
@@ -58,7 +57,7 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private val notificationId = 333
     private val handler: Handler = Handler(Looper.getMainLooper())
     private val intentFilter: IntentFilter = IntentFilter()
-    private lateinit var pref: SharedPreferences
+    private lateinit var preferencesDS: PreferencesDataSource
     private lateinit var db: AppDatabase
     private lateinit var notificationManager: NotificationManager
     private lateinit var notificationBuilder: NotificationCompat.Builder
@@ -136,7 +135,9 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
         ActivityUtils.onActivityCreateSetLocale(applicationContext)
 
-        pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        preferencesDS = PreferencesDataSource(
+            PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        )
         db = DBUtils.getDB(this)
 
         getSuraNames()
@@ -170,7 +171,8 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                     else
                         extras.getSerializable("version") as Reciter.RecitationVersion
 
-                if (playType == "continue") continueFrom = pref.getInt("last_telawa_progress", 0)
+                if (playType == "continue")
+                    continueFrom = preferencesDS.getInt(Preference.LastTelawaProgress)
 
                 buildNotification()
                 updateMetadata(false)
@@ -783,19 +785,15 @@ class TelawatService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private fun saveForLater(progress: Int) {
         if (reciterName == null) return
 
-        pref.edit()
-            .putString("last_played_media_id", mediaId)
-            .putInt("last_telawa_progress", progress)
-            .apply()
+        preferencesDS.setString(Preference.LastPlayedMediaId, mediaId!!)
+        preferencesDS.setInt(Preference.LastTelawaProgress, progress)
     }
 
     private fun updateDurationRecord(amount: Int) {
-        val old = PrefUtils.getLong(pref, Prefs.TelawatPlaybackRecord)
+        val old = preferencesDS.getLong(Preference.TelawatPlaybackRecord)
         val new = old + amount * 1000
 
-        pref.edit()
-            .putLong("telawat_playback_record", new)
-            .apply()
+        preferencesDS.setLong(Preference.TelawatPlaybackRecord, new)
 
         updateRecordCounter = 0
     }

@@ -1,17 +1,15 @@
 package bassamalim.hidaya.features.welcome
 
-import android.content.SharedPreferences
-import bassamalim.hidaya.core.data.Prefs
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import javax.inject.Inject
 
 class WelcomeRepo @Inject constructor(
-    val pref: SharedPreferences
+    private val preferencesDS: PreferencesDataSource
 ) {
 
     fun unsetFirstTime() {
-        pref.edit()
-            .putBoolean(Prefs.FirstTime.key, false)
-            .apply()
+        preferencesDS.setBoolean(Preference.FirstTime, false)
     }
 
 }

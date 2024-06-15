@@ -2,11 +2,11 @@ package bassamalim.hidaya.core.di
 
 import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.res.Resources
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.about.AboutRepo
 import bassamalim.hidaya.features.athkarList.AthkarListRepo
@@ -60,9 +60,10 @@ object AppModule {
     fun provideResources(application: Application): Resources =
         application.resources
 
+
     @Provides @Singleton
-    fun providePreferences(application: Application) =
-        PreferenceManager.getDefaultSharedPreferences(application)!!
+    fun providePreferencesDataSource(application: Application) =
+        PreferencesDataSource(PreferenceManager.getDefaultSharedPreferences(application))
 
     @Provides @Singleton
     fun provideDatabase(application: Application) =
@@ -87,153 +88,153 @@ object AppModule {
 
     @Provides @Singleton
     fun provideAboutRepository(
-        pref: SharedPreferences
-    ) = AboutRepo(pref)
+        preferencesDataSource: PreferencesDataSource
+    ) = AboutRepo(preferencesDataSource)
 
     @Provides @Singleton
     fun provideAthkarListRepository(
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase,
         gson: Gson
-    ) = AthkarListRepo(preferences, database, gson)
+    ) = AthkarListRepo(preferencesDataSource, database, gson)
 
     @Provides @Singleton
     fun provideAthkarViewerRepository(
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = AthkarViewerRepo(preferences, database)
+    ) = AthkarViewerRepo(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideBookChaptersRepository(
         context: Context,
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         gson: Gson
-    ) = BookChaptersRepo(context, preferences, gson)
+    ) = BookChaptersRepo(context, preferencesDataSource, gson)
 
     @Provides @Singleton
     fun provideBookSearcherRepository(
         context: Context,
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase,
         gson: Gson
-    ) = BookSearcherRepo(context, preferences, database, gson)
+    ) = BookSearcherRepo(context, preferencesDataSource, database, gson)
 
     @Provides @Singleton
     fun provideBooksRepository(
         context: Context,
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase,
         gson: Gson
-    ) = BooksRepo(context, preferences, database, gson)
+    ) = BooksRepo(context, preferencesDataSource, database, gson)
 
     @Provides @Singleton
     fun provideBookViewerRepository(
         context: Context,
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         gson: Gson
-    ) = BookViewerRepo(context, preferences, gson)
+    ) = BookViewerRepo(context, preferencesDataSource, gson)
 
     @Provides @Singleton
     fun provideDateConverterRepository(
         resources: Resources,
-        preferences: SharedPreferences
-    ) = DateConverterRepo(resources, preferences)
+        preferencesDataSource: PreferencesDataSource
+    ) = DateConverterRepo(resources, preferencesDataSource)
 
     @Provides @Singleton
     fun provideHomeRepository(
         resources: Resources,
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase,
         firestore: FirebaseFirestore
-    ) = HomeRepo(resources, preferences, database, firestore)
+    ) = HomeRepo(resources, preferencesDataSource, database, firestore)
 
     @Provides @Singleton
     fun provideLeaderboardRepository(
         resources: Resources,
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         firestore: FirebaseFirestore
-    ) = LeaderboardRepo(resources, preferences, firestore)
+    ) = LeaderboardRepo(resources, preferencesDataSource, firestore)
 
     @Provides @Singleton
     fun provideLocationPickerRepository(
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = LocationPickerRepo(preferences, database)
+    ) = LocationPickerRepo(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideLocatorRepository(
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = LocatorRepo(preferences, database)
+    ) = LocatorRepo(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideMainRepository(
         resources: Resources,
-        preferences: SharedPreferences
-    ) = MainRepo(resources, preferences)
+        preferencesDataSource: PreferencesDataSource
+    ) = MainRepo(resources, preferencesDataSource)
 
     @Provides @Singleton
     fun providePrayersRepository(
         resources: Resources,
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = PrayersRepo(resources, preferences, database)
+    ) = PrayersRepo(resources, preferencesDataSource, database)
 
     @Provides @Singleton
     fun providePrayerReminderRepository(
         resources: Resources,
-        preferences: SharedPreferences
-    ) = PrayerReminderRepo(resources, preferences)
+        preferencesDataSource: PreferencesDataSource
+    ) = PrayerReminderRepo(resources, preferencesDataSource)
 
     @Provides @Singleton
     fun providePrayerSettingsRepository(
         resources: Resources,
-        preferences: SharedPreferences
-    ) = PrayerSettingsRepo(resources, preferences)
+        preferencesDataSource: PreferencesDataSource
+    ) = PrayerSettingsRepo(resources, preferencesDataSource)
 
     @Provides @Singleton
     fun provideQiblaRepository(
-        preferences: SharedPreferences
-    ) = QiblaRepo(preferences)
+        preferencesDataSource: PreferencesDataSource
+    ) = QiblaRepo(preferencesDataSource)
 
     @Provides @Singleton
     fun provideQuizRepository(
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = QuizRepo(preferences, database)
+    ) = QuizRepo(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideQuizResultRepository(
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = QuizResultRepo(preferences, database)
+    ) = QuizResultRepo(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideQuranRepository(
         resources: Resources,
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase,
         gson: Gson
-    ) = QuranRepo(resources, preferences, database, gson)
+    ) = QuranRepo(resources, preferencesDataSource, database, gson)
 
     @Provides @Singleton
     fun provideQuranSearcherRepository(
         resources: Resources,
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = QuranSearcherRepo(resources, preferences, database)
+    ) = QuranSearcherRepo(resources, preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideQuranSettingsRepository(
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = QuranSettingsRepo(preferences, database)
+    ) = QuranSettingsRepo(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideQuranViewerRepository(
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = QuranViewerRepo(preferences, database)
+    ) = QuranViewerRepo(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideRadioClientRepository(
@@ -243,29 +244,29 @@ object AppModule {
     @Provides @Singleton
     fun provideSettingsRepository(
         resources: Resources,
-        preferences: SharedPreferences
-    ) = SettingsRepo(resources, preferences)
+        preferencesDataSource: PreferencesDataSource
+    ) = SettingsRepo(resources, preferencesDataSource)
 
     @Provides @Singleton
     fun provideTelawatClientRepository(
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = TelawatClientRepo(preferences, database)
+    ) = TelawatClientRepo(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideTelawatRepository(
         resources: Resources,
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase,
         gson: Gson
-    ) = TelawatRepo(resources, preferences, database, gson)
+    ) = TelawatRepo(resources, preferencesDataSource, database, gson)
 
     @Provides @Singleton
     fun provideTelawatSuarRepository(
-        preferences: SharedPreferences,
+        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase,
         gson: Gson
-    ) = TelawatSuarRepo(preferences, database, gson)
+    ) = TelawatSuarRepo(preferencesDataSource, database, gson)
 
     @Provides @Singleton
     fun provideTvRepository(
@@ -274,13 +275,13 @@ object AppModule {
 
     @Provides @Singleton
     fun provideWelcomeRepository(
-        preferences: SharedPreferences
-    ) = WelcomeRepo(preferences)
+        preferencesDataSource: PreferencesDataSource
+    ) = WelcomeRepo(preferencesDataSource)
 
     @Provides @Singleton
     fun provideHijriDatePickerRepository(
         resources: Resources,
-        preferences: SharedPreferences
-    ) = HijriDatePickerRepo(resources, preferences)
+        preferencesDataSource: PreferencesDataSource
+    ) = HijriDatePickerRepo(resources, preferencesDataSource)
 
 }

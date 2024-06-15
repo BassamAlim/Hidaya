@@ -24,7 +24,7 @@ import bassamalim.hidaya.features.athkarList.AthkarListScreen
 import bassamalim.hidaya.features.athkarViewer.AthkarViewerUI
 import bassamalim.hidaya.features.bookChapters.BookChaptersUI
 import bassamalim.hidaya.features.bookSearcher.BookSearcherUI
-import bassamalim.hidaya.features.bookViewer.BookViewerUI
+import bassamalim.hidaya.features.bookViewer.BookViewerScreen
 import bassamalim.hidaya.features.books.BooksUI
 import bassamalim.hidaya.features.dateConverter.DateConverterUI
 import bassamalim.hidaya.features.hijriDatePicker.HijriDatePickerDialog
@@ -185,7 +185,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            BookViewerUI(
+            BookViewerScreen(
                 hiltViewModel()
             )
         }

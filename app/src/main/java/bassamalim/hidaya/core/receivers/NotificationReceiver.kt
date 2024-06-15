@@ -9,7 +9,6 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
@@ -19,16 +18,17 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
-import bassamalim.hidaya.core.data.Prefs
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.utils.ActivityUtils
-import bassamalim.hidaya.core.utils.PrefUtils
 import bassamalim.hidaya.features.quranViewer.QuranTarget
 import java.util.Calendar
 import kotlin.math.abs
@@ -36,7 +36,7 @@ import kotlin.math.abs
 class NotificationReceiver : BroadcastReceiver() {
 
     private lateinit var ctx: Context
-    private lateinit var sp: SharedPreferences
+    private lateinit var preferencesDS: PreferencesDataSource
     private lateinit var action: String
     private lateinit var pid: PID
     private var notificationId = 0
@@ -45,7 +45,9 @@ class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         ctx = context.applicationContext
-        sp = PrefUtils.getPreferences(ctx)
+        preferencesDS = PreferencesDataSource(
+            PreferenceManager.getDefaultSharedPreferences(context)
+        )
 
         try {  // remove after a while
             ActivityUtils.onActivityCreateSetLocale(ctx)
@@ -76,7 +78,7 @@ class NotificationReceiver : BroadcastReceiver() {
         notificationId = pid.ordinal
 
         val notificationType = NotificationType.valueOf(
-            PrefUtils.getString(sp, Prefs.NotificationType(pid))
+            preferencesDS.getString(Preference.NotificationType(pid))
         )
 
         if (notificationType != NotificationType.None) {
@@ -98,7 +100,7 @@ class NotificationReceiver : BroadcastReceiver() {
         notificationId = pid.ordinal
 
         val notificationType = NotificationType.valueOf(
-            PrefUtils.getString(sp, Prefs.NotificationType(pid))
+            preferencesDS.getString(Preference.NotificationType(pid))
         )
 
         showNotification(false, notificationType)
@@ -110,7 +112,7 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun isAlreadyNotified(): Boolean {
-        val lastDate = PrefUtils.getInt(sp, Prefs.LastNotificationDate(pid))
+        val lastDate = preferencesDS.getInt(Preference.LastNotificationDate(pid))
         return lastDate == Calendar.getInstance()[Calendar.DAY_OF_YEAR]
     }
 
@@ -189,7 +191,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
     private fun getSubtitle(): String {
         return if (action == "reminder") {
-            val offset = PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
+            val offset = preferencesDS.getInt(Preference.ReminderOffset(pid))
             String.format(
                 format =
                 if (offset < 0) ctx.resources.getString(R.string.reminder_before)
@@ -226,7 +228,7 @@ class NotificationReceiver : BroadcastReceiver() {
             PID.DAILY_WERD -> {
                 Screen.QuranViewer(
                     targetType = QuranTarget.PAGE.name,
-                    targetValue = PrefUtils.getInt(sp, Prefs.WerdPage).toString()
+                    targetValue = preferencesDS.getInt(Preference.WerdPage).toString()
                 ).route
             }
             PID.FRIDAY_KAHF -> {
@@ -262,12 +264,10 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun markAsNotified() {
-        sp.edit()
-            .putInt(
-                Prefs.LastNotificationDate(pid).key,
-                Calendar.getInstance()[Calendar.DAY_OF_YEAR]
-            )
-            .apply()
+        preferencesDS.setInt(
+            Preference.LastNotificationDate(pid),
+            Calendar.getInstance()[Calendar.DAY_OF_YEAR]
+        )
     }
 
 }

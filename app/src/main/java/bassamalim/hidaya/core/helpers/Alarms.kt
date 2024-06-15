@@ -4,40 +4,44 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.util.Log
-import bassamalim.hidaya.core.data.Prefs
+import androidx.preference.PreferenceManager
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.NotificationReceiver
 import bassamalim.hidaya.core.utils.DBUtils
 import bassamalim.hidaya.core.utils.PTUtils
-import bassamalim.hidaya.core.utils.PrefUtils
 import java.util.Calendar
 
 class Alarms {
 
     private val context: Context
-    private var sp: SharedPreferences
+    private val preferencesDS: PreferencesDataSource
 
     constructor(gContext: Context, gTimes: Array<Calendar?>) {
         context = gContext
-        sp = PrefUtils.getPreferences(context)
+        preferencesDS = PreferencesDataSource(
+            PreferenceManager.getDefaultSharedPreferences(context)
+        )
 
         setAll(gTimes)
     }
 
     constructor(gContext: Context, pid: PID) {
         context = gContext
-        sp = PrefUtils.getPreferences(context)
+        preferencesDS = PreferencesDataSource(
+            PreferenceManager.getDefaultSharedPreferences(context)
+        )
 
-        val times = PTUtils.getTimes(sp, DBUtils.getDB(context)) ?: return
+        val times = PTUtils.getTimes(preferencesDS, DBUtils.getDB(context)) ?: return
 
         if (pid.ordinal in 0..5) {
             setPrayerAlarm(pid = pid, time = times[pid.ordinal]!!)
 
-            val reminderOffset = PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
+            val reminderOffset = preferencesDS.getInt(Preference.ReminderOffset(pid))
             if (reminderOffset != 0)
                 setReminder(pid = pid, time = times[pid.ordinal]!!, offset = reminderOffset)
         }
@@ -59,7 +63,7 @@ class Alarms {
         val pidValues = PID.entries.toTypedArray()
         for (i in times.indices) {
             val pid = pidValues[i]
-            if (PrefUtils.getString(sp, Prefs.NotificationType(pid)) != NotificationType.None.name)
+            if (preferencesDS.getString(Preference.NotificationType(pid)) != NotificationType.None.name)
                 setPrayerAlarm(pid, times[i]!!)
         }
     }
@@ -99,7 +103,7 @@ class Alarms {
         val pidValues = PID.entries.toTypedArray()
         for (i in times.indices) {
             val pid = pidValues[i]
-            val offset = PrefUtils.getInt(sp, Prefs.ReminderOffset(pid))
+            val offset = preferencesDS.getInt(Preference.ReminderOffset(pid))
             if (offset != 0) setReminder(pid, times[i]!!, offset)
         }
     }
@@ -136,13 +140,13 @@ class Alarms {
 
         val today = Calendar.getInstance()
 
-        if (PrefUtils.getBoolean(sp, Prefs.NotifyExtraNotification(PID.MORNING)))
+        if (preferencesDS.getBoolean(Preference.NotifyExtraNotification(PID.MORNING)))
             setExtraAlarm(PID.MORNING)
-        if (PrefUtils.getBoolean(sp, Prefs.NotifyExtraNotification(PID.EVENING)))
+        if (preferencesDS.getBoolean(Preference.NotifyExtraNotification(PID.EVENING)))
             setExtraAlarm(PID.EVENING)
-        if (PrefUtils.getBoolean(sp, Prefs.NotifyExtraNotification(PID.DAILY_WERD)))
+        if (preferencesDS.getBoolean(Preference.NotifyExtraNotification(PID.DAILY_WERD)))
             setExtraAlarm(PID.DAILY_WERD)
-        if (PrefUtils.getBoolean(sp, Prefs.NotifyExtraNotification(PID.FRIDAY_KAHF))
+        if (preferencesDS.getBoolean(Preference.NotifyExtraNotification(PID.FRIDAY_KAHF))
             && today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
             setExtraAlarm(PID.FRIDAY_KAHF)
     }
@@ -155,8 +159,8 @@ class Alarms {
     private fun setExtraAlarm(pid: PID) {
         Log.i(Global.TAG, "in set extra alarm")
 
-        val hour = PrefUtils.getInt(sp, Prefs.ExtraNotificationHour(pid))
-        val minute = PrefUtils.getInt(sp, Prefs.ExtraNotificationMinute(pid))
+        val hour = preferencesDS.getInt(Preference.ExtraNotificationHour(pid))
+        val minute = preferencesDS.getInt(Preference.ExtraNotificationMinute(pid))
 
         val time = Calendar.getInstance()
         time[Calendar.HOUR_OF_DAY] = hour

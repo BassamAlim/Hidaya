@@ -4,11 +4,12 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.location.Location
 import android.util.Log
-import bassamalim.hidaya.core.data.Prefs
+import androidx.preference.PreferenceManager
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.TimeFormat
@@ -23,41 +24,46 @@ import java.util.TimeZone
 object PTUtils {
 
     fun getTimes(
-        sp: SharedPreferences,
+        preferenceDS: PreferencesDataSource,
         db: AppDatabase,
-        loc: Location? = LocUtils.retrieveLocation(sp),
+        loc: Location? = LocUtils.retrieveLocation(preferenceDS.getString(Preference.StoredLocation)),
         calendar: Calendar = Calendar.getInstance()
     ): Array<Calendar?>? {
         if (loc == null) return null
 
-        val prayTimes = PrayTimes(sp)
-        val utcOffset = getUTCOffset(sp, db).toDouble()
+        val prayTimes = PrayTimes(preferenceDS)
+        val utcOffset = getUTCOffset(preferenceDS, db).toDouble()
 
         return prayTimes.getPrayerTimes(loc.latitude, loc.longitude, utcOffset, calendar)
     }
 
     fun getStrTimes(
         context: Context,
-        pref: SharedPreferences = PrefUtils.getPreferences(context),
-        loc: Location? = LocUtils.retrieveLocation(pref),
+        preferencesDS: PreferencesDataSource = PreferencesDataSource(
+            PreferenceManager.getDefaultSharedPreferences(context)
+        ),
+        loc: Location? = LocUtils.retrieveLocation(preferencesDS.getString(Preference.StoredLocation)),
         calendar: Calendar = Calendar.getInstance()
     ): ArrayList<String>? {
         if (loc == null) return null
 
-        val prayTimes = PrayTimes(pref)
-        val utcOffset = getUTCOffset(sp = pref, db = DBUtils.getDB(context)).toDouble()
+        val prayTimes = PrayTimes(preferencesDS)
+        val utcOffset = getUTCOffset(
+            preferencesDS = preferencesDS,
+            db = DBUtils.getDB(context)
+        ).toDouble()
 
         return prayTimes.getStrPrayerTimes(loc.latitude, loc.longitude, utcOffset, calendar)
     }
 
     fun getUTCOffset(
-        sp: SharedPreferences,
+        preferencesDS: PreferencesDataSource,
         db: AppDatabase
     ): Int {
-        when (LocationType.valueOf(PrefUtils.getString(sp, Prefs.LocationType))) {
+        when (LocationType.valueOf(preferencesDS.getString(Preference.LocationType))) {
             LocationType.Auto -> return TimeZone.getDefault().getOffset(Date().time) / 3600000
             LocationType.Manual -> {
-                val cityId = PrefUtils.getInt(sp, Prefs.CityID)
+                val cityId = preferencesDS.getInt(Preference.CityID)
 
                 if (cityId == -1) return 0
 

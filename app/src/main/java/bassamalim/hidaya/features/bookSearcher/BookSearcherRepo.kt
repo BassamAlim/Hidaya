@@ -1,32 +1,31 @@
 package bassamalim.hidaya.features.bookSearcher
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.FileUtils
-import bassamalim.hidaya.core.utils.PrefUtils
 import com.google.gson.Gson
 import java.io.File
 import javax.inject.Inject
 
 class BookSearcherRepo @Inject constructor(
     private val ctx: Context,
-    private val sp: SharedPreferences,
+    private val preferencesDS: PreferencesDataSource,
     private val db: AppDatabase,
     private val gson: Gson
 ) {
 
     private val prefix = "/Books/"
 
-    fun getLanguage() = PrefUtils.getLanguage(sp)
+    fun getLanguage() = preferencesDS.getLanguage()
 
-    fun getNumeralsLanguage() = PrefUtils.getNumeralsLanguage(sp)
+    fun getNumeralsLanguage() = preferencesDS.getNumeralsLanguage()
 
     private fun getBooks() = db.booksDao().getAll()
 
@@ -59,7 +58,7 @@ class BookSearcherRepo @Inject constructor(
         val books = getBooks()
         val selections = Array(books.size) { true }
 
-        val json = PrefUtils.getString(sp, Prefs.SelectedSearchBooks)
+        val json = preferencesDS.getString(Preference.SelectedSearchBooks)
         if (json.isNotEmpty()) {
             val boolArr =  gson.fromJson(json, BooleanArray::class.java)
             boolArr.forEachIndexed { index, bool ->
@@ -70,22 +69,19 @@ class BookSearcherRepo @Inject constructor(
         return selections
     }
 
-    fun getMaxMatchesIndex() = PrefUtils.getInt(sp, Prefs.BookSearcherMaxMatchesIndex)
+    fun getMaxMatchesIndex() =
+        preferencesDS.getInt(Preference.BookSearcherMaxMatchesIndex)
 
-    fun getMaxMatchesItems(): Array<String> {
-        return ctx.resources.getStringArray(R.array.searcher_matches_en)
-    }
+    fun getMaxMatchesItems(): Array<String> =
+        ctx.resources.getStringArray(R.array.searcher_matches_en)
 
     fun setMaxMatchesIndex(index: Int) {
-        sp.edit()
-            .putInt(Prefs.BookSearcherMaxMatchesIndex.key, index)
-            .apply()
+        preferencesDS.setInt(Preference.BookSearcherMaxMatchesIndex, index)
     }
 
-    fun getBookTitles(language: Language): List<String> {
-        return if (language == Language.ENGLISH) db.booksDao().getTitlesEn()
+    fun getBookTitles(language: Language): List<String> =
+        if (language == Language.ENGLISH) db.booksDao().getTitlesEn()
         else db.booksDao().getTitles()
-    }
 
     fun isDownloaded(id: Int): Boolean {
         val dir = File(ctx.getExternalFilesDir(null).toString() + prefix)

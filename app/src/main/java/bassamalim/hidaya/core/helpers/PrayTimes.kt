@@ -1,11 +1,10 @@
 package bassamalim.hidaya.core.helpers
 
-import android.content.SharedPreferences
-import bassamalim.hidaya.core.data.Prefs
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.core.utils.PrefUtils
 import java.util.Calendar
 import java.util.TimeZone
 import kotlin.math.abs
@@ -19,15 +18,15 @@ import kotlin.math.sin
 import kotlin.math.tan
 
 class PrayTimes(
-    private val sp: SharedPreferences
+    private val preferencesDS: PreferencesDataSource
 ) {
 
-    private val timeFormat = PrefUtils.getTimeFormat(sp)
-    private val calcMethod = PrefUtils.getString(sp, Prefs.PrayerTimesCalculationMethod)
+    private val timeFormat = preferencesDS.getTimeFormat()
+    private val calcMethod = preferencesDS.getString(Preference.PrayerTimesCalculationMethod)
     private var asrJuristic =
-        if (PrefUtils.getString(sp, Prefs.PrayerTimesJuristicMethod) == "HANAFI") 1
+        if (preferencesDS.getString(Preference.PrayerTimesJuristicMethod) == "HANAFI") 1
         else 0
-    private val adjustHighLats = PrefUtils.getString(sp, Prefs.PrayerTimesAdjustment)
+    private val adjustHighLats = preferencesDS.getString(Preference.PrayerTimesAdjustment)
 
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
     private var latitude = 0.0 // latitude
@@ -53,13 +52,13 @@ class PrayTimes(
 
     // Tune timings for adjustments (Set time offsets)
     private fun setOffsets() {
-        offsets[0] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.FAJR))
-        offsets[1] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.SUNRISE))
-        offsets[2] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.DHUHR))
-        offsets[3] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ASR))
+        offsets[0] = preferencesDS.getInt(Preference.TimeOffset(PID.FAJR))
+        offsets[1] = preferencesDS.getInt(Preference.TimeOffset(PID.SUNRISE))
+        offsets[2] = preferencesDS.getInt(Preference.TimeOffset(PID.DHUHR))
+        offsets[3] = preferencesDS.getInt(Preference.TimeOffset(PID.ASR))
         // Skipping sunset
-        offsets[5] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.MAGHRIB))
-        offsets[6] = PrefUtils.getInt(sp, Prefs.TimeOffset(PID.ISHAA))
+        offsets[5] = preferencesDS.getInt(Preference.TimeOffset(PID.MAGHRIB))
+        offsets[6] = preferencesDS.getInt(Preference.TimeOffset(PID.ISHAA))
     }
 
     // -------------------- Interface Functions --------------------
@@ -109,7 +108,7 @@ class PrayTimes(
             else floatToTime12(computeDayTimes())
         times.removeAt(4)  // removing sunset time
 
-        val numeralsLanguage = PrefUtils.getNumeralsLanguage(sp)
+        val numeralsLanguage = preferencesDS.getNumeralsLanguage()
         for (i in times.indices)
             times[i] = translateNums(numeralsLanguage, times[i], true)
 

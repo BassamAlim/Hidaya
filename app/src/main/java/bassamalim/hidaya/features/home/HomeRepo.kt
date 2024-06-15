@@ -1,16 +1,15 @@
 package bassamalim.hidaya.features.home
 
-import android.content.SharedPreferences
 import android.content.res.Resources
 import android.util.Log
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.Response
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.LocUtils
-import bassamalim.hidaya.core.utils.PrefUtils
 import bassamalim.hidaya.features.leaderboard.UserRecord
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -19,51 +18,46 @@ import javax.inject.Inject
 
 class HomeRepo @Inject constructor(
     private val res: Resources,
-    val sp: SharedPreferences,
-    val db: AppDatabase,
+    private val preferencesDS: PreferencesDataSource,
+    private val db: AppDatabase,
     private val firestore: FirebaseFirestore
 ) {
 
     fun getIsWerdDone() =
-        PrefUtils.getBoolean(sp, Prefs.WerdDone)
+        preferencesDS.getBoolean(Preference.WerdDone)
 
     fun getPrayerNames(): Array<String> =
         res.getStringArray(R.array.prayer_names)
 
-    fun getNumeralsLanguage() = Language.valueOf(
-        PrefUtils.getString(sp, Prefs.NumeralsLanguage)
-    )
+    fun getNumeralsLanguage() =
+        Language.valueOf(preferencesDS.getString(Preference.NumeralsLanguage))
 
     fun getTodayWerdPage() =
-        PrefUtils.getInt(sp, Prefs.WerdPage)
+        preferencesDS.getInt(Preference.WerdPage)
 
     fun getQuranPagesRecord() =
-        PrefUtils.getInt(sp, Prefs.QuranPagesRecord)
+        preferencesDS.getInt(Preference.QuranPagesRecord)
 
     fun getTelawatPlaybackRecord() =
-        PrefUtils.getLong(sp, Prefs.TelawatPlaybackRecord)
+        preferencesDS.getLong(Preference.TelawatPlaybackRecord)
 
     fun getLocation() =
-        LocUtils.retrieveLocation(sp)
+        LocUtils.retrieveLocation(preferencesDS.getString(Preference.StoredLocation))
 
     fun getLocalRecord(): UserRecord {
         return UserRecord(
             userId = -1,
-            readingRecord = PrefUtils.getInt(sp, Prefs.QuranPagesRecord),
-            listeningRecord = PrefUtils.getLong(sp, Prefs.TelawatPlaybackRecord)
+            readingRecord = preferencesDS.getInt(Preference.QuranPagesRecord),
+            listeningRecord = preferencesDS.getLong(Preference.TelawatPlaybackRecord)
         )
     }
 
     fun setLocalQuranRecord(pages: Int) {
-        sp.edit()
-            .putInt(Prefs.QuranPagesRecord.key, pages)
-            .apply()
+        preferencesDS.setInt(Preference.QuranPagesRecord, pages)
     }
 
     fun setLocalTelawatRecord(seconds: Long) {
-        sp.edit()
-            .putLong(Prefs.TelawatPlaybackRecord.key, seconds)
-            .apply()
+        preferencesDS.setLong(Preference.TelawatPlaybackRecord, seconds)
     }
 
     suspend fun getRemoteUserRecord(deviceId: String): Response<UserRecord> {

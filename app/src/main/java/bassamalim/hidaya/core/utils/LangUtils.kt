@@ -14,7 +14,7 @@ object LangUtils {
         string: String,
         timeFormat: Boolean = false
     ) : String {
-        val numeralsLanguage = PrefUtils.getNumeralsLanguage(PrefUtils.getPreferences(context))
+        val numeralsLanguage = preferencesDS.getNumeralsLanguage(preferencesDS.getPreferences(context))
 
         val str = if (timeFormat) cleanup(string, numeralsLanguage) else string
 
@@ -33,7 +33,7 @@ object LangUtils {
         string: String,
         timeFormat: Boolean = false
     ) : String {
-        val numeralsLanguage = PrefUtils.getNumeralsLanguage(pref)
+        val numeralsLanguage = preferencesDS.getNumeralsLanguage(pref)
 
         val str = if (timeFormat) cleanup(string, numeralsLanguage) else string
 

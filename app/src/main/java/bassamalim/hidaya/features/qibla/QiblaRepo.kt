@@ -1,16 +1,17 @@
 package bassamalim.hidaya.features.qibla
 
-import android.content.SharedPreferences
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.utils.LocUtils
-import bassamalim.hidaya.core.utils.PrefUtils
 import javax.inject.Inject
 
 class QiblaRepo @Inject constructor(
-    private val pref: SharedPreferences
+    private val preferencesDS: PreferencesDataSource
 ) {
 
-    fun getLocation() = LocUtils.retrieveLocation(pref)
+    fun numeralsLanguage() = preferencesDS.getNumeralsLanguage()
 
-    fun numeralsLanguage() = PrefUtils.getNumeralsLanguage(pref)
+    fun getLocation() =
+        LocUtils.retrieveLocation(preferencesDS.getString(Preference.StoredLocation))
 
 }

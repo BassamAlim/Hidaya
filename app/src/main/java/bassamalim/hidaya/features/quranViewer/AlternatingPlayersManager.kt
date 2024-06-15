@@ -1,7 +1,6 @@
 package bassamalim.hidaya.features.quranViewer
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
@@ -16,11 +15,11 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.AyatDB
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.utils.PrefUtils
 import java.util.Locale
 import kotlin.math.floor
 
@@ -28,7 +27,7 @@ import kotlin.math.floor
 @RequiresApi(Build.VERSION_CODES.O)
 class AlternatingPlayersManager(
     private val ctx: Context,
-    private val sp: SharedPreferences,
+    private val preferencesDS: PreferencesDataSource,
     private val db: AppDatabase,
     private val callback: PlayerCallback
 ) : OnPreparedListener, OnCompletionListener, OnErrorListener {
@@ -54,7 +53,11 @@ class AlternatingPlayersManager(
         val currentPlayerIdx = idx(mp)
         val prvPlayerIdx = prvIdx(mp)
         val nxtPlayerIdx = nxtIdx(mp)
-        Log.d(Global.TAG, "in onPrepared with playerIdx: $currentPlayerIdx and ayaIdx: ${aps[currentPlayerIdx].ayaIdx}")
+        Log.d(
+            Global.TAG,
+            "in onPrepared with playerIdx: $currentPlayerIdx " +
+                    "and ayaIdx: ${aps[currentPlayerIdx].ayaIdx}"
+        )
 
         aps[currentPlayerIdx].state = PlayerState.PREPARED
 
@@ -82,7 +85,11 @@ class AlternatingPlayersManager(
     override fun onCompletion(mp: MediaPlayer) {
         val currentPlayerIdx = idx(mp)
         val nxtPlayerIdx = nxtIdx(mp)
-        Log.d(Global.TAG, "in onCompletion with playerIdx: $currentPlayerIdx and ayaIdx: ${aps[currentPlayerIdx].ayaIdx}")
+        Log.d(
+            Global.TAG,
+            "in onCompletion with playerIdx: $currentPlayerIdx" +
+                " and ayaIdx: ${aps[currentPlayerIdx].ayaIdx}"
+        )
 
         aps[currentPlayerIdx].state = PlayerState.COMPLETED
         aps[currentPlayerIdx].repeated++
@@ -131,7 +138,10 @@ class AlternatingPlayersManager(
     }
 
     fun playFromMediaId(ayaIdx: Int) {
-        Log.d(Global.TAG, "in playFromMediaId in AlternatingPlayersManager with ayaIdx: $ayaIdx")
+        Log.d(
+            Global.TAG,
+            "in playFromMediaId in AlternatingPlayersManager with ayaIdx: $ayaIdx"
+        )
 
         if (ayaIdx != this.ayaIdx) playNew(ayaIdx)
         else if (isPaused) resume()
@@ -239,7 +249,7 @@ class AlternatingPlayersManager(
     }
 
     private fun getRepeat(): Int {
-        val repeat = floor(PrefUtils.getFloat(sp, Prefs.AyaRepeat)).toInt()
+        val repeat = floor(preferencesDS.getFloat(Preference.AyaRepeat)).toInt()
         return if (repeat == 11) Int.MAX_VALUE else repeat
     }
 
@@ -263,14 +273,14 @@ class AlternatingPlayersManager(
     private fun shouldStop(currentAya: Int, jumpSize: Int): Boolean {
         val targetAya = currentAya + jumpSize
         return targetAya >= ayat.size
-                || (PrefUtils.getBoolean(sp, Prefs.StopOnSuraEnd)
+                || (preferencesDS.getBoolean(Preference.StopOnSuraEnd)
                 && ayat[currentAya].suraNum != ayat[targetAya].suraNum)
-                || (PrefUtils.getBoolean(sp, Prefs.StopOnPageEnd)
+                || (preferencesDS.getBoolean(Preference.StopOnPageEnd)
                 && ayat[currentAya].page != ayat[targetAya].page)
     }
 
     private fun getUri(aya: AyatDB): Uri {
-        val choice = PrefUtils.getString(sp, Prefs.AyaReciter).toInt()
+        val choice = preferencesDS.getString(Preference.AyaReciter).toInt()
         val sources = db.ayatTelawaDao().getReciter(choice)
 
         var uri = "https://www.everyayah.com/data/"

@@ -1,35 +1,35 @@
 package bassamalim.hidaya.features.telawatPlayer
 
-import android.content.SharedPreferences
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.utils.PrefUtils
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import javax.inject.Inject
 
 class TelawatClientRepo @Inject constructor(
-    private val pref: SharedPreferences,
+    private val preferencesDS: PreferencesDataSource,
     private val db: AppDatabase,
 ) {
 
     fun getSuraNames() = db.suarDao().getNames()
 
-    fun getReciterName(reciterId: Int) = db.telawatRecitersDao().getNameAr(reciterId)
+    fun getReciterName(reciterId: Int) =
+        db.telawatRecitersDao().getNameAr(reciterId)
 
     fun getVersion(reciterId: Int, versionId: Int) =
         db.telawatRewayatDao().getVersion(reciterId, versionId)
 
-    fun getRepeatMode() = PrefUtils.getInt(pref, Prefs.TelawatRepeatMode)
+    fun getRepeatMode() =
+        preferencesDS.getInt(Preference.TelawatRepeatMode)
+
     fun setRepeatMode(mode: Int) {
-        pref.edit()
-            .putInt(Prefs.TelawatRepeatMode.key, mode)
-            .apply()
+        preferencesDS.setInt(Preference.TelawatRepeatMode, mode)
     }
 
-    fun getShuffleMode() = PrefUtils.getInt(pref, Prefs.TelawatShuffleMode)
+    fun getShuffleMode() =
+        preferencesDS.getInt(Preference.TelawatShuffleMode)
+
     fun setShuffleMode(mode: Int) {
-        pref.edit()
-            .putInt(Prefs.TelawatShuffleMode.key, mode)
-            .apply()
+        preferencesDS.setInt(Preference.TelawatShuffleMode, mode)
     }
 
 }

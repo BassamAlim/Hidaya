@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
@@ -33,15 +32,15 @@ import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
 import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.AyatDB
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
-import bassamalim.hidaya.core.utils.PrefUtils
 
 @UnstableApi
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -52,7 +51,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
     private lateinit var apm: AlternatingPlayersManager
     private lateinit var wifiLock: WifiManager.WifiLock
     private lateinit var db: AppDatabase
-    private lateinit var pref: SharedPreferences
+    private lateinit var preferencesDS: PreferencesDataSource
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var audioFocusRequest: AudioFocusRequest
     private lateinit var controller: MediaControllerCompat
@@ -122,13 +121,15 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
 
         ActivityUtils.onActivityCreateSetLocale(applicationContext)
 
-        pref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        preferencesDS = PreferencesDataSource(
+            PreferenceManager.getDefaultSharedPreferences(this)
+        )
         db = DBUtils.getDB(this)
 
         ayat = db.ayatDao().getAll()
         reciterNames = db.ayatRecitersDao().getNames()
         suarNames =
-            if (PrefUtils.getLanguage(pref) == Language.ENGLISH) db.suarDao().getNamesEn()
+            if (preferencesDS.getLanguage() == Language.ENGLISH) db.suarDao().getNamesEn()
             else db.suarDao().getNames()
 
         initSession()
@@ -148,7 +149,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
 
             val ayaId = mediaId.toInt()
 
-            reciterId = PrefUtils.getString(pref, Prefs.AyaReciter).toInt()
+            reciterId = preferencesDS.getString(Preference.AyaReciter).toInt()
 
             if (apm.isNotInitialized()) {
                 // Start the service
@@ -291,7 +292,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
     private fun initAPM() {
         apm = AlternatingPlayersManager(
             ctx = this,
-            sp = pref,
+            preferencesDS = preferencesDS,
             db = db,
             callback = this
         )
@@ -576,12 +577,10 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
     private fun getAya(id: Int) = ayat[id-1]
 
     private fun updateDurationRecord(amount: Int) {
-        val old = PrefUtils.getLong(pref, Prefs.TelawatPlaybackRecord)
+        val old = preferencesDS.getLong(Preference.TelawatPlaybackRecord)
         val new = old + amount * 1000
 
-        pref.edit()
-            .putLong(Prefs.TelawatPlaybackRecord.key, new)
-            .apply()
+        preferencesDS.setLong(Preference.TelawatPlaybackRecord, new)
 
         updateRecordCounter = 0
     }

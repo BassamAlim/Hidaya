@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.Prefs
+import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.ui.components.CategoryTitle
 import bassamalim.hidaya.core.ui.components.HorizontalRadioGroup
 import bassamalim.hidaya.core.ui.components.ListPref
@@ -54,7 +54,7 @@ fun QuranSettingsDlg(
 
             SliderPref(
                 sp = vm.sp,
-                pref = Prefs.QuranTextSize,
+                pref = Preference.QuranTextSize,
                 titleResId = R.string.text_size_title,
                 valueRange = 20F..50F
             )
@@ -65,7 +65,7 @@ fun QuranSettingsDlg(
             ListPref(
                 sp = vm.sp,
                 titleResId = R.string.reciter,
-                pref = Prefs.AyaReciter,
+                pref = Preference.AyaReciter,
                 iconResId = -1,
                 entries = vm.reciterNames.toTypedArray(),
                 values = vm.reciterIds,
@@ -74,7 +74,7 @@ fun QuranSettingsDlg(
 
             SliderPref(
                 sp = vm.sp,
-                pref = Prefs.AyaRepeat,
+                pref = Preference.AyaRepeat,
                 titleResId = R.string.aya_repeat,
                 valueRange = 1f..11f,
                 infinite = true
@@ -82,7 +82,7 @@ fun QuranSettingsDlg(
 
             SwitchPref(
                 sp = vm.sp,
-                pref = Prefs.StopOnSuraEnd,
+                pref = Preference.StopOnSuraEnd,
                 titleResId = R.string.stop_on_sura_end,
                 bgColor = AppTheme.colors.background,
                 summary = ""
@@ -90,7 +90,7 @@ fun QuranSettingsDlg(
 
             SwitchPref(
                 sp = vm.sp,
-                pref = Prefs.StopOnPageEnd,
+                pref = Preference.StopOnPageEnd,
                 titleResId = R.string.stop_on_page_end,
                 bgColor = AppTheme.colors.background,
                 summary = ""

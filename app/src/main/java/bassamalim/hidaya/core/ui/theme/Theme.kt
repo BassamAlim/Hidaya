@@ -7,7 +7,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import bassamalim.hidaya.core.enums.Theme
-import bassamalim.hidaya.core.utils.PrefUtils
 
 object AppTheme {
     val colors: AppColors
@@ -28,7 +27,7 @@ object AppTheme {
 
 @Composable
 fun AppTheme(
-    theme: Theme = PrefUtils.getTheme(PrefUtils.getPreferences(LocalContext.current)),
+    theme: Theme = preferencesDS.getTheme(preferencesDS.getPreferences(LocalContext.current)),
     typography: AppTypography = AppTheme.typography,
     dimensions: AppDimensions = AppTheme.dimensions,
     direction: LayoutDirection = LayoutDirection.Rtl,

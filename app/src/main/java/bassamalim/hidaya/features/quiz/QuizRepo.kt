@@ -1,16 +1,15 @@
 package bassamalim.hidaya.features.quiz
 
-import android.content.SharedPreferences
 import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.utils.PrefUtils
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import javax.inject.Inject
 
 class QuizRepo @Inject constructor(
-    private val sp: SharedPreferences,
+    private val preferencesDS: PreferencesDataSource,
     private val db: AppDatabase
 ) {
 
-    fun getNumeralsLanguage() = PrefUtils.getNumeralsLanguage(sp)
+    fun getNumeralsLanguage() = preferencesDS.getNumeralsLanguage()
 
     fun getQuestions() = db.quizQuestionDao().all
 

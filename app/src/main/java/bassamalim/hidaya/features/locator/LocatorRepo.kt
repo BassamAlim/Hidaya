@@ -1,36 +1,36 @@
 package bassamalim.hidaya.features.locator
 
-import android.content.SharedPreferences
 import android.location.Location
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.utils.LocUtils
-import bassamalim.hidaya.core.utils.PrefUtils
 import javax.inject.Inject
 
 class LocatorRepo @Inject constructor(
-    private val sp: SharedPreferences,
+    private val preferencesDS: PreferencesDataSource,
     private val db: AppDatabase
 ) {
 
-    val language = PrefUtils.getString(sp, Prefs.Language)
+    fun getLanguage() = preferencesDS.getString(Preference.Language)
 
     fun setLocationType(type: LocationType) {
-        sp.edit()
-            .putString(Prefs.LocationType.key, type.name)
-            .apply()
+        preferencesDS.setString(Preference.LocationType, type.name)
     }
 
     fun storeLocation(location: Location) {
         val closestCity = db.cityDao().getClosest(location.latitude, location.longitude)
 
-        sp.edit()
-            .putInt(Prefs.CountryID.key, closestCity.countryId)
-            .putInt(Prefs.CityID.key, closestCity.id)
-            .apply()
+        preferencesDS.setInt(Preference.CountryID, closestCity.countryId)
+        preferencesDS.setInt(Preference.CityID, closestCity.id)
 
-        LocUtils.storeLocation(sp, location)
+        LocUtils.storeLocation(
+            location = location,
+            locationPreferenceSetter = {
+                json -> preferencesDS.setString(Preference.StoredLocation, json)
+            }
+        )
     }
 
 }

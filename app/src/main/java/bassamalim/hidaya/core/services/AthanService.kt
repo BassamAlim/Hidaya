@@ -22,11 +22,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
-import bassamalim.hidaya.core.data.Prefs
+import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
-import bassamalim.hidaya.core.utils.PrefUtils
 import java.util.Calendar
 
 class AthanService : Service() {
@@ -42,7 +41,7 @@ class AthanService : Service() {
         super.onCreate()
         ActivityUtils.onActivityCreateSetLocale(applicationContext)
 
-        sp = PrefUtils.getPreferences(applicationContext)
+        sp = preferencesDS.getPreferences(applicationContext)
 
         createNotificationChannel()
     }
@@ -165,7 +164,7 @@ class AthanService : Service() {
     }
 
     private fun getAthanVoice(): Int {
-        val athanVoice = PrefUtils.getString(sp, Prefs.AthanVoice)
+        val athanVoice = preferencesDS.getString(Preference.AthanVoice)
         return when(athanVoice.toInt()) {
             1 -> R.raw.athan1
             2 -> R.raw.athan2

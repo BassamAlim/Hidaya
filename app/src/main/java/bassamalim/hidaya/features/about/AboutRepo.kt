@@ -1,15 +1,14 @@
 package bassamalim.hidaya.features.about
 
-import android.content.SharedPreferences
-import bassamalim.hidaya.core.data.Prefs
-import bassamalim.hidaya.core.utils.PrefUtils
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import javax.inject.Inject
 
 class AboutRepo @Inject constructor(
-    private val sp: SharedPreferences
+    private val preferencesDS: PreferencesDataSource
 ) {
 
     fun getLastUpdate() =
-        PrefUtils.getString(sp, Prefs.DailyUpdateRecord)
+        preferencesDS.getString(Preference.DailyUpdateRecord)
 
 }

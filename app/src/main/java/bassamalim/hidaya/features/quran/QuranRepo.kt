@@ -1,40 +1,32 @@
 package bassamalim.hidaya.features.quran
 
-import android.content.SharedPreferences
 import android.content.res.Resources
-import android.util.Log
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.Prefs
 import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.data.database.dbs.SuarDB
+import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.utils.PrefUtils
 import com.google.gson.Gson
 import javax.inject.Inject
 
 class QuranRepo @Inject constructor(
     private val res: Resources,
-    private val sp: SharedPreferences,
+    private val preferencesDS: PreferencesDataSource,
     private val db: AppDatabase,
     private val gson: Gson
 ) {
 
-    fun getNumeralsLanguage() = PrefUtils.getNumeralsLanguage(sp)
+    fun getNumeralsLanguage() = preferencesDS.getNumeralsLanguage()
 
-    fun getBookmarkedPage() = PrefUtils.getInt(sp, Prefs.BookmarkedPage)
+    fun getBookmarkedPage() = preferencesDS.getInt(Preference.BookmarkedPage)
 
-    fun getBookmarkedSura() = PrefUtils.getInt(sp, Prefs.BookmarkedSura)
+    fun getBookmarkedSura() = preferencesDS.getInt(Preference.BookmarkedSura)
 
-    fun getAllSuar(): List<SuarDB> {
-        val suar = db.suarDao().getAll()
-        Log.d("FromMeToMe", "getAllSuar: $suar")
-        return suar
-    }
+    fun getAllSuar() = db.suarDao().getAll()
 
-    fun getSuraNames(): List<String> {
-        return if (PrefUtils.getLanguage(sp) == Language.ENGLISH) db.suarDao().getNamesEn()
+    fun getSuraNames(): List<String> =
+        if (preferencesDS.getLanguage() == Language.ENGLISH) db.suarDao().getNamesEn()
         else db.suarDao().getNames()
-    }
 
     fun getFavs() = db.suarDao().getFavs()
 
@@ -44,17 +36,13 @@ class QuranRepo @Inject constructor(
 
     fun updateFavorites(favs: List<Int>) {
         val json = gson.toJson(favs.toIntArray())
-        sp.edit()
-            .putString(Prefs.FavoriteSuar.key, json)
-            .apply()
+        preferencesDS.setString(Preference.FavoriteSuar, json)
     }
 
-    fun getShowTutorial() = PrefUtils.getBoolean(sp, Prefs.ShowQuranTutorial)
+    fun getShowTutorial() = preferencesDS.getBoolean(Preference.ShowQuranTutorial)
 
     fun setDoNotShowAgain() {
-        sp.edit()
-            .putBoolean(Prefs.ShowQuranTutorial.key, false)
-            .apply()
+        preferencesDS.setBoolean(Preference.ShowQuranTutorial, false)
     }
 
     fun getSuraStr() = res.getString(R.string.sura)
