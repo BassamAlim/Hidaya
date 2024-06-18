@@ -10,14 +10,14 @@ import javax.inject.Inject
 
 class BookViewerRepo @Inject constructor(
     private val ctx: Context,
-    private val preferencesDS: PreferencesDataSource,
+    private val prefs: PreferencesDataSource,
     private val gson: Gson
 ) {
 
-    fun getTextSize() = preferencesDS.getFloat(Preference.BooksTextSize)
+    fun getTextSize() = prefs.getFloat(Preference.BooksTextSize)
 
     fun updateTextSize(textSize: Float) {
-        preferencesDS.setFloat(Preference.BooksTextSize, textSize)
+        prefs.setFloat(Preference.BooksTextSize, textSize)
     }
 
     fun getDoors(bookId: Int, chapterId: Int): List<Book.BookChapter.BookDoor> {

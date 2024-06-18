@@ -47,7 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.QuranViewTypes.*
+import bassamalim.hidaya.core.enums.QuranViewType.*
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.models.Aya
 import bassamalim.hidaya.core.other.Global
@@ -268,7 +268,7 @@ private fun PageContent(
                 if (isCurrentPage) st.pageAyat
                 else vm.buildPage(pageIdx + 1)
 
-            if (st.viewType == List) ListItems(ayat, isCurrentPage, vm, st)
+            if (st.viewType == LIST) ListItems(ayat, isCurrentPage, vm, st)
             else PageItems(ayat, isCurrentPage, vm, st)
 
             if (isCurrentPage && vm.scrollTo > 0f) {

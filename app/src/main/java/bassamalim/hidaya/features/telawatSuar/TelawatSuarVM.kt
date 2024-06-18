@@ -143,7 +143,7 @@ class TelawatSuarVM @Inject constructor(
 
     private fun download(sura: ReciterSura) {
         _uiState.update { it.copy(
-            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+            downloadStates = it.downloadStates.toMutableList().apply {
                 this[sura.num] = DownloadState.Downloading
             }
         )}
@@ -170,7 +170,7 @@ class TelawatSuarVM @Inject constructor(
                 val id = downloading[downloadId]!!
 
                 _uiState.update { it.copy(
-                    downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+                    downloadStates = it.downloadStates.toMutableList().apply {
                         this[id] = DownloadState.Downloaded
                     }
                 )}
@@ -212,7 +212,7 @@ class TelawatSuarVM @Inject constructor(
 
     fun onDelete(suraNum: Int) {
         _uiState.update { it.copy(
-            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+            downloadStates = it.downloadStates.toMutableList().apply {
                 this[suraNum] = DownloadState.NotDownloaded
             }
         )}

@@ -27,7 +27,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.QuranViewTypes
+import bassamalim.hidaya.core.enums.QuranViewType
 import bassamalim.hidaya.core.models.Aya
 import bassamalim.hidaya.core.other.Global
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -86,7 +86,7 @@ class QuranViewerVM @Inject constructor(
     private val _uiState = MutableStateFlow(QuranViewerState(
         pageNum = initialPageNum,
         viewType =
-            if (language == Language.ENGLISH) QuranViewTypes.List
+            if (language == Language.ENGLISH) QuranViewType.LIST
             else repo.getViewType(),
         textSize = repo.getTextSize(),
         isBookmarked = bookmarkedPage == initialPageNum,
@@ -98,7 +98,7 @@ class QuranViewerVM @Inject constructor(
     init {
         if (targetType == QuranTarget.AYA) {
             _uiState.update { it.copy(
-                selectedAya = _uiState.value.pageAyat.first { it.id == targetValue }
+                selectedAya = it.pageAyat.first { it.id == targetValue }
             )}
         }
     }
@@ -149,7 +149,7 @@ class QuranViewerVM @Inject constructor(
         }
 
         _uiState.update { it.copy(
-            isBookmarked = !_uiState.value.isBookmarked
+            isBookmarked = !it.isBookmarked
         )}
     }
 
@@ -191,7 +191,7 @@ class QuranViewerVM @Inject constructor(
 
                     if (_uiState.value.selectedAya == null) {
                         _uiState.update { it.copy(
-                            selectedAya = _uiState.value.pageAyat[0]
+                            selectedAya = it.pageAyat[0]
                         )}
                     }
 
@@ -221,7 +221,7 @@ class QuranViewerVM @Inject constructor(
 
         var aya: Aya? = null
         when (_uiState.value.viewType) {
-            QuranViewTypes.Page -> {
+            QuranViewType.PAGE -> {
                 val startIdx = _uiState.value.pageAyat.indexOfFirst { it.id == ayaId }
                 for (idx in startIdx until _uiState.value.pageAyat.size) {
                     val a = _uiState.value.pageAyat[idx]
@@ -231,7 +231,7 @@ class QuranViewerVM @Inject constructor(
                     }
                 }
             }
-            QuranViewTypes.List -> aya = _uiState.value.pageAyat.find { it.id == ayaId }
+            QuranViewType.LIST -> aya = _uiState.value.pageAyat.find { it.id == ayaId }
         }
 
         // double click
@@ -284,7 +284,7 @@ class QuranViewerVM @Inject constructor(
         layoutCoordinates: LayoutCoordinates
     ) {
         val screenHeight = app.resources.displayMetrics.heightPixels
-        if (isCurrentPage && _uiState.value.viewType == QuranViewTypes.List)
+        if (isCurrentPage && _uiState.value.viewType == QuranViewType.LIST)
             ayaPositions[aya.id] = layoutCoordinates.positionInParent().y - screenHeight / 3f
     }
 
@@ -412,7 +412,7 @@ class QuranViewerVM @Inject constructor(
 
             if (_uiState.value.selectedAya == null) {
                 _uiState.update { it.copy(
-                    selectedAya = _uiState.value.pageAyat[0]
+                    selectedAya = it.pageAyat[0]
                 )}
             }
 
@@ -438,7 +438,7 @@ class QuranViewerVM @Inject constructor(
             _uiState.update { it.copy(
                 trackedAyaId = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
             )}
-            if (_uiState.value.viewType == QuranViewTypes.List) {
+            if (_uiState.value.viewType == QuranViewType.LIST) {
                 coroutineScope.launch {
                     Log.d(Global.TAG, "Scrolling to ${_uiState.value.trackedAyaId} at ${ayaPositions[_uiState.value.trackedAyaId]}")
                     if (ayaPositions[_uiState.value.trackedAyaId] != null)

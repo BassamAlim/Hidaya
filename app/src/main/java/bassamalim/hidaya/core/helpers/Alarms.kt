@@ -159,8 +159,9 @@ class Alarms {
     private fun setExtraAlarm(pid: PID) {
         Log.i(Global.TAG, "in set extra alarm")
 
-        val hour = preferencesDS.getInt(Preference.ExtraNotificationHour(pid))
-        val minute = preferencesDS.getInt(Preference.ExtraNotificationMinute(pid))
+        val minuteOfDay = preferencesDS.getInt(Preference.ExtraNotificationMinuteOfDay(pid))
+        val hour = minuteOfDay / 60
+        val minute = minuteOfDay % 60
 
         val time = Calendar.getInstance()
         time[Calendar.HOUR_OF_DAY] = hour

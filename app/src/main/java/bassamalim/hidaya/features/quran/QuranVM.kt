@@ -103,7 +103,7 @@ class QuranVM @Inject constructor(
 
     fun onFavClick(itemId: Int) {
         _uiState.update { it.copy(
-            favs = _uiState.value.favs.toMutableList().apply {
+            favs = it.favs.toMutableList().apply {
                 this[itemId] = if (this[itemId] == 1) 0 else 1
             }
         )}
@@ -131,7 +131,7 @@ class QuranVM @Inject constructor(
             }
             else {
                 _uiState.update { it.copy(
-                    shouldShowPageDNE = _uiState.value.shouldShowPageDNE + 1
+                    shouldShowPageDNE = it.shouldShowPageDNE + 1
                 )}
             }
         } catch (_: NumberFormatException) {}

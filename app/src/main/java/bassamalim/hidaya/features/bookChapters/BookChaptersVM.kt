@@ -60,7 +60,7 @@ class BookChaptersVM @Inject constructor(
 
     fun onFavClick(itemId: Int) {
         _uiState.update { it.copy(
-            favs = _uiState.value.favs.toMutableList().apply {
+            favs = it.favs.toMutableList().apply {
                 this[itemId] = if (this[itemId] == 1) 0 else 1
             }
         )}

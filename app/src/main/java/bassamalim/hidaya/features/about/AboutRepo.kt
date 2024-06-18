@@ -9,6 +9,6 @@ class AboutRepo @Inject constructor(
 ) {
 
     fun getLastUpdate() =
-        preferencesDS.getString(Preference.DailyUpdateRecord)
+        preferencesDS.getLong(Preference.LastDailyUpdateMillis)
 
 }

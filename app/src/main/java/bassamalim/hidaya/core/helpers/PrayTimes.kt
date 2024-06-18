@@ -3,6 +3,7 @@ package bassamalim.hidaya.core.helpers
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.PTCalculationMethod
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import java.util.Calendar
@@ -22,7 +23,8 @@ class PrayTimes(
 ) {
 
     private val timeFormat = preferencesDS.getTimeFormat()
-    private val calcMethod = preferencesDS.getString(Preference.PrayerTimesCalculationMethod)
+//    private val calcMethod = preferencesDS.getString(Preference.PrayerTimesCalculationMethod)
+    private val calcMethod = PTCalculationMethod.MECCA
     private var asrJuristic =
         if (preferencesDS.getString(Preference.PrayerTimesJuristicMethod) == "HANAFI") 1
         else 0
@@ -37,13 +39,12 @@ class PrayTimes(
     private var numIterations = 1 // number of iterations needed to compute times
 
     private val methodParams = hashMapOf(
-        "MECCA" to doubleArrayOf(18.5, 1.0, 0.0, 1.0, 90.0),
-        "MWL" to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0),
-        "ISNA" to doubleArrayOf(15.0, 1.0, 0.0, 0.0, 15.0),
-        "JAFARI" to doubleArrayOf(16.0, 0.0, 4.0, 0.0, 14.0),
-        "KARACHI" to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 18.0),
-        "EGYPT" to doubleArrayOf(19.5, 1.0, 0.0, 0.0, 17.5),
-        "TAHRAN" to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0)
+        PTCalculationMethod.MECCA to doubleArrayOf(18.5, 1.0, 0.0, 1.0, 90.0),
+        PTCalculationMethod.MWL to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0),
+        PTCalculationMethod.ISNA to doubleArrayOf(15.0, 1.0, 0.0, 0.0, 15.0),
+        PTCalculationMethod.KARACHI to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 18.0),
+        PTCalculationMethod.EGYPT to doubleArrayOf(19.5, 1.0, 0.0, 0.0, 17.5),
+        PTCalculationMethod.TAHRAN to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0)
     )
 
     init {
@@ -68,8 +69,12 @@ class PrayTimes(
         date: Calendar = Calendar.getInstance()
     ): Array<Calendar?> {
         setValues(
-            lat, lon, tZone,
-            date[Calendar.YEAR], date[Calendar.MONTH] + 1, date[Calendar.DATE]
+            lat = lat,
+            lng = lon,
+            tZone = tZone,
+            year = date[Calendar.YEAR],
+            month = date[Calendar.MONTH] + 1,
+            day = date[Calendar.DATE]
         )
 
         val times = floatToTime24(computeDayTimes())
@@ -87,8 +92,6 @@ class PrayTimes(
             cal[Calendar.MILLISECOND] = 0
             cals[i] = cal
         }
-
-        // add offsets
 
         return cals
     }
@@ -116,7 +119,12 @@ class PrayTimes(
     }
 
     private fun setValues(
-        lat: Double, lng: Double, tZone: Double, year: Int, month: Int, day: Int
+        lat: Double,
+        lng: Double,
+        tZone: Double,
+        year: Int,
+        month: Int,
+        day: Int
     ) {
         latitude = lat
         longitude = lng
@@ -152,8 +160,8 @@ class PrayTimes(
     private fun computeDayTimes(): DoubleArray {
         var times = doubleArrayOf(5.0, 6.0, 12.0, 13.0, 18.0, 18.0, 18.0)  // default times
         for (i in 1..numIterations) times = computeTimes(times)
-        adjustTimes(times)
-        tuneTimes(times)
+        times = adjustTimes(times)
+        times = tuneTimes(times)
         return times
     }
 
@@ -174,7 +182,7 @@ class PrayTimes(
     // Shafii: step=1, Hanafi: step=2
     private fun computeAsr(step: Double, t: Double): Double {
         val d = sunDeclination(jDate + t)
-        val g = -dArcCot(step + dTan(abs(latitude - d)))
+        val g = -degreeArcCot(step + degreeTan(abs(latitude - d)))
         return computeTime(g, t)
     }
 
@@ -183,16 +191,15 @@ class PrayTimes(
     private fun computeTime(G: Double, t: Double): Double {
         val d = sunDeclination(jDate + t)
         val z = computeMidDay(t)
-        val beg = -dSin(G) - dSin(d) * dSin(latitude)
-        val mid = dCos(d) * dCos(latitude)
-        val v = dArcCos(beg / mid) / 15.0
+        val beg = -degreeSin(G) - degreeSin(d) * degreeSin(latitude)
+        val mid = degreeCos(d) * degreeCos(latitude)
+        val v = degreeArcCos(beg / mid) / 15.0
         return z + if (G > 90) -v else v
     }
 
     // compute declination angle of sun
-    private fun sunDeclination(jd: Double): Double {
-        return sunPosition(jd)[0]
-    }
+    private fun sunDeclination(jd: Double) =
+        sunPosition(jd)[0]
 
     // compute mid-day (Dhuhr, Zawal) time
     private fun computeMidDay(gT: Double): Double {
@@ -201,22 +208,21 @@ class PrayTimes(
     }
 
     // compute equation of time
-    private fun equationOfTime(jd: Double): Double {
-        return sunPosition(jd)[1]
-    }
+    private fun equationOfTime(jd: Double) =
+        sunPosition(jd)[1]
 
     // compute declination angle of sun and equation of time
     private fun sunPosition(jd: Double): DoubleArray {
         val dd = jd - 2451545
         val g = fixAngle(357.529 + 0.98560028 * dd)
         val q = fixAngle(280.459 + 0.98564736 * dd)
-        val l = fixAngle(q + 1.915 * dSin(g) + 0.020 * dSin(2 * g))
+        val l = fixAngle(q + 1.915 * degreeSin(g) + 0.020 * degreeSin(2 * g))
 
         // double R = 1.00014 - 0.01671 * [self dCos:g] - 0.00014 * [self dCos:
         // (2*g)];
         val e = 23.439 - 0.00000036 * dd
-        val d = dArcSin(dSin(e) * dSin(l))
-        var ra = dArcTan2(dCos(e) * dSin(l), dCos(l)) / 15.0
+        val d = degreeArcSin(degreeSin(e) * degreeSin(l))
+        var ra = degreeArcTan2(degreeCos(e) * degreeSin(l), degreeCos(l)) / 15.0
         ra = fixHour(ra)
         val eqT = q / 15.0 - ra
         val sPosition = DoubleArray(2)
@@ -273,15 +279,14 @@ class PrayTimes(
     }
 
     // compute the difference between two times
-    private fun timeDiff(time1: Double, time2: Double): Double {
-        return fixHour(time2 - time1)
-    }
+    private fun timeDiff(time1: Double, time2: Double) =
+        fixHour(time2 - time1)
 
     // convert hours to day portions
-    private fun dayPortion(times: DoubleArray): DoubleArray {
-        for (i in 0..6) times[i] = times[i] / 24
-        return times
-    }
+    private fun dayPortion(times: DoubleArray) =
+        times.map { time ->
+            time / 24.0
+        }.toDoubleArray()
 
     // the night portion used for adjusting times in higher latitudes
     private fun nightPortion(angle: Double): Double {
@@ -293,10 +298,10 @@ class PrayTimes(
         }
     }
 
-    private fun tuneTimes(times: DoubleArray): DoubleArray {
-        for (i in times.indices) times[i] = times[i] + offsets[i] / 60.0
-        return times
-    }
+    private fun tuneTimes(times: DoubleArray): DoubleArray =
+        times.mapIndexed { i, time ->
+            time + offsets[i] / 60.0
+        }.toDoubleArray()
 
     // convert double hours to 24h format
     private fun floatToTime24(times: DoubleArray): ArrayList<String> {
@@ -361,47 +366,22 @@ class PrayTimes(
         return a
     }
 
-    // degree sin
-    private fun dSin(d: Double): Double {
-        return sin(degreesToRadians(d))
-    }
+    private fun degreeSin(d: Double) = sin(degreesToRadians(d))
 
-    // degree cos
-    private fun dCos(d: Double): Double {
-        return cos(degreesToRadians(d))
-    }
+    private fun degreeCos(d: Double) = cos(degreesToRadians(d))
 
-    // degree tan
-    private fun dTan(d: Double): Double {
-        return tan(degreesToRadians(d))
-    }
+    private fun degreeTan(d: Double) = tan(degreesToRadians(d))
 
-    // degree arcSin
-    private fun dArcSin(x: Double): Double {
-        return radiansToDegrees(asin(x))
-    }
+    private fun degreeArcSin(x: Double) = radiansToDegrees(asin(x))
 
-    // degree arcCos
-    private fun dArcCos(x: Double): Double {
-        return radiansToDegrees(acos(x))
-    }
+    private fun degreeArcCos(x: Double) = radiansToDegrees(acos(x))
 
-    // degree arcTan2
-    private fun dArcTan2(y: Double, x: Double): Double {
-        return radiansToDegrees(atan2(y, x))
-    }
+    private fun degreeArcTan2(y: Double, x: Double) = radiansToDegrees(atan2(y, x))
 
-    // degree arcCot
-    private fun dArcCot(x: Double): Double {
-        return radiansToDegrees(atan2(1.0, x))
-    }
+    private fun degreeArcCot(x: Double) = radiansToDegrees(atan2(1.0, x))
 
-    private fun radiansToDegrees(alpha: Double): Double {
-        return alpha * 180.0 / Math.PI
-    }
+    private fun radiansToDegrees(alpha: Double) = alpha * 180.0 / Math.PI
 
-    private fun degreesToRadians(alpha: Double): Double {
-        return alpha * Math.PI / 180.0
-    }
+    private fun degreesToRadians(alpha: Double) = alpha * Math.PI / 180.0
 
 }

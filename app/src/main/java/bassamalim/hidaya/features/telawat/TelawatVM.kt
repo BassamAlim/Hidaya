@@ -55,7 +55,7 @@ class TelawatVM @Inject constructor(
 
     init {
         _uiState.update { it.copy(
-            isFiltered = _uiState.value.selectedVersions.any { bool -> !bool }
+            isFiltered = it.selectedVersions.any { bool -> !bool }
         )}
     }
 
@@ -249,7 +249,7 @@ class TelawatVM @Inject constructor(
             try {
                 val versionId = downloading[downloadId]!!
                 _uiState.update { it.copy(
-                    downloadStates = _uiState.value.downloadStates.toMutableMap().apply {
+                    downloadStates = it.downloadStates.toMutableMap().apply {
                         this[versionId] = DownloadState.Downloaded
                     }
                 )}
@@ -302,7 +302,7 @@ class TelawatVM @Inject constructor(
 
     fun onDeleteClk(versionId: Int) {
         _uiState.update { it.copy(
-            downloadStates = _uiState.value.downloadStates.toMutableMap().apply {
+            downloadStates = it.downloadStates.toMutableMap().apply {
                 this[versionId] = DownloadState.NotDownloaded
             }
         )}
@@ -310,7 +310,7 @@ class TelawatVM @Inject constructor(
 
     fun onDownloadClk(reciterId: Int, version: Reciter.RecitationVersion) {
         _uiState.update { it.copy(
-            downloadStates = _uiState.value.downloadStates.toMutableMap().apply {
+            downloadStates = it.downloadStates.toMutableMap().apply {
                 this[reciterId] = DownloadState.Downloading
             }
         )}

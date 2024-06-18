@@ -16,6 +16,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.preferences.Preference
@@ -46,6 +48,7 @@ class Activity : ComponentActivity() {
 
     @Inject lateinit var preferencesDS: PreferencesDataSource
     @Inject lateinit var db: AppDatabase
+    private lateinit var dataStore: DataStore<Preferences>
     @Inject lateinit var navigator: Navigator
     private var shouldWelcome = false
     private var startRoute: String? = null
@@ -55,6 +58,8 @@ class Activity : ComponentActivity() {
 
         shouldWelcome = preferencesDS.getBoolean(Preference.FirstTime)
         startRoute = intent.getStringExtra("start_route")
+
+        dataStore = createDataStore(name = "settings")
 
         val isFirstLaunch = savedInstanceState == null
 

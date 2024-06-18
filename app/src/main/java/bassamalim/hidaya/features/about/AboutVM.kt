@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +24,7 @@ class AboutVM @Inject constructor(
     private var counter by mutableIntStateOf(0)
 
     private val _uiState = MutableStateFlow(AboutState(
-        lastDailyUpdate = repo.getLastUpdate()
+        lastDailyUpdate = formatLastUpdate(repo.getLastUpdate())
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -41,12 +42,23 @@ class AboutVM @Inject constructor(
         DBUtils.reviveDB(app)
 
         _uiState.update { it.copy(
-            shouldShowRebuilt = _uiState.value.shouldShowRebuilt + 1
+            shouldShowRebuilt = it.shouldShowRebuilt + 1
         )}
     }
 
     fun onTitleClick() {
         if (++counter == 5) enableDevMode()
+    }
+
+    private fun formatLastUpdate(millis: Long): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = millis
+
+        return "Last Daily Update: " +
+                "${calendar[Calendar.YEAR]}/" +
+                "${calendar[Calendar.MONTH] + 1}/" +
+                "${calendar[Calendar.DATE]} " +
+                "${calendar[Calendar.HOUR_OF_DAY]}:${calendar[Calendar.MINUTE]}"
     }
 
 }

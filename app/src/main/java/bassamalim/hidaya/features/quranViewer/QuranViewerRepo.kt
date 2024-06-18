@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.quranViewer
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
-import bassamalim.hidaya.core.enums.QuranViewTypes
+import bassamalim.hidaya.core.enums.QuranViewType
 import javax.inject.Inject
 
 class QuranViewerRepo @Inject constructor(
@@ -28,7 +28,7 @@ class QuranViewerRepo @Inject constructor(
     fun getSuraNamesEn() = db.suarDao().getNamesEn()
 
     fun getViewType() =
-        QuranViewTypes.valueOf(preferencesDS.getString(Preference.QuranViewType))
+        QuranViewType.valueOf(preferencesDS.getString(Preference.QuranViewType))
 
     fun getShowTutorial() =
         preferencesDS.getBoolean(Preference.ShowQuranViewerTutorial)

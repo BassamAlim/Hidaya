@@ -50,7 +50,7 @@ class QuizVM @Inject constructor(
         if (_uiState.value.questionIdx == 9) {
             _uiState.update { it.copy(
                 selection = a,
-                nextBtnEnabled = !(_uiState.value.questionIdx == 9 && !_uiState.value.allAnswered),
+                nextBtnEnabled = !(it.questionIdx == 9 && !it.allAnswered),
             )}
         }
         else nextQ()
@@ -108,9 +108,9 @@ class QuizVM @Inject constructor(
         _uiState.update { it.copy(
             question = question.questionText!!,
             answers = answers.map { a -> a.answerText },
-            selection = chosenAs[_uiState.value.questionIdx],
-            prevBtnEnabled = _uiState.value.questionIdx != 0,
-            nextBtnEnabled = !(_uiState.value.questionIdx == 9 && !_uiState.value.allAnswered),
+            selection = chosenAs[it.questionIdx],
+            prevBtnEnabled = it.questionIdx != 0,
+            nextBtnEnabled = !(it.questionIdx == 9 && !it.allAnswered),
         )}
     }
 

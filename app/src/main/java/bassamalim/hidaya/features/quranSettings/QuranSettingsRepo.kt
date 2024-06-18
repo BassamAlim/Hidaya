@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.quranSettings
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
-import bassamalim.hidaya.core.enums.QuranViewTypes
+import bassamalim.hidaya.core.enums.QuranViewType
 import javax.inject.Inject
 
 class QuranSettingsRepo @Inject constructor(
@@ -12,9 +12,9 @@ class QuranSettingsRepo @Inject constructor(
 ) {
 
     fun getViewType() =
-        QuranViewTypes.valueOf(preferencesDS.getString(Preference.QuranViewType))
+        QuranViewType.valueOf(preferencesDS.getString(Preference.QuranViewType))
 
-    fun setViewType(type: QuranViewTypes) {
+    fun setViewType(type: QuranViewType) {
         preferencesDS.setString(Preference.QuranViewType, type.name)
     }
 

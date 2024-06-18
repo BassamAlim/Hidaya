@@ -16,13 +16,16 @@ class SettingsRepo @Inject constructor(
 
     fun getTimeFormat() = preferencesDS.getTimeFormat()
 
-    fun getTime(pid: PID): String =
-        "${preferencesDS.getInt(Preference.ExtraNotificationHour(pid))}:" +
-                "${preferencesDS.getInt(Preference.ExtraNotificationMinute(pid))}"
+    fun getTime(pid: PID): String {
+        val minuteOfDay = preferencesDS.getInt(Preference.ExtraNotificationMinuteOfDay(pid))
+        val hour = minuteOfDay / 60
+        val minute = minuteOfDay % 60
+        return "${hour.toString().format("%02d")}:${minute.toString().format("%02d")}"
+    }
 
     fun setTime(pid: PID, hour: Int, minute: Int) {
-        preferencesDS.setInt(Preference.ExtraNotificationHour(pid), hour)
-        preferencesDS.setInt(Preference.ExtraNotificationMinute(pid), minute)
+        val minuteOfDay = hour * 60 + minute
+        preferencesDS.setInt(Preference.ExtraNotificationMinuteOfDay(pid), minuteOfDay)
     }
 
     fun getTimePickerTitleStr() = resources.getString(R.string.time_picker_title)

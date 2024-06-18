@@ -3,10 +3,30 @@ package bassamalim.hidaya.core.di
 import android.app.Application
 import android.content.Context
 import android.content.res.Resources
-import androidx.preference.PreferenceManager
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
+import androidx.datastore.dataStoreFile
 import androidx.room.Room
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataStore.objects.AppSettingsPreferences
+import bassamalim.hidaya.core.data.preferences.dataStore.objects.AppStatePreferences
+import bassamalim.hidaya.core.data.preferences.dataStore.objects.BooksPreferences
+import bassamalim.hidaya.core.data.preferences.dataStore.objects.NotificationsPreferences
+import bassamalim.hidaya.core.data.preferences.dataStore.objects.PrayersPreferences
+import bassamalim.hidaya.core.data.preferences.dataStore.objects.QuranPreferences
+import bassamalim.hidaya.core.data.preferences.dataStore.objects.RecitationsPreferences
+import bassamalim.hidaya.core.data.preferences.dataStore.objects.SupplicationsPreferences
+import bassamalim.hidaya.core.data.preferences.dataStore.objects.UserPreferences
+import bassamalim.hidaya.core.data.preferences.dataStore.serializers.AppSettingsPreferencesSerializer
+import bassamalim.hidaya.core.data.preferences.dataStore.serializers.AppStatePreferencesSerializer
+import bassamalim.hidaya.core.data.preferences.dataStore.serializers.BooksPreferencesSerializer
+import bassamalim.hidaya.core.data.preferences.dataStore.serializers.NotificationsPreferencesSerializer
+import bassamalim.hidaya.core.data.preferences.dataStore.serializers.PrayersPreferencesSerializer
+import bassamalim.hidaya.core.data.preferences.dataStore.serializers.QuranPreferencesSerializer
+import bassamalim.hidaya.core.data.preferences.dataStore.serializers.RecitationsPreferencesSerializer
+import bassamalim.hidaya.core.data.preferences.dataStore.serializers.SupplicationsPreferencesSerializer
+import bassamalim.hidaya.core.data.preferences.dataStore.serializers.UserPreferencesSerializer
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.about.AboutRepo
 import bassamalim.hidaya.features.athkarList.AthkarListRepo
@@ -45,7 +65,11 @@ import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
 @Module
@@ -60,11 +84,6 @@ object AppModule {
     fun provideResources(application: Application): Resources =
         application.resources
 
-
-    @Provides @Singleton
-    fun providePreferencesDataSource(application: Application) =
-        PreferencesDataSource(PreferenceManager.getDefaultSharedPreferences(application))
-
     @Provides @Singleton
     fun provideDatabase(application: Application) =
         Room.databaseBuilder(
@@ -72,6 +91,105 @@ object AppModule {
         ).createFromAsset("databases/HidayaDB.db")
             .allowMainThreadQueries()
             .build()
+
+    @Provides @Singleton
+    fun provideAppSettingsPreferences(@ApplicationContext appContext: Context) =
+        DataStoreFactory.create(
+            serializer = AppSettingsPreferencesSerializer,
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { AppSettingsPreferences() }
+            ),
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { appContext.dataStoreFile("app_settings_preferences") }
+        )
+
+    @Provides @Singleton
+    fun provideAppStatePreferences(@ApplicationContext appContext: Context) =
+        DataStoreFactory.create(
+            serializer = AppStatePreferencesSerializer,
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { AppStatePreferences() }
+            ),
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { appContext.dataStoreFile("app_state_preferences") }
+        )
+
+    @Provides @Singleton
+    fun provideBooksPreferences(@ApplicationContext appContext: Context) =
+        DataStoreFactory.create(
+            serializer = BooksPreferencesSerializer,
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { BooksPreferences() }
+            ),
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { appContext.dataStoreFile("books_preferences") }
+        )
+
+    @Provides @Singleton
+    fun provideNotificationsPreferences(@ApplicationContext appContext: Context) =
+        DataStoreFactory.create(
+            serializer = NotificationsPreferencesSerializer,
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { NotificationsPreferences() }
+            ),
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { appContext.dataStoreFile("notifications_preferences") }
+        )
+
+    @Provides @Singleton
+    fun providePrayersPreferences(@ApplicationContext appContext: Context) =
+        DataStoreFactory.create(
+            serializer = PrayersPreferencesSerializer,
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { PrayersPreferences() }
+            ),
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { appContext.dataStoreFile("prayers_preferences") }
+        )
+
+    @Provides @Singleton
+    fun provideQuranPreferences(@ApplicationContext appContext: Context) =
+        DataStoreFactory.create(
+            serializer = QuranPreferencesSerializer,
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { QuranPreferences() }
+            ),
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { appContext.dataStoreFile("quran_preferences") }
+        )
+
+    @Provides @Singleton
+    fun provideRecitationsPreferences(@ApplicationContext appContext: Context) =
+        DataStoreFactory.create(
+            serializer = RecitationsPreferencesSerializer,
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { RecitationsPreferences() }
+            ),
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { appContext.dataStoreFile("recitations_preferences") }
+        )
+
+    @Provides @Singleton
+    fun provideSupplicationsPreferences(@ApplicationContext appContext: Context) =
+        DataStoreFactory.create(
+            serializer = SupplicationsPreferencesSerializer,
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { SupplicationsPreferences() }
+            ),
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { appContext.dataStoreFile("supplications_preferences") }
+        )
+
+    @Provides @Singleton
+    fun provideUserPreferences(@ApplicationContext appContext: Context) =
+        DataStoreFactory.create(
+            serializer = UserPreferencesSerializer,
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { UserPreferences() }
+            ),
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { appContext.dataStoreFile("user_preferences") }
+        )
 
     @Provides @Singleton
     fun provideFirestore() = FirebaseFirestore.getInstance()

@@ -76,8 +76,14 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         setTomorrow(context)
     }
 
-    private fun notUpdatedToday(preferencesDS: PreferencesDataSource, now: Calendar) =
-        preferencesDS.getInt(Preference.LastDailyUpdateDay) != now[Calendar.DATE]
+    private fun notUpdatedToday(
+        preferencesDS: PreferencesDataSource,
+        now: Calendar
+    ): Boolean {
+        val lastUpdate = Calendar.getInstance()
+        lastUpdate.timeInMillis = preferencesDS.getLong(Preference.LastDailyUpdateMillis)
+        return lastUpdate[Calendar.DATE] != now[Calendar.DATE]
+    }
 
     private fun locate(
         context: Context,
@@ -154,11 +160,9 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         preferencesDS: PreferencesDataSource,
         now: Calendar
     ) {
-        val str = "Last Daily Update: ${now[Calendar.YEAR]}/${now[Calendar.MONTH] + 1}" +
-            "/${now[Calendar.DATE]}" + " ${now[Calendar.HOUR_OF_DAY]}:${now[Calendar.MINUTE]}"
+        preferencesDS.setLong(Preference.LastDailyUpdateMillis, now.timeInMillis)
 
-        preferencesDS.setInt(Preference.LastDailyUpdateDay, now[Calendar.DATE])
-        preferencesDS.setString(Preference.DailyUpdateRecord, str)
+
     }
 
     private fun pickWerd(preferencesDS: PreferencesDataSource) {

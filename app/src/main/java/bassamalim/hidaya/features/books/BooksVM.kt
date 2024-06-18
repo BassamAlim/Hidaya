@@ -40,7 +40,7 @@ class BooksVM @Inject constructor(
 
     fun onFileDeleted(itemId: Int) {
         _uiState.update { it.copy(
-            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+            downloadStates = it.downloadStates.toMutableList().apply {
                 this[itemId] = DownloadState.NotDownloaded
             }
         )}
@@ -66,7 +66,7 @@ class BooksVM @Inject constructor(
 
     private fun download(item: BooksDB) {
         _uiState.update { it.copy(
-            downloadStates = _uiState.value.downloadStates.toMutableList().apply {
+            downloadStates = it.downloadStates.toMutableList().apply {
                 this[item.id] = DownloadState.Downloading
             }
         )}
@@ -102,7 +102,7 @@ class BooksVM @Inject constructor(
 
     private fun showWaitMassage() {
         _uiState.update { it.copy(
-            shouldShowWait = _uiState.value.shouldShowWait + 1
+            shouldShowWait = it.shouldShowWait + 1
         )}
     }
 
