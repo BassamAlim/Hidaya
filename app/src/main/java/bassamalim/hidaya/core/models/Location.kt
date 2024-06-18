@@ -15,11 +15,8 @@ sealed class Location {
     data class SelectedLocation(
         val countryId: Int,
         val cityId: Int,
-    ) : Location()
-
-    @Serializable
-    data class NoLocation(
-        val message: String,
+        val latitude: Double,
+        val longitude: Double,
     ) : Location()
 
 }

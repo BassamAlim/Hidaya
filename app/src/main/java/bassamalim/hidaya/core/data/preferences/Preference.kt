@@ -53,15 +53,31 @@ sealed class Preference(val key: String, val default: Any) {
     data object DateOffset : Preference("date_offset", 0)
 
     // NotificationsPreferences
-    data class ExtraNotificationMinuteOfDay(val pid: PID) : Preference(
-        key = "${pid.name}_mod",
+//    data class ExtraNotificationMinuteOfDay(val pid: PID) : Preference(
+//        key = "${pid.name}_mod",
+//        default = when (pid) {
+//            PID.MORNING -> 300  // 5 am
+//            PID.EVENING -> 960  // 4 pm
+//            PID.DAILY_WERD -> 1260  // 9 pm
+//            PID.FRIDAY_KAHF -> 600 // 10 am
+//            else -> 0
+//        }
+//    )
+
+    data class ExtraNotificationHour(val pid: PID) : Preference(
+        key = "${pid.name}_hour",
         default = when (pid) {
-            PID.MORNING -> 300  // 5 am
-            PID.EVENING -> 960  // 4 pm
-            PID.DAILY_WERD -> 1260  // 9 pm
-            PID.FRIDAY_KAHF -> 600 // 10 am
+            PID.MORNING -> 5
+            PID.EVENING -> 16
+            PID.DAILY_WERD -> 21
+            PID.FRIDAY_KAHF -> 10
             else -> 0
         }
+    )
+
+    data class ExtraNotificationMinute(val pid: PID) : Preference(
+        key = "${pid.name}_minute",
+        default = 0
     )
 
     // QuranPreferences
@@ -80,7 +96,7 @@ sealed class Preference(val key: String, val default: Any) {
     data object Language : Preference("language_key", Languages.ARABIC.name)
 
     // AppStatePreferences
-    data object LastDailyUpdateMillis : Preference("last_daily_update_millis", 0L)
+    data object LastDailyUpdateDay : Preference("last_daily_update_day", 0)
 
     // LocationPreferences
     data object LocationType : Preference("location_type", LocationTypes.Auto.name)
