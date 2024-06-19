@@ -1,14 +1,14 @@
 package bassamalim.hidaya.features.about
 
-import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
+import androidx.datastore.core.DataStore
+import bassamalim.hidaya.core.data.preferences.objects.AppStatePreferences
 import javax.inject.Inject
 
 class AboutRepo @Inject constructor(
-    private val preferencesDS: PreferencesDataSource
+    private val appStatePrefs: DataStore<AppStatePreferences>
 ) {
 
     fun getLastUpdate() =
-        preferencesDS.getLong(Preference.LastDailyUpdateMillis)
+        appStatePrefs.data
 
 }

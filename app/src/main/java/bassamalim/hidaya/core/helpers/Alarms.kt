@@ -14,8 +14,10 @@ import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.NotificationReceiver
 import bassamalim.hidaya.core.utils.DBUtils
 import bassamalim.hidaya.core.utils.PTUtils
+import dagger.hilt.EntryPoint
 import java.util.Calendar
 
+@EntryPoint
 class Alarms {
 
     private val context: Context
