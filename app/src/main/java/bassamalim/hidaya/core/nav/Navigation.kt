@@ -20,11 +20,11 @@ import bassamalim.hidaya.core.ui.outToBottom
 import bassamalim.hidaya.core.ui.outToLeft
 import bassamalim.hidaya.core.ui.outToTop
 import bassamalim.hidaya.features.about.AboutScreen
-import bassamalim.hidaya.features.athkarList.AthkarListScreen
-import bassamalim.hidaya.features.athkarViewer.AthkarViewerUI
+import bassamalim.hidaya.features.supplicationsMenu.AthkarListScreen
+import bassamalim.hidaya.features.supplicationsReader.AthkarViewerUI
 import bassamalim.hidaya.features.bookChapters.BookChaptersUI
 import bassamalim.hidaya.features.bookSearcher.BookSearcherUI
-import bassamalim.hidaya.features.bookViewer.BookViewerScreen
+import bassamalim.hidaya.features.bookReader.BookViewerScreen
 import bassamalim.hidaya.features.books.BooksUI
 import bassamalim.hidaya.features.dateConverter.DateConverterUI
 import bassamalim.hidaya.features.hijriDatePicker.HijriDatePickerDialog
@@ -39,14 +39,14 @@ import bassamalim.hidaya.features.quiz.QuizUI
 import bassamalim.hidaya.features.quizLobby.QuizLobbyUI
 import bassamalim.hidaya.features.quizResult.QuizResultUI
 import bassamalim.hidaya.features.quranSearcher.QuranSearcherUI
-import bassamalim.hidaya.features.quranViewer.QuranViewerUI
+import bassamalim.hidaya.features.quranReader.QuranViewerUI
 import bassamalim.hidaya.features.radio.RadioClientUI
 import bassamalim.hidaya.features.settings.SettingsUI
-import bassamalim.hidaya.features.telawat.TelawatUI
-import bassamalim.hidaya.features.telawatPlayer.TelawatClientUI
-import bassamalim.hidaya.features.telawatSuar.TelawatSuarUI
+import bassamalim.hidaya.features.recitationsRecitersMenu.TelawatUI
+import bassamalim.hidaya.features.recitationsPlayer.TelawatClientUI
+import bassamalim.hidaya.features.recitationsSuarMenu.TelawatSuarUI
 import bassamalim.hidaya.features.tv.TvUI
-import bassamalim.hidaya.features.welcome.WelcomeUI
+import bassamalim.hidaya.features.onboarding.WelcomeUI
 import com.google.gson.Gson
 
 @Composable

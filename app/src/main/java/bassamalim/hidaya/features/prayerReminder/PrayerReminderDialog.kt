@@ -23,7 +23,7 @@ import bassamalim.hidaya.core.ui.components.MyValuedSlider
 
 @Composable
 fun PrayerReminderDialog(
-    vm: PrayerReminderVM
+    vm: PrayerReminderViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -74,7 +74,7 @@ fun PrayerReminderDialog(
 }
 
 @Composable
-private fun RowScope.SaveBtn(vm: PrayerReminderVM) {
+private fun RowScope.SaveBtn(vm: PrayerReminderViewModel) {
     MyHorizontalButton(
         text = stringResource(R.string.save),
         fontSize = 24.sp,
@@ -84,7 +84,7 @@ private fun RowScope.SaveBtn(vm: PrayerReminderVM) {
 }
 
 @Composable
-private fun RowScope.CancelBtn(vm: PrayerReminderVM) {
+private fun RowScope.CancelBtn(vm: PrayerReminderViewModel) {
     MyHorizontalButton(
         text = stringResource(R.string.cancel),
         fontSize = 24.sp,

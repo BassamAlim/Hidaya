@@ -26,6 +26,15 @@ import bassamalim.hidaya.core.data.preferences.objects.QuranPreferences
 import bassamalim.hidaya.core.data.preferences.objects.RecitationsPreferences
 import bassamalim.hidaya.core.data.preferences.objects.SupplicationsPreferences
 import bassamalim.hidaya.core.data.preferences.objects.UserPreferences
+import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.AppStatePreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.BooksPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.NotificationsPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.PrayersPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.QuranPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.RecitationsPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.SupplicationsPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.UserPreferencesRepository
 import bassamalim.hidaya.core.data.preferences.serializers.AppSettingsPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.AppStatePreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.BooksPreferencesSerializer
@@ -36,37 +45,37 @@ import bassamalim.hidaya.core.data.preferences.serializers.RecitationsPreference
 import bassamalim.hidaya.core.data.preferences.serializers.SupplicationsPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.UserPreferencesSerializer
 import bassamalim.hidaya.core.nav.Navigator
-import bassamalim.hidaya.features.about.AboutRepo
-import bassamalim.hidaya.features.athkarList.AthkarListRepo
-import bassamalim.hidaya.features.athkarViewer.AthkarViewerRepo
-import bassamalim.hidaya.features.bookChapters.BookChaptersRepo
-import bassamalim.hidaya.features.bookSearcher.BookSearcherRepo
-import bassamalim.hidaya.features.bookViewer.BookViewerRepo
-import bassamalim.hidaya.features.books.BooksRepo
-import bassamalim.hidaya.features.dateConverter.DateConverterRepo
-import bassamalim.hidaya.features.hijriDatePicker.HijriDatePickerRepo
-import bassamalim.hidaya.features.home.HomeRepo
-import bassamalim.hidaya.features.leaderboard.LeaderboardRepo
-import bassamalim.hidaya.features.locationPicker.LocationPickerRepo
-import bassamalim.hidaya.features.locator.LocatorRepo
-import bassamalim.hidaya.features.main.MainRepo
-import bassamalim.hidaya.features.prayerReminder.PrayerReminderRepo
-import bassamalim.hidaya.features.prayerSetting.PrayerSettingsRepo
-import bassamalim.hidaya.features.prayers.PrayersRepo
-import bassamalim.hidaya.features.qibla.QiblaRepo
-import bassamalim.hidaya.features.quiz.QuizRepo
-import bassamalim.hidaya.features.quizResult.QuizResultRepo
-import bassamalim.hidaya.features.quran.QuranRepo
-import bassamalim.hidaya.features.quranSearcher.QuranSearcherRepo
-import bassamalim.hidaya.features.quranSettings.QuranSettingsRepo
-import bassamalim.hidaya.features.quranViewer.QuranViewerRepo
-import bassamalim.hidaya.features.radio.RadioClientRepo
-import bassamalim.hidaya.features.settings.SettingsRepo
-import bassamalim.hidaya.features.telawat.TelawatRepo
-import bassamalim.hidaya.features.telawatPlayer.TelawatClientRepo
-import bassamalim.hidaya.features.telawatSuar.TelawatSuarRepo
-import bassamalim.hidaya.features.tv.TvRepo
-import bassamalim.hidaya.features.welcome.WelcomeRepo
+import bassamalim.hidaya.features.about.AboutRepository
+import bassamalim.hidaya.features.supplicationsMenu.SupplicationsMenuRepository
+import bassamalim.hidaya.features.supplicationsReader.SupplicationsReaderRepository
+import bassamalim.hidaya.features.bookChapters.BookChaptersRepository
+import bassamalim.hidaya.features.bookSearcher.BookSearcherRepository
+import bassamalim.hidaya.features.bookReader.BookReaderRepository
+import bassamalim.hidaya.features.books.BooksRepository
+import bassamalim.hidaya.features.dateConverter.DateConverterRepository
+import bassamalim.hidaya.features.hijriDatePicker.HijriDatePickerRepository
+import bassamalim.hidaya.features.home.HomeRepository
+import bassamalim.hidaya.features.leaderboard.LeaderboardRepository
+import bassamalim.hidaya.features.locationPicker.LocationPickerRepository
+import bassamalim.hidaya.features.locator.LocatorRepository
+import bassamalim.hidaya.features.main.MainRepository
+import bassamalim.hidaya.features.prayerReminder.PrayerReminderRepository
+import bassamalim.hidaya.features.prayerSetting.PrayerSettingsRepository
+import bassamalim.hidaya.features.prayers.PrayersRepository
+import bassamalim.hidaya.features.qibla.QiblaRepository
+import bassamalim.hidaya.features.quiz.QuizRepository
+import bassamalim.hidaya.features.quizResult.QuizResultRepository
+import bassamalim.hidaya.features.quran.QuranRepository
+import bassamalim.hidaya.features.quranSearcher.QuranSearcherRepository
+import bassamalim.hidaya.features.quranSettings.QuranSettingsRepository
+import bassamalim.hidaya.features.quranReader.QuranReaderRepository
+import bassamalim.hidaya.features.radio.RadioClientRepository
+import bassamalim.hidaya.features.settings.SettingsRepository
+import bassamalim.hidaya.features.recitationsRecitersMenu.RecitationsRecitersMenuRepository
+import bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerClientRepository
+import bassamalim.hidaya.features.recitationsSuarMenu.RecitationsSuarRepository
+import bassamalim.hidaya.features.tv.TvRepository
+import bassamalim.hidaya.features.onboarding.OnboardingRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
@@ -101,111 +110,129 @@ object AppModule {
             .build()
 
     @Provides @Singleton
-    fun provideAppSettingsPreferences(@ApplicationContext appContext: Context) =
-        DataStoreFactory.create(
-            serializer = AppSettingsPreferencesSerializer,
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { AppSettingsPreferences() }
-            ),
-            migrations = listOf(AppSettingsPreferencesMigration.getMigration(appContext)),
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.dataStoreFile("app_settings_preferences") }
+    fun provideAppSettingsPreferencesRepository(@ApplicationContext appContext: Context) =
+        AppSettingsPreferencesRepository(
+            DataStoreFactory.create(
+                serializer = AppSettingsPreferencesSerializer,
+                corruptionHandler = ReplaceFileCorruptionHandler(
+                    produceNewData = { AppSettingsPreferences() }
+                ),
+                migrations = listOf(AppSettingsPreferencesMigration.getMigration(appContext)),
+                scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+                produceFile = { appContext.dataStoreFile("app_settings_preferences") }
+            )
         )
 
     @Provides @Singleton
-    fun provideAppStatePreferences(@ApplicationContext appContext: Context) =
-        DataStoreFactory.create(
-            serializer = AppStatePreferencesSerializer,
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { AppStatePreferences() }
-            ),
-            migrations = listOf(AppStatePreferencesMigration.getMigration(appContext)),
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.dataStoreFile("app_state_preferences") }
+    fun provideAppStatePreferencesRepository(@ApplicationContext appContext: Context) =
+        AppStatePreferencesRepository(
+            DataStoreFactory.create(
+                serializer = AppStatePreferencesSerializer,
+                corruptionHandler = ReplaceFileCorruptionHandler(
+                    produceNewData = { AppStatePreferences() }
+                ),
+                migrations = listOf(AppStatePreferencesMigration.getMigration(appContext)),
+                scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+                produceFile = { appContext.dataStoreFile("app_state_preferences") }
+            )
         )
 
     @Provides @Singleton
-    fun provideBooksPreferences(@ApplicationContext appContext: Context) =
-        DataStoreFactory.create(
-            serializer = BooksPreferencesSerializer,
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { BooksPreferences() }
-            ),
-            migrations = listOf(BooksPreferencesMigration.getMigration(appContext)),
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.dataStoreFile("books_preferences") }
+    fun provideBooksPreferencesRepository(@ApplicationContext appContext: Context) =
+        BooksPreferencesRepository(
+            DataStoreFactory.create(
+                serializer = BooksPreferencesSerializer,
+                corruptionHandler = ReplaceFileCorruptionHandler(
+                    produceNewData = { BooksPreferences() }
+                ),
+                migrations = listOf(BooksPreferencesMigration.getMigration(appContext)),
+                scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+                produceFile = { appContext.dataStoreFile("books_preferences") }
+            )
         )
 
     @Provides @Singleton
-    fun provideNotificationsPreferences(@ApplicationContext appContext: Context) =
-        DataStoreFactory.create(
-            serializer = NotificationsPreferencesSerializer,
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { NotificationsPreferences() }
-            ),
-            migrations = listOf(NotificationsPreferencesMigration.getMigration(appContext)),
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.dataStoreFile("notifications_preferences") }
+    fun provideNotificationsPreferencesRepository(@ApplicationContext appContext: Context) =
+        NotificationsPreferencesRepository(
+            DataStoreFactory.create(
+                serializer = NotificationsPreferencesSerializer,
+                corruptionHandler = ReplaceFileCorruptionHandler(
+                    produceNewData = { NotificationsPreferences() }
+                ),
+                migrations = listOf(NotificationsPreferencesMigration.getMigration(appContext)),
+                scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+                produceFile = { appContext.dataStoreFile("notifications_preferences") }
+            )
         )
 
     @Provides @Singleton
-    fun providePrayersPreferences(@ApplicationContext appContext: Context) =
-        DataStoreFactory.create(
-            serializer = PrayersPreferencesSerializer,
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { PrayersPreferences() }
-            ),
-            migrations = listOf(PrayersPreferencesMigration.getMigration(appContext)),
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.dataStoreFile("prayers_preferences") }
+    fun providePrayersPreferencesRepository(@ApplicationContext appContext: Context) =
+        PrayersPreferencesRepository(
+            DataStoreFactory.create(
+                serializer = PrayersPreferencesSerializer,
+                corruptionHandler = ReplaceFileCorruptionHandler(
+                    produceNewData = { PrayersPreferences() }
+                ),
+                migrations = listOf(PrayersPreferencesMigration.getMigration(appContext)),
+                scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+                produceFile = { appContext.dataStoreFile("prayers_preferences") }
+            )
         )
 
     @Provides @Singleton
-    fun provideQuranPreferences(@ApplicationContext appContext: Context) =
-        DataStoreFactory.create(
-            serializer = QuranPreferencesSerializer,
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { QuranPreferences() }
-            ),
-            migrations = listOf(QuranPreferencesMigration.getMigration(appContext)),
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.dataStoreFile("quran_preferences") }
+    fun provideQuranPreferencesRepository(@ApplicationContext appContext: Context) =
+        QuranPreferencesRepository(
+            DataStoreFactory.create(
+                serializer = QuranPreferencesSerializer,
+                corruptionHandler = ReplaceFileCorruptionHandler(
+                    produceNewData = { QuranPreferences() }
+                ),
+                migrations = listOf(QuranPreferencesMigration.getMigration(appContext)),
+                scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+                produceFile = { appContext.dataStoreFile("quran_preferences") }
+            )
         )
 
     @Provides @Singleton
-    fun provideRecitationsPreferences(@ApplicationContext appContext: Context) =
-        DataStoreFactory.create(
-            serializer = RecitationsPreferencesSerializer,
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { RecitationsPreferences() }
-            ),
-            migrations = listOf(RecitationsPreferencesMigration.getMigration(appContext)),
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.dataStoreFile("recitations_preferences") }
+    fun provideRecitationsPreferencesRepository(@ApplicationContext appContext: Context) =
+        RecitationsPreferencesRepository(
+            DataStoreFactory.create(
+                serializer = RecitationsPreferencesSerializer,
+                corruptionHandler = ReplaceFileCorruptionHandler(
+                    produceNewData = { RecitationsPreferences() }
+                ),
+                migrations = listOf(RecitationsPreferencesMigration.getMigration(appContext)),
+                scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+                produceFile = { appContext.dataStoreFile("recitations_preferences") }
+            )
         )
 
     @Provides @Singleton
-    fun provideSupplicationsPreferences(@ApplicationContext appContext: Context) =
-        DataStoreFactory.create(
-            serializer = SupplicationsPreferencesSerializer,
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { SupplicationsPreferences() }
-            ),
-            migrations = listOf(SupplicationsPreferencesMigration.getMigration(appContext)),
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.dataStoreFile("supplications_preferences") }
+    fun provideSupplicationsPreferencesRepository(@ApplicationContext appContext: Context) =
+        SupplicationsPreferencesRepository(
+            DataStoreFactory.create(
+                serializer = SupplicationsPreferencesSerializer,
+                corruptionHandler = ReplaceFileCorruptionHandler(
+                    produceNewData = { SupplicationsPreferences() }
+                ),
+                migrations = listOf(SupplicationsPreferencesMigration.getMigration(appContext)),
+                scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+                produceFile = { appContext.dataStoreFile("supplications_preferences") }
+            )
         )
 
     @Provides @Singleton
-    fun provideUserPreferences(@ApplicationContext appContext: Context) =
-        DataStoreFactory.create(
-            serializer = UserPreferencesSerializer,
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { UserPreferences() }
-            ),
-            migrations = listOf(UserPreferencesMigration.getMigration(appContext)),
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.dataStoreFile("user_preferences") }
+    fun provideUserPreferencesRepository(@ApplicationContext appContext: Context) =
+        UserPreferencesRepository(
+            DataStoreFactory.create(
+                serializer = UserPreferencesSerializer,
+                corruptionHandler = ReplaceFileCorruptionHandler(
+                    produceNewData = { UserPreferences() }
+                ),
+                migrations = listOf(UserPreferencesMigration.getMigration(appContext)),
+                scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+                produceFile = { appContext.dataStoreFile("user_preferences") }
+            )
         )
 
     @Provides @Singleton
@@ -223,57 +250,46 @@ object AppModule {
 
     @Provides @Singleton
     fun provideAboutRepository(
-        preferencesDataSource: PreferencesDataSource
-    ) = AboutRepo(preferencesDataSource)
-
-    @Provides @Singleton
-    fun provideAthkarListRepository(
-        preferencesDataSource: PreferencesDataSource,
-        database: AppDatabase,
-        gson: Gson
-    ) = AthkarListRepo(preferencesDataSource, database, gson)
-
-    @Provides @Singleton
-    fun provideAthkarViewerRepository(
-        preferencesDataSource: PreferencesDataSource,
-        database: AppDatabase
-    ) = AthkarViewerRepo(preferencesDataSource, database)
+        appStatePreferencesRepository: AppStatePreferencesRepository
+    ) = AboutRepository(appStatePreferencesRepository)
 
     @Provides @Singleton
     fun provideBookChaptersRepository(
         context: Context,
         preferencesDataSource: PreferencesDataSource,
-        gson: Gson
-    ) = BookChaptersRepo(context, preferencesDataSource, gson)
+    ) = BookChaptersRepository(context, preferencesDataSource)
 
     @Provides @Singleton
-    fun provideBookSearcherRepository(
+    fun provideBookReaderRepository(
         context: Context,
         preferencesDataSource: PreferencesDataSource,
-        database: AppDatabase,
-        gson: Gson
-    ) = BookSearcherRepo(context, preferencesDataSource, database, gson)
+    ) = BookReaderRepository(context, preferencesDataSource)
 
     @Provides @Singleton
     fun provideBooksRepository(
         context: Context,
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase,
-        gson: Gson
-    ) = BooksRepo(context, preferencesDataSource, database, gson)
+    ) = BooksRepository(context, preferencesDataSource, database)
 
     @Provides @Singleton
-    fun provideBookViewerRepository(
+    fun provideBookSearcherRepository(
         context: Context,
         preferencesDataSource: PreferencesDataSource,
-        gson: Gson
-    ) = BookViewerRepo(context, preferencesDataSource, gson)
+        database: AppDatabase,
+    ) = BookSearcherRepository(context, preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideDateConverterRepository(
         resources: Resources,
         preferencesDataSource: PreferencesDataSource
-    ) = DateConverterRepo(resources, preferencesDataSource)
+    ) = DateConverterRepository(resources, preferencesDataSource)
+
+    @Provides @Singleton
+    fun provideHijriDatePickerRepository(
+        resources: Resources,
+        preferencesDataSource: PreferencesDataSource
+    ) = HijriDatePickerRepository(resources, preferencesDataSource)
 
     @Provides @Singleton
     fun provideHomeRepository(
@@ -281,142 +297,145 @@ object AppModule {
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase,
         firestore: FirebaseFirestore
-    ) = HomeRepo(resources, preferencesDataSource, database, firestore)
+    ) = HomeRepository(resources, preferencesDataSource, database, firestore)
 
     @Provides @Singleton
     fun provideLeaderboardRepository(
         resources: Resources,
         preferencesDataSource: PreferencesDataSource,
         firestore: FirebaseFirestore
-    ) = LeaderboardRepo(resources, preferencesDataSource, firestore)
+    ) = LeaderboardRepository(resources, preferencesDataSource, firestore)
 
     @Provides @Singleton
     fun provideLocationPickerRepository(
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = LocationPickerRepo(preferencesDataSource, database)
+    ) = LocationPickerRepository(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideLocatorRepository(
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = LocatorRepo(preferencesDataSource, database)
+    ) = LocatorRepository(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideMainRepository(
         resources: Resources,
         preferencesDataSource: PreferencesDataSource
-    ) = MainRepo(resources, preferencesDataSource)
+    ) = MainRepository(resources, preferencesDataSource)
+
+    @Provides @Singleton
+    fun provideOnboardingRepository(
+        preferencesDataSource: PreferencesDataSource
+    ) = OnboardingRepository(preferencesDataSource)
+
+    @Provides @Singleton
+    fun providePrayerReminderRepository(
+        resources: Resources,
+        preferencesDataSource: PreferencesDataSource
+    ) = PrayerReminderRepository(resources, preferencesDataSource)
 
     @Provides @Singleton
     fun providePrayersRepository(
         resources: Resources,
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = PrayersRepo(resources, preferencesDataSource, database)
-
-    @Provides @Singleton
-    fun providePrayerReminderRepository(
-        resources: Resources,
-        preferencesDataSource: PreferencesDataSource
-    ) = PrayerReminderRepo(resources, preferencesDataSource)
+    ) = PrayersRepository(resources, preferencesDataSource, database)
 
     @Provides @Singleton
     fun providePrayerSettingsRepository(
         resources: Resources,
         preferencesDataSource: PreferencesDataSource
-    ) = PrayerSettingsRepo(resources, preferencesDataSource)
+    ) = PrayerSettingsRepository(resources, preferencesDataSource)
 
     @Provides @Singleton
     fun provideQiblaRepository(
         preferencesDataSource: PreferencesDataSource
-    ) = QiblaRepo(preferencesDataSource)
+    ) = QiblaRepository(preferencesDataSource)
 
     @Provides @Singleton
     fun provideQuizRepository(
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = QuizRepo(preferencesDataSource, database)
+    ) = QuizRepository(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideQuizResultRepository(
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = QuizResultRepo(preferencesDataSource, database)
+    ) = QuizResultRepository(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideQuranRepository(
         resources: Resources,
         preferencesDataSource: PreferencesDataSource,
-        database: AppDatabase,
-        gson: Gson
-    ) = QuranRepo(resources, preferencesDataSource, database, gson)
+        database: AppDatabase
+    ) = QuranRepository(resources, preferencesDataSource, database)
+
+    @Provides @Singleton
+    fun provideQuranReaderRepository(
+        preferencesDataSource: PreferencesDataSource,
+        database: AppDatabase
+    ) = QuranReaderRepository(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideQuranSearcherRepository(
         resources: Resources,
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = QuranSearcherRepo(resources, preferencesDataSource, database)
+    ) = QuranSearcherRepository(resources, preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideQuranSettingsRepository(
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = QuranSettingsRepo(preferencesDataSource, database)
-
-    @Provides @Singleton
-    fun provideQuranViewerRepository(
-        preferencesDataSource: PreferencesDataSource,
-        database: AppDatabase
-    ) = QuranViewerRepo(preferencesDataSource, database)
+    ) = QuranSettingsRepository(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideRadioClientRepository(
         remoteConfig: FirebaseRemoteConfig
-    ) = RadioClientRepo(remoteConfig)
+    ) = RadioClientRepository(remoteConfig)
+
+    @Provides @Singleton
+    fun provideRecitationsPlayerClientRepository(
+        preferencesDataSource: PreferencesDataSource,
+        database: AppDatabase
+    ) = RecitationsPlayerClientRepository(preferencesDataSource, database)
+
+    @Provides @Singleton
+    fun provideRecitationsRecitersMenuRepository(
+        resources: Resources,
+        preferencesDataSource: PreferencesDataSource,
+        database: AppDatabase
+    ) = RecitationsRecitersMenuRepository(resources, preferencesDataSource, database)
+
+    @Provides @Singleton
+    fun provideRecitationsSuarRepository(
+        preferencesDataSource: PreferencesDataSource,
+        database: AppDatabase
+    ) = RecitationsSuarRepository(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideSettingsRepository(
         resources: Resources,
         preferencesDataSource: PreferencesDataSource
-    ) = SettingsRepo(resources, preferencesDataSource)
+    ) = SettingsRepository(resources, preferencesDataSource)
 
     @Provides @Singleton
-    fun provideTelawatClientRepository(
+    fun provideSupplicationsMenuRepository(
+        preferencesDataSource: PreferencesDataSource,
+        database: AppDatabase,
+    ) = SupplicationsMenuRepository(preferencesDataSource, database)
+
+    @Provides @Singleton
+    fun provideSupplicationsReaderRepository(
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = TelawatClientRepo(preferencesDataSource, database)
-
-    @Provides @Singleton
-    fun provideTelawatRepository(
-        resources: Resources,
-        preferencesDataSource: PreferencesDataSource,
-        database: AppDatabase,
-        gson: Gson
-    ) = TelawatRepo(resources, preferencesDataSource, database, gson)
-
-    @Provides @Singleton
-    fun provideTelawatSuarRepository(
-        preferencesDataSource: PreferencesDataSource,
-        database: AppDatabase,
-        gson: Gson
-    ) = TelawatSuarRepo(preferencesDataSource, database, gson)
+    ) = SupplicationsReaderRepository(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideTvRepository(
         remoteConfig: FirebaseRemoteConfig
-    ) = TvRepo(remoteConfig)
-
-    @Provides @Singleton
-    fun provideWelcomeRepository(
-        preferencesDataSource: PreferencesDataSource
-    ) = WelcomeRepo(preferencesDataSource)
-
-    @Provides @Singleton
-    fun provideHijriDatePickerRepository(
-        resources: Resources,
-        preferencesDataSource: PreferencesDataSource
-    ) = HijriDatePickerRepo(resources, preferencesDataSource)
+    ) = TvRepository(remoteConfig)
 
 }

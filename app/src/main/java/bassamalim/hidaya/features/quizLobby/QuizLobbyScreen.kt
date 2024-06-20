@@ -18,7 +18,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun QuizLobbyUI(
-    vm: QuizLobbyVM
+    vm: QuizLobbyViewModel
 ) {
     MyScaffold(stringResource(R.string.quiz_title)) {
         Column(

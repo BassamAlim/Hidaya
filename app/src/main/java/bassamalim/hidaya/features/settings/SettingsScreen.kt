@@ -31,7 +31,7 @@ import bassamalim.hidaya.core.utils.LangUtils.translateNums
 
 @Composable
 fun SettingsUI(
-    vm: SettingsVM
+    vm: SettingsViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
@@ -137,7 +137,7 @@ fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
 
 @Composable
 private fun ExtraNotificationsSettings(
-    vm: SettingsVM,
+    vm: SettingsViewModel,
     st: SettingsState
 ) {
     val ctx = LocalContext.current
@@ -184,7 +184,7 @@ private fun ExtraNotificationsSettings(
 }
 
 @Composable
-private fun PrayerTimesSettings(viewModel: SettingsVM) {
+private fun PrayerTimesSettings(viewModel: SettingsViewModel) {
     Column(
         Modifier.padding(bottom = 10.dp)
     ) {

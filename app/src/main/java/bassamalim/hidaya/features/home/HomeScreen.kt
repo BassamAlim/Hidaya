@@ -41,7 +41,7 @@ import bassamalim.hidaya.core.ui.theme.Positive
 
 @Composable
 fun HomeUI(
-    vm: HomeVM
+    vm: HomeViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -61,7 +61,7 @@ fun HomeUI(
 
 @Composable
 fun UpcomingPrayerCard(
-    vm: HomeVM,
+    vm: HomeViewModel,
     st: HomeState
 ) {
     MySurface(
@@ -115,7 +115,7 @@ fun UpcomingPrayerCard(
 
 @Composable
 fun RecordsCard(
-    vm: HomeVM,
+    vm: HomeViewModel,
     st: HomeState
 ) {
     MySurface {
@@ -180,7 +180,7 @@ fun RecordsCard(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TodayWerdCard(
-    vm: HomeVM,
+    vm: HomeViewModel,
     st: HomeState
 ) {
     MySurface(

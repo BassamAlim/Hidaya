@@ -18,7 +18,7 @@ import bassamalim.hidaya.core.ui.components.TabLayout
 
 @Composable
 fun BookChaptersUI(
-    vm: BookChaptersVM
+    vm: BookChaptersViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -44,7 +44,7 @@ fun BookChaptersUI(
 
 @Composable
 private fun Tab(
-    vm: BookChaptersVM,
+    vm: BookChaptersViewModel,
     st: BookChaptersState,
     items: List<BookChapter>
 ) {

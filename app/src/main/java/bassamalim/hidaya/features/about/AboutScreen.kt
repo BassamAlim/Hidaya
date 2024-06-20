@@ -33,7 +33,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 
 @Composable
 fun AboutScreen(
-    vm: AboutVM
+    vm: AboutViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -60,7 +60,7 @@ fun AboutScreen(
 
 @Composable
 private fun ColumnScope.ThankYouMessage(
-    vm: AboutVM
+    vm: AboutViewModel
 ) {
     MyText(
         text = stringResource(R.string.thanks),
@@ -108,7 +108,7 @@ private fun Source(textResId: Int) {
 
 @Composable
 private fun ColumnScope.HiddenArea(
-    vm: AboutVM,
+    vm: AboutViewModel,
     st: AboutState
 ) {
     AnimatedVisibility(

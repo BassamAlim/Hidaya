@@ -28,7 +28,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 
 @Composable
 fun TvUI(
-    vm: TvVM
+    vm: TvViewModel
 ) {
     val ctx = LocalContext.current
 
@@ -75,7 +75,7 @@ fun TvUI(
 @Composable
 fun YoutubeScreen(
     ctx: Context,
-    vm: TvVM
+    vm: TvViewModel
 ) {
     // a fix because locale changes when displaying YouTubePlayerView for some reason
     ActivityUtils.onActivityCreateSetLocale(ctx)

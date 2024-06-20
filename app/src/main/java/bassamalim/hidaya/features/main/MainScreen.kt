@@ -34,7 +34,7 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.features.athkar.AthkarScreen
+import bassamalim.hidaya.features.supplicationsCategories.AthkarScreen
 import bassamalim.hidaya.features.home.HomeUI
 import bassamalim.hidaya.features.more.MoreUI
 import bassamalim.hidaya.features.prayers.PrayersUI
@@ -42,7 +42,7 @@ import bassamalim.hidaya.features.quran.QuranUI
 
 @Composable
 fun MainUI(
-    vm: MainVM
+    vm: MainViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val bottomNavController = rememberNavController()
@@ -68,7 +68,7 @@ fun MainUI(
 
 @Composable
 private fun TopBar(
-    vm: MainVM,
+    vm: MainViewModel,
     st: MainState
 ) {
     TopAppBar(

@@ -30,7 +30,7 @@ import bassamalim.hidaya.core.utils.LangUtils.translateNums
 
 @Composable
 fun QuranSearcherUI(
-    vm: QuranSearcherVM
+    vm: QuranSearcherViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -103,7 +103,7 @@ fun QuranSearcherUI(
 @Composable
 fun MatchItem(
     item: QuranSearcherMatch,
-    vm: QuranSearcherVM
+    vm: QuranSearcherViewModel
 ) {
     MySurface {
         Column(

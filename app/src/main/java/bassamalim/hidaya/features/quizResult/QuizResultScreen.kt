@@ -32,7 +32,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun QuizResultUI(
-    vm: QuizResultVM
+    vm: QuizResultViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 

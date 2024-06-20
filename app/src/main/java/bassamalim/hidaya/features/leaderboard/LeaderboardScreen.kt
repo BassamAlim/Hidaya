@@ -30,7 +30,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun LeaderboardUI(
-    vm: LeaderboardVM
+    vm: LeaderboardViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 

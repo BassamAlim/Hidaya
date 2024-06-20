@@ -33,7 +33,7 @@ import bassamalim.hidaya.core.utils.LangUtils
 
 @Composable
 fun QuizUI(
-    vm: QuizVM
+    vm: QuizViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -87,7 +87,7 @@ fun QuestionArea(
 
 @Composable
 fun ColumnScope.BottomBar(
-    vm: QuizVM,
+    vm: QuizViewModel,
     st: QuizState
 ) {
     Row(

@@ -30,7 +30,7 @@ import bassamalim.hidaya.core.utils.FileUtils
 
 @Composable
 fun BooksUI(
-    vm: BooksVM
+    vm: BooksViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -74,7 +74,7 @@ fun BooksUI(
 
 @Composable
 private fun BookCard(
-    vm: BooksVM,
+    vm: BooksViewModel,
     st: BooksState,
     item: BooksDB
 ) {

@@ -47,7 +47,7 @@ import java.util.Calendar
 
 @Composable
 fun HijriDatePickerDialog(
-    vm: HijriDatePickerVM
+    vm: HijriDatePickerViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(
@@ -82,7 +82,7 @@ fun HijriDatePickerDialog(
 
 @Composable
 private fun TopArea(
-    vm: HijriDatePickerVM,
+    vm: HijriDatePickerViewModel,
     st: HijriDatePickerState,
     pagerState: PagerState
 ) {
@@ -126,7 +126,7 @@ private fun TopArea(
 
 @Composable
 private fun DayMonthSelector(
-    vm: HijriDatePickerVM,
+    vm: HijriDatePickerViewModel,
     st: HijriDatePickerState,
     pagerState: PagerState
 ) {
@@ -191,7 +191,7 @@ private fun DayMonthSelector(
 
 @Composable
 private fun BottomArea(
-    vm: HijriDatePickerVM
+    vm: HijriDatePickerViewModel
 ) {
     Row(
         Modifier
@@ -218,7 +218,7 @@ private fun BottomArea(
 
 @Composable
 private fun DaysGrid(
-    vm: HijriDatePickerVM,
+    vm: HijriDatePickerViewModel,
     st: HijriDatePickerState,
     absMonth: Int
 ) {
@@ -279,7 +279,7 @@ private fun DaysGrid(
 
 @Composable
 private fun YearSelector(
-    vm: HijriDatePickerVM
+    vm: HijriDatePickerViewModel
 ) {
     val lazyListState = rememberLazyListState(
         vm.now[Calendar.YEAR] - vm.minYear - 3,

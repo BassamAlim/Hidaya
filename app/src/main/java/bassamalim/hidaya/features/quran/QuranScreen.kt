@@ -37,7 +37,7 @@ import bassamalim.hidaya.core.ui.components.TutorialDialog
 
 @Composable
 fun QuranUI(
-    vm: QuranVM
+    vm: QuranViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -112,7 +112,7 @@ fun QuranUI(
 
 @Composable
 private fun Tab(
-    vm: QuranVM,
+    vm: QuranViewModel,
     st: QuranState,
     items: List<Sura>
 ) {

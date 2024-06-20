@@ -1,0 +1,19 @@
+package bassamalim.hidaya.core.data.preferences.repositories
+
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.IOException
+import bassamalim.hidaya.core.data.preferences.objects.BooksPreferences
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+
+class BooksPreferencesRepository(
+    private val dataStore: DataStore<BooksPreferences>
+) {
+
+    val booksPreferencesFlow: Flow<BooksPreferences> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) emit(BooksPreferences())
+            else throw exception
+        }
+
+}

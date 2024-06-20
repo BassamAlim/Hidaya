@@ -35,7 +35,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun PrayerSettingsDialog(
-    vm: PrayerSettingVM
+    vm: PrayerSettingViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -91,7 +91,7 @@ fun PrayerSettingsDialog(
 
 @Composable
 private fun CustomRadioGroup(
-    vm: PrayerSettingVM,
+    vm: PrayerSettingViewModel,
     pid: PID,
     selection: NotificationType,
     onSelect: (NotificationType) -> Unit
@@ -146,7 +146,7 @@ private fun CustomRadioGroup(
 }
 
 @Composable
-private fun RowScope.SaveBtn(vm: PrayerSettingVM) {
+private fun RowScope.SaveBtn(vm: PrayerSettingViewModel) {
     MyHorizontalButton(
         text = stringResource(R.string.save),
         fontSize = 24.sp,
@@ -156,7 +156,7 @@ private fun RowScope.SaveBtn(vm: PrayerSettingVM) {
 }
 
 @Composable
-private fun RowScope.CancelBtn(vm: PrayerSettingVM) {
+private fun RowScope.CancelBtn(vm: PrayerSettingViewModel) {
     MyHorizontalButton(
         text = stringResource(R.string.cancel),
         fontSize = 24.sp,

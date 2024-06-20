@@ -24,7 +24,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun QuranSettingsDlg(
-    vm: QuranSettingsVM,
+    vm: QuranSettingsViewModel,
     shown: Boolean,
     mainOnDone: () -> Unit
 ) {

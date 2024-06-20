@@ -28,7 +28,7 @@ import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
 fun LocatorUI(
-    vm: LocatorVM
+    vm: LocatorViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val requestLauncher = rememberLauncherForActivityResult(

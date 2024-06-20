@@ -39,7 +39,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RadioClientUI(
-    vm: RadioClientVM
+    vm: RadioClientViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
@@ -72,7 +72,7 @@ fun RadioClientUI(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun PlayPauseBtn(
-    vm: RadioClientVM,
+    vm: RadioClientViewModel,
     st: RadioClientState
 ) {
     Box(

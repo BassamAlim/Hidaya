@@ -32,7 +32,7 @@ import bassamalim.hidaya.core.utils.LangUtils.translateNums
 
 @Composable
 fun BookSearcherUI(
-    vm: BookSearcherVM
+    vm: BookSearcherViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 

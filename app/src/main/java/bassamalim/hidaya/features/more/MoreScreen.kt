@@ -17,7 +17,7 @@ import bassamalim.hidaya.core.ui.components.MySquareButton
 
 @Composable
 fun MoreUI(
-    vm: MoreVM
+    vm: MoreViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current

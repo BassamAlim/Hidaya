@@ -38,7 +38,7 @@ import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
 fun PrayersUI(
-    vm: PrayersVM
+    vm: PrayersViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -66,7 +66,7 @@ fun PrayersUI(
 
 @Composable
 private fun LocationCard(
-    vm: PrayersVM,
+    vm: PrayersViewModel,
     st: PrayersState
 ) {
     MySurface(
@@ -101,7 +101,7 @@ private fun LocationCard(
 
 @Composable
 private fun ColumnScope.PrayersSpace(
-    vm: PrayersVM,
+    vm: PrayersViewModel,
     st: PrayersState
 ) {
     Column(
@@ -119,7 +119,7 @@ private fun ColumnScope.PrayersSpace(
 
 @Composable
 private fun PrayerSpace(
-    vm: PrayersVM,
+    vm: PrayersViewModel,
     st: PrayersState,
     idx: Int,
     data: PrayerData
@@ -141,7 +141,7 @@ private fun PrayerSpace(
 
 @Composable
 private fun RowScope.PrayerCard(
-    vm: PrayersVM,
+    vm: PrayersViewModel,
     idx: Int,
     data: PrayerData
 ) {
@@ -191,7 +191,7 @@ private fun RowScope.PrayerCard(
 
 @Composable
 private fun ReminderCard(
-    vm: PrayersVM,
+    vm: PrayersViewModel,
     idx: Int,
     reminderOffset: Int
 ) {
@@ -229,7 +229,7 @@ private fun ReminderCard(
 
 @Composable
 private fun DayCard(
-    vm: PrayersVM,
+    vm: PrayersViewModel,
     st: PrayersState
 ) {
     MySurface(

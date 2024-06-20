@@ -23,7 +23,7 @@ import bassamalim.hidaya.core.ui.components.SearchComponent
 
 @Composable
 fun LocationPickerUI(
-    vm: LocationPickerVM
+    vm: LocationPickerViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()

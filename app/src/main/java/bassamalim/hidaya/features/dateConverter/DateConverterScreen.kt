@@ -26,7 +26,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun DateConverterUI(
-    vm: DateConverterVM
+    vm: DateConverterViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current

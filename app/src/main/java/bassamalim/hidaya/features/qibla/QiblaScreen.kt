@@ -45,7 +45,7 @@ import coil.size.Size
 
 @Composable
 fun QiblaUI(
-    vm: QiblaVM
+    vm: QiblaViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
@@ -166,7 +166,7 @@ fun QiblaUI(
 @Composable
 private fun CalibrationDialog(
     context: Context,
-    viewModel: QiblaVM,
+    viewModel: QiblaViewModel,
     state: QiblaState
 ) {
     MyDialog(
