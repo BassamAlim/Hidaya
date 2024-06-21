@@ -10,7 +10,7 @@ class RecitationsPreferencesRepository(
     private val dataStore: DataStore<RecitationsPreferences>
 ) {
 
-    val recitationsPreferencesFlow: Flow<RecitationsPreferences> = dataStore.data
+    val flow: Flow<RecitationsPreferences> = dataStore.data
         .catch { exception ->
             if (exception is IOException) emit(RecitationsPreferences())
             else throw exception

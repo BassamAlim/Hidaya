@@ -1,20 +1,25 @@
 package bassamalim.hidaya.features.bookChapters
 
 import android.content.Context
-import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.BooksPreferencesRepository
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.utils.FileUtils
 import com.google.gson.Gson
+import kotlinx.collections.immutable.mutate
+import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class BookChaptersRepository @Inject constructor(
     private val ctx: Context,
-    private val preferencesDS: PreferencesDataSource,
-    private val gson: Gson
+    private val gson: Gson,
+    private val appSettingsPrefsRepo: AppSettingsPreferencesRepository,
+    private val booksPrefsRepo: BooksPreferencesRepository
 ) {
 
-    fun getLanguage() = preferencesDS.getLanguage()
+    suspend fun getLanguage() = appSettingsPrefsRepo.flow.first()
+        .language
 
     fun getBook(bookId: Int): Book {
         val path = ctx.getExternalFilesDir(null).toString() + "/Books/" + bookId + ".json"
@@ -22,20 +27,31 @@ class BookChaptersRepository @Inject constructor(
         return gson.fromJson(jsonStr, Book::class.java)
     }
 
-    fun getFavs(book: Book): List<Int> {
-        val favsStr = preferencesDS.getString(Preference.BookChaptersFavs(book.bookInfo.bookId))
-        return if (favsStr.isNotEmpty())
-            gson.fromJson(favsStr, IntArray::class.java).toList()
+    suspend fun getFavs(book: Book): Map<Int, Int> {
+        val allFavs = booksPrefsRepo.flow.first().chaptersFavs
+        return if (allFavs.containsKey(book.bookInfo.bookId))
+            allFavs[book.bookInfo.bookId]!!
         else {
-            val favs = mutableListOf<Int>()
-            book.chapters.forEach { _ -> favs.add(0) }
+            val favs = book.chapters.associate {
+                it.chapterId to 0
+            }
+
+            booksPrefsRepo.update { it.copy(
+                chaptersFavs = it.chaptersFavs.mutate { oldMap ->
+                    oldMap[book.bookInfo.bookId] = favs.toPersistentMap()
+                }
+            )}
+
             favs
         }
     }
 
-    fun updateFavorites(bookId: Int, favs: List<Int>) {
-        val json = gson.toJson(favs.toIntArray())
-        preferencesDS.setString(Preference.BookChaptersFavs(bookId), json)
+    suspend fun setFavorites(bookId: Int, favs: Map<Int, Int>) {
+        booksPrefsRepo.update { it.copy(
+            chaptersFavs = it.chaptersFavs.mutate { oldMap ->
+                oldMap[bookId] = favs.toPersistentMap()
+            }
+        )}
     }
 
 }

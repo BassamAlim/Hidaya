@@ -256,8 +256,15 @@ object AppModule {
     @Provides @Singleton
     fun provideBookChaptersRepository(
         context: Context,
-        preferencesDataSource: PreferencesDataSource,
-    ) = BookChaptersRepository(context, preferencesDataSource)
+        gson: Gson,
+        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
+        booksPreferencesRepository: BooksPreferencesRepository,
+    ) = BookChaptersRepository(
+        context,
+        gson,
+        appSettingsPreferencesRepository,
+        booksPreferencesRepository
+    )
 
     @Provides @Singleton
     fun provideBookReaderRepository(

@@ -10,10 +10,16 @@ class BooksPreferencesRepository(
     private val dataStore: DataStore<BooksPreferences>
 ) {
 
-    val booksPreferencesFlow: Flow<BooksPreferences> = dataStore.data
+    val flow: Flow<BooksPreferences> = dataStore.data
         .catch { exception ->
             if (exception is IOException) emit(BooksPreferences())
             else throw exception
         }
+
+    suspend fun update(update: (BooksPreferences) -> BooksPreferences) {
+        dataStore.updateData { preferences ->
+            update(preferences)
+        }
+    }
 
 }

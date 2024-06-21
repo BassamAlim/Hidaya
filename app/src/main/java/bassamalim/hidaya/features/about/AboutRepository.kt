@@ -9,6 +9,7 @@ class AboutRepository @Inject constructor(
 ) {
 
     suspend fun getLastUpdate() =
-        appStatePrefsRepo.appStatePreferencesFlow.first().lastDailyUpdateMillis
+        appStatePrefsRepo.flow.first()
+            .lastDailyUpdateMillis
 
 }

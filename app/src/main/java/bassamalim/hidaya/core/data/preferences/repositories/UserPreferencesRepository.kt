@@ -10,7 +10,7 @@ class UserPreferencesRepository(
     private val dataStore: DataStore<UserPreferences>
 ) {
 
-    val userPreferencesFlow: Flow<UserPreferences> = dataStore.data
+    val flow: Flow<UserPreferences> = dataStore.data
         .catch { exception ->
             if (exception is IOException) emit(UserPreferences())
             else throw exception

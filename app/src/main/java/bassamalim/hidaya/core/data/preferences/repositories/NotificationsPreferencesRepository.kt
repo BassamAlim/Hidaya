@@ -10,7 +10,7 @@ class NotificationsPreferencesRepository(
     private val dataStore: DataStore<NotificationsPreferences>
 ) {
 
-    val appNotificationsPreferencesFlow: Flow<NotificationsPreferences> = dataStore.data
+    val flow: Flow<NotificationsPreferences> = dataStore.data
         .catch { exception ->
             if (exception is IOException) emit(NotificationsPreferences())
             else throw exception

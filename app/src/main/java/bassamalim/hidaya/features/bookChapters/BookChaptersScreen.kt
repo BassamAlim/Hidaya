@@ -54,7 +54,7 @@ private fun Tab(
                 MyBtnSurface(
                     text = item.title,
                     iconBtn = {
-                        MyFavBtn(st.favs[item.id]) {
+                        MyFavBtn(st.favs[item.id]!!) {
                             vm.onFavClick(item.id)
                         }
                     }

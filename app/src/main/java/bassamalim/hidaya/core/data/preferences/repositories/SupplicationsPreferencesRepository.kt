@@ -10,7 +10,7 @@ class SupplicationsPreferencesRepository(
     private val dataStore: DataStore<SupplicationsPreferences>
 ) {
 
-    val supplicationsPreferencesFlow: Flow<SupplicationsPreferences> = dataStore.data
+    val flow: Flow<SupplicationsPreferences> = dataStore.data
         .catch { exception ->
             if (exception is IOException) emit(SupplicationsPreferences())
             else throw exception

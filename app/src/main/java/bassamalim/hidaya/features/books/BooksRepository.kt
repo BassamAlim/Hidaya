@@ -3,35 +3,41 @@ package bassamalim.hidaya.features.books
 import android.content.Context
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.BooksDB
-import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.BooksPreferencesRepository
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.utils.FileUtils
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.first
 import java.io.File
 import javax.inject.Inject
 
 class BooksRepository @Inject constructor(
     private val ctx: Context,
-    private val preferencesDS: PreferencesDataSource,
     private val db: AppDatabase,
-    private val gson: Gson
+    private val gson: Gson,
+    private val appSettingsPrefsRepository: AppSettingsPreferencesRepository,
+    private val booksPreferencesRepository: BooksPreferencesRepository
 ) {
 
     private val prefix = "/Books/"
 
-    fun getLanguage() = preferencesDS.getLanguage()
+    suspend fun getLanguage() = appSettingsPrefsRepository.flow.first()
+        .language
 
     fun getBooks() = db.booksDao().getAll()
 
-    fun getShowTutorial() =
-        preferencesDS.getBoolean(Preference.ShowBooksTutorial)
+    suspend fun getShowTutorial() =
+        booksPreferencesRepository.flow.first()
+            .shouldShowTutorial
 
-    fun setDoNotShowAgain() {
-        preferencesDS.setBoolean(Preference.ShowBooksTutorial, false)
+    suspend fun setDoNotShowAgain() {
+        booksPreferencesRepository.update { it.copy(
+            shouldShowTutorial = false
+        )}
     }
 
     fun download(item: BooksDB): FileDownloadTask {
@@ -75,6 +81,13 @@ class BooksRepository @Inject constructor(
         } catch (e: Exception) {
             true
         }
+    }
+
+    fun deleteBook(bookId: Int) {
+        FileUtils.deleteFile(
+            context = ctx,
+            path = "${prefix}$bookId.json"
+        )
     }
 
 }

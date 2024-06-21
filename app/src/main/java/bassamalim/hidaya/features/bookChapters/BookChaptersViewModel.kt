@@ -2,6 +2,7 @@ package bassamalim.hidaya.features.bookChapters
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.BookChapter
 import bassamalim.hidaya.core.nav.Navigator
@@ -10,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,10 +28,17 @@ class BookChaptersViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(BookChaptersState(
         title = bookTitle,
-        favs = repository.getFavs(book),
-        language = repository.getLanguage()
     ))
     val uiState = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            _uiState.update { it.copy(
+                language = repository.getLanguage(),
+                favs = repository.getFavs(book)
+            )}
+        }
+    }
 
     fun getItems(page: Int): List<BookChapter> {
         val listType = ListType.entries[page]
@@ -60,12 +69,14 @@ class BookChaptersViewModel @Inject constructor(
 
     fun onFavClick(itemId: Int) {
         _uiState.update { it.copy(
-            favs = it.favs.toMutableList().apply {
+            favs = it.favs.toMutableMap().apply {
                 this[itemId] = if (this[itemId] == 1) 0 else 1
             }
         )}
 
-        repository.updateFavorites(bookId, _uiState.value.favs.toList())
+        viewModelScope.launch {
+            repository.setFavorites(bookId, _uiState.value.favs.toMap())
+        }
     }
 
     fun onSearchTextChange(text: String) {

@@ -3,46 +3,44 @@ package bassamalim.hidaya.features.books
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.data.database.dbs.BooksDB
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.utils.FileUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class BooksViewModel @Inject constructor(
     app: Application,
-    private val repo: BooksRepository,
+    private val repository: BooksRepository,
     private val navigator: Navigator
 ): AndroidViewModel(app) {
 
     private val _uiState = MutableStateFlow(BooksState(
-        items = repo.getBooks(),
-        language = repo.getLanguage(),
-        tutorialDialogShown = repo.getShowTutorial()
+        items = repository.getBooks()
     ))
     val uiState = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            _uiState.update { it.copy(
+                language = repository.getLanguage(),
+                tutorialDialogShown = repository.getShowTutorial()
+            )}
+        }
+    }
 
     fun onStart() {
         _uiState.update { it.copy(
             downloadStates = getDownloadStates()
-        )}
-    }
-
-    fun getPath(itemId: Int) = "${repo.prefix}$itemId.json"
-
-    fun onFileDeleted(itemId: Int) {
-        _uiState.update { it.copy(
-            downloadStates = it.downloadStates.toMutableList().apply {
-                this[itemId] = DownloadState.NotDownloaded
-            }
         )}
     }
 
@@ -54,8 +52,8 @@ class BooksViewModel @Inject constructor(
         val downloadStates = ArrayList<DownloadState>()
         for (book in _uiState.value.items) {
             downloadStates.add(
-                if (repo.isDownloaded(book.id)) {
-                    if (repo.isDownloading(book.id)) DownloadState.Downloading
+                if (repository.isDownloaded(book.id)) {
+                    if (repository.isDownloading(book.id)) DownloadState.Downloading
                     else DownloadState.Downloaded
                 }
                 else DownloadState.NotDownloaded
@@ -71,7 +69,7 @@ class BooksViewModel @Inject constructor(
             }
         )}
 
-        val downloadTask = repo.download(item)
+        val downloadTask = repository.download(item)
         downloadTask
             .addOnSuccessListener {
                 Log.i(Global.TAG, "File download succeeded")
@@ -112,11 +110,13 @@ class BooksViewModel @Inject constructor(
             else _uiState.value.downloadStates[item.id]
 
         if (state == DownloadState.Downloaded) {
-            onFileDeleted(item.id)
-            FileUtils.deleteFile(
-                context = getApplication(),
-                path = getPath(item.id)
-            )
+            _uiState.update { it.copy(
+                downloadStates = it.downloadStates.toMutableList().apply {
+                    this[item.id] = DownloadState.NotDownloaded
+                }
+            )}
+
+            repository.deleteBook(item.id)
         }
         else download(item)
     }
@@ -126,7 +126,11 @@ class BooksViewModel @Inject constructor(
             tutorialDialogShown = false
         )}
 
-        if (doNotShowAgain) repo.setDoNotShowAgain()
+        if (doNotShowAgain) {
+            viewModelScope.launch {
+                repository.setDoNotShowAgain()
+            }
+        }
     }
 
 }

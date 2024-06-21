@@ -10,7 +10,7 @@ class QuranPreferencesRepository(
     private val dataStore: DataStore<QuranPreferences>
 ) {
 
-    val quranPreferencesFlow: Flow<QuranPreferences> = dataStore.data
+    val flow: Flow<QuranPreferences> = dataStore.data
         .catch { exception ->
             if (exception is IOException) emit(QuranPreferences())
             else throw exception

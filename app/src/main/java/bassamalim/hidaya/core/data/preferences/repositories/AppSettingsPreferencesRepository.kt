@@ -10,7 +10,7 @@ class AppSettingsPreferencesRepository(
     private val dataStore: DataStore<AppSettingsPreferences>
 ) {
 
-    val appSettingsPreferencesFlow: Flow<AppSettingsPreferences> = dataStore.data
+    val flow: Flow<AppSettingsPreferences> = dataStore.data
         .catch { exception ->
             if (exception is IOException) emit(AppSettingsPreferences())
             else throw exception
