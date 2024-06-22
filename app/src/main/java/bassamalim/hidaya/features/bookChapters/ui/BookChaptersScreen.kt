@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.bookChapters
+package bassamalim.hidaya.features.bookChapters.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.items
@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.models.BookChapter
+import bassamalim.hidaya.features.bookChapters.domain.BookChapter
 import bassamalim.hidaya.core.ui.components.MyBtnSurface
 import bassamalim.hidaya.core.ui.components.MyFavBtn
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
@@ -18,11 +18,11 @@ import bassamalim.hidaya.core.ui.components.TabLayout
 
 @Composable
 fun BookChaptersUI(
-    vm: BookChaptersViewModel
+    viewModel: BookChaptersViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyScaffold(st.title) {
+    MyScaffold(state.title) {
         TabLayout(
             pageNames = listOf(
                 stringResource(R.string.all),
@@ -30,23 +30,29 @@ fun BookChaptersUI(
             ),
             searchComponent = {
                 SearchComponent(
-                    value = st.searchText,
+                    value = state.searchText,
                     hint = stringResource(R.string.search),
                     modifier = Modifier.fillMaxWidth(),
-                    onValueChange = { vm.onSearchTextChange(it) }
+                    onValueChange = { viewModel.onSearchTextChange(it) }
                 )
             }
         ) { page ->
-            Tab(vm, st, vm.getItems(page))
+            Tab(
+                items = viewModel.getItems(page),
+                favs = state.favs,
+                onItemClick = { viewModel.onItemClick(it) },
+                onFavClick = { viewModel.onFavClick(it) },
+            )
         }
     }
 }
 
 @Composable
 private fun Tab(
-    vm: BookChaptersViewModel,
-    st: BookChaptersState,
-    items: List<BookChapter>
+    items: List<BookChapter>,
+    favs: Map<Int, Int>,
+    onItemClick: (BookChapter) -> Unit,
+    onFavClick: (Int) -> Unit
 ) {
     MyLazyColumn(
         lazyList = {
@@ -54,13 +60,13 @@ private fun Tab(
                 MyBtnSurface(
                     text = item.title,
                     iconBtn = {
-                        MyFavBtn(st.favs[item.id]!!) {
-                            vm.onFavClick(item.id)
-                        }
-                    }
-                ) {
-                    vm.onItemClick(item)
-                }
+                        MyFavBtn(
+                            fav = favs[item.id]!!,
+                            onClick = { onFavClick(item.id) }
+                        )
+                    },
+                    onClick = { onItemClick(item) }
+                )
             }
         }
     )

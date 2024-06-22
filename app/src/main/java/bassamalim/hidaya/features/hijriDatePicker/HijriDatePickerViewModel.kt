@@ -7,6 +7,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.PagerState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.nav.Navigator
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,10 +28,9 @@ class HijriDatePickerViewModel @Inject constructor(
 
     private val initialDate = savedStateHandle.get<String>("initial_date")
 
-    val numeralsLanguage = repo.numeralsLanguage
-    val months = repo.months
-    val weekDays = repo.weekDays
-    val weekDaysAbb = repo.weekDaysAbb
+    lateinit var months: Array<String>
+    lateinit var weekDays: Array<String>
+    lateinit var weekDaysAbb: List<String>
     val now = UmmalquraCalendar()
     private lateinit var daysPagerState: PagerState
     private lateinit var coroutineScope: CoroutineScope
@@ -41,6 +41,17 @@ class HijriDatePickerViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            _uiState.update { it.copy(
+                language = repo.getLanguage(),
+                numeralsLanguage = repo.getNumeralsLanguage(),
+            )}
+
+            months = repo.getMonths()
+            weekDays = repo.getWeekDays()
+            weekDaysAbb = repo.getWeekDaysAbb(_uiState.value.language)
+        }
+
         initialDate?.let { dateStr ->
             val date = dateStr.split("-")
             val year = date[0].toInt()

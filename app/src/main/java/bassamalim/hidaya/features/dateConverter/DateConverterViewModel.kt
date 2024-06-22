@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.widget.DatePicker
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
@@ -14,22 +15,31 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class DateConverterViewModel @Inject constructor(
-    private val repo: DateConverterRepository,
+    private val repository: DateConverterRepository,
     private val navigator: Navigator
 ): ViewModel() {
 
-    var hijriCalendar = UmmalquraCalendar()
+    private var hijriCalendar = UmmalquraCalendar()
     private var gregorianCalendar = Calendar.getInstance()
-    private val hijriMonths = repo.getHijriMonths()
-    private val gregorianMonths = repo.getGregorianMonths()
+    private val hijriMonths = repository.getHijriMonths()
+    private val gregorianMonths = repository.getGregorianMonths()
 
     private val _uiState = MutableStateFlow(DateConverterState())
     val uiState = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            _uiState.update { it.copy(
+                numeralsLanguage = repository.getNumeralsLanguage()
+            )}
+        }
+    }
 
     fun onPickGregorianClk(ctx: Context) {
         val datePicker = DatePickerDialog(
@@ -102,23 +112,23 @@ class DateConverterViewModel @Inject constructor(
         _uiState.update { it.copy(
             hijriValues = listOf(
                 translateNums(
-                    repo.numeralsLanguage,
+                    _uiState.value.numeralsLanguage,
                     hijriCalendar[Calendar.YEAR].toString()
                 ),
                 hijriMonths[hijriCalendar[Calendar.MONTH]],
                 translateNums(
-                    repo.numeralsLanguage,
+                    _uiState.value.numeralsLanguage,
                     hijriCalendar[Calendar.DATE].toString()
                 )
             ),
             gregorianValues = listOf(
                 translateNums(
-                    repo.numeralsLanguage,
+                    _uiState.value.numeralsLanguage,
                     gregorianCalendar[Calendar.YEAR].toString()
                 ),
                 gregorianMonths[gregorianCalendar[Calendar.MONTH]],
                 translateNums(
-                    repo.numeralsLanguage,
+                    _uiState.value.numeralsLanguage,
                     gregorianCalendar[Calendar.DATE].toString()
                 )
             )

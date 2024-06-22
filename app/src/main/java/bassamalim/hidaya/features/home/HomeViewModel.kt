@@ -22,11 +22,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.max
-
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -38,7 +38,6 @@ class HomeViewModel @Inject constructor(
     private val deviceId = getDeviceId(app)
     private var latestUserRecord = repo.getLocalRecord()
     private val prayerNames = repo.getPrayerNames()
-    private val numeralsLanguage = repo.getNumeralsLanguage()
     private var times: Array<Calendar?> = arrayOfNulls(6)
     private var formattedTimes: List<String> = arrayListOf()
     private var tomorrowFajr: Calendar = Calendar.getInstance()
@@ -58,6 +57,12 @@ class HomeViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            _uiState.update { it.copy(
+                numeralsLanguage = repo.getNumeralsLanguage()
+            )}
+        }
+
         if (isInternetConnected(app)) {
             updateUserRecords()
         }
@@ -72,14 +77,16 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onStart() {
-        if (repo.getLocation() != null) setupPrayersCard()
+        viewModelScope.launch {
+            if (repo.getLocation() != null) setupPrayersCard()
 
-        _uiState.update { it.copy(
-            telawatRecord = formatTelawatTime(repo.getTelawatPlaybackRecord()),
-            quranPagesRecord = formatQuranPagesRecord(repo.getQuranPagesRecord()),
-            todayWerdPage = getTodayWerdPage(),
-            isWerdDone = repo.getIsWerdDone()
-        )}
+            _uiState.update { it.copy(
+                telawatRecord = formatTelawatTime(repo.getTelawatTimeRecord()),
+                quranPagesRecord = formatQuranPagesRecord(repo.getQuranPagesRecord()),
+                todayWerdPage = getWerdPage(),
+                isWerdDone = repo.getIsWerdDone()
+            )}
+        }
     }
 
     fun onStop() {
@@ -185,7 +192,7 @@ class HomeViewModel @Inject constructor(
 
                 _uiState.update { it.copy(
                     remainingTime = translateNums(
-                        numeralsLanguage = numeralsLanguage,
+                        numeralsLanguage = _uiState.value.numeralsLanguage,
                         string = hms,
                         timeFormat = true
                     )
@@ -217,10 +224,17 @@ class HomeViewModel @Inject constructor(
         return -1
     }
 
-    private fun getTodayWerdPage(): String {
+    private fun getWerdPage(): String {
+        return viewModelScope.launch {
+             translateNums(
+                numeralsLanguage = _uiState.value.numeralsLanguage,
+                string = repo.getWerdPage().toString()
+            )
+        }.start().wait()
+
         return translateNums(
-            numeralsLanguage = numeralsLanguage,
-            string = repo.getTodayWerdPage().toString()
+            numeralsLanguage = _uiState.value.numeralsLanguage,
+            string = repo.getWerdPage().toString()
         )
     }
 
@@ -265,10 +279,16 @@ class HomeViewModel @Inject constructor(
             }
         }
 
-        if (latestUserRecord.readingRecord > localRecord.readingRecord)
-            repo.setLocalQuranRecord(latestUserRecord.readingRecord)
-        if (latestUserRecord.listeningRecord > localRecord.listeningRecord)
-            repo.setLocalTelawatRecord(latestUserRecord.listeningRecord)
+        if (latestUserRecord.readingRecord > localRecord.readingRecord) {
+            viewModelScope.launch {
+                repo.setLocalQuranRecord(latestUserRecord.readingRecord)
+            }
+        }
+        if (latestUserRecord.listeningRecord > localRecord.listeningRecord) {
+            viewModelScope.launch {
+                repo.setLocalTelawatRecord(latestUserRecord.listeningRecord)
+            }
+        }
 
         _uiState.update { it.copy(
             quranPagesRecord = formatQuranPagesRecord(latestUserRecord.readingRecord),
@@ -283,7 +303,7 @@ class HomeViewModel @Inject constructor(
         val seconds = millis / 1000 % 60
 
         return translateNums(
-            numeralsLanguage,
+            _uiState.value.numeralsLanguage,
             String.format(
                 Locale.US, "%02d:%02d:%02d",
                 hours, minutes, seconds
@@ -293,7 +313,7 @@ class HomeViewModel @Inject constructor(
 
     private fun formatQuranPagesRecord(num: Int): String {
         return translateNums(
-            numeralsLanguage = numeralsLanguage,
+            numeralsLanguage = _uiState.value.numeralsLanguage,
             string = num.toString()
         )
     }

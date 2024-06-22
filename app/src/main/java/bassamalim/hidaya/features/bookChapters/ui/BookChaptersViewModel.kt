@@ -1,12 +1,13 @@
-package bassamalim.hidaya.features.bookChapters
+package bassamalim.hidaya.features.bookChapters.ui
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.ListType
-import bassamalim.hidaya.core.models.BookChapter
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
+import bassamalim.hidaya.features.bookChapters.domain.BookChapter
+import bassamalim.hidaya.features.bookChapters.domain.BookChaptersDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,16 +18,16 @@ import javax.inject.Inject
 @HiltViewModel
 class BookChaptersViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: BookChaptersRepository,
+    private val domain: BookChaptersDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
     private val bookId = savedStateHandle.get<Int>("book_id")?: 0
     private val bookTitle = savedStateHandle.get<String>("book_title")?: ""
 
-    private val book = repository.getBook(bookId)
+    private val book = domain.getBook(bookId)
 
-    private val _uiState = MutableStateFlow(BookChaptersState(
+    private val _uiState = MutableStateFlow(BookChaptersUiState(
         title = bookTitle,
     ))
     val uiState = _uiState.asStateFlow()
@@ -34,8 +35,7 @@ class BookChaptersViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _uiState.update { it.copy(
-                language = repository.getLanguage(),
-                favs = repository.getFavs(book)
+                favs = domain.getFavs(book)
             )}
         }
     }
@@ -43,18 +43,12 @@ class BookChaptersViewModel @Inject constructor(
     fun getItems(page: Int): List<BookChapter> {
         val listType = ListType.entries[page]
 
-        val items = ArrayList<BookChapter>()
-        for (i in book.chapters.indices) {
-            val chapter = book.chapters[i]
-            if (listType == ListType.All ||
-                listType == ListType.Favorite && _uiState.value.favs[i] == 1)
-                items.add(BookChapter(chapter.chapterId, chapter.chapterTitle))
-        }
-
-        return if (_uiState.value.searchText.isEmpty()) items
-        else items.filter {
-            it.title.contains(_uiState.value.searchText, true)
-        }
+        return domain.getItems(
+            listType = listType,
+            chapters = book.chapters,
+            favs = _uiState.value.favs,
+            searchText = _uiState.value.searchText
+        )
     }
 
     fun onItemClick(item: BookChapter) {
@@ -75,7 +69,10 @@ class BookChaptersViewModel @Inject constructor(
         )}
 
         viewModelScope.launch {
-            repository.setFavorites(bookId, _uiState.value.favs.toMap())
+            domain.setFavs(
+                bookId = bookId,
+                favs = _uiState.value.favs.toMap()
+            )
         }
     }
 

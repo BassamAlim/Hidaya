@@ -16,4 +16,10 @@ class RecitationsPreferencesRepository(
             else throw exception
         }
 
+    suspend fun update(update: (RecitationsPreferences) -> RecitationsPreferences) {
+        dataStore.updateData { preferences ->
+            update(preferences)
+        }
+    }
+
 }

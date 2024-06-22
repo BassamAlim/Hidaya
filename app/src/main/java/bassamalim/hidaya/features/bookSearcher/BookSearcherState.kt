@@ -9,6 +9,7 @@ data class BookSearcherState(
     val noResultsFound: Boolean = false,
     val maxMatches: Int = 10,
     val maxMatchesItems: Array<String> = emptyArray(),
+    val bookSelections: Map<Int, Boolean> = emptyMap(),
     val filtered: Boolean = false,
     val language: Language = Language.ARABIC,
     val numeralsLanguage: Language = Language.ARABIC,

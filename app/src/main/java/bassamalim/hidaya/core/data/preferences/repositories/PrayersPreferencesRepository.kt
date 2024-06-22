@@ -16,4 +16,10 @@ class PrayersPreferencesRepository(
             else throw exception
         }
 
+    suspend fun update(update: (PrayersPreferences) -> PrayersPreferences) {
+        dataStore.updateData { preferences ->
+            update(preferences)
+        }
+    }
+
 }

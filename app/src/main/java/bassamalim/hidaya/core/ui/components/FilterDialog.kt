@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,10 +25,10 @@ fun FilterDialog(
     shown: Boolean,
     title: String,
     itemTitles: List<String>,
-    itemSelections: Array<Boolean>,
-    onDismiss: (Array<Boolean>) -> Unit
+    itemSelections: Map<Int, Boolean>,
+    onDismiss: (Map<Int, Boolean>) -> Unit
 ) {
-    val selections = itemSelections.toList().toMutableStateList()
+    val selections = itemSelections.toMutableMap()
 
     MyDialog(shown) {
         Column(
@@ -51,7 +50,7 @@ fun FilterDialog(
                     itemsIndexed(itemTitles) { index, _ ->
                         CheckboxListItem(
                             title = itemTitles[index],
-                            isChecked = selections[index]
+                            isChecked = selections[index]!!
                         ) { isSelected ->
                             selections[index] = isSelected
                         }
@@ -68,12 +67,16 @@ fun FilterDialog(
                 MyText(
                     stringResource(R.string.select_all),
                     textColor = AppTheme.colors.accent,
-                    modifier = Modifier.clickable { selections.fill(true) }
+                    modifier = Modifier.clickable {
+                        selections.mapValues { true }
+                    }
                 )
 
                 MyText(
                     stringResource(R.string.unselect_all),
-                    modifier = Modifier.clickable { selections.fill(false) },
+                    modifier = Modifier.clickable {
+                        selections.mapValues { false }
+                    },
                     textColor = AppTheme.colors.accent
                 )
             }
@@ -82,7 +85,7 @@ fun FilterDialog(
                 text = stringResource(R.string.select),
                 modifier = Modifier.padding(horizontal = 10.dp)
             ) {
-                onDismiss(selections.toTypedArray())
+                onDismiss(selections)
             }
         }
     }

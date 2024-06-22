@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.about
+package bassamalim.hidaya.features.about.ui
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -32,10 +32,8 @@ import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 
 @Composable
-fun AboutScreen(
-    vm: AboutViewModel
-) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+fun AboutScreen(viewModel: AboutViewModel) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(title = stringResource(R.string.about)) {
         Column(
@@ -44,23 +42,31 @@ fun AboutScreen(
                 .padding(it)
                 .padding(horizontal = 5.dp)
         ) {
-            ThankYouMessage(vm)
+            ThankYouMessage(
+                onTitleClick = viewModel::onTitleClick
+            )
 
             SourcesList()
 
-            HiddenArea(vm, st)
+            HiddenArea(
+                isDevModeOn = state.isDevModeEnabled,
+                lastDailyUpdate = state.lastDailyUpdate,
+                onRebuildDatabaseClick = viewModel::onRebuildDatabaseClick
+            )
         }
     }
 
     // show a toast when the database is rebuilt
-    if (st.shouldShowRebuilt != 0) {
-        DatabaseRebuiltToast(st)
+    if (state.shouldShowRebuilt != 0) {
+        DatabaseRebuiltToast(
+            shouldShowRebuilt = state.shouldShowRebuilt
+        )
     }
 }
 
 @Composable
 private fun ColumnScope.ThankYouMessage(
-    vm: AboutViewModel
+    onTitleClick: () -> Unit
 ) {
     MyText(
         text = stringResource(R.string.thanks),
@@ -72,7 +78,7 @@ private fun ColumnScope.ThankYouMessage(
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
-                onClick = vm::onTitleClick
+                onClick = onTitleClick
             )
     )
 }
@@ -108,11 +114,12 @@ private fun Source(textResId: Int) {
 
 @Composable
 private fun ColumnScope.HiddenArea(
-    vm: AboutViewModel,
-    st: AboutState
+    isDevModeOn: Boolean,
+    lastDailyUpdate: String,
+    onRebuildDatabaseClick: () -> Unit,
 ) {
     AnimatedVisibility(
-        visible = st.isDevModeOn,
+        visible = isDevModeOn,
         enter = expandVertically()
     ) {
         Column(
@@ -121,14 +128,14 @@ private fun ColumnScope.HiddenArea(
         ) {
             // rebuild database button
             MySquareButton(
-                stringResource(R.string.rebuild_database),
+                text = stringResource(R.string.rebuild_database),
                 Modifier.align(Alignment.CenterHorizontally),
-                onClick = { vm.rebuildDatabase() }
+                onClick = onRebuildDatabaseClick
             )
 
             // last daily update text
             MyText(
-                st.lastDailyUpdate,
+                lastDailyUpdate,
                 Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(10.dp)
@@ -139,13 +146,13 @@ private fun ColumnScope.HiddenArea(
 
 @Composable
 private fun DatabaseRebuiltToast(
-    st: AboutState
+    shouldShowRebuilt: Int
 ) {
     val ctx = LocalContext.current
-
-    LaunchedEffect(key1 = st.shouldShowRebuilt) {
+    LaunchedEffect(key1 = shouldShowRebuilt) {
         Toast.makeText(
-            ctx, ctx.getString(R.string.database_rebuilt),
+            ctx,
+            ctx.getString(R.string.database_rebuilt),
             Toast.LENGTH_SHORT
         ).show()
     }

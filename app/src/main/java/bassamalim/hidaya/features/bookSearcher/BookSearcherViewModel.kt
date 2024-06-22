@@ -4,37 +4,42 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.models.BookSearcherMatch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
 class BookSearcherViewModel @Inject constructor(
-    private val repo: BookSearcherRepository
+    private val repository: BookSearcherRepository
 ): ViewModel() {
 
-    var bookSelections = repo.getBookSelections()
     val bookTitles: List<String>
     private var highlightColor: Color? = null
 
     private val _uiState = MutableStateFlow(BookSearcherState(
-        maxMatchesItems = repo.getMaxMatchesItems(),
-        filtered = bookSelections.contains(false),
-        language = repo.getLanguage(),
-        numeralsLanguage = repo.getNumeralsLanguage()
+        maxMatchesItems = repository.getMaxMatchesItems(),
     ))
     val uiState = _uiState.asStateFlow()
 
     init {
-        bookTitles = repo.getBookTitles(_uiState.value.language)
+        viewModelScope.launch {
+            val bookSelections = repository.getBookSelections()
+            _uiState.update { it.copy(
+                language = repository.getLanguage(),
+                numeralsLanguage = repository.getNumeralsLanguage(),
+                bookSelections = bookSelections,
+                filtered = bookSelections.containsValue(false),
+                maxMatches = it.maxMatchesItems[repository.getMaxMatches()].toInt(),
+            )}
+        }
 
-        _uiState.update { it.copy(
-            maxMatches = it.maxMatchesItems[repo.getMaxMatchesIndex()].toInt(),
-        )}
+        bookTitles = repository.getBookTitles(_uiState.value.language)
     }
 
     fun onFilterClick() {
@@ -43,13 +48,14 @@ class BookSearcherViewModel @Inject constructor(
         )}
     }
 
-    fun onFilterDialogDismiss(selections: Array<Boolean>) {
-        bookSelections = selections
-
-        _uiState.update { it.copy(
-            filterDialogShown = false,
-            filtered = bookSelections.contains(false)
-        )}
+    fun onFilterDialogDismiss(selections: Map<Int, Boolean>) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(
+                filterDialogShown = false,
+                bookSelections = selections,
+                filtered = selections.containsValue(false)
+            )}
+        }
 
         highlightColor?.let { search(it) }  // re-search if already searched
     }
@@ -61,7 +67,9 @@ class BookSearcherViewModel @Inject constructor(
 
         highlightColor?.let { search(it) }  // re-search if already searched
 
-        repo.setMaxMatchesIndex(index)
+        viewModelScope.launch {
+            repository.setMaxMatches(index)
+        }
     }
 
     fun search(highlightColor: Color) {
@@ -69,9 +77,10 @@ class BookSearcherViewModel @Inject constructor(
 
         val matches = ArrayList<BookSearcherMatch>()
 
-        val bookContents = repo.getBookContents()
+        val bookContents = repository.getBookContents()
         for (i in bookContents.indices) {
-            if (!bookSelections[i] || !repo.isDownloaded(i)) continue
+            if (!_uiState.value.bookSelections[i]!! || !repository.isDownloaded(i))
+                continue
 
             val bookContent = bookContents[i]
             for (j in bookContent.chapters.indices) {

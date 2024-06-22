@@ -16,4 +16,10 @@ class QuranPreferencesRepository(
             else throw exception
         }
 
+    suspend fun update(update: (QuranPreferences) -> QuranPreferences) {
+        dataStore.updateData { preferences ->
+            update(preferences)
+        }
+    }
+
 }

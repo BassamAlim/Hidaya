@@ -1,46 +1,50 @@
 package bassamalim.hidaya.features.bookSearcher
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.BooksPreferencesRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.FileUtils
 import com.google.gson.Gson
+import kotlinx.collections.immutable.mutate
+import kotlinx.coroutines.flow.first
 import java.io.File
 import javax.inject.Inject
 
 class BookSearcherRepository @Inject constructor(
-    private val ctx: Context,
-    private val preferencesDS: PreferencesDataSource,
+    ctx: Context,
+    private val resources: Resources,
     private val db: AppDatabase,
-    private val gson: Gson
+    private val gson: Gson,
+    private val appSettingsPrefsRepo: AppSettingsPreferencesRepository,
+    private val booksPreferencesRepo: BooksPreferencesRepository
 ) {
 
-    private val prefix = "/Books/"
+    private val path = "${ctx.getExternalFilesDir(null)}/Books/"
 
-    fun getLanguage() = preferencesDS.getLanguage()
+    suspend fun getLanguage() = appSettingsPrefsRepo.flow.first()
+        .language
 
-    fun getNumeralsLanguage() = preferencesDS.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsPrefsRepo.flow.first()
+        .numeralsLanguage
 
     private fun getBooks() = db.booksDao().getAll()
 
     fun getBookContents(): List<Book> {
-        val dir = File(ctx.getExternalFilesDir(null).toString() + prefix)
+        val dir = File(path)
         if (!dir.exists()) return emptyList()
 
         val books = getBooks()
 
         val bookContents = ArrayList<Book>()
         for (i in books.indices) {
-            val jsonStr = FileUtils.getJsonFromDownloads(
-                ctx.getExternalFilesDir(null).toString() + prefix + i + ".json"
-            )
-
+            val jsonStr = FileUtils.getJsonFromDownloads("$path$i.json")
             try {
                 val bookContent = gson.fromJson(jsonStr, Book::class.java)
                 if (bookContent != null) bookContents.add(bookContent)
@@ -54,37 +58,40 @@ class BookSearcherRepository @Inject constructor(
         return bookContents
     }
 
-    fun getBookSelections(): Array<Boolean> {
+    suspend fun getBookSelections(): Map<Int, Boolean> {
         val books = getBooks()
-        val selections = Array(books.size) { true }
 
-        val json = preferencesDS.getString(Preference.SelectedSearchBooks)
-        if (json.isNotEmpty()) {
-            val boolArr =  gson.fromJson(json, BooleanArray::class.java)
-            boolArr.forEachIndexed { index, bool ->
-                selections[index] = bool
+        val selections = booksPreferencesRepo.flow.first()
+            .searchSelections
+
+        return if (selections.isNotEmpty()) selections
+        else {
+            selections.mutate { oldMap ->
+                books.forEach {
+                    oldMap[it.id] = true
+                }
             }
         }
-
-        return selections
     }
 
-    fun getMaxMatchesIndex() =
-        preferencesDS.getInt(Preference.BookSearcherMaxMatchesIndex)
+    suspend fun getMaxMatches() =
+        booksPreferencesRepo.flow.first().searcherMaxMatches
+
+    suspend fun setMaxMatches(value: Int) {
+        booksPreferencesRepo.update { it.copy(
+            searcherMaxMatches = value
+        )}
+    }
 
     fun getMaxMatchesItems(): Array<String> =
-        ctx.resources.getStringArray(R.array.searcher_matches_en)
-
-    fun setMaxMatchesIndex(index: Int) {
-        preferencesDS.setInt(Preference.BookSearcherMaxMatchesIndex, index)
-    }
+        resources.getStringArray(R.array.searcher_matches_en)
 
     fun getBookTitles(language: Language): List<String> =
         if (language == Language.ENGLISH) db.booksDao().getTitlesEn()
         else db.booksDao().getTitles()
 
     fun isDownloaded(id: Int): Boolean {
-        val dir = File(ctx.getExternalFilesDir(null).toString() + prefix)
+        val dir = File(path)
         if (!dir.exists()) return false
 
         val files = dir.listFiles()

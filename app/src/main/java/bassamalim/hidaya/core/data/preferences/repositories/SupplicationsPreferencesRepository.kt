@@ -16,4 +16,10 @@ class SupplicationsPreferencesRepository(
             else throw exception
         }
 
+    suspend fun update(update: (SupplicationsPreferences) -> SupplicationsPreferences) {
+        dataStore.updateData { preferences ->
+            update(preferences)
+        }
+    }
+
 }

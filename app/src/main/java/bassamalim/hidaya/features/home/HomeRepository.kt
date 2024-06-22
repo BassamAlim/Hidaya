@@ -4,60 +4,70 @@ import android.content.res.Resources
 import android.util.Log
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Response
-import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
-import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.QuranPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.UserPreferencesRepository
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.utils.LocUtils
 import bassamalim.hidaya.features.leaderboard.UserRecord
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
-    private val res: Resources,
-    private val preferencesDS: PreferencesDataSource,
-    private val db: AppDatabase,
+    private val resources: Resources,
+    private val appSettingsPrefsRpo: AppSettingsPreferencesRepository,
+    private val quranPrefsRepo: QuranPreferencesRepository,
+    private val userPrefsRepo: UserPreferencesRepository,
     private val firestore: FirebaseFirestore
 ) {
 
-    fun getIsWerdDone() =
-        preferencesDS.getBoolean(Preference.WerdDone)
+    suspend fun getIsWerdDone() =
+        quranPrefsRepo.flow.first()
+            .isWerdDone
 
     fun getPrayerNames(): Array<String> =
-        res.getStringArray(R.array.prayer_names)
+        resources.getStringArray(R.array.prayer_names)
 
-    fun getNumeralsLanguage() =
-        Language.valueOf(preferencesDS.getString(Preference.NumeralsLanguage))
+    suspend fun getNumeralsLanguage() =
+        appSettingsPrefsRpo.flow.first()
+            .numeralsLanguage
 
-    fun getTodayWerdPage() =
-        preferencesDS.getInt(Preference.WerdPage)
+    suspend fun getWerdPage() =
+        quranPrefsRepo.flow.first()
+            .werdPage
 
-    fun getQuranPagesRecord() =
-        preferencesDS.getInt(Preference.QuranPagesRecord)
+    suspend fun getQuranPagesRecord() =
+        userPrefsRepo.flow.first()
+            .quranPagesRecord
 
-    fun getTelawatPlaybackRecord() =
-        preferencesDS.getLong(Preference.TelawatPlaybackRecord)
+    suspend fun getTelawatTimeRecord() =
+        userPrefsRepo.flow.first()
+            .recitationsTimeRecord
 
-    fun getLocation() =
-        LocUtils.retrieveLocation(preferencesDS.getString(Preference.StoredLocation))
+    suspend fun getLocation() =
+        userPrefsRepo.flow.first()
+            .location
 
-    fun getLocalRecord(): UserRecord {
+    suspend fun getLocalRecord(): UserRecord {
         return UserRecord(
             userId = -1,
-            readingRecord = preferencesDS.getInt(Preference.QuranPagesRecord),
-            listeningRecord = preferencesDS.getLong(Preference.TelawatPlaybackRecord)
+            readingRecord = getQuranPagesRecord(),
+            listeningRecord = getTelawatTimeRecord()
         )
     }
 
-    fun setLocalQuranRecord(pages: Int) {
-        preferencesDS.setInt(Preference.QuranPagesRecord, pages)
+    suspend fun setLocalQuranRecord(pages: Int) {
+        userPrefsRepo.update { it.copy(
+            quranPagesRecord = pages
+        )}
     }
 
-    fun setLocalTelawatRecord(seconds: Long) {
-        preferencesDS.setLong(Preference.TelawatPlaybackRecord, seconds)
+    suspend fun setLocalTelawatRecord(seconds: Long) {
+        userPrefsRepo.update { it.copy(
+            recitationsTimeRecord = seconds
+        )}
     }
 
     suspend fun getRemoteUserRecord(deviceId: String): Response<UserRecord> {
@@ -109,8 +119,7 @@ class HomeRepository @Inject constructor(
     suspend fun registerDevice(deviceId: String): UserRecord? {
         val localRecord = getLocalRecord()
 
-        val largestUserId = getLargestUserId()
-        if (largestUserId == null) return null
+        val largestUserId = getLargestUserId() ?: return null
 
         val userId = largestUserId + 1
         val remoteUserRecord = UserRecord(

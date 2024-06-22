@@ -1,15 +1,16 @@
-package bassamalim.hidaya.features.about
+package bassamalim.hidaya.features.about.data
 
 import bassamalim.hidaya.core.data.preferences.repositories.AppStatePreferencesRepository
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AboutRepository @Inject constructor(
     private val appStatePrefsRepo: AppStatePreferencesRepository
 ) {
 
-    suspend fun getLastUpdate() =
-        appStatePrefsRepo.flow.first()
-            .lastDailyUpdateMillis
+    fun getLastUpdate() =
+        appStatePrefsRepo.flow.map {
+            it.lastDailyUpdateMillis
+        }
 
 }

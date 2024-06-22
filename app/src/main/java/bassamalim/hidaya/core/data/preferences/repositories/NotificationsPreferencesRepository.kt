@@ -16,4 +16,10 @@ class NotificationsPreferencesRepository(
             else throw exception
         }
 
+    suspend fun update(update: (NotificationsPreferences) -> NotificationsPreferences) {
+        dataStore.updateData { preferences ->
+            update(preferences)
+        }
+    }
+
 }

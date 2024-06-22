@@ -45,10 +45,10 @@ import bassamalim.hidaya.core.data.preferences.serializers.RecitationsPreference
 import bassamalim.hidaya.core.data.preferences.serializers.SupplicationsPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.UserPreferencesSerializer
 import bassamalim.hidaya.core.nav.Navigator
-import bassamalim.hidaya.features.about.AboutRepository
+import bassamalim.hidaya.features.about.data.AboutRepository
 import bassamalim.hidaya.features.supplicationsMenu.SupplicationsMenuRepository
 import bassamalim.hidaya.features.supplicationsReader.SupplicationsReaderRepository
-import bassamalim.hidaya.features.bookChapters.BookChaptersRepository
+import bassamalim.hidaya.features.bookChapters.data.BookChaptersRepository
 import bassamalim.hidaya.features.bookSearcher.BookSearcherRepository
 import bassamalim.hidaya.features.bookReader.BookReaderRepository
 import bassamalim.hidaya.features.books.BooksRepository
@@ -280,7 +280,8 @@ object AppModule {
     ) = BooksRepository(context, preferencesDataSource, database)
 
     @Provides @Singleton
-    fun provideBookSearcherRepository(
+
+`    fun provideBookSearcherRepository(
         context: Context,
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase,

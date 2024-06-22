@@ -1,7 +1,6 @@
-package bassamalim.hidaya.features.bookChapters
+package bassamalim.hidaya.features.bookChapters.data
 
 import android.content.Context
-import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
 import bassamalim.hidaya.core.data.preferences.repositories.BooksPreferencesRepository
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.utils.FileUtils
@@ -12,17 +11,13 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class BookChaptersRepository @Inject constructor(
-    private val ctx: Context,
+    private val context: Context,
     private val gson: Gson,
-    private val appSettingsPrefsRepo: AppSettingsPreferencesRepository,
     private val booksPrefsRepo: BooksPreferencesRepository
 ) {
 
-    suspend fun getLanguage() = appSettingsPrefsRepo.flow.first()
-        .language
-
     fun getBook(bookId: Int): Book {
-        val path = ctx.getExternalFilesDir(null).toString() + "/Books/" + bookId + ".json"
+        val path = context.getExternalFilesDir(null).toString() + "/Books/" + bookId + ".json"
         val jsonStr = FileUtils.getJsonFromDownloads(path)
         return gson.fromJson(jsonStr, Book::class.java)
     }
@@ -46,7 +41,7 @@ class BookChaptersRepository @Inject constructor(
         }
     }
 
-    suspend fun setFavorites(bookId: Int, favs: Map<Int, Int>) {
+    suspend fun setFavs(bookId: Int, favs: Map<Int, Int>) {
         booksPrefsRepo.update { it.copy(
             chaptersFavs = it.chaptersFavs.mutate { oldMap ->
                 oldMap[bookId] = favs.toPersistentMap()

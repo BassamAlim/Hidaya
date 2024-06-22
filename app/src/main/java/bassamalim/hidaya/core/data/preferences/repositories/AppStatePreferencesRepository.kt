@@ -16,4 +16,10 @@ class AppStatePreferencesRepository(
             else throw exception
         }
 
+    suspend fun update(update: (AppStatePreferences) -> AppStatePreferences) {
+        dataStore.updateData { preferences ->
+            update(preferences)
+        }
+    }
+
 }

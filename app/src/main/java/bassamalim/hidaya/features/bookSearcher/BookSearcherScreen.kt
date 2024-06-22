@@ -69,7 +69,7 @@ fun BookSearcherUI(
         FilterDialog(
             title = stringResource(R.string.choose_books),
             itemTitles = vm.bookTitles,
-            itemSelections = vm.bookSelections,
+            itemSelections = st.bookSelections,
             shown = st.filterDialogShown
         ) { selections ->
             vm.onFilterDialogDismiss(selections)

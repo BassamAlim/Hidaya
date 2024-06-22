@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.ui.components.MyClickableText
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyDialog
@@ -71,7 +72,7 @@ fun HijriDatePickerDialog(
             Box(Modifier.height(350.dp)) {
                 when (st.selectorMode) {
                     SelectorMode.DAY_MONTH -> DayMonthSelector(vm, st, pagerState)
-                    SelectorMode.YEAR -> YearSelector(vm)
+                    SelectorMode.YEAR -> YearSelector(vm, st.numeralsLanguage)
                 }
             }
 
@@ -102,7 +103,7 @@ private fun TopArea(
             ) {
                 MyText(
                     text = translateNums(
-                        vm.numeralsLanguage,
+                        st.numeralsLanguage,
                         ((vm.minYear * 12 + pagerState.currentPage) / 12).toString()
                     ),
                     modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
@@ -114,7 +115,7 @@ private fun TopArea(
             // main text
             MyText(
                 text = "${vm.weekDays[st.selected[Calendar.DAY_OF_WEEK]-1]} " +
-                        "${translateNums(vm.numeralsLanguage, st.selected[Calendar.DATE].toString())} " +
+                        "${translateNums(st.numeralsLanguage, st.selected[Calendar.DATE].toString())} " +
                         vm.months[st.selected[Calendar.MONTH]],
                 fontSize = 22.nsp,
                 fontWeight = FontWeight.Bold,
@@ -148,7 +149,7 @@ private fun DayMonthSelector(
             val absMonth = vm.minYear * 12 + pagerState.currentPage
             MyText(
                 "${vm.months[absMonth % 12]} " +
-                        translateNums(vm.numeralsLanguage, (absMonth / 12).toString()),
+                        translateNums(st.numeralsLanguage, (absMonth / 12).toString()),
                 Modifier.width(150.dp)
             )
 
@@ -249,7 +250,7 @@ private fun DaysGrid(
                                     && value.toInt() == vm.now[Calendar.DATE]
 
                             MyText(
-                                translateNums(vm.numeralsLanguage, value),
+                                translateNums(st.numeralsLanguage, value),
                                 textColor =
                                 if (isSelected) AppTheme.colors.onPrimary
                                 else if (isToday) AppTheme.colors.accent
@@ -279,7 +280,8 @@ private fun DaysGrid(
 
 @Composable
 private fun YearSelector(
-    vm: HijriDatePickerViewModel
+    vm: HijriDatePickerViewModel,
+    numeralsLanguage: Language
 ) {
     val lazyListState = rememberLazyListState(
         vm.now[Calendar.YEAR] - vm.minYear - 3,
@@ -292,7 +294,7 @@ private fun YearSelector(
             items(vm.maxYear - vm.minYear + 1) { idx ->
                 val year = vm.minYear + idx
                 MyText(
-                    text = translateNums(vm.numeralsLanguage, year.toString()),
+                    text = translateNums(numeralsLanguage, year.toString()),
                     textColor =
                     if (year == vm.now[Calendar.YEAR]) AppTheme.colors.accent
                     else AppTheme.colors.text,

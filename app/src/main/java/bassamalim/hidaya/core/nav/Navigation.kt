@@ -19,10 +19,10 @@ import bassamalim.hidaya.core.ui.inFromTop
 import bassamalim.hidaya.core.ui.outToBottom
 import bassamalim.hidaya.core.ui.outToLeft
 import bassamalim.hidaya.core.ui.outToTop
-import bassamalim.hidaya.features.about.AboutScreen
+import bassamalim.hidaya.features.about.ui.AboutScreen
 import bassamalim.hidaya.features.supplicationsMenu.AthkarListScreen
 import bassamalim.hidaya.features.supplicationsReader.AthkarViewerUI
-import bassamalim.hidaya.features.bookChapters.BookChaptersUI
+import bassamalim.hidaya.features.bookChapters.ui.BookChaptersUI
 import bassamalim.hidaya.features.bookSearcher.BookSearcherUI
 import bassamalim.hidaya.features.bookReader.BookViewerScreen
 import bassamalim.hidaya.features.books.BooksUI
