@@ -10,7 +10,10 @@ import bassamalim.hidaya.features.bookChapters.domain.BookChapter
 import bassamalim.hidaya.features.bookChapters.domain.BookChaptersDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,18 +30,20 @@ class BookChaptersViewModel @Inject constructor(
 
     private val book = domain.getBook(bookId)
 
-    private val _uiState = MutableStateFlow(BookChaptersUiState(
-        title = bookTitle,
-    ))
-    val uiState = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            _uiState.update { it.copy(
-                favs = domain.getFavs(book)
-            )}
-        }
-    }
+    private val _uiState = MutableStateFlow(BookChaptersUiState())
+    val uiState = combine(
+        _uiState.asStateFlow(),
+        domain.getFavs(book)
+    ) { state, favs ->
+        state.copy(
+            title = bookTitle,
+            favs = favs
+        )
+    }.stateIn(
+        initialValue = BookChaptersUiState(),
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
+    )
 
     fun getItems(page: Int): List<BookChapter> {
         val listType = ListType.entries[page]

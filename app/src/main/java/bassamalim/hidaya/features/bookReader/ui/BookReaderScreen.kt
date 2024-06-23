@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.bookReader
+package bassamalim.hidaya.features.bookReader.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -21,25 +21,28 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun BookViewerScreen(
-    vm: BookReaderViewModel
+    viewModel: BookReaderViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(
-        title = st.bookTitle,
+        title = state.bookTitle,
         bottomBar = {
             MyReadingBottomBar(
-                textSize = st.textSize
+                textSize = state.textSize
             ) {
-                vm.onTextSizeChange(it)
+                viewModel.onTextSizeChange(it)
             }
         }
     ) {
         MyLazyColumn(
             modifier = Modifier.padding(it),
             lazyList = {
-                items(st.items) { item ->
-                    DoorCard(item, st)
+                items(state.items) { item ->
+                    DoorCard(
+                        door = item,
+                        textSize = state.textSize
+                    )
                 }
             }
         )
@@ -47,7 +50,10 @@ fun BookViewerScreen(
 }
 
 @Composable
-private fun DoorCard(door: Book.BookChapter.BookDoor, state: BookReaderState) {
+private fun DoorCard(
+    door: Book.BookChapter.BookDoor,
+    textSize: Float
+) {
     val textSizeMargin = 15
     MySurface {
         Column(
@@ -56,14 +62,14 @@ private fun DoorCard(door: Book.BookChapter.BookDoor, state: BookReaderState) {
             MyText(
                 text = door.doorTitle,
                 modifier = Modifier.padding(10.dp),
-                fontSize = (state.textSize + textSizeMargin).sp,
+                fontSize = (textSize + textSizeMargin).sp,
                 fontWeight = FontWeight.Bold
             )
 
             MyText(
                 text = door.text,
                 modifier = Modifier.padding(10.dp),
-                fontSize = (state.textSize + textSizeMargin).sp,
+                fontSize = (textSize + textSizeMargin).sp,
                 textColor = AppTheme.colors.strongText
             )
         }

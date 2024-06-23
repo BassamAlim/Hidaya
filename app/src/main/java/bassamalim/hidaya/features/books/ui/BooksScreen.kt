@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.books
+package bassamalim.hidaya.features.books.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -30,12 +30,12 @@ import bassamalim.hidaya.core.utils.FileUtils
 
 @Composable
 fun BooksUI(
-    vm: BooksViewModel
+    viewModel: BooksViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    DisposableEffect(key1 = vm) {
-        vm.onStart()
+    DisposableEffect(key1 = viewModel) {
+        viewModel.onStart()
         onDispose {}
     }
 
@@ -45,7 +45,7 @@ fun BooksUI(
             MyFloatingActionButton(
                 iconId = R.drawable.ic_quran_search,
                 description = stringResource(R.string.search_in_books),
-                onClick = { vm.onFabClick() }
+                onClick = { viewModel.onFabClick() }
             )
         }
     ) {
@@ -53,8 +53,13 @@ fun BooksUI(
         MyLazyColumn(
             Modifier.padding(vertical = 5.dp),
             lazyList = {
-                items(st.items) { item ->
-                    BookCard(vm, st, item)
+                items(state.items) { item ->
+                    BookCard(
+                        item = item,
+                        downloadState = state.downloadStates[item.id]!!,
+                        onItemClick = { viewModel.onItemClick(it) },
+                        onDownloadButtonClick = { viewModel.onDownloadButtonClick(it) }
+                    )
                 }
             }
         )
@@ -62,21 +67,22 @@ fun BooksUI(
         // tutorial dialog
         TutorialDialog(
             textResId = R.string.books_activity_tips,
-            shown = st.tutorialDialogShown,
-            onDismiss = { vm.onTutorialDialogDismiss(it) }
+            shown = state.tutorialDialogShown,
+            onDismiss = { viewModel.onTutorialDialogDismiss(it) }
         )
 
-        if (st.shouldShowWait != 0) {
-            WaitMessage(st)
+        if (state.shouldShowWait != 0) {
+            WaitMessage(state.shouldShowWait)
         }
     }
 }
 
 @Composable
 private fun BookCard(
-    vm: BooksViewModel,
-    st: BooksState,
-    item: BooksDB
+    item: BooksDB,
+    downloadState: DownloadState,
+    onItemClick: (BooksDB) -> Unit,
+    onDownloadButtonClick: (BooksDB) -> Unit,
 ) {
     MyBtnSurface(
         text = item.title,
@@ -85,31 +91,29 @@ private fun BookCard(
         modifier = Modifier.padding(vertical = 2.dp),
         iconBtn = {
             DownloadBtn(
-                state =
-                    if (st.downloadStates.isEmpty()) DownloadState.NotDownloaded
-                    else st.downloadStates[item.id],
-                onClick = { vm.onDownloadButtonClick(item) }
+                downloadState = downloadState,
+                onClick = { onDownloadButtonClick(item) }
             )
         },
-        onClick = { vm.onItemClick(item) }
+        onClick = { onItemClick(item) }
     )
 }
 
 @Composable
 fun DownloadBtn(
-    state: DownloadState,
+    downloadState: DownloadState,
     onClick: () -> Unit,
 ) {
     Box(
         Modifier.padding(end = 10.dp),
         contentAlignment = Alignment.Center
     ) {
-        if (state == DownloadState.Downloading)
+        if (downloadState == DownloadState.Downloading)
             MyCircularProgressIndicator(Modifier.size(32.dp))
         else {
             MyIconButton(
                 iconId =
-                    if (state == DownloadState.Downloaded) R.drawable.ic_downloaded
+                    if (downloadState == DownloadState.Downloaded) R.drawable.ic_downloaded
                     else R.drawable.ic_download,
                 description = stringResource(R.string.download_description),
                 size = 32.dp,
@@ -123,10 +127,10 @@ fun DownloadBtn(
 
 @Composable
 private fun WaitMessage(
-    st: BooksState
+    shouldShowWait: Int
 ) {
     val ctx = LocalContext.current
-    LaunchedEffect(st.shouldShowWait) {
+    LaunchedEffect(shouldShowWait) {
         FileUtils.showWaitMassage(ctx)
     }
 }

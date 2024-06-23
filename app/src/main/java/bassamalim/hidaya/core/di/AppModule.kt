@@ -50,8 +50,8 @@ import bassamalim.hidaya.features.supplicationsMenu.SupplicationsMenuRepository
 import bassamalim.hidaya.features.supplicationsReader.SupplicationsReaderRepository
 import bassamalim.hidaya.features.bookChapters.data.BookChaptersRepository
 import bassamalim.hidaya.features.bookSearcher.BookSearcherRepository
-import bassamalim.hidaya.features.bookReader.BookReaderRepository
-import bassamalim.hidaya.features.books.BooksRepository
+import bassamalim.hidaya.features.bookReader.data.BookReaderRepository
+import bassamalim.hidaya.features.books.data.BooksRepository
 import bassamalim.hidaya.features.dateConverter.DateConverterRepository
 import bassamalim.hidaya.features.hijriDatePicker.HijriDatePickerRepository
 import bassamalim.hidaya.features.home.HomeRepository

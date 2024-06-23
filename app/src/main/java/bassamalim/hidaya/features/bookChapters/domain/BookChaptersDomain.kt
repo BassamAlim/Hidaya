@@ -11,7 +11,7 @@ class BookChaptersDomain @Inject constructor(
 
     fun getBook(bookId: Int) = repository.getBook(bookId)
 
-    suspend fun getFavs(book: Book) = repository.getFavs(book)
+    fun getFavs(book: Book) = repository.getFavs(book)
 
     suspend fun setFavs(bookId: Int, favs: Map<Int, Int>) = repository.setFavs(bookId, favs)
 

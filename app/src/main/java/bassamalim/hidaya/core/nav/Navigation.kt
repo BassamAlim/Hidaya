@@ -24,8 +24,8 @@ import bassamalim.hidaya.features.supplicationsMenu.AthkarListScreen
 import bassamalim.hidaya.features.supplicationsReader.AthkarViewerUI
 import bassamalim.hidaya.features.bookChapters.ui.BookChaptersUI
 import bassamalim.hidaya.features.bookSearcher.BookSearcherUI
-import bassamalim.hidaya.features.bookReader.BookViewerScreen
-import bassamalim.hidaya.features.books.BooksUI
+import bassamalim.hidaya.features.bookReader.ui.BookViewerScreen
+import bassamalim.hidaya.features.books.ui.BooksUI
 import bassamalim.hidaya.features.dateConverter.DateConverterUI
 import bassamalim.hidaya.features.hijriDatePicker.HijriDatePickerDialog
 import bassamalim.hidaya.features.leaderboard.LeaderboardUI

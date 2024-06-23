@@ -1,8 +1,7 @@
-package bassamalim.hidaya.features.books
+package bassamalim.hidaya.features.books.data
 
-import android.content.Context
+import android.app.Application
 import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.data.database.dbs.BooksDB
 import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
 import bassamalim.hidaya.core.data.preferences.repositories.BooksPreferencesRepository
 import bassamalim.hidaya.core.models.Book
@@ -16,11 +15,11 @@ import java.io.File
 import javax.inject.Inject
 
 class BooksRepository @Inject constructor(
-    private val ctx: Context,
+    private val app: Application,
     private val db: AppDatabase,
-    private val gson: Gson,
     private val appSettingsPrefsRepository: AppSettingsPreferencesRepository,
-    private val booksPreferencesRepository: BooksPreferencesRepository
+    private val booksPreferencesRepository: BooksPreferencesRepository,
+    private val gson: Gson
 ) {
 
     private val prefix = "/Books/"
@@ -40,22 +39,22 @@ class BooksRepository @Inject constructor(
         )}
     }
 
-    fun download(item: BooksDB): FileDownloadTask {
+    fun download(bookId: Int): FileDownloadTask {
         val storage = Firebase.storage
         // Create a storage reference from our app
         val storageRef = storage.reference
         // Create a reference with an initial file path and name
-        val fileRef = storageRef.child("${prefix.substring(1)}${item.id}.json")
+        val fileRef = storageRef.child("${prefix.substring(1)}$bookId.json")
 
-        FileUtils.createDir(ctx, prefix)
-        val file = File("${ctx.getExternalFilesDir(null)}/$prefix/${fileRef.name}")
+        FileUtils.createDir(app, prefix)
+        val file = File("${app.getExternalFilesDir(null)}/$prefix/${fileRef.name}")
         file.createNewFile()
 
         return fileRef.getFile(file)
     }
 
-    fun isDownloaded(id: Int): Boolean {
-        val dir = File(ctx.getExternalFilesDir(null).toString() + prefix)
+    fun isDownloaded(bookId: Int): Boolean {
+        val dir = File(app.getExternalFilesDir(null).toString() + prefix)
         if (!dir.exists()) return false
 
         val files = dir.listFiles()
@@ -64,15 +63,15 @@ class BooksRepository @Inject constructor(
             val n = name.substring(0, name.length - 5)
             try {
                 val num = n.toInt()
-                if (num == id) return true
+                if (num == bookId) return true
             } catch (ignored: NumberFormatException) {}
         }
 
         return false
     }
 
-    fun isDownloading(id: Int): Boolean {
-        val path = ctx.getExternalFilesDir(null).toString() + prefix + id + ".json"
+    fun isDownloading(bookId: Int): Boolean {
+        val path = app.getExternalFilesDir(null).toString() + prefix + bookId + ".json"
 
         val jsonStr = FileUtils.getJsonFromDownloads(path)
         return try {
@@ -85,7 +84,7 @@ class BooksRepository @Inject constructor(
 
     fun deleteBook(bookId: Int) {
         FileUtils.deleteFile(
-            context = ctx,
+            context = app,
             path = "${prefix}$bookId.json"
         )
     }

@@ -1,8 +1,8 @@
-package bassamalim.hidaya.features.bookReader
+package bassamalim.hidaya.features.bookReader.ui
 
 import bassamalim.hidaya.core.models.Book
 
-data class BookReaderState(
+data class BookReaderUiState(
     val bookTitle: String = "",
     val textSize: Float = 15f,
     val items: List<Book.BookChapter.BookDoor> = emptyList()

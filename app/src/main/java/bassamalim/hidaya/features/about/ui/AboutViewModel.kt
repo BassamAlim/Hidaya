@@ -24,8 +24,7 @@ class AboutViewModel @Inject constructor(
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.getLastUpdate()
-    ) {
-        state, lastUpdate ->
+    ) { state, lastUpdate ->
         state.copy(
             lastDailyUpdate = formatLastUpdate(lastUpdate)
         )

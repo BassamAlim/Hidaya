@@ -1,13 +1,11 @@
-package bassamalim.hidaya.features.books
+package bassamalim.hidaya.features.books.ui
 
 import bassamalim.hidaya.core.data.database.dbs.BooksDB
 import bassamalim.hidaya.core.enums.DownloadState
-import bassamalim.hidaya.core.enums.Language
 
-data class BooksState(
+data class BooksUiState(
     val items: List<BooksDB> = emptyList(),
-    val downloadStates: List<DownloadState> = emptyList(),
-    val language: Language = Language.ARABIC,
+    val downloadStates: Map<Int, DownloadState> = emptyMap(),
     val shouldShowWait: Int = 0,
     val tutorialDialogShown: Boolean = false
 )
