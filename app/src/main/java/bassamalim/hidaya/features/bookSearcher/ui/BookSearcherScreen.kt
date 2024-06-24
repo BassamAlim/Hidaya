@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.bookSearcher
+package bassamalim.hidaya.features.bookSearcher.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.BookSearcherMatch
 import bassamalim.hidaya.core.ui.components.FilterDialog
 import bassamalim.hidaya.core.ui.components.MyDropDownMenu
@@ -28,13 +27,12 @@ import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.core.utils.LangUtils.translateNums
 
 @Composable
 fun BookSearcherUI(
-    vm: BookSearcherViewModel
+    viewModel: BookSearcherViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(stringResource(R.string.books_searcher)) { padding ->
         Column(
@@ -44,36 +42,36 @@ fun BookSearcherUI(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SearchArea(
-                searchText = st.searchText,
-                isFiltered = st.filtered,
-                maxMatchesItems = st.maxMatchesItems,
-                maxMatches = st.maxMatches,
-                numeralsLanguage = st.numeralsLanguage,
-                onSearchTextChange = { vm.onSearchTextChange(it) },
-                onSearch = { color -> vm.search(color) },
-                onFilterClick = { vm.onFilterClick() },
-                onMaxMatchesIndexChange = { vm.onMaxMatchesIndexChange(it) }
+                searchText = state.searchText,
+                isFiltered = state.filtered,
+                maxMatchesItems = state.maxMatchesItems,
+                maxMatches = state.maxMatches,
+                onSearchTextChange = { viewModel.onSearchTextChange(it) },
+                onSearch = { color -> viewModel.onSearch(color) },
+                onFilterClick = { viewModel.onFilterClick() },
+                onMaxMatchesIndexChange = { viewModel.onMaxMatchesIndexChange(it) }
             )
 
-            if (st.noResultsFound) {
-                MyText(
-                    text = stringResource(R.string.books_no_matches),
-                    modifier = Modifier.padding(top = 100.dp)
-                )
-            }
-            else {
-                ResultsList(st.matches)
+            state.matches?.let {
+                if (state.matches!!.isEmpty()) {
+                    MyText(
+                        text = stringResource(R.string.books_no_matches),
+                        modifier = Modifier.padding(top = 100.dp)
+                    )
+                }
+                else {
+                    ResultsList(state.matches!!)
+                }
             }
         }
 
         FilterDialog(
             title = stringResource(R.string.choose_books),
-            itemTitles = vm.bookTitles,
-            itemSelections = st.bookSelections,
-            shown = st.filterDialogShown
-        ) { selections ->
-            vm.onFilterDialogDismiss(selections)
-        }
+            itemTitles = state.bookTitles,
+            itemSelections = state.bookSelections,
+            shown = state.filterDialogShown,
+            onDismiss = { selections -> viewModel.onFilterDialogDismiss(selections) }
+        )
     }
 }
 
@@ -83,7 +81,6 @@ private fun SearchArea(
     isFiltered: Boolean,
     maxMatchesItems: Array<String>,
     maxMatches: Int,
-    numeralsLanguage: Language,
     onSearchTextChange: (String) -> Unit,
     onSearch: (Color) -> Unit,
     onFilterClick: () -> Unit,
@@ -126,13 +123,9 @@ private fun SearchArea(
             MyText(text = stringResource(R.string.max_num_of_marches))
 
             MyDropDownMenu(
-                selectedIndex = maxMatchesItems.indexOf(
-                    maxMatches.toString()
-                ),
-                items = maxMatchesItems.map {
-                    translateNums(numeralsLanguage, it)
-                }.toTypedArray(),
-                onChoice = { index -> onMaxMatchesIndexChange(index) }
+                selectedIndex = maxMatchesItems.indexOf(maxMatches.toString()),
+                items = maxMatchesItems,
+                onChoice = { _, value -> onMaxMatchesIndexChange(value.toInt()) }
             )
         }
     }
@@ -156,10 +149,9 @@ private fun BooksFilter(
             size = 30.dp,
             tint =
                 if (isFiltered) AppTheme.colors.secondary
-                else AppTheme.colors.weakText
-        ) {
-            onFilterClick()
-        }
+                else AppTheme.colors.weakText,
+            onClick = onFilterClick
+        )
     }
 }
 

@@ -26,7 +26,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 fun MyDropDownMenu(
     selectedIndex: Int,
     items: Array<String>,
-    onChoice: (Int) -> Unit
+    onChoice: (Int, String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -47,10 +47,9 @@ fun MyDropDownMenu(
                     if (expanded) Icons.Default.KeyboardArrowUp
                     else Icons.Default.KeyboardArrowDown,
                 description = "Show Dropdown",
-                tint = AppTheme.colors.text
-            ) {
-                expanded = !expanded
-            }
+                tint = AppTheme.colors.text,
+                onClick = { expanded = !expanded }
+            )
         }
         // setting corner width to 0 because there is a problem that shows white corners
         MaterialTheme(shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(0.dp))) {
@@ -59,14 +58,14 @@ fun MyDropDownMenu(
                 modifier = Modifier.background(AppTheme.colors.surface),
                 onDismissRequest = { expanded = false }
             ) {
-                items.forEachIndexed { index, name ->
+                items.forEachIndexed { index, value ->
                     DropdownMenuItem(
                         onClick = {
                             expanded = false
-                            onChoice(index)
+                            onChoice(index, value)
                         }
                     ) {
-                        MyText(text = name)
+                        MyText(text = value)
                     }
                 }
             }

@@ -1,6 +1,6 @@
-package bassamalim.hidaya.features.bookSearcher
+package bassamalim.hidaya.features.bookSearcher.data
 
-import android.content.Context
+import android.app.Application
 import android.content.res.Resources
 import android.util.Log
 import bassamalim.hidaya.R
@@ -13,12 +13,14 @@ import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.FileUtils
 import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
+import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.io.File
 import javax.inject.Inject
 
 class BookSearcherRepository @Inject constructor(
-    ctx: Context,
+    app: Application,
     private val resources: Resources,
     private val db: AppDatabase,
     private val gson: Gson,
@@ -26,15 +28,13 @@ class BookSearcherRepository @Inject constructor(
     private val booksPreferencesRepo: BooksPreferencesRepository
 ) {
 
-    private val path = "${ctx.getExternalFilesDir(null)}/Books/"
+    private val path = "${app.getExternalFilesDir(null)}/Books/"
 
     suspend fun getLanguage() = appSettingsPrefsRepo.flow.first()
         .language
 
     suspend fun getNumeralsLanguage() = appSettingsPrefsRepo.flow.first()
         .numeralsLanguage
-
-    private fun getBooks() = db.booksDao().getAll()
 
     fun getBookContents(): List<Book> {
         val dir = File(path)
@@ -58,24 +58,26 @@ class BookSearcherRepository @Inject constructor(
         return bookContents
     }
 
-    suspend fun getBookSelections(): Map<Int, Boolean> {
-        val books = getBooks()
-
-        val selections = booksPreferencesRepo.flow.first()
-            .searchSelections
-
-        return if (selections.isNotEmpty()) selections
-        else {
-            selections.mutate { oldMap ->
-                books.forEach {
-                    oldMap[it.id] = true
+    fun getBookSelections() =
+        booksPreferencesRepo.flow.map {
+            it.searchSelections.ifEmpty {
+                val books = getBooks()
+                it.searchSelections.mutate { oldMap ->
+                    books.forEach { book -> oldMap[book.id] = true }
                 }
-            }
+            }.toMap()
         }
+
+    suspend fun setBookSelections(selections: Map<Int, Boolean>) {
+        booksPreferencesRepo.update { it.copy(
+            searchSelections = selections.toPersistentMap()
+        )}
     }
 
-    suspend fun getMaxMatches() =
-        booksPreferencesRepo.flow.first().searcherMaxMatches
+    fun getMaxMatches() =
+        booksPreferencesRepo.flow.map {
+            it.searcherMaxMatches
+        }
 
     suspend fun setMaxMatches(value: Int) {
         booksPreferencesRepo.update { it.copy(
@@ -105,5 +107,7 @@ class BookSearcherRepository @Inject constructor(
         }
         return false
     }
+
+    private fun getBooks() = db.booksDao().getAll()
 
 }

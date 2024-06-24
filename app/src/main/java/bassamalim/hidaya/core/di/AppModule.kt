@@ -49,7 +49,7 @@ import bassamalim.hidaya.features.about.data.AboutRepository
 import bassamalim.hidaya.features.supplicationsMenu.SupplicationsMenuRepository
 import bassamalim.hidaya.features.supplicationsReader.SupplicationsReaderRepository
 import bassamalim.hidaya.features.bookChapters.data.BookChaptersRepository
-import bassamalim.hidaya.features.bookSearcher.BookSearcherRepository
+import bassamalim.hidaya.features.bookSearcher.data.BookSearcherRepository
 import bassamalim.hidaya.features.bookReader.data.BookReaderRepository
 import bassamalim.hidaya.features.books.data.BooksRepository
 import bassamalim.hidaya.features.dateConverter.DateConverterRepository

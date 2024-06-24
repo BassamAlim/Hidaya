@@ -23,7 +23,7 @@ import bassamalim.hidaya.features.about.ui.AboutScreen
 import bassamalim.hidaya.features.supplicationsMenu.AthkarListScreen
 import bassamalim.hidaya.features.supplicationsReader.AthkarViewerUI
 import bassamalim.hidaya.features.bookChapters.ui.BookChaptersUI
-import bassamalim.hidaya.features.bookSearcher.BookSearcherUI
+import bassamalim.hidaya.features.bookSearcher.ui.BookSearcherUI
 import bassamalim.hidaya.features.bookReader.ui.BookViewerScreen
 import bassamalim.hidaya.features.books.ui.BooksUI
 import bassamalim.hidaya.features.dateConverter.DateConverterUI
