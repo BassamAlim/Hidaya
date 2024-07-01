@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.hijriDatePicker
+package bassamalim.hidaya.features.hijriDatePicker.data
 
 import android.content.res.Resources
 import bassamalim.hidaya.R

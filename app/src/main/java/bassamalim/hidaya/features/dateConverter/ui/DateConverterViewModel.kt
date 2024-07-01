@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.dateConverter
+package bassamalim.hidaya.features.dateConverter.ui
 
 import android.app.DatePickerDialog
 import android.content.Context
@@ -7,9 +7,11 @@ import android.widget.DatePicker
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.features.dateConverter.domain.DateConverterDomain
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,38 +23,37 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DateConverterViewModel @Inject constructor(
-    private val repository: DateConverterRepository,
+    private val domain: DateConverterDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
     private var hijriCalendar = UmmalquraCalendar()
     private var gregorianCalendar = Calendar.getInstance()
-    private val hijriMonths = repository.getHijriMonths()
-    private val gregorianMonths = repository.getGregorianMonths()
+    private val hijriMonth = domain.getHijriMonths()
+    private val gregorianMonths = domain.getGregorianMonths()
+    private lateinit var numeralsLanguage: Language
 
-    private val _uiState = MutableStateFlow(DateConverterState())
+    private val _uiState = MutableStateFlow(DateConverterUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            _uiState.update { it.copy(
-                numeralsLanguage = repository.getNumeralsLanguage()
-            )}
+            numeralsLanguage = domain.getNumeralsLanguage()
         }
     }
 
-    fun onPickGregorianClk(ctx: Context) {
+    fun onPickGregorianClk(context: Context) {
         val datePicker = DatePickerDialog(
-            ctx, { _: DatePicker?, year: Int, month: Int, day: Int ->
+            context, { _: DatePicker?, year: Int, month: Int, day: Int ->
                 val choice = Calendar.getInstance()
                 choice[Calendar.YEAR] = year
                 choice[Calendar.MONTH] = month // starts from 0
                 choice[Calendar.DATE] = day
 
                 gregorianCalendar = choice
-                hijriCalendar = gregorianToHijri(choice) as UmmalquraCalendar
+                hijriCalendar = domain.gregorianToHijri(choice) as UmmalquraCalendar
 
-                display()
+                updateDates()
             },
             gregorianCalendar[Calendar.YEAR],
             gregorianCalendar[Calendar.MONTH],
@@ -60,11 +61,11 @@ class DateConverterViewModel @Inject constructor(
         )
         datePicker.setButton(
             DatePickerDialog.BUTTON_POSITIVE,
-            ctx.getString(R.string.select), datePicker
+            context.getString(R.string.select), datePicker
         )
         datePicker.setButton(
             DatePickerDialog.BUTTON_NEGATIVE,
-            ctx.getString(R.string.cancel), datePicker
+            context.getString(R.string.cancel), datePicker
         )
         datePicker.show()
     }
@@ -84,52 +85,36 @@ class DateConverterViewModel @Inject constructor(
                     else
                         result.getSerializable("selected_date") as UmmalquraCalendar
 
-                onHijriSelected(date!!)
+                hijriCalendar = date!!
+                gregorianCalendar = domain.hijriToGregorian(date)
+
+                updateDates()
             }
         }
     }
 
-    fun onHijriSelected(pickedHijriDate: UmmalquraCalendar) {
-        hijriCalendar = pickedHijriDate
-        gregorianCalendar = hijriToGregorian(pickedHijriDate)
-
-        display()
-    }
-
-    private fun gregorianToHijri(gregorian: Calendar): Calendar {
-        val hijri = UmmalquraCalendar()
-        hijri.time = gregorian.time
-        return hijri
-    }
-
-    private fun hijriToGregorian(hijri: Calendar): Calendar {
-        val gregorian = Calendar.getInstance()
-        gregorian.time = hijri.time
-        return gregorian
-    }
-
-    private fun display() {
+    private fun updateDates() {
         _uiState.update { it.copy(
-            hijriValues = listOf(
-                translateNums(
-                    _uiState.value.numeralsLanguage,
-                    hijriCalendar[Calendar.YEAR].toString()
+            hijriDate = Date(
+                year = translateNums(
+                    numeralsLanguage = numeralsLanguage,
+                    string = hijriCalendar[Calendar.YEAR].toString()
                 ),
-                hijriMonths[hijriCalendar[Calendar.MONTH]],
-                translateNums(
-                    _uiState.value.numeralsLanguage,
-                    hijriCalendar[Calendar.DATE].toString()
+                month = hijriMonth[hijriCalendar[Calendar.MONTH]],
+                day = translateNums(
+                    numeralsLanguage = numeralsLanguage,
+                    string = hijriCalendar[Calendar.DATE].toString()
                 )
             ),
-            gregorianValues = listOf(
-                translateNums(
-                    _uiState.value.numeralsLanguage,
-                    gregorianCalendar[Calendar.YEAR].toString()
+            gregorianDate = Date(
+                year = translateNums(
+                    numeralsLanguage = numeralsLanguage,
+                    string = gregorianCalendar[Calendar.YEAR].toString()
                 ),
-                gregorianMonths[gregorianCalendar[Calendar.MONTH]],
-                translateNums(
-                    _uiState.value.numeralsLanguage,
-                    gregorianCalendar[Calendar.DATE].toString()
+                month = gregorianMonths[gregorianCalendar[Calendar.MONTH]],
+                day = translateNums(
+                    numeralsLanguage = numeralsLanguage,
+                    string = gregorianCalendar[Calendar.DATE].toString()
                 )
             )
         )}

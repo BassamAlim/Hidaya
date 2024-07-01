@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.dateConverter
+package bassamalim.hidaya.features.dateConverter.data
 
 import android.content.res.Resources
 import bassamalim.hidaya.R

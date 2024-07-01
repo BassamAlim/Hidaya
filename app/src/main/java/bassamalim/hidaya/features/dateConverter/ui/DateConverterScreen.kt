@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.dateConverter
+package bassamalim.hidaya.features.dateConverter.ui
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -26,10 +26,10 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun DateConverterUI(
-    vm: DateConverterViewModel
+    viewModel: DateConverterViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
-    val ctx = LocalContext.current
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     MyScaffold(stringResource(R.string.date_converter)) {
         Column(
@@ -46,10 +46,9 @@ fun DateConverterUI(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 15.dp, horizontal = 30.dp),
-                    innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp)
-                ) {
-                    vm.onPickHijriClk()
-                }
+                    innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp),
+                    onClick = viewModel::onPickHijriClk
+                )
 
                 MySquareButton(
                     text = stringResource(R.string.pick_gregorian_date),
@@ -57,21 +56,29 @@ fun DateConverterUI(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 15.dp, horizontal = 30.dp),
-                    innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp)
-                ) {
-                    vm.onPickGregorianClk(ctx)
-                }
+                    innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp),
+                    onClick = { viewModel.onPickGregorianClk(context) }
+                )
             }
 
-            ResultSpace(stringResource(R.string.hijri_date), st.hijriValues)
+            ResultSpace(
+                title = stringResource(R.string.hijri_date),
+                date = state.hijriDate
+            )
 
-            ResultSpace(stringResource(R.string.gregorian_date), st.gregorianValues)
+            ResultSpace(
+                title = stringResource(R.string.gregorian_date),
+                date = state.gregorianDate
+            )
         }
     }
 }
 
 @Composable
-private fun ResultSpace(title: String, values: List<String>) {
+private fun ResultSpace(
+    title: String,
+    date: Date
+) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -85,8 +92,8 @@ private fun ResultSpace(title: String, values: List<String>) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         MyText(
-            text = title,
-            modifier = Modifier.padding(10.dp),
+            title,
+            Modifier.padding(10.dp),
             fontSize = 22.sp
         )
 
@@ -100,26 +107,12 @@ private fun ResultSpace(title: String, values: List<String>) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MyText(
-                    text = stringResource(R.string.day),
+                    stringResource(R.string.day),
                     Modifier.padding(10.dp)
                 )
 
                 MyText(
-                    text = values[2],
-                    Modifier.padding(10.dp)
-                )
-            }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                MyText(
-                    text = stringResource(R.string.month),
-                    Modifier.padding(10.dp)
-                )
-
-                MyText(
-                    text = values[1],
+                    date.day,
                     Modifier.padding(10.dp)
                 )
             }
@@ -128,12 +121,26 @@ private fun ResultSpace(title: String, values: List<String>) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MyText(
-                    text = stringResource(R.string.year),
+                    stringResource(R.string.month),
                     Modifier.padding(10.dp)
                 )
 
                 MyText(
-                    text = values[0],
+                    date.month,
+                    Modifier.padding(10.dp)
+                )
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                MyText(
+                    stringResource(R.string.year),
+                    Modifier.padding(10.dp)
+                )
+
+                MyText(
+                    date.year,
                     Modifier.padding(10.dp)
                 )
             }

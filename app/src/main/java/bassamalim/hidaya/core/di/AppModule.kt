@@ -52,8 +52,8 @@ import bassamalim.hidaya.features.bookChapters.data.BookChaptersRepository
 import bassamalim.hidaya.features.bookSearcher.data.BookSearcherRepository
 import bassamalim.hidaya.features.bookReader.data.BookReaderRepository
 import bassamalim.hidaya.features.books.data.BooksRepository
-import bassamalim.hidaya.features.dateConverter.DateConverterRepository
-import bassamalim.hidaya.features.hijriDatePicker.HijriDatePickerRepository
+import bassamalim.hidaya.features.dateConverter.data.DateConverterRepository
+import bassamalim.hidaya.features.hijriDatePicker.data.HijriDatePickerRepository
 import bassamalim.hidaya.features.home.HomeRepository
 import bassamalim.hidaya.features.leaderboard.LeaderboardRepository
 import bassamalim.hidaya.features.locationPicker.LocationPickerRepository
