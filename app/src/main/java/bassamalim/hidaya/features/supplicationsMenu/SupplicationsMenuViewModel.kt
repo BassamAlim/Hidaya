@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.core.data.database.dbs.AthkarDB
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.ListType
-import bassamalim.hidaya.core.models.AthkarItem
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel

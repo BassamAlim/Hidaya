@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.other
+package bassamalim.hidaya.features.home.ui
 
 import android.content.Context
 import android.graphics.Canvas
@@ -8,9 +8,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
-import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import java.util.Calendar
 import kotlin.math.cos
@@ -22,7 +20,7 @@ class AnalogClock(
     attrs: AttributeSet
 ) : View(context, attrs) {
 
-    private val calendar = Calendar.getInstance()
+    private val now = Calendar.getInstance()
     private var center = 0F
     private var teethR = 0F
     private var numeralsR = 0F
@@ -35,28 +33,25 @@ class AnalogClock(
     private val hourHandPaint = Paint()
     private val minuteHandPaint = Paint()
     private val secondHandPaint = Paint()
-    private val betweenArcPaint = Paint()
-    private var numerals: Array<String>
+    private val passedArcPaint = Paint()
+    private lateinit var numeralsLanguage: Language
+    private lateinit var numerals: Array<String>
     private val bgColor = TypedValue()
     private val linesColor = TypedValue()
     private val accentColor = TypedValue()
     private val accentDarkColor = TypedValue()
-    private var language: Language
-    private var pastTime = 0L
-    private var upcomingTime = 0L
-    private var remaining = 0L
+    private var timeFromPreviousPrayer = 0L
+    private var timeToNextPrayer = 0L
 
-    init {
+    fun init(numeralsLanguage: Language) {
         setupPaint()
 
-        val preferencesDS = PreferencesDataSource(
-            PreferenceManager.getDefaultSharedPreferences(context)
-        )
-        language = preferencesDS.getNumeralsLanguage()
-
+        this.numeralsLanguage = numeralsLanguage
         numerals =
-            if (language == Language.ENGLISH) context.resources.getStringArray(R.array.numerals_en)
-            else context.resources.getStringArray(R.array.numerals)
+            if (numeralsLanguage == Language.ENGLISH)
+                context.resources.getStringArray(R.array.numerals_en)
+            else
+                context.resources.getStringArray(R.array.numerals)
     }
 
     private fun setupPaint() {
@@ -98,11 +93,11 @@ class AnalogClock(
         secondHandPaint.isAntiAlias = true
 
         // Between prayers arc
-        betweenArcPaint.style = Paint.Style.STROKE
-        betweenArcPaint.color = accentDarkColor.data
-        betweenArcPaint.strokeWidth = 6F
-        betweenArcPaint.strokeCap = Paint.Cap.ROUND
-        betweenArcPaint.isAntiAlias = true
+        passedArcPaint.style = Paint.Style.STROKE
+        passedArcPaint.color = accentDarkColor.data
+        passedArcPaint.strokeWidth = 6F
+        passedArcPaint.strokeCap = Paint.Cap.ROUND
+        passedArcPaint.isAntiAlias = true
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -125,18 +120,20 @@ class AnalogClock(
         minuteHandR = radius * 0.7F
         secondHandR = radius * 0.7F
 
-        numeralsPaint.textSize = if (language == Language.ENGLISH) size * 0.065F else size * 0.08F
+        numeralsPaint.textSize =
+            if (numeralsLanguage == Language.ENGLISH) size * 0.065F
+            else size * 0.08F
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        calendar.timeInMillis = System.currentTimeMillis()
+        now.timeInMillis = System.currentTimeMillis()
 
         drawTeeth(canvas)
         drawNumerals(canvas)
         drawHands(canvas)
-        if (pastTime != -1L) drawBetweenArc(canvas)
+        if (timeFromPreviousPrayer != -1L) drawPassedArc(canvas)
         drawRemainingArc(canvas)
 
         postInvalidateDelayed(500)
@@ -170,7 +167,7 @@ class AnalogClock(
 
         drawHourHand(canvas, (time[0] + time[1] / 60F) * 5)
         drawMinuteHand(canvas, time[1])
-        drawSecondsHand(canvas, calendar.get(Calendar.SECOND).toFloat())
+        drawSecondsHand(canvas, now.get(Calendar.SECOND).toFloat())
     }
 
     private fun drawHourHand(canvas: Canvas, location: Float) {
@@ -206,16 +203,16 @@ class AnalogClock(
         )
     }
 
-    private fun drawBetweenArc(canvas: Canvas) {
+    private fun drawPassedArc(canvas: Canvas) {
         val strokeWidth = 10
 
         val start = strokeWidth / 2
         val end = 2 * center - start
         val rect = RectF(start.toFloat(), start.toFloat(), end, end)
 
-        val fromTheta = pastTime / 1000 / 60 / 2F
-        val thetaDiff = (upcomingTime - pastTime) / 1000 / 60 / 2F
-        canvas.drawArc(rect, fromTheta, thetaDiff, false, betweenArcPaint)
+        val fromTheta = timeFromPreviousPrayer / 1000 / 60 / 2F
+        val thetaDiff = (System.currentTimeMillis() - timeFromPreviousPrayer) / 1000 / 60 / 2F
+        canvas.drawArc(rect, fromTheta, thetaDiff, false, passedArcPaint)
     }
 
     private fun drawRemainingArc(canvas: Canvas) {
@@ -228,13 +225,11 @@ class AnalogClock(
         val time = getTime()
 
         val nowTheta = -90 + 30 * (time[0] + time[1] / 60F)
-        val thetaDiff = remaining / 1000 / 60 / 2F
+        val thetaDiff = timeToNextPrayer / 1000 / 60 / 2F
         canvas.drawArc(rect, nowTheta, thetaDiff, false, secondHandPaint)
     }
 
-    private fun getHandTheta(location: Float): Double {
-        return Math.PI * location / 30 - Math.PI / 2
-    }
+    private fun getHandTheta(location: Float) = Math.PI * location / 30 - Math.PI / 2
 
     /**
      * It returns an array of two floats, the hour and the minute
@@ -242,22 +237,20 @@ class AnalogClock(
      * @return An array of floats.
      */
     private fun getTime(): Array<Float> {
-        var hour = calendar.get(Calendar.HOUR_OF_DAY).toFloat()
+        var hour = now.get(Calendar.HOUR_OF_DAY).toFloat()
         //convert to 12hour format from 24 hour format
         hour = if (hour > 12) hour - 12 else hour
-        val minute = calendar.get(Calendar.MINUTE).toFloat()
+        val minute = now.get(Calendar.MINUTE).toFloat()
 
         return arrayOf(hour, minute)
     }
 
-    fun update(
-        pastTime: Long,
-        upcomingTime: Long,
-        remaining: Long
+    fun updateArcs(
+        timeFromPreviousPrayer: Long,
+        timeToNextPrayer: Long,
     ) {
-        this.pastTime = pastTime
-        this.upcomingTime = upcomingTime
-        this.remaining = remaining
+        this.timeFromPreviousPrayer = timeFromPreviousPrayer
+        this.timeToNextPrayer = timeToNextPrayer
     }
 
 }

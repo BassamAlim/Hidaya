@@ -5,7 +5,7 @@ import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
-import bassamalim.hidaya.core.data.preferences.dataStore.objects.NotificationsPreferences
+import bassamalim.hidaya.core.data.preferences.objects.NotificationsPreferences
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import kotlinx.collections.immutable.mutate
@@ -16,9 +16,19 @@ object NotificationsPreferencesMigration {
     fun getMigration(context: Context) =
         SharedPreferencesMigration(
             context = context,
-            sharedPreferencesName = PreferencesFileNames.NOTIFICATIONS_PREFERENCES_NAME,
+            sharedPreferencesName = PreferencesFileNames.NOTIFICATIONS_PREFERENCES_NAME
         ) { sharedPrefs: SharedPreferencesView, currentData: NotificationsPreferences ->
             currentData.copy(
+                notificationTypes = persistentMapOf<PID, NotificationType>().mutate {
+                    PID.entries.map {
+                        it to NotificationType.valueOf(
+                            sharedPrefs.getString(
+                                key = Preference.NotificationType(it).key,
+                                defValue = Preference.NotificationType(it).default as String
+                            )!!
+                        )
+                    }
+                },
                 extraNotificationsMinuteOfDay = persistentMapOf(
                     PID.MORNING to sharedPrefs.getInt(
                         key = Preference.ExtraNotificationHour(PID.MORNING).key,
@@ -49,21 +59,6 @@ object NotificationsPreferencesMigration {
                         defValue = Preference.ExtraNotificationMinute(PID.FRIDAY_KAHF).default as Int
                     )
                 ),
-                lastNotificationsMillis = persistentMapOf<PID, Long>().mutate {
-                    PID.entries.map {
-                        it to 0L
-                    }
-                },
-                notificationTypes = persistentMapOf<PID, NotificationType>().mutate {
-                    PID.entries.map {
-                        it to NotificationType.valueOf(
-                            sharedPrefs.getString(
-                                key = Preference.NotificationType(it).key,
-                                defValue = Preference.NotificationType(it).default as String
-                            )!!
-                        )
-                    }
-                },
                 notifyExtraNotifications = persistentMapOf(
                     PID.MORNING to sharedPrefs.getBoolean(
                         key = Preference.NotifyExtraNotification(PID.MORNING).key,
@@ -108,6 +103,11 @@ object NotificationsPreferencesMigration {
                         defValue = Preference.ReminderOffset(PID.ISHAA).default as Int
                     ),
                 ),
+                lastNotificationDates = persistentMapOf<PID, Int>().mutate {
+                    PID.entries.map {
+                        it to 0
+                    }
+                },
             )
         }
 

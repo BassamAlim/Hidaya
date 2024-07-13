@@ -9,7 +9,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.LocationType
-import bassamalim.hidaya.core.models.LocationPickerItem
 import bassamalim.hidaya.core.nav.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope

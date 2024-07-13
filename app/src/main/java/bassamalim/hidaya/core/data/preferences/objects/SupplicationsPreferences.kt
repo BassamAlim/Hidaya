@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SupplicationsPreferences(
-    val textSize: Float = 15f,
     val favorites: PersistentMap<Int, Int> = persistentMapOf(),
+    val textSize: Float = 15f,
 )

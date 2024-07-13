@@ -1,7 +1,7 @@
 package bassamalim.hidaya.core.data.preferences.serializers
 
 import androidx.datastore.core.Serializer
-import bassamalim.hidaya.core.data.preferences.dataStore.objects.BooksPreferences
+import bassamalim.hidaya.core.data.preferences.objects.BooksPreferences
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.InputStream

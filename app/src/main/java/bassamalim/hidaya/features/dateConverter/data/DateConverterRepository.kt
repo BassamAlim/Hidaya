@@ -11,8 +11,7 @@ class DateConverterRepository @Inject constructor(
     private val appSettingsPrefsRepo: AppSettingsPreferencesRepository
 ) {
 
-    suspend fun getNumeralsLanguage() = appSettingsPrefsRepo.flow.first()
-        .numeralsLanguage
+    suspend fun getNumeralsLanguage() = appSettingsPrefsRepo.getNumeralsLanguage().first()
 
     fun getHijriMonths(): Array<String> =
         resources.getStringArray(R.array.numbered_hijri_months)

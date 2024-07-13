@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.models
+package bassamalim.hidaya.features.quizResult
 
 data class QuizResultQuestion(
     val questionNum: Int,

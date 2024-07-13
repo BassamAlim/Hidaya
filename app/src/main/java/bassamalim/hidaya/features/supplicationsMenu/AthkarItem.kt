@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.models
+package bassamalim.hidaya.features.supplicationsMenu
 
 import androidx.compose.runtime.MutableState
 

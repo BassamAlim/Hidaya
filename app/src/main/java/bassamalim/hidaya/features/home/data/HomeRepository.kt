@@ -1,76 +1,58 @@
-package bassamalim.hidaya.features.home
+package bassamalim.hidaya.features.home.data
 
 import android.content.res.Resources
 import android.util.Log
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Response
+import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.repositories.PrayersPreferencesRepository
 import bassamalim.hidaya.core.data.preferences.repositories.QuranPreferencesRepository
 import bassamalim.hidaya.core.data.preferences.repositories.UserPreferencesRepository
+import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.features.leaderboard.UserRecord
+import bassamalim.hidaya.features.leaderboard.LeaderboardUserRecord
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
     private val resources: Resources,
+    private val database: AppDatabase,
+    private val firestore: FirebaseFirestore,
     private val appSettingsPrefsRpo: AppSettingsPreferencesRepository,
+    private val prayersPreferencesRepository: PrayersPreferencesRepository,
     private val quranPrefsRepo: QuranPreferencesRepository,
     private val userPrefsRepo: UserPreferencesRepository,
-    private val firestore: FirebaseFirestore
 ) {
 
-    suspend fun getIsWerdDone() =
-        quranPrefsRepo.flow.first()
-            .isWerdDone
+    suspend fun getNumeralsLanguage() = appSettingsPrefsRpo.getNumeralsLanguage().first()
 
-    fun getPrayerNames(): Array<String> =
-        resources.getStringArray(R.array.prayer_names)
+    fun getTimeFormat() = appSettingsPrefsRpo.getTimeFormat()
 
-    suspend fun getNumeralsLanguage() =
-        appSettingsPrefsRpo.flow.first()
-            .numeralsLanguage
+    fun getIsWerdDone() = quranPrefsRepo.getIsWerdDone()
 
-    suspend fun getWerdPage() =
-        quranPrefsRepo.flow.first()
-            .werdPage
+    fun getWerdPage() = quranPrefsRepo.getWerdPage()
 
-    suspend fun getQuranPagesRecord() =
-        userPrefsRepo.flow.first()
-            .quranPagesRecord
+    fun getLocalRecord() = userPrefsRepo.getUserRecord()
 
-    suspend fun getTelawatTimeRecord() =
-        userPrefsRepo.flow.first()
-            .recitationsTimeRecord
+    fun getLocation() = userPrefsRepo.getLocation()
 
-    suspend fun getLocation() =
-        userPrefsRepo.flow.first()
-            .location
-
-    suspend fun getLocalRecord(): UserRecord {
-        return UserRecord(
-            userId = -1,
-            readingRecord = getQuranPagesRecord(),
-            listeningRecord = getTelawatTimeRecord()
-        )
-    }
-
-    suspend fun setLocalQuranRecord(pages: Int) {
+    suspend fun setLocalRecord(userRecord: UserRecord) {
         userPrefsRepo.update { it.copy(
-            quranPagesRecord = pages
+            userRecord = userRecord
         )}
     }
 
-    suspend fun setLocalTelawatRecord(seconds: Long) {
-        userPrefsRepo.update { it.copy(
-            recitationsTimeRecord = seconds
-        )}
-    }
+    fun getPrayerTimesCalculatorSettings() =
+        prayersPreferencesRepository.getPrayerTimesCalculatorSettings()
 
-    suspend fun getRemoteUserRecord(deviceId: String): Response<UserRecord> {
+    fun getTimeOffsets() = prayersPreferencesRepository.getTimeOffsets()
+
+    fun getTimeZone(cityId: Int) = database.cityDao().getCity(cityId).timeZone
+
+    suspend fun getRemoteRecord(deviceId: String): Response<LeaderboardUserRecord> {
         return try {
             firestore.collection("Leaderboard")
                 .document(deviceId)
@@ -83,10 +65,10 @@ class HomeRepository @Inject constructor(
                     else {
                         val data = result.data!!
                         Response.Success(
-                            UserRecord(
+                            LeaderboardUserRecord(
                                 userId = data["user_id"].toString().toInt(),
-                                readingRecord = data["reading_record"].toString().toInt(),
-                                listeningRecord = data["listening_record"].toString().toLong()
+                                quranRecord = data["reading_record"].toString().toInt(),
+                                recitationsRecord = data["listening_record"].toString().toLong()
                             )
                         )
                     }
@@ -97,14 +79,14 @@ class HomeRepository @Inject constructor(
         }
     }
 
-    suspend fun setRemoteUserRecord(deviceId: String, record: UserRecord) {
+    suspend fun setRemoteRecord(deviceId: String, record: LeaderboardUserRecord) {
         firestore.collection("Leaderboard")
             .document(deviceId)
             .set(
                 mapOf(
                     "user_id" to record.userId,
-                    "reading_record" to record.readingRecord,
-                    "listening_record" to record.listeningRecord
+                    "reading_record" to record.quranRecord,
+                    "listening_record" to record.recitationsRecord
                 )
             )
             .addOnSuccessListener {
@@ -116,16 +98,16 @@ class HomeRepository @Inject constructor(
             .await()
     }
 
-    suspend fun registerDevice(deviceId: String): UserRecord? {
-        val localRecord = getLocalRecord()
+    suspend fun registerDevice(deviceId: String): LeaderboardUserRecord? {
+        val localRecord = getLocalRecord().first()
 
-        val largestUserId = getLargestUserId() ?: return null
-
+        val largestUserId = getLastUserId() ?: return null
         val userId = largestUserId + 1
-        val remoteUserRecord = UserRecord(
+
+        val remoteLeaderboardUserRecord = LeaderboardUserRecord(
             userId = userId,
-            readingRecord = localRecord.readingRecord,
-            listeningRecord = localRecord.listeningRecord
+            quranRecord = localRecord.quranPages,
+            recitationsRecord = localRecord.recitationsTime
         )
 
         firestore.collection("Leaderboard")
@@ -133,8 +115,8 @@ class HomeRepository @Inject constructor(
             .set(
                 mapOf(
                     "user_id" to userId,
-                    "reading_record" to localRecord.readingRecord,
-                    "listening_record" to localRecord.listeningRecord
+                    "reading_record" to localRecord.quranPages,
+                    "listening_record" to localRecord.recitationsTime
                 )
             )
             .addOnSuccessListener {
@@ -145,20 +127,17 @@ class HomeRepository @Inject constructor(
             }
             .await()
 
-        return remoteUserRecord
+        return remoteLeaderboardUserRecord
     }
 
-    private suspend fun getLargestUserId(): Int? {
-        var max: Int? = null
+    private suspend fun getLastUserId(): Int? {
+        var id: Int? = null
 
-        firestore.collection("Leaderboard")
-            .orderBy("user_id", Query.Direction.DESCENDING)
-            .limit(1)
+        firestore.collection("Counters")
+            .document("users")
             .get()
             .addOnSuccessListener { result ->
-                if (result.documents.isNotEmpty())
-                    max = result.documents.first().data!!["user_id"].toString().toInt()
-
+                id = result.data!!["last_id"].toString().toInt()
                 Log.i(Global.TAG, "Data retrieved successfully!")
             }
             .addOnFailureListener { exception ->
@@ -166,7 +145,10 @@ class HomeRepository @Inject constructor(
             }
             .await()
 
-        return max
+        return id
     }
+
+    fun getPrayerNames(): Array<String> =
+        resources.getStringArray(R.array.prayer_names)
 
 }

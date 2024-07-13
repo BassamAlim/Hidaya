@@ -2,7 +2,6 @@ package bassamalim.hidaya.features.quizResult
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import bassamalim.hidaya.core.models.QuizResultQuestion
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

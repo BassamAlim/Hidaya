@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.models
+package bassamalim.hidaya.features.locationPicker
 
 data class LocationPickerItem(
     val id: Int,

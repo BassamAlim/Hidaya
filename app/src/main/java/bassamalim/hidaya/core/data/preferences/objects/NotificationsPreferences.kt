@@ -8,9 +8,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NotificationsPreferences(
-    val extraNotificationsMinuteOfDay: PersistentMap<PID, Int> = persistentMapOf(),
-    val lastNotificationsMillis: PersistentMap<PID, Long> = persistentMapOf(),
     val notificationTypes: PersistentMap<PID, NotificationType> = persistentMapOf(),
+    val extraNotificationsMinuteOfDay: PersistentMap<PID, Int> = persistentMapOf(),
     val notifyExtraNotifications: PersistentMap<PID, Boolean> = persistentMapOf(),
     val prayerReminderOffsets: PersistentMap<PID, Int> = persistentMapOf(),
+    val lastNotificationDates: PersistentMap<PID, Int> = persistentMapOf(),
 )

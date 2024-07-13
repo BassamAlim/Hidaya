@@ -5,7 +5,7 @@ import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
-import bassamalim.hidaya.core.data.preferences.dataStore.objects.AppStatePreferences
+import bassamalim.hidaya.core.data.preferences.objects.AppStatePreferences
 
 object AppStatePreferencesMigration {
 

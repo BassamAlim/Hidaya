@@ -20,17 +20,17 @@ class LeaderboardRepository @Inject constructor(
 
     fun getNumeralsLanguage() = preferencesDS.getNumeralsLanguage()
 
-    suspend fun getRanks(): List<UserRecord> {
+    suspend fun getRanks(): List<LeaderboardUserRecord> {
         return firestore.collection("Leaderboard")
             .get()
             .await()
             .let { result ->
                 try {
                     result.documents.map { document ->
-                        UserRecord(
+                        LeaderboardUserRecord(
                             userId = document.data!!["user_id"].toString().toInt(),
-                            readingRecord = document.data!!["reading_record"].toString().toInt(),
-                            listeningRecord = document.data!!["listening_record"].toString().toLong()
+                            quranRecord = document.data!!["reading_record"].toString().toInt(),
+                            recitationsRecord = document.data!!["listening_record"].toString().toLong()
                         )
                     }
                 } catch (e: Exception) {

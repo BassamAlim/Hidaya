@@ -1,6 +1,6 @@
 package bassamalim.hidaya.features.bookSearcher.ui
 
-import bassamalim.hidaya.core.models.BookSearcherMatch
+import bassamalim.hidaya.features.bookSearcher.BookSearcherMatch
 
 data class BookSearcherUiState(
     val searchText: String = "",

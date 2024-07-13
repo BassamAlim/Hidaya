@@ -10,7 +10,7 @@ import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.helpers.Alarms
-import bassamalim.hidaya.core.helpers.PrayTimes
+import bassamalim.hidaya.core.helpers.PrayerTimesCalculator
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
@@ -32,7 +32,7 @@ class PrayersViewModel @Inject constructor(
 ): AndroidViewModel(app) {
 
     var location = repo.getLocation()
-    private lateinit var prayTimes: PrayTimes
+    private lateinit var prayerTimesCalculator: PrayerTimesCalculator
     private val calendar = Calendar.getInstance()
     private var dateOffset = 0
 
@@ -46,7 +46,7 @@ class PrayersViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun onStart() {
-        prayTimes = PrayTimes(repo.sp)  // to update in case of method changes
+        prayerTimesCalculator = PrayerTimesCalculator(repo.sp)  // to update in case of method changes
 
         updateState()
     }
@@ -192,7 +192,7 @@ class PrayersViewModel @Inject constructor(
 
         val utcOffset = PTUtils.getUTCOffset(repo.sp, repo.db)
 
-        return prayTimes.getStrPrayerTimes(
+        return prayerTimesCalculator.getStrPrayerTimes(
             location!!.latitude, location!!.longitude, utcOffset.toDouble(), calendar
         )
     }

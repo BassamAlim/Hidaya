@@ -5,7 +5,7 @@ import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
-import bassamalim.hidaya.core.data.preferences.dataStore.objects.RecitationsPreferences
+import bassamalim.hidaya.core.data.preferences.objects.RecitationsPreferences
 import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentMapOf
@@ -15,7 +15,7 @@ object RecitationsPreferencesMigration {
     fun getMigration(context: Context) =
         SharedPreferencesMigration(
             context = context,
-            sharedPreferencesName = PreferencesFileNames.RECITATIONS_PREFERENCES_NAME,
+            sharedPreferencesName = PreferencesFileNames.RECITATIONS_PREFERENCES_NAME
         ) { sharedPrefs: SharedPreferencesView, currentData: RecitationsPreferences ->
             currentData.copy(
                 reciterFavorites = persistentMapOf<Int, Int>().mutate {
@@ -29,11 +29,7 @@ object RecitationsPreferencesMigration {
                         index to (fav as Double).toInt()
                     }
                 },
-                lastPlayedMediaId = sharedPrefs.getString(
-                    key = Preference.LastPlayedMediaId.key,
-                    defValue = Preference.LastPlayedMediaId.default as String
-                )!!,
-                selectedNarrations = persistentMapOf<Int, Boolean>().mutate {
+                narrationSelections = persistentMapOf<Int, Boolean>().mutate {
                     Gson().fromJson(
                         sharedPrefs.getString(
                             key = Preference.SelectedRewayat.key,
@@ -52,6 +48,10 @@ object RecitationsPreferencesMigration {
                     key = Preference.TelawatShuffleMode.key,
                     defValue = Preference.TelawatShuffleMode.default as Int
                 ),
+                lastPlayedMediaId = sharedPrefs.getString(
+                    key = Preference.LastPlayedMediaId.key,
+                    defValue = Preference.LastPlayedMediaId.default as String
+                )!!,
                 lastProgress = sharedPrefs.getInt(
                     key = Preference.LastTelawaProgress.key,
                     defValue = Preference.LastTelawaProgress.default as Int

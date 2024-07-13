@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.models
+package bassamalim.hidaya.features.quranSearcher
 
 import androidx.compose.ui.text.AnnotatedString
 

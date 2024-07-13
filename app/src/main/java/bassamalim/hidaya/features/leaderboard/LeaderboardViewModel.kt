@@ -20,10 +20,10 @@ class LeaderboardViewModel @Inject constructor(
     private val repo: LeaderboardRepository
 ): AndroidViewModel(app) {
 
-    private val userRecord = UserRecord(
+    private val leaderboardUserRecord = LeaderboardUserRecord(
         userId = savedStateHandle.get<Int>("user_id") ?: -1,
-        readingRecord = savedStateHandle.get<Int>("reading_record") ?: 0,
-        listeningRecord = savedStateHandle.get<Long>("listening_record") ?: 0L
+        quranRecord = savedStateHandle.get<Int>("reading_record") ?: 0,
+        recitationsRecord = savedStateHandle.get<Long>("listening_record") ?: 0L
     )
     private lateinit var items: MutableList<LeaderboardItem>
 
@@ -36,7 +36,7 @@ class LeaderboardViewModel @Inject constructor(
 
     private fun fillRanks() {
         viewModelScope.launch {
-            if (userRecord.userId == -1) {
+            if (leaderboardUserRecord.userId == -1) {
                 _uiState.update { it.copy(
                     errorMessage = repo.errorFetchingDataStr,
                     loading = false
@@ -49,14 +49,14 @@ class LeaderboardViewModel @Inject constructor(
                     items.add(
                         LeaderboardItem(
                             userId = "${repo.userStr} ${it.userId}",
-                            readingRecord = it.readingRecord,
-                            listeningRecord = formatTelawatTime(it.listeningRecord)
+                            readingRecord = it.quranRecord,
+                            listeningRecord = formatTelawatTime(it.recitationsRecord)
                         )
                     )
                 }
 
                 _uiState.update { it.copy(
-                    userId = "${repo.userStr} ${userRecord.userId}",
+                    userId = "${repo.userStr} ${leaderboardUserRecord.userId}",
                     loading = false
                 )}
             }
@@ -72,7 +72,7 @@ class LeaderboardViewModel @Inject constructor(
 
     fun getUserPosition(items: List<LeaderboardItem>): String {
         return (items.indexOfFirst {
-            it.userId == "${repo.userStr} ${userRecord.userId}"
+            it.userId == "${repo.userStr} ${leaderboardUserRecord.userId}"
         } + 1).toString()
     }
 

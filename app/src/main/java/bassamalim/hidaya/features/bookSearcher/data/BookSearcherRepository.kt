@@ -23,18 +23,40 @@ class BookSearcherRepository @Inject constructor(
     app: Application,
     private val resources: Resources,
     private val db: AppDatabase,
-    private val gson: Gson,
     private val appSettingsPrefsRepo: AppSettingsPreferencesRepository,
-    private val booksPreferencesRepo: BooksPreferencesRepository
+    private val booksPreferencesRepo: BooksPreferencesRepository,
+    private val gson: Gson
 ) {
 
     private val path = "${app.getExternalFilesDir(null)}/Books/"
 
-    suspend fun getLanguage() = appSettingsPrefsRepo.flow.first()
-        .language
+    suspend fun getLanguage() = appSettingsPrefsRepo.getLanguage().first()
 
-    suspend fun getNumeralsLanguage() = appSettingsPrefsRepo.flow.first()
-        .numeralsLanguage
+    suspend fun getNumeralsLanguage() = appSettingsPrefsRepo.getNumeralsLanguage().first()
+
+    fun getBookSelections() =
+        booksPreferencesRepo.getSearchSelections().map {
+            it.ifEmpty {
+                val books = getBooks()
+                it.mutate { oldMap ->
+                    books.forEach { book -> oldMap[book.id] = true }
+                }
+            }.toMap()
+        }
+
+    suspend fun setBookSelections(selections: Map<Int, Boolean>) {
+        booksPreferencesRepo.update { it.copy(
+            searchSelections = selections.toPersistentMap()
+        )}
+    }
+
+    fun getMaxMatches() = booksPreferencesRepo.getSearchMaxMatches()
+
+    suspend fun setMaxMatches(value: Int) {
+        booksPreferencesRepo.update { it.copy(
+            searchMaxMatches = value
+        )}
+    }
 
     fun getBookContents(): List<Book> {
         val dir = File(path)
@@ -56,33 +78,6 @@ class BookSearcherRepository @Inject constructor(
         }
 
         return bookContents
-    }
-
-    fun getBookSelections() =
-        booksPreferencesRepo.flow.map {
-            it.searchSelections.ifEmpty {
-                val books = getBooks()
-                it.searchSelections.mutate { oldMap ->
-                    books.forEach { book -> oldMap[book.id] = true }
-                }
-            }.toMap()
-        }
-
-    suspend fun setBookSelections(selections: Map<Int, Boolean>) {
-        booksPreferencesRepo.update { it.copy(
-            searchSelections = selections.toPersistentMap()
-        )}
-    }
-
-    fun getMaxMatches() =
-        booksPreferencesRepo.flow.map {
-            it.searcherMaxMatches
-        }
-
-    suspend fun setMaxMatches(value: Int) {
-        booksPreferencesRepo.update { it.copy(
-            searcherMaxMatches = value
-        )}
     }
 
     fun getMaxMatchesItems(): Array<String> =

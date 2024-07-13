@@ -24,14 +24,9 @@ class BooksRepository @Inject constructor(
 
     private val prefix = "/Books/"
 
-    suspend fun getLanguage() = appSettingsPrefsRepository.flow.first()
-        .language
+    suspend fun getLanguage() = appSettingsPrefsRepository.getLanguage().first()
 
-    fun getBooks() = db.booksDao().getAll()
-
-    suspend fun getShowTutorial() =
-        booksPreferencesRepository.flow.first()
-            .shouldShowTutorial
+    suspend fun getShowTutorial() = booksPreferencesRepository.getShouldShowTutorial().first()
 
     suspend fun setDoNotShowAgain() {
         booksPreferencesRepository.update { it.copy(
@@ -39,11 +34,11 @@ class BooksRepository @Inject constructor(
         )}
     }
 
+    fun getBooks() = db.booksDao().getAll()
+
     fun download(bookId: Int): FileDownloadTask {
         val storage = Firebase.storage
-        // Create a storage reference from our app
         val storageRef = storage.reference
-        // Create a reference with an initial file path and name
         val fileRef = storageRef.child("${prefix.substring(1)}$bookId.json")
 
         FileUtils.createDir(app, prefix)
@@ -72,7 +67,6 @@ class BooksRepository @Inject constructor(
 
     fun isDownloading(bookId: Int): Boolean {
         val path = app.getExternalFilesDir(null).toString() + prefix + bookId + ".json"
-
         val jsonStr = FileUtils.getJsonFromDownloads(path)
         return try {
             gson.fromJson(jsonStr, Book::class.java)

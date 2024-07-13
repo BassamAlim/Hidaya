@@ -5,18 +5,15 @@ import bassamalim.hidaya.core.data.preferences.repositories.BooksPreferencesRepo
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.utils.FileUtils
 import com.google.gson.Gson
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class BookReaderRepository @Inject constructor(
     private val app: Application,
-    private val gson: Gson,
-    private val booksPrefsRepo: BooksPreferencesRepository
+    private val booksPrefsRepo: BooksPreferencesRepository,
+    private val gson: Gson
 ) {
 
-    fun getTextSize() = booksPrefsRepo.flow.map {
-        it.textSize
-    }
+    fun getTextSize() = booksPrefsRepo.getTextSize()
 
     suspend fun setTextSize(textSize: Float) {
         booksPrefsRepo.update { it.copy(

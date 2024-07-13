@@ -5,7 +5,7 @@ import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
-import bassamalim.hidaya.core.data.preferences.dataStore.objects.AppSettingsPreferences
+import bassamalim.hidaya.core.data.preferences.objects.AppSettingsPreferences
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
@@ -30,16 +30,16 @@ object AppSettingsPreferencesMigration {
                         defValue = Preference.NumeralsLanguage.default as String
                     )!!
                 ),
-                timeFormat = TimeFormat.valueOf(
-                    sharedPrefs.getString(
-                        key = Preference.TimeFormat.key,
-                        defValue = Preference.TimeFormat.default as String
-                    )!!
-                ),
                 theme = Theme.valueOf(
                     sharedPrefs.getString(
                         key = Preference.Theme.key,
                         defValue = Preference.Theme.default as String
+                    )!!
+                ),
+                timeFormat = TimeFormat.valueOf(
+                    sharedPrefs.getString(
+                        key = Preference.TimeFormat.key,
+                        defValue = Preference.TimeFormat.default as String
                     )!!
                 ),
                 dateOffset = sharedPrefs.getInt(

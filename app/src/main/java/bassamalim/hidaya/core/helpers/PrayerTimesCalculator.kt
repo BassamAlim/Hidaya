@@ -6,6 +6,7 @@ import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.PTCalculationMethod
 import bassamalim.hidaya.core.enums.PTJuristicMethod
 import bassamalim.hidaya.core.enums.TimeFormat
+import bassamalim.hidaya.core.models.PrayerTimesCalculatorSettings
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import java.util.Calendar
 import java.util.TimeZone
@@ -19,20 +20,16 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.tan
 
-class PrayTimes(
-    private val calculationMethod: PTCalculationMethod,
-    juristicMethod: PTJuristicMethod,
-    private val highLatAdjustmentMethod: HighLatAdjustmentMethod,
+class PrayerTimesCalculator(
+    private val settings: PrayerTimesCalculatorSettings,
     private val timeFormat: TimeFormat,
     private val timeOffsets: Map<PID, Int>,
     private val numeralsLanguage: Language
 ) {
 
-//    private val calcMethod = preferencesDS.getString(Preference.PrayerTimesCalculationMethod)
     private var asrJuristic =
-        if (juristicMethod == PTJuristicMethod.HANAFI) 1
+        if (settings.juristicMethod == PTJuristicMethod.HANAFI) 1
         else 0
-
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
     private var latitude = 0.0 // latitude
     private var longitude = 0.0 // longitude
@@ -170,13 +167,13 @@ class PrayTimes(
     // compute prayer times at given julian date
     private fun computeTimes(times: DoubleArray): DoubleArray {
         val t = dayPortion(times)
-        val fajr = computeTime(180 - (methodParams[calculationMethod]!![0]), t[0])
+        val fajr = computeTime(180 - (methodParams[settings.calculationMethod]!![0]), t[0])
         val sunrise = computeTime(180 - 0.833, t[1])
         val dhuhr = computeMidDay(t[2])
         val asr = computeAsr((1 + asrJuristic).toDouble(), t[3])
         val sunset = computeTime(0.833, t[4])
-        val maghrib = computeTime(methodParams[calculationMethod]!![2], t[5])
-        val isha = computeTime(methodParams[calculationMethod]!![4], t[6])
+        val maghrib = computeTime(methodParams[settings.calculationMethod]!![2], t[5])
+        val isha = computeTime(methodParams[settings.calculationMethod]!![4], t[6])
         return doubleArrayOf(fajr, sunrise, dhuhr, asr, sunset, maghrib, isha)
     }
 
@@ -238,11 +235,11 @@ class PrayTimes(
         for (i in times.indices) times[i] += timeZone - longitude / 15
 
         times[2] += dhuhrMinutes / 60.0 // Dhuhr
-        if (methodParams[calculationMethod]?.get(1)?.toInt() == 1) // Maghrib
-            times[5] = times[4] + (methodParams[calculationMethod]?.get(2)!!) / 60
-        if (methodParams[calculationMethod]?.get(3)?.toInt() == 1) // Isha
-            times[6] = times[5] + (methodParams[calculationMethod]?.get(4)!!) / 60
-        if (highLatAdjustmentMethod != HighLatAdjustmentMethod.NONE)
+        if (methodParams[settings.calculationMethod]?.get(1)?.toInt() == 1) // Maghrib
+            times[5] = times[4] + (methodParams[settings.calculationMethod]?.get(2)!!) / 60
+        if (methodParams[settings.calculationMethod]?.get(3)?.toInt() == 1) // Isha
+            times[6] = times[5] + (methodParams[settings.calculationMethod]?.get(4)!!) / 60
+        if (settings.highLatAdjustmentMethod != HighLatAdjustmentMethod.NONE)
             adjustHighLatTimes(times)
 
         return times
@@ -253,14 +250,14 @@ class PrayTimes(
         val nightTime = timeDiff(times[4], times[1]) // sunset to sunrise
 
         // Adjust Fajr
-        val fajrDiff = nightPortion(methodParams[calculationMethod]?.get(0)!!) * nightTime
+        val fajrDiff = nightPortion(methodParams[settings.calculationMethod]?.get(0)!!) * nightTime
         if (java.lang.Double.isNaN(times[0]) || timeDiff(times[0], times[1]) > fajrDiff)
             times[0] = times[1] - fajrDiff
 
         // Adjust Isha
         val ishaAngle =
-            if (methodParams[calculationMethod]?.get(3)?.toInt() == 0)
-                methodParams[calculationMethod]?.get(4)!!.toDouble()
+            if (methodParams[settings.calculationMethod]?.get(3)?.toInt() == 0)
+                methodParams[settings.calculationMethod]?.get(4)!!.toDouble()
             else 18.0
 
         val ishaDiff = nightPortion(ishaAngle) * nightTime
@@ -269,8 +266,8 @@ class PrayTimes(
 
         // Adjust Maghrib
         val maghribAngle =
-            if (methodParams[calculationMethod]?.get(1)?.toInt() == 0)
-                methodParams[calculationMethod]?.get(2)!!.toDouble()
+            if (methodParams[settings.calculationMethod]?.get(1)?.toInt() == 0)
+                methodParams[settings.calculationMethod]?.get(2)!!.toDouble()
             else 4.0
 
         val maghribDiff = nightPortion(maghribAngle) * nightTime
@@ -292,7 +289,7 @@ class PrayTimes(
 
     // the night portion used for adjusting times in higher latitudes
     private fun nightPortion(angle: Double): Double {
-        return when (highLatAdjustmentMethod) {
+        return when (settings.highLatAdjustmentMethod) {
             HighLatAdjustmentMethod.MIDNIGHT -> 0.5
             HighLatAdjustmentMethod.ONE_SEVENTH -> 0.14286
             HighLatAdjustmentMethod.ANGLE_BASED -> angle / 60.0

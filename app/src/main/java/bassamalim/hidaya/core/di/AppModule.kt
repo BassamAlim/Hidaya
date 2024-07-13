@@ -44,6 +44,7 @@ import bassamalim.hidaya.core.data.preferences.serializers.QuranPreferencesSeria
 import bassamalim.hidaya.core.data.preferences.serializers.RecitationsPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.SupplicationsPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.UserPreferencesSerializer
+import bassamalim.hidaya.core.helpers.PrayerTimesCalculator
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.about.data.AboutRepository
 import bassamalim.hidaya.features.supplicationsMenu.SupplicationsMenuRepository
@@ -54,7 +55,7 @@ import bassamalim.hidaya.features.bookReader.data.BookReaderRepository
 import bassamalim.hidaya.features.books.data.BooksRepository
 import bassamalim.hidaya.features.dateConverter.data.DateConverterRepository
 import bassamalim.hidaya.features.hijriDatePicker.data.HijriDatePickerRepository
-import bassamalim.hidaya.features.home.HomeRepository
+import bassamalim.hidaya.features.home.data.HomeRepository
 import bassamalim.hidaya.features.leaderboard.LeaderboardRepository
 import bassamalim.hidaya.features.locationPicker.LocationPickerRepository
 import bassamalim.hidaya.features.locator.LocatorRepository
@@ -87,6 +88,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
 import javax.inject.Singleton
 
 @Module
@@ -255,57 +257,80 @@ object AppModule {
 
     @Provides @Singleton
     fun provideBookChaptersRepository(
-        context: Context,
-        gson: Gson,
-        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
+        application: Application,
         booksPreferencesRepository: BooksPreferencesRepository,
-    ) = BookChaptersRepository(
-        context,
-        gson,
-        appSettingsPreferencesRepository,
-        booksPreferencesRepository
-    )
+        gson: Gson
+    ) = BookChaptersRepository(application, booksPreferencesRepository, gson)
 
     @Provides @Singleton
     fun provideBookReaderRepository(
-        context: Context,
-        preferencesDataSource: PreferencesDataSource,
-    ) = BookReaderRepository(context, preferencesDataSource)
+        application: Application,
+        gson: Gson,
+        booksPreferencesRepository: BooksPreferencesRepository
+    ) = BookReaderRepository(application, booksPreferencesRepository, gson)
 
     @Provides @Singleton
     fun provideBooksRepository(
-        context: Context,
-        preferencesDataSource: PreferencesDataSource,
+        application: Application,
         database: AppDatabase,
-    ) = BooksRepository(context, preferencesDataSource, database)
+        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
+        booksPreferencesRepository: BooksPreferencesRepository,
+        gson: Gson
+    ) = BooksRepository(
+        application,
+        database,
+        appSettingsPreferencesRepository,
+        booksPreferencesRepository,
+        gson
+    )
 
     @Provides @Singleton
-
-`    fun provideBookSearcherRepository(
-        context: Context,
-        preferencesDataSource: PreferencesDataSource,
+    fun provideBookSearcherRepository(
+        application: Application,
+        resources: Resources,
         database: AppDatabase,
-    ) = BookSearcherRepository(context, preferencesDataSource, database)
+        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
+        booksPreferencesRepository: BooksPreferencesRepository,
+        gson: Gson
+    ) = BookSearcherRepository(
+        application,
+        resources,
+        database,
+        appSettingsPreferencesRepository,
+        booksPreferencesRepository,
+        gson
+    )
 
     @Provides @Singleton
     fun provideDateConverterRepository(
         resources: Resources,
-        preferencesDataSource: PreferencesDataSource
-    ) = DateConverterRepository(resources, preferencesDataSource)
+        appSettingsPreferencesRepository: AppSettingsPreferencesRepository
+    ) = DateConverterRepository(resources, appSettingsPreferencesRepository)
 
     @Provides @Singleton
     fun provideHijriDatePickerRepository(
         resources: Resources,
-        preferencesDataSource: PreferencesDataSource
-    ) = HijriDatePickerRepository(resources, preferencesDataSource)
+        appSettingsPreferencesRepository: AppSettingsPreferencesRepository
+    ) = HijriDatePickerRepository(resources, appSettingsPreferencesRepository)
 
     @Provides @Singleton
     fun provideHomeRepository(
         resources: Resources,
-        preferencesDataSource: PreferencesDataSource,
         database: AppDatabase,
-        firestore: FirebaseFirestore
-    ) = HomeRepository(resources, preferencesDataSource, database, firestore)
+        firestore: FirebaseFirestore,
+        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
+        prayersPreferencesRepository: PrayersPreferencesRepository,
+        quranPreferencesRepository: QuranPreferencesRepository,
+        userPreferencesRepository: UserPreferencesRepository
+    ) = HomeRepository(
+        resources,
+        database,
+        firestore,
+        appSettingsPreferencesRepository,
+        prayersPreferencesRepository,
+        quranPreferencesRepository,
+        userPreferencesRepository
+    )
 
     @Provides @Singleton
     fun provideLeaderboardRepository(

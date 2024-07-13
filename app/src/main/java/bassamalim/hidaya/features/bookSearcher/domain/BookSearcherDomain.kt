@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.models.BookSearcherMatch
+import bassamalim.hidaya.features.bookSearcher.BookSearcherMatch
 import bassamalim.hidaya.features.bookSearcher.data.BookSearcherRepository
 import java.util.regex.Pattern
 import javax.inject.Inject

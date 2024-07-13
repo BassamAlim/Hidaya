@@ -1,8 +1,7 @@
-package bassamalim.hidaya.features.home
+package bassamalim.hidaya.features.home.ui
 
 import android.view.LayoutInflater
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.other.AnalogClock
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.ui.components.MyClickableText
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
@@ -41,28 +40,48 @@ import bassamalim.hidaya.core.ui.theme.Positive
 
 @Composable
 fun HomeUI(
-    vm: HomeViewModel
+    viewModel: HomeViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    DisposableEffect(key1 = vm) {
-        vm.onStart()
-        onDispose { vm.onStop() }
+    DisposableEffect(key1 = viewModel) {
+        viewModel.onStart()
+        onDispose { viewModel.onStop() }
     }
 
     MyParentColumn {
-        UpcomingPrayerCard(vm, st)
+        UpcomingPrayerCard(
+            upcomingPrayerName = state.upcomingPrayerName,
+            upcomingPrayerTime = state.upcomingPrayerTime,
+            remaining = state.remaining,
+            timeFromPreviousPrayer = state.timeFromPreviousPrayer,
+            timeToNextPrayer = state.timeToNextPrayer,
+            numeralsLanguage = viewModel.numeralsLanguage
+        )
 
-        RecordsCard(vm, st)
+        TodayWerdCard(
+            werdPage = state.werdPage,
+            isWerdDone = state.isWerdDone,
+            onGoToWerdClick = viewModel::onGotoTodayWerdClick
+        )
 
-        TodayWerdCard(vm, st)
+        RecordsCard(
+            telawatRecord = state.recitationsRecord,
+            quranPagesRecord = state.quranRecord,
+            isLeaderboardEnabled = state.isLeaderboardEnabled,
+            onLeaderboardClick = viewModel::onLeaderboardClick
+        )
     }
 }
 
 @Composable
 fun UpcomingPrayerCard(
-    vm: HomeViewModel,
-    st: HomeState
+    upcomingPrayerName: String,
+    upcomingPrayerTime: String,
+    remaining: String,
+    timeFromPreviousPrayer: Long,
+    timeToNextPrayer: Long,
+    numeralsLanguage: Language
 ) {
     MySurface(
         Modifier.padding(top = 3.dp)
@@ -74,14 +93,16 @@ fun UpcomingPrayerCard(
             AndroidView(
                 factory = { context ->
                     val view = LayoutInflater.from(context).inflate(
-                        R.layout.clock_view, null, false
+                        R.layout.clock_view,
+                        null,
+                        false
                     ) as AnalogClock
-                    // do whatever you want...
-                    view // return the view
+                    view.init(numeralsLanguage)
+                    view
                 },
                 update = { view ->
                     // Update the view
-                    view.update(vm.pastTime, vm.upcomingTime, vm.remaining)
+                    view.updateArcs(timeFromPreviousPrayer, timeToNextPrayer)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -89,99 +110,35 @@ fun UpcomingPrayerCard(
             )
 
             MyText(
-                st.upcomingPrayerName,
+                upcomingPrayerName,
+                Modifier.padding(3.dp),
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(3.dp)
+                fontWeight = FontWeight.Bold
             )
 
             MyText(
-                text = st.upcomingPrayerTime,
-                fontSize = 24.sp,
-                modifier = Modifier.padding(3.dp)
+                upcomingPrayerTime,
+                Modifier.padding(3.dp),
+                fontSize = 24.sp
             )
 
             MyText(
-                text = String.format(
+                String.format(
                     stringResource(R.string.remaining),
-                    st.remainingTime
+                    remaining
                 ),
-                fontSize = 24.sp,
-                modifier = Modifier.padding(top = 3.dp, bottom = 15.dp)
+                Modifier.padding(top = 3.dp, bottom = 15.dp),
+                fontSize = 24.sp
             )
         }
     }
 }
 
-@Composable
-fun RecordsCard(
-    vm: HomeViewModel,
-    st: HomeState
-) {
-    MySurface {
-        MyColumn {
-            MyRow(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 14.dp, horizontal = 20.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                MyText(
-                    stringResource(R.string.telawat_time_record_title),
-                    Modifier.widthIn(1.dp, 200.dp)
-                )
-
-                MyText(
-                    st.telawatRecord,
-                    fontSize = 30.sp
-                )
-            }
-
-            MyRow(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 14.dp, horizontal = 20.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                MyText(
-                    stringResource(R.string.quran_pages_record_title),
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier.widthIn(1.dp, 280.dp)
-                )
-
-                MyText(
-                    st.quranPagesRecord,
-                    fontSize = 30.sp
-                )
-            }
-
-            MyHorizontalButton(
-                text = stringResource(R.string.leaderboard),
-                textColor = AppTheme.colors.accent,
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_leaderboard),
-                        contentDescription = stringResource(R.string.leaderboard),
-                        tint =
-                            if (st.leaderboardEnabled) AppTheme.colors.accent
-                            else Color.Gray
-                    )
-                },
-                middlePadding = PaddingValues(vertical = 6.dp, horizontal = 8.dp),
-                elevation = 0,
-                enabled = st.leaderboardEnabled
-            ) {
-                vm.gotoLeaderboard()
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TodayWerdCard(
-    vm: HomeViewModel,
-    st: HomeState
+    werdPage: String,
+    isWerdDone: Boolean,
+    onGoToWerdClick: () -> Unit
 ) {
     MySurface(
         Modifier.padding(bottom = 3.dp)
@@ -203,7 +160,7 @@ fun TodayWerdCard(
                 )
 
                 MyText(
-                    "${stringResource(R.string.page)} ${st.todayWerdPage}",
+                    "${stringResource(R.string.page)} $werdPage",
                     fontSize = 22.sp
                 )
             }
@@ -214,15 +171,14 @@ fun TodayWerdCard(
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 MyClickableText(
-                    stringResource(R.string.go_to_page),
+                    text = stringResource(R.string.go_to_page),
                     textColor = AppTheme.colors.accent,
-                    modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
-                ) {
-                    vm.onGotoTodayWerdClick()
-                }
+                    modifier = Modifier.padding(top = 10.dp, bottom = 5.dp),
+                    onClick = onGoToWerdClick
+                )
 
                 AnimatedVisibility(
-                    visible = st.isWerdDone,
+                    visible = isWerdDone,
                     enter = scaleIn()
                 ) {
                     Icon(
@@ -233,6 +189,71 @@ fun TodayWerdCard(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun RecordsCard(
+    telawatRecord: String,
+    quranPagesRecord: String,
+    isLeaderboardEnabled: Boolean,
+    onLeaderboardClick: () -> Unit
+) {
+    MySurface {
+        MyColumn {
+            MyRow(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 14.dp, horizontal = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                MyText(
+                    stringResource(R.string.telawat_time_record_title),
+                    Modifier.widthIn(1.dp, 200.dp)
+                )
+
+                MyText(
+                    telawatRecord,
+                    fontSize = 30.sp
+                )
+            }
+
+            MyRow(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 14.dp, horizontal = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                MyText(
+                    stringResource(R.string.quran_pages_record_title),
+                    Modifier.widthIn(1.dp, 280.dp),
+                    textAlign = TextAlign.Start,
+                )
+
+                MyText(
+                    quranPagesRecord,
+                    fontSize = 30.sp
+                )
+            }
+
+            MyHorizontalButton(
+                text = stringResource(R.string.leaderboard),
+                textColor = AppTheme.colors.accent,
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_leaderboard),
+                        contentDescription = stringResource(R.string.leaderboard),
+                        tint =
+                            if (isLeaderboardEnabled) AppTheme.colors.accent
+                            else Color.Gray
+                    )
+                },
+                middlePadding = PaddingValues(vertical = 6.dp, horizontal = 8.dp),
+                elevation = 0,
+                enabled = isLeaderboardEnabled,
+                onClick = onLeaderboardClick
+            )
         }
     }
 }

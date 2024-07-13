@@ -12,11 +12,9 @@ class HijriDatePickerRepository @Inject constructor(
     private val appSettingsPrefsRepo: AppSettingsPreferencesRepository
 ) {
 
-    suspend fun getLanguage() = appSettingsPrefsRepo.flow.first()
-        .language
+    suspend fun getLanguage() = appSettingsPrefsRepo.getLanguage().first()
 
-    suspend fun getNumeralsLanguage() = appSettingsPrefsRepo.flow.first()
-        .numeralsLanguage
+    suspend fun getNumeralsLanguage() = appSettingsPrefsRepo.getNumeralsLanguage().first()
 
     fun getMonths() =
         resources.getStringArray(R.array.hijri_months) as Array<String>

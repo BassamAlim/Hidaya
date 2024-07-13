@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 class BookChaptersRepository @Inject constructor(
     private val app: Application,
-    private val gson: Gson,
-    private val booksPrefsRepo: BooksPreferencesRepository
+    private val booksPrefsRepo: BooksPreferencesRepository,
+    private val gson: Gson
 ) {
 
     fun getBook(bookId: Int): Book {
@@ -22,19 +22,18 @@ class BookChaptersRepository @Inject constructor(
         return gson.fromJson(jsonStr, Book::class.java)
     }
 
-    fun getFavs(book: Book) =
-        booksPrefsRepo.flow.map { preferences ->
-            val allFavs = preferences.chaptersFavs
+    fun getFavorites(book: Book) =
+        booksPrefsRepo.getChapterFavorites().map { favoriteChapters ->
 
-            if (allFavs.containsKey(book.bookInfo.bookId))
-                allFavs[book.bookInfo.bookId]!!
+            if (favoriteChapters.containsKey(book.bookInfo.bookId))
+                favoriteChapters[book.bookInfo.bookId]!!
             else {
                 val favs = book.chapters.associate {
                     it.chapterId to 0
                 }
 
                 booksPrefsRepo.update { it.copy(
-                    chaptersFavs = it.chaptersFavs.mutate { oldMap ->
+                    chapterFavorites = it.chapterFavorites.mutate { oldMap ->
                         oldMap[book.bookInfo.bookId] = favs.toPersistentMap()
                     }
                 )}
@@ -43,9 +42,9 @@ class BookChaptersRepository @Inject constructor(
             }
         }
 
-    suspend fun setFavs(bookId: Int, favs: Map<Int, Int>) {
+    suspend fun setFavorites(bookId: Int, favs: Map<Int, Int>) {
         booksPrefsRepo.update { it.copy(
-            chaptersFavs = it.chaptersFavs.mutate { oldMap ->
+            chapterFavorites = it.chapterFavorites.mutate { oldMap ->
                 oldMap[bookId] = favs.toPersistentMap()
             }
         )}
