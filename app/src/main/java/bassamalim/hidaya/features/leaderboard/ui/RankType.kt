@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.leaderboard
+package bassamalim.hidaya.features.leaderboard.ui
 
 enum class RankType {
     BY_READING,

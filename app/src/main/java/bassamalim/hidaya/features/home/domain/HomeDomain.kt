@@ -1,16 +1,14 @@
 package bassamalim.hidaya.features.home.domain
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import android.provider.Settings
 import bassamalim.hidaya.core.data.Response
+import bassamalim.hidaya.core.helpers.OS.getDeviceId
 import bassamalim.hidaya.core.helpers.PrayerTimesCalculator
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.utils.PTUtils
 import bassamalim.hidaya.features.home.data.HomeRepository
-import bassamalim.hidaya.features.leaderboard.LeaderboardUserRecord
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import javax.inject.Inject
@@ -103,8 +101,6 @@ class HomeDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = repository.getNumeralsLanguage()
 
-    fun getTimeFormat() = repository.getTimeFormat()
-
     fun getWerdPage() = repository.getWerdPage()
 
     fun getIsWerdDone() = repository.getIsWerdDone()
@@ -112,10 +108,6 @@ class HomeDomain @Inject constructor(
     fun getLocalRecord() = repository.getLocalRecord()
 
     private fun getLocation() = repository.getLocation()
-
-    fun getPrayerTimesCalculatorSettings() = repository.getPrayerTimesCalculatorSettings()
-
-    fun getPrayerTimeOffsets() = repository.getTimeOffsets()
 
     fun getPrayerNames() = repository.getPrayerNames()
 
@@ -130,32 +122,32 @@ class HomeDomain @Inject constructor(
 
                 val localRecord = getLocalRecord().first()
 
-                val latestRecord = LeaderboardUserRecord(
+                val latestRecord = UserRecord(
                     userId = remoteRecord.userId,
-                    quranRecord = max(
+                    quranPages = max(
                         localRecord.quranPages,
-                        remoteRecord.quranRecord
+                        remoteRecord.quranPages
                     ),
-                    recitationsRecord = max(
+                    recitationsTime = max(
                         localRecord.recitationsTime,
-                        remoteRecord.recitationsRecord
+                        remoteRecord.recitationsTime
                     )
                 )
 
-                if (remoteRecord.quranRecord != latestRecord.quranRecord ||
-                    remoteRecord.recitationsRecord > latestRecord.recitationsRecord) {
+                if (remoteRecord.quranPages != latestRecord.quranPages ||
+                    remoteRecord.recitationsTime > latestRecord.recitationsTime) {
                     repository.setRemoteRecord(
                         deviceId = deviceId,
                         record = latestRecord
                     )
                 }
 
-                if (localRecord.quranPages != latestRecord.quranRecord ||
-                    localRecord.recitationsTime > latestRecord.recitationsRecord) {
+                if (localRecord.quranPages != latestRecord.quranPages ||
+                    localRecord.recitationsTime > latestRecord.recitationsTime) {
                     repository.setLocalRecord(
                         UserRecord(
-                            quranPages = latestRecord.quranRecord,
-                            recitationsTime = latestRecord.recitationsRecord
+                            quranPages = latestRecord.quranPages,
+                            recitationsTime = latestRecord.recitationsTime
                         )
                     )
                 }
@@ -168,8 +160,8 @@ class HomeDomain @Inject constructor(
                     if (remoteRecord != null) {
                         repository.setLocalRecord(
                             UserRecord(
-                                quranPages = remoteRecord.quranRecord,
-                                recitationsTime = remoteRecord.recitationsRecord
+                                quranPages = remoteRecord.quranPages,
+                                recitationsTime = remoteRecord.recitationsTime
                             )
                         )
                         true
@@ -180,13 +172,6 @@ class HomeDomain @Inject constructor(
     }
 
     private suspend fun registerDevice(deviceId: String) = repository.registerDevice(deviceId)
-
-    @SuppressLint("HardwareIds")
-    private fun getDeviceId(app: Application) =
-        Settings.Secure.getString(
-            app.contentResolver,
-            Settings.Secure.ANDROID_ID
-        )
 
     private fun isInternetConnected(context: Context): Boolean {
         val connectivityManager =

@@ -11,7 +11,6 @@ import bassamalim.hidaya.core.data.preferences.repositories.QuranPreferencesRepo
 import bassamalim.hidaya.core.data.preferences.repositories.UserPreferencesRepository
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.features.leaderboard.LeaderboardUserRecord
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
@@ -52,7 +51,7 @@ class HomeRepository @Inject constructor(
 
     fun getTimeZone(cityId: Int) = database.cityDao().getCity(cityId).timeZone
 
-    suspend fun getRemoteRecord(deviceId: String): Response<LeaderboardUserRecord> {
+    suspend fun getRemoteRecord(deviceId: String): Response<UserRecord> {
         return try {
             firestore.collection("Leaderboard")
                 .document(deviceId)
@@ -65,10 +64,10 @@ class HomeRepository @Inject constructor(
                     else {
                         val data = result.data!!
                         Response.Success(
-                            LeaderboardUserRecord(
+                            UserRecord(
                                 userId = data["user_id"].toString().toInt(),
-                                quranRecord = data["reading_record"].toString().toInt(),
-                                recitationsRecord = data["listening_record"].toString().toLong()
+                                quranPages = data["reading_record"].toString().toInt(),
+                                recitationsTime = data["listening_record"].toString().toLong()
                             )
                         )
                     }
@@ -79,14 +78,14 @@ class HomeRepository @Inject constructor(
         }
     }
 
-    suspend fun setRemoteRecord(deviceId: String, record: LeaderboardUserRecord) {
+    suspend fun setRemoteRecord(deviceId: String, record: UserRecord) {
         firestore.collection("Leaderboard")
             .document(deviceId)
             .set(
                 mapOf(
                     "user_id" to record.userId,
-                    "reading_record" to record.quranRecord,
-                    "listening_record" to record.recitationsRecord
+                    "reading_record" to record.quranPages,
+                    "listening_record" to record.recitationsTime
                 )
             )
             .addOnSuccessListener {
@@ -98,16 +97,16 @@ class HomeRepository @Inject constructor(
             .await()
     }
 
-    suspend fun registerDevice(deviceId: String): LeaderboardUserRecord? {
+    suspend fun registerDevice(deviceId: String): UserRecord? {
         val localRecord = getLocalRecord().first()
 
         val largestUserId = getLastUserId() ?: return null
         val userId = largestUserId + 1
 
-        val remoteLeaderboardUserRecord = LeaderboardUserRecord(
+        val remoteLeaderboardUserRecord = UserRecord(
             userId = userId,
-            quranRecord = localRecord.quranPages,
-            recitationsRecord = localRecord.recitationsTime
+            quranPages = localRecord.quranPages,
+            recitationsTime = localRecord.recitationsTime
         )
 
         firestore.collection("Leaderboard")

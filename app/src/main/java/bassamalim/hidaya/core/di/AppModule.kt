@@ -44,7 +44,6 @@ import bassamalim.hidaya.core.data.preferences.serializers.QuranPreferencesSeria
 import bassamalim.hidaya.core.data.preferences.serializers.RecitationsPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.SupplicationsPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.UserPreferencesSerializer
-import bassamalim.hidaya.core.helpers.PrayerTimesCalculator
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.about.data.AboutRepository
 import bassamalim.hidaya.features.supplicationsMenu.SupplicationsMenuRepository
@@ -56,7 +55,7 @@ import bassamalim.hidaya.features.books.data.BooksRepository
 import bassamalim.hidaya.features.dateConverter.data.DateConverterRepository
 import bassamalim.hidaya.features.hijriDatePicker.data.HijriDatePickerRepository
 import bassamalim.hidaya.features.home.data.HomeRepository
-import bassamalim.hidaya.features.leaderboard.LeaderboardRepository
+import bassamalim.hidaya.features.leaderboard.data.LeaderboardRepository
 import bassamalim.hidaya.features.locationPicker.LocationPickerRepository
 import bassamalim.hidaya.features.locator.LocatorRepository
 import bassamalim.hidaya.features.main.MainRepository
@@ -88,7 +87,6 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.first
 import javax.inject.Singleton
 
 @Module

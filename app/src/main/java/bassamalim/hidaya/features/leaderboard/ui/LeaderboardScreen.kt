@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.leaderboard
+package bassamalim.hidaya.features.leaderboard.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
@@ -30,45 +30,54 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun LeaderboardUI(
-    vm: LeaderboardViewModel
+    viewModel: LeaderboardViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(stringResource(R.string.leaderboard)) {
-        if (st.loading) LoadingScreen()
-        else if (st.errorMessage.isNotEmpty()) ErrorScreen(st.errorMessage)
-        else {
-            TabLayout(
-                pageNames = listOf(
-                    stringResource(R.string.by_reading),
-                    stringResource(R.string.by_listening)
-                )
-            ) { page ->
-                val rankBy = RankType.entries[page]
-                val items = vm.getSortedItems(rankBy)
+        if (state.isLoading) LoadingScreen()
+        else if (state.isError) ErrorScreen(message = stringResource(R.string.error_fetching_data))
+        else UsersList(
+            userId = state.userId,
+            getTabContent = { viewModel.getTabContent(it) }
+        )
+    }
+}
 
-                MyColumn {
-                    UserPositionCard(
-                        userId = st.userId,
-                        userPosition = vm.getUserPosition(items)
-                    )
+@Composable
+private fun UsersList(
+    userId: String,
+    getTabContent: (RankType) -> LeaderboardTabContent,
+) {
+    TabLayout(
+        pageNames = listOf(
+            stringResource(R.string.by_reading),
+            stringResource(R.string.by_listening)
+        )
+    ) { page ->
+        val rankBy = RankType.entries[page]
+        val content = getTabContent(rankBy)
 
-                    MyHorizontalDivider(thickness = 1.dp)
+        MyColumn {
+            UserRankCard(
+                userId = userId,
+                userRank = content.userRank
+            )
 
-                    UsersList(
-                        items = items,
-                        rankType = rankBy
-                    )
-                }
-            }
+            MyHorizontalDivider(thickness = 1.dp)
+
+            UsersList(
+                items = content.items,
+                rankType = rankBy
+            )
         }
     }
 }
 
 @Composable
-fun UserPositionCard(
+fun UserRankCard(
     userId: String,
-    userPosition: String
+    userRank: String
 ) {
     MySurface(
         Modifier.padding(top = 6.dp, bottom = 2.dp),
@@ -78,9 +87,9 @@ fun UserPositionCard(
             modifier = Modifier.padding(16.dp)
         ) {
             MyText(
-                text = userId,
+                text = "${stringResource(R.string.user)} $userId",
                 fontSize = 20.sp,
-                textColor = when (userPosition) {
+                textColor = when (userRank) {
                     "1" -> bassamalim.hidaya.core.ui.theme.Gold
                     "2" -> bassamalim.hidaya.core.ui.theme.Silver
                     "3" -> bassamalim.hidaya.core.ui.theme.Bronze
@@ -95,7 +104,7 @@ fun UserPositionCard(
             ) {
                 MyText(
                     stringResource(R.string.your_position),
-                    textColor = when (userPosition) {
+                    textColor = when (userRank) {
                         "1" -> bassamalim.hidaya.core.ui.theme.Gold
                         "2" -> bassamalim.hidaya.core.ui.theme.Silver
                         "3" -> bassamalim.hidaya.core.ui.theme.Bronze
@@ -106,10 +115,10 @@ fun UserPositionCard(
                 Spacer(Modifier.width(10.dp))
 
                 MyText(
-                    text = userPosition,
+                    text = userRank,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    textColor = when (userPosition) {
+                    textColor = when (userRank) {
                         "1" -> bassamalim.hidaya.core.ui.theme.Gold
                         "2" -> bassamalim.hidaya.core.ui.theme.Silver
                         "3" -> bassamalim.hidaya.core.ui.theme.Bronze
@@ -161,7 +170,7 @@ fun ItemCard(
             )
 
             MyText(
-                text = item.userId,
+                text = "${stringResource(R.string.user)} ${item.userId}",
                 fontWeight =
                     if (rank <= 3) FontWeight.Bold
                     else FontWeight.Normal,
@@ -177,8 +186,8 @@ fun ItemCard(
 
             MyText(
                 text = when (rankType) {
-                    RankType.BY_READING -> "${item.readingRecord} ${stringResource(R.string.pages)}"
-                    RankType.BY_LISTENING -> item.listeningRecord
+                    RankType.BY_READING -> "${item.quranRecord} ${stringResource(R.string.pages)}"
+                    RankType.BY_LISTENING -> item.recitationsRecord
                 },
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
