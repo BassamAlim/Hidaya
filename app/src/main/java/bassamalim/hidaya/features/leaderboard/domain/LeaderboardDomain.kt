@@ -2,7 +2,7 @@ package bassamalim.hidaya.features.leaderboard.domain
 
 import android.app.Application
 import bassamalim.hidaya.core.data.Response
-import bassamalim.hidaya.core.helpers.OS.getDeviceId
+import bassamalim.hidaya.core.utils.OS.getDeviceId
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.features.leaderboard.data.LeaderboardRepository
 import bassamalim.hidaya.features.leaderboard.ui.RankType

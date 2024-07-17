@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import bassamalim.hidaya.core.data.Response
-import bassamalim.hidaya.core.helpers.OS.getDeviceId
+import bassamalim.hidaya.core.utils.OS.getDeviceId
 import bassamalim.hidaya.core.helpers.PrayerTimesCalculator
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.utils.PTUtils

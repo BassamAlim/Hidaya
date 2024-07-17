@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.bookSearcher
+package bassamalim.hidaya.features.bookSearcher.ui
 
 import androidx.compose.ui.text.AnnotatedString
 

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.locator
+package bassamalim.hidaya.features.locator.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -11,21 +11,24 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
+import bassamalim.hidaya.features.locator.domain.LocatorDomain
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LocatorViewModel @Inject constructor(
     private val app: Application,
     savedStateHandle: SavedStateHandle,
-    private val repo: LocatorRepository,
+    private val domain: LocatorDomain,
     private val navigator: Navigator
 ): AndroidViewModel(app) {
 
@@ -34,8 +37,8 @@ class LocatorViewModel @Inject constructor(
     private lateinit var locationRequestLauncher:
             ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
 
-    private val _uiState = MutableStateFlow(LocatorState(
-        showSkipLocationBtn = type == "initial"
+    private val _uiState = MutableStateFlow(LocatorUiState(
+        shouldShowSkipLocationButton = type == "initial"
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -45,7 +48,7 @@ class LocatorViewModel @Inject constructor(
         this.locationRequestLauncher = locationRequestLauncher
     }
 
-    fun onLocateClk() {
+    fun onLocateClick() {
         if (granted()) {
             locate()
             background()
@@ -58,7 +61,7 @@ class LocatorViewModel @Inject constructor(
         }
     }
 
-    fun onChooseLocationClk() {
+    fun onSelectLocationClick() {
         navigator.navigateForResult(
             Screen.LocationPicker
         ) { result ->
@@ -78,8 +81,13 @@ class LocatorViewModel @Inject constructor(
         LocationServices.getFusedLocationProviderClient(app)
             .lastLocation.addOnSuccessListener { location: Location? ->
                 if (location != null) {
-                    repo.setLocationType(LocationType.Auto)
-                    repo.storeLocation(location)
+                    viewModelScope.launch {
+                        domain.setLocation(
+                            type = LocationType.Auto,
+                            latitude = location.latitude,
+                            longitude = location.longitude
+                        )
+                    }
                 }
 
                 launch(location)
@@ -112,12 +120,12 @@ class LocatorViewModel @Inject constructor(
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED) {
             _uiState.update { it.copy(
-                showAllowLocationToast = true
+                shouldShowAllowLocationToast = true
             )}
 
-            locationRequestLauncher.launch(arrayOf(
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ))
+            locationRequestLauncher.launch(
+                arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            )
         }
     }
 
@@ -130,9 +138,7 @@ class LocatorViewModel @Inject constructor(
                 ) == PackageManager.PERMISSION_GRANTED
     }
 
-    fun onSkipLocationClk() {
-        repo.setLocationType(LocationType.None)
-
+    fun onSkipLocationClick() {
         launch(null)
     }
 

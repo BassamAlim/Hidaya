@@ -56,8 +56,8 @@ import bassamalim.hidaya.features.dateConverter.data.DateConverterRepository
 import bassamalim.hidaya.features.hijriDatePicker.data.HijriDatePickerRepository
 import bassamalim.hidaya.features.home.data.HomeRepository
 import bassamalim.hidaya.features.leaderboard.data.LeaderboardRepository
-import bassamalim.hidaya.features.locationPicker.LocationPickerRepository
-import bassamalim.hidaya.features.locator.LocatorRepository
+import bassamalim.hidaya.features.locationPicker.data.LocationPickerRepository
+import bassamalim.hidaya.features.locator.data.LocatorRepository
 import bassamalim.hidaya.features.main.MainRepository
 import bassamalim.hidaya.features.prayerReminder.PrayerReminderRepository
 import bassamalim.hidaya.features.prayerSetting.PrayerSettingsRepository
@@ -332,22 +332,31 @@ object AppModule {
 
     @Provides @Singleton
     fun provideLeaderboardRepository(
-        resources: Resources,
-        preferencesDataSource: PreferencesDataSource,
+        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
         firestore: FirebaseFirestore
-    ) = LeaderboardRepository(resources, preferencesDataSource, firestore)
+    ) = LeaderboardRepository(appSettingsPreferencesRepository, firestore)
 
     @Provides @Singleton
     fun provideLocationPickerRepository(
-        preferencesDataSource: PreferencesDataSource,
-        database: AppDatabase
-    ) = LocationPickerRepository(preferencesDataSource, database)
+        database: AppDatabase,
+        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
+        userPreferencesRepository: UserPreferencesRepository
+    ) = LocationPickerRepository(
+        database,
+        appSettingsPreferencesRepository,
+        userPreferencesRepository
+    )
 
     @Provides @Singleton
     fun provideLocatorRepository(
-        preferencesDataSource: PreferencesDataSource,
-        database: AppDatabase
-    ) = LocatorRepository(preferencesDataSource, database)
+        database: AppDatabase,
+        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
+        userPreferencesRepository: UserPreferencesRepository
+    ) = LocatorRepository(
+        database,
+        appSettingsPreferencesRepository,
+        userPreferencesRepository
+    )
 
     @Provides @Singleton
     fun provideMainRepository(

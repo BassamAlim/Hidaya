@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.helpers
+package bassamalim.hidaya.core.utils
 
 import android.annotation.SuppressLint
 import android.app.Application

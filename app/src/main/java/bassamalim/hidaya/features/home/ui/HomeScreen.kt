@@ -75,7 +75,7 @@ fun HomeUI(
 }
 
 @Composable
-fun UpcomingPrayerCard(
+private fun UpcomingPrayerCard(
     upcomingPrayerName: String,
     upcomingPrayerTime: String,
     remaining: String,
@@ -135,7 +135,7 @@ fun UpcomingPrayerCard(
 }
 
 @Composable
-fun TodayWerdCard(
+private fun TodayWerdCard(
     werdPage: String,
     isWerdDone: Boolean,
     onGoToWerdClick: () -> Unit
@@ -194,7 +194,7 @@ fun TodayWerdCard(
 }
 
 @Composable
-fun RecordsCard(
+private fun RecordsCard(
     telawatRecord: String,
     quranPagesRecord: String,
     isLeaderboardEnabled: Boolean,

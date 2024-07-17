@@ -198,8 +198,8 @@
     <string name="display_method">View Method</string>
     <string name="qibla">Qibla</string>
     <string name="numerals_language">Numerals language</string>
-    <string name="choose_country">Choose country</string>
-    <string name="choose_city">Choose city</string>
+    <string name="select_country">Choose country</string>
+    <string name="select_city">Choose city</string>
     <string name="infinite">Infinite</string>
     <string name="adjust_date">Adjust Hijri date</string>
     <string name="close">Close</string>

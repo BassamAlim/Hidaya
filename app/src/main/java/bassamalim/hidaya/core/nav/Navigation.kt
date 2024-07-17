@@ -29,8 +29,8 @@ import bassamalim.hidaya.features.books.ui.BooksUI
 import bassamalim.hidaya.features.dateConverter.ui.DateConverterUI
 import bassamalim.hidaya.features.hijriDatePicker.ui.HijriDatePickerDialog
 import bassamalim.hidaya.features.leaderboard.ui.LeaderboardUI
-import bassamalim.hidaya.features.locationPicker.LocationPickerUI
-import bassamalim.hidaya.features.locator.LocatorUI
+import bassamalim.hidaya.features.locationPicker.ui.LocationPickerUI
+import bassamalim.hidaya.features.locator.ui.LocatorUI
 import bassamalim.hidaya.features.main.MainUI
 import bassamalim.hidaya.features.prayerReminder.PrayerReminderDialog
 import bassamalim.hidaya.features.prayerSetting.PrayerSettingsDialog

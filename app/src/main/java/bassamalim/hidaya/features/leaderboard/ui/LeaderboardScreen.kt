@@ -75,7 +75,7 @@ private fun UsersList(
 }
 
 @Composable
-fun UserRankCard(
+private fun UserRankCard(
     userId: String,
     userRank: String
 ) {
@@ -131,7 +131,7 @@ fun UserRankCard(
 }
 
 @Composable
-fun UsersList(
+private fun UsersList(
     items: List<LeaderboardItem>,
     rankType: RankType
 ) {
@@ -147,7 +147,7 @@ fun UsersList(
 }
 
 @Composable
-fun ItemCard(
+private fun ItemCard(
     item: LeaderboardItem,
     rank: Int,
     rankType: RankType

@@ -200,8 +200,8 @@
     <string name="display_method">طريقة العرض</string>
     <string name="qibla">القبلة</string>
     <string name="numerals_language">لغة الأرقام</string>
-    <string name="choose_country">اختر البلد</string>
-    <string name="choose_city">اختر المدينة</string>
+    <string name="select_country">اختر البلد</string>
+    <string name="select_city">اختر المدينة</string>
     <string name="infinite">بلا نهاية</string>
     <string name="adjust_date">تعديل التاريخ الهجري</string>
     <string name="close">إغلاق</string>

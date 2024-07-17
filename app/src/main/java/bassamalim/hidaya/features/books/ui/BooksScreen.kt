@@ -100,7 +100,7 @@ private fun BookCard(
 }
 
 @Composable
-fun DownloadBtn(
+private fun DownloadBtn(
     downloadState: DownloadState,
     onClick: () -> Unit,
 ) {

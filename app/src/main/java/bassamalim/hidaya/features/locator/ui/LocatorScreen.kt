@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.locator
+package bassamalim.hidaya.features.locator.ui
 
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -28,17 +28,17 @@ import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
 fun LocatorUI(
-    vm: LocatorViewModel
+    viewModel: LocatorViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val requestLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        vm.onLocationRequestResult(permissions)
+        viewModel.onLocationRequestResult(permissions)
     }
 
     LaunchedEffect(null) {
-        vm.provide(requestLauncher)
+        viewModel.provide(requestLauncher)
     }
 
     Column(
@@ -67,10 +67,9 @@ fun LocatorUI(
                 textColor = AppTheme.colors.background,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 10.dp, horizontal = 30.dp)
-            ) {
-                vm.onLocateClk()
-            }
+                    .padding(vertical = 10.dp, horizontal = 30.dp),
+                onClick = { viewModel.onLocateClick() }
+            )
 
             // Choose manually button
             MySquareButton(
@@ -78,28 +77,27 @@ fun LocatorUI(
                 fontSize = 22.sp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 10.dp, horizontal = 30.dp)
-            ) {
-                vm.onChooseLocationClk()
-            }
+                    .padding(vertical = 10.dp, horizontal = 30.dp),
+                onClick = { viewModel.onSelectLocationClick() }
+            )
 
-            // Skip button
-            if (st.showSkipLocationBtn) {
+            if (state.shouldShowSkipLocationButton) {
+                // Skip button
                 MySquareButton(
                     text = stringResource(R.string.rejected),
                     fontSize = 22.sp,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 10.dp, horizontal = 30.dp)
-                ) {
-                    vm.onSkipLocationClk()
-                }
+                        .padding(vertical = 10.dp, horizontal = 30.dp),
+                    onClick = { viewModel.onSkipLocationClick() }
+                )
             }
         }
     }
 
-    if (st.showAllowLocationToast)
+    if (state.shouldShowAllowLocationToast) {
         LocationToast()
+    }
 }
 
 @Composable
