@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.main
+package bassamalim.hidaya.features.main.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,47 +29,43 @@ import bassamalim.hidaya.core.ui.TabEnter
 import bassamalim.hidaya.core.ui.TabExit
 import bassamalim.hidaya.core.ui.TabPopEnter
 import bassamalim.hidaya.core.ui.TabPopExit
-import bassamalim.hidaya.core.ui.components.DateEditorDialog
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.features.supplicationsCategories.AthkarScreen
 import bassamalim.hidaya.features.home.ui.HomeUI
 import bassamalim.hidaya.features.more.MoreUI
 import bassamalim.hidaya.features.prayers.PrayersUI
 import bassamalim.hidaya.features.quran.QuranUI
+import bassamalim.hidaya.features.supplicationsCategories.AthkarScreen
 
 @Composable
 fun MainUI(
-    vm: MainViewModel
+    viewModel: MainViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val bottomNavController = rememberNavController()
 
     MyScaffold(
         title = stringResource(R.string.app_name),
-        topBar = { TopBar(vm, st) },
+        topBar = {
+            TopBar(
+                hijriDate = state.hijriDate,
+                gregorianDate = state.gregorianDate,
+                onDateClick = viewModel::onDateClick
+            )
+        },
         bottomBar = { MyBottomNavigation(bottomNavController) }
     ) {
         NavigationGraph(bottomNavController, it)
-
-        DateEditorDialog(
-            shown = st.dateEditorShown,
-            offsetText = st.dateEditorOffsetText,
-            dateText = st.dateEditorDateText,
-            onNextDay = { vm.onDateEditorNextDay() },
-            onPreviousDay = { vm.onDateEditorPrevDay() },
-            onCancel = { vm.onDateEditorCancel() },
-            onSubmit = { vm.onDateEditorSubmit() }
-        )
     }
 }
 
 @Composable
 private fun TopBar(
-    vm: MainViewModel,
-    st: MainState
+    hijriDate: String,
+    gregorianDate: String,
+    onDateClick: () -> Unit
 ) {
     TopAppBar(
         backgroundColor = AppTheme.colors.primary,
@@ -95,7 +91,7 @@ private fun TopBar(
                 Column(
                     Modifier
                         .fillMaxHeight()
-                        .clickable { vm.showDateEditor() },
+                        .clickable(onClick = onDateClick),
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Column(
@@ -106,7 +102,7 @@ private fun TopBar(
                     ) {
                         // Hijri date
                         MyText(
-                            text = st.hijriDate,
+                            text = hijriDate,
                             fontSize = 16.nsp,
                             fontWeight = FontWeight.Bold,
                             textColor = AppTheme.colors.onPrimary
@@ -114,7 +110,7 @@ private fun TopBar(
 
                         // Gregorian date
                         MyText(
-                            text = st.gregorianDate,
+                            text = gregorianDate,
                             fontSize = 16.nsp,
                             textColor = AppTheme.colors.onPrimary
                         )

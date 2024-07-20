@@ -45,7 +45,7 @@ class HijriDatePickerViewModel @Inject constructor(
         displayedYear = getDisplayedYearString(),
         yearSelectorItems = getYearSelectorItems(),
         mainText = getMainText(),
-        displayedMonth = getDisplayedMonthString(initialPage),
+        displayedMonth = getDisplayedMonthString(initialPage)
     ))
     val uiState = _uiState.asStateFlow()
 

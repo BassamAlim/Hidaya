@@ -20,33 +20,34 @@ import bassamalim.hidaya.core.ui.outToBottom
 import bassamalim.hidaya.core.ui.outToLeft
 import bassamalim.hidaya.core.ui.outToTop
 import bassamalim.hidaya.features.about.ui.AboutScreen
-import bassamalim.hidaya.features.supplicationsMenu.AthkarListScreen
-import bassamalim.hidaya.features.supplicationsReader.AthkarViewerUI
 import bassamalim.hidaya.features.bookChapters.ui.BookChaptersUI
-import bassamalim.hidaya.features.bookSearcher.ui.BookSearcherUI
 import bassamalim.hidaya.features.bookReader.ui.BookViewerScreen
+import bassamalim.hidaya.features.bookSearcher.ui.BookSearcherUI
 import bassamalim.hidaya.features.books.ui.BooksUI
 import bassamalim.hidaya.features.dateConverter.ui.DateConverterUI
+import bassamalim.hidaya.features.dateEditor.ui.DateEditorDialog
 import bassamalim.hidaya.features.hijriDatePicker.ui.HijriDatePickerDialog
 import bassamalim.hidaya.features.leaderboard.ui.LeaderboardUI
 import bassamalim.hidaya.features.locationPicker.ui.LocationPickerUI
 import bassamalim.hidaya.features.locator.ui.LocatorUI
-import bassamalim.hidaya.features.main.MainUI
+import bassamalim.hidaya.features.main.ui.MainUI
+import bassamalim.hidaya.features.onboarding.WelcomeUI
 import bassamalim.hidaya.features.prayerReminder.PrayerReminderDialog
 import bassamalim.hidaya.features.prayerSetting.PrayerSettingsDialog
 import bassamalim.hidaya.features.qibla.QiblaUI
 import bassamalim.hidaya.features.quiz.QuizUI
 import bassamalim.hidaya.features.quizLobby.QuizLobbyUI
 import bassamalim.hidaya.features.quizResult.QuizResultUI
-import bassamalim.hidaya.features.quranSearcher.QuranSearcherUI
 import bassamalim.hidaya.features.quranReader.QuranViewerUI
+import bassamalim.hidaya.features.quranSearcher.QuranSearcherUI
 import bassamalim.hidaya.features.radio.RadioClientUI
-import bassamalim.hidaya.features.settings.SettingsUI
-import bassamalim.hidaya.features.recitationsRecitersMenu.TelawatUI
 import bassamalim.hidaya.features.recitationsPlayer.TelawatClientUI
+import bassamalim.hidaya.features.recitationsRecitersMenu.TelawatUI
 import bassamalim.hidaya.features.recitationsSuarMenu.TelawatSuarUI
+import bassamalim.hidaya.features.settings.SettingsUI
+import bassamalim.hidaya.features.supplicationsMenu.AthkarListScreen
+import bassamalim.hidaya.features.supplicationsReader.AthkarViewerUI
 import bassamalim.hidaya.features.tv.TvUI
-import bassamalim.hidaya.features.onboarding.WelcomeUI
 import com.google.gson.Gson
 
 @Composable
@@ -198,6 +199,14 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             DateConverterUI(
+                hiltViewModel()
+            )
+        }
+
+        dialog(
+            route = Screen.DateEditor.route
+        ) {
+            DateEditorDialog(
                 hiltViewModel()
             )
         }

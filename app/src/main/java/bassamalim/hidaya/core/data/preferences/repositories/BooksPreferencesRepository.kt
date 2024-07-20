@@ -24,7 +24,7 @@ class BooksPreferencesRepository(
     }
 
     fun getChapterFavorites() = flow.map { it.chapterFavorites }
-    fun getTextSize() = flow.map { it.searchSelections }
+    fun getTextSize() = flow.map { it.textSize }
     fun getSearchSelections() = flow.map { it.searchSelections }
     fun getSearchMaxMatches() = flow.map { it.searchMaxMatches }
     fun getShouldShowTutorial() = flow.map { it.shouldShowTutorial }

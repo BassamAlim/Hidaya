@@ -30,16 +30,15 @@ class BookChaptersViewModel @Inject constructor(
 
     private val book = domain.getBook(bookId)
 
-    private val _uiState = MutableStateFlow(BookChaptersUiState())
+    private val _uiState = MutableStateFlow(BookChaptersUiState(
+        title = bookTitle
+    ))
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.getFavs(book)
-    ) { state, favs ->
-        state.copy(
-            title = bookTitle,
-            favs = favs
-        )
-    }.stateIn(
+    ) { state, favs -> state.copy(
+        favs = favs
+    )}.stateIn(
         initialValue = BookChaptersUiState(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)

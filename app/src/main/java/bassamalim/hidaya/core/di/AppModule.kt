@@ -53,12 +53,13 @@ import bassamalim.hidaya.features.bookSearcher.data.BookSearcherRepository
 import bassamalim.hidaya.features.bookReader.data.BookReaderRepository
 import bassamalim.hidaya.features.books.data.BooksRepository
 import bassamalim.hidaya.features.dateConverter.data.DateConverterRepository
+import bassamalim.hidaya.features.dateEditor.data.DateEditorRepository
 import bassamalim.hidaya.features.hijriDatePicker.data.HijriDatePickerRepository
 import bassamalim.hidaya.features.home.data.HomeRepository
 import bassamalim.hidaya.features.leaderboard.data.LeaderboardRepository
 import bassamalim.hidaya.features.locationPicker.data.LocationPickerRepository
 import bassamalim.hidaya.features.locator.data.LocatorRepository
-import bassamalim.hidaya.features.main.MainRepository
+import bassamalim.hidaya.features.main.data.MainRepository
 import bassamalim.hidaya.features.prayerReminder.PrayerReminderRepository
 import bassamalim.hidaya.features.prayerSetting.PrayerSettingsRepository
 import bassamalim.hidaya.features.prayers.PrayersRepository
@@ -306,6 +307,11 @@ object AppModule {
     ) = DateConverterRepository(resources, appSettingsPreferencesRepository)
 
     @Provides @Singleton
+    fun provideDateEditorRepository(
+        appSettingsPreferencesRepository: AppSettingsPreferencesRepository
+    ) = DateEditorRepository(appSettingsPreferencesRepository)
+
+    @Provides @Singleton
     fun provideHijriDatePickerRepository(
         resources: Resources,
         appSettingsPreferencesRepository: AppSettingsPreferencesRepository
@@ -361,8 +367,8 @@ object AppModule {
     @Provides @Singleton
     fun provideMainRepository(
         resources: Resources,
-        preferencesDataSource: PreferencesDataSource
-    ) = MainRepository(resources, preferencesDataSource)
+        appSettingsPreferencesRepository: AppSettingsPreferencesRepository
+    ) = MainRepository(resources, appSettingsPreferencesRepository)
 
     @Provides @Singleton
     fun provideOnboardingRepository(

@@ -45,14 +45,12 @@ class HomeViewModel @Inject constructor(
         domain.getWerdPage(),
         domain.getIsWerdDone(),
         domain.getLocalRecord()
-    ) { state, werdPage, isWerdDone, localRecord ->
-        state.copy(
-            werdPage = translateNumber(werdPage),
-            isWerdDone = isWerdDone,
-            quranRecord = translateNumber(localRecord.quranPages),
-            recitationsRecord = formatRecitationsTime(localRecord.recitationsTime),
-        )
-    }.stateIn(
+    ) { state, werdPage, isWerdDone, localRecord -> state.copy(
+        werdPage = translateNumber(werdPage),
+        isWerdDone = isWerdDone,
+        quranRecord = translateNumber(localRecord.quranPages),
+        recitationsRecord = formatRecitationsTime(localRecord.recitationsTime)
+    )}.stateIn(
         initialValue = HomeUiState(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)

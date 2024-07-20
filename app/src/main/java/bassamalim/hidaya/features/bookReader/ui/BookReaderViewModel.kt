@@ -23,17 +23,16 @@ class BookReaderViewModel @Inject constructor(
     private val bookTitle = savedStateHandle.get<String>("book_title") ?: ""
     private val chapterId = savedStateHandle.get<Int>("chapter_id") ?: 0
 
-    private val _uiState = MutableStateFlow(BookReaderUiState())
+    private val _uiState = MutableStateFlow(BookReaderUiState(
+        bookTitle = bookTitle,
+        items = domain.getDoors(bookId, chapterId).toList()
+    ))
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.getTextSize()
-    ) { state, textSize ->
-        state.copy(
-            bookTitle = bookTitle,
-            items = domain.getDoors(bookId, chapterId).toList(),
-            textSize = textSize
-        )
-    }.stateIn(
+    ) { state, textSize -> state.copy(
+        textSize = textSize
+    )}.stateIn(
         initialValue = BookReaderUiState(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)

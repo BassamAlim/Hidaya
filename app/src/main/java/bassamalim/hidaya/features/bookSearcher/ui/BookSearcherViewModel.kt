@@ -30,12 +30,10 @@ class BookSearcherViewModel @Inject constructor(
         _uiState.asStateFlow(),
         domain.getBookSelections(),
         domain.getMaxMatches()
-    ) { state, bookSelections, maxMatches ->
-        state.copy(
-            bookSelections = bookSelections,
-            maxMatches = maxMatches,
-        )
-    }.stateIn(
+    ) { state, bookSelections, maxMatches -> state.copy(
+        bookSelections = bookSelections,
+        maxMatches = maxMatches
+    )}.stateIn(
         initialValue = BookSearcherUiState(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)

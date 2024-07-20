@@ -30,6 +30,8 @@ sealed class Screen(val route: String) {
 
     data object DateConverter: Screen("date_converter")
 
+    data object DateEditor: Screen("date_editor")
+
     data class HijriDatePicker(
         val initialDate: String
     ): Screen("hijri_date_picker/$initialDate")

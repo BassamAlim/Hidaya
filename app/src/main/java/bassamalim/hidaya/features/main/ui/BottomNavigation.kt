@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.main
+package bassamalim.hidaya.features.main.ui
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
