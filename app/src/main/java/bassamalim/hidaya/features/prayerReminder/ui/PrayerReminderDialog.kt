@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.prayerReminder
+package bassamalim.hidaya.features.prayerReminder.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
@@ -23,13 +23,13 @@ import bassamalim.hidaya.core.ui.components.MyValuedSlider
 
 @Composable
 fun PrayerReminderDialog(
-    vm: PrayerReminderViewModel
+    viewModel: PrayerReminderViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyDialog(
         shown = true,
-        onDismiss = { vm.onDismiss() }
+        onDismiss = viewModel::onDismiss
     ) {
         Column(
             Modifier
@@ -40,7 +40,7 @@ fun PrayerReminderDialog(
             MyText(
                 String.format(
                     stringResource(R.string.reminder_of),
-                    st.prayerName.removePrefix("ا")
+                    state.prayerName.removePrefix("ا")
                 ),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
@@ -56,39 +56,44 @@ fun PrayerReminderDialog(
             )
 
             MyValuedSlider(
-                initialValue = st.offset + vm.offsetMin,
+                initialValue = state.offset + viewModel.offsetMin,
                 valueRange = 0F..60F,
                 modifier = Modifier.fillMaxWidth(),
-                progressMin = vm.offsetMin,
+                numeralsLanguage = viewModel.numeralsLanguage,
+                progressMin = viewModel.offsetMin,
                 sliderFraction = 0.875F,
-                onValueChange = { value -> vm.onOffsetChange(value.toInt()) }
+                onValueChange = { value -> viewModel.onOffsetChange(value.toInt()) }
             )
 
             MyRow {
-                SaveBtn(vm)
+                SaveButton(onSave = viewModel::onSave)
 
-                CancelBtn(vm)
+                CancelButton(onDismiss = viewModel::onDismiss)
             }
         }
     }
 }
 
 @Composable
-private fun RowScope.SaveBtn(vm: PrayerReminderViewModel) {
+private fun RowScope.SaveButton(
+    onSave: () -> Unit
+) {
     MyHorizontalButton(
         text = stringResource(R.string.save),
-        fontSize = 24.sp,
         modifier = Modifier.weight(1f),
-        onClick = { vm.onSave() }
+        fontSize = 24.sp,
+        onClick = onSave
     )
 }
 
 @Composable
-private fun RowScope.CancelBtn(vm: PrayerReminderViewModel) {
+private fun RowScope.CancelButton(
+    onDismiss: () -> Unit
+) {
     MyHorizontalButton(
         text = stringResource(R.string.cancel),
-        fontSize = 24.sp,
         modifier = Modifier.weight(1f),
-        onClick = { vm.onDismiss() }
+        fontSize = 24.sp,
+        onClick = onDismiss
     )
 }

@@ -11,15 +11,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.ui.components.CategoryTitle
+import bassamalim.hidaya.features.settings.CategoryTitle
 import bassamalim.hidaya.core.ui.components.HorizontalRadioGroup
-import bassamalim.hidaya.core.ui.components.ListPref
+import bassamalim.hidaya.features.settings.ListPref
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.components.SliderPref
-import bassamalim.hidaya.core.ui.components.SwitchPref
+import bassamalim.hidaya.features.settings.SliderPref
+import bassamalim.hidaya.features.settings.SwitchPref
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable

@@ -8,6 +8,7 @@ import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import kotlin.math.floor
@@ -49,6 +51,7 @@ fun MyValuedSlider(
     initialValue: Float,
     valueRange: ClosedFloatingPointRange<Float>,
     modifier: Modifier = Modifier,
+    numeralsLanguage: Language,
     progressMin: Float = 0f,
     sliderFraction: Float = 0.8F,
     enabled: Boolean = true,
@@ -57,14 +60,15 @@ fun MyValuedSlider(
     onValueChange: (Float) -> Unit
 ) {
     val context = LocalContext.current
-    var currentValue by remember { mutableStateOf(initialValue) }
+    var currentValue by remember { mutableFloatStateOf(initialValue) }
     var sliderText by remember {
         mutableStateOf(
             if (infinite && (currentValue - progressMin) == valueRange.endInclusive)
                 context.getString(R.string.infinite)
             else
                 translateNums(
-                    context, (initialValue - progressMin).toInt().toString()
+                    numeralsLanguage = numeralsLanguage,
+                    string = (initialValue - progressMin).toInt().toString()
                 )
         )
     }
@@ -91,7 +95,10 @@ fun MyValuedSlider(
                 sliderText =
                     if (infinite && progress == valueRange.endInclusive)
                         context.getString(R.string.infinite)
-                    else translateNums(context, progressStr)
+                    else translateNums(
+                        numeralsLanguage = numeralsLanguage,
+                        string = progressStr
+                    )
 
                 onValueChange(progress)
             },

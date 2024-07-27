@@ -1,33 +1,47 @@
-package bassamalim.hidaya.features.prayerReminder
+package bassamalim.hidaya.features.prayerReminder.ui
 
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.features.prayerReminder.domain.PrayerReminderDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PrayerReminderViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    repo: PrayerReminderRepository,
+    domain: PrayerReminderDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
     private val pid = PID.valueOf(savedStateHandle.get<String>("pid") ?: "")
 
-    private val _uiState = MutableStateFlow(PrayerReminderState(
+    val offsetMin = domain.offsetMin
+    lateinit var numeralsLanguage: Language
+
+    private val _uiState = MutableStateFlow(PrayerReminderUiState(
         pid = pid,
-        prayerName = repo.getPrayerName(pid),
-        offset = repo.getOffset(pid)
+        prayerName = domain.getPrayerName(pid)
     ))
     val uiState = _uiState.asStateFlow()
 
-    val offsetMin = 30f
+    init {
+        viewModelScope.launch {
+            numeralsLanguage = domain.getNumeralsLanguage()
+
+            _uiState.update { it.copy(
+                offset = domain.getOffset(pid)
+            )}
+        }
+    }
 
     fun onOffsetChange(offset: Int) {
         _uiState.update { it.copy(
@@ -44,9 +58,7 @@ class PrayerReminderViewModel @Inject constructor(
     }
 
     fun onDismiss() {
-        navigator.navigateBackWithResult(
-            data = null
-        )
+        navigator.navigateBackWithResult(data = null)
     }
 
 }

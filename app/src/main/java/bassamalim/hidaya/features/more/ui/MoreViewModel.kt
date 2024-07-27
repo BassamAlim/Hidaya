@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.more
+package bassamalim.hidaya.features.more.ui
 
 import android.content.Context
 import android.content.Intent
@@ -19,10 +19,10 @@ class MoreViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(MoreState())
+    private val _uiState = MutableStateFlow(MoreUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun gotoTelawat() {
+    fun onTelawatClick() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             navigator.navigate(Screen.Telawat)
         else {
@@ -32,23 +32,23 @@ class MoreViewModel @Inject constructor(
         }
     }
 
-    fun gotoQibla() {
+    fun onQiblaClick() {
         navigator.navigate(Screen.Qibla)
     }
 
-    fun gotoQuiz() {
+    fun onQuizClick() {
         navigator.navigate(Screen.QuizLobby)
     }
 
-    fun gotoBooks() {
+    fun onBooksClick() {
         navigator.navigate(Screen.Books)
     }
 
-    fun gotoTV() {
+    fun onTvClick() {
         navigator.navigate(Screen.Tv)
     }
 
-    fun gotoRadio() {
+    fun onRadioClick() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             navigator.navigate(Screen.RadioClient)
         else {
@@ -58,22 +58,22 @@ class MoreViewModel @Inject constructor(
         }
     }
 
-    fun gotoDateConverter() {
+    fun onDateConverterClick() {
         navigator.navigate(Screen.DateConverter)
     }
 
-    fun gotoSettings() {
+    fun onSettingsClick() {
         navigator.navigate(Screen.Settings)
     }
 
-    fun contactMe(ctx: Context) {
+    fun onContactClick(context: Context) {
         val contactIntent = Intent(
             Intent.ACTION_SENDTO,
             Uri.fromParts("mailto", Global.CONTACT_EMAIL, null)
         )
         contactIntent.putExtra(Intent.EXTRA_SUBJECT, "Hidaya")
         contactIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        ctx.startActivity(
+        context.startActivity(
             Intent.createChooser(
                 contactIntent,
                 "Choose an Email client :"
@@ -81,17 +81,17 @@ class MoreViewModel @Inject constructor(
         )
     }
 
-    fun shareApp(ctx: Context) {
+    fun onShareClick(context: Context) {
         val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "App Share")
         sharingIntent.putExtra(Intent.EXTRA_TEXT, Global.PLAY_STORE_URL)
-        ctx.startActivity(
+        context.startActivity(
             Intent.createChooser(sharingIntent, "Share via")
         )
     }
 
-    fun gotoAbout() {
+    fun onAboutClick() {
         navigator.navigate(Screen.About)
     }
 

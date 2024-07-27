@@ -31,8 +31,8 @@ import bassamalim.hidaya.features.leaderboard.ui.LeaderboardUI
 import bassamalim.hidaya.features.locationPicker.ui.LocationPickerUI
 import bassamalim.hidaya.features.locator.ui.LocatorUI
 import bassamalim.hidaya.features.main.ui.MainUI
-import bassamalim.hidaya.features.onboarding.WelcomeUI
-import bassamalim.hidaya.features.prayerReminder.PrayerReminderDialog
+import bassamalim.hidaya.features.onboarding.ui.WelcomeUI
+import bassamalim.hidaya.features.prayerReminder.ui.PrayerReminderDialog
 import bassamalim.hidaya.features.prayerSetting.PrayerSettingsDialog
 import bassamalim.hidaya.features.qibla.QiblaUI
 import bassamalim.hidaya.features.quiz.QuizUI

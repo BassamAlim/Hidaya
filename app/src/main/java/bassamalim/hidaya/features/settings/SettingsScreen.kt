@@ -22,18 +22,16 @@ import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.ui.components.ExpandableCard
-import bassamalim.hidaya.core.ui.components.ListPref
 import bassamalim.hidaya.core.ui.components.MyFatColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.SwitchPref
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 
 @Composable
 fun SettingsUI(
-    vm: SettingsViewModel
+    viewModel: SettingsViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
 
     MyScaffold(
@@ -46,39 +44,37 @@ fun SettingsUI(
         ) {
             MyFatColumn {
                 ExpandableCard(
-                    R.string.appearance,
-                    Modifier.padding(top = 4.dp, bottom = 2.dp)
-                ) {
-                    AppearanceSettings(activity, vm.sp)
-                }
+                    titleResId = R.string.appearance,
+                    modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
+                    expandedContent = { AppearanceSettings(activity, viewModel.sp) }
+                )
 
                 ExpandableCard(
-                    R.string.extra_notifications,
-                    Modifier.padding(vertical = 2.dp)
-                ) {
-                    ExtraNotificationsSettings(vm, st)
-                }
+                    titleResId = R.string.extra_notifications,
+                    modifier = Modifier.padding(vertical = 2.dp),
+                    expandedContent = { ExtraNotificationsSettings(viewModel, state) }
+                )
 
                 ExpandableCard(
-                    R.string.prayer_time_settings,
-                    Modifier.padding(vertical = 2.dp)
-                ) {
-                    PrayerTimesSettings(vm)
-                }
+                    titleResId = R.string.prayer_time_settings,
+                    modifier = Modifier.padding(vertical = 2.dp),
+                    expandedContent = { PrayerTimesSettings(viewModel) }
+                )
 
                 ExpandableCard(
-                    R.string.athan_settings,
-                    Modifier.padding(vertical = 2.dp)
-                ) {
-                    AthanSettings(vm.sp)
-                }
+                    titleResId = R.string.athan_settings,
+                    modifier = Modifier.padding(vertical = 2.dp),
+                    expandedContent = { AthanSettings(viewModel.sp) }
+                )
             }
         }
     }
 }
 
 @Composable
-fun AppearanceSettings(activity: Activity, pref: SharedPreferences) {
+fun AppearanceSettings() {
+    val context = LocalContext.current
+
     Column(
         Modifier.padding(bottom = 10.dp)
     ) {

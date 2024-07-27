@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.ui.components
+package bassamalim.hidaya.features.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,6 +40,9 @@ import androidx.compose.ui.window.Dialog
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
+import bassamalim.hidaya.core.ui.components.MySquareButton
+import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.MyValuedSlider
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable

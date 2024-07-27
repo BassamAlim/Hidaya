@@ -60,7 +60,7 @@ import bassamalim.hidaya.features.leaderboard.data.LeaderboardRepository
 import bassamalim.hidaya.features.locationPicker.data.LocationPickerRepository
 import bassamalim.hidaya.features.locator.data.LocatorRepository
 import bassamalim.hidaya.features.main.data.MainRepository
-import bassamalim.hidaya.features.prayerReminder.PrayerReminderRepository
+import bassamalim.hidaya.features.prayerReminder.data.PrayerReminderRepository
 import bassamalim.hidaya.features.prayerSetting.PrayerSettingsRepository
 import bassamalim.hidaya.features.prayers.PrayersRepository
 import bassamalim.hidaya.features.qibla.QiblaRepository
@@ -76,7 +76,7 @@ import bassamalim.hidaya.features.recitationsRecitersMenu.RecitationsRecitersMen
 import bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerClientRepository
 import bassamalim.hidaya.features.recitationsSuarMenu.RecitationsSuarRepository
 import bassamalim.hidaya.features.tv.TvRepository
-import bassamalim.hidaya.features.onboarding.OnboardingRepository
+import bassamalim.hidaya.features.onboarding.data.OnboardingRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
@@ -372,14 +372,19 @@ object AppModule {
 
     @Provides @Singleton
     fun provideOnboardingRepository(
-        preferencesDataSource: PreferencesDataSource
-    ) = OnboardingRepository(preferencesDataSource)
+        appStatePreferencesRepository: AppStatePreferencesRepository
+    ) = OnboardingRepository(appStatePreferencesRepository)
 
     @Provides @Singleton
     fun providePrayerReminderRepository(
         resources: Resources,
-        preferencesDataSource: PreferencesDataSource
-    ) = PrayerReminderRepository(resources, preferencesDataSource)
+        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
+        prayersPreferencesRepository: PrayersPreferencesRepository
+    ) = PrayerReminderRepository(
+        resources,
+        appSettingsPreferencesRepository,
+        prayersPreferencesRepository
+    )
 
     @Provides @Singleton
     fun providePrayersRepository(
