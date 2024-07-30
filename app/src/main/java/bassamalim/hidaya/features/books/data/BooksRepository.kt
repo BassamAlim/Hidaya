@@ -2,8 +2,8 @@ package bassamalim.hidaya.features.books.data
 
 import android.app.Application
 import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.BooksPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.BooksPreferencesDataSource
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.utils.FileUtils
 import com.google.firebase.ktx.Firebase
@@ -17,8 +17,8 @@ import javax.inject.Inject
 class BooksRepository @Inject constructor(
     private val app: Application,
     private val db: AppDatabase,
-    private val appSettingsPrefsRepository: AppSettingsPreferencesRepository,
-    private val booksPreferencesRepository: BooksPreferencesRepository,
+    private val appSettingsPrefsRepository: AppSettingsPreferencesDataSource,
+    private val booksPreferencesDataSource: BooksPreferencesDataSource,
     private val gson: Gson
 ) {
 
@@ -26,10 +26,10 @@ class BooksRepository @Inject constructor(
 
     suspend fun getLanguage() = appSettingsPrefsRepository.getLanguage().first()
 
-    suspend fun getShowTutorial() = booksPreferencesRepository.getShouldShowTutorial().first()
+    suspend fun getShowTutorial() = booksPreferencesDataSource.getShouldShowTutorial().first()
 
     suspend fun setDoNotShowAgain() {
-        booksPreferencesRepository.update { it.copy(
+        booksPreferencesDataSource.update { it.copy(
             shouldShowTutorial = false
         )}
     }

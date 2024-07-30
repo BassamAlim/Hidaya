@@ -2,8 +2,8 @@ package bassamalim.hidaya.features.prayerReminder.data
 
 import android.content.res.Resources
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.PrayersPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.PrayersPreferencesDataSource
 import bassamalim.hidaya.core.enums.PID
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -11,8 +11,8 @@ import javax.inject.Inject
 
 class PrayerReminderRepository @Inject constructor(
     private val res: Resources,
-    private val appSettingsPrefsRepo: AppSettingsPreferencesRepository,
-    private val prayersPrefsRepo: PrayersPreferencesRepository
+    private val appSettingsPrefsRepo: AppSettingsPreferencesDataSource,
+    private val prayersPrefsRepo: PrayersPreferencesDataSource
 ) {
 
     suspend fun numeralsLanguage() = appSettingsPrefsRepo.getNumeralsLanguage().first()

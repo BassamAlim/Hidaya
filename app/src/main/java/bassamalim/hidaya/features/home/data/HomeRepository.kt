@@ -5,10 +5,10 @@ import android.util.Log
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.Response
 import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.PrayersPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.QuranPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.UserPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.PrayersPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.UserPreferencesDataSource
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.other.Global
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,10 +20,10 @@ class HomeRepository @Inject constructor(
     private val resources: Resources,
     private val database: AppDatabase,
     private val firestore: FirebaseFirestore,
-    private val appSettingsPrefsRpo: AppSettingsPreferencesRepository,
-    private val prayersPreferencesRepository: PrayersPreferencesRepository,
-    private val quranPrefsRepo: QuranPreferencesRepository,
-    private val userPrefsRepo: UserPreferencesRepository,
+    private val appSettingsPrefsRpo: AppSettingsPreferencesDataSource,
+    private val prayersPreferencesDataSource: PrayersPreferencesDataSource,
+    private val quranPrefsRepo: QuranPreferencesDataSource,
+    private val userPrefsRepo: UserPreferencesDataSource,
 ) {
 
     suspend fun getNumeralsLanguage() = appSettingsPrefsRpo.getNumeralsLanguage().first()
@@ -45,9 +45,9 @@ class HomeRepository @Inject constructor(
     }
 
     fun getPrayerTimesCalculatorSettings() =
-        prayersPreferencesRepository.getPrayerTimesCalculatorSettings()
+        prayersPreferencesDataSource.getPrayerTimesCalculatorSettings()
 
-    fun getTimeOffsets() = prayersPreferencesRepository.getTimeOffsets()
+    fun getTimeOffsets() = prayersPreferencesDataSource.getTimeOffsets()
 
     fun getTimeZone(cityId: Int) = database.cityDao().getCity(cityId).timeZone
 

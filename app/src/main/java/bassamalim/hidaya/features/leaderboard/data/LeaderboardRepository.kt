@@ -2,7 +2,7 @@ package bassamalim.hidaya.features.leaderboard.data
 
 import android.util.Log
 import bassamalim.hidaya.core.data.Response
-import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.other.Global
 import com.google.firebase.firestore.FirebaseFirestore
@@ -11,7 +11,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class LeaderboardRepository @Inject constructor(
-    private val appSettingsPrefsRepo: AppSettingsPreferencesRepository,
+    private val appSettingsPrefsRepo: AppSettingsPreferencesDataSource,
     private val firestore: FirebaseFirestore
 ) {
 

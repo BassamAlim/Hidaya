@@ -5,8 +5,8 @@ import android.content.res.Resources
 import android.util.Log
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.BooksPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.BooksPreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.other.Global
@@ -23,8 +23,8 @@ class BookSearcherRepository @Inject constructor(
     app: Application,
     private val resources: Resources,
     private val db: AppDatabase,
-    private val appSettingsPrefsRepo: AppSettingsPreferencesRepository,
-    private val booksPreferencesRepo: BooksPreferencesRepository,
+    private val appSettingsPrefsRepo: AppSettingsPreferencesDataSource,
+    private val booksPreferencesRepo: BooksPreferencesDataSource,
     private val gson: Gson
 ) {
 

@@ -3,8 +3,8 @@ package bassamalim.hidaya.features.locationPicker.data
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.dbs.CityDB
 import bassamalim.hidaya.core.data.database.dbs.CountryDB
-import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.UserPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.UserPreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.models.Location
@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 class LocationPickerRepository @Inject constructor(
     private val db: AppDatabase,
-    private val appSettingsPrefsRepo: AppSettingsPreferencesRepository,
-    private val userPrefsRepo: UserPreferencesRepository
+    private val appSettingsPrefsRepo: AppSettingsPreferencesDataSource,
+    private val userPrefsRepo: UserPreferencesDataSource
 ) {
 
     suspend fun getLanguage() = appSettingsPrefsRepo.getLanguage().first()

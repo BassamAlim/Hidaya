@@ -26,15 +26,15 @@ import bassamalim.hidaya.core.data.preferences.objects.QuranPreferences
 import bassamalim.hidaya.core.data.preferences.objects.RecitationsPreferences
 import bassamalim.hidaya.core.data.preferences.objects.SupplicationsPreferences
 import bassamalim.hidaya.core.data.preferences.objects.UserPreferences
-import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.AppStatePreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.BooksPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.NotificationsPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.PrayersPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.QuranPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.RecitationsPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.SupplicationsPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.UserPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.AppStatePreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.BooksPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.NotificationsPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.PrayersPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.RecitationsPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.SupplicationsPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.UserPreferencesDataSource
 import bassamalim.hidaya.core.data.preferences.serializers.AppSettingsPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.AppStatePreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.BooksPreferencesSerializer
@@ -112,7 +112,7 @@ object AppModule {
 
     @Provides @Singleton
     fun provideAppSettingsPreferencesRepository(@ApplicationContext appContext: Context) =
-        AppSettingsPreferencesRepository(
+        AppSettingsPreferencesDataSource(
             DataStoreFactory.create(
                 serializer = AppSettingsPreferencesSerializer,
                 corruptionHandler = ReplaceFileCorruptionHandler(
@@ -126,7 +126,7 @@ object AppModule {
 
     @Provides @Singleton
     fun provideAppStatePreferencesRepository(@ApplicationContext appContext: Context) =
-        AppStatePreferencesRepository(
+        AppStatePreferencesDataSource(
             DataStoreFactory.create(
                 serializer = AppStatePreferencesSerializer,
                 corruptionHandler = ReplaceFileCorruptionHandler(
@@ -140,7 +140,7 @@ object AppModule {
 
     @Provides @Singleton
     fun provideBooksPreferencesRepository(@ApplicationContext appContext: Context) =
-        BooksPreferencesRepository(
+        BooksPreferencesDataSource(
             DataStoreFactory.create(
                 serializer = BooksPreferencesSerializer,
                 corruptionHandler = ReplaceFileCorruptionHandler(
@@ -154,7 +154,7 @@ object AppModule {
 
     @Provides @Singleton
     fun provideNotificationsPreferencesRepository(@ApplicationContext appContext: Context) =
-        NotificationsPreferencesRepository(
+        NotificationsPreferencesDataSource(
             DataStoreFactory.create(
                 serializer = NotificationsPreferencesSerializer,
                 corruptionHandler = ReplaceFileCorruptionHandler(
@@ -168,7 +168,7 @@ object AppModule {
 
     @Provides @Singleton
     fun providePrayersPreferencesRepository(@ApplicationContext appContext: Context) =
-        PrayersPreferencesRepository(
+        PrayersPreferencesDataSource(
             DataStoreFactory.create(
                 serializer = PrayersPreferencesSerializer,
                 corruptionHandler = ReplaceFileCorruptionHandler(
@@ -182,7 +182,7 @@ object AppModule {
 
     @Provides @Singleton
     fun provideQuranPreferencesRepository(@ApplicationContext appContext: Context) =
-        QuranPreferencesRepository(
+        QuranPreferencesDataSource(
             DataStoreFactory.create(
                 serializer = QuranPreferencesSerializer,
                 corruptionHandler = ReplaceFileCorruptionHandler(
@@ -196,7 +196,7 @@ object AppModule {
 
     @Provides @Singleton
     fun provideRecitationsPreferencesRepository(@ApplicationContext appContext: Context) =
-        RecitationsPreferencesRepository(
+        RecitationsPreferencesDataSource(
             DataStoreFactory.create(
                 serializer = RecitationsPreferencesSerializer,
                 corruptionHandler = ReplaceFileCorruptionHandler(
@@ -210,7 +210,7 @@ object AppModule {
 
     @Provides @Singleton
     fun provideSupplicationsPreferencesRepository(@ApplicationContext appContext: Context) =
-        SupplicationsPreferencesRepository(
+        SupplicationsPreferencesDataSource(
             DataStoreFactory.create(
                 serializer = SupplicationsPreferencesSerializer,
                 corruptionHandler = ReplaceFileCorruptionHandler(
@@ -224,7 +224,7 @@ object AppModule {
 
     @Provides @Singleton
     fun provideUserPreferencesRepository(@ApplicationContext appContext: Context) =
-        UserPreferencesRepository(
+        UserPreferencesDataSource(
             DataStoreFactory.create(
                 serializer = UserPreferencesSerializer,
                 corruptionHandler = ReplaceFileCorruptionHandler(
@@ -251,35 +251,35 @@ object AppModule {
 
     @Provides @Singleton
     fun provideAboutRepository(
-        appStatePreferencesRepository: AppStatePreferencesRepository
-    ) = AboutRepository(appStatePreferencesRepository)
+        appStatePreferencesDataSource: AppStatePreferencesDataSource
+    ) = AboutRepository(appStatePreferencesDataSource)
 
     @Provides @Singleton
     fun provideBookChaptersRepository(
         application: Application,
-        booksPreferencesRepository: BooksPreferencesRepository,
+        booksPreferencesDataSource: BooksPreferencesDataSource,
         gson: Gson
-    ) = BookChaptersRepository(application, booksPreferencesRepository, gson)
+    ) = BookChaptersRepository(application, booksPreferencesDataSource, gson)
 
     @Provides @Singleton
     fun provideBookReaderRepository(
         application: Application,
         gson: Gson,
-        booksPreferencesRepository: BooksPreferencesRepository
-    ) = BookReaderRepository(application, booksPreferencesRepository, gson)
+        booksPreferencesDataSource: BooksPreferencesDataSource
+    ) = BookReaderRepository(application, booksPreferencesDataSource, gson)
 
     @Provides @Singleton
     fun provideBooksRepository(
         application: Application,
         database: AppDatabase,
-        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
-        booksPreferencesRepository: BooksPreferencesRepository,
+        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource,
+        booksPreferencesDataSource: BooksPreferencesDataSource,
         gson: Gson
     ) = BooksRepository(
         application,
         database,
-        appSettingsPreferencesRepository,
-        booksPreferencesRepository,
+        appSettingsPreferencesDataSource,
+        booksPreferencesDataSource,
         gson
     )
 
@@ -288,102 +288,102 @@ object AppModule {
         application: Application,
         resources: Resources,
         database: AppDatabase,
-        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
-        booksPreferencesRepository: BooksPreferencesRepository,
+        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource,
+        booksPreferencesDataSource: BooksPreferencesDataSource,
         gson: Gson
     ) = BookSearcherRepository(
         application,
         resources,
         database,
-        appSettingsPreferencesRepository,
-        booksPreferencesRepository,
+        appSettingsPreferencesDataSource,
+        booksPreferencesDataSource,
         gson
     )
 
     @Provides @Singleton
     fun provideDateConverterRepository(
         resources: Resources,
-        appSettingsPreferencesRepository: AppSettingsPreferencesRepository
-    ) = DateConverterRepository(resources, appSettingsPreferencesRepository)
+        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource
+    ) = DateConverterRepository(resources, appSettingsPreferencesDataSource)
 
     @Provides @Singleton
     fun provideDateEditorRepository(
-        appSettingsPreferencesRepository: AppSettingsPreferencesRepository
-    ) = DateEditorRepository(appSettingsPreferencesRepository)
+        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource
+    ) = DateEditorRepository(appSettingsPreferencesDataSource)
 
     @Provides @Singleton
     fun provideHijriDatePickerRepository(
         resources: Resources,
-        appSettingsPreferencesRepository: AppSettingsPreferencesRepository
-    ) = HijriDatePickerRepository(resources, appSettingsPreferencesRepository)
+        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource
+    ) = HijriDatePickerRepository(resources, appSettingsPreferencesDataSource)
 
     @Provides @Singleton
     fun provideHomeRepository(
         resources: Resources,
         database: AppDatabase,
         firestore: FirebaseFirestore,
-        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
-        prayersPreferencesRepository: PrayersPreferencesRepository,
-        quranPreferencesRepository: QuranPreferencesRepository,
-        userPreferencesRepository: UserPreferencesRepository
+        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource,
+        prayersPreferencesDataSource: PrayersPreferencesDataSource,
+        quranPreferencesDataSource: QuranPreferencesDataSource,
+        userPreferencesDataSource: UserPreferencesDataSource
     ) = HomeRepository(
         resources,
         database,
         firestore,
-        appSettingsPreferencesRepository,
-        prayersPreferencesRepository,
-        quranPreferencesRepository,
-        userPreferencesRepository
+        appSettingsPreferencesDataSource,
+        prayersPreferencesDataSource,
+        quranPreferencesDataSource,
+        userPreferencesDataSource
     )
 
     @Provides @Singleton
     fun provideLeaderboardRepository(
-        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
+        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource,
         firestore: FirebaseFirestore
-    ) = LeaderboardRepository(appSettingsPreferencesRepository, firestore)
+    ) = LeaderboardRepository(appSettingsPreferencesDataSource, firestore)
 
     @Provides @Singleton
     fun provideLocationPickerRepository(
         database: AppDatabase,
-        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
-        userPreferencesRepository: UserPreferencesRepository
+        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource,
+        userPreferencesDataSource: UserPreferencesDataSource
     ) = LocationPickerRepository(
         database,
-        appSettingsPreferencesRepository,
-        userPreferencesRepository
+        appSettingsPreferencesDataSource,
+        userPreferencesDataSource
     )
 
     @Provides @Singleton
     fun provideLocatorRepository(
         database: AppDatabase,
-        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
-        userPreferencesRepository: UserPreferencesRepository
+        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource,
+        userPreferencesDataSource: UserPreferencesDataSource
     ) = LocatorRepository(
         database,
-        appSettingsPreferencesRepository,
-        userPreferencesRepository
+        appSettingsPreferencesDataSource,
+        userPreferencesDataSource
     )
 
     @Provides @Singleton
     fun provideMainRepository(
         resources: Resources,
-        appSettingsPreferencesRepository: AppSettingsPreferencesRepository
-    ) = MainRepository(resources, appSettingsPreferencesRepository)
+        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource
+    ) = MainRepository(resources, appSettingsPreferencesDataSource)
 
     @Provides @Singleton
     fun provideOnboardingRepository(
-        appStatePreferencesRepository: AppStatePreferencesRepository
-    ) = OnboardingRepository(appStatePreferencesRepository)
+        appStatePreferencesDataSource: AppStatePreferencesDataSource
+    ) = OnboardingRepository(appStatePreferencesDataSource)
 
     @Provides @Singleton
     fun providePrayerReminderRepository(
         resources: Resources,
-        appSettingsPreferencesRepository: AppSettingsPreferencesRepository,
-        prayersPreferencesRepository: PrayersPreferencesRepository
+        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource,
+        prayersPreferencesDataSource: PrayersPreferencesDataSource
     ) = PrayerReminderRepository(
         resources,
-        appSettingsPreferencesRepository,
-        prayersPreferencesRepository
+        appSettingsPreferencesDataSource,
+        prayersPreferencesDataSource
     )
 
     @Provides @Singleton

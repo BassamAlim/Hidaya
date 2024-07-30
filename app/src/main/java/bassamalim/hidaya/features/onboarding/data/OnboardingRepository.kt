@@ -1,10 +1,10 @@
 package bassamalim.hidaya.features.onboarding.data
 
-import bassamalim.hidaya.core.data.preferences.repositories.AppStatePreferencesRepository
+import bassamalim.hidaya.core.data.preferences.dataSources.AppStatePreferencesDataSource
 import javax.inject.Inject
 
 class OnboardingRepository @Inject constructor(
-    private val appStatePrefsRepo: AppStatePreferencesRepository
+    private val appStatePrefsRepo: AppStatePreferencesDataSource
 ) {
 
     suspend fun unsetFirstTime() {

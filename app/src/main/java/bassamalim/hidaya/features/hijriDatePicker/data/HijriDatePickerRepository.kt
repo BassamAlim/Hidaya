@@ -2,14 +2,14 @@ package bassamalim.hidaya.features.hijriDatePicker.data
 
 import android.content.res.Resources
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class HijriDatePickerRepository @Inject constructor(
     private val resources: Resources,
-    private val appSettingsPrefsRepo: AppSettingsPreferencesRepository
+    private val appSettingsPrefsRepo: AppSettingsPreferencesDataSource
 ) {
 
     suspend fun getLanguage() = appSettingsPrefsRepo.getLanguage().first()

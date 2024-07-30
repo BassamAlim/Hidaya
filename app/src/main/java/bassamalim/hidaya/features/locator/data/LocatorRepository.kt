@@ -1,16 +1,16 @@
 package bassamalim.hidaya.features.locator.data
 
 import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.data.preferences.repositories.AppSettingsPreferencesRepository
-import bassamalim.hidaya.core.data.preferences.repositories.UserPreferencesRepository
+import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.UserPreferencesDataSource
 import bassamalim.hidaya.core.models.Location
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class LocatorRepository @Inject constructor(
     private val db: AppDatabase,
-    private val appSettingsPrefsRepo: AppSettingsPreferencesRepository,
-    private val userPrefsRepo: UserPreferencesRepository
+    private val appSettingsPrefsRepo: AppSettingsPreferencesDataSource,
+    private val userPrefsRepo: UserPreferencesDataSource
 ) {
 
     suspend fun getLanguage() = appSettingsPrefsRepo.getLanguage().first()
