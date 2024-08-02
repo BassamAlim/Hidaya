@@ -3,14 +3,17 @@ package bassamalim.hidaya.features.bookSearcher.domain
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.features.bookSearcher.ui.BookSearcherMatch
-import bassamalim.hidaya.features.bookSearcher.data.BookSearcherRepository
+import kotlinx.coroutines.flow.first
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 class BookSearcherDomain @Inject constructor(
-    private val repository: BookSearcherRepository
+    private val booksRepo: BooksRepository,
+    private val appSettingsRepo: AppSettingsRepository
 ) {
 
     fun search(
@@ -21,9 +24,9 @@ class BookSearcherDomain @Inject constructor(
     ): ArrayList<BookSearcherMatch> {
         val matches = ArrayList<BookSearcherMatch>()
 
-        val bookContents = repository.getBookContents()
+        val bookContents = booksRepo.getBookContents()
         for (i in bookContents.indices) {
-            if (!bookSelections[i]!! || !repository.isDownloaded(i))
+            if (!bookSelections[i]!! || !booksRepo.isDownloaded(i))
                 continue
 
             val bookContent = bookContents[i]
@@ -70,24 +73,24 @@ class BookSearcherDomain @Inject constructor(
         return matches
     }
 
-    suspend fun getLanguage() = repository.getLanguage()
+    suspend fun getLanguage() = appSettingsRepo.getLanguage().first()
 
-    suspend fun getNumeralsLanguage() = repository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
 
-    fun getBookSelections() = repository.getBookSelections()
+    fun getBookSelections() = booksRepo.getBookSelections()
 
     suspend fun setBookSelections(selections: Map<Int, Boolean>) {
-        repository.setBookSelections(selections)
+        booksRepo.setBookSelections(selections)
     }
 
-    fun getMaxMatches() = repository.getMaxMatches()
+    fun getMaxMatches() = booksRepo.getMaxMatches()
 
     suspend fun setMaxMatches(value: Int) {
-        repository.setMaxMatches(value)
+        booksRepo.setMaxMatches(value)
     }
 
-    fun getMaxMatchesItems() = repository.getMaxMatchesItems()
+    fun getMaxMatchesItems() = booksRepo.getMaxMatchesItems()
 
-    fun getBookTitles(language: Language) = repository.getBookTitles(language)
+    fun getBookTitles(language: Language) = booksRepo.getBookTitles(language)
 
 }

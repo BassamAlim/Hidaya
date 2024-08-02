@@ -2,23 +2,26 @@ package bassamalim.hidaya.features.books.domain
 
 import android.util.Log
 import bassamalim.hidaya.core.data.database.dbs.BooksDB
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.features.books.data.BooksRepository
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class BooksDomain @Inject constructor(
-    private val repository: BooksRepository
+    private val booksRepo: BooksRepository,
+    private val appSettingsRepo: AppSettingsRepository
 ) {
 
-    suspend fun getLanguage() = repository.getLanguage()
+    suspend fun getLanguage() = appSettingsRepo.getLanguage().first()
 
-    fun getBooks() = repository.getBooks()
+    fun getBooks() = booksRepo.getBooks()
 
     fun getDownloadStates(books: List<BooksDB>) =
         books.associate {
-            it.id to if (repository.isDownloaded(it.id)) {
-                if (repository.isDownloading(it.id)) DownloadState.Downloading
+            it.id to if (booksRepo.isDownloaded(it.id)) {
+                if (booksRepo.isDownloading(it.id)) DownloadState.Downloading
                 else DownloadState.Downloaded
             }
             else DownloadState.NotDownloaded
@@ -28,7 +31,7 @@ class BooksDomain @Inject constructor(
         bookId: Int,
         onDownloadedCallback: () -> Unit
     ) {
-        val downloadTask = repository.download(bookId)
+        val downloadTask = booksRepo.download(bookId)
         downloadTask
             .addOnSuccessListener {
                 Log.i(Global.TAG, "File download succeeded")
@@ -41,14 +44,14 @@ class BooksDomain @Inject constructor(
     }
 
     fun deleteBook(bookId: Int) {
-        repository.deleteBook(bookId)
+        booksRepo.deleteBook(bookId)
     }
 
-    suspend fun getShowTutorial() = repository.getShowTutorial()
+    suspend fun getShowTutorial() = booksRepo.getShouldShowTutorial().first()
 
     suspend fun handleTutorialDialogDismiss(doNotShowAgain: Boolean) {
         if (doNotShowAgain)
-            repository.setDoNotShowAgain()
+            booksRepo.setDoNotShowAgain()
     }
 
 }

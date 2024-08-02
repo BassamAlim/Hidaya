@@ -1,5 +1,7 @@
 package bassamalim.hidaya.core.data.repositories
 
+import android.content.res.Resources
+import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.preferences.dataSources.PrayersPreferencesDataSource
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.models.PrayerTimesCalculatorSettings
@@ -8,6 +10,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class PrayersRepository @Inject constructor(
+    private val resources: Resources,
     private val prayersPreferencesDataSource: PrayersPreferencesDataSource
 ) {
 
@@ -48,5 +51,8 @@ class PrayersRepository @Inject constructor(
             shouldShowTutorial = shouldShowTutorial
         )}
     }
+
+    fun getPrayerNames() =
+        resources.getStringArray(R.array.prayer_names) as Array<String>
 
 }

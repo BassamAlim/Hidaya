@@ -1,19 +1,22 @@
 package bassamalim.hidaya.features.dateConverter.domain
 
-import bassamalim.hidaya.features.dateConverter.data.DateConverterRepository
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
+import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import javax.inject.Inject
 
 class DateConverterDomain @Inject constructor(
-    private val repository: DateConverterRepository
+    private val appSettingsRepo: AppSettingsRepository,
+    private val appStateRepo: AppStateRepository
 ) {
 
-    suspend fun getNumeralsLanguage() = repository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
 
-    fun getHijriMonths() = repository.getHijriMonths()
+    fun getHijriMonths() = appStateRepo.getHijriMonths()
 
-    fun getGregorianMonths() = repository.getGregorianMonths()
+    fun getGregorianMonths() = appStateRepo.getGregorianMonths()
 
     fun gregorianToHijri(gregorian: Calendar): Calendar {
         val hijri = UmmalquraCalendar()

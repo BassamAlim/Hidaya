@@ -2,15 +2,17 @@ package bassamalim.hidaya.features.leaderboard.domain
 
 import android.app.Application
 import bassamalim.hidaya.core.data.Response
-import bassamalim.hidaya.core.utils.OS.getDeviceId
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.models.UserRecord
-import bassamalim.hidaya.features.leaderboard.data.LeaderboardRepository
+import bassamalim.hidaya.core.utils.OS.getDeviceId
 import bassamalim.hidaya.features.leaderboard.ui.RankType
 import javax.inject.Inject
 
 class LeaderboardDomain @Inject constructor(
     app: Application,
-    private val repository: LeaderboardRepository
+    private val appSettingsRepo: AppSettingsRepository,
+    private val userRepo: UserRepository
 ) {
 
     private val deviceId = getDeviceId(app)
@@ -18,8 +20,8 @@ class LeaderboardDomain @Inject constructor(
     private lateinit var userRecord: UserRecord
 
     suspend fun fetchData(): Int {
-        val userRecordResponse = repository.getUserRecord(deviceId)
-        val ranksResponse = repository.getRanks()
+        val userRecordResponse = userRepo.getRemoteRecord(deviceId)
+        val ranksResponse = userRepo.getRanks()
         return if (userRecordResponse is Response.Success && ranksResponse is Response.Success) {
             userRecord = userRecordResponse.data!!
             ranks = ranksResponse.data!!
@@ -28,7 +30,7 @@ class LeaderboardDomain @Inject constructor(
         else -1
     }
 
-    suspend fun getNumeralsLanguage() = repository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage()
 
     fun getUserRank(items: List<UserRecord>) =
         items.indexOfFirst { it.userId == userRecord.userId } + 1

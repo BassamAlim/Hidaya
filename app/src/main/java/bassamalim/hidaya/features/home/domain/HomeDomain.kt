@@ -4,11 +4,14 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import bassamalim.hidaya.core.data.Response
-import bassamalim.hidaya.core.utils.OS.getDeviceId
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.PrayersRepository
+import bassamalim.hidaya.core.data.repositories.QuranRepository
+import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.helpers.PrayerTimesCalculator
 import bassamalim.hidaya.core.models.UserRecord
+import bassamalim.hidaya.core.utils.OS.getDeviceId
 import bassamalim.hidaya.core.utils.PTUtils
-import bassamalim.hidaya.features.home.data.HomeRepository
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import javax.inject.Inject
@@ -16,7 +19,10 @@ import kotlin.math.max
 
 class HomeDomain @Inject constructor(
     private val app: Application,
-    private val repository: HomeRepository
+    private val appSettingsRepo: AppSettingsRepository,
+    private val prayersRepository: PrayersRepository,
+    private val quranRepo: QuranRepository,
+    private val userRepo: UserRepository
 ) {
 
     private val deviceId = getDeviceId(app)
@@ -88,34 +94,34 @@ class HomeDomain @Inject constructor(
     }
 
     private suspend fun getPrayerTimesCalculator() = PrayerTimesCalculator(
-        settings = repository.getPrayerTimesCalculatorSettings().first(),
-        timeFormat = repository.getTimeFormat().first(),
-        timeOffsets = repository.getTimeOffsets().first(),
-        numeralsLanguage = getNumeralsLanguage()
+        settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+        timeFormat = appSettingsRepo.getTimeFormat().first(),
+        timeOffsets = prayersRepository.getTimeOffsets().first(),
+        numeralsLanguage = appSettingsRepo.getNumeralsLanguage().first()
     )
 
     private suspend fun getUTCOffset() = PTUtils.getUTCOffset(
         locationType = location.first()!!.type,
-        timeZone = repository.getTimeZone(location.first()!!.cityId)
+        timeZone = userRepo.getTimeZone(location.first()!!.cityId)
     )
 
-    suspend fun getNumeralsLanguage() = repository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
 
-    fun getWerdPage() = repository.getWerdPage()
+    fun getWerdPage() = quranRepo.getWerdPage()
 
-    fun getIsWerdDone() = repository.getIsWerdDone()
+    fun getIsWerdDone() = quranRepo.getIsWerdDone()
 
-    fun getLocalRecord() = repository.getLocalRecord()
+    fun getLocalRecord() = userRepo.getLocalRecord()
 
-    private fun getLocation() = repository.getLocation()
+    private fun getLocation() = userRepo.getLocation()
 
-    fun getPrayerNames() = repository.getPrayerNames()
+    fun getPrayerNames() = prayersRepository.getPrayerNames()
 
     suspend fun syncRecords(): Boolean {
         if (!isInternetConnected(app)) return false
 
         return when (
-            val response = repository.getRemoteRecord(deviceId)
+            val response = userRepo.getRemoteRecord(deviceId)
         ) {
             is Response.Success -> {
                 val remoteRecord = response.data!!
@@ -136,7 +142,7 @@ class HomeDomain @Inject constructor(
 
                 if (remoteRecord.quranPages != latestRecord.quranPages ||
                     remoteRecord.recitationsTime > latestRecord.recitationsTime) {
-                    repository.setRemoteRecord(
+                    userRepo.setRemoteRecord(
                         deviceId = deviceId,
                         record = latestRecord
                     )
@@ -144,7 +150,7 @@ class HomeDomain @Inject constructor(
 
                 if (localRecord.quranPages != latestRecord.quranPages ||
                     localRecord.recitationsTime > latestRecord.recitationsTime) {
-                    repository.setLocalRecord(
+                    userRepo.setLocalRecord(
                         UserRecord(
                             quranPages = latestRecord.quranPages,
                             recitationsTime = latestRecord.recitationsTime
@@ -158,7 +164,7 @@ class HomeDomain @Inject constructor(
                 if (response.message == "Device not registered") {
                     val remoteRecord = registerDevice(deviceId)
                     if (remoteRecord != null) {
-                        repository.setLocalRecord(
+                        userRepo.setLocalRecord(
                             UserRecord(
                                 quranPages = remoteRecord.quranPages,
                                 recitationsTime = remoteRecord.recitationsTime
@@ -171,7 +177,7 @@ class HomeDomain @Inject constructor(
         }
     }
 
-    private suspend fun registerDevice(deviceId: String) = repository.registerDevice(deviceId)
+    private suspend fun registerDevice(deviceId: String) = userRepo.registerDevice(deviceId)
 
     private fun isInternetConnected(context: Context): Boolean {
         val connectivityManager =

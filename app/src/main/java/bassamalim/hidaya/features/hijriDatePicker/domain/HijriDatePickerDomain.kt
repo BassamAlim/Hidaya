@@ -1,13 +1,15 @@
 package bassamalim.hidaya.features.hijriDatePicker.domain
 
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.features.hijriDatePicker.data.HijriDatePickerRepository
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import java.util.Calendar
 import javax.inject.Inject
 
 class HijriDatePickerDomain @Inject constructor(
-    private val repository: HijriDatePickerRepository
+    private val appSettingsRepo: AppSettingsRepository,
+    private val appStateRepo: AppStateRepository
 ) {
 
     private val selectedDate = UmmalquraCalendar()
@@ -15,15 +17,15 @@ class HijriDatePickerDomain @Inject constructor(
     val minYear = currentDate[Calendar.YEAR] - 100
     val maxYear = currentDate[Calendar.YEAR] + 100
 
-    suspend fun getLanguage() = repository.getLanguage()
+    suspend fun getLanguage() = appSettingsRepo.getLanguage()
 
-    suspend fun getNumeralsLanguage() = repository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage()
 
-    fun getMonths() = repository.getMonths()
+    fun getMonths() = appStateRepo.getMonths()
 
-    fun getWeekDays() = repository.getWeekDays()
+    fun getWeekDays() = appStateRepo.getWeekDays()
 
-    fun getWeekDaysAbb(language: Language) = repository.getWeekDaysAbb(language)
+    fun getWeekDaysAbb(language: Language) = appStateRepo.getWeekDaysAbb(language)
 
     fun getSelectedDate() = selectedDate
 

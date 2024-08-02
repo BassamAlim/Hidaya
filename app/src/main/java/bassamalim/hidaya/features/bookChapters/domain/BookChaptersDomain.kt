@@ -1,19 +1,21 @@
 package bassamalim.hidaya.features.bookChapters.domain
 
+import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.Book
-import bassamalim.hidaya.features.bookChapters.data.BookChaptersRepository
 import javax.inject.Inject
 
 class BookChaptersDomain @Inject constructor(
-    private val repository: BookChaptersRepository
+    private val booksRepo: BooksRepository,
 ) {
 
-    fun getBook(bookId: Int) = repository.getBook(bookId)
+    fun getBook(bookId: Int) = booksRepo.getBook(bookId)
 
-    fun getFavs(book: Book) = repository.getFavorites(book)
+    fun getFavs(book: Book) = booksRepo.getChapterFavorites(book)
 
-    suspend fun setFavs(bookId: Int, favs: Map<Int, Int>) = repository.setFavorites(bookId, favs)
+    suspend fun setFavs(bookId: Int, favs: Map<Int, Int>) {
+        booksRepo.setChapterFavorites(bookId, favs)
+    }
 
     fun getItems(
         listType: ListType,
