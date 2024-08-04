@@ -4,6 +4,7 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.enums.Language
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
+import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -17,9 +18,9 @@ class HijriDatePickerDomain @Inject constructor(
     val minYear = currentDate[Calendar.YEAR] - 100
     val maxYear = currentDate[Calendar.YEAR] + 100
 
-    suspend fun getLanguage() = appSettingsRepo.getLanguage()
+    suspend fun getLanguage() = appSettingsRepo.getLanguage().first()
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
 
     fun getMonths() = appStateRepo.getMonths()
 

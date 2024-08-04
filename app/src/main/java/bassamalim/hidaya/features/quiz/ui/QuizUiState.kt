@@ -1,8 +1,9 @@
-package bassamalim.hidaya.features.quiz
+package bassamalim.hidaya.features.quiz.ui
 
 import bassamalim.hidaya.core.enums.Language
 
-data class QuizState(
+data class QuizUiState(
+    val titleQuestionNumber: String = "",
     val questionIdx: Int = 0,
     val question: String = "",
     val answers: List<String> = emptyList(),

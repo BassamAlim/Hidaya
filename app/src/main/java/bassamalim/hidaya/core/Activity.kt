@@ -16,12 +16,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
+import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.helpers.Alarms
@@ -35,20 +33,19 @@ import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
-import bassamalim.hidaya.core.utils.LocUtils
 import bassamalim.hidaya.core.utils.PTUtils
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class Activity : ComponentActivity() {
 
-    @Inject lateinit var preferencesDS: PreferencesDataSource
+    @Inject lateinit var appStateRepo: AppStateRepository
     @Inject lateinit var db: AppDatabase
-    private lateinit var dataStore: DataStore<Preferences>
     @Inject lateinit var navigator: Navigator
     private var shouldWelcome = false
     private var startRoute: String? = null
@@ -56,10 +53,8 @@ class Activity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        shouldWelcome = preferencesDS.getBoolean(Preference.FirstTime)
+        shouldWelcome = !appStateRepo.getIsOnboardingCompleted().first()
         startRoute = intent.getStringExtra("start_route")
-
-        dataStore = createDataStore(name = "settings")
 
         val isFirstLaunch = savedInstanceState == null
 

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quiz
+package bassamalim.hidaya.features.quiz.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,44 +29,46 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.RadioGroup
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.Grey
-import bassamalim.hidaya.core.utils.LangUtils
 
 @Composable
 fun QuizUI(
-    vm: QuizViewModel
+    viewModel: QuizViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyScaffold(
-        title = "${stringResource(R.string.question)} ${
-            LangUtils.translateNums(st.numeralsLanguage, (st.questionIdx + 1).toString())
-        }",
-    ) {
+    MyScaffold(title = "${stringResource(R.string.question)} ${state.titleQuestionNumber}") {
         Column(
             Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            QuestionArea(st)
+            QuestionArea(question = state.question)
 
             // Answers
             RadioGroup(
-                options = st.answers,
-                selection = st.selection,
+                options = state.answers,
+                selection = state.selection,
                 modifier = Modifier
                     .heightIn(1.dp, 400.dp)
                     .verticalScroll(rememberScrollState()),
-                onSelect = { index -> vm.answered(index) }
+                onSelect = { index -> viewModel.onAnswerSelected(index) }
             )
 
-            BottomBar(vm, st)
+            BottomBar(
+                questionIdx = state.questionIdx,
+                isAllAnswered = state.allAnswered,
+                isPreviousButtonEnabled = state.prevBtnEnabled,
+                isNextButtonEnabled = state.nextBtnEnabled,
+                onPreviousQuestionClick = viewModel::onPreviousQuestionClick,
+                onNextQuestionClick = viewModel::onNextQuestionClick
+            )
         }
     }
 }
 
 @Composable
 fun QuestionArea(
-    st: QuizState
+    question: String
 ) {
     Box(
         Modifier
@@ -77,7 +79,7 @@ fun QuestionArea(
         contentAlignment = Alignment.Center
     ) {
         MyText(
-            text = st.question,
+            text = question,
             fontSize = 28.sp,
             textColor = AppTheme.colors.onPrimary,
             modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
@@ -87,8 +89,12 @@ fun QuestionArea(
 
 @Composable
 fun ColumnScope.BottomBar(
-    vm: QuizViewModel,
-    st: QuizState
+    questionIdx: Int,
+    isAllAnswered: Boolean,
+    isPreviousButtonEnabled: Boolean,
+    isNextButtonEnabled: Boolean,
+    onPreviousQuestionClick: () -> Unit,
+    onNextQuestionClick: () -> Unit
 ) {
     Row(
         Modifier
@@ -101,28 +107,26 @@ fun ColumnScope.BottomBar(
         MySquareButton(
             text = stringResource(R.string.previous_question),
             textColor =
-                if (st.prevBtnEnabled) AppTheme.colors.text
+                if (isPreviousButtonEnabled) AppTheme.colors.text
                 else Grey,
-            innerPadding = PaddingValues(10.dp)
-        ) {
-            vm.previousQ()
-        }
+            innerPadding = PaddingValues(10.dp),
+            onClick = onPreviousQuestionClick
+        )
 
         MySquareButton(
             text = stringResource(
-                if (st.questionIdx == 9) {
-                    if (st.allAnswered) R.string.finish_quiz
+                if (questionIdx == 9) {
+                    if (isAllAnswered) R.string.finish_quiz
                     else R.string.answer_all_questions
                 }
                 else R.string.next_question
             ),
             modifier = Modifier.sizeIn(maxWidth = 175.dp),
             textColor =
-                if (st.nextBtnEnabled) AppTheme.colors.text
+                if (isNextButtonEnabled) AppTheme.colors.text
                 else Grey,
-            innerPadding = PaddingValues(10.dp)
-        ) {
-            vm.nextQ()
-        }
+            innerPadding = PaddingValues(10.dp),
+            onClick = onNextQuestionClick
+        )
     }
 }
