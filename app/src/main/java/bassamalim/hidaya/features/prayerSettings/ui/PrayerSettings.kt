@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.prayerSetting
+package bassamalim.hidaya.features.prayerSettings.ui
 
 import android.os.Parcel
 import android.os.Parcelable

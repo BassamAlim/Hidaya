@@ -11,7 +11,7 @@ import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.prayerSetting.PrayerSettings
+import bassamalim.hidaya.features.prayerSettings.ui.PrayerSettings
 import bassamalim.hidaya.features.prayers.domain.PrayersDomain
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel

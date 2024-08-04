@@ -1,32 +1,36 @@
-package bassamalim.hidaya.features.prayerSetting
+package bassamalim.hidaya.features.prayerSettings.ui
 
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.features.prayerSettings.domain.PrayerSettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PrayerSettingViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    repo: PrayerSettingsRepository,
+    domain: PrayerSettingsDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
     private val pid = PID.valueOf(savedStateHandle.get<String>("pid") ?: "")
 
-    private val _uiState = MutableStateFlow(PrayerSettingState(
+    lateinit var numeralsLanguage: Language
+
+    private val _uiState = MutableStateFlow(PrayerSettingUiState(
         pid = pid,
-        prayerName = repo.getPrayerName(pid),
-        notificationType = repo.getNotificationType(pid),
-        timeOffset = repo.getTimeOffset(pid)
+        prayerName = domain.getPrayerName(pid)
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -37,6 +41,17 @@ class PrayerSettingViewModel @Inject constructor(
         Pair(R.string.silent_notification, R.drawable.ic_silent),
         Pair(R.string.disable_notification, R.drawable.ic_block)
     )
+
+    init {
+        viewModelScope.launch {
+            numeralsLanguage = domain.getNumeralsLanguage()
+
+            _uiState.update { it.copy(
+                notificationType = domain.getNotificationType(pid),
+                timeOffset = domain.getTimeOffset(pid)
+            )}
+        }
+    }
 
     fun onNotificationTypeChange(notificationType: NotificationType) {
         _uiState.update { it.copy(
@@ -52,7 +67,6 @@ class PrayerSettingViewModel @Inject constructor(
 
     fun onSave() {
         val prayerSettings = PrayerSettings(
-            pid = pid,
             notificationType = uiState.value.notificationType,
             timeOffset = uiState.value.timeOffset
         )

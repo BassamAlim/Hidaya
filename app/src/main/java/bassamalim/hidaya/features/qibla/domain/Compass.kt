@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.qibla
+package bassamalim.hidaya.features.qibla.domain
 
 import android.content.Context
 import android.hardware.Sensor

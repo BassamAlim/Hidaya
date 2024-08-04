@@ -13,7 +13,7 @@ import bassamalim.hidaya.core.helpers.Alarms
 import bassamalim.hidaya.core.helpers.PrayerTimesCalculator
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.utils.PTUtils
-import bassamalim.hidaya.features.prayerSetting.PrayerSettings
+import bassamalim.hidaya.features.prayerSettings.ui.PrayerSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first

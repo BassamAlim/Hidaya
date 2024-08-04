@@ -61,7 +61,7 @@ import bassamalim.hidaya.features.locationPicker.data.LocationPickerRepository
 import bassamalim.hidaya.features.locator.data.LocatorRepository
 import bassamalim.hidaya.features.main.data.MainRepository
 import bassamalim.hidaya.features.prayerReminder.data.PrayerReminderRepository
-import bassamalim.hidaya.features.prayerSetting.PrayerSettingsRepository
+import bassamalim.hidaya.features.prayerSettings.PrayerSettingsRepository
 import bassamalim.hidaya.features.prayers.PrayersRepository
 import bassamalim.hidaya.features.qibla.QiblaRepository
 import bassamalim.hidaya.features.quiz.QuizRepository

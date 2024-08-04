@@ -1,6 +1,6 @@
 package bassamalim.hidaya.features.prayers.ui
 
-import bassamalim.hidaya.features.prayerSetting.PrayerSettings
+import bassamalim.hidaya.features.prayerSettings.ui.PrayerSettings
 
 data class PrayerData(
     val name: String,

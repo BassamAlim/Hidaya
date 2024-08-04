@@ -219,5 +219,6 @@
     <string name="previous_track_btn_description">Previous track</string>
     <string name="location_failed">Location Selection Failed</string>
     <string name="athan_voice">Athan Voice</string>
+    <string name="compass_calibration">Compass calibration</string>
 
 </resources>

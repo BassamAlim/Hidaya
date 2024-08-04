@@ -7,7 +7,6 @@ import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.models.PrayerTimesCalculatorSettings
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.toPersistentMap
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -32,10 +31,9 @@ class PrayersRepository @Inject constructor(
         it.timeOffsets.toMap()
     }
 
-    suspend fun getTimeOffset(pid: PID) =
-        prayersPreferencesDataSource.flow.map {
-            getTimeOffsets().map { it[pid]!! }
-        }.first()
+    fun getTimeOffset(pid: PID) = prayersPreferencesDataSource.flow.map {
+            it.timeOffsets[pid]!!
+        }
 
     suspend fun setTimeOffsets(timeOffsets: Map<PID, Int>) {
         prayersPreferencesDataSource.update { it.copy(

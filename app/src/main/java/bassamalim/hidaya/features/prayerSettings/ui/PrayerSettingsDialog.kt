@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.prayerSetting
+package bassamalim.hidaya.features.prayerSettings.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -35,13 +35,13 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun PrayerSettingsDialog(
-    vm: PrayerSettingViewModel
+    viewModel: PrayerSettingViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyDialog(
         shown = true,
-        onDismiss = { vm.onDismiss() }
+        onDismiss = viewModel::onDismiss
     ) {
         Column(
             Modifier
@@ -50,17 +50,17 @@ fun PrayerSettingsDialog(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MyText(
-                String.format(stringResource(R.string.settings_of), st.prayerName),
+                String.format(stringResource(R.string.settings_of), state.prayerName),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 5.dp, bottom = 20.dp)
             )
 
             CustomRadioGroup(
-                vm = vm,
-                pid = st.pid,
-                selection = st.notificationType,
-                onSelect = { selection -> vm.onNotificationTypeChange(selection) }
+                notificationTypeOptions = viewModel.notificationTypeOptions,
+                pid = state.pid,
+                selection = state.notificationType,
+                onSelect = { selection -> viewModel.onNotificationTypeChange(selection) }
             )
 
             MyText(
@@ -72,18 +72,19 @@ fun PrayerSettingsDialog(
             )
 
             MyValuedSlider(
-                initialValue = st.timeOffset + vm.offsetMin,
+                initialValue = state.timeOffset + viewModel.offsetMin,
                 valueRange = 0F..60F,
                 modifier = Modifier.fillMaxWidth(),
-                progressMin = vm.offsetMin,
+                progressMin = viewModel.offsetMin,
                 sliderFraction = 0.875F,
-                onValueChange = { value -> vm.onTimeOffsetChange(value.toInt()) }
+                numeralsLanguage = viewModel.numeralsLanguage,
+                onValueChange = { value -> viewModel.onTimeOffsetChange(value.toInt()) }
             )
 
             MyRow {
-                SaveBtn(vm)
+                SaveBtn(onSave = viewModel::onSave)
 
-                CancelBtn(vm)
+                CancelBtn(onDismiss = viewModel::onDismiss)
             }
         }
     }
@@ -91,7 +92,7 @@ fun PrayerSettingsDialog(
 
 @Composable
 private fun CustomRadioGroup(
-    vm: PrayerSettingViewModel,
+    notificationTypeOptions: List<Pair<Int, Int>>,
     pid: PID,
     selection: NotificationType,
     onSelect: (NotificationType) -> Unit
@@ -101,23 +102,21 @@ private fun CustomRadioGroup(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth(),
     ) {
-        vm.notificationTypeOptions.forEachIndexed { i, pair ->
+        notificationTypeOptions.forEachIndexed { i, pair ->
             if (!(pid == PID.SUNRISE && i == 0)) {
-                val text = stringResource(pair.first)
-
                 Box(
                     Modifier.padding(vertical = 6.dp)
                 ) {
                     MyClickableSurface(
                         padding = PaddingValues(vertical = 0.dp),
                         modifier =
-                        if (i == selection.ordinal)
-                            Modifier.border(
-                                width = 3.dp,
-                                color = AppTheme.colors.accent,
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                        else Modifier,
+                            if (i == selection.ordinal)
+                                Modifier.border(
+                                    width = 3.dp,
+                                    color = AppTheme.colors.accent,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                            else Modifier,
                         onClick = { onSelect(NotificationType.entries[i]) }
                     ) {
                         Row(
@@ -128,13 +127,14 @@ private fun CustomRadioGroup(
                         ) {
                             Image(
                                 painter = painterResource(pair.second),
-                                contentDescription = text
+                                contentDescription = stringResource(pair.first)
                             )
 
-                            MyText(text,
+                            MyText(
+                                stringResource(pair.first),
                                 textColor =
-                                if (i == selection.ordinal) AppTheme.colors.accent
-                                else AppTheme.colors.text,
+                                    if (i == selection.ordinal) AppTheme.colors.accent
+                                    else AppTheme.colors.text,
                                 modifier = Modifier.padding(start = 20.dp)
                             )
                         }
@@ -146,21 +146,21 @@ private fun CustomRadioGroup(
 }
 
 @Composable
-private fun RowScope.SaveBtn(vm: PrayerSettingViewModel) {
+private fun RowScope.SaveBtn(onSave: () -> Unit) {
     MyHorizontalButton(
         text = stringResource(R.string.save),
         fontSize = 24.sp,
         modifier = Modifier.weight(1f),
-        onClick = { vm.onSave() }
+        onClick = onSave
     )
 }
 
 @Composable
-private fun RowScope.CancelBtn(vm: PrayerSettingViewModel) {
+private fun RowScope.CancelBtn(onDismiss: () -> Unit) {
     MyHorizontalButton(
         text = stringResource(R.string.cancel),
         fontSize = 24.sp,
         modifier = Modifier.weight(1f),
-        onClick = { vm.onDismiss() }
+        onClick = onDismiss
     )
 }
