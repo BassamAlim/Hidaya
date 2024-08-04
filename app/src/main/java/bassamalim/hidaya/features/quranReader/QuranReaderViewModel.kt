@@ -27,7 +27,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.QuranViewType
 import bassamalim.hidaya.core.models.Aya
 import bassamalim.hidaya.core.other.Global
 import dagger.hilt.android.lifecycle.HiltViewModel

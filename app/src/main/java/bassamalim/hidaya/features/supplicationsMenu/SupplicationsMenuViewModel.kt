@@ -21,7 +21,7 @@ class SupplicationsMenuViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private val type = savedStateHandle.get<String>("type") ?: ListType.All.name
+    private val type = savedStateHandle.get<String>("type") ?: ListType.ALL.name
     private val category = savedStateHandle.get<Int>("category")?: 0
 
     private val _uiState = MutableStateFlow(SupplicationsMenuState(

@@ -171,9 +171,9 @@ class RecitationsPlayerClientViewModel @Inject constructor(
 
     private fun checkDownload(): DownloadState {
         return if (File("${app.getExternalFilesDir(null)}$prefix").exists())
-            DownloadState.Downloaded
+            DownloadState.DOWNLOADED
         else
-            DownloadState.NotDownloaded
+            DownloadState.NOT_DOWNLOADED
     }
 
     private fun updateTrackState() {
@@ -285,7 +285,7 @@ class RecitationsPlayerClientViewModel @Inject constructor(
 
     private fun download() {
         _uiState.update { it.copy(
-            downloadState = DownloadState.Downloading
+            downloadState = DownloadState.DOWNLOADING
         )}
 
         val server = version.server
@@ -390,7 +390,7 @@ class RecitationsPlayerClientViewModel @Inject constructor(
 
     fun onDeleteClk() {
         _uiState.update { it.copy(
-            downloadState = DownloadState.NotDownloaded
+            downloadState = DownloadState.NOT_DOWNLOADED
         )}
     }
 

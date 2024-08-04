@@ -1,17 +1,20 @@
 package bassamalim.hidaya.features.main.domain
 
-import bassamalim.hidaya.features.main.data.MainRepository
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
+import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import javax.inject.Inject
 
 class MainDomain @Inject constructor(
-    private val repository: MainRepository
+    private val appSettingsRepo: AppSettingsRepository,
+    private val appStateRepository: AppStateRepository
 ) {
 
     private val millisInDay = 1000 * 60 * 60 * 24
 
-    fun getDateOffset() = repository.getDateOffset()
+    fun getDateOffset() = appSettingsRepo.getDateOffset()
 
     fun getHijriDateCalendar(dateOffset: Int) =
         UmmalquraCalendar().apply {
@@ -20,12 +23,12 @@ class MainDomain @Inject constructor(
 
     fun getGregorianDateCalendar(): Calendar = Calendar.getInstance()
 
-    suspend fun getNumeralsLanguage() = repository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
 
-    fun getWeekDays() = repository.getWeekDays()
+    fun getWeekDays() = appStateRepository.getWeekDays()
 
-    fun getHijriMonths() = repository.getHijriMonths()
+    fun getHijriMonths() = appStateRepository.getHijriMonths()
 
-    fun getGregorianMonths() = repository.getGregorianMonths()
+    fun getGregorianMonths() = appStateRepository.getGregorianMonths()
 
 }

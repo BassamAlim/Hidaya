@@ -14,5 +14,5 @@ data class RecitationsPlayerClientState(
     val versionName: String = "",
     val reciterName: String = "",
     val controlsEnabled: Boolean = false,
-    val downloadState: DownloadState = DownloadState.NotDownloaded,
+    val downloadState: DownloadState = DownloadState.NOT_DOWNLOADED,
 )

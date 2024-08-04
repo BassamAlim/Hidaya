@@ -108,12 +108,12 @@ private fun DownloadBtn(
         Modifier.padding(end = 10.dp),
         contentAlignment = Alignment.Center
     ) {
-        if (downloadState == DownloadState.Downloading)
+        if (downloadState == DownloadState.DOWNLOADING)
             MyCircularProgressIndicator(Modifier.size(32.dp))
         else {
             MyIconButton(
                 iconId =
-                    if (downloadState == DownloadState.Downloaded) R.drawable.ic_downloaded
+                    if (downloadState == DownloadState.DOWNLOADED) R.drawable.ic_downloaded
                     else R.drawable.ic_download,
                 description = stringResource(R.string.download_description),
                 size = 32.dp,

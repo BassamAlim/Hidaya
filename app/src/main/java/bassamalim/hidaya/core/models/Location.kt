@@ -1,13 +1,16 @@
 package bassamalim.hidaya.core.models
 
+import android.os.Parcelable
 import bassamalim.hidaya.core.enums.LocationType
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Parcelize
 data class Location(
     val type: LocationType,
     val latitude: Double,
     val longitude: Double,
     val countryId: Int,
     val cityId: Int,
-)
+) : Parcelable

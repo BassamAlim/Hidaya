@@ -1,8 +1,8 @@
 package bassamalim.hidaya.core.enums
 
 enum class ListType {
-    All,
-    Favorite,
-    Downloaded,
-    Custom
+    ALL,
+    FAVORITES,
+    DOWNLOADED,
+    CUSTOM
 }

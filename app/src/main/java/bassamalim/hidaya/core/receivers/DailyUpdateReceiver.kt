@@ -48,8 +48,8 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         val now = Calendar.getInstance()
         if ((intent.action == "daily" && notUpdatedToday(preferencesDS, now)) || intent.action == "boot") {
             when (LocationType.valueOf(preferencesDS.getString(Preference.LocationType))) {
-                LocationType.Auto -> locate(context, preferencesDS, db, now)
-                LocationType.Manual -> {
+                LocationType.AUTO -> locate(context, preferencesDS, db, now)
+                LocationType.MANUAL -> {
                     val cityId = preferencesDS.getInt(Preference.CityID)
                     if (cityId == -1) return
                     val city = db.cityDao().getCity(cityId)
@@ -66,7 +66,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
                         now = now
                     )
                 }
-                LocationType.None -> return
+                LocationType.NONE -> return
             }
 
             pickWerd(preferencesDS)

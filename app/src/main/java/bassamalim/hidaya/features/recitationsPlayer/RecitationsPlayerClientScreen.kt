@@ -202,7 +202,7 @@ private fun BottomBar(viewModel: RecitationsPlayerClientViewModel, state: Recita
                 path = "${"/Telawat/${viewModel.reciterId}/${viewModel.versionId}/"}${viewModel.suraIdx}.mp3",
                 innerPadding = 10.dp,
                 tint =
-                    if (state.downloadState == DownloadState.Downloaded) AppTheme.colors.secondary
+                    if (state.downloadState == DownloadState.DOWNLOADED) AppTheme.colors.secondary
                     else AppTheme.colors.onPrimary,
                 deleted = { viewModel.onDeleteClk() },
                 download = { viewModel.onDownloadClk() }

@@ -26,8 +26,8 @@ class BookChaptersDomain @Inject constructor(
         val items = ArrayList<BookChapter>()
         for (i in chapters.indices) {
             val chapter = chapters[i]
-            if (listType == ListType.All ||
-                listType == ListType.Favorite && favs[i] == 1)
+            if (listType == ListType.ALL ||
+                listType == ListType.FAVORITES && favs[i] == 1)
                 items.add(BookChapter(chapter.chapterId, chapter.chapterTitle))
         }
 

@@ -45,7 +45,7 @@ object UserPreferencesMigration {
                             defValue = Preference.CityID.default as Int
                         )
 
-                        if (locationType == LocationType.None) null
+                        if (locationType == LocationType.NONE) null
                         else Location(
                             type = locationType,
                             latitude = myLocation.latitude,

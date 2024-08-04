@@ -1,7 +1,6 @@
 package bassamalim.hidaya.features.quranReader
 
 import android.support.v4.media.session.PlaybackStateCompat
-import bassamalim.hidaya.core.enums.QuranViewType
 import bassamalim.hidaya.core.models.Aya
 
 data class QuranReaderState(

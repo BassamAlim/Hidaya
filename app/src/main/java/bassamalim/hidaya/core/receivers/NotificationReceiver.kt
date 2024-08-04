@@ -81,8 +81,8 @@ class NotificationReceiver : BroadcastReceiver() {
             preferencesDS.getString(Preference.NotificationType(pid))
         )
 
-        if (notificationType != NotificationType.None) {
-            if (notificationType == NotificationType.Athan) startService()
+        if (notificationType != NotificationType.NONE) {
+            if (notificationType == NotificationType.ATHAN) startService()
             else showNotification(true, notificationType)
         }
     }
@@ -118,7 +118,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
     private fun showNotification(
         isPrayer: Boolean,
-        notificationType: NotificationType = NotificationType.Notification,
+        notificationType: NotificationType = NotificationType.NOTIFICATION,
     ) {
         createNotificationChannel()
 
@@ -174,7 +174,7 @@ class NotificationReceiver : BroadcastReceiver() {
         builder.color = ctx.getColor(R.color.surface_M)
         builder.setContentIntent(onClick(pid))
 
-        if (notificationType == NotificationType.Silent)
+        if (notificationType == NotificationType.SILENT)
             builder.setSilent(true)
 
         return builder.build()

@@ -25,8 +25,8 @@ fun AthkarListScreen(
 
     MyScaffold(
         title = when (st.listType) {
-            ListType.Favorite -> stringResource(R.string.favorite_athkar)
-            ListType.Custom -> vm.getName()
+            ListType.FAVORITES -> stringResource(R.string.favorite_athkar)
+            ListType.CUSTOM -> vm.getName()
             else -> stringResource(R.string.all_athkar)
         }
     ) { padding ->

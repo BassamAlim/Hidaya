@@ -1,5 +1,6 @@
-package bassamalim.hidaya.features.prayers
+package bassamalim.hidaya.features.prayers.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -14,10 +15,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyClickableText
@@ -38,36 +41,50 @@ import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
 fun PrayersUI(
-    vm: PrayersViewModel
+    viewModel: PrayersViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
-
-    DisposableEffect(key1 = vm) {
-        vm.onStart()
-        onDispose {}
-    }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LocationCard(vm, st)
+        LocationCard(
+            isLocationAvailable = state.isLocationAvailable,
+            locationName = state.locationName,
+            onLocatorClick = viewModel::onLocatorClk
+        )
 
-        PrayersSpace(vm, st)
+        PrayersSpace(
+            prayersData = state.prayersData,
+            isLocationAvailable = state.locationName.isNotEmpty(),
+            onPrayerCardClick = viewModel::onPrayerCardClk,
+            onReminderCardClick = viewModel::onReminderCardClk
+        )
 
-        DayCard(vm, st)
+        DayCard(
+            dateText = state.dateText,
+            isNoDateOffset = state.isNoDateOffset,
+            onDateClick = viewModel::onDateClk,
+            onPreviousDayClick = viewModel::onPreviousDayClk,
+            onNextDayClick = viewModel::onNextDayClk
+        )
     }
 
     TutorialDialog(
-        shown = st.tutorialDialogShown,
+        shown = state.tutorialDialogShown,
         textResId = R.string.prayers_tips,
-        onDismiss = { vm.onTutorialDialogDismiss(it) }
+        onDismiss = { viewModel.onTutorialDialogDismiss(it) }
     )
+
+    if (state.shouldShowLocationFailedToast)
+        LocationFailedToast()
 }
 
 @Composable
 private fun LocationCard(
-    vm: PrayersViewModel,
-    st: PrayersState
+    isLocationAvailable: Boolean,
+    locationName: String,
+    onLocatorClick: () -> Unit
 ) {
     MySurface(
         Modifier.padding(top = 5.dp)
@@ -80,7 +97,8 @@ private fun LocationCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             MyText(
-                text = st.locationName,
+                if (isLocationAvailable) locationName
+                else stringResource(R.string.clk_to_locate),
                 modifier = Modifier
                     .widthIn(1.dp, 300.dp)
                     .padding(start = 15.dp)
@@ -89,20 +107,21 @@ private fun LocationCard(
             MyIconButton(
                 iconId = R.drawable.ic_location,
                 description = stringResource(R.string.locate),
-                tint = AppTheme.colors.text,
                 modifier = Modifier.padding(end = 8.dp),
-                size = 32.dp
-            ) {
-                vm.onLocatorClk()
-            }
+                tint = AppTheme.colors.text,
+                size = 32.dp,
+                onClick = onLocatorClick
+            )
         }
     }
 }
 
 @Composable
 private fun ColumnScope.PrayersSpace(
-    vm: PrayersViewModel,
-    st: PrayersState
+    prayersData: List<PrayerCardData>,
+    isLocationAvailable: Boolean,
+    onPrayerCardClick: (PID) -> Unit,
+    onReminderCardClick: (PID) -> Unit
 ) {
     Column(
         Modifier
@@ -111,45 +130,56 @@ private fun ColumnScope.PrayersSpace(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.SpaceAround
     ) {
-        st.prayersData.forEachIndexed { i, data ->
-            PrayerSpace(vm, st, i, data)
+        prayersData.forEachIndexed { i, data ->
+            PrayerSpace(
+                idx = i,
+                data = data,
+                isLocationAvailable = isLocationAvailable,
+                onPrayerCardClick = { onPrayerCardClick(it) },
+                onReminderCardClick = { onReminderCardClick(it) }
+            )
         }
     }
 }
 
 @Composable
 private fun PrayerSpace(
-    vm: PrayersViewModel,
-    st: PrayersState,
     idx: Int,
-    data: PrayerData
+    data: PrayerCardData,
+    isLocationAvailable: Boolean,
+    onPrayerCardClick: (PID) -> Unit,
+    onReminderCardClick: (PID) -> Unit
 ) {
     MyRow {
         PrayerCard(
-            vm = vm,
             idx = idx,
-            data = data
+            data = data,
+            isLocationAvailable = isLocationAvailable,
+            onPrayerCardClick = onPrayerCardClick
         )
 
         ReminderCard(
-            vm = vm,
             idx = idx,
-            reminderOffset = data.settings.reminderOffset
+            isReminderOffsetSpecified = data.isReminderOffsetSpecified,
+            reminderOffsetText = data.reminderOffset,
+            isLocationAvailable = isLocationAvailable,
+            onReminderCardClick = onReminderCardClick
         )
     }
 }
 
 @Composable
 private fun RowScope.PrayerCard(
-    vm: PrayersViewModel,
     idx: Int,
-    data: PrayerData
+    data: PrayerCardData,
+    isLocationAvailable: Boolean,
+    onPrayerCardClick: (PID) -> Unit
 ) {
     MyClickableSurface(
         modifier = Modifier.weight(1f),
         cornerRadius = 15.dp,
         padding = PaddingValues(vertical = 3.dp, horizontal = 4.dp),
-        onClick = { vm.onPrayerCardClk(PID.entries[idx]) }
+        onClick = { onPrayerCardClick(PID.entries[idx]) }
     ) {
         MyRow(
             modifier = Modifier
@@ -158,17 +188,17 @@ private fun RowScope.PrayerCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             MyText(
-                data.getText(),
+                data.text,
                 fontSize = 29.nsp,
                 fontWeight = FontWeight.Medium
             )
 
-            if (vm.location != null) {
+            if (isLocationAvailable) {
                 MyRow {
                     // Time offset
-                    if (data.settings.timeOffset != 0) {
+                    if (data.isTimeOffsetSpecified) {
                         MyText(
-                            vm.formatOffset(data.settings.timeOffset),
+                            data.timeOffset,
                             textColor = AppTheme.colors.accent,
                             modifier = Modifier.padding(end = 3.dp)
                         )
@@ -177,7 +207,12 @@ private fun RowScope.PrayerCard(
                     // Notification type
                     Icon(
                         painter = painterResource(
-                            vm.getNotificationTypeIconID(data.settings.notificationType)
+                            when (data.notificationType) {
+                                NotificationType.ATHAN -> R.drawable.ic_speaker
+                                NotificationType.NOTIFICATION -> R.drawable.ic_sound
+                                NotificationType.SILENT -> R.drawable.ic_silent
+                                NotificationType.NONE -> R.drawable.ic_block
+                            }
                         ),
                         contentDescription = stringResource(R.string.notification_image_description),
                         tint = AppTheme.colors.accent,
@@ -191,36 +226,38 @@ private fun RowScope.PrayerCard(
 
 @Composable
 private fun ReminderCard(
-    vm: PrayersViewModel,
     idx: Int,
-    reminderOffset: Int
+    isReminderOffsetSpecified: Boolean,
+    reminderOffsetText: String,
+    isLocationAvailable: Boolean,
+    onReminderCardClick: (PID) -> Unit
 ) {
     MyClickableSurface(
         modifier = Modifier.fillMaxWidth(0.19f),
         cornerRadius = 15.dp,
         padding = PaddingValues(horizontal = 3.dp),
-        onClick = { vm.onReminderCardClk(PID.entries[idx]) }
+        onClick = { onReminderCardClick(PID.entries[idx]) }
     ) {
-        if (vm.location != null) {
+        if (isLocationAvailable) {
             MyRow(
                 Modifier.padding(vertical = 19.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                if (reminderOffset != 0) {
+                if (isReminderOffsetSpecified) {
                     MyText(
-                        vm.formatOffset(reminderOffset),
-                        textColor = AppTheme.colors.accent,
-                        modifier = Modifier.padding(end = 3.dp)
+                        reminderOffsetText,
+                        Modifier.padding(end = 3.dp),
+                        textColor = AppTheme.colors.accent
                     )
                 }
 
                 Icon(
                     painter = painterResource(R.drawable.ic_add_reminder),
                     contentDescription = stringResource(R.string.notification_image_description),
+                    modifier = Modifier.size(32.dp),
                     tint =
-                        if (reminderOffset == 0) AppTheme.colors.text
-                        else AppTheme.colors.accent,
-                    modifier = Modifier.size(32.dp)
+                        if (isReminderOffsetSpecified) AppTheme.colors.text
+                        else AppTheme.colors.accent
                 )
             }
         }
@@ -229,8 +266,11 @@ private fun ReminderCard(
 
 @Composable
 private fun DayCard(
-    vm: PrayersViewModel,
-    st: PrayersState
+    dateText: String,
+    isNoDateOffset: Boolean,
+    onDateClick: () -> Unit,
+    onPreviousDayClick: () -> Unit,
+    onNextDayClick: () -> Unit,
 ) {
     MySurface(
         Modifier.padding(bottom = 8.dp)
@@ -248,15 +288,17 @@ private fun DayCard(
                 modifier = Modifier.padding(2.dp),
                 innerPadding = 10.dp,
                 tint = AppTheme.colors.text,
-                onClick = { vm.onPreviousDayClk() }
+                onClick = onPreviousDayClick
             )
 
             MyClickableText(
-                text = st.dateText,
+                text =
+                    if (isNoDateOffset) stringResource(R.string.day)
+                    else dateText,
                 fontSize = 24.sp,
                 textColor = AppTheme.colors.text,
                 innerPadding = PaddingValues(vertical = 3.dp, horizontal = 15.dp),
-                onClick = { vm.onDateClk() }
+                onClick = onDateClick
             )
 
             MyIconButton(
@@ -265,8 +307,20 @@ private fun DayCard(
                 modifier = Modifier.padding(2.dp),
                 innerPadding = 10.dp,
                 tint = AppTheme.colors.text,
-                onClick = { vm.onNextDayClk() }
+                onClick = onNextDayClick
             )
         }
+    }
+}
+
+@Composable
+private fun LocationFailedToast() {
+    val context = LocalContext.current
+    LaunchedEffect(null) {
+        Toast.makeText(
+            context,
+            context.getString(R.string.location_failed),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

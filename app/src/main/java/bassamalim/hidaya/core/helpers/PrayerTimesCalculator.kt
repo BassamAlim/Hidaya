@@ -98,11 +98,11 @@ class PrayerTimesCalculator(
 
     // return prayer times for a given date in string format
     fun getStrPrayerTimes(
-        lat: Double, lng: Double, tZone: Double = getDefaultTimeZone(),
+        lat: Double, lon: Double, tZone: Double = getDefaultTimeZone(),
         date: Calendar = Calendar.getInstance()
     ): ArrayList<String> {
         setValues(
-            lat, lng, tZone,
+            lat, lon, tZone,
             date[Calendar.YEAR], date[Calendar.MONTH] + 1, date[Calendar.DATE]
         )
 

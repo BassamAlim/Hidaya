@@ -1,7 +1,7 @@
 package bassamalim.hidaya.core.enums
 
 enum class DownloadState {
-    Downloaded,
-    Downloading,
-    NotDownloaded
+    DOWNLOADED,
+    DOWNLOADING,
+    NOT_DOWNLOADED
 }

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.prayers
+package bassamalim.hidaya.features.prayers.ui
 
 import bassamalim.hidaya.features.prayerSetting.PrayerSettings
 

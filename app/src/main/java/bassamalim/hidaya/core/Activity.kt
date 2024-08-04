@@ -112,7 +112,7 @@ class Activity : ComponentActivity() {
 
     private fun getLocationAndLaunch() {
         val locType = LocationType.valueOf(preferencesDS.getString(Preference.LocationType))
-        if (locType == LocationType.Auto) {
+        if (locType == LocationType.AUTO) {
             if (granted()) locate()
             else {
                 permissionRequestLauncher.launch(arrayOf(
@@ -139,7 +139,7 @@ class Activity : ComponentActivity() {
         val fineLoc = result[Manifest.permission.ACCESS_FINE_LOCATION]
         val coarseLoc = result[Manifest.permission.ACCESS_COARSE_LOCATION]
         if (fineLoc != null && fineLoc && coarseLoc != null && coarseLoc) {
-            preferencesDS.setString(Preference.LocationType, LocationType.Auto.name)
+            preferencesDS.setString(Preference.LocationType, LocationType.AUTO.name)
 
             locate()
 

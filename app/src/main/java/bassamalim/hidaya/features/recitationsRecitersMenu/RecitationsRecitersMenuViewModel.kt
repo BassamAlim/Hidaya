@@ -110,9 +110,9 @@ class RecitationsRecitersMenuViewModel @Inject constructor(
         for (telawa in repo.getAllVersions()) {
             downloadStates[telawa.rewayah_id] =
                 if (isDownloaded("${telawa.reciter_id}/${telawa.rewayah_id}"))
-                    DownloadState.Downloaded
+                    DownloadState.DOWNLOADED
                 else
-                    DownloadState.NotDownloaded
+                    DownloadState.NOT_DOWNLOADED
         }
 
         return downloadStates
@@ -151,8 +151,8 @@ class RecitationsRecitersMenuViewModel @Inject constructor(
         for (i in reciters.indices) {
             val reciter = reciters[i]
 
-            if ((listType == ListType.Favorite && favs[i] == 0) ||
-                (listType == ListType.Downloaded && !isDownloaded("${reciter.id}")))
+            if ((listType == ListType.FAVORITES && favs[i] == 0) ||
+                (listType == ListType.DOWNLOADED && !isDownloaded("${reciter.id}")))
                 continue
 
             val versions = filterSelectedVersions(repo.getReciterTelawat(reciter.id))
@@ -250,7 +250,7 @@ class RecitationsRecitersMenuViewModel @Inject constructor(
                 val versionId = downloading[downloadId]!!
                 _uiState.update { it.copy(
                     downloadStates = it.downloadStates.toMutableMap().apply {
-                        this[versionId] = DownloadState.Downloaded
+                        this[versionId] = DownloadState.DOWNLOADED
                     }
                 )}
 
@@ -303,7 +303,7 @@ class RecitationsRecitersMenuViewModel @Inject constructor(
     fun onDeleteClk(versionId: Int) {
         _uiState.update { it.copy(
             downloadStates = it.downloadStates.toMutableMap().apply {
-                this[versionId] = DownloadState.NotDownloaded
+                this[versionId] = DownloadState.NOT_DOWNLOADED
             }
         )}
     }
@@ -311,7 +311,7 @@ class RecitationsRecitersMenuViewModel @Inject constructor(
     fun onDownloadClk(reciterId: Int, version: Reciter.RecitationVersion) {
         _uiState.update { it.copy(
             downloadStates = it.downloadStates.toMutableMap().apply {
-                this[reciterId] = DownloadState.Downloading
+                this[reciterId] = DownloadState.DOWNLOADING
             }
         )}
 

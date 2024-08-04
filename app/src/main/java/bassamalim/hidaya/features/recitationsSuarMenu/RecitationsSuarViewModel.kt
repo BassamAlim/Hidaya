@@ -98,8 +98,8 @@ class RecitationsSuarViewModel @Inject constructor(
 
         for (i in 0..113) {
             states.add(
-                if (isDownloaded(i)) DownloadState.Downloaded
-                else DownloadState.NotDownloaded
+                if (isDownloaded(i)) DownloadState.DOWNLOADED
+                else DownloadState.NOT_DOWNLOADED
             )
         }
 
@@ -121,8 +121,8 @@ class RecitationsSuarViewModel @Inject constructor(
         val availableSuar = ver.surahList
         for (i in 0..113) {
             if (!availableSuar.contains(",${(i + 1)},") ||
-                (listType == ListType.Favorite && favs[i] == 0) ||
-                (listType == ListType.Downloaded && !isDownloaded(i))
+                (listType == ListType.FAVORITES && favs[i] == 0) ||
+                (listType == ListType.DOWNLOADED && !isDownloaded(i))
             ) continue
 
             items.add(
@@ -144,7 +144,7 @@ class RecitationsSuarViewModel @Inject constructor(
     private fun download(sura: ReciterSura) {
         _uiState.update { it.copy(
             downloadStates = it.downloadStates.toMutableList().apply {
-                this[sura.num] = DownloadState.Downloading
+                this[sura.num] = DownloadState.DOWNLOADING
             }
         )}
 
@@ -171,7 +171,7 @@ class RecitationsSuarViewModel @Inject constructor(
 
                 _uiState.update { it.copy(
                     downloadStates = it.downloadStates.toMutableList().apply {
-                        this[id] = DownloadState.Downloaded
+                        this[id] = DownloadState.DOWNLOADED
                     }
                 )}
 
@@ -213,7 +213,7 @@ class RecitationsSuarViewModel @Inject constructor(
     fun onDelete(suraNum: Int) {
         _uiState.update { it.copy(
             downloadStates = it.downloadStates.toMutableList().apply {
-                this[suraNum] = DownloadState.NotDownloaded
+                this[suraNum] = DownloadState.NOT_DOWNLOADED
             }
         )}
     }

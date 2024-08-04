@@ -7,6 +7,7 @@ import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.utils.OS.getDeviceId
 import bassamalim.hidaya.features.leaderboard.ui.RankType
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class LeaderboardDomain @Inject constructor(
@@ -30,7 +31,7 @@ class LeaderboardDomain @Inject constructor(
         else -1
     }
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
 
     fun getUserRank(items: List<UserRecord>) =
         items.indexOfFirst { it.userId == userRecord.userId } + 1

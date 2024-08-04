@@ -4,7 +4,7 @@ import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.Language as Languages
 import bassamalim.hidaya.core.enums.LocationType as LocationTypes
 import bassamalim.hidaya.core.enums.NotificationType as NotificationTypes
-import bassamalim.hidaya.core.enums.QuranViewType as QuranViewTypes
+import bassamalim.hidaya.features.quranReader.QuranViewType as QuranViewTypes
 import bassamalim.hidaya.core.enums.Theme as Themes
 import bassamalim.hidaya.core.enums.TimeFormat as TimeFormats
 
@@ -99,7 +99,7 @@ sealed class Preference(val key: String, val default: Any) {
     data object LastDailyUpdateDay : Preference("last_daily_update_day", 0)
 
     // LocationPreferences
-    data object LocationType : Preference("location_type", LocationTypes.Auto.name)
+    data object LocationType : Preference("location_type", LocationTypes.AUTO.name)
 
     // AppStatePreferences
     data object LastDBVersion : Preference("last_db_version", 1)
@@ -120,8 +120,8 @@ sealed class Preference(val key: String, val default: Any) {
     data class NotificationType(val pid: PID) : Preference(
         key = "${pid.name}_notification_type",
         default =
-            if (pid == PID.SUNRISE) NotificationTypes.None.name
-            else NotificationTypes.Notification.name
+            if (pid == PID.SUNRISE) NotificationTypes.NONE.name
+            else NotificationTypes.NOTIFICATION.name
     )
 
     // NotificationsPreferences

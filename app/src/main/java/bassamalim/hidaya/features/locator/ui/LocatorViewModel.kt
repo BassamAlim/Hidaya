@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -13,6 +12,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.LocationType
+import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.locator.domain.LocatorDomain
@@ -79,18 +79,19 @@ class LocatorViewModel @Inject constructor(
     @SuppressLint("MissingPermission")
     private fun locate() {
         LocationServices.getFusedLocationProviderClient(app)
-            .lastLocation.addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    viewModelScope.launch {
-                        domain.setLocation(
-                            type = LocationType.Auto,
-                            latitude = location.latitude,
-                            longitude = location.longitude
+            .lastLocation.addOnSuccessListener { loc: android.location.Location? ->
+                viewModelScope.launch {
+                    var location: Location? = null
+                    if (loc != null) {
+                        location = domain.setAndReturnLocation(
+                            type = LocationType.AUTO,
+                            latitude = loc.latitude,
+                            longitude = loc.longitude
                         )
                     }
-                }
 
-                launch(location)
+                    launch(location)
+                }
             }
 
         background()

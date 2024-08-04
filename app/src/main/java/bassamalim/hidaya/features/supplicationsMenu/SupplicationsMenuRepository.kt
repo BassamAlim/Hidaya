@@ -25,8 +25,8 @@ class SupplicationsMenuRepository @Inject constructor(
 
     fun getAthkar(type: String, category: Int): List<AthkarDB> =
         when (type) {
-            ListType.Favorite.name -> db.athkarDao().getFavorites()
-            ListType.Custom.name -> db.athkarDao().getList(category)
+            ListType.FAVORITES.name -> db.athkarDao().getFavorites()
+            ListType.CUSTOM.name -> db.athkarDao().getList(category)
             else -> db.athkarDao().getAll()
         }
 

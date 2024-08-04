@@ -210,7 +210,7 @@ private fun VersionCard(
 
                 MyDownloadBtn(
                     state =
-                        if (st.downloadStates.isEmpty()) DownloadState.NotDownloaded
+                        if (st.downloadStates.isEmpty()) DownloadState.NOT_DOWNLOADED
                         else st.downloadStates[version.versionId]!!,
                     path = "${vm.prefix}$reciterId/${version.versionId}",
                     size = 28.dp,

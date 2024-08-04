@@ -42,7 +42,7 @@ class QuranViewModel @Inject constructor(
         val items = ArrayList<Sura>()
         val suar = repo.getAllSuar()
         for (i in suar.indices) {
-            if (listType == ListType.Favorite && _uiState.value.favs[i] == 0) continue
+            if (listType == ListType.FAVORITES && _uiState.value.favs[i] == 0) continue
 
             items.add(
                 suar[i].let {

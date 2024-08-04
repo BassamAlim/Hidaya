@@ -47,7 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.QuranViewType.*
+import bassamalim.hidaya.features.quranReader.QuranViewType.*
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.models.Aya
 import bassamalim.hidaya.core.other.Global

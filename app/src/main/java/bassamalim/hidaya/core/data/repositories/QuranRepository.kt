@@ -2,7 +2,7 @@ package bassamalim.hidaya.core.data.repositories
 
 import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
 import bassamalim.hidaya.core.enums.AyaRepeat
-import bassamalim.hidaya.core.enums.QuranViewType
+import bassamalim.hidaya.features.quranReader.QuranViewType
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

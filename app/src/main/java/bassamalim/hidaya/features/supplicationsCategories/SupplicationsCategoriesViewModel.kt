@@ -14,20 +14,20 @@ class SupplicationsCategoriesViewModel @Inject constructor(
 
     fun onAllAthkarClick() {
         navigator.navigate(
-            Screen.AthkarList(ListType.All.name)
+            Screen.AthkarList(ListType.ALL.name)
         )
     }
 
     fun onFavoriteAthkarClick() {
         navigator.navigate(
-            Screen.AthkarList(ListType.Favorite.name)
+            Screen.AthkarList(ListType.FAVORITES.name)
         )
     }
 
     fun onCategoryClick(category: Int) {
         navigator.navigate(
             Screen.AthkarList(
-                type = ListType.Custom.name,
+                type = ListType.CUSTOM.name,
                 category = category.toString()
             )
         )

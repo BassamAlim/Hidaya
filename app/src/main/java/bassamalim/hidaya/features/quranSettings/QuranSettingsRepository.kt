@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.quranSettings
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
-import bassamalim.hidaya.core.enums.QuranViewType
+import bassamalim.hidaya.features.quranReader.QuranViewType
 import javax.inject.Inject
 
 class QuranSettingsRepository @Inject constructor(

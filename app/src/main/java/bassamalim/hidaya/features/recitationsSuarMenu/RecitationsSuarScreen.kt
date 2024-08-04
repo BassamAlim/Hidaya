@@ -93,7 +93,7 @@ private fun SuraCard(
         ) {
             MyDownloadBtn(
                 state =
-                    if (st.downloadStates.isEmpty()) DownloadState.NotDownloaded
+                    if (st.downloadStates.isEmpty()) DownloadState.NOT_DOWNLOADED
                     else st.downloadStates[sura.num],
                 path = "${vm.prefix}${sura.num}.mp3",
                 size = 28.dp,

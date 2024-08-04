@@ -65,7 +65,7 @@ class Alarms {
         val pidValues = PID.entries.toTypedArray()
         for (i in times.indices) {
             val pid = pidValues[i]
-            if (preferencesDS.getString(Preference.NotificationType(pid)) != NotificationType.None.name)
+            if (preferencesDS.getString(Preference.NotificationType(pid)) != NotificationType.NONE.name)
                 setPrayerAlarm(pid, times[i]!!)
         }
     }

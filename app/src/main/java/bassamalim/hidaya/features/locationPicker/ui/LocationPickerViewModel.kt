@@ -1,11 +1,12 @@
 package bassamalim.hidaya.features.locationPicker.ui
 
-import android.location.Location
 import android.os.Bundle
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.enums.LocationType
+import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.locationPicker.domain.LocationPickerDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -53,10 +54,13 @@ class LocationPickerViewModel @Inject constructor(
                 Bundle().apply {
                     putParcelable(
                         "location",
-                        Location("").apply {
-                            latitude = city.latitude
-                            longitude = city.longitude
-                        }
+                        Location(
+                            type = LocationType.MANUAL,
+                            latitude = city.latitude,
+                            longitude = city.longitude,
+                            countryId = city.countryId,
+                            cityId = city.id
+                        )
                     )
                 }
             )
@@ -105,7 +109,7 @@ class LocationPickerViewModel @Inject constructor(
 
     private fun fillWithCountries() {
         viewModelScope.launch {
-            val countries = domain.getCountries().map { country ->
+            val countries = domain.getCountries(language = language).map { country ->
                 LocationPickerItem(
                     id = country.id,
                     name = if (language == Language.ARABIC) country.nameAr else country.nameEn
@@ -124,7 +128,7 @@ class LocationPickerViewModel @Inject constructor(
 
     private fun fillWithCities() {
         viewModelScope.launch {
-            val cities = domain.getCities().map { city ->
+            val cities = domain.getCities(language = language).map { city ->
                 LocationPickerItem(
                     id = city.id,
                     name = if (language == Language.ARABIC) city.nameAr else city.nameEn

@@ -52,10 +52,10 @@ class BooksViewModel @Inject constructor(
 
     fun onItemClick(item: BooksDB) {
         when (_uiState.value.downloadStates[item.id]!!) {
-            DownloadState.NotDownloaded -> {
+            DownloadState.NOT_DOWNLOADED -> {
                 _uiState.update { it.copy(
                     downloadStates = it.downloadStates.toMutableMap().apply {
-                        this[item.id] = DownloadState.Downloading
+                        this[item.id] = DownloadState.DOWNLOADING
                     }
                 )}
 
@@ -64,13 +64,13 @@ class BooksViewModel @Inject constructor(
                     onDownloadedCallback = {
                         _uiState.update { it.copy(
                             downloadStates = it.downloadStates.toMutableMap().apply {
-                                this[item.id] = DownloadState.Downloaded
+                                this[item.id] = DownloadState.DOWNLOADED
                             }
                         )}
                     }
                 )
             }
-            DownloadState.Downloaded -> {
+            DownloadState.DOWNLOADED -> {
                 navigator.navigate(
                     Screen.BookChapters(
                         bookId = item.id.toString(),
@@ -80,7 +80,7 @@ class BooksViewModel @Inject constructor(
                     )
                 )
             }
-            DownloadState.Downloading -> {
+            DownloadState.DOWNLOADING -> {
                 _uiState.update { it.copy(
                     shouldShowWait = it.shouldShowWait + 1
                 )}
@@ -90,10 +90,10 @@ class BooksViewModel @Inject constructor(
 
     fun onDownloadButtonClick(item: BooksDB) {
         when (_uiState.value.downloadStates[item.id]!!) {
-            DownloadState.NotDownloaded -> {
+            DownloadState.NOT_DOWNLOADED -> {
                 _uiState.update { it.copy(
                     downloadStates = it.downloadStates.toMutableMap().apply {
-                        this[item.id] = DownloadState.Downloading
+                        this[item.id] = DownloadState.DOWNLOADING
                     }
                 )}
 
@@ -102,22 +102,22 @@ class BooksViewModel @Inject constructor(
                     onDownloadedCallback = {
                         _uiState.update { it.copy(
                             downloadStates = it.downloadStates.toMutableMap().apply {
-                                this[item.id] = DownloadState.Downloaded
+                                this[item.id] = DownloadState.DOWNLOADED
                             }
                         )}
                     }
                 )
             }
-            DownloadState.Downloaded -> {
+            DownloadState.DOWNLOADED -> {
                 _uiState.update { it.copy(
                     downloadStates = it.downloadStates.toMutableMap().apply {
-                        this[item.id] = DownloadState.NotDownloaded
+                        this[item.id] = DownloadState.NOT_DOWNLOADED
                     }
                 )}
 
                 domain.deleteBook(item.id)
             }
-            DownloadState.Downloading -> {
+            DownloadState.DOWNLOADING -> {
                 _uiState.update { it.copy(
                     shouldShowWait = it.shouldShowWait + 1
                 )}

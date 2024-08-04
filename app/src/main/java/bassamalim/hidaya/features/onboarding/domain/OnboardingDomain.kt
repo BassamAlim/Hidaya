@@ -1,14 +1,14 @@
 package bassamalim.hidaya.features.onboarding.domain
 
-import bassamalim.hidaya.features.onboarding.data.OnboardingRepository
+import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import javax.inject.Inject
 
 class OnboardingDomain @Inject constructor(
-    private val repository: OnboardingRepository
+    private val appStateRepo: AppStateRepository
 ) {
 
     suspend fun unsetFirstTime() {
-        repository.unsetFirstTime()
+        appStateRepo.setIsOnboardingCompleted(true)
     }
 
 }

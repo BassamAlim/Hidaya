@@ -79,9 +79,9 @@ object PTUtils {
         locationType: LocationType,
         timeZone: String = "",
     ) = when (locationType) {
-        LocationType.Auto -> TimeZone.getDefault().getOffset(Date().time) / 3600000
-        LocationType.Manual -> TimeZone.getTimeZone(timeZone).getOffset(Date().time) / 3600000
-        LocationType.None -> 0
+        LocationType.AUTO -> TimeZone.getDefault().getOffset(Date().time) / 3600000
+        LocationType.MANUAL -> TimeZone.getTimeZone(timeZone).getOffset(Date().time) / 3600000
+        LocationType.NONE -> 0
     }
 
     fun cancelAlarm(context: Context, pid: PID) {

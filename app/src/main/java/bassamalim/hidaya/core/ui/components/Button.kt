@@ -367,19 +367,19 @@ fun MyDownloadBtn(
         modifier,
         contentAlignment = Alignment.Center
     ) {
-        if (state == DownloadState.Downloading)
+        if (state == DownloadState.DOWNLOADING)
             MyCircularProgressIndicator(Modifier.size(size))
         else {
             MyIconButton(
                 iconId =
-                    if (state == DownloadState.Downloaded) R.drawable.ic_downloaded
+                    if (state == DownloadState.DOWNLOADED) R.drawable.ic_downloaded
                     else R.drawable.ic_download,
                 description = stringResource(R.string.download_description),
                 size = size,
                 innerPadding = innerPadding,
                 tint = tint,
                 onClick = {
-                    if (state == DownloadState.Downloaded) {
+                    if (state == DownloadState.DOWNLOADED) {
                         deleted()
                         FileUtils.deleteFile(context, path)
                     }

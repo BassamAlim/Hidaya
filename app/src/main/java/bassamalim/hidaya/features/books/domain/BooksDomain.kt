@@ -21,10 +21,10 @@ class BooksDomain @Inject constructor(
     fun getDownloadStates(books: List<BooksDB>) =
         books.associate {
             it.id to if (booksRepo.isDownloaded(it.id)) {
-                if (booksRepo.isDownloading(it.id)) DownloadState.Downloading
-                else DownloadState.Downloaded
+                if (booksRepo.isDownloading(it.id)) DownloadState.DOWNLOADING
+                else DownloadState.DOWNLOADED
             }
-            else DownloadState.NotDownloaded
+            else DownloadState.NOT_DOWNLOADED
         }
 
     fun download(

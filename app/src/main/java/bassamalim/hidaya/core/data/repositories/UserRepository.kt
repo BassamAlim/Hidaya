@@ -2,15 +2,7 @@ package bassamalim.hidaya.core.data.repositories
 
 import android.util.Log
 import bassamalim.hidaya.core.data.Response
-import bassamalim.hidaya.core.data.database.daos.CityDao
-import bassamalim.hidaya.core.data.database.daos.CountryDao
-import bassamalim.hidaya.core.data.database.dbs.CityDB
-import bassamalim.hidaya.core.data.database.dbs.CountryDB
-import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
 import bassamalim.hidaya.core.data.preferences.dataSources.UserPreferencesDataSource
-import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.LocationType
-import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.other.Global
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,32 +12,19 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
-    private val appSettingsPrefsDataSource: AppSettingsPreferencesDataSource,
     private val userPreferencesDataSource: UserPreferencesDataSource,
     private val firestore: FirebaseFirestore,
-    private val countryDao: CountryDao,
-    private val cityDao: CityDao
 ) {
-
-    fun getLocation() = userPreferencesDataSource.flow.map {
-        it.location
-    }
-    suspend fun setLocation(location: Location) {
-        userPreferencesDataSource.update { it.copy(
-            location = location
-        )}
-    }
 
     fun getLocalRecord() = userPreferencesDataSource.flow.map {
         it.userRecord
     }
+
     suspend fun setLocalRecord(userRecord: UserRecord) {
         userPreferencesDataSource.update { it.copy(
             userRecord = userRecord
         )}
     }
-
-    fun getTimeZone(cityId: Int) = cityDao.getCity(cityId).timeZone
 
     suspend fun getRemoteRecord(deviceId: String): Response<UserRecord> {
         return try {
@@ -165,44 +144,6 @@ class UserRepository @Inject constructor(
                     Response.Error("Error fetching data")
                 }
             }
-    }
-
-    suspend fun getCountries(): List<CountryDB> {
-        val language = appSettingsPrefsDataSource.flow.map {
-            it.language
-        }.first()
-
-        return countryDao.getAll().sortedBy { countryDB: CountryDB ->
-            if (language == Language.ENGLISH) countryDB.nameEn
-            else countryDB.nameAr
-        }
-    }
-
-    suspend fun getCities(countryId: Int): List<CityDB> {
-        val language = appSettingsPrefsDataSource.flow.map {
-            it.language
-        }.first()
-
-        return if (language == Language.ENGLISH)
-            cityDao.getTopEn(countryId, "").toList()
-        else
-            cityDao.getTopAr(countryId, "").toList()
-    }
-
-    fun getCity(cityId: Int) = cityDao.getCity(cityId)
-
-    suspend fun setLocation(countryId: Int, cityId: Int) {
-        val city = getCity(cityId)
-
-        userPreferencesDataSource.update { it.copy(
-            location = Location(
-                type = LocationType.Manual,
-                latitude = city.latitude,
-                longitude = city.longitude,
-                countryId = countryId,
-                cityId = cityId
-            )
-        )}
     }
 
 }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import bassamalim.hidaya.core.data.Response
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
@@ -20,7 +21,8 @@ import kotlin.math.max
 class HomeDomain @Inject constructor(
     private val app: Application,
     private val appSettingsRepo: AppSettingsRepository,
-    private val prayersRepository: PrayersRepository,
+    private val prayersRepo: PrayersRepository,
+    private val locationRepo: LocationRepository,
     private val quranRepo: QuranRepository,
     private val userRepo: UserRepository
 ) {
@@ -44,7 +46,7 @@ class HomeDomain @Inject constructor(
         val loc = location.first()!!
         return prayerTimesCalculator.getStrPrayerTimes(
             lat = loc.latitude,
-            lng = loc.longitude,
+            lon = loc.longitude,
             tZone = getUTCOffset().toDouble(),
             date = Calendar.getInstance()
         )
@@ -78,7 +80,7 @@ class HomeDomain @Inject constructor(
 
         return prayerTimesCalculator.getStrPrayerTimes(
             lat = loc.latitude,
-            lng = loc.longitude,
+            lon = loc.longitude,
             tZone = utcOffset.toDouble(),
             date = tomorrow
         )[0]
@@ -94,15 +96,15 @@ class HomeDomain @Inject constructor(
     }
 
     private suspend fun getPrayerTimesCalculator() = PrayerTimesCalculator(
-        settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+        settings = prayersRepo.getPrayerTimesCalculatorSettings().first(),
         timeFormat = appSettingsRepo.getTimeFormat().first(),
-        timeOffsets = prayersRepository.getTimeOffsets().first(),
+        timeOffsets = prayersRepo.getTimeOffsets().first(),
         numeralsLanguage = appSettingsRepo.getNumeralsLanguage().first()
     )
 
     private suspend fun getUTCOffset() = PTUtils.getUTCOffset(
         locationType = location.first()!!.type,
-        timeZone = userRepo.getTimeZone(location.first()!!.cityId)
+        timeZone = locationRepo.getTimeZone(location.first()!!.cityId)
     )
 
     suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
@@ -113,9 +115,9 @@ class HomeDomain @Inject constructor(
 
     fun getLocalRecord() = userRepo.getLocalRecord()
 
-    private fun getLocation() = userRepo.getLocation()
+    private fun getLocation() = locationRepo.getLocation()
 
-    fun getPrayerNames() = prayersRepository.getPrayerNames()
+    fun getPrayerNames() = prayersRepo.getPrayerNames()
 
     suspend fun syncRecords(): Boolean {
         if (!isInternetConnected(app)) return false
