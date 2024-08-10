@@ -36,7 +36,7 @@ import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.features.home.ui.HomeUI
 import bassamalim.hidaya.features.more.ui.MoreUI
 import bassamalim.hidaya.features.prayers.ui.PrayersUI
-import bassamalim.hidaya.features.quran.QuranUI
+import bassamalim.hidaya.features.quran.ui.QuranUI
 import bassamalim.hidaya.features.supplicationsCategories.AthkarScreen
 
 @Composable

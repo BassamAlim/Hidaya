@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quran
+package bassamalim.hidaya.features.quran.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,15 +36,9 @@ import bassamalim.hidaya.core.ui.components.TutorialDialog
 
 @Composable
 fun QuranUI(
-    vm: QuranViewModel
+    viewModel: QuranViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
-    val ctx = LocalContext.current
-
-    DisposableEffect(key1 = vm) {
-        vm.onStart()
-        onDispose {}
-    }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(
         title = "",
@@ -53,23 +46,29 @@ fun QuranUI(
         fab = {
             MyFloatingActionButton(
                 iconId = R.drawable.ic_quran_search,
-                description = stringResource(R.string.search_in_quran)
-            ) {
-                vm.onQuranSearcherClick()
-            }
+                description = stringResource(R.string.search_in_quran),
+                onClick = viewModel::onQuranSearcherClick
+            )
         }
     ) {
         Column(
             Modifier.fillMaxSize()
         ) {
             MySquareButton(
-                text = st.bookmarkedPageText,
-                fontSize = 18.sp,
+                text = if (state.bookmarkPageText == null) {
+                    stringResource(R.string.no_bookmarked_page)
+                } else {
+                    stringResource(R.string.bookmarked_page) +
+                            " ${stringResource(R.string.page)}" +
+                            " ${state.bookmarkPageText}," +
+                            " ${stringResource(R.string.sura)}" +
+                            " ${state.bookmarkSuraText}"
+                },
                 modifier = Modifier.fillMaxWidth(),
-                innerPadding = PaddingValues(vertical = 4.dp)
-            ) {
-                vm.onBookmarkedPageClick()
-            }
+                fontSize = 18.sp,
+                innerPadding = PaddingValues(vertical = 4.dp),
+                onClick = viewModel::onBookmarkedPageClick
+            )
 
             TabLayout(
                 pageNames = listOf(
@@ -78,43 +77,39 @@ fun QuranUI(
                 ),
                 searchComponent = {
                     SearchComponent(
-                        value = st.searchText,
+                        value = state.searchText,
                         hint = stringResource(R.string.quran_query_hint),
                         modifier = Modifier.fillMaxWidth(),
-                        onValueChange = { vm.onSearchTextChange(it) },
-                        onSubmit = { vm.onSearchSubmit() }
+                        onValueChange = viewModel::onSearchTextChange,
+                        onSubmit = viewModel::onSearchSubmit
                     )
                 }
             ) { page ->
-                Tab(vm, st, vm.getItems(page))
+                Tab(
+                    items = viewModel.getItems(page),
+                    favs = state.favs,
+                    onSuraClick = viewModel::onSuraClick,
+                    onFavClick = viewModel::onFavClick
+                )
             }
         }
     }
 
     TutorialDialog(
         textResId = R.string.quran_fragment_tips,
-        shown = st.tutorialDialogShown
-    ) {
-        vm.onTutorialDialogDismiss(it)
-    }
+        shown = state.isTutorialDialogShown,
+        onDismiss = viewModel::onTutorialDialogDismiss
+    )
 
-    if (st.shouldShowPageDNE != 0) {
-        LaunchedEffect(st.shouldShowPageDNE) {
-                Toast.makeText(
-                    ctx,
-                    ctx.getString(R.string.page_does_not_exist),
-                    Toast.LENGTH_SHORT
-                ).show()
-        }
-    }
-
+    if (state.shouldShowPageDoesNotExist != 0) PageDoesNotExistToast()
 }
 
 @Composable
 private fun Tab(
-    vm: QuranViewModel,
-    st: QuranState,
-    items: List<Sura>
+    items: List<Sura>,
+    favs: Map<Int, Boolean>,
+    onSuraClick: (Int) -> Unit,
+    onFavClick: (Int) -> Unit
 ) {
     MyLazyColumn(
         lazyList = {
@@ -122,7 +117,7 @@ private fun Tab(
                 MyClickableSurface(
                     modifier = Modifier.padding(2.dp),
                     elevation = 6.dp,
-                    onClick = { vm.onSuraClick(item.id) }
+                    onClick = { onSuraClick(item.id) }
                 ) {
                     Row(
                         modifier = Modifier.padding(
@@ -140,18 +135,31 @@ private fun Tab(
                         )
 
                         MyText(
-                            text = item.suraName,
+                            text = "${stringResource(R.string.sura)} ${item.suraName}",
                             modifier = Modifier
                                 .weight(1F)
                                 .padding(10.dp)
                         )
 
-                        MyFavBtn(st.favs[item.id]) {
-                            vm.onFavClick(item.id)
-                        }
+                        MyFavBtn(
+                            fav = favs[item.id]!!,
+                            onClick = { onFavClick(item.id) }
+                        )
                     }
                 }
             }
         }
     )
+}
+
+@Composable
+fun PageDoesNotExistToast() {
+    val context = LocalContext.current
+    LaunchedEffect(null) {
+        Toast.makeText(
+            context,
+            context.getString(R.string.page_does_not_exist),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
 }

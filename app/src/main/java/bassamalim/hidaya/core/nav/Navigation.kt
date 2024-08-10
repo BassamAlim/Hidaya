@@ -37,7 +37,7 @@ import bassamalim.hidaya.features.prayerSettings.ui.PrayerSettingsDialog
 import bassamalim.hidaya.features.qibla.ui.QiblaUI
 import bassamalim.hidaya.features.quiz.ui.QuizUI
 import bassamalim.hidaya.features.quizLobby.QuizLobbyUI
-import bassamalim.hidaya.features.quizResult.QuizResultUI
+import bassamalim.hidaya.features.quizResult.ui.QuizResultUI
 import bassamalim.hidaya.features.quranReader.QuranViewerUI
 import bassamalim.hidaya.features.quranSearcher.QuranSearcherUI
 import bassamalim.hidaya.features.radio.RadioClientUI

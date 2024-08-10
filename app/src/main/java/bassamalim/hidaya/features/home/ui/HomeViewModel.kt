@@ -4,6 +4,7 @@ import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
@@ -30,12 +31,12 @@ class HomeViewModel @Inject constructor(
 
     lateinit var numeralsLanguage: Language
     private val prayerNames = domain.getPrayerNames()
-    private var times: Array<Calendar?> = arrayOfNulls(6)
-    private var formattedTimes: List<String> = arrayListOf()
+    private var times: Map<PID, Calendar?> = emptyMap()
+    private var formattedTimes: Map<PID, String> = emptyMap()
     private var tomorrowFajr: Calendar = Calendar.getInstance()
     private var formattedTomorrowFajr: String = ""
     private var timer: CountDownTimer? = null
-    private var upcomingPrayerIndex = 0
+    private var upcomingPrayer: PID? = null
     private var tomorrow = false
     private var counterCounter = 0
 
@@ -105,22 +106,22 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun setupUpcomingPrayer() {
-        upcomingPrayerIndex = domain.getUpcomingPrayerIndex(times)
+        upcomingPrayer = domain.getUpcomingPrayer(times)
 
         tomorrow = false
-        if (upcomingPrayerIndex == -1) {
+        if (upcomingPrayer == null) {
             tomorrow = true
-            upcomingPrayerIndex = 0
+            upcomingPrayer = PID.FAJR
         }
 
-        var till = times[upcomingPrayerIndex]!!.timeInMillis
+        var till = times[upcomingPrayer]!!.timeInMillis
         if (tomorrow) till = tomorrowFajr.timeInMillis
 
         _uiState.update { it.copy(
-            upcomingPrayerName = prayerNames[upcomingPrayerIndex],
+            upcomingPrayerName = prayerNames[upcomingPrayer]!!,
             upcomingPrayerTime =
                 if (tomorrow) formattedTomorrowFajr
-                else formattedTimes[upcomingPrayerIndex]
+                else formattedTimes[upcomingPrayer]!!
         )}
 
         count(till)
@@ -147,8 +148,10 @@ class HomeViewModel @Inject constructor(
                         timeFormat = true
                     ),
                     timeFromPreviousPrayer =
-                        if (upcomingPrayerIndex == 0) -1L
-                        else times[upcomingPrayerIndex - 1]!!.timeInMillis,
+                        if (upcomingPrayer == PID.FAJR) -1L
+                        else times[PID.entries[
+                            PID.entries.indexOf(upcomingPrayer) - 1
+                        ]]!!.timeInMillis,
                     timeToNextPrayer = millisUntilFinished
                 )}
             }

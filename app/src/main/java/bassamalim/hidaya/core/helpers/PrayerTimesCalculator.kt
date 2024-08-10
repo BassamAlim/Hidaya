@@ -9,6 +9,7 @@ import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.models.PrayerTimesCalculatorSettings
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import java.util.Calendar
+import java.util.SortedMap
 import java.util.TimeZone
 import kotlin.math.abs
 import kotlin.math.acos
@@ -67,7 +68,7 @@ class PrayerTimesCalculator(
     fun getPrayerTimes(
         lat: Double, lon: Double, tZone: Double = getDefaultTimeZone(),
         date: Calendar = Calendar.getInstance()
-    ): Array<Calendar?> {
+    ): SortedMap<PID, Calendar?> {
         setValues(
             lat = lat,
             lng = lon,
@@ -93,14 +94,21 @@ class PrayerTimesCalculator(
             cals[i] = cal
         }
 
-        return cals
+        return sortedMapOf(
+            PID.FAJR to cals[0],
+            PID.SUNRISE to cals[1],
+            PID.DHUHR to cals[2],
+            PID.ASR to cals[3],
+            PID.MAGHRIB to cals[5],
+            PID.ISHAA to cals[6]
+        )
     }
 
     // return prayer times for a given date in string format
     fun getStrPrayerTimes(
         lat: Double, lon: Double, tZone: Double = getDefaultTimeZone(),
         date: Calendar = Calendar.getInstance()
-    ): ArrayList<String> {
+    ): SortedMap<PID, String> {
         setValues(
             lat, lon, tZone,
             date[Calendar.YEAR], date[Calendar.MONTH] + 1, date[Calendar.DATE]
@@ -114,7 +122,14 @@ class PrayerTimesCalculator(
         for (i in times.indices)
             times[i] = translateNums(numeralsLanguage, times[i], true)
 
-        return times
+        return sortedMapOf(
+            PID.FAJR to times[0],
+            PID.SUNRISE to times[1],
+            PID.DHUHR to times[2],
+            PID.ASR to times[3],
+            PID.MAGHRIB to times[4],
+            PID.ISHAA to times[5]
+        )
     }
 
     private fun setValues(

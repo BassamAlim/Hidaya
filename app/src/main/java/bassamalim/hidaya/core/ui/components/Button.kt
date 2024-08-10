@@ -334,15 +334,13 @@ fun MySquareButton(
 
 @Composable
 fun MyFavBtn(
-    fav: Int,
+    fav: Boolean,
     onClick: () -> Unit
 ) {
-    val iconId =
-        if (fav == 1) R.drawable.ic_star
-        else R.drawable.ic_star_outline
-
     MyIconButton(
-        iconId = iconId,
+        iconId =
+            if (fav) R.drawable.ic_star
+            else R.drawable.ic_star_outline,
         description = "Favorite",
         onClick = onClick,
         tint = AppTheme.colors.accent,

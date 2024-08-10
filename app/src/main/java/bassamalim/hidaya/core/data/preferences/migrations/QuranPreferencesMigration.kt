@@ -7,6 +7,7 @@ import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.preferences.objects.QuranPreferences
 import bassamalim.hidaya.core.enums.AyaRepeat
+import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.features.quranReader.QuranViewType
 import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
@@ -52,13 +53,15 @@ object QuranPreferencesMigration {
                     key = Preference.StopOnSuraEnd.key,
                     defValue = Preference.StopOnSuraEnd.default as Boolean
                 ),
-                bookmarkedPage = sharedPrefs.getInt(
-                    key = Preference.BookmarkedPage.key,
-                    defValue = Preference.BookmarkedPage.default as Int
-                ),
-                bookmarkedSura = sharedPrefs.getInt(
-                    key = Preference.BookmarkedSura.key,
-                    defValue = Preference.BookmarkedSura.default as Int
+                pageBookmark = QuranPageBookmark(
+                    pageNum = sharedPrefs.getInt(
+                        key = Preference.BookmarkedPage.key,
+                        defValue = Preference.BookmarkedPage.default as Int
+                    ),
+                    suraId = sharedPrefs.getInt(
+                        key = Preference.BookmarkedSura.key,
+                        defValue = Preference.BookmarkedSura.default as Int
+                    )
                 ),
                 searchMaxMatches = 10,
                 shouldShowMenuTutorial = sharedPrefs.getBoolean(

@@ -18,9 +18,9 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun QuizLobbyUI(
-    vm: QuizLobbyViewModel
+    viewModel: QuizLobbyViewModel
 ) {
-    MyScaffold(stringResource(R.string.quiz_title)) {
+    MyScaffold(title = stringResource(R.string.quiz_title)) {
         Column(
             Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -31,10 +31,9 @@ fun QuizLobbyUI(
                 innerPadding = PaddingValues(vertical = 10.dp, horizontal = 25.dp),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                textColor = AppTheme.colors.accent
-            ) {
-                vm.onStartQuizClick()
-            }
+                textColor = AppTheme.colors.accent,
+                onClick = viewModel::onStartQuizClick
+            )
         }
     }
 }

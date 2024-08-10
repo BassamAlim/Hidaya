@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quizResult
+package bassamalim.hidaya.features.quizResult.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,11 +31,11 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun QuizResultUI(
-    vm: QuizResultViewModel
+    viewModel: QuizResultViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyScaffold(stringResource(R.string.quiz_result)) {
+    MyScaffold(title = stringResource(R.string.quiz_result)) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -50,17 +50,17 @@ fun QuizResultUI(
                 contentAlignment = Alignment.Center
             ) {
                 MyText(
-                    text = "${stringResource(R.string.your_score_is)} ${st.score}%",
+                    "${stringResource(R.string.your_score_is)} ${state.score}%",
+                    Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    textColor = AppTheme.colors.onPrimary,
-                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
+                    textColor = AppTheme.colors.onPrimary
                 )
             }
 
             MyLazyColumn(
                 lazyList = {
-                    items(st.questions) { item ->
+                    items(state.questions) { item ->
                         Question(item)
                     }
                 }
@@ -78,15 +78,15 @@ fun Question(question: QuizResultQuestion) {
         ) {
             // Question number
             MyText(
-                text = "${stringResource(R.string.question)} ${question.questionNum+1}",
-                fontSize = 16.sp,
-                modifier = Modifier.padding(bottom = 3.dp)
+                "${stringResource(R.string.question)} ${question.questionNum+1}",
+                Modifier.padding(bottom = 3.dp),
+                fontSize = 16.sp
             )
 
             // Question text
             MyText(
-                text = question.questionText,
-                modifier = Modifier.padding(vertical = 3.dp)
+                question.questionText,
+                Modifier.padding(vertical = 3.dp)
             )
 
             MyHorizontalDivider(thickness = 2.dp)
@@ -105,8 +105,14 @@ fun Question(question: QuizResultQuestion) {
 }
 
 @Composable
-private fun Answer(ansNum: Int, ansText: String, correctAns: Int, chosenAns: Int) {
-    if (ansNum != 0) MyHorizontalDivider(modifier = Modifier.padding(horizontal = 5.dp))
+private fun Answer(
+    ansNum: Int,
+    ansText: String,
+    correctAns: Int,
+    chosenAns: Int
+) {
+    if (ansNum != 0)
+        MyHorizontalDivider(Modifier.padding(horizontal = 5.dp))
 
     Row(
         Modifier
@@ -115,7 +121,10 @@ private fun Answer(ansNum: Int, ansText: String, correctAns: Int, chosenAns: Int
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        MyText(text = ansText, fontSize = 18.sp)
+        MyText(
+            ansText,
+            fontSize = 18.sp
+        )
 
         if (ansNum == chosenAns || ansNum == correctAns) {
             Image(

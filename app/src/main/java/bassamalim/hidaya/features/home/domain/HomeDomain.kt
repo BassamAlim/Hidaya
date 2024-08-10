@@ -9,12 +9,14 @@ import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
+import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.helpers.PrayerTimesCalculator
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.utils.OS.getDeviceId
 import bassamalim.hidaya.core.utils.PTUtils
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
+import java.util.SortedMap
 import javax.inject.Inject
 import kotlin.math.max
 
@@ -30,7 +32,7 @@ class HomeDomain @Inject constructor(
     private val deviceId = getDeviceId(app)
     val location = getLocation()
 
-    suspend fun getTimes(): Array<Calendar?> {
+    suspend fun getTimes(): SortedMap<PID, Calendar?> {
         val prayerTimesCalculator = getPrayerTimesCalculator()
         val loc = location.first()!!
         return prayerTimesCalculator.getPrayerTimes(
@@ -41,7 +43,7 @@ class HomeDomain @Inject constructor(
         )
     }
 
-    suspend fun getStrTimes(): ArrayList<String> {
+    suspend fun getStrTimes(): SortedMap<PID, String> {
         val prayerTimesCalculator = getPrayerTimesCalculator()
         val loc = location.first()!!
         return prayerTimesCalculator.getStrPrayerTimes(
@@ -64,7 +66,7 @@ class HomeDomain @Inject constructor(
             lon = loc.longitude,
             tZone = getUTCOffset().toDouble(),
             date = tomorrow
-        )[0]!!
+        )[PID.FAJR]!!
         tomorrowFajr[Calendar.DATE]++
 
         return tomorrowFajr
@@ -83,16 +85,16 @@ class HomeDomain @Inject constructor(
             lon = loc.longitude,
             tZone = utcOffset.toDouble(),
             date = tomorrow
-        )[0]
+        )[PID.FAJR]!!
     }
 
-    fun getUpcomingPrayerIndex(times: Array<Calendar?>): Int {
+    fun getUpcomingPrayer(times: Map<PID, Calendar?>): PID? {
         val currentMillis = System.currentTimeMillis()
-        for (i in times.indices) {
-            val millis = times[i]!!.timeInMillis
-            if (millis > currentMillis) return i
+        for (prayer in times.entries) {
+            val millis = prayer.value!!.timeInMillis
+            if (millis > currentMillis) return prayer.key
         }
-        return -1
+        return null
     }
 
     private suspend fun getPrayerTimesCalculator() = PrayerTimesCalculator(

@@ -1,6 +1,7 @@
 package bassamalim.hidaya.core.data.preferences.objects
 
 import bassamalim.hidaya.core.enums.AyaRepeat
+import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.features.quranReader.QuranViewType
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
@@ -15,8 +16,7 @@ data class QuranPreferences(
     val ayaRepeat: AyaRepeat = AyaRepeat.NONE,
     val shouldStopOnSuraEnd: Boolean = false,
     val shouldStopOnPageEnd: Boolean = false,
-    val bookmarkedPage: Int = 1,
-    val bookmarkedSura: Int = 1,
+    val pageBookmark: QuranPageBookmark? = null,
     val searchMaxMatches: Int = 10,
     val shouldShowMenuTutorial: Boolean = true,
     val shouldShowReaderTutorial: Boolean = true,
