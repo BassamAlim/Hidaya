@@ -17,8 +17,8 @@ import androidx.room.PrimaryKey
 )
 data class Remembrance(
     @field:ColumnInfo(name = "id") @field:PrimaryKey val id: Int,
-    @field:ColumnInfo(name = "category_id") val category_id: Int,
-    @field:ColumnInfo(name = "name_ar") val name_ar: String?,
-    @field:ColumnInfo(name = "name_en") val name_en: String?,
-    @field:ColumnInfo(name = "is_favorite") var is_favorite: Int
+    @field:ColumnInfo(name = "category_id") val categoryId: Int,
+    @field:ColumnInfo(name = "name_ar") val nameAr: String?,
+    @field:ColumnInfo(name = "name_en") val nameEn: String?,
+    @field:ColumnInfo(name = "is_favorite") var isFavorite: Int
 )

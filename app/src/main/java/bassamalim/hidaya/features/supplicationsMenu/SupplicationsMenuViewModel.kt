@@ -40,15 +40,15 @@ class SupplicationsMenuViewModel @Inject constructor(
             if (isEng && !hasEn(thikr)) continue
 
             val name =
-                if (isEng) thikr.name_en!!
-                else thikr.name_ar!!
+                if (isEng) thikr.nameEn!!
+                else thikr.nameAr!!
 
             items.add(
                 AthkarItem(
                     id = thikr.id,
-                    category_id = thikr.category_id,
+                    category_id = thikr.categoryId,
                     name = name,
-                    favorite = mutableIntStateOf(thikr.is_favorite)
+                    favorite = mutableIntStateOf(thikr.isFavorite)
                 )
             )
         }
