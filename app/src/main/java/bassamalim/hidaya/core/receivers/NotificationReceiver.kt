@@ -29,7 +29,7 @@ import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.utils.ActivityUtils
-import bassamalim.hidaya.features.quranReader.QuranTarget
+import bassamalim.hidaya.features.quranReader.domain.QuranTarget
 import java.util.Calendar
 import kotlin.math.abs
 

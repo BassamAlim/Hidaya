@@ -205,6 +205,6 @@ class BooksRepository @Inject constructor(
 
     fun getBookTitles(language: Language): List<String> =
         if (language == Language.ENGLISH) booksDao.getTitlesEn()
-        else booksDao.getTitles()
+        else booksDao.getTitlesAr()
 
 }

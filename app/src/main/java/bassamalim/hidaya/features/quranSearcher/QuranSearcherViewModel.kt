@@ -11,7 +11,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.quranReader.QuranTarget
+import bassamalim.hidaya.features.quranReader.domain.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -50,7 +50,7 @@ class QuranSearcherViewModel @Inject constructor(
 
         for (i in allAyat.indices) {
             val a = allAyat[i]
-            val string = a.clearAyaText
+            val string = a.plainText
 
             val matcher = Pattern.compile(searchText).matcher(string)
             if (matcher.find()) {
@@ -69,11 +69,11 @@ class QuranSearcherViewModel @Inject constructor(
                 matches.add(
                     QuranSearcherMatch(
                         id = a.id,
-                        ayaNum = a.ayaNum,
+                        ayaNum = a.num,
                         suraName = names[a.suraNum-1],
-                        pageNum = a.page,
+                        pageNum = a.pageNum,
                         text = annotatedString,
-                        tafseer = a.tafseer
+                        tafseer = a.interpretation
                     )
                 )
 

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.database.dbs.BooksDB
+import bassamalim.hidaya.core.data.database.models.Book
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.components.MyBtnSurface
 import bassamalim.hidaya.core.ui.components.MyCircularProgressIndicator
@@ -79,13 +79,13 @@ fun BooksUI(
 
 @Composable
 private fun BookCard(
-    item: BooksDB,
+    item: Book,
     downloadState: DownloadState,
-    onItemClick: (BooksDB) -> Unit,
-    onDownloadButtonClick: (BooksDB) -> Unit,
+    onItemClick: (Book) -> Unit,
+    onDownloadButtonClick: (Book) -> Unit,
 ) {
     MyBtnSurface(
-        text = item.title,
+        text = item.titleAr,
         innerVPadding = 15.dp,
         fontSize = 22.sp,
         modifier = Modifier.padding(vertical = 2.dp),

@@ -16,9 +16,9 @@ class RecitationsSuarRepository @Inject constructor(
     private val language = preferencesDS.getLanguage()
     fun getLanguage() = language
 
-    fun getSuraNames() = db.suarDao().getNames()
+    fun getSuraNames() = db.suarDao().getDecoratedNamesAr()
 
-    fun getSearchNames() = db.suarDao().getSearchNames()
+    fun getSearchNames() = db.suarDao().getPlainNamesAr()
 
     fun getReciterName(id: Int) =
         if (language == Language.ARABIC) db.telawatRecitersDao().getNameAr(id)
@@ -27,14 +27,14 @@ class RecitationsSuarRepository @Inject constructor(
     fun getVersion(reciterId: Int, versionId: Int) =
         db.telawatRewayatDao().getVersion(reciterId, versionId)
 
-    fun getFavs() = db.suarDao().getFavs()
+    fun getFavs() = db.suarDao().observeIsFavorites()
 
     fun setFav(suraNum: Int, value: Int) {
-        db.suarDao().setFav(suraNum, value)
+        db.suarDao().setIsFavorite(suraNum, value)
     }
 
     fun updateFavorites() {
-        val suarJson = gson.toJson(db.suarDao().getFavs())
+        val suarJson = gson.toJson(db.suarDao().observeIsFavorites())
         preferencesDS.setString(Preference.FavoriteSuar, suarJson)
     }
 

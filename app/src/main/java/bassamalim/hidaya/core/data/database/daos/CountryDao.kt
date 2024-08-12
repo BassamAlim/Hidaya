@@ -2,13 +2,13 @@ package bassamalim.hidaya.core.data.database.daos
 
 import androidx.room.Dao
 import androidx.room.Query
-import bassamalim.hidaya.core.data.database.dbs.CountryDB
+import bassamalim.hidaya.core.data.database.models.Country
 
 @Dao
 interface CountryDao {
 
     @Query("SELECT * FROM countries")
-    fun getAll(): List<CountryDB>
+    fun getAll(): List<Country>
 
     @Query("SELECT name_ar FROM countries WHERE id = :id")
     fun getNameAr(id: Int): String

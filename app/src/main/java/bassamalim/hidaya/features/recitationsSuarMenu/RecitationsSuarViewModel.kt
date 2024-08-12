@@ -118,7 +118,7 @@ class RecitationsSuarViewModel @Inject constructor(
         val favs = repo.getFavs()
 
         val items = ArrayList<ReciterSura>()
-        val availableSuar = ver.surahList
+        val availableSuar = ver.availableSuras
         for (i in 0..113) {
             if (!availableSuar.contains(",${(i + 1)},") ||
                 (listType == ListType.FAVORITES && favs[i] == 0) ||

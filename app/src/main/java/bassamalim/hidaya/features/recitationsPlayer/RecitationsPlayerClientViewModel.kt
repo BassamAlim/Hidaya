@@ -179,7 +179,7 @@ class RecitationsPlayerClientViewModel @Inject constructor(
     private fun updateTrackState() {
         version = repo.getVersion(reciterId, versionId).let {
             Reciter.RecitationVersion(
-                versionId, it.url, it.nameAr, it.surahTotal, it.surahList
+                versionId, it.url, it.nameAr, it.surahTotal, it.availableSuras
             )
         }
 

@@ -10,7 +10,7 @@ class RecitationsPlayerClientRepository @Inject constructor(
     private val db: AppDatabase,
 ) {
 
-    fun getSuraNames() = db.suarDao().getNames()
+    fun getSuraNames() = db.suarDao().getDecoratedNamesAr()
 
     fun getReciterName(reciterId: Int) =
         db.telawatRecitersDao().getNameAr(reciterId)

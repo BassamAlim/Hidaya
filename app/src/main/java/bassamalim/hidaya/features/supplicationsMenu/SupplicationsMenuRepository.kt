@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.supplicationsMenu
 
 import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.data.database.dbs.AthkarDB
+import bassamalim.hidaya.core.data.database.models.Remembrance
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
@@ -23,24 +23,24 @@ class SupplicationsMenuRepository @Inject constructor(
         preferencesDS.setString(Preference.FavoriteAthkar, athkarJson)
     }
 
-    fun getAthkar(type: String, category: Int): List<AthkarDB> =
+    fun getAthkar(type: String, category: Int): List<Remembrance> =
         when (type) {
-            ListType.FAVORITES.name -> db.athkarDao().getFavorites()
-            ListType.CUSTOM.name -> db.athkarDao().getList(category)
+            ListType.FAVORITES.name -> db.athkarDao().observeFavorites()
+            ListType.CUSTOM.name -> db.athkarDao().observeCategoryRemembrances(category)
             else -> db.athkarDao().getAll()
         }
 
     fun getThikrParts(thikrId: Int) =
-        db.athkarPartsDao().getThikrParts(thikrId)
+        db.athkarPartsDao().getRemembrancePassages(thikrId)
 
     fun getName(language: Language, category: Int): String =
         when (language) {
-            Language.ARABIC -> db.athkarCategoryDao().getName(category)
+            Language.ARABIC -> db.athkarCategoryDao().getNameAr(category)
             Language.ENGLISH -> db.athkarCategoryDao().getNameEn(category)
         }
 
     fun setFavorite(itemId: Int, value: Int) {
-        db.athkarDao().setFav(itemId, value)
+        db.athkarDao().setIsFavorite(itemId, value)
     }
 
 }

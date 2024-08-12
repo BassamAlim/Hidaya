@@ -21,10 +21,10 @@ class SupplicationsReaderRepository @Inject constructor(
 
     fun getTitle(id: Int): String =
         when(getLanguage()) {
-            Language.ARABIC -> db.athkarDao().getName(id)
+            Language.ARABIC -> db.athkarDao().getNameAr(id)
             Language.ENGLISH -> db.athkarDao().getNameEn(id)
         }
 
-    fun getThikrParts(id: Int) = db.athkarPartsDao().getThikrParts(id)
+    fun getThikrParts(id: Int) = db.athkarPartsDao().getRemembrancePassages(id)
 
 }

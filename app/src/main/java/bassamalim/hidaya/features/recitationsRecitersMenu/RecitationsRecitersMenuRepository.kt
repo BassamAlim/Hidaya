@@ -17,10 +17,10 @@ class RecitationsRecitersMenuRepository @Inject constructor(
 
     fun getLanguage() = preferencesDS.getLanguage()
 
-    fun getFavs() = db.telawatRecitersDao().getFavs()
+    fun getFavs() = db.telawatRecitersDao().getIsFavorites()
 
     fun setFav(reciterId: Int, fav: Int) {
-        db.telawatRecitersDao().setFav(reciterId, fav)
+        db.telawatRecitersDao().setIsFavorite(reciterId, fav)
     }
 
     fun getReciters() = db.telawatRecitersDao().getAll()
@@ -36,9 +36,9 @@ class RecitationsRecitersMenuRepository @Inject constructor(
     fun getReciterName(reciterId: Int) =
         db.telawatRecitersDao().getNameAr(reciterId)
 
-    fun getSuraNames() = db.suarDao().getNames()
+    fun getSuraNames() = db.suarDao().getDecoratedNamesAr()
 
-    fun getSuraNamesEn() = db.suarDao().getNamesEn()
+    fun getSuraNamesEn() = db.suarDao().getDecoratedNamesEn()
 
     fun getSelectedVersions(): MutableList<Boolean> {
         val selectedVersions = mutableListOf<Boolean>()
@@ -57,7 +57,7 @@ class RecitationsRecitersMenuRepository @Inject constructor(
         preferencesDS.getString(Preference.LastPlayedMediaId)
 
     fun updateFavorites() {
-        val recitersJson = gson.toJson(db.telawatRecitersDao().getFavs())
+        val recitersJson = gson.toJson(db.telawatRecitersDao().getIsFavorites())
         preferencesDS.setString(Preference.FavoriteReciters, recitersJson)
     }
 

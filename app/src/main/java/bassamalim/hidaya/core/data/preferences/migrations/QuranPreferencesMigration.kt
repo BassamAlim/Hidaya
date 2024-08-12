@@ -8,7 +8,7 @@ import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.preferences.objects.QuranPreferences
 import bassamalim.hidaya.core.enums.AyaRepeat
 import bassamalim.hidaya.core.models.QuranPageBookmark
-import bassamalim.hidaya.features.quranReader.QuranViewType
+import bassamalim.hidaya.features.quranReader.ui.QuranViewType
 import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentMapOf

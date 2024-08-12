@@ -19,9 +19,9 @@ class QuranSearcherRepository @Inject constructor(
 
     fun getAyat() = db.ayatDao().getAll()
 
-    fun getSuraNames() = db.suarDao().getNames()
+    fun getSuraNames() = db.suarDao().getDecoratedNamesAr()
 
-    fun getSuraNamesEn() = db.suarDao().getNamesEn()
+    fun getSuraNamesEn() = db.suarDao().getDecoratedNamesEn()
 
     fun getMaxMatchesIndex() =
         preferencesDS.getInt(Preference.QuranSearcherMaxMatchesIndex)

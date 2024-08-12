@@ -39,11 +39,11 @@ class SupplicationsReaderViewModel @Inject constructor(
             if (language == Language.ENGLISH)
                 items.add(
                     Thikr(
-                        id = t.partId,
+                        id = t.id,
                         title = t.titleEn,
                         text = t.textEn!!,
                         textTranslation = t.textEnTranslation,
-                        fadl = t.fadlEn,
+                        fadl = t.virtueEn,
                         reference = t.referenceEn,
                         repetition = t.repetitionEn
                     )
@@ -51,13 +51,13 @@ class SupplicationsReaderViewModel @Inject constructor(
             else
                 items.add(
                     Thikr(
-                        id = t.partId,
-                        title = t.title,
-                        text = t.text!!,
+                        id = t.id,
+                        title = t.titleAr,
+                        text = t.textAr!!,
                         textTranslation = t.textEnTranslation,
-                        fadl = t.fadl,
-                        reference = t.reference,
-                        repetition = t.repetition
+                        fadl = t.virtueAr,
+                        reference = t.referenceAr,
+                        repetition = t.repetitionAr
                     )
                 )
         }

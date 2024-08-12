@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.supplicationsMenu
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import bassamalim.hidaya.core.data.database.dbs.AthkarDB
+import bassamalim.hidaya.core.data.database.models.Remembrance
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.nav.Navigator
@@ -41,14 +41,14 @@ class SupplicationsMenuViewModel @Inject constructor(
 
             val name =
                 if (isEng) thikr.name_en!!
-                else thikr.name!!
+                else thikr.name_ar!!
 
             items.add(
                 AthkarItem(
                     id = thikr.id,
                     category_id = thikr.category_id,
                     name = name,
-                    favorite = mutableIntStateOf(thikr.favorite)
+                    favorite = mutableIntStateOf(thikr.is_favorite)
                 )
             )
         }
@@ -57,7 +57,7 @@ class SupplicationsMenuViewModel @Inject constructor(
         else items.filter { it.name.contains(_uiState.value.searchText, true) }
     }
 
-    private fun hasEn(thikr: AthkarDB): Boolean {
+    private fun hasEn(thikr: Remembrance): Boolean {
         val thikrParts = repo.getThikrParts(thikr.id)
 
         for (i in thikrParts.indices) {

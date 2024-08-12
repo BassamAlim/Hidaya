@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.data.database.dbs.TelawatDB
+import bassamalim.hidaya.core.data.database.models.Recitation
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.ListType
@@ -190,10 +190,10 @@ class RecitationsRecitersMenuViewModel @Inject constructor(
         }
     }
 
-    private fun filterSelectedVersions(versions: List<TelawatDB>): List<TelawatDB> {
+    private fun filterSelectedVersions(versions: List<Recitation>): List<Recitation> {
         if (!_uiState.value.isFiltered) return versions
 
-        val selected = mutableListOf<TelawatDB>()
+        val selected = mutableListOf<Recitation>()
         for (i in versions.indices) {
             for (j in rewayat.indices) {
                 if (_uiState.value.selectedVersions[j]

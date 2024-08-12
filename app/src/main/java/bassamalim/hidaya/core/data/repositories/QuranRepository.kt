@@ -1,34 +1,34 @@
 package bassamalim.hidaya.core.data.repositories
 
-import bassamalim.hidaya.core.data.database.daos.AyatDao
-import bassamalim.hidaya.core.data.database.daos.SuarDao
+import bassamalim.hidaya.core.data.database.daos.VersesDao
+import bassamalim.hidaya.core.data.database.daos.SurasDao
 import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
 import bassamalim.hidaya.core.enums.AyaRepeat
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranPageBookmark
-import bassamalim.hidaya.features.quranReader.QuranViewType
+import bassamalim.hidaya.features.quranReader.ui.QuranViewType
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class QuranRepository @Inject constructor(
     private val quranPreferencesDataSource: QuranPreferencesDataSource,
-    private val suarDao: SuarDao,
-    private val ayatDao: AyatDao
+    private val surasDao: SurasDao,
+    private val versesDao: VersesDao
 ) {
 
-    fun getAllSuar() = suarDao.getAll()
+    fun getAllSuar() = surasDao.getAll()
 
     fun getSuraNames(language: Language) =
-        if (language == Language.ENGLISH) suarDao.getNamesEn()
-        else suarDao.getNames()
+        if (language == Language.ENGLISH) surasDao.getDecoratedNamesEn()
+        else surasDao.getDecoratedNamesAr()
 
-    fun getSuraFavorites() = suarDao.getFavs()
+    fun getSuraFavorites() = surasDao.observeIsFavorites()
 
     suspend fun setSuraFavorites(suraId: Int, fav: Int) {
-        suarDao.setFav(suraId, fav)
+        surasDao.setIsFavorite(suraId, fav)
         setBackupSuraFavorites(
-            suarDao.getFavs().mapIndexed { index, value -> index + 1 to value }.toMap()
+            surasDao.observeIsFavorites().mapIndexed { index, value -> index + 1 to value }.toMap()
         )
     }
     
@@ -103,11 +103,11 @@ class QuranRepository @Inject constructor(
         )}
     }
 
-    fun getBookmark() = quranPreferencesDataSource.flow.map {
+    fun getPageBookmark() = quranPreferencesDataSource.flow.map {
         it.pageBookmark
     }
 
-    suspend fun setBookmark(bookmark: QuranPageBookmark) {
+    suspend fun setPageBookmark(bookmark: QuranPageBookmark) {
         quranPreferencesDataSource.update { it.copy(
             pageBookmark = bookmark
         )}
@@ -162,5 +162,11 @@ class QuranRepository @Inject constructor(
             isWerdDone = isWerdDone
         )}
     }
+
+    fun getSuraPageNum(suraId: Int) = surasDao.getSuraStartPage(suraId)
+
+    fun getAyaPageNum(ayaId: Int) = versesDao.getAyaPageNum(ayaId)
+
+    fun getAyas() = versesDao.getAll()
 
 }

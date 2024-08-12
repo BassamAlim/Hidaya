@@ -34,11 +34,11 @@ class QuizResultViewModel @Inject constructor(
     private fun getQuestionItems(): List<QuizResultQuestion> {
         val questions = domain.getQuestions(questionIds)
         return questions.mapIndexed { i, q ->
-            val answers = domain.getAnswers(q.questionId)
-            val answersText = List(answers.size) { answers[it].answerText }
+            val answers = domain.getAnswers(q.id)
+            val answersText = List(answers.size) { answers[it].text }
 
             QuizResultQuestion(
-                i, questions[i].questionText!!, questions[i].correctAnswerId,
+                i, questions[i].text!!, questions[i].correctAnswerId,
                 chosenAnswers[i], answersText
             )
         }

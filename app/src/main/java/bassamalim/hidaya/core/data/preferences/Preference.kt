@@ -4,7 +4,7 @@ import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.Language as Languages
 import bassamalim.hidaya.core.enums.LocationType as LocationTypes
 import bassamalim.hidaya.core.enums.NotificationType as NotificationTypes
-import bassamalim.hidaya.features.quranReader.QuranViewType as QuranViewTypes
+import bassamalim.hidaya.features.quranReader.ui.QuranViewType as QuranViewTypes
 import bassamalim.hidaya.core.enums.Theme as Themes
 import bassamalim.hidaya.core.enums.TimeFormat as TimeFormats
 

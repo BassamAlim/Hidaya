@@ -1,6 +1,6 @@
 package bassamalim.hidaya.features.quiz.domain
 
-import bassamalim.hidaya.core.data.database.dbs.QuizQuestionsDB
+import bassamalim.hidaya.core.data.database.models.QuizQuestion
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuizRepository
 import kotlinx.coroutines.flow.first
@@ -25,7 +25,7 @@ class QuizDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
 
-    fun getQuestions(): MutableList<QuizQuestionsDB> {
+    fun getQuestions(): MutableList<QuizQuestion> {
         val allQuestions = quizRepo.getQuestions().toMutableList()
         allQuestions.shuffle()
         return allQuestions.subList(0, 10)

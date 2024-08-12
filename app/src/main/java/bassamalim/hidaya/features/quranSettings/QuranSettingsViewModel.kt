@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.quranSettings
 
 import androidx.lifecycle.ViewModel
-import bassamalim.hidaya.features.quranReader.QuranViewType
+import bassamalim.hidaya.features.quranReader.ui.QuranViewType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

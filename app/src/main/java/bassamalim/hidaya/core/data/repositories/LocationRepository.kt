@@ -2,7 +2,7 @@ package bassamalim.hidaya.core.data.repositories
 
 import bassamalim.hidaya.core.data.database.daos.CityDao
 import bassamalim.hidaya.core.data.database.daos.CountryDao
-import bassamalim.hidaya.core.data.database.dbs.CountryDB
+import bassamalim.hidaya.core.data.database.models.Country
 import bassamalim.hidaya.core.data.preferences.dataSources.UserPreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
@@ -28,9 +28,9 @@ class LocationRepository @Inject constructor(
     fun getTimeZone(cityId: Int) = cityDao.getCity(cityId).timeZone
 
     fun getCountries(language: Language) =
-        countryDao.getAll().sortedBy { countryDB: CountryDB ->
-            if (language == Language.ENGLISH) countryDB.nameEn
-            else countryDB.nameAr
+        countryDao.getAll().sortedBy { country: Country ->
+            if (language == Language.ENGLISH) country.nameEn
+            else country.nameAr
         }
 
     fun getCities(countryId: Int, language: Language) =

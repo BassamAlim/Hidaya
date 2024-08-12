@@ -75,7 +75,7 @@ class QuizViewModel @Inject constructor(
         navigator.navigate(
             Screen.QuizResult(
                 score = score.toString(),
-                questions = domain.questions.map { q -> q.questionId }.toIntArray().contentToString(),
+                questions = domain.questions.map { q -> q.id }.toIntArray().contentToString(),
                 chosenAnswers = domain.chosenAs.toTypedArray().toIntArray().contentToString()
             )
         ) {
@@ -87,15 +87,15 @@ class QuizViewModel @Inject constructor(
 
     private fun updateState() {
         val question = domain.questions[_uiState.value.questionIdx]
-        val answers = domain.getAnswers(question.questionId)
+        val answers = domain.getAnswers(question.id)
 
         _uiState.update { it.copy(
             titleQuestionNumber = LangUtils.translateNums(
                 numeralsLanguage = numeralsLanguage,
                 string = (it.questionIdx + 1).toString()
             ),
-            question = question.questionText!!,
-            answers = answers.map { a -> a.answerText },
+            question = question.text!!,
+            answers = answers.map { a -> a.text },
             selection = domain.chosenAs[it.questionIdx],
             prevBtnEnabled = it.questionIdx != 0,
             nextBtnEnabled = !(it.questionIdx == 9 && !it.allAnswered),

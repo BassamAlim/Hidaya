@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.books.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.data.database.dbs.BooksDB
+import bassamalim.hidaya.core.data.database.models.Book
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
@@ -50,7 +50,7 @@ class BooksViewModel @Inject constructor(
         navigator.navigate(Screen.BookSearcher)
     }
 
-    fun onItemClick(item: BooksDB) {
+    fun onItemClick(item: Book) {
         when (_uiState.value.downloadStates[item.id]!!) {
             DownloadState.NOT_DOWNLOADED -> {
                 _uiState.update { it.copy(
@@ -76,7 +76,7 @@ class BooksViewModel @Inject constructor(
                         bookId = item.id.toString(),
                         bookTitle =
                             if (language == Language.ENGLISH) item.titleEn
-                            else item.title
+                            else item.titleAr
                     )
                 )
             }
@@ -88,7 +88,7 @@ class BooksViewModel @Inject constructor(
         }
     }
 
-    fun onDownloadButtonClick(item: BooksDB) {
+    fun onDownloadButtonClick(item: Book) {
         when (_uiState.value.downloadStates[item.id]!!) {
             DownloadState.NOT_DOWNLOADED -> {
                 _uiState.update { it.copy(

@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.books.domain
 
 import android.util.Log
-import bassamalim.hidaya.core.data.database.dbs.BooksDB
+import bassamalim.hidaya.core.data.database.models.Book
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.DownloadState
@@ -18,7 +18,7 @@ class BooksDomain @Inject constructor(
 
     fun getBooks() = booksRepo.getBooks()
 
-    fun getDownloadStates(books: List<BooksDB>) =
+    fun getDownloadStates(books: List<Book>) =
         books.associate {
             it.id to if (booksRepo.isDownloaded(it.id)) {
                 if (booksRepo.isDownloading(it.id)) DownloadState.DOWNLOADING
