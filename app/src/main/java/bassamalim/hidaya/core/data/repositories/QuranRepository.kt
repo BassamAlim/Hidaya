@@ -1,13 +1,14 @@
 package bassamalim.hidaya.core.data.repositories
 
-import bassamalim.hidaya.core.data.database.daos.VersesDao
 import bassamalim.hidaya.core.data.database.daos.SurasDao
+import bassamalim.hidaya.core.data.database.daos.VersesDao
 import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
-import bassamalim.hidaya.core.enums.AyaRepeat
+import bassamalim.hidaya.core.enums.VerseRepeat
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.features.quranReader.ui.QuranViewType
 import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -17,7 +18,7 @@ class QuranRepository @Inject constructor(
     private val versesDao: VersesDao
 ) {
 
-    fun getAllSuar() = surasDao.getAll()
+    fun observeAllSuar() = surasDao.observeAll()
 
     fun getSuraNames(language: Language) =
         if (language == Language.ENGLISH) surasDao.getDecoratedNamesEn()
@@ -28,7 +29,9 @@ class QuranRepository @Inject constructor(
     suspend fun setSuraFavorites(suraId: Int, fav: Int) {
         surasDao.setIsFavorite(suraId, fav)
         setBackupSuraFavorites(
-            surasDao.observeIsFavorites().mapIndexed { index, value -> index + 1 to value }.toMap()
+            surasDao.observeIsFavorites().first().mapIndexed { index, value ->
+                index + 1 to value
+            }.toMap()
         )
     }
     
@@ -73,12 +76,12 @@ class QuranRepository @Inject constructor(
     }
 
     fun getAyaRepeat() = quranPreferencesDataSource.flow.map {
-        it.ayaRepeat
+        it.verseRepeat
     }
 
-    suspend fun setAyaRepeat(ayaRepeat: AyaRepeat) {
+    suspend fun setAyaRepeat(verseRepeat: VerseRepeat) {
         quranPreferencesDataSource.update { it.copy(
-            ayaRepeat = ayaRepeat
+            verseRepeat = verseRepeat
         )}
     }
 

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.models.Thikr
+import bassamalim.hidaya.core.models.RemembrancePassage
 import bassamalim.hidaya.core.ui.components.InfoDialog
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
@@ -54,7 +54,7 @@ fun AthkarViewerUI(
                 items(st.items) { item ->
                     ThikrCard(
                         vm = vm,
-                        thikr = item,
+                        remembrancePassage = item,
                         textSize = st.textSize
                     )
                 }
@@ -74,7 +74,7 @@ fun AthkarViewerUI(
 @Composable
 private fun ThikrCard(
     vm: SupplicationsReaderViewModel,
-    thikr: Thikr,
+    remembrancePassage: RemembrancePassage,
     textSize: Float
 ) {
     val textSizeMargin = 15
@@ -92,9 +92,9 @@ private fun ThikrCard(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // title
-                if (vm.shouldShowTitle(thikr)) {
+                if (vm.shouldShowTitle(remembrancePassage)) {
                     MyText(
-                        text = thikr.title!!,
+                        text = remembrancePassage.title!!,
                         modifier = Modifier.padding(10.dp),
                         fontSize = (textSize + textSizeMargin).sp,
                         fontWeight = FontWeight.Bold
@@ -103,27 +103,27 @@ private fun ThikrCard(
 
                 // text
                 MyText(
-                    text = thikr.text,
+                    text = remembrancePassage.text,
                     modifier = Modifier.padding(10.dp),
                     fontSize = (textSize + textSizeMargin).sp,
                     textColor = AppTheme.colors.strongText
                 )
 
                 // translation
-                if (vm.shouldShowTranslation(thikr)) {
+                if (vm.shouldShowTranslation(remembrancePassage)) {
                     MyText(
-                        text = thikr.textTranslation!!,
+                        text = remembrancePassage.textTranslation!!,
                         modifier = Modifier.padding(10.dp),
                         fontSize = (textSize + textSizeMargin).sp
                     )
                 }
 
                 // fadl
-                if (vm.shouldShowFadl(thikr)) {
+                if (vm.shouldShowFadl(remembrancePassage)) {
                     Divider()
 
                     MyText(
-                        text = thikr.fadl!!,
+                        text = remembrancePassage.fadl!!,
                         modifier = Modifier.padding(10.dp),
                         fontSize = (textSize + textSizeMargin - 8).sp,
                         textColor = AppTheme.colors.accent
@@ -131,7 +131,7 @@ private fun ThikrCard(
                 }
 
                 // reference
-                if (vm.shouldShowReference(thikr)) {
+                if (vm.shouldShowReference(remembrancePassage)) {
                     Divider()
 
                     MyIconButton(
@@ -142,13 +142,13 @@ private fun ThikrCard(
                         tint = AppTheme.colors.text,
                         size = 26.dp
                     ) {
-                        vm.showInfoDialog(thikr.reference!!)
+                        vm.showInfoDialog(remembrancePassage.reference!!)
                     }
                 }
             }
 
             // repetition
-            if (vm.shouldShowRepetition(thikr)) {
+            if (vm.shouldShowRepetition(remembrancePassage)) {
                 Divider(
                     modifier = Modifier
                         .fillMaxHeight()
@@ -156,7 +156,7 @@ private fun ThikrCard(
                 )
 
                 MyText(
-                    text = thikr.repetition,
+                    text = remembrancePassage.repetition,
                     modifier = Modifier
                         .padding(10.dp)
                         .widthIn(10.dp, 100.dp)

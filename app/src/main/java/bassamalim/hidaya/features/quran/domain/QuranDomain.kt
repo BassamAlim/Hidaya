@@ -17,7 +17,7 @@ class QuranDomain @Inject constructor(
 
     fun getBookmark() = quranRepository.getPageBookmark()
 
-    fun getAllSuar() = quranRepository.getAllSuar()
+    fun getAllSuar() = quranRepository.observeAllSuar()
 
     fun getSuraNames(language: Language) = quranRepository.getSuraNames(language)
 

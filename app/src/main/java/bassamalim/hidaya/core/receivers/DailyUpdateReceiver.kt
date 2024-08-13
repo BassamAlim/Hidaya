@@ -52,7 +52,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
                 LocationType.MANUAL -> {
                     val cityId = preferencesDS.getInt(Preference.CityID)
                     if (cityId == -1) return
-                    val city = db.cityDao().getCity(cityId)
+                    val city = db.citiesDao().getCity(cityId)
 
                     val location = Location("")
                     location.latitude = city.latitude

@@ -1,6 +1,6 @@
 package bassamalim.hidaya.core.enums
 
-enum class AyaRepeat {
+enum class VerseRepeat {
     NONE,
     TWO,
     THREE,

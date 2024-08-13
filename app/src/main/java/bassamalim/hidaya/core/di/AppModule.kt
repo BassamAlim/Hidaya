@@ -33,7 +33,7 @@ import bassamalim.hidaya.core.data.preferences.dataSources.NotificationsPreferen
 import bassamalim.hidaya.core.data.preferences.dataSources.PrayersPreferencesDataSource
 import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
 import bassamalim.hidaya.core.data.preferences.dataSources.RecitationsPreferencesDataSource
-import bassamalim.hidaya.core.data.preferences.dataSources.SupplicationsPreferencesDataSource
+import bassamalim.hidaya.core.data.preferences.dataSources.RemembrancePreferencesDataSource
 import bassamalim.hidaya.core.data.preferences.dataSources.UserPreferencesDataSource
 import bassamalim.hidaya.core.data.preferences.serializers.AppSettingsPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.AppStatePreferencesSerializer
@@ -45,38 +45,14 @@ import bassamalim.hidaya.core.data.preferences.serializers.RecitationsPreference
 import bassamalim.hidaya.core.data.preferences.serializers.SupplicationsPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.UserPreferencesSerializer
 import bassamalim.hidaya.core.nav.Navigator
-import bassamalim.hidaya.features.about.data.AboutRepository
-import bassamalim.hidaya.features.supplicationsMenu.SupplicationsMenuRepository
-import bassamalim.hidaya.features.supplicationsReader.SupplicationsReaderRepository
-import bassamalim.hidaya.features.bookChapters.data.BookChaptersRepository
-import bassamalim.hidaya.features.bookSearcher.data.BookSearcherRepository
-import bassamalim.hidaya.features.bookReader.data.BookReaderRepository
-import bassamalim.hidaya.features.books.data.BooksRepository
-import bassamalim.hidaya.features.dateConverter.data.DateConverterRepository
-import bassamalim.hidaya.features.dateEditor.data.DateEditorRepository
-import bassamalim.hidaya.features.hijriDatePicker.data.HijriDatePickerRepository
-import bassamalim.hidaya.features.home.data.HomeRepository
-import bassamalim.hidaya.features.leaderboard.data.LeaderboardRepository
-import bassamalim.hidaya.features.locationPicker.data.LocationPickerRepository
-import bassamalim.hidaya.features.locator.data.LocatorRepository
-import bassamalim.hidaya.features.main.data.MainRepository
-import bassamalim.hidaya.features.prayerReminder.data.PrayerReminderRepository
-import bassamalim.hidaya.features.prayerSettings.PrayerSettingsRepository
-import bassamalim.hidaya.features.prayers.PrayersRepository
-import bassamalim.hidaya.features.qibla.QiblaRepository
-import bassamalim.hidaya.features.quiz.QuizRepository
-import bassamalim.hidaya.features.quizResult.QuizResultRepository
-import bassamalim.hidaya.features.quran.QuranRepository
 import bassamalim.hidaya.features.quranSearcher.QuranSearcherRepository
 import bassamalim.hidaya.features.quranSettings.QuranSettingsRepository
-import bassamalim.hidaya.features.quranReader.QuranReaderRepository
 import bassamalim.hidaya.features.radio.RadioClientRepository
 import bassamalim.hidaya.features.settings.SettingsRepository
 import bassamalim.hidaya.features.recitationsRecitersMenu.RecitationsRecitersMenuRepository
 import bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerClientRepository
 import bassamalim.hidaya.features.recitationsSuarMenu.RecitationsSuarRepository
 import bassamalim.hidaya.features.tv.TvRepository
-import bassamalim.hidaya.features.onboarding.data.OnboardingRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
@@ -210,7 +186,7 @@ object AppModule {
 
     @Provides @Singleton
     fun provideSupplicationsPreferencesRepository(@ApplicationContext appContext: Context) =
-        SupplicationsPreferencesDataSource(
+        RemembrancePreferencesDataSource(
             DataStoreFactory.create(
                 serializer = SupplicationsPreferencesSerializer,
                 corruptionHandler = ReplaceFileCorruptionHandler(

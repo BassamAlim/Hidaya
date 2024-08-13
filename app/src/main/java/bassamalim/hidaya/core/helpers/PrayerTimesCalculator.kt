@@ -3,8 +3,8 @@ package bassamalim.hidaya.core.helpers
 import bassamalim.hidaya.core.enums.HighLatAdjustmentMethod
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.PID
-import bassamalim.hidaya.core.enums.PTCalculationMethod
-import bassamalim.hidaya.core.enums.PTJuristicMethod
+import bassamalim.hidaya.core.enums.PrayerTimesCalculationMethod
+import bassamalim.hidaya.core.enums.PrayerTimesJuristicMethod
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.models.PrayerTimesCalculatorSettings
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
@@ -29,7 +29,7 @@ class PrayerTimesCalculator(
 ) {
 
     private var asrJuristic =
-        if (settings.juristicMethod == PTJuristicMethod.HANAFI) 1
+        if (settings.juristicMethod == PrayerTimesJuristicMethod.HANAFI) 1
         else 0
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
     private var latitude = 0.0 // latitude
@@ -40,12 +40,12 @@ class PrayerTimesCalculator(
     private var numIterations = 1 // number of iterations needed to compute times
 
     private val methodParams = hashMapOf(
-        PTCalculationMethod.MECCA to doubleArrayOf(18.5, 1.0, 0.0, 1.0, 90.0),
-        PTCalculationMethod.MWL to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0),
-        PTCalculationMethod.ISNA to doubleArrayOf(15.0, 1.0, 0.0, 0.0, 15.0),
-        PTCalculationMethod.KARACHI to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 18.0),
-        PTCalculationMethod.EGYPT to doubleArrayOf(19.5, 1.0, 0.0, 0.0, 17.5),
-        PTCalculationMethod.TAHRAN to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0)
+        PrayerTimesCalculationMethod.MECCA to doubleArrayOf(18.5, 1.0, 0.0, 1.0, 90.0),
+        PrayerTimesCalculationMethod.MWL to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 17.0),
+        PrayerTimesCalculationMethod.ISNA to doubleArrayOf(15.0, 1.0, 0.0, 0.0, 15.0),
+        PrayerTimesCalculationMethod.KARACHI to doubleArrayOf(18.0, 1.0, 0.0, 0.0, 18.0),
+        PrayerTimesCalculationMethod.EGYPT to doubleArrayOf(19.5, 1.0, 0.0, 0.0, 17.5),
+        PrayerTimesCalculationMethod.TAHRAN to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0)
     )
 
     init {

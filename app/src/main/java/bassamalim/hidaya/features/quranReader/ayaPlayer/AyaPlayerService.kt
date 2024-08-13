@@ -126,11 +126,11 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         )
         db = DBUtils.getDB(this)
 
-        ayat = db.ayatDao().getAll()
-        reciterNames = db.ayatRecitersDao().getNames()
+        ayat = db.versesDao().getAll()
+        reciterNames = db.verseRecitersDao().getNames()
         suarNames =
-            if (preferencesDS.getLanguage() == Language.ENGLISH) db.suarDao().getDecoratedNamesEn()
-            else db.suarDao().getDecoratedNamesAr()
+            if (preferencesDS.getLanguage() == Language.ENGLISH) db.surasDao().getDecoratedNamesEn()
+            else db.surasDao().getDecoratedNamesAr()
 
         initSession()
         initAPM()

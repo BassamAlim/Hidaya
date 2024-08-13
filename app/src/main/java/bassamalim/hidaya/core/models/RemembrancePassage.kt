@@ -1,6 +1,6 @@
 package bassamalim.hidaya.core.models
 
-data class Thikr(
+data class RemembrancePassage(
     val id: Int,
     val title: String?,
     val text: String,

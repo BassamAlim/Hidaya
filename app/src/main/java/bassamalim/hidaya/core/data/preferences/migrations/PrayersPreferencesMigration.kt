@@ -8,8 +8,8 @@ import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.preferences.objects.PrayersPreferences
 import bassamalim.hidaya.core.enums.HighLatAdjustmentMethod
 import bassamalim.hidaya.core.enums.PID
-import bassamalim.hidaya.core.enums.PTCalculationMethod
-import bassamalim.hidaya.core.enums.PTJuristicMethod
+import bassamalim.hidaya.core.enums.PrayerTimesCalculationMethod
+import bassamalim.hidaya.core.enums.PrayerTimesJuristicMethod
 import bassamalim.hidaya.core.models.PrayerTimesCalculatorSettings
 import kotlinx.collections.immutable.persistentMapOf
 
@@ -22,13 +22,13 @@ object PrayersPreferencesMigration {
         ) { sharedPrefs: SharedPreferencesView, currentData: PrayersPreferences ->
             currentData.copy(
                 prayerTimesCalculatorSettings = PrayerTimesCalculatorSettings(
-                    calculationMethod = PTCalculationMethod.valueOf(
+                    calculationMethod = PrayerTimesCalculationMethod.valueOf(
                         sharedPrefs.getString(
                             key = Preference.PrayerTimesCalculationMethod.key,
                             defValue = Preference.PrayerTimesCalculationMethod.default as String
                         )!!
                     ),
-                    juristicMethod = PTJuristicMethod.valueOf(
+                    juristicMethod = PrayerTimesJuristicMethod.valueOf(
                         sharedPrefs.getString(
                             key = Preference.PrayerTimesJuristicMethod.key,
                             defValue = Preference.PrayerTimesJuristicMethod.default as String

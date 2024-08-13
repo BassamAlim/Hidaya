@@ -5,7 +5,7 @@ import androidx.room.Query
 import bassamalim.hidaya.core.data.database.models.City
 
 @Dao
-interface CityDao {
+interface CitiesDao {
 
     @Query("SELECT * FROM cities WHERE country_id = :countryId AND name_ar LIKE '%' || :name || '%' LIMIT 50")
     fun getTopAr(countryId: Int, name: String): List<City>

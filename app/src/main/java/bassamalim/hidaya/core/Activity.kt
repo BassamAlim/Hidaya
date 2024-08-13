@@ -226,7 +226,7 @@ class Activity : ComponentActivity() {
     private fun storeLocation(location: Location?) {
         if (location == null) return
 
-        val closestCity = db.cityDao().getClosest(location.latitude, location.longitude)
+        val closestCity = db.citiesDao().getClosest(location.latitude, location.longitude)
 
         preferencesDS.setInt(Preference.CountryID, closestCity.countryId)
         preferencesDS.setInt(Preference.CityID, closestCity.id)

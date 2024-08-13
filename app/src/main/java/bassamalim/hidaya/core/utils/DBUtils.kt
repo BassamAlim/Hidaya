@@ -27,7 +27,7 @@ object DBUtils {
         if (Global.DB_VERSION > lastVer) return true
 
         return try {  // if there is a problem in the db it will cause an error
-            db.suarDao().observeIsFavorites()
+            db.surasDao().observeIsFavorites()
             false
         } catch (e: Exception) {
             true
@@ -51,14 +51,14 @@ object DBUtils {
 
         if (suarJson.isNotEmpty()) {
             val favSuar = gson.fromJson(suarJson, IntArray::class.java)
-            for (i in favSuar.indices) db.suarDao().setIsFavorite(i, favSuar[i])
+            for (i in favSuar.indices) db.surasDao().setIsFavorite(i, favSuar[i])
         }
 
         if (recitersJson.isNotEmpty()) {
             val favReciters: Array<Any> = gson.fromJson(recitersJson, Array<Any>::class.java)
             for (i in favReciters.indices) {
                 val d = favReciters[i] as Double
-                db.telawatRecitersDao().setIsFavorite(i, d.toInt())
+                db.recitationRecitersDao().setIsFavorite(i, d.toInt())
             }
         }
 
@@ -66,7 +66,7 @@ object DBUtils {
             val favAthkar: Array<Any> = gson.fromJson(athkarJson, Array<Any>::class.java)
             for (i in favAthkar.indices) {
                 val d = favAthkar[i] as Double
-                db.athkarDao().setIsFavorite(i, d.toInt())
+                db.remembrancesDao().setIsFavorite(i, d.toInt())
             }
         }
 

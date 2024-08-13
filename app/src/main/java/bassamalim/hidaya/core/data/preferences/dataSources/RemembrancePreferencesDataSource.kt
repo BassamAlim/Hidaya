@@ -6,7 +6,7 @@ import bassamalim.hidaya.core.data.preferences.objects.SupplicationsPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 
-class SupplicationsPreferencesDataSource(
+class RemembrancePreferencesDataSource(
     private val dataStore: DataStore<SupplicationsPreferences>
 ) {
 

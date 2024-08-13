@@ -35,7 +35,7 @@ class AlternatingPlayersManager(
     private val NUMBER_OF_PLAYERS = 2
     private val aps = Array(NUMBER_OF_PLAYERS) { AlternatePlayer(MediaPlayer()) }
     private var playerIdx = 0
-    private val ayat = db.ayatDao().getAll()
+    private val ayat = db.versesDao().getAll()
     var ayaIdx = -1
     private var isPaused = false
 
@@ -282,7 +282,7 @@ class AlternatingPlayersManager(
 
     private fun getUri(aya: Verse): Uri {
         val choice = preferencesDS.getString(Preference.AyaReciter).toInt()
-        val sources = db.ayatTelawaDao().getReciter(choice)
+        val sources = db.verseRecitationsDao().getReciter(choice)
 
         var uri = "https://www.everyayah.com/data/"
         uri += sources[0].source

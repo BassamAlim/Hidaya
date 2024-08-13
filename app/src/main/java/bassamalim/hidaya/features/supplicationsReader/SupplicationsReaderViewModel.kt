@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.supplicationsReader
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.models.Thikr
+import bassamalim.hidaya.core.models.RemembrancePassage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,10 +27,10 @@ class SupplicationsReaderViewModel @Inject constructor(
     ))
     val uiState = _uiState.asStateFlow()
 
-    private fun getItems(): List<Thikr> {
+    private fun getItems(): List<RemembrancePassage> {
         val thikrParts = repo.getThikrParts(id)
 
-        val items = ArrayList<Thikr>()
+        val items = ArrayList<RemembrancePassage>()
         for (i in thikrParts.indices) {
             val t = thikrParts[i]
 
@@ -38,7 +38,7 @@ class SupplicationsReaderViewModel @Inject constructor(
 
             if (language == Language.ENGLISH)
                 items.add(
-                    Thikr(
+                    RemembrancePassage(
                         id = t.id,
                         title = t.titleEn,
                         text = t.textEn!!,
@@ -50,7 +50,7 @@ class SupplicationsReaderViewModel @Inject constructor(
                 )
             else
                 items.add(
-                    Thikr(
+                    RemembrancePassage(
                         id = t.id,
                         title = t.titleAr,
                         text = t.textAr!!,
@@ -85,15 +85,15 @@ class SupplicationsReaderViewModel @Inject constructor(
         )}
     }
 
-    fun shouldShowTitle(thikr: Thikr) = !thikr.title.isNullOrEmpty()
+    fun shouldShowTitle(remembrancePassage: RemembrancePassage) = !remembrancePassage.title.isNullOrEmpty()
 
-    fun shouldShowTranslation(thikr: Thikr) =
-        language != Language.ARABIC && !thikr.textTranslation.isNullOrEmpty()
+    fun shouldShowTranslation(remembrancePassage: RemembrancePassage) =
+        language != Language.ARABIC && !remembrancePassage.textTranslation.isNullOrEmpty()
 
-    fun shouldShowFadl(thikr: Thikr) = !thikr.fadl.isNullOrEmpty()
+    fun shouldShowFadl(remembrancePassage: RemembrancePassage) = !remembrancePassage.fadl.isNullOrEmpty()
 
-    fun shouldShowReference(thikr: Thikr) = !thikr.reference.isNullOrEmpty()
+    fun shouldShowReference(remembrancePassage: RemembrancePassage) = !remembrancePassage.reference.isNullOrEmpty()
 
-    fun shouldShowRepetition(thikr: Thikr) = thikr.repetition != "1"
+    fun shouldShowRepetition(remembrancePassage: RemembrancePassage) = remembrancePassage.repetition != "1"
 
 }

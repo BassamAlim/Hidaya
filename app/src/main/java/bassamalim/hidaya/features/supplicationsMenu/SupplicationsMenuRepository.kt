@@ -18,29 +18,29 @@ class SupplicationsMenuRepository @Inject constructor(
     fun getLanguage() = preferencesDS.getLanguage()
 
     fun updateFavorites() {
-        val favAthkar = db.athkarDao().getFavs()
+        val favAthkar = db.remembrancesDao().getFavs()
         val athkarJson = gson.toJson(favAthkar)
         preferencesDS.setString(Preference.FavoriteAthkar, athkarJson)
     }
 
     fun getAthkar(type: String, category: Int): List<Remembrance> =
         when (type) {
-            ListType.FAVORITES.name -> db.athkarDao().observeFavorites()
-            ListType.CUSTOM.name -> db.athkarDao().observeCategoryRemembrances(category)
-            else -> db.athkarDao().getAll()
+            ListType.FAVORITES.name -> db.remembrancesDao().observeFavorites()
+            ListType.CUSTOM.name -> db.remembrancesDao().observeCategoryRemembrances(category)
+            else -> db.remembrancesDao().getAll()
         }
 
     fun getThikrParts(thikrId: Int) =
-        db.athkarPartsDao().getRemembrancePassages(thikrId)
+        db.remembrancePassagesDao().getRemembrancePassages(thikrId)
 
     fun getName(language: Language, category: Int): String =
         when (language) {
-            Language.ARABIC -> db.athkarCategoryDao().getNameAr(category)
-            Language.ENGLISH -> db.athkarCategoryDao().getNameEn(category)
+            Language.ARABIC -> db.remembranceCategoriesDao().getNameAr(category)
+            Language.ENGLISH -> db.remembranceCategoriesDao().getNameEn(category)
         }
 
     fun setFavorite(itemId: Int, value: Int) {
-        db.athkarDao().setIsFavorite(itemId, value)
+        db.remembrancesDao().setIsFavorite(itemId, value)
     }
 
 }

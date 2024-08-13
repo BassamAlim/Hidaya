@@ -18,6 +18,6 @@ class QuranSettingsRepository @Inject constructor(
         preferencesDS.setString(Preference.QuranViewType, type.name)
     }
 
-    fun getReciterNames() = db.ayatRecitersDao().getNames()
+    fun getReciterNames() = db.verseRecitersDao().getNames()
 
 }

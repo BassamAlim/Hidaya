@@ -728,7 +728,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
     }
 
     private fun getSuraNames() {
-        suraNames = db.suarDao().getDecoratedNamesAr()
+        suraNames = db.surasDao().getDecoratedNamesAr()
     }
 
     private fun getContentIntent(): PendingIntent {

@@ -17,11 +17,11 @@ class QuranSearcherRepository @Inject constructor(
 
     fun getNumeralsLanguage() = preferencesDS.getNumeralsLanguage()
 
-    fun getAyat() = db.ayatDao().getAll()
+    fun getAyat() = db.versesDao().getAll()
 
-    fun getSuraNames() = db.suarDao().getDecoratedNamesAr()
+    fun getSuraNames() = db.surasDao().getDecoratedNamesAr()
 
-    fun getSuraNamesEn() = db.suarDao().getDecoratedNamesEn()
+    fun getSuraNamesEn() = db.surasDao().getDecoratedNamesEn()
 
     fun getMaxMatchesIndex() =
         preferencesDS.getInt(Preference.QuranSearcherMaxMatchesIndex)

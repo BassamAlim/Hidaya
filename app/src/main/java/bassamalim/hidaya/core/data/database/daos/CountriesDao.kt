@@ -5,7 +5,7 @@ import androidx.room.Query
 import bassamalim.hidaya.core.data.database.models.Country
 
 @Dao
-interface CountryDao {
+interface CountriesDao {
 
     @Query("SELECT * FROM countries")
     fun getAll(): List<Country>
