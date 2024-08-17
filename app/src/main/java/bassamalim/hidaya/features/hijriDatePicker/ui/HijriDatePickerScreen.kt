@@ -80,7 +80,7 @@ fun HijriDatePickerDialog(
                         getDaysGrid = viewModel::getDaysGrid,
                         onPreviousMonthClick = viewModel::onPreviousMonthClick,
                         onNextMonthClick = viewModel::onNextMonthClick,
-                        onDaySelected = { viewModel.onDaySelected(it) }
+                        onDaySelected = viewModel::onDaySelected
                     )
                     SelectorMode.YEAR -> YearSelector(
                         selectedYear = state.displayedYear,
@@ -91,8 +91,8 @@ fun HijriDatePickerDialog(
             }
 
             BottomArea(
-                onSelectClick = { viewModel.onSelectClicked() },
-                onCancelClick = { viewModel.onCancelClicked() }
+                onSelectClick = viewModel::onSelectClicked,
+                onCancelClick = viewModel::onCancelClicked
             )
         }
     }
@@ -159,7 +159,7 @@ private fun DayMonthSelector(
         DaySelector(
             weekDaysAbb = weekDaysAbb,
             pagerState = pagerState,
-            getDaysGrid = { getDaysGrid(it) },
+            getDaysGrid = getDaysGrid,
             selectedDay = selectedDay,
             currentDay = currentDay,
             onDaySelected = onDaySelected
@@ -251,14 +251,14 @@ private fun BottomArea(
         // select
         MyClickableText(
             text = stringResource(R.string.select),
-            Modifier.padding(start = 10.dp),
+            modifier = Modifier.padding(start = 10.dp),
             onClick = onSelectClick
         )
 
         // cancel
         MyClickableText(
             text = stringResource(R.string.cancel),
-            Modifier.padding(start = 10.dp),
+            modifier = Modifier.padding(start = 10.dp),
             onClick = onCancelClick
         )
     }
@@ -287,7 +287,7 @@ private fun DaysGrid(
                         else {
                             MyText(
                                 value,
-                                modifier = Modifier
+                                Modifier
                                     .size(40.dp)
                                     .clip(CircleShape)
                                     .background(

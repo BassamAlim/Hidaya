@@ -1,6 +1,6 @@
 package bassamalim.hidaya.core.data.preferences.objects
 
-import bassamalim.hidaya.core.enums.VerseRepeat
+import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.features.quranReader.ui.QuranViewType
 import kotlinx.collections.immutable.PersistentMap
@@ -13,7 +13,7 @@ data class QuranPreferences(
     val viewType: QuranViewType = QuranViewType.PAGE,
     val textSize: Float = 30f,
     val ayaReciterId: Int = 13,
-    val verseRepeat: VerseRepeat = VerseRepeat.NONE,
+    val verseRepeatMode: VerseRepeatMode = VerseRepeatMode.NONE,
     val shouldStopOnSuraEnd: Boolean = false,
     val shouldStopOnPageEnd: Boolean = false,
     val pageBookmark: QuranPageBookmark? = null,

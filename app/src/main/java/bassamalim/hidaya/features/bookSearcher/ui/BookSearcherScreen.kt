@@ -45,10 +45,10 @@ fun BookSearcherUI(
                 isFiltered = state.filtered,
                 maxMatchesItems = state.maxMatchesItems,
                 maxMatches = state.maxMatches,
-                onSearchTextChange = { viewModel.onSearchTextChange(it) },
+                onSearchTextChange = viewModel::onSearchTextChange,
                 onSearch = { color -> viewModel.onSearch(color) },
-                onFilterClick = { viewModel.onFilterClick() },
-                onMaxMatchesIndexChange = { viewModel.onMaxMatchesIndexChange(it) }
+                onFilterClick = viewModel::onFilterClick,
+                onMaxMatchesIndexChange = viewModel::onMaxMatchesIndexChange
             )
 
             state.matches?.let {
@@ -103,13 +103,13 @@ private fun SearchArea(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp),
-            onValueChange = { onSearchTextChange(it) },
+            onValueChange = onSearchTextChange,
             onSubmit = { onSearch(highlightColor) }
         )
 
         BooksFilter(
             isFiltered = isFiltered,
-            onFilterClick = { onFilterClick() }
+            onFilterClick = onFilterClick
         )
 
         Row(
@@ -119,7 +119,7 @@ private fun SearchArea(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            MyText(text = stringResource(R.string.max_num_of_marches))
+            MyText(stringResource(R.string.max_num_of_marches))
 
             MyDropDownMenu(
                 selectedIndex = maxMatchesItems.indexOf(maxMatches.toString()),

@@ -329,7 +329,7 @@ class RecitationsRecitersMenuViewModel @Inject constructor(
         )
     }
 
-    fun onSearchTextCh(text: String) {
+    fun onSearchTextChange(text: String) {
         _uiState.update { it.copy(
             searchText = text
         )}

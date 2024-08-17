@@ -33,15 +33,15 @@ fun BookChaptersUI(
                     value = state.searchText,
                     hint = stringResource(R.string.search),
                     modifier = Modifier.fillMaxWidth(),
-                    onValueChange = { viewModel.onSearchTextChange(it) }
+                    onValueChange = viewModel::onSearchTextChange
                 )
             }
         ) { page ->
             Tab(
                 items = viewModel.getItems(page),
                 favs = state.favs,
-                onItemClick = { viewModel.onItemClick(it) },
-                onFavClick = { viewModel.onFavClick(it) },
+                onItemClick = viewModel::onItemClick,
+                onFavClick = viewModel::onFavClick,
             )
         }
     }

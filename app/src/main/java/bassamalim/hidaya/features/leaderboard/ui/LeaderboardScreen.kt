@@ -39,7 +39,7 @@ fun LeaderboardUI(
         else if (state.isError) ErrorScreen(message = stringResource(R.string.error_fetching_data))
         else UsersList(
             userId = state.userId,
-            getTabContent = { viewModel.getTabContent(it) }
+            getTabContent = viewModel::getTabContent
         )
     }
 }

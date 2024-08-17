@@ -104,7 +104,7 @@ private fun CheckboxListItem(
     ) {
         Checkbox(
             checked = isChecked,
-            onCheckedChange = { onCheckedChange(it) },
+            onCheckedChange = onCheckedChange,
             colors = CheckboxDefaults.colors(
                 checkedColor = AppTheme.colors.accent,
                 uncheckedColor = AppTheme.colors.text

@@ -29,10 +29,9 @@ fun BookViewerScreen(
         title = state.bookTitle,
         bottomBar = {
             MyReadingBottomBar(
-                textSize = state.textSize
-            ) {
-                viewModel.onTextSizeChange(it)
-            }
+                textSize = state.textSize,
+                onSeek = viewModel::onTextSizeChange
+            )
         }
     ) {
         MyLazyColumn(

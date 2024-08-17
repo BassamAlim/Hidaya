@@ -78,7 +78,7 @@ fun TelawatUI(
                             value = st.searchText,
                             hint = stringResource(R.string.reciters_hint),
                             modifier = Modifier.weight(1F),
-                            onValueChange = { vm.onSearchTextCh(it) }
+                            onValueChange = vm::onSearchTextChange
                         )
 
                         MyIconButton(
@@ -104,7 +104,7 @@ fun TelawatUI(
             title = stringResource(R.string.choose_rewaya),
             itemTitles = vm.rewayat.toList(),
             itemSelections = st.selectedVersions.toTypedArray(),
-            onDismiss = { vm.onFilterDialogDismiss(it) }
+            onDismiss = vm::onFilterDialogDismiss
         )
     }
 }

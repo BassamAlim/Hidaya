@@ -3,8 +3,8 @@ package bassamalim.hidaya.core.data.repositories
 import bassamalim.hidaya.core.data.database.daos.SurasDao
 import bassamalim.hidaya.core.data.database.daos.VersesDao
 import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
-import bassamalim.hidaya.core.enums.VerseRepeat
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.features.quranReader.ui.QuranViewType
 import kotlinx.collections.immutable.toPersistentMap
@@ -65,23 +65,23 @@ class QuranRepository @Inject constructor(
         )}
     }
 
-    fun getAyaReciterId() = quranPreferencesDataSource.flow.map {
+    fun getVerseReciterId() = quranPreferencesDataSource.flow.map {
         it.ayaReciterId
     }
 
-    suspend fun setAyaReciterId(ayaReciterId: Int) {
+    suspend fun setVerseReciterId(ayaReciterId: Int) {
         quranPreferencesDataSource.update { it.copy(
             ayaReciterId = ayaReciterId
         )}
     }
 
-    fun getAyaRepeat() = quranPreferencesDataSource.flow.map {
-        it.verseRepeat
+    fun getVerseRepeatMode() = quranPreferencesDataSource.flow.map {
+        it.verseRepeatMode
     }
 
-    suspend fun setAyaRepeat(verseRepeat: VerseRepeat) {
+    suspend fun setVerseRepeatMode(verseRepeatMode: VerseRepeatMode) {
         quranPreferencesDataSource.update { it.copy(
-            verseRepeat = verseRepeat
+            verseRepeatMode = verseRepeatMode
         )}
     }
 
@@ -94,7 +94,6 @@ class QuranRepository @Inject constructor(
             shouldStopOnSuraEnd = shouldStopOnSuraEnd
         )}
     }
-
 
     fun getShouldStopOnPageEnd() = quranPreferencesDataSource.flow.map {
         it.shouldStopOnPageEnd
@@ -110,7 +109,7 @@ class QuranRepository @Inject constructor(
         it.pageBookmark
     }
 
-    suspend fun setPageBookmark(bookmark: QuranPageBookmark) {
+    suspend fun setPageBookmark(bookmark: QuranPageBookmark?) {
         quranPreferencesDataSource.update { it.copy(
             pageBookmark = bookmark
         )}
@@ -168,8 +167,8 @@ class QuranRepository @Inject constructor(
 
     fun getSuraPageNum(suraId: Int) = surasDao.getSuraStartPage(suraId)
 
-    fun getAyaPageNum(ayaId: Int) = versesDao.getAyaPageNum(ayaId)
+    fun getVersePageNum(ayaId: Int) = versesDao.getAyaPageNum(ayaId)
 
-    fun getAyas() = versesDao.getAll()
+    fun getAllVerses() = versesDao.getAll()
 
 }

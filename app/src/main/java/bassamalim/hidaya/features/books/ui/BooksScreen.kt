@@ -57,8 +57,8 @@ fun BooksUI(
                     BookCard(
                         item = item,
                         downloadState = state.downloadStates[item.id]!!,
-                        onItemClick = { viewModel.onItemClick(it) },
-                        onDownloadButtonClick = { viewModel.onDownloadButtonClick(it) }
+                        onItemClick = viewModel::onItemClick,
+                        onDownloadButtonClick = viewModel::onDownloadButtonClick
                     )
                 }
             }
@@ -68,7 +68,7 @@ fun BooksUI(
         TutorialDialog(
             textResId = R.string.books_activity_tips,
             shown = state.tutorialDialogShown,
-            onDismiss = { viewModel.onTutorialDialogDismiss(it) }
+            onDismiss = viewModel::onTutorialDialogDismiss
         )
 
         if (state.shouldShowWait != 0) {

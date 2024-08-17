@@ -51,7 +51,7 @@ fun TelawatSuarUI(
                     value = st.searchText,
                     hint = stringResource(R.string.suar_hint),
                     modifier = Modifier.fillMaxWidth(),
-                    onValueChange = { vm.onSearchChange(it) }
+                    onValueChange = vm::onSearchChange
                 )
             }
         ) { page ->

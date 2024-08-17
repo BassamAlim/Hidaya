@@ -4,13 +4,13 @@ import java.io.Serializable
 
 data class Verse(
     var id: Int,
-    var juz: Int,
+    val num: Int,
+    var juzNum: Int,
     val suraNum: Int,
     val suraName: String,
-    val ayaNum: Int,
     var text: String?,
     var translation: String?,
-    val tafseer: String
+    val interpretation: String
 ) : Serializable {
     var start = 0
     var end = 0

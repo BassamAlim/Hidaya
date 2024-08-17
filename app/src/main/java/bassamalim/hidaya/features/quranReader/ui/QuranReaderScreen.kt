@@ -3,6 +3,7 @@
 package bassamalim.hidaya.features.quranReader.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -71,7 +73,7 @@ fun QuranViewerUI(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(
-        initialPage = viewModel.initialPageNum - 1,
+        initialPage = viewModel.pageNum - 1,
         pageCount = { Global.QURAN_PAGES }
     )
     val coroutineScope = rememberCoroutineScope()
@@ -87,8 +89,8 @@ fun QuranViewerUI(
         topBar = {
             TopBar(
                 suraName = state.suraName,
-                pageNumText = state.pageNumText,
-                juzNumText = state.juzNumText,
+                pageNumText = state.pageNum,
+                juzNumText = state.juzNum,
                 numeralsLanguage = viewModel.numeralsLanguage
             )
         },
@@ -110,19 +112,19 @@ fun QuranViewerUI(
             onPageChange = viewModel::onPageChange,
             buildPage = viewModel::buildPage,
             onSuraHeaderGloballyPositioned = viewModel::onSuraHeaderGloballyPositioned,
-            onAyaGloballyPositioned = viewModel::onAyaGloballyPositioned,
-            onAyaScreenClick = viewModel::onAyaScreenClick
+            onAyaGloballyPositioned = viewModel::onVerseGloballyPositioned,
+            onAyaScreenClick = viewModel::onVerseClick
         )
     }
 
     TutorialDialog(
-        shown = state.tutorialDialogShown,
+        shown = state.isTutorialDialogShown,
         textResId = R.string.quran_tips,
-        onDismiss = { doNotShowAgain -> viewModel.onTutorialDialogDismiss(doNotShowAgain) }
+        onDismiss = viewModel::onTutorialDialogDismiss
     )
 
     InfoDialog(
-        shown = state.infoDialogShown,
+        shown = state.isInfoDialogShown,
         title = stringResource(R.string.tafseer),
         text = state.infoDialogText,
         onDismiss = viewModel::onInfoDialogDismiss  // :: gives the reference to the function
@@ -130,9 +132,13 @@ fun QuranViewerUI(
 
     QuranSettingsDlg(
         vm = hiltViewModel(),
-        shown = state.settingsDialogShown,
-        mainOnDone = { viewModel.onSettingsDialogDismiss() }
+        shown = state.isSettingsDialogShown,
+        mainOnDone = viewModel::onSettingsDialogDismiss
     )
+
+    if (state.isPlayerNotSupportedShown) {
+        PlayerNotSupportedToast()
+    }
 }
 
 @Composable
@@ -156,7 +162,7 @@ private fun TopBar(
         ) {
             // Sura name
             MyText(
-                "${stringResource(R.string.sura)} $suraName",
+                text = "${stringResource(R.string.sura)} $suraName",
                 fontSize = 18.nsp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start,
@@ -165,7 +171,7 @@ private fun TopBar(
 
             // Page number
             MyText(
-                "${stringResource(R.string.page)} " +
+                text = "${stringResource(R.string.page)} " +
                         translateNums(
                             numeralsLanguage = numeralsLanguage,
                             string = pageNumText
@@ -224,7 +230,7 @@ private fun BottomBar(
                     description = stringResource(R.string.rewind_btn_description),
                     size = 40.dp,
                     tint = AppTheme.colors.onPrimary,
-                    onClick = { vm.onPreviousAyaClk() }
+                    onClick = { vm.onPreviousVerseClick() }
                 )
 
                 // Play/Pause btn
@@ -243,7 +249,7 @@ private fun BottomBar(
                     description = stringResource(R.string.fast_forward_btn_description),
                     size = 40.dp,
                     tint = AppTheme.colors.onPrimary,
-                    onClick = { vm.onNextAyaClk() }
+                    onClick = { vm.onNextVerseClick() }
                 )
             }
 
@@ -354,7 +360,7 @@ private fun PageItems(
     var sequence = ArrayList<Verse>()
     var lastSura = verses[0].suraNum
 
-    if (verses[0].ayaNum == 1) {
+    if (verses[0].num == 1) {
         NewSura(
             verse = verses[0],
             isCurrentPage = isCurrentPage,
@@ -375,7 +381,7 @@ private fun PageItems(
                 onAyaScreenClick = onAyaScreenClick
             )
 
-            if (aya.ayaNum == 1) {
+            if (aya.num == 1) {
                 NewSura(
                     verse = aya,
                     isCurrentPage = isCurrentPage,
@@ -469,7 +475,7 @@ private fun ListItems(
     onAyaScreenClick: (Int, Int) -> Unit
 ) {
     for (aya in verses) {
-        if (aya.ayaNum == 1)
+        if (aya.num == 1)
             NewSura(
                 verse = aya,
                 isCurrentPage = isCurrentPage,
@@ -511,7 +517,7 @@ private fun ListItems(
             )
         }
 
-        if (aya.ayaNum != verses.last().ayaNum)
+        if (aya.num != verses.last().num)
             MyHorizontalDivider()
     }
 }
@@ -622,7 +628,7 @@ private fun SuraHeader(
         )
 
         MyText(
-            verse.suraName,
+            text = verse.suraName,
             fontSize = (textSize + 2).sp,
             fontWeight = FontWeight.Bold,
             textColor = AppTheme.colors.strongText
@@ -633,9 +639,21 @@ private fun SuraHeader(
 @Composable
 private fun Basmalah(textSize: Int) {
     MyText(
-        stringResource(R.string.basmalah),
-        Modifier.padding(bottom = 5.dp),
+        text = stringResource(R.string.basmalah),
+        modifier = Modifier.padding(bottom = 5.dp),
         fontSize = (textSize - 3).sp,
         fontWeight = FontWeight.Bold
     )
+}
+
+@Composable
+private fun PlayerNotSupportedToast() {
+    val context = LocalContext.current
+    LaunchedEffect(null) {
+        Toast.makeText(
+            context,
+            context.getString(R.string.feature_not_supported),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
 }

@@ -51,7 +51,7 @@ private fun SearchBar(
         value = st.searchText,
         hint = stringResource(R.string.athkar_hint),
         modifier = Modifier.fillMaxWidth(),
-        onValueChange = { vm.onSearchChange(it) }
+        onValueChange = vm::onSearchChange
     )
 }
 

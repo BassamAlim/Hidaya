@@ -73,7 +73,7 @@ fun PrayersUI(
     TutorialDialog(
         shown = state.tutorialDialogShown,
         textResId = R.string.prayers_tips,
-        onDismiss = { viewModel.onTutorialDialogDismiss(it) }
+        onDismiss = viewModel::onTutorialDialogDismiss
     )
 
     if (state.shouldShowLocationFailedToast)
@@ -135,8 +135,8 @@ private fun ColumnScope.PrayersSpace(
                 idx = i,
                 data = data,
                 isLocationAvailable = isLocationAvailable,
-                onPrayerCardClick = { onPrayerCardClick(it) },
-                onReminderCardClick = { onReminderCardClick(it) }
+                onPrayerCardClick = onPrayerCardClick,
+                onReminderCardClick = onReminderCardClick
             )
         }
     }

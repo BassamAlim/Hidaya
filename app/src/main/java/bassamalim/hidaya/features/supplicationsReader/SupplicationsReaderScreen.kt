@@ -43,7 +43,7 @@ fun AthkarViewerUI(
         bottomBar = {
             MyReadingBottomBar(
                 textSize = st.textSize,
-                onSeek = { vm.onTextSizeChange(it) }
+                onSeek = vm::onTextSizeChange
             )
         }
     ) {
@@ -66,7 +66,7 @@ fun AthkarViewerUI(
             title = stringResource(R.string.reference),
             text = st.infoDialogText,
             shown = st.infoDialogShown,
-            onDismiss = { vm.onInfoDialogDismiss() }
+            onDismiss = vm::onInfoDialogDismiss
         )
     }
 }

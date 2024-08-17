@@ -58,13 +58,13 @@ fun LocationPickerUI(
             SearchComp(
                 mode = state.mode,
                 searchText = state.searchText,
-                onSearchTextChange = { viewModel.onSearchTextChange(it) }
+                onSearchTextChange = viewModel::onSearchTextChange
             )
 
             LocationItems(
                 lazyListState = lazyListState,
                 items = state.items,
-                onSelect = { viewModel.onSelect(it) }
+                onSelect = viewModel::onSelect
             )
         }
     }
@@ -87,7 +87,7 @@ private fun SearchComp(
                 LocationPickerMode.CITY -> R.string.city_hint
             }
         ),
-        onValueChange = { onSearchTextChange(it) }
+        onValueChange = onSearchTextChange
     )
 }
 
