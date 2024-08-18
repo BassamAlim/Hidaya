@@ -4,7 +4,6 @@ import bassamalim.hidaya.core.data.database.daos.SurasDao
 import bassamalim.hidaya.core.data.database.daos.VersesDao
 import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.features.quranReader.ui.QuranViewType
 import kotlinx.collections.immutable.toPersistentMap
@@ -62,46 +61,6 @@ class QuranRepository @Inject constructor(
     suspend fun setTextSize(textSize: Float) {
         quranPreferencesDataSource.update { it.copy(
             textSize = textSize
-        )}
-    }
-
-    fun getVerseReciterId() = quranPreferencesDataSource.flow.map {
-        it.ayaReciterId
-    }
-
-    suspend fun setVerseReciterId(ayaReciterId: Int) {
-        quranPreferencesDataSource.update { it.copy(
-            ayaReciterId = ayaReciterId
-        )}
-    }
-
-    fun getVerseRepeatMode() = quranPreferencesDataSource.flow.map {
-        it.verseRepeatMode
-    }
-
-    suspend fun setVerseRepeatMode(verseRepeatMode: VerseRepeatMode) {
-        quranPreferencesDataSource.update { it.copy(
-            verseRepeatMode = verseRepeatMode
-        )}
-    }
-
-    fun getShouldStopOnSuraEnd() = quranPreferencesDataSource.flow.map {
-        it.shouldStopOnSuraEnd
-    }
-
-    suspend fun setShouldStopOnSuraEnd(shouldStopOnSuraEnd: Boolean) {
-        quranPreferencesDataSource.update { it.copy(
-            shouldStopOnSuraEnd = shouldStopOnSuraEnd
-        )}
-    }
-
-    fun getShouldStopOnPageEnd() = quranPreferencesDataSource.flow.map {
-        it.shouldStopOnPageEnd
-    }
-
-    suspend fun setShouldStopOnPageEnd(shouldStopOnPageEnd: Boolean) {
-        quranPreferencesDataSource.update { it.copy(
-            shouldStopOnPageEnd = shouldStopOnPageEnd
         )}
     }
 
@@ -167,7 +126,7 @@ class QuranRepository @Inject constructor(
 
     fun getSuraPageNum(suraId: Int) = surasDao.getSuraStartPage(suraId)
 
-    fun getVersePageNum(ayaId: Int) = versesDao.getAyaPageNum(ayaId)
+    fun getVersePageNum(verseId: Int) = versesDao.getVersePageNum(verseId)
 
     fun getAllVerses() = versesDao.getAll()
 

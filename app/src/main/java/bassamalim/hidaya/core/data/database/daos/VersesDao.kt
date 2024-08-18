@@ -11,6 +11,6 @@ interface VersesDao {
     fun getAll(): List<Verse>
 
     @Query("SELECT page_num FROM verses WHERE id = :id")
-    fun getAyaPageNum(id: Int): Int
+    fun getVersePageNum(id: Int): Int
 
 }

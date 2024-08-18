@@ -276,4 +276,17 @@
         <item>مشاري راشد العفاسي</item>
     </string-array>
 
+    <string-array name="quran_view_type_entries">
+        <item>صفحة</item>
+        <item>قائمة</item>
+    </string-array>
+
+    <string-array name="quran_repeat_mode_entries">
+        <item>بدون تكرار</item>
+        <item>٢</item>
+        <item>٣</item>
+        <item>٥</item>
+        <item>لا نهائي</item>
+    </string-array>
+
 </resources>

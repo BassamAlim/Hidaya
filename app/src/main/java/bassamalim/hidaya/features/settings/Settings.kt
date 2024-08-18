@@ -23,7 +23,6 @@ import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,34 +37,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.MyValuedSlider
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun ListPref(
-    preferencesDS: PreferencesDataSource,
-    titleResId: Int,
-    pref: Preference,
-    iconResId: Int = -1,
+fun <V> MenuSetting(
+    selection: V,
+    items: Array<V>,
     entries: Array<String>,
-    values: Array<String>,
+    title: String,
+    iconResId: Int = -1,
     bgColor: Color = AppTheme.colors.surface,
-    onSelection: () -> Unit = {}
+    onSelection: (V) -> Unit = {}
 ) {
-    var shown by remember { mutableStateOf(false) }
-    val initialValue = preferencesDS.getString(pref)
-    var selectedValue by remember { mutableStateOf(initialValue) }
+    var isShown by remember { mutableStateOf(false) }
 
     Box(
         Modifier
             .fillMaxWidth()
             .padding(4.dp)
             .clip(RoundedCornerShape(10.dp))
-            .clickable { shown = true }
+            .clickable { isShown = true }
     ) {
         Row(
             Modifier
@@ -77,47 +72,38 @@ fun ListPref(
             if (iconResId != -1) {
                 Icon(
                     painter = painterResource(iconResId),
-                    contentDescription = stringResource(titleResId),
-                    Modifier.padding(end = 20.dp),
+                    contentDescription = title,
+                    modifier = Modifier.padding(end = 20.dp),
                     tint = AppTheme.colors.text
                 )
             }
 
             Column {
-                PreferenceTitle(titleResId)
+                PreferenceTitle(title)
 
-                SummaryText(entries[values.indexOf(selectedValue)])
+                SummaryText(entries[items.indexOf(selection)])
             }
         }
 
-        if (shown) {
-            val onSelect = { index: Int ->
-                selectedValue = values[index]
-
-                preferencesDS.setString(pref, values[index])
-
-                onSelection()
-            }
-
+        if (isShown) {
             Dialog(
-                onDismissRequest = { shown = false }
+                onDismissRequest = { isShown = false }
             ) {
                 Surface(
                     color = Color.Transparent
                 ) {
                     Box(
-                        Modifier
-                            .background(
-                                shape = RoundedCornerShape(16.dp),
-                                color = AppTheme.colors.background
-                            )
+                        Modifier.background(
+                            shape = RoundedCornerShape(16.dp),
+                            color = AppTheme.colors.background
+                        )
                     ) {
                         Column(
                             Modifier.padding(vertical = 20.dp, horizontal = 10.dp)
                         ) {
                             MyText(
-                                text = stringResource(titleResId),
-                                Modifier.padding(start = 10.dp, bottom = 10.dp)
+                                text = title,
+                                modifier = Modifier.padding(start = 10.dp, bottom = 10.dp)
                             )
 
                             Column(
@@ -131,12 +117,12 @@ fun ListPref(
                                             .clip(RoundedCornerShape(100.dp))
                                             .fillMaxWidth()
                                             .padding(6.dp)
-                                            .clickable { onSelect(index) },
+                                            .clickable { onSelection(items[index]) },
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         RadioButton(
-                                            selected = index == values.indexOf(selectedValue),
-                                            onClick = { onSelect(index) },
+                                            selected = index == items.indexOf(selection),
+                                            onClick = { onSelection(items[index]) },
                                             colors = RadioButtonDefaults.colors(
                                                 selectedColor = AppTheme.colors.accent,
                                                 unselectedColor = AppTheme.colors.text
@@ -156,7 +142,7 @@ fun ListPref(
                                 elevation = 0,
                                 innerPadding = PaddingValues(0.dp)
                             ) {
-                                shown = !shown
+                                isShown = !isShown
                             }
                         }
                     }
@@ -167,32 +153,20 @@ fun ListPref(
 }
 
 @Composable
-fun SwitchPref(
-    preferencesDS: PreferencesDataSource,
-    pref: Preference,
-    titleResId: Int,
+fun SwitchSetting(
+    value: Boolean,
+    title: String,
     summary: String,
     bgColor: Color = AppTheme.colors.surface,
     onSwitch: (Boolean) -> Unit = {}
 ) {
-    val initialValue = preferencesDS.getBoolean(pref)
-    var checked by remember { mutableStateOf(initialValue) }
-
-    val onCheckChange = {
-        checked = !checked
-
-        preferencesDS.setBoolean(pref, checked)
-
-        onSwitch(checked)
-    }
-
     Box(
         Modifier
             .fillMaxWidth()
             .padding(4.dp)
             .background(bgColor)
             .clip(RoundedCornerShape(10.dp))
-            .clickable { onCheckChange() }
+            .clickable { onSwitch(!value) }
     ) {
         Column(
             Modifier
@@ -204,11 +178,11 @@ fun SwitchPref(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                PreferenceTitle(titleResId, Modifier.padding(end = 40.dp))
+                PreferenceTitle(title, Modifier.padding(end = 40.dp))
 
                 Switch(
-                    checked = checked,
-                    onCheckedChange = { onCheckChange() },
+                    checked = value,
+                    onCheckedChange = { onSwitch(!value) },
                     modifier = Modifier.height(10.dp),
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = AppTheme.colors.accent,
@@ -224,34 +198,30 @@ fun SwitchPref(
 
 @Composable
 fun SliderPref(
-    preferencesDS: PreferencesDataSource,
-    pref: Preference,
-    titleResId: Int,
+    value: Float,
+    title: String,
     valueRange: ClosedFloatingPointRange<Float>,
+    numeralsLanguage: Language,
     infinite: Boolean = false,
     sliderFraction: Float = 0.8F,
-    onValueChange: () -> Unit = {}
+    onValueChange: (Float) -> Unit = {},
+    onValueChangeFinished: () -> Unit = {}
 ) {
-    var value by remember { mutableFloatStateOf(preferencesDS.getFloat(pref)) }
-
     Column(
         Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp, horizontal = 16.dp)
     ) {
-        PreferenceTitle(titleResId)
+        PreferenceTitle(title)
 
         MyValuedSlider(
-            initialValue = value,
+            value = value,
             valueRange = valueRange,
+            numeralsLanguage = numeralsLanguage,
             infinite = infinite,
             sliderFraction = sliderFraction,
-            onValueChange = { newValue -> value = newValue },
-            onValueChangeFinished = {
-                preferencesDS.setFloat(pref, value)
-
-                onValueChange()
-            }
+            onValueChange = onValueChange,
+            onValueChangeFinished = onValueChangeFinished
         )
     }
 }
@@ -270,12 +240,19 @@ fun CategoryTitle(titleResId: Int) {
 
 @Composable
 private fun PreferenceTitle(
-    titleResId: Int, modifier: Modifier = Modifier
+    title: String,
+    modifier: Modifier = Modifier
 ) {
-    MyText(stringResource(titleResId), modifier)
+    MyText(
+        text = title,
+        modifier = modifier
+    )
 }
 
 @Composable
 private fun SummaryText(text: String) {
-    MyText(text = text, fontSize = 16.sp)
+    MyText(
+        text = text,
+        fontSize = 16.sp
+    )
 }

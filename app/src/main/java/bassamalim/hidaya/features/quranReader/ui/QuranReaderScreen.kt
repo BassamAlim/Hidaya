@@ -65,7 +65,7 @@ import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quranReader.ui.QuranViewType.LIST
-import bassamalim.hidaya.features.quranSettings.QuranSettingsDlg
+import bassamalim.hidaya.features.quranSettings.ui.QuranSettingsDlg
 
 @Composable
 fun QuranViewerUI(
@@ -131,9 +131,9 @@ fun QuranViewerUI(
     )
 
     QuranSettingsDlg(
-        vm = hiltViewModel(),
+        viewModel = hiltViewModel(),
         shown = state.isSettingsDialogShown,
-        mainOnDone = viewModel::onSettingsDialogDismiss
+        onDone = viewModel::onSettingsDialogDismiss
     )
 
     if (state.isPlayerNotSupportedShown) {

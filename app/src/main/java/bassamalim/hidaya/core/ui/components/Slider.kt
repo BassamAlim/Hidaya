@@ -7,11 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,27 +23,27 @@ fun MySlider(
     valueRange: ClosedFloatingPointRange<Float>,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    onValueChangeFinished: () -> Unit = {},
-    onValueChange: (Float) -> Unit
+    onValueChange: (Float) -> Unit,
+    onValueChangeFinished: () -> Unit = {}
 ) {
     Slider(
         value = value,
         valueRange = valueRange,
         onValueChange = onValueChange,
-        onValueChangeFinished = onValueChangeFinished,
+        modifier = modifier,
+        enabled = enabled,
         colors = SliderDefaults.colors(
             activeTrackColor = AppTheme.colors.accent,
             inactiveTrackColor = AppTheme.colors.altAccent,
             thumbColor = AppTheme.colors.accent
         ),
-        modifier = modifier,
-        enabled = enabled
+        onValueChangeFinished = onValueChangeFinished
     )
 }
 
 @Composable
 fun MyValuedSlider(
-    initialValue: Float,
+    value: Float,
     valueRange: ClosedFloatingPointRange<Float>,
     modifier: Modifier = Modifier,
     numeralsLanguage: Language,
@@ -56,22 +51,17 @@ fun MyValuedSlider(
     sliderFraction: Float = 0.8F,
     enabled: Boolean = true,
     infinite: Boolean = false,
+    onValueChange: (Float) -> Unit,
     onValueChangeFinished: () -> Unit = {},
-    onValueChange: (Float) -> Unit
 ) {
     val context = LocalContext.current
-    var currentValue by remember { mutableFloatStateOf(initialValue) }
-    var sliderText by remember {
-        mutableStateOf(
-            if (infinite && (currentValue - progressMin) == valueRange.endInclusive)
-                context.getString(R.string.infinite)
-            else
-                translateNums(
-                    numeralsLanguage = numeralsLanguage,
-                    string = (initialValue - progressMin).toInt().toString()
-                )
+    var sliderText = if (infinite && (value - progressMin) == valueRange.endInclusive)
+        context.getString(R.string.infinite)
+    else
+        translateNums(
+            numeralsLanguage = numeralsLanguage,
+            string = (value - progressMin).toInt().toString()
         )
-    }
 
     Row(
         modifier = modifier
@@ -81,14 +71,12 @@ fun MyValuedSlider(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         MySlider(
-            value = currentValue,
+            value = value,
             valueRange = valueRange,
             modifier = Modifier.fillMaxWidth(fraction = sliderFraction),
             enabled = enabled,
-            onValueChange = { value ->
-                currentValue = value
-
-                val progress = currentValue - progressMin
+            onValueChange = { newValue ->
+                val progress = newValue - progressMin
 
                 var progressStr = floor(progress).toInt().toString()
                 if (progressMin != 0f && progress.toInt() > 0) progressStr += "+"
@@ -106,7 +94,7 @@ fun MyValuedSlider(
         )
 
         MyText(
-            sliderText,
+            text = sliderText,
             textColor = AppTheme.colors.accent
         )
     }

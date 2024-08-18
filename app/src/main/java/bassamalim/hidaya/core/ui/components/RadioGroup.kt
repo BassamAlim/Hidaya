@@ -9,10 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -60,13 +56,12 @@ fun RadioGroup(
 }
 
 @Composable
-fun HorizontalRadioGroup(
-    options: List<String>,
-    initialSelection: Int,
-    onSelect: (Int) -> Unit
+fun <V> HorizontalRadioGroup(
+    selection: V,
+    items: List<V>,
+    entries: Array<String>,
+    onSelect: (V) -> Unit
 ) {
-    var state by remember { mutableStateOf(initialSelection) }
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -74,33 +69,29 @@ fun HorizontalRadioGroup(
             .fillMaxWidth()
             .padding(vertical = 10.dp),
     ) {
-        options.forEachIndexed { index, text ->
+        entries.forEachIndexed { index, text ->
             MySquareButton(
                 text = text,
                 fontSize = 20.nsp,
                 textColor =
-                if (index == state) AppTheme.colors.accent
-                else AppTheme.colors.text,
+                    if (text == selection) AppTheme.colors.accent
+                    else AppTheme.colors.text,
                 innerPadding = PaddingValues(vertical = 1.dp),
                 modifier =
-                if (index == state)
-                    Modifier
-                        .weight(1F)
-                        .padding(horizontal = 5.dp)
-                        .border(
-                            width = 3.dp,
-                            color = AppTheme.colors.accent,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                else
-                    Modifier
-                        .weight(1F)
-                        .padding(horizontal = 5.dp),
-                onClick = {
-                    state = index
-
-                    onSelect(index)
-                }
+                    if (text == selection)
+                        Modifier
+                            .weight(1F)
+                            .padding(horizontal = 5.dp)
+                            .border(
+                                width = 3.dp,
+                                color = AppTheme.colors.accent,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                    else
+                        Modifier
+                            .weight(1F)
+                            .padding(horizontal = 5.dp),
+                onClick = { onSelect(items[index]) }
             )
         }
     }

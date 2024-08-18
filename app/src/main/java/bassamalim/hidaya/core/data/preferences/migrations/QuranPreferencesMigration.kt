@@ -6,7 +6,6 @@ import androidx.datastore.migrations.SharedPreferencesView
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.preferences.objects.QuranPreferences
-import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.features.quranReader.ui.QuranViewType
 import com.google.gson.Gson
@@ -39,19 +38,6 @@ object QuranPreferencesMigration {
                 textSize = sharedPrefs.getFloat(
                     key = Preference.QuranTextSize.key,
                     defValue = Preference.QuranTextSize.default as Float
-                ),
-                ayaReciterId = sharedPrefs.getString(
-                    key = Preference.AyaReciter.key,
-                    defValue = Preference.AyaReciter.default as String
-                )!!.toInt(),
-                verseRepeatMode = VerseRepeatMode.NONE,
-                shouldStopOnPageEnd = sharedPrefs.getBoolean(
-                    key = Preference.StopOnPageEnd.key,
-                    defValue = Preference.StopOnPageEnd.default as Boolean
-                ),
-                shouldStopOnSuraEnd = sharedPrefs.getBoolean(
-                    key = Preference.StopOnSuraEnd.key,
-                    defValue = Preference.StopOnSuraEnd.default as Boolean
                 ),
                 pageBookmark = QuranPageBookmark(
                     pageNum = sharedPrefs.getInt(

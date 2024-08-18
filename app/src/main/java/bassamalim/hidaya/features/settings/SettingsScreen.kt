@@ -79,25 +79,25 @@ fun AppearanceSettings() {
         Modifier.padding(bottom = 10.dp)
     ) {
         // Language
-        ListPref(
+        MenuSetting(
             sp = pref,
             titleResId = R.string.language,
             pref = Preference.Language,
             iconResId = R.drawable.ic_translation,
             entries = stringArrayResource(R.array.language_entries),
-            values = Language.entries.map { it.name }.toTypedArray()
+            items = Language.entries.map { it.name }.toTypedArray()
         ) {
             ActivityUtils.restartActivity(activity)
         }
 
         // Numerals language
-        ListPref(
+        MenuSetting(
             sp = pref,
             titleResId = R.string.numerals_language,
             pref = Preference.NumeralsLanguage,
             iconResId = R.drawable.ic_translation,
             entries = stringArrayResource(R.array.numerals_language_entries),
-            values = Language.entries.map { it.name }.toTypedArray()
+            items = Language.entries.map { it.name }.toTypedArray()
         ) {
             ActivityUtils.restartActivity(activity)
         }
@@ -106,25 +106,25 @@ fun AppearanceSettings() {
         val timeFormatEntries = stringArrayResource(R.array.time_format_entries).map {
             translateNums(pref, it)
         }.toTypedArray()
-        ListPref(
+        MenuSetting(
             sp = pref,
             titleResId = R.string.time_format,
             pref = Preference.TimeFormat,
             iconResId = R.drawable.ic_time_format,
             entries = timeFormatEntries,
-            values = TimeFormat.entries.map { it.name }.toTypedArray()
+            items = TimeFormat.entries.map { it.name }.toTypedArray()
         ) {
             ActivityUtils.restartActivity(activity)
         }
 
         // Theme
-        ListPref(
+        MenuSetting(
             sp = pref,
             titleResId = R.string.theme,
             pref = Preference.Theme,
             iconResId = R.drawable.ic_theme,
             entries = stringArrayResource(R.array.themes_entries),
-            values = Theme.entries.map { it.name }.toTypedArray()
+            items = Theme.entries.map { it.name }.toTypedArray()
         ) {
             ActivityUtils.restartActivity(activity)
         }
@@ -141,7 +141,7 @@ private fun ExtraNotificationsSettings(
     Column(
         Modifier.padding(bottom = 10.dp)
     ) {
-        SwitchPref(
+        SwitchSetting(
             sp = vm.sp,
             pref = Preference.NotifyExtraNotification(PID.MORNING),
             titleResId = R.string.morning_athkar_title,
@@ -150,7 +150,7 @@ private fun ExtraNotificationsSettings(
             vm.onSwitch(ctx, checked, PID.MORNING)
         }
 
-        SwitchPref(
+        SwitchSetting(
             sp = vm.sp,
             pref = Preference.NotifyExtraNotification(PID.EVENING),
             titleResId = R.string.evening_athkar_title,
@@ -159,7 +159,7 @@ private fun ExtraNotificationsSettings(
             vm.onSwitch(ctx, checked, PID.EVENING)
         }
 
-        SwitchPref(
+        SwitchSetting(
             sp = vm.sp,
             pref = Preference.NotifyExtraNotification(PID.DAILY_WERD),
             titleResId = R.string.daily_werd_title,
@@ -168,7 +168,7 @@ private fun ExtraNotificationsSettings(
             vm.onSwitch(ctx, checked, PID.DAILY_WERD)
         }
 
-        SwitchPref(
+        SwitchSetting(
             sp = vm.sp,
             pref = Preference.NotifyExtraNotification(PID.FRIDAY_KAHF),
             titleResId = R.string.friday_kahf_title,
@@ -185,30 +185,30 @@ private fun PrayerTimesSettings(viewModel: SettingsViewModel) {
         Modifier.padding(bottom = 10.dp)
     ) {
         // Calculation method
-        ListPref(
+        MenuSetting(
             sp = viewModel.sp,
             titleResId = R.string.calculation_method_title,
             pref = Preference.PrayerTimesCalculationMethod,
             entries = stringArrayResource(R.array.prayer_times_calc_method_entries),
-            values = stringArrayResource(R.array.prayer_times_calc_method_values)
+            items = stringArrayResource(R.array.prayer_times_calc_method_values)
         ) { viewModel.onPrayerTimesCalculationMethodCh() }
 
         // Juristic method
-        ListPref(
+        MenuSetting(
             sp = viewModel.sp,
             titleResId = R.string.juristic_method_title,
             pref = Preference.PrayerTimesJuristicMethod,
             entries = stringArrayResource(R.array.juristic_method_entries),
-            values = stringArrayResource(R.array.juristic_method_values)
+            items = stringArrayResource(R.array.juristic_method_values)
         ) { viewModel.onPrayerTimesJuristicMethodCh() }
 
         // High latitude adjustment
-        ListPref(
+        MenuSetting(
             sp = viewModel.sp,
             titleResId = R.string.high_lat_adjustment_title,
             pref = Preference.PrayerTimesAdjustment,
             entries = stringArrayResource(R.array.high_lat_adjustment_entries),
-            values = stringArrayResource(R.array.high_lat_adjustment_values)
+            items = stringArrayResource(R.array.high_lat_adjustment_values)
         ) { viewModel.onPrayerTimesHighLatAdjustmentCh() }
     }
 }
@@ -220,13 +220,13 @@ private fun AthanSettings(
     Column(
         Modifier.padding(bottom = 10.dp)
     ) {
-        ListPref(
+        MenuSetting(
             sp = sp,
             titleResId = R.string.athan_voice,
             pref = Preference.AthanVoice,
             iconResId = R.drawable.ic_speaker,
             entries = stringArrayResource(R.array.athan_voices_entries),
-            values = stringArrayResource(R.array.athan_voices_entries).mapIndexed { i, _ -> (i+1).toString() }.toTypedArray()
+            items = stringArrayResource(R.array.athan_voices_entries).mapIndexed { i, _ -> (i+1).toString() }.toTypedArray()
         )
     }
 }

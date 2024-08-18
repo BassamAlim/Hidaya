@@ -6,6 +6,7 @@ import androidx.datastore.migrations.SharedPreferencesView
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.preferences.objects.RecitationsPreferences
+import bassamalim.hidaya.core.enums.VerseRepeatMode
 import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentMapOf
@@ -56,6 +57,19 @@ object RecitationsPreferencesMigration {
                     key = Preference.LastTelawaProgress.key,
                     defValue = Preference.LastTelawaProgress.default as Int
                 ).toLong(),
+                verseReciterId = sharedPrefs.getString(
+                    key = Preference.AyaReciter.key,
+                    defValue = Preference.AyaReciter.default as String
+                )!!.toInt(),
+                verseRepeatMode = VerseRepeatMode.NONE,
+                shouldStopOnPageEnd = sharedPrefs.getBoolean(
+                    key = Preference.StopOnPageEnd.key,
+                    defValue = Preference.StopOnPageEnd.default as Boolean
+                ),
+                shouldStopOnSuraEnd = sharedPrefs.getBoolean(
+                    key = Preference.StopOnSuraEnd.key,
+                    defValue = Preference.StopOnSuraEnd.default as Boolean
+                ),
             )
         }
 

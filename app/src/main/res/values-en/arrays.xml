@@ -190,4 +190,17 @@
         <item>Mishary Rashid Al-Afasy</item>
     </string-array>
 
+    <string-array name="quran_view_type_entries">
+        <item>Page</item>
+        <item>List</item>
+    </string-array>
+
+    <string-array name="quran_repeat_mode_entries">
+        <item>No repeat</item>
+        <item>2</item>
+        <item>3</item>
+        <item>5</item>
+        <item>Infinite</item>
+    </string-array>
+
 </resources>
