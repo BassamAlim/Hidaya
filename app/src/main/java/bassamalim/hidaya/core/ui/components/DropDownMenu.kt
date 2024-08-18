@@ -23,10 +23,11 @@ import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun MyDropDownMenu(
+fun <V> MyDropDownMenu(
     selectedIndex: Int,
-    items: Array<String>,
-    onChoice: (Int, String) -> Unit
+    entries: Array<String>,
+    items: Array<V>,
+    onChoice: (V) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -37,7 +38,7 @@ fun MyDropDownMenu(
             verticalAlignment = Alignment.CenterVertically
         ) {
             MyText(
-                text = items[selectedIndex],
+                text = entries[selectedIndex],
                 fontSize = 22.sp,
                 modifier = Modifier.padding(horizontal = 5.dp)
             )
@@ -58,11 +59,11 @@ fun MyDropDownMenu(
                 modifier = Modifier.background(AppTheme.colors.surface),
                 onDismissRequest = { expanded = false }
             ) {
-                items.forEachIndexed { index, value ->
+                entries.forEachIndexed { index, value ->
                     DropdownMenuItem(
                         onClick = {
                             expanded = false
-                            onChoice(index, value)
+                            onChoice(items[index])
                         }
                     ) {
                         MyText(text = value)

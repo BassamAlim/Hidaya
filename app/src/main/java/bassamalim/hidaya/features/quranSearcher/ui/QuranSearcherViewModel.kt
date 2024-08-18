@@ -1,58 +1,69 @@
-package bassamalim.hidaya.features.quranSearcher
+package bassamalim.hidaya.features.quranSearcher.ui
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quranReader.domain.QuranTarget
+import bassamalim.hidaya.features.quranSearcher.domain.QuranSearcherDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
 class QuranSearcherViewModel @Inject constructor(
-    private val repo: QuranSearcherRepository,
+    private val domain: QuranSearcherDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
-    val numeralsLanguage = repo.numeralsLanguage
-    private var allAyat = repo.getAyat()
-    private var names =
-        if (repo.language == Language.ENGLISH) repo.getSuraNamesEn()
-        else repo.getSuraNames()
-    var maxMatchesItems = repo.getMaxMatchesItems()
-    val translatedMaxMatchesItems = maxMatchesItems.map {
-        translateNums(numeralsLanguage, it)
-    }.toTypedArray()
-    var searchText by mutableStateOf("")
-        private set
+    private lateinit var language: Language
+    private lateinit var numeralsLanguage: Language
+    private var allVerses = domain.getAllVerses()
+    private lateinit var suraNames: List<String>
     private var highlightColor: Color? = null
 
-    private val _uiState = MutableStateFlow(QuranSearcherState(
-        maxMatches = maxMatchesItems[repo.getMaxMatchesIndex()].toInt()
-    ))
-    val uiState = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(QuranSearcherUiState())
+    val uiState = combine(
+        _uiState.asStateFlow(),
+        domain.getMaxMatches()
+    ) { state, maxMatches -> state.copy(
+        maxMatches = maxMatches
+    )}.stateIn(
+        initialValue = QuranSearcherUiState(),
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
+    )
+
+    init {
+        viewModelScope.launch {
+            language = domain.getLanguage()
+            numeralsLanguage = domain.getNumeralsLanguage()
+            suraNames = domain.getSuraNames(language)
+        }
+    }
 
     private fun search(highlightColor: Color) {
         this.highlightColor = highlightColor
 
         val matches = ArrayList<QuranSearcherMatch>()
 
-        for (i in allAyat.indices) {
-            val a = allAyat[i]
+        for (i in allVerses.indices) {
+            val a = allVerses[i]
             val string = a.plainText
 
-            val matcher = Pattern.compile(searchText).matcher(string)
+            val matcher = Pattern.compile(_uiState.value.searchText).matcher(string)
             if (matcher.find()) {
                 val annotatedString = buildAnnotatedString {
                     append(string)
@@ -69,9 +80,15 @@ class QuranSearcherViewModel @Inject constructor(
                 matches.add(
                     QuranSearcherMatch(
                         id = a.id,
-                        ayaNum = a.num,
-                        suraName = names[a.suraNum-1],
-                        pageNum = a.pageNum,
+                        ayaNum = translateNums(
+                            string = a.num.toString(),
+                            numeralsLanguage = numeralsLanguage
+                        ),
+                        suraName = suraNames[a.suraNum-1],
+                        pageNum = translateNums(
+                            string = a.pageNum.toString(),
+                            numeralsLanguage = numeralsLanguage
+                        ),
                         text = annotatedString,
                         tafseer = a.interpretation
                     )
@@ -80,7 +97,7 @@ class QuranSearcherViewModel @Inject constructor(
                 if (matches.size == _uiState.value.maxMatches) {
                     _uiState.update { it.copy(
                         matches = matches,
-                        noResultsFound = false
+                        isNoResultsFound = false
                     )}
                     return
                 }
@@ -89,24 +106,28 @@ class QuranSearcherViewModel @Inject constructor(
 
         _uiState.update { it.copy(
             matches = matches,
-            noResultsFound = matches.isEmpty()
+            isNoResultsFound = matches.isEmpty()
         )}
     }
 
     fun onSearchValueChange(value: String, highlightColor: Color) {
-        searchText = value
+        _uiState.update { it.copy(
+            searchText = value
+        )}
 
         search(highlightColor)
     }
 
-    fun onMaxMatchesIndexChange(index: Int) {
+    fun onMaxMatchesChange(value: Int) {
         _uiState.update { it.copy(
-            maxMatches = maxMatchesItems[index].toInt()
+            maxMatches = value
         )}
 
         highlightColor ?.let { search(it) }  // re-search if already searched
 
-        repo.setMaxMatchesIndex(index)
+        viewModelScope.launch {
+            domain.setMaxMatches(value)
+        }
     }
 
     fun onGotoPageClick(aya: QuranSearcherMatch) {

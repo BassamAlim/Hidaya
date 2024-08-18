@@ -66,6 +66,12 @@
         <item>Night Mode</item>
     </string-array>
 
+    <string-array name="searcher_matches_entries">
+        <item>10</item>
+        <item>30</item>
+        <item>100</item>
+    </string-array>
+
     <string-array name="hijri_months">
         <item>Muharram</item>
         <item>Safar</item>

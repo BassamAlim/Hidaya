@@ -85,10 +85,16 @@
         <item>ليلي</item>
     </string-array>
 
-    <string-array name="searcher_matches_en">
+    <integer-array name="searcher_matches_items">
         <item>10</item>
         <item>30</item>
         <item>100</item>
+    </integer-array>
+
+    <string-array name="searcher_matches_entries">
+        <item>١٠</item>
+        <item>٣٠</item>
+        <item>١٠٠</item>
     </string-array>
 
     <string-array name="hijri_months">

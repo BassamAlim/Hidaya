@@ -1,12 +1,12 @@
-package bassamalim.hidaya.features.quranSearcher
+package bassamalim.hidaya.features.quranSearcher.ui
 
 import androidx.compose.ui.text.AnnotatedString
 
 class QuranSearcherMatch(
     var id: Int,
-    val ayaNum: Int,
+    val ayaNum: String,
     val suraName: String,
-    var pageNum: Int,
+    var pageNum: String,
     var text: AnnotatedString,
     val tafseer: String
 )

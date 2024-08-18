@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quranSearcher
+package bassamalim.hidaya.features.quranSearcher.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.integerArrayResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,13 +27,12 @@ import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.core.utils.LangUtils.translateNums
 
 @Composable
 fun QuranSearcherUI(
-    vm: QuranSearcherViewModel
+    viewModel: QuranSearcherViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(stringResource(R.string.quran_searcher)) { padding ->
         Column(
@@ -50,14 +51,13 @@ fun QuranSearcherUI(
                 MyText(stringResource(R.string.search_for_quran_text))
 
                 SearchComponent(
-                    value = vm.searchText,
+                    value = state.searchText,
                     hint = stringResource(R.string.search),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 30.dp)
-                ) {
-                    vm.onSearchValueChange(it, highlightColor)
-                }
+                        .padding(horizontal = 30.dp),
+                    onValueChange = { viewModel.onSearchValueChange(it, highlightColor) }
+                )
 
                 Row(
                     Modifier
@@ -72,17 +72,16 @@ fun QuranSearcherUI(
                     )
 
                     MyDropDownMenu(
-                        selectedIndex = vm.maxMatchesItems.indexOf(
-                            st.maxMatches.toString()
-                        ),
-                        items = vm.translatedMaxMatchesItems
-                    ) { index ->
-                        vm.onMaxMatchesIndexChange(index)
-                    }
+                        selectedIndex = integerArrayResource(R.array.searcher_matches_items)
+                            .indexOf(state.maxMatches),
+                        entries = stringArrayResource(R.array.searcher_matches_entries),
+                        items = integerArrayResource(R.array.searcher_matches_items).toTypedArray(),
+                        onChoice = { value -> viewModel.onMaxMatchesChange(value) }
+                    )
                 }
             }
 
-            if (st.noResultsFound) {
+            if (state.isNoResultsFound) {
                 MyText(
                     text = stringResource(R.string.no_matches),
                     modifier = Modifier.padding(top = 100.dp)
@@ -90,8 +89,11 @@ fun QuranSearcherUI(
             }
             else {
                 MyLazyColumn(lazyList = {
-                    items(st.matches) { item ->
-                        MatchItem(item, vm)
+                    items(state.matches) { item ->
+                        MatchItem(
+                            item = item,
+                            onGoToPageClick = viewModel::onGotoPageClick
+                        )
                     }
                 })
             }
@@ -102,7 +104,7 @@ fun QuranSearcherUI(
 @Composable
 fun MatchItem(
     item: QuranSearcherMatch,
-    vm: QuranSearcherViewModel
+    onGoToPageClick: (QuranSearcherMatch) -> Unit
 ) {
     MySurface {
         Column(
@@ -115,25 +117,13 @@ fun MatchItem(
                     .padding(6.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                MyText(
-                    "${stringResource(R.string.sura)} ${item.suraName}"
-                )
+                MyText("${stringResource(R.string.sura)} ${item.suraName}")
 
-                MyText(
-                    "${stringResource(R.string.page)} " +
-                            translateNums(
-                                vm.numeralsLanguage,
-                                item.pageNum.toString()
-                            )
-                )
+                MyText("${stringResource(R.string.page)} ${item.pageNum}")
             }
 
             MyText(
-                text = "${stringResource(R.string.aya_number)} " +
-                        translateNums(
-                            vm.numeralsLanguage,
-                            item.ayaNum.toString()
-                        ),
+                text = "${stringResource(R.string.aya_number)} ${item.ayaNum}",
                 modifier = Modifier.padding(6.dp)
             )
             MyText(
@@ -147,13 +137,12 @@ fun MatchItem(
 
             MySquareButton(
                 text = stringResource(R.string.go_to_page),
+                modifier = Modifier.padding(bottom = 6.dp),
                 textColor = AppTheme.colors.accent,
                 elevation = 0,
                 innerPadding = PaddingValues(0.dp),
-                modifier = Modifier.padding(bottom = 6.dp)
-            ) {
-                vm.onGotoPageClick(item)
-            }
+                onClick = { onGoToPageClick(item) }
+            )
         }
     }
 }
