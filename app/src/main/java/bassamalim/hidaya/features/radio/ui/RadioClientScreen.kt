@@ -1,6 +1,5 @@
-package bassamalim.hidaya.features.radio
+package bassamalim.hidaya.features.radio.ui
 
-import android.app.Activity
 import android.os.Build
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.RequiresApi
@@ -24,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,14 +37,13 @@ import bassamalim.hidaya.core.ui.components.MyText
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RadioClientUI(
-    vm: RadioClientViewModel
+    viewModel: RadioClientViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
-    val activity = LocalContext.current as Activity
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    DisposableEffect(key1 = vm) {
-        vm.onStart(activity)
-        onDispose { vm.onStop() }
+    DisposableEffect(key1 = viewModel) {
+        viewModel.onStart()
+        onDispose { viewModel.onStop() }
     }
 
     MyScaffold(stringResource(R.string.quran_radio)) {
@@ -64,7 +61,10 @@ fun RadioClientUI(
                 modifier = Modifier.padding(bottom = 50.dp)
             )
 
-            PlayPauseBtn(vm, st)
+            PlayPauseBtn(
+                state = state.btnState,
+                onClick = viewModel::onPlayPauseClick
+            )
         }
     }
 }
@@ -72,37 +72,40 @@ fun RadioClientUI(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun PlayPauseBtn(
-    vm: RadioClientViewModel,
-    st: RadioClientState
+    state: Int,
+    onClick: () -> Unit
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(100.dp)
             .clip(CircleShape)
-            .clickable { vm.onPlayPause() }
+            .clickable { onClick() }
     ) {
         AnimatedContent(
-            targetState = st.btnState,
+            targetState = state,
             label = "",
             transitionSpec = {
                 scaleIn(animationSpec = tween(durationMillis = 200)) togetherWith
                         scaleOut(animationSpec = tween(durationMillis = 200))
             }
         ) { state ->
-            if (state == PlaybackStateCompat.STATE_NONE
-                || state == PlaybackStateCompat.STATE_CONNECTING
-                || state == PlaybackStateCompat.STATE_BUFFERING)
-                MyCircularProgressIndicator()
-            else {
-                Image(
-                    painter = painterResource(
-                        if (state == PlaybackStateCompat.STATE_PLAYING) R.drawable.ic_radio_pause
-                        else R.drawable.ic_radio_play
-                    ),
-                    contentDescription = stringResource(R.string.play_pause_btn_description),
-                    modifier = Modifier.padding(10.dp)
-                )
+            when (state) {
+                PlaybackStateCompat.STATE_NONE,
+                PlaybackStateCompat.STATE_CONNECTING,
+                PlaybackStateCompat.STATE_BUFFERING -> {
+                    MyCircularProgressIndicator()
+                }
+                else -> {
+                    Image(
+                        painter = painterResource(
+                            if (state == PlaybackStateCompat.STATE_PLAYING) R.drawable.ic_radio_pause
+                            else R.drawable.ic_radio_play
+                        ),
+                        contentDescription = stringResource(R.string.play_pause_btn_description),
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
             }
         }
     }

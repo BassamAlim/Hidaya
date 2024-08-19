@@ -40,7 +40,7 @@ import bassamalim.hidaya.features.quizLobby.QuizLobbyUI
 import bassamalim.hidaya.features.quizResult.ui.QuizResultUI
 import bassamalim.hidaya.features.quranReader.ui.QuranViewerUI
 import bassamalim.hidaya.features.quranSearcher.ui.QuranSearcherUI
-import bassamalim.hidaya.features.radio.RadioClientUI
+import bassamalim.hidaya.features.radio.ui.RadioClientUI
 import bassamalim.hidaya.features.recitationsPlayer.TelawatClientUI
 import bassamalim.hidaya.features.recitationsRecitersMenu.TelawatUI
 import bassamalim.hidaya.features.recitationsSuarMenu.TelawatSuarUI
