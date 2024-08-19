@@ -1,10 +1,12 @@
 package bassamalim.hidaya.core.data.repositories
 
 import bassamalim.hidaya.core.data.database.daos.RecitationRecitersDao
+import bassamalim.hidaya.core.data.database.daos.RecitationVersionsDao
 import bassamalim.hidaya.core.data.database.daos.RecitationsDao
 import bassamalim.hidaya.core.data.database.daos.VerseRecitationsDao
 import bassamalim.hidaya.core.data.database.daos.VerseRecitersDao
 import bassamalim.hidaya.core.data.preferences.dataSources.RecitationsPreferencesDataSource
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.VerseRepeatMode
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.map
@@ -15,7 +17,8 @@ class RecitationsRepository @Inject constructor(
     private val recitationsDao: RecitationsDao,
     private val recitationRecitersDao: RecitationRecitersDao,
     private val verseRecitationsDao: VerseRecitationsDao,
-    private val verseRecitersDao: VerseRecitersDao
+    private val verseRecitersDao: VerseRecitersDao,
+    private val recitationVersionsDao: RecitationVersionsDao
 ) {
 
     fun getReciterFavorites() = recitationsPreferencesDataSource.flow.map {
@@ -48,13 +51,13 @@ class RecitationsRepository @Inject constructor(
         )}
     }
 
-    fun getShuffle() = recitationsPreferencesDataSource.flow.map {
+    fun getShuffleMode() = recitationsPreferencesDataSource.flow.map {
         it.shuffleMode
     }
 
-    suspend fun setShuffle(shuffle: Int) {
+    suspend fun setShuffleMode(mode: Int) {
         recitationsPreferencesDataSource.update { it.copy(
-            shuffleMode = shuffle
+            shuffleMode = mode
         )}
     }
 
@@ -119,5 +122,12 @@ class RecitationsRepository @Inject constructor(
     }
 
     fun getVerseReciterNames() = verseRecitersDao.getNames()
+
+    fun getReciterName(id: Int, language: Language) =
+        if (language == Language.ARABIC) recitationRecitersDao.getNameAr(id)
+        else recitationRecitersDao.getNameEn(id)
+
+    fun getVersion(reciterId: Int, versionId: Int) =
+        recitationVersionsDao.getVersion(reciterId, versionId)
 
 }

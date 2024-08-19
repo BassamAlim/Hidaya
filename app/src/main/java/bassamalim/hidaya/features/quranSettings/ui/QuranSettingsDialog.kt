@@ -102,7 +102,7 @@ fun QuranSettingsDlg(
                 onSwitch = viewModel::onShouldStopOnPageEndChange
             )
 
-            Footer(
+            BottomBar(
                 onDone = onDone,
                 onCancel = viewModel::onCancel,
                 onSave = viewModel::onSave
@@ -112,7 +112,7 @@ fun QuranSettingsDlg(
 }
 
 @Composable
-private fun Footer(
+private fun BottomBar(
     onDone: () -> Unit,
     onCancel: (() -> Unit) -> Unit,
     onSave: (() -> Unit) -> Unit

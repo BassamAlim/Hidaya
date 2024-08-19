@@ -19,7 +19,7 @@ class QuranRepository @Inject constructor(
 
     fun observeAllSuar() = surasDao.observeAll()
 
-    fun getSuraNames(language: Language) =
+    fun getDecoratedSuraNames(language: Language) =
         if (language == Language.ENGLISH) surasDao.getDecoratedNamesEn()
         else surasDao.getDecoratedNamesAr()
 

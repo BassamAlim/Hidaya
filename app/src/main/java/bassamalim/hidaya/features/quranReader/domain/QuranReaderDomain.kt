@@ -207,7 +207,7 @@ class QuranReaderDomain @Inject constructor(
 
     fun getAllVerses() = quranRepository.getAllVerses()
 
-    fun getSuraNames(language: Language) = quranRepository.getSuraNames(language)
+    fun getSuraNames(language: Language) = quranRepository.getDecoratedSuraNames(language)
 
     fun getViewType() = quranRepository.getViewType()
 

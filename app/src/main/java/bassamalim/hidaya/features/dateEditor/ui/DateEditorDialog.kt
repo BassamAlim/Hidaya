@@ -55,7 +55,7 @@ fun DateEditorDialog(
                 onNextDayClick = viewModel::onNextDayClick
             )
 
-            Footer(
+            BottomBar(
                 onSave = viewModel::onSave,
                 onDismiss = viewModel::onDismiss
             )
@@ -96,7 +96,7 @@ private fun DateOffsetEditor(
 }
 
 @Composable
-private fun Footer(
+private fun BottomBar(
     onSave: () -> Unit,
     onDismiss: () -> Unit
 ) {

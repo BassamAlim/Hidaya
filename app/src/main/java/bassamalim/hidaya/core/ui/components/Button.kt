@@ -49,7 +49,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.core.utils.FileUtils
 
 @Composable
 fun PrimaryPillBtn(
@@ -351,16 +350,10 @@ fun MyFavBtn(
 @Composable
 fun MyDownloadBtn(
     state: DownloadState,
-    path: String,
     modifier: Modifier = Modifier,
     size: Dp = 26.dp,
-    innerPadding: Dp = 6.dp,
-    tint: Color = AppTheme.colors.accent,
-    deleted: () -> Unit,
-    download: () -> Unit
+    onClick: () -> Unit
 ) {
-    val context = LocalContext.current
-
     Box(
         modifier,
         contentAlignment = Alignment.Center
@@ -374,15 +367,11 @@ fun MyDownloadBtn(
                     else R.drawable.ic_download,
                 description = stringResource(R.string.download_description),
                 size = size,
-                innerPadding = innerPadding,
-                tint = tint,
-                onClick = {
-                    if (state == DownloadState.DOWNLOADED) {
-                        deleted()
-                        FileUtils.deleteFile(context, path)
-                    }
-                    else download()
-                }
+                innerPadding = 8.dp,
+                tint =
+                    if (state == DownloadState.DOWNLOADED) AppTheme.colors.secondary
+                    else AppTheme.colors.onPrimary,
+                onClick = onClick
             )
         }
     }

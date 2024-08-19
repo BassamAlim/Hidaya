@@ -1,17 +1,10 @@
-package bassamalim.hidaya.features.recitationsPlayer
+package bassamalim.hidaya.features.recitationsPlayer.ui
 
 import android.app.Activity
-import android.app.Application
-import android.app.DownloadManager
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.media.AudioManager
-import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -27,83 +20,99 @@ import android.util.Log
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.core.enums.DownloadState
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Reciter
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.utils.FileUtils
+import bassamalim.hidaya.features.recitationsPlayer.domain.RecitationsPlayerDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import java.io.File
+import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(UnstableApi::class)
 @HiltViewModel
-class RecitationsPlayerClientViewModel @Inject constructor(
-    private val app: Application,
+class RecitationsPlayerViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repo: RecitationsPlayerClientRepository,
+    private val domain: RecitationsPlayerDomain,
     private val navigator: Navigator
-): AndroidViewModel(app) {
+): ViewModel() {
 
     private val action = savedStateHandle.get<String>("action") ?: ""
     private val mediaId = savedStateHandle.get<String>("media_id") ?: ""
 
-    private lateinit var activity: Activity
+    private lateinit var language: Language
     var reciterId = mediaId.substring(0, 3).toInt()
     var versionId = mediaId.substring(3, 5).toInt()
     var suraIdx = mediaId.substring(5).toInt()
-    private var mediaBrowser: MediaBrowserCompat? = null
-    private lateinit var controller: MediaControllerCompat
-    private lateinit var tc: MediaControllerCompat.TransportControls
     private lateinit var version: Reciter.RecitationVersion
-    private val suraNames = repo.getSuraNames()
-    private var prefix = ""
+    private lateinit var suraNames: List<String>
     var duration = 0L
     var progress = 0L
 
-    private val _uiState = MutableStateFlow(RecitationsPlayerClientState(
-        reciterName = repo.getReciterName(reciterId)
-    ))
-    val uiState = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(RecitationsPlayerUiState())
+    val uiState = combine(
+        _uiState.asStateFlow(),
+        domain.getRepeatMode(),
+        domain.getShuffleMode()
+    ) { state, repeatMode, shuffleMode ->
+        state.copy(
+            repeatMode = repeatMode,
+            shuffleMode = shuffleMode
+        )
+    }.stateIn(
+        initialValue = RecitationsPlayerUiState(),
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
+    )
 
     init {
+        viewModelScope.launch {
+            language = domain.getLanguage()
+            suraNames = domain.getSuraNames(language)
+        }
+
+        _uiState.update { it.copy(
+            reciterName = domain.getReciterName(id = reciterId, language = language)
+        )}
+
         updateTrackState()
     }
 
     private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
-            if (mediaBrowser == null) return
+            if (domain.isMediaBrowserInitialized()) return
 
-            // Get the token for the MediaSession
-            val token = mediaBrowser!!.sessionToken
-
-            // Create a MediaControllerCompat
-            val mediaController = MediaControllerCompat(app, token)
-
-            // Save the controller
-            MediaControllerCompat.setMediaController(
-                activity,
-                mediaController
-            )
+            domain.initializeController(controllerCallback)
 
             // Finish building the UI
             buildTransportControls()
 
             if (action != "back" &&
-                (controller.playbackState.state == STATE_NONE ||
-                        mediaId != controller.metadata.getString(
-                    MediaMetadataCompat.METADATA_KEY_MEDIA_ID
-                )))
-                sendPlayRequest()
+                (domain.getState() == STATE_NONE ||
+                        mediaId != domain.getMetadata()
+                            .getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID))
+            ) {
+                domain.sendPlayRequest(
+                    mediaId = mediaId,
+                    playType = action,
+                    reciterName = _uiState.value.reciterName,
+                    version = version
+                )
+            }
         }
 
         override fun onConnectionSuspended() {
@@ -120,88 +129,40 @@ class RecitationsPlayerClientViewModel @Inject constructor(
         }
     }
 
-    fun onStart(activity: Activity) {
-        this.activity = activity
-
-        mediaBrowser = MediaBrowserCompat(
-            app,
-            ComponentName(app, RecitationsPlayerService::class.java),
-            connectionCallbacks,
-            null
-        )
-        mediaBrowser?.connect()
-
-        activity.volumeControlStream = AudioManager.STREAM_MUSIC
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            app.registerReceiver(
-                onComplete,
-                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-                Context.RECEIVER_NOT_EXPORTED
-            )
-        else
-            app.registerReceiver(
-                onComplete,
-                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-            )
+    fun onStart() {
+        domain.connect(connectionCallbacks, onComplete)
     }
 
     fun onStop() {
         Log.i(Global.TAG, "in onStop of TelawatClient")
 
-        try {
-            app.unregisterReceiver(onComplete)
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
-
-        MediaControllerCompat.getMediaController(activity)
-            ?.unregisterCallback(controllerCallback)
-
-        mediaBrowser?.disconnect()
+        domain.stopMediaBrowser(controllerCallback, onComplete)
     }
 
     private var onComplete = object : BroadcastReceiver() {
         override fun onReceive(ctx: Context, intent: Intent) {
             _uiState.update { it.copy(
-                downloadState = checkDownload()
+                downloadState = domain.checkDownload()
             )}
         }
     }
 
-    private fun checkDownload(): DownloadState {
-        return if (File("${app.getExternalFilesDir(null)}$prefix").exists())
-            DownloadState.DOWNLOADED
-        else
-            DownloadState.NOT_DOWNLOADED
-    }
-
     private fun updateTrackState() {
-        version = repo.getVersion(reciterId, versionId).let {
+        version = domain.getVersion(reciterId, versionId).let {
             Reciter.RecitationVersion(
-                versionId, it.url, it.nameAr, it.surahTotal, it.availableSuras
+                versionId = versionId,
+                server = it.url,
+                rewaya = it.nameAr,
+                suar = it.availableSuras
             )
         }
 
         _uiState.update { it.copy(
             suraName = suraNames[suraIdx],
             versionName = version.rewaya,
-            reciterName = repo.getReciterName(reciterId),
-            repeat = repo.getRepeatMode(),
-            shuffle = repo.getShuffleMode(),
-            downloadState = checkDownload()
+            reciterName = domain.getReciterName(id = reciterId, language = language),
+            downloadState = domain.checkDownload()
         )}
-    }
-
-    private fun sendPlayRequest() {
-        // Pass media data
-        val bundle = Bundle()
-        bundle.putString("play_type", action)
-        bundle.putString("reciter_name", _uiState.value.reciterName)
-        bundle.putSerializable("version", version)
-
-        // Start Playback
-        tc.playFromMediaId(mediaId, bundle)
     }
 
     private fun enableControls() {
@@ -220,15 +181,9 @@ class RecitationsPlayerClientViewModel @Inject constructor(
     private fun buildTransportControls() {
         enableControls()
 
-        controller = MediaControllerCompat.getMediaController(activity)
-        tc = controller.transportControls
-
         // Display the initial state
-        updateMetadata(controller.metadata)
-        updatePbState(controller.playbackState)
-
-        // Register a Callback to stay in sync
-        controller.registerCallback(controllerCallback)
+        updateMetadata(domain.getMetadata())
+        updatePbState(domain.getPlaybackState())
     }
 
     private var controllerCallback = object : MediaControllerCompat.Callback() {
@@ -244,7 +199,7 @@ class RecitationsPlayerClientViewModel @Inject constructor(
         }
 
         override fun onSessionDestroyed() {
-            mediaBrowser?.disconnect()
+            domain.disconnectMediaBrowser()
         }
     }
 
@@ -252,12 +207,12 @@ class RecitationsPlayerClientViewModel @Inject constructor(
         suraIdx = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
         duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
 
-        prefix = "${"/Telawat/${reciterId}/${versionId}/"}$suraIdx.mp3"
+        domain.setPath("${"/Telawat/${reciterId}/${versionId}/"}$suraIdx.mp3")
 
         _uiState.update { it.copy(
             suraName = suraNames[suraIdx],
             duration = formatTime(duration),
-            downloadState = checkDownload()
+            downloadState = domain.checkDownload()
         )}
     }
 
@@ -283,25 +238,7 @@ class RecitationsPlayerClientViewModel @Inject constructor(
         return hms
     }
 
-    private fun download() {
-        _uiState.update { it.copy(
-            downloadState = DownloadState.DOWNLOADING
-        )}
-
-        val server = version.server
-        val link = String.format(Locale.US, "%s/%03d.mp3", server, suraIdx + 1)
-        val uri = Uri.parse(link)
-
-        val request = DownloadManager.Request(uri)
-        request.setTitle(_uiState.value.suraName)
-        FileUtils.createDir(app, prefix)
-        request.setDestinationInExternalFilesDir(app, prefix, "${suraIdx}.mp3")
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-
-        (app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
-    }
-
-    fun onBackPressed() {
+    fun onBackPressed(activity: Activity) {
         if (activity.isTaskRoot) {
             navigator.navigate(
                 Screen.TelawatSuar(
@@ -318,16 +255,16 @@ class RecitationsPlayerClientViewModel @Inject constructor(
             (activity as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
     }
 
-    fun onPlayPauseClk() {
+    fun onPlayPauseClick() {
         if (_uiState.value.btnState != STATE_NONE) {
-            if (controller.playbackState.state == STATE_PLAYING) {
-                tc.pause()
+            if (domain.getState() == STATE_PLAYING) {
+                domain.pause()
                 _uiState.update { it.copy(
                     btnState = STATE_PAUSED
                 )}
             }
             else {
-                tc.play()
+                domain.resume()
                 _uiState.update { it.copy(
                     btnState = STATE_PLAYING
                 )}
@@ -335,12 +272,12 @@ class RecitationsPlayerClientViewModel @Inject constructor(
         }
     }
 
-    fun onPrevClk() {
-        tc.skipToPrevious()
+    fun onPreviousTrackClick() {
+        domain.skipToPrevious()
     }
 
-    fun onNextClk() {
-        tc.skipToNext()
+    fun onNextTrackClick() {
+        domain.skipToNext()
     }
 
     fun onSliderChange(progress: Float) {
@@ -351,47 +288,46 @@ class RecitationsPlayerClientViewModel @Inject constructor(
     }
 
     fun onSliderChangeFinished() {
-        tc.seekTo(progress)
+        domain.seekTo(progress)
     }
 
-    fun onRepeatClk() {
-        val mode =
-            if (_uiState.value.repeat == REPEAT_MODE_NONE) REPEAT_MODE_ONE
-            else REPEAT_MODE_NONE
-
-        _uiState.update { it.copy(
-            repeat = mode
-        )}
-
-        tc.setRepeatMode(mode)
-
-        repo.setRepeatMode(mode)
+    fun onRepeatClick() {
+        viewModelScope.launch {
+            domain.setRepeatMode(
+                if (_uiState.value.repeatMode == REPEAT_MODE_NONE) REPEAT_MODE_ONE
+                else REPEAT_MODE_NONE
+            )
+        }
     }
 
-    fun onShuffleClk() {
-        val mode =
-            if (_uiState.value.shuffle == SHUFFLE_MODE_NONE) SHUFFLE_MODE_ALL
-            else SHUFFLE_MODE_NONE
-
-        _uiState.update { it.copy(
-            shuffle = mode
-        )}
-
-        tc.setShuffleMode(mode)
-
-        repo.setShuffleMode(mode)
+    fun onShuffleClick() {
+        viewModelScope.launch {
+            domain.setShuffleMode(
+                if (_uiState.value.shuffleMode == SHUFFLE_MODE_NONE) SHUFFLE_MODE_ALL
+                else SHUFFLE_MODE_NONE
+            )
+        }
     }
 
-    fun onDownloadClk() {
-        Thread {
-            download()
-        }.start()
-    }
+    fun onDownloadClick() {
+        if (_uiState.value.downloadState == DownloadState.NOT_DOWNLOADED) {
+            _uiState.update { it.copy(
+                downloadState = DownloadState.DOWNLOADING
+            )}
 
-    fun onDeleteClk() {
-        _uiState.update { it.copy(
-            downloadState = DownloadState.NOT_DOWNLOADED
-        )}
+            domain.downloadRecitation(
+                version = version,
+                suraIdx = suraIdx,
+                suraName = suraNames[suraIdx]
+            )
+        }
+        else {
+            _uiState.update { it.copy(
+                downloadState = DownloadState.NOT_DOWNLOADED
+            )}
+
+            domain.deleteRecitation()
+        }
     }
 
 }
