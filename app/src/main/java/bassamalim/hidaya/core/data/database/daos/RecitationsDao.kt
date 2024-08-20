@@ -12,13 +12,13 @@ interface RecitationsDao {
         "recitations_reciters.id AS reciter_id, " +
         "recitations_reciters.name_ar AS reciter_name_ar, " +
         "recitations_reciters.name_en AS reciter_name_en, " +
-        "recitation_versions.id AS version_id, " +
-        "recitation_versions.name_ar AS version_name_ar, " +
-        "recitation_versions.name_en AS version_name_en, " +
-        "recitation_versions.url AS version_url, " +
-        "recitation_versions.available_suras AS version_available_suras " +
-        "FROM recitations_reciters INNER JOIN recitation_versions " +
-        "ON recitations_reciters.id = recitation_versions.reciter_id"
+        "recitation_narrations.id AS version_id, " +
+        "recitation_narrations.name_ar AS version_name_ar, " +
+        "recitation_narrations.name_en AS version_name_en, " +
+        "recitation_narrations.url AS version_url, " +
+        "recitation_narrations.available_suras AS version_available_suras " +
+        "FROM recitations_reciters INNER JOIN recitation_narrations " +
+        "ON recitations_reciters.id = recitation_narrations.reciter_id"
     )
     fun getAll(): List<Recitation>
 
@@ -27,15 +27,15 @@ interface RecitationsDao {
         "recitations_reciters.id AS reciter_id, " +
         "recitations_reciters.name_ar AS reciter_name_ar, " +
         "recitations_reciters.name_en AS reciter_name_en, " +
-        "recitation_versions.id AS version_id, " +
-        "recitation_versions.name_ar AS version_name_ar, " +
-        "recitation_versions.name_en AS version_name_en, " +
-        "recitation_versions.url AS version_url, " +
-        "recitation_versions.available_suras AS version_available_suras " +
-        "FROM recitations_reciters INNER JOIN recitation_versions " +
-        "ON recitations_reciters.id = recitation_versions.reciter_id " +
+        "recitation_narrations.id AS version_id, " +
+        "recitation_narrations.name_ar AS version_name_ar, " +
+        "recitation_narrations.name_en AS version_name_en, " +
+        "recitation_narrations.url AS version_url, " +
+        "recitation_narrations.available_suras AS version_available_suras " +
+        "FROM recitations_reciters INNER JOIN recitation_narrations " +
+        "ON recitations_reciters.id = recitation_narrations.reciter_id " +
         "WHERE recitations_reciters.id = :reciterId"
     )
-    fun getReciterTelawat(reciterId: Int): List<Recitation>
+    fun getReciterRecitations(reciterId: Int): List<Recitation>
 
 }

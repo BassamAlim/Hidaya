@@ -4,10 +4,9 @@ data class Recitation(
     val reciter_id: Int,
     val reciter_name_ar: String,
     val reciter_name_en: String,
-    val rewayah_id: Int,
-    val rewayah_name_ar: String,
-    val rewayah_name_en: String,
-    val rewayah_url: String,
-    val rewayah_surah_total: Int,
-    val rewayah_surah_list: String
+    val narration_id: Int,
+    val narration_name_ar: String,
+    val narration_name_en: String,
+    val narration_url: String,
+    val narration_available_suras: String
 )

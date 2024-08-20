@@ -8,7 +8,7 @@ import bassamalim.hidaya.core.data.database.daos.CountriesDao
 import bassamalim.hidaya.core.data.database.daos.QuizAnswersDao
 import bassamalim.hidaya.core.data.database.daos.QuizQuestionsDao
 import bassamalim.hidaya.core.data.database.daos.RecitationRecitersDao
-import bassamalim.hidaya.core.data.database.daos.RecitationVersionsDao
+import bassamalim.hidaya.core.data.database.daos.RecitationNarrationsDao
 import bassamalim.hidaya.core.data.database.daos.RecitationsDao
 import bassamalim.hidaya.core.data.database.daos.RemembranceCategoriesDao
 import bassamalim.hidaya.core.data.database.daos.RemembrancePassagesDao
@@ -23,7 +23,7 @@ import bassamalim.hidaya.core.data.database.models.Country
 import bassamalim.hidaya.core.data.database.models.QuizAnswer
 import bassamalim.hidaya.core.data.database.models.QuizQuestion
 import bassamalim.hidaya.core.data.database.models.RecitationsReciter
-import bassamalim.hidaya.core.data.database.models.RecitationsVersion
+import bassamalim.hidaya.core.data.database.models.RecitationsNarrations
 import bassamalim.hidaya.core.data.database.models.Remembrance
 import bassamalim.hidaya.core.data.database.models.RemembranceCategory
 import bassamalim.hidaya.core.data.database.models.RemembrancePassage
@@ -40,7 +40,7 @@ import bassamalim.hidaya.core.data.database.models.VerseReciter
         QuizAnswer::class,
         QuizQuestion::class,
         RecitationsReciter::class,
-        RecitationsVersion::class,
+        RecitationsNarrations::class,
         RemembranceCategory::class,
         RemembrancePassage::class,
         Remembrance::class,
@@ -59,7 +59,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun quizQuestionsDao(): QuizQuestionsDao
     abstract fun recitationRecitersDao(): RecitationRecitersDao
     abstract fun recitationsDao(): RecitationsDao
-    abstract fun recitationVersionsDao(): RecitationVersionsDao
+    abstract fun recitationVersionsDao(): RecitationNarrationsDao
     abstract fun remembranceCategoriesDao(): RemembranceCategoriesDao
     abstract fun remembrancePassagesDao(): RemembrancePassagesDao
     abstract fun remembrancesDao(): RemembrancesDao

@@ -1,7 +1,7 @@
 package bassamalim.hidaya.core.data.repositories
 
+import bassamalim.hidaya.core.data.database.daos.RecitationNarrationsDao
 import bassamalim.hidaya.core.data.database.daos.RecitationRecitersDao
-import bassamalim.hidaya.core.data.database.daos.RecitationVersionsDao
 import bassamalim.hidaya.core.data.database.daos.RecitationsDao
 import bassamalim.hidaya.core.data.database.daos.VerseRecitationsDao
 import bassamalim.hidaya.core.data.database.daos.VerseRecitersDao
@@ -18,8 +18,10 @@ class RecitationsRepository @Inject constructor(
     private val recitationRecitersDao: RecitationRecitersDao,
     private val verseRecitationsDao: VerseRecitationsDao,
     private val verseRecitersDao: VerseRecitersDao,
-    private val recitationVersionsDao: RecitationVersionsDao
+    private val recitationNarrationsDao: RecitationNarrationsDao
 ) {
+
+    fun observeAllReciters() = recitationRecitersDao.observeAll()
 
     fun getReciterFavorites() = recitationsPreferencesDataSource.flow.map {
         it.reciterFavorites.toMap()
@@ -31,8 +33,20 @@ class RecitationsRepository @Inject constructor(
         )}
     }
 
+    suspend fun setReciterFavorite(reciterId: Int, favorite: Int) {
+        recitationsPreferencesDataSource.update { it.copy(
+            reciterFavorites = it.reciterFavorites.put(reciterId, favorite)
+        )}
+    }
+
+    fun getReciterRecitations(reciterId: Int) = recitationsDao.getReciterRecitations(reciterId)
+
     fun getNarrationSelections() = recitationsPreferencesDataSource.flow.map {
-        it.narrationSelections.toMap()
+        val selections = it.narrationSelections.toMap()
+        selections.ifEmpty {
+            val narrations = recitationNarrationsDao.getAll()
+            narrations.associate { it.id to true }
+        }
     }
 
     suspend fun setNarrationSelections(selections: Map<Int, Boolean>) {
@@ -60,6 +74,8 @@ class RecitationsRepository @Inject constructor(
             shuffleMode = mode
         )}
     }
+
+    fun getAllNarrations() = recitationsDao.getAll()
 
     fun getLastPlayedMediaId() = recitationsPreferencesDataSource.flow.map {
         it.lastPlayedMediaId
@@ -127,7 +143,9 @@ class RecitationsRepository @Inject constructor(
         if (language == Language.ARABIC) recitationRecitersDao.getNameAr(id)
         else recitationRecitersDao.getNameEn(id)
 
-    fun getVersion(reciterId: Int, versionId: Int) =
-        recitationVersionsDao.getVersion(reciterId, versionId)
+    fun getNarration(reciterId: Int, narrationId: Int) =
+        recitationNarrationsDao.getNarration(reciterId, narrationId)
+
+    fun getNarrations() = recitationNarrationsDao.getAll()
 
 }
