@@ -24,7 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
-import bassamalim.hidaya.core.ui.components.MyFavBtn
+import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyFloatingActionButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
@@ -141,8 +141,8 @@ private fun Tab(
                                 .padding(10.dp)
                         )
 
-                        MyFavBtn(
-                            fav = favs[item.id]!!,
+                        MyFavoriteButton(
+                            isFavorite = favs[item.id]!!,
                             onClick = { onFavClick(item.id) }
                         )
                     }

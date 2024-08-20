@@ -76,7 +76,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
     private lateinit var controller: MediaControllerCompat
     private lateinit var mediaMetadata: MediaMetadataCompat
     private lateinit var playType: String
-    private lateinit var version: Reciter.RecitationVersion
+    private lateinit var version: Reciter.RecitationNarration
     private var channelId = "channel ID"
     private var mediaId: String? = null
     private var reciterName: String? = null
@@ -167,9 +167,9 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
                 reciterName = extras.getString("reciter_name")!!
                 version =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                        extras.getSerializable("version", Reciter.RecitationVersion::class.java)!!
+                        extras.getSerializable("version", Reciter.RecitationNarration::class.java)!!
                     else
-                        extras.getSerializable("version") as Reciter.RecitationVersion
+                        extras.getSerializable("version") as Reciter.RecitationNarration
 
                 if (playType == "continue")
                     continueFrom = preferencesDS.getInt(Preference.LastTelawaProgress)
@@ -313,13 +313,13 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
             do {
                 temp++
             } while (temp < Global.QURAN_SUAR &&
-                !version.suar.contains("," + (temp + 1) + ","))
+                !version.availableSuras.contains("," + (temp + 1) + ","))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
                 temp = random.nextInt(Global.QURAN_SUAR)
-            } while (!version.suar.contains("," + (temp + 1) + ","))
+            } while (!version.availableSuras.contains("," + (temp + 1) + ","))
         }
 
         if (temp < Global.QURAN_SUAR) {
@@ -339,13 +339,13 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp--
-            } while (temp >= 0 && !version.suar.contains("," + (temp + 1) + ","))
+            } while (temp >= 0 && !version.availableSuras.contains("," + (temp + 1) + ","))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
                 temp = random.nextInt(Global.QURAN_SUAR)
-            } while (!version.suar.contains("," + (temp + 1) + ","))
+            } while (!version.availableSuras.contains("," + (temp + 1) + ","))
         }
 
         if (temp >= 0) {
@@ -545,7 +545,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, suraNames[suraIndex])
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterName!!)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName!!)
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, version.rewaya)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, version.name)
             .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, suraIndex.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version.count.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
@@ -698,7 +698,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
 
     private fun tryOffline(sura: Int): Boolean {
         val path = (getExternalFilesDir(null).toString() + "/Telawat/" + reciterId
-                + "/" + version.versionId + "/" + sura + ".mp3")
+                + "/" + version.id + "/" + sura + ".mp3")
 
         return try {
             player.setDataSource(path)

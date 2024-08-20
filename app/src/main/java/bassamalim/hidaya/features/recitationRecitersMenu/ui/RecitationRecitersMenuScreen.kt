@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.recitationsRecitersMenu.ui
+package bassamalim.hidaya.features.recitationRecitersMenu.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +27,7 @@ import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.Reciter
 import bassamalim.hidaya.core.ui.components.FilterDialog
 import bassamalim.hidaya.core.ui.components.MyDownloadBtn
-import bassamalim.hidaya.core.ui.components.MyFavBtn
+import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
@@ -39,29 +39,28 @@ import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun TelawatUI(
-    vm: RecitationsRecitersMenuViewModel
+fun RecitationRecitersMenuUI(
+    viewModel: RecitationRecitersMenuViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    DisposableEffect(key1 = vm) {
-        vm.onStart()
-        onDispose { vm.onStop() }
+    DisposableEffect(key1 = viewModel) {
+        viewModel.onStart()
+        onDispose(viewModel::onStop)
     }
 
     MyScaffold(
-        stringResource(R.string.recitations),
-        onBack = { vm.onBackPressed() }
+        title = stringResource(R.string.recitations),
+        onBack = viewModel::onBackPressed
     ) {
         Column {
             MySquareButton(
-                text = st.continueListeningText,
-                fontSize = 18.sp,
+                text = state.continueListeningText,
                 modifier = Modifier.fillMaxWidth(),
-                innerPadding = PaddingValues(vertical = 4.dp)
-            ) {
-                vm.onContinueListeningClick()
-            }
+                fontSize = 18.sp,
+                innerPadding = PaddingValues(vertical = 4.dp),
+                onClick = viewModel::onContinueListeningClick
+            )
 
             TabLayout(
                 pageNames = listOf(
@@ -75,10 +74,10 @@ fun TelawatUI(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         SearchComponent(
-                            value = st.searchText,
+                            value = state.searchText,
                             hint = stringResource(R.string.reciters_hint),
                             modifier = Modifier.weight(1F),
-                            onValueChange = vm::onSearchTextChange
+                            onValueChange = viewModel::onSearchTextChange
                         )
 
                         MyIconButton(
@@ -87,38 +86,51 @@ fun TelawatUI(
                             description = stringResource(R.string.filter_search_description),
                             size = 32.dp,
                             tint =
-                                if (st.isFiltered) AppTheme.colors.secondary
-                                else AppTheme.colors.weakText
-                        ) {
-                            vm.onFilterClk()
-                        }
+                                if (state.isFiltered) AppTheme.colors.secondary
+                                else AppTheme.colors.weakText,
+                            onClick = viewModel::onFilterClick
+                        )
                     }
                 }
             ) { page ->
-                Tab(vm, st, vm.getItems(page))
+                Tab(
+                    items = viewModel.getItems(page),
+                    downloadStates = state.downloadStates,
+                    onFavoriteClick = viewModel::onFavoriteClick,
+                    onNarrationClick = viewModel::onNarrationClick,
+                    onDownloadNarrationClick = viewModel::onDownloadNarrationClick
+                )
             }
         }
 
         FilterDialog(
-            shown = st.filterDialogShown,
+            shown = state.filterDialogShown,
             title = stringResource(R.string.choose_rewaya),
-            itemTitles = vm.rewayat.toList(),
-            itemSelections = st.selectedVersions.toTypedArray(),
-            onDismiss = vm::onFilterDialogDismiss
+            itemTitles = viewModel.narrations.toList(),
+            itemSelections = state.narrationSelections,
+            onDismiss = viewModel::onFilterDialogDismiss
         )
     }
 }
 
 @Composable
 private fun Tab(
-    vm: RecitationsRecitersMenuViewModel,
-    st: RecitationsRecitersMenuUiState,
-    items: List<Reciter>
+    items: List<Reciter>,
+    downloadStates: Map<Int, DownloadState>,
+    onFavoriteClick: (Int, Boolean) -> Unit,
+    onNarrationClick: (Int, Int) -> Unit,
+    onDownloadNarrationClick: (Int, Reciter.RecitationNarration) -> Unit
 ) {
     MyLazyColumn(
         lazyList = {
             items(items) { item ->
-                ReciterCard(reciter = item, vm, st)
+                ReciterCard(
+                    reciter = item,
+                    downloadStates = downloadStates,
+                    onFavoriteClick = onFavoriteClick,
+                    onNarrationClick = onNarrationClick,
+                    onDownloadNarrationClick = onDownloadNarrationClick
+                )
             }
         }
     )
@@ -127,8 +139,10 @@ private fun Tab(
 @Composable
 private fun ReciterCard(
     reciter: Reciter,
-    vm: RecitationsRecitersMenuViewModel,
-    st: RecitationsRecitersMenuUiState
+    downloadStates: Map<Int, DownloadState>,
+    onFavoriteClick: (Int, Boolean) -> Unit,
+    onNarrationClick: (Int, Int) -> Unit,
+    onDownloadNarrationClick: (Int, Reciter.RecitationNarration) -> Unit
 ) {
     Surface(
         Modifier
@@ -150,12 +164,16 @@ private fun ReciterCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                MyText(reciter.name, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                MyText(
+                    text = reciter.name,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold
+                )
 
-                MyFavBtn(reciter.fav.value) {
-                    reciter.fav.value = (reciter.fav.value + 1) % 2
-                    vm.onFavClk(reciter.id, reciter.fav.value)
-                }
+                MyFavoriteButton(
+                    isFavorite = reciter.isFavorite,
+                    onClick = { onFavoriteClick(reciter.id, reciter.isFavorite) }
+                )
             }
 
             MyHorizontalDivider(thickness = 2.dp)
@@ -163,13 +181,14 @@ private fun ReciterCard(
             Column(
                 Modifier.fillMaxWidth()
             ) {
-                reciter.versions.forEachIndexed { idx, version ->
-                    VersionCard(
-                        idx,
+                reciter.narrations.forEachIndexed { idx, version ->
+                    NarrationsCard(
+                        idx = idx,
                         reciterId = reciter.id,
-                        version = version,
-                        vm = vm,
-                        st = st
+                        narration = version,
+                        downloadStates = downloadStates,
+                        onNarrationClick = onNarrationClick,
+                        onDownloadClick = onDownloadNarrationClick
                     )
                 }
             }
@@ -178,22 +197,25 @@ private fun ReciterCard(
 }
 
 @Composable
-private fun VersionCard(
+private fun NarrationsCard(
     idx: Int,
     reciterId: Int,
-    version: Reciter.RecitationVersion,
-    vm: RecitationsRecitersMenuViewModel,
-    st: RecitationsRecitersMenuUiState
+    narration: Reciter.RecitationNarration,
+    downloadStates: Map<Int, DownloadState>,
+    onNarrationClick: (Int, Int) -> Unit,
+    onDownloadClick: (Int, Reciter.RecitationNarration) -> Unit
 ) {
     if (idx != 0)
         MyHorizontalDivider()
 
     Box(
         Modifier.clickable {
-            vm.onVersionClk(reciterId, version.versionId)
+            onNarrationClick(reciterId, narration.id)
         }
     ) {
-        Box(Modifier.padding(start = 10.dp)) {
+        Box(
+            Modifier.padding(start = 10.dp)
+        ) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -202,7 +224,7 @@ private fun VersionCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 MyText(
-                    text = version.rewaya,
+                    text = narration.name,
                     fontSize = 18.sp,
                     textAlign = TextAlign.Start,
                     modifier = Modifier.weight(1F)
@@ -210,12 +232,10 @@ private fun VersionCard(
 
                 MyDownloadBtn(
                     state =
-                        if (st.downloadStates.isEmpty()) DownloadState.NOT_DOWNLOADED
-                        else st.downloadStates[version.versionId]!!,
-                    path = "${vm.prefix}$reciterId/${version.versionId}",
+                        if (downloadStates.isEmpty()) DownloadState.NOT_DOWNLOADED
+                        else downloadStates[narration.id]!!,
                     size = 28.dp,
-                    deleted = { vm.onDeleteClk(version.versionId) },
-                    download = { vm.onDownloadClk(reciterId, version) }
+                    onClick = { onDownloadClick(reciterId, narration) }
                 )
             }
         }

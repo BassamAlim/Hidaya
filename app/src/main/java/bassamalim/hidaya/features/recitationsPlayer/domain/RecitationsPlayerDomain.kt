@@ -116,7 +116,7 @@ class RecitationsPlayerDomain @Inject constructor(
         mediaId: String,
         playType: String,
         reciterName: String,
-        version: Reciter.RecitationVersion
+        version: Reciter.RecitationNarration
     ) {
         // Pass media data
         val bundle = Bundle()
@@ -145,7 +145,7 @@ class RecitationsPlayerDomain @Inject constructor(
     fun getPlaybackState() = controller.playbackState
 
     fun downloadRecitation(
-        version: Reciter.RecitationVersion,
+        version: Reciter.RecitationNarration,
         suraIdx: Int,
         suraName: String
     ) {

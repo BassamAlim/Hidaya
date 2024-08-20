@@ -12,7 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.ui.components.MyBtnSurface
-import bassamalim.hidaya.core.ui.components.MyFavBtn
+import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.SearchComponent
@@ -66,7 +66,7 @@ private fun AthkarList(
                 MyBtnSurface(
                     text = item.name,
                     iconBtn = {
-                        MyFavBtn(item.favorite.value) {
+                        MyFavoriteButton(item.favorite.value) {
                             vm.onFavoriteCLick(item)
                         }
                     },

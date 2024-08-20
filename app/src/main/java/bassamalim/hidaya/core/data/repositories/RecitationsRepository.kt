@@ -33,9 +33,9 @@ class RecitationsRepository @Inject constructor(
         )}
     }
 
-    suspend fun setReciterFavorite(reciterId: Int, favorite: Int) {
+    suspend fun setReciterIsFavorite(reciterId: Int, isFavorite: Int) {
         recitationsPreferencesDataSource.update { it.copy(
-            reciterFavorites = it.reciterFavorites.put(reciterId, favorite)
+            reciterFavorites = it.reciterFavorites.put(reciterId, isFavorite)
         )}
     }
 

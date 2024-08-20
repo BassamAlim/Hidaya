@@ -58,7 +58,7 @@ class RecitationsPlayerViewModel @Inject constructor(
     var reciterId = mediaId.substring(0, 3).toInt()
     var versionId = mediaId.substring(3, 5).toInt()
     var suraIdx = mediaId.substring(5).toInt()
-    private lateinit var version: Reciter.RecitationVersion
+    private lateinit var version: Reciter.RecitationNarration
     private lateinit var suraNames: List<String>
     var duration = 0L
     var progress = 0L
@@ -149,17 +149,17 @@ class RecitationsPlayerViewModel @Inject constructor(
 
     private fun updateTrackState() {
         version = domain.getVersion(reciterId, versionId).let {
-            Reciter.RecitationVersion(
-                versionId = versionId,
+            Reciter.RecitationNarration(
+                id = versionId,
                 server = it.url,
-                rewaya = it.nameAr,
-                suar = it.availableSuras
+                name = it.nameAr,
+                availableSuras = it.availableSuras
             )
         }
 
         _uiState.update { it.copy(
             suraName = suraNames[suraIdx],
-            versionName = version.rewaya,
+            versionName = version.name,
             reciterName = domain.getReciterName(id = reciterId, language = language),
             downloadState = domain.checkDownload()
         )}
@@ -243,7 +243,7 @@ class RecitationsPlayerViewModel @Inject constructor(
             navigator.navigate(
                 Screen.TelawatSuar(
                     reciterId = reciterId.toString(),
-                    versionId = versionId.toString()
+                    narrationId = versionId.toString()
                 )
             ) {
                 popUpTo(Screen.TelawatClient(action, mediaId).route) {

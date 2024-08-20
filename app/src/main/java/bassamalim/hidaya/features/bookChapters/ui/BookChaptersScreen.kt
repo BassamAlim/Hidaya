@@ -10,7 +10,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.features.bookChapters.domain.BookChapter
 import bassamalim.hidaya.core.ui.components.MyBtnSurface
-import bassamalim.hidaya.core.ui.components.MyFavBtn
+import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.SearchComponent
@@ -60,8 +60,8 @@ private fun Tab(
                 MyBtnSurface(
                     text = item.title,
                     iconBtn = {
-                        MyFavBtn(
-                            fav = favs[item.id]!!,
+                        MyFavoriteButton(
+                            isFavorite = favs[item.id]!!,
                             onClick = { onFavClick(item.id) }
                         )
                     },

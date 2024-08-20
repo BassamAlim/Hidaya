@@ -86,8 +86,8 @@ sealed class Screen(val route: String) {
 
     data class TelawatSuar(
         val reciterId: String,
-        val versionId: String
-    ): Screen("telawat_suar/$reciterId/$versionId")
+        val narrationId: String
+    ): Screen("telawat_suar/$reciterId/$narrationId")
 
     data object Tv: Screen("tv")
 

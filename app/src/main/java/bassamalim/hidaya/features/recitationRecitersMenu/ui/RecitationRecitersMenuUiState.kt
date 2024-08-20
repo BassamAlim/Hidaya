@@ -1,11 +1,11 @@
-package bassamalim.hidaya.features.recitationsRecitersMenu.ui
+package bassamalim.hidaya.features.recitationRecitersMenu.ui
 
 import bassamalim.hidaya.core.enums.DownloadState
 
-data class RecitationsRecitersMenuUiState(
+data class RecitationRecitersMenuUiState(
     val continueListeningText: String = "",
     val downloadStates: Map<Int, DownloadState> = emptyMap(),
-    val selectedVersions: List<Boolean> = emptyList(),
+    val narrationSelections: Map<Int, Boolean> = emptyMap(),
     val searchText: String = "",
     val isFiltered: Boolean = false,
     val filterDialogShown: Boolean = false

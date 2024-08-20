@@ -332,13 +332,13 @@ fun MySquareButton(
 }
 
 @Composable
-fun MyFavBtn(
-    fav: Boolean,
+fun MyFavoriteButton(
+    isFavorite: Boolean,
     onClick: () -> Unit
 ) {
     MyIconButton(
         iconId =
-            if (fav) R.drawable.ic_star
+            if (isFavorite) R.drawable.ic_star
             else R.drawable.ic_star_outline,
         description = "Favorite",
         onClick = onClick,

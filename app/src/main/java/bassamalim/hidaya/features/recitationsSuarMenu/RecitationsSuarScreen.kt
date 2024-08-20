@@ -18,7 +18,7 @@ import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyDownloadBtn
-import bassamalim.hidaya.core.ui.components.MyFavBtn
+import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
@@ -108,8 +108,8 @@ private fun SuraCard(
                     .padding(10.dp)
             )
 
-            MyFavBtn(
-                fav = sura.fav.value,
+            MyFavoriteButton(
+                isFavorite = sura.fav.value,
                 onClick = {
                     sura.fav.value = (sura.fav.value + 1) % 2
                     vm.onFavClk(sura.num, sura.fav.value)

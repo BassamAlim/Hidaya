@@ -1,19 +1,17 @@
 package bassamalim.hidaya.core.models
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
 import java.io.Serializable
 
 data class Reciter(
     val id: Int,
     val name: String,
-    val versions: List<RecitationVersion>,
-    var fav: MutableState<Int> = mutableIntStateOf(0)
+    val narrations: List<RecitationNarration>,
+    var isFavorite: Boolean = false
 ) {
-    data class RecitationVersion(
-        val versionId: Int,
+    data class RecitationNarration(
+        val id: Int,
+        val name: String,
         val server: String,
-        val rewaya: String,
-        val suar: String
+        val availableSuras: String
     ) : Serializable
 }

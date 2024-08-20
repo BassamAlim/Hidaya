@@ -49,7 +49,7 @@ import bassamalim.hidaya.features.quranSearcher.QuranSearcherRepository
 import bassamalim.hidaya.features.quranSettings.QuranSettingsRepository
 import bassamalim.hidaya.features.radio.RadioClientRepository
 import bassamalim.hidaya.features.settings.SettingsRepository
-import bassamalim.hidaya.features.recitationsRecitersMenu.RecitationsRecitersMenuRepository
+import bassamalim.hidaya.features.recitationRecitersMenu.RecitationsRecitersMenuRepository
 import bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerClientRepository
 import bassamalim.hidaya.features.recitationsSuarMenu.RecitationsSuarRepository
 import bassamalim.hidaya.features.tv.TvRepository
