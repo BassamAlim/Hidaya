@@ -15,7 +15,7 @@ import androidx.room.ForeignKey
         onDelete = ForeignKey.SET_DEFAULT
     )]
 )
-data class RecitationsNarrations(
+data class RecitationNarrations(
     @field:ColumnInfo(name = "id") val id: Int,
     @field:ColumnInfo(name = "reciter_id") val reciterId: Int,
     @field:ColumnInfo(name = "name_ar") val nameAr: String,

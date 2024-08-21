@@ -11,7 +11,7 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.utils.FileUtils
 import kotlinx.coroutines.flow.first
 import java.io.File
@@ -56,20 +56,31 @@ class RecitationRecitersMenuDomain @Inject constructor(
         FileUtils.deleteDirRecursive(mainDir)
     }
 
-    fun downloadNarration(reciterId: Int, narration: Reciter.RecitationNarration) {
+    fun downloadNarration(
+        reciterId: Int,
+        narration: Recitation.Narration,
+        suraNames: List<String>,
+        language: Language,
+        suraString: String
+    ) {
         Thread {
             val downloadManager = app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             var request: DownloadManager.Request
             var posted = false
-            val suraStr = getSuraStr()
             for (i in 0..113) {
                 if (narration.availableSuras.contains("," + (i + 1) + ",")) {
-                    val link = String.format(Locale.US, "%s/%03d.mp3", narration.server, i + 1)
+                    val link = String.format(
+                        Locale.US,
+                        "%s/%03d.mp3",
+                        narration.server,
+                        i + 1
+                    )
                     val uri = Uri.parse(link)
 
                     request = DownloadManager.Request(uri)
                     request.setTitle(
-                        "${getReciterName(reciterId)} ${narration.name} $suraStr ${suraNames[i]}"
+                        "${getReciterName(reciterId, language)} ${narration.name}" +
+                                " $suraString ${suraNames[i]}"
                     )
                     val suffix = "$prefix$reciterId/${narration.id}"
                     FileUtils.createDir(app, suffix)
@@ -88,7 +99,9 @@ class RecitationRecitersMenuDomain @Inject constructor(
         }.start()
     }
 
-    fun deleteNarration(reciterId: Int, narration: Reciter.RecitationNarration) {
+    fun getAllRecitations(language: Language) = recitationsRepository.getAllRecitations(language)
+
+    fun deleteNarration(reciterId: Int, narration: Recitation.Narration) {
         FileUtils.deleteFile(
             context = app,
             path = "/Telawat/$reciterId/${narration.id}"
@@ -103,12 +116,18 @@ class RecitationRecitersMenuDomain @Inject constructor(
         recitationsRepository.setReciterIsFavorite(reciterId, fav)
     }
 
-    fun observeReciters() = recitationsRepository.observeAllReciters()
+    fun getDownloadingNarrationId(downloadId: Long) = downloading[downloadId]!!
 
-    fun getReciterRecitations(reciterId: Int) =
-        recitationsRepository.getReciterRecitations(reciterId)
+    fun removeDownloading(downloadId: Long) {
+        downloading.remove(downloadId)
+    }
 
-    fun getAllNarrations() = recitationsRepository.getAllNarrations()
+    fun observeReciters(language: Language) = recitationsRepository.observeAllReciters(language)
+
+    fun getReciterNarrations(reciterId: Int, language: Language) =
+        recitationsRepository.getReciterNarrations(reciterId, language)
+
+    fun getAllNarrations(language: Language) = recitationsRepository.getAllNarrations(language)
 
     fun getNarration(reciterId: Int, narrationId: Int) =
         recitationsRepository.getNarration(reciterId, narrationId)
@@ -131,14 +150,5 @@ class RecitationRecitersMenuDomain @Inject constructor(
 
     fun checkIsDownloaded(reciterId: Int, narrationId: Int) =
         File("$dir${reciterId}/${narrationId}").exists()
-
-//    fun getNarrations(): Array<String> =
-//        res.getStringArray(R.array.narrations)
-//
-//    fun getLastPlayStr() = res.getString(R.string.last_play)
-//    fun getSuraStr() = res.getString(R.string.sura)
-//    fun getForReciterStr() = res.getString(R.string.for_reciter)
-//    fun getInRewayaOfStr() = res.getString(R.string.in_rewaya_of)
-//    fun getNoLastPlayStr() = res.getString(R.string.no_last_play)
 
 }

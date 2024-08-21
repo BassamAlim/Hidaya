@@ -2,26 +2,45 @@ package bassamalim.hidaya.core.data.repositories
 
 import bassamalim.hidaya.core.data.database.daos.RecitationNarrationsDao
 import bassamalim.hidaya.core.data.database.daos.RecitationRecitersDao
-import bassamalim.hidaya.core.data.database.daos.RecitationsDao
 import bassamalim.hidaya.core.data.database.daos.VerseRecitationsDao
 import bassamalim.hidaya.core.data.database.daos.VerseRecitersDao
 import bassamalim.hidaya.core.data.preferences.dataSources.RecitationsPreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.VerseRepeatMode
+import bassamalim.hidaya.core.models.Recitation
+import bassamalim.hidaya.core.models.Reciter
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RecitationsRepository @Inject constructor(
     private val recitationsPreferencesDataSource: RecitationsPreferencesDataSource,
-    private val recitationsDao: RecitationsDao,
     private val recitationRecitersDao: RecitationRecitersDao,
     private val verseRecitationsDao: VerseRecitationsDao,
     private val verseRecitersDao: VerseRecitersDao,
     private val recitationNarrationsDao: RecitationNarrationsDao
 ) {
 
-    fun observeAllReciters() = recitationRecitersDao.observeAll()
+    fun observeAllReciters(language: Language) =
+        recitationRecitersDao.observeAll().map {
+            it.map { reciter ->
+                Reciter(
+                    id = reciter.id,
+                    name = if (language == Language.ARABIC) reciter.nameAr else reciter.nameEn,
+                    isFavorite = reciter.isFavorite != 0
+                )
+            }
+        }
+
+    fun getAllReciters(language: Language) = recitationRecitersDao.getAll().map {
+        it.let {
+            Reciter(
+                id = it.id,
+                name = if (language == Language.ARABIC) it.nameAr else it.nameEn,
+                isFavorite = it.isFavorite != 0
+            )
+        }
+    }
 
     fun getReciterFavorites() = recitationsPreferencesDataSource.flow.map {
         it.reciterFavorites.toMap()
@@ -39,7 +58,57 @@ class RecitationsRepository @Inject constructor(
         )}
     }
 
-    fun getReciterRecitations(reciterId: Int) = recitationsDao.getReciterRecitations(reciterId)
+    fun getAllNarrations(language: Language) = recitationNarrationsDao.getAll().map {
+        Recitation.Narration(
+            id = it.id,
+            name = if (language == Language.ARABIC) it.nameAr else it.nameEn,
+            server = it.url,
+            availableSuras = it.availableSuras
+        )
+    }
+
+    fun getReciterWithNarrations(reciterId: Int, language: Language): Recitation {
+        val reciter = getReciter(reciterId, language)
+        val narrations = getReciterNarrations(reciterId, language)
+
+        return Recitation(
+            reciterId = reciter.id,
+            reciterName = reciter.name,
+            reciterIsFavorite = reciter.isFavorite,
+            narrations = narrations.map {
+                Recitation.Narration(
+                    id = it.id,
+                    name = it.name,
+                    server = it.server,
+                    availableSuras = it.availableSuras
+                )
+            }
+        )
+    }
+
+    fun getAllRecitations(language: Language): List<Recitation> {
+        val reciters = getAllReciters(language)
+        return reciters.map {
+            Recitation(
+                reciterId = it.id,
+                reciterName = it.name,
+                reciterIsFavorite = it.isFavorite,
+                narrations = getReciterNarrations(it.id, language)
+            )
+        }
+    }
+
+    fun getReciterNarrations(reciterId: Int, language: Language) =
+        recitationNarrationsDao.getReciterNarrations(reciterId).let { narrations ->
+            narrations.map {
+                Recitation.Narration(
+                    id = it.id,
+                    name = if (language == Language.ARABIC) it.nameAr else it.nameEn,
+                    server = it.url,
+                    availableSuras = it.availableSuras
+                )
+            }
+        }
 
     fun getNarrationSelections() = recitationsPreferencesDataSource.flow.map {
         val selections = it.narrationSelections.toMap()
@@ -74,8 +143,6 @@ class RecitationsRepository @Inject constructor(
             shuffleMode = mode
         )}
     }
-
-    fun getAllNarrations() = recitationsDao.getAll()
 
     fun getLastPlayedMediaId() = recitationsPreferencesDataSource.flow.map {
         it.lastPlayedMediaId
@@ -138,6 +205,15 @@ class RecitationsRepository @Inject constructor(
     }
 
     fun getVerseReciterNames() = verseRecitersDao.getNames()
+
+    fun getReciter(id: Int, language: Language) =
+        recitationRecitersDao.getReciter(id).let {
+            Reciter(
+                id = it.id,
+                name = if (language == Language.ARABIC) it.nameAr else it.nameEn,
+                isFavorite = it.isFavorite != 0
+            )
+        }
 
     fun getReciterName(id: Int, language: Language) =
         if (language == Language.ARABIC) recitationRecitersDao.getNameAr(id)

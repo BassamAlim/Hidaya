@@ -11,6 +11,12 @@ interface RecitationRecitersDao {
     @Query("SELECT * FROM recitations_reciters")
     fun observeAll(): Flow<List<RecitationsReciter>>
 
+    @Query("SELECT * FROM recitations_reciters")
+    fun getAll(): List<RecitationsReciter>
+
+    @Query("SELECT * FROM recitations_reciters WHERE id == :id")
+    fun getReciter(id: Int): RecitationsReciter
+
     @Query("SELECT name_ar FROM recitations_reciters")
     fun getNamesAr(): List<String>
 

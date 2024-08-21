@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
-import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.ui.components.FilterDialog
 import bassamalim.hidaya.core.ui.components.MyDownloadBtn
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
@@ -55,7 +55,14 @@ fun RecitationRecitersMenuUI(
     ) {
         Column {
             MySquareButton(
-                text = state.continueListeningText,
+                text =
+                if (state.lastPlayedMedia != null) {
+                    "${stringResource(R.string.last_play)}: " +
+                            "${stringResource(R.string.sura)} ${state.lastPlayedMedia!!.suraName} " +
+                            "${stringResource(R.string.for_reciter)} ${state.lastPlayedMedia!!.reciterName}" +
+                            "${stringResource(R.string.in_rewaya_of)} ${state.lastPlayedMedia!!.narrationName}"
+                }
+                else stringResource(R.string.no_last_play),
                 modifier = Modifier.fillMaxWidth(),
                 fontSize = 18.sp,
                 innerPadding = PaddingValues(vertical = 4.dp),
@@ -106,7 +113,7 @@ fun RecitationRecitersMenuUI(
         FilterDialog(
             shown = state.filterDialogShown,
             title = stringResource(R.string.choose_rewaya),
-            itemTitles = viewModel.narrations.toList(),
+            itemTitles = viewModel.narrationOptions,
             itemSelections = state.narrationSelections,
             onDismiss = viewModel::onFilterDialogDismiss
         )
@@ -115,11 +122,11 @@ fun RecitationRecitersMenuUI(
 
 @Composable
 private fun Tab(
-    items: List<Reciter>,
+    items: List<Recitation>,
     downloadStates: Map<Int, DownloadState>,
     onFavoriteClick: (Int, Boolean) -> Unit,
     onNarrationClick: (Int, Int) -> Unit,
-    onDownloadNarrationClick: (Int, Reciter.RecitationNarration) -> Unit
+    onDownloadNarrationClick: (Int, Recitation.Narration, String) -> Unit
 ) {
     MyLazyColumn(
         lazyList = {
@@ -138,11 +145,11 @@ private fun Tab(
 
 @Composable
 private fun ReciterCard(
-    reciter: Reciter,
+    reciter: Recitation,
     downloadStates: Map<Int, DownloadState>,
     onFavoriteClick: (Int, Boolean) -> Unit,
     onNarrationClick: (Int, Int) -> Unit,
-    onDownloadNarrationClick: (Int, Reciter.RecitationNarration) -> Unit
+    onDownloadNarrationClick: (Int, Recitation.Narration, String) -> Unit
 ) {
     Surface(
         Modifier
@@ -165,14 +172,14 @@ private fun ReciterCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 MyText(
-                    text = reciter.name,
+                    text = reciter.reciterName,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
                 )
 
                 MyFavoriteButton(
-                    isFavorite = reciter.isFavorite,
-                    onClick = { onFavoriteClick(reciter.id, reciter.isFavorite) }
+                    isFavorite = reciter.reciterIsFavorite,
+                    onClick = { onFavoriteClick(reciter.reciterId, reciter.reciterIsFavorite) }
                 )
             }
 
@@ -184,7 +191,7 @@ private fun ReciterCard(
                 reciter.narrations.forEachIndexed { idx, version ->
                     NarrationsCard(
                         idx = idx,
-                        reciterId = reciter.id,
+                        reciterId = reciter.reciterId,
                         narration = version,
                         downloadStates = downloadStates,
                         onNarrationClick = onNarrationClick,
@@ -200,11 +207,13 @@ private fun ReciterCard(
 private fun NarrationsCard(
     idx: Int,
     reciterId: Int,
-    narration: Reciter.RecitationNarration,
+    narration: Recitation.Narration,
     downloadStates: Map<Int, DownloadState>,
     onNarrationClick: (Int, Int) -> Unit,
-    onDownloadClick: (Int, Reciter.RecitationNarration) -> Unit
+    onDownloadClick: (Int, Recitation.Narration, String) -> Unit
 ) {
+    val suraString = stringResource(R.string.sura)
+
     if (idx != 0)
         MyHorizontalDivider()
 
@@ -235,7 +244,7 @@ private fun NarrationsCard(
                         if (downloadStates.isEmpty()) DownloadState.NOT_DOWNLOADED
                         else downloadStates[narration.id]!!,
                     size = 28.dp,
-                    onClick = { onDownloadClick(reciterId, narration) }
+                    onClick = { onDownloadClick(reciterId, narration, suraString) }
                 )
             }
         }

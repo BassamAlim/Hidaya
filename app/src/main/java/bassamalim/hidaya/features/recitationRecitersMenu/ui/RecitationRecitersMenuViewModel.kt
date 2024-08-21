@@ -9,18 +9,22 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.data.database.models.Recitation
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.ListType
-import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
+import bassamalim.hidaya.features.quran.ui.LastPlayedMedia
 import bassamalim.hidaya.features.recitationRecitersMenu.domain.RecitationRecitersMenuDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,20 +37,35 @@ class RecitationRecitersMenuViewModel @Inject constructor(
 
     private lateinit var language: Language
     private var continueListeningMediaId = ""
-    val narrations = domain.getAllNarrations()
+    private lateinit var allNarrations: List<Recitation.Narration>
+    private lateinit var allRecitations: List<Recitation>
+    lateinit var narrationOptions: List<String>
     private lateinit var suraNames: List<String>
 
-    private val _uiState = MutableStateFlow(RecitationRecitersMenuUiState(
-        narrationSelections = domain.getSelectedNarrations(),
-        continueListeningText = domain.getNoLastPlayStr()
-    ))
-    val uiState = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(RecitationRecitersMenuUiState())
+    val uiState = combine(
+        _uiState.asStateFlow(),
+        domain.getNarrationSelections(),
+        domain.getLastPlayedMediaId()
+    ) { state, narrationSelections, lastPlayedMediaId ->
+        state.copy(
+            narrationSelections = narrationSelections,
+            lastPlayedMedia = getLastPlayedMedia(lastPlayedMediaId)
+        )
+    }.stateIn(
+        initialValue = RecitationRecitersMenuUiState(),
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
+    )
 
     init {
         viewModelScope.launch {
             language = domain.getLanguage()
 
             suraNames = domain.getSuraNames(language)
+            allNarrations = domain.getAllNarrations(language)
+            narrationOptions = allNarrations.map { it.name }.distinct()
+            allRecitations = domain.getAllRecitations(language)
         }
 
         _uiState.update { it.copy(
@@ -55,8 +74,6 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     }
 
     fun onStart() {
-        setupContinue()
-
         domain.cleanFiles()
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -87,98 +104,93 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     private fun getDownloadStates(): Map<Int, DownloadState> {
         val downloadStates = mutableMapOf<Int, DownloadState>()
 
-        for (recitation in domain.getAllNarrations()) {
-            downloadStates[recitation.narration_id] =
-                if (domain.checkIsDownloaded(recitation.reciter_id, recitation.narration_id))
-                    DownloadState.DOWNLOADED
-                else
-                    DownloadState.NOT_DOWNLOADED
+        for (recitation in allRecitations) {
+            for (narration in recitation.narrations) {
+                downloadStates[recitation.reciterId] =
+                    if (domain.checkIsDownloaded(
+                            reciterId = recitation.reciterId,
+                            narrationId = narration.id
+                        ))
+                        DownloadState.DOWNLOADED
+                    else
+                        DownloadState.NOT_DOWNLOADED
+            }
         }
 
         return downloadStates
     }
 
-    private fun setupContinue() {
-        continueListeningMediaId = domain.getLastPlayedMediaId()
+    private fun getLastPlayedMedia(mediaId: String): LastPlayedMedia? {
+        if (mediaId.isEmpty() || mediaId == "00000000") return null  // added the second part to prevent errors due to change in db
+        Log.d("TelawatVM", "continueListeningMediaId: $mediaId")
 
-        if (continueListeningMediaId.isEmpty() || continueListeningMediaId == "00000000") return  // added the second part to prevent errors due to change in db
-        Log.d("TelawatVM", "continueListeningMediaId: $continueListeningMediaId")
+        val reciterId = mediaId.substring(0, 3).toInt()
+        val narrationId = mediaId.substring(3, 5).toInt()
+        val suraId = mediaId.substring(5).toInt()
+        Log.d("TelawatVM", "reciterId: $reciterId, narrationId: $narrationId, suraIndex: $suraId")
 
-        val reciterId = continueListeningMediaId.substring(0, 3).toInt()
-        val narrationId = continueListeningMediaId.substring(3, 5).toInt()
-        val suraIndex = continueListeningMediaId.substring(5).toInt()
-        Log.d("TelawatVM", "reciterId: $reciterId, narrationId: $narrationId, suraIndex: $suraIndex")
-
-        val reciterName = domain.getReciterName(reciterId, language)
-        val rewaya = domain.getNarration(reciterId, narrationId)
-
-        _uiState.update { it.copy(
-            continueListeningText = "${domain.getLastPlayStr()}: " +
-                    "${domain.getSuraStr()} ${suraNames[suraIndex]} " +
-                    "${domain.getForReciterStr()} $reciterName " +
-                    "${domain.getInRewayaOfStr()} $rewaya"
-        )}
+        return LastPlayedMedia(
+            reciterName = domain.getReciterName(reciterId, language),
+            suraName = suraNames[suraId],
+            narrationName = domain.getNarration(reciterId, narrationId).nameAr
+        )
     }
 
-    fun getItems(page: Int): List<Reciter> {
+    suspend fun getItems(page: Int): List<Recitation> {
         val listType = ListType.entries[page]
 
-        val reciters = domain.getReciters()
+        val reciters = domain.observeReciters(language).first()
 
-        val favs = domain.getFavs()
-
-        val items = ArrayList<Reciter>()
+        val items = ArrayList<Recitation>()
         for (i in reciters.indices) {
             val reciter = reciters[i]
 
-            if ((listType == ListType.FAVORITES && favs[i] == 0) ||
-                (listType == ListType.DOWNLOADED && !isDownloaded("${reciter.id}")))
+            if ((listType == ListType.FAVORITES && !reciter.isFavorite) ||
+                (listType == ListType.DOWNLOADED))
                 continue
 
-            val narrations = filterSelectedNarrations(domain.getReciterRecitations(reciter.id))
-            val narrationsList = ArrayList<Reciter.RecitationNarration>()
+            val narrations = filterSelectedNarrations(
+                domain.getReciterNarrations(reciter.id, language)
+            )
+            val narrationsList = ArrayList<Recitation.Narration>()
 
-            narrations.forEach { telawa ->
-                narrationsList.add(
-                    Reciter.RecitationNarration(
-                        id = telawa.narration_id,
-                        server = telawa.narration_url,
-                        name =
-                            if (domain.language == Language.ARABIC) telawa.narration_name_ar
-                            else telawa.narration_name_en,
-                        count = telawa.rewayah_surah_total,
-                        availableSuras = telawa.narration_available_suras
+            narrations.forEach { narration ->
+                if (domain.checkIsDownloaded(reciter.id, narrationId = narration.id)) {
+                    narrationsList.add(
+                        Recitation.Narration(
+                            id = narration.id,
+                            server = narration.server,
+                            name = narration.name,
+                            availableSuras = narration.availableSuras
+                        )
                     )
-                )
+                }
             }
 
             items.add(
-                Reciter(
-                    id = reciter.id,
-                    name =
-                        if (language == Language.ARABIC) reciter.nameAr
-                        else reciter.nameEn,
+                Recitation(
+                    reciterId = reciter.id,
+                    reciterName = reciter.name,
                     narrations = narrationsList,
-                    isFavorite = favs[i]
+                    reciterIsFavorite = reciter.isFavorite
                 )
             )
         }
 
         return if (_uiState.value.searchText.isEmpty()) items
         else items.filter { reciter ->
-            reciter.name.contains(_uiState.value.searchText, true)
+            reciter.reciterName.contains(_uiState.value.searchText, true)
         }
     }
 
-    private fun filterSelectedNarrations(narrations: List<Recitation>): List<Recitation> {
+    private fun filterSelectedNarrations(narrations: List<Recitation.Narration>): List<Recitation.Narration> {
         if (!_uiState.value.isFiltered) return narrations
 
-        val selected = mutableListOf<Recitation>()
+        val selected = mutableListOf<Recitation.Narration>()
         for (i in narrations.indices) {
-            for (j in this.narrations.indices) {
+            for (j in this.allNarrations.indices) {
                 if (_uiState.value.narrationSelections[j]!!
-                    && narrations[i].narration_name_ar
-                        .startsWith(this.narrations[j].narration_name_ar)) {
+                    && narrations[i].name.startsWith(this.allNarrations[j].name)) {
                     selected.add(narrations[i])
                     break
                 }
@@ -188,22 +200,18 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         return selected
     }
 
-    private fun downloadNarration(reciterId: Int, ver: Reciter.RecitationNarration) {
-
-    }
-
     private var onComplete: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(ctxt: Context, intent: Intent) {
             val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             try {
-                val narrationId = downloading[downloadId]!!
+                val narrationId = domain.getDownloadingNarrationId(downloadId)
                 _uiState.update { it.copy(
                     downloadStates = it.downloadStates.toMutableMap().apply {
                         this[narrationId] = DownloadState.DOWNLOADED
                     }
                 )}
 
-                downloading.remove(downloadId)
+                domain.removeDownloading(downloadId)
             } catch (e: RuntimeException) {
                 _uiState.update { it.copy(
                     downloadStates = getDownloadStates()
@@ -243,7 +251,11 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         }
     }
 
-    fun onDownloadNarrationClick(reciterId: Int, narration: Reciter.RecitationNarration) {
+    fun onDownloadNarrationClick(
+        reciterId: Int,
+        narration: Recitation.Narration,
+        suraString: String
+    ) {
         if (_uiState.value.downloadStates[reciterId] == DownloadState.NOT_DOWNLOADED) {
             _uiState.update { it.copy(
                 downloadStates = it.downloadStates.toMutableMap().apply {
@@ -251,7 +263,13 @@ class RecitationRecitersMenuViewModel @Inject constructor(
                 }
             )}
 
-            domain.downloadNarration(reciterId, narration)
+            domain.downloadNarration(
+                reciterId = reciterId,
+                narration = narration,
+                suraNames = suraNames,
+                language = language,
+                suraString = suraString
+            )
         }
         else {
             _uiState.update { it.copy(
