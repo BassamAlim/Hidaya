@@ -1,5 +1,6 @@
 package bassamalim.hidaya.core.data.repositories
 
+import android.app.Application
 import bassamalim.hidaya.core.data.database.daos.RecitationNarrationsDao
 import bassamalim.hidaya.core.data.database.daos.RecitationRecitersDao
 import bassamalim.hidaya.core.data.database.daos.VerseRecitationsDao
@@ -14,12 +15,16 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RecitationsRepository @Inject constructor(
+    app: Application,
     private val recitationsPreferencesDataSource: RecitationsPreferencesDataSource,
     private val recitationRecitersDao: RecitationRecitersDao,
     private val verseRecitationsDao: VerseRecitationsDao,
     private val verseRecitersDao: VerseRecitersDao,
     private val recitationNarrationsDao: RecitationNarrationsDao
 ) {
+
+    val prefix = "/Telawat/"
+    val dir = "${app.getExternalFilesDir(null)}$prefix"
 
     fun observeAllReciters(language: Language) =
         recitationRecitersDao.observeAll().map {

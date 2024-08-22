@@ -11,7 +11,7 @@ data class RecitationsPlayerUiState(
     val secondaryProgress: Long = 0,
     val btnState: Int = PlaybackStateCompat.STATE_NONE,
     val suraName: String = "",
-    val versionName: String = "",
+    val narrationName: String = "",
     val reciterName: String = "",
     val controlsEnabled: Boolean = false,
     val downloadState: DownloadState = DownloadState.NOT_DOWNLOADED,

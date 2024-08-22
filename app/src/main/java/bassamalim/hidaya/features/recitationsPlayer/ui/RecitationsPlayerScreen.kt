@@ -75,7 +75,7 @@ fun TelawatClientUI(
         ) {
             InfoSpace(
                 suraName = state.suraName,
-                versionName = state.versionName,
+                versionName = state.narrationName,
                 reciterName = state.reciterName
             )
 

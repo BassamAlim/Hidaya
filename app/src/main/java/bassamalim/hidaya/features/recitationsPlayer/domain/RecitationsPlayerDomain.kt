@@ -21,7 +21,7 @@ import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService
 import kotlinx.coroutines.flow.first
@@ -116,13 +116,13 @@ class RecitationsPlayerDomain @Inject constructor(
         mediaId: String,
         playType: String,
         reciterName: String,
-        version: Reciter.RecitationNarration
+        narration: Recitation.Narration
     ) {
         // Pass media data
         val bundle = Bundle()
         bundle.putString("play_type", playType)
         bundle.putString("reciter_name", reciterName)
-        bundle.putSerializable("version", version)
+        bundle.putSerializable("version", narration)
 
         // Start Playback
         tc.playFromMediaId(mediaId, bundle)
@@ -145,11 +145,11 @@ class RecitationsPlayerDomain @Inject constructor(
     fun getPlaybackState() = controller.playbackState
 
     fun downloadRecitation(
-        version: Reciter.RecitationNarration,
+        narration: Recitation.Narration,
         suraIdx: Int,
         suraName: String
     ) {
-        val server = version.server
+        val server = narration.server
         val link = String.format(Locale.US, "%s/%03d.mp3", server, suraIdx + 1)
         val uri = Uri.parse(link)
 
@@ -166,8 +166,8 @@ class RecitationsPlayerDomain @Inject constructor(
         FileUtils.deleteFile(app, path)
     }
 
-    fun setPath(path: String) {
-        this.path = path
+    fun setPath(reciterId: Int, narrationId: Int, suraId: Int) {
+        this.path = "${"${recitationsRepository.prefix}${reciterId}/${narrationId}/"}$suraId.mp3"
     }
 
     suspend fun getLanguage() = settingsRepository.getLanguage().first()
@@ -177,8 +177,8 @@ class RecitationsPlayerDomain @Inject constructor(
     fun getReciterName(id: Int, language: Language) =
         recitationsRepository.getReciterName(id, language)
 
-    fun getVersion(reciterId: Int, versionId: Int) =
-        recitationsRepository.getVersion(reciterId, versionId)
+    fun getNarration(reciterId: Int, narrationId: Int) =
+        recitationsRepository.getNarration(reciterId, narrationId)
 
     fun getRepeatMode() = recitationsRepository.getRepeatMode()
 

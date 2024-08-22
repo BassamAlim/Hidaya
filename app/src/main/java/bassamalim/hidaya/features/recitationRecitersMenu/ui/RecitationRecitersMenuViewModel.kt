@@ -19,11 +19,12 @@ import bassamalim.hidaya.features.quran.ui.LastPlayedMedia
 import bassamalim.hidaya.features.recitationRecitersMenu.domain.RecitationRecitersMenuDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -136,54 +137,48 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         )
     }
 
-    suspend fun getItems(page: Int): List<Recitation> {
+    fun getItems(page: Int): Flow<List<Recitation>> {
         val listType = ListType.entries[page]
 
-        val reciters = domain.observeReciters(language).first()
-
-        val items = ArrayList<Recitation>()
-        for (i in reciters.indices) {
-            val reciter = reciters[i]
-
-            if ((listType == ListType.FAVORITES && !reciter.isFavorite) ||
-                (listType == ListType.DOWNLOADED))
-                continue
-
-            val narrations = filterSelectedNarrations(
-                domain.getReciterNarrations(reciter.id, language)
-            )
-            val narrationsList = ArrayList<Recitation.Narration>()
-
-            narrations.forEach { narration ->
-                if (domain.checkIsDownloaded(reciter.id, narrationId = narration.id)) {
-                    narrationsList.add(
-                        Recitation.Narration(
-                            id = narration.id,
-                            server = narration.server,
-                            name = narration.name,
-                            availableSuras = narration.availableSuras
-                        )
+        val recitersFlow = domain.observeAllReciters(language)
+        return recitersFlow.map { reciters ->
+            val items = reciters.filter { reciter ->
+                !(listType == ListType.FAVORITES && !reciter.isFavorite)
+            }.map { reciter ->
+                val narrations = filterSelectedNarrations(
+                    domain.getReciterNarrations(reciter.id, language)
+                )
+                val narrationsList = narrations.filter { narration ->
+                    domain.checkIsDownloaded(reciter.id, narrationId = narration.id)
+                }.map { narration ->
+                    Recitation.Narration(
+                        id = narration.id,
+                        server = narration.server,
+                        name = narration.name,
+                        availableSuras = narration.availableSuras
                     )
                 }
-            }
 
-            items.add(
                 Recitation(
                     reciterId = reciter.id,
                     reciterName = reciter.name,
                     narrations = narrationsList,
                     reciterIsFavorite = reciter.isFavorite
                 )
-            )
-        }
+            }.filter {
+                it.narrations.isNotEmpty()
+            }
 
-        return if (_uiState.value.searchText.isEmpty()) items
-        else items.filter { reciter ->
-            reciter.reciterName.contains(_uiState.value.searchText, true)
+            if (_uiState.value.searchText.isEmpty()) items
+            else items.filter { reciter ->
+                reciter.reciterName.contains(_uiState.value.searchText, true)
+            }
         }
     }
 
-    private fun filterSelectedNarrations(narrations: List<Recitation.Narration>): List<Recitation.Narration> {
+    private fun filterSelectedNarrations(
+        narrations: List<Recitation.Narration>
+    ): List<Recitation.Narration> {
         if (!_uiState.value.isFiltered) return narrations
 
         val selected = mutableListOf<Recitation.Narration>()

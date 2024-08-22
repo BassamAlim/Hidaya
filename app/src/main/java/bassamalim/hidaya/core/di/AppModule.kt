@@ -51,7 +51,7 @@ import bassamalim.hidaya.features.radio.RadioClientRepository
 import bassamalim.hidaya.features.settings.SettingsRepository
 import bassamalim.hidaya.features.recitationRecitersMenu.RecitationsRecitersMenuRepository
 import bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerClientRepository
-import bassamalim.hidaya.features.recitationsSuarMenu.RecitationsSuarRepository
+import bassamalim.hidaya.features.recitationSurasMenu.RecitationsSurasRepository
 import bassamalim.hidaya.features.tv.TvRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -440,7 +440,7 @@ object AppModule {
     fun provideRecitationsSuarRepository(
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = RecitationsSuarRepository(preferencesDataSource, database)
+    ) = RecitationsSurasRepository(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideSettingsRepository(

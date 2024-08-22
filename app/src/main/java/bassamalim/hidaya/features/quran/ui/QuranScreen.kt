@@ -128,14 +128,14 @@ private fun Tab(
                     ) {
                         Icon(
                             painter = painterResource(
-                                if (item.tanzeel == 0) R.drawable.ic_kaaba
+                                if (item.revelation == 0) R.drawable.ic_kaaba
                                 else R.drawable.ic_madina
                             ),
                             contentDescription = stringResource(R.string.tanzeel_view_description)
                         )
 
                         MyText(
-                            text = "${stringResource(R.string.sura)} ${item.suraName}",
+                            text = "${stringResource(R.string.sura)} ${item.decoratedName}",
                             modifier = Modifier
                                 .weight(1F)
                                 .padding(10.dp)

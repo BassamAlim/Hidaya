@@ -26,7 +26,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
@@ -56,12 +56,12 @@ class RecitationsPlayerViewModel @Inject constructor(
 
     private lateinit var language: Language
     var reciterId = mediaId.substring(0, 3).toInt()
-    var versionId = mediaId.substring(3, 5).toInt()
-    var suraIdx = mediaId.substring(5).toInt()
-    private lateinit var version: Reciter.RecitationNarration
+    private var narrationId = mediaId.substring(3, 5).toInt()
+    private var suraIdx = mediaId.substring(5).toInt()
+    private lateinit var narration: Recitation.Narration
     private lateinit var suraNames: List<String>
-    var duration = 0L
-    var progress = 0L
+    private var duration = 0L
+    private var progress = 0L
 
     private val _uiState = MutableStateFlow(RecitationsPlayerUiState())
     val uiState = combine(
@@ -110,20 +110,20 @@ class RecitationsPlayerViewModel @Inject constructor(
                     mediaId = mediaId,
                     playType = action,
                     reciterName = _uiState.value.reciterName,
-                    version = version
+                    narration = narration
                 )
             }
         }
 
         override fun onConnectionSuspended() {
-            Log.e(Global.TAG, "Connection suspended in TelawatClient")
+            Log.e(Global.TAG, "Connection suspended in RecitationsPlayerViewModel")
             // The Service has crashed.
             // Disable transport controls until it automatically reconnects
             disableControls()
         }
 
         override fun onConnectionFailed() {
-            Log.e(Global.TAG, "Connection failed in TelawatClient")
+            Log.e(Global.TAG, "Connection failed in RecitationsPlayerViewModel")
             // The Service has refused our connection
             disableControls()
         }
@@ -134,7 +134,7 @@ class RecitationsPlayerViewModel @Inject constructor(
     }
 
     fun onStop() {
-        Log.i(Global.TAG, "in onStop of TelawatClient")
+        Log.i(Global.TAG, "in onStop of RecitationsPlayerViewModel")
 
         domain.stopMediaBrowser(controllerCallback, onComplete)
     }
@@ -148,9 +148,9 @@ class RecitationsPlayerViewModel @Inject constructor(
     }
 
     private fun updateTrackState() {
-        version = domain.getVersion(reciterId, versionId).let {
-            Reciter.RecitationNarration(
-                id = versionId,
+        narration = domain.getNarration(reciterId, narrationId).let {
+            Recitation.Narration(
+                id = narrationId,
                 server = it.url,
                 name = it.nameAr,
                 availableSuras = it.availableSuras
@@ -159,7 +159,7 @@ class RecitationsPlayerViewModel @Inject constructor(
 
         _uiState.update { it.copy(
             suraName = suraNames[suraIdx],
-            versionName = version.name,
+            narrationName = narration.name,
             reciterName = domain.getReciterName(id = reciterId, language = language),
             downloadState = domain.checkDownload()
         )}
@@ -207,7 +207,7 @@ class RecitationsPlayerViewModel @Inject constructor(
         suraIdx = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
         duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
 
-        domain.setPath("${"/Telawat/${reciterId}/${versionId}/"}$suraIdx.mp3")
+        domain.setPath(reciterId = reciterId, narrationId = narrationId, suraId = suraIdx)
 
         _uiState.update { it.copy(
             suraName = suraNames[suraIdx],
@@ -243,7 +243,7 @@ class RecitationsPlayerViewModel @Inject constructor(
             navigator.navigate(
                 Screen.TelawatSuar(
                     reciterId = reciterId.toString(),
-                    narrationId = versionId.toString()
+                    narrationId = narrationId.toString()
                 )
             ) {
                 popUpTo(Screen.TelawatClient(action, mediaId).route) {
@@ -316,7 +316,7 @@ class RecitationsPlayerViewModel @Inject constructor(
             )}
 
             domain.downloadRecitation(
-                version = version,
+                narration = narration,
                 suraIdx = suraIdx,
                 suraName = suraNames[suraIdx]
             )

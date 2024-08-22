@@ -37,6 +37,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.theme.AppTheme
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun RecitationRecitersMenuUI(
@@ -101,7 +102,7 @@ fun RecitationRecitersMenuUI(
                 }
             ) { page ->
                 Tab(
-                    items = viewModel.getItems(page),
+                    itemsFlow = viewModel.getItems(page),
                     downloadStates = state.downloadStates,
                     onFavoriteClick = viewModel::onFavoriteClick,
                     onNarrationClick = viewModel::onNarrationClick,
@@ -122,12 +123,13 @@ fun RecitationRecitersMenuUI(
 
 @Composable
 private fun Tab(
-    items: List<Recitation>,
+    itemsFlow: Flow<List<Recitation>>,
     downloadStates: Map<Int, DownloadState>,
     onFavoriteClick: (Int, Boolean) -> Unit,
     onNarrationClick: (Int, Int) -> Unit,
     onDownloadNarrationClick: (Int, Recitation.Narration, String) -> Unit
 ) {
+    val items by itemsFlow.collectAsStateWithLifecycle(initialValue = emptyList())
     MyLazyColumn(
         lazyList = {
             items(items) { item ->

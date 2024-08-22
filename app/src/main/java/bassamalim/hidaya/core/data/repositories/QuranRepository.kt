@@ -23,10 +23,12 @@ class QuranRepository @Inject constructor(
         if (language == Language.ENGLISH) surasDao.getDecoratedNamesEn()
         else surasDao.getDecoratedNamesAr()
 
+    fun getPlainSuraNames() = surasDao.getPlainNamesAr()
+
     fun getSuraFavorites() = surasDao.observeIsFavorites()
 
-    suspend fun setSuraFavorites(suraId: Int, fav: Int) {
-        surasDao.setIsFavorite(suraId, fav)
+    suspend fun setSuraIsFavorite(suraId: Int, isFavorite: Boolean) {
+        surasDao.setIsFavorite(suraId, if (isFavorite) 1 else 0)
         setBackupSuraFavorites(
             surasDao.observeIsFavorites().first().mapIndexed { index, value ->
                 index + 1 to value

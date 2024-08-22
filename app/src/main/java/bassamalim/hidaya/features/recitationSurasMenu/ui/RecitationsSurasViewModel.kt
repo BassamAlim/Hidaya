@@ -1,7 +1,6 @@
-package bassamalim.hidaya.features.recitationsSuarMenu
+package bassamalim.hidaya.features.recitationSurasMenu.ui
 
 import android.app.Activity
-import android.app.Application
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -11,15 +10,17 @@ import android.net.Uri
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.DownloadState
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.FileUtils
+import bassamalim.hidaya.features.recitationSurasMenu.domain.RecitationSurasMenuDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,26 +32,33 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class RecitationsSuarViewModel @Inject constructor(
-    private val app: Application,
+class RecitationsSurasViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repo: RecitationsSuarRepository,
+    private val domain: RecitationSurasMenuDomain,
     private val navigator: Navigator
-): AndroidViewModel(app) {
+): ViewModel() {
 
     private val reciterId = savedStateHandle.get<Int>("reciter_id") ?: 0
-    private val versionId = savedStateHandle.get<Int>("version_id") ?: 0
+    private val narrationId = savedStateHandle.get<Int>("narration_id") ?: 0
 
-    private val ver = repo.getVersion(reciterId, versionId)
-    val prefix = "/Telawat/${ver.reciterId}/${versionId}/"
-    private val suraNames = repo.getSuraNames()
-    private val searchNames = repo.getSearchNames()
-    private val downloading = HashMap<Long, Int>()
+    private lateinit var language: Language
+    private val narration = domain.getNarration(reciterId, narrationId)
+    private lateinit var suraNames: List<String>
+    private val searchNames = domain.getPlainSuraNames()
 
-    private val _uiState = MutableStateFlow(RecitationsSuarState(
-        title = repo.getReciterName(reciterId)
-    ))
+    private val _uiState = MutableStateFlow(RecitationsSurasUiState())
     val uiState = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            language = domain.getLanguage()
+            suraNames = domain.getDecoratedSuraNames(language)
+
+            _uiState.update { it.copy(
+                title = domain.getReciterName(reciterId, language)
+            )}
+        }
+    }
 
     fun onStart() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -85,7 +93,7 @@ class RecitationsSuarViewModel @Inject constructor(
 
         if ((ctx as Activity).isTaskRoot) {
             navigator.navigate(Screen.Telawat) {
-                popUpTo(Screen.TelawatSuar(reciterId.toString(), versionId.toString()).route) {
+                popUpTo(Screen.TelawatSuar(reciterId.toString(), narrationId.toString()).route) {
                     inclusive = true
                 }
             }
@@ -106,19 +114,13 @@ class RecitationsSuarViewModel @Inject constructor(
         return states
     }
 
-    private fun isDownloaded(suraNum: Int): Boolean {
-        return File(
-            "${app.getExternalFilesDir(null)}$prefix$suraNum.mp3"
-        ).exists()
-    }
-
     fun getItems(page: Int): List<ReciterSura> {
         val listType = ListType.entries[page]
 
-        val favs = repo.getFavs()
+        val favs = domain.getFavs()
 
         val items = ArrayList<ReciterSura>()
-        val availableSuar = ver.availableSuras
+        val availableSuar = narration.availableSuras
         for (i in 0..113) {
             if (!availableSuar.contains(",${(i + 1)},") ||
                 (listType == ListType.FAVORITES && favs[i] == 0) ||
@@ -130,7 +132,7 @@ class RecitationsSuarViewModel @Inject constructor(
                     num = i,
                     suraName = suraNames[i],
                     searchName = searchNames[i],
-                    fav = mutableIntStateOf(favs[i]),
+                    isFavorite = mutableIntStateOf(favs[i]),
                 )
             )
         }
@@ -148,7 +150,7 @@ class RecitationsSuarViewModel @Inject constructor(
             }
         )}
 
-        val server = ver.url
+        val server = narration.url
         val link = String.format(Locale.US, "%s/%03d.mp3", server, sura.num + 1)
         val uri = Uri.parse(link)
 
@@ -186,7 +188,7 @@ class RecitationsSuarViewModel @Inject constructor(
 
     fun onItemClk(sura: ReciterSura) {
         val rId = String.format(Locale.US, "%03d", reciterId)
-        val vId = String.format(Locale.US, "%02d", versionId)
+        val vId = String.format(Locale.US, "%02d", narrationId)
         val sId = String.format(Locale.US, "%03d", sura.num)
         val mediaId = rId + vId + sId
 
@@ -199,9 +201,9 @@ class RecitationsSuarViewModel @Inject constructor(
     }
 
     fun onFavClk(suraNum: Int, newFav: Int) {
-        repo.setFav(suraNum, newFav)
+        domain.setFav(suraNum, newFav)
 
-        repo.updateFavorites()
+        domain.updateFavorites()
     }
 
     fun onDownload(sura: ReciterSura) {

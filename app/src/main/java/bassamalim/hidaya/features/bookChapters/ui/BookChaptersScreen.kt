@@ -8,13 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.features.bookChapters.domain.BookChapter
 import bassamalim.hidaya.core.ui.components.MyBtnSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
+import bassamalim.hidaya.features.bookChapters.domain.BookChapter
 
 @Composable
 fun BookChaptersUI(
@@ -22,7 +22,7 @@ fun BookChaptersUI(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyScaffold(state.title) {
+    MyScaffold(title = state.title) {
         TabLayout(
             pageNames = listOf(
                 stringResource(R.string.all),
@@ -50,7 +50,7 @@ fun BookChaptersUI(
 @Composable
 private fun Tab(
     items: List<BookChapter>,
-    favs: Map<Int, Int>,
+    favs: Map<Int, Boolean>,
     onItemClick: (BookChapter) -> Unit,
     onFavClick: (Int) -> Unit
 ) {

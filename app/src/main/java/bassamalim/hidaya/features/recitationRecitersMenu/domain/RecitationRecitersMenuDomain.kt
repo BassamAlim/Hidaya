@@ -25,8 +25,6 @@ class RecitationRecitersMenuDomain @Inject constructor(
     private val settingsRepository: AppSettingsRepository
 ) {
 
-    private val prefix = "/Telawat/"
-    private val dir = "${app.getExternalFilesDir(null)}$prefix"
     private val downloading = HashMap<Long, Int>()
 
     fun registerDownloadReceiver(onComplete: BroadcastReceiver) {
@@ -52,7 +50,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
     }
 
     fun cleanFiles() {
-        val mainDir = File(dir)
+        val mainDir = File(recitationsRepository.dir)
         FileUtils.deleteDirRecursive(mainDir)
     }
 
@@ -82,7 +80,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
                         "${getReciterName(reciterId, language)} ${narration.name}" +
                                 " $suraString ${suraNames[i]}"
                     )
-                    val suffix = "$prefix$reciterId/${narration.id}"
+                    val suffix = "${recitationsRepository.prefix}$reciterId/${narration.id}"
                     FileUtils.createDir(app, suffix)
                     request.setDestinationInExternalFilesDir(app, suffix, "$i.mp3")
                     request.setNotificationVisibility(
@@ -104,7 +102,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
     fun deleteNarration(reciterId: Int, narration: Recitation.Narration) {
         FileUtils.deleteFile(
             context = app,
-            path = "/Telawat/$reciterId/${narration.id}"
+            path = "${recitationsRepository.prefix}$reciterId/${narration.id}"
         )
     }
 
@@ -122,7 +120,11 @@ class RecitationRecitersMenuDomain @Inject constructor(
         downloading.remove(downloadId)
     }
 
-    fun observeReciters(language: Language) = recitationsRepository.observeAllReciters(language)
+    fun observeAllReciters(language: Language) =
+        recitationsRepository.observeAllReciters(language)
+
+    fun getAllReciters(language: Language) =
+        recitationsRepository.getAllReciters(language)
 
     fun getReciterNarrations(reciterId: Int, language: Language) =
         recitationsRepository.getReciterNarrations(reciterId, language)
@@ -149,6 +151,6 @@ class RecitationRecitersMenuDomain @Inject constructor(
     }
 
     fun checkIsDownloaded(reciterId: Int, narrationId: Int) =
-        File("$dir${reciterId}/${narrationId}").exists()
+        File("${recitationsRepository.dir}${reciterId}/${narrationId}").exists()
 
 }

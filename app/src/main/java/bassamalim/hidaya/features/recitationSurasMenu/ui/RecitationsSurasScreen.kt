@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.recitationsSuarMenu
+package bassamalim.hidaya.features.recitationSurasMenu.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -26,19 +26,19 @@ import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 
 @Composable
-fun TelawatSuarUI(
-    vm: RecitationsSuarViewModel
+fun TelawatSurasScreen(
+    viewModel: RecitationsSurasViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    DisposableEffect(key1 = vm) {
-        vm.onStart()
-        onDispose { vm.onStop() }
+    DisposableEffect(key1 = viewModel) {
+        viewModel.onStart()
+        onDispose(viewModel::onStop)
     }
 
     MyScaffold(
-        st.title,
-        onBack = { vm.onBackPressed() }
+        title = state.title,
+        onBack = viewModel::onBackPressed
     ) {
         TabLayout(
             pageNames = listOf(
@@ -48,22 +48,22 @@ fun TelawatSuarUI(
             ),
             searchComponent = {
                 SearchComponent(
-                    value = st.searchText,
+                    value = state.searchText,
                     hint = stringResource(R.string.suar_hint),
                     modifier = Modifier.fillMaxWidth(),
-                    onValueChange = vm::onSearchChange
+                    onValueChange = viewModel::onSearchChange
                 )
             }
         ) { page ->
-            Tab(vm, st, vm.getItems(page))
+            Tab(viewModel, state, viewModel.getItems(page))
         }
     }
 }
 
 @Composable
 private fun Tab(
-    vm: RecitationsSuarViewModel,
-    st: RecitationsSuarState,
+    vm: RecitationsSurasViewModel,
+    st: RecitationsSurasUiState,
     items: List<ReciterSura>
 ) {
     MyLazyColumn(
@@ -78,11 +78,11 @@ private fun Tab(
 @Composable
 private fun SuraCard(
     sura: ReciterSura,
-    vm: RecitationsSuarViewModel,
-    st: RecitationsSuarState
+    onClick: (ReciterSura) -> Unit,
+    onFavoriteClick: (Int) -> Unit,
 ) {
     MyClickableSurface(
-        onClick = { vm.onItemClk(sura) }
+        onClick = { onClick(sura) }
     ) {
         Row(
             Modifier
@@ -109,11 +109,8 @@ private fun SuraCard(
             )
 
             MyFavoriteButton(
-                isFavorite = sura.fav.value,
-                onClick = {
-                    sura.fav.value = (sura.fav.value + 1) % 2
-                    vm.onFavClk(sura.num, sura.fav.value)
-                }
+                isFavorite = sura.isFavorite,
+                onClick = { onFavoriteClick(sura.) }
             )
         }
     }

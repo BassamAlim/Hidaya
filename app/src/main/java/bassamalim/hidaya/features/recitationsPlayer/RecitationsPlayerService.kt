@@ -57,7 +57,6 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
     private val notificationId = 333
     private val handler: Handler = Handler(Looper.getMainLooper())
     private val intentFilter: IntentFilter = IntentFilter()
-    private lateinit var preferencesDS: PreferencesDataSource
     private lateinit var db: AppDatabase
     private lateinit var notificationManager: NotificationManager
     private lateinit var notificationBuilder: NotificationCompat.Builder

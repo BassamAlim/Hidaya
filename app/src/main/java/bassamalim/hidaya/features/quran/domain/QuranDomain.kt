@@ -3,7 +3,9 @@ package bassamalim.hidaya.features.quran.domain
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.models.Sura
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class QuranDomain @Inject constructor(
@@ -17,7 +19,21 @@ class QuranDomain @Inject constructor(
 
     fun getBookmark() = quranRepository.getPageBookmark()
 
-    fun getAllSuar() = quranRepository.observeAllSuar()
+    fun getAllSuras(language: Language) = quranRepository.observeAllSuar().map {
+        it.map { sura ->
+            Sura(
+                id = sura.id,
+                decoratedName =
+                    if (language == Language.ARABIC)sura.decoratedNameAr
+                    else sura.decoratedNameEn,
+                plainName = sura.plainNameAr,
+//                    if (language == Language.ARABIC) sura.plainNameAr
+//                    else sura.plainNameEn,
+                revelation = sura.revelation,
+                isFavorite = sura.isFavorite == 1
+            )
+        }
+    }
 
     fun getSuraNames(language: Language) = quranRepository.getDecoratedSuraNames(language)
 

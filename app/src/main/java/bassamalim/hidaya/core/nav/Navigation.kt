@@ -43,7 +43,7 @@ import bassamalim.hidaya.features.quranSearcher.ui.QuranSearcherUI
 import bassamalim.hidaya.features.radio.ui.RadioClientUI
 import bassamalim.hidaya.features.recitationsPlayer.ui.TelawatClientUI
 import bassamalim.hidaya.features.recitationRecitersMenu.ui.RecitationRecitersMenuUI
-import bassamalim.hidaya.features.recitationsSuarMenu.TelawatSuarUI
+import bassamalim.hidaya.features.recitationSurasMenu.ui.TelawatSurasScreen
 import bassamalim.hidaya.features.settings.SettingsUI
 import bassamalim.hidaya.features.supplicationsMenu.AthkarListScreen
 import bassamalim.hidaya.features.supplicationsReader.AthkarViewerUI
@@ -456,7 +456,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            TelawatSuarUI(
+            TelawatSurasScreen(
                 hiltViewModel()
             )
         }

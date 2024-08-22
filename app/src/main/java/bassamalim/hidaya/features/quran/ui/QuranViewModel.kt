@@ -11,10 +11,12 @@ import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.domain.QuranDomain
 import bassamalim.hidaya.features.quranReader.domain.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,6 +32,7 @@ class QuranViewModel @Inject constructor(
     private var numeralsLanguage: Language? = null
     private lateinit var suraNames: List<String>
     private var bookmarkedPage = -1
+    private lateinit var allSurasFlow: Flow<List<Sura>>
 
     private val _uiState = MutableStateFlow(QuranUiState())
     val uiState = combine(
@@ -58,6 +61,7 @@ class QuranViewModel @Inject constructor(
         viewModelScope.launch {
             language = domain.getLanguage()
             numeralsLanguage = domain.getNumeralsLanguage()
+            allSurasFlow = domain.getAllSuras(language)
             suraNames = domain.getSuraNames(language)
         }
     }
@@ -138,29 +142,26 @@ class QuranViewModel @Inject constructor(
         }
     }
 
-    fun getItems(page: Int): List<Sura> {
+    fun getItems(page: Int): Flow<List<Sura>> {
         val listType = ListType.entries[page]
 
-        val items = ArrayList<Sura>()
-        val suar = domain.getAllSuar()
-        for (i in suar.indices) {
-            if (listType == ListType.FAVORITES && !_uiState.value.favs[i]!!) continue
+        return allSurasFlow.map { suras ->
+            val items = suras.filter { sura ->
+                !(listType == ListType.FAVORITES && !sura.isFavorite)
+            }.map { sura ->
+                Sura(
+                    id = sura.id,
+                    decoratedName = suraNames[sura.id],
+                    plainName = sura.plainName,
+                    revelation = sura.revelation,
+                    isFavorite = sura.isFavorite
+                )
+            }
 
-            items.add(
-                suar[i].let {
-                    Sura(
-                        id = it.id,
-                        suraName = suraNames[it.id],
-                        searchName = it.plainNameAr,
-                        tanzeel = it.revelation
-                    )
-                }
-            )
-        }
-
-        return if (_uiState.value.searchText.isEmpty()) items
-        else items.filter {
-            it.searchName.contains(_uiState.value.searchText, true)
+            if (_uiState.value.searchText.isEmpty()) items
+            else items.filter {
+                it.plainName.contains(_uiState.value.searchText, true)
+            }
         }
     }
 
