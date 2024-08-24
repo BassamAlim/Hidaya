@@ -6,14 +6,12 @@ import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.features.bookChapters.domain.BookChapter
 import bassamalim.hidaya.features.bookChapters.domain.BookChaptersDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,53 +27,49 @@ class BookChaptersViewModel @Inject constructor(
     private val bookTitle = savedStateHandle.get<String>("book_title")?: ""
 
     private val book = domain.getBook(bookId)
+    private val favoritesFlow = domain.getFavorites(book)
 
     private val _uiState = MutableStateFlow(BookChaptersUiState(
         title = bookTitle
     ))
-    val uiState = combine(
-        _uiState.asStateFlow(),
-        domain.getFavs(book)
-    ) { state, favs -> state.copy(
-        favs = favs
-    )}.stateIn(
-        initialValue = BookChaptersUiState(),
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
-    )
+    val uiState = _uiState.asStateFlow()
 
-    fun getItems(page: Int): List<BookChapter> {
+    fun getItems(page: Int): Flow<List<BookChapter>> {
         val listType = ListType.entries[page]
 
-        return domain.getItems(
-            listType = listType,
-            chapters = book.chapters,
-            favs = _uiState.value.favs,
-            searchText = _uiState.value.searchText
-        )
+        return favoritesFlow.map { favorites ->
+            favorites.filter {
+                (listType == ListType.ALL ||
+                        listType == ListType.FAVORITES && favorites[it.key]!!)
+                        && (_uiState.value.searchText.isEmpty() ||
+                        book.chapters[it.key].title
+                            .contains(_uiState.value.searchText, true))
+            }.map { favorite ->
+                BookChapter(
+                    id = favorite.key,
+                    title = book.chapters[favorite.key].title,
+                    isFavorite = favorite.value
+                )
+            }
+        }
     }
 
-    fun onItemClick(item: BookChapter) {
+    fun onItemClick(chapter: BookChapter) {
         navigator.navigate(
             Screen.BookViewer(
                 bookId = bookId.toString(),
-                bookTitle = item.title,
-                chapterId = item.id.toString()
+                bookTitle = chapter.title,
+                chapterId = chapter.id.toString()
             )
         )
     }
 
-    fun onFavClick(itemId: Int) {
-        _uiState.update { it.copy(
-            favs = it.favs.toMutableMap().apply {
-                this[itemId] = if (this[itemId] == 1) 0 else 1
-            }
-        )}
-
+    fun onFavoriteClick(chapterNum: Int) {
         viewModelScope.launch {
-            domain.setFavs(
+            domain.setIsFavorite(
                 bookId = bookId,
-                favs = _uiState.value.favs.toMap()
+                chapterNum = chapterNum,
+                newValue = !_uiState.value.favs[chapterNum]!!
             )
         }
     }

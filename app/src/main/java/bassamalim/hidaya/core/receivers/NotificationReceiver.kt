@@ -216,12 +216,12 @@ class NotificationReceiver : BroadcastReceiver() {
 
         val route = when (pid) {
             PID.MORNING -> {
-                Screen.AthkarViewer(
+                Screen.RemembranceReader(
                     0.toString(),
                 ).route
             }
             PID.EVENING -> {
-                Screen.AthkarViewer(
+                Screen.RemembranceReader(
                     1.toString(),
                 ).route
             }

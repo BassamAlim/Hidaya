@@ -144,7 +144,7 @@ private fun ExtraNotificationsSettings(
         SwitchSetting(
             sp = vm.sp,
             pref = Preference.NotifyExtraNotification(PID.MORNING),
-            titleResId = R.string.morning_athkar_title,
+            titleResId = R.string.morning_remembrance_title,
             summary = st.morningSummary
         ) { checked ->
             vm.onSwitch(ctx, checked, PID.MORNING)
@@ -153,7 +153,7 @@ private fun ExtraNotificationsSettings(
         SwitchSetting(
             sp = vm.sp,
             pref = Preference.NotifyExtraNotification(PID.EVENING),
-            titleResId = R.string.evening_athkar_title,
+            titleResId = R.string.evening_remembrance_title,
             summary = st.eveningSummary
         ) { checked ->
             vm.onSwitch(ctx, checked, PID.EVENING)

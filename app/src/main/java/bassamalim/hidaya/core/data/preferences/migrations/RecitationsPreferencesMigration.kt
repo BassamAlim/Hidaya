@@ -42,12 +42,12 @@ object RecitationsPreferencesMigration {
                     }
                 },
                 repeatMode = sharedPrefs.getInt(
-                    key = Preference.TelawatRepeatMode.key,
-                    defValue = Preference.TelawatRepeatMode.default as Int
+                    key = Preference.RecitationsRepeatMode.key,
+                    defValue = Preference.RecitationsRepeatMode.default as Int
                 ),
                 shuffleMode = sharedPrefs.getInt(
-                    key = Preference.TelawatShuffleMode.key,
-                    defValue = Preference.TelawatShuffleMode.default as Int
+                    key = Preference.RecitationsShuffleMode.key,
+                    defValue = Preference.RecitationsShuffleMode.default as Int
                 ),
                 lastPlayedMediaId = sharedPrefs.getString(
                     key = Preference.LastPlayedMediaId.key,

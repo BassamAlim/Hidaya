@@ -100,7 +100,7 @@ class QuranViewModel @Inject constructor(
         viewModelScope.launch {
             domain.setFav(
                 suraId = itemId,
-                fav = if (_uiState.value.favs[itemId]!!) 1 else 0
+                fav = _uiState.value.favs[itemId]!!
             )
         }
     }

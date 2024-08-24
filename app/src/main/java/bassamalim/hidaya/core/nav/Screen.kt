@@ -4,14 +4,14 @@ sealed class Screen(val route: String) {
 
     data object About: Screen("about")
 
-    data class AthkarList(
+    data class RemembrancesList(
         val type: String,
         val category: String="-1"
-    ): Screen("athkar_list/$type/$category")
+    ): Screen("remembrances_list/$type/$category")
 
-    data class AthkarViewer(
-        val thikrId: String
-    ): Screen("athkar_viewer/$thikrId")
+    data class RemembranceReader(
+        val id: String
+    ): Screen("remembrance_reader/$id")
 
     data class BookChapters(
         val bookId: String,
@@ -77,17 +77,17 @@ sealed class Screen(val route: String) {
 
     data object Settings: Screen("settings")
 
-    data class TelawatClient(
+    data class RecitationsMenu(
         val action: String,
         val mediaId: String
     ): Screen("telawat_client/$action/$mediaId")
 
-    data object Telawat: Screen("telawat")
+    data object RecitationsMenu: Screen("telawat")
 
-    data class TelawatSuar(
+    data class RecitationSurasMenu(
         val reciterId: String,
         val narrationId: String
-    ): Screen("telawat_suar/$reciterId/$narrationId")
+    ): Screen("recitation_suras_menu/$reciterId/$narrationId")
 
     data object Tv: Screen("tv")
 

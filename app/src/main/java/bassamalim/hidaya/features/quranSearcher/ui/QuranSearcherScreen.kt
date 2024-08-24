@@ -131,7 +131,7 @@ fun MatchItem(
                 modifier = Modifier.padding(6.dp)
             )
             MyText(
-                text = "${stringResource(R.string.tafseer)}: ${item.tafseer}",
+                text = "${stringResource(R.string.interpretation)}: ${item.interpretation}",
                 modifier = Modifier.padding(6.dp)
             )
 

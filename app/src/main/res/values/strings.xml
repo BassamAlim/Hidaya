@@ -5,7 +5,7 @@
     <string name="title_home">الرئيسية</string>
     <string name="title_prayers">أوقات الصلاة</string>
     <string name="title_quran">القرآن</string>
-    <string name="title_athkar">الأذكار</string>
+    <string name="title_remembrances">الأذكار</string>
     <string name="title_more">المزيد</string>
 
     <!-- Preference Categories -->
@@ -18,8 +18,8 @@
 
     <!-- Preference Titles -->
     <string name="language" translatable="false">Language | اللغة</string>
-    <string name="morning_athkar_title">إشعار أذكار الصباح</string>
-    <string name="evening_athkar_title">إشعار أذكار المساء</string>
+    <string name="morning_remembrance_title">إشعار أذكار الصباح</string>
+    <string name="evening_remembrance_title">إشعار أذكار المساء</string>
     <string name="daily_werd_title">إشعار صفحة اليوم</string>
     <string name="friday_kahf_title">إشعار سورة الكهف</string>
     <string name="text_size_title">حجم الخط</string>
@@ -36,13 +36,13 @@
 
     <!-- Buttons Text -->
     <string name="contact">تواصل معي</string>
-    <string name="day_and_night_athkar">أذكار اليوم والليلة</string>
-    <string name="prayers_athkar">أذكار الصلاة</string>
-    <string name="quran_athkar">أدعية المصحف</string>
-    <string name="places_athkar">أذكار المكان</string>
-    <string name="emotion_athkar">أذكار الحال</string>
-    <string name="actions_athkar">أذكار الأفعال</string>
-    <string name="events_athkar">أدعية الأحداث</string>
+    <string name="day_and_night_remembrances">أذكار اليوم والليلة</string>
+    <string name="prayers_remembrances">أذكار الصلاة</string>
+    <string name="quran_remembrances">أدعية المصحف</string>
+    <string name="places_remembrances">أذكار المكان</string>
+    <string name="emotion_remembrances">أذكار الحال</string>
+    <string name="actions_remembrances">أذكار الأفعال</string>
+    <string name="events_remembrances">أدعية الأحداث</string>
     <string name="tv_channels">بث مباشر</string>
     <string name="quran_channel">القرآن الكريم</string>
     <string name="sunnah_channel">السنة النبوية</string>
@@ -71,7 +71,7 @@
     <string name="rewind_btn_description">عودة</string>
     <string name="play_pause_btn_description">اوقف/اكمل التشغيل</string>
     <string name="fast_forward_btn_description">تقدم</string>
-    <string name="tanzeel_view_description">مكان نزول السورة</string>
+    <string name="revelation_view_description">مكان نزول السورة</string>
     <string name="bookmark_page_button_description">حفظ الصفحة</string>
     <string name="filter_search_description">تصفية البحث</string>
     <string name="source_btn_description">إظهار المرجع</string>
@@ -84,12 +84,12 @@
     <string name="books_activity_tips">يمكنك الضغط على الزر في الزاوية السفلية من الشاشة للبحث عن نص في الكتب المحملة.</string>
 
     <!-- Hints -->
-    <string name="quran_query_hint">ابحث عن اسم السورة أو رقم الصفحة</string>
-    <string name="athkar_hint">ابحث عن الذِكر</string>
-    <string name="reciters_hint">ابحث عن القارئ</string>
-    <string name="suar_hint">ابحث عن السورة</string>
-    <string name="country_hint">ابحث عن اسم البلد</string>
-    <string name="city_hint">ابحث عن اسم المدينة</string>
+    <string name="quran_search_hint">ابحث عن اسم السورة أو رقم الصفحة</string>
+    <string name="remembrances_search_hint">ابحث عن الذِكر</string>
+    <string name="reciters_search_hint">ابحث عن القارئ</string>
+    <string name="suras_search_hint">ابحث عن السورة</string>
+    <string name="countries_search_hint">ابحث عن اسم البلد</string>
+    <string name="cities_search_hint">ابحث عن اسم المدينة</string>
 
     <!-- Words -->
     <string name="settings">الإعدادات</string>
@@ -115,7 +115,7 @@
     <string name="quran_source">المصحف: من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
     <string name="hadeeth_source">كتب الحديث: من موقع أم الكتاب وموقع الدرر السنية.</string>
     <string name="quiz_source">اسئلة الإختبار: من موقع فولدرات.</string>
-    <string name="athkar_source">الأذكار والأدعية: من موقع https://timesprayer.today</string>
+    <string name="remembrances_source">الأذكار والأدعية: من موقع https://timesprayer.today</string>
 
     <!-- Toasts -->
     <string name="give_location_permission_toast">لا يمكن الوصول للموقع، يرجى إعطاء أذن الوصول للموقع لحساب أوقات الصلاة والقبلة</string>
@@ -140,7 +140,7 @@
     <string name="recitation_settings">إعدادات التلاوة</string>
     <string name="qibla_warning">أبعد جهازك عن الاجسام المعدنية</string>
     <string name="thanks">شكرا لاستخدامكم تطبيق هِداية</string>
-    <string name="tafseer_source">التفسير: التفسير الميسر من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
+    <string name="interpretation_source">التفسير: التفسير الميسر من موقع مجمع الملك فهد لطباعة المصحف الشريف.</string>
     <string name="recitations">تلاوات</string>
     <string name="stop_on_sura_end">توقف عند نهاية السورة</string>
     <string name="stop_on_page_end">توقف عند نهاية الصفحة</string>
@@ -169,18 +169,18 @@
     <string name="year">السنة</string>
     <string name="month">الشهر</string>
     <string name="day">اليوم</string>
-    <string name="tafseer">التفسير</string>
+    <string name="interpretation">التفسير</string>
     <string name="reference">المرجع</string>
     <string name="choose_books">اختر الكتب</string>
     <string name="selected_books">الكتب المشمولة</string>
-    <string name="choose_rewaya">اختر الروايات</string>
+    <string name="choose_narration">اختر الروايات</string>
     <string name="save">حفظ</string>
     <string name="select">اختيار</string>
     <string name="select_all">تحديد الكل</string>
     <string name="unselect_all">إلغاء تحديد الكل</string>
     <string name="do_not_show_again">لا تظهر مرة اخرى</string>
-    <string name="all_athkar">جميع الأذكار</string>
-    <string name="favorite_athkar">الأذكار المفضلة</string>
+    <string name="all_remembrances">جميع الأذكار</string>
+    <string name="favorite_remembrances">الأذكار المفضلة</string>
     <string name="no_bookmarked_page">لا يوجد صفحة محفوظة</string>
     <string name="bookmarked_page">الصفحة المحفوظة:  </string>
     <string name="distance_unit">كم</string>
@@ -193,7 +193,7 @@
     <string name="prayer_alerts">إشعارات الصلوات</string>
     <string name="stop_athan">إيقاف الأذان</string>
     <string name="for_reciter">للقارئ</string>
-    <string name="in_rewaya_of">برواية</string>
+    <string name="in_narration_of">برواية</string>
     <string name="aya_number">آية رقم</string>
     <string name="basmalah" translatable="false">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</string>
     <string name="list_view">قائمة</string>

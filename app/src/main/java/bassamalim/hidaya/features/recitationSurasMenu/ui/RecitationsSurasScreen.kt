@@ -49,7 +49,7 @@ fun TelawatSurasScreen(
             searchComponent = {
                 SearchComponent(
                     value = state.searchText,
-                    hint = stringResource(R.string.suar_hint),
+                    hint = stringResource(R.string.suras_search_hint),
                     modifier = Modifier.fillMaxWidth(),
                     onValueChange = viewModel::onSearchChange
                 )

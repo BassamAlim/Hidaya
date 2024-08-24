@@ -7,7 +7,7 @@
     <string name="title_home">Home</string>
     <string name="title_prayers">Prayer times</string>
     <string name="title_quran">Quran</string>
-    <string name="title_athkar">Athkar</string>
+    <string name="title_remembrances">Remembrances</string>
     <string name="title_more">More</string>
 
     <!-- Preference Categories -->
@@ -19,8 +19,8 @@
     <string name="athan_settings">Athan Settings</string>
 
     <!-- Preference Titles -->
-    <string name="morning_athkar_title">Morning athkar reminder</string>
-    <string name="evening_athkar_title">Evening athkar reminder</string>
+    <string name="morning_remembrance_title">Morning remembrance reminder</string>
+    <string name="evening_remembrance_title">Evening remembrance reminder</string>
     <string name="daily_werd_title">Daily werd reminder</string>
     <string name="friday_kahf_title">Surat al-kahf reminder</string>
     <string name="text_size_title">Text size</string>
@@ -37,13 +37,13 @@
 
     <!-- Buttons Text -->
     <string name="contact">Contact me</string>
-    <string name="day_and_night_athkar">Day and Night Athkar</string>
-    <string name="prayers_athkar">Prayers Athkar</string>
-    <string name="quran_athkar">Quran Duas</string>
-    <string name="places_athkar">Places Athkar</string>
-    <string name="emotion_athkar">Status Athkar</string>
-    <string name="actions_athkar">Actions Athkar</string>
-    <string name="events_athkar">Events Duas</string>
+    <string name="day_and_night_remembrances">Day and Night Remembrances</string>
+    <string name="prayers_remembrances">Prayers Remembrances</string>
+    <string name="quran_remembrances">Quran Duas</string>
+    <string name="places_remembrances">Places Remembrances</string>
+    <string name="emotion_remembrances">Status Remembrances</string>
+    <string name="actions_remembrances">Actions Remembrances</string>
+    <string name="events_remembrances">Events Duas</string>
     <string name="tv_channels">Live TV</string>
     <string name="quran_channel">Quran channel</string>
     <string name="sunnah_channel">Sunnah channel</string>
@@ -71,7 +71,7 @@
     <string name="rewind_btn_description">Rewind</string>
     <string name="play_pause_btn_description">Play/Pause</string>
     <string name="fast_forward_btn_description">Fast forward</string>
-    <string name="tanzeel_view_description">Sura nuzool location</string>
+    <string name="revelation_view_description">Sura nuzool location</string>
     <string name="bookmark_page_button_description">Save Page</string>
     <string name="filter_search_description">Filter search</string>
     <string name="source_btn_description">Show reference</string>
@@ -79,17 +79,17 @@
 
     <!-- Tips -->
     <string name="prayers_tips">Click on the prayer name to edit prayer preferences.\n\n Click on the right and left arrows in the bottom of the screen to view other days prayer times .. Then click on the text between the arrows to return to the current day.</string>
-    <string name="quran_tips">Double click the aya to view its tafseer.\n\n Click on an aya then click on the play button in the bottom bar to start playing from that aya.\n\n You can change the reciter while recitation is playing.</string>
+    <string name="quran_tips">Double click the aya to view its interpretation.\n\n Click on an aya then click on the play button in the bottom bar to start playing from that aya.\n\n You can change the reciter while recitation is playing.</string>
     <string name="quran_fragment_tips">You can click on the button in the bottom corner of the screen to search in the quran.</string>
     <string name="books_activity_tips">You can click on the button in the bottom corner of the screen to search in the downloaded books.</string>
 
-    <!-- Hints -->
-    <string name="quran_query_hint">Search for sura name or page number</string>
-    <string name="athkar_hint">Search for thikr</string>
-    <string name="reciters_hint">Search for reciter</string>
-    <string name="suar_hint">Search for suar</string>
-    <string name="country_hint">Search for country name</string>
-    <string name="city_hint">Search for city name</string>
+    <!-- Search Hints -->
+    <string name="quran_search_hint">Search for sura name or page number</string>
+    <string name="remembrances_search_hint">Search for thikr</string>
+    <string name="reciters_search_hint">Search for reciter</string>
+    <string name="suras_search_hint">Search for suar</string>
+    <string name="countries_search_hint">Search for country name</string>
+    <string name="cities_search_hint">Search for city name</string>
 
     <!-- Words -->
     <string name="settings">Settings</string>
@@ -113,9 +113,9 @@
 
     <!-- Sources -->
     <string name="quran_source">Quran: from King Fahd Glorious Quran Printing Complex.</string>
-    <string name="tafseer_source">Tafseer: tafseer moyassar from King Fahd Glorious Quran Printing Complex.</string>
+    <string name="interpretation_source">Interpretation: tafseer moyassar from King Fahd Glorious Quran Printing Complex.</string>
     <string name="quiz_source">Quiz questions: from folderat site.</string>
-    <string name="athkar_source">Athkar and duas: from https://timesprayer.today</string>
+    <string name="remembrances_source">Remembrances and duas: from https://timesprayer.today</string>
 
     <!-- Toasts -->
     <string name="give_location_permission_toast">Location can not be accessed, give the app location permission to calculate prayer times and qibla</string>
@@ -168,18 +168,18 @@
     <string name="year">Year</string>
     <string name="month">Month</string>
     <string name="day">Day</string>
-    <string name="tafseer">Tafseer</string>
+    <string name="interpretation">Interpretation</string>
     <string name="reference">Reference</string>
     <string name="choose_books">Choose the books</string>
     <string name="selected_books">Selected books</string>
-    <string name="choose_rewaya">Choose rewaya\'s</string>
+    <string name="choose_narration">Choose rewaya\'s</string>
     <string name="save">Save</string>
     <string name="select">Select</string>
     <string name="select_all">Select all</string>
     <string name="unselect_all">Unselect all</string>
     <string name="do_not_show_again">Do not show again</string>
-    <string name="all_athkar">All athkar</string>
-    <string name="favorite_athkar">Favorite athkar</string>
+    <string name="all_remembrances">All remembrances</string>
+    <string name="favorite_remembrances">Favorite remembrances</string>
     <string name="no_bookmarked_page">No bookmarked page</string>
     <string name="bookmarked_page">Bookmarked page:  </string>
     <string name="distance_unit">km</string>
@@ -192,7 +192,7 @@
     <string name="prayer_alerts">Prayer alerts</string>
     <string name="stop_athan">Stop athan</string>
     <string name="for_reciter">for reciter</string>
-    <string name="in_rewaya_of">in the rewaya of</string>
+    <string name="in_narration_of">in the rewaya of</string>
     <string name="aya_number">Aya number</string>
     <string name="list_view">List</string>
     <string name="display_method">View Method</string>

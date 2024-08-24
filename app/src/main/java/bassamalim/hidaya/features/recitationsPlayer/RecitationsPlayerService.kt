@@ -39,9 +39,8 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.helpers.ReceiverManager
-import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
@@ -75,7 +74,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
     private lateinit var controller: MediaControllerCompat
     private lateinit var mediaMetadata: MediaMetadataCompat
     private lateinit var playType: String
-    private lateinit var version: Reciter.RecitationNarration
+    private lateinit var narration: Recitation.Narration
     private var channelId = "channel ID"
     private var mediaId: String? = null
     private var reciterName: String? = null
@@ -164,11 +163,11 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
                 versionId = givenMediaId.substring(3, 5).toInt()
                 suraIndex = givenMediaId.substring(5).toInt()
                 reciterName = extras.getString("reciter_name")!!
-                version =
+                narration =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                        extras.getSerializable("version", Reciter.RecitationNarration::class.java)!!
+                        extras.getSerializable("narration", Recitation.Narration::class.java)!!
                     else
-                        extras.getSerializable("version") as Reciter.RecitationNarration
+                        extras.getSerializable("narration") as Recitation.Narration
 
                 if (playType == "continue")
                     continueFrom = preferencesDS.getInt(Preference.LastTelawaProgress)
@@ -312,13 +311,13 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
             do {
                 temp++
             } while (temp < Global.QURAN_SUAR &&
-                !version.availableSuras.contains("," + (temp + 1) + ","))
+                !narration.availableSuras.contains("," + (temp + 1) + ","))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
                 temp = random.nextInt(Global.QURAN_SUAR)
-            } while (!version.availableSuras.contains("," + (temp + 1) + ","))
+            } while (!narration.availableSuras.contains("," + (temp + 1) + ","))
         }
 
         if (temp < Global.QURAN_SUAR) {
@@ -338,13 +337,13 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp--
-            } while (temp >= 0 && !version.availableSuras.contains("," + (temp + 1) + ","))
+            } while (temp >= 0 && !narration.availableSuras.contains("," + (temp + 1) + ","))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
                 temp = random.nextInt(Global.QURAN_SUAR)
-            } while (!version.availableSuras.contains("," + (temp + 1) + ","))
+            } while (!narration.availableSuras.contains("," + (temp + 1) + ","))
         }
 
         if (temp >= 0) {
@@ -526,6 +525,8 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
     }
 
     private fun updateMetadata(duration: Boolean) {
+        val numOfAvailableSuras = narration.availableSuras.split(",").size
+
         mediaMetadata = MediaMetadataCompat.Builder()
             .putBitmap(    //Notification icon in card
                 MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
@@ -544,9 +545,9 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, suraNames[suraIndex])
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, reciterName!!)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName!!)
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, version.name)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, narration.name)
             .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, suraIndex.toLong())
-            .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, version.count.toLong())
+            .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, numOfAvailableSuras.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
                 (if (duration) player.duration else 0).toLong()
             )
@@ -684,7 +685,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
 
         if (tryOffline(sura)) return
 
-        val text = String.format(Locale.US, "%s/%03d.mp3", version.server, sura + 1)
+        val text = String.format(Locale.US, "%s/%03d.mp3", narration.server, sura + 1)
 
         try {
             player.setDataSource(applicationContext, Uri.parse(text))
@@ -697,7 +698,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
 
     private fun tryOffline(sura: Int): Boolean {
         val path = (getExternalFilesDir(null).toString() + "/Telawat/" + reciterId
-                + "/" + version.id + "/" + sura + ".mp3")
+                + "/" + narration.id + "/" + sura + ".mp3")
 
         return try {
             player.setDataSource(path)
@@ -789,10 +790,10 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
     }
 
     private fun updateDurationRecord(amount: Int) {
-        val old = preferencesDS.getLong(Preference.TelawatPlaybackRecord)
+        val old = preferencesDS.getLong(Preference.RecitationsPlaybackRecord)
         val new = old + amount * 1000
 
-        preferencesDS.setLong(Preference.TelawatPlaybackRecord, new)
+        preferencesDS.setLong(Preference.RecitationsPlaybackRecord, new)
 
         updateRecordCounter = 0
     }

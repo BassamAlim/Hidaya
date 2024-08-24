@@ -23,8 +23,8 @@ object QuranPreferencesMigration {
                 suraFavorites = persistentMapOf<Int, Int>().mutate {
                     Gson().fromJson(
                         sharedPrefs.getString(
-                            key = Preference.FavoriteSuar.key,
-                            defValue = Preference.FavoriteSuar.default as String
+                            key = Preference.FavoriteSuras.key,
+                            defValue = Preference.FavoriteSuras.default as String
                         )!!,
                         IntArray::class.java
                     ).mapIndexed { index, fav -> index to fav }

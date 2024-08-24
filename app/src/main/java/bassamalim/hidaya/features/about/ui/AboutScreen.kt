@@ -92,11 +92,11 @@ private fun ColumnScope.SourcesList() {
     ) {
         Source(R.string.quran_source)
         MyHorizontalDivider()
-        Source(R.string.tafseer_source)
+        Source(R.string.interpretation_source)
         MyHorizontalDivider()
         Source(R.string.hadeeth_source)
         MyHorizontalDivider()
-        Source(R.string.athkar_source)
+        Source(R.string.remembrances_source)
         MyHorizontalDivider()
         Source(R.string.quiz_source)
     }

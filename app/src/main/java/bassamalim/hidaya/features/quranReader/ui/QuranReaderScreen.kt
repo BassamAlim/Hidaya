@@ -67,6 +67,7 @@ import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quranReader.ui.QuranViewType.LIST
 import bassamalim.hidaya.features.quranSettings.ui.QuranSettingsDlg
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun QuranViewerUI(
     viewModel: QuranReaderViewModel
@@ -125,7 +126,7 @@ fun QuranViewerUI(
 
     InfoDialog(
         shown = state.isInfoDialogShown,
-        title = stringResource(R.string.tafseer),
+        title = stringResource(R.string.interpretation),
         text = state.infoDialogText,
         onDismiss = viewModel::onInfoDialogDismiss  // :: gives the reference to the function
     )

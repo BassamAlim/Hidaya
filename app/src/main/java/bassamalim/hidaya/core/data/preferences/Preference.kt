@@ -4,17 +4,17 @@ import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.Language as Languages
 import bassamalim.hidaya.core.enums.LocationType as LocationTypes
 import bassamalim.hidaya.core.enums.NotificationType as NotificationTypes
-import bassamalim.hidaya.features.quranReader.ui.QuranViewType as QuranViewTypes
 import bassamalim.hidaya.core.enums.Theme as Themes
 import bassamalim.hidaya.core.enums.TimeFormat as TimeFormats
+import bassamalim.hidaya.features.quranReader.ui.QuranViewType as QuranViewTypes
 
 sealed class Preference(val key: String, val default: Any) {
 
     // PrayersPreferences
     data object AthanVoice : Preference("athan_voice", "1")
 
-    // SupplicationsPreferences
-    data object AthkarTextSize : Preference("athkar_text_size_key", 15f)
+    // RemembrancesPreferences
+    data object RemembrancesTextSize : Preference("athkar_text_size_key", 15f)
 
     // QuranPreferences
     data object AyaReciter : Preference("aya_reciter", "13")
@@ -81,10 +81,10 @@ sealed class Preference(val key: String, val default: Any) {
     )
 
     // QuranPreferences
-    data object FavoriteSuar : Preference("favorite_suar", "")
+    data object FavoriteSuras : Preference("favorite_suar", "")
 
     // SupplicationsPreferences
-    data object FavoriteAthkar : Preference("favorite_athkar", "")
+    data object RemembranceFavorites : Preference("favorite_athkar", "")
 
     // RecitationsPreferences
     data object FavoriteReciters : Preference("favorite_reciters", "")
@@ -185,13 +185,13 @@ sealed class Preference(val key: String, val default: Any) {
     data object SelectedRewayat : Preference("selected_rewayat", "")
 
     // UserPreferences
-    data object TelawatPlaybackRecord : Preference("telawat_playback_record", 0L)
+    data object RecitationsPlaybackRecord : Preference("telawat_playback_record", 0L)
 
     // RecitationsPreferences
-    data object TelawatRepeatMode : Preference("telawat_repeat_mode", 0)
+    data object RecitationsRepeatMode : Preference("telawat_repeat_mode", 0)
 
     // RecitationsPreferences
-    data object TelawatShuffleMode : Preference("telawat_shuffle_mode", 0)
+    data object RecitationsShuffleMode : Preference("telawat_shuffle_mode", 0)
 
     // AppSettingsPreferences
     data object TimeFormat : Preference("time_format_key", TimeFormats.TWELVE.name)

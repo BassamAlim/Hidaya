@@ -9,7 +9,6 @@ import bassamalim.hidaya.core.data.database.daos.QuizAnswersDao
 import bassamalim.hidaya.core.data.database.daos.QuizQuestionsDao
 import bassamalim.hidaya.core.data.database.daos.RecitationRecitersDao
 import bassamalim.hidaya.core.data.database.daos.RecitationNarrationsDao
-import bassamalim.hidaya.core.data.database.daos.RecitationsDao
 import bassamalim.hidaya.core.data.database.daos.RemembranceCategoriesDao
 import bassamalim.hidaya.core.data.database.daos.RemembrancePassagesDao
 import bassamalim.hidaya.core.data.database.daos.RemembrancesDao
@@ -58,8 +57,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun quizAnswersDao(): QuizAnswersDao
     abstract fun quizQuestionsDao(): QuizQuestionsDao
     abstract fun recitationRecitersDao(): RecitationRecitersDao
-    abstract fun recitationsDao(): RecitationsDao
-    abstract fun recitationVersionsDao(): RecitationNarrationsDao
+    abstract fun recitationNarrationsDao(): RecitationNarrationsDao
     abstract fun remembranceCategoriesDao(): RemembranceCategoriesDao
     abstract fun remembrancePassagesDao(): RemembrancePassagesDao
     abstract fun remembrancesDao(): RemembrancesDao

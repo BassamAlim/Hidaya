@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.supplicationsMenu
+package bassamalim.hidaya.features.remembrancesMenu
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,16 +18,16 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.SearchComponent
 
 @Composable
-fun AthkarListScreen(
-    vm: SupplicationsMenuViewModel
+fun RemembrancesListScreen(
+    vm: RemembrancesMenuViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(
         title = when (st.listType) {
-            ListType.FAVORITES -> stringResource(R.string.favorite_athkar)
+            ListType.FAVORITES -> stringResource(R.string.favorite_remembrances)
             ListType.CUSTOM -> vm.getName()
-            else -> stringResource(R.string.all_athkar)
+            else -> stringResource(R.string.all_remembrances)
         }
     ) { padding ->
         Column(
@@ -44,12 +44,12 @@ fun AthkarListScreen(
 
 @Composable
 private fun SearchBar(
-    vm: SupplicationsMenuViewModel,
-    st: SupplicationsMenuState
+    vm: RemembrancesMenuViewModel,
+    st: RemembrancesMenuState
 ) {
     SearchComponent (
         value = st.searchText,
-        hint = stringResource(R.string.athkar_hint),
+        hint = stringResource(R.string.remembrances_search_hint),
         modifier = Modifier.fillMaxWidth(),
         onValueChange = vm::onSearchChange
     )
@@ -57,8 +57,8 @@ private fun SearchBar(
 
 @Composable
 private fun AthkarList(
-    vm: SupplicationsMenuViewModel,
-    st: SupplicationsMenuState
+    vm: RemembrancesMenuViewModel,
+    st: RemembrancesMenuState
 ) {
     MyLazyColumn(
         lazyList = {

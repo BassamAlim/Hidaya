@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.supplicationsMenu
+package bassamalim.hidaya.features.remembrancesMenu
 
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.models.Remembrance
@@ -9,7 +9,7 @@ import bassamalim.hidaya.core.enums.ListType
 import com.google.gson.Gson
 import javax.inject.Inject
 
-class SupplicationsMenuRepository @Inject constructor(
+class RemembrancesMenuRepository @Inject constructor(
     private val preferencesDS: PreferencesDataSource,
     private val db: AppDatabase,
     private val gson: Gson
@@ -20,18 +20,18 @@ class SupplicationsMenuRepository @Inject constructor(
     fun updateFavorites() {
         val favAthkar = db.remembrancesDao().getFavs()
         val athkarJson = gson.toJson(favAthkar)
-        preferencesDS.setString(Preference.FavoriteAthkar, athkarJson)
+        preferencesDS.setString(Preference.RemembranceFavorites, athkarJson)
     }
 
-    fun getAthkar(type: String, category: Int): List<Remembrance> =
+    fun getRemembrances(type: String, category: Int): List<Remembrance> =
         when (type) {
             ListType.FAVORITES.name -> db.remembrancesDao().observeFavorites()
             ListType.CUSTOM.name -> db.remembrancesDao().observeCategoryRemembrances(category)
             else -> db.remembrancesDao().getAll()
         }
 
-    fun getThikrParts(thikrId: Int) =
-        db.remembrancePassagesDao().getRemembrancePassages(thikrId)
+    fun getRemembrancePassages(remembrancesId: Int) =
+        db.remembrancePassagesDao().getRemembrancePassages(remembrancesId)
 
     fun getName(language: Language, category: Int): String =
         when (language) {

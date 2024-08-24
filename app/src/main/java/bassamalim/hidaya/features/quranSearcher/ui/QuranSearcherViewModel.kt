@@ -90,7 +90,7 @@ class QuranSearcherViewModel @Inject constructor(
                             numeralsLanguage = numeralsLanguage
                         ),
                         text = annotatedString,
-                        tafseer = a.interpretation
+                        interpretation = a.interpretation
                     )
                 )
 

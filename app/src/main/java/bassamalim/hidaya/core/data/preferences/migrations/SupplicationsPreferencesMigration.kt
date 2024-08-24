@@ -21,8 +21,8 @@ object SupplicationsPreferencesMigration {
                 favorites = persistentMapOf<Int, Int>().mutate {
                     Gson().fromJson(
                         sharedPrefs.getString(
-                            key = Preference.FavoriteAthkar.key,
-                            defValue = Preference.FavoriteAthkar.default as String
+                            key = Preference.RemembranceFavorites.key,
+                            defValue = Preference.RemembranceFavorites.default as String
                         )!!,
                         Array<Any>::class.java
                     ).mapIndexed { index, fav ->
@@ -30,8 +30,8 @@ object SupplicationsPreferencesMigration {
                     }
                 },
                 textSize = sharedPrefs.getFloat(
-                    key = Preference.AthkarTextSize.key,
-                    defValue = Preference.AthkarTextSize.default as Float
+                    key = Preference.RemembrancesTextSize.key,
+                    defValue = Preference.RemembrancesTextSize.default as Float
                 ),
             )
         }

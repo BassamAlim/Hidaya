@@ -437,7 +437,7 @@ object AppModule {
     ) = RecitationsRecitersMenuRepository(resources, preferencesDataSource, database)
 
     @Provides @Singleton
-    fun provideRecitationsSuarRepository(
+    fun provideRecitationsSurasRepository(
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
     ) = RecitationsSurasRepository(preferencesDataSource, database)

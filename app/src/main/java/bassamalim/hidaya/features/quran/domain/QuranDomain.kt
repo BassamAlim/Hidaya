@@ -19,7 +19,7 @@ class QuranDomain @Inject constructor(
 
     fun getBookmark() = quranRepository.getPageBookmark()
 
-    fun getAllSuras(language: Language) = quranRepository.observeAllSuar().map {
+    fun getAllSuras(language: Language) = quranRepository.observeAllSuras().map {
         it.map { sura ->
             Sura(
                 id = sura.id,
@@ -39,8 +39,8 @@ class QuranDomain @Inject constructor(
 
     fun getFavs() = quranRepository.getSuraFavorites()
 
-    suspend fun setFav(suraId: Int, fav: Int) {
-        quranRepository.setSuraFavorites(suraId, fav)
+    suspend fun setFav(suraId: Int, fav: Boolean) {
+        quranRepository.setSuraIsFavorite(suraId, fav)
     }
 
     fun getShouldShowTutorial() = quranRepository.getShouldShowReaderTutorial()

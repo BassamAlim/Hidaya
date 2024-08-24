@@ -14,7 +14,6 @@ import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
-import bassamalim.hidaya.features.bookChapters.domain.BookChapter
 
 @Composable
 fun BookChaptersUI(
@@ -38,10 +37,9 @@ fun BookChaptersUI(
             }
         ) { page ->
             Tab(
-                items = viewModel.getItems(page),
-                favs = state.favs,
+                chapters = viewModel.getItems(page),
                 onItemClick = viewModel::onItemClick,
-                onFavClick = viewModel::onFavClick,
+                onFavClick = viewModel::onFavoriteClick,
             )
         }
     }
@@ -49,23 +47,22 @@ fun BookChaptersUI(
 
 @Composable
 private fun Tab(
-    items: List<BookChapter>,
-    favs: Map<Int, Boolean>,
+    chapters: List<BookChapter>,
     onItemClick: (BookChapter) -> Unit,
     onFavClick: (Int) -> Unit
 ) {
     MyLazyColumn(
         lazyList = {
-            items(items) { item ->
+            items(chapters) { chapter ->
                 MyBtnSurface(
-                    text = item.title,
+                    text = chapter.title,
                     iconBtn = {
                         MyFavoriteButton(
-                            isFavorite = favs[item.id]!!,
-                            onClick = { onFavClick(item.id) }
+                            isFavorite = chapter.isFavorite,
+                            onClick = { onFavClick(chapter.id) }
                         )
                     },
-                    onClick = { onItemClick(item) }
+                    onClick = { onItemClick(chapter) }
                 )
             }
         }

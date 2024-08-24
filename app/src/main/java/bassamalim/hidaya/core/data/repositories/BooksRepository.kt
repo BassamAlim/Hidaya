@@ -45,19 +45,20 @@ class BooksRepository @Inject constructor(
     }
 
     fun getChapterFavorites(book: Book) = booksPreferencesDataSource.flow.map { bookPrefs ->
-        if (bookPrefs.chapterFavorites.containsKey(book.bookInfo.bookId))
-            bookPrefs.chapterFavorites[book.bookInfo.bookId]!!
+        if (bookPrefs.chapterFavorites.containsKey(book.info.id))
+            bookPrefs.chapterFavorites[book.info.id]!!
         else {
-            val favs = book.chapters.associate { it.chapterId to 0 }
+            val favs = book.chapters.associate { it.id to false }
             booksPreferencesDataSource.update { it.copy(
                 chapterFavorites = it.chapterFavorites.mutate { oldMap ->
-                    oldMap[book.bookInfo.bookId] = favs.toPersistentMap()
+                    oldMap[book.info.id] = favs.toPersistentMap()
                 }
             )}
             favs
         }
     }
-    suspend fun setChapterFavorites(bookId: Int, favs: Map<Int, Int>) {
+
+    suspend fun setChapterFavorites(bookId: Int, favs: Map<Int, Boolean>) {
         booksPreferencesDataSource.update { it.copy(
             chapterFavorites = it.chapterFavorites.mutate { oldMap ->
                 oldMap[bookId] = favs.toPersistentMap()
@@ -65,9 +66,18 @@ class BooksRepository @Inject constructor(
         )}
     }
 
+    suspend fun setChapterFavorite(bookId: Int, chapterNum: Int, newValue: Boolean) {
+        booksPreferencesDataSource.update { it.copy(
+            chapterFavorites = it.chapterFavorites.mutate { oldMap ->
+                oldMap[bookId] = oldMap[bookId]!!.put(chapterNum, newValue)
+            }
+        )}
+    }
+
     fun getTextSize() = booksPreferencesDataSource.flow.map {
         it.textSize
     }
+
     suspend fun setTextSize(textSize: Float) {
         booksPreferencesDataSource.update { it.copy(
             textSize = textSize
@@ -77,6 +87,7 @@ class BooksRepository @Inject constructor(
     fun getSearchSelections() = booksPreferencesDataSource.flow.map {
         it.searchSelections.toMap()
     }
+
     suspend fun setSearchSelections(searchSelections: Map<Int, Boolean>) {
         booksPreferencesDataSource.update { it.copy(
             searchSelections = searchSelections.toPersistentMap()
@@ -86,6 +97,7 @@ class BooksRepository @Inject constructor(
     fun getSearchMaxMatches() = booksPreferencesDataSource.flow.map {
         it.searchMaxMatches
     }
+
     suspend fun setSearchMaxMatches(searchMaxMatches: Int) {
         booksPreferencesDataSource.update { it.copy(
             searchMaxMatches = searchMaxMatches
@@ -95,6 +107,7 @@ class BooksRepository @Inject constructor(
     fun getShouldShowTutorial() = booksPreferencesDataSource.flow.map {
         it.shouldShowTutorial
     }
+
     suspend fun setShouldShowTutorial(shouldShowTutorial: Boolean) {
         booksPreferencesDataSource.update { it.copy(
             shouldShowTutorial = shouldShowTutorial
@@ -172,6 +185,7 @@ class BooksRepository @Inject constructor(
     fun getMaxMatches() = booksPreferencesDataSource.flow.map {
         it.searchMaxMatches
     }
+
     suspend fun setMaxMatches(value: Int) {
         booksPreferencesDataSource.update { it.copy(
             searchMaxMatches = value
@@ -201,7 +215,7 @@ class BooksRepository @Inject constructor(
     }
 
     fun getMaxMatchesItems(): Array<String> =
-        resources.getStringArray(R.array.searcher_matches_en)
+        resources.getStringArray(R.array.searcher_matches_items)
 
     fun getBookTitles(language: Language): List<String> =
         if (language == Language.ENGLISH) booksDao.getTitlesEn()

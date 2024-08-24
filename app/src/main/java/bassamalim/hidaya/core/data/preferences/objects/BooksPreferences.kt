@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BooksPreferences(
-    val chapterFavorites: PersistentMap<Int, PersistentMap<Int, Int>> = persistentMapOf(),
+    val chapterFavorites: PersistentMap<Int, PersistentMap<Int, Boolean>> = persistentMapOf(),
     val textSize: Float = 15f,
     val searchSelections: PersistentMap<Int, Boolean> = persistentMapOf(),
     val searchMaxMatches: Int = 10,

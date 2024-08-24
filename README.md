@@ -9,10 +9,10 @@ https://play.google.com/store/apps/details?id=bassamalim.hidaya
 ## Features
 - Prayer times, using your current location or a location of your choice
 - Athkar
-- Quran with Tafseer and audio Recitations
+- Quran with Tafseer (interpretation) and audio Recitations
 - Qibla direction with Compass
 - Audio Recitations with more than 200 Reciters
-- Islamic quiz to test your information with more than 700 questiouns
+- Islamic quiz to test your information with more than 700 questions
 - Hadeeth books such as Saheeh al-Bokhari and Saheeh Muslim
 - Live tv feed of Quran channel and Sunnah channel
 - Quran radio station

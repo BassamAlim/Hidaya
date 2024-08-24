@@ -43,9 +43,9 @@ object DBUtils {
     ) {
         ctx.deleteDatabase("HidayaDB")
 
-        val suarJson = preferencesDS.getString(Preference.FavoriteSuar)
+        val suarJson = preferencesDS.getString(Preference.FavoriteSuras)
         val recitersJson = preferencesDS.getString(Preference.FavoriteReciters)
-        val athkarJson = preferencesDS.getString(Preference.FavoriteAthkar)
+        val remembrancesJson = preferencesDS.getString(Preference.RemembranceFavorites)
 
         val gson = Gson()
 
@@ -62,10 +62,10 @@ object DBUtils {
             }
         }
 
-        if (athkarJson.isNotEmpty()) {
-            val favAthkar: Array<Any> = gson.fromJson(athkarJson, Array<Any>::class.java)
-            for (i in favAthkar.indices) {
-                val d = favAthkar[i] as Double
+        if (remembrancesJson.isNotEmpty()) {
+            val favRemembrances: Array<Any> = gson.fromJson(remembrancesJson, Array<Any>::class.java)
+            for (i in favRemembrances.indices) {
+                val d = favRemembrances[i] as Double
                 db.remembrancesDao().setIsFavorite(i, d.toInt())
             }
         }

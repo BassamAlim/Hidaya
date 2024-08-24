@@ -94,7 +94,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         val context = navigator.getContext()
         if ((context as Activity).isTaskRoot) {
             navigator.navigate(Screen.Main) {
-                popUpTo(Screen.Telawat.route) {
+                popUpTo(Screen.RecitationsMenu.route) {
                     inclusive = true
                 }
             }
@@ -219,7 +219,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     fun onContinueListeningClick() {
         if (continueListeningMediaId.isNotEmpty()) {
             navigator.navigate(
-                Screen.TelawatClient(
+                Screen.RecitationsMenu(
                     action = "continue",
                     mediaId = continueListeningMediaId
                 )
@@ -279,7 +279,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
 
     fun onNarrationClick(reciterId: Int, narrationId: Int) {
         navigator.navigate(
-            Screen.TelawatSuar(
+            Screen.RecitationSurasMenu(
                 reciterId = reciterId.toString(),
                 narrationId = narrationId.toString()
             )

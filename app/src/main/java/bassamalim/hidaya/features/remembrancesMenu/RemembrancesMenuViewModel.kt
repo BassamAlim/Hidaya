@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.supplicationsMenu
+package bassamalim.hidaya.features.remembrancesMenu
 
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -15,16 +15,16 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class SupplicationsMenuViewModel @Inject constructor(
+class RemembrancesMenuViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repo: SupplicationsMenuRepository,
+    private val repo: RemembrancesMenuRepository,
     private val navigator: Navigator
 ): ViewModel() {
 
     private val type = savedStateHandle.get<String>("type") ?: ListType.ALL.name
     private val category = savedStateHandle.get<Int>("category")?: 0
 
-    private val _uiState = MutableStateFlow(SupplicationsMenuState(
+    private val _uiState = MutableStateFlow(RemembrancesMenuState(
         language = repo.getLanguage(),
         listType = ListType.valueOf(type),
         items = getItems()
@@ -32,23 +32,23 @@ class SupplicationsMenuViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     private fun getItems(): List<AthkarItem> {
-        val athkar = repo.getAthkar(type, category)
+        val remembrances = repo.getRemembrances(type, category)
         val items = mutableListOf<AthkarItem>()
 
         val isEng = _uiState.value.language == Language.ENGLISH
-        for (thikr in athkar) {
-            if (isEng && !hasEn(thikr)) continue
+        for (remembrance in remembrances) {
+            if (isEng && !hasEn(remembrance)) continue
 
             val name =
-                if (isEng) thikr.nameEn!!
-                else thikr.nameAr!!
+                if (isEng) remembrance.nameEn!!
+                else remembrance.nameAr!!
 
             items.add(
                 AthkarItem(
-                    id = thikr.id,
-                    category_id = thikr.categoryId,
+                    id = remembrance.id,
+                    category_id = remembrance.categoryId,
                     name = name,
-                    favorite = mutableIntStateOf(thikr.isFavorite)
+                    favorite = mutableIntStateOf(remembrance.isFavorite)
                 )
             )
         }
@@ -57,11 +57,11 @@ class SupplicationsMenuViewModel @Inject constructor(
         else items.filter { it.name.contains(_uiState.value.searchText, true) }
     }
 
-    private fun hasEn(thikr: Remembrance): Boolean {
-        val thikrParts = repo.getThikrParts(thikr.id)
+    private fun hasEn(remembrance: Remembrance): Boolean {
+        val remembrancePassages = repo.getRemembrancePassages(remembrance.id)
 
-        for (i in thikrParts.indices) {
-            val t = thikrParts[i]
+        for (i in remembrancePassages.indices) {
+            val t = remembrancePassages[i]
             if (t.textEn != null && t.textEn.length > 1) return true
         }
         return false
@@ -82,8 +82,8 @@ class SupplicationsMenuViewModel @Inject constructor(
 
     fun onItemClick(item: AthkarItem) {
         navigator.navigate(
-            Screen.AthkarViewer(
-                thikrId = item.id.toString()
+            Screen.RemembranceReader(
+                id = item.id.toString()
             )
         )
     }

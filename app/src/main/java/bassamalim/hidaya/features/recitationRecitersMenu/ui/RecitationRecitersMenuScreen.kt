@@ -61,7 +61,7 @@ fun RecitationRecitersMenuUI(
                     "${stringResource(R.string.last_play)}: " +
                             "${stringResource(R.string.sura)} ${state.lastPlayedMedia!!.suraName} " +
                             "${stringResource(R.string.for_reciter)} ${state.lastPlayedMedia!!.reciterName}" +
-                            "${stringResource(R.string.in_rewaya_of)} ${state.lastPlayedMedia!!.narrationName}"
+                            "${stringResource(R.string.in_narration_of)} ${state.lastPlayedMedia!!.narrationName}"
                 }
                 else stringResource(R.string.no_last_play),
                 modifier = Modifier.fillMaxWidth(),
@@ -83,7 +83,7 @@ fun RecitationRecitersMenuUI(
                     ) {
                         SearchComponent(
                             value = state.searchText,
-                            hint = stringResource(R.string.reciters_hint),
+                            hint = stringResource(R.string.reciters_search_hint),
                             modifier = Modifier.weight(1F),
                             onValueChange = viewModel::onSearchTextChange
                         )
@@ -113,7 +113,7 @@ fun RecitationRecitersMenuUI(
 
         FilterDialog(
             shown = state.filterDialogShown,
-            title = stringResource(R.string.choose_rewaya),
+            title = stringResource(R.string.choose_narration),
             itemTitles = viewModel.narrationOptions,
             itemSelections = state.narrationSelections,
             onDismiss = viewModel::onFilterDialogDismiss
@@ -190,11 +190,11 @@ private fun ReciterCard(
             Column(
                 Modifier.fillMaxWidth()
             ) {
-                reciter.narrations.forEachIndexed { idx, version ->
+                reciter.narrations.forEachIndexed { idx, narration ->
                     NarrationsCard(
                         idx = idx,
                         reciterId = reciter.reciterId,
-                        narration = version,
+                        narration = narration,
                         downloadStates = downloadStates,
                         onNarrationClick = onNarrationClick,
                         onDownloadClick = onDownloadNarrationClick

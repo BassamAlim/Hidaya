@@ -241,12 +241,12 @@ class RecitationsPlayerViewModel @Inject constructor(
     fun onBackPressed(activity: Activity) {
         if (activity.isTaskRoot) {
             navigator.navigate(
-                Screen.TelawatSuar(
+                Screen.RecitationSurasMenu(
                     reciterId = reciterId.toString(),
                     narrationId = narrationId.toString()
                 )
             ) {
-                popUpTo(Screen.TelawatClient(action, mediaId).route) {
+                popUpTo(Screen.RecitationsMenu(action, mediaId).route) {
                     inclusive = true
                 }
             }

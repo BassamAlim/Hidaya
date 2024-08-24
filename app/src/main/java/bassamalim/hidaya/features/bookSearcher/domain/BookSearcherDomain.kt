@@ -54,11 +54,11 @@ class BookSearcherDomain @Inject constructor(
                         matches.add(
                             BookSearcherMatch(
                                 bookId = i,
-                                bookTitle = bookContent.bookInfo.bookTitle,
+                                bookTitle = bookContent.info.title,
                                 chapterId = j,
-                                chapterTitle = chapter.chapterTitle,
+                                chapterTitle = chapter.title,
                                 doorId = k,
-                                doorTitle = door.doorTitle,
+                                doorTitle = door.title,
                                 text = annotatedString
                             )
                         )

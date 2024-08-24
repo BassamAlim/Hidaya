@@ -75,8 +75,8 @@ class RecitationsSurasViewModel @Inject constructor(
         val ctx = navigator.getContext()
 
         if ((ctx as Activity).isTaskRoot) {
-            navigator.navigate(Screen.Telawat) {
-                popUpTo(Screen.TelawatSuar(reciterId.toString(), narrationId.toString()).route) {
+            navigator.navigate(Screen.RecitationsMenu) {
+                popUpTo(Screen.RecitationSurasMenu(reciterId.toString(), narrationId.toString()).route) {
                     inclusive = true
                 }
             }
@@ -134,7 +134,7 @@ class RecitationsSurasViewModel @Inject constructor(
         val mediaId = formattedReciterId + formattedNarrationId + formattedSuraId
 
         navigator.navigate(
-            Screen.TelawatClient(
+            Screen.RecitationsMenu(
                 action = "start",
                 mediaId = mediaId
             )

@@ -17,7 +17,7 @@ class QuranRepository @Inject constructor(
     private val versesDao: VersesDao
 ) {
 
-    fun observeAllSuar() = surasDao.observeAll()
+    fun observeAllSurasF() = surasDao.observeAll()
 
     fun getDecoratedSuraNames(language: Language) =
         if (language == Language.ENGLISH) surasDao.getDecoratedNamesEn()

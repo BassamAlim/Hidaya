@@ -16,8 +16,8 @@
         <item>Asr prayer</item>
         <item>Maghrib prayer</item>
         <item>Ishaa prayer</item>
-        <item>Morning athkar</item>
-        <item>Evening athkar</item>
+        <item>Morning remembrance</item>
+        <item>Evening remembrance</item>
         <item>Daily werd</item>
         <item>Surat al-Kahf</item>
         <item>Fajr reminder</item>
@@ -35,8 +35,8 @@
         <item>It\'s Asr athan time</item>
         <item>It\'s Maghrib athan time</item>
         <item>It\'s Ishaa athan time</item>
-        <item>Click to read morning athkar</item>
-        <item>Click to read evening athkar</item>
+        <item>Click to read morning remembrance</item>
+        <item>Click to read evening remembrance</item>
         <item>Click to read today\'s quran page</item>
         <item>Click to read surat al-Kahf</item>
     </string-array>
@@ -48,8 +48,8 @@
         <item>Prayer alerts</item>
         <item>Prayer alerts</item>
         <item>Prayer alerts</item>
-        <item>Morning and evening athkar reminders</item>
-        <item>Morning and evening athkar reminders</item>
+        <item>Morning and evening remembrance reminders</item>
+        <item>Morning and evening remembrance reminders</item>
         <item>Daily werd reminder</item>
         <item>Surat al-Kahf reminder</item>
         <item>Prayer reminder</item>

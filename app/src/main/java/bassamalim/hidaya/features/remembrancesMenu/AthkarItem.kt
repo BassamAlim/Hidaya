@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.supplicationsMenu
+package bassamalim.hidaya.features.remembrancesMenu
 
 import androidx.compose.runtime.MutableState
 

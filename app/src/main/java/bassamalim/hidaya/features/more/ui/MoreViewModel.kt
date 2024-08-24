@@ -24,7 +24,7 @@ class MoreViewModel @Inject constructor(
 
     fun onTelawatClick() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            navigator.navigate(Screen.Telawat)
+            navigator.navigate(Screen.RecitationsMenu)
         else {
             _uiState.update { it.copy(
                 shouldShowUnsupported = true

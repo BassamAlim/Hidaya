@@ -51,7 +51,6 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
     private lateinit var apm: AlternatingPlayersManager
     private lateinit var wifiLock: WifiManager.WifiLock
     private lateinit var db: AppDatabase
-    private lateinit var preferencesDS: PreferencesDataSource
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var audioFocusRequest: AudioFocusRequest
     private lateinit var controller: MediaControllerCompat
@@ -577,10 +576,10 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
     private fun getAya(id: Int) = ayat[id-1]
 
     private fun updateDurationRecord(amount: Int) {
-        val old = preferencesDS.getLong(Preference.TelawatPlaybackRecord)
+        val old = preferencesDS.getLong(Preference.RecitationsPlaybackRecord)
         val new = old + amount * 1000
 
-        preferencesDS.setLong(Preference.TelawatPlaybackRecord, new)
+        preferencesDS.setLong(Preference.RecitationsPlaybackRecord, new)
 
         updateRecordCounter = 0
     }

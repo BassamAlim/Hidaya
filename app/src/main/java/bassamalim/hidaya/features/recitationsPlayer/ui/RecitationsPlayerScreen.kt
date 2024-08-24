@@ -41,7 +41,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TelawatClientUI(
+fun RecitationsPlayerScreen(
     viewModel: RecitationsPlayerViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -75,7 +75,7 @@ fun TelawatClientUI(
         ) {
             InfoSpace(
                 suraName = state.suraName,
-                versionName = state.narrationName,
+                narrationName = state.narrationName,
                 reciterName = state.reciterName
             )
 
@@ -97,7 +97,7 @@ fun TelawatClientUI(
 @Composable
 private fun InfoSpace(
     suraName: String,
-    versionName: String,
+    narrationName: String,
     reciterName: String
 ) {
     Box(
@@ -120,7 +120,7 @@ private fun InfoSpace(
             )
 
             MyText(
-                text = versionName,
+                text = narrationName,
                 modifier = Modifier.padding(vertical = 10.dp),
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold

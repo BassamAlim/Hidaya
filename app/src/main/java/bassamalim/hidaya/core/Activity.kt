@@ -87,7 +87,7 @@ class Activity : ComponentActivity() {
                 stopService(Intent(this, AthanService::class.java))
             }
             Global.GO_TO_TELAWA -> {
-                startRoute = Screen.TelawatClient(
+                startRoute = Screen.RecitationsMenu(
                     "back",
                     intent.getStringExtra("media_id")!!
                 ).route

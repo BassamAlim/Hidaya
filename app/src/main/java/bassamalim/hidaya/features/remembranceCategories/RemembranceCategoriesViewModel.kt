@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.supplicationsCategories
+package bassamalim.hidaya.features.remembranceCategories
 
 import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.core.enums.ListType
@@ -8,25 +8,25 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class SupplicationsCategoriesViewModel @Inject constructor(
+class RemembranceCategoriesViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
     fun onAllAthkarClick() {
         navigator.navigate(
-            Screen.AthkarList(ListType.ALL.name)
+            Screen.RemembrancesList(ListType.ALL.name)
         )
     }
 
     fun onFavoriteAthkarClick() {
         navigator.navigate(
-            Screen.AthkarList(ListType.FAVORITES.name)
+            Screen.RemembrancesList(ListType.FAVORITES.name)
         )
     }
 
     fun onCategoryClick(category: Int) {
         navigator.navigate(
-            Screen.AthkarList(
+            Screen.RemembrancesList(
                 type = ListType.CUSTOM.name,
                 category = category.toString()
             )

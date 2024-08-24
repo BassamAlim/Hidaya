@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.supplicationsReader
+package bassamalim.hidaya.features.remembranceReader
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,8 +33,8 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun AthkarViewerUI(
-    vm: SupplicationsReaderViewModel
+fun RemembranceReaderScreen(
+    vm: RemembranceReaderViewModel
 ) {
     val st by vm.uiState.collectAsStateWithLifecycle()
 
@@ -52,7 +52,7 @@ fun AthkarViewerUI(
             modifier = Modifier.padding(it),
             lazyList = {
                 items(st.items) { item ->
-                    ThikrCard(
+                    RemembranceCard(
                         vm = vm,
                         remembrancePassage = item,
                         textSize = st.textSize
@@ -72,8 +72,8 @@ fun AthkarViewerUI(
 }
 
 @Composable
-private fun ThikrCard(
-    vm: SupplicationsReaderViewModel,
+private fun RemembranceCard(
+    vm: RemembranceReaderViewModel,
     remembrancePassage: RemembrancePassage,
     textSize: Float
 ) {

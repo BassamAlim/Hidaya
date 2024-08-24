@@ -33,6 +33,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.components.TutorialDialog
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun QuranUI(
@@ -78,7 +79,7 @@ fun QuranUI(
                 searchComponent = {
                     SearchComponent(
                         value = state.searchText,
-                        hint = stringResource(R.string.quran_query_hint),
+                        hint = stringResource(R.string.quran_search_hint),
                         modifier = Modifier.fillMaxWidth(),
                         onValueChange = viewModel::onSearchTextChange,
                         onSubmit = viewModel::onSearchSubmit
@@ -86,7 +87,7 @@ fun QuranUI(
                 }
             ) { page ->
                 Tab(
-                    items = viewModel.getItems(page),
+                    surasFlow = viewModel.getItems(page),
                     favs = state.favs,
                     onSuraClick = viewModel::onSuraClick,
                     onFavClick = viewModel::onFavClick
@@ -106,14 +107,16 @@ fun QuranUI(
 
 @Composable
 private fun Tab(
-    items: List<Sura>,
+    surasFlow: Flow<List<Sura>>,
     favs: Map<Int, Boolean>,
     onSuraClick: (Int) -> Unit,
     onFavClick: (Int) -> Unit
 ) {
+    val suras by surasFlow.collectAsStateWithLifecycle(emptyList())
+
     MyLazyColumn(
         lazyList = {
-            items(items) { item ->
+            items(suras) { item ->
                 MyClickableSurface(
                     modifier = Modifier.padding(2.dp),
                     elevation = 6.dp,
@@ -131,7 +134,7 @@ private fun Tab(
                                 if (item.revelation == 0) R.drawable.ic_kaaba
                                 else R.drawable.ic_madina
                             ),
-                            contentDescription = stringResource(R.string.tanzeel_view_description)
+                            contentDescription = stringResource(R.string.revelation_view_description)
                         )
 
                         MyText(

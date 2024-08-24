@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.supplicationsReader
+package bassamalim.hidaya.features.remembranceReader
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -11,16 +11,16 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class SupplicationsReaderViewModel @Inject constructor(
-    private val repo: SupplicationsReaderRepository,
+class RemembranceReaderViewModel @Inject constructor(
+    private val repo: RemembranceReaderRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val id = savedStateHandle.get<Int>("thikr_id") ?: 0
+    private val id = savedStateHandle.get<Int>("remembrance_id") ?: 0
 
     private val language = repo.getLanguage()
 
-    private val _uiState = MutableStateFlow(SupplicationsReaderState(
+    private val _uiState = MutableStateFlow(RemembranceReaderState(
         title = repo.getTitle(id),
         textSize = repo.getTextSize(),
         items = getItems()
@@ -28,11 +28,11 @@ class SupplicationsReaderViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     private fun getItems(): List<RemembrancePassage> {
-        val thikrParts = repo.getThikrParts(id)
+        val remembrancePassages = repo.getRemembrancePassages(id)
 
         val items = mutableListOf<RemembrancePassage>()
-        for (i in thikrParts.indices) {
-            val t = thikrParts[i]
+        for (i in remembrancePassages.indices) {
+            val t = remembrancePassages[i]
 
             if (language == Language.ENGLISH && t.textEn.isNullOrEmpty()) continue
 

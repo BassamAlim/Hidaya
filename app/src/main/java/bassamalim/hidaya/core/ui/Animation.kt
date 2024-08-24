@@ -44,7 +44,7 @@ val bottomNavBarWeightMap = hashMapOf(
     BottomNavItem.Home.route to 1,
     BottomNavItem.Prayers.route to 2,
     BottomNavItem.Quran.route to 3,
-    BottomNavItem.Athkar.route to 4,
+    BottomNavItem.Remembrances.route to 4,
     BottomNavItem.More.route to 5
 )
 

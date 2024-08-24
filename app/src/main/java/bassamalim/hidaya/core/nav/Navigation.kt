@@ -41,12 +41,12 @@ import bassamalim.hidaya.features.quizResult.ui.QuizResultUI
 import bassamalim.hidaya.features.quranReader.ui.QuranViewerUI
 import bassamalim.hidaya.features.quranSearcher.ui.QuranSearcherUI
 import bassamalim.hidaya.features.radio.ui.RadioClientUI
-import bassamalim.hidaya.features.recitationsPlayer.ui.TelawatClientUI
 import bassamalim.hidaya.features.recitationRecitersMenu.ui.RecitationRecitersMenuUI
 import bassamalim.hidaya.features.recitationSurasMenu.ui.TelawatSurasScreen
+import bassamalim.hidaya.features.recitationsPlayer.ui.RecitationsPlayerScreen
+import bassamalim.hidaya.features.remembranceReader.RemembranceReaderScreen
+import bassamalim.hidaya.features.remembrancesMenu.RemembrancesListScreen
 import bassamalim.hidaya.features.settings.SettingsUI
-import bassamalim.hidaya.features.supplicationsMenu.AthkarListScreen
-import bassamalim.hidaya.features.supplicationsReader.AthkarViewerUI
 import bassamalim.hidaya.features.tv.TvUI
 import com.google.gson.Gson
 
@@ -96,7 +96,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.AthkarList(
+            route = Screen.RemembrancesList(
                 "{type}", "{category}"
             ).route,
             arguments = listOf(
@@ -108,24 +108,24 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            AthkarListScreen(
+            RemembrancesListScreen(
                 hiltViewModel()
             )
         }
 
         composable(
-            route = Screen.AthkarViewer(
-                "{thikr_id}"
+            route = Screen.RemembranceReader(
+                "{remembrance_id}"
             ).route,
             arguments = listOf(
-                navArgument("thikr_id") { type = NavType.IntType }
+                navArgument("remembrance_id") { type = NavType.IntType }
             ),
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            AthkarViewerUI(
+            RemembranceReaderScreen(
                 hiltViewModel()
             )
         }
@@ -412,7 +412,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.TelawatClient(
+            route = Screen.RecitationsMenu(
                 "{action}", "{media_id}"
             ).route,
             arguments = listOf(
@@ -425,14 +425,14 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                TelawatClientUI(
+                RecitationsPlayerScreen(
                     hiltViewModel()
                 )
             }
         }
 
         composable(
-            route = Screen.Telawat.route,
+            route = Screen.RecitationsMenu.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -444,12 +444,12 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.TelawatSuar(
-                "{reciter_id}", "{version_id}"
+            route = Screen.RecitationSurasMenu(
+                "{reciter_id}", "{narration_id}"
             ).route,
             arguments = listOf(
                 navArgument("reciter_id") { type = NavType.IntType },
-                navArgument("version_id") { type = NavType.IntType }
+                navArgument("narration_id") { type = NavType.IntType }
             ),
             enterTransition = inFromBottom,
             exitTransition = outToBottom,

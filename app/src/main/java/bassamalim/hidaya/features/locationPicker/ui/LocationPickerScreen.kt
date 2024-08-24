@@ -83,8 +83,8 @@ private fun SearchComp(
             .padding(bottom = 10.dp),
         hint = stringResource(
             when (mode) {
-                LocationPickerMode.COUNTRY -> R.string.country_hint
-                LocationPickerMode.CITY -> R.string.city_hint
+                LocationPickerMode.COUNTRY -> R.string.countries_search_hint
+                LocationPickerMode.CITY -> R.string.cities_search_hint
             }
         ),
         onValueChange = onSearchTextChange

@@ -60,8 +60,8 @@ object UserPreferencesMigration {
                         defValue = Preference.QuranPagesRecord.default as Int
                     ),
                     recitationsTime = sharedPrefs.getLong(
-                        key = Preference.TelawatPlaybackRecord.key,
-                        defValue = Preference.TelawatPlaybackRecord.default as Long
+                        key = Preference.RecitationsPlaybackRecord.key,
+                        defValue = Preference.RecitationsPlaybackRecord.default as Long
                     )
                 ),
             )

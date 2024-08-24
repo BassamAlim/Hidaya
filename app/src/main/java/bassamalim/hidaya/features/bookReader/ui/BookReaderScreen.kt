@@ -59,7 +59,7 @@ private fun DoorCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MyText(
-                text = door.doorTitle,
+                text = door.title,
                 modifier = Modifier.padding(10.dp),
                 fontSize = (textSize + textSizeMargin).sp,
                 fontWeight = FontWeight.Bold

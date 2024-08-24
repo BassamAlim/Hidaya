@@ -122,7 +122,7 @@ class RecitationsPlayerDomain @Inject constructor(
         val bundle = Bundle()
         bundle.putString("play_type", playType)
         bundle.putString("reciter_name", reciterName)
-        bundle.putSerializable("version", narration)
+        bundle.putSerializable("narration", narration)
 
         // Start Playback
         tc.playFromMediaId(mediaId, bundle)

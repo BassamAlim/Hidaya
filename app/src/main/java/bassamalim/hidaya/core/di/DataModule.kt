@@ -41,10 +41,7 @@ object DataModule {
     fun provideRecitationRecitersDao(database: AppDatabase) = database.recitationRecitersDao()
 
     @Provides
-    fun provideRecitationsDao(database: AppDatabase) = database.recitationsDao()
-
-    @Provides
-    fun provideRecitationVersionsDao(database: AppDatabase) = database.recitationVersionsDao()
+    fun provideRecitationNarrationsDao(database: AppDatabase) = database.recitationNarrationsDao()
 
     @Provides
     fun provideRemembranceCategoriesDao(database: AppDatabase) = database.remembranceCategoriesDao()

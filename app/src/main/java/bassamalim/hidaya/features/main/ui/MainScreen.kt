@@ -37,7 +37,7 @@ import bassamalim.hidaya.features.home.ui.HomeUI
 import bassamalim.hidaya.features.more.ui.MoreUI
 import bassamalim.hidaya.features.prayers.ui.PrayersUI
 import bassamalim.hidaya.features.quran.ui.QuranUI
-import bassamalim.hidaya.features.supplicationsCategories.AthkarScreen
+import bassamalim.hidaya.features.remembranceCategories.RemembranceScreen
 
 @Composable
 fun MainUI(
@@ -168,13 +168,13 @@ fun NavigationGraph(
         }
 
         composable(
-            route = BottomNavItem.Athkar.route,
+            route = BottomNavItem.Remembrances.route,
             enterTransition = TabEnter,
             exitTransition = TabExit,
             popEnterTransition = TabPopEnter,
             popExitTransition = TabPopExit
         ) {
-            AthkarScreen(
+            RemembranceScreen(
                 hiltViewModel()
             )
         }
