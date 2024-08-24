@@ -33,7 +33,7 @@ class SupplicationsMenuViewModel @Inject constructor(
 
     private fun getItems(): List<AthkarItem> {
         val athkar = repo.getAthkar(type, category)
-        val items = ArrayList<AthkarItem>()
+        val items = mutableListOf<AthkarItem>()
 
         val isEng = _uiState.value.language == Language.ENGLISH
         for (thikr in athkar) {

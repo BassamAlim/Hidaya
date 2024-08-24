@@ -319,8 +319,8 @@ class QuranReaderViewModel @Inject constructor(
         this.scrollState = scrollState
     }
 
-    fun buildPage(pageNumber: Int): ArrayList<Verse> {
-        val pageVerses = ArrayList<Verse>()
+    fun buildPage(pageNumber: Int): List<Verse> {
+        val pageVerses = mutableListOf<Verse>()
 
         // get page start
         var counter = allVerses.indexOfFirst { verse -> verse.pageNum == pageNumber }

@@ -57,7 +57,7 @@ class QuranSearcherViewModel @Inject constructor(
     private fun search(highlightColor: Color) {
         this.highlightColor = highlightColor
 
-        val matches = ArrayList<QuranSearcherMatch>()
+        val matches = mutableListOf<QuranSearcherMatch>()
 
         for (i in allVerses.indices) {
             val a = allVerses[i]

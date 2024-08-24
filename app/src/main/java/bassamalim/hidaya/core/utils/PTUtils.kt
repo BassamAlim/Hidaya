@@ -57,7 +57,7 @@ object PTUtils {
         timeZoneId: String = "",
         location: Location,
         calendar: Calendar = Calendar.getInstance()
-    ): ArrayList<String> {
+    ): List<String> {
         val prayerTimesCalculator = PrayerTimesCalculator(
             settings,
             timeFormat,

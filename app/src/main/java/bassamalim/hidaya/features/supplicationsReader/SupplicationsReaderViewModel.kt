@@ -30,7 +30,7 @@ class SupplicationsReaderViewModel @Inject constructor(
     private fun getItems(): List<RemembrancePassage> {
         val thikrParts = repo.getThikrParts(id)
 
-        val items = ArrayList<RemembrancePassage>()
+        val items = mutableListOf<RemembrancePassage>()
         for (i in thikrParts.indices) {
             val t = thikrParts[i]
 

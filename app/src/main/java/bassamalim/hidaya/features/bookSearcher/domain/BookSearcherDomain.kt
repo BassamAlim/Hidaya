@@ -21,8 +21,8 @@ class BookSearcherDomain @Inject constructor(
         bookSelections: Map<Int, Boolean>,
         maxMatches: Int,
         highlightColor: Color
-    ): ArrayList<BookSearcherMatch> {
-        val matches = ArrayList<BookSearcherMatch>()
+    ): List<BookSearcherMatch> {
+        val matches = mutableListOf<BookSearcherMatch>()
 
         val bookContents = booksRepo.getBookContents()
         for (i in bookContents.indices) {

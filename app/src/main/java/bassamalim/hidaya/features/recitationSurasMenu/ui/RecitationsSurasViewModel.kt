@@ -5,11 +5,7 @@ import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.net.Uri
-import android.os.Build
 import androidx.activity.ComponentActivity
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,15 +15,15 @@ import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.features.recitationSurasMenu.domain.RecitationSurasMenuDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 import java.util.Locale
 import javax.inject.Inject
 
@@ -43,8 +39,9 @@ class RecitationsSurasViewModel @Inject constructor(
 
     private lateinit var language: Language
     private val narration = domain.getNarration(reciterId, narrationId)
-    private lateinit var suraNames: List<String>
-    private val searchNames = domain.getPlainSuraNames()
+    private lateinit var decoratedSuraNames: List<String>
+    private val plainSuraNames = domain.getPlainSuraNames()
+    private val suraFavorites = domain.getSuraFavorites()
 
     private val _uiState = MutableStateFlow(RecitationsSurasUiState())
     val uiState = _uiState.asStateFlow()
@@ -52,7 +49,7 @@ class RecitationsSurasViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             language = domain.getLanguage()
-            suraNames = domain.getDecoratedSuraNames(language)
+            decoratedSuraNames = domain.getDecoratedSuraNames(language)
 
             _uiState.update { it.copy(
                 title = domain.getReciterName(reciterId, language)
@@ -63,29 +60,15 @@ class RecitationsSurasViewModel @Inject constructor(
     fun onStart() {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { it.copy(
-                downloadStates = getDownloadStates()
+                downloadStates = domain.getDownloadStates()
             )}
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            app.registerReceiver(
-                onComplete,
-                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-                Context.RECEIVER_NOT_EXPORTED
-            )
-        else
-            app.registerReceiver(
-                onComplete,
-                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-            )
+        domain.registerDownloadReceiver(onComplete)
     }
 
     fun onStop() {
-        try {
-            app.unregisterReceiver(onComplete)
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
+        domain.unregisterDownloadReceiver(onComplete)
     }
 
     fun onBackPressed() {
@@ -101,96 +84,54 @@ class RecitationsSurasViewModel @Inject constructor(
         else (ctx as ComponentActivity).onBackPressedDispatcher.onBackPressed()
     }
 
-    private fun getDownloadStates(): ArrayList<DownloadState> {
-        val states = ArrayList<DownloadState>()
-
-        for (i in 0..113) {
-            states.add(
-                if (isDownloaded(i)) DownloadState.DOWNLOADED
-                else DownloadState.NOT_DOWNLOADED
-            )
-        }
-
-        return states
-    }
-
-    fun getItems(page: Int): List<ReciterSura> {
+    fun getItems(page: Int): Flow<List<ReciterSura>> {
         val listType = ListType.entries[page]
-
-        val favs = domain.getFavs()
-
-        val items = ArrayList<ReciterSura>()
         val availableSuar = narration.availableSuras
-        for (i in 0..113) {
-            if (!availableSuar.contains(",${(i + 1)},") ||
-                (listType == ListType.FAVORITES && favs[i] == 0) ||
-                (listType == ListType.DOWNLOADED && !isDownloaded(i))
-            ) continue
 
-            items.add(
+        return suraFavorites.map { favoriteSuras ->
+            (0..113).filter { i ->
+                (availableSuar.contains(",${(i + 1)},") ||
+                        (listType == ListType.FAVORITES && favoriteSuras[i]!!) ||
+                        (listType == ListType.DOWNLOADED && domain.checkIsDownloaded(i))) &&
+                        (_uiState.value.searchText.isEmpty() ||
+                                plainSuraNames[i].contains(_uiState.value.searchText, true))
+            }.map { i ->
                 ReciterSura(
-                    num = i,
-                    suraName = suraNames[i],
-                    searchName = searchNames[i],
-                    isFavorite = mutableIntStateOf(favs[i]),
+                    id = i,
+                    suraName = decoratedSuraNames[i],
+                    searchName = plainSuraNames[i],
+                    isFavorite = favoriteSuras[i]!!
                 )
-            )
-        }
-
-        return if (_uiState.value.searchText.isEmpty()) items
-        else items.filter {
-            it.searchName.contains(_uiState.value.searchText, true)
-        }
-    }
-
-    private fun download(sura: ReciterSura) {
-        _uiState.update { it.copy(
-            downloadStates = it.downloadStates.toMutableList().apply {
-                this[sura.num] = DownloadState.DOWNLOADING
             }
-        )}
-
-        val server = narration.url
-        val link = String.format(Locale.US, "%s/%03d.mp3", server, sura.num + 1)
-        val uri = Uri.parse(link)
-
-        val request = DownloadManager.Request(uri)
-        request.setTitle(sura.searchName)
-        FileUtils.createDir(app, prefix)
-        request.setDestinationInExternalFilesDir(app, prefix, "${sura.num}.mp3")
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-
-        val downloadId = (app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager)
-            .enqueue(request)
-        downloading[downloadId] = sura.num
+        }
     }
 
     private var onComplete: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(ctx: Context, intent: Intent) {
             val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             try {
-                val id = downloading[downloadId]!!
+                val suraId = domain.getDownloadingSuraId(downloadId)
 
                 _uiState.update { it.copy(
-                    downloadStates = it.downloadStates.toMutableList().apply {
-                        this[id] = DownloadState.DOWNLOADED
+                    downloadStates = it.downloadStates.toMutableMap().apply {
+                        this[suraId] = DownloadState.DOWNLOADED
                     }
                 )}
 
-                downloading.remove(downloadId)
+                domain.removeFromDownloading(downloadId)
             } catch (e: RuntimeException) {
                 _uiState.update { it.copy(
-                    downloadStates = getDownloadStates()
+                    downloadStates = domain.getDownloadStates()
                 )}
             }
         }
     }
 
-    fun onItemClk(sura: ReciterSura) {
-        val rId = String.format(Locale.US, "%03d", reciterId)
-        val vId = String.format(Locale.US, "%02d", narrationId)
-        val sId = String.format(Locale.US, "%03d", sura.num)
-        val mediaId = rId + vId + sId
+    fun onSuraClick(suraId: Int) {
+        val formattedReciterId = String.format(Locale.US, "%03d", reciterId)
+        val formattedNarrationId = String.format(Locale.US, "%02d", narrationId)
+        val formattedSuraId = String.format(Locale.US, "%03d", suraId)
+        val mediaId = formattedReciterId + formattedNarrationId + formattedSuraId
 
         navigator.navigate(
             Screen.TelawatClient(
@@ -200,24 +141,34 @@ class RecitationsSurasViewModel @Inject constructor(
         )
     }
 
-    fun onFavClk(suraNum: Int, newFav: Int) {
-        domain.setFav(suraNum, newFav)
-
-        domain.updateFavorites()
+    fun onFavoriteClick(sura: ReciterSura) {
+        viewModelScope.launch {
+            domain.setIsFavorite(
+                suraId = sura.id,
+                value = !sura.isFavorite
+            )
+        }
     }
 
-    fun onDownload(sura: ReciterSura) {
-        Thread {
-            download(sura)
-        }.start()
-    }
+    fun onDownloadClick(sura: ReciterSura) {
+        if (_uiState.value.downloadStates[sura.id] == DownloadState.NOT_DOWNLOADED) {
+            _uiState.update { it.copy(
+                downloadStates = it.downloadStates.toMutableMap().apply {
+                    this[sura.id] = DownloadState.DOWNLOADING
+                }
+            )}
 
-    fun onDelete(suraNum: Int) {
-        _uiState.update { it.copy(
-            downloadStates = it.downloadStates.toMutableList().apply {
-                this[suraNum] = DownloadState.NOT_DOWNLOADED
-            }
-        )}
+            domain.download(sura = sura, server = narration.url)
+        }
+        else {
+            _uiState.update { it.copy(
+                downloadStates = it.downloadStates.toMutableMap().apply {
+                    this[sura.id] = DownloadState.NOT_DOWNLOADED
+                }
+            )}
+
+            domain.delete(reciterId = reciterId, narrationId = narrationId, suraId = sura.id)
+        }
     }
 
     fun onSearchChange(text: String) {

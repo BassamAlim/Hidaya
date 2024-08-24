@@ -318,8 +318,8 @@ class PrayerTimesCalculator(
         }.toDoubleArray()
 
     // convert double hours to 24h format
-    private fun floatToTime24(times: DoubleArray): ArrayList<String> {
-        val result = ArrayList<String>()
+    private fun floatToTime24(times: DoubleArray): List<String> {
+        val result = mutableListOf<String>()
         for (time in times) {
             val fixed = fixHour(time + 0.5 / 60.0) // add 0.5 minutes to round
             val hours = floor(fixed).toInt()
@@ -340,8 +340,8 @@ class PrayerTimesCalculator(
     }
 
     // convert double hours to 12h format
-    private fun floatToTime12(times: DoubleArray): ArrayList<String> {
-        val result = ArrayList<String>()
+    private fun floatToTime12(times: DoubleArray): List<String> {
+        val result = mutableListOf<String>()
         for (time in times) {
             val fixed = fixHour(time + 0.5 / 60) // add 0.5 minutes to round
             var hours = floor(fixed).toInt()

@@ -184,7 +184,7 @@ class BooksRepository @Inject constructor(
 
         val books = getBooks()
 
-        val bookContents = ArrayList<Book>()
+        val bookContents = mutableListOf<Book>()
         for (i in books.indices) {
             val jsonStr = FileUtils.getJsonFromDownloads("$path$i.json")
             try {

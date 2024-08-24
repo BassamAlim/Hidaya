@@ -609,7 +609,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
             return;
         }
         // Assume for example that the music catalog is already loaded/cached.
-        List<MediaItem> mediaItems = new ArrayList<>();
+        val mediaItems = mutableListOf()
         // Check if this is the root menu:
         if (MY_MEDIA_ROOT_ID.equals(parentMediaId)) {
             // Build the MediaItem objects for the top level,

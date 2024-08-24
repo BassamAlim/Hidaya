@@ -23,7 +23,7 @@ class BookChaptersDomain @Inject constructor(
         favs: Map<Int, Int>,
         searchText: String
     ): List<BookChapter> {
-        val items = ArrayList<BookChapter>()
+        val items = mutableListOf<BookChapter>()
         for (i in chapters.indices) {
             val chapter = chapters[i]
             if (listType == ListType.ALL ||

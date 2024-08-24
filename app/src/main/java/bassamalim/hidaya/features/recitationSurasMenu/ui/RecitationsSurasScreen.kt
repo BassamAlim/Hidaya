@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyDownloadBtn
@@ -24,6 +23,7 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun TelawatSurasScreen(
@@ -55,21 +55,34 @@ fun TelawatSurasScreen(
                 )
             }
         ) { page ->
-            Tab(viewModel, state, viewModel.getItems(page))
+            Tab(
+                surasFlow = viewModel.getItems(page),
+                onSuraClick = viewModel::onSuraClick,
+                onFavoriteClick = viewModel::onFavoriteClick,
+                onDownloadClick = viewModel::onDownloadClick
+            )
         }
     }
 }
 
 @Composable
 private fun Tab(
-    vm: RecitationsSurasViewModel,
-    st: RecitationsSurasUiState,
-    items: List<ReciterSura>
+    surasFlow: Flow<List<ReciterSura>>,
+    onSuraClick: (Int) -> Unit,
+    onFavoriteClick: (ReciterSura) -> Unit,
+    onDownloadClick: (ReciterSura) -> Unit
 ) {
+    val suras by surasFlow.collectAsStateWithLifecycle(emptyList())
+
     MyLazyColumn(
         lazyList = {
-            items(items) { item ->
-                SuraCard(item, vm, st)
+            items(suras) { sura ->
+                SuraCard(
+                    sura = sura,
+                    onClick = onSuraClick,
+                    onFavoriteClick = onFavoriteClick,
+                    onDownloadClick = onDownloadClick
+                )
             }
         }
     )
@@ -78,11 +91,12 @@ private fun Tab(
 @Composable
 private fun SuraCard(
     sura: ReciterSura,
-    onClick: (ReciterSura) -> Unit,
-    onFavoriteClick: (Int) -> Unit,
+    onClick: (Int) -> Unit,
+    onFavoriteClick: (ReciterSura) -> Unit,
+    onDownloadClick: (ReciterSura) -> Unit
 ) {
     MyClickableSurface(
-        onClick = { onClick(sura) }
+        onClick = { onClick(sura.id) }
     ) {
         Row(
             Modifier
@@ -92,13 +106,9 @@ private fun SuraCard(
             horizontalArrangement = Arrangement.Center
         ) {
             MyDownloadBtn(
-                state =
-                    if (st.downloadStates.isEmpty()) DownloadState.NOT_DOWNLOADED
-                    else st.downloadStates[sura.num],
-                path = "${vm.prefix}${sura.num}.mp3",
+                state = sura.downloadState,
                 size = 28.dp,
-                deleted = { vm.onDelete(sura.num) },
-                download = { vm.onDownload(sura) }
+                onClick = { onDownloadClick(sura) }
             )
 
             MyText(
@@ -110,7 +120,7 @@ private fun SuraCard(
 
             MyFavoriteButton(
                 isFavorite = sura.isFavorite,
-                onClick = { onFavoriteClick(sura.) }
+                onClick = { onFavoriteClick(sura) }
             )
         }
     }

@@ -357,7 +357,7 @@ private fun PageItems(
     onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
 ) {
     var sequenceText = StringBuilder()
-    var sequence = ArrayList<Verse>()
+    var sequence = mutableListOf<Verse>()
     var lastSura = verses[0].suraNum
 
     if (verses[0].num == 1) {
@@ -392,7 +392,7 @@ private fun PageItems(
             }
 
             sequenceText = StringBuilder()
-            sequence = ArrayList()
+            sequence = mutableListOf()
         }
 
         aya.start = sequenceText.length

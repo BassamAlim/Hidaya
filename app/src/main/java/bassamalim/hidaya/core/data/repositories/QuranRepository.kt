@@ -25,7 +25,9 @@ class QuranRepository @Inject constructor(
 
     fun getPlainSuraNames() = surasDao.getPlainNamesAr()
 
-    fun getSuraFavorites() = surasDao.observeIsFavorites()
+    fun getSuraFavorites() = surasDao.observeIsFavorites().map {
+        it.mapIndexed { index, value -> index + 1 to (value == 1) }.toMap()
+    }
 
     suspend fun setSuraIsFavorite(suraId: Int, isFavorite: Boolean) {
         surasDao.setIsFavorite(suraId, if (isFavorite) 1 else 0)
