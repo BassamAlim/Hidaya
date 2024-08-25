@@ -47,11 +47,11 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.getNarrationSelections(),
-        domain.getLastPlayedMediaId()
-    ) { state, narrationSelections, lastPlayedMediaId ->
+        domain.getLastPlayed()
+    ) { state, narrationSelections, lastPlayed ->
         state.copy(
             narrationSelections = narrationSelections,
-            lastPlayedMedia = getLastPlayedMedia(lastPlayedMediaId)
+            lastPlayedMedia = getLastPlayedMedia(lastPlayed.mediaId)
         )
     }.stateIn(
         initialValue = RecitationRecitersMenuUiState(),
@@ -94,7 +94,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         val context = navigator.getContext()
         if ((context as Activity).isTaskRoot) {
             navigator.navigate(Screen.Main) {
-                popUpTo(Screen.RecitationsMenu.route) {
+                popUpTo(Screen.RecitationsRecitersMenu.route) {
                     inclusive = true
                 }
             }
@@ -123,12 +123,15 @@ class RecitationRecitersMenuViewModel @Inject constructor(
 
     private fun getLastPlayedMedia(mediaId: String): LastPlayedMedia? {
         if (mediaId.isEmpty() || mediaId == "00000000") return null  // added the second part to prevent errors due to change in db
-        Log.d("TelawatVM", "continueListeningMediaId: $mediaId")
+        Log.d("RecitationsRecitersMenuViewModel", "continueListeningMediaId: $mediaId")
 
         val reciterId = mediaId.substring(0, 3).toInt()
         val narrationId = mediaId.substring(3, 5).toInt()
         val suraId = mediaId.substring(5).toInt()
-        Log.d("TelawatVM", "reciterId: $reciterId, narrationId: $narrationId, suraIndex: $suraId")
+        Log.d(
+            "RecitationsRecitersMenuViewModel",
+            "reciterId: $reciterId, narrationId: $narrationId, suraIndex: $suraId"
+        )
 
         return LastPlayedMedia(
             reciterName = domain.getReciterName(reciterId, language),
@@ -219,7 +222,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     fun onContinueListeningClick() {
         if (continueListeningMediaId.isNotEmpty()) {
             navigator.navigate(
-                Screen.RecitationsMenu(
+                Screen.RecitationsPlayer(
                     action = "continue",
                     mediaId = continueListeningMediaId
                 )

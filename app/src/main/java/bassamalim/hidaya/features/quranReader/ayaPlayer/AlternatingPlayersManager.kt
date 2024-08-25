@@ -32,8 +32,8 @@ class AlternatingPlayersManager(
     private val callback: PlayerCallback
 ) : OnPreparedListener, OnCompletionListener, OnErrorListener {
 
-    private val NUMBER_OF_PLAYERS = 2
-    private val aps = Array(NUMBER_OF_PLAYERS) { AlternatePlayer(MediaPlayer()) }
+    private val NUM_OF_PLAYERS = 2
+    private val aps = Array(NUM_OF_PLAYERS) { AlternatePlayer(MediaPlayer()) }
     private var playerIdx = 0
     private val ayat = db.versesDao().getAll()
     var ayaIdx = -1
@@ -109,13 +109,13 @@ class AlternatingPlayersManager(
                 else -> {}
             }
 
-            if (shouldStop(currentAya = aps[currentPlayerIdx].ayaIdx, jumpSize = NUMBER_OF_PLAYERS))
+            if (shouldStop(currentAya = aps[currentPlayerIdx].ayaIdx, jumpSize = NUM_OF_PLAYERS))
                 aps[currentPlayerIdx].state = PlayerState.STOPPED
             else {
                 if (!isOtherPlayerPreparing()) {
                     prepare(
                         playerIdx = currentPlayerIdx,
-                        ayaIdx = aps[currentPlayerIdx].ayaIdx + NUMBER_OF_PLAYERS
+                        ayaIdx = aps[currentPlayerIdx].ayaIdx + NUM_OF_PLAYERS
                     )
                 }
             }
@@ -245,7 +245,7 @@ class AlternatingPlayersManager(
             aps[playerIdx].mp.prepareAsync()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(Global.TAG, "Reciter not found in ayat telawa")
+            Log.e(Global.TAG, "Reciter not found in verse recitations")
         }
     }
 
@@ -291,8 +291,8 @@ class AlternatingPlayersManager(
         return Uri.parse(uri)
     }
 
-    private fun prv(current: Int) = if (current == 0) NUMBER_OF_PLAYERS - 1 else current - 1
-    private fun nxt(current: Int) = (current + 1) % NUMBER_OF_PLAYERS
+    private fun prv(current: Int) = if (current == 0) NUM_OF_PLAYERS - 1 else current - 1
+    private fun nxt(current: Int) = (current + 1) % NUM_OF_PLAYERS
     private fun idx(mp: MediaPlayer) = aps.indexOf(aps.find { ap -> ap.mp == mp })
     private fun prvIdx(mp: MediaPlayer) = prv(idx(mp))
     private fun nxtIdx(mp: MediaPlayer) = nxt(idx(mp))

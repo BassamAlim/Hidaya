@@ -32,7 +32,7 @@
     <string name="high_lat_adjustment_title">High latitude adjustment</string>
 
     <!-- TextViews Text -->
-    <string name="telawat_time_record_title">Telawat Listening \nDuration</string>
+    <string name="recitations_time_record_title">Recitations Listening \nDuration</string>
     <string name="quran_pages_record_title">Read Quran Pages \n (with repetition)</string>
 
     <!-- Buttons Text -->
@@ -172,7 +172,7 @@
     <string name="reference">Reference</string>
     <string name="choose_books">Choose the books</string>
     <string name="selected_books">Selected books</string>
-    <string name="choose_narration">Choose rewaya\'s</string>
+    <string name="choose_narration">Choose narration\'s</string>
     <string name="save">Save</string>
     <string name="select">Select</string>
     <string name="select_all">Select all</string>
@@ -187,12 +187,12 @@
     <string name="finish_quiz">Finish quiz</string>
     <string name="answer_all_questions">Answer all questions</string>
     <string name="your_score_is">Your score is</string>
-    <string name="no_last_play">You have not played any telawa</string>
+    <string name="no_last_play">No previous recitation played</string>
     <string name="last_play">Last played</string>
     <string name="prayer_alerts">Prayer alerts</string>
     <string name="stop_athan">Stop athan</string>
     <string name="for_reciter">for reciter</string>
-    <string name="in_narration_of">in the rewaya of</string>
+    <string name="in_narration_of">in the narration of</string>
     <string name="aya_number">Aya number</string>
     <string name="list_view">List</string>
     <string name="display_method">View Method</string>

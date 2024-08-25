@@ -88,11 +88,11 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
     companion object {
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
         private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
-        private const val ACTION_PLAY = "bassamalim.hidaya.features.telawatPlayer.TelawatService.PLAY"
-        private const val ACTION_PAUSE = "bassamalim.hidaya.features.telawatPlayer.TelawatService.PAUSE"
-        private const val ACTION_NEXT = "bassamalim.hidaya.features.telawatPlayer.TelawatService.NEXT"
-        private const val ACTION_PREV = "bassamalim.hidaya.features.telawatPlayer.TelawatService.PREVIOUS"
-        private const val ACTION_STOP = "bassamalim.hidaya.features.telawatPlayer.TelawatService.STOP"
+        private const val ACTION_PLAY = "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.PLAY"
+        private const val ACTION_PAUSE = "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.PAUSE"
+        private const val ACTION_NEXT = "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.NEXT"
+        private const val ACTION_PREV = "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.PREVIOUS"
+        private const val ACTION_STOP = "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.STOP"
     }
 
     private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -153,7 +153,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
 
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(givenMediaId: String, extras: Bundle) {
-            Log.i(Global.TAG, "In onPlayFromMediaId of TelawatService")
+            Log.i(Global.TAG, "In onPlayFromMediaId of RecitationsPlayerService")
 
             playType = extras.getString("play_type")!!
             if (givenMediaId != mediaId || playType == "continue") {
@@ -170,7 +170,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
                         extras.getSerializable("narration") as Recitation.Narration
 
                 if (playType == "continue")
-                    continueFrom = preferencesDS.getInt(Preference.LastTelawaProgress)
+                    continueFrom = preferencesDS.getInt(Preference.LastRecitationProgress)
 
                 buildNotification()
                 updateMetadata(false)
@@ -183,7 +183,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         }
 
         override fun onPlay() {
-            Log.i(Global.TAG, "In onPlay of TelawatService")
+            Log.i(Global.TAG, "In onPlay of RecitationsPlayerService")
 
             if (mediaId == null) return  // bandage for an error
 
@@ -219,7 +219,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         }
 
         override fun onPause() {
-            Log.i(Global.TAG, "In onPause of TelawatService")
+            Log.i(Global.TAG, "In onPause of RecitationsPlayerService")
 
             // Update metadata and state
             updatePbState(
@@ -240,7 +240,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         }
 
         override fun onStop() {
-            Log.i(Global.TAG, "In onStop of TelawatService")
+            Log.i(Global.TAG, "In onStop of RecitationsPlayerService")
 
             updatePbState(
                 PlaybackStateCompat.STATE_STOPPED,
@@ -310,17 +310,17 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp++
-            } while (temp < Global.QURAN_SUAR &&
+            } while (temp < Global.NUM_OF_QURAN_SURAS &&
                 !narration.availableSuras.contains("," + (temp + 1) + ","))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
-                temp = random.nextInt(Global.QURAN_SUAR)
+                temp = random.nextInt(Global.NUM_OF_QURAN_SURAS)
             } while (!narration.availableSuras.contains("," + (temp + 1) + ","))
         }
 
-        if (temp < Global.QURAN_SUAR) {
+        if (temp < Global.NUM_OF_QURAN_SURAS) {
             suraIndex = temp
             updateMetadata(false)
             updateNotification(true)
@@ -342,7 +342,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
-                temp = random.nextInt(Global.QURAN_SUAR)
+                temp = random.nextInt(Global.NUM_OF_QURAN_SURAS)
             } while (!narration.availableSuras.contains("," + (temp + 1) + ","))
         }
 
@@ -371,7 +371,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
 
     private fun initSession() {
         // Create a MediaSessionCompat
-        mediaSession = MediaSessionCompat(this, "TelawatService")
+        mediaSession = MediaSessionCompat(this, "RecitationsPlayerService")
 
         // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
         stateBuilder = PlaybackStateCompat.Builder().setActions(
@@ -675,7 +675,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         }
 
         player.setOnErrorListener { _, what, _ ->
-            Log.e(Global.TAG, "Error in TelawatService player: $what")
+            Log.e(Global.TAG, "Error in RecitationsPlayerService player: $what")
             true
         }
     }
@@ -692,7 +692,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
             player.prepareAsync()
         } catch (e: IOException) {
             e.printStackTrace()
-            Log.e(Global.TAG, "Problem in TelawatService player")
+            Log.e(Global.TAG, "Problem in RecitationsPlayerService player")
         }
     }
 
@@ -710,7 +710,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
             false
         } catch (e: IOException) {
             e.printStackTrace()
-            Log.e(Global.TAG, "Problem in TelawatService player")
+            Log.e(Global.TAG, "Problem in RecitationsPlayerService player")
             false
         }
     }
@@ -733,7 +733,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
 
     private fun getContentIntent(): PendingIntent {
         val intent = Intent(this, Activity::class.java).apply {
-            action = Global.GO_TO_TELAWA
+            action = Global.GO_TO_RECITATION
             putExtra("media_id", mediaId)
         }
 
@@ -786,7 +786,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         if (reciterName == null) return
 
         preferencesDS.setString(Preference.LastPlayedMediaId, mediaId!!)
-        preferencesDS.setInt(Preference.LastTelawaProgress, progress)
+        preferencesDS.setInt(Preference.LastRecitationProgress, progress)
     }
 
     private fun updateDurationRecord(amount: Int) {
@@ -804,7 +804,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-        Log.i(Global.TAG, "In onUnbind of TelawatService")
+        Log.i(Global.TAG, "In onUnbind of RecitationsPlayerService")
         saveForLater(player.currentPosition)
         updateDurationRecord(updateRecordCounter)
         return super.onUnbind(intent)

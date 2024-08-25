@@ -77,12 +77,12 @@ sealed class Screen(val route: String) {
 
     data object Settings: Screen("settings")
 
-    data class RecitationsMenu(
+    data class RecitationsPlayer(
         val action: String,
         val mediaId: String
-    ): Screen("telawat_client/$action/$mediaId")
+    ): Screen("recitations_player/$action/$mediaId")
 
-    data object RecitationsMenu: Screen("telawat")
+    data object RecitationsRecitersMenu: Screen("recitations_reciters_menu")
 
     data class RecitationSurasMenu(
         val reciterId: String,

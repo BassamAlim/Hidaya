@@ -343,7 +343,7 @@ class QuranReaderViewModel @Inject constructor(
             )
 
             counter++
-        } while (counter != Global.QURAN_VERSES && allVerses[counter].pageNum == pageNumber)
+        } while (counter != Global.NUM_OF_QURAN_VERSES && allVerses[counter].pageNum == pageNumber)
 
         return pageVerses
     }

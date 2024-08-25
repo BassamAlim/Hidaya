@@ -86,8 +86,8 @@ class Activity : ComponentActivity() {
                 // stop athan if it is running
                 stopService(Intent(this, AthanService::class.java))
             }
-            Global.GO_TO_TELAWA -> {
-                startRoute = Screen.RecitationsMenu(
+            Global.GO_TO_RECITATION -> {
+                startRoute = Screen.RecitationsPlayer(
                     "back",
                     intent.getStringExtra("media_id")!!
                 ).route

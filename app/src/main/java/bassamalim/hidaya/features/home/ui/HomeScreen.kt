@@ -66,7 +66,7 @@ fun HomeUI(
         )
 
         RecordsCard(
-            telawatRecord = state.recitationsRecord,
+            recitationsRecord = state.recitationsRecord,
             quranPagesRecord = state.quranRecord,
             isLeaderboardEnabled = state.isLeaderboardEnabled,
             onLeaderboardClick = viewModel::onLeaderboardClick
@@ -195,7 +195,7 @@ private fun TodayWerdCard(
 
 @Composable
 private fun RecordsCard(
-    telawatRecord: String,
+    recitationsRecord: String,
     quranPagesRecord: String,
     isLeaderboardEnabled: Boolean,
     onLeaderboardClick: () -> Unit
@@ -209,12 +209,12 @@ private fun RecordsCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 MyText(
-                    stringResource(R.string.telawat_time_record_title),
+                    stringResource(R.string.recitations_time_record_title),
                     Modifier.widthIn(1.dp, 200.dp)
                 )
 
                 MyText(
-                    telawatRecord,
+                    recitationsRecord,
                     fontSize = 30.sp
                 )
             }

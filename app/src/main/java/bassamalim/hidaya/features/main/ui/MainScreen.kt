@@ -37,7 +37,7 @@ import bassamalim.hidaya.features.home.ui.HomeUI
 import bassamalim.hidaya.features.more.ui.MoreUI
 import bassamalim.hidaya.features.prayers.ui.PrayersUI
 import bassamalim.hidaya.features.quran.ui.QuranUI
-import bassamalim.hidaya.features.remembranceCategories.RemembranceScreen
+import bassamalim.hidaya.features.remembranceCategories.ui.RemembranceCategoriesScreen
 
 @Composable
 fun MainUI(
@@ -174,7 +174,7 @@ fun NavigationGraph(
             popEnterTransition = TabPopEnter,
             popExitTransition = TabPopExit
         ) {
-            RemembranceScreen(
+            RemembranceCategoriesScreen(
                 hiltViewModel()
             )
         }

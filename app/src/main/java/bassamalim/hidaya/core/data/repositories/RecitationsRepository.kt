@@ -10,6 +10,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.features.recitationRecitersMenu.domain.LastPlayedRecitation
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -149,23 +150,12 @@ class RecitationsRepository @Inject constructor(
         )}
     }
 
-    fun getLastPlayedMediaId() = recitationsPreferencesDataSource.flow.map {
-        it.lastPlayedMediaId
+    fun getLastPlayed() = recitationsPreferencesDataSource.flow.map {
+        it.lastPlayed
     }
-
-    suspend fun setLastPlayedMediaId(mediaId: String) {
+    suspend fun setLastPlayedMediaId(lastPlayed: LastPlayedRecitation) {
         recitationsPreferencesDataSource.update { it.copy(
-            lastPlayedMediaId = mediaId
-        )}
-    }
-
-    fun getLastProgress() = recitationsPreferencesDataSource.flow.map {
-        it.lastProgress
-    }
-
-    suspend fun setLastProgress(progress: Long) {
-        recitationsPreferencesDataSource.update { it.copy(
-            lastProgress = progress
+            lastPlayed = lastPlayed
         )}
     }
 

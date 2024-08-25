@@ -22,9 +22,9 @@ class MoreViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MoreUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun onTelawatClick() {
+    fun onRecitationsClick() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            navigator.navigate(Screen.RecitationsMenu)
+            navigator.navigate(Screen.RecitationsRecitersMenu)
         else {
             _uiState.update { it.copy(
                 shouldShowUnsupported = true

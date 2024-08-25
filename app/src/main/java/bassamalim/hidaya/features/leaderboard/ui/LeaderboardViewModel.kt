@@ -49,7 +49,7 @@ class LeaderboardViewModel @Inject constructor(
             LeaderboardItem(
                 userId = it.userId.toString(),
                 quranRecord = it.quranPages.toString(),
-                recitationsRecord = formatTelawatTime(it.recitationsTime)
+                recitationsRecord = formatRecitationsTime(it.recitationsTime)
             )
         }
 
@@ -63,7 +63,7 @@ class LeaderboardViewModel @Inject constructor(
         )
     }
 
-    private fun formatTelawatTime(millis: Long): String {
+    private fun formatRecitationsTime(millis: Long): String {
         val hours = millis / (60 * 60 * 1000) % 24
         val minutes = millis / (60 * 1000) % 60
         val seconds = millis / 1000 % 60

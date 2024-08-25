@@ -42,7 +42,7 @@ import bassamalim.hidaya.features.quranReader.ui.QuranViewerUI
 import bassamalim.hidaya.features.quranSearcher.ui.QuranSearcherUI
 import bassamalim.hidaya.features.radio.ui.RadioClientUI
 import bassamalim.hidaya.features.recitationRecitersMenu.ui.RecitationRecitersMenuUI
-import bassamalim.hidaya.features.recitationSurasMenu.ui.TelawatSurasScreen
+import bassamalim.hidaya.features.recitationSurasMenu.ui.RecitationSurasMenuScreen
 import bassamalim.hidaya.features.recitationsPlayer.ui.RecitationsPlayerScreen
 import bassamalim.hidaya.features.remembranceReader.RemembranceReaderScreen
 import bassamalim.hidaya.features.remembrancesMenu.RemembrancesListScreen
@@ -412,7 +412,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.RecitationsMenu(
+            route = Screen.RecitationsPlayer(
                 "{action}", "{media_id}"
             ).route,
             arguments = listOf(
@@ -432,7 +432,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.RecitationsMenu.route,
+            route = Screen.RecitationsPlayer.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -456,7 +456,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            TelawatSurasScreen(
+            RecitationSurasMenuScreen(
                 hiltViewModel()
             )
         }

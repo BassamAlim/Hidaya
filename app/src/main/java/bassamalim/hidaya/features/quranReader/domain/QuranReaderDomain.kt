@@ -107,7 +107,7 @@ class QuranReaderDomain @Inject constructor(
                 // Create a MediaControllerCompat
                 mediaController = MediaControllerCompat(app, mediaBrowser!!.sessionToken)
             } catch (e: IllegalStateException) {
-                Log.e(Global.TAG, "Error in TelawatClient: ${e.message}")
+                Log.e(Global.TAG, "Error in QuranReader: ${e.message}")
                 return
             }
 
@@ -128,12 +128,12 @@ class QuranReaderDomain @Inject constructor(
         }
 
         override fun onConnectionSuspended() {
-            Log.e(Global.TAG, "Connection suspended in TelawatClient")
+            Log.e(Global.TAG, "Connection suspended in QuranReader")
             // The Service has crashed.
         }
 
         override fun onConnectionFailed() {
-            Log.e(Global.TAG, "Connection failed in TelawatClient")
+            Log.e(Global.TAG, "Connection failed in QuranReader")
             // The Service has refused our connection
         }
     }

@@ -7,6 +7,7 @@ import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.preferences.objects.RecitationsPreferences
 import bassamalim.hidaya.core.enums.VerseRepeatMode
+import bassamalim.hidaya.features.recitationRecitersMenu.domain.LastPlayedRecitation
 import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentMapOf
@@ -33,8 +34,8 @@ object RecitationsPreferencesMigration {
                 narrationSelections = persistentMapOf<Int, Boolean>().mutate {
                     Gson().fromJson(
                         sharedPrefs.getString(
-                            key = Preference.SelectedRewayat.key,
-                            defValue = Preference.SelectedRewayat.default as String
+                            key = Preference.SelectedNarrations.key,
+                            defValue = Preference.SelectedNarrations.default as String
                         )!!,
                         BooleanArray::class.java
                     ).mapIndexed { index, selected ->
@@ -49,14 +50,16 @@ object RecitationsPreferencesMigration {
                     key = Preference.RecitationsShuffleMode.key,
                     defValue = Preference.RecitationsShuffleMode.default as Int
                 ),
-                lastPlayedMediaId = sharedPrefs.getString(
-                    key = Preference.LastPlayedMediaId.key,
-                    defValue = Preference.LastPlayedMediaId.default as String
-                )!!,
-                lastProgress = sharedPrefs.getInt(
-                    key = Preference.LastTelawaProgress.key,
-                    defValue = Preference.LastTelawaProgress.default as Int
-                ).toLong(),
+                lastPlayed = LastPlayedRecitation(
+                    mediaId = sharedPrefs.getString(
+                        key = Preference.LastPlayedMediaId.key,
+                        defValue = Preference.LastPlayedMediaId.default as String
+                    )!!,
+                    progress = sharedPrefs.getInt(
+                        key = Preference.LastRecitationProgress.key,
+                        defValue = Preference.LastRecitationProgress.default as Int
+                    ).toLong()
+                ),
                 verseReciterId = sharedPrefs.getString(
                     key = Preference.AyaReciter.key,
                     defValue = Preference.AyaReciter.default as String

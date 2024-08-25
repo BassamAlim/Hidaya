@@ -141,7 +141,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
 
     fun getNarrationSelections() = recitationsRepository.getNarrationSelections()
 
-    fun getLastPlayedMediaId() = recitationsRepository.getLastPlayedMediaId()
+    fun getLastPlayed() = recitationsRepository.getLastPlayed()
 
     suspend fun setFavorite(reciterId: Int, isFavorite: Boolean) {
         recitationsRepository.setReciterIsFavorite(

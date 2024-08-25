@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.remembranceCategories
+package bassamalim.hidaya.features.remembranceCategories.ui
 
 import androidx.lifecycle.ViewModel
 import bassamalim.hidaya.core.enums.ListType
@@ -12,13 +12,13 @@ class RemembranceCategoriesViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    fun onAllAthkarClick() {
+    fun onAllRemembrancesClick() {
         navigator.navigate(
             Screen.RemembrancesList(ListType.ALL.name)
         )
     }
 
-    fun onFavoriteAthkarClick() {
+    fun onFavoriteRemembrancesClick() {
         navigator.navigate(
             Screen.RemembrancesList(ListType.FAVORITES.name)
         )

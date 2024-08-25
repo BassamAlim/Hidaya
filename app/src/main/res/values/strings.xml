@@ -31,7 +31,7 @@
     <string name="high_lat_adjustment_title">التعديل لخطوط العرض المرتفعة</string>
 
     <!-- TextViews Text -->
-    <string name="telawat_time_record_title">مدة الاستماع للتلاوات</string>
+    <string name="recitations_time_record_title">مدة الاستماع للتلاوات</string>
     <string name="quran_pages_record_title">عدد صفحات القرآن المقروءة \n(مع التكرار)</string>
 
     <!-- Buttons Text -->

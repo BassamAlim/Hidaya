@@ -29,13 +29,13 @@ fun MoreUI(
         MyRow {
             MySquareButton(
                 textResId = R.string.recitations,
-                imageResId = R.drawable.ic_headphone,
-                onClick = viewModel::onTelawatClick
+                imagePainter = R.drawable.ic_headphone,
+                onClick = viewModel::onRecitationsClick
             )
 
             MySquareButton(
                 textResId = R.string.qibla,
-                imageResId = R.drawable.ic_qibla_compass,
+                imagePainter = R.drawable.ic_qibla_compass,
                 onClick = viewModel::onQiblaClick
             )
         }
@@ -43,13 +43,13 @@ fun MoreUI(
         MyRow {
             MySquareButton(
                 textResId = R.string.quiz_title,
-                imageResId = R.drawable.ic_quiz,
+                imagePainter = R.drawable.ic_quiz,
                 onClick = viewModel::onQuizClick
             )
 
             MySquareButton(
                 textResId = R.string.hadeeth_books,
-                imageResId = R.drawable.ic_books,
+                imagePainter = R.drawable.ic_books,
                 onClick = viewModel::onBooksClick
             )
         }
@@ -57,13 +57,13 @@ fun MoreUI(
         MyRow {
             MySquareButton(
                 textResId = R.string.tv_channels,
-                imageResId = R.drawable.ic_television,
+                imagePainter = R.drawable.ic_television,
                 onClick = viewModel::onTvClick
             )
 
             MySquareButton(
                 textResId = R.string.quran_radio,
-                imageResId = R.drawable.ic_radio,
+                imagePainter = R.drawable.ic_radio,
                 onClick = viewModel::onRadioClick
             )
         }
@@ -71,13 +71,13 @@ fun MoreUI(
         MyRow {
             MySquareButton(
                 textResId = R.string.date_converter,
-                imageResId = R.drawable.ic_calendar,
+                imagePainter = R.drawable.ic_calendar,
                 onClick = viewModel::onDateConverterClick
             )
 
             MySquareButton(
                 textResId = R.string.settings,
-                imageResId = R.drawable.ic_settings,
+                imagePainter = R.drawable.ic_settings,
                 onClick = viewModel::onSettingsClick
             )
         }
@@ -85,13 +85,13 @@ fun MoreUI(
         MyRow {
             MySquareButton(
                 textResId = R.string.contact,
-                imageResId = R.drawable.ic_mail,
+                imagePainter = R.drawable.ic_mail,
                 onClick = { viewModel.onContactClick(context) }
             )
 
             MySquareButton(
                 textResId = R.string.share_app,
-                imageResId = R.drawable.ic_share,
+                imagePainter = R.drawable.ic_share,
                 onClick = { viewModel.onShareClick(context) }
             )
         }
@@ -99,7 +99,7 @@ fun MoreUI(
         MyRow {
             MySquareButton(
                 textResId = R.string.about,
-                imageResId = R.drawable.ic_info,
+                imagePainter = R.drawable.ic_info,
                 onClick = viewModel::onAboutClick
             )
         }
