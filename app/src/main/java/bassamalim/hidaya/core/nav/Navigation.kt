@@ -44,7 +44,7 @@ import bassamalim.hidaya.features.radio.ui.RadioClientUI
 import bassamalim.hidaya.features.recitationRecitersMenu.ui.RecitationRecitersMenuUI
 import bassamalim.hidaya.features.recitationSurasMenu.ui.RecitationSurasMenuScreen
 import bassamalim.hidaya.features.recitationsPlayer.ui.RecitationsPlayerScreen
-import bassamalim.hidaya.features.remembranceReader.RemembranceReaderScreen
+import bassamalim.hidaya.features.remembranceReader.ui.RemembranceReaderScreen
 import bassamalim.hidaya.features.remembrancesMenu.RemembrancesListScreen
 import bassamalim.hidaya.features.settings.SettingsUI
 import bassamalim.hidaya.features.tv.TvUI

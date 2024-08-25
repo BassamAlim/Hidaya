@@ -153,6 +153,7 @@ class RecitationsRepository @Inject constructor(
     fun getLastPlayed() = recitationsPreferencesDataSource.flow.map {
         it.lastPlayed
     }
+
     suspend fun setLastPlayedMediaId(lastPlayed: LastPlayedRecitation) {
         recitationsPreferencesDataSource.update { it.copy(
             lastPlayed = lastPlayed

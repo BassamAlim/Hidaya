@@ -8,6 +8,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
@@ -28,78 +30,78 @@ fun MoreUI(
     ) {
         MyRow {
             MySquareButton(
-                textResId = R.string.recitations,
-                imagePainter = R.drawable.ic_headphone,
+                text = stringResource(R.string.recitations),
+                imagePainter = painterResource(R.drawable.ic_headphone),
                 onClick = viewModel::onRecitationsClick
             )
 
             MySquareButton(
-                textResId = R.string.qibla,
-                imagePainter = R.drawable.ic_qibla_compass,
+                text = stringResource(R.string.qibla),
+                imagePainter = painterResource(R.drawable.ic_qibla_compass),
                 onClick = viewModel::onQiblaClick
             )
         }
 
         MyRow {
             MySquareButton(
-                textResId = R.string.quiz_title,
-                imagePainter = R.drawable.ic_quiz,
+                text = stringResource(R.string.quiz_title),
+                imagePainter = painterResource(R.drawable.ic_quiz),
                 onClick = viewModel::onQuizClick
             )
 
             MySquareButton(
-                textResId = R.string.hadeeth_books,
-                imagePainter = R.drawable.ic_books,
+                text = stringResource(R.string.hadeeth_books),
+                imagePainter = painterResource(R.drawable.ic_books),
                 onClick = viewModel::onBooksClick
             )
         }
 
         MyRow {
             MySquareButton(
-                textResId = R.string.tv_channels,
-                imagePainter = R.drawable.ic_television,
+                text = stringResource(R.string.tv_channels),
+                imagePainter = painterResource(R.drawable.ic_television),
                 onClick = viewModel::onTvClick
             )
 
             MySquareButton(
-                textResId = R.string.quran_radio,
-                imagePainter = R.drawable.ic_radio,
+                text = stringResource(R.string.quran_radio),
+                imagePainter = painterResource(R.drawable.ic_radio),
                 onClick = viewModel::onRadioClick
             )
         }
 
         MyRow {
             MySquareButton(
-                textResId = R.string.date_converter,
-                imagePainter = R.drawable.ic_calendar,
+                text = stringResource(R.string.date_converter),
+                imagePainter = painterResource(R.drawable.ic_calendar),
                 onClick = viewModel::onDateConverterClick
             )
 
             MySquareButton(
-                textResId = R.string.settings,
-                imagePainter = R.drawable.ic_settings,
+                text = stringResource(R.string.settings),
+                imagePainter = painterResource(R.drawable.ic_settings),
                 onClick = viewModel::onSettingsClick
             )
         }
 
         MyRow {
             MySquareButton(
-                textResId = R.string.contact,
-                imagePainter = R.drawable.ic_mail,
+                text = stringResource(R.string.contact),
+                imagePainter = painterResource(R.drawable.ic_mail),
                 onClick = { viewModel.onContactClick(context) }
             )
 
             MySquareButton(
-                textResId = R.string.share_app,
-                imagePainter = R.drawable.ic_share,
+                text = stringResource(R.string.share_app),
+                imagePainter = painterResource(R.drawable.ic_share),
                 onClick = { viewModel.onShareClick(context) }
             )
         }
 
         MyRow {
             MySquareButton(
-                textResId = R.string.about,
-                imagePainter = R.drawable.ic_info,
+                text = stringResource(R.string.about),
+                imagePainter = painterResource(R.drawable.ic_info),
                 onClick = viewModel::onAboutClick
             )
         }

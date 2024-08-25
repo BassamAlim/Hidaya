@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.remembranceReader
+package bassamalim.hidaya.features.remembranceReader.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,28 +34,28 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun RemembranceReaderScreen(
-    vm: RemembranceReaderViewModel
+    viewModel: RemembranceReaderViewModel
 ) {
-    val st by vm.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(
-        title = st.title,
+        title = state.title,
         bottomBar = {
             MyReadingBottomBar(
-                textSize = st.textSize,
-                onSeek = vm::onTextSizeChange
+                textSize = state.textSize,
+                onSeek = viewModel::onTextSizeSliderChange
             )
         }
     ) {
-        // athkar list
+        // remembrances list
         MyLazyColumn(
             modifier = Modifier.padding(it),
             lazyList = {
-                items(st.items) { item ->
-                    RemembranceCard(
-                        vm = vm,
-                        remembrancePassage = item,
-                        textSize = st.textSize
+                items(state.items) { item ->
+                    RemembrancePassageCard(
+                        passage = item,
+                        textSize = state.textSize,
+                        onInfoClick = viewModel::onInfoClick
                     )
                 }
             }
@@ -64,18 +64,18 @@ fun RemembranceReaderScreen(
         // source dialog
         InfoDialog(
             title = stringResource(R.string.reference),
-            text = st.infoDialogText,
-            shown = st.infoDialogShown,
-            onDismiss = vm::onInfoDialogDismiss
+            text = state.infoDialogText,
+            shown = state.isInfoDialogShown,
+            onDismiss = viewModel::onInfoDialogDismiss
         )
     }
 }
 
 @Composable
-private fun RemembranceCard(
-    vm: RemembranceReaderViewModel,
-    remembrancePassage: RemembrancePassage,
-    textSize: Float
+private fun RemembrancePassageCard(
+    passage: RemembrancePassage,
+    textSize: Float,
+    onInfoClick: (String) -> Unit
 ) {
     val textSizeMargin = 15
 
@@ -92,9 +92,9 @@ private fun RemembranceCard(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // title
-                if (vm.shouldShowTitle(remembrancePassage)) {
+                if (passage.isTitleAvailable) {
                     MyText(
-                        text = remembrancePassage.title!!,
+                        text = passage.title!!,
                         modifier = Modifier.padding(10.dp),
                         fontSize = (textSize + textSizeMargin).sp,
                         fontWeight = FontWeight.Bold
@@ -103,27 +103,27 @@ private fun RemembranceCard(
 
                 // text
                 MyText(
-                    text = remembrancePassage.text,
+                    text = passage.text,
                     modifier = Modifier.padding(10.dp),
                     fontSize = (textSize + textSizeMargin).sp,
                     textColor = AppTheme.colors.strongText
                 )
 
                 // translation
-                if (vm.shouldShowTranslation(remembrancePassage)) {
+                if (passage.isTranslationAvailable) {
                     MyText(
-                        text = remembrancePassage.textTranslation!!,
+                        text = passage.translation!!,
                         modifier = Modifier.padding(10.dp),
                         fontSize = (textSize + textSizeMargin).sp
                     )
                 }
 
-                // fadl
-                if (vm.shouldShowFadl(remembrancePassage)) {
+                // virtue
+                if (passage.isVirtueAvailable) {
                     Divider()
 
                     MyText(
-                        text = remembrancePassage.fadl!!,
+                        text = passage.virtue!!,
                         modifier = Modifier.padding(10.dp),
                         fontSize = (textSize + textSizeMargin - 8).sp,
                         textColor = AppTheme.colors.accent
@@ -131,7 +131,7 @@ private fun RemembranceCard(
                 }
 
                 // reference
-                if (vm.shouldShowReference(remembrancePassage)) {
+                if (passage.isReferenceAvailable) {
                     Divider()
 
                     MyIconButton(
@@ -140,15 +140,14 @@ private fun RemembranceCard(
                         modifier = Modifier.padding(2.dp),
                         innerPadding = 6.dp,
                         tint = AppTheme.colors.text,
-                        size = 26.dp
-                    ) {
-                        vm.showInfoDialog(remembrancePassage.reference!!)
-                    }
+                        size = 26.dp,
+                        onClick = { onInfoClick(passage.reference!!) }
+                    )
                 }
             }
 
             // repetition
-            if (vm.shouldShowRepetition(remembrancePassage)) {
+            if (passage.isRepetitionAvailable) {
                 Divider(
                     modifier = Modifier
                         .fillMaxHeight()
@@ -156,7 +155,7 @@ private fun RemembranceCard(
                 )
 
                 MyText(
-                    text = remembrancePassage.repetition,
+                    text = passage.repetition,
                     modifier = Modifier
                         .padding(10.dp)
                         .widthIn(10.dp, 100.dp)
