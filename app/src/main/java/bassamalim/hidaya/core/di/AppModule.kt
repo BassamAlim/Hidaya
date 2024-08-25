@@ -15,7 +15,7 @@ import bassamalim.hidaya.core.data.preferences.migrations.NotificationsPreferenc
 import bassamalim.hidaya.core.data.preferences.migrations.PrayersPreferencesMigration
 import bassamalim.hidaya.core.data.preferences.migrations.QuranPreferencesMigration
 import bassamalim.hidaya.core.data.preferences.migrations.RecitationsPreferencesMigration
-import bassamalim.hidaya.core.data.preferences.migrations.SupplicationsPreferencesMigration
+import bassamalim.hidaya.core.data.preferences.migrations.RemembrancesPreferencesMigration
 import bassamalim.hidaya.core.data.preferences.migrations.UserPreferencesMigration
 import bassamalim.hidaya.core.data.preferences.objects.AppSettingsPreferences
 import bassamalim.hidaya.core.data.preferences.objects.AppStatePreferences
@@ -24,7 +24,7 @@ import bassamalim.hidaya.core.data.preferences.objects.NotificationsPreferences
 import bassamalim.hidaya.core.data.preferences.objects.PrayersPreferences
 import bassamalim.hidaya.core.data.preferences.objects.QuranPreferences
 import bassamalim.hidaya.core.data.preferences.objects.RecitationsPreferences
-import bassamalim.hidaya.core.data.preferences.objects.SupplicationsPreferences
+import bassamalim.hidaya.core.data.preferences.objects.RemembrancesPreferences
 import bassamalim.hidaya.core.data.preferences.objects.UserPreferences
 import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
 import bassamalim.hidaya.core.data.preferences.dataSources.AppStatePreferencesDataSource
@@ -42,7 +42,7 @@ import bassamalim.hidaya.core.data.preferences.serializers.NotificationsPreferen
 import bassamalim.hidaya.core.data.preferences.serializers.PrayersPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.QuranPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.RecitationsPreferencesSerializer
-import bassamalim.hidaya.core.data.preferences.serializers.SupplicationsPreferencesSerializer
+import bassamalim.hidaya.core.data.preferences.serializers.RemembrancesPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.UserPreferencesSerializer
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.quranSearcher.QuranSearcherRepository
@@ -185,16 +185,16 @@ object AppModule {
         )
 
     @Provides @Singleton
-    fun provideSupplicationsPreferencesRepository(@ApplicationContext appContext: Context) =
+    fun provideRemembrancesPreferencesRepository(@ApplicationContext appContext: Context) =
         RemembrancePreferencesDataSource(
             DataStoreFactory.create(
-                serializer = SupplicationsPreferencesSerializer,
+                serializer = RemembrancesPreferencesSerializer,
                 corruptionHandler = ReplaceFileCorruptionHandler(
-                    produceNewData = { SupplicationsPreferences() }
+                    produceNewData = { RemembrancesPreferences() }
                 ),
-                migrations = listOf(SupplicationsPreferencesMigration.getMigration(appContext)),
+                migrations = listOf(RemembrancesPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-                produceFile = { appContext.dataStoreFile("supplications_preferences") }
+                produceFile = { appContext.dataStoreFile("remembrances_preferences") }
             )
         )
 
@@ -449,16 +449,16 @@ object AppModule {
     ) = SettingsRepository(resources, preferencesDataSource)
 
     @Provides @Singleton
-    fun provideSupplicationsMenuRepository(
+    fun provideRemembrancesMenuRepository(
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase,
-    ) = SupplicationsMenuRepository(preferencesDataSource, database)
+    ) = RemembrancesMenuRepository(preferencesDataSource, database)
 
     @Provides @Singleton
-    fun provideSupplicationsReaderRepository(
+    fun provideRemembranceReaderRepository(
         preferencesDataSource: PreferencesDataSource,
         database: AppDatabase
-    ) = SupplicationsReaderRepository(preferencesDataSource, database)
+    ) = RemembranceReaderRepository(preferencesDataSource, database)
 
     @Provides @Singleton
     fun provideTvRepository(

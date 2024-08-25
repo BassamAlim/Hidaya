@@ -8,7 +8,7 @@ https://play.google.com/store/apps/details?id=bassamalim.hidaya
 
 ## Features
 - Prayer times, using your current location or a location of your choice
-- Athkar
+- Remembrances (Athkar)
 - Quran with Tafseer (interpretation) and audio Recitations
 - Qibla direction with Compass
 - Audio Recitations with more than 200 Reciters
@@ -18,7 +18,7 @@ https://play.google.com/store/apps/details?id=bassamalim.hidaya
 - Quran radio station
 - Date converter between Hijri and Gregorian dates
 - Quran searcher and books searcher
-- Get daily reminder notifications for: morning athkar, evening athkar, daily werd page of quran, and surat al-kahf on friday
+- Get daily reminder notifications for: morning remembrances, evening remembrances, daily werd page of quran, and surat al-kahf on friday
 - Available in Arabic and English
 - Choose between many themes
 - and much more

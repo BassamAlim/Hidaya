@@ -8,6 +8,6 @@ object PreferencesFileNames {
     const val PRAYERS_PREFERENCES_NAME = "prayers_preferences"
     const val QURAN_PREFERENCES_NAME = "quran_preferences"
     const val RECITATIONS_PREFERENCES_NAME = "recitations_preferences"
-    const val SUPPLICATIONS_PREFERENCES_NAME = "supplications_preferences"
+    const val REMEMBRANCES_PREFERENCES_NAME = "remembrances_preferences"
     const val USER_PREFERENCES_NAME = "user_preferences"
 }

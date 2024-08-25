@@ -9,8 +9,8 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.quranReader.domain.QuranTarget
 import bassamalim.hidaya.features.quran.quranSearcher.domain.QuranSearcherDomain
+import bassamalim.hidaya.features.quranReader.domain.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -80,7 +80,7 @@ class QuranSearcherViewModel @Inject constructor(
                 matches.add(
                     QuranSearcherMatch(
                         id = a.id,
-                        ayaNum = translateNums(
+                        verseNum = translateNums(
                             string = a.num.toString(),
                             numeralsLanguage = numeralsLanguage
                         ),
@@ -130,11 +130,11 @@ class QuranSearcherViewModel @Inject constructor(
         }
     }
 
-    fun onGotoPageClick(aya: QuranSearcherMatch) {
+    fun onGotoPageClick(match: QuranSearcherMatch) {
         navigator.navigate(
             Screen.QuranViewer(
                 targetType = QuranTarget.VERSE.name,
-                targetValue = aya.id.toString()
+                targetValue = match.id.toString()
             )
         )
     }

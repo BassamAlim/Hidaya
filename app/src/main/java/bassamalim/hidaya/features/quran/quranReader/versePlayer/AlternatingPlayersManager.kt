@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quranReader.ayaPlayer
+package bassamalim.hidaya.features.quran.quranReader.versePlayer
 
 import android.content.Context
 import android.media.AudioAttributes
@@ -18,8 +18,10 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.models.Verse
 import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.features.quranReader.ayaPlayer.AlternatePlayer
+import bassamalim.hidaya.features.quranReader.ayaPlayer.PlayerCallback
+import bassamalim.hidaya.features.quranReader.ayaPlayer.PlayerState
 import java.util.Locale
 import kotlin.math.floor
 
@@ -35,8 +37,8 @@ class AlternatingPlayersManager(
     private val NUM_OF_PLAYERS = 2
     private val aps = Array(NUM_OF_PLAYERS) { AlternatePlayer(MediaPlayer()) }
     private var playerIdx = 0
-    private val ayat = db.versesDao().getAll()
-    var ayaIdx = -1
+    private val verses = db.versesDao().getAll()
+    var verseIdx = -1
     private var isPaused = false
 
     init {
@@ -56,7 +58,7 @@ class AlternatingPlayersManager(
         Log.d(
             Global.TAG,
             "in onPrepared with playerIdx: $currentPlayerIdx " +
-                    "and ayaIdx: ${aps[currentPlayerIdx].ayaIdx}"
+                    "and verseIdx: ${aps[currentPlayerIdx].verseIdx}"
         )
 
         aps[currentPlayerIdx].state = PlayerState.PREPARED
@@ -66,10 +68,10 @@ class AlternatingPlayersManager(
         ) {
             // check
             if (!isOtherPlayerPlaying())
-                play(playerIdx = currentPlayerIdx, ayaIdx = aps[currentPlayerIdx].ayaIdx)
+                play(playerIdx = currentPlayerIdx, verseIdx = aps[currentPlayerIdx].verseIdx)
         }
 
-        if (shouldStop(currentAya = aps[currentPlayerIdx].ayaIdx, jumpSize = 1))
+        if (shouldStop(currentVerse = aps[currentPlayerIdx].verseIdx, jumpSize = 1))
             aps[nxtPlayerIdx].state = PlayerState.STOPPED
         else {
             if (!isOtherPlayerPreparing()
@@ -77,7 +79,7 @@ class AlternatingPlayersManager(
                         || aps[nxtPlayerIdx].state == PlayerState.COMPLETED)) {
                 prepare(  // prepare next
                     playerIdx = nxt(currentPlayerIdx),
-                    ayaIdx = aps[currentPlayerIdx].ayaIdx + 1
+                    verseIdx = aps[currentPlayerIdx].verseIdx + 1
                 )
             }
         }
@@ -89,7 +91,7 @@ class AlternatingPlayersManager(
         Log.d(
             Global.TAG,
             "in onCompletion with playerIdx: $currentPlayerIdx" +
-                " and ayaIdx: ${aps[currentPlayerIdx].ayaIdx}"
+                " and verseIdx: ${aps[currentPlayerIdx].verseIdx}"
         )
 
         aps[currentPlayerIdx].state = PlayerState.COMPLETED
@@ -101,7 +103,7 @@ class AlternatingPlayersManager(
             when (aps[nxtPlayerIdx].state) {
                 PlayerState.PREPARED -> {
                     if (!isOtherPlayerPlaying())
-                        play(playerIdx = nxtPlayerIdx, ayaIdx = aps[nxtPlayerIdx].ayaIdx)
+                        play(playerIdx = nxtPlayerIdx, verseIdx = aps[nxtPlayerIdx].verseIdx)
                 }
                 PlayerState.STOPPED -> {  // finished
                     callback.updatePbState(PlaybackStateCompat.STATE_STOPPED)
@@ -109,13 +111,13 @@ class AlternatingPlayersManager(
                 else -> {}
             }
 
-            if (shouldStop(currentAya = aps[currentPlayerIdx].ayaIdx, jumpSize = NUM_OF_PLAYERS))
+            if (shouldStop(currentVerse = aps[currentPlayerIdx].verseIdx, jumpSize = NUM_OF_PLAYERS))
                 aps[currentPlayerIdx].state = PlayerState.STOPPED
             else {
                 if (!isOtherPlayerPreparing()) {
                     prepare(
                         playerIdx = currentPlayerIdx,
-                        ayaIdx = aps[currentPlayerIdx].ayaIdx + NUM_OF_PLAYERS
+                        verseIdx = aps[currentPlayerIdx].verseIdx + NUM_OF_PLAYERS
                     )
                 }
             }
@@ -138,13 +140,13 @@ class AlternatingPlayersManager(
         return true
     }
 
-    fun playFromMediaId(ayaIdx: Int) {
+    fun playFromMediaId(verseIdx: Int) {
         Log.d(
             Global.TAG,
-            "in playFromMediaId in AlternatingPlayersManager with ayaIdx: $ayaIdx"
+            "in playFromMediaId in AlternatingPlayersManager with verseIdx: $verseIdx"
         )
 
-        if (ayaIdx != this.ayaIdx) playNew(ayaIdx)
+        if (verseIdx != this.verseIdx) playNew(verseIdx)
         else if (isPaused) resume()
 
         callback.updatePbState(PlaybackStateCompat.STATE_PLAYING)
@@ -167,14 +169,14 @@ class AlternatingPlayersManager(
         aps[playerIdx].mp.seekTo(pos.toInt())
     }
 
-    fun previousAya() {
-        if (ayaIdx > 0)
-            playNew(ayaIdx - 1)
+    fun previousVerse() {
+        if (verseIdx > 0)
+            playNew(verseIdx - 1)
     }
 
-    fun nextAya() {
-        if (ayaIdx < ayat.size - 1)
-            playNew(ayaIdx + 1)
+    fun nextVerse() {
+        if (verseIdx < verses.size - 1)
+            playNew(verseIdx + 1)
     }
 
     fun getCurrentPosition() = aps[playerIdx].mp.currentPosition
@@ -216,31 +218,31 @@ class AlternatingPlayersManager(
         }
     }
 
-    private fun playNew(ayaIdx: Int) {
-        this.ayaIdx = ayaIdx
+    private fun playNew(verseIdx: Int) {
+        this.verseIdx = verseIdx
 
         reset()
 
-        prepare(playerIdx = 0, ayaIdx = ayaIdx)  // prepare first
+        prepare(playerIdx = 0, verseIdx = verseIdx)  // prepare first
     }
 
-    private fun play(playerIdx: Int, ayaIdx: Int) {
+    private fun play(playerIdx: Int, verseIdx: Int) {
         aps[playerIdx].state = PlayerState.PLAYING
         this.playerIdx = playerIdx
-        this.ayaIdx = ayaIdx
+        this.verseIdx = verseIdx
         aps[playerIdx].mp.start()
-        callback.track(ayaId = ayaIdx+1)
+        callback.track(verseId = verseIdx+1)
     }
 
-    private fun prepare(playerIdx: Int, ayaIdx: Int) {
+    private fun prepare(playerIdx: Int, verseIdx: Int) {
         aps[playerIdx].state = PlayerState.PREPARING
-        aps[playerIdx].ayaIdx = ayaIdx
+        aps[playerIdx].verseIdx = verseIdx
         aps[playerIdx].repeated = 0
 
         val uri: Uri
         try {
             aps[playerIdx].mp.reset()
-            uri = getUri(ayat[ayaIdx])
+            uri = getUri(verses[verseIdx])
             aps[playerIdx].mp.setDataSource(ctx, uri)
             aps[playerIdx].mp.prepareAsync()
         } catch (e: Exception) {
@@ -250,7 +252,7 @@ class AlternatingPlayersManager(
     }
 
     private fun getRepeat(): Int {
-        val repeat = floor(preferencesDS.getFloat(Preference.AyaRepeat)).toInt()
+        val repeat = floor(preferencesDS.getFloat(Preference.VerseRepeat)).toInt()
         return if (repeat == 11) Int.MAX_VALUE else repeat
     }
 
@@ -271,22 +273,22 @@ class AlternatingPlayersManager(
         }.contains(true)
     }
 
-    private fun shouldStop(currentAya: Int, jumpSize: Int): Boolean {
-        val targetAya = currentAya + jumpSize
-        return targetAya >= ayat.size
+    private fun shouldStop(currentVerse: Int, jumpSize: Int): Boolean {
+        val targetVerse = currentVerse + jumpSize
+        return targetVerse >= verses.size
                 || (preferencesDS.getBoolean(Preference.StopOnSuraEnd)
-                && ayat[currentAya].suraNum != ayat[targetAya].suraNum)
+                && verses[currentVerse].suraNum != verses[targetVerse].suraNum)
                 || (preferencesDS.getBoolean(Preference.StopOnPageEnd)
-                && ayat[currentAya].pageNum != ayat[targetAya].pageNum)
+                && verses[currentVerse].pageNum != verses[targetVerse].pageNum)
     }
 
-    private fun getUri(aya: Verse): Uri {
-        val choice = preferencesDS.getString(Preference.AyaReciter).toInt()
+    private fun getUri(verse: Verse): Uri {
+        val choice = preferencesDS.getString(Preference.VerseReciter).toInt()
         val sources = db.verseRecitationsDao().getReciter(choice)
 
         var uri = "https://www.everyayah.com/data/"
         uri += sources[0].source
-        uri += String.format(Locale.US, "%03d%03d.mp3", aya.suraNum, aya.num)
+        uri += String.format(Locale.US, "%03d%03d.mp3", verse.suraNum, verse.num)
 
         return Uri.parse(uri)
     }

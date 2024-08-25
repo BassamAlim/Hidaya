@@ -61,8 +61,8 @@ object RecitationsPreferencesMigration {
                     ).toLong()
                 ),
                 verseReciterId = sharedPrefs.getString(
-                    key = Preference.AyaReciter.key,
-                    defValue = Preference.AyaReciter.default as String
+                    key = Preference.VerseReciter.key,
+                    defValue = Preference.VerseReciter.default as String
                 )!!.toInt(),
                 verseRepeatMode = VerseRepeatMode.NONE,
                 shouldStopOnPageEnd = sharedPrefs.getBoolean(

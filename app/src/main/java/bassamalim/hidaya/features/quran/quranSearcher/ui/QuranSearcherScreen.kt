@@ -123,7 +123,7 @@ fun MatchItem(
             }
 
             MyText(
-                text = "${stringResource(R.string.aya_number)} ${item.ayaNum}",
+                text = "${stringResource(R.string.aya_number)} ${item.verseNum}",
                 modifier = Modifier.padding(6.dp)
             )
             MyText(

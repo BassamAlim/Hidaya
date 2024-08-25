@@ -22,7 +22,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.features.quranReader.ayaPlayer.AyaPlayerService
+import bassamalim.hidaya.features.quranReader.ayaPlayer.VersePlayerService
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -87,7 +87,7 @@ class QuranReaderDomain @Inject constructor(
 
         mediaBrowser = MediaBrowserCompat(
             app,
-            ComponentName(app, AyaPlayerService::class.java),
+            ComponentName(app, VersePlayerService::class.java),
             connectionCallbacks,
             null
         )

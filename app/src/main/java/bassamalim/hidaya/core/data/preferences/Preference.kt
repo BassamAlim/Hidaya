@@ -14,9 +14,9 @@ sealed class Preference(val key: String, val default: Any) {
 
     data object RemembrancesTextSize : Preference("athkar_text_size_key", 15f)
 
-    data object AyaReciter : Preference("aya_reciter", "13")
+    data object VerseReciter : Preference("aya_reciter", "13")
 
-    data object AyaRepeat : Preference("aya_repeat", 1f)  // float to use in slider
+    data object VerseRepeat : Preference("aya_repeat", 1f)  // float to use in slider
 
     data object BooksTextSize : Preference("books_text_size_key", 15f)
 

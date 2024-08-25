@@ -5,18 +5,18 @@ import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
-import bassamalim.hidaya.core.data.preferences.objects.SupplicationsPreferences
+import bassamalim.hidaya.core.data.preferences.objects.RemembrancesPreferences
 import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentMapOf
 
-object SupplicationsPreferencesMigration {
+object RemembrancesPreferencesMigration {
 
     fun getMigration(context: Context) =
         SharedPreferencesMigration(
             context = context,
-            sharedPreferencesName = PreferencesFileNames.SUPPLICATIONS_PREFERENCES_NAME
-        ) { sharedPrefs: SharedPreferencesView, currentData: SupplicationsPreferences ->
+            sharedPreferencesName = PreferencesFileNames.REMEMBRANCES_PREFERENCES_NAME
+        ) { sharedPrefs: SharedPreferencesView, currentData: RemembrancesPreferences ->
             currentData.copy(
                 favorites = persistentMapOf<Int, Int>().mutate {
                     Gson().fromJson(

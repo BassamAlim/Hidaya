@@ -64,8 +64,8 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.quranReader.ui.QuranViewType.LIST
 import bassamalim.hidaya.features.quran.quranSettings.ui.QuranSettingsDlg
+import bassamalim.hidaya.features.quranReader.ui.QuranViewType.LIST
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -371,8 +371,8 @@ private fun PageItems(
         )
     }
 
-    for (aya in verses) {
-        if (aya.suraNum != lastSura) {
+    for (verse in verses) {
+        if (verse.suraNum != lastSura) {
             PageItem(
                 text = sequenceText.toString(),
                 sequence = sequence,
@@ -382,9 +382,9 @@ private fun PageItems(
                 onAyaScreenClick = onAyaScreenClick
             )
 
-            if (aya.num == 1) {
+            if (verse.num == 1) {
                 NewSura(
-                    verse = aya,
+                    verse = verse,
                     isCurrentPage = isCurrentPage,
                     textSize = textSize,
                     theme = theme,
@@ -396,12 +396,12 @@ private fun PageItems(
             sequence = mutableListOf()
         }
 
-        aya.start = sequenceText.length
-        val ayaText =
+        verse.start = sequenceText.length
+        val verseText =
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
-                aya.text!!
-            else {  // reverse aya number if below android 13 (because of a bug)
-                val text = aya.text!!
+                verse.text!!
+            else {  // reverse verse number if below android 13 (because of a bug)
+                val text = verse.text!!
                 val reversedNum = text
                     .split(" ")
                     .last()
@@ -410,13 +410,13 @@ private fun PageItems(
                 val rest = text.dropLast(reversedNum.length + 1)
                 "$rest$reversedNum "
             }
-        sequenceText.append(ayaText)
-        aya.end = sequenceText.length
-        sequence.add(aya)
+        sequenceText.append(verseText)
+        verse.end = sequenceText.length
+        sequence.add(verse)
 
-        Log.d(Global.TAG, "ID: ${aya.id}, Start: ${aya.start}, End: ${aya.end}")
+        Log.d(Global.TAG, "ID: ${verse.id}, Start: ${verse.start}, End: ${verse.end}")
 
-        lastSura = aya.suraNum
+        lastSura = verse.suraNum
     }
     PageItem(
         text = sequenceText.toString(),
@@ -485,7 +485,7 @@ private fun ListItems(
                 onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
             )
 
-        val ayaText =
+        val verseText =
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
                 aya.text!!
             else {  // reverse aya number if below android 13 (because of a bug)
@@ -500,7 +500,7 @@ private fun ListItems(
             }
 
         ListViewScreen(
-            annotatedString = AnnotatedString(ayaText),
+            annotatedString = AnnotatedString(verseText),
             verse = aya,
             isCurrentPage = isCurrentPage,
             textSize = textSize,

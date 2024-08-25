@@ -41,10 +41,11 @@ import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
+import bassamalim.hidaya.features.quran.quranReader.versePlayer.AlternatingPlayersManager
 
 @UnstableApi
 @RequiresApi(api = Build.VERSION_CODES.O)
-class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, PlayerCallback {
+class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener, PlayerCallback {
 
     private val intentFilter = IntentFilter()
     private val handler = Handler(Looper.getMainLooper())
@@ -64,7 +65,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
     private lateinit var pauseAction: NotificationCompat.Action
     private lateinit var nextAction: NotificationCompat.Action
     private lateinit var prevAction: NotificationCompat.Action
-    private lateinit var ayat: List<Verse>
+    private lateinit var verses: List<Verse>
     private lateinit var reciterNames: List<String>
     private lateinit var suarNames: List<String>
     private val notificationId = 101
@@ -99,11 +100,11 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
                 }
                 ACTION_NEXT -> {
                     Log.i(Global.TAG, "In ACTION_NEXT")
-                    apm.nextAya()
+                    apm.nextVerse()
                 }
                 ACTION_PREV -> {
                     Log.i(Global.TAG, "In ACTION_PREV")
-                    apm.previousAya()
+                    apm.previousVerse()
                 }
                 ACTION_STOP -> {
                     Log.i(Global.TAG, "In ACTION_STOP")
@@ -125,7 +126,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         )
         db = DBUtils.getDB(this)
 
-        ayat = db.versesDao().getAll()
+        verses = db.versesDao().getAll()
         reciterNames = db.verseRecitersDao().getNames()
         suarNames =
             if (preferencesDS.getLanguage() == Language.ENGLISH) db.surasDao().getDecoratedNamesEn()
@@ -148,11 +149,11 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
 
             val ayaId = mediaId.toInt()
 
-            reciterId = preferencesDS.getString(Preference.AyaReciter).toInt()
+            reciterId = preferencesDS.getString(Preference.VerseReciter).toInt()
 
             if (apm.isNotInitialized()) {
                 // Start the service
-                startService(Intent(applicationContext, AyaPlayerService::class.java))
+                startService(Intent(applicationContext, VersePlayerService::class.java))
             }
 
             mediaSession.isActive = true
@@ -176,7 +177,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
 
             receiverManager.register()
 
-            apm.playFromMediaId(ayaIdx = ayaId-1)
+            apm.playFromMediaId(verseIdx = ayaId-1)
         }
 
         // used as onResume
@@ -185,7 +186,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
 
             if (apm.isNotInitialized()) {
                 // Start the service
-                startService(Intent(applicationContext, AyaPlayerService::class.java))
+                startService(Intent(applicationContext, VersePlayerService::class.java))
             }
 
             mediaSession.isActive = true
@@ -253,12 +254,12 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
 
         override fun onSkipToNext() {
             super.onSkipToNext()
-            apm.nextAya()
+            apm.nextVerse()
         }
 
         override fun onSkipToPrevious() {
             super.onSkipToPrevious()
-            apm.previousAya()
+            apm.previousVerse()
         }
 
         override fun onSeekTo(pos: Long) {
@@ -344,8 +345,8 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         return controller.playbackState.state
     }
 
-    override fun track(ayaId: Int) {
-        updateMetadata(ayaId, true)
+    override fun track(verseId: Int) {
+        updateMetadata(verseId, true)
     }
 
     private fun setupActions() {
@@ -543,7 +544,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         )
     }
 
-    private fun updateMetadata(ayaId: Int = apm.ayaIdx, duration: Boolean) {
+    private fun updateMetadata(ayaId: Int = apm.verseIdx, duration: Boolean) {
         val aya = getAya(ayaId)
 
         mediaMetadata = MediaMetadataCompat.Builder()
@@ -573,7 +574,7 @@ class AyaPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener
         mediaSession.setMetadata(mediaMetadata)
     }
 
-    private fun getAya(id: Int) = ayat[id-1]
+    private fun getAya(id: Int) = verses[id-1]
 
     private fun updateDurationRecord(amount: Int) {
         val old = preferencesDS.getLong(Preference.RecitationsPlaybackRecord)

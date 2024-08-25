@@ -1,21 +1,21 @@
 package bassamalim.hidaya.core.data.preferences.serializers
 
 import androidx.datastore.core.Serializer
-import bassamalim.hidaya.core.data.preferences.objects.SupplicationsPreferences
+import bassamalim.hidaya.core.data.preferences.objects.RemembrancesPreferences
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
 
-object SupplicationsPreferencesSerializer: Serializer<SupplicationsPreferences> {
+object RemembrancesPreferencesSerializer: Serializer<RemembrancesPreferences> {
 
-    override val defaultValue: SupplicationsPreferences
-        get() = SupplicationsPreferences()
+    override val defaultValue: RemembrancesPreferences
+        get() = RemembrancesPreferences()
 
-    override suspend fun readFrom(input: InputStream): SupplicationsPreferences {
+    override suspend fun readFrom(input: InputStream): RemembrancesPreferences {
         return try {
             Json.decodeFromString(
-                deserializer = SupplicationsPreferences.serializer(),
+                deserializer = RemembrancesPreferences.serializer(),
                 string = input.readBytes().decodeToString()
             )
         } catch (e: SerializationException) {
@@ -24,10 +24,10 @@ object SupplicationsPreferencesSerializer: Serializer<SupplicationsPreferences> 
         }
     }
 
-    override suspend fun writeTo(t: SupplicationsPreferences, output: OutputStream) {
+    override suspend fun writeTo(t: RemembrancesPreferences, output: OutputStream) {
         output.write(
             Json.encodeToString(
-                serializer = SupplicationsPreferences.serializer(),
+                serializer = RemembrancesPreferences.serializer(),
                 value = t
             ).encodeToByteArray()
         )
