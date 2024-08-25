@@ -79,8 +79,7 @@ class PrayerTimesCalculator(
         )
 
         val times = floatToTime24(computeDayTimes())
-
-        times.removeAt(4)  // removing sunset time
+            .drop(4)  // removing sunset time
 
         val cals = arrayOfNulls<Calendar>(times.size)
         for (i in times.indices) {
@@ -115,9 +114,10 @@ class PrayerTimesCalculator(
         )
 
         val times =
-            if (timeFormat == TimeFormat.TWENTY_FOUR) floatToTime24(computeDayTimes())
-            else floatToTime12(computeDayTimes())
-        times.removeAt(4)  // removing sunset time
+            (if (timeFormat == TimeFormat.TWENTY_FOUR) floatToTime24(computeDayTimes())
+            else floatToTime12(computeDayTimes()))
+                .drop(4)  // removing sunset time
+                .toMutableList()
 
         for (i in times.indices)
             times[i] = translateNums(numeralsLanguage, times[i], true)

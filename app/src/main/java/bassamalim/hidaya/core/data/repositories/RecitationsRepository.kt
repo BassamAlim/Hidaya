@@ -10,7 +10,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.models.Reciter
-import bassamalim.hidaya.features.recitationRecitersMenu.domain.LastPlayedRecitation
+import bassamalim.hidaya.features.recitations.recitationRecitersMenu.domain.LastPlayedRecitation
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

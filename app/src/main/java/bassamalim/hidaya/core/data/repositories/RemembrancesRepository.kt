@@ -25,9 +25,13 @@ class RemembrancesRepository @Inject constructor(
 
     fun observeAllRemembrances() = remembrancesDao.observeAll()
 
+    fun observeFavoriteRemembrances() = remembrancesDao.observeFavorites()
+
     fun observeRemembranceFavorites() = remembrancesDao.observeFavorites()
 
     fun observeRemembranceIsFavorites() = remembrancesDao.observeIsFavorites()
+
+    fun observeFavorites() = remembrancesDao.observeFavorites()
 
     fun observeCategoryRemembrances(categoryId: Int) =
         remembrancesDao.observeCategoryRemembrances(categoryId)
@@ -40,8 +44,8 @@ class RemembrancesRepository @Inject constructor(
         if (language == Language.ARABIC) remembrancesDao.getNameAr(id)
         else remembrancesDao.getNameEn(id)
 
-    suspend fun setRemembranceFavorite(id: Int, value: Int) {
-        remembrancesDao.setIsFavorite(id, value)
+    suspend fun setRemembranceIsFavorite(id: Int, value: Boolean) {
+        remembrancesDao.setIsFavorite(id = id, value = if (value) 1 else 0)
 
         setBackupFavorites(
             remembrancesDao.observeIsFavorites().first().mapIndexed { index, isFavorite ->

@@ -46,7 +46,7 @@ import bassamalim.hidaya.core.data.preferences.serializers.SupplicationsPreferen
 import bassamalim.hidaya.core.data.preferences.serializers.UserPreferencesSerializer
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.quranSearcher.QuranSearcherRepository
-import bassamalim.hidaya.features.quranSettings.QuranSettingsRepository
+import bassamalim.hidaya.features.quran.quranSettings.QuranSettingsRepository
 import bassamalim.hidaya.features.radio.RadioClientRepository
 import bassamalim.hidaya.features.settings.SettingsRepository
 import bassamalim.hidaya.features.recitationRecitersMenu.RecitationsRecitersMenuRepository

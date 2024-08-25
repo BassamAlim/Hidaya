@@ -20,10 +20,10 @@ import bassamalim.hidaya.core.ui.outToBottom
 import bassamalim.hidaya.core.ui.outToLeft
 import bassamalim.hidaya.core.ui.outToTop
 import bassamalim.hidaya.features.about.ui.AboutScreen
-import bassamalim.hidaya.features.bookChapters.ui.BookChaptersUI
+import bassamalim.hidaya.features.books.bookChapters.ui.BookChaptersUI
 import bassamalim.hidaya.features.bookReader.ui.BookViewerScreen
-import bassamalim.hidaya.features.bookSearcher.ui.BookSearcherUI
-import bassamalim.hidaya.features.books.ui.BooksUI
+import bassamalim.hidaya.features.books.bookSearcher.ui.BookSearcherUI
+import bassamalim.hidaya.features.books.booksMenu.ui.BooksMenuScreen
 import bassamalim.hidaya.features.dateConverter.ui.DateConverterUI
 import bassamalim.hidaya.features.dateEditor.ui.DateEditorDialog
 import bassamalim.hidaya.features.hijriDatePicker.ui.HijriDatePickerDialog
@@ -32,20 +32,20 @@ import bassamalim.hidaya.features.locationPicker.ui.LocationPickerUI
 import bassamalim.hidaya.features.locator.ui.LocatorUI
 import bassamalim.hidaya.features.main.ui.MainUI
 import bassamalim.hidaya.features.onboarding.ui.WelcomeUI
-import bassamalim.hidaya.features.prayerReminder.ui.PrayerReminderDialog
-import bassamalim.hidaya.features.prayerSettings.ui.PrayerSettingsDialog
+import bassamalim.hidaya.features.prayers.prayerReminder.ui.PrayerReminderDialog
+import bassamalim.hidaya.features.prayers.prayerSettings.ui.PrayerSettingsDialog
 import bassamalim.hidaya.features.qibla.ui.QiblaUI
-import bassamalim.hidaya.features.quiz.ui.QuizUI
-import bassamalim.hidaya.features.quizLobby.QuizLobbyUI
-import bassamalim.hidaya.features.quizResult.ui.QuizResultUI
+import bassamalim.hidaya.features.quiz.quizTester.ui.QuizUI
+import bassamalim.hidaya.features.quiz.quizLobby.QuizLobbyUI
+import bassamalim.hidaya.features.quiz.quizResult.ui.QuizResultUI
 import bassamalim.hidaya.features.quranReader.ui.QuranViewerUI
-import bassamalim.hidaya.features.quranSearcher.ui.QuranSearcherUI
+import bassamalim.hidaya.features.quran.quranSearcher.ui.QuranSearcherUI
 import bassamalim.hidaya.features.radio.ui.RadioClientUI
-import bassamalim.hidaya.features.recitationRecitersMenu.ui.RecitationRecitersMenuUI
-import bassamalim.hidaya.features.recitationSurasMenu.ui.RecitationSurasMenuScreen
-import bassamalim.hidaya.features.recitationsPlayer.ui.RecitationsPlayerScreen
-import bassamalim.hidaya.features.remembranceReader.ui.RemembranceReaderScreen
-import bassamalim.hidaya.features.remembrancesMenu.RemembrancesListScreen
+import bassamalim.hidaya.features.recitations.recitationRecitersMenu.ui.RecitationRecitersMenuUI
+import bassamalim.hidaya.features.recitations.recitationSurasMenu.ui.RecitationSurasMenuScreen
+import bassamalim.hidaya.features.recitations.recitationsPlayer.ui.RecitationsPlayerScreen
+import bassamalim.hidaya.features.remembrances.remembranceReader.ui.RemembranceReaderScreen
+import bassamalim.hidaya.features.remembrances.remembrancesMenu.ui.RemembrancesListScreen
 import bassamalim.hidaya.features.settings.SettingsUI
 import bassamalim.hidaya.features.tv.TvUI
 import com.google.gson.Gson
@@ -167,7 +167,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            BooksUI(
+            BooksMenuScreen(
                 hiltViewModel()
             )
         }
