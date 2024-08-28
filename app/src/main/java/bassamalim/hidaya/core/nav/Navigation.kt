@@ -47,7 +47,7 @@ import bassamalim.hidaya.features.recitations.recitationsPlayer.ui.RecitationsPl
 import bassamalim.hidaya.features.remembrances.remembranceReader.ui.RemembranceReaderScreen
 import bassamalim.hidaya.features.remembrances.remembrancesMenu.ui.RemembrancesListScreen
 import bassamalim.hidaya.features.settings.ui.SettingsScreen
-import bassamalim.hidaya.features.tv.TvUI
+import bassamalim.hidaya.features.tv.ui.TvScreen
 import com.google.gson.Gson
 
 @Composable
@@ -468,7 +468,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            TvUI(
+            TvScreen(
                 hiltViewModel()
             )
         }

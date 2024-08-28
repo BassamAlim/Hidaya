@@ -1,6 +1,5 @@
-package bassamalim.hidaya.features.tv
+package bassamalim.hidaya.features.tv.ui
 
-import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -27,18 +26,14 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
 @Composable
-fun TvUI(
-    vm: TvViewModel
+fun TvScreen(
+    viewModel: TvViewModel
 ) {
-    val ctx = LocalContext.current
-
-    KeepScreenOn()
-
-    MyScaffold(stringResource(R.string.tv_channels)) {
+    MyScaffold(title = stringResource(R.string.tv_channels)) {
         MyParentColumn(
             Modifier.padding(it)
         ) {
-            YoutubeScreen(ctx, vm)
+            YoutubeScreen(viewModel::onInitializationSuccess)
 
             MyColumn(
                 modifier = Modifier.padding(top = 100.dp)
@@ -51,10 +46,9 @@ fun TvUI(
                             contentDescription = stringResource(R.string.quran_channel)
                         )
                     },
-                    modifier = Modifier.padding(bottom = 50.dp)
-                ) {
-                    vm.onQuranChannelClk()
-                }
+                    modifier = Modifier.padding(bottom = 50.dp),
+                    onClick = viewModel::onQuranChannelClick
+                )
 
                 MyHorizontalButton(
                     text = stringResource(R.string.sunnah_channel),
@@ -63,22 +57,24 @@ fun TvUI(
                             painter = painterResource(R.mipmap.ic_sunnah_channel),
                             contentDescription = stringResource(R.string.quran_channel)
                         )
-                    }
-                ) {
-                    vm.onSunnahChannelClk()
-                }
+                    },
+                    onClick = viewModel::onSunnahChannelClick
+                )
             }
         }
     }
+
+    KeepScreenOn()
 }
 
 @Composable
 fun YoutubeScreen(
-    ctx: Context,
-    vm: TvViewModel
+    onInitializationSuccess: (YouTubePlayer) -> Unit,
 ) {
+    val context = LocalContext.current
+
     // a fix because locale changes when displaying YouTubePlayerView for some reason
-    ActivityUtils.onActivityCreateSetLocale(ctx)
+    ActivityUtils.onActivityCreateSetLocale(context)
 
     AndroidView(factory = {
         val view = YouTubePlayerView(it)
@@ -86,8 +82,7 @@ fun YoutubeScreen(
             object : AbstractYouTubePlayerListener() {
                 override fun onReady(youTubePlayer: YouTubePlayer) {
                     super.onReady(youTubePlayer)
-
-                    vm.onInitializationSuccess(youTubePlayer)
+                    onInitializationSuccess(youTubePlayer)
                 }
 
                 override fun onError(
@@ -95,12 +90,10 @@ fun YoutubeScreen(
                     error: PlayerConstants.PlayerError
                 ) {
                     super.onError(youTubePlayer, error)
-
                     Log.e(Global.TAG, java.lang.String.valueOf(error))
-
                     Toast.makeText(
-                        ctx,
-                        ctx.getString(R.string.playback_failed),
+                        context,
+                        context.getString(R.string.playback_failed),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
