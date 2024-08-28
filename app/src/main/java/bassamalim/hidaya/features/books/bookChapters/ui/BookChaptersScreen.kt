@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.MyBtnSurface
+import bassamalim.hidaya.core.ui.components.MyButtonSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
@@ -54,9 +54,9 @@ private fun Tab(
     MyLazyColumn(
         lazyList = {
             items(chapters) { chapter ->
-                MyBtnSurface(
+                MyButtonSurface(
                     text = chapter.title,
-                    iconBtn = {
+                    iconButton = {
                         MyFavoriteButton(
                             isFavorite = chapter.isFavorite,
                             onClick = { onFavClick(chapter.id) }

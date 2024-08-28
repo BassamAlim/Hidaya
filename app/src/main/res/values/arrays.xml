@@ -237,7 +237,7 @@
         <item>مؤسسة الجيوفيزياء, جامعة طهران</item>
     </string-array>
 
-    <string-array name="prayer_times_calc_method_values" translatable="false">
+    <string-array name="prayer_times_calc_method_items" translatable="false">
         <item>MECCA</item>
         <item>MWL</item>
         <item>ISNA</item>

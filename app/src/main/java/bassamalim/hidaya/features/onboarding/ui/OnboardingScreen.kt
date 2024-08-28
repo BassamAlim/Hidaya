@@ -17,7 +17,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.features.settings.AppearanceSettings
+import bassamalim.hidaya.features.settings.ui.AppearanceSettings
 
 @Composable
 fun WelcomeUI(

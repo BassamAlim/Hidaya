@@ -79,12 +79,12 @@ fun MyClickableSurface(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MyBtnSurface(
+fun MyButtonSurface(
     text: String,
     modifier: Modifier = Modifier,
     innerVPadding: Dp = 10.dp,
     fontSize: TextUnit = 20.sp,
-    iconBtn: @Composable () -> Unit,
+    iconButton: @Composable () -> Unit,
     onClick: () -> Unit
 ) {
     Surface(
@@ -110,19 +110,19 @@ fun MyBtnSurface(
                     .padding(10.dp)
             )
 
-            iconBtn()
+            iconButton()
         }
     }
 }
 
 @Composable
 fun ExpandableCard(
-    titleResId: Int,
+    title: String,
     modifier: Modifier = Modifier,
     expandedContent: @Composable () -> Unit
 ) {
     var expandedState by remember { mutableStateOf(false) }
-    val rotationState by animateFloatAsState(if (expandedState) 180f else 0f)
+    val rotationState by animateFloatAsState(if (expandedState) 180f else 0f, label = "")
 
     MyClickableSurface(
         modifier.animateContentSize(
@@ -139,7 +139,7 @@ fun ExpandableCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 MyText(
-                    stringResource(titleResId),
+                    title,
                     Modifier.weight(6f),
                     fontWeight = FontWeight.Bold
                 )

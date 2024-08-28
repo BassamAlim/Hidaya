@@ -1,6 +1,6 @@
 package bassamalim.hidaya.core.enums
 
-enum class PrayerTimesJuristicMethod {
+enum class PrayerTimeJuristicMethod {
     SHAFII,
     HANAFI
 }

@@ -10,7 +10,7 @@ import bassamalim.hidaya.features.quranReader.ui.QuranViewType as QuranViewTypes
 
 sealed class Preference(val key: String, val default: Any) {
 
-    data object AthanVoice : Preference("athan_voice", "1")
+    data object AthanId : Preference("athan_voice", "1")
 
     data object RemembrancesTextSize : Preference("athkar_text_size_key", 15f)
 

@@ -22,10 +22,10 @@ import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.features.quranReader.ui.QuranViewType
-import bassamalim.hidaya.features.settings.CategoryTitle
-import bassamalim.hidaya.features.settings.MenuSetting
-import bassamalim.hidaya.features.settings.SliderPref
-import bassamalim.hidaya.features.settings.SwitchSetting
+import bassamalim.hidaya.features.settings.ui.CategoryTitle
+import bassamalim.hidaya.features.settings.ui.MenuSetting
+import bassamalim.hidaya.features.settings.ui.SliderPref
+import bassamalim.hidaya.features.settings.ui.SwitchSetting
 
 @Composable
 fun QuranSettingsDlg(

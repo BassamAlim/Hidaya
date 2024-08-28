@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.settings
+package bassamalim.hidaya.features.settings.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

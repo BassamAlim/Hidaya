@@ -19,7 +19,7 @@ object NotificationsPreferencesMigration {
             sharedPreferencesName = PreferencesFileNames.NOTIFICATIONS_PREFERENCES_NAME
         ) { sharedPrefs: SharedPreferencesView, currentData: NotificationsPreferences ->
             currentData.copy(
-                notificationTypes = persistentMapOf<PID, NotificationType>().mutate {
+                notificationTypeMap = persistentMapOf<PID, NotificationType>().mutate {
                     PID.entries.map {
                         it to NotificationType.valueOf(
                             sharedPrefs.getString(
@@ -29,7 +29,7 @@ object NotificationsPreferencesMigration {
                         )
                     }
                 },
-                extraNotificationsMinuteOfDay = persistentMapOf(
+                devotionReminderMinuteOfDayMap = persistentMapOf(
                     PID.MORNING to sharedPrefs.getInt(
                         key = Preference.ExtraNotificationHour(PID.MORNING).key,
                         defValue = Preference.ExtraNotificationHour(PID.MORNING).default as Int
@@ -59,7 +59,7 @@ object NotificationsPreferencesMigration {
                         defValue = Preference.ExtraNotificationMinute(PID.FRIDAY_KAHF).default as Int
                     )
                 ),
-                notifyExtraNotifications = persistentMapOf(
+                isExtraNotificationEnabled = persistentMapOf(
                     PID.MORNING to sharedPrefs.getBoolean(
                         key = Preference.NotifyExtraNotification(PID.MORNING).key,
                         defValue = Preference.NotifyExtraNotification(PID.MORNING).default as Boolean
@@ -77,7 +77,7 @@ object NotificationsPreferencesMigration {
                         defValue = Preference.NotifyExtraNotification(PID.FRIDAY_KAHF).default as Boolean
                     )
                 ),
-                prayerReminderOffsets = persistentMapOf(
+                prayerReminderOffsetMap = persistentMapOf(
                     PID.FAJR to sharedPrefs.getInt(
                         key = Preference.ReminderOffset(PID.FAJR).key,
                         defValue = Preference.ReminderOffset(PID.FAJR).default as Int
@@ -103,7 +103,7 @@ object NotificationsPreferencesMigration {
                         defValue = Preference.ReminderOffset(PID.ISHAA).default as Int
                     ),
                 ),
-                lastNotificationDates = persistentMapOf<PID, Int>().mutate {
+                lastNotificationDayOfYearMap = persistentMapOf<PID, Int>().mutate {
                     PID.entries.map {
                         it to 0
                     }

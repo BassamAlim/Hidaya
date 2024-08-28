@@ -52,7 +52,7 @@ class PrayersWidget : AppWidgetProvider() {
     }
 
     private fun getTimesList(context: Context): Array<String?>? {
-        val times = PTUtils.getStrTimes(context) ?: return null
+        val times = PTUtils.getFormattedPrayerTimeStrings(context) ?: return null
 
         val prayerNames = context.resources.getStringArray(R.array.prayer_names)
 

@@ -167,7 +167,7 @@ class AthanService : Service() {
     }
 
     private fun getAthanVoice(): Int {
-        val athanVoice = preferencesDS.getString(Preference.AthanVoice)
+        val athanVoice = preferencesDS.getString(Preference.AthanId)
         return when(athanVoice.toInt()) {
             1 -> R.raw.athan1
             2 -> R.raw.athan2

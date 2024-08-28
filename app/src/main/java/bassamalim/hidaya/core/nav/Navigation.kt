@@ -46,7 +46,7 @@ import bassamalim.hidaya.features.recitations.recitationSurasMenu.ui.RecitationS
 import bassamalim.hidaya.features.recitations.recitationsPlayer.ui.RecitationsPlayerScreen
 import bassamalim.hidaya.features.remembrances.remembranceReader.ui.RemembranceReaderScreen
 import bassamalim.hidaya.features.remembrances.remembrancesMenu.ui.RemembrancesListScreen
-import bassamalim.hidaya.features.settings.SettingsUI
+import bassamalim.hidaya.features.settings.ui.SettingsScreen
 import bassamalim.hidaya.features.tv.TvUI
 import com.google.gson.Gson
 
@@ -406,7 +406,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            SettingsUI(
+            SettingsScreen(
                 hiltViewModel()
             )
         }

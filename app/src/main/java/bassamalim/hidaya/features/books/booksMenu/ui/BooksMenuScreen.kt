@@ -18,7 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.database.models.Book
 import bassamalim.hidaya.core.enums.DownloadState
-import bassamalim.hidaya.core.ui.components.MyBtnSurface
+import bassamalim.hidaya.core.ui.components.MyButtonSurface
 import bassamalim.hidaya.core.ui.components.MyCircularProgressIndicator
 import bassamalim.hidaya.core.ui.components.MyFloatingActionButton
 import bassamalim.hidaya.core.ui.components.MyIconButton
@@ -84,12 +84,12 @@ private fun BookCard(
     onItemClick: (Book) -> Unit,
     onDownloadButtonClick: (Book) -> Unit,
 ) {
-    MyBtnSurface(
+    MyButtonSurface(
         text = item.titleAr,
         innerVPadding = 15.dp,
         fontSize = 22.sp,
         modifier = Modifier.padding(vertical = 2.dp),
-        iconBtn = {
+        iconButton = {
             DownloadBtn(
                 downloadState = downloadState,
                 onClick = { onDownloadButtonClick(item) }

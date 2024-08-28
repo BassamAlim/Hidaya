@@ -4,75 +4,83 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.location.Location
 import android.util.Log
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.TimeFormat
-import bassamalim.hidaya.core.helpers.PrayerTimesCalculator
-import bassamalim.hidaya.core.models.PrayerTimesCalculatorSettings
+import bassamalim.hidaya.core.helpers.PrayerTimeCalculator
+import bassamalim.hidaya.core.models.Coordinates
+import bassamalim.hidaya.core.models.Location
+import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
 import bassamalim.hidaya.core.other.Global
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.SortedMap
 import java.util.TimeZone
 
 object PTUtils {
 
     fun getTimes(
-        settings: PrayerTimesCalculatorSettings,
-        timeFormat: TimeFormat,
+        settings: PrayerTimeCalculatorSettings,
         timeOffsets: Map<PID, Int>,
-        numeralsLanguage: Language,
         timeZoneId: String = "",
-        locationType: LocationType,
         location: Location,
         calendar: Calendar = Calendar.getInstance()
-    ): Array<Calendar?> {
-        val prayerTimesCalculator = PrayerTimesCalculator(
-            settings,
-            timeFormat,
-            timeOffsets,
-            numeralsLanguage
+    ): SortedMap<PID, Calendar?> {
+        val prayerTimeCalculator = PrayerTimeCalculator(
+            settings = settings,
+            timeOffsets = timeOffsets
         )
 
-        val utcOffset = getUTCOffset(locationType, timeZoneId).toDouble()
+        val utcOffset = getUTCOffset(location.type, timeZoneId).toDouble()
 
-        return prayerTimesCalculator.getPrayerTimes(
-            location.latitude,
-            location.longitude,
-            utcOffset,
-            calendar
+        return prayerTimeCalculator.getPrayerTimes(
+            coordinates = Coordinates(
+                location.latitude,
+                location.longitude
+            ),
+            utcOffset = utcOffset,
+            calendar = calendar
         )
     }
 
-    fun getStrTimes(
-        settings: PrayerTimesCalculatorSettings,
+    fun getFormattedPrayerTimeStrings(
+        prayerTimeMap: SortedMap<PID, Calendar?>,
         timeFormat: TimeFormat,
-        timeOffsets: Map<PID, Int>,
         numeralsLanguage: Language,
-        locationType: LocationType,
-        timeZoneId: String = "",
-        location: Location,
-        calendar: Calendar = Calendar.getInstance()
-    ): List<String> {
-        val prayerTimesCalculator = PrayerTimesCalculator(
-            settings,
-            timeFormat,
-            timeOffsets,
-            numeralsLanguage
-        )
+    ): SortedMap<PID, String> {
+        val formattedTimes = sortedMapOf<PID, String>()
+        prayerTimeMap.forEach { (pid, time) ->
+            if (time == null) formattedTimes[pid] = ""
 
-        val utcOffset = getUTCOffset(locationType, timeZoneId).toDouble()
+            val formattedTime = when (timeFormat) {
+                TimeFormat.TWENTY_FOUR -> {
+                    val hour = String.format("%02d", time!![Calendar.HOUR_OF_DAY])
+                    val minute = String.format("%02d", time[Calendar.MINUTE])
+                    "$hour:$minute"
+                }
+                TimeFormat.TWELVE -> {
+                    var hour = time!![Calendar.HOUR_OF_DAY]
+                    hour = (hour + 12 - 1) % 12 + 1
+                    val minute = time[Calendar.MINUTE]
+                    val suffix = if (hour >= 12) "pm" else "am"
 
-        return prayerTimesCalculator.getStrPrayerTimes(
-            location.latitude,
-            location.longitude,
-            utcOffset,
-            calendar
-        )
+                    val formattedHour = String.format("%02d", hour)
+                    val formattedMinute = String.format("%02d", minute)
+                    "$formattedHour:$formattedMinute $suffix"
+                }
+            }
+
+            LangUtils.translateNums(
+                numeralsLanguage = numeralsLanguage,
+                string = formattedTime,
+                timeFormat = true
+            )
+        }
+        return formattedTimes
     }
 
     fun getUTCOffset(
@@ -96,8 +104,8 @@ object PTUtils {
         Log.i(Global.TAG, "Canceled $pid Alarm")
     }
 
-    fun formatTime(timeFormat: TimeFormat, gStr: String): String {
-        var str = gStr
+    fun formatTime(timeFormat: TimeFormat, string: String): String {
+        var str = string
 
         val hour = "%d".format(str.split(':')[0].toInt())
         var minute = str.split(":")[1]

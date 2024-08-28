@@ -3,8 +3,10 @@ package bassamalim.hidaya.core.data.repositories
 import android.content.res.Resources
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.preferences.dataSources.PrayersPreferencesDataSource
+import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.PID
-import bassamalim.hidaya.core.models.PrayerTimesCalculatorSettings
+import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
+import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.map
@@ -16,14 +18,30 @@ class PrayersRepository @Inject constructor(
 ) {
 
     fun getPrayerTimesCalculatorSettings() = prayersPreferencesDataSource.flow.map {
-        it.prayerTimesCalculatorSettings
+        it.prayerTimeCalculatorSettings
     }
 
-    suspend fun setPrayerTimesCalculatorSettings(
-        prayerTimesCalculatorSettings: PrayerTimesCalculatorSettings
-    ) {
+    suspend fun setCalculationMethod(calculationMethod: PrayerTimeCalculationMethod) {
         prayersPreferencesDataSource.update { it.copy(
-            prayerTimesCalculatorSettings = prayerTimesCalculatorSettings
+            prayerTimeCalculatorSettings = it.prayerTimeCalculatorSettings.copy(
+                calculationMethod = calculationMethod
+            )
+        )}
+    }
+
+    suspend fun setJuristicMethod(juristicMethod: PrayerTimeJuristicMethod) {
+        prayersPreferencesDataSource.update { it.copy(
+            prayerTimeCalculatorSettings = it.prayerTimeCalculatorSettings.copy(
+                juristicMethod = juristicMethod
+            )
+        )}
+    }
+
+    suspend fun setAdjustHighLatitudes(adjustmentMethod: HighLatitudesAdjustmentMethod) {
+        prayersPreferencesDataSource.update { it.copy(
+            prayerTimeCalculatorSettings = it.prayerTimeCalculatorSettings.copy(
+                highLatitudesAdjustmentMethod = adjustmentMethod
+            )
         )}
     }
 
@@ -49,13 +67,13 @@ class PrayersRepository @Inject constructor(
         )}
     }
 
-    fun getAthanVoiceId() = prayersPreferencesDataSource.flow.map {
-        it.athanVoiceId
+    fun getAthanId() = prayersPreferencesDataSource.flow.map {
+        it.athanId
     }
 
-    suspend fun setAthanVoiceId(athanVoiceId: Int) {
+    suspend fun setAthanId(athanId: Int) {
         prayersPreferencesDataSource.update { it.copy(
-            athanVoiceId = athanVoiceId
+            athanId = athanId
         )}
     }
 

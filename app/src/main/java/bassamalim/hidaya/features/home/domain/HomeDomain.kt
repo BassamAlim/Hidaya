@@ -10,7 +10,7 @@ import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.PID
-import bassamalim.hidaya.core.helpers.PrayerTimesCalculator
+import bassamalim.hidaya.core.helpers.PrayerTimeCalculator
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.utils.OS.getDeviceId
 import bassamalim.hidaya.core.utils.PTUtils
@@ -36,10 +36,10 @@ class HomeDomain @Inject constructor(
         val prayerTimesCalculator = getPrayerTimesCalculator()
         val loc = location.first()!!
         return prayerTimesCalculator.getPrayerTimes(
-            lat = loc.latitude,
-            lon = loc.longitude,
-            tZone = getUTCOffset().toDouble(),
-            date = Calendar.getInstance()
+            latitude = loc.latitude,
+            longitude = loc.longitude,
+            utcOffset = getUTCOffset().toDouble(),
+            calendar = Calendar.getInstance()
         )
     }
 
@@ -62,10 +62,10 @@ class HomeDomain @Inject constructor(
         tomorrow[Calendar.DATE]++
 
         val tomorrowFajr = prayerTimesCalculator.getPrayerTimes(
-            lat = loc.latitude,
-            lon = loc.longitude,
-            tZone = getUTCOffset().toDouble(),
-            date = tomorrow
+            latitude = loc.latitude,
+            longitude = loc.longitude,
+            utcOffset = getUTCOffset().toDouble(),
+            calendar = tomorrow
         )[PID.FAJR]!!
         tomorrowFajr[Calendar.DATE]++
 
@@ -97,7 +97,7 @@ class HomeDomain @Inject constructor(
         return null
     }
 
-    private suspend fun getPrayerTimesCalculator() = PrayerTimesCalculator(
+    private suspend fun getPrayerTimesCalculator() = PrayerTimeCalculator(
         settings = prayersRepo.getPrayerTimesCalculatorSettings().first(),
         timeFormat = appSettingsRepo.getTimeFormat().first(),
         timeOffsets = prayersRepo.getTimeOffsets().first(),

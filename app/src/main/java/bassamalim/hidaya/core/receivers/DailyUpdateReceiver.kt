@@ -130,7 +130,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
         val times = PTUtils.getTimes(preferenceDS = preferencesDS, db = db) ?: return
 
-        Alarms(gContext = context, gTimes = times)
+        Alarms(context = context, prayerTimeMap = times)
 
         updateWidget(context = context, times = times)
 

@@ -3,7 +3,7 @@ package bassamalim.hidaya.core.data.repositories
 import bassamalim.hidaya.core.data.preferences.dataSources.NotificationsPreferencesDataSource
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
-import kotlinx.collections.immutable.toPersistentMap
+import bassamalim.hidaya.core.models.TimeOfDay
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -12,56 +12,62 @@ class NotificationsRepository @Inject constructor(
 ) {
 
     fun getNotificationType(pid: PID) = notificationsPreferencesDataSource.flow.map {
-        it.notificationTypes[pid]!!
+        it.notificationTypeMap[pid]!!
     }
 
-    fun getNotificationTypes() = notificationsPreferencesDataSource.flow.map {
-        it.notificationTypes.toMap()
+    fun getNotificationTypeMap() = notificationsPreferencesDataSource.flow.map {
+        it.notificationTypeMap.toMap()
     }
 
-    suspend fun setNotificationTypes(notificationTypes: Map<PID, NotificationType>) {
+    fun setNotificationType(type: NotificationType, pid: PID) =
+        notificationsPreferencesDataSource.flow.map {
+            notificationsPreferencesDataSource.update { it.copy(
+                notificationTypeMap = it.notificationTypeMap
+                    .put(pid, type)
+            )}
+        }
+
+    fun getDevotionReminderEnabledMap() = notificationsPreferencesDataSource.flow.map {
+        it.devotionReminderEnabledMap.toMap()
+    }
+
+    suspend fun setDevotionReminderEnabled(enabled: Boolean, pid: PID) {
         notificationsPreferencesDataSource.update { it.copy(
-            notificationTypes = notificationTypes.toPersistentMap()
+            devotionReminderEnabledMap = it.devotionReminderEnabledMap
+                .put(pid, enabled)
         )}
     }
 
-    fun getExtraNotificationsMinuteOfDay() = notificationsPreferencesDataSource.flow.map {
-        it.extraNotificationsMinuteOfDay.toMap()
+    fun getDevotionReminderTimeOfDayMap() = notificationsPreferencesDataSource.flow.map {
+        it.devotionReminderTimeOfDayMap.toMap()
     }
 
-    suspend fun setExtraNotificationsMinuteOfDay(minuteOfDay: Map<PID, Int>) {
+    suspend fun setDevotionReminderTimeOfDay(timeOfDay: TimeOfDay, pid: PID) {
         notificationsPreferencesDataSource.update { it.copy(
-            extraNotificationsMinuteOfDay = minuteOfDay.toPersistentMap()
+            devotionReminderTimeOfDayMap = it.devotionReminderTimeOfDayMap
+                .put(pid, timeOfDay)
         )}
     }
 
-    fun getNotifyExtraNotifications() = notificationsPreferencesDataSource.flow.map {
-        it.notifyExtraNotifications.toMap()
+    fun getPrayerReminderOffsetMap() = notificationsPreferencesDataSource.flow.map {
+        it.prayerReminderOffsetMap.toMap()
     }
 
-    suspend fun setNotifyExtraNotifications(notify: Map<PID, Boolean>) {
+    suspend fun setPrayerReminderOffset(offset: Int, pid: PID) {
         notificationsPreferencesDataSource.update { it.copy(
-            notifyExtraNotifications = notify.toPersistentMap()
+            prayerReminderOffsetMap = it.prayerReminderOffsetMap
+                .put(pid, offset)
         )}
     }
 
-    fun getPrayerReminderOffsets() = notificationsPreferencesDataSource.flow.map {
-        it.prayerReminderOffsets.toMap()
+    fun getLastNotificationDateMap() = notificationsPreferencesDataSource.flow.map {
+        it.lastNotificationDayOfYearMap.toMap()
     }
 
-    suspend fun setPrayerReminderOffsets(offsets: Map<PID, Int>) {
+    suspend fun setLastNotificationDayOfYear(pid: PID, dayOfYear: Int) {
         notificationsPreferencesDataSource.update { it.copy(
-            prayerReminderOffsets = offsets.toPersistentMap()
-        )}
-    }
-
-    fun getLastNotificationDates() = notificationsPreferencesDataSource.flow.map {
-        it.lastNotificationDates.toMap()
-    }
-
-    suspend fun setLastNotificationDates(dates: Map<PID, Int>) {
-        notificationsPreferencesDataSource.update { it.copy(
-            lastNotificationDates = dates.toPersistentMap()
+            lastNotificationDayOfYearMap = it.lastNotificationDayOfYearMap
+                .put(pid, dayOfYear)
         )}
     }
 

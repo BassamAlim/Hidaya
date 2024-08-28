@@ -5,68 +5,64 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.preference.PreferenceManager
-import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
+import bassamalim.hidaya.core.data.repositories.LocationRepository
+import bassamalim.hidaya.core.data.repositories.NotificationsRepository
+import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.NotificationReceiver
-import bassamalim.hidaya.core.utils.DBUtils
 import bassamalim.hidaya.core.utils.PTUtils
 import dagger.hilt.EntryPoint
+import kotlinx.coroutines.flow.first
 import java.util.Calendar
+import java.util.SortedMap
+import javax.inject.Inject
 
 @EntryPoint
-class Alarms {
-
+class Alarms(
     private val context: Context
-    private val preferencesDS: PreferencesDataSource
+) {
 
-    constructor(gContext: Context, gTimes: Array<Calendar?>) {
-        context = gContext
-        preferencesDS = PreferencesDataSource(
-            PreferenceManager.getDefaultSharedPreferences(context)
+    @Inject private lateinit var prayersRepository: PrayersRepository
+    @Inject private lateinit var notificationsRepository: NotificationsRepository
+    @Inject private lateinit var locationRepository: LocationRepository
+
+    suspend fun setPidAlarm(pid: PID) {
+        val location = locationRepository.getLocation().first() ?: return
+        val prayerTimesMap = PTUtils.getTimes(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            timeOffsets = prayersRepository.getTimeOffsets().first(),
+            timeZoneId = locationRepository.getTimeZone(location.cityId),
+            location = location,
+            calendar = Calendar.getInstance()
         )
-
-        setAll(gTimes)
-    }
-
-    constructor(gContext: Context, pid: PID) {
-        context = gContext
-        preferencesDS = PreferencesDataSource(
-            PreferenceManager.getDefaultSharedPreferences(context)
-        )
-
-        val times = PTUtils.getTimes(preferencesDS, DBUtils.getDB(context)) ?: return
 
         if (pid.ordinal in 0..5) {
-            setPrayerAlarm(pid = pid, time = times[pid.ordinal]!!)
+            setPrayerAlarm(pid = pid, time = prayerTimesMap[pid]!!)
 
-            val reminderOffset = preferencesDS.getInt(Preference.ReminderOffset(pid))
+            val reminderOffset = notificationsRepository.getPrayerReminderOffsetMap().first()[pid]!!
             if (reminderOffset != 0)
-                setReminder(pid = pid, time = times[pid.ordinal]!!, offset = reminderOffset)
+                setReminder(pid = pid, time = prayerTimesMap[pid]!!, offset = reminderOffset)
         }
-        else if (pid.ordinal in 6..9) setExtraAlarm(pid)
+        else if (pid.ordinal in 6..9) setDevotionAlarm(pid)
     }
 
     /**
      * Finds out if the desired function and executes it
      */
-    private fun setAll(times: Array<Calendar?>) {
-        setPrayerAlarms(times)
-        setReminders(times)
-        setExtraAlarms()
+    suspend fun setAll(prayerTimeMap: SortedMap<PID, Calendar?>) {
+        setPrayerAlarms(prayerTimeMap)
+        setReminders(prayerTimeMap)
+        setDevotionAlarms()
     }
 
-    private fun setPrayerAlarms(times: Array<Calendar?>) {
+    private suspend fun setPrayerAlarms(prayerTimeMap: SortedMap<PID, Calendar?>) {
         Log.i(Global.TAG, "in set prayer alarms")
 
-        val pidValues = PID.entries.toTypedArray()
-        for (i in times.indices) {
-            val pid = pidValues[i]
-            if (preferencesDS.getString(Preference.NotificationType(pid)) != NotificationType.NONE.name)
-                setPrayerAlarm(pid, times[i]!!)
+        for ((pid, time) in prayerTimeMap) {
+            if (notificationsRepository.getNotificationType(pid).first() != NotificationType.NONE)
+                setPrayerAlarm(pid, time!!)
         }
     }
 
@@ -81,7 +77,7 @@ class Alarms {
         val millis = time.timeInMillis
         if (System.currentTimeMillis() <= millis) {
             val intent = Intent(context, NotificationReceiver::class.java)
-            if (pid == PID.SUNRISE) intent.action = "extra"
+            if (pid == PID.SUNRISE) intent.action = "devotion"
             else intent.action = "prayer"
             intent.putExtra("id", pid.name)
             intent.putExtra("time", millis)
@@ -99,14 +95,12 @@ class Alarms {
         else Log.i(Global.TAG, "$pid Passed")
     }
 
-    private fun setReminders(times: Array<Calendar?>) {
+    private suspend fun setReminders(prayerTimeMap: SortedMap<PID, Calendar?>) {
         Log.i(Global.TAG, "in set reminders")
 
-        val pidValues = PID.entries.toTypedArray()
-        for (i in times.indices) {
-            val pid = pidValues[i]
-            val offset = preferencesDS.getInt(Preference.ReminderOffset(pid))
-            if (offset != 0) setReminder(pid, times[i]!!, offset)
+        for ((pid, time) in prayerTimeMap) {
+            val reminderOffset = notificationsRepository.getPrayerReminderOffsetMap().first()[pid]!!
+            if (reminderOffset != 0) setReminder(pid, time!!, reminderOffset)
         }
     }
 
@@ -126,8 +120,8 @@ class Alarms {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-            val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
 
             Log.i(Global.TAG, "reminder $pid set")
         }
@@ -135,22 +129,23 @@ class Alarms {
     }
 
     /**
-     * Set the extra alarms based on the user preferences
+     * Set the devotion alarms based on the user preferences
      */
-    private fun setExtraAlarms() {
-        Log.i(Global.TAG, "in set extra alarms")
+    private suspend fun setDevotionAlarms() {
+        Log.i(Global.TAG, "in set devotion alarms")
 
         val today = Calendar.getInstance()
 
-        if (preferencesDS.getBoolean(Preference.NotifyExtraNotification(PID.MORNING)))
-            setExtraAlarm(PID.MORNING)
-        if (preferencesDS.getBoolean(Preference.NotifyExtraNotification(PID.EVENING)))
-            setExtraAlarm(PID.EVENING)
-        if (preferencesDS.getBoolean(Preference.NotifyExtraNotification(PID.DAILY_WERD)))
-            setExtraAlarm(PID.DAILY_WERD)
-        if (preferencesDS.getBoolean(Preference.NotifyExtraNotification(PID.FRIDAY_KAHF))
-            && today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
-            setExtraAlarm(PID.FRIDAY_KAHF)
+        val devotionAlarmEnabledMap =
+            notificationsRepository.getDevotionReminderEnabledMap().first()
+
+        for ((pid, enabled) in devotionAlarmEnabledMap) {
+            if (enabled) {
+                if (pid == PID.FRIDAY_KAHF && today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+                    setDevotionAlarm(pid)
+                else if (pid != PID.FRIDAY_KAHF) setDevotionAlarm(pid)
+            }
+        }
     }
 
     /**
@@ -158,32 +153,34 @@ class Alarms {
      *
      * @param pid The ID of the alarm.
      */
-    private fun setExtraAlarm(pid: PID) {
+    private suspend fun setDevotionAlarm(pid: PID) {
         Log.i(Global.TAG, "in set extra alarm")
 
-        val minuteOfDay = preferencesDS.getInt(Preference.ExtraNotificationMinuteOfDay(pid))
-        val hour = minuteOfDay / 60
-        val minute = minuteOfDay % 60
+        val timeOfDay = notificationsRepository.getDevotionReminderTimeOfDayMap().first()[pid]!!
 
         val time = Calendar.getInstance()
-        time[Calendar.HOUR_OF_DAY] = hour
-        time[Calendar.MINUTE] = minute
+        time[Calendar.HOUR_OF_DAY] = timeOfDay.hour
+        time[Calendar.MINUTE] = timeOfDay.minute
         time[Calendar.SECOND] = 0
         time[Calendar.MILLISECOND] = 0
 
         val intent = Intent(context, NotificationReceiver::class.java)
-        intent.action = "extra"
+        intent.action = "devotion"
         intent.putExtra("id", pid.name)
         intent.putExtra("time", time.timeInMillis)
 
-        val myAlarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val pendingIntent = PendingIntent.getBroadcast(
             context, pid.ordinal, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        myAlarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time.timeInMillis, pendingIntent)
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            time.timeInMillis,
+            pendingIntent
+        )
 
         Log.i(Global.TAG, "alarm $pid set")
     }

@@ -1,6 +1,6 @@
 package bassamalim.hidaya.core.enums
 
-enum class PrayerTimesCalculationMethod {
+enum class PrayerTimeCalculationMethod {
     MECCA,
     MWL,
     ISNA,

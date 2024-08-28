@@ -6,11 +6,11 @@ import androidx.datastore.migrations.SharedPreferencesView
 import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.preferences.objects.PrayersPreferences
-import bassamalim.hidaya.core.enums.HighLatAdjustmentMethod
+import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.PID
-import bassamalim.hidaya.core.enums.PrayerTimesCalculationMethod
-import bassamalim.hidaya.core.enums.PrayerTimesJuristicMethod
-import bassamalim.hidaya.core.models.PrayerTimesCalculatorSettings
+import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
+import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
+import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
 import kotlinx.collections.immutable.persistentMapOf
 
 object PrayersPreferencesMigration {
@@ -21,20 +21,20 @@ object PrayersPreferencesMigration {
             sharedPreferencesName = PreferencesFileNames.PRAYERS_PREFERENCES_NAME
         ) { sharedPrefs: SharedPreferencesView, currentData: PrayersPreferences ->
             currentData.copy(
-                prayerTimesCalculatorSettings = PrayerTimesCalculatorSettings(
-                    calculationMethod = PrayerTimesCalculationMethod.valueOf(
+                prayerTimeCalculatorSettings = PrayerTimeCalculatorSettings(
+                    calculationMethod = PrayerTimeCalculationMethod.valueOf(
                         sharedPrefs.getString(
                             key = Preference.PrayerTimesCalculationMethod.key,
                             defValue = Preference.PrayerTimesCalculationMethod.default as String
                         )!!
                     ),
-                    juristicMethod = PrayerTimesJuristicMethod.valueOf(
+                    juristicMethod = PrayerTimeJuristicMethod.valueOf(
                         sharedPrefs.getString(
                             key = Preference.PrayerTimesJuristicMethod.key,
                             defValue = Preference.PrayerTimesJuristicMethod.default as String
                         )!!
                     ),
-                    highLatAdjustmentMethod = HighLatAdjustmentMethod.valueOf(
+                    highLatitudesAdjustmentMethod = HighLatitudesAdjustmentMethod.valueOf(
                         sharedPrefs.getString(
                             key = Preference.PrayerTimesAdjustment.key,
                             defValue = Preference.PrayerTimesAdjustment.default as String
@@ -67,9 +67,9 @@ object PrayersPreferencesMigration {
                         defValue = Preference.TimeOffset(PID.ISHAA).default as Int
                     ),
                 ),
-                athanVoiceId = sharedPrefs.getString(
-                    key = Preference.AthanVoice.key,
-                    defValue = Preference.AthanVoice.default as String
+                athanId = sharedPrefs.getString(
+                    key = Preference.AthanId.key,
+                    defValue = Preference.AthanId.default as String
                 )!!.toInt(),
                 shouldShowTutorial = sharedPrefs.getBoolean(
                     key = Preference.ShowPrayersTutorial.key,

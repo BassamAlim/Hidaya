@@ -10,7 +10,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.helpers.Alarms
-import bassamalim.hidaya.core.helpers.PrayerTimesCalculator
+import bassamalim.hidaya.core.helpers.PrayerTimeCalculator
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.utils.PTUtils
 import bassamalim.hidaya.features.prayers.prayerSettings.ui.PrayerSettings
@@ -78,8 +78,8 @@ class PrayersDomain @Inject constructor(
     }
 
     suspend fun updatePrayerSettings(pid: PID, prayerSettings: PrayerSettings) {
-        val notificationTypes = notificationsRepo.getNotificationTypes().first()
-        notificationsRepo.setNotificationTypes(
+        val notificationTypes = notificationsRepo.getNotificationTypeMap().first()
+        notificationsRepo.setNotificationTypeMap(
             notificationTypes.toMutableMap().apply {
                 this[pid] = prayerSettings.notificationType
             }.toMap()
@@ -92,19 +92,19 @@ class PrayersDomain @Inject constructor(
             }.toMap()
         )
 
-        val reminderOffsets = notificationsRepo.getPrayerReminderOffsets().first()
-        notificationsRepo.setPrayerReminderOffsets(
+        val reminderOffsets = notificationsRepo.getPrayerReminderOffsetMap().first()
+        notificationsRepo.setPrayerReminderOffsetMap(
             reminderOffsets.toMutableMap().apply {
                 this[pid] = prayerSettings.reminderOffset
             }.toMap()
         )
     }
 
-    private fun getNotificationTypes() = notificationsRepo.getNotificationTypes()
+    private fun getNotificationTypes() = notificationsRepo.getNotificationTypeMap()
 
     private fun getTimeOffsets() = prayersRepo.getTimeOffsets()
 
-    private fun getReminderOffsets() = notificationsRepo.getPrayerReminderOffsets()
+    private fun getReminderOffsets() = notificationsRepo.getPrayerReminderOffsetMap()
 
     suspend fun getShouldShowTutorial() = prayersRepo.getShouldShowTutorial().first()
 
@@ -113,7 +113,7 @@ class PrayersDomain @Inject constructor(
     }
 
     fun getTimes(
-        calculator: PrayerTimesCalculator,
+        calculator: PrayerTimeCalculator,
         location: Location,
         dateOffset: Int
     ): Map<PID, String?> {
@@ -144,7 +144,7 @@ class PrayersDomain @Inject constructor(
         appSettingsRepo.getNumeralsLanguage()
     ) {
         prayerTimesCalculatorSettings, timeFormat, timeOffsets, numeralsLanguage ->
-        PrayerTimesCalculator(
+        PrayerTimeCalculator(
             settings = prayerTimesCalculatorSettings,
             timeFormat = timeFormat,
             timeOffsets = timeOffsets,
@@ -158,7 +158,7 @@ class PrayersDomain @Inject constructor(
     )
 
     fun updatePrayerTimeAlarms(pid: PID) {
-        Alarms(gContext = app, pid = pid)
+        Alarms(context = app, pid = pid)
     }
 
 }

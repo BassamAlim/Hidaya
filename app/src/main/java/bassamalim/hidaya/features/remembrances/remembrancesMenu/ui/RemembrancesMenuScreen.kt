@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.ListType
-import bassamalim.hidaya.core.ui.components.MyBtnSurface
+import bassamalim.hidaya.core.ui.components.MyButtonSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
@@ -72,9 +72,9 @@ private fun RemembrancesList(
     MyLazyColumn(
         lazyList = {
             items(remembrances) { remembrance ->
-                MyBtnSurface(
+                MyButtonSurface(
                     text = remembrance.name,
-                    iconBtn = {
+                    iconButton = {
                         MyFavoriteButton(
                             isFavorite = remembrance.isFavorite,
                             onClick = { onFavoriteClick(remembrance) }

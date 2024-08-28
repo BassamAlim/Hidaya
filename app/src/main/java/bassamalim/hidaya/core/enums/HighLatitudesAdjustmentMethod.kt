@@ -1,6 +1,6 @@
 package bassamalim.hidaya.core.enums
 
-enum class HighLatAdjustmentMethod {
+enum class HighLatitudesAdjustmentMethod {
     NONE,
     MIDNIGHT,
     ONE_SEVENTH,
