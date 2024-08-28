@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
@@ -20,9 +22,11 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.features.settings.ui.AppearanceSettings
 
 @Composable
-fun WelcomeUI(
+fun OnboardingScreen(
     viewModel: OnboardingViewModel
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
     Box(
         Modifier.background(AppTheme.colors.background)
     ) {
@@ -38,7 +42,17 @@ fun WelcomeUI(
                 fontSize = 26.sp
             )
 
-            AppearanceSettings()
+            AppearanceSettings(
+                selectedLanguage = state.language,
+                onLanguageChange = viewModel::onLanguageChange,
+                selectedNumeralsLanguage = state.numeralsLanguage,
+                onNumeralsLanguageChange = viewModel::onNumeralsLanguageChange,
+                selectedTimeFormat = state.timeFormat,
+                onTimeFormatChange = viewModel::onTimeFormatChange,
+                selectedTheme = state.theme,
+                onThemeChange = viewModel::onThemeChange,
+                numeralsLanguage = state.numeralsLanguage
+            )
 
             MySquareButton(
                 text = stringResource(R.string.save),

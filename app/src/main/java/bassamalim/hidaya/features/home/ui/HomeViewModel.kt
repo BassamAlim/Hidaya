@@ -96,8 +96,8 @@ class HomeViewModel @Inject constructor(
 
     private fun setupPrayersCard() {
         viewModelScope.launch {
-            times = domain.getTimes()
-            formattedTimes = domain.getStrTimes()
+            times = domain.getPrayerTimeMap()
+            formattedTimes = domain.getStrPrayerTimeMap()
             tomorrowFajr = domain.getTomorrowFajr()
             formattedTomorrowFajr = domain.getStrTomorrowFajr()
 

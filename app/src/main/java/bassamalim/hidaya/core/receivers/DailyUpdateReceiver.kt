@@ -23,7 +23,7 @@ import bassamalim.hidaya.core.other.PrayersWidget
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
 import bassamalim.hidaya.core.utils.LocUtils
-import bassamalim.hidaya.core.utils.PTUtils
+import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import com.google.android.gms.location.LocationServices
 import java.util.Calendar
 import java.util.Random
@@ -128,7 +128,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
             }
         )
 
-        val times = PTUtils.getTimes(preferenceDS = preferencesDS, db = db) ?: return
+        val times = PrayerTimeUtils.getPrayerTimesMap(preferenceDS = preferencesDS, db = db) ?: return
 
         Alarms(context = context, prayerTimeMap = times)
 

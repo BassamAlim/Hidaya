@@ -24,9 +24,9 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun <V> MyDropDownMenu(
-    selectedIndex: Int,
-    entries: Array<String>,
+    selection: V,
     items: Array<V>,
+    entries: Array<String>,
     onChoice: (V) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -38,7 +38,7 @@ fun <V> MyDropDownMenu(
             verticalAlignment = Alignment.CenterVertically
         ) {
             MyText(
-                text = entries[selectedIndex],
+                text = entries[items.indexOf(selection)],
                 fontSize = 22.sp,
                 modifier = Modifier.padding(horizontal = 5.dp)
             )

@@ -10,9 +10,8 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.helpers.Alarms
-import bassamalim.hidaya.core.helpers.PrayerTimeCalculator
 import bassamalim.hidaya.core.models.Location
-import bassamalim.hidaya.core.utils.PTUtils
+import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import bassamalim.hidaya.features.prayers.prayerSettings.ui.PrayerSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -22,10 +21,10 @@ import javax.inject.Inject
 
 class PrayersDomain @Inject constructor(
     private val app: Application,
-    private val prayersRepo: PrayersRepository,
+    private val prayersRepository: PrayersRepository,
     private val appSettingsRepo: AppSettingsRepository,
     private val appStateRepo: AppStateRepository,
-    private val notificationsRepo: NotificationsRepository,
+    private val notificationsRepository: NotificationsRepository,
     private val locationRepo: LocationRepository
 ) {
 
@@ -55,7 +54,7 @@ class PrayersDomain @Inject constructor(
             language = language
         )
 
-    fun getPrayerNames() = prayersRepo.getPrayerNames()
+    fun getPrayerNames() = prayersRepository.getPrayerNames()
 
     fun getPrayerSettings(): Flow<Map<PID, PrayerSettings>> {
         return combine(
@@ -78,42 +77,32 @@ class PrayersDomain @Inject constructor(
     }
 
     suspend fun updatePrayerSettings(pid: PID, prayerSettings: PrayerSettings) {
-        val notificationTypes = notificationsRepo.getNotificationTypeMap().first()
-        notificationsRepo.setNotificationTypeMap(
-            notificationTypes.toMutableMap().apply {
-                this[pid] = prayerSettings.notificationType
-            }.toMap()
+        notificationsRepository.setNotificationType(
+            pid = pid,
+            type = prayerSettings.notificationType
         )
 
-        val timeOffsets = prayersRepo.getTimeOffsets().first()
-        prayersRepo.setTimeOffsets(
-            timeOffsets.toMutableMap().apply {
-                this[pid] = prayerSettings.timeOffset
-            }.toMap()
-        )
+        prayersRepository.setTimeOffset(pid = pid, timeOffset = prayerSettings.timeOffset)
 
-        val reminderOffsets = notificationsRepo.getPrayerReminderOffsetMap().first()
-        notificationsRepo.setPrayerReminderOffsetMap(
-            reminderOffsets.toMutableMap().apply {
-                this[pid] = prayerSettings.reminderOffset
-            }.toMap()
+        notificationsRepository.setPrayerReminderOffset(
+            pid = pid,
+            offset = prayerSettings.reminderOffset
         )
     }
 
-    private fun getNotificationTypes() = notificationsRepo.getNotificationTypeMap()
+    private fun getNotificationTypes() = notificationsRepository.getNotificationTypeMap()
 
-    private fun getTimeOffsets() = prayersRepo.getTimeOffsets()
+    private fun getTimeOffsets() = prayersRepository.getTimeOffsets()
 
-    private fun getReminderOffsets() = notificationsRepo.getPrayerReminderOffsetMap()
+    private fun getReminderOffsets() = notificationsRepository.getPrayerReminderOffsetMap()
 
-    suspend fun getShouldShowTutorial() = prayersRepo.getShouldShowTutorial().first()
+    suspend fun getShouldShowTutorial() = prayersRepository.getShouldShowTutorial().first()
 
     suspend fun setDoNotShowAgain() {
-        prayersRepo.setShouldShowTutorial(false)
+        prayersRepository.setShouldShowTutorial(false)
     }
 
-    fun getTimes(
-        calculator: PrayerTimeCalculator,
+    suspend fun getTimes(
         location: Location,
         dateOffset: Int
     ): Map<PID, String?> {
@@ -121,44 +110,28 @@ class PrayersDomain @Inject constructor(
             add(Calendar.DATE, dateOffset)
         }
 
-        val prayerTimes = calculator.getStrPrayerTimes(
-            lat = location.latitude,
-            lon = location.longitude,
-            tZone = getUTCOffset(location).toDouble(),
-            date = calendar
+        val prayerTimeMap = PrayerTimeUtils.getPrayerTimesMap(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            timeOffsets = prayersRepository.getTimeOffsets().first(),
+            timeZoneId = locationRepo.getTimeZone(location.cityId),
+            location = location,
+            calendar = calendar
         )
-        return mapOf(
-            PID.FAJR to prayerTimes[0],
-            PID.SUNRISE to prayerTimes[1],
-            PID.DHUHR to prayerTimes[2],
-            PID.ASR to prayerTimes[3],
-            PID.MAGHRIB to prayerTimes[4],
-            PID.ISHAA to prayerTimes[5]
+
+        return PrayerTimeUtils.formatPrayerTimes(
+            prayerTimeMap = prayerTimeMap,
+            timeFormat = appSettingsRepo.getTimeFormat().first(),
+            numeralsLanguage = appSettingsRepo.getNumeralsLanguage().first()
         )
     }
 
-    fun getPrayerTimesCalculator() = combine(
-        prayersRepo.getPrayerTimesCalculatorSettings(),
-        appSettingsRepo.getTimeFormat(),
-        prayersRepo.getTimeOffsets(),
-        appSettingsRepo.getNumeralsLanguage()
-    ) {
-        prayerTimesCalculatorSettings, timeFormat, timeOffsets, numeralsLanguage ->
-        PrayerTimeCalculator(
-            settings = prayerTimesCalculatorSettings,
-            timeFormat = timeFormat,
-            timeOffsets = timeOffsets,
-            numeralsLanguage = numeralsLanguage
-        )
-    }
-
-    private fun getUTCOffset(location: Location) = PTUtils.getUTCOffset(
+    private fun getUTCOffset(location: Location) = PrayerTimeUtils.getUTCOffset(
         locationType = location.type,
         timeZone = locationRepo.getTimeZone(location.cityId)
     )
 
-    fun updatePrayerTimeAlarms(pid: PID) {
-        Alarms(context = app, pid = pid)
+    suspend fun updatePrayerTimeAlarms(pid: PID) {
+        Alarms(app).setPidAlarm(pid)
     }
 
 }

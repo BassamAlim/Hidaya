@@ -20,7 +20,7 @@
         tools:ignore="SpUsage" />
 
     <TextView
-        android:id="@+id/widget_duhr"
+        android:id="@+id/widget_dhuhr"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginHorizontal=".5dp"

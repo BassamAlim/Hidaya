@@ -56,7 +56,7 @@ fun PrayerReminderDialog(
             )
 
             MyValuedSlider(
-                initialValue = state.offset + viewModel.offsetMin,
+                value = state.offset + viewModel.offsetMin,
                 valueRange = 0F..60F,
                 modifier = Modifier.fillMaxWidth(),
                 numeralsLanguage = viewModel.numeralsLanguage,

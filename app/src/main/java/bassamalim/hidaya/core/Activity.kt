@@ -33,7 +33,7 @@ import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DBUtils
-import bassamalim.hidaya.core.utils.PTUtils
+import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
@@ -265,7 +265,7 @@ class Activity : ComponentActivity() {
     private fun setAlarms() {
         val location = LocUtils.retrieveLocation(preferencesDS.getString(Preference.StoredLocation))
         if (location != null) {
-            val times = PTUtils.getTimes(preferencesDS, db)!!
+            val times = PrayerTimeUtils.getPrayerTimesMap(preferencesDS, db)!!
             Alarms(this, times)
         }
         else if (!preferencesDS.getBoolean(Preference.FirstTime)) {

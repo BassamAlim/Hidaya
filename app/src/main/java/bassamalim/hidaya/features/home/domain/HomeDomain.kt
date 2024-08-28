@@ -10,10 +10,9 @@ import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.PID
-import bassamalim.hidaya.core.helpers.PrayerTimeCalculator
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.utils.OS.getDeviceId
-import bassamalim.hidaya.core.utils.PTUtils
+import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import java.util.SortedMap
@@ -22,70 +21,68 @@ import kotlin.math.max
 
 class HomeDomain @Inject constructor(
     private val app: Application,
-    private val appSettingsRepo: AppSettingsRepository,
-    private val prayersRepo: PrayersRepository,
-    private val locationRepo: LocationRepository,
-    private val quranRepo: QuranRepository,
-    private val userRepo: UserRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val prayersRepository: PrayersRepository,
+    private val locationRepository: LocationRepository,
+    private val quranRepository: QuranRepository,
+    private val userRepository: UserRepository
 ) {
 
     private val deviceId = getDeviceId(app)
     val location = getLocation()
 
-    suspend fun getTimes(): SortedMap<PID, Calendar?> {
-        val prayerTimesCalculator = getPrayerTimesCalculator()
-        val loc = location.first()!!
-        return prayerTimesCalculator.getPrayerTimes(
-            latitude = loc.latitude,
-            longitude = loc.longitude,
-            utcOffset = getUTCOffset().toDouble(),
+    suspend fun getPrayerTimeMap(): SortedMap<PID, Calendar?> {
+        return PrayerTimeUtils.getPrayerTimesMap(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            timeOffsets = prayersRepository.getTimeOffsets().first(),
+            timeZoneId = locationRepository.getTimeZone(location.first()!!.cityId),
+            location = location.first()!!,
             calendar = Calendar.getInstance()
         )
     }
 
-    suspend fun getStrTimes(): SortedMap<PID, String> {
-        val prayerTimesCalculator = getPrayerTimesCalculator()
-        val loc = location.first()!!
-        return prayerTimesCalculator.getStrPrayerTimes(
-            lat = loc.latitude,
-            lon = loc.longitude,
-            tZone = getUTCOffset().toDouble(),
-            date = Calendar.getInstance()
+    suspend fun getStrPrayerTimeMap(): SortedMap<PID, String> {
+        val prayerTimeMap = PrayerTimeUtils.getPrayerTimesMap(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            timeOffsets = prayersRepository.getTimeOffsets().first(),
+            timeZoneId = locationRepository.getTimeZone(location.first()!!.cityId),
+            location = location.first()!!,
+            calendar = Calendar.getInstance()
+        )
+
+        return PrayerTimeUtils.formatPrayerTimes(
+            prayerTimeMap = prayerTimeMap,
+            timeFormat = appSettingsRepository.getTimeFormat().first(),
+            language = appSettingsRepository.getLanguage().first(),
+            numeralsLanguage = getNumeralsLanguage()
         )
     }
 
     suspend fun getTomorrowFajr(): Calendar {
-        val prayerTimesCalculator = getPrayerTimesCalculator()
-        val loc = location.first()!!
-
-        val tomorrow = Calendar.getInstance()
-        tomorrow[Calendar.DATE]++
-
-        val tomorrowFajr = prayerTimesCalculator.getPrayerTimes(
-            latitude = loc.latitude,
-            longitude = loc.longitude,
-            utcOffset = getUTCOffset().toDouble(),
-            calendar = tomorrow
+        return PrayerTimeUtils.getPrayerTimesMap(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            timeOffsets = prayersRepository.getTimeOffsets().first(),
+            timeZoneId = locationRepository.getTimeZone(location.first()!!.cityId),
+            location = location.first()!!,
+            calendar = Calendar.getInstance().apply { this[Calendar.DATE]++ }
         )[PID.FAJR]!!
-        tomorrowFajr[Calendar.DATE]++
-
-        return tomorrowFajr
     }
 
     suspend fun getStrTomorrowFajr(): String {
-        val prayerTimesCalculator = getPrayerTimesCalculator()
-        val utcOffset = getUTCOffset()
-        val loc = location.first()!!
-
-        val tomorrow = Calendar.getInstance()
-        tomorrow[Calendar.DATE]++
-
-        return prayerTimesCalculator.getStrPrayerTimes(
-            lat = loc.latitude,
-            lon = loc.longitude,
-            tZone = utcOffset.toDouble(),
-            date = tomorrow
+        val time = PrayerTimeUtils.getPrayerTimesMap(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            timeOffsets = prayersRepository.getTimeOffsets().first(),
+            timeZoneId = locationRepository.getTimeZone(location.first()!!.cityId),
+            location = location.first()!!,
+            calendar = Calendar.getInstance().apply { this[Calendar.DATE]++ }
         )[PID.FAJR]!!
+
+        return PrayerTimeUtils.formatPrayerTime(
+            time = time,
+            language = appSettingsRepository.getLanguage().first(),
+            numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
+            timeFormat = appSettingsRepository.getTimeFormat().first()
+        )
     }
 
     fun getUpcomingPrayer(times: Map<PID, Calendar?>): PID? {
@@ -97,35 +94,23 @@ class HomeDomain @Inject constructor(
         return null
     }
 
-    private suspend fun getPrayerTimesCalculator() = PrayerTimeCalculator(
-        settings = prayersRepo.getPrayerTimesCalculatorSettings().first(),
-        timeFormat = appSettingsRepo.getTimeFormat().first(),
-        timeOffsets = prayersRepo.getTimeOffsets().first(),
-        numeralsLanguage = appSettingsRepo.getNumeralsLanguage().first()
-    )
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    private suspend fun getUTCOffset() = PTUtils.getUTCOffset(
-        locationType = location.first()!!.type,
-        timeZone = locationRepo.getTimeZone(location.first()!!.cityId)
-    )
+    fun getWerdPage() = quranRepository.getWerdPage()
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    fun getIsWerdDone() = quranRepository.getIsWerdDone()
 
-    fun getWerdPage() = quranRepo.getWerdPage()
+    fun getLocalRecord() = userRepository.getLocalRecord()
 
-    fun getIsWerdDone() = quranRepo.getIsWerdDone()
+    private fun getLocation() = locationRepository.getLocation()
 
-    fun getLocalRecord() = userRepo.getLocalRecord()
-
-    private fun getLocation() = locationRepo.getLocation()
-
-    fun getPrayerNames() = prayersRepo.getPrayerNames()
+    fun getPrayerNames() = prayersRepository.getPrayerNames()
 
     suspend fun syncRecords(): Boolean {
         if (!isInternetConnected(app)) return false
 
         return when (
-            val response = userRepo.getRemoteRecord(deviceId)
+            val response = userRepository.getRemoteRecord(deviceId)
         ) {
             is Response.Success -> {
                 val remoteRecord = response.data!!
@@ -146,7 +131,7 @@ class HomeDomain @Inject constructor(
 
                 if (remoteRecord.quranPages != latestRecord.quranPages ||
                     remoteRecord.recitationsTime > latestRecord.recitationsTime) {
-                    userRepo.setRemoteRecord(
+                    userRepository.setRemoteRecord(
                         deviceId = deviceId,
                         record = latestRecord
                     )
@@ -154,7 +139,7 @@ class HomeDomain @Inject constructor(
 
                 if (localRecord.quranPages != latestRecord.quranPages ||
                     localRecord.recitationsTime > latestRecord.recitationsTime) {
-                    userRepo.setLocalRecord(
+                    userRepository.setLocalRecord(
                         UserRecord(
                             quranPages = latestRecord.quranPages,
                             recitationsTime = latestRecord.recitationsTime
@@ -168,7 +153,7 @@ class HomeDomain @Inject constructor(
                 if (response.message == "Device not registered") {
                     val remoteRecord = registerDevice(deviceId)
                     if (remoteRecord != null) {
-                        userRepo.setLocalRecord(
+                        userRepository.setLocalRecord(
                             UserRecord(
                                 quranPages = remoteRecord.quranPages,
                                 recitationsTime = remoteRecord.recitationsTime
@@ -181,7 +166,7 @@ class HomeDomain @Inject constructor(
         }
     }
 
-    private suspend fun registerDevice(deviceId: String) = userRepo.registerDevice(deviceId)
+    private suspend fun registerDevice(deviceId: String) = userRepository.registerDevice(deviceId)
 
     private fun isInternetConnected(context: Context): Boolean {
         val connectivityManager =

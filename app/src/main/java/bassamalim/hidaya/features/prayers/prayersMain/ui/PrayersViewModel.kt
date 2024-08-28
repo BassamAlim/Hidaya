@@ -44,12 +44,10 @@ class PrayersViewModel @Inject constructor(
         _uiState.asStateFlow(),
         domain.location,
         flowOf(dateOffset),
-        domain.getPrayerSettings(),
-        domain.getPrayerTimesCalculator()
-    ) { state, location, dateOffset, prayerSettings, prayerTimesCalculator ->
-        val prayerTimes = location?.let {
+        domain.getPrayerSettings()
+    ) { state, location, dateOffset, prayerSettings ->
+        val prayerTimeMap = location?.let {
             domain.getTimes(
-                calculator = prayerTimesCalculator,
                 location = location,
                 dateOffset = dateOffset.intValue
             )
@@ -59,7 +57,7 @@ class PrayersViewModel @Inject constructor(
             prayersData = prayerNames.map {
                 PrayerCardData(
                     pid = it.key,
-                    text = "${it.value} ${prayerTimes?.get(it.key) ?: ""}",
+                    text = "${it.value} ${prayerTimeMap?.get(it.key) ?: ""}",
                     notificationType = prayerSettings[it.key]!!.notificationType,
                     isTimeOffsetSpecified = prayerSettings[it.key]!!.timeOffset != 0,
                     timeOffset = formatOffset(prayerSettings[it.key]!!.timeOffset),
@@ -132,7 +130,10 @@ class PrayersViewModel @Inject constructor(
                         pid = pid,
                         settings =
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                                result.getParcelable("prayer_settings", PrayerSettings::class.java)!!
+                                result.getParcelable(
+                                    "prayer_settings",
+                                    PrayerSettings::class.java
+                                )!!
                             else
                                 result.getParcelable("prayer_settings")!!
                     )
@@ -189,9 +190,10 @@ class PrayersViewModel @Inject constructor(
                     reminderOffset = offset
                 )
             )
+
+            domain.updatePrayerTimeAlarms(pid)
         }
 
-        domain.updatePrayerTimeAlarms(pid)
     }
 
     fun onPreviousDayClk() {

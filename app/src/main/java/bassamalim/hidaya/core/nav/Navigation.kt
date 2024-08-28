@@ -20,8 +20,8 @@ import bassamalim.hidaya.core.ui.outToBottom
 import bassamalim.hidaya.core.ui.outToLeft
 import bassamalim.hidaya.core.ui.outToTop
 import bassamalim.hidaya.features.about.ui.AboutScreen
-import bassamalim.hidaya.features.books.bookChapters.ui.BookChaptersUI
 import bassamalim.hidaya.features.bookReader.ui.BookViewerScreen
+import bassamalim.hidaya.features.books.bookChapters.ui.BookChaptersUI
 import bassamalim.hidaya.features.books.bookSearcher.ui.BookSearcherUI
 import bassamalim.hidaya.features.books.booksMenu.ui.BooksMenuScreen
 import bassamalim.hidaya.features.dateConverter.ui.DateConverterUI
@@ -31,15 +31,15 @@ import bassamalim.hidaya.features.leaderboard.ui.LeaderboardUI
 import bassamalim.hidaya.features.locationPicker.ui.LocationPickerUI
 import bassamalim.hidaya.features.locator.ui.LocatorUI
 import bassamalim.hidaya.features.main.ui.MainUI
-import bassamalim.hidaya.features.onboarding.ui.WelcomeUI
+import bassamalim.hidaya.features.onboarding.ui.OnboardingScreen
 import bassamalim.hidaya.features.prayers.prayerReminder.ui.PrayerReminderDialog
 import bassamalim.hidaya.features.prayers.prayerSettings.ui.PrayerSettingsDialog
 import bassamalim.hidaya.features.qibla.ui.QiblaUI
-import bassamalim.hidaya.features.quiz.quizTester.ui.QuizUI
 import bassamalim.hidaya.features.quiz.quizLobby.QuizLobbyUI
 import bassamalim.hidaya.features.quiz.quizResult.ui.QuizResultUI
-import bassamalim.hidaya.features.quranReader.ui.QuranViewerUI
+import bassamalim.hidaya.features.quiz.quizTester.ui.QuizUI
 import bassamalim.hidaya.features.quran.quranSearcher.ui.QuranSearcherUI
+import bassamalim.hidaya.features.quranReader.ui.QuranViewerUI
 import bassamalim.hidaya.features.radio.ui.RadioClientUI
 import bassamalim.hidaya.features.recitations.recitationRecitersMenu.ui.RecitationRecitersMenuUI
 import bassamalim.hidaya.features.recitations.recitationSurasMenu.ui.RecitationSurasMenuScreen
@@ -432,7 +432,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.RecitationsPlayer.route,
+            route = Screen.RecitationsRecitersMenu.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -480,7 +480,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            WelcomeUI(
+            OnboardingScreen(
                 hiltViewModel()
             )
         }

@@ -72,7 +72,7 @@ fun PrayerSettingsDialog(
             )
 
             MyValuedSlider(
-                initialValue = state.timeOffset + viewModel.offsetMin,
+                value = state.timeOffset + viewModel.offsetMin,
                 valueRange = 0F..60F,
                 modifier = Modifier.fillMaxWidth(),
                 progressMin = viewModel.offsetMin,

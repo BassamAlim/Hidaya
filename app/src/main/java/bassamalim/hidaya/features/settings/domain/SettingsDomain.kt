@@ -14,7 +14,7 @@ import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.helpers.Alarms
 import bassamalim.hidaya.core.models.TimeOfDay
-import bassamalim.hidaya.core.utils.PTUtils
+import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import javax.inject.Inject
@@ -30,7 +30,7 @@ class SettingsDomain @Inject constructor(
     suspend fun resetPrayerTimes() {
         val location = locationRepository.getLocation().first() ?: return
 
-        val prayerTimes = PTUtils.getTimes(
+        val prayerTimes = PrayerTimeUtils.getPrayerTimesMap(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.cityId),
@@ -46,7 +46,7 @@ class SettingsDomain @Inject constructor(
     }
 
     fun cancelAlarm(pid: PID) {
-        PTUtils.cancelAlarm(app, pid)
+        PrayerTimeUtils.cancelAlarm(app, pid)
     }
 
     fun getLanguage() = appSettingsRepository.getLanguage()

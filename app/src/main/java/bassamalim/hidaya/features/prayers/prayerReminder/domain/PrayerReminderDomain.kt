@@ -15,7 +15,7 @@ class PrayerReminderDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
 
-    suspend fun getOffset(pid: PID) = prayersRepo.getTimeOffset(pid)
+    suspend fun getOffset(pid: PID) = prayersRepo.getTimeOffset(pid).first()
 
     fun getPrayerName(pid: PID) = prayersRepo.getPrayerName(pid)
 

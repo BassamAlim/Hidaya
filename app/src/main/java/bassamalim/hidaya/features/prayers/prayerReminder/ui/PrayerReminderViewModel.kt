@@ -27,12 +27,10 @@ class PrayerReminderViewModel @Inject constructor(
     val offsetMin = domain.offsetMin
     lateinit var numeralsLanguage: Language
 
-    private val _uiState = MutableStateFlow(
-        PrayerReminderUiState(
+    private val _uiState = MutableStateFlow(PrayerReminderUiState(
         pid = pid,
         prayerName = domain.getPrayerName(pid)
-    )
-    )
+    ))
     val uiState = _uiState.asStateFlow()
 
     init {

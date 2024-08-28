@@ -12,7 +12,7 @@ import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.NotificationReceiver
-import bassamalim.hidaya.core.utils.PTUtils
+import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import dagger.hilt.EntryPoint
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
@@ -30,7 +30,7 @@ class Alarms(
 
     suspend fun setPidAlarm(pid: PID) {
         val location = locationRepository.getLocation().first() ?: return
-        val prayerTimesMap = PTUtils.getTimes(
+        val prayerTimesMap = PrayerTimeUtils.getPrayerTimesMap(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.cityId),

@@ -14,6 +14,7 @@ import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun BookChaptersUI(
@@ -37,7 +38,7 @@ fun BookChaptersUI(
             }
         ) { page ->
             Tab(
-                chapters = viewModel.getItems(page),
+                chaptersFlow = viewModel.getItems(page),
                 onItemClick = viewModel::onItemClick,
                 onFavClick = viewModel::onFavoriteClick,
             )
@@ -47,10 +48,12 @@ fun BookChaptersUI(
 
 @Composable
 private fun Tab(
-    chapters: List<BookChapter>,
+    chaptersFlow: Flow<List<BookChapter>>,
     onItemClick: (BookChapter) -> Unit,
     onFavClick: (Int) -> Unit
 ) {
+    val chapters by chaptersFlow.collectAsStateWithLifecycle(emptyList())
+
     MyLazyColumn(
         lazyList = {
             items(chapters) { chapter ->

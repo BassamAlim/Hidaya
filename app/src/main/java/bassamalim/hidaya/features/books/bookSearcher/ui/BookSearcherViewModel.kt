@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.books.bookSearcher.domain.BookSearcherDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,10 +45,7 @@ class BookSearcherViewModel @Inject constructor(
 
             _uiState.update { it.copy(
                 bookTitles = domain.getBookTitles(language),
-                filtered = it.bookSelections.containsValue(false),
-                maxMatchesItems = domain.getMaxMatchesItems().map { num ->
-                    translateNums(numeralsLanguage, num)
-                }.toTypedArray()
+                filtered = it.bookSelections.containsValue(false)
             )}
         }
     }
@@ -99,9 +95,9 @@ class BookSearcherViewModel @Inject constructor(
         }
     }
 
-    fun onMaxMatchesIndexChange(newMaxMatches: Int) {
+    fun onMaxMatchesIndexChange(newValue: Int) {
         viewModelScope.launch {
-            domain.setMaxMatches(newMaxMatches)
+            domain.setMaxMatches(newValue)
 
             highlightColor?.let {
                 domain.search(
