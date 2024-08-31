@@ -12,6 +12,7 @@ import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.models.Reciter
 import bassamalim.hidaya.features.recitations.recitationRecitersMenu.domain.LastPlayedRecitation
 import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -48,19 +49,27 @@ class RecitationsRepository @Inject constructor(
         }
     }
 
-    fun getReciterFavorites() = recitationsPreferencesDataSource.flow.map {
-        it.reciterFavorites.toMap()
+    suspend fun setReciterFavorite(reciterId: Int, isFavorite: Boolean) {
+        recitationsPreferencesDataSource.update { it.copy(
+            reciterFavorites = it.reciterFavorites.put(reciterId, isFavorite)
+        )}
+        updateReciterFavoritesBackup()
     }
 
-    suspend fun setReciterFavorites(favorites: Map<Int, Int>) {
+    suspend fun setReciterFavorites(favorites: Map<Int, Boolean>) {
         recitationsPreferencesDataSource.update { it.copy(
             reciterFavorites = favorites.toPersistentMap()
         )}
     }
 
-    suspend fun setReciterIsFavorite(reciterId: Int, isFavorite: Int) {
+    fun getReciterFavoritesBackup() = recitationsPreferencesDataSource.flow.map { preferences ->
+        preferences.reciterFavorites.toMap()
+    }
+
+    private suspend fun updateReciterFavoritesBackup() {
+        val reciterFavorites = getReciterFavoritesBackup().first()
         recitationsPreferencesDataSource.update { it.copy(
-            reciterFavorites = it.reciterFavorites.put(reciterId, isFavorite)
+            reciterFavorites = reciterFavorites.toPersistentMap()
         )}
     }
 

@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RecitationsPreferences(
-    val reciterFavorites: PersistentMap<Int, Int> = persistentMapOf(),
+    val reciterFavorites: PersistentMap<Int, Boolean> = persistentMapOf(),
     val narrationSelections: PersistentMap<Int, Boolean> = persistentMapOf(),
     val repeatMode: Int = PlaybackStateCompat.REPEAT_MODE_NONE,
     val shuffleMode: Int = PlaybackStateCompat.SHUFFLE_MODE_NONE,

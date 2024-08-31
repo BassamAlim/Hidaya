@@ -37,6 +37,12 @@ class QuranRepository @Inject constructor(
             }.toMap()
         )
     }
+
+    suspend fun setFavoriteSuraMap(map: Map<Int, Boolean>) {
+        map.forEach { (suraId, isFavorite) ->
+            surasDao.setIsFavorite(suraId, if (isFavorite) 1 else 0)
+        }
+    }
     
     fun getBackupSuraFavorites() = quranPreferencesDataSource.flow.map {
         it.suraFavorites.toMap()

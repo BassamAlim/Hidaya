@@ -16,10 +16,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.database.daos.SurasDao
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
+import bassamalim.hidaya.core.data.repositories.LocationRepository
+import bassamalim.hidaya.core.data.repositories.PrayersRepository
+import bassamalim.hidaya.core.data.repositories.QuranRepository
+import bassamalim.hidaya.core.data.repositories.RecitationsRepository
+import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.helpers.Alarms
@@ -32,50 +38,74 @@ import bassamalim.hidaya.core.receivers.DeviceBootReceiver
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.ActivityUtils
-import bassamalim.hidaya.core.utils.DBUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class Activity : ComponentActivity() {
 
-    @Inject lateinit var appStateRepo: AppStateRepository
-    @Inject lateinit var db: AppDatabase
+    @Inject lateinit var appSettingsRepository: AppSettingsRepository
+    @Inject lateinit var appStateRepository: AppStateRepository
+    @Inject lateinit var prayersRepository: PrayersRepository
+    @Inject lateinit var quranRepository: QuranRepository
+    @Inject lateinit var recitationsRepository: RecitationsRepository
+    @Inject lateinit var remembrancesRepository: RemembrancesRepository
+    @Inject lateinit var locationRepository: LocationRepository
+    @Inject lateinit var surasDao: SurasDao
     @Inject lateinit var navigator: Navigator
     private var shouldWelcome = false
     private var startRoute: String? = null
+    private lateinit var language: Language
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        shouldWelcome = !appStateRepo.getIsOnboardingCompleted().first()
-        startRoute = intent.getStringExtra("start_route")
+        lifecycleScope.launch {
+            shouldWelcome = !appStateRepository.getIsOnboardingCompleted().first()
+            startRoute = intent.getStringExtra("start_route")
+            language = appSettingsRepository.getLanguage().first()
 
-        val isFirstLaunch = savedInstanceState == null
+            val isFirstLaunch = savedInstanceState == null
 
+            bootstrapApp(isFirstLaunch)
+
+            if (isFirstLaunch) {
+                handleAction(intent.action)
+
+                if (shouldWelcome) {
+                    launchApp()
+                    postLaunch()
+                }
+                else getLocationAndLaunch()
+            }
+            else launchApp()
+        }
+    }
+
+    private suspend fun bootstrapApp(isFirstLaunch: Boolean) {
         ActivityUtils.bootstrapApp(
             context = this,
             applicationContext = applicationContext,
-            preferencesDS = preferencesDS,
-            db = db,
-            isFirstLaunch = isFirstLaunch
+            language = appSettingsRepository.getLanguage().first(),
+            theme = appSettingsRepository.getTheme().first(),
+            isFirstLaunch = isFirstLaunch,
+            lastDbVersion = appStateRepository.getLastDbVersion().first(),
+            setLastDbVersion = appStateRepository::setLastDbVersion,
+            favoriteSuraMap = quranRepository.getSuraFavorites().first(),
+            setFavoriteSuraMap = quranRepository::setFavoriteSuraMap,
+            favoriteReciterMap = recitationsRepository.getReciterFavoritesBackup().first(),
+            setFavoriteReciterMap = recitationsRepository::setReciterFavorites,
+            favoriteRemembranceMap = remembrancesRepository.getFavoritesBackup().first(),
+            setFavoriteRemembranceMap = remembrancesRepository::setFavorites,
+            testDb = { surasDao.getPlainNamesAr() }
         )
-
-        if (isFirstLaunch) {
-            handleAction(intent.action)
-
-            if (shouldWelcome) {
-                launch()
-                postLaunch()
-            }
-            else getLocationAndLaunch()
-        }
-        else launch()
     }
 
     private fun handleAction(action: String?) {
@@ -95,19 +125,9 @@ class Activity : ComponentActivity() {
         }
     }
 
-    private fun preLaunch(firstLaunch: Boolean = false) {
-        if (firstLaunch && DBUtils.needsRevival(preferencesDS = preferencesDS, db = db))
-            DBUtils.reviveDB(ctx = this, preferencesDS = preferencesDS)
-
-        ActivityUtils.onActivityCreateSetLocale(this)
-        ActivityUtils.onActivityCreateSetTheme(this)
-        ActivityUtils.onActivityCreateSetLocale(applicationContext)
-        ActivityUtils.onActivityCreateSetTheme(applicationContext)
-    }
-
-    private fun getLocationAndLaunch() {
-        val locType = LocationType.valueOf(preferencesDS.getString(Preference.LocationType))
-        if (locType == LocationType.AUTO) {
+    private suspend fun getLocationAndLaunch() {
+        val location = locationRepository.getLocation().first()
+        if (location != null && location.type == LocationType.AUTO) {
             if (granted()) locate()
             else {
                 permissionRequestLauncher.launch(arrayOf(
@@ -117,7 +137,7 @@ class Activity : ComponentActivity() {
             }
         }
         else {
-            launch()
+            launchApp()
             postLaunch()
         }
     }
@@ -134,14 +154,12 @@ class Activity : ComponentActivity() {
         val fineLoc = result[Manifest.permission.ACCESS_FINE_LOCATION]
         val coarseLoc = result[Manifest.permission.ACCESS_COARSE_LOCATION]
         if (fineLoc != null && fineLoc && coarseLoc != null && coarseLoc) {
-            preferencesDS.setString(Preference.LocationType, LocationType.AUTO.name)
-
             locate()
 
             requestBackgroundLocationPermission()
         }
         else {
-            launch()
+            launchApp()
             postLaunch()
         }
     }
@@ -165,13 +183,14 @@ class Activity : ComponentActivity() {
         }
     }
 
-    private fun launch() {
+    private fun launchApp() {
         setContent {
-            ActivityUtils.onActivityCreateSetLocale(LocalContext.current)
+            ActivityUtils.onActivityCreateSetLocale(
+                context = LocalContext.current,
+                language = language
+            )
 
-            AppTheme(
-                direction = getDirection()
-            ) {
+            AppTheme(direction = getDirection(language)) {
                 Navigation(
                     navigator = navigator,
                     thenTo = startRoute,
@@ -181,23 +200,23 @@ class Activity : ComponentActivity() {
         }
     }
 
-    private fun getDirection(): LayoutDirection {
-        val language = preferencesDS.getLanguage()
-
+    private fun getDirection(language: Language): LayoutDirection {
         return if (language == Language.ENGLISH) LayoutDirection.Ltr
         else LayoutDirection.Rtl
     }
 
     private fun postLaunch() {
-        initFirebase()
+        lifecycleScope.launch {
+            initFirebase()
 
-        fetchAndActivateRemoteConfig()
+            fetchAndActivateRemoteConfig()
 
-        dailyUpdate()
+            dailyUpdate()
 
-        setAlarms()  // because maybe location changed
+            setAlarms()  // because maybe location changed
 
-        setupBootReceiver()
+            setupBootReceiver()
+        }
     }
 
     private fun granted(): Boolean {
@@ -215,7 +234,7 @@ class Activity : ComponentActivity() {
             .lastLocation.addOnSuccessListener { location: Location? ->
                 storeLocation(location)
 
-                launch()
+                launchApp()
 
                 postLaunch()
             }
@@ -224,19 +243,11 @@ class Activity : ComponentActivity() {
     }
 
     private fun storeLocation(location: Location?) {
-        if (location == null) return
-
-        val closestCity = db.citiesDao().getClosest(location.latitude, location.longitude)
-
-        preferencesDS.setInt(Preference.CountryID, closestCity.countryId)
-        preferencesDS.setInt(Preference.CityID, closestCity.id)
-
-        LocUtils.storeLocation(
-            location = location,
-            locationPreferenceSetter = { json ->
-                preferencesDS.setString(Preference.StoredLocation, json)
+        if (location != null) {
+            lifecycleScope.launch {
+                locationRepository.setLocation(location)
             }
-        )
+        }
     }
 
     private fun initFirebase() {
@@ -262,13 +273,19 @@ class Activity : ComponentActivity() {
         sendBroadcast(intent)
     }
 
-    private fun setAlarms() {
-        val location = LocUtils.retrieveLocation(preferencesDS.getString(Preference.StoredLocation))
+    private suspend fun setAlarms() {
+        val location = locationRepository.getLocation().first()
         if (location != null) {
-            val times = PrayerTimeUtils.getPrayerTimesMap(preferencesDS, db)!!
-            Alarms(this, times)
+            val prayerTimes = PrayerTimeUtils.getPrayerTimesMap(
+                settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+                timeOffsets = prayersRepository.getTimeOffsets().first(),
+                timeZoneId = locationRepository.getTimeZone(location.cityId),
+                location = location,
+                calendar = Calendar.getInstance()
+            )
+            Alarms(this).setAll(prayerTimes)
         }
-        else if (!preferencesDS.getBoolean(Preference.FirstTime)) {
+        else if (!appStateRepository.getIsOnboardingCompleted().first()) {
             Toast.makeText(
                 this,
                 getString(R.string.give_location_permission_toast),

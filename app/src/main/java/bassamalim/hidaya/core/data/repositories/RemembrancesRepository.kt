@@ -44,24 +44,32 @@ class RemembrancesRepository @Inject constructor(
         if (language == Language.ARABIC) remembrancesDao.getNameAr(id)
         else remembrancesDao.getNameEn(id)
 
-    suspend fun setRemembranceIsFavorite(id: Int, value: Boolean) {
+    suspend fun setFavorite(id: Int, value: Boolean) {
         remembrancesDao.setIsFavorite(id = id, value = if (value) 1 else 0)
 
-        setBackupFavorites(
+        setFavoritesBackup(
             remembrancesDao.observeIsFavorites().first().mapIndexed { index, isFavorite ->
                 index to isFavorite
             }.toMap()
         )
     }
 
+    suspend fun setFavorites(favorites: Map<Int, Boolean>) {
+        favorites.forEach { (id, value) ->
+            remembrancesDao.setIsFavorite(id = id, value = if (value) 1 else 0)
+        }
+    }
+
     fun getRemembrancePassages(remembranceId: Int) =
         remembrancePassagesDao.getRemembrancePassages(remembranceId)
 
-    fun getFavorites() = remembrancePreferencesDataSource.flow.map {
-        it.favorites
+    fun getFavoritesBackup() = remembrancePreferencesDataSource.flow.map { preferences ->
+        preferences.favorites.map {
+            it.key to (it.value == 1)
+        }.toMap()
     }
 
-    private suspend fun setBackupFavorites(favorites: Map<Int, Int>) {
+    private suspend fun setFavoritesBackup(favorites: Map<Int, Int>) {
         remembrancePreferencesDataSource.update { it.copy(
             favorites = favorites.toPersistentMap()
         )}

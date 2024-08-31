@@ -19,9 +19,31 @@ class LocationRepository @Inject constructor(
     fun getLocation() = userPreferencesDataSource.flow.map {
         it.location
     }
-    suspend fun setLocation(location: Location) {
+
+    suspend fun setLocation(location: android.location.Location) {
+        val closestCity = getClosestCity(location.latitude, location.longitude)
         userPreferencesDataSource.update { it.copy(
-            location = location
+            location = Location(
+                type = LocationType.AUTO,
+                latitude = location.latitude,
+                longitude = location.longitude,
+                countryId = closestCity.countryId,
+                cityId = closestCity.id
+            )
+        )}
+    }
+
+    suspend fun setLocation(countryId: Int, cityId: Int) {
+        val city = getCity(cityId)
+
+        userPreferencesDataSource.update { it.copy(
+            location = Location(
+                type = LocationType.MANUAL,
+                latitude = city.latitude,
+                longitude = city.longitude,
+                countryId = countryId,
+                cityId = cityId
+            )
         )}
     }
 
@@ -40,20 +62,6 @@ class LocationRepository @Inject constructor(
             citiesDao.getTopAr(countryId, "").toList()
 
     fun getCity(cityId: Int) = citiesDao.getCity(cityId)
-
-    suspend fun setLocation(countryId: Int, cityId: Int) {
-        val city = getCity(cityId)
-
-        userPreferencesDataSource.update { it.copy(
-            location = Location(
-                type = LocationType.MANUAL,
-                latitude = city.latitude,
-                longitude = city.longitude,
-                countryId = countryId,
-                cityId = cityId
-            )
-        )}
-    }
 
     fun getClosestCity(latitude: Double, longitude: Double) =
         citiesDao.getClosest(latitude, longitude)

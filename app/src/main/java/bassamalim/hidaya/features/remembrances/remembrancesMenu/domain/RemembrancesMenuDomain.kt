@@ -50,7 +50,7 @@ class RemembrancesMenuDomain @Inject constructor(
         remembrancesRepository.getRemembranceCategoryName(categoryId, language)
 
     suspend fun setIsFavorite(id: Int, value: Boolean) {
-        remembrancesRepository.setRemembranceIsFavorite(id, value)
+        remembrancesRepository.setFavorite(id, value)
     }
 
 }

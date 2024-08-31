@@ -19,7 +19,7 @@ object NotificationsPreferencesMigration {
             sharedPreferencesName = PreferencesFileNames.NOTIFICATIONS_PREFERENCES_NAME
         ) { sharedPrefs: SharedPreferencesView, currentData: NotificationsPreferences ->
             currentData.copy(
-                notificationTypeMap = persistentMapOf<PID, NotificationType>().mutate {
+                notificationTypes = persistentMapOf<PID, NotificationType>().mutate {
                     PID.entries.map {
                         it to NotificationType.valueOf(
                             sharedPrefs.getString(
@@ -77,7 +77,7 @@ object NotificationsPreferencesMigration {
                         defValue = Preference.NotifyExtraNotification(PID.FRIDAY_KAHF).default as Boolean
                     )
                 ),
-                prayerReminderOffsetMap = persistentMapOf(
+                prayerReminderTimeOffsets = persistentMapOf(
                     PID.FAJR to sharedPrefs.getInt(
                         key = Preference.ReminderOffset(PID.FAJR).key,
                         defValue = Preference.ReminderOffset(PID.FAJR).default as Int
@@ -103,7 +103,7 @@ object NotificationsPreferencesMigration {
                         defValue = Preference.ReminderOffset(PID.ISHAA).default as Int
                     ),
                 ),
-                lastNotificationDayOfYearMap = persistentMapOf<PID, Int>().mutate {
+                lastNotificationDates = persistentMapOf<PID, Int>().mutate {
                     PID.entries.map {
                         it to 0
                     }

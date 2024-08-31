@@ -112,7 +112,7 @@ class RecitationSurasMenuDomain @Inject constructor(
     fun getNarration(reciterId: Int, narrationId: Int) =
         recitationsRepository.getNarration(reciterId, narrationId)
 
-    fun getIsFavorites() = recitationsRepository.getReciterFavorites()
+    fun getIsFavorites() = recitationsRepository.getReciterFavoritesBackup()
 
     suspend fun setIsFavorite(suraId: Int, value: Boolean) {
         quranRepository.setSuraIsFavorite(suraId, value)
