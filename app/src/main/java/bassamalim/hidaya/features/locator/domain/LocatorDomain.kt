@@ -1,37 +1,28 @@
 package bassamalim.hidaya.features.locator.domain
 
+import android.location.Location
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
-import bassamalim.hidaya.core.enums.LocationType
-import bassamalim.hidaya.core.models.Location
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class LocatorDomain @Inject constructor(
-    private val appSettingsRepo: AppSettingsRepository,
-    private val locationRepo: LocationRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val locationRepository: LocationRepository
 ) {
 
-    suspend fun getLanguage() = appSettingsRepo.getLanguage().first()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    suspend fun setAndReturnLocation(
-        type: LocationType,
-        latitude: Double,
-        longitude: Double
-    ): Location {
-        val closestCity = locationRepo.getClosestCity(latitude, longitude)
+    suspend fun setAutoLocation(location: Location) {
+        locationRepository.setLocation(location)
+    }
 
-        val location = Location(
-            type = type,
-            latitude = latitude,
-            longitude = longitude,
-            countryId = closestCity.countryId,
-            cityId = closestCity.id
+    suspend fun setManualLocation(cityId: Int) {
+        val city = locationRepository.getCity(cityId)
+        locationRepository.setLocation(
+            countryId = city.countryId,
+            cityId = city.id
         )
-
-        locationRepo.setLocation(location)
-
-        return location
     }
 
 }

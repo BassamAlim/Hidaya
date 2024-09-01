@@ -12,85 +12,92 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import androidx.preference.PreferenceManager
-import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
+import bassamalim.hidaya.core.data.database.daos.SurasDao
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.AppStateRepository
+import bassamalim.hidaya.core.data.repositories.LocationRepository
+import bassamalim.hidaya.core.data.repositories.PrayersRepository
+import bassamalim.hidaya.core.data.repositories.QuranRepository
+import bassamalim.hidaya.core.data.repositories.RecitationsRepository
+import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.helpers.Alarms
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.other.PrayersWidget
 import bassamalim.hidaya.core.utils.ActivityUtils
-import bassamalim.hidaya.core.utils.DBUtils
-import bassamalim.hidaya.core.utils.LocUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Random
+import javax.inject.Inject
 
 class DailyUpdateReceiver : BroadcastReceiver() {
 
+    @Inject lateinit var appSettingsRepository: AppSettingsRepository
+    @Inject lateinit var appStateRepository: AppStateRepository
+    @Inject lateinit var prayersRepository: PrayersRepository
+    @Inject lateinit var quranRepository: QuranRepository
+    @Inject lateinit var recitationsRepository: RecitationsRepository
+    @Inject lateinit var remembrancesRepository: RemembrancesRepository
+    @Inject lateinit var locationRepository: LocationRepository
+    @Inject lateinit var surasDao: SurasDao
+
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context, intent: Intent) {
         Log.i(Global.TAG, "in DailyUpdateReceiver")
 
-        val preferencesDS = PreferencesDataSource(
-            PreferenceManager.getDefaultSharedPreferences(context)
-        )
-        val db = DBUtils.getDB(context)
+        GlobalScope.launch {
+            bootstrapApp(context)
 
-        ActivityUtils.bootstrapApp(
-            context = context,
-            preferencesDS = preferencesDS,
-            db = db,
-            isFirstLaunch = true
-        )
-
-        val now = Calendar.getInstance()
-        if ((intent.action == "daily" && notUpdatedToday(preferencesDS, now)) || intent.action == "boot") {
-            when (LocationType.valueOf(preferencesDS.getString(Preference.LocationType))) {
-                LocationType.AUTO -> locate(context, preferencesDS, db, now)
-                LocationType.MANUAL -> {
-                    val cityId = preferencesDS.getInt(Preference.CityID)
-                    if (cityId == -1) return
-                    val city = db.citiesDao().getCity(cityId)
-
-                    val location = Location("")
-                    location.latitude = city.latitude
-                    location.longitude = city.longitude
-
-                    update(
-                        context = context,
-                        preferencesDS = preferencesDS,
-                        db = db,
-                        location = location,
-                        now = now
-                    )
+            val now = Calendar.getInstance()
+            if ((intent.action == "daily" && notUpdatedToday(now)) || intent.action == "boot") {
+                val location = locationRepository.getLocation().first() ?: return@launch
+                when (location.type) {
+                    LocationType.AUTO -> locate(context, now)
+                    LocationType.MANUAL -> {
+                        update(context = context, location = null, now = now)
+                    }
+                    LocationType.NONE -> return@launch
                 }
-                LocationType.NONE -> return
+
+                pickWerd()
             }
+            else Log.i(Global.TAG, "dead intent in daily update receiver")
 
-            pickWerd(preferencesDS)
+            setTomorrow(context)
         }
-        else Log.i(Global.TAG, "dead intent in daily update receiver")
-
-        setTomorrow(context)
     }
 
-    private fun notUpdatedToday(
-        preferencesDS: PreferencesDataSource,
-        now: Calendar
-    ): Boolean {
+    private suspend fun bootstrapApp(context: Context) {
+        ActivityUtils.bootstrapApp(
+            context = context,
+            applicationContext = context.applicationContext,
+            language = appSettingsRepository.getLanguage().first(),
+            theme = appSettingsRepository.getTheme().first(),
+            isFirstLaunch = true,
+            lastDbVersion = appStateRepository.getLastDbVersion().first(),
+            setLastDbVersion = appStateRepository::setLastDbVersion,
+            favoriteSuraMap = quranRepository.getSuraFavorites().first(),
+            setFavoriteSuraMap = quranRepository::setFavoriteSuraMap,
+            favoriteReciterMap = recitationsRepository.getReciterFavoritesBackup().first(),
+            setFavoriteReciterMap = recitationsRepository::setReciterFavorites,
+            favoriteRemembranceMap = remembrancesRepository.getFavoritesBackup().first(),
+            setFavoriteRemembranceMap = remembrancesRepository::setFavorites,
+            testDb = { surasDao.getPlainNamesAr() }
+        )
+    }
+
+    private suspend fun notUpdatedToday(now: Calendar): Boolean {
         val lastUpdate = Calendar.getInstance()
-        lastUpdate.timeInMillis = preferencesDS.getLong(Preference.LastDailyUpdateMillis)
+        lastUpdate.timeInMillis = appStateRepository.getLastDailyUpdateMillis().first()
         return lastUpdate[Calendar.DATE] != now[Calendar.DATE]
     }
 
-    private fun locate(
-        context: Context,
-        preferencesDS: PreferencesDataSource,
-        db: AppDatabase,
-        now: Calendar
-    ) {
+    private fun locate(context: Context, now: Calendar) {
         if (ActivityCompat.checkSelfPermission(
                 context, Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
@@ -100,74 +107,61 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         ) {
             LocationServices.getFusedLocationProviderClient(context)
                 .lastLocation.addOnSuccessListener {
-                    location: Location? -> update(context, preferencesDS, db, location, now)
+                    location: Location? ->
+                    update(context = context, location = location, now = now)
             }
         }
     }
 
-    private fun update(
-        context: Context,
-        preferencesDS: PreferencesDataSource,
-        db: AppDatabase,
-        location: Location?,
-        now: Calendar
-    ) {
-        if (location == null) {
-            val storedLoc = LocUtils.retrieveLocation(
-                preferencesDS.getString(Preference.StoredLocation)
-            )
-            if (storedLoc == null) {
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun update(context: Context, location: Location?, now: Calendar) {
+        GlobalScope.launch {
+            if (location != null)
+                locationRepository.setLocation(location)
+
+            val latestLocation = locationRepository.getLocation().first()
+            if (latestLocation == null) {
                 Log.e(Global.TAG, "no available location in DailyUpdate")
-                return
+                return@launch
             }
+
+            val prayerTimes = PrayerTimeUtils.getPrayerTimes(
+                settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+                timeOffsets = prayersRepository.getTimeOffsets().first(),
+                timeZoneId = locationRepository.getTimeZone(latestLocation.cityId),
+                location = latestLocation,
+                calendar = now
+            )
+
+            Alarms(context).setAll(prayerTimes)
+
+            updateWidget(context)
+
+            setUpdated(now)
         }
-        else LocUtils.storeLocation(
-            location = location,
-            locationPreferenceSetter = { json ->
-                preferencesDS.setString(Preference.StoredLocation, json)
-            }
-        )
-
-        val times = PrayerTimeUtils.getPrayerTimesMap(preferenceDS = preferencesDS, db = db) ?: return
-
-        Alarms(context = context, prayerTimeMap = times)
-
-        updateWidget(context = context, times = times)
-
-        updated(preferencesDS = preferencesDS, now = now)
     }
 
-    private fun updateWidget(
-        context: Context,
-        times: Array<Calendar?>
-    ) {
+    private fun updateWidget(context: Context) {
         val intent = Intent(context, PrayersWidget::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        intent.putExtra("times", times)
 
         val ids = AppWidgetManager
             .getInstance(context.applicationContext)
-            .getAppWidgetIds(
-                ComponentName(context.applicationContext, PrayersWidget::class.java)
-            )
+            .getAppWidgetIds(ComponentName(context.applicationContext, PrayersWidget::class.java))
 
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
 
         context.sendBroadcast(intent)
     }
 
-    private fun updated(
-        preferencesDS: PreferencesDataSource,
-        now: Calendar
-    ) {
-        preferencesDS.setLong(Preference.LastDailyUpdateMillis, now.timeInMillis)
-
-
+    private suspend fun setUpdated(now: Calendar) {
+        appStateRepository.setLastDailyUpdateMillis(now.timeInMillis)
     }
 
-    private fun pickWerd(preferencesDS: PreferencesDataSource) {
-        preferencesDS.setInt(Preference.WerdPage, Random().nextInt(Global.QURAN_PAGES))
-        preferencesDS.setBoolean(Preference.WerdDone, false)
+    private suspend fun pickWerd() {
+        val randomWerd = Random().nextInt(Global.QURAN_PAGES)
+        quranRepository.setWerdPage(randomWerd)
+        quranRepository.setIsWerdDone(false)
     }
 
     private fun setTomorrow(context: Context) {

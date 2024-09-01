@@ -9,8 +9,6 @@ import kotlinx.serialization.Serializable
 @Parcelize
 data class Location(
     val type: LocationType,
-    val latitude: Double,
-    val longitude: Double,
-    val countryId: Int,
-    val cityId: Int,
+    val coordinates: Coordinates,
+    val ids: LocationIds
 ) : Parcelable

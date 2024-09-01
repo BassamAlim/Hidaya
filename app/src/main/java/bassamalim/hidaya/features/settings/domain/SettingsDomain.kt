@@ -30,7 +30,7 @@ class SettingsDomain @Inject constructor(
     suspend fun resetPrayerTimes() {
         val location = locationRepository.getLocation().first() ?: return
 
-        val prayerTimes = PrayerTimeUtils.getPrayerTimesMap(
+        val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.cityId),
@@ -101,10 +101,10 @@ class SettingsDomain @Inject constructor(
         prayersRepository.setAdjustHighLatitudes(adjustmentMethod)
     }
 
-    fun getAthanId() = prayersRepository.getAthanId()
+    fun getAthanId() = prayersRepository.getAthanAudioId()
 
     suspend fun setAthanId(athanId: Int) {
-        prayersRepository.setAthanId(athanId)
+        prayersRepository.setAthanAudioId(athanId)
     }
 
 }

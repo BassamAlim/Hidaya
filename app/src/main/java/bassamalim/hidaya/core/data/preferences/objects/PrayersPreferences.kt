@@ -11,6 +11,6 @@ data class PrayersPreferences(
     val prayerTimeCalculatorSettings: PrayerTimeCalculatorSettings =
         PrayerTimeCalculatorSettings(),
     val timeOffsets: PersistentMap<PID, Int> = persistentMapOf(),
-    val athanId: Int = 1,
+    val athanAudioId: Int = 1,
     val shouldShowTutorial: Boolean = true,
 )

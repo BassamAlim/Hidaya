@@ -97,7 +97,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".features.quranReader.ayaPlayer.VersePlayerService"
+            android:name=".features.quran.quranReader.versePlayer.VersePlayerService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             android:permission="none">

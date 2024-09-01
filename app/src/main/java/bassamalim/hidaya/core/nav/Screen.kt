@@ -41,8 +41,8 @@ sealed class Screen(val route: String) {
     data object LocationPicker: Screen("location_picker")
 
     data class Locator(
-        val type: String
-    ): Screen("locator/$type")
+        val isInitial: String
+    ): Screen("locator/$isInitial")
 
     data object Main: Screen("main")
 

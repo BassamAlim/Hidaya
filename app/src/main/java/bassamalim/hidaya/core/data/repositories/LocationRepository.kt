@@ -6,7 +6,9 @@ import bassamalim.hidaya.core.data.database.models.Country
 import bassamalim.hidaya.core.data.preferences.dataSources.UserPreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
+import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.Location
+import bassamalim.hidaya.core.models.LocationIds
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -21,14 +23,23 @@ class LocationRepository @Inject constructor(
     }
 
     suspend fun setLocation(location: android.location.Location) {
-        val closestCity = getClosestCity(location.latitude, location.longitude)
+        val closestCity = getClosestCity(
+            Coordinates(
+                latitude = location.latitude,
+                longitude = location.longitude
+            )
+        )
         userPreferencesDataSource.update { it.copy(
             location = Location(
                 type = LocationType.AUTO,
-                latitude = location.latitude,
-                longitude = location.longitude,
-                countryId = closestCity.countryId,
-                cityId = closestCity.id
+                coordinates = Coordinates(
+                    latitude = location.latitude,
+                    longitude = location.longitude
+                ),
+                ids = LocationIds(
+                    countryId = closestCity.countryId,
+                    cityId = closestCity.id
+                )
             )
         )}
     }
@@ -39,10 +50,14 @@ class LocationRepository @Inject constructor(
         userPreferencesDataSource.update { it.copy(
             location = Location(
                 type = LocationType.MANUAL,
-                latitude = city.latitude,
-                longitude = city.longitude,
-                countryId = countryId,
-                cityId = cityId
+                coordinates = Coordinates(
+                    latitude = city.latitude,
+                    longitude = city.longitude
+                ),
+                ids = LocationIds(
+                    countryId = countryId,
+                    cityId = cityId
+                )
             )
         )}
     }
@@ -63,8 +78,8 @@ class LocationRepository @Inject constructor(
 
     fun getCity(cityId: Int) = citiesDao.getCity(cityId)
 
-    fun getClosestCity(latitude: Double, longitude: Double) =
-        citiesDao.getClosest(latitude, longitude)
+    fun getClosestCity(coordinates: Coordinates) =
+        citiesDao.getClosest(latitude = coordinates.latitude, longitude = coordinates.longitude)
 
     fun getCountryName(countryId: Int, language: Language): String =
         if (language == Language.ENGLISH) countriesDao.getNameEn(countryId)

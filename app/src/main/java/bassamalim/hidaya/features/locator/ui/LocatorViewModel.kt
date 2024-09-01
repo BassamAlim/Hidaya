@@ -5,14 +5,11 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.pm.PackageManager
 import android.os.Build
-import android.os.Bundle
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.enums.LocationType
-import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.locator.domain.LocatorDomain
@@ -32,13 +29,13 @@ class LocatorViewModel @Inject constructor(
     private val navigator: Navigator
 ): AndroidViewModel(app) {
 
-    private val type = savedStateHandle.get<String>("type") ?: "normal"
+    private val isInitialLocation = savedStateHandle.get<Boolean>("is_initial") ?: false
 
     private lateinit var locationRequestLauncher:
             ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
 
     private val _uiState = MutableStateFlow(LocatorUiState(
-        shouldShowSkipLocationButton = type == "initial"
+        shouldShowSkipLocationButton = isInitialLocation
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -66,12 +63,12 @@ class LocatorViewModel @Inject constructor(
             Screen.LocationPicker
         ) { result ->
             if (result != null) {
-                launch(
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                        result.getParcelable("location", Location::class.java)
-                    else
-                        result.getParcelable("location")
-                )
+                val cityId = result.getInt("city_id")
+                viewModelScope.launch {
+                    domain.setManualLocation(cityId)
+                }
+
+                launch()
             }
         }
     }
@@ -79,39 +76,27 @@ class LocatorViewModel @Inject constructor(
     @SuppressLint("MissingPermission")
     private fun locate() {
         LocationServices.getFusedLocationProviderClient(app)
-            .lastLocation.addOnSuccessListener { loc: android.location.Location? ->
+            .lastLocation.addOnSuccessListener { location: android.location.Location? ->
                 viewModelScope.launch {
-                    var location: Location? = null
-                    if (loc != null) {
-                        location = domain.setAndReturnLocation(
-                            type = LocationType.AUTO,
-                            latitude = loc.latitude,
-                            longitude = loc.longitude
-                        )
-                    }
+                    if (location != null)
+                        domain.setAutoLocation(location)
 
-                    launch(location)
+                    launch()
                 }
             }
 
         background()
     }
 
-    private fun launch(location: Location?) {
-        if (type == "initial") {
+    private fun launch() {
+        if (isInitialLocation) {
             navigator.navigate(Screen.Main) {
-                popUpTo(Screen.Locator(type = "{type}").route) {
+                popUpTo(Screen.Locator(isInitial = "{is_initial}").route) {
                     inclusive = true
                 }
             }
         }
-        else if (type == "normal") {
-            navigator.navigateBackWithResult(
-                Bundle().apply {
-                    putParcelable("location", location)
-                }
-            )
-        }
+        else navigator.popBackStack()
     }
 
     private fun background() {
@@ -140,7 +125,7 @@ class LocatorViewModel @Inject constructor(
     }
 
     fun onSkipLocationClick() {
-        launch(null)
+        launch()
     }
 
     fun onLocationRequestResult(result: Map<String, Boolean>) {
@@ -153,7 +138,7 @@ class LocatorViewModel @Inject constructor(
             locate()
             background()
         }
-        else launch(null)
+        else launch()
     }
 
 }

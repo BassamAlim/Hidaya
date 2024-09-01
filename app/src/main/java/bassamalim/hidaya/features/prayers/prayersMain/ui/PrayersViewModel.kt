@@ -5,9 +5,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.PID
-import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
@@ -70,6 +68,7 @@ class PrayersViewModel @Inject constructor(
             locationName =
                 if (location != null) getLocationName()
                 else "",
+            shouldShowLocationFailedToast = location == null,
             dateText = getDateText(dateOffset.intValue),
     )}.stateIn(
         initialValue = PrayersUiState(),
@@ -84,46 +83,16 @@ class PrayersViewModel @Inject constructor(
         }
     }
 
-    fun onLocatorClk() {
-        navigator.navigateForResult(
-            Screen.Locator(
-                type = "normal"
-            )
-        ) { result ->
-            if (result != null) {
-                onLocationSet(
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                            result.getParcelable("location", Location::class.java)
-                    else
-                        result.getParcelable("location")
-                )
-            }
-        }
+    fun onLocatorClick() {
+        navigator.navigate(
+            Screen.Locator(isInitial = false.toString())
+        )
     }
 
-    private fun onLocationSet(location: Location?) {
-        if (location == null) {
-            _uiState.update { it.copy(
-                shouldShowLocationFailedToast = true
-            )}
-            return
-        }
-
-        viewModelScope.launch {
-            domain.setLocation(location)
-
-            _uiState.update { it.copy(
-                locationName = getLocationName()
-            )}
-        }
-    }
-
-    fun onPrayerCardClk(pid: PID) {
+    fun onPrayerCardClick(pid: PID) {
         if (_uiState.value.isLocationAvailable) {
             navigator.navigateForResult(
-                destination = Screen.PrayerSettings(
-                    pid = pid.name
-                )
+                Screen.PrayerSettings(pid = pid.name)
             ) { result ->
                 if (result != null) {
                     onSettingsDialogSave(
@@ -153,7 +122,7 @@ class PrayersViewModel @Inject constructor(
         }
     }
 
-    fun onReminderCardClk(pid: PID) {
+    fun onReminderCardClick(pid: PID) {
         if (_uiState.value.isLocationAvailable) {
             navigator.navigateForResult(
                 destination = Screen.PrayerReminder(
@@ -225,18 +194,12 @@ class PrayersViewModel @Inject constructor(
 
     private suspend fun getLocationName(): String {
         val location = domain.location.first()!!
-        var countryId = location.countryId
-        var cityId = location.cityId
 
-        if (location.type == LocationType.AUTO || countryId == -1 || cityId == -1) {
-            val closest = domain.getClosest(location.latitude, location.longitude)
-            countryId = closest.countryId
-            cityId = closest.id
-        }
-
-        val countryName = domain.getCountryName(countryId = countryId, language = language)
-        val cityName = domain.getCityName(cityId = cityId, language = language)
-
+        val countryName = domain.getCountryName(
+            countryId = location.ids.countryId,
+            language = language
+        )
+        val cityName = domain.getCityName(cityId = location.ids.cityId, language = language)
         return "$countryName, $cityName"
     }
 

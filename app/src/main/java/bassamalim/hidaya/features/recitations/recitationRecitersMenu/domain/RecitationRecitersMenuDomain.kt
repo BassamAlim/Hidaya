@@ -108,10 +108,13 @@ class RecitationRecitersMenuDomain @Inject constructor(
 
     suspend fun getLanguage() = settingsRepository.getLanguage().first()
 
-    fun getFavs() = recitationsRepository.getReciterFavoritesBackup()
+    fun getFavorites() = recitationsRepository.getReciterFavoritesBackup()
 
-    suspend fun setFav(reciterId: Int, fav: Int) {
-        recitationsRepository.setReciterFavorite(reciterId, fav)
+    suspend fun setFavorite(reciterId: Int, value: Boolean) {
+        recitationsRepository.setReciterFavorite(
+            reciterId = reciterId,
+            isFavorite = value
+        )
     }
 
     fun getDownloadingNarrationId(downloadId: Long) = downloading[downloadId]!!
@@ -141,14 +144,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
 
     fun getNarrationSelections() = recitationsRepository.getNarrationSelections()
 
-    fun getLastPlayed() = recitationsRepository.getLastPlayed()
-
-    suspend fun setFavorite(reciterId: Int, isFavorite: Boolean) {
-        recitationsRepository.setReciterFavorite(
-            reciterId = reciterId,
-            isFavorite = if (isFavorite) 1 else 0
-        )
-    }
+    fun getLastPlayed() = recitationsRepository.getLastPlayedMedia()
 
     fun checkIsDownloaded(reciterId: Int, narrationId: Int) =
         File("${recitationsRepository.dir}${reciterId}/${narrationId}").exists()

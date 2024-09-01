@@ -51,14 +51,14 @@ fun PrayersUI(
         LocationCard(
             isLocationAvailable = state.isLocationAvailable,
             locationName = state.locationName,
-            onLocatorClick = viewModel::onLocatorClk
+            onLocatorClick = viewModel::onLocatorClick
         )
 
         PrayersSpace(
             prayersData = state.prayersData,
             isLocationAvailable = state.locationName.isNotEmpty(),
-            onPrayerCardClick = viewModel::onPrayerCardClk,
-            onReminderCardClick = viewModel::onReminderCardClk
+            onPrayerCardClick = viewModel::onPrayerCardClick,
+            onReminderCardClick = viewModel::onReminderCardClick
         )
 
         DayCard(

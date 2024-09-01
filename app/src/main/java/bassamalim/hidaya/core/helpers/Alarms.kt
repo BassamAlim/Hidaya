@@ -30,7 +30,7 @@ class Alarms(
 
     suspend fun setPidAlarm(pid: PID) {
         val location = locationRepository.getLocation().first() ?: return
-        val prayerTimesMap = PrayerTimeUtils.getPrayerTimesMap(
+        val prayerTimesMap = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.cityId),

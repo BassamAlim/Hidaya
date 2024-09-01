@@ -15,29 +15,30 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.data.database.models.Verse
-import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.database.models.VerseRecitation
+import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.features.quranReader.ayaPlayer.AlternatePlayer
 import bassamalim.hidaya.features.quranReader.ayaPlayer.PlayerCallback
 import bassamalim.hidaya.features.quranReader.ayaPlayer.PlayerState
 import java.util.Locale
-import kotlin.math.floor
 
 @UnstableApi
 @RequiresApi(Build.VERSION_CODES.O)
 class AlternatingPlayersManager(
-    private val ctx: Context,
-    private val preferencesDS: PreferencesDataSource,
-    private val db: AppDatabase,
+    private val context: Context,
+    private val allVerses: List<Verse>,
+    private val recitations: List<VerseRecitation>,
+    private val repeatMode: VerseRepeatMode,
+    private val shouldStopOnSuraEnd: Boolean,
+    private val shouldStopOnPageEnd: Boolean,
     private val callback: PlayerCallback
 ) : OnPreparedListener, OnCompletionListener, OnErrorListener {
 
     private val NUM_OF_PLAYERS = 2
     private val aps = Array(NUM_OF_PLAYERS) { AlternatePlayer(MediaPlayer()) }
     private var playerIdx = 0
-    private val verses = db.versesDao().getAll()
     var verseIdx = -1
     private var isPaused = false
 
@@ -47,7 +48,7 @@ class AlternatingPlayersManager(
             ap.mp.setOnCompletionListener(this)
             ap.mp.setOnErrorListener(this)
 
-            ap.mp.setWakeMode(ctx, PowerManager.PARTIAL_WAKE_LOCK)
+            ap.mp.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
         }
     }
 
@@ -128,8 +129,8 @@ class AlternatingPlayersManager(
         Log.d(Global.TAG, "in onError")
 
         Toast.makeText(
-            ctx,
-            ctx.getString(R.string.error_fetching_data),
+            context,
+            context.getString(R.string.error_fetching_data),
             Toast.LENGTH_SHORT
         ).show()
 
@@ -175,7 +176,7 @@ class AlternatingPlayersManager(
     }
 
     fun nextVerse() {
-        if (verseIdx < verses.size - 1)
+        if (verseIdx < allVerses.size - 1)
             playNew(verseIdx + 1)
     }
 
@@ -242,8 +243,8 @@ class AlternatingPlayersManager(
         val uri: Uri
         try {
             aps[playerIdx].mp.reset()
-            uri = getUri(verses[verseIdx])
-            aps[playerIdx].mp.setDataSource(ctx, uri)
+            uri = getUri(allVerses[verseIdx])
+            aps[playerIdx].mp.setDataSource(context, uri)
             aps[playerIdx].mp.prepareAsync()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -251,14 +252,16 @@ class AlternatingPlayersManager(
         }
     }
 
-    private fun getRepeat(): Int {
-        val repeat = floor(preferencesDS.getFloat(Preference.VerseRepeat)).toInt()
-        return if (repeat == 11) Int.MAX_VALUE else repeat
-    }
-
     private fun shouldRepeat(playerIdx: Int): Boolean {
-        Log.d(Global.TAG, "Repeat: ${getRepeat()}")
-        return aps[playerIdx].repeated < getRepeat()
+        Log.d(Global.TAG, "Repeat Mode: $repeatMode")
+
+        return when (repeatMode) {
+            VerseRepeatMode.NONE -> false
+            VerseRepeatMode.TWO -> aps[playerIdx].repeated < 1
+            VerseRepeatMode.THREE -> aps[playerIdx].repeated < 2
+            VerseRepeatMode.FIVE -> aps[playerIdx].repeated < 4
+            VerseRepeatMode.INFINITE -> true
+        }
     }
 
     private fun isOtherPlayerPlaying(): Boolean {
@@ -275,21 +278,17 @@ class AlternatingPlayersManager(
 
     private fun shouldStop(currentVerse: Int, jumpSize: Int): Boolean {
         val targetVerse = currentVerse + jumpSize
-        return targetVerse >= verses.size
-                || (preferencesDS.getBoolean(Preference.StopOnSuraEnd)
-                && verses[currentVerse].suraNum != verses[targetVerse].suraNum)
-                || (preferencesDS.getBoolean(Preference.StopOnPageEnd)
-                && verses[currentVerse].pageNum != verses[targetVerse].pageNum)
+        return targetVerse >= allVerses.size
+                || (shouldStopOnSuraEnd
+                && allVerses[currentVerse].suraNum != allVerses[targetVerse].suraNum)
+                || (shouldStopOnPageEnd
+                && allVerses[currentVerse].pageNum != allVerses[targetVerse].pageNum)
     }
 
     private fun getUri(verse: Verse): Uri {
-        val choice = preferencesDS.getString(Preference.VerseReciter).toInt()
-        val sources = db.verseRecitationsDao().getReciter(choice)
-
         var uri = "https://www.everyayah.com/data/"
-        uri += sources[0].source
+        uri += recitations[0].source
         uri += String.format(Locale.US, "%03d%03d.mp3", verse.suraNum, verse.num)
-
         return Uri.parse(uri)
     }
 

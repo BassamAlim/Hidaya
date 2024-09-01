@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Parcelize
 @Serializable
-data class Coordinates(
-    val latitude: Double,
-    val longitude: Double
+data class LocationIds(
+    val countryId: Int,
+    val cityId: Int
 ) : Parcelable

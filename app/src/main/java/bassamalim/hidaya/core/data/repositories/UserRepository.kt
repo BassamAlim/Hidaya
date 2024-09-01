@@ -20,9 +20,29 @@ class UserRepository @Inject constructor(
         it.userRecord
     }
 
+    fun getQuranRecord() = userPreferencesDataSource.flow.map {
+        it.userRecord.quranPages
+    }
+
+    fun getRecitationsRecord() = userPreferencesDataSource.flow.map {
+        it.userRecord.recitationsTime
+    }
+
     suspend fun setLocalRecord(userRecord: UserRecord) {
         userPreferencesDataSource.update { it.copy(
             userRecord = userRecord
+        )}
+    }
+
+    suspend fun setQuranRecord(quranPages: Int) {
+        userPreferencesDataSource.update { it.copy(
+            userRecord = it.userRecord.copy(quranPages = quranPages)
+        )}
+    }
+
+    suspend fun setRecitationsRecord(recitationsTime: Long) {
+        userPreferencesDataSource.update { it.copy(
+            userRecord = it.userRecord.copy(recitationsTime = recitationsTime)
         )}
     }
 

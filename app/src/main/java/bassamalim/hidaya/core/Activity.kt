@@ -276,7 +276,7 @@ class Activity : ComponentActivity() {
     private suspend fun setAlarms() {
         val location = locationRepository.getLocation().first()
         if (location != null) {
-            val prayerTimes = PrayerTimeUtils.getPrayerTimesMap(
+            val prayerTimes = PrayerTimeUtils.getPrayerTimes(
                 settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
                 timeOffsets = prayersRepository.getTimeOffsets().first(),
                 timeZoneId = locationRepository.getTimeZone(location.cityId),

@@ -45,14 +45,6 @@ import bassamalim.hidaya.core.data.preferences.serializers.RecitationsPreference
 import bassamalim.hidaya.core.data.preferences.serializers.RemembrancesPreferencesSerializer
 import bassamalim.hidaya.core.data.preferences.serializers.UserPreferencesSerializer
 import bassamalim.hidaya.core.nav.Navigator
-import bassamalim.hidaya.features.quranSearcher.QuranSearcherRepository
-import bassamalim.hidaya.features.quran.quranSettings.QuranSettingsRepository
-import bassamalim.hidaya.features.radio.RadioClientRepository
-import bassamalim.hidaya.features.settings.SettingsRepository
-import bassamalim.hidaya.features.recitationRecitersMenu.RecitationsRecitersMenuRepository
-import bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerClientRepository
-import bassamalim.hidaya.features.recitationSurasMenu.RecitationsSurasRepository
-import bassamalim.hidaya.features.tv.TvRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson

@@ -21,7 +21,7 @@ import java.util.TimeZone
 
 object PrayerTimeUtils {
 
-    fun getPrayerTimesMap(
+    fun getPrayerTimes(
         settings: PrayerTimeCalculatorSettings,
         timeOffsets: Map<PID, Int>,
         timeZoneId: String = "",
@@ -37,12 +37,12 @@ object PrayerTimeUtils {
     )
 
     fun formatPrayerTimes(
-        prayerTimeMap: SortedMap<PID, Calendar?>,
+        prayerTimes: SortedMap<PID, Calendar?>,
         language: Language,
         numeralsLanguage: Language,
         timeFormat: TimeFormat
     ): SortedMap<PID, String> = sortedMapOf<PID, String>().apply {
-        prayerTimeMap.forEach { (pid, time) ->
+        prayerTimes.forEach { (pid, time) ->
             put(
                 key = pid,
                 value = formatPrayerTime(

@@ -250,7 +250,7 @@ fun NavGraph(
                 "{type}"
             ).route,
             arguments = listOf(
-                navArgument("type") { type = NavType.StringType }
+                navArgument("is_initial") { type = NavType.BoolType }
             ),
             enterTransition = inFromBottom,
             exitTransition = outToBottom,

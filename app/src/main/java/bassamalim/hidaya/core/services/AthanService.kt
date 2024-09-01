@@ -19,34 +19,41 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
-import bassamalim.hidaya.core.data.preferences.Preference
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.util.Calendar
+import javax.inject.Inject
 
 class AthanService : Service() {
 
-    private lateinit var preferencesDS: PreferencesDataSource
+    @Inject lateinit var appSettingsRepository: AppSettingsRepository
+    @Inject lateinit var prayersRepository: PrayersRepository
     private lateinit var pid: PID
     private var channelId = ""
     private var mediaPlayer: MediaPlayer? = null
 
     override fun onBind(intent: Intent): IBinder? { return null }  // Not used
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
-        ActivityUtils.onActivityCreateSetLocale(applicationContext)
 
-        preferencesDS = PreferencesDataSource(
-            PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        )
-
-        createNotificationChannel()
+        GlobalScope.launch {
+            ActivityUtils.onActivityCreateSetLocale(
+                context = applicationContext,
+                language = appSettingsRepository.getLanguage().first()
+            )
+            createNotificationChannel()
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -149,26 +156,29 @@ class AthanService : Service() {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun play() {
         Log.i(Global.TAG, "Playing Athan")
 
-        val athanVoice = getAthanVoice()
-        mediaPlayer = MediaPlayer.create(this, athanVoice)
-        mediaPlayer!!.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
-        mediaPlayer!!.setAudioAttributes(
-            AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build()
-        )
-        mediaPlayer!!.setOnPreparedListener { mediaPlayer?.start() }
-        mediaPlayer!!.setOnCompletionListener {
-            showReminderNotification()
-            onDestroy()
+        GlobalScope.launch {
+            val athanAudio = getAthanAudio()
+            mediaPlayer = MediaPlayer.create(this@AthanService, athanAudio)
+            mediaPlayer!!.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+            mediaPlayer!!.setAudioAttributes(
+                AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build()
+            )
+            mediaPlayer!!.setOnPreparedListener { mediaPlayer?.start() }
+            mediaPlayer!!.setOnCompletionListener {
+                showReminderNotification()
+                onDestroy()
+            }
         }
     }
 
-    private fun getAthanVoice(): Int {
-        val athanVoice = preferencesDS.getString(Preference.AthanId)
-        return when(athanVoice.toInt()) {
+    private suspend fun getAthanAudio(): Int {
+        val athanAudioId = prayersRepository.getAthanAudioId().first()
+        return when(athanAudioId) {
             1 -> R.raw.athan1
             2 -> R.raw.athan2
             3 -> R.raw.athan3
@@ -178,9 +188,9 @@ class AthanService : Service() {
 
     private fun showReminderNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val am = getSystemService(AUDIO_SERVICE) as AudioManager
+            val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
             // Request audio focus
-            am.requestAudioFocus(                   // Request permanent focus
+            audioManager.requestAudioFocus(                   // Request permanent focus
                 AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
                     .setAudioAttributes(
                         AudioAttributes.Builder()

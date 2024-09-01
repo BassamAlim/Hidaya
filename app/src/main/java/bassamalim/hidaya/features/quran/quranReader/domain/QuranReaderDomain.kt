@@ -22,7 +22,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.features.quranReader.ayaPlayer.VersePlayerService
+import bassamalim.hidaya.features.quran.quranReader.versePlayer.VersePlayerService
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking

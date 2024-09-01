@@ -5,10 +5,14 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.widget.RemoteViews
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.data.database.daos.SurasDao
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
-import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
+import bassamalim.hidaya.core.data.repositories.QuranRepository
+import bassamalim.hidaya.core.data.repositories.RecitationsRepository
+import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
@@ -24,19 +28,23 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class PrayersWidget : AppWidgetProvider() {
 
-    @Inject private lateinit var prayersRepository: PrayersRepository
-    @Inject private lateinit var notificationsRepository: NotificationsRepository
-    @Inject private lateinit var locationRepository: LocationRepository
-    @Inject private lateinit var appSettingsRepository: AppSettingsRepository
+    @Inject lateinit var appSettingsRepository: AppSettingsRepository
+    @Inject lateinit var appStateRepository: AppStateRepository
+    @Inject lateinit var prayersRepository: PrayersRepository
+    @Inject lateinit var quranRepository: QuranRepository
+    @Inject lateinit var recitationsRepository: RecitationsRepository
+    @Inject lateinit var remembrancesRepository: RemembrancesRepository
+    @Inject lateinit var locationRepository: LocationRepository
+    @Inject lateinit var surasDao: SurasDao
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onUpdate(
         context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
-        ActivityUtils.bootstrapApp(
-            context = context,
-            isFirstLaunch = true
-        )
+        GlobalScope.launch {
+            bootstrapApp(context)
+        }
         // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) updateAppWidget(context, appWidgetManager, appWidgetId)
     }
@@ -47,6 +55,25 @@ class PrayersWidget : AppWidgetProvider() {
 
     override fun onDisabled(context: Context) {
         // Enter relevant functionality for when the last widget is disabled
+    }
+
+    private suspend fun bootstrapApp(context: Context) {
+        ActivityUtils.bootstrapApp(
+            context = context,
+            applicationContext = context.applicationContext,
+            language = appSettingsRepository.getLanguage().first(),
+            theme = appSettingsRepository.getTheme().first(),
+            isFirstLaunch = true,
+            lastDbVersion = appStateRepository.getLastDbVersion().first(),
+            setLastDbVersion = appStateRepository::setLastDbVersion,
+            favoriteSuraMap = quranRepository.getSuraFavorites().first(),
+            setFavoriteSuraMap = quranRepository::setFavoriteSuraMap,
+            favoriteReciterMap = recitationsRepository.getReciterFavoritesBackup().first(),
+            setFavoriteReciterMap = recitationsRepository::setReciterFavorites,
+            favoriteRemembranceMap = remembrancesRepository.getFavoritesBackup().first(),
+            setFavoriteRemembranceMap = remembrancesRepository::setFavorites,
+            testDb = { surasDao.getPlainNamesAr() }
+        )
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -75,7 +102,7 @@ class PrayersWidget : AppWidgetProvider() {
     private suspend fun getPrayerTimeStringMap(context: Context): SortedMap<PID, String>? {
         val location = locationRepository.getLocation().first() ?: return null
 
-        val prayerTimes = PrayerTimeUtils.getPrayerTimesMap(
+        val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.cityId),
@@ -83,7 +110,7 @@ class PrayersWidget : AppWidgetProvider() {
             calendar = Calendar.getInstance()
         )
         val prayerTimeStrings = PrayerTimeUtils.formatPrayerTimes(
-            prayerTimeMap = prayerTimes,
+            prayerTimes = prayerTimes,
             language = appSettingsRepository.getLanguage().first(),
             numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
             timeFormat = appSettingsRepository.getTimeFormat().first()

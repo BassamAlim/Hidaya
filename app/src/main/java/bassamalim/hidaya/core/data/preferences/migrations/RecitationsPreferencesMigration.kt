@@ -50,7 +50,7 @@ object RecitationsPreferencesMigration {
                     key = Preference.RecitationsShuffleMode.key,
                     defValue = Preference.RecitationsShuffleMode.default as Int
                 ),
-                lastPlayed = LastPlayedRecitation(
+                lastPlayedMedia = LastPlayedRecitation(
                     mediaId = sharedPrefs.getString(
                         key = Preference.LastPlayedMediaId.key,
                         defValue = Preference.LastPlayedMediaId.default as String

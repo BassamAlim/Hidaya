@@ -32,7 +32,7 @@ class HomeDomain @Inject constructor(
     val location = getLocation()
 
     suspend fun getPrayerTimeMap(): SortedMap<PID, Calendar?> {
-        return PrayerTimeUtils.getPrayerTimesMap(
+        return PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.first()!!.cityId),
@@ -42,7 +42,7 @@ class HomeDomain @Inject constructor(
     }
 
     suspend fun getStrPrayerTimeMap(): SortedMap<PID, String> {
-        val prayerTimeMap = PrayerTimeUtils.getPrayerTimesMap(
+        val prayerTimeMap = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.first()!!.cityId),
@@ -51,7 +51,7 @@ class HomeDomain @Inject constructor(
         )
 
         return PrayerTimeUtils.formatPrayerTimes(
-            prayerTimeMap = prayerTimeMap,
+            prayerTimes = prayerTimeMap,
             timeFormat = appSettingsRepository.getTimeFormat().first(),
             language = appSettingsRepository.getLanguage().first(),
             numeralsLanguage = getNumeralsLanguage()
@@ -59,7 +59,7 @@ class HomeDomain @Inject constructor(
     }
 
     suspend fun getTomorrowFajr(): Calendar {
-        return PrayerTimeUtils.getPrayerTimesMap(
+        return PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.first()!!.cityId),
@@ -69,7 +69,7 @@ class HomeDomain @Inject constructor(
     }
 
     suspend fun getStrTomorrowFajr(): String {
-        val time = PrayerTimeUtils.getPrayerTimesMap(
+        val time = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.first()!!.cityId),

@@ -67,7 +67,7 @@ object PrayersPreferencesMigration {
                         defValue = Preference.TimeOffset(PID.ISHAA).default as Int
                     ),
                 ),
-                athanId = sharedPrefs.getString(
+                athanAudioId = sharedPrefs.getString(
                     key = Preference.AthanId.key,
                     defValue = Preference.AthanId.default as String
                 )!!.toInt(),

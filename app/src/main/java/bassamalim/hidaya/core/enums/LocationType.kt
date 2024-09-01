@@ -1,6 +1,10 @@
 package bassamalim.hidaya.core.enums
 
-enum class LocationType {
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+enum class LocationType : Parcelable {
     AUTO,
     MANUAL,
     NONE

@@ -11,7 +11,7 @@ interface VerseRecitationsDao {
     fun getAll(): List<VerseRecitation>
 
     @Query("SELECT * FROM verse_recitations WHERE reciter_id = :reciterId")
-    fun getReciter(reciterId: Int): List<VerseRecitation>
+    fun getReciterRecitations(reciterId: Int): List<VerseRecitation>
 
     @Query("SELECT COUNT(*) FROM verse_recitations")
     fun getSize(): Int

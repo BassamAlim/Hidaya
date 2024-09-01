@@ -67,13 +67,13 @@ class PrayersRepository @Inject constructor(
         )}
     }
 
-    fun getAthanId() = prayersPreferencesDataSource.flow.map {
-        it.athanId
+    fun getAthanAudioId() = prayersPreferencesDataSource.flow.map {
+        it.athanAudioId
     }
 
-    suspend fun setAthanId(athanId: Int) {
+    suspend fun setAthanAudioId(audioId: Int) {
         prayersPreferencesDataSource.update { it.copy(
-            athanId = athanId
+            athanAudioId = audioId
         )}
     }
 

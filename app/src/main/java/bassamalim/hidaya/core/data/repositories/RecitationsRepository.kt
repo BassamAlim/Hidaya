@@ -159,13 +159,13 @@ class RecitationsRepository @Inject constructor(
         )}
     }
 
-    fun getLastPlayed() = recitationsPreferencesDataSource.flow.map {
-        it.lastPlayed
+    fun getLastPlayedMedia() = recitationsPreferencesDataSource.flow.map {
+        it.lastPlayedMedia
     }
 
-    suspend fun setLastPlayedMediaId(lastPlayed: LastPlayedRecitation) {
+    suspend fun setLastPlayedMedia(lastPlayed: LastPlayedRecitation) {
         recitationsPreferencesDataSource.update { it.copy(
-            lastPlayed = lastPlayed
+            lastPlayedMedia = lastPlayed
         )}
     }
 
@@ -228,5 +228,10 @@ class RecitationsRepository @Inject constructor(
         recitationNarrationsDao.getNarration(reciterId, narrationId)
 
     fun getNarrations() = recitationNarrationsDao.getAll()
+
+    fun getAllVerseRecitations() = verseRecitationsDao.getAll()
+
+    fun getReciterVerseRecitations(reciterId: Int) =
+        verseRecitationsDao.getReciterRecitations(reciterId)
 
 }

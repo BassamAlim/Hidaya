@@ -5,8 +5,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.LocationType
-import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.locationPicker.domain.LocationPickerDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,23 +43,9 @@ class LocationPickerViewModel @Inject constructor(
 
     fun onSelect(id: Int) {
         if (_uiState.value.mode == LocationPickerMode.CITY) {
-            viewModelScope.launch {
-                domain.setLocation(cityId = id)
-            }
-
-            val city = domain.getCity(id)
             navigator.navigateBackWithResult(
                 Bundle().apply {
-                    putParcelable(
-                        "location",
-                        Location(
-                            type = LocationType.MANUAL,
-                            latitude = city.latitude,
-                            longitude = city.longitude,
-                            countryId = city.countryId,
-                            cityId = city.id
-                        )
-                    )
+                    putInt("city_id", id)
                 }
             )
         }

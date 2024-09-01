@@ -26,9 +26,4 @@ class LocationPickerDomain @Inject constructor(
             language = language
         )
 
-    fun getCity(cityId: Int) = locationRepo.getCity(cityId)
-
-    suspend fun setLocation(cityId: Int) =
-        locationRepo.setLocation(countryId, cityId)
-
 }

@@ -34,25 +34,36 @@ import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
-import androidx.preference.PreferenceManager
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.database.AppDatabase
-import bassamalim.hidaya.core.data.preferences.Preference
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.QuranRepository
+import bassamalim.hidaya.core.data.repositories.RecitationsRepository
+import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
-import bassamalim.hidaya.core.utils.DBUtils
+import bassamalim.hidaya.features.recitations.recitationRecitersMenu.domain.LastPlayedRecitation
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.Locale
 import java.util.Random
+import javax.inject.Inject
 
 @UnstableApi
 @RequiresApi(api = Build.VERSION_CODES.O)
 class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
+    @Inject lateinit var quranRepository: QuranRepository
+    @Inject lateinit var recitationsRepository: RecitationsRepository
+    @Inject lateinit var appSettingsRepository: AppSettingsRepository
+    @Inject lateinit var userRepository: UserRepository
     private val notificationId = 333
     private val handler: Handler = Handler(Looper.getMainLooper())
     private val intentFilter: IntentFilter = IntentFilter()
@@ -88,11 +99,16 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
     companion object {
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
         private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
-        private const val ACTION_PLAY = "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.PLAY"
-        private const val ACTION_PAUSE = "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.PAUSE"
-        private const val ACTION_NEXT = "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.NEXT"
-        private const val ACTION_PREV = "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.PREVIOUS"
-        private const val ACTION_STOP = "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.STOP"
+        private const val ACTION_PLAY =
+            "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.PLAY"
+        private const val ACTION_PAUSE =
+            "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.PAUSE"
+        private const val ACTION_NEXT =
+            "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.NEXT"
+        private const val ACTION_PREV =
+            "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.PREVIOUS"
+        private const val ACTION_STOP =
+            "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.STOP"
     }
 
     private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -128,22 +144,23 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
 
     private val receiverManager = ReceiverManager(this, receiver, intentFilter)
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
 
-        ActivityUtils.onActivityCreateSetLocale(applicationContext)
+        GlobalScope.launch {
+            ActivityUtils.onActivityCreateSetLocale(
+                context = applicationContext,
+                language = appSettingsRepository.getLanguage().first()
+            )
 
-        preferencesDS = PreferencesDataSource(
-            PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        )
-        db = DBUtils.getDB(this)
+            getSuraNames()
 
-        getSuraNames()
-
-        initSession()
-        initPlayer()
-        setupActions()
-        initMetadata()
+            initSession()
+            initPlayer()
+            setupActions()
+            initMetadata()
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -151,6 +168,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         return super.onStartCommand(intent, flags, startId)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(givenMediaId: String, extras: Bundle) {
             Log.i(Global.TAG, "In onPlayFromMediaId of RecitationsPlayerService")
@@ -169,16 +187,19 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
                     else
                         extras.getSerializable("narration") as Recitation.Narration
 
-                if (playType == "continue")
-                    continueFrom = preferencesDS.getInt(Preference.LastRecitationProgress)
+                GlobalScope.launch {
+                    if (playType == "continue")
+                        continueFrom = recitationsRepository.getLastPlayedMedia()
+                            .first().progress.toInt()
 
-                buildNotification()
-                updateMetadata(false)
+                    buildNotification()
+                    updateMetadata(false)
 
-                wifiLock.acquire()
+                    wifiLock.acquire()
 
-                if (controller.playbackState.state == PlaybackStateCompat.STATE_NONE) onPlay()
-                else playOther()
+                    if (controller.playbackState.state == PlaybackStateCompat.STATE_NONE) onPlay()
+                    else playOther()
+                }
             }
         }
 
@@ -228,8 +249,10 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
             )
             updateNotification(false)
 
-            saveForLater(player.currentPosition)
-            updateDurationRecord(updateRecordCounter)
+            GlobalScope.launch {
+                saveForLater(player.currentPosition)
+                updateDurationRecord(updateRecordCounter)
+            }
 
             handler.removeCallbacks(runnable)
             // pause the player
@@ -252,8 +275,10 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
             receiverManager.unregister()
             if (wifiLock.isHeld) wifiLock.release()
 
-            saveForLater(player.currentPosition)
-            updateDurationRecord(updateRecordCounter)
+            GlobalScope.launch {
+                saveForLater(player.currentPosition)
+                updateDurationRecord(updateRecordCounter)
+            }
 
             player.release()
 
@@ -579,13 +604,18 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) refresh()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun refresh() {
         updatePbState(
             controller.playbackState.state,
             controller.playbackState.bufferedPosition
         )
 
-        if (updateRecordCounter++ == 10) updateDurationRecord(updateRecordCounter)
+        if (updateRecordCounter++ == 10) {
+            GlobalScope.launch {
+                updateDurationRecord(updateRecordCounter)
+            }
+        }
 
         handler.postDelayed(runnable, 1000)
     }
@@ -602,6 +632,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         notificationManager.notify(notificationId, notification)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun initPlayer() {
         player = MediaPlayer()
         player.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
@@ -645,7 +676,9 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         }
 
         player.setOnCompletionListener {
-            updateDurationRecord(updateRecordCounter)
+            GlobalScope.launch {
+                updateDurationRecord(updateRecordCounter)
+            }
             skipToNext()
         }
 
@@ -782,18 +815,22 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         return true
     }
 
-    private fun saveForLater(progress: Int) {
+    private suspend fun saveForLater(progress: Int) {
         if (reciterName == null) return
 
-        preferencesDS.setString(Preference.LastPlayedMediaId, mediaId!!)
-        preferencesDS.setInt(Preference.LastRecitationProgress, progress)
+        recitationsRepository.setLastPlayedMedia(
+            LastPlayedRecitation(
+                mediaId = mediaId!!,
+                progress = progress.toLong()
+            )
+        )
     }
 
-    private fun updateDurationRecord(amount: Int) {
-        val old = preferencesDS.getLong(Preference.RecitationsPlaybackRecord)
+    private suspend fun updateDurationRecord(amount: Int) {
+        val old = userRepository.getRecitationsRecord().first()
         val new = old + amount * 1000
 
-        preferencesDS.setLong(Preference.RecitationsPlaybackRecord, new)
+        userRepository.setRecitationsRecord(new)
 
         updateRecordCounter = 0
     }
@@ -803,10 +840,13 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
         else stopForeground(false)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onUnbind(intent: Intent?): Boolean {
         Log.i(Global.TAG, "In onUnbind of RecitationsPlayerService")
-        saveForLater(player.currentPosition)
-        updateDurationRecord(updateRecordCounter)
+        GlobalScope.launch {
+            saveForLater(player.currentPosition)
+            updateDurationRecord(updateRecordCounter)
+        }
         return super.onUnbind(intent)
     }
 

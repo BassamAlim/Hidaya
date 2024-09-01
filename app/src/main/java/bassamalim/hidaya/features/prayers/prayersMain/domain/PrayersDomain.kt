@@ -30,17 +30,11 @@ class PrayersDomain @Inject constructor(
 
     val location = locationRepo.getLocation()
 
-    suspend fun setLocation(location: Location) {
-        locationRepo.setLocation(location)
-    }
-
     suspend fun getLanguage() = appSettingsRepo.getLanguage().first()
 
     suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
 
     fun getHijriMonths() = appStateRepo.getHijriMonths()
-
-    fun getClosest(lat: Double, lon: Double) = locationRepo.getClosestCity(lat, lon)
 
     fun getCountryName(countryId: Int, language: Language) =
         locationRepo.getCountryName(
@@ -110,25 +104,21 @@ class PrayersDomain @Inject constructor(
             add(Calendar.DATE, dateOffset)
         }
 
-        val prayerTimeMap = PrayerTimeUtils.getPrayerTimesMap(
+        val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
-            timeZoneId = locationRepo.getTimeZone(location.cityId),
+            timeZoneId = locationRepo.getTimeZone(location.ids.cityId),
             location = location,
             calendar = calendar
         )
 
         return PrayerTimeUtils.formatPrayerTimes(
-            prayerTimeMap = prayerTimeMap,
+            prayerTimes = prayerTimes,
+            language = appSettingsRepo.getLanguage().first(),
             timeFormat = appSettingsRepo.getTimeFormat().first(),
-            numeralsLanguage = appSettingsRepo.getNumeralsLanguage().first()
+            numeralsLanguage = appSettingsRepo.getNumeralsLanguage().first(),
         )
     }
-
-    private fun getUTCOffset(location: Location) = PrayerTimeUtils.getUTCOffset(
-        locationType = location.type,
-        timeZone = locationRepo.getTimeZone(location.cityId)
-    )
 
     suspend fun updatePrayerTimeAlarms(pid: PID) {
         Alarms(app).setPidAlarm(pid)
