@@ -114,11 +114,9 @@ class SettingsViewModel @Inject constructor(
 
         if (isEnabled) timePickerPid = pid
         else {
-            _uiState.update { it.copy(
-                devotionReminderSummaryMap = it.devotionReminderSummaryMap.toMutableMap().apply {
-                    this[pid] = ""
-                }
-            )}
+            viewModelScope.launch {
+                domain.setDevotionReminderEnabled(false, pid)
+            }
 
             domain.cancelAlarm(pid)
         }
@@ -157,6 +155,7 @@ class SettingsViewModel @Inject constructor(
 
     fun onTimePicked(hour: Int, minute: Int) {
         viewModelScope.launch {
+            domain.setDevotionReminderEnabled(true, timePickerPid!!)
             domain.setDevotionReminderTimeOfDay(
                 timeOfDay = TimeOfDay(hour = hour, minute = minute),
                 pid = timePickerPid!!

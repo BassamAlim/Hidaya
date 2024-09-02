@@ -20,7 +20,7 @@ object RecitationsPreferencesMigration {
             sharedPreferencesName = PreferencesFileNames.RECITATIONS_PREFERENCES_NAME
         ) { sharedPrefs: SharedPreferencesView, currentData: RecitationsPreferences ->
             currentData.copy(
-                reciterFavorites = persistentMapOf<Int, Int>().mutate {
+                reciterFavorites = persistentMapOf<Int, Boolean>().mutate {
                     Gson().fromJson(
                         sharedPrefs.getString(
                             key = Preference.FavoriteReciters.key,
@@ -28,7 +28,7 @@ object RecitationsPreferencesMigration {
                         )!!,
                         Array<Any>::class.java
                     ).mapIndexed { index, fav ->
-                        index to (fav as Double).toInt()
+                        index to ((fav as Double).toInt() == 1)
                     }
                 },
                 narrationSelections = persistentMapOf<Int, Boolean>().mutate {

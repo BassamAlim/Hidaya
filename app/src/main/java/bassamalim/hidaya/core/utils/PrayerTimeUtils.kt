@@ -31,7 +31,7 @@ object PrayerTimeUtils {
         settings = settings,
         timeOffsets = timeOffsets
     ).getPrayerTimes(
-        coordinates = Coordinates(location.latitude, location.longitude),
+        coordinates = Coordinates(location.coordinates.latitude, location.coordinates.longitude),
         utcOffset = getUTCOffset(location.type, timeZoneId).toDouble(),
         calendar = calendar
     )

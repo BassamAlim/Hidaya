@@ -35,7 +35,7 @@ class HomeDomain @Inject constructor(
         return PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
-            timeZoneId = locationRepository.getTimeZone(location.first()!!.cityId),
+            timeZoneId = locationRepository.getTimeZone(location.first()!!.ids.cityId),
             location = location.first()!!,
             calendar = Calendar.getInstance()
         )
@@ -45,7 +45,7 @@ class HomeDomain @Inject constructor(
         val prayerTimeMap = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
-            timeZoneId = locationRepository.getTimeZone(location.first()!!.cityId),
+            timeZoneId = locationRepository.getTimeZone(location.first()!!.ids.cityId),
             location = location.first()!!,
             calendar = Calendar.getInstance()
         )
@@ -62,7 +62,7 @@ class HomeDomain @Inject constructor(
         return PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
-            timeZoneId = locationRepository.getTimeZone(location.first()!!.cityId),
+            timeZoneId = locationRepository.getTimeZone(location.first()!!.ids.cityId),
             location = location.first()!!,
             calendar = Calendar.getInstance().apply { this[Calendar.DATE]++ }
         )[PID.FAJR]!!
@@ -72,7 +72,7 @@ class HomeDomain @Inject constructor(
         val time = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
-            timeZoneId = locationRepository.getTimeZone(location.first()!!.cityId),
+            timeZoneId = locationRepository.getTimeZone(location.first()!!.ids.cityId),
             location = location.first()!!,
             calendar = Calendar.getInstance().apply { this[Calendar.DATE]++ }
         )[PID.FAJR]!!
