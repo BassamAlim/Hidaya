@@ -749,8 +749,8 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
     }
 
     private fun createNotificationChannel() {
-        val description = "quran listening"
-        channelId = "Telawat"
+        val description = "Recitations Player Notification Channel"
+        channelId = "Recitations"
         val name = getString(R.string.recitations)
         val importance = NotificationManager.IMPORTANCE_DEFAULT
         val notificationChannel = NotificationChannel(channelId, name, importance)

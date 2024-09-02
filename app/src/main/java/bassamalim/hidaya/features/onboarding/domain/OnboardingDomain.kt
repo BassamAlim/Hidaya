@@ -29,7 +29,7 @@ class OnboardingDomain @Inject constructor(
     }
 
     suspend fun unsetFirstTime() {
-        appStateRepository.setIsOnboardingCompleted(true)
+        appStateRepository.setOnboardingCompleted(true)
     }
 
 }

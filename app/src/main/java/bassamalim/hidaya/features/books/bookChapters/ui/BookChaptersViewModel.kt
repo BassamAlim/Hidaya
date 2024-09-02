@@ -29,11 +29,9 @@ class BookChaptersViewModel @Inject constructor(
     private val book = domain.getBook(bookId)
     private val favoritesFlow = domain.getFavorites(book)
 
-    private val _uiState = MutableStateFlow(
-        BookChaptersUiState(
+    private val _uiState = MutableStateFlow(BookChaptersUiState(
         title = bookTitle
-    )
-    )
+    ))
     val uiState = _uiState.asStateFlow()
 
     fun getItems(page: Int): Flow<List<BookChapter>> {
@@ -68,7 +66,7 @@ class BookChaptersViewModel @Inject constructor(
 
     fun onFavoriteClick(chapterNum: Int) {
         viewModelScope.launch {
-            domain.setIsFavorite(
+            domain.setFavoriteStatus(
                 bookId = bookId,
                 chapterNum = chapterNum,
                 newValue = !_uiState.value.favs[chapterNum]!!

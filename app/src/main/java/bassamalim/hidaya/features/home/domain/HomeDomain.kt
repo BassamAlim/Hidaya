@@ -98,7 +98,7 @@ class HomeDomain @Inject constructor(
 
     fun getWerdPage() = quranRepository.getWerdPage()
 
-    fun getIsWerdDone() = quranRepository.getIsWerdDone()
+    fun isWerdDone() = quranRepository.isWerdDone()
 
     fun getLocalRecord() = userRepository.getLocalRecord()
 

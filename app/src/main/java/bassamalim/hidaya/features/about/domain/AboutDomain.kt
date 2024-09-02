@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.utils.DBUtils
+import bassamalim.hidaya.core.utils.DbUtils
 import javax.inject.Inject
 
 class AboutDomain @Inject constructor(
@@ -24,7 +24,7 @@ class AboutDomain @Inject constructor(
 
         Log.i(Global.TAG, "Database Rebuilt")
 
-        DBUtils.reviveDB(app)
+        DbUtils.reviveDB(app)
     }
 
     fun handleTitleClicks(setDevModeEnabled: () -> Unit){

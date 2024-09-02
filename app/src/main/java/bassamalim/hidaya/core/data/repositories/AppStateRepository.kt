@@ -12,10 +12,11 @@ class AppStateRepository @Inject constructor(
     private val appStatePreferencesDataSource: AppStatePreferencesDataSource
 ) {
 
-    fun getIsOnboardingCompleted() = appStatePreferencesDataSource.flow.map {
+    fun isOnboardingCompleted() = appStatePreferencesDataSource.flow.map {
         it.isOnboardingCompleted
     }
-    suspend fun setIsOnboardingCompleted(isCompleted: Boolean) {
+
+    suspend fun setOnboardingCompleted(isCompleted: Boolean) {
         appStatePreferencesDataSource.update { it.copy(
             isOnboardingCompleted = isCompleted
         )}
@@ -24,6 +25,7 @@ class AppStateRepository @Inject constructor(
     fun getLastDailyUpdateMillis() = appStatePreferencesDataSource.flow.map {
         it.lastDailyUpdateMillis
     }
+
     suspend fun setLastDailyUpdateMillis(millis: Long) {
         appStatePreferencesDataSource.update { it.copy(
             lastDailyUpdateMillis = millis
@@ -33,6 +35,7 @@ class AppStateRepository @Inject constructor(
     fun getLastDbVersion() = appStatePreferencesDataSource.flow.map {
         it.lastDBVersion
     }
+
     suspend fun setLastDbVersion(version: Int) {
         appStatePreferencesDataSource.update { it.copy(
             lastDBVersion = version

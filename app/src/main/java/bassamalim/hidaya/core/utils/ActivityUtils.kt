@@ -19,12 +19,12 @@ object ActivityUtils {
         isFirstLaunch: Boolean = false,
         lastDbVersion: Int,
         setLastDbVersion: suspend (Int) -> Unit,
-        favoriteSuraMap: Map<Int, Boolean>,
-        setFavoriteSuraMap: suspend (Map<Int, Boolean>) -> Unit,
-        favoriteReciterMap: Map<Int, Boolean>,
-        setFavoriteReciterMap: suspend (Map<Int, Boolean>) -> Unit,
-        favoriteRemembranceMap: Map<Int, Boolean>,
-        setFavoriteRemembranceMap: suspend (Map<Int, Boolean>) -> Unit,
+        suraFavorites: Map<Int, Boolean>,
+        setSuraFavorites: suspend (Map<Int, Boolean>) -> Unit,
+        reciterFavorites: Map<Int, Boolean>,
+        setReciterFavorites: suspend (Map<Int, Boolean>) -> Unit,
+        remembranceFavorites: Map<Int, Boolean>,
+        setRemembranceFavorites: suspend (Map<Int, Boolean>) -> Unit,
         testDb: () -> Unit
     ) {
         onActivityCreateSetLocale(context = context, language = language)
@@ -33,21 +33,21 @@ object ActivityUtils {
         onActivityCreateSetTheme(context = applicationContext, theme = theme)
 
         if (isFirstLaunch) {
-            if (DBUtils.needsRevival(lastDbVersion = lastDbVersion, test = testDb))
-                DBUtils.reviveDB(
+            if (DbUtils.shouldReviveDb(lastDbVersion = lastDbVersion, test = testDb))
+                DbUtils.reviveDB(
                     context = context,
-                    favoriteSuraMap = favoriteSuraMap,
-                    setFavoriteSuraMap = setFavoriteSuraMap,
-                    favoriteReciterMap = favoriteReciterMap,
-                    setFavoriteReciterMap = setFavoriteReciterMap,
-                    favoriteRemembranceMap = favoriteRemembranceMap,
-                    setFavoriteRemembranceMap = setFavoriteRemembranceMap,
+                    suraFavorites = suraFavorites,
+                    setSuraFavorites = setSuraFavorites,
+                    reciterFavorites = reciterFavorites,
+                    setReciterFavorites = setReciterFavorites,
+                    remembranceFavorites = remembranceFavorites,
+                    setRemembranceFavorites = setRemembranceFavorites,
                     setLastDbVersion = setLastDbVersion
                 )
         }
     }
 
-    fun onActivityCreateSetTheme(context: Context, theme: Theme) {
+    private fun onActivityCreateSetTheme(context: Context, theme: Theme) {
         when (theme) {
             Theme.LIGHT -> context.setTheme(R.style.Theme_HidayaL)
             Theme.DARK -> context.setTheme(R.style.Theme_HidayaM)

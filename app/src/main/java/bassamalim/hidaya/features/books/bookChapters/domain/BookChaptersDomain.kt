@@ -12,7 +12,7 @@ class BookChaptersDomain @Inject constructor(
 
     fun getFavorites(book: Book) = booksRepo.getChapterFavorites(book)
 
-    suspend fun setIsFavorite(bookId: Int, chapterNum: Int, newValue: Boolean) {
+    suspend fun setFavoriteStatus(bookId: Int, chapterNum: Int, newValue: Boolean) {
         booksRepo.setChapterFavorite(bookId, chapterNum, newValue)
     }
 

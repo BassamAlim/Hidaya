@@ -44,7 +44,7 @@ class HomeViewModel @Inject constructor(
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.getWerdPage(),
-        domain.getIsWerdDone(),
+        domain.isWerdDone(),
         domain.getLocalRecord()
     ) { state, werdPage, isWerdDone, localRecord -> state.copy(
         werdPage = translateNumber(werdPage),

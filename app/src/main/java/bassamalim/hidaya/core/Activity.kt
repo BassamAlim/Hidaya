@@ -68,7 +68,7 @@ class Activity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            shouldWelcome = !appStateRepository.getIsOnboardingCompleted().first()
+            shouldWelcome = !appStateRepository.isOnboardingCompleted().first()
             startRoute = intent.getStringExtra("start_route")
             language = appSettingsRepository.getLanguage().first()
 
@@ -98,12 +98,12 @@ class Activity : ComponentActivity() {
             isFirstLaunch = isFirstLaunch,
             lastDbVersion = appStateRepository.getLastDbVersion().first(),
             setLastDbVersion = appStateRepository::setLastDbVersion,
-            favoriteSuraMap = quranRepository.getSuraFavorites().first(),
-            setFavoriteSuraMap = quranRepository::setFavoriteSuraMap,
-            favoriteReciterMap = recitationsRepository.getReciterFavoritesBackup().first(),
-            setFavoriteReciterMap = recitationsRepository::setReciterFavorites,
-            favoriteRemembranceMap = remembrancesRepository.getFavoritesBackup().first(),
-            setFavoriteRemembranceMap = remembrancesRepository::setFavorites,
+            suraFavorites = quranRepository.getSuraFavorites().first(),
+            setSuraFavorites = quranRepository::setFavoriteSuraMap,
+            reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
+            setReciterFavorites = recitationsRepository::setReciterFavorites,
+            remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
+            setRemembranceFavorites = remembrancesRepository::setFavorites,
             testDb = { surasDao.getPlainNamesAr() }
         )
     }
@@ -285,7 +285,7 @@ class Activity : ComponentActivity() {
             )
             Alarms(this).setAll(prayerTimes)
         }
-        else if (!appStateRepository.getIsOnboardingCompleted().first()) {
+        else if (!appStateRepository.isOnboardingCompleted().first()) {
             Toast.makeText(
                 this,
                 getString(R.string.give_location_permission_toast),

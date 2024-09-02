@@ -67,8 +67,8 @@ fun SettingsScreen(
                     modifier = Modifier.padding(vertical = 2.dp),
                     expandedContent = {
                         DevotionReminderSettings(
-                            devotionReminderEnabledMap = state.devotionReminderEnabledMap,
-                            devotionReminderSummaryMap = state.devotionReminderSummaryMap,
+                            devotionReminderEnabledStatuses = state.devotionalReminderEnabledStatuses,
+                            devotionReminderSummaries = state.devotionalReminderSummaries,
                             onDevotionReminderSwitch = viewModel::onDevotionReminderSwitch
                         )
                     }
@@ -98,8 +98,8 @@ fun SettingsScreen(
                     modifier = Modifier.padding(vertical = 2.dp),
                     expandedContent = {
                         AthanSettings(
-                            athanId = state.athanId,
-                            onAthanIdChange = viewModel::onAthanIdChange
+                            athanAudioId = state.athanAudioId,
+                            onAthanAudioIdChange = viewModel::onAthanAudioIdChange
                         )
                     }
                 )
@@ -179,8 +179,8 @@ fun AppearanceSettings(
 
 @Composable
 private fun DevotionReminderSettings(
-    devotionReminderEnabledMap: Map<PID, Boolean>,
-    devotionReminderSummaryMap: Map<PID, String>,
+    devotionReminderEnabledStatuses: Map<PID, Boolean>,
+    devotionReminderSummaries: Map<PID, String>,
     onDevotionReminderSwitch: (PID, Boolean) -> Unit,
 ) {
     val titles = sortedMapOf(
@@ -195,9 +195,9 @@ private fun DevotionReminderSettings(
     ) {
         titles.forEach { (pid, title) ->
             SwitchSetting(
-                value = devotionReminderEnabledMap[pid]!!,
+                value = devotionReminderEnabledStatuses[pid]!!,
                 title = title,
-                summary = devotionReminderSummaryMap[pid]!!,
+                summary = devotionReminderSummaries[pid]!!,
                 onSwitch = { onDevotionReminderSwitch(pid, it) }
             )
         }
@@ -247,20 +247,20 @@ private fun PrayerTimesSettings(
 
 @Composable
 private fun AthanSettings(
-    athanId: Int,
-    onAthanIdChange: (Int) -> Unit
+    athanAudioId: Int,
+    onAthanAudioIdChange: (Int) -> Unit
 ) {
     Column(
         Modifier.padding(bottom = 10.dp)
     ) {
         MenuSetting(
-            selection = athanId,
+            selection = athanAudioId,
             items = stringArrayResource(R.array.athan_voices_entries)
                 .mapIndexed { i, _ -> i+1 }.toTypedArray(),
             entries = stringArrayResource(R.array.athan_voices_entries),
             title = stringResource(R.string.athan_voice),
             iconResId = R.drawable.ic_speaker,
-            onSelection = onAthanIdChange
+            onSelection = onAthanAudioIdChange
         )
     }
 }

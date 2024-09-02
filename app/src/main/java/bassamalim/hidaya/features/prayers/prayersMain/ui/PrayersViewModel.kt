@@ -165,17 +165,17 @@ class PrayersViewModel @Inject constructor(
 
     }
 
-    fun onPreviousDayClk() {
+    fun onPreviousDayClick() {
         dateOffset.intValue--
         viewedDate.add(Calendar.DATE, -1)
     }
 
-    fun onDateClk() {
+    fun onDateClick() {
         dateOffset.intValue = 0
         viewedDate.time = Calendar.getInstance().time
     }
 
-    fun onNextDayClk() {
+    fun onNextDayClick() {
         dateOffset.intValue++
         viewedDate.add(Calendar.DATE, 1)
     }

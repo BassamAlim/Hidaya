@@ -81,12 +81,12 @@ class DailyUpdateReceiver : BroadcastReceiver() {
             isFirstLaunch = true,
             lastDbVersion = appStateRepository.getLastDbVersion().first(),
             setLastDbVersion = appStateRepository::setLastDbVersion,
-            favoriteSuraMap = quranRepository.getSuraFavorites().first(),
-            setFavoriteSuraMap = quranRepository::setFavoriteSuraMap,
-            favoriteReciterMap = recitationsRepository.getReciterFavoritesBackup().first(),
-            setFavoriteReciterMap = recitationsRepository::setReciterFavorites,
-            favoriteRemembranceMap = remembrancesRepository.getFavoritesBackup().first(),
-            setFavoriteRemembranceMap = remembrancesRepository::setFavorites,
+            suraFavorites = quranRepository.getSuraFavorites().first(),
+            setSuraFavorites = quranRepository::setFavoriteSuraMap,
+            reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
+            setReciterFavorites = recitationsRepository::setReciterFavorites,
+            remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
+            setRemembranceFavorites = remembrancesRepository::setFavorites,
             testDb = { surasDao.getPlainNamesAr() }
         )
     }
@@ -161,7 +161,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     private suspend fun pickWerd() {
         val randomWerd = Random().nextInt(Global.QURAN_PAGES)
         quranRepository.setWerdPage(randomWerd)
-        quranRepository.setIsWerdDone(false)
+        quranRepository.setWerdDone(false)
     }
 
     private fun setTomorrow(context: Context) {

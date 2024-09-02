@@ -33,9 +33,9 @@ interface RecitationRecitersDao {
     fun getFavorites(): List<RecitationsReciter>
 
     @Query("UPDATE recitations_reciters SET is_favorite = :value WHERE id = :id")
-    suspend fun setIsFavorite(id: Int, value: Int)
+    suspend fun setFavoriteStatus(id: Int, value: Int)
 
     @Query("SELECT is_favorite FROM recitations_reciters")
-    fun getIsFavorites(): List<Int>
+    fun getFavoriteStatuses(): List<Int>
 
 }

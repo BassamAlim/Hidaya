@@ -139,19 +139,13 @@ class RecitationsSurasViewModel @Inject constructor(
         val mediaId = formattedReciterId + formattedNarrationId + formattedSuraId
 
         navigator.navigate(
-            Screen.RecitationsPlayer(
-                action = "start",
-                mediaId = mediaId
-            )
+            Screen.RecitationsPlayer(action = "start", mediaId = mediaId)
         )
     }
 
     fun onFavoriteClick(sura: ReciterSura) {
         viewModelScope.launch {
-            domain.setIsFavorite(
-                suraId = sura.id,
-                value = !sura.isFavorite
-            )
+            domain.setFavoriteStatus(suraId = sura.id, value = !sura.isFavorite)
         }
     }
 

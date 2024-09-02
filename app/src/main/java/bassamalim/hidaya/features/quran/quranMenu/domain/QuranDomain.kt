@@ -40,7 +40,7 @@ class QuranDomain @Inject constructor(
     fun getFavs() = quranRepository.getSuraFavorites()
 
     suspend fun setFav(suraId: Int, fav: Boolean) {
-        quranRepository.setSuraIsFavorite(suraId, fav)
+        quranRepository.setSuraFavoriteStatus(suraId, fav)
     }
 
     fun getShouldShowTutorial() = quranRepository.getShouldShowReaderTutorial()

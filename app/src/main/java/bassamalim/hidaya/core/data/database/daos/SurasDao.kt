@@ -30,7 +30,7 @@ interface SurasDao {
     fun observeFavorites(): Flow<List<Sura>>
 
     @Query("UPDATE suras SET is_favorite = :value WHERE id = :id")
-    suspend fun setIsFavorite(id: Int, value: Int)
+    suspend fun setFavoriteStatus(id: Int, value: Int)
 
     @Query("SELECT is_favorite FROM suras")
     fun observeIsFavorites(): Flow<List<Int>>

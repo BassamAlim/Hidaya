@@ -78,7 +78,7 @@ class RemembrancesMenuViewModel @Inject constructor(
 
     fun onFavoriteCLick(item: RemembrancesItem) {
         viewModelScope.launch {
-            domain.setIsFavorite(item.id, !item.isFavorite)
+            domain.setFavoriteStatus(item.id, !item.isFavorite)
         }
     }
 

@@ -45,7 +45,7 @@ class RemembrancesRepository @Inject constructor(
         else remembrancesDao.getNameEn(id)
 
     suspend fun setFavorite(id: Int, value: Boolean) {
-        remembrancesDao.setIsFavorite(id = id, value = if (value) 1 else 0)
+        remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
 
         setFavoritesBackup(
             remembrancesDao.observeIsFavorites().first().mapIndexed { index, isFavorite ->
@@ -56,7 +56,7 @@ class RemembrancesRepository @Inject constructor(
 
     suspend fun setFavorites(favorites: Map<Int, Boolean>) {
         favorites.forEach { (id, value) ->
-            remembrancesDao.setIsFavorite(id = id, value = if (value) 1 else 0)
+            remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
         }
     }
 

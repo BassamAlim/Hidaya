@@ -111,9 +111,10 @@ class QiblaDomain @Inject constructor(
     fun getDistance(): Double {
         val location = location!!
         val earthRadius = 6371.0
-        val dLon = Math.toRadians(abs(location.latitude - kaabaLat))
-        val dLat = Math.toRadians(abs(location.longitude - kaabaLng))
-        val a = sin(dLat / 2) * sin(dLat / 2) + (cos(Math.toRadians(location.latitude)) *
+        val dLon = Math.toRadians(abs(location.coordinates.latitude - kaabaLat))
+        val dLat = Math.toRadians(abs(location.coordinates.longitude - kaabaLng))
+        val a = sin(dLat / 2) * sin(dLat / 2) +
+                (cos(Math.toRadians(location.coordinates.latitude)) *
                 cos(Math.toRadians(kaabaLat)) * sin(dLon / 2) * sin(dLon / 2))
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
         var distance = earthRadius * c
@@ -123,8 +124,8 @@ class QiblaDomain @Inject constructor(
 
     private fun calculateBearing(): Float {
         val location = location!!
-        val myLatRad = Math.toRadians(location.latitude)
-        val lngDiff = Math.toRadians(kaabaLng - location.longitude)
+        val myLatRad = Math.toRadians(location.coordinates.latitude)
+        val lngDiff = Math.toRadians(kaabaLng - location.coordinates.longitude)
         val y = sin(lngDiff) * cos(kaabaLatInRad)
         val x = cos(myLatRad) * sin(kaabaLatInRad) -
                 (sin(myLatRad) * cos(kaabaLatInRad) * cos(lngDiff))

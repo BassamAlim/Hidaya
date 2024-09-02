@@ -101,10 +101,10 @@ class SettingsDomain @Inject constructor(
         prayersRepository.setAdjustHighLatitudes(adjustmentMethod)
     }
 
-    fun getAthanId() = prayersRepository.getAthanAudioId()
+    fun getAthanAudioId() = prayersRepository.getAthanAudioId()
 
-    suspend fun setAthanId(athanId: Int) {
-        prayersRepository.setAthanAudioId(athanId)
+    suspend fun setAthanAudioId(athanAudioId: Int) {
+        prayersRepository.setAthanAudioId(athanAudioId)
     }
 
 }

@@ -12,11 +12,11 @@ data class SettingsUiState(
     val numeralsLanguage: Language = Language.ARABIC,
     val timeFormat: TimeFormat = TimeFormat.TWELVE,
     val theme: Theme = Theme.DARK,
-    val devotionReminderEnabledMap: Map<PID, Boolean> = emptyMap(),
-    val devotionReminderTimeOfDayMap: Map<PID, TimeOfDay> = emptyMap(),
-    val devotionReminderSummaryMap: Map<PID, String> = emptyMap(),
+    val devotionalReminderEnabledStatuses: Map<PID, Boolean> = emptyMap(),
+    val devotionalReminderTimes: Map<PID, TimeOfDay> = emptyMap(),
+    val devotionalReminderSummaries: Map<PID, String> = emptyMap(),
     val isTimePickerShown: Boolean = false,
     val prayerTimeCalculatorSettings: PrayerTimeCalculatorSettings =
         PrayerTimeCalculatorSettings(),
-    val athanId: Int = 0,
+    val athanAudioId: Int = 0,
 )

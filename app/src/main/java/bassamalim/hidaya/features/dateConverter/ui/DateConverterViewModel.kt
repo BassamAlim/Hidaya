@@ -42,7 +42,7 @@ class DateConverterViewModel @Inject constructor(
         }
     }
 
-    fun onPickGregorianClk(context: Context) {
+    fun onPickGregorianClick(context: Context) {
         val datePicker = DatePickerDialog(
             context, { _: DatePicker?, year: Int, month: Int, day: Int ->
                 val choice = Calendar.getInstance()
@@ -70,7 +70,7 @@ class DateConverterViewModel @Inject constructor(
         datePicker.show()
     }
 
-    fun onPickHijriClk() {
+    fun onPickHijriClick() {
         val dateStr = "${hijriCalendar[Calendar.YEAR]}" +
                 "-${hijriCalendar[Calendar.MONTH] + 1}" +
                 "-${hijriCalendar[Calendar.DATE]}"

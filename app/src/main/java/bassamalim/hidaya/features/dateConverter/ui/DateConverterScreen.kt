@@ -47,7 +47,7 @@ fun DateConverterUI(
                         .fillMaxWidth()
                         .padding(vertical = 15.dp, horizontal = 30.dp),
                     innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp),
-                    onClick = viewModel::onPickHijriClk
+                    onClick = viewModel::onPickHijriClick
                 )
 
                 MySquareButton(
@@ -57,7 +57,7 @@ fun DateConverterUI(
                         .fillMaxWidth()
                         .padding(vertical = 15.dp, horizontal = 30.dp),
                     innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp),
-                    onClick = { viewModel.onPickGregorianClk(context) }
+                    onClick = { viewModel.onPickGregorianClick(context) }
                 )
             }
 

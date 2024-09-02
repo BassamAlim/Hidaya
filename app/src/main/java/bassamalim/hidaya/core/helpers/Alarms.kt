@@ -51,16 +51,16 @@ class Alarms(
     /**
      * Finds out if the desired function and executes it
      */
-    suspend fun setAll(prayerTimeMap: SortedMap<PID, Calendar?>) {
-        setPrayerAlarms(prayerTimeMap)
-        setReminders(prayerTimeMap)
+    suspend fun setAll(prayerTimes: SortedMap<PID, Calendar?>) {
+        setPrayerAlarms(prayerTimes)
+        setReminders(prayerTimes)
         setDevotionAlarms()
     }
 
-    private suspend fun setPrayerAlarms(prayerTimeMap: SortedMap<PID, Calendar?>) {
+    private suspend fun setPrayerAlarms(prayerTimes: SortedMap<PID, Calendar?>) {
         Log.i(Global.TAG, "in set prayer alarms")
 
-        for ((pid, time) in prayerTimeMap) {
+        for ((pid, time) in prayerTimes) {
             if (notificationsRepository.getNotificationType(pid).first() != NotificationType.NONE)
                 setPrayerAlarm(pid, time!!)
         }
@@ -76,29 +76,29 @@ class Alarms(
 
         val millis = time.timeInMillis
         if (System.currentTimeMillis() <= millis) {
-            val intent = Intent(context, NotificationReceiver::class.java)
-            if (pid == PID.SUNRISE) intent.action = "devotion"
-            else intent.action = "prayer"
-            intent.putExtra("id", pid.name)
-            intent.putExtra("time", millis)
+            val intent = Intent(context, NotificationReceiver::class.java).also {
+                it.action = if (pid == PID.SUNRISE) "devotion" else "prayer"
+                it.putExtra("id", pid.name)
+                it.putExtra("time", millis)
+            }
 
             val pendingIntent = PendingIntent.getBroadcast(
                 context, pid.ordinal, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-            val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
 
             Log.i(Global.TAG, "alarm $pid set")
         }
         else Log.i(Global.TAG, "$pid Passed")
     }
 
-    private suspend fun setReminders(prayerTimeMap: SortedMap<PID, Calendar?>) {
+    private suspend fun setReminders(prayerTimes: SortedMap<PID, Calendar?>) {
         Log.i(Global.TAG, "in set reminders")
 
-        for ((pid, time) in prayerTimeMap) {
+        for ((pid, time) in prayerTimes) {
             val reminderOffset = notificationsRepository.getPrayerReminderOffsetMap().first()[pid]!!
             if (reminderOffset != 0) setReminder(pid, time!!, reminderOffset)
         }

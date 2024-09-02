@@ -64,9 +64,9 @@ fun PrayersUI(
         DayCard(
             dateText = state.dateText,
             isNoDateOffset = state.isNoDateOffset,
-            onDateClick = viewModel::onDateClk,
-            onPreviousDayClick = viewModel::onPreviousDayClk,
-            onNextDayClick = viewModel::onNextDayClk
+            onDateClick = viewModel::onDateClick,
+            onPreviousDayClick = viewModel::onPreviousDayClick,
+            onNextDayClick = viewModel::onNextDayClick
         )
     }
 
@@ -98,7 +98,7 @@ private fun LocationCard(
         ) {
             MyText(
                 if (isLocationAvailable) locationName
-                else stringResource(R.string.clk_to_locate),
+                else stringResource(R.string.click_to_locate),
                 modifier = Modifier
                     .widthIn(1.dp, 300.dp)
                     .padding(start = 15.dp)

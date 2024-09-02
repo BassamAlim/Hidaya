@@ -52,31 +52,25 @@ class SettingsViewModel @Inject constructor(
     }.combine(
         domain.getDevotionReminderEnabledMap()
     ) { state, devotionReminderEnabledMap ->
-        state.copy(
-            devotionReminderEnabledMap = devotionReminderEnabledMap
-        )
+        state.copy(devotionalReminderEnabledStatuses = devotionReminderEnabledMap)
     }.combine(
         domain.getDevotionReminderTimeOfDayMap()
     ) { state, devotionReminderTimeOfDayMap ->
         state.copy(
-            devotionReminderTimeOfDayMap = devotionReminderTimeOfDayMap,
-            devotionReminderSummaryMap = devotionReminderTimeOfDayMap.mapValues {
-                if (!state.devotionReminderEnabledMap[it.key]!!) ""
+            devotionalReminderTimes = devotionReminderTimeOfDayMap,
+            devotionalReminderSummaries = devotionReminderTimeOfDayMap.mapValues {
+                if (!state.devotionalReminderEnabledStatuses[it.key]!!) ""
                 else formatTime(it.value)
             }.toMutableMap()
         )
     }.combine(
         domain.getPrayerTimesCalculatorSettings()
     ) { state, prayerTimesCalculatorSettings ->
-        state.copy(
-            prayerTimeCalculatorSettings = prayerTimesCalculatorSettings
-        )
+        state.copy(prayerTimeCalculatorSettings = prayerTimesCalculatorSettings)
     }.combine(
-        domain.getAthanId()
-    ) { state, athanId ->
-        state.copy(
-            athanId = athanId
-        )
+        domain.getAthanAudioId()
+    ) { state, athanAudioId ->
+        state.copy(athanAudioId = athanAudioId)
     }.stateIn(
         initialValue = SettingsUiState(),
         scope = viewModelScope,
@@ -143,9 +137,9 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onAthanIdChange(newValue: Int) {
+    fun onAthanAudioIdChange(newValue: Int) {
         viewModelScope.launch {
-            domain.setAthanId(newValue)
+            domain.setAthanAudioId(newValue)
         }
     }
 

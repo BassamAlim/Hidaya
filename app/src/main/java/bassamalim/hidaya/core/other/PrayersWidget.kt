@@ -66,12 +66,12 @@ class PrayersWidget : AppWidgetProvider() {
             isFirstLaunch = true,
             lastDbVersion = appStateRepository.getLastDbVersion().first(),
             setLastDbVersion = appStateRepository::setLastDbVersion,
-            favoriteSuraMap = quranRepository.getSuraFavorites().first(),
-            setFavoriteSuraMap = quranRepository::setFavoriteSuraMap,
-            favoriteReciterMap = recitationsRepository.getReciterFavoritesBackup().first(),
-            setFavoriteReciterMap = recitationsRepository::setReciterFavorites,
-            favoriteRemembranceMap = remembrancesRepository.getFavoritesBackup().first(),
-            setFavoriteRemembranceMap = remembrancesRepository::setFavorites,
+            suraFavorites = quranRepository.getSuraFavorites().first(),
+            setSuraFavorites = quranRepository::setFavoriteSuraMap,
+            reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
+            setReciterFavorites = recitationsRepository::setReciterFavorites,
+            remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
+            setRemembranceFavorites = remembrancesRepository::setFavorites,
             testDb = { surasDao.getPlainNamesAr() }
         )
     }

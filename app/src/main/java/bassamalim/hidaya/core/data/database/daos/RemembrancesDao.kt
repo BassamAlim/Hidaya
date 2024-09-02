@@ -33,6 +33,6 @@ interface RemembrancesDao {
     fun getNameEn(id: Int): String
 
     @Query("UPDATE remembrances SET is_favorite = :value WHERE id = :id")
-    suspend fun setIsFavorite(id: Int, value: Int)
+    suspend fun setFavoriteStatus(id: Int, value: Int)
 
 }
