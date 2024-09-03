@@ -5,7 +5,7 @@ import bassamalim.hidaya.core.data.database.daos.VersesDao
 import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranPageBookmark
-import bassamalim.hidaya.features.quranReader.ui.QuranViewType
+import bassamalim.hidaya.features.quran.quranReader.ui.QuranViewType
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

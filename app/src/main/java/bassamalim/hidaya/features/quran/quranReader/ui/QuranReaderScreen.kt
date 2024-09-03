@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package bassamalim.hidaya.features.quranReader.ui
+package bassamalim.hidaya.features.quran.quranReader.ui
 
 import android.util.Log
 import android.widget.Toast
@@ -65,7 +65,7 @@ import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.quranSettings.ui.QuranSettingsDlg
-import bassamalim.hidaya.features.quranReader.ui.QuranViewType.LIST
+import bassamalim.hidaya.features.quran.quranReader.ui.QuranViewType.LIST
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

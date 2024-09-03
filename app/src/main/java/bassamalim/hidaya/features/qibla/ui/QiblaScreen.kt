@@ -133,7 +133,7 @@ private fun CalibrationDialog(
 
             MyText(
                 stringResource(R.string.qibla_warning),
-                textColor = bassamalim.hidaya.core.ui.theme.Negative
+                textColor = Negative
             )
         }
     }

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quranReader.ui
+package bassamalim.hidaya.features.quran.quranReader.ui
 
 import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
@@ -19,8 +19,8 @@ import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.quranReader.domain.QuranReaderDomain
-import bassamalim.hidaya.features.quranReader.domain.QuranTarget
+import bassamalim.hidaya.features.quran.quranReader.domain.QuranReaderDomain
+import bassamalim.hidaya.features.quran.quranReader.domain.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -100,7 +100,7 @@ class QuranReaderViewModel @Inject constructor(
 
         if (targetType == QuranTarget.VERSE) {
             _uiState.update { it.copy(
-                selectedVerse = it.pageVerses.first { it.id == targetValue }
+                selectedVerse = it.pageVerses.first { verse -> verse.id == targetValue }
             )}
         }
     }

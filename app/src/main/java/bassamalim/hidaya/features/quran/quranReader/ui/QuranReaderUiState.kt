@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quranReader.ui
+package bassamalim.hidaya.features.quran.quranReader.ui
 
 import android.support.v4.media.session.PlaybackStateCompat
 import bassamalim.hidaya.core.models.Verse

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quranReader.domain
+package bassamalim.hidaya.features.quran.quranReader.domain
 
 import android.app.Activity
 import android.app.Application
@@ -221,11 +221,11 @@ class QuranReaderDomain @Inject constructor(
         quranRepository.setPageBookmark(pageBookmark)
     }
 
-    fun getPagesRecord() = userRepository.getLocalRecord().map { 
+    private fun getPagesRecord() = userRepository.getLocalRecord().map {
         it.quranPages
     }
 
-    suspend fun setPagesRecord(record: Int) {
+    private suspend fun setPagesRecord(record: Int) {
         userRepository.setLocalRecord(
             userRepository.getLocalRecord().first().copy(
                 quranPages = record
@@ -233,9 +233,9 @@ class QuranReaderDomain @Inject constructor(
         )
     }
 
-    fun getWerdPage() = quranRepository.getWerdPage()
+    private fun getWerdPage() = quranRepository.getWerdPage()
 
-    suspend fun setWerdDone() {
+    private suspend fun setWerdDone() {
         quranRepository.setWerdDone(true)
     }
 

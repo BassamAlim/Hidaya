@@ -78,7 +78,7 @@ class LocationRepository @Inject constructor(
 
     fun getCity(cityId: Int) = citiesDao.getCity(cityId)
 
-    fun getClosestCity(coordinates: Coordinates) =
+    private fun getClosestCity(coordinates: Coordinates) =
         citiesDao.getClosest(latitude = coordinates.latitude, longitude = coordinates.longitude)
 
     fun getCountryName(countryId: Int, language: Language): String =

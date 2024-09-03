@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.bookReader.ui
+package bassamalim.hidaya.features.books.bookReader.ui
 
 import bassamalim.hidaya.core.models.Book
 

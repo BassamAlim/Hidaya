@@ -39,7 +39,6 @@ import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
-import bassamalim.hidaya.features.quranReader.ayaPlayer.PlayerCallback
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first

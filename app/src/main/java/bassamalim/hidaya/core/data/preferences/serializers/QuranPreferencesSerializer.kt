@@ -2,6 +2,8 @@ package bassamalim.hidaya.core.data.preferences.serializers
 
 import androidx.datastore.core.Serializer
 import bassamalim.hidaya.core.data.preferences.objects.QuranPreferences
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.InputStream
@@ -25,12 +27,14 @@ object QuranPreferencesSerializer: Serializer<QuranPreferences> {
     }
 
     override suspend fun writeTo(t: QuranPreferences, output: OutputStream) {
-        output.write(
-            Json.encodeToString(
-                serializer = QuranPreferences.serializer(),
-                value = t
-            ).encodeToByteArray()
-        )
+        withContext(Dispatchers.IO) {
+            output.write(
+                Json.encodeToString(
+                    serializer = QuranPreferences.serializer(),
+                    value = t
+                ).encodeToByteArray()
+            )
+        }
     }
 
 }

@@ -20,7 +20,7 @@ import bassamalim.hidaya.core.ui.outToBottom
 import bassamalim.hidaya.core.ui.outToLeft
 import bassamalim.hidaya.core.ui.outToTop
 import bassamalim.hidaya.features.about.ui.AboutScreen
-import bassamalim.hidaya.features.bookReader.ui.BookViewerScreen
+import bassamalim.hidaya.features.books.bookReader.ui.BookViewerScreen
 import bassamalim.hidaya.features.books.bookChapters.ui.BookChaptersUI
 import bassamalim.hidaya.features.books.bookSearcher.ui.BookSearcherUI
 import bassamalim.hidaya.features.books.booksMenu.ui.BooksMenuScreen
@@ -39,7 +39,7 @@ import bassamalim.hidaya.features.quiz.quizLobby.QuizLobbyUI
 import bassamalim.hidaya.features.quiz.quizResult.ui.QuizResultUI
 import bassamalim.hidaya.features.quiz.quizTester.ui.QuizUI
 import bassamalim.hidaya.features.quran.quranSearcher.ui.QuranSearcherUI
-import bassamalim.hidaya.features.quranReader.ui.QuranViewerUI
+import bassamalim.hidaya.features.quran.quranReader.ui.QuranViewerUI
 import bassamalim.hidaya.features.radio.ui.RadioClientUI
 import bassamalim.hidaya.features.recitations.recitationRecitersMenu.ui.RecitationRecitersMenuUI
 import bassamalim.hidaya.features.recitations.recitationSurasMenu.ui.RecitationSurasMenuScreen

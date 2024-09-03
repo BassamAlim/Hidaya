@@ -12,7 +12,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.media3.common.util.UnstableApi
@@ -140,9 +142,9 @@ class RecitationsPlayerDomain @Inject constructor(
 
     fun getState() = controller.playbackState.state
 
-    fun getMetadata() = controller.metadata
+    fun getMetadata(): MediaMetadataCompat = controller.metadata
 
-    fun getPlaybackState() = controller.playbackState
+    fun getPlaybackState(): PlaybackStateCompat = controller.playbackState
 
     fun downloadRecitation(
         narration: Recitation.Narration,

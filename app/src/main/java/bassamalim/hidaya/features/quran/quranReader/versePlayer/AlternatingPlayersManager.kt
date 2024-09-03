@@ -19,9 +19,6 @@ import bassamalim.hidaya.core.data.database.models.Verse
 import bassamalim.hidaya.core.data.database.models.VerseRecitation
 import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.features.quranReader.ayaPlayer.AlternatePlayer
-import bassamalim.hidaya.features.quranReader.ayaPlayer.PlayerCallback
-import bassamalim.hidaya.features.quranReader.ayaPlayer.PlayerState
 import java.util.Locale
 
 @UnstableApi

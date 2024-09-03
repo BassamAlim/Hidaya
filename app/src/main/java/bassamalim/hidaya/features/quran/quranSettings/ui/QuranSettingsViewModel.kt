@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.VerseRepeatMode
-import bassamalim.hidaya.features.quranReader.ui.QuranViewType
+import bassamalim.hidaya.features.quran.quranReader.ui.QuranViewType
 import bassamalim.hidaya.features.quran.quranSettings.domain.QuranSettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

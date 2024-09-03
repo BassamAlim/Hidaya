@@ -130,7 +130,7 @@ class RecitationsRepository @Inject constructor(
         val selections = it.narrationSelections.toMap()
         selections.ifEmpty {
             val narrations = recitationNarrationsDao.getAll()
-            narrations.associate { it.id to true }
+            narrations.associate { narration -> narration.id to true }
         }
     }
 
@@ -212,7 +212,7 @@ class RecitationsRepository @Inject constructor(
 
     fun getVerseReciterNames() = verseRecitersDao.getNames()
 
-    fun getReciter(id: Int, language: Language) =
+    private fun getReciter(id: Int, language: Language) =
         recitationRecitersDao.getReciter(id).let {
             Reciter(
                 id = it.id,

@@ -25,7 +25,7 @@ class QuizDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    fun getQuestions(): MutableList<QuizQuestion> {
+    private fun getQuestions(): MutableList<QuizQuestion> {
         val allQuestions = quizRepository.getQuestions().toMutableList()
         allQuestions.shuffle()
         return allQuestions.subList(0, 10)

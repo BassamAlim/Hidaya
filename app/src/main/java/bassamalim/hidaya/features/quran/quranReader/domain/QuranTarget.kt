@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quranReader.domain
+package bassamalim.hidaya.features.quran.quranReader.domain
 
 enum class QuranTarget {
     PAGE,

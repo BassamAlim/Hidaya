@@ -21,7 +21,7 @@ import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.features.quranReader.ui.QuranViewType
+import bassamalim.hidaya.features.quran.quranReader.ui.QuranViewType
 import bassamalim.hidaya.features.settings.ui.CategoryTitle
 import bassamalim.hidaya.features.settings.ui.MenuSetting
 import bassamalim.hidaya.features.settings.ui.SliderPref

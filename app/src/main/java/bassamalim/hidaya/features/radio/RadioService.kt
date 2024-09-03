@@ -33,12 +33,18 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.O)
 class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
@@ -59,6 +65,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private lateinit var wifiLock: WifiLock
     private var staticUrl: String? = null
     private lateinit var dynamicUrl: String
+    @Inject lateinit var appSettingsRepository: AppSettingsRepository
 
     companion object {
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
@@ -93,14 +100,20 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private val receiverManager = ReceiverManager(this, receiver, intentFilter)
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
-        ActivityUtils.onActivityCreateSetLocale(applicationContext)
+        GlobalScope.launch {
+            ActivityUtils.onActivityCreateSetLocale(
+                context = applicationContext,
+                language = appSettingsRepository.getLanguage().first()
+            )
 
-        initSession()
-        initPlayer()
-        setActions()
-        initMediaSessionMetadata()
+            initSession()
+            initPlayer()
+            setActions()
+            initMediaSessionMetadata()
+        }
     }
 
     val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {

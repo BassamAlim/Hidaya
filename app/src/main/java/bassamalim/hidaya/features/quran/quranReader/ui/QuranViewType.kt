@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quranReader.ui
+package bassamalim.hidaya.features.quran.quranReader.ui
 
 enum class QuranViewType {
     PAGE,

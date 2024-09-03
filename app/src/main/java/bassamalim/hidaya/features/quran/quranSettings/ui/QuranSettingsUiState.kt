@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.quran.quranSettings.ui
 
 import bassamalim.hidaya.core.enums.VerseRepeatMode
-import bassamalim.hidaya.features.quranReader.ui.QuranViewType
+import bassamalim.hidaya.features.quran.quranReader.ui.QuranViewType
 
 data class QuranSettingsUiState(
     val viewType: QuranViewType = QuranViewType.PAGE,

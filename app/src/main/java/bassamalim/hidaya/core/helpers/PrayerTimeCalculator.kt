@@ -173,13 +173,13 @@ class PrayerTimeCalculator(
             latitude = latitude,
             julianDate = julianDate
         )
-        val isha = computeTime(
+        val ishaa = computeTime(
             g = methodParams[settings.calculationMethod]!![4],
             t = t[6],
             latitude = latitude,
             julianDate = julianDate
         )
-        return doubleArrayOf(fajr, sunrise, dhuhr, asr, sunset, maghrib, isha)
+        return doubleArrayOf(fajr, sunrise, dhuhr, asr, sunset, maghrib, ishaa)
     }
 
     // compute the time of Asr
@@ -256,7 +256,7 @@ class PrayerTimeCalculator(
         times[2] += dhuhrMinutes / 60.0 // Dhuhr
         if (methodParams[settings.calculationMethod]?.get(1)?.toInt() == 1) // Maghrib
             times[5] = times[4] + (methodParams[settings.calculationMethod]?.get(2)!!) / 60
-        if (methodParams[settings.calculationMethod]?.get(3)?.toInt() == 1) // Isha
+        if (methodParams[settings.calculationMethod]?.get(3)?.toInt() == 1) // ishaa
             times[6] = times[5] + (methodParams[settings.calculationMethod]?.get(4)!!) / 60
         if (settings.highLatitudesAdjustmentMethod != HighLatitudesAdjustmentMethod.NONE)
             adjustHighLatTimes(times)
@@ -264,7 +264,7 @@ class PrayerTimeCalculator(
         return times
     }
 
-    // adjust Fajr, Isha and Maghrib for locations in higher latitudes
+    // adjust Fajr, ishaa and Maghrib for locations in higher latitudes
     private fun adjustHighLatTimes(times: DoubleArray): DoubleArray {
         val nightTime = timeDiff(times[4], times[1]) // sunset to sunrise
 
@@ -273,15 +273,15 @@ class PrayerTimeCalculator(
         if (java.lang.Double.isNaN(times[0]) || timeDiff(times[0], times[1]) > fajrDiff)
             times[0] = times[1] - fajrDiff
 
-        // Adjust Isha
-        val ishaAngle =
+        // Adjust ishaa
+        val ishaaAngle =
             if (methodParams[settings.calculationMethod]?.get(3)?.toInt() == 0)
                 methodParams[settings.calculationMethod]?.get(4)!!.toDouble()
             else 18.0
 
-        val ishaDiff = nightPortion(ishaAngle) * nightTime
-        if (java.lang.Double.isNaN(times[6]) || timeDiff(times[4], times[6]) > ishaDiff)
-            times[6] = times[4] + ishaDiff
+        val ishaaDiff = nightPortion(ishaaAngle) * nightTime
+        if (java.lang.Double.isNaN(times[6]) || timeDiff(times[4], times[6]) > ishaaDiff)
+            times[6] = times[4] + ishaaDiff
 
         // Adjust Maghrib
         val maghribAngle =

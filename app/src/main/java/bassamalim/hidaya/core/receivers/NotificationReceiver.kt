@@ -27,8 +27,7 @@ import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.services.AthanService
-import bassamalim.hidaya.core.utils.ActivityUtils
-import bassamalim.hidaya.features.quranReader.domain.QuranTarget
+import bassamalim.hidaya.features.quran.quranReader.domain.QuranTarget
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
@@ -51,13 +50,6 @@ class NotificationReceiver : BroadcastReceiver() {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context, intent: Intent) {
         ctx = context.applicationContext
-
-        try {  // remove after a while
-            ActivityUtils.onActivityCreateSetLocale(ctx)
-        } catch (e: Exception) {
-            Log.e(Global.TAG, "Neuralyzing", e)
-            ActivityUtils.clearAppData(ctx)
-        }
 
         pid = PID.valueOf(intent.getStringExtra("id")!!)
         time = intent.getLongExtra("time", 0L)

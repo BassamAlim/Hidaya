@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quranReader.ayaPlayer
+package bassamalim.hidaya.features.quran.quranReader.versePlayer
 
 interface PlayerCallback {
     fun getPbState(): Int

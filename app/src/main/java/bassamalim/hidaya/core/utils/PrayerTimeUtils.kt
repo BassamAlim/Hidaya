@@ -55,7 +55,7 @@ object PrayerTimeUtils {
         }
     }
 
-    fun getUTCOffset(locationType: LocationType, timeZone: String = "") =
+    private fun getUTCOffset(locationType: LocationType, timeZone: String = "") =
         when (locationType) {
             LocationType.AUTO -> TimeZone.getDefault().getOffset(Date().time) / 3600000
             LocationType.MANUAL -> TimeZone.getTimeZone(timeZone).getOffset(Date().time) / 3600000
