@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.bookReader.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.features.bookReader.domain.BookReaderDomain
+import bassamalim.hidaya.features.books.bookReader.domain.BookReaderDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

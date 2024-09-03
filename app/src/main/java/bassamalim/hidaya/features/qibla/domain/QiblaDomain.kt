@@ -18,8 +18,8 @@ import kotlin.math.sqrt
 
 class QiblaDomain @Inject constructor(
     private val app: Application,
-    private val appSettingsRepo: AppSettingsRepository,
-    private val locationRepo: LocationRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val locationRepository: LocationRepository
 ) {
 
     var location: Location? = null
@@ -36,7 +36,7 @@ class QiblaDomain @Inject constructor(
         adjustQiblaDial: (Float) -> Unit,
         adjustNorthDial: (Float) -> Unit
     ) {
-        location = locationRepo.getLocation().first()
+        location = locationRepository.getLocation().first()
 
         bearing = calculateBearing()
 
@@ -132,6 +132,6 @@ class QiblaDomain @Inject constructor(
         return ((Math.toDegrees(atan2(y, x)) + 360) % 360).toFloat()
     }
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
 }

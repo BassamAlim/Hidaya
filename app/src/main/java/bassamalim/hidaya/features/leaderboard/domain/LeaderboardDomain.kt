@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 class LeaderboardDomain @Inject constructor(
     app: Application,
-    private val appSettingsRepo: AppSettingsRepository,
-    private val userRepo: UserRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val userRepository: UserRepository
 ) {
 
     private val deviceId = getDeviceId(app)
@@ -21,8 +21,8 @@ class LeaderboardDomain @Inject constructor(
     private lateinit var userRecord: UserRecord
 
     suspend fun fetchData(): Int {
-        val userRecordResponse = userRepo.getRemoteRecord(deviceId)
-        val ranksResponse = userRepo.getRanks()
+        val userRecordResponse = userRepository.getRemoteRecord(deviceId)
+        val ranksResponse = userRepository.getRanks()
         return if (userRecordResponse is Response.Success && ranksResponse is Response.Success) {
             userRecord = userRecordResponse.data!!
             ranks = ranksResponse.data!!
@@ -31,7 +31,7 @@ class LeaderboardDomain @Inject constructor(
         else -1
     }
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     fun getUserRank(items: List<UserRecord>) =
         items.indexOfFirst { it.userId == userRecord.userId } + 1

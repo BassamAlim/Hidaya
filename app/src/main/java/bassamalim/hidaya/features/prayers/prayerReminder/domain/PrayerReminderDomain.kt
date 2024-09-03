@@ -7,16 +7,16 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class PrayerReminderDomain @Inject constructor(
-    private val appSettingsRepo: AppSettingsRepository,
-    private val prayersRepo: PrayersRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val prayersRepository: PrayersRepository
 ) {
 
     val offsetMin = 30f
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    suspend fun getOffset(pid: PID) = prayersRepo.getTimeOffset(pid).first()
+    suspend fun getOffset(pid: PID) = prayersRepository.getTimeOffset(pid).first()
 
-    fun getPrayerName(pid: PID) = prayersRepo.getPrayerName(pid)
+    fun getPrayerName(pid: PID) = prayersRepository.getPrayerName(pid)
 
 }

@@ -7,10 +7,10 @@ import javax.inject.Inject
 
 class QuizResultDomain @Inject constructor(
     private val quizRepository: QuizRepository,
-    private val appSettingsRepo: AppSettingsRepository
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     fun getQuestions(ids: IntArray) = ids.map { id -> quizRepository.getQuestion(id) }
 

@@ -15,7 +15,7 @@ interface RemembrancesDao {
     fun observeFavorites(): Flow<List<Remembrance>>
 
     @Query("SELECT is_favorite FROM remembrances")
-    fun observeIsFavorites(): Flow<List<Int>>
+    fun observeFavoriteStatuses(): Flow<List<Int>>
 
     @Query("SELECT * FROM remembrances WHERE category_id = :categoryId")
     fun observeCategoryRemembrances(categoryId: Int): Flow<List<Remembrance>>

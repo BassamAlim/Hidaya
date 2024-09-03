@@ -22,28 +22,28 @@ import javax.inject.Inject
 class PrayersDomain @Inject constructor(
     private val app: Application,
     private val prayersRepository: PrayersRepository,
-    private val appSettingsRepo: AppSettingsRepository,
-    private val appStateRepo: AppStateRepository,
+    private val appSettingsRepository: AppSettingsRepository,
+    private val appStateRepository: AppStateRepository,
     private val notificationsRepository: NotificationsRepository,
-    private val locationRepo: LocationRepository
+    private val locationRepository: LocationRepository
 ) {
 
-    val location = locationRepo.getLocation()
+    val location = locationRepository.getLocation()
 
-    suspend fun getLanguage() = appSettingsRepo.getLanguage().first()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    fun getHijriMonths() = appStateRepo.getHijriMonths()
+    fun getHijriMonths() = appStateRepository.getHijriMonths()
 
     fun getCountryName(countryId: Int, language: Language) =
-        locationRepo.getCountryName(
+        locationRepository.getCountryName(
             countryId = countryId,
             language = language
         )
 
     fun getCityName(cityId: Int, language: Language) =
-        locationRepo.getCityName(
+        locationRepository.getCityName(
             cityId = cityId,
             language = language
         )
@@ -107,16 +107,16 @@ class PrayersDomain @Inject constructor(
         val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
-            timeZoneId = locationRepo.getTimeZone(location.ids.cityId),
+            timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = calendar
         )
 
         return PrayerTimeUtils.formatPrayerTimes(
             prayerTimes = prayerTimes,
-            language = appSettingsRepo.getLanguage().first(),
-            timeFormat = appSettingsRepo.getTimeFormat().first(),
-            numeralsLanguage = appSettingsRepo.getNumeralsLanguage().first(),
+            language = appSettingsRepository.getLanguage().first(),
+            timeFormat = appSettingsRepository.getTimeFormat().first(),
+            numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
         )
     }
 

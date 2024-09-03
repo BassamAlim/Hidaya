@@ -38,7 +38,7 @@ class QuranRepository @Inject constructor(
         )
     }
 
-    suspend fun setFavoriteSuraMap(map: Map<Int, Boolean>) {
+    suspend fun setSuraFavorites(map: Map<Int, Boolean>) {
         map.forEach { (suraId, isFavorite) ->
             surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
         }

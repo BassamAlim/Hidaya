@@ -49,17 +49,18 @@ class RecitationsRepository @Inject constructor(
         }
     }
 
+    fun getReciterFavorites() = recitationRecitersDao.getFavoriteStatuses()
+        .mapIndexed { index, isFavorite -> index to (isFavorite == 1) }.toMap()
+
     suspend fun setReciterFavorite(reciterId: Int, isFavorite: Boolean) {
-        recitationsPreferencesDataSource.update { it.copy(
-            reciterFavorites = it.reciterFavorites.put(reciterId, isFavorite)
-        )}
+        recitationRecitersDao.setFavoriteStatus(id = reciterId, value = if (isFavorite) 1 else 0)
         updateReciterFavoritesBackup()
     }
 
     suspend fun setReciterFavorites(favorites: Map<Int, Boolean>) {
-        recitationsPreferencesDataSource.update { it.copy(
-            reciterFavorites = favorites.toPersistentMap()
-        )}
+        favorites.map { (id, isFavorite) ->
+            setReciterFavorite(id, isFavorite)
+        }
     }
 
     fun getReciterFavoritesBackup() = recitationsPreferencesDataSource.flow.map { preferences ->

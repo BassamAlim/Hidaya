@@ -8,15 +8,15 @@ import java.util.Calendar
 import javax.inject.Inject
 
 class DateConverterDomain @Inject constructor(
-    private val appSettingsRepo: AppSettingsRepository,
-    private val appStateRepo: AppStateRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val appStateRepository: AppStateRepository
 ) {
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    fun getHijriMonths() = appStateRepo.getHijriMonths()
+    fun getHijriMonths() = appStateRepository.getHijriMonths()
 
-    fun getGregorianMonths() = appStateRepo.getGregorianMonths()
+    fun getGregorianMonths() = appStateRepository.getGregorianMonths()
 
     fun gregorianToHijri(gregorian: Calendar): Calendar {
         val hijri = UmmalquraCalendar()

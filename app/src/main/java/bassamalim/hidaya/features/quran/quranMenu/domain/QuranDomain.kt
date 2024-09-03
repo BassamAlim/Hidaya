@@ -10,12 +10,12 @@ import javax.inject.Inject
 
 class QuranDomain @Inject constructor(
     private val quranRepository: QuranRepository,
-    private val appSettingsRepo: AppSettingsRepository
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    suspend fun getLanguage() = appSettingsRepo.getLanguage().first()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     fun getBookmark() = quranRepository.getPageBookmark()
 

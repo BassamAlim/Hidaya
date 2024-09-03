@@ -8,17 +8,17 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class PrayerSettingsDomain @Inject constructor(
-    private val appSettingsRepo: AppSettingsRepository,
-    private val prayersRepo: PrayersRepository,
-    private val notificationsRepo: NotificationsRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val prayersRepository: PrayersRepository,
+    private val notificationsRepository: NotificationsRepository
 ) {
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    suspend fun getNotificationType(pid: PID) = notificationsRepo.getNotificationType(pid).first()
+    suspend fun getNotificationType(pid: PID) = notificationsRepository.getNotificationType(pid).first()
 
-    suspend fun getTimeOffset(pid: PID) = prayersRepo.getTimeOffset(pid).first()
+    suspend fun getTimeOffset(pid: PID) = prayersRepository.getTimeOffset(pid).first()
 
-    fun getPrayerName(pid: PID) = prayersRepo.getPrayerName(pid)
+    fun getPrayerName(pid: PID) = prayersRepository.getPrayerName(pid)
 
 }

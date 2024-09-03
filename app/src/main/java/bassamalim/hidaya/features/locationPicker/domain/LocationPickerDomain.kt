@@ -7,21 +7,21 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class LocationPickerDomain @Inject constructor(
-    private val appSettingsRepo: AppSettingsRepository,
-    private val locationRepo: LocationRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val locationRepository: LocationRepository
 ) {
 
     private var countryId = -1
 
     fun setCountryId(id: Int) { countryId = id }
 
-    suspend fun getLanguage() = appSettingsRepo.getLanguage().first()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
     fun getCountries(language: Language) =
-        locationRepo.getCountries(language = language)
+        locationRepository.getCountries(language = language)
 
     fun getCities(language: Language) =
-        locationRepo.getCities(
+        locationRepository.getCities(
             countryId = countryId,
             language = language
         )

@@ -5,15 +5,15 @@ import bassamalim.hidaya.core.models.Book
 import javax.inject.Inject
 
 class BookChaptersDomain @Inject constructor(
-    private val booksRepo: BooksRepository,
+    private val booksRepository: BooksRepository,
 ) {
 
-    fun getBook(bookId: Int) = booksRepo.getBook(bookId)
+    fun getBook(bookId: Int) = booksRepository.getBook(bookId)
 
-    fun getFavorites(book: Book) = booksRepo.getChapterFavorites(book)
+    fun getFavorites(book: Book) = booksRepository.getChapterFavorites(book)
 
     suspend fun setFavoriteStatus(bookId: Int, chapterNum: Int, newValue: Boolean) {
-        booksRepo.setChapterFavorite(bookId, chapterNum, newValue)
+        booksRepository.setChapterFavorite(bookId, chapterNum, newValue)
     }
 
 }

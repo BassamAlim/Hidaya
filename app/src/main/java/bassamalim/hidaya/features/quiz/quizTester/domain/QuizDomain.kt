@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class QuizDomain @Inject constructor(
-    private val appSettingsRepo: AppSettingsRepository,
-    private val quizRepo: QuizRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val quizRepository: QuizRepository
 ) {
 
     val chosenAs = IntArray(10) { -1 }
@@ -23,14 +23,14 @@ class QuizDomain @Inject constructor(
         return score
     }
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     fun getQuestions(): MutableList<QuizQuestion> {
-        val allQuestions = quizRepo.getQuestions().toMutableList()
+        val allQuestions = quizRepository.getQuestions().toMutableList()
         allQuestions.shuffle()
         return allQuestions.subList(0, 10)
     }
 
-    fun getAnswers(questionId: Int) = quizRepo.getAnswers(questionId)
+    fun getAnswers(questionId: Int) = quizRepository.getAnswers(questionId)
 
 }

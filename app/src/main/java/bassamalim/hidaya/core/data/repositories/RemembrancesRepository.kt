@@ -25,13 +25,37 @@ class RemembrancesRepository @Inject constructor(
 
     fun observeAllRemembrances() = remembrancesDao.observeAll()
 
-    fun observeFavoriteRemembrances() = remembrancesDao.observeFavorites()
-
-    fun observeRemembranceFavorites() = remembrancesDao.observeFavorites()
-
-    fun observeRemembranceIsFavorites() = remembrancesDao.observeIsFavorites()
-
     fun observeFavorites() = remembrancesDao.observeFavorites()
+
+    suspend fun setFavorite(id: Int, value: Boolean) {
+        remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
+
+        setFavoritesBackup(
+            remembrancesDao.observeFavoriteStatuses().first().mapIndexed { index, isFavorite ->
+                index to isFavorite
+            }.toMap()
+        )
+    }
+
+    fun observeFavoriteStatuses() = remembrancesDao.observeFavoriteStatuses()
+
+    suspend fun setFavoriteStatuses(favorites: Map<Int, Boolean>) {
+        favorites.forEach { (id, value) ->
+            remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
+        }
+    }
+
+    fun getFavoriteStatusesBackup() = remembrancePreferencesDataSource.flow.map { preferences ->
+        preferences.favorites.map {
+            it.key to (it.value == 1)
+        }.toMap()
+    }
+
+    private suspend fun setFavoritesBackup(favorites: Map<Int, Int>) {
+        remembrancePreferencesDataSource.update { it.copy(
+            favorites = favorites.toPersistentMap()
+        )}
+    }
 
     fun observeCategoryRemembrances(categoryId: Int) =
         remembrancesDao.observeCategoryRemembrances(categoryId)
@@ -44,36 +68,8 @@ class RemembrancesRepository @Inject constructor(
         if (language == Language.ARABIC) remembrancesDao.getNameAr(id)
         else remembrancesDao.getNameEn(id)
 
-    suspend fun setFavorite(id: Int, value: Boolean) {
-        remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
-
-        setFavoritesBackup(
-            remembrancesDao.observeIsFavorites().first().mapIndexed { index, isFavorite ->
-                index to isFavorite
-            }.toMap()
-        )
-    }
-
-    suspend fun setFavorites(favorites: Map<Int, Boolean>) {
-        favorites.forEach { (id, value) ->
-            remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
-        }
-    }
-
     fun getRemembrancePassages(remembranceId: Int) =
         remembrancePassagesDao.getRemembrancePassages(remembranceId)
-
-    fun getFavoritesBackup() = remembrancePreferencesDataSource.flow.map { preferences ->
-        preferences.favorites.map {
-            it.key to (it.value == 1)
-        }.toMap()
-    }
-
-    private suspend fun setFavoritesBackup(favorites: Map<Int, Int>) {
-        remembrancePreferencesDataSource.update { it.copy(
-            favorites = favorites.toPersistentMap()
-        )}
-    }
 
     fun getTextSize() = remembrancePreferencesDataSource.flow.map {
         it.textSize

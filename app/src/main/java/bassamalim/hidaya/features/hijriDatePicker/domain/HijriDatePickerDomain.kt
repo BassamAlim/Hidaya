@@ -9,8 +9,8 @@ import java.util.Calendar
 import javax.inject.Inject
 
 class HijriDatePickerDomain @Inject constructor(
-    private val appSettingsRepo: AppSettingsRepository,
-    private val appStateRepo: AppStateRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val appStateRepository: AppStateRepository
 ) {
 
     private val selectedDate = UmmalquraCalendar()
@@ -18,15 +18,15 @@ class HijriDatePickerDomain @Inject constructor(
     val minYear = currentDate[Calendar.YEAR] - 100
     val maxYear = currentDate[Calendar.YEAR] + 100
 
-    suspend fun getLanguage() = appSettingsRepo.getLanguage().first()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    fun getMonths() = appStateRepo.getMonths()
+    fun getMonths() = appStateRepository.getMonths()
 
-    fun getWeekDays() = appStateRepo.getWeekDays()
+    fun getWeekDays() = appStateRepository.getWeekDays()
 
-    fun getWeekDaysAbb(language: Language) = appStateRepo.getWeekDaysAbb(language)
+    fun getWeekDaysAbb(language: Language) = appStateRepository.getWeekDaysAbb(language)
 
     fun getSelectedDate() = selectedDate
 

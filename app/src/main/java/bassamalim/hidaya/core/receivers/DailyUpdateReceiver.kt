@@ -82,11 +82,11 @@ class DailyUpdateReceiver : BroadcastReceiver() {
             lastDbVersion = appStateRepository.getLastDbVersion().first(),
             setLastDbVersion = appStateRepository::setLastDbVersion,
             suraFavorites = quranRepository.getSuraFavorites().first(),
-            setSuraFavorites = quranRepository::setFavoriteSuraMap,
+            setSuraFavorites = quranRepository::setSuraFavorites,
             reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
             setReciterFavorites = recitationsRepository::setReciterFavorites,
-            remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
-            setRemembranceFavorites = remembrancesRepository::setFavorites,
+            remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
+            setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
             testDb = { surasDao.getPlainNamesAr() }
         )
     }

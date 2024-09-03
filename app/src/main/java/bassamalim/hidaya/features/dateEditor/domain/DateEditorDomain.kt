@@ -5,13 +5,13 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class DateEditorDomain @Inject constructor(
-    private val appSettingsRepo: AppSettingsRepository
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     private var dateOffset = 0
 
     suspend fun assignDateOffset() {
-        dateOffset = appSettingsRepo.getDateOffset().first()
+        dateOffset = appSettingsRepository.getDateOffset().first()
     }
 
     fun getDateOffset() = dateOffset
@@ -25,9 +25,9 @@ class DateEditorDomain @Inject constructor(
     }
 
     suspend fun saveDateOffset() {
-        appSettingsRepo.setDateOffset(dateOffset)
+        appSettingsRepository.setDateOffset(dateOffset)
     }
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
 }

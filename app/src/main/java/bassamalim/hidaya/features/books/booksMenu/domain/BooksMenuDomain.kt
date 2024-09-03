@@ -10,18 +10,18 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class BooksMenuDomain @Inject constructor(
-    private val booksRepo: BooksRepository,
-    private val appSettingsRepo: AppSettingsRepository
+    private val booksRepository: BooksRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    suspend fun getLanguage() = appSettingsRepo.getLanguage().first()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    fun getBooks() = booksRepo.getBooks()
+    fun getBooks() = booksRepository.getBooks()
 
     fun getDownloadStates(books: List<Book>) =
         books.associate {
-            it.id to if (booksRepo.isDownloaded(it.id)) {
-                if (booksRepo.isDownloading(it.id)) DownloadState.DOWNLOADING
+            it.id to if (booksRepository.isDownloaded(it.id)) {
+                if (booksRepository.isDownloading(it.id)) DownloadState.DOWNLOADING
                 else DownloadState.DOWNLOADED
             }
             else DownloadState.NOT_DOWNLOADED
@@ -31,7 +31,7 @@ class BooksMenuDomain @Inject constructor(
         bookId: Int,
         onDownloadedCallback: () -> Unit
     ) {
-        val downloadTask = booksRepo.download(bookId)
+        val downloadTask = booksRepository.download(bookId)
         downloadTask
             .addOnSuccessListener {
                 Log.i(Global.TAG, "File download succeeded")
@@ -44,14 +44,14 @@ class BooksMenuDomain @Inject constructor(
     }
 
     fun deleteBook(bookId: Int) {
-        booksRepo.deleteBook(bookId)
+        booksRepository.deleteBook(bookId)
     }
 
-    suspend fun getShowTutorial() = booksRepo.getShouldShowTutorial().first()
+    suspend fun getShowTutorial() = booksRepository.getShouldShowTutorial().first()
 
     suspend fun handleTutorialDialogDismiss(doNotShowAgain: Boolean) {
         if (doNotShowAgain)
-            booksRepo.setDoNotShowAgain()
+            booksRepository.setDoNotShowAgain()
     }
 
 }

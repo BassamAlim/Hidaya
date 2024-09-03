@@ -8,13 +8,13 @@ import java.util.Calendar
 import javax.inject.Inject
 
 class MainDomain @Inject constructor(
-    private val appSettingsRepo: AppSettingsRepository,
+    private val appSettingsRepository: AppSettingsRepository,
     private val appStateRepository: AppStateRepository
 ) {
 
     private val millisInDay = 1000 * 60 * 60 * 24
 
-    fun getDateOffset() = appSettingsRepo.getDateOffset()
+    fun getDateOffset() = appSettingsRepository.getDateOffset()
 
     fun getHijriDateCalendar(dateOffset: Int) =
         UmmalquraCalendar().apply {
@@ -23,7 +23,7 @@ class MainDomain @Inject constructor(
 
     fun getGregorianDateCalendar(): Calendar = Calendar.getInstance()
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     fun getWeekDays() = appStateRepository.getWeekDays()
 

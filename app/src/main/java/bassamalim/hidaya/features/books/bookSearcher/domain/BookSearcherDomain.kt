@@ -12,8 +12,8 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 class BookSearcherDomain @Inject constructor(
-    private val booksRepo: BooksRepository,
-    private val appSettingsRepo: AppSettingsRepository
+    private val booksRepository: BooksRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     fun search(
@@ -24,9 +24,9 @@ class BookSearcherDomain @Inject constructor(
     ): List<BookSearcherMatch> {
         val matches = mutableListOf<BookSearcherMatch>()
 
-        val bookContents = booksRepo.getBookContents()
+        val bookContents = booksRepository.getBookContents()
         for (i in bookContents.indices) {
-            if (!bookSelections[i]!! || !booksRepo.isDownloaded(i))
+            if (!bookSelections[i]!! || !booksRepository.isDownloaded(i))
                 continue
 
             val bookContent = bookContents[i]
@@ -73,24 +73,24 @@ class BookSearcherDomain @Inject constructor(
         return matches
     }
 
-    suspend fun getLanguage() = appSettingsRepo.getLanguage().first()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    suspend fun getNumeralsLanguage() = appSettingsRepo.getNumeralsLanguage().first()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    fun getBookSelections() = booksRepo.getBookSelections()
+    fun getBookSelections() = booksRepository.getBookSelections()
 
     suspend fun setBookSelections(selections: Map<Int, Boolean>) {
-        booksRepo.setBookSelections(selections)
+        booksRepository.setBookSelections(selections)
     }
 
-    fun getMaxMatches() = booksRepo.getMaxMatches()
+    fun getMaxMatches() = booksRepository.getMaxMatches()
 
     suspend fun setMaxMatches(value: Int) {
-        booksRepo.setMaxMatches(value)
+        booksRepository.setMaxMatches(value)
     }
 
-    fun getMaxMatchesItems() = booksRepo.getMaxMatchesItems()
+    fun getMaxMatchesItems() = booksRepository.getMaxMatchesItems()
 
-    fun getBookTitles(language: Language) = booksRepo.getBookTitles(language)
+    fun getBookTitles(language: Language) = booksRepository.getBookTitles(language)
 
 }

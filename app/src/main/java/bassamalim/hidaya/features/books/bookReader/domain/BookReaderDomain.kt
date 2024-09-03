@@ -1,18 +1,18 @@
-package bassamalim.hidaya.features.bookReader.domain
+package bassamalim.hidaya.features.books.bookReader.domain
 
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import javax.inject.Inject
 
 class BookReaderDomain @Inject constructor(
-    private val booksRepo: BooksRepository
+    private val booksRepository: BooksRepository
 ) {
 
-    fun getTextSize() = booksRepo.getTextSize()
+    fun getTextSize() = booksRepository.getTextSize()
 
     suspend fun setTextSize(textSize: Float) {
-        booksRepo.setTextSize(textSize)
+        booksRepository.setTextSize(textSize)
     }
 
-    fun getDoors(bookId: Int, chapterId: Int) = booksRepo.getDoors(bookId, chapterId)
+    fun getDoors(bookId: Int, chapterId: Int) = booksRepository.getDoors(bookId, chapterId)
 
 }
