@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quran.quranMenu.domain
+package bassamalim.hidaya.features.quran.quranSuras.domain
 
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class QuranMenuDomain @Inject constructor(
+class QuranSurasDomain @Inject constructor(
     private val quranRepository: QuranRepository,
     private val appSettingsRepository: AppSettingsRepository
 ) {

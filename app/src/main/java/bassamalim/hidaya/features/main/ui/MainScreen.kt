@@ -36,7 +36,7 @@ import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.features.home.ui.HomeScreen
 import bassamalim.hidaya.features.more.ui.MoreScreen
 import bassamalim.hidaya.features.prayers.prayersBoard.ui.PrayersBoardScreen
-import bassamalim.hidaya.features.quran.quranMenu.ui.QuranMenuScreen
+import bassamalim.hidaya.features.quran.quranSuras.ui.QuranSurasScreen
 import bassamalim.hidaya.features.remembrances.remembranceCategories.ui.RemembranceCategoriesScreen
 
 @Composable
@@ -156,19 +156,19 @@ private fun NavigationGraph(
         }
 
         composable(
-            route = BottomNavItem.QuranMenu.route,
+            route = BottomNavItem.QuranSuras.route,
             enterTransition = TabEnter,
             exitTransition = TabExit,
             popEnterTransition = TabPopEnter,
             popExitTransition = TabPopExit
         ) {
-            QuranMenuScreen(
+            QuranSurasScreen(
                 hiltViewModel()
             )
         }
 
         composable(
-            route = BottomNavItem.Remembrances.route,
+            route = BottomNavItem.RemembranceCategories.route,
             enterTransition = TabEnter,
             exitTransition = TabExit,
             popEnterTransition = TabPopEnter,

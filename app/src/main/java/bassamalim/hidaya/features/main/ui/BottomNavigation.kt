@@ -20,8 +20,8 @@ import bassamalim.hidaya.core.ui.theme.nsp
 sealed class BottomNavItem(var route: String, var titleRId: Int, var icon: Int) {
     data object Home: BottomNavItem("home", R.string.title_home, R.drawable.ic_home)
     data object PrayersBoard: BottomNavItem("prayers", R.string.title_prayers, R.drawable.ic_clock)
-    data object QuranMenu: BottomNavItem("quran", R.string.title_quran, R.drawable.ic_bar_quran)
-    data object Remembrances: BottomNavItem("remembrances", R.string.title_remembrances, R.drawable.ic_duaa)
+    data object QuranSuras: BottomNavItem("quran", R.string.title_quran, R.drawable.ic_bar_quran)
+    data object RemembranceCategories: BottomNavItem("remembrances", R.string.title_remembrances, R.drawable.ic_duaa)
     data object More: BottomNavItem("more", R.string.title_more, R.drawable.ic_more)
 }
 
@@ -30,8 +30,8 @@ fun MyBottomNavigation(navController: NavController) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.PrayersBoard,
-        BottomNavItem.QuranMenu,
-        BottomNavItem.Remembrances,
+        BottomNavItem.QuranSuras,
+        BottomNavItem.RemembranceCategories,
         BottomNavItem.More
     )
 

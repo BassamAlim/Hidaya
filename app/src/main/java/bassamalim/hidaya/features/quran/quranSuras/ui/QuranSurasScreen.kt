@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quran.quranMenu.ui
+package bassamalim.hidaya.features.quran.quranSuras.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -36,8 +36,8 @@ import bassamalim.hidaya.core.ui.components.TutorialDialog
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun QuranMenuScreen(
-    viewModel: QuranMenuViewModel
+fun QuranSurasScreen(
+    viewModel: QuranSurasViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 

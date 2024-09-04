@@ -1,6 +1,6 @@
-package bassamalim.hidaya.features.quran.quranMenu.ui
+package bassamalim.hidaya.features.quran.quranSuras.ui
 
-data class QuranMenuUiState(
+data class QuranSurasUiState(
     val bookmarkPageText: String? = null,
     val bookmarkSuraText: String? = null,
     val searchText: String = "",

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quran.quranMenu.ui
+package bassamalim.hidaya.features.quran.quranSuras.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +8,7 @@ import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.quran.quranMenu.domain.QuranMenuDomain
+import bassamalim.hidaya.features.quran.quranSuras.domain.QuranSurasDomain
 import bassamalim.hidaya.features.quran.quranReader.domain.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -23,8 +23,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class QuranMenuViewModel @Inject constructor(
-    private val domain: QuranMenuDomain,
+class QuranSurasViewModel @Inject constructor(
+    private val domain: QuranSurasDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
@@ -34,7 +34,7 @@ class QuranMenuViewModel @Inject constructor(
     private var bookmarkedPage = -1
     private lateinit var allSurasFlow: Flow<List<Sura>>
 
-    private val _uiState = MutableStateFlow(QuranMenuUiState())
+    private val _uiState = MutableStateFlow(QuranSurasUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.getBookmark()
@@ -52,7 +52,7 @@ class QuranMenuViewModel @Inject constructor(
                 else suraNames[bookmark.suraId]
         )
     }.stateIn(
-        initialValue = QuranMenuUiState(),
+        initialValue = QuranSurasUiState(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
     )

@@ -72,11 +72,10 @@ fun QuranSearcherScreen(
                     )
 
                     MyDropDownMenu(
-                        selectedIndex = integerArrayResource(R.array.searcher_matches_items)
-                            .indexOf(state.maxMatches),
-                        entries = stringArrayResource(R.array.searcher_matches_entries),
+                        selection = state.maxMatches,
                         items = integerArrayResource(R.array.searcher_matches_items).toTypedArray(),
-                        onChoice = { value -> viewModel.onMaxMatchesChange(value) }
+                        entries = stringArrayResource(R.array.searcher_matches_entries),
+                        onChoice = viewModel::onMaxMatchesChange
                     )
                 }
             }

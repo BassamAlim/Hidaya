@@ -15,7 +15,7 @@ import bassamalim.hidaya.core.enums.ListType
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.features.quran.quranMenu.ui.LastPlayedMedia
+import bassamalim.hidaya.features.quran.quranSuras.ui.LastPlayedMedia
 import bassamalim.hidaya.features.recitations.recitationRecitersMenu.domain.RecitationRecitersMenuDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

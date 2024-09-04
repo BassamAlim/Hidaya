@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.recitations.recitationRecitersMenu.ui
 
 import bassamalim.hidaya.core.enums.DownloadState
-import bassamalim.hidaya.features.quran.quranMenu.ui.LastPlayedMedia
+import bassamalim.hidaya.features.quran.quranSuras.ui.LastPlayedMedia
 
 data class RecitationRecitersMenuUiState(
     val lastPlayedMedia: LastPlayedMedia? = null,

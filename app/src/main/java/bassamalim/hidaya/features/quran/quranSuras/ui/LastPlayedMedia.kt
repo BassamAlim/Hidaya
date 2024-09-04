@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quran.quranMenu.ui
+package bassamalim.hidaya.features.quran.quranSuras.ui
 
 data class LastPlayedMedia(
     val reciterName: String,

@@ -33,7 +33,7 @@ import bassamalim.hidaya.features.prayers.prayersBoard.domain.PrayersBoardDomain
 import bassamalim.hidaya.features.qibla.domain.QiblaDomain
 import bassamalim.hidaya.features.quiz.quizResult.domain.QuizResultDomain
 import bassamalim.hidaya.features.quiz.quizTest.domain.QuizTestDomain
-import bassamalim.hidaya.features.quran.quranMenu.domain.QuranMenuDomain
+import bassamalim.hidaya.features.quran.quranSuras.domain.QuranSurasDomain
 import bassamalim.hidaya.features.quran.quranReader.domain.QuranReaderDomain
 import bassamalim.hidaya.features.quran.quranSearcher.domain.QuranSearcherDomain
 import bassamalim.hidaya.features.quran.quranSettings.domain.QuranSettingsDomain
@@ -205,7 +205,7 @@ object DomainModule {
     fun provideQuranMenu(
         quranRepository: QuranRepository,
         appSettingsRepository: AppSettingsRepository
-    ) = QuranMenuDomain(quranRepository, appSettingsRepository)
+    ) = QuranSurasDomain(quranRepository, appSettingsRepository)
 
     @Provides @Singleton
     fun provideQuranReaderDomain(

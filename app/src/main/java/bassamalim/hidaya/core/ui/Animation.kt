@@ -43,8 +43,8 @@ val outToTop = { _: AnimatedContentTransitionScope<NavBackStackEntry> ->
 val bottomNavBarWeightMap = hashMapOf(
     BottomNavItem.Home.route to 1,
     BottomNavItem.PrayersBoard.route to 2,
-    BottomNavItem.QuranMenu.route to 3,
-    BottomNavItem.Remembrances.route to 4,
+    BottomNavItem.QuranSuras.route to 3,
+    BottomNavItem.RemembranceCategories.route to 4,
     BottomNavItem.More.route to 5
 )
 
