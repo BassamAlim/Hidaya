@@ -77,7 +77,7 @@
             android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="false" />
         <service
-            android:name=".features.recitations.recitationsPlayer.RecitationsPlayerService"
+            android:name=".features.recitations.recitationPlayer.RecitationPlayerService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             android:permission="none">

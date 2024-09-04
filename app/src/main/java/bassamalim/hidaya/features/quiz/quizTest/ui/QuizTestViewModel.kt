@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quiz.quizTester.ui
+package bassamalim.hidaya.features.quiz.quizTest.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,7 +6,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils
-import bassamalim.hidaya.features.quiz.quizTester.domain.QuizDomain
+import bassamalim.hidaya.features.quiz.quizTest.domain.QuizTestDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,14 +15,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class QuizViewModel @Inject constructor(
-    private val domain: QuizDomain,
+class QuizTestViewModel @Inject constructor(
+    private val domain: QuizTestDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
     private lateinit var numeralsLanguage: Language
 
-    private val _uiState = MutableStateFlow(QuizUiState())
+    private val _uiState = MutableStateFlow(QuizTestUiState())
     val uiState = _uiState.asStateFlow()
 
     init {

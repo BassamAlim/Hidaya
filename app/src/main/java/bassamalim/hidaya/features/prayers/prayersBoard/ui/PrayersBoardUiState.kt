@@ -1,6 +1,6 @@
-package bassamalim.hidaya.features.prayers.prayersMain.ui
+package bassamalim.hidaya.features.prayers.prayersBoard.ui
 
-data class PrayersUiState(
+data class PrayersBoardUiState(
     val isLocationAvailable: Boolean = false,
     val locationName: String = "",
     val prayersData: List<PrayerCardData> = emptyList(),

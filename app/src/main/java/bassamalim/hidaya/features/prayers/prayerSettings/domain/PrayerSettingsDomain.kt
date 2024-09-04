@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class PrayerSettingsDomain @Inject constructor(
-    private val appSettingsRepository: AppSettingsRepository,
     private val prayersRepository: PrayersRepository,
-    private val notificationsRepository: NotificationsRepository
+    private val notificationsRepository: NotificationsRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()

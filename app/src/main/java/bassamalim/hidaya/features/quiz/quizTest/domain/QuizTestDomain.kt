@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quiz.quizTester.domain
+package bassamalim.hidaya.features.quiz.quizTest.domain
 
 import bassamalim.hidaya.core.data.database.models.QuizQuestion
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
@@ -6,9 +6,9 @@ import bassamalim.hidaya.core.data.repositories.QuizRepository
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-class QuizDomain @Inject constructor(
-    private val appSettingsRepository: AppSettingsRepository,
-    private val quizRepository: QuizRepository
+class QuizTestDomain @Inject constructor(
+    private val quizRepository: QuizRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     val chosenAs = IntArray(10) { -1 }

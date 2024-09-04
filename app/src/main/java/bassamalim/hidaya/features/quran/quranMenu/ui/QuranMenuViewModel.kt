@@ -8,7 +8,7 @@ import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.quran.quranMenu.domain.QuranDomain
+import bassamalim.hidaya.features.quran.quranMenu.domain.QuranMenuDomain
 import bassamalim.hidaya.features.quran.quranReader.domain.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -23,8 +23,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class QuranViewModel @Inject constructor(
-    private val domain: QuranDomain,
+class QuranMenuViewModel @Inject constructor(
+    private val domain: QuranMenuDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
@@ -34,7 +34,7 @@ class QuranViewModel @Inject constructor(
     private var bookmarkedPage = -1
     private lateinit var allSurasFlow: Flow<List<Sura>>
 
-    private val _uiState = MutableStateFlow(QuranUiState())
+    private val _uiState = MutableStateFlow(QuranMenuUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.getBookmark()
@@ -52,7 +52,7 @@ class QuranViewModel @Inject constructor(
                 else suraNames[bookmark.suraId]
         )
     }.stateIn(
-        initialValue = QuranUiState(),
+        initialValue = QuranMenuUiState(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
     )

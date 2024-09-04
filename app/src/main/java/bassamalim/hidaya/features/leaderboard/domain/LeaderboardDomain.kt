@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 class LeaderboardDomain @Inject constructor(
     app: Application,
-    private val appSettingsRepository: AppSettingsRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     private val deviceId = getDeviceId(app)

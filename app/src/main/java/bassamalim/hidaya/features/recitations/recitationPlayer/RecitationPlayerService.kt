@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.recitations.recitationsPlayer
+package bassamalim.hidaya.features.recitations.recitationPlayer
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -58,7 +58,7 @@ import javax.inject.Inject
 
 @UnstableApi
 @RequiresApi(api = Build.VERSION_CODES.O)
-class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
+class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     @Inject lateinit var quranRepository: QuranRepository
     @Inject lateinit var recitationsRepository: RecitationsRepository
@@ -215,7 +215,7 @@ class RecitationsPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChange
 
             if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                 // Start the service
-                startService(Intent(applicationContext, RecitationsPlayerService::class.java))
+                startService(Intent(applicationContext, RecitationPlayerService::class.java))
                 // Set the session active  (and update metadata and state)
                 mediaSession.isActive = true
 

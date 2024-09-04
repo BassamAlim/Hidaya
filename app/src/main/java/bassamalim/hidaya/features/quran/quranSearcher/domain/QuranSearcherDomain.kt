@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class QuranSearcherDomain @Inject constructor(
-    private val appSettingsRepository: AppSettingsRepository,
-    private val quranRepository: QuranRepository
+    private val quranRepository: QuranRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()

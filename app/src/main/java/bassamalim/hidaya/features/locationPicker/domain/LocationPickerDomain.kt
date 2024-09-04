@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class LocationPickerDomain @Inject constructor(
-    private val appSettingsRepository: AppSettingsRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     private var countryId = -1

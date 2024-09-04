@@ -37,13 +37,13 @@ import bassamalim.hidaya.features.prayers.prayerSettings.ui.PrayerSettingsDialog
 import bassamalim.hidaya.features.qibla.ui.QiblaUI
 import bassamalim.hidaya.features.quiz.quizLobby.QuizLobbyUI
 import bassamalim.hidaya.features.quiz.quizResult.ui.QuizResultUI
-import bassamalim.hidaya.features.quiz.quizTester.ui.QuizUI
+import bassamalim.hidaya.features.quiz.quizTest.ui.QuizUI
 import bassamalim.hidaya.features.quran.quranSearcher.ui.QuranSearcherUI
 import bassamalim.hidaya.features.quran.quranReader.ui.QuranViewerUI
 import bassamalim.hidaya.features.radio.ui.RadioClientUI
 import bassamalim.hidaya.features.recitations.recitationRecitersMenu.ui.RecitationRecitersMenuUI
 import bassamalim.hidaya.features.recitations.recitationSurasMenu.ui.RecitationSurasMenuScreen
-import bassamalim.hidaya.features.recitations.recitationsPlayer.ui.RecitationsPlayerScreen
+import bassamalim.hidaya.features.recitations.recitationPlayer.ui.RecitationsPlayerScreen
 import bassamalim.hidaya.features.remembrances.remembranceReader.ui.RemembranceReaderScreen
 import bassamalim.hidaya.features.remembrances.remembrancesMenu.ui.RemembrancesListScreen
 import bassamalim.hidaya.features.settings.ui.SettingsScreen

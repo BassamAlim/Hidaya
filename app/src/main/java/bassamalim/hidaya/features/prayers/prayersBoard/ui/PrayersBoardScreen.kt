@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.prayers.prayersMain.ui
+package bassamalim.hidaya.features.prayers.prayersBoard.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +41,7 @@ import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
 fun PrayersUI(
-    viewModel: PrayersViewModel
+    viewModel: PrayersBoardViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 

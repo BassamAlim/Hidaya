@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.quiz.quizTester.ui
+package bassamalim.hidaya.features.quiz.quizTest.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +32,7 @@ import bassamalim.hidaya.core.ui.theme.Grey
 
 @Composable
 fun QuizUI(
-    viewModel: QuizViewModel
+    viewModel: QuizTestViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.recitations.recitationsPlayer.ui
+package bassamalim.hidaya.features.recitations.recitationPlayer.ui
 
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -30,7 +30,7 @@ import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.features.recitations.recitationsPlayer.domain.RecitationsPlayerDomain
+import bassamalim.hidaya.features.recitations.recitationPlayer.domain.RecitationPlayerDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -45,9 +45,9 @@ import javax.inject.Inject
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(UnstableApi::class)
 @HiltViewModel
-class RecitationsPlayerViewModel @Inject constructor(
+class RecitationPlayerViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val domain: RecitationsPlayerDomain,
+    private val domain: RecitationPlayerDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
@@ -63,7 +63,7 @@ class RecitationsPlayerViewModel @Inject constructor(
     private var duration = 0L
     private var progress = 0L
 
-    private val _uiState = MutableStateFlow(RecitationsPlayerUiState())
+    private val _uiState = MutableStateFlow(RecitationPlayerUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.getRepeatMode(),
@@ -74,7 +74,7 @@ class RecitationsPlayerViewModel @Inject constructor(
             shuffleMode = shuffleMode
         )
     }.stateIn(
-        initialValue = RecitationsPlayerUiState(),
+        initialValue = RecitationPlayerUiState(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
     )

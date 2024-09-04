@@ -21,11 +21,11 @@ import kotlin.math.max
 
 class HomeDomain @Inject constructor(
     private val app: Application,
-    private val appSettingsRepository: AppSettingsRepository,
     private val prayersRepository: PrayersRepository,
     private val locationRepository: LocationRepository,
     private val quranRepository: QuranRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     private val deviceId = getDeviceId(app)

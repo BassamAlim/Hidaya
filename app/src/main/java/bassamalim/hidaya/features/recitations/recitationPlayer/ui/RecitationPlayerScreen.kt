@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.recitations.recitationsPlayer.ui
+package bassamalim.hidaya.features.recitations.recitationPlayer.ui
 
 import android.app.Activity
 import android.os.Build
@@ -42,7 +42,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RecitationsPlayerScreen(
-    viewModel: RecitationsPlayerViewModel
+    viewModel: RecitationPlayerViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity

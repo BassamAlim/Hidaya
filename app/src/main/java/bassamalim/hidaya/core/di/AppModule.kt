@@ -17,7 +17,6 @@ object AppModule {
     fun provideApplicationContext(application: Application) =
         application.applicationContext!!
 
-
     @Provides @Singleton
     fun provideGson() = Gson()
 

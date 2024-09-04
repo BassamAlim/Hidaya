@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.prayers.prayersMain.domain
+package bassamalim.hidaya.features.prayers.prayersBoard.domain
 
 import android.app.Application
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
@@ -19,13 +19,13 @@ import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import javax.inject.Inject
 
-class PrayersDomain @Inject constructor(
+class PrayersBoardDomain @Inject constructor(
     private val app: Application,
     private val prayersRepository: PrayersRepository,
-    private val appSettingsRepository: AppSettingsRepository,
-    private val appStateRepository: AppStateRepository,
+    private val locationRepository: LocationRepository,
     private val notificationsRepository: NotificationsRepository,
-    private val locationRepository: LocationRepository
+    private val appStateRepository: AppStateRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     val location = locationRepository.getLocation()

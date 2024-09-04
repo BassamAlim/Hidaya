@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class PrayerReminderDomain @Inject constructor(
-    private val appSettingsRepository: AppSettingsRepository,
-    private val prayersRepository: PrayersRepository
+    private val prayersRepository: PrayersRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     val offsetMin = 30f

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.prayers.prayersMain.ui
+package bassamalim.hidaya.features.prayers.prayersBoard.ui
 
 import android.os.Build
 import androidx.compose.runtime.mutableIntStateOf
@@ -10,7 +10,7 @@ import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.prayers.prayerSettings.ui.PrayerSettings
-import bassamalim.hidaya.features.prayers.prayersMain.domain.PrayersDomain
+import bassamalim.hidaya.features.prayers.prayersBoard.domain.PrayersBoardDomain
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,8 +26,8 @@ import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
-class PrayersViewModel @Inject constructor(
-    private val domain: PrayersDomain,
+class PrayersBoardViewModel @Inject constructor(
+    private val domain: PrayersBoardDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
@@ -37,7 +37,7 @@ class PrayersViewModel @Inject constructor(
     private val viewedDate = Calendar.getInstance()
     private val prayerNames = domain.getPrayerNames()
 
-    private val _uiState = MutableStateFlow(PrayersUiState())
+    private val _uiState = MutableStateFlow(PrayersBoardUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.location,
@@ -71,7 +71,7 @@ class PrayersViewModel @Inject constructor(
             shouldShowLocationFailedToast = location == null,
             dateText = getDateText(dateOffset.intValue),
     )}.stateIn(
-        initialValue = PrayersUiState(),
+        initialValue = PrayersBoardUiState(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
     )

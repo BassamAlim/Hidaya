@@ -22,7 +22,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
     private val app: Application,
     private val recitationsRepository: RecitationsRepository,
     private val quranRepository: QuranRepository,
-    private val settingsRepository: AppSettingsRepository
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     private val downloading = HashMap<Long, Int>()
@@ -106,7 +106,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
         )
     }
 
-    suspend fun getLanguage() = settingsRepository.getLanguage().first()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
     fun getFavorites() = recitationsRepository.getReciterFavoritesBackup()
 

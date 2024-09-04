@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.recitations.recitationsPlayer.domain
+package bassamalim.hidaya.features.recitations.recitationPlayer.domain
 
 import android.app.Activity
 import android.app.Application
@@ -25,17 +25,17 @@ import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.utils.FileUtils
-import bassamalim.hidaya.features.recitations.recitationsPlayer.RecitationsPlayerService
+import bassamalim.hidaya.features.recitations.recitationPlayer.RecitationPlayerService
 import kotlinx.coroutines.flow.first
 import java.io.File
 import java.util.Locale
 import javax.inject.Inject
 
-class RecitationsPlayerDomain @Inject constructor(
+class RecitationPlayerDomain @Inject constructor(
     private val app: Application,
-    private val quranRepository: QuranRepository,
     private val recitationsRepository: RecitationsRepository,
-    private val settingsRepository: AppSettingsRepository
+    private val quranRepository: QuranRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     private var mediaBrowser: MediaBrowserCompat? = null
@@ -51,7 +51,7 @@ class RecitationsPlayerDomain @Inject constructor(
     ) {
         mediaBrowser = MediaBrowserCompat(
             app,
-            ComponentName(app, RecitationsPlayerService::class.java),
+            ComponentName(app, RecitationPlayerService::class.java),
             connectionCallbacks,
             null
         )
@@ -172,7 +172,7 @@ class RecitationsPlayerDomain @Inject constructor(
         this.path = "${"${recitationsRepository.prefix}${reciterId}/${narrationId}/"}$suraId.mp3"
     }
 
-    suspend fun getLanguage() = settingsRepository.getLanguage().first()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
     fun getSuraNames(language: Language) = quranRepository.getDecoratedSuraNames(language)
 

@@ -8,8 +8,8 @@ import java.util.Calendar
 import javax.inject.Inject
 
 class MainDomain @Inject constructor(
-    private val appSettingsRepository: AppSettingsRepository,
-    private val appStateRepository: AppStateRepository
+    private val appStateRepository: AppStateRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     private val millisInDay = 1000 * 60 * 60 * 24

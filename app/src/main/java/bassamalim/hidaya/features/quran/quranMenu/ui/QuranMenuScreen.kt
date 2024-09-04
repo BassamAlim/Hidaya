@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun QuranUI(
-    viewModel: QuranViewModel
+    viewModel: QuranMenuViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 

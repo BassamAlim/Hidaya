@@ -18,8 +18,8 @@ import kotlin.math.sqrt
 
 class QiblaDomain @Inject constructor(
     private val app: Application,
-    private val appSettingsRepository: AppSettingsRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     var location: Location? = null

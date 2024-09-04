@@ -1,0 +1,303 @@
+package bassamalim.hidaya.core.di
+
+import android.app.Application
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.AppStateRepository
+import bassamalim.hidaya.core.data.repositories.BooksRepository
+import bassamalim.hidaya.core.data.repositories.LiveContentRepository
+import bassamalim.hidaya.core.data.repositories.LocationRepository
+import bassamalim.hidaya.core.data.repositories.NotificationsRepository
+import bassamalim.hidaya.core.data.repositories.PrayersRepository
+import bassamalim.hidaya.core.data.repositories.QuizRepository
+import bassamalim.hidaya.core.data.repositories.QuranRepository
+import bassamalim.hidaya.core.data.repositories.RecitationsRepository
+import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
+import bassamalim.hidaya.core.data.repositories.UserRepository
+import bassamalim.hidaya.features.about.domain.AboutDomain
+import bassamalim.hidaya.features.books.bookChapters.domain.BookChaptersDomain
+import bassamalim.hidaya.features.books.bookReader.domain.BookReaderDomain
+import bassamalim.hidaya.features.books.bookSearcher.domain.BookSearcherDomain
+import bassamalim.hidaya.features.books.booksMenu.domain.BooksMenuDomain
+import bassamalim.hidaya.features.dateConverter.domain.DateConverterDomain
+import bassamalim.hidaya.features.dateEditor.domain.DateEditorDomain
+import bassamalim.hidaya.features.hijriDatePicker.domain.HijriDatePickerDomain
+import bassamalim.hidaya.features.home.domain.HomeDomain
+import bassamalim.hidaya.features.leaderboard.domain.LeaderboardDomain
+import bassamalim.hidaya.features.locationPicker.domain.LocationPickerDomain
+import bassamalim.hidaya.features.locator.domain.LocatorDomain
+import bassamalim.hidaya.features.main.domain.MainDomain
+import bassamalim.hidaya.features.onboarding.domain.OnboardingDomain
+import bassamalim.hidaya.features.prayers.prayerReminder.domain.PrayerReminderDomain
+import bassamalim.hidaya.features.prayers.prayerSettings.domain.PrayerSettingsDomain
+import bassamalim.hidaya.features.prayers.prayersBoard.domain.PrayersBoardDomain
+import bassamalim.hidaya.features.qibla.domain.QiblaDomain
+import bassamalim.hidaya.features.quiz.quizResult.domain.QuizResultDomain
+import bassamalim.hidaya.features.quiz.quizTest.domain.QuizTestDomain
+import bassamalim.hidaya.features.quran.quranMenu.domain.QuranMenuDomain
+import bassamalim.hidaya.features.quran.quranReader.domain.QuranReaderDomain
+import bassamalim.hidaya.features.quran.quranSearcher.domain.QuranSearcherDomain
+import bassamalim.hidaya.features.quran.quranSettings.domain.QuranSettingsDomain
+import bassamalim.hidaya.features.radio.domain.RadioDomain
+import bassamalim.hidaya.features.recitations.recitationPlayer.domain.RecitationPlayerDomain
+import bassamalim.hidaya.features.recitations.recitationRecitersMenu.domain.RecitationRecitersMenuDomain
+import bassamalim.hidaya.features.recitations.recitationSurasMenu.domain.RecitationSurasMenuDomain
+import bassamalim.hidaya.features.remembrances.remembranceReader.domain.RemembranceReaderDomain
+import bassamalim.hidaya.features.remembrances.remembrancesMenu.domain.RemembrancesMenuDomain
+import bassamalim.hidaya.features.settings.domain.SettingsDomain
+import bassamalim.hidaya.features.tv.domain.TvDomain
+import dagger.Provides
+import javax.inject.Singleton
+
+object DomainModule {
+
+    @Provides @Singleton
+    fun provideAboutDomain(
+        app: Application,
+        appStateRepository: AppStateRepository,
+        quranRepository: QuranRepository,
+        recitationsRepository: RecitationsRepository,
+        remembrancesRepository: RemembrancesRepository
+    ) = AboutDomain(
+        app,
+        appStateRepository,
+        quranRepository,
+        recitationsRepository,
+        remembrancesRepository
+    )
+
+    @Provides @Singleton
+    fun provideBookChaptersDomain(
+        booksRepository: BooksRepository
+    ) = BookChaptersDomain(booksRepository)
+
+    @Provides @Singleton
+    fun provideBookReaderDomain(
+        booksRepository: BooksRepository
+    ) = BookReaderDomain(booksRepository)
+
+    @Provides @Singleton
+    fun provideBookSearcherDomain(
+        booksRepository: BooksRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = BookSearcherDomain(booksRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideBooksMenuDomain(
+        booksRepository: BooksRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = BooksMenuDomain(booksRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideDateConverterDomain(
+        appSettingsRepository: AppSettingsRepository,
+        appStateRepository: AppStateRepository
+    ) = DateConverterDomain(appSettingsRepository, appStateRepository)
+
+    @Provides @Singleton
+    fun provideDateEditorDomain(
+        appSettingsRepository: AppSettingsRepository
+    ) = DateEditorDomain(appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideHijriDatePickerDomain(
+        appSettingsRepository: AppSettingsRepository,
+        appStateRepository: AppStateRepository
+    ) = HijriDatePickerDomain(appSettingsRepository, appStateRepository)
+
+    @Provides @Singleton
+    fun provideHomeDomain(
+        app: Application,
+        prayersRepository: PrayersRepository,
+        locationRepository: LocationRepository,
+        quranRepository: QuranRepository,
+        userRepository: UserRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = HomeDomain(
+        app,
+        prayersRepository,
+        locationRepository,
+        quranRepository,
+        userRepository,
+        appSettingsRepository
+    )
+
+    @Provides @Singleton
+    fun provideLeaderboardDomain(
+        app: Application,
+        userRepository: UserRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = LeaderboardDomain(app, userRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideLocationPickerDomain(
+        locationRepository: LocationRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = LocationPickerDomain(locationRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideLocatorDomain(
+        locationRepository: LocationRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = LocatorDomain(locationRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideMainDomain(
+        appStateRepository: AppStateRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = MainDomain(appStateRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideOnboardingDomain(
+        appStateRepository: AppStateRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = OnboardingDomain(appStateRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun providePrayerReminderDomain(
+        prayersRepository: PrayersRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = PrayerReminderDomain(prayersRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun providePrayersBoardDomain(
+        app: Application,
+        prayersRepository: PrayersRepository,
+        locationRepository: LocationRepository,
+        notificationsRepository: NotificationsRepository,
+        appStateRepository: AppStateRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = PrayersBoardDomain(
+        app,
+        prayersRepository,
+        locationRepository,
+        notificationsRepository,
+        appStateRepository,
+        appSettingsRepository
+    )
+
+    @Provides @Singleton
+    fun providePrayerSettingsDomain(
+        prayersRepository: PrayersRepository,
+        notificationsRepository: NotificationsRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = PrayerSettingsDomain(prayersRepository, notificationsRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideQiblaDomain(
+        app: Application,
+        locationRepository: LocationRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = QiblaDomain(app, locationRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideQuizResultDomain(
+        quizRepository: QuizRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = QuizResultDomain(quizRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideQuizTestDomain(
+        quizRepository: QuizRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = QuizTestDomain(quizRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideQuranMenu(
+        quranRepository: QuranRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = QuranMenuDomain(quranRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideQuranReaderDomain(
+        app: Application,
+        quranRepository: QuranRepository,
+        appSettingsRepository: AppSettingsRepository,
+        userRepository: UserRepository
+    ) = QuranReaderDomain(app, quranRepository, appSettingsRepository, userRepository)
+
+    @Provides @Singleton
+    fun provideQuranSearcherDomain(
+        quranRepository: QuranRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = QuranSearcherDomain(quranRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideQuranSettings(
+        quranRepository: QuranRepository,
+        recitationsRepository: RecitationsRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = QuranSettingsDomain(quranRepository, recitationsRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideRadioDomain(
+        app: Application,
+        liveContentRepository: LiveContentRepository
+    ) = RadioDomain(app, liveContentRepository)
+
+    @Provides @Singleton
+    fun provideRecitationPlayerDomain(
+        app: Application,
+        recitationsRepository: RecitationsRepository,
+        quranRepository: QuranRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = RecitationPlayerDomain(app, recitationsRepository, quranRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideRecitationRecitersMenuDomain(
+        app: Application,
+        recitationsRepository: RecitationsRepository,
+        quranRepository: QuranRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = RecitationRecitersMenuDomain(
+        app,
+        recitationsRepository,
+        quranRepository,
+        appSettingsRepository
+    )
+
+    @Provides @Singleton
+    fun provideRecitationSurasMenuDomain(
+        app: Application,
+        recitationsRepository: RecitationsRepository,
+        quranRepository: QuranRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = RecitationSurasMenuDomain(
+        app,
+        recitationsRepository,
+        quranRepository,
+        appSettingsRepository
+    )
+
+    @Provides @Singleton
+    fun provideRemembranceReaderDomain(
+        remembrancesRepository: RemembrancesRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = RemembranceReaderDomain(remembrancesRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideRemembrancesMenuDomain(
+        remembrancesRepository: RemembrancesRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = RemembrancesMenuDomain(remembrancesRepository, appSettingsRepository)
+
+    @Provides @Singleton
+    fun provideSettingsDomain(
+        app: Application,
+        appSettingsRepository: AppSettingsRepository,
+        prayersRepository: PrayersRepository,
+        notificationsRepository: NotificationsRepository,
+        locationRepository: LocationRepository
+    ) = SettingsDomain(
+        app,
+        appSettingsRepository,
+        prayersRepository,
+        notificationsRepository,
+        locationRepository
+    )
+
+    @Provides @Singleton
+    fun provideTvDomain(
+        liveContentRepository: LiveContentRepository
+    ) = TvDomain(liveContentRepository)
+
+}
