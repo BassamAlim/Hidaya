@@ -83,7 +83,7 @@ class HomeViewModel @Inject constructor(
 
     fun onGotoTodayWerdClick() {
         navigator.navigate(
-            Screen.QuranViewer(
+            Screen.QuranReader(
                 targetType = QuranTarget.PAGE.name,
                 targetValue = _uiState.value.werdPage
             )

@@ -246,7 +246,7 @@ class RecitationPlayerViewModel @Inject constructor(
                     narrationId = narrationId.toString()
                 )
             ) {
-                popUpTo(Screen.RecitationsPlayer(action, mediaId).route) {
+                popUpTo(Screen.RecitationPlayer(action, mediaId).route) {
                     inclusive = true
                 }
             }

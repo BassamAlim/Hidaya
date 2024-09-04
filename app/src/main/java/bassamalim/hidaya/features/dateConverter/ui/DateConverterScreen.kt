@@ -25,7 +25,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun DateConverterUI(
+fun DateConverterScreen(
     viewModel: DateConverterViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -42,20 +42,20 @@ fun DateConverterUI(
             Column {
                 MySquareButton(
                     text = stringResource(R.string.pick_hijri_date),
-                    fontSize = 22.sp,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 15.dp, horizontal = 30.dp),
+                    fontSize = 22.sp,
                     innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp),
                     onClick = viewModel::onPickHijriClick
                 )
 
                 MySquareButton(
                     text = stringResource(R.string.pick_gregorian_date),
-                    fontSize = 22.sp,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 15.dp, horizontal = 30.dp),
+                    fontSize = 22.sp,
                     innerPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp),
                     onClick = { viewModel.onPickGregorianClick(context) }
                 )

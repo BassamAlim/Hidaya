@@ -19,7 +19,7 @@ import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.features.remembrances.remembrancesMenu.RemembrancesItem
 
 @Composable
-fun RemembrancesListScreen(
+fun RemembrancesMenuScreen(
     viewModel: RemembrancesMenuViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

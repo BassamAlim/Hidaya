@@ -28,7 +28,7 @@ import bassamalim.hidaya.features.settings.ui.SliderPref
 import bassamalim.hidaya.features.settings.ui.SwitchSetting
 
 @Composable
-fun QuranSettingsDlg(
+fun QuranSettingsDialog(
     viewModel: QuranSettingsViewModel,
     shown: Boolean,
     onDone: () -> Unit

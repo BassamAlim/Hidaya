@@ -41,7 +41,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun RecitationsPlayerScreen(
+fun RecitationPlayerScreen(
     viewModel: RecitationPlayerViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

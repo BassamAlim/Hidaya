@@ -125,7 +125,7 @@ class PrayersBoardViewModel @Inject constructor(
     fun onReminderCardClick(pid: PID) {
         if (_uiState.value.isLocationAvailable) {
             navigator.navigateForResult(
-                destination = Screen.PrayerReminder(
+                destination = Screen.PrayerReminderSettings(
                     pid = pid.name
                 )
             ) { result ->

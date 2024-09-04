@@ -56,7 +56,7 @@ class BookChaptersViewModel @Inject constructor(
 
     fun onItemClick(chapter: BookChapter) {
         navigator.navigate(
-            Screen.BookViewer(
+            Screen.BookReader(
                 bookId = bookId.toString(),
                 bookTitle = chapter.title,
                 chapterId = chapter.id.toString()

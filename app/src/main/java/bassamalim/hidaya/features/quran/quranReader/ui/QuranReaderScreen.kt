@@ -64,12 +64,12 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.quran.quranSettings.ui.QuranSettingsDlg
 import bassamalim.hidaya.features.quran.quranReader.ui.QuranViewType.LIST
+import bassamalim.hidaya.features.quran.quranSettings.ui.QuranSettingsDialog
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun QuranViewerUI(
+fun QuranReaderScreen(
     viewModel: QuranReaderViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -131,7 +131,7 @@ fun QuranViewerUI(
         onDismiss = viewModel::onInfoDialogDismiss  // :: gives the reference to the function
     )
 
-    QuranSettingsDlg(
+    QuranSettingsDialog(
         viewModel = hiltViewModel(),
         shown = state.isSettingsDialogShown,
         onDone = viewModel::onSettingsDialogDismiss

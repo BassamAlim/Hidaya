@@ -12,7 +12,7 @@ class QuizLobbyViewModel @Inject constructor(
 ): ViewModel() {
 
     fun onStartQuizClick() {
-        navigator.navigate(Screen.Quiz)
+        navigator.navigate(Screen.QuizTest)
     }
 
 }

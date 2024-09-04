@@ -4,7 +4,7 @@ sealed class Screen(val route: String) {
 
     data object About: Screen("about")
 
-    data class RemembrancesList(
+    data class RemembrancesMenu(
         val type: String,
         val category: String="-1"
     ): Screen("remembrances_list/$type/$category")
@@ -20,9 +20,9 @@ sealed class Screen(val route: String) {
 
     data object BookSearcher: Screen("book_searcher")
 
-    data object Books: Screen("books")
+    data object BooksMenu: Screen("books")
 
-    data class BookViewer(
+    data class BookReader(
         val bookId: String,
         val bookTitle: String,
         val chapterId: String
@@ -46,7 +46,7 @@ sealed class Screen(val route: String) {
 
     data object Main: Screen("main")
 
-    data class PrayerReminder(
+    data class PrayerReminderSettings(
         val pid: String
     ): Screen("prayer_reminder/$pid")
 
@@ -64,11 +64,11 @@ sealed class Screen(val route: String) {
         val chosenAnswers: String
     ): Screen("quiz_result/$score/$questions/$chosenAnswers")
 
-    data object Quiz: Screen("quiz")
+    data object QuizTest: Screen("quiz")
 
     data object QuranSearcher: Screen("quran_searcher")
 
-    data class QuranViewer(
+    data class QuranReader(
         val targetType: String,
         val targetValue: String = "-1",
     ): Screen("quran_viewer/$targetType/$targetValue")
@@ -77,7 +77,7 @@ sealed class Screen(val route: String) {
 
     data object Settings: Screen("settings")
 
-    data class RecitationsPlayer(
+    data class RecitationPlayer(
         val action: String,
         val mediaId: String
     ): Screen("recitations_player/$action/$mediaId")
@@ -91,6 +91,6 @@ sealed class Screen(val route: String) {
 
     data object Tv: Screen("tv")
 
-    data object Welcome: Screen("welcome")
+    data object Onboarding: Screen("welcome")
 
 }

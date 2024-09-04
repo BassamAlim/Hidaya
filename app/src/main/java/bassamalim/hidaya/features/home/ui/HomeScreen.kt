@@ -39,7 +39,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.Positive
 
 @Composable
-fun HomeUI(
+fun HomeScreen(
     viewModel: HomeViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

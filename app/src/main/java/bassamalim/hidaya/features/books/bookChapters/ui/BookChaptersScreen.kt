@@ -17,7 +17,7 @@ import bassamalim.hidaya.core.ui.components.TabLayout
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun BookChaptersUI(
+fun BookChaptersScreen(
     viewModel: BookChaptersViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

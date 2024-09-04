@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.prayers.prayerReminder.domain
+package bassamalim.hidaya.features.prayers.prayerReminderSettings.domain
 
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
@@ -6,7 +6,7 @@ import bassamalim.hidaya.core.enums.PID
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-class PrayerReminderDomain @Inject constructor(
+class PrayerReminderSettingsDomain @Inject constructor(
     private val prayersRepository: PrayersRepository,
     private val appSettingsRepository: AppSettingsRepository
 ) {

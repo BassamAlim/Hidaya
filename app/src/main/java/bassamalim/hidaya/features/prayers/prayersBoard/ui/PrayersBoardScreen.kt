@@ -40,7 +40,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
-fun PrayersUI(
+fun PrayersBoardScreen(
     viewModel: PrayersBoardViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

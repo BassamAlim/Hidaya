@@ -213,13 +213,13 @@ class NotificationReceiver : BroadcastReceiver() {
                 Screen.RemembranceReader(1.toString()).route
             }
             PID.DAILY_WERD -> {
-                Screen.QuranViewer(
+                Screen.QuranReader(
                     targetType = QuranTarget.PAGE.name,
                     targetValue = quranRepository.getWerdPage().first().toString()
                 ).route
             }
             PID.FRIDAY_KAHF -> {
-                Screen.QuranViewer(
+                Screen.QuranReader(
                     targetType = QuranTarget.SURA.name,
                     targetValue = 17.toString() // surat al-kahf
                 ).route

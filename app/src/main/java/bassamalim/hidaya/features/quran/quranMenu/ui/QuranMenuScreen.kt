@@ -36,7 +36,7 @@ import bassamalim.hidaya.core.ui.components.TutorialDialog
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun QuranUI(
+fun QuranMenuScreen(
     viewModel: QuranMenuViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -156,7 +156,7 @@ private fun Tab(
 }
 
 @Composable
-fun PageDoesNotExistToast() {
+private fun PageDoesNotExistToast() {
     val context = LocalContext.current
     LaunchedEffect(null) {
         Toast.makeText(

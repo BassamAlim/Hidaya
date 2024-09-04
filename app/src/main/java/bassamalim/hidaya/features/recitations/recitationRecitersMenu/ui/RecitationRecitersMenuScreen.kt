@@ -40,7 +40,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun RecitationRecitersMenuUI(
+fun RecitationRecitersMenuScreen(
     viewModel: RecitationRecitersMenuViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

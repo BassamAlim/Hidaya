@@ -20,32 +20,32 @@ import bassamalim.hidaya.core.ui.outToBottom
 import bassamalim.hidaya.core.ui.outToLeft
 import bassamalim.hidaya.core.ui.outToTop
 import bassamalim.hidaya.features.about.ui.AboutScreen
-import bassamalim.hidaya.features.books.bookReader.ui.BookViewerScreen
-import bassamalim.hidaya.features.books.bookChapters.ui.BookChaptersUI
-import bassamalim.hidaya.features.books.bookSearcher.ui.BookSearcherUI
+import bassamalim.hidaya.features.books.bookChapters.ui.BookChaptersScreen
+import bassamalim.hidaya.features.books.bookReader.ui.BookReaderScreen
+import bassamalim.hidaya.features.books.bookSearcher.ui.BookSearcherScreen
 import bassamalim.hidaya.features.books.booksMenu.ui.BooksMenuScreen
-import bassamalim.hidaya.features.dateConverter.ui.DateConverterUI
+import bassamalim.hidaya.features.dateConverter.ui.DateConverterScreen
 import bassamalim.hidaya.features.dateEditor.ui.DateEditorDialog
 import bassamalim.hidaya.features.hijriDatePicker.ui.HijriDatePickerDialog
-import bassamalim.hidaya.features.leaderboard.ui.LeaderboardUI
-import bassamalim.hidaya.features.locationPicker.ui.LocationPickerUI
-import bassamalim.hidaya.features.locator.ui.LocatorUI
-import bassamalim.hidaya.features.main.ui.MainUI
+import bassamalim.hidaya.features.leaderboard.ui.LeaderboardScreen
+import bassamalim.hidaya.features.locationPicker.ui.LocationPickerScreen
+import bassamalim.hidaya.features.locator.ui.LocatorScreen
+import bassamalim.hidaya.features.main.ui.MainScreen
 import bassamalim.hidaya.features.onboarding.ui.OnboardingScreen
-import bassamalim.hidaya.features.prayers.prayerReminder.ui.PrayerReminderDialog
+import bassamalim.hidaya.features.prayers.prayerReminderSettings.ui.PrayerReminderSettingsDialog
 import bassamalim.hidaya.features.prayers.prayerSettings.ui.PrayerSettingsDialog
-import bassamalim.hidaya.features.qibla.ui.QiblaUI
-import bassamalim.hidaya.features.quiz.quizLobby.QuizLobbyUI
-import bassamalim.hidaya.features.quiz.quizResult.ui.QuizResultUI
-import bassamalim.hidaya.features.quiz.quizTest.ui.QuizUI
-import bassamalim.hidaya.features.quran.quranSearcher.ui.QuranSearcherUI
-import bassamalim.hidaya.features.quran.quranReader.ui.QuranViewerUI
-import bassamalim.hidaya.features.radio.ui.RadioClientUI
-import bassamalim.hidaya.features.recitations.recitationRecitersMenu.ui.RecitationRecitersMenuUI
+import bassamalim.hidaya.features.qibla.ui.QiblaScreen
+import bassamalim.hidaya.features.quiz.quizLobby.QuizLobbyScreen
+import bassamalim.hidaya.features.quiz.quizResult.ui.QuizResultScreen
+import bassamalim.hidaya.features.quiz.quizTest.ui.QuizTestScreen
+import bassamalim.hidaya.features.quran.quranReader.ui.QuranReaderScreen
+import bassamalim.hidaya.features.quran.quranSearcher.ui.QuranSearcherScreen
+import bassamalim.hidaya.features.radio.ui.RadioClientScreen
+import bassamalim.hidaya.features.recitations.recitationPlayer.ui.RecitationPlayerScreen
+import bassamalim.hidaya.features.recitations.recitationRecitersMenu.ui.RecitationRecitersMenuScreen
 import bassamalim.hidaya.features.recitations.recitationSurasMenu.ui.RecitationSurasMenuScreen
-import bassamalim.hidaya.features.recitations.recitationPlayer.ui.RecitationsPlayerScreen
 import bassamalim.hidaya.features.remembrances.remembranceReader.ui.RemembranceReaderScreen
-import bassamalim.hidaya.features.remembrances.remembrancesMenu.ui.RemembrancesListScreen
+import bassamalim.hidaya.features.remembrances.remembrancesMenu.ui.RemembrancesMenuScreen
 import bassamalim.hidaya.features.settings.ui.SettingsScreen
 import bassamalim.hidaya.features.tv.ui.TvScreen
 import com.google.gson.Gson
@@ -66,7 +66,7 @@ fun Navigation(
     }
 
     val startDest =
-        if (shouldWelcome) Screen.Welcome.route
+        if (shouldWelcome) Screen.Onboarding.route
         else Screen.Main.route
 
     NavGraph(navController, startDest)
@@ -96,9 +96,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.RemembrancesList(
-                "{type}", "{category}"
-            ).route,
+            route = Screen.RemembrancesMenu("{type}", "{category}").route,
             arguments = listOf(
                 navArgument("type") { type = NavType.StringType },
                 navArgument("category") { type = NavType.IntType }
@@ -108,15 +106,13 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            RemembrancesListScreen(
+            RemembrancesMenuScreen(
                 hiltViewModel()
             )
         }
 
         composable(
-            route = Screen.RemembranceReader(
-                "{remembrance_id}"
-            ).route,
+            route = Screen.RemembranceReader("{remembrance_id}").route,
             arguments = listOf(
                 navArgument("remembrance_id") { type = NavType.IntType }
             ),
@@ -131,9 +127,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.BookChapters(
-                "{book_id}", "{book_title}"
-            ).route,
+            route = Screen.BookChapters("{book_id}", "{book_title}").route,
             arguments = listOf(
                 navArgument("book_id") { type = NavType.IntType },
                 navArgument("book_title") { type = NavType.StringType }
@@ -143,7 +137,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            BookChaptersUI(
+            BookChaptersScreen(
                 hiltViewModel()
             )
         }
@@ -155,13 +149,13 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            BookSearcherUI(
+            BookSearcherScreen(
                 hiltViewModel()
             )
         }
 
         composable(
-            route = Screen.Books.route,
+            route = Screen.BooksMenu.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -173,7 +167,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.BookViewer(
+            route = Screen.BookReader(
                 "{book_id}", "{book_title}", "{chapter_id}"
             ).route,
             arguments = listOf(
@@ -186,7 +180,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            BookViewerScreen(
+            BookReaderScreen(
                 hiltViewModel()
             )
         }
@@ -198,7 +192,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            DateConverterUI(
+            DateConverterScreen(
                 hiltViewModel()
             )
         }
@@ -212,9 +206,7 @@ fun NavGraph(
         }
 
         dialog(
-            route = Screen.HijriDatePicker(
-                "{initial_date}"
-            ).route,
+            route = Screen.HijriDatePicker("{initial_date}").route,
         ) {
             HijriDatePickerDialog(
                 hiltViewModel()
@@ -228,7 +220,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            LeaderboardUI(
+            LeaderboardScreen(
                 hiltViewModel()
             )
         }
@@ -240,15 +232,13 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            LocationPickerUI(
+            LocationPickerScreen(
                 hiltViewModel()
             )
         }
 
         composable(
-            route = Screen.Locator(
-                "{type}"
-            ).route,
+            route = Screen.Locator("{is_initial}").route,
             arguments = listOf(
                 navArgument("is_initial") { type = NavType.BoolType }
             ),
@@ -257,7 +247,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            LocatorUI(
+            LocatorScreen(
                 hiltViewModel()
             )
         }
@@ -269,28 +259,24 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            MainUI(
+            MainScreen(
                 hiltViewModel()
             )
         }
 
         dialog(
-            route = Screen.PrayerReminder(
-                "{pid}"
-            ).route,
+            route = Screen.PrayerReminderSettings("{pid}").route,
             arguments = listOf(
                 navArgument("pid") { type = NavType.StringType }
             )
         ) {
-            PrayerReminderDialog(
+            PrayerReminderSettingsDialog(
                 hiltViewModel()
             )
         }
 
         dialog(
-            route = Screen.PrayerSettings(
-                "{pid}"
-            ).route,
+            route = Screen.PrayerSettings("{pid}").route,
             arguments = listOf(
                 navArgument("pid") { type = NavType.StringType }
             )
@@ -307,7 +293,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            QiblaUI(
+            QiblaScreen(
                 hiltViewModel()
             )
         }
@@ -319,7 +305,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            QuizLobbyUI(
+            QuizLobbyScreen(
                 hiltViewModel()
             )
         }
@@ -338,19 +324,19 @@ fun NavGraph(
             popEnterTransition = inFromRight,
             popExitTransition = outToBottom
         ) {
-            QuizResultUI(
+            QuizResultScreen(
                 hiltViewModel()
             )
         }
 
         composable(
-            route = Screen.Quiz.route,
+            route = Screen.QuizTest.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            QuizUI(
+            QuizTestScreen(
                 hiltViewModel()
             )
         }
@@ -362,15 +348,13 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            QuranSearcherUI(
+            QuranSearcherScreen(
                 hiltViewModel()
             )
         }
 
         composable(
-            route = Screen.QuranViewer(
-                "{target_type}", "{target_value}"
-            ).route,
+            route = Screen.QuranReader("{target_type}", "{target_value}").route,
             arguments = listOf(
                 navArgument("target_type") { type = NavType.StringType },
                 navArgument("target_value") { type = NavType.IntType },
@@ -380,7 +364,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            QuranViewerUI(
+            QuranReaderScreen(
                 hiltViewModel()
             )
         }
@@ -393,7 +377,7 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                RadioClientUI(
+                RadioClientScreen(
                     hiltViewModel()
                 )
             }
@@ -412,9 +396,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.RecitationsPlayer(
-                "{action}", "{media_id}"
-            ).route,
+            route = Screen.RecitationPlayer("{action}", "{media_id}").route,
             arguments = listOf(
                 navArgument("action") { type = NavType.StringType },
                 navArgument("media_id") { type = NavType.StringType }
@@ -425,7 +407,7 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                RecitationsPlayerScreen(
+                RecitationPlayerScreen(
                     hiltViewModel()
                 )
             }
@@ -438,7 +420,7 @@ fun NavGraph(
             popEnterTransition = inFromTop,
             popExitTransition = outToTop
         ) {
-            RecitationRecitersMenuUI(
+            RecitationRecitersMenuScreen(
                 hiltViewModel()
             )
         }
@@ -474,7 +456,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.Welcome.route,
+            route = Screen.Onboarding.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,

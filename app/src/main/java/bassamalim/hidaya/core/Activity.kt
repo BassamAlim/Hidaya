@@ -117,7 +117,7 @@ class Activity : ComponentActivity() {
                 stopService(Intent(this, AthanService::class.java))
             }
             Global.GO_TO_RECITATION -> {
-                startRoute = Screen.RecitationsPlayer(
+                startRoute = Screen.RecitationPlayer(
                     "back",
                     intent.getStringExtra("media_id")!!
                 ).route

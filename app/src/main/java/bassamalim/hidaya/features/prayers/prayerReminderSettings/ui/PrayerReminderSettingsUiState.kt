@@ -1,8 +1,8 @@
-package bassamalim.hidaya.features.prayers.prayerReminder.ui
+package bassamalim.hidaya.features.prayers.prayerReminderSettings.ui
 
 import bassamalim.hidaya.core.enums.PID
 
-data class PrayerReminderUiState(
+data class PrayerReminderSettingsUiState(
     val pid: PID,
     val prayerName: String,
     val offset: Int = 0

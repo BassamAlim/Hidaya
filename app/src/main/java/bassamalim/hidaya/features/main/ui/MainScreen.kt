@@ -33,14 +33,14 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.features.home.ui.HomeUI
-import bassamalim.hidaya.features.more.ui.MoreUI
-import bassamalim.hidaya.features.prayers.prayersBoard.ui.PrayersUI
-import bassamalim.hidaya.features.quran.quranMenu.ui.QuranUI
+import bassamalim.hidaya.features.home.ui.HomeScreen
+import bassamalim.hidaya.features.more.ui.MoreScreen
+import bassamalim.hidaya.features.prayers.prayersBoard.ui.PrayersBoardScreen
+import bassamalim.hidaya.features.quran.quranMenu.ui.QuranMenuScreen
 import bassamalim.hidaya.features.remembrances.remembranceCategories.ui.RemembranceCategoriesScreen
 
 @Composable
-fun MainUI(
+fun MainScreen(
     viewModel: MainViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -122,7 +122,7 @@ private fun TopBar(
 }
 
 @Composable
-fun NavigationGraph(
+private fun NavigationGraph(
     bottomNavController: NavHostController,
     padding: PaddingValues
 ) {
@@ -138,31 +138,31 @@ fun NavigationGraph(
             popEnterTransition = TabPopEnter,
             popExitTransition = TabPopExit
         ) {
-            HomeUI(
+            HomeScreen(
                 hiltViewModel()
             )
         }
 
         composable(
-            route = BottomNavItem.Prayers.route,
+            route = BottomNavItem.PrayersBoard.route,
             enterTransition = TabEnter,
             exitTransition = TabExit,
             popEnterTransition = TabPopEnter,
             popExitTransition = TabPopExit
         ) {
-            PrayersUI(
+            PrayersBoardScreen(
                 hiltViewModel()
             )
         }
 
         composable(
-            route = BottomNavItem.Quran.route,
+            route = BottomNavItem.QuranMenu.route,
             enterTransition = TabEnter,
             exitTransition = TabExit,
             popEnterTransition = TabPopEnter,
             popExitTransition = TabPopExit
         ) {
-            QuranUI(
+            QuranMenuScreen(
                 hiltViewModel()
             )
         }
@@ -186,7 +186,7 @@ fun NavigationGraph(
             popEnterTransition = TabPopEnter,
             popExitTransition = TabPopExit
         ) {
-            MoreUI(
+            MoreScreen(
                 hiltViewModel()
             )
         }

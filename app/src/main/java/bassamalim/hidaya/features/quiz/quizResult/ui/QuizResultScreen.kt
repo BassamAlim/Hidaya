@@ -30,7 +30,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun QuizResultUI(
+fun QuizResultScreen(
     viewModel: QuizResultViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

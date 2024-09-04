@@ -68,7 +68,7 @@ class QuranMenuViewModel @Inject constructor(
 
     fun onSuraClick(suraId: Int) {
         navigator.navigate(
-            Screen.QuranViewer(
+            Screen.QuranReader(
                 targetType = QuranTarget.SURA.name,
                 targetValue = suraId.toString()
             )
@@ -82,7 +82,7 @@ class QuranMenuViewModel @Inject constructor(
     fun onBookmarkedPageClick() {
         if (bookmarkedPage != -1) {
             navigator.navigate(
-                Screen.QuranViewer(
+                Screen.QuranReader(
                     targetType = QuranTarget.PAGE.name,
                     targetValue = bookmarkedPage.toString()
                 )
@@ -116,7 +116,7 @@ class QuranMenuViewModel @Inject constructor(
             val num = _uiState.value.searchText.toInt()
             if (num in 1..604) {
                 navigator.navigate(
-                    Screen.QuranViewer(
+                    Screen.QuranReader(
                         targetType = QuranTarget.PAGE.name,
                         targetValue = num.toString()
                     )

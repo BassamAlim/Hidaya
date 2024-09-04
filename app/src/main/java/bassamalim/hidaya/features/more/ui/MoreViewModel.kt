@@ -41,7 +41,7 @@ class MoreViewModel @Inject constructor(
     }
 
     fun onBooksClick() {
-        navigator.navigate(Screen.Books)
+        navigator.navigate(Screen.BooksMenu)
     }
 
     fun onTvClick() {

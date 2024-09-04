@@ -30,7 +30,7 @@ import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun BookSearcherUI(
+fun BookSearcherScreen(
     viewModel: BookSearcherViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

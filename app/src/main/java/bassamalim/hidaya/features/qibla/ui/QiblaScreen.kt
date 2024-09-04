@@ -45,7 +45,7 @@ import coil.request.ImageRequest
 import coil.size.Size
 
 @Composable
-fun QiblaUI(
+fun QiblaScreen(
     viewModel: QiblaViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

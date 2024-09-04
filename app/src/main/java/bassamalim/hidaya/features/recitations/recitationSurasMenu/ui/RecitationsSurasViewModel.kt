@@ -139,7 +139,7 @@ class RecitationsSurasViewModel @Inject constructor(
         val mediaId = formattedReciterId + formattedNarrationId + formattedSuraId
 
         navigator.navigate(
-            Screen.RecitationsPlayer(action = "start", mediaId = mediaId)
+            Screen.RecitationPlayer(action = "start", mediaId = mediaId)
         )
     }
 

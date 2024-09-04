@@ -132,7 +132,7 @@ class QuranSearcherViewModel @Inject constructor(
 
     fun onGotoPageClick(match: QuranSearcherMatch) {
         navigator.navigate(
-            Screen.QuranViewer(
+            Screen.QuranReader(
                 targetType = QuranTarget.VERSE.name,
                 targetValue = match.id.toString()
             )

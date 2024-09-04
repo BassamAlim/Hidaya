@@ -14,19 +14,19 @@ class RemembranceCategoriesViewModel @Inject constructor(
 
     fun onAllRemembrancesClick() {
         navigator.navigate(
-            Screen.RemembrancesList(ListType.ALL.name)
+            Screen.RemembrancesMenu(ListType.ALL.name)
         )
     }
 
     fun onFavoriteRemembrancesClick() {
         navigator.navigate(
-            Screen.RemembrancesList(ListType.FAVORITES.name)
+            Screen.RemembrancesMenu(ListType.FAVORITES.name)
         )
     }
 
     fun onCategoryClick(category: Int) {
         navigator.navigate(
-            Screen.RemembrancesList(
+            Screen.RemembrancesMenu(
                 type = ListType.CUSTOM.name,
                 category = category.toString()
             )

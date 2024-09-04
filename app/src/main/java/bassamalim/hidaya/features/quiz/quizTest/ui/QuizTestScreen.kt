@@ -31,7 +31,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.Grey
 
 @Composable
-fun QuizUI(
+fun QuizTestScreen(
     viewModel: QuizTestViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

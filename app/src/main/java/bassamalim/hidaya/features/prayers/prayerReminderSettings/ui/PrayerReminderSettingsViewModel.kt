@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.prayers.prayerReminder.ui
+package bassamalim.hidaya.features.prayers.prayerReminderSettings.ui
 
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.nav.Navigator
-import bassamalim.hidaya.features.prayers.prayerReminder.domain.PrayerReminderDomain
+import bassamalim.hidaya.features.prayers.prayerReminderSettings.domain.PrayerReminderSettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,9 +16,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PrayerReminderViewModel @Inject constructor(
+class PrayerReminderSettingsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    domain: PrayerReminderDomain,
+    domain: PrayerReminderSettingsDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
@@ -27,7 +27,7 @@ class PrayerReminderViewModel @Inject constructor(
     val offsetMin = domain.offsetMin
     lateinit var numeralsLanguage: Language
 
-    private val _uiState = MutableStateFlow(PrayerReminderUiState(
+    private val _uiState = MutableStateFlow(PrayerReminderSettingsUiState(
         pid = pid,
         prayerName = domain.getPrayerName(pid)
     ))

@@ -23,7 +23,7 @@ import bassamalim.hidaya.core.ui.components.MyTopBar
 import bassamalim.hidaya.core.ui.components.SearchComponent
 
 @Composable
-fun LocationPickerUI(
+fun LocationPickerScreen(
     viewModel: LocationPickerViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

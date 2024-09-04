@@ -29,7 +29,7 @@ import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun QuranSearcherUI(
+fun QuranSearcherScreen(
     viewModel: QuranSearcherViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

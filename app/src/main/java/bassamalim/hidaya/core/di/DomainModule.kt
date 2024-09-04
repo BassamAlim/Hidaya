@@ -27,7 +27,7 @@ import bassamalim.hidaya.features.locationPicker.domain.LocationPickerDomain
 import bassamalim.hidaya.features.locator.domain.LocatorDomain
 import bassamalim.hidaya.features.main.domain.MainDomain
 import bassamalim.hidaya.features.onboarding.domain.OnboardingDomain
-import bassamalim.hidaya.features.prayers.prayerReminder.domain.PrayerReminderDomain
+import bassamalim.hidaya.features.prayers.prayerReminderSettings.domain.PrayerReminderSettingsDomain
 import bassamalim.hidaya.features.prayers.prayerSettings.domain.PrayerSettingsDomain
 import bassamalim.hidaya.features.prayers.prayersBoard.domain.PrayersBoardDomain
 import bassamalim.hidaya.features.qibla.domain.QiblaDomain
@@ -156,7 +156,7 @@ object DomainModule {
     fun providePrayerReminderDomain(
         prayersRepository: PrayersRepository,
         appSettingsRepository: AppSettingsRepository
-    ) = PrayerReminderDomain(prayersRepository, appSettingsRepository)
+    ) = PrayerReminderSettingsDomain(prayersRepository, appSettingsRepository)
 
     @Provides @Singleton
     fun providePrayersBoardDomain(

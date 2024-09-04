@@ -222,7 +222,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     fun onContinueListeningClick() {
         if (continueListeningMediaId.isNotEmpty()) {
             navigator.navigate(
-                Screen.RecitationsPlayer(
+                Screen.RecitationPlayer(
                     action = "continue",
                     mediaId = continueListeningMediaId
                 )
