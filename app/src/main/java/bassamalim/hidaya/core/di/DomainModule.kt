@@ -13,6 +13,7 @@ import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
+import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.features.about.domain.AboutDomain
 import bassamalim.hidaya.features.books.bookChapters.domain.BookChaptersDomain
 import bassamalim.hidaya.features.books.bookReader.domain.BookReaderDomain
@@ -33,10 +34,10 @@ import bassamalim.hidaya.features.prayers.prayersBoard.domain.PrayersBoardDomain
 import bassamalim.hidaya.features.qibla.domain.QiblaDomain
 import bassamalim.hidaya.features.quiz.quizResult.domain.QuizResultDomain
 import bassamalim.hidaya.features.quiz.quizTest.domain.QuizTestDomain
-import bassamalim.hidaya.features.quran.quranSuras.domain.QuranSurasDomain
 import bassamalim.hidaya.features.quran.quranReader.domain.QuranReaderDomain
 import bassamalim.hidaya.features.quran.quranSearcher.domain.QuranSearcherDomain
 import bassamalim.hidaya.features.quran.quranSettings.domain.QuranSettingsDomain
+import bassamalim.hidaya.features.quran.quranSuras.domain.QuranSurasDomain
 import bassamalim.hidaya.features.radio.domain.RadioDomain
 import bassamalim.hidaya.features.recitations.recitationPlayer.domain.RecitationPlayerDomain
 import bassamalim.hidaya.features.recitations.recitationRecitersMenu.domain.RecitationRecitersMenuDomain
@@ -45,9 +46,14 @@ import bassamalim.hidaya.features.remembrances.remembranceReader.domain.Remembra
 import bassamalim.hidaya.features.remembrances.remembrancesMenu.domain.RemembrancesMenuDomain
 import bassamalim.hidaya.features.settings.domain.SettingsDomain
 import bassamalim.hidaya.features.tv.domain.TvDomain
+import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+@Module
+@InstallIn(SingletonComponent::class)
 object DomainModule {
 
     @Provides @Singleton
@@ -160,19 +166,19 @@ object DomainModule {
 
     @Provides @Singleton
     fun providePrayersBoardDomain(
-        app: Application,
         prayersRepository: PrayersRepository,
         locationRepository: LocationRepository,
         notificationsRepository: NotificationsRepository,
         appStateRepository: AppStateRepository,
-        appSettingsRepository: AppSettingsRepository
+        appSettingsRepository: AppSettingsRepository,
+        alarm: Alarm
     ) = PrayersBoardDomain(
-        app,
         prayersRepository,
         locationRepository,
         notificationsRepository,
         appStateRepository,
-        appSettingsRepository
+        appSettingsRepository,
+        alarm
     )
 
     @Provides @Singleton
@@ -282,17 +288,17 @@ object DomainModule {
 
     @Provides @Singleton
     fun provideSettingsDomain(
-        app: Application,
         appSettingsRepository: AppSettingsRepository,
         prayersRepository: PrayersRepository,
         notificationsRepository: NotificationsRepository,
-        locationRepository: LocationRepository
+        locationRepository: LocationRepository,
+        alarm: Alarm
     ) = SettingsDomain(
-        app,
         appSettingsRepository,
         prayersRepository,
         notificationsRepository,
-        locationRepository
+        locationRepository,
+        alarm
     )
 
     @Provides @Singleton

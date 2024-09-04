@@ -21,7 +21,7 @@ import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.enums.LocationType
-import bassamalim.hidaya.core.helpers.Alarms
+import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.other.PrayersWidget
 import bassamalim.hidaya.core.utils.ActivityUtils
@@ -45,6 +45,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     @Inject lateinit var remembrancesRepository: RemembrancesRepository
     @Inject lateinit var locationRepository: LocationRepository
     @Inject lateinit var surasDao: SurasDao
+    @Inject lateinit var alarm: Alarm
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context, intent: Intent) {
@@ -133,7 +134,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
                 calendar = now
             )
 
-            Alarms(context).setAll(prayerTimes)
+            alarm.setAll(prayerTimes)
 
             updateWidget(context)
 

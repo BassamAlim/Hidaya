@@ -28,7 +28,7 @@ import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
-import bassamalim.hidaya.core.helpers.Alarms
+import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.nav.Navigation
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
@@ -60,6 +60,7 @@ class Activity : ComponentActivity() {
     @Inject lateinit var locationRepository: LocationRepository
     @Inject lateinit var surasDao: SurasDao
     @Inject lateinit var navigator: Navigator
+    @Inject lateinit var alarm: Alarm
     private var shouldWelcome = false
     private var startRoute: String? = null
     private lateinit var language: Language
@@ -283,7 +284,7 @@ class Activity : ComponentActivity() {
                 location = location,
                 calendar = Calendar.getInstance()
             )
-            Alarms(this).setAll(prayerTimes)
+            alarm.setAll(prayerTimes)
         }
         else if (!appStateRepository.isOnboardingCompleted().first()) {
             Toast.makeText(

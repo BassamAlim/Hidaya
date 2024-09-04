@@ -1,6 +1,7 @@
 package bassamalim.hidaya.core.helpers
 
 import android.app.AlarmManager
+import android.app.Application
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -13,20 +14,16 @@ import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.NotificationReceiver
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
-import dagger.hilt.EntryPoint
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import java.util.SortedMap
-import javax.inject.Inject
 
-@EntryPoint
-class Alarms(
-    private val context: Context
+class Alarm(
+    private val app: Application,
+    private val prayersRepository: PrayersRepository,
+    private val notificationsRepository: NotificationsRepository,
+    private val locationRepository: LocationRepository
 ) {
-
-    @Inject private lateinit var prayersRepository: PrayersRepository
-    @Inject private lateinit var notificationsRepository: NotificationsRepository
-    @Inject private lateinit var locationRepository: LocationRepository
 
     suspend fun setPidAlarm(pid: PID) {
         val location = locationRepository.getLocation().first() ?: return
@@ -76,18 +73,18 @@ class Alarms(
 
         val millis = time.timeInMillis
         if (System.currentTimeMillis() <= millis) {
-            val intent = Intent(context, NotificationReceiver::class.java).also {
+            val intent = Intent(app, NotificationReceiver::class.java).also {
                 it.action = if (pid == PID.SUNRISE) "devotion" else "prayer"
                 it.putExtra("id", pid.name)
                 it.putExtra("time", millis)
             }
 
             val pendingIntent = PendingIntent.getBroadcast(
-                context, pid.ordinal, intent,
+                app, pid.ordinal, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
 
             Log.i(Global.TAG, "alarm $pid set")
@@ -109,18 +106,18 @@ class Alarms(
 
         val millis = time.timeInMillis + offset * 60 * 1000
         if (System.currentTimeMillis() <= millis) {
-            val intent = Intent(context, NotificationReceiver::class.java).apply {
+            val intent = Intent(app, NotificationReceiver::class.java).apply {
                 action = "reminder"
                 putExtra("id", pid.name)
                 putExtra("time", millis)
             }
 
             val pendingIntent = PendingIntent.getBroadcast(
-                context, pid.ordinal, intent,
+                app, pid.ordinal, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
 
             Log.i(Global.TAG, "reminder $pid set")
@@ -164,15 +161,15 @@ class Alarms(
         time[Calendar.SECOND] = 0
         time[Calendar.MILLISECOND] = 0
 
-        val intent = Intent(context, NotificationReceiver::class.java)
+        val intent = Intent(app, NotificationReceiver::class.java)
         intent.action = "devotion"
         intent.putExtra("id", pid.name)
         intent.putExtra("time", time.timeInMillis)
 
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val pendingIntent = PendingIntent.getBroadcast(
-            context, pid.ordinal, intent,
+            app, pid.ordinal, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -183,6 +180,18 @@ class Alarms(
         )
 
         Log.i(Global.TAG, "alarm $pid set")
+    }
+
+    fun cancelAlarm(pid: PID) {
+        val pendingIntent = PendingIntent.getBroadcast(
+            app, pid.ordinal, Intent(),
+            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel(pendingIntent)
+
+        Log.i(Global.TAG, "Canceled $pid Alarm")
     }
 
 }

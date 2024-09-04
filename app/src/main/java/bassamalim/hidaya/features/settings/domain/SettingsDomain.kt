@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.settings.domain
 
-import android.app.Application
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
@@ -12,7 +11,7 @@ import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
-import bassamalim.hidaya.core.helpers.Alarms
+import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.models.TimeOfDay
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.flow.first
@@ -20,11 +19,11 @@ import java.util.Calendar
 import javax.inject.Inject
 
 class SettingsDomain @Inject constructor(
-    private val app: Application,
     private val appSettingsRepository: AppSettingsRepository,
     private val prayersRepository: PrayersRepository,
     private val notificationsRepository: NotificationsRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val alarm: Alarm
 ) {
 
     suspend fun resetPrayerTimes() {
@@ -38,15 +37,15 @@ class SettingsDomain @Inject constructor(
             calendar = Calendar.getInstance()
         )
 
-        Alarms(app).setAll(prayerTimes)
+        alarm.setAll(prayerTimes)
     }
 
     suspend fun setAlarm(pid: PID) {
-        Alarms(app).setPidAlarm(pid)
+        alarm.setPidAlarm(pid)
     }
 
     fun cancelAlarm(pid: PID) {
-        PrayerTimeUtils.cancelAlarm(app, pid)
+        alarm.cancelAlarm(pid)
     }
 
     fun getLanguage() = appSettingsRepository.getLanguage()

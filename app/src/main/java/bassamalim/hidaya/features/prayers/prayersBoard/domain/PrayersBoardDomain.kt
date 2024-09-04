@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.prayers.prayersBoard.domain
 
-import android.app.Application
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
@@ -9,7 +8,7 @@ import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
-import bassamalim.hidaya.core.helpers.Alarms
+import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import bassamalim.hidaya.features.prayers.prayerSettings.ui.PrayerSettings
@@ -20,12 +19,12 @@ import java.util.Calendar
 import javax.inject.Inject
 
 class PrayersBoardDomain @Inject constructor(
-    private val app: Application,
     private val prayersRepository: PrayersRepository,
     private val locationRepository: LocationRepository,
     private val notificationsRepository: NotificationsRepository,
     private val appStateRepository: AppStateRepository,
-    private val appSettingsRepository: AppSettingsRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    private val alarm: Alarm
 ) {
 
     val location = locationRepository.getLocation()
@@ -121,7 +120,7 @@ class PrayersBoardDomain @Inject constructor(
     }
 
     suspend fun updatePrayerTimeAlarms(pid: PID) {
-        Alarms(app).setPidAlarm(pid)
+        alarm.setPidAlarm(pid)
     }
 
 }

@@ -1,6 +1,10 @@
 package bassamalim.hidaya.core.di
 
 import android.app.Application
+import bassamalim.hidaya.core.data.repositories.LocationRepository
+import bassamalim.hidaya.core.data.repositories.NotificationsRepository
+import bassamalim.hidaya.core.data.repositories.PrayersRepository
+import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.nav.Navigator
 import com.google.gson.Gson
 import dagger.Module
@@ -22,5 +26,13 @@ object AppModule {
 
     @Provides @Singleton
     fun provideNavigator() = Navigator()
+
+    @Provides @Singleton
+    fun provideAlarm(
+        app: Application,
+        prayersRepository: PrayersRepository,
+        notificationsRepository: NotificationsRepository,
+        locationRepository: LocationRepository
+    ) = Alarm(app, prayersRepository, notificationsRepository, locationRepository)
 
 }

@@ -1,10 +1,5 @@
 package bassamalim.hidaya.core.utils
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.util.Log
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.PID
@@ -13,7 +8,6 @@ import bassamalim.hidaya.core.helpers.PrayerTimeCalculator
 import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
-import bassamalim.hidaya.core.other.Global
 import java.util.Calendar
 import java.util.Date
 import java.util.SortedMap
@@ -61,18 +55,6 @@ object PrayerTimeUtils {
             LocationType.MANUAL -> TimeZone.getTimeZone(timeZone).getOffset(Date().time) / 3600000
             LocationType.NONE -> 0
         }
-
-    fun cancelAlarm(context: Context, pid: PID) {
-        val pendingIntent = PendingIntent.getBroadcast(
-            context, pid.ordinal, Intent(),
-            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.cancel(pendingIntent)
-
-        Log.i(Global.TAG, "Canceled $pid Alarm")
-    }
 
     fun formatPrayerTime(
         time: Calendar?,
