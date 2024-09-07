@@ -31,9 +31,9 @@ class QuranRepository @Inject constructor(
 
     suspend fun setSuraFavoriteStatus(suraId: Int, isFavorite: Boolean) {
         surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
-        setBackupSuraFavorites(
+        setSuraFavoritesBackup(
             surasDao.observeIsFavorites().first().mapIndexed { index, value ->
-                index + 1 to value
+                index + 1 to (value == 1)
             }.toMap()
         )
     }
@@ -44,11 +44,11 @@ class QuranRepository @Inject constructor(
         }
     }
     
-    fun getBackupSuraFavorites() = quranPreferencesDataSource.flow.map {
+    fun getSuraFavoritesBackup() = quranPreferencesDataSource.flow.map {
         it.suraFavorites.toMap()
     }
 
-    private suspend fun setBackupSuraFavorites(suraFavorites: Map<Int, Int>) {
+    private suspend fun setSuraFavoritesBackup(suraFavorites: Map<Int, Boolean>) {
         quranPreferencesDataSource.update { it.copy(
             suraFavorites = suraFavorites.toPersistentMap()
         )}

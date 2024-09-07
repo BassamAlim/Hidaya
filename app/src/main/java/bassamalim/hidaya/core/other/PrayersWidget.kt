@@ -15,6 +15,7 @@ import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.utils.ActivityUtils
+import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -42,9 +43,12 @@ class PrayersWidget : AppWidgetProvider() {
         context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
+
+        testDb(context)
         GlobalScope.launch {
             bootstrapApp(context)
         }
+
         // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) updateAppWidget(context, appWidgetManager, appWidgetId)
     }
@@ -63,17 +67,36 @@ class PrayersWidget : AppWidgetProvider() {
             applicationContext = context.applicationContext,
             language = appSettingsRepository.getLanguage().first(),
             theme = appSettingsRepository.getTheme().first(),
-            isFirstLaunch = true,
-            lastDbVersion = appStateRepository.getLastDbVersion().first(),
-            setLastDbVersion = appStateRepository::setLastDbVersion,
-            suraFavorites = quranRepository.getSuraFavorites().first(),
-            setSuraFavorites = quranRepository::setSuraFavorites,
-            reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
-            setReciterFavorites = recitationsRepository::setReciterFavorites,
-            remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
-            setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
-            testDb = { surasDao.getPlainNamesAr() }
         )
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun testDb(context: Context) {
+        GlobalScope.launch {
+            val shouldReviveDb = DbUtils.shouldReviveDb(
+                lastDbVersion = appStateRepository.getLastDbVersion().first(),
+                test = surasDao::getPlainNamesAr
+            )
+            if (shouldReviveDb) {
+                reviveDb(context)
+                appStateRepository.setLastDbVersion(Global.DB_VERSION)
+            }
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun reviveDb(context: Context) {
+        DbUtils.deleteDB(context)
+        GlobalScope.launch {
+            DbUtils.restoreDbData(
+                suraFavorites = quranRepository.getSuraFavorites().first(),
+                setSuraFavorites = quranRepository::setSuraFavorites,
+                reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
+                setReciterFavorites = recitationsRepository::setReciterFavorites,
+                remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
+                setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
+            )
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)

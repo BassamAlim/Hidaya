@@ -39,6 +39,7 @@ import bassamalim.hidaya.core.receivers.DeviceBootReceiver
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.ActivityUtils
+import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -68,47 +69,72 @@ class Activity : ComponentActivity() {
     private lateinit var theme: Theme
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        println("In onCreate of Activity")
         super.onCreate(savedInstanceState)
 
+        val isFirstLaunch = savedInstanceState == null
+
+        println("1")
+        if (isFirstLaunch) testDb()
+        println("2")
         lifecycleScope.launch {
             shouldWelcome = !appStateRepository.isOnboardingCompleted().first()
             startRoute = intent.getStringExtra("start_route")
             language = appSettingsRepository.getLanguage().first()
             theme = appSettingsRepository.getTheme().first()
+            println("3")
 
-            val isFirstLaunch = savedInstanceState == null
+            bootstrapApp()
 
-            bootstrapApp(isFirstLaunch)
-
-            if (isFirstLaunch) {
-                handleAction(intent.action)
-
-                if (shouldWelcome) {
-                    launchApp()
-                    postLaunch()
-                }
-                else getLocationAndLaunch()
-            }
-            else launchApp()
+//            if (isFirstLaunch) {
+//                handleAction(intent.action)
+//
+//                if (shouldWelcome) {
+//                    launchApp()
+//                    postLaunch()
+//                }
+//                else getLocationAndLaunch()
+//            }
+//            else launchApp()
         }
     }
 
-    private suspend fun bootstrapApp(isFirstLaunch: Boolean) {
+    private fun testDb() {
+        lifecycleScope.launch {
+            val shouldReviveDb = DbUtils.shouldReviveDb(
+                lastDbVersion = appStateRepository.getLastDbVersion().first(),
+                test = surasDao::getPlainNamesAr
+            )
+            if (shouldReviveDb) {
+                println("shouldReviveDb")
+                reviveDb()
+                appStateRepository.setLastDbVersion(Global.DB_VERSION)
+            }
+        }
+    }
+
+    private fun reviveDb() {
+        println("In reviveDb of Activity")
+        DbUtils.deleteDB(this)
+        lifecycleScope.launch {
+            DbUtils.restoreDbData(
+                suraFavorites = quranRepository.getSuraFavoritesBackup().first(),
+                setSuraFavorites = quranRepository::setSuraFavorites,
+                reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
+                setReciterFavorites = recitationsRepository::setReciterFavorites,
+                remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
+                setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
+            )
+        }
+    }
+
+    private fun bootstrapApp() {
+        println("In bootstrapApp of Activity")
         ActivityUtils.bootstrapApp(
             context = this,
             applicationContext = applicationContext,
-            language = appSettingsRepository.getLanguage().first(),
-            theme = appSettingsRepository.getTheme().first(),
-            isFirstLaunch = isFirstLaunch,
-            lastDbVersion = appStateRepository.getLastDbVersion().first(),
-            setLastDbVersion = appStateRepository::setLastDbVersion,
-            suraFavorites = quranRepository.getSuraFavorites().first(),
-            setSuraFavorites = quranRepository::setSuraFavorites,
-            reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
-            setReciterFavorites = recitationsRepository::setReciterFavorites,
-            remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
-            setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
-            testDb = { surasDao.getPlainNamesAr() }
+            language = language,
+            theme = theme
         )
     }
 

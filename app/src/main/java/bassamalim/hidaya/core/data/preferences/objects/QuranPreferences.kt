@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class QuranPreferences(
-    val suraFavorites: PersistentMap<Int, Int> = persistentMapOf(),
+    val suraFavorites: PersistentMap<Int, Boolean> = persistentMapOf(),
     val viewType: QuranViewType = QuranViewType.PAGE,
     val textSize: Float = 30f,
     val pageBookmark: QuranPageBookmark? = null,

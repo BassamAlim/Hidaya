@@ -10,7 +10,7 @@ object Global {
     const val QURAN_PAGES = 604
     const val NUM_OF_QURAN_SURAS = 114
     const val NUM_OF_QURAN_VERSES = 6236
-    const val DB_VERSION = 11
+    const val DB_VERSION = 14
     const val DAILY_UPDATE_HOUR = 0
     const val DAILY_UPDATE_MINUTE = 10
 }

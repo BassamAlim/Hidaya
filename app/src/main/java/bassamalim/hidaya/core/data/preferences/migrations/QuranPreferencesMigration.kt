@@ -20,7 +20,7 @@ object QuranPreferencesMigration {
             sharedPreferencesName = PreferencesFileNames.QURAN_PREFERENCES_NAME
         ) { sharedPrefs: SharedPreferencesView, currentData: QuranPreferences ->
             currentData.copy(
-                suraFavorites = persistentMapOf<Int, Int>().mutate {
+                suraFavorites = persistentMapOf<Int, Boolean>().mutate {
                     Gson().fromJson(
                         sharedPrefs.getString(
                             key = Preference.FavoriteSuras.key,

@@ -11,40 +11,17 @@ import java.util.Locale
 
 object ActivityUtils {
 
-    suspend fun bootstrapApp(
+    fun bootstrapApp(
         context: Context,
         applicationContext: Context = context.applicationContext,
         language: Language,
-        theme: Theme,
-        isFirstLaunch: Boolean = false,
-        lastDbVersion: Int,
-        setLastDbVersion: suspend (Int) -> Unit,
-        suraFavorites: Map<Int, Boolean>,
-        setSuraFavorites: suspend (Map<Int, Boolean>) -> Unit,
-        reciterFavorites: Map<Int, Boolean>,
-        setReciterFavorites: suspend (Map<Int, Boolean>) -> Unit,
-        remembranceFavorites: Map<Int, Boolean>,
-        setRemembranceFavorites: suspend (Map<Int, Boolean>) -> Unit,
-        testDb: () -> Unit
+        theme: Theme
     ) {
+        println("In bootstrapApp")
         onActivityCreateSetLocale(context = context, language = language)
         onActivityCreateSetTheme(context = context, theme = theme)
         onActivityCreateSetLocale(context = applicationContext, language = language)
         onActivityCreateSetTheme(context = applicationContext, theme = theme)
-
-        if (isFirstLaunch) {
-            if (DbUtils.shouldReviveDb(lastDbVersion = lastDbVersion, test = testDb))
-                DbUtils.reviveDB(
-                    context = context,
-                    suraFavorites = suraFavorites,
-                    setSuraFavorites = setSuraFavorites,
-                    reciterFavorites = reciterFavorites,
-                    setReciterFavorites = setReciterFavorites,
-                    remembranceFavorites = remembranceFavorites,
-                    setRemembranceFavorites = setRemembranceFavorites,
-                    setLastDbVersion = setLastDbVersion
-                )
-        }
     }
 
     private fun onActivityCreateSetTheme(context: Context, theme: Theme) {

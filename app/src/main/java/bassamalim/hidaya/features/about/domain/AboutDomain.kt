@@ -31,19 +31,22 @@ class AboutDomain @Inject constructor(
 
         Log.i(Global.TAG, "Database Rebuilt")
 
-        DbUtils.reviveDB(
-            context = app,
+        reviveDb()
+    }
+
+    private suspend fun reviveDb() {
+        DbUtils.deleteDB(app)
+        DbUtils.restoreDbData(
             suraFavorites = quranRepository.getSuraFavorites().first(),
             setSuraFavorites = quranRepository::setSuraFavorites,
-            reciterFavorites = recitationsRepository.getReciterFavorites(),
+            reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
             setReciterFavorites = recitationsRepository::setReciterFavorites,
             remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
             setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
-            setLastDbVersion = appStateRepository::setLastDbVersion
         )
     }
 
-    fun handleTitleClicks(setDevModeEnabled: () -> Unit){
+    fun handleTitleClicks(setDevModeEnabled: () -> Unit) {
         if (++counter >= 5) setDevModeEnabled()
     }
 

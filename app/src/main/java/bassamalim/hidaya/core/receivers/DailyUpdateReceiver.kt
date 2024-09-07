@@ -25,6 +25,7 @@ import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.other.PrayersWidget
 import bassamalim.hidaya.core.utils.ActivityUtils
+import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -51,6 +52,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.i(Global.TAG, "in DailyUpdateReceiver")
 
+        testDb(context)
         GlobalScope.launch {
             bootstrapApp(context)
 
@@ -79,17 +81,36 @@ class DailyUpdateReceiver : BroadcastReceiver() {
             applicationContext = context.applicationContext,
             language = appSettingsRepository.getLanguage().first(),
             theme = appSettingsRepository.getTheme().first(),
-            isFirstLaunch = true,
-            lastDbVersion = appStateRepository.getLastDbVersion().first(),
-            setLastDbVersion = appStateRepository::setLastDbVersion,
-            suraFavorites = quranRepository.getSuraFavorites().first(),
-            setSuraFavorites = quranRepository::setSuraFavorites,
-            reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
-            setReciterFavorites = recitationsRepository::setReciterFavorites,
-            remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
-            setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
-            testDb = { surasDao.getPlainNamesAr() }
         )
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun testDb(context: Context) {
+        GlobalScope.launch {
+            val shouldReviveDb = DbUtils.shouldReviveDb(
+                lastDbVersion = appStateRepository.getLastDbVersion().first(),
+                test = surasDao::getPlainNamesAr
+            )
+            if (shouldReviveDb) {
+                reviveDb(context)
+                appStateRepository.setLastDbVersion(Global.DB_VERSION)
+            }
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun reviveDb(context: Context) {
+        DbUtils.deleteDB(context)
+        GlobalScope.launch {
+            DbUtils.restoreDbData(
+                suraFavorites = quranRepository.getSuraFavorites().first(),
+                setSuraFavorites = quranRepository::setSuraFavorites,
+                reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
+                setReciterFavorites = recitationsRepository::setReciterFavorites,
+                remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
+                setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
+            )
+        }
     }
 
     private suspend fun notUpdatedToday(now: Calendar): Boolean {

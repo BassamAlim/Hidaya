@@ -14,6 +14,7 @@ class AppSettingsRepository @Inject constructor(
     fun getLanguage() = appSettingsPreferencesDataSource.flow.map {
         it.language
     }
+
     suspend fun setLanguage(language: Language) {
         appSettingsPreferencesDataSource.update { it.copy(
             language = language
@@ -23,6 +24,7 @@ class AppSettingsRepository @Inject constructor(
     fun getNumeralsLanguage() = appSettingsPreferencesDataSource.flow.map {
         it.numeralsLanguage
     }
+
     suspend fun setNumeralsLanguage(numeralsLanguage: Language) {
         appSettingsPreferencesDataSource.update { it.copy(
             numeralsLanguage = numeralsLanguage
@@ -32,6 +34,7 @@ class AppSettingsRepository @Inject constructor(
     fun getTheme() = appSettingsPreferencesDataSource.flow.map {
         it.theme
     }
+
     suspend fun setTheme(theme: Theme) {
         appSettingsPreferencesDataSource.update { it.copy(
             theme = theme
@@ -41,6 +44,7 @@ class AppSettingsRepository @Inject constructor(
     fun getTimeFormat() = appSettingsPreferencesDataSource.flow.map {
         it.timeFormat
     }
+
     suspend fun setTimeFormat(timeFormat: TimeFormat) {
         appSettingsPreferencesDataSource.update { it.copy(
             timeFormat = timeFormat
@@ -50,6 +54,7 @@ class AppSettingsRepository @Inject constructor(
     fun getDateOffset() = appSettingsPreferencesDataSource.flow.map {
         it.dateOffset
     }
+
     suspend fun setDateOffset(dateOffset: Int) {
         appSettingsPreferencesDataSource.update { it.copy(
             dateOffset = dateOffset

@@ -19,18 +19,19 @@ object DbUtils {
         }
     }
 
-    suspend fun reviveDB(
-        context: Context,
+    fun deleteDB(context: Context) {
+        context.deleteDatabase(DB_NAME)
+        Log.i(Global.TAG, "Database Deleted")
+    }
+
+    suspend fun restoreDbData(
         suraFavorites: Map<Int, Boolean>,
         setSuraFavorites: suspend (Map<Int, Boolean>) -> Unit,
         reciterFavorites: Map<Int, Boolean>,
         setReciterFavorites: suspend (Map<Int, Boolean>) -> Unit,
         remembranceFavorites: Map<Int, Boolean>,
         setRemembranceFavorites: suspend (Map<Int, Boolean>) -> Unit,
-        setLastDbVersion: suspend (Int) -> Unit,
     ) {
-        context.deleteDatabase(DB_NAME)
-
         if (suraFavorites.isNotEmpty())
             setSuraFavorites(suraFavorites)
 
@@ -39,10 +40,6 @@ object DbUtils {
 
         if (remembranceFavorites.isNotEmpty())
             setRemembranceFavorites(remembranceFavorites)
-
-        setLastDbVersion(Global.DB_VERSION)
-
-        Log.i(Global.TAG, "Database Revived")
     }
 
 }
