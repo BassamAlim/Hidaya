@@ -41,8 +41,8 @@ class NotificationReceiver : BroadcastReceiver() {
     private lateinit var ctx: Context
     private lateinit var action: String
     private lateinit var pid: PID
-    @Inject private lateinit var notificationsRepository: NotificationsRepository
-    @Inject private lateinit var quranRepository: QuranRepository
+    @Inject lateinit var notificationsRepository: NotificationsRepository
+    @Inject lateinit var quranRepository: QuranRepository
     private var notificationId = 0
     private var channelId = ""
     private var time = 0L

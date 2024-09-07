@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
@@ -33,7 +34,10 @@ fun TvScreen(
         MyParentColumn(
             Modifier.padding(it)
         ) {
-            YoutubeScreen(viewModel::onInitializationSuccess)
+            YoutubeScreen(
+                language = viewModel.language,
+                onInitializationSuccess = viewModel::onInitializationSuccess
+            )
 
             MyColumn(
                 modifier = Modifier.padding(top = 100.dp)
@@ -69,12 +73,13 @@ fun TvScreen(
 
 @Composable
 fun YoutubeScreen(
+    language: Language,
     onInitializationSuccess: (YouTubePlayer) -> Unit,
 ) {
     val context = LocalContext.current
 
     // a fix because locale changes when displaying YouTubePlayerView for some reason
-    ActivityUtils.onActivityCreateSetLocale(context)
+    ActivityUtils.onActivityCreateSetLocale(context = context, language = language)
 
     AndroidView(factory = {
         val view = YouTubePlayerView(it)

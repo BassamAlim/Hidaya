@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
@@ -39,6 +40,7 @@ class HomeViewModel @Inject constructor(
     private var upcomingPrayer: PID? = null
     private var tomorrow = false
     private var counterCounter = 0
+    private var location: Location? = null
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = combine(
@@ -60,6 +62,7 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             numeralsLanguage = domain.getNumeralsLanguage()
+            location = domain.getLocation().first()
 
             val isSuccess = domain.syncRecords()
             if (isSuccess) {
@@ -72,7 +75,8 @@ class HomeViewModel @Inject constructor(
 
     fun onStart() {
         viewModelScope.launch {
-            if (domain.location.first() != null)
+            location = domain.getLocation().first()
+            if (location != null)
                 setupPrayersCard()
         }
     }
@@ -96,10 +100,10 @@ class HomeViewModel @Inject constructor(
 
     private fun setupPrayersCard() {
         viewModelScope.launch {
-            times = domain.getPrayerTimeMap()
-            formattedTimes = domain.getStrPrayerTimeMap()
-            tomorrowFajr = domain.getTomorrowFajr()
-            formattedTomorrowFajr = domain.getStrTomorrowFajr()
+            times = domain.getPrayerTimeMap(location!!)
+            formattedTimes = domain.getStrPrayerTimeMap(location!!)
+            tomorrowFajr = domain.getTomorrowFajr(location!!)
+            formattedTomorrowFajr = domain.getStrTomorrowFajr(location!!)
 
             setupUpcomingPrayer()
         }

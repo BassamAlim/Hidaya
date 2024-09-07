@@ -28,6 +28,7 @@ import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
+import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.nav.Navigation
 import bassamalim.hidaya.core.nav.Navigator
@@ -64,6 +65,7 @@ class Activity : ComponentActivity() {
     private var shouldWelcome = false
     private var startRoute: String? = null
     private lateinit var language: Language
+    private lateinit var theme: Theme
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +74,7 @@ class Activity : ComponentActivity() {
             shouldWelcome = !appStateRepository.isOnboardingCompleted().first()
             startRoute = intent.getStringExtra("start_route")
             language = appSettingsRepository.getLanguage().first()
+            theme = appSettingsRepository.getTheme().first()
 
             val isFirstLaunch = savedInstanceState == null
 
@@ -191,7 +194,10 @@ class Activity : ComponentActivity() {
                 language = language
             )
 
-            AppTheme(direction = getDirection(language)) {
+            AppTheme(
+                theme = theme,
+                direction = getDirection(language)
+            ) {
                 Navigation(
                     navigator = navigator,
                     thenTo = startRoute,

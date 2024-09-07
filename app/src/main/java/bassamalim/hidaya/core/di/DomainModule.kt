@@ -303,7 +303,8 @@ object DomainModule {
 
     @Provides @Singleton
     fun provideTvDomain(
-        liveContentRepository: LiveContentRepository
-    ) = TvDomain(liveContentRepository)
+        liveContentRepository: LiveContentRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = TvDomain(liveContentRepository, appSettingsRepository)
 
 }

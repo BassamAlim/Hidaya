@@ -1,11 +1,14 @@
 package bassamalim.hidaya.features.tv.domain
 
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LiveContentRepository
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class TvDomain @Inject constructor(
-    liveContentRepository: LiveContentRepository
+    liveContentRepository: LiveContentRepository,
+    private val appSettingsRepository: AppSettingsRepository
 ) {
 
     private val quranVidId = liveContentRepository.getMakkahVideoId()
@@ -26,5 +29,7 @@ class TvDomain @Inject constructor(
         ytPlayer?.loadVideo(sunnahVidId, 0f)
         ytPlayer?.play()
     }
+
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
 }

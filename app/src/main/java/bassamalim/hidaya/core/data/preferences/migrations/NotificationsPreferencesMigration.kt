@@ -8,8 +8,10 @@ import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.preferences.objects.NotificationsPreferences
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.models.TimeOfDay
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toPersistentMap
 
 object NotificationsPreferencesMigration {
 
@@ -29,37 +31,21 @@ object NotificationsPreferencesMigration {
                         )
                     }
                 },
-                devotionReminderMinuteOfDayMap = persistentMapOf(
-                    PID.MORNING to sharedPrefs.getInt(
-                        key = Preference.ExtraNotificationHour(PID.MORNING).key,
-                        defValue = Preference.ExtraNotificationHour(PID.MORNING).default as Int
-                    ) * 60 + sharedPrefs.getInt(
-                        key = Preference.ExtraNotificationMinute(PID.MORNING).key,
-                        defValue = Preference.ExtraNotificationMinute(PID.MORNING).default as Int
-                    ),
-                    PID.EVENING to sharedPrefs.getInt(
-                        key = Preference.ExtraNotificationHour(PID.EVENING).key,
-                        defValue = Preference.ExtraNotificationHour(PID.EVENING).default as Int
-                    ) * 60 + sharedPrefs.getInt(
-                        key = Preference.ExtraNotificationMinute(PID.EVENING).key,
-                        defValue = Preference.ExtraNotificationMinute(PID.EVENING).default as Int
-                    ),
-                    PID.DAILY_WERD to sharedPrefs.getInt(
-                        key = Preference.ExtraNotificationHour(PID.DAILY_WERD).key,
-                        defValue = Preference.ExtraNotificationHour(PID.DAILY_WERD).default as Int
-                    ) * 60 + sharedPrefs.getInt(
-                        key = Preference.ExtraNotificationMinute(PID.DAILY_WERD).key,
-                        defValue = Preference.ExtraNotificationMinute(PID.DAILY_WERD).default as Int
-                    ),
-                    PID.FRIDAY_KAHF to sharedPrefs.getInt(
-                        key = Preference.ExtraNotificationHour(PID.FRIDAY_KAHF).key,
-                        defValue = Preference.ExtraNotificationHour(PID.FRIDAY_KAHF).default as Int
-                    ) * 60 + sharedPrefs.getInt(
-                        key = Preference.ExtraNotificationMinute(PID.FRIDAY_KAHF).key,
-                        defValue = Preference.ExtraNotificationMinute(PID.FRIDAY_KAHF).default as Int
+                devotionalReminderTimes = listOf(
+                    PID.MORNING, PID.EVENING, PID.DAILY_WERD, PID.FRIDAY_KAHF
+                ).associateWith { pid ->
+                    TimeOfDay(
+                        hour = sharedPrefs.getInt(
+                            key = Preference.ExtraNotificationHour(pid).key,
+                            defValue = Preference.ExtraNotificationHour(pid).default as Int
+                        ),
+                        minute = sharedPrefs.getInt(
+                            key = Preference.ExtraNotificationMinute(pid).key,
+                            defValue = Preference.ExtraNotificationMinute(pid).default as Int
+                        )
                     )
-                ),
-                isExtraNotificationEnabled = persistentMapOf(
+                }.toPersistentMap(),
+                devotionalReminderEnabled = persistentMapOf(
                     PID.MORNING to sharedPrefs.getBoolean(
                         key = Preference.NotifyExtraNotification(PID.MORNING).key,
                         defValue = Preference.NotifyExtraNotification(PID.MORNING).default as Boolean

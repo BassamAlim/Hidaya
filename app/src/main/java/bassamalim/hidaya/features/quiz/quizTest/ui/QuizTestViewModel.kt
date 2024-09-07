@@ -20,6 +20,8 @@ class QuizTestViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
+    private val questions = domain.getQuestions()
+    private val chosenAs = IntArray(10) { -1 }
     private lateinit var numeralsLanguage: Language
 
     private val _uiState = MutableStateFlow(QuizTestUiState())
@@ -46,10 +48,10 @@ class QuizTestViewModel @Inject constructor(
     }
 
     fun onAnswerSelected(answerIndex: Int) {
-        domain.chosenAs[_uiState.value.questionIdx] = answerIndex
+        chosenAs[_uiState.value.questionIdx] = answerIndex
 
         _uiState.update { it.copy(
-            allAnswered = !domain.chosenAs.contains(-1)
+            allAnswered = !chosenAs.contains(-1)
         )}
 
         if (_uiState.value.questionIdx == 9) {
@@ -70,13 +72,13 @@ class QuizTestViewModel @Inject constructor(
     }
 
     private fun endQuiz() {
-        val score = domain.calculateScore()
+        val score = domain.calculateScore(questions, chosenAs)
 
         navigator.navigate(
             Screen.QuizResult(
                 score = score.toString(),
-                questions = domain.questions.map { q -> q.id }.toIntArray().contentToString(),
-                chosenAnswers = domain.chosenAs.toTypedArray().toIntArray().contentToString()
+                questions = questions.map { q -> q.id }.toIntArray().contentToString(),
+                chosenAnswers = chosenAs.toTypedArray().toIntArray().contentToString()
             )
         ) {
             popUpTo(Screen.QuizTest.route) {
@@ -86,7 +88,7 @@ class QuizTestViewModel @Inject constructor(
     }
 
     private fun updateState() {
-        val question = domain.questions[_uiState.value.questionIdx]
+        val question = questions[_uiState.value.questionIdx]
         val answers = domain.getAnswers(question.id)
 
         _uiState.update { it.copy(
@@ -96,7 +98,7 @@ class QuizTestViewModel @Inject constructor(
             ),
             question = question.text!!,
             answers = answers.map { a -> a.text },
-            selection = domain.chosenAs[it.questionIdx],
+            selection = chosenAs[it.questionIdx],
             prevBtnEnabled = it.questionIdx != 0,
             nextBtnEnabled = !(it.questionIdx == 9 && !it.allAnswered),
         )}

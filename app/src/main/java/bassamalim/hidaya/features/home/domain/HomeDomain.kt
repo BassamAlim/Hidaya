@@ -10,6 +10,7 @@ import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.utils.OS.getDeviceId
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
@@ -29,24 +30,23 @@ class HomeDomain @Inject constructor(
 ) {
 
     private val deviceId = getDeviceId(app)
-    val location = getLocation()
 
-    suspend fun getPrayerTimeMap(): SortedMap<PID, Calendar?> {
+    suspend fun getPrayerTimeMap(location: Location): SortedMap<PID, Calendar?> {
         return PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
-            timeZoneId = locationRepository.getTimeZone(location.first()!!.ids.cityId),
-            location = location.first()!!,
+            timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            location = location,
             calendar = Calendar.getInstance()
         )
     }
 
-    suspend fun getStrPrayerTimeMap(): SortedMap<PID, String> {
+    suspend fun getStrPrayerTimeMap(location: Location): SortedMap<PID, String> {
         val prayerTimeMap = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
-            timeZoneId = locationRepository.getTimeZone(location.first()!!.ids.cityId),
-            location = location.first()!!,
+            timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            location = location,
             calendar = Calendar.getInstance()
         )
 
@@ -58,22 +58,22 @@ class HomeDomain @Inject constructor(
         )
     }
 
-    suspend fun getTomorrowFajr(): Calendar {
+    suspend fun getTomorrowFajr(location: Location): Calendar {
         return PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
-            timeZoneId = locationRepository.getTimeZone(location.first()!!.ids.cityId),
-            location = location.first()!!,
+            timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            location = location,
             calendar = Calendar.getInstance().apply { this[Calendar.DATE]++ }
         )[PID.FAJR]!!
     }
 
-    suspend fun getStrTomorrowFajr(): String {
+    suspend fun getStrTomorrowFajr(location: Location): String {
         val time = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeOffsets = prayersRepository.getTimeOffsets().first(),
-            timeZoneId = locationRepository.getTimeZone(location.first()!!.ids.cityId),
-            location = location.first()!!,
+            timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            location = location,
             calendar = Calendar.getInstance().apply { this[Calendar.DATE]++ }
         )[PID.FAJR]!!
 
@@ -102,7 +102,7 @@ class HomeDomain @Inject constructor(
 
     fun getLocalRecord() = userRepository.getLocalRecord()
 
-    private fun getLocation() = locationRepository.getLocation()
+    fun getLocation() = locationRepository.getLocation()
 
     fun getPrayerNames() = prayersRepository.getPrayerNames()
 

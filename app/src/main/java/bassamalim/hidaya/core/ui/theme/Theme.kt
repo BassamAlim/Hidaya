@@ -3,11 +3,8 @@ package bassamalim.hidaya.core.ui.theme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.preference.PreferenceManager
-import bassamalim.hidaya.core.data.preferences.PreferencesDataSource
 import bassamalim.hidaya.core.enums.Theme
 
 object AppTheme {
@@ -29,9 +26,7 @@ object AppTheme {
 
 @Composable
 fun AppTheme(
-    theme: Theme = PreferencesDataSource(
-        PreferenceManager.getDefaultSharedPreferences(LocalContext.current)
-    ).getTheme(),
+    theme: Theme = Theme.DARK,
     typography: AppTypography = AppTheme.typography,
     dimensions: AppDimensions = AppTheme.dimensions,
     direction: LayoutDirection = LayoutDirection.Rtl,
@@ -50,5 +45,5 @@ fun AppTheme(
 private fun getColors(theme: Theme) = when (theme) {
     Theme.DARK -> darkColors()
     Theme.NIGHT -> nightColors()
-    else -> lightColors()
+    Theme.LIGHT -> lightColors()
 }

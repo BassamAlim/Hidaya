@@ -7,7 +7,9 @@ import bassamalim.hidaya.core.data.preferences.Preference
 import bassamalim.hidaya.core.data.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.preferences.objects.UserPreferences
 import bassamalim.hidaya.core.enums.LocationType
+import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.Location
+import bassamalim.hidaya.core.models.LocationIds
 import bassamalim.hidaya.core.models.MyLocation
 import bassamalim.hidaya.core.models.UserRecord
 import com.google.gson.Gson
@@ -48,10 +50,14 @@ object UserPreferencesMigration {
                         if (locationType == LocationType.NONE) null
                         else Location(
                             type = locationType,
-                            latitude = myLocation.latitude,
-                            longitude = myLocation.longitude,
-                            countryId = countryId,
-                            cityId = cityId,
+                            coordinates = Coordinates(
+                                latitude = myLocation.latitude,
+                                longitude = myLocation.longitude
+                            ),
+                            ids = LocationIds(
+                                countryId = countryId,
+                                cityId = cityId
+                            )
                         )
                     },
                 userRecord = UserRecord(

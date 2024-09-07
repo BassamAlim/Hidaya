@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -33,11 +34,13 @@ class AboutViewModel @Inject constructor(
     )
 
     fun onRebuildDatabaseClick() {
-        domain.rebuildDatabase()
+        viewModelScope.launch {
+            domain.rebuildDatabase()
 
-        _uiState.update { it.copy(
-            shouldShowRebuilt = it.shouldShowRebuilt + 1
-        )}
+            _uiState.update { it.copy(
+                shouldShowRebuilt = it.shouldShowRebuilt + 1
+            )}
+        }
     }
 
     fun onTitleClick() {
