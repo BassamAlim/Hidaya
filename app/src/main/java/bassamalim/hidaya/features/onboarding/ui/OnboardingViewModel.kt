@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.onboarding.ui
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
@@ -10,7 +11,10 @@ import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.onboarding.domain.OnboardingDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,11 +25,29 @@ class OnboardingViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(OnboardingUiState())
-    val uiState = _uiState.asStateFlow()
+    val uiState = combine(
+        _uiState.asStateFlow(),
+        domain.getLanguage(),
+        domain.getNumeralsLanguage(),
+        domain.getTimeFormat(),
+        domain.getTheme()
+    ) { state, language, numeralsLanguage, timeFormat, theme ->
+        state.copy(
+            language = language,
+            numeralsLanguage = numeralsLanguage,
+            timeFormat = timeFormat,
+            theme = theme
+        )
+    }.stateIn(
+        initialValue = OnboardingUiState(),
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
+    )
 
-    fun onLanguageChange(language: Language) {
+    fun onLanguageChange(language: Language, activity: Activity) {
         viewModelScope.launch {
             domain.setLanguage(language)
+            domain.restartActivity(activity)
         }
     }
 

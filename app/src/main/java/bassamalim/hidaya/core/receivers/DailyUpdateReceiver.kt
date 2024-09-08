@@ -28,6 +28,7 @@ import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import com.google.android.gms.location.LocationServices
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
@@ -36,6 +37,7 @@ import java.util.Calendar
 import java.util.Random
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class DailyUpdateReceiver : BroadcastReceiver() {
 
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
@@ -100,7 +102,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun reviveDb(context: Context) {
-        DbUtils.deleteDB(context)
+        DbUtils.resetDB(context)
         GlobalScope.launch {
             DbUtils.restoreDbData(
                 suraFavorites = quranRepository.getSuraFavorites().first(),
@@ -181,7 +183,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     }
 
     private suspend fun pickWerd() {
-        val randomWerd = Random().nextInt(Global.QURAN_PAGES)
+        val randomWerd = Random().nextInt(Global.NUM_OF_QURAN_PAGES)
         quranRepository.setWerdPage(randomWerd)
         quranRepository.setWerdDone(false)
     }

@@ -13,6 +13,8 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
@@ -45,6 +47,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -66,36 +69,32 @@ class Activity : ComponentActivity() {
     private var shouldWelcome = false
     private var startRoute: String? = null
     private lateinit var language: Language
-    private lateinit var theme: Theme
+    private lateinit var theme: Flow<Theme>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        println("In onCreate of Activity")
         super.onCreate(savedInstanceState)
 
+        theme = appSettingsRepository.getTheme()
         val isFirstLaunch = savedInstanceState == null
 
-        println("1")
         if (isFirstLaunch) testDb()
-        println("2")
         lifecycleScope.launch {
             shouldWelcome = !appStateRepository.isOnboardingCompleted().first()
             startRoute = intent.getStringExtra("start_route")
             language = appSettingsRepository.getLanguage().first()
-            theme = appSettingsRepository.getTheme().first()
-            println("3")
 
             bootstrapApp()
 
-//            if (isFirstLaunch) {
-//                handleAction(intent.action)
-//
-//                if (shouldWelcome) {
-//                    launchApp()
+            if (isFirstLaunch) {
+                handleAction(intent.action)
+
+                if (shouldWelcome) {
+                    launchApp()
 //                    postLaunch()
-//                }
-//                else getLocationAndLaunch()
-//            }
-//            else launchApp()
+                }
+                else getLocationAndLaunch()
+            }
+            else launchApp()
         }
     }
 
@@ -106,7 +105,6 @@ class Activity : ComponentActivity() {
                 test = surasDao::getPlainNamesAr
             )
             if (shouldReviveDb) {
-                println("shouldReviveDb")
                 reviveDb()
                 appStateRepository.setLastDbVersion(Global.DB_VERSION)
             }
@@ -114,8 +112,8 @@ class Activity : ComponentActivity() {
     }
 
     private fun reviveDb() {
-        println("In reviveDb of Activity")
-        DbUtils.deleteDB(this)
+        DbUtils.resetDB(this)
+
         lifecycleScope.launch {
             DbUtils.restoreDbData(
                 suraFavorites = quranRepository.getSuraFavoritesBackup().first(),
@@ -125,17 +123,19 @@ class Activity : ComponentActivity() {
                 remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
                 setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
             )
+            Log.d(Global.TAG, "DB data restored")
         }
     }
 
     private fun bootstrapApp() {
-        println("In bootstrapApp of Activity")
-        ActivityUtils.bootstrapApp(
-            context = this,
-            applicationContext = applicationContext,
-            language = language,
-            theme = theme
-        )
+        lifecycleScope.launch {
+            ActivityUtils.bootstrapApp(
+                context = this@Activity,
+                applicationContext = applicationContext,
+                language = language,
+                theme = theme.first()
+            )
+        }
     }
 
     private fun handleAction(action: String?) {
@@ -215,13 +215,15 @@ class Activity : ComponentActivity() {
 
     private fun launchApp() {
         setContent {
+            val themeState by theme.collectAsState(initial = Theme.DARK, lifecycleScope.coroutineContext)
+
             ActivityUtils.onActivityCreateSetLocale(
                 context = LocalContext.current,
                 language = language
             )
 
             AppTheme(
-                theme = theme,
+                theme = themeState,
                 direction = getDirection(language)
             ) {
                 Navigation(

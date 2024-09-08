@@ -80,6 +80,7 @@ class SettingsViewModel @Inject constructor(
     fun onLanguageChange(newLanguage: Language) {
         viewModelScope.launch {
             domain.setLanguage(newLanguage)
+            domain.restartActivity()
         }
     }
 

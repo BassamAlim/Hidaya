@@ -117,12 +117,18 @@ fun <V> MenuSetting(
                                             .clip(RoundedCornerShape(100.dp))
                                             .fillMaxWidth()
                                             .padding(6.dp)
-                                            .clickable { onSelection(items[index]) },
+                                            .clickable {
+                                                onSelection(items[index])
+                                                isShown = false
+                                            },
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         RadioButton(
                                             selected = index == items.indexOf(selection),
-                                            onClick = { onSelection(items[index]) },
+                                            onClick = {
+                                                onSelection(items[index])
+                                                isShown = false
+                                            },
                                             colors = RadioButtonDefaults.colors(
                                                 selectedColor = AppTheme.colors.accent,
                                                 unselectedColor = AppTheme.colors.text

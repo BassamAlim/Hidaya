@@ -46,6 +46,7 @@ import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.features.recitations.recitationRecitersMenu.domain.LastPlayedRecitation
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
@@ -56,6 +57,7 @@ import java.util.Locale
 import java.util.Random
 import javax.inject.Inject
 
+@AndroidEntryPoint
 @UnstableApi
 @RequiresApi(api = Build.VERSION_CODES.O)
 class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {

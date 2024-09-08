@@ -75,7 +75,7 @@ fun QuranReaderScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(
         initialPage = viewModel.pageNum - 1,
-        pageCount = { Global.QURAN_PAGES }
+        pageCount = { Global.NUM_OF_QURAN_PAGES }
     )
     val coroutineScope = rememberCoroutineScope()
 

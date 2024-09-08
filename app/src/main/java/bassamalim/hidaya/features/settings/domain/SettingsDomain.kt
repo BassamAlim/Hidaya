@@ -1,5 +1,7 @@
 package bassamalim.hidaya.features.settings.domain
 
+import android.app.Activity
+import android.app.Application
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
@@ -13,12 +15,14 @@ import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.models.TimeOfDay
+import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import javax.inject.Inject
 
 class SettingsDomain @Inject constructor(
+    private val app: Application,
     private val appSettingsRepository: AppSettingsRepository,
     private val prayersRepository: PrayersRepository,
     private val notificationsRepository: NotificationsRepository,
@@ -104,6 +108,10 @@ class SettingsDomain @Inject constructor(
 
     suspend fun setAthanAudioId(athanAudioId: Int) {
         prayersRepository.setAthanAudioId(athanAudioId)
+    }
+
+    fun restartActivity() {
+        ActivityUtils.restartActivity(app.applicationContext as Activity)
     }
 
 }

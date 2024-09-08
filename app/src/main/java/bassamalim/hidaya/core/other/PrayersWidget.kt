@@ -86,7 +86,7 @@ class PrayersWidget : AppWidgetProvider() {
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun reviveDb(context: Context) {
-        DbUtils.deleteDB(context)
+        DbUtils.resetDB(context)
         GlobalScope.launch {
             DbUtils.restoreDbData(
                 suraFavorites = quranRepository.getSuraFavorites().first(),

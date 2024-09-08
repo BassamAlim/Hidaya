@@ -28,6 +28,7 @@ import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.services.AthanService
 import bassamalim.hidaya.features.quran.quranReader.domain.QuranTarget
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
@@ -36,6 +37,7 @@ import java.util.Calendar
 import javax.inject.Inject
 import kotlin.math.abs
 
+@AndroidEntryPoint
 class NotificationReceiver : BroadcastReceiver() {
 
     private lateinit var ctx: Context

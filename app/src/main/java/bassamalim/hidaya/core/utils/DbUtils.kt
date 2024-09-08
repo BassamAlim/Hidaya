@@ -2,6 +2,8 @@ package bassamalim.hidaya.core.utils
 
 import android.content.Context
 import android.util.Log
+import androidx.room.Room
+import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.other.Global
 
 object DbUtils {
@@ -19,9 +21,16 @@ object DbUtils {
         }
     }
 
-    fun deleteDB(context: Context) {
+    fun resetDB(context: Context) {
         context.deleteDatabase(DB_NAME)
         Log.i(Global.TAG, "Database Deleted")
+
+        Room.databaseBuilder(
+            context = context.applicationContext,
+            klass = AppDatabase::class.java,
+            name = "HidayaDB"
+        ).createFromAsset("databases/HidayaDB.db").build()
+        Log.i(Global.TAG, "Database Revived")
     }
 
     suspend fun restoreDbData(
