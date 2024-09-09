@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.settings.ui
 
+import android.app.Activity
 import android.app.TimePickerDialog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -77,10 +78,10 @@ class SettingsViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
     )
 
-    fun onLanguageChange(newLanguage: Language) {
+    fun onLanguageChange(newLanguage: Language, activity: Activity) {
         viewModelScope.launch {
             domain.setLanguage(newLanguage)
-            domain.restartActivity()
+            domain.restartActivity(activity)
         }
     }
 

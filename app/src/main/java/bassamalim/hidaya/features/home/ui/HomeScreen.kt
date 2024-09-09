@@ -56,7 +56,7 @@ fun HomeScreen(
             remaining = state.remaining,
             timeFromPreviousPrayer = state.timeFromPreviousPrayer,
             timeToNextPrayer = state.timeToNextPrayer,
-            numeralsLanguage = viewModel.numeralsLanguage
+            numeralsLanguage = state.numeralsLanguage
         )
 
         TodayWerdCard(

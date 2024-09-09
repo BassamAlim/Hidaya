@@ -54,7 +54,7 @@ class HomeDomain @Inject constructor(
             prayerTimes = prayerTimeMap,
             timeFormat = appSettingsRepository.getTimeFormat().first(),
             language = appSettingsRepository.getLanguage().first(),
-            numeralsLanguage = getNumeralsLanguage()
+            numeralsLanguage = getNumeralsLanguage().first()
         )
     }
 
@@ -94,7 +94,7 @@ class HomeDomain @Inject constructor(
         return null
     }
 
-    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
+    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
     fun getWerdPage() = quranRepository.getWerdPage()
 

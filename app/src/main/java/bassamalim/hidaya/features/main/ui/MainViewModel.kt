@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
@@ -25,9 +26,7 @@ class MainViewModel @Inject constructor(
 
     private lateinit var numeralsLanguage: Language
 
-    private val _uiState = MutableStateFlow(MainUiState(
-        gregorianDate = getGregorianDate()
-    ))
+    private val _uiState = MutableStateFlow(MainUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.getDateOffset()
@@ -42,6 +41,10 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             numeralsLanguage = domain.getNumeralsLanguage()
+
+            _uiState.update { it.copy(
+                gregorianDate = getGregorianDate()
+            )}
         }
     }
 

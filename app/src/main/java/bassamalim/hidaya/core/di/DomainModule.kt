@@ -288,14 +288,12 @@ object DomainModule {
 
     @Provides @Singleton
     fun provideSettingsDomain(
-        app: Application,
         appSettingsRepository: AppSettingsRepository,
         prayersRepository: PrayersRepository,
         notificationsRepository: NotificationsRepository,
         locationRepository: LocationRepository,
         alarm: Alarm
     ) = SettingsDomain(
-        app,
         appSettingsRepository,
         prayersRepository,
         notificationsRepository,

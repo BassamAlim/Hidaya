@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.settings.ui
 
+import android.app.Activity
 import android.app.TimePickerDialog
 import android.os.Message
 import android.widget.TimePicker
@@ -34,6 +35,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val activity = LocalContext.current as Activity
 
     MyScaffold(
         title = stringResource(R.string.settings)
@@ -50,7 +52,10 @@ fun SettingsScreen(
                     expandedContent = {
                         AppearanceSettings(
                             selectedLanguage = state.language,
-                            onLanguageChange = viewModel::onLanguageChange,
+                            onLanguageChange = { viewModel.onLanguageChange(
+                                newLanguage = it,
+                                activity = activity
+                            ) },
                             selectedNumeralsLanguage = state.numeralsLanguage,
                             onNumeralsLanguageChange = viewModel::onNumeralsLanguageChange,
                             selectedTimeFormat = state.timeFormat,

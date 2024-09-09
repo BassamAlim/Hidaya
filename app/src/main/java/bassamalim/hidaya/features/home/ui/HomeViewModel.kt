@@ -3,7 +3,6 @@ package bassamalim.hidaya.features.home.ui
 import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
@@ -30,7 +29,6 @@ class HomeViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    lateinit var numeralsLanguage: Language
     private val prayerNames = domain.getPrayerNames()
     private var times: Map<PID, Calendar?> = emptyMap()
     private var formattedTimes: Map<PID, String> = emptyMap()
@@ -47,12 +45,14 @@ class HomeViewModel @Inject constructor(
         _uiState.asStateFlow(),
         domain.getWerdPage(),
         domain.isWerdDone(),
-        domain.getLocalRecord()
-    ) { state, werdPage, isWerdDone, localRecord -> state.copy(
+        domain.getLocalRecord(),
+        domain.getNumeralsLanguage()
+    ) { state, werdPage, isWerdDone, localRecord, numeralsLanguage -> state.copy(
         werdPage = translateNumber(werdPage),
         isWerdDone = isWerdDone,
         quranRecord = translateNumber(localRecord.quranPages),
-        recitationsRecord = formatRecitationsTime(localRecord.recitationsTime)
+        recitationsRecord = formatRecitationsTime(localRecord.recitationsTime),
+        numeralsLanguage = numeralsLanguage
     )}.stateIn(
         initialValue = HomeUiState(),
         scope = viewModelScope,
@@ -61,7 +61,6 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            numeralsLanguage = domain.getNumeralsLanguage()
             location = domain.getLocation().first()
 
             val isSuccess = domain.syncRecords()
@@ -147,7 +146,7 @@ class HomeViewModel @Inject constructor(
 
                 _uiState.update { it.copy(
                     remaining = translateNums(
-                        numeralsLanguage = numeralsLanguage,
+                        numeralsLanguage = it.numeralsLanguage,
                         string = hms,
                         timeFormat = true
                     ),
@@ -174,7 +173,7 @@ class HomeViewModel @Inject constructor(
         val seconds = millis / 1000 % 60
 
         return translateNums(
-            numeralsLanguage,
+            _uiState.value.numeralsLanguage,
             String.format(
                 Locale.US, "%02d:%02d:%02d",
                 hours, minutes, seconds
@@ -184,7 +183,7 @@ class HomeViewModel @Inject constructor(
 
     private fun translateNumber(num: Int) =
         translateNums(
-            numeralsLanguage = numeralsLanguage,
+            numeralsLanguage = _uiState.value.numeralsLanguage,
             string = num.toString()
         )
 
