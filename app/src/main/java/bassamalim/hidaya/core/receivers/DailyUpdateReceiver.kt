@@ -105,7 +105,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         DbUtils.resetDB(context)
         GlobalScope.launch {
             DbUtils.restoreDbData(
-                suraFavorites = quranRepository.getSuraFavorites().first(),
+                suraFavorites = quranRepository.getSuraFavoritesBackup().first(),
                 setSuraFavorites = quranRepository::setSuraFavorites,
                 reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
                 setReciterFavorites = recitationsRepository::setReciterFavorites,

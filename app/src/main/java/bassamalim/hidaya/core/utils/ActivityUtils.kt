@@ -17,7 +17,6 @@ object ActivityUtils {
         language: Language,
         theme: Theme
     ) {
-        println("In bootstrapApp")
         onActivityCreateSetLocale(context = context, language = language)
         onActivityCreateSetTheme(context = context, theme = theme)
         onActivityCreateSetLocale(context = applicationContext, language = language)

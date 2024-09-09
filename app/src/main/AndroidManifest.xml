@@ -28,7 +28,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:allowBackup="true"
         android:supportsRtl="true"
-        android:theme="@style/Theme.HidayaL">
+        android:theme="@style/Theme.HidayaM">
 
         <activity
             android:name=".core.Activity"

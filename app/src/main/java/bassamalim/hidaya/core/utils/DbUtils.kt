@@ -5,18 +5,24 @@ import android.util.Log
 import androidx.room.Room
 import bassamalim.hidaya.core.data.database.AppDatabase
 import bassamalim.hidaya.core.other.Global
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 object DbUtils {
 
     private const val DB_NAME = "HidayaDB"
 
-    fun shouldReviveDb(lastDbVersion: Int, test: () -> Unit): Boolean {
+    suspend fun shouldReviveDb(lastDbVersion: Int, test: () -> Unit): Boolean {
         if (Global.DB_VERSION > lastDbVersion) return true
 
         return try {  // if there is a problem in the db it will cause an error
-            test()
+            withContext(Dispatchers.IO) {
+                test()
+            }
             false
-        } catch (e: Exception) {
+        } catch (e: IllegalStateException) {
+            Log.e(Global.TAG, "DB Error: ${e.message}")
+            e.printStackTrace()
             true
         }
     }
@@ -26,10 +32,19 @@ object DbUtils {
         Log.i(Global.TAG, "Database Deleted")
 
         Room.databaseBuilder(
+            context = context,
+            klass = AppDatabase::class.java,
+            name = "HidayaDB"
+        ).createFromAsset("databases/HidayaDB.db")
+            .allowMainThreadQueries()
+            .build()
+
+        Room.databaseBuilder(
             context = context.applicationContext,
             klass = AppDatabase::class.java,
             name = "HidayaDB"
         ).createFromAsset("databases/HidayaDB.db").build()
+
         Log.i(Global.TAG, "Database Revived")
     }
 

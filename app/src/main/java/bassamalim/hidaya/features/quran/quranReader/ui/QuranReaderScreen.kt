@@ -266,6 +266,7 @@ private fun BottomBar(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PageContent(
     pageVerses: List<Verse>,

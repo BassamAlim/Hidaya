@@ -74,13 +74,15 @@ class Activity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        theme = appSettingsRepository.getTheme()
         val isFirstLaunch = savedInstanceState == null
+        startRoute = intent.getStringExtra("start_route")
+
+        theme = appSettingsRepository.getTheme()
 
         if (isFirstLaunch) testDb()
+
         lifecycleScope.launch {
             shouldWelcome = !appStateRepository.isOnboardingCompleted().first()
-            startRoute = intent.getStringExtra("start_route")
             language = appSettingsRepository.getLanguage().first()
 
             bootstrapApp()
@@ -90,7 +92,7 @@ class Activity : ComponentActivity() {
 
                 if (shouldWelcome) {
                     launchApp()
-//                    postLaunch()
+                    postLaunch()
                 }
                 else getLocationAndLaunch()
             }
@@ -123,7 +125,7 @@ class Activity : ComponentActivity() {
                 remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
                 setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
             )
-            Log.d(Global.TAG, "DB data restored")
+            Log.d(Global.TAG, "Database data restored")
         }
     }
 

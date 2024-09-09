@@ -7,7 +7,7 @@ import bassamalim.hidaya.core.data.database.models.RemembrancePassage
 @Dao
 interface RemembrancePassagesDao {
 
-    @Query("SELECT * FROM remembrance_passages WHERE remembrance_id = :id Order By id")
-    fun getRemembrancePassages(id: Int): List<RemembrancePassage>
+    @Query("SELECT * FROM remembrance_passages WHERE remembrance_id = :remembranceId Order By id")
+    fun getRemembrancePassages(remembranceId: Int): List<RemembrancePassage>
 
 }

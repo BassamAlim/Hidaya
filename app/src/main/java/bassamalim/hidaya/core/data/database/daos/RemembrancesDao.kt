@@ -20,12 +20,6 @@ interface RemembrancesDao {
     @Query("SELECT * FROM remembrances WHERE category_id = :categoryId")
     fun observeCategoryRemembrances(categoryId: Int): Flow<List<Remembrance>>
 
-    @Query("SELECT name_ar FROM remembrances")
-    fun getNamesAr(): List<String>
-
-    @Query("SELECT name_en FROM remembrances")
-    fun getNamesEn(): List<String>
-
     @Query("SELECT name_ar FROM remembrances WHERE id = :id")
     fun getNameAr(id: Int): String
 

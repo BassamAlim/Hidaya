@@ -37,7 +37,7 @@ class AboutDomain @Inject constructor(
     private suspend fun reviveDb() {
         DbUtils.resetDB(app)
         DbUtils.restoreDbData(
-            suraFavorites = quranRepository.getSuraFavorites().first(),
+            suraFavorites = quranRepository.getSuraFavoritesBackup().first(),
             setSuraFavorites = quranRepository::setSuraFavorites,
             reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
             setReciterFavorites = recitationsRepository::setReciterFavorites,

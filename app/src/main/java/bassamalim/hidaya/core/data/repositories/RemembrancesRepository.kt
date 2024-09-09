@@ -17,8 +17,6 @@ class RemembrancesRepository @Inject constructor(
     private val remembrancePassagesDao: RemembrancePassagesDao
 ) {
 
-    fun getAllRemembranceCategories() = remembranceCategoriesDao.getAll()
-
     fun getRemembranceCategoryName(id: Int, language: Language) =
         if (language == Language.ARABIC) remembranceCategoriesDao.getNameAr(id)
         else remembranceCategoriesDao.getNameEn(id)
@@ -27,17 +25,18 @@ class RemembrancesRepository @Inject constructor(
 
     fun observeFavorites() = remembrancesDao.observeFavorites()
 
+    fun observeCategoryRemembrances(categoryId: Int) =
+        remembrancesDao.observeCategoryRemembrances(categoryId)
+
     suspend fun setFavorite(id: Int, value: Boolean) {
         remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
 
-        setFavoritesBackup(
+        setFavoriteStatusesBackup(
             remembrancesDao.observeFavoriteStatuses().first().mapIndexed { index, isFavorite ->
                 index to isFavorite
             }.toMap()
         )
     }
-
-    fun observeFavoriteStatuses() = remembrancesDao.observeFavoriteStatuses()
 
     suspend fun setFavoriteStatuses(favorites: Map<Int, Boolean>) {
         favorites.forEach { (id, value) ->
@@ -51,18 +50,11 @@ class RemembrancesRepository @Inject constructor(
         }.toMap()
     }
 
-    private suspend fun setFavoritesBackup(favorites: Map<Int, Int>) {
+    private suspend fun setFavoriteStatusesBackup(favorites: Map<Int, Int>) {
         remembrancePreferencesDataSource.update { it.copy(
             favorites = favorites.toPersistentMap()
         )}
     }
-
-    fun observeCategoryRemembrances(categoryId: Int) =
-        remembrancesDao.observeCategoryRemembrances(categoryId)
-
-    fun getRemembranceNames(language: Language) =
-        if (language == Language.ARABIC) remembrancesDao.getNamesAr()
-        else remembrancesDao.getNamesEn()
 
     fun getRemembranceName(id: Int, language: Language) =
         if (language == Language.ARABIC) remembrancesDao.getNameAr(id)
