@@ -54,7 +54,7 @@ import com.google.gson.Gson
 fun Navigation(
     navigator: Navigator,
     thenTo: String? = null,
-    shouldWelcome: Boolean = false
+    shouldOnboard: Boolean = false
 ) {
     val navController = rememberNavController()
 
@@ -66,7 +66,7 @@ fun Navigation(
     }
 
     val startDest =
-        if (shouldWelcome) Screen.Onboarding.route
+        if (shouldOnboard) Screen.Onboarding.route
         else Screen.Main.route
 
     NavGraph(navController, startDest)

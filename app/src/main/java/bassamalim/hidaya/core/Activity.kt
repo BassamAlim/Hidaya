@@ -66,7 +66,7 @@ class Activity : ComponentActivity() {
     @Inject lateinit var surasDao: SurasDao
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var alarm: Alarm
-    private var shouldWelcome = false
+    private var shouldOnboard = false
     private var startRoute: String? = null
     private lateinit var language: Language
     private lateinit var theme: Flow<Theme>
@@ -82,7 +82,7 @@ class Activity : ComponentActivity() {
         if (isFirstLaunch) testDb()
 
         lifecycleScope.launch {
-            shouldWelcome = !appStateRepository.isOnboardingCompleted().first()
+            shouldOnboard = !appStateRepository.isOnboardingCompleted().first()
             language = appSettingsRepository.getLanguage().first()
 
             bootstrapApp()
@@ -90,7 +90,7 @@ class Activity : ComponentActivity() {
             if (isFirstLaunch) {
                 handleAction(intent.action)
 
-                if (shouldWelcome) {
+                if (shouldOnboard) {
                     launchApp()
                     postLaunch()
                 }
@@ -231,7 +231,7 @@ class Activity : ComponentActivity() {
                 Navigation(
                     navigator = navigator,
                     thenTo = startRoute,
-                    shouldWelcome = shouldWelcome
+                    shouldOnboard = shouldOnboard
                 )
             }
         }

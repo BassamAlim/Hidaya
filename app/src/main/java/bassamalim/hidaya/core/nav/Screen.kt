@@ -91,6 +91,6 @@ sealed class Screen(val route: String) {
 
     data object Tv: Screen("tv")
 
-    data object Onboarding: Screen("welcome")
+    data object Onboarding: Screen("onboarding")
 
 }
