@@ -79,11 +79,13 @@ class Activity : ComponentActivity() {
 
         theme = appSettingsRepository.getTheme()
 
-        if (isFirstLaunch) testDb()
-
         lifecycleScope.launch {
+            if (isFirstLaunch) testDb()
+
             shouldOnboard = !appStateRepository.isOnboardingCompleted().first()
             language = appSettingsRepository.getLanguage().first()
+
+            Log.d(Global.TAG, "Result: ${quranRepository.getPlainSuraNames()}")
 
             bootstrapApp()
 
@@ -100,44 +102,40 @@ class Activity : ComponentActivity() {
         }
     }
 
-    private fun testDb() {
-        lifecycleScope.launch {
-            val shouldReviveDb = DbUtils.shouldReviveDb(
-                lastDbVersion = appStateRepository.getLastDbVersion().first(),
-                test = surasDao::getPlainNamesAr
-            )
-            if (shouldReviveDb) {
-                reviveDb()
-                appStateRepository.setLastDbVersion(Global.DB_VERSION)
-            }
+    private suspend fun testDb() {
+        val shouldReviveDb = DbUtils.shouldReviveDb(
+            lastDbVersion = appStateRepository.getLastDbVersion().first(),
+            test = surasDao::getPlainNamesAr
+        )
+        if (shouldReviveDb) {
+            reviveDb()
+            appStateRepository.setLastDbVersion(Global.DB_VERSION)
         }
+        else
+            Log.d(Global.TAG, "Database is up to date")
     }
 
-    private fun reviveDb() {
+    private suspend fun reviveDb() {
         DbUtils.resetDB(this)
 
-        lifecycleScope.launch {
-            DbUtils.restoreDbData(
-                suraFavorites = quranRepository.getSuraFavoritesBackup().first(),
-                setSuraFavorites = quranRepository::setSuraFavorites,
-                reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
-                setReciterFavorites = recitationsRepository::setReciterFavorites,
-                remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
-                setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
-            )
-            Log.d(Global.TAG, "Database data restored")
-        }
+        DbUtils.restoreDbData(
+            suraFavorites = quranRepository.getSuraFavoritesBackup().first(),
+            setSuraFavorites = quranRepository::setSuraFavorites,
+            reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
+            setReciterFavorites = recitationsRepository::setReciterFavorites,
+            remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
+            setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
+        )
+        Log.d(Global.TAG, "Database data restored")
     }
 
-    private fun bootstrapApp() {
-        lifecycleScope.launch {
-            ActivityUtils.bootstrapApp(
-                context = this@Activity,
-                applicationContext = applicationContext,
-                language = language,
-                theme = theme.first()
-            )
-        }
+    private suspend fun bootstrapApp() {
+        ActivityUtils.bootstrapApp(
+            context = this@Activity,
+            applicationContext = applicationContext,
+            language = language,
+            theme = theme.first()
+        )
     }
 
     private fun handleAction(action: String?) {

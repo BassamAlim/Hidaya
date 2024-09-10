@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 
 @Entity(
     tableName = "remembrance_passages",
-    primaryKeys = ["remembrance_id", "id"],
+    primaryKeys = ["id", "remembrance_id"],
     foreignKeys = [
         ForeignKey(
             entity = Remembrance::class,

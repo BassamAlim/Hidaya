@@ -224,8 +224,11 @@ class PrayersBoardViewModel @Inject constructor(
     }
 
     private fun formatOffset(offset : Int): String {
-        return if (offset < 0) translateNums(numeralsLanguage, offset.toString())
-        else translateNums(numeralsLanguage, "+$offset")
+        return if (offset < 0) translateNums(
+            string = offset.toString(),
+            numeralsLanguage = numeralsLanguage
+        )
+        else translateNums(string = "+$offset", numeralsLanguage = numeralsLanguage)
     }
 
 }

@@ -46,7 +46,7 @@ class RemembrancesMenuDomain @Inject constructor(
     fun getRemembrancePassages(remembrancesId: Int) =
         remembrancesRepository.getRemembrancePassages(remembrancesId)
 
-    fun getCategoryTitle(categoryId: Int, language: Language) =
+    suspend fun getCategoryTitle(categoryId: Int, language: Language) =
         remembrancesRepository.getRemembranceCategoryName(categoryId, language)
 
     suspend fun setFavoriteStatus(id: Int, value: Boolean) {

@@ -3,34 +3,43 @@ package bassamalim.hidaya.core.data.repositories
 import bassamalim.hidaya.core.data.database.daos.SurasDao
 import bassamalim.hidaya.core.data.database.daos.VersesDao
 import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
+import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.features.quran.quranReader.ui.QuranViewType
 import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class QuranRepository @Inject constructor(
     private val quranPreferencesDataSource: QuranPreferencesDataSource,
     private val surasDao: SurasDao,
-    private val versesDao: VersesDao
+    private val versesDao: VersesDao,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher
 ) {
 
     fun observeAllSuras() = surasDao.observeAll()
 
-    fun getDecoratedSuraNames(language: Language) =
+    suspend fun getDecoratedSuraNames(language: Language) = withContext(dispatcher) {
         if (language == Language.ENGLISH) surasDao.getDecoratedNamesEn()
         else surasDao.getDecoratedNamesAr()
+    }
 
-    fun getPlainSuraNames() = surasDao.getPlainNamesAr()
+    suspend fun getPlainSuraNames() = withContext(dispatcher) {
+        surasDao.getPlainNamesAr()
+    }
 
     fun getSuraFavorites() = surasDao.observeIsFavorites().map {
         it.mapIndexed { index, value -> index + 1 to (value == 1) }.toMap()
     }
 
     suspend fun setSuraFavoriteStatus(suraId: Int, isFavorite: Boolean) {
-        surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
+        withContext(dispatcher) {
+            surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
+        }
         setSuraFavoritesBackup(
             surasDao.observeIsFavorites().first().mapIndexed { index, value ->
                 index + 1 to (value == 1)
@@ -39,9 +48,23 @@ class QuranRepository @Inject constructor(
     }
 
     suspend fun setSuraFavorites(map: Map<Int, Boolean>) {
-        map.forEach { (suraId, isFavorite) ->
-            surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
+        withContext(dispatcher) {
+            map.forEach { (suraId, isFavorite) ->
+                surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
+            }
         }
+    }
+
+    suspend fun getSuraPageNum(suraId: Int) = withContext(dispatcher) {
+        surasDao.getSuraStartPage(suraId)
+    }
+
+    suspend fun getVersePageNum(verseId: Int) = withContext(dispatcher) {
+        versesDao.getVersePageNum(verseId)
+    }
+
+    suspend fun getAllVerses() =  withContext(dispatcher) {
+        versesDao.getAll()
     }
     
     fun getSuraFavoritesBackup() = quranPreferencesDataSource.flow.map {
@@ -133,11 +156,5 @@ class QuranRepository @Inject constructor(
             isWerdDone = isWerdDone
         )}
     }
-
-    fun getSuraPageNum(suraId: Int) = surasDao.getSuraStartPage(suraId)
-
-    fun getVersePageNum(verseId: Int) = versesDao.getVersePageNum(verseId)
-
-    fun getAllVerses() = versesDao.getAll()
 
 }

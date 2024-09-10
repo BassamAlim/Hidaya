@@ -157,7 +157,10 @@ class HijriDatePickerViewModel @Inject constructor(
     private fun getDisplayedMonthString(currentPage: Int): String {
         val absMonth = domain.minYear * 12 + currentPage
         return "${months[absMonth % 12]} " +
-                translateNums(numeralsLanguage, (absMonth / 12).toString())
+                translateNums(
+                    string = (absMonth / 12).toString(),
+                    numeralsLanguage = numeralsLanguage
+                )
     }
 
     private fun getMainText(): String {
@@ -165,8 +168,8 @@ class HijriDatePickerViewModel @Inject constructor(
         return "${weekDays[selectedDate[Calendar.DAY_OF_WEEK] - 1]} " +
                 "${
                     translateNums(
-                        numeralsLanguage,
-                        selectedDate[Calendar.DATE].toString()
+                        string = selectedDate[Calendar.DATE].toString(),
+                        numeralsLanguage = numeralsLanguage
                     )
                 } " +
                 months[selectedDate[Calendar.MONTH]]

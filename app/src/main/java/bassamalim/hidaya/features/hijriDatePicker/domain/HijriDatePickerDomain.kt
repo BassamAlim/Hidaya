@@ -22,7 +22,7 @@ class HijriDatePickerDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    fun getMonths() = appStateRepository.getMonths()
+    fun getMonths() = appStateRepository.getHijriMonths()
 
     fun getWeekDays() = appStateRepository.getWeekDays()
 

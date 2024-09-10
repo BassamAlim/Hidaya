@@ -1,11 +1,13 @@
 package bassamalim.hidaya.features.locationPicker.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.features.locationPicker.domain.LocationPickerDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -71,7 +73,9 @@ class LocationPickerViewModel @Inject constructor(
                 mode = LocationPickerMode.COUNTRY
             )}
 
-            fillItems()
+            viewModelScope.launch {
+                fillItems()
+            }
         }
         else navigator.popBackStack()
     }
@@ -81,33 +85,35 @@ class LocationPickerViewModel @Inject constructor(
             searchText = text,
         )}
 
-        fillItems()
+        viewModelScope.launch {
+            fillItems()
+        }
     }
 
-    private fun fillItems() {
+    private suspend fun fillItems() {
         when (_uiState.value.mode) {
             LocationPickerMode.COUNTRY -> fillWithCountries()
             LocationPickerMode.CITY -> fillWithCities()
         }
     }
 
-    private fun fillWithCountries() {
-        viewModelScope.launch {
-            val countries = domain.getCountries(language = language).map { country ->
-                LocationPickerItem(
-                    id = country.id,
-                    name = if (language == Language.ARABIC) country.nameAr else country.nameEn
-                )
-            }
-
-            val searchText = _uiState.value.searchText
-            _uiState.update { it.copy(
-                items = if (searchText.isEmpty()) countries
-                else countries.filter { country ->
-                    country.name.contains(searchText, ignoreCase = true)
-                }
-            )}
+    private suspend fun fillWithCountries() {
+        val countries = domain.getCountries(language = language).map { country ->
+            LocationPickerItem(
+                id = country.id,
+                name = if (language == Language.ARABIC) country.nameAr else country.nameEn
+            )
         }
+
+        Log.d(Global.TAG, "Countries: $countries")
+
+        val searchText = _uiState.value.searchText
+        _uiState.update { it.copy(
+            items = if (searchText.isEmpty()) countries
+            else countries.filter { country ->
+                country.name.contains(searchText, ignoreCase = true)
+            }
+        )}
     }
 
     private fun fillWithCities() {

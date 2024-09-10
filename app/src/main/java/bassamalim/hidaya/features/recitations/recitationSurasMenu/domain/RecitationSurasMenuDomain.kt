@@ -104,7 +104,7 @@ class RecitationSurasMenuDomain @Inject constructor(
     fun getDecoratedSuraNames(language: Language) =
         quranRepository.getDecoratedSuraNames(language)
 
-    fun getPlainSuraNames() = quranRepository.getPlainSuraNames()
+    suspend fun getPlainSuraNames() = quranRepository.getPlainSuraNames()
 
     fun getReciterName(id: Int, language: Language) =
         recitationsRepository.getReciterName(id, language)

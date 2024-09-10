@@ -43,13 +43,16 @@ class AppStateRepository @Inject constructor(
     }
 
     fun getHijriMonths() =
-        resources.getStringArray(R.array.numbered_hijri_months) as Array<String>
+        resources.getStringArray(R.array.hijri_months) as Array<String>
 
     fun getGregorianMonths() =
-        resources.getStringArray(R.array.numbered_gregorian_months) as Array<String>
+        resources.getStringArray(R.array.gregorian_months) as Array<String>
 
-    fun getMonths() =
-        resources.getStringArray(R.array.hijri_months) as Array<String>
+    fun getNumberedHijriMonths() =
+        resources.getStringArray(R.array.numbered_hijri_months) as Array<String>
+
+    fun getNumberedGregorianMonths() =
+        resources.getStringArray(R.array.numbered_gregorian_months) as Array<String>
 
     fun getWeekDays() =
         resources.getStringArray(R.array.week_days) as Array<String>

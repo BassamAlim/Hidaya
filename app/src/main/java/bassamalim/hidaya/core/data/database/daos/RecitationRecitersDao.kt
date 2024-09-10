@@ -11,6 +11,9 @@ interface RecitationRecitersDao {
     @Query("SELECT * FROM recitations_reciters")
     fun observeAll(): Flow<List<RecitationsReciter>>
 
+    @Query("SELECT * FROM recitations_reciters WHERE is_favorite = 1")
+    fun observeFavorites(): Flow<List<RecitationsReciter>>
+
     @Query("SELECT * FROM recitations_reciters")
     fun getAll(): List<RecitationsReciter>
 
@@ -29,13 +32,10 @@ interface RecitationRecitersDao {
     @Query("SELECT name_en FROM recitations_reciters WHERE id == :id")
     fun getNameEn(id: Int): String
 
-    @Query("SELECT * FROM recitations_reciters WHERE is_favorite = 1")
-    fun getFavorites(): List<RecitationsReciter>
+    @Query("SELECT is_favorite FROM recitations_reciters")
+    fun observeFavoriteStatuses(): Flow<List<Int>>
 
     @Query("UPDATE recitations_reciters SET is_favorite = :value WHERE id = :id")
     suspend fun setFavoriteStatus(id: Int, value: Int)
-
-    @Query("SELECT is_favorite FROM recitations_reciters")
-    fun getFavoriteStatuses(): List<Int>
 
 }

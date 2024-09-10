@@ -8,8 +8,8 @@ object LangUtils {
     private val arNums = arrayOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
 
     fun translateNums(
-        numeralsLanguage: Language,
         string: String,
+        numeralsLanguage: Language,
         timeFormat: Boolean = false
     ) : String {
         val str = if (timeFormat) cleanup(string, numeralsLanguage) else string

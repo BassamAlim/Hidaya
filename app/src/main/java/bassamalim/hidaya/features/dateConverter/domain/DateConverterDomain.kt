@@ -14,9 +14,9 @@ class DateConverterDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    fun getHijriMonths() = appStateRepository.getHijriMonths()
+    fun getHijriMonths() = appStateRepository.getNumberedHijriMonths()
 
-    fun getGregorianMonths() = appStateRepository.getGregorianMonths()
+    fun getGregorianMonths() = appStateRepository.getNumberedGregorianMonths()
 
     fun gregorianToHijri(gregorian: Calendar): Calendar {
         val hijri = UmmalquraCalendar()

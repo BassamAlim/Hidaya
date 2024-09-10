@@ -44,10 +44,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
+@Module @InstallIn(SingletonComponent::class)
 object RepositoryModule {
 
     @Provides @Singleton
@@ -67,8 +67,9 @@ object RepositoryModule {
         resources: Resources,
         booksDao: BooksDao,
         booksPreferencesDataSource: BooksPreferencesDataSource,
-        gson: Gson
-    ) = BooksRepository(app, resources, booksDao, booksPreferencesDataSource, gson)
+        gson: Gson,
+        @DefaultDispatcher dispatcher: CoroutineDispatcher
+    ) = BooksRepository(app, resources, booksDao, booksPreferencesDataSource, gson, dispatcher)
 
     @Provides @Singleton
     fun provideLiveContentRepository(
@@ -79,8 +80,9 @@ object RepositoryModule {
     fun provideLocationRepository(
         userPreferencesDataSource: UserPreferencesDataSource,
         countriesDao: CountriesDao,
-        citiesDao: CitiesDao
-    ) = LocationRepository(userPreferencesDataSource, countriesDao, citiesDao)
+        citiesDao: CitiesDao,
+        @DefaultDispatcher dispatcher: CoroutineDispatcher
+    ) = LocationRepository(userPreferencesDataSource, countriesDao, citiesDao, dispatcher)
 
     @Provides @Singleton
     fun provideNotificationsRepository(
@@ -96,15 +98,17 @@ object RepositoryModule {
     @Provides @Singleton
     fun provideQuizRepository(
         quizQuestionsDao: QuizQuestionsDao,
-        quizAnswersDao: QuizAnswersDao
-    ) = QuizRepository(quizQuestionsDao, quizAnswersDao)
+        quizAnswersDao: QuizAnswersDao,
+        @DefaultDispatcher dispatcher: CoroutineDispatcher
+    ) = QuizRepository(quizQuestionsDao, quizAnswersDao, dispatcher)
 
     @Provides @Singleton
     fun provideQuranRepository(
         quranPreferencesDataSource: QuranPreferencesDataSource,
         surasDao: SurasDao,
-        versesDao: VersesDao
-    ) = QuranRepository(quranPreferencesDataSource, surasDao, versesDao)
+        versesDao: VersesDao,
+        @DefaultDispatcher dispatcher: CoroutineDispatcher
+    ) = QuranRepository(quranPreferencesDataSource, surasDao, versesDao, dispatcher)
 
     @Provides @Singleton
     fun provideRecitationsRepository(
@@ -113,14 +117,16 @@ object RepositoryModule {
         recitationRecitersDao: RecitationRecitersDao,
         verseRecitationsDao: VerseRecitationsDao,
         verseRecitersDao: VerseRecitersDao,
-        recitationNarrationsDao: RecitationNarrationsDao
+        recitationNarrationsDao: RecitationNarrationsDao,
+        @DefaultDispatcher dispatcher: CoroutineDispatcher
     ) = RecitationsRepository(
         app,
         recitationsPreferencesDataSource,
         recitationRecitersDao,
         verseRecitationsDao,
         verseRecitersDao,
-        recitationNarrationsDao
+        recitationNarrationsDao,
+        dispatcher
     )
 
     @Provides @Singleton
@@ -128,12 +134,14 @@ object RepositoryModule {
         remembrancePreferencesDataSource: RemembrancePreferencesDataSource,
         remembranceCategoriesDao: RemembranceCategoriesDao,
         remembrancesDao: RemembrancesDao,
-        remembrancePassagesDao: RemembrancePassagesDao
+        remembrancePassagesDao: RemembrancePassagesDao,
+        @DefaultDispatcher dispatcher: CoroutineDispatcher
     ) = RemembrancesRepository(
         remembrancePreferencesDataSource,
         remembranceCategoriesDao,
         remembrancesDao,
-        remembrancePassagesDao
+        remembrancePassagesDao,
+        dispatcher
     )
 
     @Provides @Singleton

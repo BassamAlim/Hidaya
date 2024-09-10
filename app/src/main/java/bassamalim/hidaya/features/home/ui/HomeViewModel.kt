@@ -3,8 +3,8 @@ package bassamalim.hidaya.features.home.ui
 import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.PID
-import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -38,7 +37,6 @@ class HomeViewModel @Inject constructor(
     private var upcomingPrayer: PID? = null
     private var tomorrow = false
     private var counterCounter = 0
-    private var location: Location? = null
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = combine(
@@ -48,12 +46,25 @@ class HomeViewModel @Inject constructor(
         domain.getLocalRecord(),
         domain.getNumeralsLanguage()
     ) { state, werdPage, isWerdDone, localRecord, numeralsLanguage -> state.copy(
-        werdPage = translateNumber(werdPage),
+        werdPage = translateNums(
+            string = werdPage.toString(),
+            numeralsLanguage = numeralsLanguage
+        ),
         isWerdDone = isWerdDone,
-        quranRecord = translateNumber(localRecord.quranPages),
-        recitationsRecord = formatRecitationsTime(localRecord.recitationsTime),
+        quranRecord = translateNums(
+            string = localRecord.quranPages.toString(),
+            numeralsLanguage = numeralsLanguage
+        ),
+        recitationsRecord = formatRecitationsTime(
+            millis = localRecord.recitationsTime,
+            numeralsLanguage = numeralsLanguage
+        ),
         numeralsLanguage = numeralsLanguage
-    )}.stateIn(
+    )}.combine(
+        domain.getLocation()
+    ) { state, location ->
+        state.copy(location = location)
+    }.stateIn(
         initialValue = HomeUiState(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
@@ -61,8 +72,6 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            location = domain.getLocation().first()
-
             val isSuccess = domain.syncRecords()
             if (isSuccess) {
                 _uiState.update { it.copy(
@@ -74,8 +83,7 @@ class HomeViewModel @Inject constructor(
 
     fun onStart() {
         viewModelScope.launch {
-            location = domain.getLocation().first()
-            if (location != null)
+            if (_uiState.value.location != null)
                 setupPrayersCard()
         }
     }
@@ -99,10 +107,12 @@ class HomeViewModel @Inject constructor(
 
     private fun setupPrayersCard() {
         viewModelScope.launch {
-            times = domain.getPrayerTimeMap(location!!)
-            formattedTimes = domain.getStrPrayerTimeMap(location!!)
-            tomorrowFajr = domain.getTomorrowFajr(location!!)
-            formattedTomorrowFajr = domain.getStrTomorrowFajr(location!!)
+            val location = _uiState.value.location!!
+
+            times = domain.getPrayerTimeMap(location)
+            formattedTimes = domain.getStrPrayerTimeMap(location)
+            tomorrowFajr = domain.getTomorrowFajr(location)
+            formattedTomorrowFajr = domain.getStrTomorrowFajr(location)
 
             setupUpcomingPrayer()
         }
@@ -146,8 +156,8 @@ class HomeViewModel @Inject constructor(
 
                 _uiState.update { it.copy(
                     remaining = translateNums(
-                        numeralsLanguage = it.numeralsLanguage,
                         string = hms,
+                        numeralsLanguage = it.numeralsLanguage,
                         timeFormat = true
                     ),
                     timeFromPreviousPrayer =
@@ -167,24 +177,18 @@ class HomeViewModel @Inject constructor(
         }.start()
     }
 
-    private fun formatRecitationsTime(millis: Long): String {
+    private fun formatRecitationsTime(millis: Long, numeralsLanguage: Language): String {
         val hours = millis / (60 * 60 * 1000) % 24
         val minutes = millis / (60 * 1000) % 60
         val seconds = millis / 1000 % 60
 
         return translateNums(
-            _uiState.value.numeralsLanguage,
-            String.format(
+            string = String.format(
                 Locale.US, "%02d:%02d:%02d",
                 hours, minutes, seconds
-            )
+            ),
+            numeralsLanguage = numeralsLanguage
         )
     }
-
-    private fun translateNumber(num: Int) =
-        translateNums(
-            numeralsLanguage = _uiState.value.numeralsLanguage,
-            string = num.toString()
-        )
 
 }

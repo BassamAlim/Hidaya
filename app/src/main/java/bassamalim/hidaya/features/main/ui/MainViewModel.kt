@@ -13,8 +13,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -24,29 +22,19 @@ class MainViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private lateinit var numeralsLanguage: Language
-
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
-        domain.getDateOffset()
-    ) { state, dateOffset -> state.copy(
-        hijriDate = getHijriDate(dateOffset)
+        domain.getDateOffset(),
+        domain.getNumeralsLanguage()
+    ) { state, dateOffset, numeralsLanguage -> state.copy(
+        hijriDate = getHijriDate(dateOffset, numeralsLanguage),
+        gregorianDate = getGregorianDate(numeralsLanguage)
     )}.stateIn(
         initialValue = MainUiState(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
     )
-
-    init {
-        viewModelScope.launch {
-            numeralsLanguage = domain.getNumeralsLanguage()
-
-            _uiState.update { it.copy(
-                gregorianDate = getGregorianDate()
-            )}
-        }
-    }
 
     fun onDateClick() {
         navigator.navigateForResult(
@@ -55,7 +43,7 @@ class MainViewModel @Inject constructor(
         )
     }
 
-    private fun getHijriDate(dateOffset: Int): String {
+    private fun getHijriDate(dateOffset: Int, numeralsLanguage: Language): String {
         val hijri = domain.getHijriDateCalendar(dateOffset)
 
         val hDayName = domain.getWeekDays()[hijri[Calendar.DAY_OF_WEEK] - 1]
@@ -67,7 +55,7 @@ class MainViewModel @Inject constructor(
         )
     }
 
-    private fun getGregorianDate(): String {
+    private fun getGregorianDate(numeralsLanguage: Language): String {
         val gregorian = domain.getGregorianDateCalendar()
 
         val mMonth = domain.getGregorianMonths()[gregorian[Calendar.MONTH]]

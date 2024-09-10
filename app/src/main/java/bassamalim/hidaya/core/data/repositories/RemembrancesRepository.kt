@@ -4,22 +4,27 @@ import bassamalim.hidaya.core.data.database.daos.RemembranceCategoriesDao
 import bassamalim.hidaya.core.data.database.daos.RemembrancePassagesDao
 import bassamalim.hidaya.core.data.database.daos.RemembrancesDao
 import bassamalim.hidaya.core.data.preferences.dataSources.RemembrancePreferencesDataSource
+import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RemembrancesRepository @Inject constructor(
     private val remembrancePreferencesDataSource: RemembrancePreferencesDataSource,
     private val remembranceCategoriesDao: RemembranceCategoriesDao,
     private val remembrancesDao: RemembrancesDao,
-    private val remembrancePassagesDao: RemembrancePassagesDao
+    private val remembrancePassagesDao: RemembrancePassagesDao,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher
 ) {
 
-    fun getRemembranceCategoryName(id: Int, language: Language) =
+    suspend fun getRemembranceCategoryName(id: Int, language: Language) = withContext(dispatcher) {
         if (language == Language.ARABIC) remembranceCategoriesDao.getNameAr(id)
         else remembranceCategoriesDao.getNameEn(id)
+    }
 
     fun observeAllRemembrances() = remembrancesDao.observeAll()
 
@@ -29,7 +34,9 @@ class RemembrancesRepository @Inject constructor(
         remembrancesDao.observeCategoryRemembrances(categoryId)
 
     suspend fun setFavorite(id: Int, value: Boolean) {
-        remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
+        withContext(dispatcher) {
+            remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
+        }
 
         setFavoriteStatusesBackup(
             remembrancesDao.observeFavoriteStatuses().first().mapIndexed { index, isFavorite ->
@@ -39,8 +46,10 @@ class RemembrancesRepository @Inject constructor(
     }
 
     suspend fun setFavoriteStatuses(favorites: Map<Int, Boolean>) {
-        favorites.forEach { (id, value) ->
-            remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
+        withContext(dispatcher) {
+            favorites.forEach { (id, value) ->
+                remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
+            }
         }
     }
 
@@ -56,12 +65,14 @@ class RemembrancesRepository @Inject constructor(
         )}
     }
 
-    fun getRemembranceName(id: Int, language: Language) =
+    suspend fun getRemembranceName(id: Int, language: Language) = withContext(dispatcher) {
         if (language == Language.ARABIC) remembrancesDao.getNameAr(id)
         else remembrancesDao.getNameEn(id)
+    }
 
-    fun getRemembrancePassages(remembranceId: Int) =
+    suspend fun getRemembrancePassages(remembranceId: Int) = withContext(dispatcher) {
         remembrancePassagesDao.getRemembrancePassages(remembranceId)
+    }
 
     fun getTextSize() = remembrancePreferencesDataSource.flow.map {
         it.textSize

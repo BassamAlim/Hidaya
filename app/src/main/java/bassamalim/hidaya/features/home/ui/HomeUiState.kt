@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.home.ui
 
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.models.Location
 
 data class HomeUiState(
     val upcomingPrayerName: String = "",
@@ -13,5 +14,6 @@ data class HomeUiState(
     val quranRecord: String = "",
     val recitationsRecord: String = "",
     val isLeaderboardEnabled: Boolean = false,
-    val numeralsLanguage: Language = Language.ENGLISH
+    val numeralsLanguage: Language = Language.ARABIC,
+    val location: Location? = null
 )

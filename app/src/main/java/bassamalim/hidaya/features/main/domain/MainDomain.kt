@@ -3,7 +3,6 @@ package bassamalim.hidaya.features.main.domain
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
-import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -23,7 +22,7 @@ class MainDomain @Inject constructor(
 
     fun getGregorianDateCalendar(): Calendar = Calendar.getInstance()
 
-    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
+    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
     fun getWeekDays() = appStateRepository.getWeekDays()
 

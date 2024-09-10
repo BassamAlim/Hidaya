@@ -6,6 +6,7 @@ import android.util.Log
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.database.daos.BooksDao
 import bassamalim.hidaya.core.data.preferences.dataSources.BooksPreferencesDataSource
+import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.other.Global
@@ -16,7 +17,9 @@ import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -25,13 +28,16 @@ class BooksRepository @Inject constructor(
     private val resources: Resources,
     private val booksDao: BooksDao,
     private val booksPreferencesDataSource: BooksPreferencesDataSource,
-    private val gson: Gson
+    private val gson: Gson,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher
 ) {
 
     private val prefix = "/Books/"
     private val path = "${app.getExternalFilesDir(null)}/Books/"
 
-    fun getBooks() = booksDao.getAll()
+    suspend fun getBooks() = withContext(dispatcher) {
+        booksDao.getAll()
+    }
 
     fun getBook(bookId: Int): Book {
         val path = app.getExternalFilesDir(null).toString() + "/Books/" + bookId + ".json"
@@ -192,7 +198,7 @@ class BooksRepository @Inject constructor(
         )}
     }
 
-    fun getBookContents(): List<Book> {
+    suspend fun getBookContents(): List<Book> {
         val dir = File(path)
         if (!dir.exists()) return emptyList()
 
@@ -217,8 +223,9 @@ class BooksRepository @Inject constructor(
     fun getMaxMatchesItems(): Array<String> =
         resources.getStringArray(R.array.searcher_matches_items)
 
-    fun getBookTitles(language: Language): List<String> =
+    suspend fun getBookTitles(language: Language) = withContext(dispatcher) {
         if (language == Language.ENGLISH) booksDao.getTitlesEn()
         else booksDao.getTitlesAr()
+    }
 
 }
