@@ -1,7 +1,7 @@
 package bassamalim.hidaya.core.data.repositories
 
-import bassamalim.hidaya.core.data.database.daos.QuizAnswersDao
-import bassamalim.hidaya.core.data.database.daos.QuizQuestionsDao
+import bassamalim.hidaya.core.data.room.daos.QuizAnswersDao
+import bassamalim.hidaya.core.data.room.daos.QuizQuestionsDao
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.models.QuizFullQuestion
 import kotlinx.coroutines.CoroutineDispatcher

@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.leaderboard.domain
 
 import android.app.Application
-import bassamalim.hidaya.core.data.Response
+import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.models.UserRecord

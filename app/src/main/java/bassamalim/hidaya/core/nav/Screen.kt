@@ -6,8 +6,8 @@ sealed class Screen(val route: String) {
 
     data class RemembrancesMenu(
         val type: String,
-        val category: String="-1"
-    ): Screen("remembrances_list/$type/$category")
+        val categoryId: String="0"
+    ): Screen("remembrances_list/$type/$categoryId")
 
     data class RemembranceReader(
         val id: String

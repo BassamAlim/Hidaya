@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.ListType
+import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
@@ -141,12 +141,12 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     }
 
     fun getItems(page: Int): Flow<List<Recitation>> {
-        val listType = ListType.entries[page]
+        val menuType = MenuType.entries[page]
 
         val recitersFlow = domain.observeAllReciters(language)
         return recitersFlow.map { reciters ->
             val items = reciters.filter { reciter ->
-                !(listType == ListType.FAVORITES && !reciter.isFavorite)
+                !(menuType == MenuType.FAVORITES && !reciter.isFavorite)
             }.map { reciter ->
                 val narrations = filterSelectedNarrations(
                     domain.getReciterNarrations(reciter.id, language)

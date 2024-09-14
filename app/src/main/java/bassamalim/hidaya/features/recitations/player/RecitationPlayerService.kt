@@ -36,7 +36,7 @@ import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
-import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.room.AppDatabase
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
@@ -45,7 +45,7 @@ import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
-import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedRecitation
+import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -821,7 +821,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         if (reciterName == null) return
 
         recitationsRepository.setLastPlayedMedia(
-            LastPlayedRecitation(
+            LastPlayedMedia(
                 mediaId = mediaId!!,
                 progress = progress.toLong()
             )

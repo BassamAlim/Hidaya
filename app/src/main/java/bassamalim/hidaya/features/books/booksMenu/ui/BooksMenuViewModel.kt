@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.books.booksMenu.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.data.database.models.Book
+import bassamalim.hidaya.core.data.room.models.Book
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator

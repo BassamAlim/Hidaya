@@ -51,7 +51,7 @@ class QuranReaderViewModel @Inject constructor(
     private lateinit var pagerState: PagerState
     private lateinit var scrollState: ScrollState
     private lateinit var suraNames: List<String>
-    private lateinit var allVerses: List<bassamalim.hidaya.core.data.database.models.Verse>
+    private lateinit var allVerses: List<bassamalim.hidaya.core.data.room.models.Verse>
     var pageNum = 0
         private set
     private var suraId = 0

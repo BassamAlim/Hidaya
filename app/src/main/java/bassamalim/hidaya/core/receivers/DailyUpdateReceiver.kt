@@ -12,7 +12,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import bassamalim.hidaya.core.data.database.daos.SurasDao
+import bassamalim.hidaya.core.data.room.daos.SurasDao
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
@@ -109,8 +109,8 @@ class DailyUpdateReceiver : BroadcastReceiver() {
                 setSuraFavorites = quranRepository::setSuraFavorites,
                 reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
                 setReciterFavorites = recitationsRepository::setReciterFavorites,
-                remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
-                setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
+                remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
+                setRemembranceFavorites = remembrancesRepository::setFavorites,
             )
         }
     }

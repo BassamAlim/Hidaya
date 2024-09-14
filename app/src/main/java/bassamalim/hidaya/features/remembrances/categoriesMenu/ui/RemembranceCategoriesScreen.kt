@@ -50,14 +50,14 @@ fun RemembranceCategoriesScreen(
             MySquareButton(
                 text = stringResource(R.string.day_and_night_remembrances),
                 imagePainter = painterResource(R.drawable.ic_day_and_night),
-                onClick = { viewModel.onCategoryClick(category = 0) }
+                onClick = { viewModel.onCategoryClick(categoryId = 0) }
             )
 
             // prayer recitations button
             MySquareButton(
                 text = stringResource(R.string.prayers_remembrances),
                 imagePainter = painterResource(R.drawable.ic_praying),
-                onClick = { viewModel.onCategoryClick(category = 1) }
+                onClick = { viewModel.onCategoryClick(categoryId = 1) }
             )
         }
 
@@ -69,13 +69,13 @@ fun RemembranceCategoriesScreen(
             MySquareButton(
                 text = stringResource(R.string.quran_remembrances),
                 imagePainter = painterResource(R.drawable.ic_closed_quran),
-                onClick = { viewModel.onCategoryClick(category = 2) }
+                onClick = { viewModel.onCategoryClick(categoryId = 2) }
             )
             // actions recitations button
             MySquareButton(
                 text = stringResource(R.string.actions_remembrances),
                 imagePainter = painterResource(R.drawable.ic_actions),
-                onClick = { viewModel.onCategoryClick(category = 3) }
+                onClick = { viewModel.onCategoryClick(categoryId = 3) }
             )
         }
 
@@ -87,13 +87,13 @@ fun RemembranceCategoriesScreen(
             MySquareButton(
                 text = stringResource(R.string.events_remembrances),
                 imagePainter = painterResource(R.drawable.ic_events),
-                onClick = { viewModel.onCategoryClick(category = 4) }
+                onClick = { viewModel.onCategoryClick(categoryId = 4) }
             )
             // emotion recitations button
             MySquareButton(
                 text = stringResource(R.string.emotion_remembrances),
                 imagePainter = painterResource(R.drawable.ic_emotion),
-                onClick = { viewModel.onCategoryClick(category = 5) }
+                onClick = { viewModel.onCategoryClick(categoryId = 5) }
             )
         }
 
@@ -105,13 +105,13 @@ fun RemembranceCategoriesScreen(
             MySquareButton(
                 text = stringResource(R.string.places_remembrances),
                 imagePainter = painterResource(R.drawable.ic_going_out),
-                onClick = { viewModel.onCategoryClick(category = 6) }
+                onClick = { viewModel.onCategoryClick(categoryId = 6) }
             )
             // more recitations button
             MySquareButton(
                 text = stringResource(R.string.title_more),
                 imagePainter = painterResource(R.drawable.ic_duaa_moon),
-                onClick = { viewModel.onCategoryClick(category = 7) }
+                onClick = { viewModel.onCategoryClick(categoryId = 7) }
             )
         }
     }

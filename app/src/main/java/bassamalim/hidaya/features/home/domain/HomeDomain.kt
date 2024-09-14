@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.home.domain
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import bassamalim.hidaya.core.data.Response
+import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository

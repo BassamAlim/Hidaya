@@ -1,17 +1,17 @@
 package bassamalim.hidaya.core.data.repositories
 
 import android.app.Application
-import bassamalim.hidaya.core.data.database.daos.RecitationNarrationsDao
-import bassamalim.hidaya.core.data.database.daos.RecitationRecitersDao
-import bassamalim.hidaya.core.data.database.daos.VerseRecitationsDao
-import bassamalim.hidaya.core.data.database.daos.VerseRecitersDao
-import bassamalim.hidaya.core.data.preferences.dataSources.RecitationsPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.RecitationsPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.room.daos.RecitationNarrationsDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.RecitationRecitersDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.VerseRecitationsDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.VerseRecitersDao
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.models.Reciter
-import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedRecitation
+import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
@@ -72,7 +72,7 @@ class RecitationsRepository @Inject constructor(
                 value = if (isFavorite) 1 else 0
             )
         }
-        updateReciterFavoritesBackup()
+        updateReciterFavoritesBackup(getReciterFavoriteStatuses().first())
     }
 
     suspend fun setReciterFavorites(favorites: Map<Int, Boolean>) {
@@ -88,15 +88,10 @@ class RecitationsRepository @Inject constructor(
         }
     }
 
-    fun getReciterFavoritesBackup() = recitationsPreferencesDataSource.flow.map { preferences ->
-        preferences.reciterFavorites.toMap()
-    }
+    fun getReciterFavoritesBackup() = recitationsPreferencesDataSource.getReciterFavorites()
 
-    private suspend fun updateReciterFavoritesBackup() {
-        val reciterFavorites = getReciterFavoritesBackup().first()
-        recitationsPreferencesDataSource.update { it.copy(
-            reciterFavorites = reciterFavorites.toPersistentMap()
-        )}
+    private suspend fun updateReciterFavoritesBackup(favorites: Map<Int, Boolean>) {
+        recitationsPreferencesDataSource.updateReciterFavorites(favorites.toPersistentMap())
     }
 
     suspend fun getAllNarrations(language: Language) = withContext(dispatcher) {
@@ -160,9 +155,8 @@ class RecitationsRepository @Inject constructor(
         }
     }
 
-    fun getNarrationSelections() = recitationsPreferencesDataSource.flow.map {
-        val selections = it.narrationSelections.toMap()
-        selections.ifEmpty {
+    fun getNarrationSelections() = recitationsPreferencesDataSource.getNarrationSelections().map {
+        it.ifEmpty {
             withContext(dispatcher) {
                 val narrations = recitationNarrationsDao.getAll()
                 narrations.associate { narration -> narration.id to true }
@@ -171,79 +165,49 @@ class RecitationsRepository @Inject constructor(
     }
 
     suspend fun setNarrationSelections(selections: Map<Int, Boolean>) {
-        recitationsPreferencesDataSource.update { it.copy(
-            narrationSelections = selections.toPersistentMap()
-        )}
+        recitationsPreferencesDataSource.updateNarrationSelections(selections.toPersistentMap())
     }
 
-    fun getRepeatMode() = recitationsPreferencesDataSource.flow.map {
-        it.repeatMode
-    }
+    fun getRepeatMode() = recitationsPreferencesDataSource.getRepeatMode()
 
     suspend fun setRepeatMode(mode: Int) {
-        recitationsPreferencesDataSource.update { it.copy(
-            repeatMode = mode
-        )}
+        recitationsPreferencesDataSource.updateRepeatMode(mode)
     }
 
-    fun getShuffleMode() = recitationsPreferencesDataSource.flow.map {
-        it.shuffleMode
-    }
+    fun getShuffleMode() = recitationsPreferencesDataSource.getShuffleMode()
 
     suspend fun setShuffleMode(mode: Int) {
-        recitationsPreferencesDataSource.update { it.copy(
-            shuffleMode = mode
-        )}
+        recitationsPreferencesDataSource.updateShuffleMode(mode)
     }
 
-    fun getLastPlayedMedia() = recitationsPreferencesDataSource.flow.map {
-        it.lastPlayedMedia
+    fun getLastPlayedMedia() = recitationsPreferencesDataSource.getLastPlayedMedia()
+
+    suspend fun setLastPlayedMedia(lastPlayed: LastPlayedMedia) {
+        recitationsPreferencesDataSource.updateLastPlayedMedia(lastPlayed)
     }
 
-    suspend fun setLastPlayedMedia(lastPlayed: LastPlayedRecitation) {
-        recitationsPreferencesDataSource.update { it.copy(
-            lastPlayedMedia = lastPlayed
-        )}
-    }
-
-    fun getVerseReciterId() = recitationsPreferencesDataSource.flow.map {
-        it.verseReciterId
-    }
+    fun getVerseReciterId() = recitationsPreferencesDataSource.getVerseReciterId()
 
     suspend fun setVerseReciterId(verseReciterId: Int) {
-        recitationsPreferencesDataSource.update { it.copy(
-            verseReciterId = verseReciterId
-        )}
+        recitationsPreferencesDataSource.updateVerseReciterId(verseReciterId)
     }
 
-    fun getVerseRepeatMode() = recitationsPreferencesDataSource.flow.map {
-        it.verseRepeatMode
-    }
+    fun getVerseRepeatMode() = recitationsPreferencesDataSource.getVerseRepeatMode()
 
     suspend fun setVerseRepeatMode(verseRepeatMode: VerseRepeatMode) {
-        recitationsPreferencesDataSource.update { it.copy(
-            verseRepeatMode = verseRepeatMode
-        )}
+        recitationsPreferencesDataSource.updateVerseRepeatMode(verseRepeatMode)
     }
 
-    fun getShouldStopOnSuraEnd() = recitationsPreferencesDataSource.flow.map {
-        it.shouldStopOnSuraEnd
-    }
+    fun getShouldStopOnSuraEnd() = recitationsPreferencesDataSource.getShouldStopOnSuraEnd()
 
     suspend fun setShouldStopOnSuraEnd(shouldStopOnSuraEnd: Boolean) {
-        recitationsPreferencesDataSource.update { it.copy(
-            shouldStopOnSuraEnd = shouldStopOnSuraEnd
-        )}
+        recitationsPreferencesDataSource.updateShouldStopOnSuraEnd(shouldStopOnSuraEnd)
     }
 
-    fun getShouldStopOnPageEnd() = recitationsPreferencesDataSource.flow.map {
-        it.shouldStopOnPageEnd
-    }
+    fun getShouldStopOnPageEnd() = recitationsPreferencesDataSource.getShouldStopOnPageEnd()
 
     suspend fun setShouldStopOnPageEnd(shouldStopOnPageEnd: Boolean) {
-        recitationsPreferencesDataSource.update { it.copy(
-            shouldStopOnPageEnd = shouldStopOnPageEnd
-        )}
+        recitationsPreferencesDataSource.updateShouldStopOnPageEnd(shouldStopOnPageEnd)
     }
 
     suspend fun getVerseReciterNames() = withContext(dispatcher) {

@@ -1,64 +1,43 @@
 package bassamalim.hidaya.core.data.repositories
 
-import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.AppSettingsPreferencesDataSource
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AppSettingsRepository @Inject constructor(
     private val appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource
 ) {
 
-    fun getLanguage() = appSettingsPreferencesDataSource.flow.map {
-        it.language
-    }
+    fun getLanguage() = appSettingsPreferencesDataSource.getLanguage()
 
     suspend fun setLanguage(language: Language) {
-        appSettingsPreferencesDataSource.update { it.copy(
-            language = language
-        )}
+        appSettingsPreferencesDataSource.updateLanguage(language)
     }
 
-    fun getNumeralsLanguage() = appSettingsPreferencesDataSource.flow.map {
-        it.numeralsLanguage
-    }
+    fun getNumeralsLanguage() = appSettingsPreferencesDataSource.getNumeralsLanguage()
 
     suspend fun setNumeralsLanguage(numeralsLanguage: Language) {
-        appSettingsPreferencesDataSource.update { it.copy(
-            numeralsLanguage = numeralsLanguage
-        )}
+        appSettingsPreferencesDataSource.updateNumeralsLanguage(numeralsLanguage)
     }
 
-    fun getTheme() = appSettingsPreferencesDataSource.flow.map {
-        it.theme
-    }
+    fun getTheme() = appSettingsPreferencesDataSource.getTheme()
 
     suspend fun setTheme(theme: Theme) {
-        appSettingsPreferencesDataSource.update { it.copy(
-            theme = theme
-        )}
+        appSettingsPreferencesDataSource.updateTheme(theme)
     }
 
-    fun getTimeFormat() = appSettingsPreferencesDataSource.flow.map {
-        it.timeFormat
-    }
+    fun getTimeFormat() = appSettingsPreferencesDataSource.getTimeFormat()
 
     suspend fun setTimeFormat(timeFormat: TimeFormat) {
-        appSettingsPreferencesDataSource.update { it.copy(
-            timeFormat = timeFormat
-        )}
+        appSettingsPreferencesDataSource.updateTimeFormat(timeFormat)
     }
 
-    fun getDateOffset() = appSettingsPreferencesDataSource.flow.map {
-        it.dateOffset
-    }
+    fun getDateOffset() = appSettingsPreferencesDataSource.getDateOffset()
 
     suspend fun setDateOffset(dateOffset: Int) {
-        appSettingsPreferencesDataSource.update { it.copy(
-            dateOffset = dateOffset
-        )}
+        appSettingsPreferencesDataSource.updateDateOffset(dateOffset)
     }
 
 }

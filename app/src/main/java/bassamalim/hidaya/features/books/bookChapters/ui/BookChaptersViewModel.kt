@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.books.bookChapters.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.enums.ListType
+import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.books.bookChapters.domain.BookChaptersDomain
@@ -35,12 +35,12 @@ class BookChaptersViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun getItems(page: Int): Flow<List<BookChapter>> {
-        val listType = ListType.entries[page]
+        val menuType = MenuType.entries[page]
 
         return favoritesFlow.map { favorites ->
             favorites.filter {
-                (listType == ListType.ALL ||
-                        listType == ListType.FAVORITES && favorites[it.key]!!)
+                (menuType == MenuType.ALL ||
+                        menuType == MenuType.FAVORITES && favorites[it.key]!!)
                         && (_uiState.value.searchText.isEmpty() ||
                         book.chapters[it.key].title
                             .contains(_uiState.value.searchText, true))

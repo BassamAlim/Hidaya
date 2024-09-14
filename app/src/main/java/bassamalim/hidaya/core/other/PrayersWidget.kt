@@ -5,7 +5,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.widget.RemoteViews
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.database.daos.SurasDao
+import bassamalim.hidaya.core.data.room.daos.SurasDao
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
@@ -93,8 +93,8 @@ class PrayersWidget : AppWidgetProvider() {
                 setSuraFavorites = quranRepository::setSuraFavorites,
                 reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
                 setReciterFavorites = recitationsRepository::setReciterFavorites,
-                remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
-                setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
+                remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
+                setRemembranceFavorites = remembrancesRepository::setFavorites,
             )
         }
     }

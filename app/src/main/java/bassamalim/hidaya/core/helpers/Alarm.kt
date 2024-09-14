@@ -153,7 +153,7 @@ class Alarm(
     private suspend fun setDevotionAlarm(pid: PID) {
         Log.i(Global.TAG, "in set extra alarm")
 
-        val timeOfDay = notificationsRepository.getDevotionReminderTimeOfDayMap().first()[pid]!!
+        val timeOfDay = notificationsRepository.getDevotionReminderTimes().first()[pid]!!
 
         val time = Calendar.getInstance()
         time[Calendar.HOUR_OF_DAY] = timeOfDay.hour

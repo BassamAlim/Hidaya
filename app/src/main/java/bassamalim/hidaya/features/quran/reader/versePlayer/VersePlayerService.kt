@@ -31,7 +31,7 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.database.models.Verse
+import bassamalim.hidaya.core.data.room.models.Verse
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository

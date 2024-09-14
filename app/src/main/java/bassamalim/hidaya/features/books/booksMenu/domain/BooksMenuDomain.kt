@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.books.booksMenu.domain
 
 import android.util.Log
-import bassamalim.hidaya.core.data.database.models.Book
+import bassamalim.hidaya.core.data.room.models.Book
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.DownloadState

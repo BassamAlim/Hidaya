@@ -41,8 +41,8 @@ class AboutDomain @Inject constructor(
             setSuraFavorites = quranRepository::setSuraFavorites,
             reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
             setReciterFavorites = recitationsRepository::setReciterFavorites,
-            remembranceFavorites = remembrancesRepository.getFavoriteStatusesBackup().first(),
-            setRemembranceFavorites = remembrancesRepository::setFavoriteStatuses,
+            remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
+            setRemembranceFavorites = remembrancesRepository::setFavorites,
         )
     }
 

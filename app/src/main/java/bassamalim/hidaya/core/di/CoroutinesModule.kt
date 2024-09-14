@@ -5,20 +5,27 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Qualifier
 
 @Module @InstallIn(SingletonComponent::class)
 class CoroutinesModule {
 
     @Provides @DefaultDispatcher
-    fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+    fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 
     @Provides @IoDispatcher
-    fun providesIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides @MainDispatcher
-    fun providesMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+
+    @Provides @ApplicationScope
+    fun provideApplicationScope(): CoroutineScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
 }
 
@@ -30,3 +37,7 @@ annotation class IoDispatcher
 
 @Qualifier @Retention(AnnotationRetention.BINARY)
 annotation class MainDispatcher
+
+
+@Qualifier @Retention(AnnotationRetention.BINARY)
+annotation class ApplicationScope

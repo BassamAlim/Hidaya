@@ -7,7 +7,7 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.dataStoreFile
 import androidx.room.Room
-import bassamalim.hidaya.core.data.database.AppDatabase
+import bassamalim.hidaya.core.data.room.AppDatabase
 import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
 import bassamalim.hidaya.core.data.preferences.dataSources.AppStatePreferencesDataSource
 import bassamalim.hidaya.core.data.preferences.dataSources.BooksPreferencesDataSource

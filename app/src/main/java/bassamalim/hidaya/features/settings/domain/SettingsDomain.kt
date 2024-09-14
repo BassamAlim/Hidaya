@@ -82,10 +82,10 @@ class SettingsDomain @Inject constructor(
     }
 
     fun getDevotionReminderTimeOfDayMap() =
-        notificationsRepository.getDevotionReminderTimeOfDayMap()
+        notificationsRepository.getDevotionReminderTimes()
 
     suspend fun setDevotionReminderTimeOfDay(timeOfDay: TimeOfDay, pid: PID) {
-        notificationsRepository.setDevotionReminderTimeOfDay(timeOfDay, pid)
+        notificationsRepository.setDevotionReminderTimes(timeOfDay, pid)
     }
 
     fun getPrayerTimesCalculatorSettings() = prayersRepository.getPrayerTimesCalculatorSettings()

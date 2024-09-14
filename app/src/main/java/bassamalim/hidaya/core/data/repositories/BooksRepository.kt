@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.res.Resources
 import android.util.Log
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.database.daos.BooksDao
-import bassamalim.hidaya.core.data.preferences.dataSources.BooksPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.BooksPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.room.daos.BooksDao
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Book
@@ -18,6 +18,7 @@ import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -50,80 +51,59 @@ class BooksRepository @Inject constructor(
         return book.chapters[chapterId].doors.toList()
     }
 
-    fun getChapterFavorites(book: Book) = booksPreferencesDataSource.flow.map { bookPrefs ->
-        if (bookPrefs.chapterFavorites.containsKey(book.info.id))
-            bookPrefs.chapterFavorites[book.info.id]!!
-        else {
-            val favs = book.chapters.associate { it.id to false }
-            booksPreferencesDataSource.update { it.copy(
-                chapterFavorites = it.chapterFavorites.mutate { oldMap ->
-                    oldMap[book.info.id] = favs.toPersistentMap()
-                }
-            )}
-            favs
+    fun getChapterFavorites(book: Book) = booksPreferencesDataSource.getChapterFavorites()
+        .map { chapterFavorites ->
+            if (chapterFavorites.containsKey(book.info.id))
+                chapterFavorites[book.info.id]!!
+            else {
+                val favs = book.chapters.associate { it.id to false }
+                booksPreferencesDataSource.updateChapterFavorites(
+                    chapterFavorites.mutate { oldMap ->
+                        oldMap[book.info.id] = favs.toPersistentMap()
+                    }
+                )
+                favs
+            }
         }
-    }
 
     suspend fun setChapterFavorites(bookId: Int, favs: Map<Int, Boolean>) {
-        booksPreferencesDataSource.update { it.copy(
-            chapterFavorites = it.chapterFavorites.mutate { oldMap ->
+        booksPreferencesDataSource.updateChapterFavorites(
+            booksPreferencesDataSource.getChapterFavorites().first().mutate { oldMap ->
                 oldMap[bookId] = favs.toPersistentMap()
             }
-        )}
+        )
     }
 
     suspend fun setChapterFavorite(bookId: Int, chapterNum: Int, newValue: Boolean) {
-        booksPreferencesDataSource.update { it.copy(
-            chapterFavorites = it.chapterFavorites.mutate { oldMap ->
+        booksPreferencesDataSource.updateChapterFavorites(
+            booksPreferencesDataSource.getChapterFavorites().first().mutate { oldMap ->
                 oldMap[bookId] = oldMap[bookId]!!.put(chapterNum, newValue)
             }
-        )}
+        )
     }
 
-    fun getTextSize() = booksPreferencesDataSource.flow.map {
-        it.textSize
-    }
+    fun getTextSize() = booksPreferencesDataSource.getTextSize()
 
     suspend fun setTextSize(textSize: Float) {
-        booksPreferencesDataSource.update { it.copy(
-            textSize = textSize
-        )}
+        booksPreferencesDataSource.updateTextSize(textSize)
     }
 
-    fun getSearchSelections() = booksPreferencesDataSource.flow.map {
-        it.searchSelections.toMap()
-    }
+    fun getSearchSelections() = booksPreferencesDataSource.getSearchSelections()
 
     suspend fun setSearchSelections(searchSelections: Map<Int, Boolean>) {
-        booksPreferencesDataSource.update { it.copy(
-            searchSelections = searchSelections.toPersistentMap()
-        )}
+        booksPreferencesDataSource.updateSearchSelections(searchSelections.toPersistentMap())
     }
 
-    fun getSearchMaxMatches() = booksPreferencesDataSource.flow.map {
-        it.searchMaxMatches
-    }
+    fun getSearchMaxMatches() = booksPreferencesDataSource.getSearchMaxMatches()
 
     suspend fun setSearchMaxMatches(searchMaxMatches: Int) {
-        booksPreferencesDataSource.update { it.copy(
-            searchMaxMatches = searchMaxMatches
-        )}
+        booksPreferencesDataSource.updateSearchMaxMatches(searchMaxMatches)
     }
 
-    fun getShouldShowTutorial() = booksPreferencesDataSource.flow.map {
-        it.shouldShowTutorial
-    }
+    fun getShouldShowTutorial() = booksPreferencesDataSource.getShouldShowTutorial()
 
     suspend fun setShouldShowTutorial(shouldShowTutorial: Boolean) {
-        booksPreferencesDataSource.update { it.copy(
-            shouldShowTutorial = shouldShowTutorial
-        )}
-    }
-
-    suspend fun setDoNotShowAgain() {
-        booksPreferencesDataSource.update { it.copy(
-            shouldShowTutorial = false
-        )}
+        booksPreferencesDataSource.updateShouldShowTutorial(shouldShowTutorial)
     }
 
     fun download(bookId: Int): FileDownloadTask {
@@ -173,29 +153,17 @@ class BooksRepository @Inject constructor(
     }
 
     fun getBookSelections() =
-        booksPreferencesDataSource.flow.map {
-            it.searchSelections.ifEmpty {
+        booksPreferencesDataSource.getSearchSelections().map {
+            it.ifEmpty {
                 val books = getBooks()
-                it.searchSelections.mutate { oldMap ->
+                it.mutate { oldMap ->
                     books.forEach { book -> oldMap[book.id] = true }
                 }
             }.toMap()
         }
 
     suspend fun setBookSelections(selections: Map<Int, Boolean>) {
-        booksPreferencesDataSource.update { it.copy(
-            searchSelections = selections.toPersistentMap()
-        )}
-    }
-
-    fun getMaxMatches() = booksPreferencesDataSource.flow.map {
-        it.searchMaxMatches
-    }
-
-    suspend fun setMaxMatches(value: Int) {
-        booksPreferencesDataSource.update { it.copy(
-            searchMaxMatches = value
-        )}
+        booksPreferencesDataSource.updateSearchSelections(selections.toPersistentMap())
     }
 
     suspend fun getBookContents(): List<Book> {

@@ -1,7 +1,7 @@
 package bassamalim.hidaya.core.data.repositories
 
-import bassamalim.hidaya.core.data.database.daos.SurasDao
-import bassamalim.hidaya.core.data.database.daos.VersesDao
+import bassamalim.hidaya.core.data.room.daos.SurasDao
+import bassamalim.hidaya.core.data.room.daos.VersesDao
 import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language

@@ -9,10 +9,10 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.data.database.models.RecitationNarration
+import bassamalim.hidaya.core.data.room.models.RecitationNarration
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.ListType
+import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
@@ -93,14 +93,14 @@ class RecitationsSurasViewModel @Inject constructor(
     }
 
     fun getItems(page: Int): Flow<List<ReciterSura>> {
-        val listType = ListType.entries[page]
+        val menuType = MenuType.entries[page]
         val availableSuar = narration.availableSuras
 
         return suraFavorites.map { favoriteSuras ->
             (0..113).filter { i ->
                 (availableSuar.contains(",${(i + 1)},") ||
-                        (listType == ListType.FAVORITES && favoriteSuras[i]!!) ||
-                        (listType == ListType.DOWNLOADED && domain.checkIsDownloaded(i))) &&
+                        (menuType == MenuType.FAVORITES && favoriteSuras[i]!!) ||
+                        (menuType == MenuType.DOWNLOADED && domain.checkIsDownloaded(i))) &&
                         (_uiState.value.searchText.isEmpty() ||
                                 plainSuraNames[i].contains(_uiState.value.searchText, true))
             }.map { i ->

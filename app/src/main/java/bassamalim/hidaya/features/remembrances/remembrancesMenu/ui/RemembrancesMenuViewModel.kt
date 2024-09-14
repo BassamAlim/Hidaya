@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.ListType
+import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.remembrances.remembrancesMenu.RemembrancesItem
@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,20 +27,19 @@ class RemembrancesMenuViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private val type = savedStateHandle.get<String>("type") ?: ListType.ALL.name
-    private val category = savedStateHandle.get<Int>("category")?: 0
+    private val menuType = MenuType.valueOf(savedStateHandle["type"] ?: MenuType.ALL.name)
+    private val categoryId = savedStateHandle["category_id"] ?: 0
 
-    private var language: Language? = null
-
-    private val _uiState = MutableStateFlow(RemembrancesMenuUiState(
-        listType = ListType.valueOf(type),
-    ))
+    private val _uiState = MutableStateFlow(RemembrancesMenuUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
-        domain.getRemembrances(type, category, language)
-    ) { state, remembrances ->
+        domain.getLanguage()
+    ) { state, language ->
         state.copy(
-            remembrances = getItems(remembrances)
+            remembrances = getItems(
+                remembrances = domain.getRemembrances(menuType, categoryId, language).first(),
+                language = language
+            )
         )
     }.stateIn(
         initialValue = RemembrancesMenuUiState(),
@@ -47,17 +47,17 @@ class RemembrancesMenuViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
     )
 
-    init {
+    init { // TODO: do not launch coroutine in init block
         viewModelScope.launch {
-            language = domain.getLanguage()
-
-            _uiState.update { it.copy(
-                categoryTitle = domain.getCategoryTitle(category, language!!)
-            )}
+            if (menuType == MenuType.CUSTOM) {
+                _uiState.update { it.copy(
+                    categoryTitle = domain.getCategoryTitle(categoryId, language!!)
+                )}
+            }
         }
     }
 
-    private suspend fun getItems(remembrances: List<RemembrancesItem>) =
+    private suspend fun getItems(remembrances: List<RemembrancesItem>, language: Language) =
         remembrances.filter {
             !(language == Language.ENGLISH && !hasEn(it.id))
                     && !(_uiState.value.searchText.isNotEmpty()

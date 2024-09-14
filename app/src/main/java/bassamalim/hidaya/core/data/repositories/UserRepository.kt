@@ -1,8 +1,8 @@
 package bassamalim.hidaya.core.data.repositories
 
 import android.util.Log
-import bassamalim.hidaya.core.data.Response
-import bassamalim.hidaya.core.data.preferences.dataSources.UserPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.UserPreferencesDataSource
+import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.other.Global
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,34 +16,26 @@ class UserRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
 ) {
 
-    fun getLocalRecord() = userPreferencesDataSource.flow.map {
-        it.userRecord
-    }
+    fun getLocalRecord() = userPreferencesDataSource.getUserRecord()
 
-    fun getQuranRecord() = userPreferencesDataSource.flow.map {
-        it.userRecord.quranPages
-    }
+    fun getQuranRecord() = getLocalRecord().map { it.quranPages }
 
-    fun getRecitationsRecord() = userPreferencesDataSource.flow.map {
-        it.userRecord.recitationsTime
-    }
+    fun getRecitationsRecord() = getLocalRecord().map { it.recitationsTime }
 
     suspend fun setLocalRecord(userRecord: UserRecord) {
-        userPreferencesDataSource.update { it.copy(
-            userRecord = userRecord
-        )}
+        userPreferencesDataSource.updateUserRecord(userRecord)
     }
 
     suspend fun setQuranRecord(quranPages: Int) {
-        userPreferencesDataSource.update { it.copy(
-            userRecord = it.userRecord.copy(quranPages = quranPages)
-        )}
+        userPreferencesDataSource.updateUserRecord(
+            getLocalRecord().first().copy(quranPages = quranPages)
+        )
     }
 
     suspend fun setRecitationsRecord(recitationsTime: Long) {
-        userPreferencesDataSource.update { it.copy(
-            userRecord = it.userRecord.copy(recitationsTime = recitationsTime)
-        )}
+        userPreferencesDataSource.updateUserRecord(
+            getLocalRecord().first().copy(recitationsTime = recitationsTime)
+        )
     }
 
     suspend fun getRemoteRecord(deviceId: String): Response<UserRecord> {

@@ -83,7 +83,7 @@ class PrayersBoardDomain @Inject constructor(
         )
     }
 
-    private fun getNotificationTypes() = notificationsRepository.getNotificationTypeMap()
+    private fun getNotificationTypes() = notificationsRepository.getNotificationTypes()
 
     private fun getTimeOffsets() = prayersRepository.getTimeOffsets()
 

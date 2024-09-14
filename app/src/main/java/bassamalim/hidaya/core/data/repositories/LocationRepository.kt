@@ -1,9 +1,8 @@
 package bassamalim.hidaya.core.data.repositories
 
-import bassamalim.hidaya.core.data.database.daos.CitiesDao
-import bassamalim.hidaya.core.data.database.daos.CountriesDao
-import bassamalim.hidaya.core.data.database.models.Country
-import bassamalim.hidaya.core.data.preferences.dataSources.UserPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.UserPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.room.daos.CitiesDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.CountriesDao
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
@@ -11,7 +10,6 @@ import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.LocationIds
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -22,9 +20,7 @@ class LocationRepository @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher
 ) {
 
-    fun getLocation() = userPreferencesDataSource.flow.map {
-        it.location
-    }
+    fun getLocation() = userPreferencesDataSource.getLocation()
 
     suspend fun setLocation(location: android.location.Location) {
         val closestCity = getClosestCity(
@@ -33,7 +29,7 @@ class LocationRepository @Inject constructor(
                 longitude = location.longitude
             )
         )
-        userPreferencesDataSource.update { it.copy(
+        userPreferencesDataSource.updateLocation(
             location = Location(
                 type = LocationType.AUTO,
                 coordinates = Coordinates(
@@ -45,13 +41,13 @@ class LocationRepository @Inject constructor(
                     cityId = closestCity.id
                 )
             )
-        )}
+        )
     }
 
     suspend fun setLocation(countryId: Int, cityId: Int) {
         val city = getCity(cityId)
 
-        userPreferencesDataSource.update { it.copy(
+        userPreferencesDataSource.updateLocation(
             location = Location(
                 type = LocationType.MANUAL,
                 coordinates = Coordinates(
@@ -63,7 +59,7 @@ class LocationRepository @Inject constructor(
                     cityId = cityId
                 )
             )
-        )}
+        )
     }
 
     suspend fun getTimeZone(cityId: Int) = withContext(dispatcher) {

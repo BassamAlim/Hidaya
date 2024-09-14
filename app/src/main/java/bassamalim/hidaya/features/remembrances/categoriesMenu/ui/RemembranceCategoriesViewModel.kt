@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.remembrances.categoriesMenu.ui
 
 import androidx.lifecycle.ViewModel
-import bassamalim.hidaya.core.enums.ListType
+import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,21 +14,21 @@ class RemembranceCategoriesViewModel @Inject constructor(
 
     fun onAllRemembrancesClick() {
         navigator.navigate(
-            Screen.RemembrancesMenu(ListType.ALL.name)
+            Screen.RemembrancesMenu(MenuType.ALL.name)
         )
     }
 
     fun onFavoriteRemembrancesClick() {
         navigator.navigate(
-            Screen.RemembrancesMenu(ListType.FAVORITES.name)
+            Screen.RemembrancesMenu(MenuType.FAVORITES.name)
         )
     }
 
-    fun onCategoryClick(category: Int) {
+    fun onCategoryClick(categoryId: Int) {
         navigator.navigate(
             Screen.RemembrancesMenu(
-                type = ListType.CUSTOM.name,
-                category = category.toString()
+                type = MenuType.CUSTOM.name,
+                categoryId = categoryId.toString()
             )
         )
     }

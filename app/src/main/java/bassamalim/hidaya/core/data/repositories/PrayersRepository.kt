@@ -2,13 +2,14 @@ package bassamalim.hidaya.core.data.repositories
 
 import android.content.res.Resources
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.preferences.dataSources.PrayersPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.PrayersPreferencesDataSource
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -17,74 +18,59 @@ class PrayersRepository @Inject constructor(
     private val prayersPreferencesDataSource: PrayersPreferencesDataSource
 ) {
 
-    fun getPrayerTimesCalculatorSettings() = prayersPreferencesDataSource.flow.map {
-        it.prayerTimeCalculatorSettings
-    }
+    fun getPrayerTimesCalculatorSettings() =
+        prayersPreferencesDataSource.getPrayerTimeCalculatorSettings()
 
     suspend fun setCalculationMethod(calculationMethod: PrayerTimeCalculationMethod) {
-        prayersPreferencesDataSource.update { it.copy(
-            prayerTimeCalculatorSettings = it.prayerTimeCalculatorSettings.copy(
+        prayersPreferencesDataSource.updatePrayerTimeCalculatorSettings(
+            getPrayerTimesCalculatorSettings().first().copy(
                 calculationMethod = calculationMethod
             )
-        )}
+        )
     }
 
     suspend fun setJuristicMethod(juristicMethod: PrayerTimeJuristicMethod) {
-        prayersPreferencesDataSource.update { it.copy(
-            prayerTimeCalculatorSettings = it.prayerTimeCalculatorSettings.copy(
+        prayersPreferencesDataSource.updatePrayerTimeCalculatorSettings(
+            getPrayerTimesCalculatorSettings().first().copy(
                 juristicMethod = juristicMethod
             )
-        )}
+        )
     }
 
     suspend fun setAdjustHighLatitudes(adjustmentMethod: HighLatitudesAdjustmentMethod) {
-        prayersPreferencesDataSource.update { it.copy(
-            prayerTimeCalculatorSettings = it.prayerTimeCalculatorSettings.copy(
+        prayersPreferencesDataSource.updatePrayerTimeCalculatorSettings(
+            getPrayerTimesCalculatorSettings().first().copy(
                 highLatitudesAdjustmentMethod = adjustmentMethod
             )
-        )}
+        )
     }
 
-    fun getTimeOffsets() = prayersPreferencesDataSource.flow.map {
-        it.timeOffsets.toMap()
-    }
+    fun getTimeOffsets() = prayersPreferencesDataSource.getTimeOffsets()
 
-    fun getTimeOffset(pid: PID) = prayersPreferencesDataSource.flow.map {
-            it.timeOffsets[pid]!!
-        }
+    fun getTimeOffset(pid: PID) = getTimeOffsets().map { it[pid] }
 
     suspend fun setTimeOffsets(timeOffsets: Map<PID, Int>) {
-        prayersPreferencesDataSource.update { it.copy(
-            timeOffsets = timeOffsets.toPersistentMap()
-        )}
+        prayersPreferencesDataSource.updateTimeOffsets(timeOffsets.toPersistentMap())
     }
 
     suspend fun setTimeOffset(pid: PID, timeOffset: Int) {
-        prayersPreferencesDataSource.update { oldState -> oldState.copy(
-            timeOffsets = oldState.timeOffsets.mutate {
+        prayersPreferencesDataSource.updateTimeOffsets(
+            getTimeOffsets().first().toPersistentMap().mutate {
                 it[pid] = timeOffset
             }
-        )}
+        )
     }
 
-    fun getAthanAudioId() = prayersPreferencesDataSource.flow.map {
-        it.athanAudioId
-    }
+    fun getAthanAudioId() = prayersPreferencesDataSource.getAthanAudioId()
 
     suspend fun setAthanAudioId(audioId: Int) {
-        prayersPreferencesDataSource.update { it.copy(
-            athanAudioId = audioId
-        )}
+        prayersPreferencesDataSource.updateAthanAudioId(audioId)
     }
 
-    fun getShouldShowTutorial() = prayersPreferencesDataSource.flow.map {
-        it.shouldShowTutorial
-    }
+    fun getShouldShowTutorial() = prayersPreferencesDataSource.getShouldShowTutorial()
 
     suspend fun setShouldShowTutorial(shouldShowTutorial: Boolean) {
-        prayersPreferencesDataSource.update { it.copy(
-            shouldShowTutorial = shouldShowTutorial
-        )}
+        prayersPreferencesDataSource.updateShouldShowTutorial(shouldShowTutorial)
     }
 
     fun getPrayerNames(): Map<PID, String> {

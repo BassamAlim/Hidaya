@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.enums.ListType
+import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.ui.components.MyButtonSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
@@ -25,9 +25,9 @@ fun RemembrancesMenuScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(
-        title = when (state.listType) {
-            ListType.FAVORITES -> stringResource(R.string.favorite_remembrances)
-            ListType.CUSTOM -> state.categoryTitle
+        title = when (state.menuType) {
+            MenuType.FAVORITES -> stringResource(R.string.favorite_remembrances)
+            MenuType.CUSTOM -> state.categoryTitle
             else -> stringResource(R.string.all_remembrances)
         }
     ) { padding ->

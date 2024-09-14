@@ -1,0 +1,18 @@
+Parallelism:
+class GetAllBooksAndAuthorsUseCase(
+    private val booksRepository: BooksRepository,
+    private val authorsRepository: AuthorsRepository,
+) {
+    suspend fun getBookAndAuthors(): BookAndAuthors {
+        // In parallel, fetch books and authors and return when both requests
+        // complete and the data is ready
+        return coroutineScope {
+            val books = async { booksRepository.getAllBooks() }
+            val authors = async { authorsRepository.getAllAuthors() }
+            BookAndAuthors(books.await(), authors.await())
+        }
+    }
+}
+
+Do not run coroutines in init blocks
+

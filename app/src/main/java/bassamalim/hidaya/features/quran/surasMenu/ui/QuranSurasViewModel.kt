@@ -3,7 +3,7 @@ package bassamalim.hidaya.features.quran.surasMenu.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.ListType
+import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
@@ -143,11 +143,11 @@ class QuranSurasViewModel @Inject constructor(
     }
 
     fun getItems(page: Int): Flow<List<Sura>> {
-        val listType = ListType.entries[page]
+        val menuType = MenuType.entries[page]
 
         return allSurasFlow.map { suras ->
             val items = suras.filter { sura ->
-                !(listType == ListType.FAVORITES && !sura.isFavorite)
+                !(menuType == MenuType.FAVORITES && !sura.isFavorite)
             }.map { sura ->
                 Sura(
                     id = sura.id,

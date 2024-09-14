@@ -105,7 +105,7 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private suspend fun isAlreadyNotified(): Boolean {
-        val lastDate = notificationsRepository.getLastNotificationDateMap().first()[pid]!!
+        val lastDate = notificationsRepository.getLastNotificationDates().first()[pid]!!
         return lastDate == Calendar.getInstance()[Calendar.DAY_OF_YEAR]
     }
 
@@ -253,7 +253,7 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private suspend fun markAsNotified() {
-        notificationsRepository.setLastNotificationDayOfYear(
+        notificationsRepository.setLastNotificationDate(
             pid = pid,
             dayOfYear = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
         )

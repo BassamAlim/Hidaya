@@ -96,10 +96,10 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.RemembrancesMenu("{type}", "{category}").route,
+            route = Screen.RemembrancesMenu("{type}", "{category_id}").route,
             arguments = listOf(
                 navArgument("type") { type = NavType.StringType },
-                navArgument("category") { type = NavType.IntType }
+                navArgument("category_id") { type = NavType.IntType }
             ),
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
