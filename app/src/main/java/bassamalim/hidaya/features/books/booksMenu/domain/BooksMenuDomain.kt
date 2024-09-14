@@ -16,7 +16,7 @@ class BooksMenuDomain @Inject constructor(
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    fun getBooks() = booksRepository.getBooks()
+    suspend fun getBooks() = booksRepository.getBooks()
 
     fun getDownloadStates(books: List<Book>) =
         books.associate {

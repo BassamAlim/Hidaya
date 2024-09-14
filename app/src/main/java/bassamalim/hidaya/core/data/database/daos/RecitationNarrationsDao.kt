@@ -2,23 +2,23 @@ package bassamalim.hidaya.core.data.database.daos
 
 import androidx.room.Dao
 import androidx.room.Query
-import bassamalim.hidaya.core.data.database.models.RecitationNarrations
+import bassamalim.hidaya.core.data.database.models.RecitationNarration
 
 @Dao
 interface RecitationNarrationsDao {
 
     @Query("SELECT * FROM recitation_narrations")
-    fun getAll(): List<RecitationNarrations>
+    fun getAll(): List<RecitationNarration>
 
     @Query("SELECT * FROM recitation_narrations WHERE reciter_id = :reciterId")
-    fun getReciterNarrations(reciterId: Int): List<RecitationNarrations>
+    fun getReciterNarrations(reciterId: Int): List<RecitationNarration>
 
     @Query(
         "SELECT * " +
         "FROM recitation_narrations " +
         "WHERE reciter_id = :reciterId AND id = :narrationId"
     )
-    fun getNarration(reciterId: Int, narrationId: Int): RecitationNarrations
+    fun getNarration(reciterId: Int, narrationId: Int): RecitationNarration
 
     @Query(
         "SELECT available_suras " +

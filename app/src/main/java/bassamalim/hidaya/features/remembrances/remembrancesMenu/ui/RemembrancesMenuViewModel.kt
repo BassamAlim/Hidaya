@@ -57,7 +57,7 @@ class RemembrancesMenuViewModel @Inject constructor(
         }
     }
 
-    private fun getItems(remembrances: List<RemembrancesItem>) =
+    private suspend fun getItems(remembrances: List<RemembrancesItem>) =
         remembrances.filter {
             !(language == Language.ENGLISH && !hasEn(it.id))
                     && !(_uiState.value.searchText.isNotEmpty()
@@ -71,7 +71,7 @@ class RemembrancesMenuViewModel @Inject constructor(
             )
         }
 
-    private fun hasEn(remembranceId: Int): Boolean {
+    private suspend fun hasEn(remembranceId: Int): Boolean {
         val remembrancePassages = domain.getRemembrancePassages(remembranceId)
         return remembrancePassages.any { it.textEn != null && it.textEn.length > 1 }
     }

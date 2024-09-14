@@ -53,7 +53,7 @@ fun BooksMenuScreen(
         MyLazyColumn(
             Modifier.padding(vertical = 5.dp),
             lazyList = {
-                items(state.items) { item ->
+                items(state.books) { item ->
                     BookCard(
                         item = item,
                         downloadState = state.downloadStates[item.id]!!,

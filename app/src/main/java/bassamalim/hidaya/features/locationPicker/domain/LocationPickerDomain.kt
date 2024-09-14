@@ -20,7 +20,7 @@ class LocationPickerDomain @Inject constructor(
     suspend fun getCountries(language: Language) =
         locationRepository.getCountries(language = language)
 
-    fun getCities(language: Language) =
+    suspend fun getCities(language: Language) =
         locationRepository.getCities(
             countryId = countryId,
             language = language

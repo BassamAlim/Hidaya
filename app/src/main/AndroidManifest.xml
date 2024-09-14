@@ -76,7 +76,7 @@
             android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="false" />
         <service
-            android:name=".features.recitations.recitationPlayer.RecitationPlayerService"
+            android:name=".features.recitations.player.RecitationPlayerService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             android:permission="none">
@@ -96,7 +96,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".features.quran.quranReader.versePlayer.VersePlayerService"
+            android:name=".features.quran.reader.versePlayer.VersePlayerService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             android:permission="none">

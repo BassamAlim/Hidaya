@@ -2,7 +2,7 @@ package bassamalim.hidaya.core.data.preferences.objects
 
 import android.support.v4.media.session.PlaybackStateCompat
 import bassamalim.hidaya.core.enums.VerseRepeatMode
-import bassamalim.hidaya.features.recitations.recitationRecitersMenu.domain.LastPlayedRecitation
+import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedRecitation
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.serialization.Serializable

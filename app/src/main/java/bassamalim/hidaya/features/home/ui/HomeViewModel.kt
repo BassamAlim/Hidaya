@@ -9,7 +9,7 @@ import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.home.domain.HomeDomain
-import bassamalim.hidaya.features.quran.quranReader.domain.QuranTarget
+import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

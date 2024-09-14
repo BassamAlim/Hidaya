@@ -1,7 +1,7 @@
 package bassamalim.hidaya.core.data.preferences.objects
 
 import bassamalim.hidaya.core.models.QuranPageBookmark
-import bassamalim.hidaya.features.quran.quranReader.ui.QuranViewType
+import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.serialization.Serializable

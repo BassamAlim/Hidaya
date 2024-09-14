@@ -35,9 +35,9 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.features.home.ui.HomeScreen
 import bassamalim.hidaya.features.more.ui.MoreScreen
-import bassamalim.hidaya.features.prayers.prayersBoard.ui.PrayersBoardScreen
-import bassamalim.hidaya.features.quran.quranSuras.ui.QuranSurasScreen
-import bassamalim.hidaya.features.remembrances.remembranceCategories.ui.RemembranceCategoriesScreen
+import bassamalim.hidaya.features.prayers.board.ui.PrayersBoardScreen
+import bassamalim.hidaya.features.quran.surasMenu.ui.QuranSurasScreen
+import bassamalim.hidaya.features.remembrances.categoriesMenu.ui.RemembranceCategoriesScreen
 
 @Composable
 fun MainScreen(

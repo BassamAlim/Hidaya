@@ -16,7 +16,7 @@ class BookSearcherDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    fun search(
+    suspend fun search(
         searchText: String,
         bookSelections: Map<Int, Boolean>,
         maxMatches: Int,
@@ -89,8 +89,6 @@ class BookSearcherDomain @Inject constructor(
         booksRepository.setMaxMatches(value)
     }
 
-    fun getMaxMatchesItems() = booksRepository.getMaxMatchesItems()
-
-    fun getBookTitles(language: Language) = booksRepository.getBookTitles(language)
+    suspend fun getBookTitles(language: Language) = booksRepository.getBookTitles(language)
 
 }

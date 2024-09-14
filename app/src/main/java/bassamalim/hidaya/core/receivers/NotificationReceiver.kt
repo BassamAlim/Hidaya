@@ -27,7 +27,7 @@ import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.services.AthanService
-import bassamalim.hidaya.features.quran.quranReader.domain.QuranTarget
+import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope

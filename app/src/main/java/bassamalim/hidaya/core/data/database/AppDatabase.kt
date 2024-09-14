@@ -22,7 +22,7 @@ import bassamalim.hidaya.core.data.database.models.Country
 import bassamalim.hidaya.core.data.database.models.QuizAnswer
 import bassamalim.hidaya.core.data.database.models.QuizQuestion
 import bassamalim.hidaya.core.data.database.models.RecitationsReciter
-import bassamalim.hidaya.core.data.database.models.RecitationNarrations
+import bassamalim.hidaya.core.data.database.models.RecitationNarration
 import bassamalim.hidaya.core.data.database.models.Remembrance
 import bassamalim.hidaya.core.data.database.models.RemembranceCategory
 import bassamalim.hidaya.core.data.database.models.RemembrancePassage
@@ -39,7 +39,7 @@ import bassamalim.hidaya.core.data.database.models.VerseReciter
         QuizAnswer::class,
         QuizQuestion::class,
         RecitationsReciter::class,
-        RecitationNarrations::class,
+        RecitationNarration::class,
         RemembranceCategory::class,
         RemembrancePassage::class,
         Remembrance::class,

@@ -25,11 +25,7 @@ class BooksMenuViewModel @Inject constructor(
 
     private lateinit var language: Language
 
-    private val _uiState = MutableStateFlow(
-        BooksMenuUiState(
-        items = domain.getBooks()
-    )
-    )
+    private val _uiState = MutableStateFlow(BooksMenuUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -37,6 +33,7 @@ class BooksMenuViewModel @Inject constructor(
             language = domain.getLanguage()
 
             _uiState.update { it.copy(
+                books = domain.getBooks(),
                 tutorialDialogShown = domain.getShowTutorial()
             )}
         }
@@ -44,7 +41,7 @@ class BooksMenuViewModel @Inject constructor(
 
     fun onStart() {
         _uiState.update { it.copy(
-            downloadStates = domain.getDownloadStates(books = it.items)
+            downloadStates = domain.getDownloadStates(books = it.books)
         )}
     }
 
