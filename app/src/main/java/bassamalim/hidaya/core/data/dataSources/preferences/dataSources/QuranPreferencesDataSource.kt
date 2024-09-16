@@ -42,7 +42,7 @@ class QuranPreferencesDataSource(
     }
 
     fun getPageBookmark() = flow.map { it.pageBookmark }
-    suspend fun updatePageBookmark(page: QuranPageBookmark) {
+    suspend fun updatePageBookmark(page: QuranPageBookmark?) {
         dataStore.updateData { preferences ->
             preferences.copy(pageBookmark = page)
         }

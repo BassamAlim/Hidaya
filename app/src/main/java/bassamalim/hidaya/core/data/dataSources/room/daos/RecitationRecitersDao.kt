@@ -3,7 +3,7 @@ package bassamalim.hidaya.core.data.dataSources.room.daos
 import androidx.room.Dao
 import androidx.room.MapColumn
 import androidx.room.Query
-import bassamalim.hidaya.core.data.dataSources.room.models.RecitationsReciter
+import bassamalim.hidaya.core.data.dataSources.room.entities.RecitationsReciter
 import kotlinx.coroutines.flow.Flow
 
 @Dao

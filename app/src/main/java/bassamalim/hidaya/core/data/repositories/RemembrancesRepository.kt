@@ -5,7 +5,7 @@ import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.Remembran
 import bassamalim.hidaya.core.data.dataSources.room.daos.RemembranceCategoriesDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.RemembrancePassagesDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.RemembrancesDao
-import bassamalim.hidaya.core.data.dataSources.room.models.Remembrance
+import bassamalim.hidaya.core.data.dataSources.room.entities.Remembrance
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.other.Global

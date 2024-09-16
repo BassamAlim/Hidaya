@@ -96,7 +96,7 @@ class HomeDomain @Inject constructor(
 
     fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
-    fun getWerdPage() = quranRepository.getWerdPage()
+    fun getWerdPage() = quranRepository.getWerdPageNum()
 
     fun isWerdDone() = quranRepository.isWerdDone()
 

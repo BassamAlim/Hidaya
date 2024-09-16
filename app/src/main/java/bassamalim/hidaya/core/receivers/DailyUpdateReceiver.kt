@@ -184,7 +184,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
     private suspend fun pickWerd() {
         val randomWerd = Random().nextInt(Global.NUM_OF_QURAN_PAGES)
-        quranRepository.setWerdPage(randomWerd)
+        quranRepository.setWerdPageNum(randomWerd)
         quranRepository.setWerdDone(false)
     }
 

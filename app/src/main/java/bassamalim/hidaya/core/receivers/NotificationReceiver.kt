@@ -217,7 +217,7 @@ class NotificationReceiver : BroadcastReceiver() {
             PID.DAILY_WERD -> {
                 Screen.QuranReader(
                     targetType = QuranTarget.PAGE.name,
-                    targetValue = quranRepository.getWerdPage().first().toString()
+                    targetValue = quranRepository.getWerdPageNum().first().toString()
                 ).route
             }
             PID.FRIDAY_KAHF -> {

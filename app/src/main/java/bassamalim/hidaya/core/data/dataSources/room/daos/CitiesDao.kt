@@ -2,7 +2,7 @@ package bassamalim.hidaya.core.data.dataSources.room.daos
 
 import androidx.room.Dao
 import androidx.room.Query
-import bassamalim.hidaya.core.data.dataSources.room.models.City
+import bassamalim.hidaya.core.data.dataSources.room.entities.City
 
 @Dao
 interface CitiesDao {

@@ -2,7 +2,7 @@ package bassamalim.hidaya.core.data.dataSources.room.daos
 
 import androidx.room.Dao
 import androidx.room.Query
-import bassamalim.hidaya.core.data.room.models.Remembrance
+import bassamalim.hidaya.core.data.dataSources.room.entities.Remembrance
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -1,8 +1,8 @@
 package bassamalim.hidaya.core.data.repositories
 
-import bassamalim.hidaya.core.data.room.daos.SurasDao
-import bassamalim.hidaya.core.data.room.daos.VersesDao
-import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.QuranPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.room.daos.SurasDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.VersesDao
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranPageBookmark
@@ -67,94 +67,58 @@ class QuranRepository @Inject constructor(
         versesDao.getAll()
     }
     
-    fun getSuraFavoritesBackup() = quranPreferencesDataSource.flow.map {
-        it.suraFavorites.toMap()
-    }
+    fun getSuraFavoritesBackup() = quranPreferencesDataSource.getSuraFavorites()
 
     private suspend fun setSuraFavoritesBackup(suraFavorites: Map<Int, Boolean>) {
-        quranPreferencesDataSource.update { it.copy(
-            suraFavorites = suraFavorites.toPersistentMap()
-        )}
+        quranPreferencesDataSource.updateSuraFavorites(suraFavorites.toPersistentMap())
     }
 
-    fun getViewType() = quranPreferencesDataSource.flow.map {
-        it.viewType
-    }
+    fun getViewType() = quranPreferencesDataSource.getViewType()
 
     suspend fun setViewType(viewType: QuranViewType) {
-        quranPreferencesDataSource.update { it.copy(
-            viewType = viewType
-        )}
+        quranPreferencesDataSource.updateViewType(viewType)
     }
 
-    fun getTextSize() = quranPreferencesDataSource.flow.map {
-        it.textSize
-    }
+    fun getTextSize() = quranPreferencesDataSource.getTextSize()
 
     suspend fun setTextSize(textSize: Float) {
-        quranPreferencesDataSource.update { it.copy(
-            textSize = textSize
-        )}
+        quranPreferencesDataSource.updateTextSize(textSize)
     }
 
-    fun getPageBookmark() = quranPreferencesDataSource.flow.map {
-        it.pageBookmark
-    }
+    fun getPageBookmark() = quranPreferencesDataSource.getPageBookmark()
 
     suspend fun setPageBookmark(bookmark: QuranPageBookmark?) {
-        quranPreferencesDataSource.update { it.copy(
-            pageBookmark = bookmark
-        )}
+        quranPreferencesDataSource.updatePageBookmark(bookmark)
     }
 
-    fun getSearchMaxMatches() = quranPreferencesDataSource.flow.map {
-        it.searchMaxMatches
-    }
+    fun getSearchMaxMatches() = quranPreferencesDataSource.getSearchMaxMatches()
 
     suspend fun setSearchMaxMatches(searchMaxMatches: Int) {
-        quranPreferencesDataSource.update { it.copy(
-            searchMaxMatches = searchMaxMatches
-        )}
+        quranPreferencesDataSource.updateSearchMaxMatches(searchMaxMatches)
     }
 
-    fun getShouldShowMenuTutorial() = quranPreferencesDataSource.flow.map {
-        it.shouldShowMenuTutorial
-    }
+    fun getShouldShowMenuTutorial() = quranPreferencesDataSource.getShouldShowMenuTutorial()
 
     suspend fun setShouldShowMenuTutorial(shouldShowMenuTutorial: Boolean) {
-        quranPreferencesDataSource.update { it.copy(
-            shouldShowMenuTutorial = shouldShowMenuTutorial
-        )}
+        quranPreferencesDataSource.updateShouldShowMenuTutorial(shouldShowMenuTutorial)
     }
 
-    fun getShouldShowReaderTutorial() = quranPreferencesDataSource.flow.map {
-        it.shouldShowReaderTutorial
-    }
+    fun getShouldShowReaderTutorial() = quranPreferencesDataSource.getShouldShowReaderTutorial()
 
     suspend fun setShouldShowReaderTutorial(shouldShowReaderTutorial: Boolean) {
-        quranPreferencesDataSource.update { it.copy(
-            shouldShowReaderTutorial = shouldShowReaderTutorial
-        )}
+        quranPreferencesDataSource.updateShouldShowReaderTutorial(shouldShowReaderTutorial)
     }
 
-    fun getWerdPage() = quranPreferencesDataSource.flow.map {
-        it.werdPage
+    fun getWerdPageNum() = quranPreferencesDataSource.getWerdPageNum()
+
+    suspend fun setWerdPageNum(werdPageNum: Int) {
+        quranPreferencesDataSource.updateWerdPageNum(werdPageNum)
     }
 
-    suspend fun setWerdPage(werdPage: Int) {
-        quranPreferencesDataSource.update { it.copy(
-            werdPage = werdPage
-        )}
-    }
-
-    fun isWerdDone() = quranPreferencesDataSource.flow.map {
-        it.isWerdDone
-    }
+    fun isWerdDone() = quranPreferencesDataSource.getWerdDone()
 
     suspend fun setWerdDone(isWerdDone: Boolean) {
-        quranPreferencesDataSource.update { it.copy(
-            isWerdDone = isWerdDone
-        )}
+        quranPreferencesDataSource.updateWerdDone(isWerdDone)
     }
 
 }

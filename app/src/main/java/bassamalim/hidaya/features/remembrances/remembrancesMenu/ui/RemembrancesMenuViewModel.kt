@@ -39,23 +39,16 @@ class RemembrancesMenuViewModel @Inject constructor(
             remembrances = getItems(
                 remembrances = domain.getRemembrances(menuType, categoryId, language).first(),
                 language = language
-            )
+            ),
+            categoryTitle =
+                if (menuType == MenuType.CUSTOM) domain.getCategoryTitle(categoryId, language)
+                else ""
         )
     }.stateIn(
         initialValue = RemembrancesMenuUiState(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
     )
-
-    init { // TODO: do not launch coroutine in init block
-        viewModelScope.launch {
-            if (menuType == MenuType.CUSTOM) {
-                _uiState.update { it.copy(
-                    categoryTitle = domain.getCategoryTitle(categoryId, language!!)
-                )}
-            }
-        }
-    }
 
     private suspend fun getItems(remembrances: List<RemembrancesItem>, language: Language) =
         remembrances.filter {

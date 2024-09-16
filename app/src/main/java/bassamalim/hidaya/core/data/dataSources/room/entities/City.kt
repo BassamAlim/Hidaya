@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.data.dataSources.room.models
+package bassamalim.hidaya.core.data.dataSources.room.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
