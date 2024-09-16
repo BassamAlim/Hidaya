@@ -53,6 +53,14 @@ object ActivityUtils {
         }
     }
 
+    fun restartApplication(activity: Activity) {
+        val intent = activity.packageManager.getLaunchIntentForPackage(activity.packageName)
+        val componentName = intent?.component
+        val mainIntent = Intent.makeRestartActivityTask(componentName)
+        activity.startActivity(mainIntent)
+        Runtime.getRuntime().exit(0)
+    }
+
     fun clearAppData(context: Context) {
         try {
             context.getSystemService(ActivityManager::class.java).clearApplicationUserData()

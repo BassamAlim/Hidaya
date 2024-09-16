@@ -8,8 +8,8 @@ import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.quran.surasMenu.domain.QuranSurasDomain
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
+import bassamalim.hidaya.features.quran.surasMenu.domain.QuranSurasDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,6 +63,10 @@ class QuranSurasViewModel @Inject constructor(
             numeralsLanguage = domain.getNumeralsLanguage()
             allSurasFlow = domain.getAllSuras(language)
             suraNames = domain.getSuraNames(language)
+
+            _uiState.update { it.copy(
+                isLoading = false
+            )}
         }
     }
 

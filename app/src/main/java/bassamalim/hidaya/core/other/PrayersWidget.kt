@@ -13,11 +13,13 @@ import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
+import bassamalim.hidaya.core.di.IoDispatcher
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
@@ -37,6 +39,7 @@ class PrayersWidget : AppWidgetProvider() {
     @Inject lateinit var remembrancesRepository: RemembrancesRepository
     @Inject lateinit var locationRepository: LocationRepository
     @Inject lateinit var surasDao: SurasDao
+    @Inject @IoDispatcher lateinit var dispatcher: CoroutineDispatcher
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onUpdate(
@@ -75,7 +78,8 @@ class PrayersWidget : AppWidgetProvider() {
         GlobalScope.launch {
             val shouldReviveDb = DbUtils.shouldReviveDb(
                 lastDbVersion = appStateRepository.getLastDbVersion().first(),
-                test = surasDao::getPlainNamesAr
+                test = surasDao::getPlainNamesAr,
+                dispatcher = dispatcher
             )
             if (shouldReviveDb) {
                 reviveDb(context)

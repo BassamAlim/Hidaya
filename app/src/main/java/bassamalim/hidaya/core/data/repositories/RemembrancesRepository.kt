@@ -1,18 +1,14 @@
 package bassamalim.hidaya.core.data.repositories
 
-import android.util.Log
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.RemembrancePreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.room.daos.RemembranceCategoriesDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.RemembrancePassagesDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.RemembrancesDao
-import bassamalim.hidaya.core.data.dataSources.room.entities.Remembrance
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.other.Global
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,11 +28,7 @@ class RemembrancesRepository @Inject constructor(
         else remembranceCategoriesDao.getNameEn(id)
     }
 
-    fun observeAllRemembrances(): Flow<List<Remembrance>> {
-        val items = remembrancesDao.observeAll()
-        Log.d(Global.TAG, "observeAllRemembrances: $items")
-        return items
-    }
+    fun observeAllRemembrances() = remembrancesDao.observeAll()
 
     fun observeFavorites() = remembrancesDao.observeFavorites()
 

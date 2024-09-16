@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.about.ui
 
+import android.app.Activity
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -34,6 +35,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 @Composable
 fun AboutScreen(viewModel: AboutViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val activity = LocalContext.current as Activity
 
     MyScaffold(title = stringResource(R.string.about)) {
         Column(
@@ -51,7 +53,7 @@ fun AboutScreen(viewModel: AboutViewModel) {
             HiddenArea(
                 isDevModeOn = state.isDevModeEnabled,
                 lastDailyUpdate = state.lastDailyUpdate,
-                onRebuildDatabaseClick = viewModel::onRebuildDatabaseClick
+                onRebuildDatabaseClick = { viewModel.onRebuildDatabaseClick(activity) }
             )
         }
     }

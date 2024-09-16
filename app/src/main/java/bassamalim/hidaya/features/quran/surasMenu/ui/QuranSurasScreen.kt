@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.Sura
+import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyFloatingActionButton
@@ -41,68 +42,73 @@ fun QuranSurasScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyScaffold(
-        title = "",
-        topBar = {},  // override the default top bar
-        fab = {
-            MyFloatingActionButton(
-                iconId = R.drawable.ic_quran_search,
-                description = stringResource(R.string.search_in_quran),
-                onClick = viewModel::onQuranSearcherClick
-            )
-        }
-    ) {
-        Column(
-            Modifier.fillMaxSize()
-        ) {
-            MySquareButton(
-                text = if (state.bookmarkPageText == null) {
-                    stringResource(R.string.no_bookmarked_page)
-                } else {
-                    stringResource(R.string.bookmarked_page) +
-                            " ${stringResource(R.string.page)}" +
-                            " ${state.bookmarkPageText}," +
-                            " ${stringResource(R.string.sura)}" +
-                            " ${state.bookmarkSuraText}"
-                },
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 18.sp,
-                innerPadding = PaddingValues(vertical = 4.dp),
-                onClick = viewModel::onBookmarkedPageClick
-            )
-
-            TabLayout(
-                pageNames = listOf(
-                    stringResource(R.string.all),
-                    stringResource(R.string.favorite)
-                ),
-                searchComponent = {
-                    SearchComponent(
-                        value = state.searchText,
-                        hint = stringResource(R.string.quran_search_hint),
-                        modifier = Modifier.fillMaxWidth(),
-                        onValueChange = viewModel::onSearchTextChange,
-                        onSubmit = viewModel::onSearchSubmit
-                    )
-                }
-            ) { page ->
-                Tab(
-                    surasFlow = viewModel.getItems(page),
-                    favs = state.favs,
-                    onSuraClick = viewModel::onSuraClick,
-                    onFavClick = viewModel::onFavClick
+    if (state.isLoading) {
+        LoadingScreen()
+    }
+    else {
+        MyScaffold(
+            title = "",
+            topBar = {},  // override the default top bar
+            fab = {
+                MyFloatingActionButton(
+                    iconId = R.drawable.ic_quran_search,
+                    description = stringResource(R.string.search_in_quran),
+                    onClick = viewModel::onQuranSearcherClick
                 )
             }
+        ) {
+            Column(
+                Modifier.fillMaxSize()
+            ) {
+                MySquareButton(
+                    text = if (state.bookmarkPageText == null) {
+                        stringResource(R.string.no_bookmarked_page)
+                    } else {
+                        stringResource(R.string.bookmarked_page) +
+                                " ${stringResource(R.string.page)}" +
+                                " ${state.bookmarkPageText}," +
+                                " ${stringResource(R.string.sura)}" +
+                                " ${state.bookmarkSuraText}"
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    fontSize = 18.sp,
+                    innerPadding = PaddingValues(vertical = 4.dp),
+                    onClick = viewModel::onBookmarkedPageClick
+                )
+
+                TabLayout(
+                    pageNames = listOf(
+                        stringResource(R.string.all),
+                        stringResource(R.string.favorite)
+                    ),
+                    searchComponent = {
+                        SearchComponent(
+                            value = state.searchText,
+                            hint = stringResource(R.string.quran_search_hint),
+                            modifier = Modifier.fillMaxWidth(),
+                            onValueChange = viewModel::onSearchTextChange,
+                            onSubmit = viewModel::onSearchSubmit
+                        )
+                    }
+                ) { page ->
+                    Tab(
+                        surasFlow = viewModel.getItems(page),
+                        favs = state.favs,
+                        onSuraClick = viewModel::onSuraClick,
+                        onFavClick = viewModel::onFavClick
+                    )
+                }
+            }
         }
+
+        TutorialDialog(
+            textResId = R.string.quran_fragment_tips,
+            shown = state.isTutorialDialogShown,
+            onDismiss = viewModel::onTutorialDialogDismiss
+        )
+
+        if (state.shouldShowPageDoesNotExist != 0) PageDoesNotExistToast()
     }
-
-    TutorialDialog(
-        textResId = R.string.quran_fragment_tips,
-        shown = state.isTutorialDialogShown,
-        onDismiss = viewModel::onTutorialDialogDismiss
-    )
-
-    if (state.shouldShowPageDoesNotExist != 0) PageDoesNotExistToast()
 }
 
 @Composable

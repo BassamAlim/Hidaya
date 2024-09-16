@@ -28,9 +28,9 @@ import bassamalim.hidaya.features.locationPicker.domain.LocationPickerDomain
 import bassamalim.hidaya.features.locator.domain.LocatorDomain
 import bassamalim.hidaya.features.main.domain.MainDomain
 import bassamalim.hidaya.features.onboarding.domain.OnboardingDomain
+import bassamalim.hidaya.features.prayers.board.domain.PrayersBoardDomain
 import bassamalim.hidaya.features.prayers.reminderSettings.domain.PrayerReminderSettingsDomain
 import bassamalim.hidaya.features.prayers.settings.domain.PrayerSettingsDomain
-import bassamalim.hidaya.features.prayers.board.domain.PrayersBoardDomain
 import bassamalim.hidaya.features.qibla.domain.QiblaDomain
 import bassamalim.hidaya.features.quiz.result.domain.QuizResultDomain
 import bassamalim.hidaya.features.quiz.test.domain.QuizTestDomain
@@ -57,13 +57,11 @@ object DomainModule {
 
     @Provides @Singleton
     fun provideAboutDomain(
-        app: Application,
         appStateRepository: AppStateRepository,
         quranRepository: QuranRepository,
         recitationsRepository: RecitationsRepository,
         remembrancesRepository: RemembrancesRepository
     ) = AboutDomain(
-        app,
         appStateRepository,
         quranRepository,
         recitationsRepository,

@@ -20,6 +20,7 @@ import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
+import bassamalim.hidaya.core.di.IoDispatcher
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.other.Global
@@ -29,6 +30,7 @@ import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
@@ -49,6 +51,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
     @Inject lateinit var locationRepository: LocationRepository
     @Inject lateinit var surasDao: SurasDao
     @Inject lateinit var alarm: Alarm
+    @Inject @IoDispatcher lateinit var dispatcher: CoroutineDispatcher
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context, intent: Intent) {
@@ -91,7 +94,8 @@ class DailyUpdateReceiver : BroadcastReceiver() {
         GlobalScope.launch {
             val shouldReviveDb = DbUtils.shouldReviveDb(
                 lastDbVersion = appStateRepository.getLastDbVersion().first(),
-                test = surasDao::getPlainNamesAr
+                test = surasDao::getPlainNamesAr,
+                dispatcher = dispatcher
             )
             if (shouldReviveDb) {
                 reviveDb(context)

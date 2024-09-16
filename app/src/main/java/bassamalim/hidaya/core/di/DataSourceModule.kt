@@ -7,6 +7,7 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.dataStoreFile
 import androidx.room.Room
+import bassamalim.hidaya.core.data.dataSources.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.AppSettingsPreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.AppStatePreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.BooksPreferencesDataSource
@@ -44,6 +45,7 @@ import bassamalim.hidaya.core.data.dataSources.preferences.serializers.Recitatio
 import bassamalim.hidaya.core.data.dataSources.preferences.serializers.RemembrancesPreferencesSerializer
 import bassamalim.hidaya.core.data.dataSources.preferences.serializers.UserPreferencesSerializer
 import bassamalim.hidaya.core.data.dataSources.room.AppDatabase
+import bassamalim.hidaya.core.other.Global
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.Module
@@ -87,7 +89,9 @@ object DataSourceModule {
                 ),
                 migrations = listOf(AppStatePreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-                produceFile = { appContext.dataStoreFile("app_state_preferences") }
+                produceFile = {
+                    appContext.dataStoreFile(PreferencesFileNames.APP_STATE_PREFERENCES_NAME)
+                }
             )
         )
 
@@ -101,7 +105,9 @@ object DataSourceModule {
                 ),
                 migrations = listOf(BooksPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-                produceFile = { appContext.dataStoreFile("books_preferences") }
+                produceFile = {
+                    appContext.dataStoreFile(PreferencesFileNames.BOOKS_PREFERENCES_NAME)
+                }
             )
         )
 
@@ -115,7 +121,9 @@ object DataSourceModule {
                 ),
                 migrations = listOf(NotificationsPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-                produceFile = { appContext.dataStoreFile("notifications_preferences") }
+                produceFile = {
+                    appContext.dataStoreFile(PreferencesFileNames.NOTIFICATIONS_PREFERENCES_NAME)
+                }
             )
         )
 
@@ -129,7 +137,9 @@ object DataSourceModule {
                 ),
                 migrations = listOf(PrayersPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-                produceFile = { appContext.dataStoreFile("prayers_preferences") }
+                produceFile = {
+                    appContext.dataStoreFile(PreferencesFileNames.PRAYERS_PREFERENCES_NAME)
+                }
             )
         )
 
@@ -143,7 +153,9 @@ object DataSourceModule {
                 ),
                 migrations = listOf(QuranPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-                produceFile = { appContext.dataStoreFile("quran_preferences") }
+                produceFile = {
+                    appContext.dataStoreFile(PreferencesFileNames.QURAN_PREFERENCES_NAME)
+                }
             )
         )
 
@@ -157,7 +169,9 @@ object DataSourceModule {
                 ),
                 migrations = listOf(RecitationsPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-                produceFile = { appContext.dataStoreFile("recitations_preferences") }
+                produceFile = {
+                    appContext.dataStoreFile(PreferencesFileNames.RECITATIONS_PREFERENCES_NAME)
+                }
             )
         )
 
@@ -171,7 +185,9 @@ object DataSourceModule {
                 ),
                 migrations = listOf(RemembrancesPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-                produceFile = { appContext.dataStoreFile("remembrances_preferences") }
+                produceFile = {
+                    appContext.dataStoreFile(PreferencesFileNames.REMEMBRANCES_PREFERENCES_NAME)
+                }
             )
         )
 
@@ -185,25 +201,19 @@ object DataSourceModule {
                 ),
                 migrations = listOf(UserPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-                produceFile = { appContext.dataStoreFile("user_preferences") }
+                produceFile = {
+                    appContext.dataStoreFile(PreferencesFileNames.USER_PREFERENCES_NAME)
+                }
             )
         )
 
-    @Singleton @Provides
+    @Provides @Singleton
     fun provideDatabase(@ApplicationContext context: Context) =
         Room.databaseBuilder(
             context = context.applicationContext,
             klass = AppDatabase::class.java,
-            name = "HidayaDB"
+            name = Global.DB_NAME
         ).createFromAsset("databases/HidayaDB.db").build()
-
-//    @Provides @Singleton
-//    fun provideDatabase(application: Application) =
-//        Room.databaseBuilder(
-//            application, AppDatabase::class.java, "HidayaDB"
-//        ).createFromAsset("databases/HidayaDB.db")
-//            .allowMainThreadQueries()
-//            .build()
 
     @Provides
     fun provideBooksDao(database: AppDatabase) = database.booksDao()

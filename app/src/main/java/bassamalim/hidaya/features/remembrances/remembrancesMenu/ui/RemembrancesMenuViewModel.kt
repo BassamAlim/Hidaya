@@ -36,19 +36,26 @@ class RemembrancesMenuViewModel @Inject constructor(
         domain.getLanguage()
     ) { state, language ->
         state.copy(
-            remembrances = getItems(
-                remembrances = domain.getRemembrances(menuType, categoryId, language).first(),
-                language = language
-            ),
             categoryTitle =
                 if (menuType == MenuType.CUSTOM) domain.getCategoryTitle(categoryId, language)
-                else ""
+                else "",
+            remembrances = domain.getRemembrances(menuType, categoryId, language).first().let { remembrances ->
+                getItems(remembrances, language)
+            }
         )
     }.stateIn(
         initialValue = RemembrancesMenuUiState(),
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
     )
+
+    init {
+        viewModelScope.launch {
+            _uiState.update { it.copy(
+                isLoading = false
+            )}
+        }
+    }
 
     private suspend fun getItems(remembrances: List<RemembrancesItem>, language: Language) =
         remembrances.filter {

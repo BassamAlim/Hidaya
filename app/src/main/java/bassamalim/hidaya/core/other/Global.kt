@@ -13,4 +13,5 @@ object Global {
     const val DB_VERSION = 19
     const val DAILY_UPDATE_HOUR = 0
     const val DAILY_UPDATE_MINUTE = 10
+    const val DB_NAME = "HidayaDB"
 }

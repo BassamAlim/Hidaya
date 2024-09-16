@@ -1,22 +1,25 @@
 package bassamalim.hidaya.core.utils
 
 import android.content.Context
+import android.database.sqlite.SQLiteException
 import android.util.Log
 import androidx.room.Room
 import bassamalim.hidaya.core.data.dataSources.room.AppDatabase
 import bassamalim.hidaya.core.other.Global
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 object DbUtils {
 
-    private const val DB_NAME = "HidayaDB"
-
-    suspend fun shouldReviveDb(lastDbVersion: Int, test: () -> Unit): Boolean {
+    suspend fun shouldReviveDb(
+        lastDbVersion: Int,
+        test: () -> Unit,
+        dispatcher: CoroutineDispatcher
+    ): Boolean {
         if (Global.DB_VERSION > lastDbVersion) return true
 
         return try {  // if there is a problem in the db it will cause an error
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher) {
                 test()
             }
             false
@@ -24,25 +27,21 @@ object DbUtils {
             Log.e(Global.TAG, "DB Error: ${e.message}")
             e.printStackTrace()
             true
+        } catch (e: SQLiteException) {
+            Log.e(Global.TAG, "DB Error: ${e.message}")
+            e.printStackTrace()
+            false
         }
     }
 
     fun resetDB(context: Context) {
-        context.deleteDatabase(DB_NAME)
+        context.deleteDatabase(Global.DB_NAME)
         Log.i(Global.TAG, "Database Deleted")
 
         Room.databaseBuilder(
             context = context,
             klass = AppDatabase::class.java,
-            name = "HidayaDB"
-        ).createFromAsset("databases/HidayaDB.db")
-            .allowMainThreadQueries()
-            .build()
-
-        Room.databaseBuilder(
-            context = context.applicationContext,
-            klass = AppDatabase::class.java,
-            name = "HidayaDB"
+            name = Global.DB_NAME
         ).createFromAsset("databases/HidayaDB.db").build()
 
         Log.i(Global.TAG, "Database Revived")

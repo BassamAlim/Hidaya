@@ -28,6 +28,7 @@ import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
+import bassamalim.hidaya.core.di.IoDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.Theme
@@ -47,6 +48,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -66,6 +68,7 @@ class Activity : ComponentActivity() {
     @Inject lateinit var surasDao: SurasDao
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var alarm: Alarm
+    @Inject @IoDispatcher lateinit var dispatcher: CoroutineDispatcher
     private var shouldOnboard = false
     private var startRoute: String? = null
     private lateinit var language: Language
@@ -85,8 +88,6 @@ class Activity : ComponentActivity() {
             shouldOnboard = !appStateRepository.isOnboardingCompleted().first()
             language = appSettingsRepository.getLanguage().first()
 
-            Log.d(Global.TAG, "Result: ${quranRepository.getPlainSuraNames()}")
-
             bootstrapApp()
 
             if (isFirstLaunch) {
@@ -105,11 +106,13 @@ class Activity : ComponentActivity() {
     private suspend fun testDb() {
         val shouldReviveDb = DbUtils.shouldReviveDb(
             lastDbVersion = appStateRepository.getLastDbVersion().first(),
-            test = surasDao::getPlainNamesAr
+            test = surasDao::getPlainNamesAr,
+            dispatcher = dispatcher
         )
         if (shouldReviveDb) {
             reviveDb()
             appStateRepository.setLastDbVersion(Global.DB_VERSION)
+            ActivityUtils.restartApplication(this)
         }
         else
             Log.d(Global.TAG, "Database is up to date")

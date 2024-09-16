@@ -53,35 +53,39 @@ class RemembranceReaderViewModel @Inject constructor(
         return remembrancePassages.filter {
             !(language == Language.ENGLISH && it.textEn.isNullOrEmpty())
         }.map { passage ->
-            if (language == Language.ENGLISH)
-                RemembrancePassage(
-                    id = passage.id,
-                    title = passage.titleAr,
-                    text = passage.textAr!!,
-                    virtue = passage.virtueAr,
-                    reference = passage.referenceAr,
-                    repetition = passage.repetitionAr,
-                    isTitleAvailable = isTitleAvailable(passage.titleAr),
-                    isTranslationAvailable = false,
-                    isVirtueAvailable = isVirtueAvailable(passage.virtueAr),
-                    isReferenceAvailable = isReferenceAvailable(passage.referenceAr),
-                    isRepetitionAvailable = isRepetitionAvailable(passage.repetitionAr)
-                )
-            else
-                RemembrancePassage(
-                    id = passage.id,
-                    title = passage.titleEn,
-                    text = passage.textEn!!,
-                    translation = passage.textEnTranslation,
-                    virtue = passage.virtueEn,
-                    reference = passage.referenceEn,
-                    repetition = passage.repetitionEn,
-                    isTitleAvailable = isTitleAvailable(passage.titleEn),
-                    isTranslationAvailable = isTranslationAvailable(passage.textEnTranslation),
-                    isVirtueAvailable = isVirtueAvailable(passage.virtueEn),
-                    isReferenceAvailable = isReferenceAvailable(passage.referenceEn),
-                    isRepetitionAvailable = isRepetitionAvailable(passage.repetitionEn)
-                )
+            when (language) {
+                Language.ARABIC -> {
+                    RemembrancePassage(
+                        id = passage.id,
+                        title = passage.titleAr,
+                        text = passage.textAr!!,
+                        virtue = passage.virtueAr,
+                        reference = passage.referenceAr,
+                        repetition = passage.repetitionAr,
+                        isTitleAvailable = isTitleAvailable(passage.titleAr),
+                        isTranslationAvailable = false,
+                        isVirtueAvailable = isVirtueAvailable(passage.virtueAr),
+                        isReferenceAvailable = isReferenceAvailable(passage.referenceAr),
+                        isRepetitionAvailable = isRepetitionAvailable(passage.repetitionAr)
+                    )
+                }
+                Language.ENGLISH -> {
+                    RemembrancePassage(
+                        id = passage.id,
+                        title = passage.titleEn,
+                        text = passage.textEn!!,
+                        translation = passage.textEnTranslation,
+                        virtue = passage.virtueEn,
+                        reference = passage.referenceEn,
+                        repetition = passage.repetitionEn,
+                        isTitleAvailable = isTitleAvailable(passage.titleEn),
+                        isTranslationAvailable = isTranslationAvailable(passage.textEnTranslation),
+                        isVirtueAvailable = isVirtueAvailable(passage.virtueEn),
+                        isReferenceAvailable = isReferenceAvailable(passage.referenceEn),
+                        isRepetitionAvailable = isRepetitionAvailable(passage.repetitionEn)
+                    )
+                }
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.about.ui
 
+import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,9 +34,9 @@ class AboutViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
     )
 
-    fun onRebuildDatabaseClick() {
+    fun onRebuildDatabaseClick(activity: Activity) {
         viewModelScope.launch {
-            domain.rebuildDatabase()
+            domain.rebuildDatabase(activity)
 
             _uiState.update { it.copy(
                 shouldShowRebuilt = it.shouldShowRebuilt + 1
