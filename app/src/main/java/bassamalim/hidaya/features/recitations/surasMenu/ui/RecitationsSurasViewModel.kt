@@ -9,7 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.data.room.models.RecitationNarration
+import bassamalim.hidaya.core.data.dataSources.room.entities.RecitationNarration
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.MenuType

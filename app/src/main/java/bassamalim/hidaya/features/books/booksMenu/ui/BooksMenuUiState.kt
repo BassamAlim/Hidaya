@@ -1,6 +1,6 @@
 package bassamalim.hidaya.features.books.booksMenu.ui
 
-import bassamalim.hidaya.core.data.room.models.Book
+import bassamalim.hidaya.core.data.dataSources.room.entities.Book
 import bassamalim.hidaya.core.enums.DownloadState
 
 data class BooksMenuUiState(

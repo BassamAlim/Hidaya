@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.books.booksMenu.domain
 
 import android.util.Log
-import bassamalim.hidaya.core.data.room.models.Book
+import bassamalim.hidaya.core.data.dataSources.room.entities.Book
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.DownloadState
@@ -27,12 +27,8 @@ class BooksMenuDomain @Inject constructor(
             else DownloadState.NOT_DOWNLOADED
         }
 
-    fun download(
-        bookId: Int,
-        onDownloadedCallback: () -> Unit
-    ) {
-        val downloadTask = booksRepository.download(bookId)
-        downloadTask
+    fun download(bookId: Int, onDownloadedCallback: () -> Unit) {
+        booksRepository.download(bookId)
             .addOnSuccessListener {
                 Log.i(Global.TAG, "File download succeeded")
 
@@ -50,8 +46,7 @@ class BooksMenuDomain @Inject constructor(
     suspend fun getShowTutorial() = booksRepository.getShouldShowTutorial().first()
 
     suspend fun handleTutorialDialogDismiss(doNotShowAgain: Boolean) {
-        if (doNotShowAgain)
-            booksRepository.setDoNotShowAgain()
+        if (doNotShowAgain) booksRepository.setShouldShowTutorial(false)
     }
 
 }

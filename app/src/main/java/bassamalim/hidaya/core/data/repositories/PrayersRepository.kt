@@ -47,7 +47,7 @@ class PrayersRepository @Inject constructor(
 
     fun getTimeOffsets() = prayersPreferencesDataSource.getTimeOffsets()
 
-    fun getTimeOffset(pid: PID) = getTimeOffsets().map { it[pid] }
+    fun getTimeOffset(pid: PID) = getTimeOffsets().map { it[pid]!! }
 
     suspend fun setTimeOffsets(timeOffsets: Map<PID, Int>) {
         prayersPreferencesDataSource.updateTimeOffsets(timeOffsets.toPersistentMap())

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.room.models.Book
+import bassamalim.hidaya.core.data.dataSources.room.entities.Book
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.ui.components.MyButtonSurface
 import bassamalim.hidaya.core.ui.components.MyCircularProgressIndicator

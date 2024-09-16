@@ -31,7 +31,7 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.room.models.Verse
+import bassamalim.hidaya.core.data.dataSources.room.entities.Verse
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
@@ -72,7 +72,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     private lateinit var pauseAction: NotificationCompat.Action
     private lateinit var nextAction: NotificationCompat.Action
     private lateinit var prevAction: NotificationCompat.Action
-    private lateinit var verses: List<Verse>
+    private lateinit var allVerses: List<Verse>
     private lateinit var reciterNames: List<String>
     private lateinit var suarNames: List<String>
     private val notificationId = 101
@@ -135,7 +135,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
                 language = language
             )
 
-            verses = quranRepository.getAllVerses()
+            allVerses = quranRepository.getAllVerses()
             reciterNames = recitationsRepository.getVerseReciterNames()
             suarNames = quranRepository.getDecoratedSuraNames(language)
 
@@ -307,7 +307,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     private suspend fun initAPM() {
         apm = AlternatingPlayersManager(
             context = this,
-            allVerses = verses,
+            allVerses = allVerses,
             recitations = recitationsRepository.getAllVerseRecitations(),
             repeatMode = recitationsRepository.getVerseRepeatMode().first(),
             shouldStopOnPageEnd = recitationsRepository.getShouldStopOnPageEnd().first(),
@@ -597,7 +597,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         mediaSession.setMetadata(mediaMetadata)
     }
 
-    private fun getAya(id: Int) = verses[id-1]
+    private fun getAya(id: Int) = allVerses[id-1]
 
     private suspend fun updateDurationRecord(amount: Int) {
         val old = userRepository.getRecitationsRecord().first()

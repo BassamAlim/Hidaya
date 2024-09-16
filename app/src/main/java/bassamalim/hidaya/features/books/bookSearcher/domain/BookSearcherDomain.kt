@@ -83,10 +83,10 @@ class BookSearcherDomain @Inject constructor(
         booksRepository.setBookSelections(selections)
     }
 
-    fun getMaxMatches() = booksRepository.getMaxMatches()
+    fun getMaxMatches() = booksRepository.getSearchMaxMatches()
 
     suspend fun setMaxMatches(value: Int) {
-        booksRepository.setMaxMatches(value)
+        booksRepository.setSearchMaxMatches(value)
     }
 
     suspend fun getBookTitles(language: Language) = booksRepository.getBookTitles(language)

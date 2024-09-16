@@ -3,7 +3,7 @@ package bassamalim.hidaya.core.utils
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
-import bassamalim.hidaya.core.data.room.AppDatabase
+import bassamalim.hidaya.core.data.dataSources.room.AppDatabase
 import bassamalim.hidaya.core.other.Global
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

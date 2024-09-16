@@ -15,8 +15,8 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.room.models.Verse
-import bassamalim.hidaya.core.data.room.models.VerseRecitation
+import bassamalim.hidaya.core.data.dataSources.room.entities.Verse
+import bassamalim.hidaya.core.data.dataSources.room.entities.VerseRecitation
 import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.other.Global
 import java.util.Locale

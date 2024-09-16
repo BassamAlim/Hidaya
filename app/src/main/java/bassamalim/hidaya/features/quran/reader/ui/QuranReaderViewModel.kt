@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import bassamalim.hidaya.core.data.dataSources.room.entities.Verse as VerseEntity
 
 @OptIn(ExperimentalFoundationApi::class)
 @HiltViewModel
@@ -51,7 +52,7 @@ class QuranReaderViewModel @Inject constructor(
     private lateinit var pagerState: PagerState
     private lateinit var scrollState: ScrollState
     private lateinit var suraNames: List<String>
-    private lateinit var allVerses: List<bassamalim.hidaya.core.data.room.models.Verse>
+    private lateinit var allVerses: List<VerseEntity>
     var pageNum = 0
         private set
     private var suraId = 0
@@ -249,7 +250,7 @@ class QuranReaderViewModel @Inject constructor(
             )}
         }
         else {  // single click
-            if (_uiState.value.selectedVerse == verse) {
+            if (_uiState.value.selectedVerse!!.id == verse!!.id) {
                 _uiState.update { it.copy(
                     selectedVerse = null
                 )}
@@ -261,7 +262,7 @@ class QuranReaderViewModel @Inject constructor(
             }
         }
 
-        lastClickedId = verse?.id ?: -1
+        lastClickedId = verse.id
         lastClickT = System.currentTimeMillis()
     }
 

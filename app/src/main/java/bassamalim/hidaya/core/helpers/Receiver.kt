@@ -6,21 +6,21 @@ import android.content.IntentFilter
 import android.os.Build
 
 class ReceiverManager(
-    private val ctx: Context,
+    private val context: Context,
     private val receiver: BroadcastReceiver,
     private val intentFilter: IntentFilter
 ) {
 
     fun register() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            ctx.registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
+            context.registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
         else
-            ctx.registerReceiver(receiver, intentFilter)
+            context.registerReceiver(receiver, intentFilter)
     }
 
     fun unregister() {
         try {
-            ctx.unregisterReceiver(receiver)
+            context.unregisterReceiver(receiver)
         } catch (_: IllegalArgumentException) {}
     }
 
