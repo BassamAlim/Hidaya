@@ -36,7 +36,7 @@ class AboutDomain @Inject constructor(
             setRemembranceFavorites = remembrancesRepository::setFavorites,
         )
 
-        ActivityUtils.triggerRebirth(activity)
+        ActivityUtils.restartApplication( activity)
     }
 
     fun handleTitleClicks(setDevModeEnabled: () -> Unit) {
