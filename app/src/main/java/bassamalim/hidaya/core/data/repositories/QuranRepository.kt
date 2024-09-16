@@ -3,12 +3,14 @@ package bassamalim.hidaya.core.data.repositories
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.QuranPreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.room.daos.SurasDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.VersesDao
+import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -18,7 +20,8 @@ class QuranRepository @Inject constructor(
     private val quranPreferencesDataSource: QuranPreferencesDataSource,
     private val surasDao: SurasDao,
     private val versesDao: VersesDao,
-    @DefaultDispatcher private val dispatcher: CoroutineDispatcher
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+    @ApplicationScope private val scope: CoroutineScope
 ) {
 
     fun observeAllSuras() = surasDao.observeAll()

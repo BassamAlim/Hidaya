@@ -6,6 +6,7 @@ import android.util.Log
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.BooksPreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.room.daos.BooksDao
+import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Book
@@ -18,6 +19,7 @@ import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -30,7 +32,8 @@ class BooksRepository @Inject constructor(
     private val booksDao: BooksDao,
     private val booksPreferencesDataSource: BooksPreferencesDataSource,
     private val gson: Gson,
-    @DefaultDispatcher private val dispatcher: CoroutineDispatcher
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+    @ApplicationScope private val scope: CoroutineScope
 ) {
 
     private val prefix = "/Books/"

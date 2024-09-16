@@ -2,16 +2,19 @@ package bassamalim.hidaya.core.data.repositories
 
 import bassamalim.hidaya.core.data.dataSources.room.daos.QuizAnswersDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.QuizQuestionsDao
+import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.models.QuizFullQuestion
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class QuizRepository @Inject constructor(
     private val quizQuestionsDao: QuizQuestionsDao,
     private val quizAnswerDao: QuizAnswersDao,
-    @DefaultDispatcher private val dispatcher: CoroutineDispatcher
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+    @ApplicationScope private val scope: CoroutineScope
 ) {
 
     suspend fun getQuestions() = withContext(dispatcher) {

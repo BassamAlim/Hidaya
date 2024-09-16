@@ -2,29 +2,29 @@ package bassamalim.hidaya.core.di
 
 import android.app.Application
 import android.content.res.Resources
-import bassamalim.hidaya.core.data.room.daos.BooksDao
-import bassamalim.hidaya.core.data.room.daos.CitiesDao
-import bassamalim.hidaya.core.data.room.daos.CountriesDao
-import bassamalim.hidaya.core.data.room.daos.QuizAnswersDao
-import bassamalim.hidaya.core.data.room.daos.QuizQuestionsDao
-import bassamalim.hidaya.core.data.room.daos.RecitationNarrationsDao
-import bassamalim.hidaya.core.data.room.daos.RecitationRecitersDao
-import bassamalim.hidaya.core.data.room.daos.RemembranceCategoriesDao
-import bassamalim.hidaya.core.data.room.daos.RemembrancePassagesDao
-import bassamalim.hidaya.core.data.room.daos.RemembrancesDao
-import bassamalim.hidaya.core.data.room.daos.SurasDao
-import bassamalim.hidaya.core.data.room.daos.VerseRecitationsDao
-import bassamalim.hidaya.core.data.room.daos.VerseRecitersDao
-import bassamalim.hidaya.core.data.room.daos.VersesDao
-import bassamalim.hidaya.core.data.preferences.dataSources.AppSettingsPreferencesDataSource
-import bassamalim.hidaya.core.data.preferences.dataSources.AppStatePreferencesDataSource
-import bassamalim.hidaya.core.data.preferences.dataSources.BooksPreferencesDataSource
-import bassamalim.hidaya.core.data.preferences.dataSources.NotificationsPreferencesDataSource
-import bassamalim.hidaya.core.data.preferences.dataSources.PrayersPreferencesDataSource
-import bassamalim.hidaya.core.data.preferences.dataSources.QuranPreferencesDataSource
-import bassamalim.hidaya.core.data.preferences.dataSources.RecitationsPreferencesDataSource
-import bassamalim.hidaya.core.data.preferences.dataSources.RemembrancePreferencesDataSource
-import bassamalim.hidaya.core.data.preferences.dataSources.UserPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.AppSettingsPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.AppStatePreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.BooksPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.NotificationsPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.PrayersPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.QuranPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.RecitationsPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.RemembrancePreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.UserPreferencesDataSource
+import bassamalim.hidaya.core.data.dataSources.room.daos.BooksDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.CitiesDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.CountriesDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.QuizAnswersDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.QuizQuestionsDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.RecitationNarrationsDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.RecitationRecitersDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.RemembranceCategoriesDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.RemembrancePassagesDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.RemembrancesDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.SurasDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.VerseRecitationsDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.VerseRecitersDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.VersesDao
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
@@ -45,6 +45,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 @Module @InstallIn(SingletonComponent::class)
@@ -68,8 +69,17 @@ object RepositoryModule {
         booksDao: BooksDao,
         booksPreferencesDataSource: BooksPreferencesDataSource,
         gson: Gson,
-        @DefaultDispatcher dispatcher: CoroutineDispatcher
-    ) = BooksRepository(app, resources, booksDao, booksPreferencesDataSource, gson, dispatcher)
+        @DefaultDispatcher dispatcher: CoroutineDispatcher,
+        @ApplicationScope scope: CoroutineScope
+    ) = BooksRepository(
+        app,
+        resources,
+        booksDao,
+        booksPreferencesDataSource,
+        gson,
+        dispatcher,
+        scope
+    )
 
     @Provides @Singleton
     fun provideLiveContentRepository(
@@ -81,8 +91,9 @@ object RepositoryModule {
         userPreferencesDataSource: UserPreferencesDataSource,
         countriesDao: CountriesDao,
         citiesDao: CitiesDao,
-        @DefaultDispatcher dispatcher: CoroutineDispatcher
-    ) = LocationRepository(userPreferencesDataSource, countriesDao, citiesDao, dispatcher)
+        @DefaultDispatcher dispatcher: CoroutineDispatcher,
+        @ApplicationScope scope: CoroutineScope
+    ) = LocationRepository(userPreferencesDataSource, countriesDao, citiesDao, dispatcher, scope)
 
     @Provides @Singleton
     fun provideNotificationsRepository(
@@ -99,16 +110,18 @@ object RepositoryModule {
     fun provideQuizRepository(
         quizQuestionsDao: QuizQuestionsDao,
         quizAnswersDao: QuizAnswersDao,
-        @DefaultDispatcher dispatcher: CoroutineDispatcher
-    ) = QuizRepository(quizQuestionsDao, quizAnswersDao, dispatcher)
+        @DefaultDispatcher dispatcher: CoroutineDispatcher,
+        @ApplicationScope scope: CoroutineScope
+    ) = QuizRepository(quizQuestionsDao, quizAnswersDao, dispatcher, scope)
 
     @Provides @Singleton
     fun provideQuranRepository(
         quranPreferencesDataSource: QuranPreferencesDataSource,
         surasDao: SurasDao,
         versesDao: VersesDao,
-        @DefaultDispatcher dispatcher: CoroutineDispatcher
-    ) = QuranRepository(quranPreferencesDataSource, surasDao, versesDao, dispatcher)
+        @DefaultDispatcher dispatcher: CoroutineDispatcher,
+        @ApplicationScope scope: CoroutineScope
+    ) = QuranRepository(quranPreferencesDataSource, surasDao, versesDao, dispatcher, scope)
 
     @Provides @Singleton
     fun provideRecitationsRepository(
@@ -118,7 +131,8 @@ object RepositoryModule {
         verseRecitationsDao: VerseRecitationsDao,
         verseRecitersDao: VerseRecitersDao,
         recitationNarrationsDao: RecitationNarrationsDao,
-        @DefaultDispatcher dispatcher: CoroutineDispatcher
+        @DefaultDispatcher dispatcher: CoroutineDispatcher,
+        @ApplicationScope scope: CoroutineScope
     ) = RecitationsRepository(
         app,
         recitationsPreferencesDataSource,
@@ -126,7 +140,8 @@ object RepositoryModule {
         verseRecitationsDao,
         verseRecitersDao,
         recitationNarrationsDao,
-        dispatcher
+        dispatcher,
+        scope
     )
 
     @Provides @Singleton
@@ -135,13 +150,15 @@ object RepositoryModule {
         remembranceCategoriesDao: RemembranceCategoriesDao,
         remembrancesDao: RemembrancesDao,
         remembrancePassagesDao: RemembrancePassagesDao,
-        @DefaultDispatcher dispatcher: CoroutineDispatcher
+        @DefaultDispatcher dispatcher: CoroutineDispatcher,
+        @ApplicationScope scope: CoroutineScope
     ) = RemembrancesRepository(
         remembrancePreferencesDataSource,
         remembranceCategoriesDao,
         remembrancesDao,
         remembrancePassagesDao,
-        dispatcher
+        dispatcher,
+        scope
     )
 
     @Provides @Singleton

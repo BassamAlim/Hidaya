@@ -6,6 +6,7 @@ import bassamalim.hidaya.core.data.dataSources.room.daos.RecitationNarrationsDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.RecitationRecitersDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.VerseRecitationsDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.VerseRecitersDao
+import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.VerseRepeatMode
@@ -14,6 +15,7 @@ import bassamalim.hidaya.core.models.Reciter
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -26,7 +28,8 @@ class RecitationsRepository @Inject constructor(
     private val verseRecitationsDao: VerseRecitationsDao,
     private val verseRecitersDao: VerseRecitersDao,
     private val recitationNarrationsDao: RecitationNarrationsDao,
-    @DefaultDispatcher private val dispatcher: CoroutineDispatcher
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+    @ApplicationScope private val scope: CoroutineScope
 ) {
 
     val prefix = "/Telawat/"

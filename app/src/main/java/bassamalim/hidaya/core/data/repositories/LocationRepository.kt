@@ -4,6 +4,7 @@ import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.UserPrefe
 import bassamalim.hidaya.core.data.dataSources.room.daos.CitiesDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.CountriesDao
 import bassamalim.hidaya.core.data.dataSources.room.entities.Country
+import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
@@ -11,6 +12,7 @@ import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.LocationIds
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -18,7 +20,8 @@ class LocationRepository @Inject constructor(
     private val userPreferencesDataSource: UserPreferencesDataSource,
     private val countriesDao: CountriesDao,
     private val citiesDao: CitiesDao,
-    @DefaultDispatcher private val dispatcher: CoroutineDispatcher
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+    @ApplicationScope private val scope: CoroutineScope
 ) {
 
     fun getLocation() = userPreferencesDataSource.getLocation()
