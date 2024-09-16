@@ -3,7 +3,9 @@ package bassamalim.hidaya.core.data.dataSources.preferences.migrations
 import android.content.Context
 import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
-import bassamalim.hidaya.core.data.preferences.objects.RecitationsPreferences
+import bassamalim.hidaya.core.data.dataSources.preferences.Preference
+import bassamalim.hidaya.core.data.dataSources.preferences.PreferencesFileNames
+import bassamalim.hidaya.core.data.dataSources.preferences.objects.RecitationsPreferences
 import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
 import com.google.gson.Gson
@@ -15,14 +17,14 @@ object RecitationsPreferencesMigration {
     fun getMigration(context: Context) =
         SharedPreferencesMigration(
             context = context,
-            sharedPreferencesName = bassamalim.hidaya.core.data.dataSources.preferences.PreferencesFileNames.RECITATIONS_PREFERENCES_NAME
+            sharedPreferencesName = PreferencesFileNames.RECITATIONS_PREFERENCES_NAME
         ) { sharedPrefs: SharedPreferencesView, currentData: RecitationsPreferences ->
             currentData.copy(
                 reciterFavorites = persistentMapOf<Int, Boolean>().mutate {
                     Gson().fromJson(
                         sharedPrefs.getString(
-                            key = bassamalim.hidaya.core.data.dataSources.preferences.Preference.FavoriteReciters.key,
-                            defValue = bassamalim.hidaya.core.data.dataSources.preferences.Preference.FavoriteReciters.default as String
+                            key = Preference.FavoriteReciters.key,
+                            defValue = Preference.FavoriteReciters.default as String
                         )!!,
                         Array<Any>::class.java
                     ).mapIndexed { index, fav ->
@@ -32,8 +34,8 @@ object RecitationsPreferencesMigration {
                 narrationSelections = persistentMapOf<Int, Boolean>().mutate {
                     Gson().fromJson(
                         sharedPrefs.getString(
-                            key = bassamalim.hidaya.core.data.dataSources.preferences.Preference.SelectedNarrations.key,
-                            defValue = bassamalim.hidaya.core.data.dataSources.preferences.Preference.SelectedNarrations.default as String
+                            key = Preference.SelectedNarrations.key,
+                            defValue = Preference.SelectedNarrations.default as String
                         )!!,
                         BooleanArray::class.java
                     ).mapIndexed { index, selected ->
@@ -41,35 +43,35 @@ object RecitationsPreferencesMigration {
                     }
                 },
                 repeatMode = sharedPrefs.getInt(
-                    key = bassamalim.hidaya.core.data.dataSources.preferences.Preference.RecitationsRepeatMode.key,
-                    defValue = bassamalim.hidaya.core.data.dataSources.preferences.Preference.RecitationsRepeatMode.default as Int
+                    key = Preference.RecitationsRepeatMode.key,
+                    defValue = Preference.RecitationsRepeatMode.default as Int
                 ),
                 shuffleMode = sharedPrefs.getInt(
-                    key = bassamalim.hidaya.core.data.dataSources.preferences.Preference.RecitationsShuffleMode.key,
-                    defValue = bassamalim.hidaya.core.data.dataSources.preferences.Preference.RecitationsShuffleMode.default as Int
+                    key = Preference.RecitationsShuffleMode.key,
+                    defValue = Preference.RecitationsShuffleMode.default as Int
                 ),
                 lastPlayedMedia = LastPlayedMedia(
                     mediaId = sharedPrefs.getString(
-                        key = bassamalim.hidaya.core.data.dataSources.preferences.Preference.LastPlayedMediaId.key,
-                        defValue = bassamalim.hidaya.core.data.dataSources.preferences.Preference.LastPlayedMediaId.default as String
+                        key = Preference.LastPlayedMediaId.key,
+                        defValue = Preference.LastPlayedMediaId.default as String
                     )!!,
                     progress = sharedPrefs.getInt(
-                        key = bassamalim.hidaya.core.data.dataSources.preferences.Preference.LastRecitationProgress.key,
-                        defValue = bassamalim.hidaya.core.data.dataSources.preferences.Preference.LastRecitationProgress.default as Int
+                        key = Preference.LastRecitationProgress.key,
+                        defValue = Preference.LastRecitationProgress.default as Int
                     ).toLong()
                 ),
                 verseReciterId = sharedPrefs.getString(
-                    key = bassamalim.hidaya.core.data.dataSources.preferences.Preference.VerseReciter.key,
-                    defValue = bassamalim.hidaya.core.data.dataSources.preferences.Preference.VerseReciter.default as String
+                    key = Preference.VerseReciter.key,
+                    defValue = Preference.VerseReciter.default as String
                 )!!.toInt(),
                 verseRepeatMode = VerseRepeatMode.NONE,
                 shouldStopOnPageEnd = sharedPrefs.getBoolean(
-                    key = bassamalim.hidaya.core.data.dataSources.preferences.Preference.StopOnPageEnd.key,
-                    defValue = bassamalim.hidaya.core.data.dataSources.preferences.Preference.StopOnPageEnd.default as Boolean
+                    key = Preference.StopOnPageEnd.key,
+                    defValue = Preference.StopOnPageEnd.default as Boolean
                 ),
                 shouldStopOnSuraEnd = sharedPrefs.getBoolean(
-                    key = bassamalim.hidaya.core.data.dataSources.preferences.Preference.StopOnSuraEnd.key,
-                    defValue = bassamalim.hidaya.core.data.dataSources.preferences.Preference.StopOnSuraEnd.default as Boolean
+                    key = Preference.StopOnSuraEnd.key,
+                    defValue = Preference.StopOnSuraEnd.default as Boolean
                 ),
             )
         }

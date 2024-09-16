@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.room.daos.SurasDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.SurasDao
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository

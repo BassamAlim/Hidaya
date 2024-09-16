@@ -12,7 +12,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import bassamalim.hidaya.core.data.room.daos.SurasDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.SurasDao
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository

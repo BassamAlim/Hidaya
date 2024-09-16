@@ -14,7 +14,7 @@ class NotificationsRepository @Inject constructor(
 
     fun getNotificationTypes() = notificationsPreferencesDataSource.getNotificationTypes()
 
-    fun getNotificationType(pid: PID) = getNotificationTypes().map { it[pid] }
+    fun getNotificationType(pid: PID) = getNotificationTypes().map { it[pid]!! }
 
     suspend fun setNotificationType(type: NotificationType, pid: PID) {
         notificationsPreferencesDataSource.getNotificationTypes().first().put(pid, type)

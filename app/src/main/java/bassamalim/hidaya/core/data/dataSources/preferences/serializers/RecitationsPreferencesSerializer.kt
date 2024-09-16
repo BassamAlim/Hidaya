@@ -1,7 +1,7 @@
 package bassamalim.hidaya.core.data.dataSources.preferences.serializers
 
 import androidx.datastore.core.Serializer
-import bassamalim.hidaya.core.data.preferences.objects.RecitationsPreferences
+import bassamalim.hidaya.core.data.dataSources.preferences.objects.RecitationsPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
