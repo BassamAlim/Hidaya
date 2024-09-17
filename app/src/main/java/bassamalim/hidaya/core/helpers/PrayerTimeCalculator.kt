@@ -1,9 +1,16 @@
 package bassamalim.hidaya.core.helpers
 
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
-import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
+import bassamalim.hidaya.core.enums.PrayerTimePoint
+import bassamalim.hidaya.core.enums.PrayerTimePoint.ASR
+import bassamalim.hidaya.core.enums.PrayerTimePoint.DHUHR
+import bassamalim.hidaya.core.enums.PrayerTimePoint.FAJR
+import bassamalim.hidaya.core.enums.PrayerTimePoint.ISHAA
+import bassamalim.hidaya.core.enums.PrayerTimePoint.MAGHRIB
+import bassamalim.hidaya.core.enums.PrayerTimePoint.SUNRISE
+import bassamalim.hidaya.core.enums.PrayerTimePoint.SUNSET
 import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
 import java.util.Calendar
@@ -21,14 +28,13 @@ import kotlin.math.tan
 
 class PrayerTimeCalculator(
     private val settings: PrayerTimeCalculatorSettings,
-    private val timeOffsets: Map<PID, Int>
+    private val timeOffsets: Map<PrayerTimePoint, Int>
 ) {
 
     private var asrJuristic =
         if (settings.juristicMethod == PrayerTimeJuristicMethod.HANAFI) 1
         else 0
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
-    private val offsets = intArrayOf(0, 0, 0, 0, 0, 0, 0)
     private var numIterations = 1 // number of iterations needed to compute times
 
     private val methodParams = hashMapOf(
@@ -40,28 +46,13 @@ class PrayerTimeCalculator(
         PrayerTimeCalculationMethod.TAHRAN to doubleArrayOf(17.7, 0.0, 4.5, 0.0, 14.0)
     )
 
-    init {
-        setOffsets()
-    }
-
-    // Tune timings for adjustments (Set time offsets)
-    private fun setOffsets() {
-        offsets[0] = timeOffsets[PID.FAJR]!!
-        offsets[1] = timeOffsets[PID.SUNRISE]!!
-        offsets[2] = timeOffsets[PID.DHUHR]!!
-        offsets[3] = timeOffsets[PID.ASR]!!
-        // Skipping sunset
-        offsets[5] = timeOffsets[PID.MAGHRIB]!!
-        offsets[6] = timeOffsets[PID.ISHAA]!!
-    }
-
     // -------------------- Interface Functions --------------------
     // returns prayer times in Calendar object
     fun getPrayerTimes(
         coordinates: Coordinates,
         utcOffset: Double = getDefaultUtcOffset(),
         calendar: Calendar = Calendar.getInstance()
-    ): SortedMap<PID, Calendar?> {
+    ): SortedMap<PrayerTimePoint, Calendar?> {
         val julianDate = getJulianDate(calendar = calendar, longitude = coordinates.longitude)
 
         val times = computeDayTimes(
@@ -71,13 +62,13 @@ class PrayerTimeCalculator(
         )
 
         return sortedMapOf(
-            PID.FAJR to buildCalendar(times[0]),
-            PID.SUNRISE to buildCalendar(times[1]),
-            PID.DHUHR to buildCalendar(times[2]),
-            PID.ASR to buildCalendar(times[3]),
+            FAJR to buildCalendar(times[FAJR]!!),
+            SUNRISE to buildCalendar(times[SUNRISE]!!),
+            DHUHR to buildCalendar(times[DHUHR]!!),
+            ASR to buildCalendar(times[ASR]!!),
             // skipping sunset time
-            PID.MAGHRIB to buildCalendar(times[5]),
-            PID.ISHAA to buildCalendar(times[6])
+            MAGHRIB to buildCalendar(times[MAGHRIB]!!),
+            ISHAA to buildCalendar(times[ISHAA]!!)
         )
     }
 
@@ -128,8 +119,16 @@ class PrayerTimeCalculator(
         coordinates: Coordinates,
         utcOffset: Double,
         julianDate: Double
-    ): DoubleArray {
-        var times = doubleArrayOf(5.0, 6.0, 12.0, 13.0, 18.0, 18.0, 18.0)  // default times
+    ): SortedMap<PrayerTimePoint, Double> {
+        var times = sortedMapOf(
+            FAJR to 5.0,
+            SUNRISE to 6.0,
+            DHUHR to 12.0,
+            ASR to 13.0,
+            SUNSET to 18.0,
+            MAGHRIB to 18.0,
+            ISHAA to 18.0
+        )  // default times
         for (i in 1..numIterations) times = computeTimes(
             times = times,
             latitude = coordinates.latitude,
@@ -142,44 +141,53 @@ class PrayerTimeCalculator(
 
     // compute prayer times at given julian date
     private fun computeTimes(
-        times: DoubleArray,
+        times: SortedMap<PrayerTimePoint, Double>,
         latitude: Double,
         julianDate: Double
-    ): DoubleArray {
+    ): SortedMap<PrayerTimePoint, Double> {
         val t = dayPortion(times)
-        val fajr = computeTime(
-            g = 180 - (methodParams[settings.calculationMethod]!![0]),
-            t = t[0],
-            latitude = latitude,
-            julianDate = julianDate
+        return sortedMapOf(
+            FAJR to computeTime(
+                g = 180 - (methodParams[settings.calculationMethod]!![0]),
+                t = t[FAJR]!!,
+                latitude = latitude,
+                julianDate = julianDate
+            ),
+            SUNRISE to computeTime(
+                g = 180 - 0.833,
+                t = t[SUNRISE]!!,
+                latitude = latitude,
+                julianDate = julianDate
+            ),
+            DHUHR to computeMidDay(
+                gT = t[DHUHR]!!,
+                julianDate = julianDate
+            ),
+            ASR to computeAsr(
+                step = (1 + asrJuristic).toDouble(),
+                t = t[ASR]!!,
+                latitude = latitude,
+                julianDate = julianDate
+            ),
+            SUNSET to computeTime(
+                g = 0.833,
+                t = t[SUNSET]!!,
+                latitude = latitude,
+                julianDate = julianDate
+            ),
+            MAGHRIB to computeTime(
+                g = methodParams[settings.calculationMethod]!![2],
+                t = t[MAGHRIB]!!,
+                latitude = latitude,
+                julianDate = julianDate
+            ),
+            ISHAA to computeTime(
+                g = methodParams[settings.calculationMethod]!![4],
+                t = t[ISHAA]!!,
+                latitude = latitude,
+                julianDate = julianDate
+            )
         )
-        val sunrise = computeTime(
-            g = 180 - 0.833,
-            t = t[1],
-            latitude = latitude,
-            julianDate = julianDate
-        )
-        val dhuhr = computeMidDay(gT = t[2], julianDate = julianDate)
-        val asr = computeAsr(
-            step = (1 + asrJuristic).toDouble(),
-            t = t[3],
-            latitude = latitude,
-            julianDate = julianDate
-        )
-        val sunset = computeTime(g = 0.833, t = t[4], latitude = latitude, julianDate = julianDate)
-        val maghrib = computeTime(
-            g = methodParams[settings.calculationMethod]!![2],
-            t = t[5],
-            latitude = latitude,
-            julianDate = julianDate
-        )
-        val ishaa = computeTime(
-            g = methodParams[settings.calculationMethod]!![4],
-            t = t[6],
-            latitude = latitude,
-            julianDate = julianDate
-        )
-        return doubleArrayOf(fajr, sunrise, dhuhr, asr, sunset, maghrib, ishaa)
     }
 
     // compute the time of Asr
@@ -247,31 +255,44 @@ class PrayerTimeCalculator(
 
     // adjust times in a prayer time array
     private fun adjustTimes(
-        times: DoubleArray,
+        times: SortedMap<PrayerTimePoint, Double>,
         utcOffset: Double,
         longitude: Double
-    ): DoubleArray {
-        for (i in times.indices) times[i] += utcOffset - longitude / 15
+    ): SortedMap<PrayerTimePoint, Double> {
+        times.forEach { (point, time) ->
+            times[point] = fixHour(time + utcOffset - longitude / 15)
+        }
 
-        times[2] += dhuhrMinutes / 60.0 // Dhuhr
+        val adjustedTimes = sortedMapOf<PrayerTimePoint, Double>().apply {
+            for ((point, time) in times) {
+                put(point, time + utcOffset - longitude / 15)
+            }
+        }
+
+        adjustedTimes[DHUHR] = adjustedTimes[DHUHR]!! + dhuhrMinutes / 60.0 // Dhuhr
         if (methodParams[settings.calculationMethod]?.get(1)?.toInt() == 1) // Maghrib
-            times[5] = times[4] + (methodParams[settings.calculationMethod]?.get(2)!!) / 60
+            adjustedTimes[MAGHRIB] = adjustedTimes[SUNSET]!! +
+                    (methodParams[settings.calculationMethod]?.get(2)!!) / 60
         if (methodParams[settings.calculationMethod]?.get(3)?.toInt() == 1) // ishaa
-            times[6] = times[5] + (methodParams[settings.calculationMethod]?.get(4)!!) / 60
+            adjustedTimes[ISHAA] = adjustedTimes[MAGHRIB]!! +
+                    (methodParams[settings.calculationMethod]?.get(4)!!) / 60
         if (settings.highLatitudesAdjustmentMethod != HighLatitudesAdjustmentMethod.NONE)
-            adjustHighLatTimes(times)
+            adjustHighLatTimes(adjustedTimes)
 
-        return times
+        return adjustedTimes
     }
 
     // adjust Fajr, ishaa and Maghrib for locations in higher latitudes
-    private fun adjustHighLatTimes(times: DoubleArray): DoubleArray {
-        val nightTime = timeDiff(times[4], times[1]) // sunset to sunrise
+    private fun adjustHighLatTimes(
+        times: SortedMap<PrayerTimePoint, Double>
+    ): SortedMap<PrayerTimePoint, Double> {
+        val nightTime = timeDiff(times[SUNSET]!!, times[SUNRISE]!!) // sunset to sunrise
 
         // Adjust Fajr
         val fajrDiff = nightPortion(methodParams[settings.calculationMethod]?.get(0)!!) * nightTime
-        if (java.lang.Double.isNaN(times[0]) || timeDiff(times[0], times[1]) > fajrDiff)
-            times[0] = times[1] - fajrDiff
+        if (java.lang.Double.isNaN(times[FAJR]!!)
+            || timeDiff(times[FAJR]!!, times[SUNRISE]!!) > fajrDiff)
+            times[FAJR] = times[SUNRISE]!! - fajrDiff
 
         // Adjust ishaa
         val ishaaAngle =
@@ -280,8 +301,9 @@ class PrayerTimeCalculator(
             else 18.0
 
         val ishaaDiff = nightPortion(ishaaAngle) * nightTime
-        if (java.lang.Double.isNaN(times[6]) || timeDiff(times[4], times[6]) > ishaaDiff)
-            times[6] = times[4] + ishaaDiff
+        if (java.lang.Double.isNaN(times[ISHAA]!!)
+            || timeDiff(times[SUNSET]!!, times[ISHAA]!!) > ishaaDiff)
+            times[ISHAA] = times[SUNSET]!! + ishaaDiff
 
         // Adjust Maghrib
         val maghribAngle =
@@ -290,8 +312,9 @@ class PrayerTimeCalculator(
             else 4.0
 
         val maghribDiff = nightPortion(maghribAngle) * nightTime
-        if (java.lang.Double.isNaN(times[5]) || timeDiff(times[4], times[5]) > maghribDiff)
-            times[5] = times[4] + maghribDiff
+        if (java.lang.Double.isNaN(times[MAGHRIB]!!)
+            || timeDiff(times[SUNSET]!!, times[MAGHRIB]!!) > maghribDiff)
+            times[MAGHRIB] = times[SUNSET]!! + maghribDiff
 
         return times
     }
@@ -301,10 +324,12 @@ class PrayerTimeCalculator(
         fixHour(time2 - time1)
 
     // convert hours to day portions
-    private fun dayPortion(times: DoubleArray) =
-        times.map { time ->
-            time / 24.0
-        }.toDoubleArray()
+    private fun dayPortion(times: SortedMap<PrayerTimePoint, Double>) =
+        sortedMapOf<PrayerTimePoint, Double>().apply {
+            for ((point, time) in times) {
+                put(point, time / 24.0)
+            }
+        }
 
     // the night portion used for adjusting times in higher latitudes
     private fun nightPortion(angle: Double): Double {
@@ -316,10 +341,12 @@ class PrayerTimeCalculator(
         }
     }
 
-    private fun tuneTimes(times: DoubleArray): DoubleArray =
-        times.mapIndexed { i, time ->
-            time + offsets[i] / 60.0
-        }.toDoubleArray()
+    private fun tuneTimes(times: SortedMap<PrayerTimePoint, Double>) =
+        sortedMapOf<PrayerTimePoint, Double>().apply {
+            for ((point, time) in times) {
+                put(point, time + timeOffsets[point]!! / 60.0)
+            }
+        }
 
     // ---------------------- Trigonometric Functions -----------------------
     // range reduce angle in degrees.

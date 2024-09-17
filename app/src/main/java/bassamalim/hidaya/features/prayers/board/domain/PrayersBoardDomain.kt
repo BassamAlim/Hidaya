@@ -120,7 +120,7 @@ class PrayersBoardDomain @Inject constructor(
     }
 
     suspend fun updatePrayerTimeAlarms(pid: PID) {
-        alarm.setPidAlarm(pid)
+        alarm.setReminderAlarm(pid)
     }
 
 }

@@ -1,14 +1,11 @@
 package bassamalim.hidaya.core.enums
 
-enum class PID {
+enum class PrayerTimePoint {
     FAJR,
     SUNRISE,
     DHUHR,
     ASR,
+    SUNSET,
     MAGHRIB,
-    ISHAA,
-    MORNING,
-    EVENING,
-    DAILY_WERD,
-    FRIDAY_KAHF
+    ISHAA
 }

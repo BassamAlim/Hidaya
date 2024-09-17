@@ -7,6 +7,7 @@ import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
+import bassamalim.hidaya.core.enums.PrayerTimePoint
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.first
@@ -47,16 +48,18 @@ class PrayersRepository @Inject constructor(
 
     fun getTimeOffsets() = prayersPreferencesDataSource.getTimeOffsets()
 
-    fun getTimeOffset(pid: PID) = getTimeOffsets().map { it[pid]!! }
+    fun getTimeOffset(prayerTimePoint: PrayerTimePoint) = getTimeOffsets().map {
+        it[prayerTimePoint]!!
+    }
 
-    suspend fun setTimeOffsets(timeOffsets: Map<PID, Int>) {
+    suspend fun setTimeOffsets(timeOffsets: Map<PrayerTimePoint, Int>) {
         prayersPreferencesDataSource.updateTimeOffsets(timeOffsets.toPersistentMap())
     }
 
-    suspend fun setTimeOffset(pid: PID, timeOffset: Int) {
+    suspend fun setTimeOffset(prayerTimePoint: PrayerTimePoint, timeOffset: Int) {
         prayersPreferencesDataSource.updateTimeOffsets(
             getTimeOffsets().first().toPersistentMap().mutate {
-                it[pid] = timeOffset
+                it[prayerTimePoint] = timeOffset
             }
         )
     }

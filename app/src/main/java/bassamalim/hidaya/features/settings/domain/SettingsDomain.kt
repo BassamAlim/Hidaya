@@ -43,7 +43,7 @@ class SettingsDomain @Inject constructor(
     }
 
     suspend fun setAlarm(pid: PID) {
-        alarm.setPidAlarm(pid)
+        alarm.setReminderAlarm(pid)
     }
 
     fun cancelAlarm(pid: PID) {

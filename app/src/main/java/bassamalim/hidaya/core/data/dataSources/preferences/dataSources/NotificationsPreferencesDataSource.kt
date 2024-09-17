@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import bassamalim.hidaya.core.data.dataSources.preferences.objects.NotificationsPreferences
 import bassamalim.hidaya.core.enums.NotificationType
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.models.TimeOfDay
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.coroutines.flow.Flow
@@ -22,35 +22,35 @@ class NotificationsPreferencesDataSource(
         }
 
     fun getNotificationTypes() = flow.map { it.notificationTypes }
-    suspend fun updateNotificationTypes(types: PersistentMap<PID, NotificationType>) {
+    suspend fun updateNotificationTypes(types: PersistentMap<Reminder.Prayer, NotificationType>) {
         dataStore.updateData { preferences ->
             preferences.copy(notificationTypes = types)
         }
     }
 
     fun getDevotionalReminderEnabledStatuses() = flow.map { it.devotionalReminderEnabledStatuses }
-    suspend fun updateDevotionalReminderEnabledStatuses(statuses: PersistentMap<PID, Boolean>) {
+    suspend fun updateDevotionalReminderEnabledStatuses(statuses: PersistentMap<Reminder.Devotional, Boolean>) {
         dataStore.updateData { preferences ->
             preferences.copy(devotionalReminderEnabledStatuses = statuses)
         }
     }
 
     fun getDevotionalReminderTimes() = flow.map { it.devotionalReminderTimes }
-    suspend fun updateDevotionalReminderTimes(times: PersistentMap<PID, TimeOfDay>) {
+    suspend fun updateDevotionalReminderTimes(times: PersistentMap<Reminder.Devotional, TimeOfDay>) {
         dataStore.updateData { preferences ->
             preferences.copy(devotionalReminderTimes = times)
         }
     }
 
     fun getPrayerReminderTimeOffsets() = flow.map { it.prayerReminderTimeOffsets }
-    suspend fun updatePrayerReminderTimeOffsets(offsets: PersistentMap<PID, Int>) {
+    suspend fun updatePrayerReminderTimeOffsets(offsets: PersistentMap<Reminder.Prayer, Int>) {
         dataStore.updateData { preferences ->
             preferences.copy(prayerReminderTimeOffsets = offsets)
         }
     }
 
     fun getLastNotificationDates() = flow.map { it.lastNotificationDates }
-    suspend fun updateLastNotificationDates(dates: PersistentMap<PID, Int>) {
+    suspend fun updateLastNotificationDates(dates: PersistentMap<Reminder, Int>) {
         dataStore.updateData { preferences ->
             preferences.copy(lastNotificationDates = dates)
         }

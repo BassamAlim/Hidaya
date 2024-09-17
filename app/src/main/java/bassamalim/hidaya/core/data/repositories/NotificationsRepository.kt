@@ -2,7 +2,7 @@ package bassamalim.hidaya.core.data.repositories
 
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.NotificationsPreferencesDataSource
 import bassamalim.hidaya.core.enums.NotificationType
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.models.TimeOfDay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -14,48 +14,48 @@ class NotificationsRepository @Inject constructor(
 
     fun getNotificationTypes() = notificationsPreferencesDataSource.getNotificationTypes()
 
-    fun getNotificationType(pid: PID) = getNotificationTypes().map { it[pid]!! }
+    fun getNotificationType(prayer: Reminder.Prayer) = getNotificationTypes().map { it[prayer]!! }
 
-    suspend fun setNotificationType(type: NotificationType, pid: PID) {
-        notificationsPreferencesDataSource.getNotificationTypes().first().put(pid, type)
+    suspend fun setNotificationType(type: NotificationType, prayer: Reminder.Prayer) {
+        notificationsPreferencesDataSource.getNotificationTypes().first().put(prayer, type)
     }
 
     fun getDevotionReminderEnabledMap() =
         notificationsPreferencesDataSource.getDevotionalReminderEnabledStatuses()
 
-    suspend fun setDevotionReminderEnabled(enabled: Boolean, pid: PID) {
+    suspend fun setDevotionReminderEnabled(enabled: Boolean, devotion: Reminder.Devotional) {
         notificationsPreferencesDataSource.updateDevotionalReminderEnabledStatuses(
             notificationsPreferencesDataSource.getDevotionalReminderEnabledStatuses().first()
-                .put(pid, enabled)
+                .put(devotion, enabled)
         )
     }
 
     fun getDevotionReminderTimes() =
         notificationsPreferencesDataSource.getDevotionalReminderTimes()
 
-    suspend fun setDevotionReminderTimes(timeOfDay: TimeOfDay, pid: PID) {
+    suspend fun setDevotionReminderTimes(timeOfDay: TimeOfDay, devotion: Reminder.Devotional) {
         notificationsPreferencesDataSource.updateDevotionalReminderTimes(
             notificationsPreferencesDataSource.getDevotionalReminderTimes().first()
-                .put(pid, timeOfDay)
+                .put(devotion, timeOfDay)
         )
     }
 
     fun getPrayerReminderOffsetMap() =
         notificationsPreferencesDataSource.getPrayerReminderTimeOffsets()
 
-    suspend fun setPrayerReminderOffset(offset: Int, pid: PID) {
+    suspend fun setPrayerReminderOffset(offset: Int, prayer: Reminder.Prayer) {
         notificationsPreferencesDataSource.updatePrayerReminderTimeOffsets(
             notificationsPreferencesDataSource.getPrayerReminderTimeOffsets().first()
-                .put(pid, offset)
+                .put(prayer, offset)
         )
     }
 
     fun getLastNotificationDates() = notificationsPreferencesDataSource.getLastNotificationDates()
 
-    suspend fun setLastNotificationDate(pid: PID, dayOfYear: Int) {
+    suspend fun setLastNotificationDate(reminder: Reminder, dayOfYear: Int) {
         notificationsPreferencesDataSource.updateLastNotificationDates(
             notificationsPreferencesDataSource.getLastNotificationDates().first()
-                .put(pid, dayOfYear)
+                .put(reminder, dayOfYear)
         )
     }
 

@@ -10,7 +10,8 @@ import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.NotificationType
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.PrayerTimePoint
+import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.NotificationReceiver
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
@@ -25,7 +26,7 @@ class Alarm(
     private val locationRepository: LocationRepository
 ) {
 
-    suspend fun setPidAlarm(pid: PID) {
+    suspend fun setReminderAlarm(reminder: Reminder) {
         val location = locationRepository.getLocation().first() ?: return
         val prayerTimesMap = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
@@ -35,26 +36,31 @@ class Alarm(
             calendar = Calendar.getInstance()
         )
 
-        if (pid.ordinal in 0..5) {
-            setPrayerAlarm(pid = pid, time = prayerTimesMap[pid]!!)
+        when (reminder) {
+            is Reminder.Prayer -> {
+                setPrayerAlarm(reminder = reminder, time = prayerTimesMap[reminder]!!)
 
-            val reminderOffset = notificationsRepository.getPrayerReminderOffsetMap().first()[pid]!!
-            if (reminderOffset != 0)
-                setReminder(pid = pid, time = prayerTimesMap[pid]!!, offset = reminderOffset)
+                val reminderOffset = notificationsRepository.getPrayerReminderOffsetMap().first()[reminder]!!
+                if (reminderOffset != 0)
+                    setReminder(reminder = reminder, time = prayerTimesMap[reminder]!!, offset = reminderOffset)
+            }
+            is Reminder.Devotional -> {
+                setDevotionAlarm(reminder)
+            }
+            else -> {}
         }
-        else if (pid.ordinal in 6..9) setDevotionAlarm(pid)
     }
 
     /**
      * Finds out if the desired function and executes it
      */
-    suspend fun setAll(prayerTimes: SortedMap<PID, Calendar?>) {
+    suspend fun setAll(prayerTimes: SortedMap<PrayerTimePoint, Calendar?>) {
         setPrayerAlarms(prayerTimes)
         setReminders(prayerTimes)
         setDevotionAlarms()
     }
 
-    private suspend fun setPrayerAlarms(prayerTimes: SortedMap<PID, Calendar?>) {
+    private suspend fun setPrayerAlarms(prayerTimes: SortedMap<PrayerTimePoint, Calendar?>) {
         Log.i(Global.TAG, "in set prayer alarms")
 
         for ((pid, time) in prayerTimes) {
@@ -66,33 +72,33 @@ class Alarm(
     /**
      * Set an alarm for the given prayer time
      *
-     * @param pid the ID of the prayer
+     * @param reminder the ID of the prayer
      */
-    private fun setPrayerAlarm(pid: PID, time: Calendar) {
-        Log.i(Global.TAG, "in set alarm for: $pid")
+    private fun setPrayerAlarm(reminder: Reminder, time: Calendar) {
+        Log.i(Global.TAG, "in set alarm for: $reminder")
 
         val millis = time.timeInMillis
         if (System.currentTimeMillis() <= millis) {
             val intent = Intent(app, NotificationReceiver::class.java).also {
-                it.action = if (pid == PID.SUNRISE) "devotion" else "prayer"
-                it.putExtra("id", pid.name)
+                it.action = if (reminder == Reminder.Prayer.Sunrise) "devotion" else "prayer"
+                it.putExtra("id", reminder.toString())
                 it.putExtra("time", millis)
             }
 
             val pendingIntent = PendingIntent.getBroadcast(
-                app, pid.ordinal, intent,
+                app, reminder.id, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
             val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
 
-            Log.i(Global.TAG, "alarm $pid set")
+            Log.i(Global.TAG, "alarm $reminder set")
         }
-        else Log.i(Global.TAG, "$pid Passed")
+        else Log.i(Global.TAG, "$reminder Passed")
     }
 
-    private suspend fun setReminders(prayerTimes: SortedMap<PID, Calendar?>) {
+    private suspend fun setReminders(prayerTimes: SortedMap<PrayerTimePoint, Calendar?>) {
         Log.i(Global.TAG, "in set reminders")
 
         for ((pid, time) in prayerTimes) {
@@ -101,28 +107,28 @@ class Alarm(
         }
     }
 
-    private fun setReminder(pid: PID, time: Calendar, offset: Int) {
-        Log.i(Global.TAG, "in set reminder for: $pid")
+    private fun setReminder(reminder: Reminder, time: Calendar, offset: Int) {
+        Log.i(Global.TAG, "in set reminder for: $reminder")
 
         val millis = time.timeInMillis + offset * 60 * 1000
         if (System.currentTimeMillis() <= millis) {
             val intent = Intent(app, NotificationReceiver::class.java).apply {
                 action = "reminder"
-                putExtra("id", pid.name)
+                putExtra("id", reminder.name)
                 putExtra("time", millis)
             }
 
             val pendingIntent = PendingIntent.getBroadcast(
-                app, pid.ordinal, intent,
+                app, reminder.id, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
             val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
 
-            Log.i(Global.TAG, "reminder $pid set")
+            Log.i(Global.TAG, "reminder $reminder set")
         }
-        else Log.i(Global.TAG, "reminder $pid Passed")
+        else Log.i(Global.TAG, "reminder $reminder Passed")
     }
 
     /**
@@ -138,9 +144,9 @@ class Alarm(
 
         for ((pid, enabled) in devotionAlarmEnabledMap) {
             if (enabled) {
-                if (pid == PID.FRIDAY_KAHF && today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+                if (pid == Reminder.FRIDAY_KAHF && today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
                     setDevotionAlarm(pid)
-                else if (pid != PID.FRIDAY_KAHF) setDevotionAlarm(pid)
+                else if (pid != Reminder.FRIDAY_KAHF) setDevotionAlarm(pid)
             }
         }
     }
