@@ -23,7 +23,6 @@ import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.enums.NotificationType
-import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
@@ -42,84 +41,71 @@ import kotlin.math.abs
 class NotificationReceiver : BroadcastReceiver() {
 
     private lateinit var ctx: Context
-    private lateinit var action: String
-    private lateinit var prayer: Prayer
     @Inject lateinit var notificationsRepository: NotificationsRepository
     @Inject lateinit var quranRepository: QuranRepository
     private var notificationId = 0
     private var channelId = ""
-    private var time = 0L
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context, intent: Intent) {
         ctx = context.applicationContext
 
-        prayer = Prayer.valueOf(intent.getStringExtra("id")!!)
-        time = intent.getLongExtra("time", 0L)
+        val reminder = Reminder.valueOf(intent.getStringExtra("id")!!.toInt())
+        val time = intent.getLongExtra("time", 0L)
+        notificationId = reminder.id
 
         GlobalScope.launch {
-            if (isOnTime() || !isAlreadyNotified()) {
-                action = intent.action!!
-                when (intent.action) {
-                    "prayer" -> handlePrayer()
-                    "reminder" -> handlePrayerReminder()
-                    "devotion" -> handleDevotionReminder()
+            if (isOnTime(time) || !isAlreadyNotified(reminder)) {
+                when (reminder) {
+                    is Reminder.Prayer -> handlePrayerReminder(reminder, time)
+                    is Reminder.PrayerExtra -> handlePrayerExtraReminder(reminder)
+                    is Reminder.Devotional -> handleDevotionalReminder(reminder)
                 }
             }
             else Log.i(Global.TAG, "notification receiver: not on time or already notified")
         }
     }
 
-    private suspend fun handlePrayer() {
-        Log.i(Global.TAG, "in notification receiver for $prayer prayer")
+    private suspend fun handlePrayerReminder(reminder: Reminder.Prayer, time: Long) {
+        Log.i(Global.TAG, "in notification receiver for $reminder prayer")
 
-        notificationId = prayer.ordinal
-
-        val notificationType =
-            notificationsRepository.getNotificationType(prayer.toReminder()).first()
+        val notificationType = notificationsRepository.getNotificationType(reminder).first()
 
         if (notificationType != NotificationType.NONE) {
-            if (notificationType == NotificationType.ATHAN) startService()
-            else showNotification(true, notificationType)
+            if (notificationType == NotificationType.ATHAN) startService(reminder, time)
+            else showNotification(reminder, notificationType)
         }
     }
 
-    private suspend fun handlePrayerReminder() {
-        Log.i(Global.TAG, "in notification receiver for $prayer reminder")
+    private suspend fun handlePrayerExtraReminder(reminder: Reminder.PrayerExtra) {
+        Log.i(Global.TAG, "in notification receiver for $reminder reminder")
 
-        notificationId = prayer.ordinal + 10
-        showNotification(false)
+        showNotification(reminder)
     }
 
-    private suspend fun handleDevotionReminder() {
-        Log.i(Global.TAG, "in notification receiver for $prayer extra")
+    private suspend fun handleDevotionalReminder(reminder: Reminder.Devotional) {
+        Log.i(Global.TAG, "in notification receiver for $reminder extra")
 
-        notificationId = prayer.ordinal
-
-        val notificationType =
-            notificationsRepository.getNotificationType(prayer.toReminder()).first()
-
-        showNotification(false, notificationType)
+        showNotification(reminder)
     }
 
-    private fun isOnTime(): Boolean {
+    private fun isOnTime(time: Long): Boolean {
         val max = time + 120000
         return System.currentTimeMillis() <= max
     }
 
-    private suspend fun isAlreadyNotified(): Boolean {
-        val lastDate =
-            notificationsRepository.getLastNotificationDates().first()[prayer.toReminder()]!!
+    private suspend fun isAlreadyNotified(reminder: Reminder): Boolean {
+        val lastDate = notificationsRepository.getLastNotificationDates().first()[reminder]!!
         return lastDate == Calendar.getInstance()[Calendar.DAY_OF_YEAR]
     }
 
     private suspend fun showNotification(
-        isPrayer: Boolean,
+        reminder: Reminder,
         notificationType: NotificationType = NotificationType.NOTIFICATION
     ) {
-        createNotificationChannel()
+        createNotificationChannel(reminder)
 
-        if (isPrayer && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (reminder is Reminder.Prayer && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val am = ctx.getSystemService(Service.AUDIO_SERVICE) as AudioManager
             // Request audio focus
             am.requestAudioFocus(                   // Request permanent focus
@@ -136,17 +122,17 @@ class NotificationReceiver : BroadcastReceiver() {
         if (ActivityCompat.checkSelfPermission(
                 ctx, Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED) {
-            val notification = build(notificationType)
+            val notification = build(reminder, notificationType)
             NotificationManagerCompat.from(ctx).notify(notificationId, notification)
         }
 
-        markAsNotified()
+        markAsNotified(reminder)
     }
 
-    private fun startService() {
+    private fun startService(reminder: Reminder.Prayer, time: Long) {
         val intent = Intent(ctx, AthanService::class.java)
         intent.action = Global.PLAY_ATHAN
-        intent.putExtra("pid", prayer.name)
+        intent.putExtra("prayer", reminder.name)
         intent.putExtra("time", time)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -156,20 +142,21 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private suspend fun build(
+        reminder: Reminder,
         notificationType: NotificationType
     ): Notification {
         val builder = NotificationCompat.Builder(ctx, channelId)
         builder.setSmallIcon(R.drawable.ic_athan)
         builder.setTicker(ctx.resources.getString(R.string.app_name))
 
-        builder.setContentTitle(getTitle())
-        builder.setContentText(getSubtitle())
+        builder.setContentTitle(getTitle(reminder))
+        builder.setContentText(getSubtitle(reminder))
 
         builder.priority = NotificationCompat.PRIORITY_MAX
         builder.setAutoCancel(true)
         builder.setOnlyAlertOnce(true)
         builder.color = ctx.getColor(R.color.surface_M)
-        builder.setContentIntent(onClick(prayer.toReminder()))
+        builder.setContentIntent(onClick(reminder))
 
         if (notificationType == NotificationType.SILENT)
             builder.setSilent(true)
@@ -177,32 +164,34 @@ class NotificationReceiver : BroadcastReceiver() {
         return builder.build()
     }
 
-    private fun getTitle(): String {
-        return if (prayer == Prayer.DHUHR &&
+    private fun getTitle(reminder: Reminder): String {
+        return if ((reminder == Reminder.Prayer.Dhuhr || reminder == Reminder.PrayerExtra.Dhuhr) &&
             Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
-            if (action == "reminder") ctx.resources.getString(R.string.jumuah_reminder_title)
-            else ctx.resources.getString(R.string.jumuah_title)
+            if (reminder is Reminder.PrayerExtra)
+                ctx.resources.getString(R.string.jumuah_reminder_title)
+            else
+                ctx.resources.getString(R.string.jumuah_title)
         }
         else ctx.resources.getStringArray(R.array.prayer_titles)[notificationId]
     }
 
-    private suspend fun getSubtitle(): String {
-        return if (action == "reminder") {
-            val offset =notificationsRepository.getPrayerExtraReminderTimeOffsets()
-                .first()[prayer.toReminder()]!!
+    private suspend fun getSubtitle(reminder: Reminder): String {
+        return if (reminder is Reminder.PrayerExtra) {
+            val offset = notificationsRepository.getPrayerExtraReminderTimeOffsets()
+                .first()[reminder]!!
             String.format(
                 format =
                     if (offset < 0) ctx.resources.getString(R.string.reminder_before)
                     else ctx.resources.getString(R.string.reminder_after),
-                    if (prayer == Prayer.DHUHR &&
+                    if (reminder == Reminder.PrayerExtra.Dhuhr &&
                         Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
                         ctx.resources.getString(R.string.jumuah)
-                    else ctx.resources.getStringArray(R.array.prayer_names)[prayer.ordinal],
+                    else ctx.resources.getStringArray(R.array.prayer_names)[reminder.id],
                 abs(offset) // to remove - sign
             )
         }
         else {
-            if (prayer == Prayer.DHUHR &&
+            if (reminder == Reminder.Prayer.Dhuhr &&
                 Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
                 ctx.resources.getString(R.string.jumuah_subtitle)
             else ctx.resources.getStringArray(R.array.prayer_subtitles)[notificationId]
@@ -238,28 +227,66 @@ class NotificationReceiver : BroadcastReceiver() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
         return PendingIntent.getActivity(
-            ctx, prayer.ordinal, intent,
+            ctx, reminder.id, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 
-    private fun createNotificationChannel() {
+    private fun createNotificationChannel(reminder: Reminder) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channelId = ctx.resources.getStringArray(R.array.channel_ids)[notificationId]
-            val name = ctx.resources.getStringArray(R.array.reminders)[notificationId]
-
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val notificationChannel = NotificationChannel(channelId, name, importance)
-            notificationChannel.description = "description"
-            notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            channelId = getChannelId(reminder)
+            val channel = NotificationChannel(
+                /* id = */ channelId,
+                /* name = */ getChannelName(reminder),
+                /* importance = */ NotificationManager.IMPORTANCE_HIGH
+            )
+            channel.description = "description"
+            channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             val notificationManager = ctx.getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(notificationChannel)
+            notificationManager.createNotificationChannel(channel)
         }
     }
 
-    private suspend fun markAsNotified() {
+    private fun getChannelId(reminder: Reminder): String {
+        return when (reminder) {
+            is Reminder.Prayer -> "prayers_channel"
+            is Reminder.PrayerExtra -> "prayers_extra_channel"
+            is Reminder.Devotional -> {
+                when (reminder) {
+                    Reminder.Devotional.MorningRemembrances,
+                    Reminder.Devotional.EveningRemembrances ->
+                        "morning_and_evening_remembrances_channel"
+                    Reminder.Devotional.DailyWerd -> "daily_werd_channel"
+                    Reminder.Devotional.FridayKahf -> "friday_kahf_channel"
+                }
+            }
+        }
+    }
+
+    private fun getChannelName(reminder: Reminder): String {
+        return when (reminder) {
+            is Reminder.Prayer -> ctx.getString(R.string.prayer_notification_channel)
+            is Reminder.PrayerExtra -> ctx.getString(R.string.prayer_extra_notification_channel)
+            is Reminder.Devotional -> {
+                when (reminder) {
+                    Reminder.Devotional.MorningRemembrances,
+                    Reminder.Devotional.EveningRemembrances -> ctx.getString(
+                        R.string.morning_and_evening_remembrances_notification_channel
+                    )
+                    Reminder.Devotional.DailyWerd -> ctx.getString(
+                        R.string.daily_werd_notification_channel
+                    )
+                    Reminder.Devotional.FridayKahf -> ctx.getString(
+                        R.string.friday_kahf_notification_channel
+                    )
+                }
+            }
+        }
+    }
+
+    private suspend fun markAsNotified(reminder: Reminder) {
         notificationsRepository.setLastNotificationDate(
-            reminder = prayer.toReminder(),
+            reminder = reminder,
             dayOfYear = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
         )
     }

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.prayers.reminderSettings.ui
+package bassamalim.hidaya.features.prayers.extraReminderSettings.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
@@ -22,8 +22,8 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.MyValuedSlider
 
 @Composable
-fun PrayerReminderSettingsDialog(
-    viewModel: PrayerReminderSettingsViewModel
+fun PrayerExtraReminderSettingsDialog(
+    viewModel: PrayerExtraReminderSettingsViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 

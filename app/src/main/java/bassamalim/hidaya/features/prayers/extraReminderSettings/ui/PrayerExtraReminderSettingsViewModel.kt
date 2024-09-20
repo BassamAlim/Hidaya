@@ -1,13 +1,13 @@
-package bassamalim.hidaya.features.prayers.reminderSettings.ui
+package bassamalim.hidaya.features.prayers.extraReminderSettings.ui
 
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.nav.Navigator
-import bassamalim.hidaya.features.prayers.reminderSettings.domain.PrayerReminderSettingsDomain
+import bassamalim.hidaya.features.prayers.extraReminderSettings.domain.PrayerExtraReminderSettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,20 +16,20 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PrayerReminderSettingsViewModel @Inject constructor(
+class PrayerExtraReminderSettingsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    domain: PrayerReminderSettingsDomain,
+    domain: PrayerExtraReminderSettingsDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
-    private val pid = PID.valueOf(savedStateHandle.get<String>("pid") ?: "")
+    private val prayer = Prayer.valueOf(savedStateHandle.get<String>("prayer") ?: "")
 
     val offsetMin = domain.offsetMin
     lateinit var numeralsLanguage: Language
 
-    private val _uiState = MutableStateFlow(PrayerReminderSettingsUiState(
-        pid = pid,
-        prayerName = domain.getPrayerName(pid)
+    private val _uiState = MutableStateFlow(PrayerExtraReminderSettingsUiState(
+        prayer = prayer,
+        prayerName = domain.getPrayerName(prayer)
     ))
     val uiState = _uiState.asStateFlow()
 
@@ -38,7 +38,7 @@ class PrayerReminderSettingsViewModel @Inject constructor(
             numeralsLanguage = domain.getNumeralsLanguage()
 
             _uiState.update { it.copy(
-                offset = domain.getOffset(pid)
+                offset = domain.getOffset(prayer)
             )}
         }
     }

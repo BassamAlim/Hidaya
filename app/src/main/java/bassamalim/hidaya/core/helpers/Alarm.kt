@@ -35,7 +35,7 @@ class Alarm(
         }.toMap()
 
         setPrayerAlarms(reminderTimes)
-        setPrayerReminders(reminderTimes)
+        setPrayerExtraReminderAlarms(reminderTimes)
         setDevotionAlarms()
     }
 
@@ -43,25 +43,35 @@ class Alarm(
         when (reminder) {
             is Reminder.Prayer -> {
                 val location = locationRepository.getLocation().first() ?: return
-                val prayerTimesMap = PrayerTimeUtils.getPrayerTimes(
+                val prayerTimes = PrayerTimeUtils.getPrayerTimes(
                     settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-                    timeOffsets = prayersRepository.getTimeOffsets().first(),
                     timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
                     location = location,
                     calendar = Calendar.getInstance()
                 ).map { (prayer, time) -> prayer.toReminder() to time }.toMap()
 
-                setPrayerAlarm(reminder = reminder, time = prayerTimesMap[reminder]!!)
+                setPrayerAlarm(reminder = reminder, time = prayerTimes[reminder]!!)
 
-                val reminderOffset =
-                    notificationsRepository.getPrayerExtraReminderTimeOffsets().first()[reminder]!!
-                if (reminderOffset != 0) {
-                    setPrayerReminder(
-                        reminder = reminder,
-                        time = prayerTimesMap[reminder]!!,
-                        offset = reminderOffset
-                    )
-                }
+                setPrayerReminder(
+                    reminder = reminder,
+                    time = prayerTimes[reminder]!!
+                )
+            }
+            is Reminder.PrayerExtra -> {
+                val location = locationRepository.getLocation().first() ?: return
+                val prayerTime = PrayerTimeUtils.getPrayerTimes(
+                    settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+                    timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+                    location = location,
+                    calendar = Calendar.getInstance()
+                )[reminder.toPrayer()]!!
+
+                setPrayerExtraReminderAlarm(
+                    reminder = reminder,
+                    time = prayerTime,
+                    offset = notificationsRepository.getPrayerExtraReminderTimeOffsets()
+                        .first()[reminder]!!
+                )
             }
             is Reminder.Devotional -> {
                 setDevotionAlarm(reminder)
@@ -107,23 +117,29 @@ class Alarm(
         else Log.i(Global.TAG, "$reminder Passed")
     }
 
-    private suspend fun setPrayerReminders(prayerTimes: Map<Reminder.Prayer, Calendar?>) {
-        Log.i(Global.TAG, "in set reminders")
+    private suspend fun setPrayerExtraReminderAlarms(prayerTimes: Map<Reminder.Prayer, Calendar?>) {
+        Log.i(Global.TAG, "in setPrayerExtraReminderAlarms")
 
         val reminderOffsets = notificationsRepository.getPrayerExtraReminderTimeOffsets().first()
         for ((prayer, time) in prayerTimes) {
-            val reminderOffset = reminderOffsets[prayer]!!
-            if (reminderOffset != 0) setPrayerReminder(prayer, time!!, reminderOffsets[prayer]!!)
+            val prayerExtra = prayer.toPrayerExtra()
+            val reminderOffset = reminderOffsets[prayerExtra]!!
+            if (reminderOffset != 0)
+                setPrayerExtraReminderAlarm(prayerExtra, time!!, reminderOffset)
         }
     }
 
-    private fun setPrayerReminder(reminder: Reminder.Prayer, time: Calendar, offset: Int) {
-        Log.i(Global.TAG, "in set reminder for: $reminder")
+    fun setPrayerExtraReminderAlarm(
+        reminder: Reminder.PrayerExtra,
+        time: Calendar,
+        offset: Int
+    ) {
+        Log.i(Global.TAG, "in setPrayerExtraReminderAlarm for: $reminder")
 
-        val millis = time.timeInMillis + offset * 60 * 1000
+        val millis = time.timeInMillis + offset * 1000
         if (System.currentTimeMillis() <= millis) {
             val intent = Intent(app, NotificationReceiver::class.java).apply {
-                action = "reminder"
+                action = "prayer_extra"
                 putExtra("id", reminder.name)
                 putExtra("time", millis)
             }
@@ -136,9 +152,36 @@ class Alarm(
             val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
 
-            Log.i(Global.TAG, "reminder $reminder set")
+            Log.i(Global.TAG, "prayer extra reminder $reminder set")
         }
-        else Log.i(Global.TAG, "reminder $reminder Passed")
+        else Log.i(Global.TAG, "prayer extra reminder $reminder Passed")
+    }
+
+    private fun setPrayerReminder(reminder: Reminder.Prayer, time: Calendar) {
+        Log.i(Global.TAG, "in set reminder for: $reminder")
+
+        if (System.currentTimeMillis() <= time.timeInMillis) {
+            val intent = Intent(app, NotificationReceiver::class.java).apply {
+                action = "prayer"
+                putExtra("id", reminder.name)
+                putExtra("time", time.timeInMillis)
+            }
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                app, reminder.id, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                time.timeInMillis,
+                pendingIntent
+            )
+
+            Log.i(Global.TAG, "prayer reminder $reminder set")
+        }
+        else Log.i(Global.TAG, "prayer reminder $reminder Passed")
     }
 
     /**

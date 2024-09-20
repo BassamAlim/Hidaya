@@ -29,13 +29,13 @@ data class NotificationsPreferences(
         Reminder.Devotional.DailyWerd to TimeOfDay(21, 0),
         Reminder.Devotional.FridayKahf to TimeOfDay(10, 0)
     ),
-    val prayerExtraReminderTimeOffsets: PersistentMap<Reminder.Prayer, Int> = persistentMapOf(
-        Reminder.Prayer.Fajr to 0,
-        Reminder.Prayer.Sunrise to 0,
-        Reminder.Prayer.Dhuhr to 0,
-        Reminder.Prayer.Asr to 0,
-        Reminder.Prayer.Maghrib to 0,
-        Reminder.Prayer.Ishaa to 0
+    val prayerExtraReminderTimeOffsets: PersistentMap<Reminder.PrayerExtra, Int> = persistentMapOf(
+        Reminder.PrayerExtra.Fajr to 0,
+        Reminder.PrayerExtra.Sunrise to 0,
+        Reminder.PrayerExtra.Dhuhr to 0,
+        Reminder.PrayerExtra.Asr to 0,
+        Reminder.PrayerExtra.Maghrib to 0,
+        Reminder.PrayerExtra.Ishaa to 0
     ),
     val lastNotificationDates: PersistentMap<Reminder, Int> = persistentMapOf(
         Reminder.Prayer.Fajr to 0,

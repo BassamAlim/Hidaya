@@ -18,4 +18,15 @@ enum class Prayer {
         MAGHRIB -> Reminder.Prayer.Maghrib
         ISHAA -> Reminder.Prayer.Ishaa
     }
+
+    fun toExtraReminder() = when (this) {
+        FAJR -> Reminder.PrayerExtra.Fajr
+        SUNRISE -> Reminder.PrayerExtra.Sunrise
+        DHUHR -> Reminder.PrayerExtra.Dhuhr
+        ASR -> Reminder.PrayerExtra.Asr
+        SUNSET -> Reminder.PrayerExtra.Sunrise
+        MAGHRIB -> Reminder.PrayerExtra.Maghrib
+        ISHAA -> Reminder.PrayerExtra.Ishaa
+    }
+
 }

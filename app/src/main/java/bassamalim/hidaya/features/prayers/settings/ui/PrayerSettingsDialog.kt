@@ -24,13 +24,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.NotificationType
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
-import bassamalim.hidaya.core.ui.components.MyValuedSlider
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
@@ -58,7 +57,7 @@ fun PrayerSettingsDialog(
 
             CustomRadioGroup(
                 notificationTypeOptions = viewModel.notificationTypeOptions,
-                pid = state.pid,
+                prayer = state.prayer,
                 selection = state.notificationType,
                 onSelect = { selection -> viewModel.onNotificationTypeChange(selection) }
             )
@@ -69,16 +68,6 @@ fun PrayerSettingsDialog(
                     .fillMaxWidth()
                     .padding(top = 15.dp, bottom = 5.dp),
                 textAlign = TextAlign.Start
-            )
-
-            MyValuedSlider(
-                value = state.timeOffset + viewModel.offsetMin,
-                valueRange = 0F..60F,
-                modifier = Modifier.fillMaxWidth(),
-                progressMin = viewModel.offsetMin,
-                sliderFraction = 0.875F,
-                numeralsLanguage = viewModel.numeralsLanguage,
-                onValueChange = { value -> viewModel.onTimeOffsetChange(value.toInt()) }
             )
 
             MyRow {
@@ -93,7 +82,7 @@ fun PrayerSettingsDialog(
 @Composable
 private fun CustomRadioGroup(
     notificationTypeOptions: List<Pair<Int, Int>>,
-    pid: PID,
+    prayer: Prayer,
     selection: NotificationType,
     onSelect: (NotificationType) -> Unit
 ) {
@@ -103,7 +92,7 @@ private fun CustomRadioGroup(
         modifier = Modifier.fillMaxWidth(),
     ) {
         notificationTypeOptions.forEachIndexed { i, pair ->
-            if (!(pid == PID.SUNRISE && i == 0)) {
+            if (!(prayer == Prayer.SUNRISE && i == 0)) {
                 Box(
                     Modifier.padding(vertical = 6.dp)
                 ) {

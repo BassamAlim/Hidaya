@@ -14,7 +14,7 @@ import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.di.IoDispatcher
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.core.utils.DbUtils
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
@@ -110,28 +110,27 @@ class PrayersWidget : AppWidgetProvider() {
         appWidgetId: Int
     ) {
         GlobalScope.launch {
-            val prayerTimeStringMap = getPrayerTimeStringMap(context) ?: return@launch
+            val prayerTimeStrings = getPrayerTimeStringMap(context) ?: return@launch
 
             // Construct the RemoteViews object
             val views = RemoteViews(context.packageName, R.layout.widget_prayers)
 
-            views.setTextViewText(R.id.widget_fajr, prayerTimeStringMap[PID.FAJR])
-            views.setTextViewText(R.id.widget_dhuhr, prayerTimeStringMap[PID.DHUHR])
-            views.setTextViewText(R.id.widget_asr, prayerTimeStringMap[PID.ASR])
-            views.setTextViewText(R.id.widget_maghrib, prayerTimeStringMap[PID.MAGHRIB])
-            views.setTextViewText(R.id.widget_ishaa, prayerTimeStringMap[PID.ISHAA])
+            views.setTextViewText(R.id.widget_fajr, prayerTimeStrings[Prayer.FAJR])
+            views.setTextViewText(R.id.widget_dhuhr, prayerTimeStrings[Prayer.DHUHR])
+            views.setTextViewText(R.id.widget_asr, prayerTimeStrings[Prayer.ASR])
+            views.setTextViewText(R.id.widget_maghrib, prayerTimeStrings[Prayer.MAGHRIB])
+            views.setTextViewText(R.id.widget_ishaa, prayerTimeStrings[Prayer.ISHAA])
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
 
-    private suspend fun getPrayerTimeStringMap(context: Context): SortedMap<PID, String>? {
+    private suspend fun getPrayerTimeStringMap(context: Context): SortedMap<Prayer, String>? {
         val location = locationRepository.getLocation().first() ?: return null
 
         val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance()
@@ -145,15 +144,15 @@ class PrayersWidget : AppWidgetProvider() {
 
         val prayerNames = context.resources.getStringArray(R.array.prayer_names)
 
-        val strings = sortedMapOf<PID, String>()
+        val strings = sortedMapOf<Prayer, String>()
         for (n in prayerNames.indices) {
             if (n == 1) continue  // To skip sunrise
 
             val name = prayerNames[n]
-            val pid = prayerTimeStrings.keys.elementAt(n)
-            val timeString = prayerTimeStrings[pid]
+            val prayer = prayerTimeStrings.keys.elementAt(n)
+            val timeString = prayerTimeStrings[prayer]
 
-            strings[pid] = "$name\n$timeString"
+            strings[prayer] = "$name\n$timeString"
         }
         return strings
     }

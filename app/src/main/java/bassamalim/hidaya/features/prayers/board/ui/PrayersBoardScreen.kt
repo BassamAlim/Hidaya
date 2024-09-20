@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.NotificationType
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyClickableText
 import bassamalim.hidaya.core.ui.components.MyIconButton
@@ -38,6 +38,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
+import java.util.SortedMap
 
 @Composable
 fun PrayersBoardScreen(
@@ -118,10 +119,10 @@ private fun LocationCard(
 
 @Composable
 private fun ColumnScope.PrayersSpace(
-    prayersData: List<PrayerCardData>,
+    prayersData: SortedMap<Prayer, PrayerCardData>,
     isLocationAvailable: Boolean,
-    onPrayerCardClick: (PID) -> Unit,
-    onReminderCardClick: (PID) -> Unit
+    onPrayerCardClick: (Prayer) -> Unit,
+    onReminderCardClick: (Prayer) -> Unit
 ) {
     Column(
         Modifier
@@ -130,9 +131,9 @@ private fun ColumnScope.PrayersSpace(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.SpaceAround
     ) {
-        prayersData.forEachIndexed { i, data ->
+        prayersData.forEach { (prayer, data) ->
             PrayerSpace(
-                idx = i,
+                prayer = prayer,
                 data = data,
                 isLocationAvailable = isLocationAvailable,
                 onPrayerCardClick = onPrayerCardClick,
@@ -144,24 +145,24 @@ private fun ColumnScope.PrayersSpace(
 
 @Composable
 private fun PrayerSpace(
-    idx: Int,
+    prayer: Prayer,
     data: PrayerCardData,
     isLocationAvailable: Boolean,
-    onPrayerCardClick: (PID) -> Unit,
-    onReminderCardClick: (PID) -> Unit
+    onPrayerCardClick: (Prayer) -> Unit,
+    onReminderCardClick: (Prayer) -> Unit
 ) {
     MyRow {
         PrayerCard(
-            idx = idx,
+            prayer = prayer,
             data = data,
             isLocationAvailable = isLocationAvailable,
             onPrayerCardClick = onPrayerCardClick
         )
 
         ReminderCard(
-            idx = idx,
-            isReminderOffsetSpecified = data.isReminderOffsetSpecified,
-            reminderOffsetText = data.reminderOffset,
+            prayer = prayer,
+            isReminderOffsetSpecified = data.isExtraReminderOffsetSpecified,
+            reminderOffsetText = data.extraReminderOffset,
             isLocationAvailable = isLocationAvailable,
             onReminderCardClick = onReminderCardClick
         )
@@ -170,16 +171,16 @@ private fun PrayerSpace(
 
 @Composable
 private fun RowScope.PrayerCard(
-    idx: Int,
+    prayer: Prayer,
     data: PrayerCardData,
     isLocationAvailable: Boolean,
-    onPrayerCardClick: (PID) -> Unit
+    onPrayerCardClick: (Prayer) -> Unit
 ) {
     MyClickableSurface(
         modifier = Modifier.weight(1f),
         cornerRadius = 15.dp,
         padding = PaddingValues(vertical = 3.dp, horizontal = 4.dp),
-        onClick = { onPrayerCardClick(PID.entries[idx]) }
+        onClick = { onPrayerCardClick(prayer) }
     ) {
         MyRow(
             modifier = Modifier
@@ -195,15 +196,6 @@ private fun RowScope.PrayerCard(
 
             if (isLocationAvailable) {
                 MyRow {
-                    // Time offset
-                    if (data.isTimeOffsetSpecified) {
-                        MyText(
-                            data.timeOffset,
-                            textColor = AppTheme.colors.accent,
-                            modifier = Modifier.padding(end = 3.dp)
-                        )
-                    }
-
                     // Notification type
                     Icon(
                         painter = painterResource(
@@ -226,17 +218,17 @@ private fun RowScope.PrayerCard(
 
 @Composable
 private fun ReminderCard(
-    idx: Int,
+    prayer: Prayer,
     isReminderOffsetSpecified: Boolean,
     reminderOffsetText: String,
     isLocationAvailable: Boolean,
-    onReminderCardClick: (PID) -> Unit
+    onReminderCardClick: (Prayer) -> Unit
 ) {
     MyClickableSurface(
         modifier = Modifier.fillMaxWidth(0.19f),
         cornerRadius = 15.dp,
         padding = PaddingValues(horizontal = 3.dp),
-        onClick = { onReminderCardClick(PID.entries[idx]) }
+        onClick = { onReminderCardClick(prayer) }
     ) {
         if (isLocationAvailable) {
             MyRow(

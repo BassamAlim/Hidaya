@@ -20,9 +20,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
+import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.ui.components.ExpandableCard
@@ -184,26 +184,26 @@ fun AppearanceSettings(
 
 @Composable
 private fun DevotionReminderSettings(
-    devotionReminderEnabledStatuses: Map<PID, Boolean>,
-    devotionReminderSummaries: Map<PID, String>,
-    onDevotionReminderSwitch: (PID, Boolean) -> Unit,
+    devotionReminderEnabledStatuses: Map<Reminder.Devotional, Boolean>,
+    devotionReminderSummaries: Map<Reminder.Devotional, String>,
+    onDevotionReminderSwitch: (Reminder.Devotional, Boolean) -> Unit,
 ) {
-    val titles = sortedMapOf(
-        PID.MORNING to stringResource(R.string.morning_remembrance_title),
-        PID.EVENING to stringResource(R.string.evening_remembrance_title),
-        PID.DAILY_WERD to stringResource(R.string.daily_werd_title),
-        PID.FRIDAY_KAHF to stringResource(R.string.friday_kahf_title)
+    val titles = linkedMapOf(  // Preserve order
+        Reminder.Devotional.MorningRemembrances to stringResource(R.string.morning_remembrance_title),
+        Reminder.Devotional.EveningRemembrances to stringResource(R.string.evening_remembrance_title),
+        Reminder.Devotional.DailyWerd to stringResource(R.string.daily_werd_title),
+        Reminder.Devotional.FridayKahf to stringResource(R.string.friday_kahf_title)
     )
 
     Column(
         Modifier.padding(bottom = 10.dp)
     ) {
-        titles.forEach { (pid, title) ->
+        titles.forEach { (reminder, title) ->
             SwitchSetting(
-                value = devotionReminderEnabledStatuses[pid]!!,
+                value = devotionReminderEnabledStatuses[reminder]!!,
                 title = title,
-                summary = devotionReminderSummaries[pid]!!,
-                onSwitch = { onDevotionReminderSwitch(pid, it) }
+                summary = devotionReminderSummaries[reminder]!!,
+                onSwitch = { onDevotionReminderSwitch(reminder, it) }
             )
         }
     }

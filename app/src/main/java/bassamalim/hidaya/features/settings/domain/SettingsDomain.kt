@@ -41,11 +41,11 @@ class SettingsDomain @Inject constructor(
         alarm.setAll(prayerTimes)
     }
 
-    suspend fun setAlarm(reminder: Reminder.Prayer) {
+    suspend fun setAlarm(reminder: Reminder) {
         alarm.setAlarm(reminder)
     }
 
-    fun cancelAlarm(reminder: Reminder.Prayer) {
+    fun cancelAlarm(reminder: Reminder) {
         alarm.cancelAlarm(reminder)
     }
 

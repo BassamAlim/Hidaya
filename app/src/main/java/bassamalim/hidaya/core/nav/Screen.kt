@@ -47,12 +47,12 @@ sealed class Screen(val route: String) {
     data object Main: Screen("main")
 
     data class PrayerReminderSettings(
-        val pid: String
-    ): Screen("prayer_reminder/$pid")
+        val prayer: String
+    ): Screen("prayer_reminder/$prayer")
 
     data class PrayerSettings(
-        val pid: String
-    ): Screen("prayer_settings/$pid")
+        val prayer: String
+    ): Screen("prayer_settings/$prayer")
 
     data object Qibla: Screen("qibla")
 

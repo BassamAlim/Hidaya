@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
+import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.models.TimeOfDay
@@ -30,7 +30,7 @@ class SettingsViewModel @Inject constructor(
 ): ViewModel() {
 
     private var timePicker: TimePickerDialog? = null
-    private var timePickerPid: PID? = null
+    private var timePickerReminder: Reminder.Devotional? = null
     var timePickerInitialHour: Int = 0
         private set
     var timePickerInitialMinute: Int = 0
@@ -103,18 +103,18 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onDevotionReminderSwitch(pid: PID, isEnabled: Boolean) {
+    fun onDevotionReminderSwitch(devotion: Reminder.Devotional, isEnabled: Boolean) {
         _uiState.update { it.copy(
             isTimePickerShown = true
         )}
 
-        if (isEnabled) timePickerPid = pid
+        if (isEnabled) timePickerReminder = devotion
         else {
             viewModelScope.launch {
-                domain.setDevotionReminderEnabled(false, pid)
+                domain.setDevotionReminderEnabled(false, devotion)
             }
 
-            domain.cancelAlarm(pid)
+            domain.cancelAlarm(devotion)
         }
     }
 
@@ -151,15 +151,15 @@ class SettingsViewModel @Inject constructor(
 
     fun onTimePicked(hour: Int, minute: Int) {
         viewModelScope.launch {
-            domain.setDevotionReminderEnabled(true, timePickerPid!!)
+            domain.setDevotionReminderEnabled(true, timePickerReminder!!)
             domain.setDevotionReminderTimeOfDay(
                 timeOfDay = TimeOfDay(hour = hour, minute = minute),
-                pid = timePickerPid!!
+                reminder = timePickerReminder!!
             )
 
-            domain.setAlarm(timePickerPid!!)
+            domain.setAlarm(timePickerReminder!!)
 
-            timePickerPid = null
+            timePickerReminder = null
         }
     }
 

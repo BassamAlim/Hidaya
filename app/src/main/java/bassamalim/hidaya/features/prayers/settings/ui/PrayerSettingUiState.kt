@@ -1,11 +1,10 @@
 package bassamalim.hidaya.features.prayers.settings.ui
 
 import bassamalim.hidaya.core.enums.NotificationType
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Prayer
 
 data class PrayerSettingUiState(
-    val pid: PID = PID.FAJR,
+    val prayer: Prayer = Prayer.FAJR,
     val prayerName: String = "",
     val notificationType: NotificationType = NotificationType.NOTIFICATION,
-    val timeOffset: Int = 0
 )

@@ -23,7 +23,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +39,7 @@ class AthanService : Service() {
 
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
     @Inject lateinit var prayersRepository: PrayersRepository
-    private lateinit var pid: PID
+    private lateinit var prayer: Prayer
     private var channelId = ""
     private var mediaPlayer: MediaPlayer? = null
 
@@ -64,11 +64,11 @@ class AthanService : Service() {
             return START_NOT_STICKY
         }
 
-        pid = PID.valueOf(intent?.getStringExtra("pid")!!)
+        prayer = Prayer.valueOf(intent?.getStringExtra("prayer")!!)
 
         startForeground(243, build())
 
-        Log.i(Global.TAG, "In athan service for $pid")
+        Log.i(Global.TAG, "In athan service for $prayer")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val am = getSystemService(AUDIO_SERVICE) as AudioManager
@@ -110,19 +110,19 @@ class AthanService : Service() {
     }
 
     private fun getTitle(): String {
-        return if (pid == PID.DHUHR &&
+        return if (prayer == Prayer.DHUHR &&
             Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
             resources.getString(R.string.jumuah_title)
         }
-        else resources.getStringArray(R.array.prayer_titles)[pid.ordinal]
+        else resources.getStringArray(R.array.prayer_titles)[prayer.ordinal]
     }
 
     private fun getSubtitle(): String {
-        return if (pid == PID.DHUHR &&
+        return if (prayer == Prayer.DHUHR &&
             Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
             resources.getString(R.string.jumuah_subtitle)
         }
-        else resources.getStringArray(R.array.prayer_subtitles)[pid.ordinal]
+        else resources.getStringArray(R.array.prayer_subtitles)[prayer.ordinal]
     }
 
     private fun getStopIntent(): PendingIntent {
@@ -208,7 +208,7 @@ class AthanService : Service() {
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            NotificationManagerCompat.from(this).notify(pid.ordinal, build())
+            NotificationManagerCompat.from(this).notify(prayer.ordinal, build())
         }
     }
 

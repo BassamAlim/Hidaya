@@ -128,6 +128,13 @@
     <string name="choose_allow_all_the_time">Choose \"Allow all the time\" to keep the prayer times and qibla direction accurate</string>
     <string name="recitation_not_available">This aya\'s recitation is not available for the selected reciter</string>
 
+    <!-- Notification Channels -->
+    <string name="prayer_notification_channel">Prayer Notifications</string>
+    <string name="prayer_extra_notification_channel">Prayer Extra Reminders</string>
+    <string name="morning_and_evening_remembrances_notification_channel">Morning and Evening Remembrances</string>
+    <string name="daily_werd_notification_channel">Daily Werd</string>
+    <string name="friday_kahf_notification_channel">Surat Al-Kahf</string>
+
     <string name="athan_speaker">Athan</string>
     <string name="enable_notification">Sound notification</string>
     <string name="silent_notification">Silent notification</string>

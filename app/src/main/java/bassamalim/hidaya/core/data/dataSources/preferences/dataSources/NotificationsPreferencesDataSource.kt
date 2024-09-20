@@ -49,7 +49,7 @@ class NotificationsPreferencesDataSource(
     }
 
     fun getPrayerExtraReminderTimeOffsets() = flow.map { it.prayerExtraReminderTimeOffsets }
-    suspend fun updatePrayerExtraReminderTimeOffsets(offsets: PersistentMap<Reminder.Prayer, Int>) {
+    suspend fun updatePrayerExtraReminderTimeOffsets(offsets: PersistentMap<Reminder.PrayerExtra, Int>) {
         dataStore.updateData { preferences ->
             preferences.copy(prayerExtraReminderTimeOffsets = offsets)
         }

@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.NotificationType
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.prayers.settings.domain.PrayerSettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,19 +24,16 @@ class PrayerSettingViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private val pid = PID.valueOf(savedStateHandle.get<String>("pid") ?: "")
+    private val prayer = Prayer.valueOf(savedStateHandle.get<String>("prayer") ?: "")
 
     lateinit var numeralsLanguage: Language
 
-    private val _uiState = MutableStateFlow(
-        PrayerSettingUiState(
-        pid = pid,
-        prayerName = domain.getPrayerName(pid)
-    )
-    )
+    private val _uiState = MutableStateFlow(PrayerSettingUiState(
+        prayer = prayer,
+        prayerName = domain.getPrayerName(prayer)
+    ))
     val uiState = _uiState.asStateFlow()
 
-    val offsetMin = 30f
     val notificationTypeOptions = listOf(
         Pair(R.string.athan_speaker, R.drawable.ic_speaker),
         Pair(R.string.enable_notification, R.drawable.ic_sound),
@@ -49,8 +46,7 @@ class PrayerSettingViewModel @Inject constructor(
             numeralsLanguage = domain.getNumeralsLanguage()
 
             _uiState.update { it.copy(
-                notificationType = domain.getNotificationType(pid),
-                timeOffset = domain.getTimeOffset(pid)
+                notificationType = domain.getNotificationType(prayer)
             )}
         }
     }
@@ -61,17 +57,8 @@ class PrayerSettingViewModel @Inject constructor(
         )}
     }
 
-    fun onTimeOffsetChange(timeOffset: Int) {
-        _uiState.update { it.copy(
-            timeOffset = timeOffset
-        )}
-    }
-
     fun onSave() {
-        val prayerSettings = PrayerSettings(
-            notificationType = uiState.value.notificationType,
-            timeOffset = uiState.value.timeOffset
-        )
+        val prayerSettings = PrayerSettings(notificationType = uiState.value.notificationType)
 
         navigator.navigateBackWithResult(
             data = Bundle().apply {

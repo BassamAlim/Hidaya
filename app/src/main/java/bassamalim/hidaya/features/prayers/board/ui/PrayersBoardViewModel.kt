@@ -5,12 +5,12 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.prayers.settings.ui.PrayerSettings
 import bassamalim.hidaya.features.prayers.board.domain.PrayersBoardDomain
+import bassamalim.hidaya.features.prayers.settings.ui.PrayerSettings
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,16 +53,13 @@ class PrayersBoardViewModel @Inject constructor(
 
         state.copy(
             prayersData = prayerNames.map {
-                PrayerCardData(
-                    pid = it.key,
+                it.key to PrayerCardData(
                     text = "${it.value} ${prayerTimeMap?.get(it.key) ?: ""}",
                     notificationType = prayerSettings[it.key]!!.notificationType,
-                    isTimeOffsetSpecified = prayerSettings[it.key]!!.timeOffset != 0,
-                    timeOffset = formatOffset(prayerSettings[it.key]!!.timeOffset),
-                    isReminderOffsetSpecified = prayerSettings[it.key]!!.reminderOffset != 0,
-                    reminderOffset = formatOffset(prayerSettings[it.key]!!.reminderOffset),
+                    isExtraReminderOffsetSpecified = prayerSettings[it.key]!!.reminderOffset != 0,
+                    extraReminderOffset = formatOffset(prayerSettings[it.key]!!.reminderOffset),
                 )
-            },
+            }.toMap().toSortedMap(),
             tutorialDialogShown = domain.getShouldShowTutorial(),
             isLocationAvailable = location != null,
             locationName =
@@ -89,14 +86,14 @@ class PrayersBoardViewModel @Inject constructor(
         )
     }
 
-    fun onPrayerCardClick(pid: PID) {
+    fun onPrayerCardClick(prayer: Prayer) {
         if (_uiState.value.isLocationAvailable) {
             navigator.navigateForResult(
-                Screen.PrayerSettings(pid = pid.name)
+                Screen.PrayerSettings(prayer = prayer.name)
             ) { result ->
                 if (result != null) {
                     onSettingsDialogSave(
-                        pid = pid,
+                        prayer = prayer,
                         settings =
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                                 result.getParcelable(
@@ -111,27 +108,24 @@ class PrayersBoardViewModel @Inject constructor(
         }
     }
 
-    private fun onSettingsDialogSave(pid: PID, settings: PrayerSettings) {
+    private fun onSettingsDialogSave(prayer: Prayer, settings: PrayerSettings) {
         viewModelScope.launch {
-            domain.updatePrayerSettings(
-                prayer = pid,
-                prayerSettings = settings
-            )
+            domain.updatePrayerSettings(prayer = prayer, prayerSettings = settings)
 
-            domain.updatePrayerTimeAlarms(pid)
+            domain.updatePrayerTimeAlarms(prayer)
         }
     }
 
-    fun onReminderCardClick(pid: PID) {
+    fun onReminderCardClick(prayer: Prayer) {
         if (_uiState.value.isLocationAvailable) {
             navigator.navigateForResult(
                 destination = Screen.PrayerReminderSettings(
-                    pid = pid.name
+                    prayer = prayer.name
                 )
             ) { result ->
                 if (result != null) {
                     onReminderDialogSave(
-                        pid = pid,
+                        prayer = prayer,
                         offset = result.getInt("offset")
                     )
                 }
@@ -139,30 +133,26 @@ class PrayersBoardViewModel @Inject constructor(
         }
     }
 
-    private fun onReminderDialogSave(pid: PID, offset: Int) {
-        val prayerNum = pid.ordinal
-
+    private fun onReminderDialogSave(prayer: Prayer, offset: Int) {
         _uiState.update { oldState -> oldState.copy(
-            prayersData = oldState.prayersData.toMutableList().apply {
-                this[prayerNum] = oldState.prayersData[prayerNum].copy(
-                    reminderOffset = formatOffset(offset)
+            prayersData = oldState.prayersData.apply {
+                this[prayer] = oldState.prayersData[prayer]?.copy(
+                    extraReminderOffset = formatOffset(offset)
                 )
-            }.toList()
+            }
         )}
 
         viewModelScope.launch {
             domain.updatePrayerSettings(
-                prayer = pid,
+                prayer = prayer,
                 prayerSettings = PrayerSettings(
-                    notificationType = _uiState.value.prayersData[prayerNum].notificationType,
-                    timeOffset = _uiState.value.prayersData[prayerNum].timeOffset.toInt(),
+                    notificationType = _uiState.value.prayersData[prayer]!!.notificationType,
                     reminderOffset = offset
                 )
             )
 
-            domain.updatePrayerTimeAlarms(pid)
+            domain.updatePrayerTimeAlarms(prayer)
         }
-
     }
 
     fun onPreviousDayClick() {

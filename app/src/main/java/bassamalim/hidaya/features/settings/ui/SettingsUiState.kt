@@ -1,7 +1,7 @@
 package bassamalim.hidaya.features.settings.ui
 
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
@@ -12,9 +12,9 @@ data class SettingsUiState(
     val numeralsLanguage: Language = Language.ARABIC,
     val timeFormat: TimeFormat = TimeFormat.TWELVE,
     val theme: Theme = Theme.DARK,
-    val devotionalReminderEnabledStatuses: Map<PID, Boolean> = emptyMap(),
-    val devotionalReminderTimes: Map<PID, TimeOfDay> = emptyMap(),
-    val devotionalReminderSummaries: Map<PID, String> = emptyMap(),
+    val devotionalReminderEnabledStatuses: Map<Reminder.Devotional, Boolean> = emptyMap(),
+    val devotionalReminderTimes: Map<Reminder.Devotional, TimeOfDay> = emptyMap(),
+    val devotionalReminderSummaries: Map<Reminder.Devotional, String> = emptyMap(),
     val isTimePickerShown: Boolean = false,
     val prayerTimeCalculatorSettings: PrayerTimeCalculatorSettings =
         PrayerTimeCalculatorSettings(),

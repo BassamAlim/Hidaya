@@ -51,7 +51,7 @@ class NotificationsRepository @Inject constructor(
             it.toMap()
         }
 
-    suspend fun setPrayerExtraReminderOffset(offset: Int, prayer: Reminder.Prayer) {
+    suspend fun setPrayerExtraReminderOffset(offset: Int, prayer: Reminder.PrayerExtra) {
         notificationsPreferencesDataSource.updatePrayerExtraReminderTimeOffsets(
             notificationsPreferencesDataSource.getPrayerExtraReminderTimeOffsets().first()
                 .put(prayer, offset)

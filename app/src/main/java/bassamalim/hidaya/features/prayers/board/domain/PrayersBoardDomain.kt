@@ -53,14 +53,13 @@ class PrayersBoardDomain @Inject constructor(
             getNotificationTypes(),
             getReminderOffsets()
         ) { notificationTypes, reminderOffsets ->
-            val prayersPIDs = listOf(
+            val prayers = listOf(
                 Prayer.FAJR, Prayer.SUNRISE, Prayer.DHUHR, Prayer.ASR, Prayer.MAGHRIB, Prayer.ISHAA
             )
-
-            prayersPIDs.associateWith { pid ->
+            prayers.associateWith { prayer ->
                 PrayerSettings(
-                    notificationType = notificationTypes[pid.toReminder()]!!,
-                    reminderOffset = reminderOffsets[pid.toReminder()]!!
+                    notificationType = notificationTypes[prayer.toReminder()]!!,
+                    reminderOffset = reminderOffsets[prayer.toExtraReminder()]!!
                 )
             }
         }
@@ -73,7 +72,7 @@ class PrayersBoardDomain @Inject constructor(
         )
 
         notificationsRepository.setPrayerExtraReminderOffset(
-            prayer = prayer.toReminder(),
+            prayer = prayer.toExtraReminder(),
             offset = prayerSettings.reminderOffset
         )
     }

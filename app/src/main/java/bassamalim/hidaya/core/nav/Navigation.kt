@@ -32,7 +32,7 @@ import bassamalim.hidaya.features.locationPicker.ui.LocationPickerScreen
 import bassamalim.hidaya.features.locator.ui.LocatorScreen
 import bassamalim.hidaya.features.main.ui.MainScreen
 import bassamalim.hidaya.features.onboarding.ui.OnboardingScreen
-import bassamalim.hidaya.features.prayers.reminderSettings.ui.PrayerReminderSettingsDialog
+import bassamalim.hidaya.features.prayers.extraReminderSettings.ui.PrayerExtraReminderSettingsDialog
 import bassamalim.hidaya.features.prayers.settings.ui.PrayerSettingsDialog
 import bassamalim.hidaya.features.qibla.ui.QiblaScreen
 import bassamalim.hidaya.features.quiz.lobby.ui.QuizLobbyScreen
@@ -265,20 +265,20 @@ fun NavGraph(
         }
 
         dialog(
-            route = Screen.PrayerReminderSettings("{pid}").route,
+            route = Screen.PrayerReminderSettings("{prayer}").route,
             arguments = listOf(
-                navArgument("pid") { type = NavType.StringType }
+                navArgument("prayer") { type = NavType.StringType }
             )
         ) {
-            PrayerReminderSettingsDialog(
+            PrayerExtraReminderSettingsDialog(
                 hiltViewModel()
             )
         }
 
         dialog(
-            route = Screen.PrayerSettings("{pid}").route,
+            route = Screen.PrayerSettings("{prayer}").route,
             arguments = listOf(
-                navArgument("pid") { type = NavType.StringType }
+                navArgument("prayer") { type = NavType.StringType }
             )
         ) {
             PrayerSettingsDialog(
