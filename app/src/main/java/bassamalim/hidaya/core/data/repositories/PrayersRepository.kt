@@ -4,14 +4,10 @@ import android.content.res.Resources
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.PrayersPreferencesDataSource
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
-import bassamalim.hidaya.core.enums.PrayerTimePoint
-import kotlinx.collections.immutable.mutate
-import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class PrayersRepository @Inject constructor(
@@ -46,24 +42,6 @@ class PrayersRepository @Inject constructor(
         )
     }
 
-    fun getTimeOffsets() = prayersPreferencesDataSource.getTimeOffsets()
-
-    fun getTimeOffset(prayerTimePoint: PrayerTimePoint) = getTimeOffsets().map {
-        it[prayerTimePoint]!!
-    }
-
-    suspend fun setTimeOffsets(timeOffsets: Map<PrayerTimePoint, Int>) {
-        prayersPreferencesDataSource.updateTimeOffsets(timeOffsets.toPersistentMap())
-    }
-
-    suspend fun setTimeOffset(prayerTimePoint: PrayerTimePoint, timeOffset: Int) {
-        prayersPreferencesDataSource.updateTimeOffsets(
-            getTimeOffsets().first().toPersistentMap().mutate {
-                it[prayerTimePoint] = timeOffset
-            }
-        )
-    }
-
     fun getAthanAudioId() = prayersPreferencesDataSource.getAthanAudioId()
 
     suspend fun setAthanAudioId(audioId: Int) {
@@ -76,19 +54,19 @@ class PrayersRepository @Inject constructor(
         prayersPreferencesDataSource.updateShouldShowTutorial(shouldShowTutorial)
     }
 
-    fun getPrayerNames(): Map<PID, String> {
+    fun getPrayerNames(): Map<Prayer, String> {
         val names = resources.getStringArray(R.array.prayer_names) as Array<String>
         return mapOf(
-            PID.FAJR to names[0],
-            PID.SUNRISE to names[1],
-            PID.DHUHR to names[2],
-            PID.ASR to names[3],
-            PID.MAGHRIB to names[4],
-            PID.ISHAA to names[5]
+            Prayer.FAJR to names[0],
+            Prayer.SUNRISE to names[1],
+            Prayer.DHUHR to names[2],
+            Prayer.ASR to names[3],
+            Prayer.MAGHRIB to names[4],
+            Prayer.ISHAA to names[5]
         )
     }
 
-    fun getPrayerName(pid: PID) =
-        resources.getStringArray(R.array.prayer_names)[pid.ordinal]!!
+    fun getPrayerName(prayer: Prayer) =
+        resources.getStringArray(R.array.prayer_names)[prayer.ordinal]!!
 
 }

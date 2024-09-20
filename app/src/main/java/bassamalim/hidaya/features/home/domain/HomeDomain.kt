@@ -3,14 +3,14 @@ package bassamalim.hidaya.features.home.domain
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.models.Location
+import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.utils.OS.getDeviceId
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
@@ -31,20 +31,18 @@ class HomeDomain @Inject constructor(
 
     private val deviceId = getDeviceId(app)
 
-    suspend fun getPrayerTimeMap(location: Location): SortedMap<PID, Calendar?> {
+    suspend fun getPrayerTimeMap(location: Location): SortedMap<Prayer, Calendar?> {
         return PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance()
         )
     }
 
-    suspend fun getStrPrayerTimeMap(location: Location): SortedMap<PID, String> {
+    suspend fun getStrPrayerTimeMap(location: Location): SortedMap<Prayer, String> {
         val prayerTimeMap = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance()
@@ -61,21 +59,19 @@ class HomeDomain @Inject constructor(
     suspend fun getTomorrowFajr(location: Location): Calendar {
         return PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance().apply { this[Calendar.DATE]++ }
-        )[PID.FAJR]!!
+        )[Prayer.FAJR]!!
     }
 
     suspend fun getStrTomorrowFajr(location: Location): String {
         val time = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance().apply { this[Calendar.DATE]++ }
-        )[PID.FAJR]!!
+        )[Prayer.FAJR]!!
 
         return PrayerTimeUtils.formatPrayerTime(
             time = time,
@@ -85,7 +81,7 @@ class HomeDomain @Inject constructor(
         )
     }
 
-    fun getUpcomingPrayer(times: Map<PID, Calendar?>): PID? {
+    fun getUpcomingPrayer(times: Map<Prayer, Calendar?>): Prayer? {
         val currentMillis = System.currentTimeMillis()
         for (prayer in times.entries) {
             val millis = prayer.value!!.timeInMillis

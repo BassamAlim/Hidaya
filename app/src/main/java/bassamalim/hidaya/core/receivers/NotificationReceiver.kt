@@ -23,7 +23,8 @@ import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.enums.NotificationType
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Prayer
+import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.services.AthanService
@@ -42,7 +43,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
     private lateinit var ctx: Context
     private lateinit var action: String
-    private lateinit var pid: PID
+    private lateinit var prayer: Prayer
     @Inject lateinit var notificationsRepository: NotificationsRepository
     @Inject lateinit var quranRepository: QuranRepository
     private var notificationId = 0
@@ -53,7 +54,7 @@ class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         ctx = context.applicationContext
 
-        pid = PID.valueOf(intent.getStringExtra("id")!!)
+        prayer = Prayer.valueOf(intent.getStringExtra("id")!!)
         time = intent.getLongExtra("time", 0L)
 
         GlobalScope.launch {
@@ -70,11 +71,12 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private suspend fun handlePrayer() {
-        Log.i(Global.TAG, "in notification receiver for $pid prayer")
+        Log.i(Global.TAG, "in notification receiver for $prayer prayer")
 
-        notificationId = pid.ordinal
+        notificationId = prayer.ordinal
 
-        val notificationType = notificationsRepository.getNotificationType(pid).first()
+        val notificationType =
+            notificationsRepository.getNotificationType(prayer.toReminder()).first()
 
         if (notificationType != NotificationType.NONE) {
             if (notificationType == NotificationType.ATHAN) startService()
@@ -83,18 +85,19 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private suspend fun handlePrayerReminder() {
-        Log.i(Global.TAG, "in notification receiver for $pid reminder")
+        Log.i(Global.TAG, "in notification receiver for $prayer reminder")
 
-        notificationId = pid.ordinal + 10
+        notificationId = prayer.ordinal + 10
         showNotification(false)
     }
 
     private suspend fun handleDevotionReminder() {
-        Log.i(Global.TAG, "in notification receiver for $pid extra")
+        Log.i(Global.TAG, "in notification receiver for $prayer extra")
 
-        notificationId = pid.ordinal
+        notificationId = prayer.ordinal
 
-        val notificationType = notificationsRepository.getNotificationType(pid).first()
+        val notificationType =
+            notificationsRepository.getNotificationType(prayer.toReminder()).first()
 
         showNotification(false, notificationType)
     }
@@ -105,7 +108,8 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private suspend fun isAlreadyNotified(): Boolean {
-        val lastDate = notificationsRepository.getLastNotificationDates().first()[pid]!!
+        val lastDate =
+            notificationsRepository.getLastNotificationDates().first()[prayer.toReminder()]!!
         return lastDate == Calendar.getInstance()[Calendar.DAY_OF_YEAR]
     }
 
@@ -142,7 +146,7 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun startService() {
         val intent = Intent(ctx, AthanService::class.java)
         intent.action = Global.PLAY_ATHAN
-        intent.putExtra("pid", pid.name)
+        intent.putExtra("pid", prayer.name)
         intent.putExtra("time", time)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -165,7 +169,7 @@ class NotificationReceiver : BroadcastReceiver() {
         builder.setAutoCancel(true)
         builder.setOnlyAlertOnce(true)
         builder.color = ctx.getColor(R.color.surface_M)
-        builder.setContentIntent(onClick(pid))
+        builder.setContentIntent(onClick(prayer.toReminder()))
 
         if (notificationType == NotificationType.SILENT)
             builder.setSilent(true)
@@ -174,7 +178,7 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun getTitle(): String {
-        return if (pid == PID.DHUHR &&
+        return if (prayer == Prayer.DHUHR &&
             Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
             if (action == "reminder") ctx.resources.getString(R.string.jumuah_reminder_title)
             else ctx.resources.getString(R.string.jumuah_title)
@@ -184,43 +188,44 @@ class NotificationReceiver : BroadcastReceiver() {
 
     private suspend fun getSubtitle(): String {
         return if (action == "reminder") {
-            val offset = notificationsRepository.getPrayerReminderOffsetMap().first()[pid]!!
+            val offset =notificationsRepository.getPrayerExtraReminderTimeOffsets()
+                .first()[prayer.toReminder()]!!
             String.format(
                 format =
                     if (offset < 0) ctx.resources.getString(R.string.reminder_before)
                     else ctx.resources.getString(R.string.reminder_after),
-                    if (pid == PID.DHUHR &&
+                    if (prayer == Prayer.DHUHR &&
                         Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
                         ctx.resources.getString(R.string.jumuah)
-                    else ctx.resources.getStringArray(R.array.prayer_names)[pid.ordinal],
+                    else ctx.resources.getStringArray(R.array.prayer_names)[prayer.ordinal],
                 abs(offset) // to remove - sign
             )
         }
         else {
-            if (pid == PID.DHUHR &&
+            if (prayer == Prayer.DHUHR &&
                 Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
                 ctx.resources.getString(R.string.jumuah_subtitle)
             else ctx.resources.getStringArray(R.array.prayer_subtitles)[notificationId]
         }
     }
 
-    private suspend fun onClick(pid: PID?): PendingIntent {
+    private suspend fun onClick(reminder: Reminder): PendingIntent {
         val intent = Intent(ctx, Activity::class.java)
 
-        val route = when (pid) {
-            PID.MORNING -> {
+        val route = when (reminder) {
+            Reminder.Devotional.MorningRemembrances -> {
                 Screen.RemembranceReader(0.toString()).route
             }
-            PID.EVENING -> {
+            Reminder.Devotional.EveningRemembrances -> {
                 Screen.RemembranceReader(1.toString()).route
             }
-            PID.DAILY_WERD -> {
+            Reminder.Devotional.DailyWerd -> {
                 Screen.QuranReader(
                     targetType = QuranTarget.PAGE.name,
                     targetValue = quranRepository.getWerdPageNum().first().toString()
                 ).route
             }
-            PID.FRIDAY_KAHF -> {
+            Reminder.Devotional.FridayKahf -> {
                 Screen.QuranReader(
                     targetType = QuranTarget.SURA.name,
                     targetValue = 17.toString() // surat al-kahf
@@ -233,7 +238,7 @@ class NotificationReceiver : BroadcastReceiver() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
         return PendingIntent.getActivity(
-            ctx, pid!!.ordinal, intent,
+            ctx, prayer.ordinal, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
@@ -254,7 +259,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
     private suspend fun markAsNotified() {
         notificationsRepository.setLastNotificationDate(
-            pid = pid,
+            reminder = prayer.toReminder(),
             dayOfYear = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
         )
     }

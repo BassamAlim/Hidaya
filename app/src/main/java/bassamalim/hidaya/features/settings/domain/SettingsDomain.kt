@@ -7,9 +7,9 @@ import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
+import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.helpers.Alarm
@@ -33,7 +33,6 @@ class SettingsDomain @Inject constructor(
 
         val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance()
@@ -42,12 +41,12 @@ class SettingsDomain @Inject constructor(
         alarm.setAll(prayerTimes)
     }
 
-    suspend fun setAlarm(pid: PID) {
-        alarm.setReminderAlarm(pid)
+    suspend fun setAlarm(reminder: Reminder.Prayer) {
+        alarm.setAlarm(reminder)
     }
 
-    fun cancelAlarm(pid: PID) {
-        alarm.cancelAlarm(pid)
+    fun cancelAlarm(reminder: Reminder.Prayer) {
+        alarm.cancelAlarm(reminder)
     }
 
     fun getLanguage() = appSettingsRepository.getLanguage()
@@ -75,17 +74,17 @@ class SettingsDomain @Inject constructor(
     }
 
     fun getDevotionReminderEnabledMap() =
-        notificationsRepository.getDevotionReminderEnabledMap()
+        notificationsRepository.getDevotionalReminderEnabledMap()
 
-    suspend fun setDevotionReminderEnabled(enabled: Boolean, pid: PID) {
-        notificationsRepository.setDevotionReminderEnabled(enabled, pid)
+    suspend fun setDevotionReminderEnabled(enabled: Boolean, reminder: Reminder.Devotional) {
+        notificationsRepository.setDevotionalReminderEnabled(enabled, reminder)
     }
 
     fun getDevotionReminderTimeOfDayMap() =
-        notificationsRepository.getDevotionReminderTimes()
+        notificationsRepository.getDevotionalReminderTimes()
 
-    suspend fun setDevotionReminderTimeOfDay(timeOfDay: TimeOfDay, pid: PID) {
-        notificationsRepository.setDevotionReminderTimes(timeOfDay, pid)
+    suspend fun setDevotionReminderTimeOfDay(timeOfDay: TimeOfDay, reminder: Reminder.Devotional) {
+        notificationsRepository.setDevotionalReminderTimes(timeOfDay, reminder)
     }
 
     fun getPrayerTimesCalculatorSettings() = prayersRepository.getPrayerTimesCalculatorSettings()

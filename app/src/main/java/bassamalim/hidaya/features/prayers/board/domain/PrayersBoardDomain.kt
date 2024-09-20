@@ -6,8 +6,7 @@ import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.NotificationType
-import bassamalim.hidaya.core.enums.PID
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
@@ -49,45 +48,39 @@ class PrayersBoardDomain @Inject constructor(
 
     fun getPrayerNames() = prayersRepository.getPrayerNames()
 
-    fun getPrayerSettings(): Flow<Map<PID, PrayerSettings>> {
+    fun getPrayerSettings(): Flow<Map<Prayer, PrayerSettings>> {
         return combine(
             getNotificationTypes(),
-            getTimeOffsets(),
             getReminderOffsets()
-        ) { notificationTypes, timeOffsets, reminderOffsets ->
+        ) { notificationTypes, reminderOffsets ->
             val prayersPIDs = listOf(
-                PID.FAJR, PID.SUNRISE, PID.DHUHR, PID.ASR, PID.MAGHRIB, PID.ISHAA
+                Prayer.FAJR, Prayer.SUNRISE, Prayer.DHUHR, Prayer.ASR, Prayer.MAGHRIB, Prayer.ISHAA
             )
 
             prayersPIDs.associateWith { pid ->
                 PrayerSettings(
-                    notificationType = notificationTypes[pid] ?: NotificationType.NOTIFICATION,
-                    timeOffset = timeOffsets[pid] ?: 0,
-                    reminderOffset = reminderOffsets[pid] ?: 0
+                    notificationType = notificationTypes[pid.toReminder()]!!,
+                    reminderOffset = reminderOffsets[pid.toReminder()]!!
                 )
             }
         }
     }
 
-    suspend fun updatePrayerSettings(pid: PID, prayerSettings: PrayerSettings) {
+    suspend fun updatePrayerSettings(prayer: Prayer, prayerSettings: PrayerSettings) {
         notificationsRepository.setNotificationType(
-            pid = pid,
+            prayer = prayer.toReminder(),
             type = prayerSettings.notificationType
         )
 
-        prayersRepository.setTimeOffset(pid = pid, timeOffset = prayerSettings.timeOffset)
-
-        notificationsRepository.setPrayerReminderOffset(
-            pid = pid,
+        notificationsRepository.setPrayerExtraReminderOffset(
+            prayer = prayer.toReminder(),
             offset = prayerSettings.reminderOffset
         )
     }
 
     private fun getNotificationTypes() = notificationsRepository.getNotificationTypes()
 
-    private fun getTimeOffsets() = prayersRepository.getTimeOffsets()
-
-    private fun getReminderOffsets() = notificationsRepository.getPrayerReminderOffsetMap()
+    private fun getReminderOffsets() = notificationsRepository.getPrayerExtraReminderTimeOffsets()
 
     suspend fun getShouldShowTutorial() = prayersRepository.getShouldShowTutorial().first()
 
@@ -98,14 +91,13 @@ class PrayersBoardDomain @Inject constructor(
     suspend fun getTimes(
         location: Location,
         dateOffset: Int
-    ): Map<PID, String?> {
+    ): Map<Prayer, String?> {
         val calendar = Calendar.getInstance().apply {
             add(Calendar.DATE, dateOffset)
         }
 
         val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeOffsets = prayersRepository.getTimeOffsets().first(),
             timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = calendar
@@ -119,8 +111,8 @@ class PrayersBoardDomain @Inject constructor(
         )
     }
 
-    suspend fun updatePrayerTimeAlarms(pid: PID) {
-        alarm.setReminderAlarm(pid)
+    suspend fun updatePrayerTimeAlarms(prayer: Prayer) {
+        alarm.setAlarm(prayer.toReminder())
     }
 
 }

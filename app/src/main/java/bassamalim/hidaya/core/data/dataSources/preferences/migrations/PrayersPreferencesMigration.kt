@@ -7,11 +7,9 @@ import bassamalim.hidaya.core.data.dataSources.preferences.Preference
 import bassamalim.hidaya.core.data.dataSources.preferences.PreferencesFileNames
 import bassamalim.hidaya.core.data.dataSources.preferences.objects.PrayersPreferences
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
-import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
-import kotlinx.collections.immutable.persistentMapOf
 
 object PrayersPreferencesMigration {
 
@@ -40,32 +38,6 @@ object PrayersPreferencesMigration {
                             defValue = Preference.PrayerTimesAdjustment.default as String
                         )!!
                     )
-                ),
-                timeOffsets = persistentMapOf(
-                    PID.FAJR to sharedPrefs.getInt(
-                        key = Preference.TimeOffset(PID.FAJR).key,
-                        defValue = Preference.TimeOffset(PID.FAJR).default as Int
-                    ),
-                    PID.SUNRISE to sharedPrefs.getInt(
-                        key = Preference.TimeOffset(PID.SUNRISE).key,
-                        defValue = Preference.TimeOffset(PID.SUNRISE).default as Int
-                    ),
-                    PID.DHUHR to sharedPrefs.getInt(
-                        key = Preference.TimeOffset(PID.DHUHR).key,
-                        defValue = Preference.TimeOffset(PID.DHUHR).default as Int
-                    ),
-                    PID.ASR to sharedPrefs.getInt(
-                        key = Preference.TimeOffset(PID.ASR).key,
-                        defValue = Preference.TimeOffset(PID.ASR).default as Int
-                    ),
-                    PID.MAGHRIB to sharedPrefs.getInt(
-                        key = Preference.TimeOffset(PID.MAGHRIB).key,
-                        defValue = Preference.TimeOffset(PID.MAGHRIB).default as Int
-                    ),
-                    PID.ISHAA to sharedPrefs.getInt(
-                        key = Preference.TimeOffset(PID.ISHAA).key,
-                        defValue = Preference.TimeOffset(PID.ISHAA).default as Int
-                    ),
                 ),
                 athanAudioId = sharedPrefs.getString(
                     key = Preference.AthanId.key,

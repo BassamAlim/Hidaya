@@ -2,7 +2,7 @@ package bassamalim.hidaya.core.utils
 
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
-import bassamalim.hidaya.core.enums.PrayerTimePoint
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.helpers.PrayerTimeCalculator
 import bassamalim.hidaya.core.models.Coordinates
@@ -17,28 +17,24 @@ object PrayerTimeUtils {
 
     fun getPrayerTimes(
         settings: PrayerTimeCalculatorSettings,
-        timeOffsets: Map<PrayerTimePoint, Int>,
         timeZoneId: String = "",
         location: Location,
         calendar: Calendar = Calendar.getInstance()
-    ): SortedMap<PrayerTimePoint, Calendar?> = PrayerTimeCalculator(
-        settings = settings,
-        timeOffsets = timeOffsets
-    ).getPrayerTimes(
+    ): SortedMap<Prayer, Calendar?> = PrayerTimeCalculator(settings).getPrayerTimes(
         coordinates = Coordinates(location.coordinates.latitude, location.coordinates.longitude),
         utcOffset = getUTCOffset(location.type, timeZoneId).toDouble(),
         calendar = calendar
     )
 
     fun formatPrayerTimes(
-        prayerTimes: SortedMap<PrayerTimePoint, Calendar?>,
+        prayerTimes: SortedMap<Prayer, Calendar?>,
         language: Language,
         numeralsLanguage: Language,
         timeFormat: TimeFormat
-    ): SortedMap<PrayerTimePoint, String> = sortedMapOf<PrayerTimePoint, String>().apply {
-        prayerTimes.forEach { (pid, time) ->
+    ): SortedMap<Prayer, String> = sortedMapOf<Prayer, String>().apply {
+        prayerTimes.forEach { (prayer, time) ->
             put(
-                key = pid,
+                key = prayer,
                 value = formatPrayerTime(
                     time = time,
                     language = language,

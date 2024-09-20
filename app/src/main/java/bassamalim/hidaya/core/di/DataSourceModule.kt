@@ -20,7 +20,6 @@ import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.UserPrefe
 import bassamalim.hidaya.core.data.dataSources.preferences.migrations.AppSettingsPreferencesMigration
 import bassamalim.hidaya.core.data.dataSources.preferences.migrations.AppStatePreferencesMigration
 import bassamalim.hidaya.core.data.dataSources.preferences.migrations.BooksPreferencesMigration
-import bassamalim.hidaya.core.data.dataSources.preferences.migrations.NotificationsPreferencesMigration
 import bassamalim.hidaya.core.data.dataSources.preferences.migrations.PrayersPreferencesMigration
 import bassamalim.hidaya.core.data.dataSources.preferences.migrations.QuranPreferencesMigration
 import bassamalim.hidaya.core.data.dataSources.preferences.migrations.RecitationsPreferencesMigration
@@ -119,7 +118,6 @@ object DataSourceModule {
                 corruptionHandler = ReplaceFileCorruptionHandler(
                     produceNewData = { NotificationsPreferences() }
                 ),
-                migrations = listOf(NotificationsPreferencesMigration.getMigration(appContext)),
                 scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
                 produceFile = {
                     appContext.dataStoreFile(PreferencesFileNames.NOTIFICATIONS_PREFERENCES_NAME)

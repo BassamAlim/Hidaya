@@ -114,7 +114,7 @@ class PrayersBoardViewModel @Inject constructor(
     private fun onSettingsDialogSave(pid: PID, settings: PrayerSettings) {
         viewModelScope.launch {
             domain.updatePrayerSettings(
-                pid = pid,
+                prayer = pid,
                 prayerSettings = settings
             )
 
@@ -152,7 +152,7 @@ class PrayersBoardViewModel @Inject constructor(
 
         viewModelScope.launch {
             domain.updatePrayerSettings(
-                pid = pid,
+                prayer = pid,
                 prayerSettings = PrayerSettings(
                     notificationType = _uiState.value.prayersData[prayerNum].notificationType,
                     timeOffset = _uiState.value.prayersData[prayerNum].timeOffset.toInt(),

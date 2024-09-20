@@ -12,7 +12,9 @@ class NotificationsRepository @Inject constructor(
     private val notificationsPreferencesDataSource: NotificationsPreferencesDataSource
 ) {
 
-    fun getNotificationTypes() = notificationsPreferencesDataSource.getNotificationTypes()
+    fun getNotificationTypes() = notificationsPreferencesDataSource.getNotificationTypes().map {
+        it.toMap()
+    }
 
     fun getNotificationType(prayer: Reminder.Prayer) = getNotificationTypes().map { it[prayer]!! }
 
@@ -20,37 +22,44 @@ class NotificationsRepository @Inject constructor(
         notificationsPreferencesDataSource.getNotificationTypes().first().put(prayer, type)
     }
 
-    fun getDevotionReminderEnabledMap() =
-        notificationsPreferencesDataSource.getDevotionalReminderEnabledStatuses()
+    fun getDevotionalReminderEnabledMap() =
+        notificationsPreferencesDataSource.getDevotionalReminderEnabledStatuses().map {
+            it.toMap()
+        }
 
-    suspend fun setDevotionReminderEnabled(enabled: Boolean, devotion: Reminder.Devotional) {
+    suspend fun setDevotionalReminderEnabled(enabled: Boolean, devotion: Reminder.Devotional) {
         notificationsPreferencesDataSource.updateDevotionalReminderEnabledStatuses(
             notificationsPreferencesDataSource.getDevotionalReminderEnabledStatuses().first()
                 .put(devotion, enabled)
         )
     }
 
-    fun getDevotionReminderTimes() =
-        notificationsPreferencesDataSource.getDevotionalReminderTimes()
+    fun getDevotionalReminderTimes() =
+        notificationsPreferencesDataSource.getDevotionalReminderTimes().map {
+            it.toMap()
+        }
 
-    suspend fun setDevotionReminderTimes(timeOfDay: TimeOfDay, devotion: Reminder.Devotional) {
+    suspend fun setDevotionalReminderTimes(timeOfDay: TimeOfDay, devotion: Reminder.Devotional) {
         notificationsPreferencesDataSource.updateDevotionalReminderTimes(
             notificationsPreferencesDataSource.getDevotionalReminderTimes().first()
                 .put(devotion, timeOfDay)
         )
     }
 
-    fun getPrayerReminderOffsetMap() =
-        notificationsPreferencesDataSource.getPrayerReminderTimeOffsets()
+    fun getPrayerExtraReminderTimeOffsets() =
+        notificationsPreferencesDataSource.getPrayerExtraReminderTimeOffsets().map {
+            it.toMap()
+        }
 
-    suspend fun setPrayerReminderOffset(offset: Int, prayer: Reminder.Prayer) {
-        notificationsPreferencesDataSource.updatePrayerReminderTimeOffsets(
-            notificationsPreferencesDataSource.getPrayerReminderTimeOffsets().first()
+    suspend fun setPrayerExtraReminderOffset(offset: Int, prayer: Reminder.Prayer) {
+        notificationsPreferencesDataSource.updatePrayerExtraReminderTimeOffsets(
+            notificationsPreferencesDataSource.getPrayerExtraReminderTimeOffsets().first()
                 .put(prayer, offset)
         )
     }
 
     fun getLastNotificationDates() = notificationsPreferencesDataSource.getLastNotificationDates()
+        .map { it.toMap() }
 
     suspend fun setLastNotificationDate(reminder: Reminder, dayOfYear: Int) {
         notificationsPreferencesDataSource.updateLastNotificationDates(

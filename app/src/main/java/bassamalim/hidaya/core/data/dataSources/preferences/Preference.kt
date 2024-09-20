@@ -1,9 +1,7 @@
 package bassamalim.hidaya.core.data.dataSources.preferences
 
-import bassamalim.hidaya.core.enums.PID
 import bassamalim.hidaya.core.enums.Language as Languages
 import bassamalim.hidaya.core.enums.LocationType as LocationTypes
-import bassamalim.hidaya.core.enums.NotificationType as NotificationTypes
 import bassamalim.hidaya.core.enums.Theme as Themes
 import bassamalim.hidaya.core.enums.TimeFormat as TimeFormats
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType as QuranViewTypes
@@ -40,33 +38,6 @@ sealed class Preference(val key: String, val default: Any) {
 
     data object DateOffset : Preference("date_offset", 0)
 
-//    data class ExtraNotificationMinuteOfDay(val pid: PID) : Preference(
-//        key = "${pid.name}_mod",
-//        default = when (pid) {
-//            PID.MORNING -> 300  // 5 am
-//            PID.EVENING -> 960  // 4 pm
-//            PID.DAILY_WERD -> 1260  // 9 pm
-//            PID.FRIDAY_KAHF -> 600 // 10 am
-//            else -> 0
-//        }
-//    )
-
-    data class ExtraNotificationHour(val pid: PID) : Preference(
-        key = "${pid.name}_hour",
-        default = when (pid) {
-            PID.MORNING -> 5
-            PID.EVENING -> 16
-            PID.DAILY_WERD -> 21
-            PID.FRIDAY_KAHF -> 10
-            else -> 0
-        }
-    )
-
-    data class ExtraNotificationMinute(val pid: PID) : Preference(
-        key = "${pid.name}_minute",
-        default = 0
-    )
-
     data object FavoriteSuras : Preference("favorite_suar", "")
 
     data object RemembranceFavorites : Preference("favorite_athkar", "")
@@ -83,26 +54,9 @@ sealed class Preference(val key: String, val default: Any) {
 
     data object LastDBVersion : Preference("last_db_version", 1)
 
-    data class LastNotificationDate(val pid: PID) : Preference(
-        key = "last_${pid.name}_notification_date",
-        default = -1
-    )
-
     data object LastPlayedMediaId : Preference("last_played_media_id", "")
 
     data object NumeralsLanguage : Preference("numerals_language_key", Languages.ARABIC.name)
-
-    data class NotificationType(val pid: PID) : Preference(
-        key = "${pid.name}_notification_type",
-        default =
-            if (pid == PID.SUNRISE) NotificationTypes.NONE.name
-            else NotificationTypes.NOTIFICATION.name
-    )
-
-    data class NotifyExtraNotification(val pid: PID) : Preference(
-        key = "notify_${pid.name}",
-        default = true
-    )
 
     data object PrayerTimesCalculationMethod : Preference(
         "prayer_times_calc_method_key",
@@ -151,13 +105,6 @@ sealed class Preference(val key: String, val default: Any) {
     data object TimeFormat : Preference("time_format_key", TimeFormats.TWELVE.name)
 
     data object Theme : Preference("theme_key", Themes.LIGHT.name)
-
-    data class TimeOffset(val pid: PID) : Preference(key = "${pid.name}_offset", default = 0)
-
-    data class ReminderOffset(val pid: PID) : Preference(
-        key = "${pid.name}_reminder_offset",
-        default = 0
-    )
 
     data object WerdPage : Preference("werd_page", 25)
 

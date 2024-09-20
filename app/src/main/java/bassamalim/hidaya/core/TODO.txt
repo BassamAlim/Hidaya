@@ -14,5 +14,6 @@ class GetAllBooksAndAuthorsUseCase(
     }
 }
 
-Do not run coroutines in init blocks
+Load initial data from state.onStart, not in init blocks
 
+remove prayer time offsets feature

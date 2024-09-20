@@ -10,7 +10,7 @@ import bassamalim.hidaya.core.data.repositories.LocationRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.NotificationType
-import bassamalim.hidaya.core.enums.PrayerTimePoint
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.receivers.NotificationReceiver
@@ -26,46 +26,55 @@ class Alarm(
     private val locationRepository: LocationRepository
 ) {
 
-    suspend fun setReminderAlarm(reminder: Reminder) {
-        val location = locationRepository.getLocation().first() ?: return
-        val prayerTimesMap = PrayerTimeUtils.getPrayerTimes(
-            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeOffsets = prayersRepository.getTimeOffsets().first(),
-            timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
-            location = location,
-            calendar = Calendar.getInstance()
-        )
+    /**
+     * Finds out if the desired function and executes it
+     */
+    suspend fun setAll(prayerTimes: SortedMap<Prayer, Calendar?>) {
+        val reminderTimes = prayerTimes.map { (prayer, time) ->
+            prayer.toReminder() to time
+        }.toMap()
 
+        setPrayerAlarms(reminderTimes)
+        setPrayerReminders(reminderTimes)
+        setDevotionAlarms()
+    }
+
+    suspend fun setAlarm(reminder: Reminder) {
         when (reminder) {
             is Reminder.Prayer -> {
+                val location = locationRepository.getLocation().first() ?: return
+                val prayerTimesMap = PrayerTimeUtils.getPrayerTimes(
+                    settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+                    timeOffsets = prayersRepository.getTimeOffsets().first(),
+                    timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+                    location = location,
+                    calendar = Calendar.getInstance()
+                ).map { (prayer, time) -> prayer.toReminder() to time }.toMap()
+
                 setPrayerAlarm(reminder = reminder, time = prayerTimesMap[reminder]!!)
 
-                val reminderOffset = notificationsRepository.getPrayerReminderOffsetMap().first()[reminder]!!
-                if (reminderOffset != 0)
-                    setReminder(reminder = reminder, time = prayerTimesMap[reminder]!!, offset = reminderOffset)
+                val reminderOffset =
+                    notificationsRepository.getPrayerExtraReminderTimeOffsets().first()[reminder]!!
+                if (reminderOffset != 0) {
+                    setPrayerReminder(
+                        reminder = reminder,
+                        time = prayerTimesMap[reminder]!!,
+                        offset = reminderOffset
+                    )
+                }
             }
             is Reminder.Devotional -> {
                 setDevotionAlarm(reminder)
             }
-            else -> {}
         }
     }
 
-    /**
-     * Finds out if the desired function and executes it
-     */
-    suspend fun setAll(prayerTimes: SortedMap<PrayerTimePoint, Calendar?>) {
-        setPrayerAlarms(prayerTimes)
-        setReminders(prayerTimes)
-        setDevotionAlarms()
-    }
-
-    private suspend fun setPrayerAlarms(prayerTimes: SortedMap<PrayerTimePoint, Calendar?>) {
+    private suspend fun setPrayerAlarms(prayerTimes: Map<Reminder.Prayer, Calendar?>) {
         Log.i(Global.TAG, "in set prayer alarms")
 
-        for ((pid, time) in prayerTimes) {
-            if (notificationsRepository.getNotificationType(pid).first() != NotificationType.NONE)
-                setPrayerAlarm(pid, time!!)
+        for ((prayer, time) in prayerTimes) {
+            if (notificationsRepository.getNotificationType(prayer).first() != NotificationType.NONE)
+                setPrayerAlarm(prayer, time!!)
         }
     }
 
@@ -74,7 +83,7 @@ class Alarm(
      *
      * @param reminder the ID of the prayer
      */
-    private fun setPrayerAlarm(reminder: Reminder, time: Calendar) {
+    private fun setPrayerAlarm(reminder: Reminder.Prayer, time: Calendar) {
         Log.i(Global.TAG, "in set alarm for: $reminder")
 
         val millis = time.timeInMillis
@@ -98,16 +107,17 @@ class Alarm(
         else Log.i(Global.TAG, "$reminder Passed")
     }
 
-    private suspend fun setReminders(prayerTimes: SortedMap<PrayerTimePoint, Calendar?>) {
+    private suspend fun setPrayerReminders(prayerTimes: Map<Reminder.Prayer, Calendar?>) {
         Log.i(Global.TAG, "in set reminders")
 
-        for ((pid, time) in prayerTimes) {
-            val reminderOffset = notificationsRepository.getPrayerReminderOffsetMap().first()[pid]!!
-            if (reminderOffset != 0) setReminder(pid, time!!, reminderOffset)
+        val reminderOffsets = notificationsRepository.getPrayerExtraReminderTimeOffsets().first()
+        for ((prayer, time) in prayerTimes) {
+            val reminderOffset = reminderOffsets[prayer]!!
+            if (reminderOffset != 0) setPrayerReminder(prayer, time!!, reminderOffsets[prayer]!!)
         }
     }
 
-    private fun setReminder(reminder: Reminder, time: Calendar, offset: Int) {
+    private fun setPrayerReminder(reminder: Reminder.Prayer, time: Calendar, offset: Int) {
         Log.i(Global.TAG, "in set reminder for: $reminder")
 
         val millis = time.timeInMillis + offset * 60 * 1000
@@ -140,13 +150,17 @@ class Alarm(
         val today = Calendar.getInstance()
 
         val devotionAlarmEnabledMap =
-            notificationsRepository.getDevotionReminderEnabledMap().first()
+            notificationsRepository.getDevotionalReminderEnabledMap().first()
 
-        for ((pid, enabled) in devotionAlarmEnabledMap) {
+        for ((devotion, enabled) in devotionAlarmEnabledMap) {
             if (enabled) {
-                if (pid == Reminder.FRIDAY_KAHF && today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
-                    setDevotionAlarm(pid)
-                else if (pid != Reminder.FRIDAY_KAHF) setDevotionAlarm(pid)
+                when (devotion) {
+                    is Reminder.Devotional.FridayKahf -> {
+                        if (today[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
+                            setDevotionAlarm(devotion)
+                    }
+                    else -> setDevotionAlarm(devotion)
+                }
             }
         }
     }
@@ -154,12 +168,12 @@ class Alarm(
     /**
      * Set an alarm for a specific time
      *
-     * @param pid The ID of the alarm.
+     * @param devotion The ID of the alarm.
      */
-    private suspend fun setDevotionAlarm(pid: PID) {
+    private suspend fun setDevotionAlarm(devotion: Reminder.Devotional) {
         Log.i(Global.TAG, "in set extra alarm")
 
-        val timeOfDay = notificationsRepository.getDevotionReminderTimes().first()[pid]!!
+        val timeOfDay = notificationsRepository.getDevotionalReminderTimes().first()[devotion]!!
 
         val time = Calendar.getInstance()
         time[Calendar.HOUR_OF_DAY] = timeOfDay.hour
@@ -169,13 +183,13 @@ class Alarm(
 
         val intent = Intent(app, NotificationReceiver::class.java)
         intent.action = "devotion"
-        intent.putExtra("id", pid.name)
+        intent.putExtra("id", devotion.name)
         intent.putExtra("time", time.timeInMillis)
 
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val pendingIntent = PendingIntent.getBroadcast(
-            app, pid.ordinal, intent,
+            app, devotion.id, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -185,19 +199,19 @@ class Alarm(
             pendingIntent
         )
 
-        Log.i(Global.TAG, "alarm $pid set")
+        Log.i(Global.TAG, "alarm $devotion set")
     }
 
-    fun cancelAlarm(pid: PID) {
+    fun cancelAlarm(reminder: Reminder) {
         val pendingIntent = PendingIntent.getBroadcast(
-            app, pid.ordinal, Intent(),
+            app, reminder.id, Intent(),
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(pendingIntent)
 
-        Log.i(Global.TAG, "Canceled $pid Alarm")
+        Log.i(Global.TAG, "Canceled $reminder Alarm")
     }
 
 }

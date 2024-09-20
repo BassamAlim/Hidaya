@@ -28,24 +28,30 @@ class NotificationsPreferencesDataSource(
         }
     }
 
-    fun getDevotionalReminderEnabledStatuses() = flow.map { it.devotionalReminderEnabledStatuses }
-    suspend fun updateDevotionalReminderEnabledStatuses(statuses: PersistentMap<Reminder.Devotional, Boolean>) {
+    fun getDevotionalReminderEnabledStatuses() = flow.map {
+        it.devotionalReminderEnabledStatuses
+    }
+    suspend fun updateDevotionalReminderEnabledStatuses(
+        statuses: PersistentMap<Reminder.Devotional, Boolean>
+    ) {
         dataStore.updateData { preferences ->
             preferences.copy(devotionalReminderEnabledStatuses = statuses)
         }
     }
 
     fun getDevotionalReminderTimes() = flow.map { it.devotionalReminderTimes }
-    suspend fun updateDevotionalReminderTimes(times: PersistentMap<Reminder.Devotional, TimeOfDay>) {
+    suspend fun updateDevotionalReminderTimes(
+        times: PersistentMap<Reminder.Devotional, TimeOfDay>
+    ) {
         dataStore.updateData { preferences ->
             preferences.copy(devotionalReminderTimes = times)
         }
     }
 
-    fun getPrayerReminderTimeOffsets() = flow.map { it.prayerReminderTimeOffsets }
-    suspend fun updatePrayerReminderTimeOffsets(offsets: PersistentMap<Reminder.Prayer, Int>) {
+    fun getPrayerExtraReminderTimeOffsets() = flow.map { it.prayerExtraReminderTimeOffsets }
+    suspend fun updatePrayerExtraReminderTimeOffsets(offsets: PersistentMap<Reminder.Prayer, Int>) {
         dataStore.updateData { preferences ->
-            preferences.copy(prayerReminderTimeOffsets = offsets)
+            preferences.copy(prayerExtraReminderTimeOffsets = offsets)
         }
     }
 

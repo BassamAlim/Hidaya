@@ -6,19 +6,16 @@ import bassamalim.hidaya.core.enums.NotificationType
 
 data class PrayerSettings(
     val notificationType: NotificationType,
-    val timeOffset: Int,
     val reminderOffset: Int = 0
 ): Parcelable {
 
     constructor(parcel: Parcel) : this(
         NotificationType.valueOf(parcel.readString() ?: ""),
-        parcel.readInt(),
         parcel.readInt()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(notificationType.name)
-        parcel.writeInt(timeOffset)
         parcel.writeInt(reminderOffset)
     }
 

@@ -3,9 +3,7 @@ package bassamalim.hidaya.core.data.dataSources.preferences.dataSources
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import bassamalim.hidaya.core.data.dataSources.preferences.objects.PrayersPreferences
-import bassamalim.hidaya.core.enums.PrayerTimePoint
 import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
-import kotlinx.collections.immutable.PersistentMap
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -24,13 +22,6 @@ class PrayersPreferencesDataSource(
     suspend fun updatePrayerTimeCalculatorSettings(settings: PrayerTimeCalculatorSettings) {
         dataStore.updateData { preferences ->
             preferences.copy(prayerTimeCalculatorSettings = settings)
-        }
-    }
-
-    fun getTimeOffsets() = flow.map { it.timeOffsets }
-    suspend fun updateTimeOffsets(offsets: PersistentMap<PrayerTimePoint, Int>) {
-        dataStore.updateData { preferences ->
-            preferences.copy(timeOffsets = offsets)
         }
     }
 
