@@ -39,9 +39,9 @@ class OnboardingViewModel @Inject constructor(
             theme = theme
         )
     }.stateIn(
-        initialValue = OnboardingUiState(),
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = OnboardingUiState()
     )
 
     fun onLanguageChange(language: Language, activity: Activity) {

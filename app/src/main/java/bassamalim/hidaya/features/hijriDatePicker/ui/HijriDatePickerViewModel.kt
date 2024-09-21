@@ -16,7 +16,9 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -47,9 +49,15 @@ class HijriDatePickerViewModel @Inject constructor(
         mainText = getMainText(),
         displayedMonth = getDisplayedMonthString(initialPage)
     ))
-    val uiState = _uiState.asStateFlow()
+    val uiState = _uiState.onStart {
+        initializeData()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = HijriDatePickerUiState()
+    )
 
-    init {
+    private fun initializeData() {
         viewModelScope.launch {
             language = domain.getLanguage()
             numeralsLanguage = domain.getNumeralsLanguage()
@@ -57,22 +65,22 @@ class HijriDatePickerViewModel @Inject constructor(
             _uiState.update { it.copy(
                 weekDaysAbb = domain.getWeekDaysAbb(language),
             )}
-        }
 
-        initialPage = ((_uiState.value.displayedYear.toInt() - domain.minYear) * 12
-                + _uiState.value.displayedMonth.toInt())
+            initialPage = ((_uiState.value.displayedYear.toInt() - domain.minYear) * 12
+                    + _uiState.value.displayedMonth.toInt())
 
-        initialDate?.let { dateStr ->
-            val date = dateStr.split("-")
-            val year = date[0].toInt()
-            val month = date[1].toInt() - 1  // 0-based
-            val day = date[2].toInt()
+            initialDate?.let { dateStr ->
+                val date = dateStr.split("-")
+                val year = date[0].toInt()
+                val month = date[1].toInt() - 1  // 0-based
+                val day = date[2].toInt()
 
-            _uiState.update { it.copy(
-                displayedYear = year.toString(),
-                displayedMonth = month.toString(),
-                selectedDay = day.toString(),
-            )}
+                _uiState.update { it.copy(
+                    displayedYear = year.toString(),
+                    displayedMonth = month.toString(),
+                    selectedDay = day.toString(),
+                )}
+            }
         }
     }
 

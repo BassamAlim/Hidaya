@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -53,16 +54,17 @@ class RecitationRecitersMenuViewModel @Inject constructor(
             narrationSelections = narrationSelections,
             lastPlayedMedia = getLastPlayedMedia(lastPlayed.mediaId)
         )
+    }.onStart {
+        initializeData()
     }.stateIn(
-        initialValue = RecitationRecitersMenuUiState(),
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = RecitationRecitersMenuUiState()
     )
 
-    init {
+    private fun initializeData() {
         viewModelScope.launch {
             language = domain.getLanguage()
-
             suraNames = domain.getSuraNames(language)
             allNarrations = domain.getAllNarrations(language)
             narrationOptions = allNarrations.map { it.name }.distinct()

@@ -316,7 +316,6 @@ class Activity : ComponentActivity() {
         if (location != null) {
             val prayerTimes = PrayerTimeUtils.getPrayerTimes(
                 settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-                timeOffsets = prayersRepository.getTimeOffsets().first(),
                 timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
                 location = location,
                 calendar = Calendar.getInstance()

@@ -10,7 +10,9 @@ import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.quiz.test.domain.QuizTestDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,15 +28,20 @@ class QuizTestViewModel @Inject constructor(
     private lateinit var numeralsLanguage: Language
 
     private val _uiState = MutableStateFlow(QuizTestUiState())
-    val uiState = _uiState.asStateFlow()
+    val uiState = _uiState.onStart {
+        initializeData()
+        ask(0)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = QuizTestUiState()
+    )
 
-    init {
+    private fun initializeData() {
         viewModelScope.launch {
             numeralsLanguage = domain.getNumeralsLanguage()
             questions = domain.getQuizQuestions()
         }
-
-        ask(0)
     }
 
     fun onPreviousQuestionClick() {

@@ -7,7 +7,9 @@ import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.leaderboard.domain.LeaderboardDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -21,20 +23,24 @@ class LeaderboardViewModel @Inject constructor(
     private lateinit var numeralsLanguage: Language
 
     private val _uiState = MutableStateFlow(LeaderboardUiState())
-    val uiState = _uiState.asStateFlow()
+    val uiState = _uiState.onStart {
+        initializeData()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = LeaderboardUiState()
+    )
 
-    init {
+    private fun initializeData() {
         viewModelScope.launch {
             numeralsLanguage = domain.getNumeralsLanguage()
-            val userId = domain.fetchData()
 
-            if (userId != -1) {
-                _uiState.update { it.copy(
-                    isLoading = false,
-                    isError = true,
-                    userId = userId.toString(),
-                )}
-            }
+            val userId = domain.fetchData()
+            _uiState.update { it.copy(
+                isLoading = false,
+                isError = userId == -1,
+                userId = userId.toString(),
+            )}
         }
     }
 

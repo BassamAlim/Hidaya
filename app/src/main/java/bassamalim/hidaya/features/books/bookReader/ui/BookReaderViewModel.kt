@@ -33,9 +33,9 @@ class BookReaderViewModel @Inject constructor(
     ) { state, textSize -> state.copy(
         textSize = textSize
     )}.stateIn(
-        initialValue = BookReaderUiState(),
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = BookReaderUiState()
     )
 
     fun onTextSizeChange(textSize: Float) {

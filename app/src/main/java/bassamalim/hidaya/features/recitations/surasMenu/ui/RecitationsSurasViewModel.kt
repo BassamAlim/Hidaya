@@ -21,8 +21,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -45,9 +47,15 @@ class RecitationsSurasViewModel @Inject constructor(
     private val suraFavorites = domain.getSuraFavorites()
 
     private val _uiState = MutableStateFlow(RecitationsSurasUiState())
-    val uiState = _uiState.asStateFlow()
+    val uiState = _uiState.onStart {
+        initializeData()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = RecitationsSurasUiState()
+    )
 
-    init {
+    private fun initializeData() {
         viewModelScope.launch {
             language = domain.getLanguage()
             plainSuraNames = domain.getPlainSuraNames()

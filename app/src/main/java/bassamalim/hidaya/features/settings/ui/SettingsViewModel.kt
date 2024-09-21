@@ -73,9 +73,9 @@ class SettingsViewModel @Inject constructor(
     ) { state, athanAudioId ->
         state.copy(athanAudioId = athanAudioId)
     }.stateIn(
-        initialValue = SettingsUiState(),
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = SettingsUiState()
     )
 
     fun onLanguageChange(newLanguage: Language, activity: Activity) {

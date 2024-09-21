@@ -12,7 +12,9 @@ import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.prayers.settings.domain.PrayerSettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,20 +22,13 @@ import javax.inject.Inject
 @HiltViewModel
 class PrayerSettingViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    domain: PrayerSettingsDomain,
+    private val domain: PrayerSettingsDomain,
     private val navigator: Navigator
 ): ViewModel() {
 
     private val prayer = Prayer.valueOf(savedStateHandle.get<String>("prayer") ?: "")
 
     lateinit var numeralsLanguage: Language
-
-    private val _uiState = MutableStateFlow(PrayerSettingUiState(
-        prayer = prayer,
-        prayerName = domain.getPrayerName(prayer)
-    ))
-    val uiState = _uiState.asStateFlow()
-
     val notificationTypeOptions = listOf(
         Pair(R.string.athan_speaker, R.drawable.ic_speaker),
         Pair(R.string.enable_notification, R.drawable.ic_sound),
@@ -41,7 +36,19 @@ class PrayerSettingViewModel @Inject constructor(
         Pair(R.string.disable_notification, R.drawable.ic_block)
     )
 
-    init {
+    private val _uiState = MutableStateFlow(PrayerSettingUiState(
+        prayer = prayer,
+        prayerName = domain.getPrayerName(prayer)
+    ))
+    val uiState = _uiState.onStart {
+        initializeData()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = _uiState.value
+    )
+
+    private fun initializeData() {
         viewModelScope.launch {
             numeralsLanguage = domain.getNumeralsLanguage()
 

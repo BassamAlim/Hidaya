@@ -31,9 +31,9 @@ class MainViewModel @Inject constructor(
         hijriDate = getHijriDate(dateOffset, numeralsLanguage),
         gregorianDate = getGregorianDate(numeralsLanguage)
     )}.stateIn(
-        initialValue = MainUiState(),
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = MainUiState()
     )
 
     fun onDateClick() {

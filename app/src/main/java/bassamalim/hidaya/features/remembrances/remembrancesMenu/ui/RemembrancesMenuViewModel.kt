@@ -44,18 +44,10 @@ class RemembrancesMenuViewModel @Inject constructor(
             }
         )
     }.stateIn(
-        initialValue = RemembrancesMenuUiState(),
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000)
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = RemembrancesMenuUiState()
     )
-
-    init {
-        viewModelScope.launch {
-            _uiState.update { it.copy(
-                isLoading = false
-            )}
-        }
-    }
 
     private suspend fun getItems(remembrances: List<RemembrancesItem>, language: Language) =
         remembrances.filter {

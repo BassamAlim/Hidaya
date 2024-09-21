@@ -11,7 +11,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.MenuType
-import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyButtonSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
@@ -25,33 +24,28 @@ fun RemembrancesMenuScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (state.isLoading) {
-        LoadingScreen()
-    }
-    else {
-        MyScaffold(
-            title = when (state.menuType) {
-                MenuType.FAVORITES -> stringResource(R.string.favorite_remembrances)
-                MenuType.CUSTOM -> state.categoryTitle
-                else -> stringResource(R.string.all_remembrances)
-            }
-        ) { padding ->
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(padding)
-            ) {
-                SearchBar(
-                    searchText = state.searchText,
-                    onSearchValueChange = viewModel::onSearchChange
-                )
+    MyScaffold(
+        title = when (state.menuType) {
+            MenuType.FAVORITES -> stringResource(R.string.favorite_remembrances)
+            MenuType.CUSTOM -> state.categoryTitle
+            else -> stringResource(R.string.all_remembrances)
+        }
+    ) { padding ->
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(padding)
+        ) {
+            SearchBar(
+                searchText = state.searchText,
+                onSearchValueChange = viewModel::onSearchChange
+            )
 
-                RemembrancesList(
-                    remembrances = state.remembrances,
-                    onItemClick = viewModel::onItemClick,
-                    onFavoriteClick = viewModel::onFavoriteCLick
-                )
-            }
+            RemembrancesList(
+                remembrances = state.remembrances,
+                onItemClick = viewModel::onItemClick,
+                onFavoriteClick = viewModel::onFavoriteCLick
+            )
         }
     }
 }

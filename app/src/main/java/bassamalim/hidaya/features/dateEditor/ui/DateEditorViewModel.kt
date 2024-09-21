@@ -9,7 +9,9 @@ import bassamalim.hidaya.features.dateEditor.domain.DateEditorDomain
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -24,9 +26,15 @@ class DateEditorViewModel @Inject constructor(
     private lateinit var numeralsLanguage: Language
 
     private val _uiState = MutableStateFlow(DateEditorUiState())
-    val uiState = _uiState.asStateFlow()
+    val uiState = _uiState.onStart {
+        initializeData()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = DateEditorUiState()
+    )
 
-    init {
+    private fun initializeData() {
         viewModelScope.launch {
             domain.assignDateOffset()
 

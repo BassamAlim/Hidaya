@@ -8,8 +8,10 @@ import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 import bassamalim.hidaya.features.quran.settings.domain.QuranSettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,9 +26,15 @@ class QuranSettingsViewModel @Inject constructor(
     val reciterIds = Array(size = reciterNames.size) { idx -> idx }
 
     private val _uiState = MutableStateFlow(QuranSettingsUiState())
-    val uiState = _uiState.asStateFlow()
+    val uiState = _uiState.onStart {
+        initializeData()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = QuranSettingsUiState()
+    )
 
-    init {
+    private fun initializeData() {
         viewModelScope.launch {
             numeralsLanguage = domain.getNumeralsLanguage()
 
