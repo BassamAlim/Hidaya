@@ -4,7 +4,7 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.MenuType
-import bassamalim.hidaya.features.remembrances.remembrancesMenu.RemembrancesItem
+import bassamalim.hidaya.features.remembrances.remembrancesMenu.ui.RemembrancesItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

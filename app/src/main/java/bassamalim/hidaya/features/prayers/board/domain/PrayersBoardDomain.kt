@@ -28,9 +28,9 @@ class PrayersBoardDomain @Inject constructor(
 
     val location = locationRepository.getLocation()
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = appSettingsRepository.getLanguage()
 
-    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
+    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
     fun getHijriMonths() = appStateRepository.getHijriMonths()
 

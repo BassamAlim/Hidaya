@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.remembrances.remembrancesMenu
+package bassamalim.hidaya.features.remembrances.remembrancesMenu.ui
 
 data class RemembrancesItem(
     val id: Int,

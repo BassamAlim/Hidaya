@@ -16,7 +16,6 @@ import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.SearchComponent
-import bassamalim.hidaya.features.remembrances.remembrancesMenu.RemembrancesItem
 
 @Composable
 fun RemembrancesMenuScreen(

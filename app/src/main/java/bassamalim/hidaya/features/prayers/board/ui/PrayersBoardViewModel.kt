@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.prayers.board.ui
 
 import android.os.Build
+import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
+import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.prayers.board.domain.PrayersBoardDomain
 import bassamalim.hidaya.features.prayers.settings.ui.PrayerSettings
@@ -45,6 +47,8 @@ class PrayersBoardViewModel @Inject constructor(
         flowOf(dateOffset),
         domain.getPrayerSettings()
     ) { state, location, dateOffset, prayerSettings ->
+        Log.d(Global.TAG, "PrayersBoardViewModel: combine")
+
         val prayerTimeMap = location?.let {
             domain.getTimes(
                 location = location,
@@ -61,7 +65,6 @@ class PrayersBoardViewModel @Inject constructor(
                     extraReminderOffset = formatOffset(prayerSettings[it.key]!!.reminderOffset),
                 )
             }.toMap().toSortedMap(),
-            tutorialDialogShown = domain.getShouldShowTutorial(),
             isLocationAvailable = location != null,
             locationName =
                 if (location != null) getLocationName()
@@ -78,8 +81,17 @@ class PrayersBoardViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            language = domain.getLanguage()
-            numeralsLanguage = domain.getNumeralsLanguage()
+            Log.d(Global.TAG, "PrayersBoardViewModel: initializeData")
+
+            language = domain.getLanguage().first()
+            numeralsLanguage = domain.getNumeralsLanguage().first()
+
+            Log.d(Global.TAG, "PrayersBoardViewModel: initializeData: numeralsLanguage: $numeralsLanguage")
+
+            _uiState.update { it.copy(
+                isLoading = false,
+                tutorialDialogShown = domain.getShouldShowTutorial()
+            )}
         }
     }
 

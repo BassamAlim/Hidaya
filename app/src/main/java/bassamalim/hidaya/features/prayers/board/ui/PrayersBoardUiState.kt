@@ -4,6 +4,7 @@ import bassamalim.hidaya.core.enums.Prayer
 import java.util.SortedMap
 
 data class PrayersBoardUiState(
+    val isLoading: Boolean = true,
     val isLocationAvailable: Boolean = false,
     val locationName: String = "",
     val prayersData: SortedMap<Prayer, PrayerCardData> = sortedMapOf(),
@@ -11,5 +12,5 @@ data class PrayersBoardUiState(
     val dateText: String = "",
     val settingsDialogShown: Boolean = false,
     val tutorialDialogShown: Boolean = false,
-    val shouldShowLocationFailedToast: Boolean = false,
+    val shouldShowLocationFailedToast: Boolean = false
 )

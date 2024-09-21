@@ -6,11 +6,11 @@ import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuizFullQuestion
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
-import bassamalim.hidaya.features.books.booksMenu.ui.BooksMenuUiState
 import bassamalim.hidaya.features.quiz.result.domain.QuizResultDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -40,12 +40,12 @@ class QuizResultViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
-        initialValue = BooksMenuUiState()
+        initialValue = QuizResultUiState()
     )
 
     private fun initializeData() {
         viewModelScope.launch {
-            numeralsLanguage = domain.getNumeralsLanguage()
+            numeralsLanguage = domain.getNumeralsLanguage().first()
             _uiState.update { it.copy(
                 questions = getQuestionItems(domain.getFullQuestions(questionIds))
             )}

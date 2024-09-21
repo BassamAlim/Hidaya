@@ -13,7 +13,7 @@ class PrayerSettingsDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
+    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
     suspend fun getNotificationType(prayer: Prayer) =
         notificationsRepository.getNotificationType(prayer.toReminder()).first()

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.recitations.player
+package bassamalim.hidaya.features.recitations.player.service
 
 import android.app.Notification
 import android.app.NotificationChannel

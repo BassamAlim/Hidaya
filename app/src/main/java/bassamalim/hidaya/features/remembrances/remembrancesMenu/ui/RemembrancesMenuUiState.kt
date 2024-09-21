@@ -1,7 +1,6 @@
 package bassamalim.hidaya.features.remembrances.remembrancesMenu.ui
 
 import bassamalim.hidaya.core.enums.MenuType
-import bassamalim.hidaya.features.remembrances.remembrancesMenu.RemembrancesItem
 
 data class RemembrancesMenuUiState(
     val categoryTitle: String = "",

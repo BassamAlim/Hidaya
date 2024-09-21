@@ -28,6 +28,6 @@ class DateEditorDomain @Inject constructor(
         appSettingsRepository.setDateOffset(dateOffset)
     }
 
-    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
+    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
 }

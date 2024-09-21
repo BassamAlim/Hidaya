@@ -6,6 +6,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.features.tv.domain.TvDomain
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,7 +19,7 @@ class TvViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            language = domain.getLanguage()
+            language = domain.getLanguage().first()
         }
     }
 

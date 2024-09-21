@@ -15,7 +15,7 @@ class LocationPickerDomain @Inject constructor(
 
     fun setCountryId(id: Int) { countryId = id }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = appSettingsRepository.getLanguage()
 
     suspend fun getCountries(language: Language) =
         locationRepository.getCountries(language = language)

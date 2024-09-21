@@ -25,8 +25,7 @@ import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.utils.FileUtils
-import bassamalim.hidaya.features.recitations.player.RecitationPlayerService
-import kotlinx.coroutines.flow.first
+import bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService
 import java.io.File
 import java.util.Locale
 import javax.inject.Inject
@@ -172,7 +171,7 @@ class RecitationPlayerDomain @Inject constructor(
         this.path = "${"${recitationsRepository.prefix}${reciterId}/${narrationId}/"}$suraId.mp3"
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = appSettingsRepository.getLanguage()
 
     suspend fun getSuraNames(language: Language) = quranRepository.getDecoratedSuraNames(language)
 

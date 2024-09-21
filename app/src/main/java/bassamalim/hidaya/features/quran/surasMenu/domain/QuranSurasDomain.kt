@@ -13,9 +13,9 @@ class QuranSurasDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = appSettingsRepository.getLanguage()
 
-    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
+    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
     fun getBookmark() = quranRepository.getPageBookmark()
 

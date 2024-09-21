@@ -11,7 +11,7 @@ class LocatorDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = appSettingsRepository.getLanguage()
 
     suspend fun setAutoLocation(location: Location) {
         locationRepository.setLocation(location)

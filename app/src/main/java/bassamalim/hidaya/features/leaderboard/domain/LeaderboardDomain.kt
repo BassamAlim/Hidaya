@@ -31,7 +31,7 @@ class LeaderboardDomain @Inject constructor(
         else -1
     }
 
-    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
+    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
     fun getUserRank(items: List<UserRecord>) =
         items.indexOfFirst { it.userId == userRecord.userId } + 1

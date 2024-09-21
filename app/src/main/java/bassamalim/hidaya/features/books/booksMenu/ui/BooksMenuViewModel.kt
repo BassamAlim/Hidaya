@@ -12,6 +12,7 @@ import bassamalim.hidaya.features.books.booksMenu.domain.BooksMenuDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -38,11 +39,11 @@ class BooksMenuViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            language = domain.getLanguage()
+            language = domain.getLanguage().first()
 
             _uiState.update { it.copy(
                 books = domain.getBooks(),
-                tutorialDialogShown = domain.getShowTutorial()
+                tutorialDialogShown = domain.getShowTutorial().first()
             )}
         }
     }

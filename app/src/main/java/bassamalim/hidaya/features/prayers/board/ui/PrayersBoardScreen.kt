@@ -29,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Prayer
+import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyClickableText
 import bassamalim.hidaya.core.ui.components.MyIconButton
@@ -46,39 +47,42 @@ fun PrayersBoardScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LocationCard(
-            isLocationAvailable = state.isLocationAvailable,
-            locationName = state.locationName,
-            onLocatorClick = viewModel::onLocatorClick
+    if (state.isLoading) LoadingScreen()
+    else {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LocationCard(
+                isLocationAvailable = state.isLocationAvailable,
+                locationName = state.locationName,
+                onLocatorClick = viewModel::onLocatorClick
+            )
+
+            PrayersSpace(
+                prayersData = state.prayersData,
+                isLocationAvailable = state.locationName.isNotEmpty(),
+                onPrayerCardClick = viewModel::onPrayerCardClick,
+                onReminderCardClick = viewModel::onReminderCardClick
+            )
+
+            DayCard(
+                dateText = state.dateText,
+                isNoDateOffset = state.isNoDateOffset,
+                onDateClick = viewModel::onDateClick,
+                onPreviousDayClick = viewModel::onPreviousDayClick,
+                onNextDayClick = viewModel::onNextDayClick
+            )
+        }
+
+        TutorialDialog(
+            shown = state.tutorialDialogShown,
+            textResId = R.string.prayers_tips,
+            onDismiss = viewModel::onTutorialDialogDismiss
         )
 
-        PrayersSpace(
-            prayersData = state.prayersData,
-            isLocationAvailable = state.locationName.isNotEmpty(),
-            onPrayerCardClick = viewModel::onPrayerCardClick,
-            onReminderCardClick = viewModel::onReminderCardClick
-        )
-
-        DayCard(
-            dateText = state.dateText,
-            isNoDateOffset = state.isNoDateOffset,
-            onDateClick = viewModel::onDateClick,
-            onPreviousDayClick = viewModel::onPreviousDayClick,
-            onNextDayClick = viewModel::onNextDayClick
-        )
+        if (state.shouldShowLocationFailedToast)
+            LocationFailedToast()
     }
-
-    TutorialDialog(
-        shown = state.tutorialDialogShown,
-        textResId = R.string.prayers_tips,
-        onDismiss = viewModel::onTutorialDialogDismiss
-    )
-
-    if (state.shouldShowLocationFailedToast)
-        LocationFailedToast()
 }
 
 @Composable

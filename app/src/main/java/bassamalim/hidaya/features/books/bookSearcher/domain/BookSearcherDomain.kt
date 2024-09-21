@@ -7,7 +7,6 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.features.books.bookSearcher.ui.BookSearcherMatch
-import kotlinx.coroutines.flow.first
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -73,9 +72,9 @@ class BookSearcherDomain @Inject constructor(
         return matches
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = appSettingsRepository.getLanguage()
 
-    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
+    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
     fun getBookSelections() = booksRepository.getBookSelections()
 

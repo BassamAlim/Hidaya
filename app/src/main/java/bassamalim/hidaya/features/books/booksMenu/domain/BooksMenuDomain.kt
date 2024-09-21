@@ -6,7 +6,6 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.other.Global
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class BooksMenuDomain @Inject constructor(
@@ -14,7 +13,7 @@ class BooksMenuDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    fun getLanguage() = appSettingsRepository.getLanguage()
 
     suspend fun getBooks() = booksRepository.getBooks()
 
@@ -43,7 +42,7 @@ class BooksMenuDomain @Inject constructor(
         booksRepository.deleteBook(bookId)
     }
 
-    suspend fun getShowTutorial() = booksRepository.getShouldShowTutorial().first()
+    fun getShowTutorial() = booksRepository.getShouldShowTutorial()
 
     suspend fun handleTutorialDialogDismiss(doNotShowAgain: Boolean) {
         if (doNotShowAgain) booksRepository.setShouldShowTutorial(false)

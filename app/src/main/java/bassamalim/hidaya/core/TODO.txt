@@ -19,3 +19,5 @@ Load initial data from state.onStart, not in init blocks
 use SharingStarted.Lazily instead of SharingStarted.WhileSubscribed if you want to keep the value of the flow when the app is in the background
 
 remove prayer time offsets feature
+
+add foreground service mode for reminder notifications

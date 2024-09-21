@@ -132,6 +132,6 @@ class QiblaDomain @Inject constructor(
         return ((Math.toDegrees(atan2(y, x)) + 360) % 360).toFloat()
     }
 
-    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
+    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
 }
