@@ -30,6 +30,6 @@ class TvDomain @Inject constructor(
         ytPlayer?.play()
     }
 
-    fun getLanguage() = appSettingsRepository.getLanguage()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
 }

@@ -21,3 +21,5 @@ use SharingStarted.Lazily instead of SharingStarted.WhileSubscribed if you want 
 remove prayer time offsets feature
 
 add foreground service mode for reminder notifications
+
+user runBlocking to run suspend functions synchronously

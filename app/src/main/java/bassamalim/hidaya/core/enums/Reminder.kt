@@ -11,11 +11,17 @@ sealed class Reminder(val id: Int, val name: String) {
         private val prayerId: Int,
         private val prayerName: String
     ): Reminder(prayerId, prayerName) {
+        @Serializable
         data object Fajr : Prayer(1, "Fajr")
+        @Serializable
         data object Sunrise : Prayer(2, "Sunrise")  // Not a prayer, but added for code simplicity
+        @Serializable
         data object Dhuhr : Prayer(3, "Dhuhr")
+        @Serializable
         data object Asr : Prayer(4, "Asr")
+        @Serializable
         data object Maghrib : Prayer(5, "Maghrib")
+        @Serializable
         data object Ishaa : Prayer(6, "Ishaa")
 
         fun toPrayer(): PrayerEnum {
@@ -46,11 +52,17 @@ sealed class Reminder(val id: Int, val name: String) {
         private val prayerId: Int,
         private val prayerName: String
     ): Reminder(prayerId, prayerName) {
+        @Serializable
         data object Fajr : PrayerExtra(7, "Fajr Extra")
+        @Serializable
         data object Sunrise : PrayerExtra(8, "Sunrise Extra")  // Not a prayer, but added for code simplicity
+        @Serializable
         data object Dhuhr : PrayerExtra(9, "Dhuhr Extra")
+        @Serializable
         data object Asr : PrayerExtra(10, "Asr Extra")
+        @Serializable
         data object Maghrib : PrayerExtra(11, "Maghrib Extra")
+        @Serializable
         data object Ishaa : PrayerExtra(12, "Ishaa Extra")
 
         fun toPrayer(): PrayerEnum {
@@ -70,20 +82,24 @@ sealed class Reminder(val id: Int, val name: String) {
         private val devotionId: Int,
         private val devotionName: String
     ): Reminder(devotionId, devotionName) {
+        @Serializable
         data object MorningRemembrances : Devotional(
             devotionId = 13,
             devotionName = "Morning Remembrances"
         )
+        @Serializable
         data object EveningRemembrances : Devotional(
             devotionId = 14,
             devotionName = "Evening Remembrances"
         )
+        @Serializable
         data object DailyWerd : Devotional(15, "Daily Werd")
+        @Serializable
         data object FridayKahf : Devotional(16, "Friday Kahf")
     }
 
     companion object {
-        fun valueOf(id: Int): Reminder {
+        fun getById(id: Int): Reminder {
             return when (id) {
                 1 -> Prayer.Fajr
                 2 -> Prayer.Sunrise

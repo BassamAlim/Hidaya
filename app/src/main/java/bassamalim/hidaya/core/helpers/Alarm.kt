@@ -100,7 +100,7 @@ class Alarm(
         if (System.currentTimeMillis() <= millis) {
             val intent = Intent(app, NotificationReceiver::class.java).also {
                 it.action = if (reminder == Reminder.Prayer.Sunrise) "devotion" else "prayer"
-                it.putExtra("id", reminder.toString())
+                it.putExtra("id", reminder.id)
                 it.putExtra("time", millis)
             }
 
@@ -140,7 +140,7 @@ class Alarm(
         if (System.currentTimeMillis() <= millis) {
             val intent = Intent(app, NotificationReceiver::class.java).apply {
                 action = "prayer_extra"
-                putExtra("id", reminder.name)
+                putExtra("id", reminder.id)
                 putExtra("time", millis)
             }
 
@@ -163,7 +163,7 @@ class Alarm(
         if (System.currentTimeMillis() <= time.timeInMillis) {
             val intent = Intent(app, NotificationReceiver::class.java).apply {
                 action = "prayer"
-                putExtra("id", reminder.name)
+                putExtra("id", reminder.id)
                 putExtra("time", time.timeInMillis)
             }
 
@@ -226,7 +226,7 @@ class Alarm(
 
         val intent = Intent(app, NotificationReceiver::class.java)
         intent.action = "devotion"
-        intent.putExtra("id", devotion.name)
+        intent.putExtra("id", devotion.id)
         intent.putExtra("time", time.timeInMillis)
 
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager

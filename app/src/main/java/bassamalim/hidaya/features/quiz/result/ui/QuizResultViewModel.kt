@@ -10,7 +10,6 @@ import bassamalim.hidaya.features.quiz.result.domain.QuizResultDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -45,7 +44,7 @@ class QuizResultViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            numeralsLanguage = domain.getNumeralsLanguage().first()
+            numeralsLanguage = domain.getNumeralsLanguage()
             _uiState.update { it.copy(
                 questions = getQuestionItems(domain.getFullQuestions(questionIds))
             )}

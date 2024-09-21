@@ -15,7 +15,7 @@ class PrayerExtraReminderSettingsDomain @Inject constructor(
 
     val offsetMin = 30f
 
-    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     suspend fun getOffset(prayer: Prayer) =
         notificationsRepository.getPrayerExtraReminderTimeOffsets()

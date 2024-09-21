@@ -20,7 +20,7 @@ class QuizTestDomain @Inject constructor(
         return score
     }
 
-    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     suspend fun getQuizQuestions(): List<QuizFullQuestion> {
         val ids = getRandomIds()

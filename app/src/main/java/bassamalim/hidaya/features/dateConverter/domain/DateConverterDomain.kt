@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.dateConverter.domain
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.AppStateRepository
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
+import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -11,7 +12,7 @@ class DateConverterDomain @Inject constructor(
     private val appStateRepository: AppStateRepository
 ) {
 
-    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     fun getHijriMonths() = appStateRepository.getNumberedHijriMonths()
 

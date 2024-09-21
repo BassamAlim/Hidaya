@@ -5,7 +5,6 @@ import bassamalim.hidaya.core.data.dataSources.preferences.objects.Notifications
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -16,7 +15,7 @@ object NotificationsPreferencesSerializer: Serializer<NotificationsPreferences> 
 
     override suspend fun readFrom(input: InputStream): NotificationsPreferences {
         return try {
-            Json.decodeFromString(
+            json.decodeFromString(
                 deserializer = NotificationsPreferences.serializer(),
                 string = input.readBytes().decodeToString()
             )
@@ -29,7 +28,7 @@ object NotificationsPreferencesSerializer: Serializer<NotificationsPreferences> 
     override suspend fun writeTo(t: NotificationsPreferences, output: OutputStream) {
         withContext(Dispatchers.IO) {
             output.write(
-                Json.encodeToString(
+                json.encodeToString(
                     serializer = NotificationsPreferences.serializer(),
                     value = t
                 ).encodeToByteArray()

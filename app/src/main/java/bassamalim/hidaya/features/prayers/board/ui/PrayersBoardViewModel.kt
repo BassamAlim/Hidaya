@@ -48,6 +48,7 @@ class PrayersBoardViewModel @Inject constructor(
         domain.getPrayerSettings()
     ) { state, location, dateOffset, prayerSettings ->
         Log.d(Global.TAG, "PrayersBoardViewModel: combine")
+        if (state.isLoading) return@combine state
 
         val prayerTimeMap = location?.let {
             domain.getTimes(
@@ -83,8 +84,8 @@ class PrayersBoardViewModel @Inject constructor(
         viewModelScope.launch {
             Log.d(Global.TAG, "PrayersBoardViewModel: initializeData")
 
-            language = domain.getLanguage().first()
-            numeralsLanguage = domain.getNumeralsLanguage().first()
+            language = domain.getLanguage()
+            numeralsLanguage = domain.getNumeralsLanguage()
 
             Log.d(Global.TAG, "PrayersBoardViewModel: initializeData: numeralsLanguage: $numeralsLanguage")
 

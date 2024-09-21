@@ -108,7 +108,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
         )
     }
 
-    fun getLanguage() = appSettingsRepository.getLanguage()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
     fun getFavorites() = recitationsRepository.getReciterFavoritesBackup()
 

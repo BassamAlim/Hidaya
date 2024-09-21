@@ -99,7 +99,7 @@ class RecitationSurasMenuDomain @Inject constructor(
 
     fun getSuraFavorites() = quranRepository.getSuraFavorites()
 
-    fun getLanguage() = appSettingsRepository.getLanguage()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
     suspend fun getDecoratedSuraNames(language: Language) =
         quranRepository.getDecoratedSuraNames(language)

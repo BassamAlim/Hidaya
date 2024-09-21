@@ -36,7 +36,7 @@ class QuranSettingsViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            numeralsLanguage = domain.getNumeralsLanguage().first()
+            numeralsLanguage = domain.getNumeralsLanguage()
 
             reciterNames = domain.getReciterNames()
 

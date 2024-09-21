@@ -39,7 +39,7 @@ class BooksMenuViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            language = domain.getLanguage().first()
+            language = domain.getLanguage()
 
             _uiState.update { it.copy(
                 books = domain.getBooks(),

@@ -11,9 +11,9 @@ class QuranSearcherDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    fun getLanguage() = appSettingsRepository.getLanguage()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     suspend fun getAllVerses() = quranRepository.getAllVerses()
 

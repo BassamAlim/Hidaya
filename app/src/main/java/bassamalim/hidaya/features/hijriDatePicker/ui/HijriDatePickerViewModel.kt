@@ -17,7 +17,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -60,8 +59,8 @@ class HijriDatePickerViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            language = domain.getLanguage().first()
-            numeralsLanguage = domain.getNumeralsLanguage().first()
+            language = domain.getLanguage()
+            numeralsLanguage = domain.getNumeralsLanguage()
 
             _uiState.update { it.copy(
                 weekDaysAbb = domain.getWeekDaysAbb(language),

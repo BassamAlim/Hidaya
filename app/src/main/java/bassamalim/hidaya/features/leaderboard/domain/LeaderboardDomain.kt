@@ -1,9 +1,9 @@
 package bassamalim.hidaya.features.leaderboard.domain
 
 import android.app.Application
-import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
+import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.utils.OS.getDeviceId
 import bassamalim.hidaya.features.leaderboard.ui.RankType
@@ -31,7 +31,7 @@ class LeaderboardDomain @Inject constructor(
         else -1
     }
 
-    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     fun getUserRank(items: List<UserRecord>) =
         items.indexOfFirst { it.userId == userRecord.userId } + 1

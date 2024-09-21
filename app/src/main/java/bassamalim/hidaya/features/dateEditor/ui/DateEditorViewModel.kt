@@ -10,7 +10,6 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -39,7 +38,7 @@ class DateEditorViewModel @Inject constructor(
         viewModelScope.launch {
             domain.assignDateOffset()
 
-            numeralsLanguage = domain.getNumeralsLanguage().first()
+            numeralsLanguage = domain.getNumeralsLanguage()
 
             updateState()
         }

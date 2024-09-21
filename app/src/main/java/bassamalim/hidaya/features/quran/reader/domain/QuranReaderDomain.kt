@@ -195,9 +195,9 @@ class QuranReaderDomain @Inject constructor(
         mediaBrowser?.disconnect()
     }
 
-    fun getLanguage() = appSettingsRepository.getLanguage()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     suspend fun getTheme() = appSettingsRepository.getTheme().first()
 

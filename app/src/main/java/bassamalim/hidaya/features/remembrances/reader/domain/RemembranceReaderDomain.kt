@@ -11,7 +11,7 @@ class RemembranceReaderDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    fun getLanguage() = appSettingsRepository.getLanguage()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
     fun getTextSize() = remembrancesRepository.getTextSize()
 

@@ -22,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -58,7 +57,7 @@ class RecitationsSurasViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            language = domain.getLanguage().first()
+            language = domain.getLanguage()
             plainSuraNames = domain.getPlainSuraNames()
             decoratedSuraNames = domain.getDecoratedSuraNames(language)
             narration = domain.getNarration(reciterId, narrationId)

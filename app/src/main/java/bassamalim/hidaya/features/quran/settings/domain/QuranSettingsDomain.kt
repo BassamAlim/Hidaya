@@ -14,7 +14,7 @@ class QuranSettingsDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     suspend fun getReciterNames() = recitationsRepository.getVerseReciterNames()
 

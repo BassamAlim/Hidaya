@@ -10,7 +10,7 @@ class QuizResultDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     suspend fun getFullQuestions(ids: IntArray) = quizRepository.getFullQuestions(ids)
 

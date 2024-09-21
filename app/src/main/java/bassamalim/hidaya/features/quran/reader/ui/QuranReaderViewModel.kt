@@ -88,8 +88,8 @@ class QuranReaderViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            language = domain.getLanguage().first()
-            numeralsLanguage = domain.getNumeralsLanguage().first()
+            language = domain.getLanguage()
+            numeralsLanguage = domain.getNumeralsLanguage()
             theme = domain.getTheme()
 
             allVerses = domain.getAllVerses()

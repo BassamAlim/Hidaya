@@ -50,7 +50,8 @@ class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         ctx = context.applicationContext
 
-        val reminder = Reminder.valueOf(intent.getStringExtra("id")!!.toInt())
+        val reminder = Reminder.getById(intent.getIntExtra("id", -1))
+        Log.d(Global.TAG, "notification receiver: received $reminder")
         val time = intent.getLongExtra("time", 0L)
         notificationId = reminder.id
 

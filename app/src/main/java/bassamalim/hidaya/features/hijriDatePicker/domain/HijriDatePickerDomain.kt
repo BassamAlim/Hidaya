@@ -18,9 +18,9 @@ class HijriDatePickerDomain @Inject constructor(
     val minYear = currentDate[Calendar.YEAR] - 100
     val maxYear = currentDate[Calendar.YEAR] + 100
 
-    fun getLanguage() = appSettingsRepository.getLanguage()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
+    suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
     fun getMonths() = appStateRepository.getHijriMonths()
 
