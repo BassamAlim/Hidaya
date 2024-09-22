@@ -35,6 +35,8 @@ fun QuranSettingsDialog(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    if (state.isLoading) return
+
     MyDialog(
         shown = shown
     ) {

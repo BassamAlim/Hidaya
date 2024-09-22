@@ -75,9 +75,8 @@ object PrayerTimeUtils {
                 hour = (hour + 12 - 1) % 12 + 1
                 val minute = time[Calendar.MINUTE]
 
-                val formattedHour = String.format("%02d", hour)
                 val formattedMinute = String.format("%02d", minute)
-                "$formattedHour:$formattedMinute $suffix"
+                "$hour:$formattedMinute $suffix"
             }
         }
 

@@ -23,9 +23,10 @@ class QuranSurasDomain @Inject constructor(
         it.map { sura ->
             Sura(
                 id = sura.id,
-                decoratedName =
-                    if (language == Language.ARABIC)sura.decoratedNameAr
-                    else sura.decoratedNameEn,
+                decoratedName = when (language) {
+                    Language.ARABIC -> sura.decoratedNameAr
+                    Language.ENGLISH -> sura.decoratedNameEn
+                },
                 plainName = sura.plainNameAr,
 //                    if (language == Language.ARABIC) sura.plainNameAr
 //                    else sura.plainNameEn,

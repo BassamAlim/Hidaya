@@ -12,6 +12,8 @@ object LangUtils {
         numeralsLanguage: Language,
         timeFormat: Boolean = false
     ) : String {
+        if (string.isEmpty()) return string
+
         val str = if (timeFormat) cleanup(string, numeralsLanguage) else string
 
         return if (arNums.contains(string[0])) {

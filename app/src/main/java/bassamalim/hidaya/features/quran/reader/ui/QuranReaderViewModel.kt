@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -70,15 +69,19 @@ class QuranReaderViewModel @Inject constructor(
         domain.getViewType(),
         domain.getTextSize(),
         domain.getPageBookmark()
-    ) { state, viewType, textSize, pageBookmark -> state.copy(
-        pageNum = translateNum(pageNum),
-        viewType =
-            if (language == Language.ENGLISH) QuranViewType.LIST
-            else viewType,
-        textSize = textSize,
-        isBookmarked = (pageBookmark?.pageNum ?: -1) == pageNum,
-        pageVerses = buildPage(pageNum)
-    )}.onStart {
+    ) { state, viewType, textSize, pageBookmark ->
+        if (state.isLoading) return@combine state
+
+        state.copy(
+            pageNum = translateNum(pageNum),
+            viewType =
+                if (language == Language.ENGLISH) QuranViewType.LIST
+                else viewType,
+            textSize = textSize,
+            isBookmarked = (pageBookmark?.pageNum ?: -1) == pageNum,
+            pageVerses = buildPage(pageNum)
+        )
+    }.onStart {
         initializeData()
     }.stateIn(
         scope = viewModelScope,
@@ -102,6 +105,7 @@ class QuranReaderViewModel @Inject constructor(
             }
 
             _uiState.update { it.copy(
+                isLoading = false,
                 isTutorialDialogShown = domain.getShouldShowTutorial()
             )}
         }

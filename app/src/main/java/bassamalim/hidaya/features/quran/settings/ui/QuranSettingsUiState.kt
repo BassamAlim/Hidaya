@@ -4,6 +4,7 @@ import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 
 data class QuranSettingsUiState(
+    val isLoading: Boolean = true,
     val viewType: QuranViewType = QuranViewType.PAGE,
     val textSize: Float = 20f,
     val reciterId: Int = 0,

@@ -97,17 +97,11 @@ class QuranSurasViewModel @Inject constructor(
         }
     }
 
-    fun onFavClick(itemId: Int) {
-        _uiState.update { it.copy(
-            favs = it.favs.toMutableMap().apply {
-                this[itemId] = !it.favs[itemId]!!
-            }
-        )}
-
+    fun onFavoriteClick(itemId: Int, oldState: Boolean) {
         viewModelScope.launch {
             domain.setFav(
                 suraId = itemId,
-                fav = _uiState.value.favs[itemId]!!
+                fav = !oldState
             )
         }
     }

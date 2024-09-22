@@ -73,6 +73,9 @@ fun QuranReaderScreen(
     viewModel: QuranReaderViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    if (state.isLoading) return
+
     val pagerState = rememberPagerState(
         initialPage = viewModel.pageNum - 1,
         pageCount = { Global.NUM_OF_QURAN_PAGES }
@@ -100,7 +103,7 @@ fun QuranReaderScreen(
         PageContent(
             pageVerses = state.pageVerses,
             viewType = state.viewType,
-            selectedVerse = state.selectedVerse!!,
+            selectedVerse = state.selectedVerse,
             trackedAyaId = state.trackedVerseId,
             textSize = state.textSize.toInt(),
             language = viewModel.language,
@@ -271,7 +274,7 @@ private fun BottomBar(
 private fun PageContent(
     pageVerses: List<Verse>,
     viewType: QuranViewType,
-    selectedVerse: Verse,
+    selectedVerse: Verse?,
     trackedAyaId: Int,
     textSize: Int,
     language: Language,
@@ -351,7 +354,7 @@ private fun PageContent(
 private fun PageItems(
     verses: List<Verse>,
     isCurrentPage: Boolean,
-    selectedVerse: Verse,
+    selectedVerse: Verse?,
     trackedAyaId: Int,
     textSize: Int,
     theme: Theme,
@@ -433,7 +436,7 @@ private fun PageItems(
 private fun PageItem(
     text: String,
     sequence: List<Verse>,
-    selectedVerse: Verse,
+    selectedVerse: Verse?,
     trackedAyaId: Int,
     textSize: Int,
     onAyaScreenClick: (Int, Int) -> Unit
@@ -467,7 +470,7 @@ private fun PageItem(
 private fun ListItems(
     verses: List<Verse>,
     isCurrentPage: Boolean,
-    selectedVerse: Verse,
+    selectedVerse: Verse?,
     trackedAyaId: Int,
     textSize: Int,
     language: Language,
@@ -549,7 +552,7 @@ private fun ListViewScreen(
     annotatedString: AnnotatedString,
     verse: Verse,
     isCurrentPage: Boolean,
-    selectedVerse: Verse,
+    selectedVerse: Verse?,
     trackedAyaId: Int,
     textSize: Int,
     onAyaGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,

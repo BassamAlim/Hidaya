@@ -4,6 +4,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import bassamalim.hidaya.core.models.Verse
 
 data class QuranReaderUiState(
+    val isLoading: Boolean = true,
     val pageNum: String = "",
     val juzNum: String = "",
     val suraName: String = "",

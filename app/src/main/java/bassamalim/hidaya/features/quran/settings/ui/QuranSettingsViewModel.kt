@@ -23,7 +23,7 @@ class QuranSettingsViewModel @Inject constructor(
 
     lateinit var numeralsLanguage: Language
     lateinit var reciterNames: List<String>
-    val reciterIds = Array(size = reciterNames.size) { idx -> idx }
+    lateinit var reciterIds: Array<Int>
 
     private val _uiState = MutableStateFlow(QuranSettingsUiState())
     val uiState = _uiState.onStart {
@@ -39,8 +39,10 @@ class QuranSettingsViewModel @Inject constructor(
             numeralsLanguage = domain.getNumeralsLanguage()
 
             reciterNames = domain.getReciterNames()
+            reciterIds = Array(size = reciterNames.size) { idx -> idx }
 
             _uiState.update { it.copy(
+                isLoading = false,
                 viewType = domain.getViewType().first(),
                 textSize = domain.getTextSize().first(),
                 reciterId = domain.getReciterId().first(),

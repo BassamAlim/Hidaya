@@ -93,9 +93,8 @@ fun QuranSurasScreen(
                 ) { page ->
                     Tab(
                         surasFlow = viewModel.getItems(page),
-                        favs = state.favs,
                         onSuraClick = viewModel::onSuraClick,
-                        onFavClick = viewModel::onFavClick
+                        onFavoriteClick = viewModel::onFavoriteClick
                     )
                 }
             }
@@ -114,9 +113,8 @@ fun QuranSurasScreen(
 @Composable
 private fun Tab(
     surasFlow: Flow<List<Sura>>,
-    favs: Map<Int, Boolean>,
     onSuraClick: (Int) -> Unit,
-    onFavClick: (Int) -> Unit
+    onFavoriteClick: (Int, Boolean) -> Unit
 ) {
     val suras by surasFlow.collectAsStateWithLifecycle(emptyList())
 
@@ -151,8 +149,8 @@ private fun Tab(
                         )
 
                         MyFavoriteButton(
-                            isFavorite = favs[item.id]!!,
-                            onClick = { onFavClick(item.id) }
+                            isFavorite = item.isFavorite,
+                            onClick = { onFavoriteClick(item.id, item.isFavorite) }
                         )
                     }
                 }
