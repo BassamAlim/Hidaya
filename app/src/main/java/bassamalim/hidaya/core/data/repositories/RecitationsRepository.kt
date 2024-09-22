@@ -64,7 +64,7 @@ class RecitationsRepository @Inject constructor(
         }
     }
 
-    fun getReciterFavoriteStatuses() = recitationRecitersDao.observeFavoriteStatuses().map {
+    private fun getReciterFavoriteStatuses() = recitationRecitersDao.observeFavoriteStatuses().map {
         it.map { (id, isFavorite) -> id to (isFavorite == 1) }.toMap()
     }
 

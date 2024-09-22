@@ -17,7 +17,7 @@ data class NotificationsPreferences(
     @Serializable(with = NotificationTypesSerializer::class)
     val notificationTypes: PersistentMap<Reminder.Prayer, NotificationType> = persistentMapOf(
         Reminder.Prayer.Fajr to NotificationType.NOTIFICATION,
-        Reminder.Prayer.Sunrise to NotificationType.NONE,
+        Reminder.Prayer.Sunrise to NotificationType.OFF,
         Reminder.Prayer.Dhuhr to NotificationType.NOTIFICATION,
         Reminder.Prayer.Asr to NotificationType.NOTIFICATION,
         Reminder.Prayer.Maghrib to NotificationType.NOTIFICATION,

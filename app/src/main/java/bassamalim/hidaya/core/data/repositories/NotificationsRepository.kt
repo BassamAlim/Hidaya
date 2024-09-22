@@ -4,6 +4,7 @@ import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.Notificat
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.models.TimeOfDay
+import kotlinx.collections.immutable.mutate
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -19,7 +20,11 @@ class NotificationsRepository @Inject constructor(
     fun getNotificationType(prayer: Reminder.Prayer) = getNotificationTypes().map { it[prayer]!! }
 
     suspend fun setNotificationType(type: NotificationType, prayer: Reminder.Prayer) {
-        notificationsPreferencesDataSource.getNotificationTypes().first().put(prayer, type)
+        notificationsPreferencesDataSource.updateNotificationTypes(
+            notificationsPreferencesDataSource.getNotificationTypes().first().mutate {
+                it[prayer] = type
+            }
+        )
     }
 
     fun getDevotionalReminderEnabledMap() =
@@ -30,7 +35,7 @@ class NotificationsRepository @Inject constructor(
     suspend fun setDevotionalReminderEnabled(enabled: Boolean, devotion: Reminder.Devotional) {
         notificationsPreferencesDataSource.updateDevotionalReminderEnabledStatuses(
             notificationsPreferencesDataSource.getDevotionalReminderEnabledStatuses().first()
-                .put(devotion, enabled)
+                .mutate { it[devotion] = enabled }
         )
     }
 
@@ -41,8 +46,9 @@ class NotificationsRepository @Inject constructor(
 
     suspend fun setDevotionalReminderTimes(timeOfDay: TimeOfDay, devotion: Reminder.Devotional) {
         notificationsPreferencesDataSource.updateDevotionalReminderTimes(
-            notificationsPreferencesDataSource.getDevotionalReminderTimes().first()
-                .put(devotion, timeOfDay)
+            notificationsPreferencesDataSource.getDevotionalReminderTimes().first().mutate {
+                it[devotion] = timeOfDay
+            }
         )
     }
 
@@ -51,10 +57,11 @@ class NotificationsRepository @Inject constructor(
             it.toMap()
         }
 
-    suspend fun setPrayerExtraReminderOffset(offset: Int, prayer: Reminder.PrayerExtra) {
+    suspend fun setPrayerExtraReminderOffset(prayer: Reminder.PrayerExtra, offset: Int) {
         notificationsPreferencesDataSource.updatePrayerExtraReminderTimeOffsets(
-            notificationsPreferencesDataSource.getPrayerExtraReminderTimeOffsets().first()
-                .put(prayer, offset)
+            notificationsPreferencesDataSource.getPrayerExtraReminderTimeOffsets().first().mutate {
+                it[prayer] = offset
+            }
         )
     }
 
@@ -63,8 +70,9 @@ class NotificationsRepository @Inject constructor(
 
     suspend fun setLastNotificationDate(reminder: Reminder, dayOfYear: Int) {
         notificationsPreferencesDataSource.updateLastNotificationDates(
-            notificationsPreferencesDataSource.getLastNotificationDates().first()
-                .put(reminder, dayOfYear)
+            notificationsPreferencesDataSource.getLastNotificationDates().first().mutate {
+                it[reminder] = dayOfYear
+            }
         )
     }
 

@@ -1,10 +1,8 @@
 package bassamalim.hidaya.features.prayers.settings.ui
 
-import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.NotificationType
 import bassamalim.hidaya.core.enums.Prayer
@@ -26,15 +24,9 @@ class PrayerSettingViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private val prayer = Prayer.valueOf(savedStateHandle.get<String>("prayer") ?: "")
+    private val prayer = Prayer.valueOf(savedStateHandle.get<String>("prayer_name") ?: "")
 
     lateinit var numeralsLanguage: Language
-    val notificationTypeOptions = listOf(
-        Pair(R.string.athan_speaker, R.drawable.ic_speaker),
-        Pair(R.string.enable_notification, R.drawable.ic_sound),
-        Pair(R.string.silent_notification, R.drawable.ic_silent),
-        Pair(R.string.disable_notification, R.drawable.ic_block)
-    )
 
     private val _uiState = MutableStateFlow(PrayerSettingUiState(
         prayer = prayer,
@@ -65,19 +57,15 @@ class PrayerSettingViewModel @Inject constructor(
     }
 
     fun onSave() {
-        val prayerSettings = PrayerSettings(notificationType = uiState.value.notificationType)
+        viewModelScope.launch {
+            domain.setNotificationType(_uiState.value.notificationType, prayer)
 
-        navigator.navigateBackWithResult(
-            data = Bundle().apply {
-                putParcelable("prayer_settings", prayerSettings)
-            }
-        )
+            navigator.popBackStack()
+        }
     }
 
     fun onDismiss() {
-        navigator.navigateBackWithResult(
-            data = null
-        )
+        navigator.popBackStack()
     }
 
 }

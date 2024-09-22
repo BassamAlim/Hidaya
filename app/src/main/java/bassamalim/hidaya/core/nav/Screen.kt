@@ -7,26 +7,26 @@ sealed class Screen(val route: String) {
     data class RemembrancesMenu(
         val type: String,
         val categoryId: String="0"
-    ): Screen("remembrances_list/$type/$categoryId")
+    ): Screen("remembrances_menu/$type/$categoryId")
 
     data class RemembranceReader(
         val id: String
     ): Screen("remembrance_reader/$id")
 
-    data class BookChapters(
+    data class BookChaptersMenu(
         val bookId: String,
         val bookTitle: String
-    ): Screen("book_chapters/$bookId/$bookTitle")
+    ): Screen("book_chapters_menu/$bookId/$bookTitle")
 
     data object BookSearcher: Screen("book_searcher")
 
-    data object BooksMenu: Screen("books")
+    data object BooksMenu: Screen("books_menu")
 
     data class BookReader(
         val bookId: String,
         val bookTitle: String,
         val chapterId: String
-    ): Screen("book_viewer/$bookId/$bookTitle/$chapterId")
+    ): Screen("book_reader/$bookId/$bookTitle/$chapterId")
 
     data object DateConverter: Screen("date_converter")
 
@@ -46,13 +46,13 @@ sealed class Screen(val route: String) {
 
     data object Main: Screen("main")
 
-    data class PrayerReminderSettings(
-        val prayer: String
-    ): Screen("prayer_reminder/$prayer")
+    data class PrayerExtraReminderSettings(
+        val prayerName: String
+    ): Screen("prayer_extra_reminder/$prayerName")
 
     data class PrayerSettings(
-        val prayer: String
-    ): Screen("prayer_settings/$prayer")
+        val prayerName: String
+    ): Screen("prayer_settings/$prayerName")
 
     data object Qibla: Screen("qibla")
 
@@ -64,14 +64,14 @@ sealed class Screen(val route: String) {
         val chosenAnswers: String
     ): Screen("quiz_result/$score/$questions/$chosenAnswers")
 
-    data object QuizTest: Screen("quiz")
+    data object QuizTest: Screen("quiz_test")
 
     data object QuranSearcher: Screen("quran_searcher")
 
     data class QuranReader(
         val targetType: String,
         val targetValue: String = "-1",
-    ): Screen("quran_viewer/$targetType/$targetValue")
+    ): Screen("quran_reader/$targetType/$targetValue")
 
     data object RadioClient: Screen("radio_client")
 

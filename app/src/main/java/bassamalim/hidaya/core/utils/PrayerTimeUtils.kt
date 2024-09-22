@@ -20,7 +20,7 @@ object PrayerTimeUtils {
         timeZoneId: String = "",
         location: Location,
         calendar: Calendar = Calendar.getInstance()
-    ): SortedMap<Prayer, Calendar?> = PrayerTimeCalculator(settings).getPrayerTimes(
+    ) = PrayerTimeCalculator(settings).getPrayerTimes(
         coordinates = Coordinates(location.coordinates.latitude, location.coordinates.longitude),
         utcOffset = getUTCOffset(location.type, timeZoneId).toDouble(),
         calendar = calendar
@@ -68,12 +68,12 @@ object PrayerTimeUtils {
             }
             TimeFormat.TWELVE -> {
                 var hour = time[Calendar.HOUR_OF_DAY]
-                hour = (hour + 12 - 1) % 12 + 1
-                val minute = time[Calendar.MINUTE]
                 val suffix = when (language) {
                     Language.ENGLISH -> { if (hour >= 12) "pm" else "am" }
                     Language.ARABIC -> { if (hour >= 12) "م" else "ص" }
                 }
+                hour = (hour + 12 - 1) % 12 + 1
+                val minute = time[Calendar.MINUTE]
 
                 val formattedHour = String.format("%02d", hour)
                 val formattedMinute = String.format("%02d", minute)

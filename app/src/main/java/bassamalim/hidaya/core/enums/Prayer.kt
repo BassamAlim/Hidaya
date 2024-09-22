@@ -5,18 +5,18 @@ enum class Prayer {
     SUNRISE,  // Not a prayer but added for simplifying the code
     DHUHR,
     ASR,
-    SUNSET,  // Not a prayer but added for simplifying the code
     MAGHRIB,
-    ISHAA;
+    ISHAA,
+    SUNSET;  // Not a prayer but added for simplifying the code
 
     fun toReminder() = when (this) {
         FAJR -> Reminder.Prayer.Fajr
         SUNRISE -> Reminder.Prayer.Sunrise
         DHUHR -> Reminder.Prayer.Dhuhr
         ASR -> Reminder.Prayer.Asr
-        SUNSET -> Reminder.Prayer.Sunrise
         MAGHRIB -> Reminder.Prayer.Maghrib
         ISHAA -> Reminder.Prayer.Ishaa
+        SUNSET -> Reminder.Prayer.Sunrise
     }
 
     fun toExtraReminder() = when (this) {
@@ -24,9 +24,9 @@ enum class Prayer {
         SUNRISE -> Reminder.PrayerExtra.Sunrise
         DHUHR -> Reminder.PrayerExtra.Dhuhr
         ASR -> Reminder.PrayerExtra.Asr
-        SUNSET -> Reminder.PrayerExtra.Sunrise
         MAGHRIB -> Reminder.PrayerExtra.Maghrib
         ISHAA -> Reminder.PrayerExtra.Ishaa
+        SUNSET -> Reminder.PrayerExtra.Sunrise
     }
 
 }

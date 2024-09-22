@@ -1,15 +1,12 @@
 package bassamalim.hidaya.features.prayers.board.ui
 
-import android.os.Build
-import android.util.Log
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
+import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.prayers.board.domain.PrayersBoardDomain
 import bassamalim.hidaya.features.prayers.settings.ui.PrayerSettings
@@ -20,12 +17,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.SortedMap
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,43 +33,33 @@ class PrayersBoardViewModel @Inject constructor(
 
     private lateinit var language: Language
     private lateinit var numeralsLanguage: Language
-    private var dateOffset = mutableIntStateOf(0)
+    private val location = domain.getLocation()
+    private val prayerSettings = domain.getPrayerSettings()
+    private val currentDate = Calendar.getInstance()
     private val viewedDate = Calendar.getInstance()
     private val prayerNames = domain.getPrayerNames()
 
     private val _uiState = MutableStateFlow(PrayersBoardUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
-        domain.location,
-        flowOf(dateOffset),
-        domain.getPrayerSettings()
-    ) { state, location, dateOffset, prayerSettings ->
-        Log.d(Global.TAG, "PrayersBoardViewModel: combine")
-        if (state.isLoading) return@combine state
-
-        val prayerTimeMap = location?.let {
-            domain.getTimes(
-                location = location,
-                dateOffset = dateOffset.intValue
+        location,
+        prayerSettings
+    ) { state, location, prayerSettings ->
+        if (location != null) {
+            val prayerTimeMap = domain.getTimes(location = location, date = viewedDate)
+            state.copy(
+                isLocationAvailable = true,
+                prayersData = getPrayersData(prayerTimeMap, prayerSettings),
+                locationName = getLocationName(location),
+                shouldShowLocationFailedToast = false
             )
         }
-
-        state.copy(
-            prayersData = prayerNames.map {
-                it.key to PrayerCardData(
-                    text = "${it.value} ${prayerTimeMap?.get(it.key) ?: ""}",
-                    notificationType = prayerSettings[it.key]!!.notificationType,
-                    isExtraReminderOffsetSpecified = prayerSettings[it.key]!!.reminderOffset != 0,
-                    extraReminderOffset = formatOffset(prayerSettings[it.key]!!.reminderOffset),
-                )
-            }.toMap().toSortedMap(),
-            isLocationAvailable = location != null,
-            locationName =
-                if (location != null) getLocationName()
-                else "",
-            shouldShowLocationFailedToast = location == null,
-            dateText = getDateText(dateOffset.intValue),
-    )}.onStart {
+        else state.copy(
+            isLocationAvailable = false,
+            locationName = "",
+            shouldShowLocationFailedToast = true
+        )
+    }.onStart {
         initializeData()
     }.stateIn(
         scope = viewModelScope,
@@ -82,108 +69,60 @@ class PrayersBoardViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            Log.d(Global.TAG, "PrayersBoardViewModel: initializeData")
-
             language = domain.getLanguage()
             numeralsLanguage = domain.getNumeralsLanguage()
 
-            Log.d(Global.TAG, "PrayersBoardViewModel: initializeData: numeralsLanguage: $numeralsLanguage")
-
             _uiState.update { it.copy(
                 isLoading = false,
+                dateText = getDateText(viewedDate),
                 tutorialDialogShown = domain.getShouldShowTutorial()
             )}
         }
     }
 
     fun onLocatorClick() {
-        navigator.navigate(
-            Screen.Locator(isInitial = false.toString())
-        )
+        navigator.navigate(Screen.Locator(isInitial = false.toString()))
     }
 
-    fun onPrayerCardClick(prayer: Prayer) {
-        if (_uiState.value.isLocationAvailable) {
-            navigator.navigateForResult(
-                Screen.PrayerSettings(prayer = prayer.name)
-            ) { result ->
-                if (result != null) {
-                    onSettingsDialogSave(
-                        prayer = prayer,
-                        settings =
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                                result.getParcelable(
-                                    "prayer_settings",
-                                    PrayerSettings::class.java
-                                )!!
-                            else
-                                result.getParcelable("prayer_settings")!!
-                    )
-                }
-            }
-        }
+    fun onPrayerCardClick(prayer: Prayer, isLocationAvailable: Boolean) {
+        if (!isLocationAvailable) return
+
+        navigator.navigate(Screen.PrayerSettings(prayerName = prayer.name))
     }
 
-    private fun onSettingsDialogSave(prayer: Prayer, settings: PrayerSettings) {
-        viewModelScope.launch {
-            domain.updatePrayerSettings(prayer = prayer, prayerSettings = settings)
-
-            domain.updatePrayerTimeAlarms(prayer)
-        }
-    }
-
-    fun onReminderCardClick(prayer: Prayer) {
-        if (_uiState.value.isLocationAvailable) {
-            navigator.navigateForResult(
-                destination = Screen.PrayerReminderSettings(
-                    prayer = prayer.name
-                )
-            ) { result ->
-                if (result != null) {
-                    onReminderDialogSave(
-                        prayer = prayer,
-                        offset = result.getInt("offset")
-                    )
-                }
-            }
-        }
-    }
-
-    private fun onReminderDialogSave(prayer: Prayer, offset: Int) {
-        _uiState.update { oldState -> oldState.copy(
-            prayersData = oldState.prayersData.apply {
-                this[prayer] = oldState.prayersData[prayer]?.copy(
-                    extraReminderOffset = formatOffset(offset)
-                )
-            }
-        )}
-
-        viewModelScope.launch {
-            domain.updatePrayerSettings(
-                prayer = prayer,
-                prayerSettings = PrayerSettings(
-                    notificationType = _uiState.value.prayersData[prayer]!!.notificationType,
-                    reminderOffset = offset
-                )
-            )
-
-            domain.updatePrayerTimeAlarms(prayer)
-        }
+    fun onExtraReminderCardClick(prayer: Prayer) {
+        navigator.navigate(Screen.PrayerExtraReminderSettings(prayerName = prayer.name))
     }
 
     fun onPreviousDayClick() {
-        dateOffset.intValue--
-        viewedDate.add(Calendar.DATE, -1)
+        val newDate = (viewedDate.clone() as Calendar).apply { add(Calendar.DATE, -1) }
+        updateDate(newDate)
     }
 
     fun onDateClick() {
-        dateOffset.intValue = 0
-        viewedDate.time = Calendar.getInstance().time
+        val newDate = (viewedDate.clone() as Calendar).apply { time = currentDate.time }
+        updateDate(newDate)
     }
 
     fun onNextDayClick() {
-        dateOffset.intValue++
-        viewedDate.add(Calendar.DATE, 1)
+        val newDate = (viewedDate.clone() as Calendar).apply { add(Calendar.DATE, 1) }
+        updateDate(newDate)
+    }
+
+    private fun updateDate(newDate: Calendar) {
+        viewModelScope.launch {
+            val location = location.first() ?: return@launch
+            val prayerSettings = prayerSettings.first()
+
+            val prayerTimeMap = domain.getTimes(location = location, date = viewedDate)
+            _uiState.update { it.copy(
+                dateText = getDateText(newDate),
+                prayersData = getPrayersData(prayerTimeMap, prayerSettings),
+                isNoDateOffset = newDate == currentDate
+            )}
+
+            viewedDate.time = newDate.time
+        }
     }
 
     fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {
@@ -198,9 +137,21 @@ class PrayersBoardViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getLocationName(): String {
-        val location = domain.location.first()!!
+    private fun getPrayersData(
+        prayerTimeMap: SortedMap<Prayer, String>,
+        prayerSettings: Map<Prayer, PrayerSettings>
+    ) = sortedMapOf<Prayer, PrayerCardData>().apply {
+        prayerNames.forEach { (prayer, name) ->
+            this[prayer] = PrayerCardData(
+                text = "$name ${prayerTimeMap[prayer] ?: ""}",
+                notificationType = prayerSettings[prayer]!!.notificationType,
+                isExtraReminderOffsetSpecified = prayerSettings[prayer]!!.reminderOffset != 0,
+                extraReminderOffset = formatOffset(prayerSettings[prayer]!!.reminderOffset)
+            )
+        }
+    }
 
+    private suspend fun getLocationName(location: Location): String {
         val countryName = domain.getCountryName(
             countryId = location.ids.countryId,
             language = language
@@ -209,11 +160,11 @@ class PrayersBoardViewModel @Inject constructor(
         return "$countryName, $cityName"
     }
 
-    private fun getDateText(dateOffset: Int): String {
-        return if (dateOffset == 0) ""
+    private fun getDateText(newDate: Calendar): String {
+        return if (newDate == currentDate) ""
         else {
             val hijri = UmmalquraCalendar()
-            hijri.time = viewedDate.time
+            hijri.time = newDate.time
 
             val year = translateNums(
                 numeralsLanguage = numeralsLanguage,

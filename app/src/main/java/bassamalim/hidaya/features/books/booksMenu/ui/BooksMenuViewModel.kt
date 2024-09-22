@@ -80,7 +80,7 @@ class BooksMenuViewModel @Inject constructor(
             }
             DownloadState.DOWNLOADED -> {
                 navigator.navigate(
-                    Screen.BookChapters(
+                    Screen.BookChaptersMenu(
                         bookId = item.id.toString(),
                         bookTitle =
                             if (language == Language.ENGLISH) item.titleEn

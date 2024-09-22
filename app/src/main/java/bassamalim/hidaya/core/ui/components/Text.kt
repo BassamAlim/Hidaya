@@ -80,6 +80,7 @@ fun MyText(
     )
 }
 
+// TODO: make the click effect change the text color not the background
 @Composable
 fun MyClickableText(
     text: String,

@@ -61,22 +61,22 @@ class PrayerTimeCalculator(
         )
 
         return sortedMapOf(
-            FAJR to buildCalendar(times[FAJR]!!),
-            SUNRISE to buildCalendar(times[SUNRISE]!!),
-            DHUHR to buildCalendar(times[DHUHR]!!),
-            ASR to buildCalendar(times[ASR]!!),
+            FAJR to buildCalendar(time = times[FAJR]!!, date = calendar),
+            SUNRISE to buildCalendar(time = times[SUNRISE]!!, date = calendar),
+            DHUHR to buildCalendar(time = times[DHUHR]!!, date = calendar),
+            ASR to buildCalendar(time = times[ASR]!!, date = calendar),
             // skipping sunset time
-            MAGHRIB to buildCalendar(times[MAGHRIB]!!),
-            ISHAA to buildCalendar(times[ISHAA]!!)
+            MAGHRIB to buildCalendar(time = times[MAGHRIB]!!, date = calendar),
+            ISHAA to buildCalendar(time = times[ISHAA]!!, date = calendar)
         )
     }
 
-    private fun buildCalendar(time: Double): Calendar {
+    private fun buildCalendar(time: Double, date: Calendar): Calendar {
         val fixed = fixHour(time + 0.5 / 60.0) // add 0.5 minutes to round
         val hours = floor(fixed).toInt()
         val minutes = floor((fixed - hours) * 60.0).roundToInt()
 
-        val cal = Calendar.getInstance()
+        val cal = date.clone() as Calendar
         cal[Calendar.HOUR_OF_DAY] = hours
         cal[Calendar.MINUTE] = minutes
         cal[Calendar.SECOND] = 0

@@ -72,7 +72,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
         val notificationType = notificationsRepository.getNotificationType(reminder).first()
 
-        if (notificationType != NotificationType.NONE) {
+        if (notificationType != NotificationType.OFF) {
             if (notificationType == NotificationType.ATHAN) startService(reminder, time)
             else showNotification(reminder, notificationType)
         }

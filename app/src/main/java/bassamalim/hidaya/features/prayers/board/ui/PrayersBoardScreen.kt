@@ -60,9 +60,11 @@ fun PrayersBoardScreen(
 
             PrayersSpace(
                 prayersData = state.prayersData,
-                isLocationAvailable = state.locationName.isNotEmpty(),
-                onPrayerCardClick = viewModel::onPrayerCardClick,
-                onReminderCardClick = viewModel::onReminderCardClick
+                isLocationAvailable = state.isLocationAvailable,
+                onPrayerCardClick = { prayer, isLocationAvailable ->
+                    viewModel.onPrayerCardClick(prayer, isLocationAvailable)
+                },
+                onReminderCardClick = viewModel::onExtraReminderCardClick
             )
 
             DayCard(
@@ -125,7 +127,7 @@ private fun LocationCard(
 private fun ColumnScope.PrayersSpace(
     prayersData: SortedMap<Prayer, PrayerCardData>,
     isLocationAvailable: Boolean,
-    onPrayerCardClick: (Prayer) -> Unit,
+    onPrayerCardClick: (Prayer, Boolean) -> Unit,
     onReminderCardClick: (Prayer) -> Unit
 ) {
     Column(
@@ -152,7 +154,7 @@ private fun PrayerSpace(
     prayer: Prayer,
     data: PrayerCardData,
     isLocationAvailable: Boolean,
-    onPrayerCardClick: (Prayer) -> Unit,
+    onPrayerCardClick: (Prayer, Boolean) -> Unit,
     onReminderCardClick: (Prayer) -> Unit
 ) {
     MyRow {
@@ -163,7 +165,7 @@ private fun PrayerSpace(
             onPrayerCardClick = onPrayerCardClick
         )
 
-        ReminderCard(
+        ExtraReminderCard(
             prayer = prayer,
             isReminderOffsetSpecified = data.isExtraReminderOffsetSpecified,
             reminderOffsetText = data.extraReminderOffset,
@@ -178,13 +180,13 @@ private fun RowScope.PrayerCard(
     prayer: Prayer,
     data: PrayerCardData,
     isLocationAvailable: Boolean,
-    onPrayerCardClick: (Prayer) -> Unit
+    onPrayerCardClick: (Prayer, Boolean) -> Unit
 ) {
     MyClickableSurface(
         modifier = Modifier.weight(1f),
         cornerRadius = 15.dp,
         padding = PaddingValues(vertical = 3.dp, horizontal = 4.dp),
-        onClick = { onPrayerCardClick(prayer) }
+        onClick = { onPrayerCardClick(prayer, isLocationAvailable) }
     ) {
         MyRow(
             modifier = Modifier
@@ -207,7 +209,7 @@ private fun RowScope.PrayerCard(
                                 NotificationType.ATHAN -> R.drawable.ic_speaker
                                 NotificationType.NOTIFICATION -> R.drawable.ic_sound
                                 NotificationType.SILENT -> R.drawable.ic_silent
-                                NotificationType.NONE -> R.drawable.ic_block
+                                NotificationType.OFF -> R.drawable.ic_block
                             }
                         ),
                         contentDescription = stringResource(R.string.notification_image_description),
@@ -221,7 +223,7 @@ private fun RowScope.PrayerCard(
 }
 
 @Composable
-private fun ReminderCard(
+private fun ExtraReminderCard(
     prayer: Prayer,
     isReminderOffsetSpecified: Boolean,
     reminderOffsetText: String,

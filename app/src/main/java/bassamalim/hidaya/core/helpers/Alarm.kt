@@ -83,7 +83,7 @@ class Alarm(
         Log.i(Global.TAG, "in set prayer alarms")
 
         for ((prayer, time) in prayerTimes) {
-            if (notificationsRepository.getNotificationType(prayer).first() != NotificationType.NONE)
+            if (notificationsRepository.getNotificationType(prayer).first() != NotificationType.OFF)
                 setPrayerAlarm(prayer, time!!)
         }
     }

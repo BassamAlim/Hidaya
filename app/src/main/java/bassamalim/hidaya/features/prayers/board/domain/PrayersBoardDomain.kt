@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
+import java.util.SortedMap
 import javax.inject.Inject
 
 class PrayersBoardDomain @Inject constructor(
@@ -26,7 +27,7 @@ class PrayersBoardDomain @Inject constructor(
     private val alarm: Alarm
 ) {
 
-    val location = locationRepository.getLocation()
+    fun getLocation() = locationRepository.getLocation()
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
@@ -65,18 +66,6 @@ class PrayersBoardDomain @Inject constructor(
         }
     }
 
-    suspend fun updatePrayerSettings(prayer: Prayer, prayerSettings: PrayerSettings) {
-        notificationsRepository.setNotificationType(
-            prayer = prayer.toReminder(),
-            type = prayerSettings.notificationType
-        )
-
-        notificationsRepository.setPrayerExtraReminderOffset(
-            prayer = prayer.toExtraReminder(),
-            offset = prayerSettings.reminderOffset
-        )
-    }
-
     private fun getNotificationTypes() = notificationsRepository.getNotificationTypes()
 
     private fun getReminderOffsets() = notificationsRepository.getPrayerExtraReminderTimeOffsets()
@@ -89,17 +78,13 @@ class PrayersBoardDomain @Inject constructor(
 
     suspend fun getTimes(
         location: Location,
-        dateOffset: Int
-    ): Map<Prayer, String?> {
-        val calendar = Calendar.getInstance().apply {
-            add(Calendar.DATE, dateOffset)
-        }
-
+        date: Calendar
+    ): SortedMap<Prayer, String> {
         val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
-            calendar = calendar
+            calendar = date
         )
 
         return PrayerTimeUtils.formatPrayerTimes(
@@ -108,10 +93,6 @@ class PrayersBoardDomain @Inject constructor(
             timeFormat = appSettingsRepository.getTimeFormat().first(),
             numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
         )
-    }
-
-    suspend fun updatePrayerTimeAlarms(prayer: Prayer) {
-        alarm.setAlarm(prayer.toReminder())
     }
 
 }

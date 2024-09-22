@@ -127,7 +127,7 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.BookChapters("{book_id}", "{book_title}").route,
+            route = Screen.BookChaptersMenu("{book_id}", "{book_title}").route,
             arguments = listOf(
                 navArgument("book_id") { type = NavType.IntType },
                 navArgument("book_title") { type = NavType.StringType }
@@ -265,9 +265,9 @@ fun NavGraph(
         }
 
         dialog(
-            route = Screen.PrayerReminderSettings("{prayer}").route,
+            route = Screen.PrayerExtraReminderSettings("{prayer_name}").route,
             arguments = listOf(
-                navArgument("prayer") { type = NavType.StringType }
+                navArgument("prayer_name") { type = NavType.StringType }
             )
         ) {
             PrayerExtraReminderSettingsDialog(
@@ -276,9 +276,9 @@ fun NavGraph(
         }
 
         dialog(
-            route = Screen.PrayerSettings("{prayer}").route,
+            route = Screen.PrayerSettings("{prayer_name}").route,
             arguments = listOf(
-                navArgument("prayer") { type = NavType.StringType }
+                navArgument("prayer_name") { type = NavType.StringType }
             )
         ) {
             PrayerSettingsDialog(

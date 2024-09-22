@@ -15,10 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,22 +55,15 @@ fun PrayerSettingsDialog(
                 modifier = Modifier.padding(top = 5.dp, bottom = 20.dp)
             )
 
-            CustomRadioGroup(
-                notificationTypeOptions = viewModel.notificationTypeOptions,
+            NotificationTypesRadioGroup(
                 prayer = state.prayer,
                 selection = state.notificationType,
-                onSelect = { selection -> viewModel.onNotificationTypeChange(selection) }
+                onSelect = viewModel::onNotificationTypeChange
             )
 
-            MyText(
-                stringResource(R.string.adjust_prayer_notification_time),
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 15.dp, bottom = 5.dp),
-                textAlign = TextAlign.Start
-            )
-
-            MyRow {
+            MyRow(
+                Modifier.padding(top = 20.dp)
+            ) {
                 SaveBtn(onSave = viewModel::onSave)
 
                 CancelBtn(onDismiss = viewModel::onDismiss)
@@ -80,8 +73,7 @@ fun PrayerSettingsDialog(
 }
 
 @Composable
-private fun CustomRadioGroup(
-    notificationTypeOptions: List<Pair<Int, Int>>,
+private fun NotificationTypesRadioGroup(
     prayer: Prayer,
     selection: NotificationType,
     onSelect: (NotificationType) -> Unit
@@ -91,44 +83,82 @@ private fun CustomRadioGroup(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth(),
     ) {
-        notificationTypeOptions.forEachIndexed { i, pair ->
-            if (!(prayer == Prayer.SUNRISE && i == 0)) {
-                Box(
-                    Modifier.padding(vertical = 6.dp)
-                ) {
-                    MyClickableSurface(
-                        padding = PaddingValues(vertical = 0.dp),
-                        modifier =
-                            if (i == selection.ordinal)
-                                Modifier.border(
-                                    width = 3.dp,
-                                    color = AppTheme.colors.accent,
-                                    shape = RoundedCornerShape(10.dp)
-                                )
-                            else Modifier,
-                        onClick = { onSelect(NotificationType.entries[i]) }
-                    ) {
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 14.dp, horizontal = 20.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(pair.second),
-                                contentDescription = stringResource(pair.first)
-                            )
+        // Athan
+        if (prayer != Prayer.SUNRISE) {
+            NotificationTypeOption(
+                name = stringResource(R.string.athan_speaker),
+                icon = painterResource(R.drawable.ic_speaker),
+                isSelected = selection == NotificationType.ATHAN,
+                onSelection = { onSelect(NotificationType.ATHAN) }
+            )
+        }
 
-                            MyText(
-                                stringResource(pair.first),
-                                textColor =
-                                    if (i == selection.ordinal) AppTheme.colors.accent
-                                    else AppTheme.colors.text,
-                                modifier = Modifier.padding(start = 20.dp)
-                            )
-                        }
-                    }
-                }
+        // Notification
+        NotificationTypeOption(
+            name = stringResource(R.string.enable_notification),
+            icon = painterResource(R.drawable.ic_sound),
+            isSelected = selection == NotificationType.NOTIFICATION,
+            onSelection = { onSelect(NotificationType.NOTIFICATION) }
+        )
+
+        // Silent Notification
+        NotificationTypeOption(
+            name = stringResource(R.string.silent_notification),
+            icon = painterResource(R.drawable.ic_silent),
+            isSelected = selection == NotificationType.SILENT,
+            onSelection = { onSelect(NotificationType.SILENT) }
+        )
+
+        // Off
+        NotificationTypeOption(
+            name = stringResource(R.string.disable_notification),
+            icon = painterResource(R.drawable.ic_block),
+            isSelected = selection == NotificationType.OFF,
+            onSelection = { onSelect(NotificationType.OFF) }
+        )
+    }
+}
+
+@Composable
+private fun NotificationTypeOption(
+    name: String,
+    icon: Painter,
+    isSelected: Boolean,
+    onSelection: () -> Unit
+) {
+    Box(
+        Modifier.padding(vertical = 6.dp)
+    ) {
+        MyClickableSurface(
+            padding = PaddingValues(vertical = 0.dp),
+            modifier =
+                if (isSelected)
+                    Modifier.border(
+                        width = 3.dp,
+                        color = AppTheme.colors.accent,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                else Modifier,
+            onClick = onSelection
+        ) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 14.dp, horizontal = 20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = icon,
+                    contentDescription = name
+                )
+
+                MyText(
+                    name,
+                    Modifier.padding(start = 20.dp),
+                    textColor =
+                        if (isSelected) AppTheme.colors.accent
+                        else AppTheme.colors.text
+                )
             }
         }
     }

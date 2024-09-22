@@ -184,7 +184,7 @@ fun MyHorizontalButton(
     elevation: Int = 10,
     enabled: Boolean = true,
     middlePadding: PaddingValues = PaddingValues(6.dp),
-    icon: @Composable () -> Unit = {},
+    icon: @Composable (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
     Button(
@@ -204,7 +204,7 @@ fun MyHorizontalButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            if (icon != {}) {
+            if (icon != null) {
                 icon()
 
                 Spacer(modifier = Modifier.padding(middlePadding))

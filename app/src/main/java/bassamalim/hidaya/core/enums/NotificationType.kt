@@ -4,5 +4,5 @@ enum class NotificationType {
     ATHAN,
     NOTIFICATION,
     SILENT,
-    NONE
+    OFF
 }

@@ -56,21 +56,19 @@ class HomeDomain @Inject constructor(
         )
     }
 
-    suspend fun getTomorrowFajr(location: Location): Calendar {
-        return PrayerTimeUtils.getPrayerTimes(
-            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
-            location = location,
-            calendar = Calendar.getInstance().apply { this[Calendar.DATE]++ }
-        )[Prayer.FAJR]!!
-    }
+    suspend fun getTomorrowFajr(location: Location) = PrayerTimeUtils.getPrayerTimes(
+        settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+        timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+        location = location,
+        calendar = Calendar.getInstance().apply { add(Calendar.DATE, 1) }
+    )[Prayer.FAJR]!!
 
     suspend fun getStrTomorrowFajr(location: Location): String {
         val time = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
-            calendar = Calendar.getInstance().apply { this[Calendar.DATE]++ }
+            calendar = Calendar.getInstance().apply { add(Calendar.DATE, 1) }
         )[Prayer.FAJR]!!
 
         return PrayerTimeUtils.formatPrayerTime(

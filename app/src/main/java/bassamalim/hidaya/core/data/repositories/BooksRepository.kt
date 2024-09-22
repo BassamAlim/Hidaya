@@ -80,7 +80,7 @@ class BooksRepository @Inject constructor(
     suspend fun setChapterFavorite(bookId: Int, chapterNum: Int, newValue: Boolean) {
         booksPreferencesDataSource.updateChapterFavorites(
             booksPreferencesDataSource.getChapterFavorites().first().mutate { oldMap ->
-                oldMap[bookId] = oldMap[bookId]!!.put(chapterNum, newValue)
+                oldMap[bookId] = oldMap[bookId]!!.mutate { it[chapterNum] = newValue }
             }
         )
     }

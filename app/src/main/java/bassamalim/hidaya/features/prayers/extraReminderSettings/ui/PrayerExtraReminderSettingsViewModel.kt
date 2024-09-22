@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.prayers.extraReminderSettings.ui
 
-import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,7 +23,7 @@ class PrayerExtraReminderSettingsViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private val prayer = Prayer.valueOf(savedStateHandle.get<String>("prayer") ?: "")
+    private val prayer = Prayer.valueOf(savedStateHandle.get<String>("prayer_name") ?: "")
 
     val offsetMin = domain.offsetMin
     lateinit var numeralsLanguage: Language
@@ -58,15 +57,17 @@ class PrayerExtraReminderSettingsViewModel @Inject constructor(
     }
 
     fun onSave() {
-        navigator.navigateBackWithResult(
-            data = Bundle().apply {
-                putInt("offset", _uiState.value.offset)
-            }
-        )
+        viewModelScope.launch {
+            domain.setOffset(prayer = prayer, offset = uiState.value.offset)
+
+            navigator.popBackStack()
+
+            domain.updatePrayerTimeAlarms(prayer)
+        }
     }
 
     fun onDismiss() {
-        navigator.navigateBackWithResult(data = null)
+        navigator.popBackStack()
     }
 
 }
