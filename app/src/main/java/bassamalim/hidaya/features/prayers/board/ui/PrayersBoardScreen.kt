@@ -251,11 +251,11 @@ private fun ExtraReminderCard(
 
                 Icon(
                     painter = painterResource(R.drawable.ic_add_reminder),
-                    contentDescription = stringResource(R.string.notification_image_description),
+                    contentDescription = stringResource(R.string.extra_notifications),
                     modifier = Modifier.size(32.dp),
                     tint =
-                        if (isReminderOffsetSpecified) AppTheme.colors.text
-                        else AppTheme.colors.accent
+                        if (isReminderOffsetSpecified) AppTheme.colors.accent
+                        else AppTheme.colors.text
                 )
             }
         }

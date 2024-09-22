@@ -27,6 +27,8 @@ fun PrayerExtraReminderSettingsDialog(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    if (state.isLoading) return
+
     MyDialog(
         shown = true,
         onDismiss = viewModel::onDismiss

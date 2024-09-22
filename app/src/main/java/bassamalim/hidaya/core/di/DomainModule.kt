@@ -159,11 +159,13 @@ object DomainModule {
     fun providePrayerReminderDomain(
         prayersRepository: PrayersRepository,
         notificationsRepository: NotificationsRepository,
-        appSettingsRepository: AppSettingsRepository
+        appSettingsRepository: AppSettingsRepository,
+        alarm: Alarm
     ) = PrayerExtraReminderSettingsDomain(
         prayersRepository,
         notificationsRepository,
-        appSettingsRepository
+        appSettingsRepository,
+        alarm
     )
 
     @Provides @Singleton

@@ -45,6 +45,7 @@ class PrayerExtraReminderSettingsViewModel @Inject constructor(
             numeralsLanguage = domain.getNumeralsLanguage()
 
             _uiState.update { it.copy(
+                isLoading = false,
                 offset = domain.getOffset(prayer)
             )}
         }
