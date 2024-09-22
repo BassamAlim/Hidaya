@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.data.dataSources.preferences.serializers.customSerializers
+package bassamalim.hidaya.core.data.dataSources.preferences.serializers.customSerializers.notificationsPreferences
 
 import bassamalim.hidaya.core.enums.Reminder
 import kotlinx.collections.immutable.PersistentMap
@@ -12,24 +12,24 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @OptIn(ExperimentalSerializationApi::class)
-class PrayerExtraReminderTimeOffsetsSerializer(
-    private val keySerializer: KSerializer<Reminder.PrayerExtra>,
+class LastNotificationDatesSerializer(
+    private val keySerializer: KSerializer<Reminder>,
     private val valueSerializer: KSerializer<Int>
-) : KSerializer<PersistentMap<Reminder.PrayerExtra, Int>> {
+) : KSerializer<PersistentMap<Reminder, Int>> {
 
     private class PersistentMapDescriptor :
-        SerialDescriptor by serialDescriptor<Map<Reminder.PrayerExtra, Int>>() {
+        SerialDescriptor by serialDescriptor<Map<Reminder, Int>>() {
         @ExperimentalSerializationApi
         override val serialName: String = "kotlinx.serialization.immutable.persistentMap"
     }
 
     override val descriptor: SerialDescriptor = PersistentMapDescriptor()
 
-    override fun serialize(encoder: Encoder, value: PersistentMap<Reminder.PrayerExtra, Int>) {
+    override fun serialize(encoder: Encoder, value: PersistentMap<Reminder, Int>) {
         return MapSerializer(keySerializer, valueSerializer).serialize(encoder, value)
     }
 
-    override fun deserialize(decoder: Decoder): PersistentMap<Reminder.PrayerExtra, Int> {
+    override fun deserialize(decoder: Decoder): PersistentMap<Reminder, Int> {
         return MapSerializer(keySerializer, valueSerializer).deserialize(decoder).toPersistentMap()
     }
 
