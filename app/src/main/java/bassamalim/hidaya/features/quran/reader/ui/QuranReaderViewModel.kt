@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.quran.reader.ui
 
+import android.app.Activity
 import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -73,13 +74,15 @@ class QuranReaderViewModel @Inject constructor(
         if (state.isLoading) return@combine state
 
         state.copy(
-            pageNum = translateNum(pageNum),
+            pageNum = translateNums(
+                string = pageNum.toString(),
+                numeralsLanguage = numeralsLanguage
+            ),
             viewType =
                 if (language == Language.ENGLISH) QuranViewType.LIST
                 else viewType,
             textSize = textSize,
             isBookmarked = (pageBookmark?.pageNum ?: -1) == pageNum,
-            pageVerses = buildPage(pageNum)
         )
     }.onStart {
         initializeData()
@@ -104,6 +107,8 @@ class QuranReaderViewModel @Inject constructor(
                 QuranTarget.VERSE -> domain.getVersePageNum(targetValue)
             }
 
+            domain.setPageNumCallback { pageNum }
+
             _uiState.update { it.copy(
                 isLoading = false,
                 isTutorialDialogShown = domain.getShouldShowTutorial()
@@ -122,11 +127,13 @@ class QuranReaderViewModel @Inject constructor(
         this.coroutineScope = coroutineScope
     }
 
-    fun onStop() {
-        domain.stopPlayer()
+    fun onStop(activity: Activity) {
+        domain.stopPlayer(activity)
     }
 
     fun onPageChange(currentPageIdx: Int, pageIdx: Int) {
+        Log.d(Global.TAG, "Page change: $currentPageIdx -> $pageIdx")
+
         if (currentPageIdx == pageIdx) {
             updatePageState(pageIdx + 1) // page number = page index + 1
 
@@ -156,7 +163,7 @@ class QuranReaderViewModel @Inject constructor(
         )}
     }
 
-    fun onPlayPauseClick() {
+    fun onPlayPauseClick(activity: Activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             _uiState.update { it.copy(
                 isPlayerNotSupportedShown = true
@@ -167,6 +174,7 @@ class QuranReaderViewModel @Inject constructor(
         if (!domain.isMediaPlayerInitialized() || !domain.isControllerInitialized()) {
             updateButton(PlaybackStateCompat.STATE_BUFFERING)
             domain.setupPlayer(
+                activity = activity,
                 controllerCallback = controllerCallback,
                 getPageCallback = { pageNum },
                 getPageVersesCallback = { _uiState.value.pageVerses },
@@ -332,6 +340,8 @@ class QuranReaderViewModel @Inject constructor(
     }
 
     fun buildPage(pageNumber: Int): List<Verse> {
+        Log.d(Global.TAG, "Building page $pageNumber")
+
         val pageVerses = mutableListOf<Verse>()
 
         // get page start
@@ -367,7 +377,6 @@ class QuranReaderViewModel @Inject constructor(
             )}
             if (_uiState.value.viewType == QuranViewType.LIST) {
                 coroutineScope.launch {
-                    Log.d(Global.TAG, "Scrolling to ${_uiState.value.trackedVerseId} at ${versePositions[_uiState.value.trackedVerseId]}")
                     if (versePositions[_uiState.value.trackedVerseId] != null)
                         scrollState.animateScrollTo(versePositions[_uiState.value.trackedVerseId]!!.toInt())
                 }
@@ -399,12 +408,19 @@ class QuranReaderViewModel @Inject constructor(
     }
 
     private fun updatePageState(pageNum: Int) {
+        Log.d(Global.TAG, "PageNum: $pageNum")
         suraId = allVerses.first { verse -> verse.pageNum == pageNum }.suraNum - 1
         _uiState.update { it.copy(
-            pageNum = translateNum(pageNum),
+            pageNum = translateNums(
+                string = pageNum.toString(),
+                numeralsLanguage = numeralsLanguage
+            ),
             suraName = suraNames[suraId],
-            juzNum = translateNum(allVerses.first { verse -> verse.pageNum == pageNum }.juzNum),
-            pageVerses = buildPage(pageNum),
+            juzNum = translateNums(
+                string = allVerses.first { verse -> verse.pageNum == pageNum }.juzNum.toString(),
+                numeralsLanguage = numeralsLanguage
+            ),
+            pageVerses = buildPage(pageNum)
         )}
     }
 
@@ -422,11 +438,5 @@ class QuranReaderViewModel @Inject constructor(
             else -> {}
         }
     }
-
-    private fun translateNum(num: Int) =
-        translateNums(
-            numeralsLanguage = numeralsLanguage,
-            string = num.toString()
-        )
 
 }

@@ -36,6 +36,7 @@ class QuranReaderDomain @Inject constructor(
     private val userRepository: UserRepository
 ) {
 
+    private lateinit var activity: Activity
     private val handler = Handler(Looper.getMainLooper())
     private var mediaBrowser: MediaBrowserCompat? = null
     private var controller: MediaControllerCompat? = null
@@ -46,6 +47,10 @@ class QuranReaderDomain @Inject constructor(
     private lateinit var getPageVersesCallback: () -> List<Verse>
     private lateinit var getSelectedVerseCallback: () -> Verse?
     private lateinit var setSelectedVerseCallback: (Verse?) -> Unit
+
+    fun setPageNumCallback(callback: () -> Int) {
+        getPageNumCallback = callback
+    }
 
     private val runnable = Runnable {
         if (getPageNumCallback() == lastRecordedPage) {
@@ -73,12 +78,14 @@ class QuranReaderDomain @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(UnstableApi::class)
     fun setupPlayer(
+        activity: Activity,
         controllerCallback:MediaControllerCompat.Callback,
         getPageCallback: () -> Int,
         getPageVersesCallback: () -> List<Verse>,
         getSelectedVerseCallback: () -> Verse?,
         setSelectedVerseCallback: (Verse?) -> Unit
     ) {
+        this.activity = activity
         this.controllerCallback = controllerCallback
         this.getPageNumCallback = getPageCallback
         this.getSelectedVerseCallback = getSelectedVerseCallback
@@ -93,7 +100,7 @@ class QuranReaderDomain @Inject constructor(
         )
         mediaBrowser?.connect()
 
-        (app.applicationContext as Activity).volumeControlStream = AudioManager.STREAM_MUSIC
+        activity.volumeControlStream = AudioManager.STREAM_MUSIC
     }
 
     private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
@@ -113,7 +120,7 @@ class QuranReaderDomain @Inject constructor(
 
             // Save the controller
             MediaControllerCompat.setMediaController(
-                (app.applicationContext as Activity),
+                activity,
                 mediaController
             )
 
@@ -139,7 +146,7 @@ class QuranReaderDomain @Inject constructor(
     }
 
     private fun buildTransportControls() {
-        controller = MediaControllerCompat.getMediaController((app.applicationContext as Activity))
+        controller = MediaControllerCompat.getMediaController(activity)
         tc = controller!!.transportControls
 
         // Register a Callback to stay in sync
@@ -168,8 +175,8 @@ class QuranReaderDomain @Inject constructor(
         tc?.play()
     }
 
-    fun stopPlayer() {
-        MediaControllerCompat.getMediaController(app.applicationContext as Activity)
+    fun stopPlayer(activity: Activity) {
+        MediaControllerCompat.getMediaController(activity)
             ?.unregisterCallback(controllerCallback)
 
         mediaBrowser?.disconnect()

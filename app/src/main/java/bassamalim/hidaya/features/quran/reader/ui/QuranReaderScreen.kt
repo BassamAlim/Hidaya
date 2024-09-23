@@ -2,6 +2,7 @@
 
 package bassamalim.hidaya.features.quran.reader.ui
 
+import android.app.Activity
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -63,8 +64,8 @@ import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
-import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType.LIST
+import bassamalim.hidaya.features.quran.reader.ui.QuranViewType.PAGE
 import bassamalim.hidaya.features.quran.settings.ui.QuranSettingsDialog
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -73,6 +74,8 @@ fun QuranReaderScreen(
     viewModel: QuranReaderViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
+    val activity = LocalContext.current as Activity
 
     if (state.isLoading) return
 
@@ -80,11 +83,10 @@ fun QuranReaderScreen(
         initialPage = viewModel.pageNum - 1,
         pageCount = { Global.NUM_OF_QURAN_PAGES }
     )
-    val coroutineScope = rememberCoroutineScope()
 
     DisposableEffect(key1 = viewModel) {
         viewModel.onStart(pagerState, coroutineScope)
-        onDispose { viewModel.onStop() }
+        onDispose { viewModel.onStop(activity) }
     }
 
     MyScaffold(
@@ -94,8 +96,7 @@ fun QuranReaderScreen(
             TopBar(
                 suraName = state.suraName,
                 pageNumText = state.pageNum,
-                juzNumText = state.juzNum,
-                numeralsLanguage = viewModel.numeralsLanguage
+                juzNumText = state.juzNum
             )
         },
         bottomBar = { BottomBar(viewModel, state) }
@@ -149,8 +150,7 @@ fun QuranReaderScreen(
 private fun TopBar(
     suraName: String,
     pageNumText: String,
-    juzNumText: String,
-    numeralsLanguage: Language
+    juzNumText: String
 ) {
     TopAppBar(
         backgroundColor = AppTheme.colors.primary,
@@ -173,13 +173,10 @@ private fun TopBar(
                 textColor = AppTheme.colors.onPrimary
             )
 
+            Log.d(Global.TAG, "Final Page Number: $pageNumText")
             // Page number
             MyText(
-                text = "${stringResource(R.string.page)} " +
-                        translateNums(
-                            numeralsLanguage = numeralsLanguage,
-                            string = pageNumText
-                        ),
+                text = "${stringResource(R.string.page)} $pageNumText",
                 fontSize = 18.nsp,
                 fontWeight = FontWeight.Bold,
                 textColor = AppTheme.colors.onPrimary
@@ -187,11 +184,7 @@ private fun TopBar(
 
             // Juz number
             MyText(
-                "${stringResource(R.string.juz)} " +
-                        translateNums(
-                            numeralsLanguage = numeralsLanguage,
-                            string = juzNumText
-                        ),
+                text = "${stringResource(R.string.juz)} $juzNumText",
                 fontSize = 18.nsp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.End,
@@ -206,6 +199,8 @@ private fun BottomBar(
     vm: QuranReaderViewModel,
     st: QuranReaderUiState
 ) {
+    val activity = LocalContext.current as Activity
+
     BottomAppBar(
         backgroundColor = AppTheme.colors.primary
     ) {
@@ -244,7 +239,7 @@ private fun BottomBar(
                     padding = 5.dp,
                     modifier = Modifier.padding(horizontal = 4.dp),
                     tint = AppTheme.colors.onPrimary,
-                    onClick = { vm.onPlayPauseClick() }
+                    onClick = { vm.onPlayPauseClick(activity) }
                 )
 
                 // Fast Forward btn
@@ -310,34 +305,36 @@ private fun PageContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val verses =
-                if (isCurrentPage) pageVerses
+                if (isCurrentPage && pageVerses.isNotEmpty()) pageVerses
                 else buildPage(pageIdx + 1)
 
-            if (viewType == LIST) {
-                ListItems(
-                    verses = verses,
-                    isCurrentPage = isCurrentPage,
-                    selectedVerse = selectedVerse,
-                    trackedAyaId = trackedAyaId,
-                    textSize = textSize,
-                    language = language,
-                    theme = theme,
-                    onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned,
-                    onAyaGloballyPositioned = onAyaGloballyPositioned,
-                    onAyaScreenClick = onAyaScreenClick
-                )
-            }
-            else {
-                PageItems(
-                    verses = verses,
-                    isCurrentPage = isCurrentPage,
-                    selectedVerse = selectedVerse,
-                    trackedAyaId = trackedAyaId,
-                    textSize = textSize,
-                    theme = theme,
-                    onAyaScreenClick = onAyaScreenClick,
-                    onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
-                )
+            when (viewType) {
+                PAGE -> {
+                    PageItems(
+                        verses = verses,
+                        isCurrentPage = isCurrentPage,
+                        selectedVerse = selectedVerse,
+                        trackedAyaId = trackedAyaId,
+                        textSize = textSize,
+                        theme = theme,
+                        onAyaScreenClick = onAyaScreenClick,
+                        onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
+                    )
+                }
+                LIST -> {
+                    ListItems(
+                        verses = verses,
+                        isCurrentPage = isCurrentPage,
+                        selectedVerse = selectedVerse,
+                        trackedAyaId = trackedAyaId,
+                        textSize = textSize,
+                        language = language,
+                        theme = theme,
+                        onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned,
+                        onAyaGloballyPositioned = onAyaGloballyPositioned,
+                        onAyaScreenClick = onAyaScreenClick
+                    )
+                }
             }
 
             if (isCurrentPage && scrollTo > 0f) {
@@ -417,8 +414,6 @@ private fun PageItems(
         sequenceText.append(verseText)
         verse.end = sequenceText.length
         sequence.add(verse)
-
-        Log.d(Global.TAG, "ID: ${verse.id}, Start: ${verse.start}, End: ${verse.end}")
 
         lastSura = verse.suraNum
     }
