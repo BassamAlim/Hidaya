@@ -3,6 +3,7 @@
 package bassamalim.hidaya.features.hijriDatePicker.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.PagerState
 import androidx.lifecycle.SavedStateHandle
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.hijriDatePicker.domain.HijriDatePickerDomain
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
@@ -42,8 +44,9 @@ class HijriDatePickerViewModel @Inject constructor(
     val pageCount = { (domain.maxYear - domain.minYear + 1) * 12 }
     private lateinit var daysPagerState: PagerState
     private lateinit var coroutineScope: CoroutineScope
-    private var displayedMonth by Delegates.notNull<Int>()
+    private var displayedMonth by Delegates.notNull<Int>()  // 1-indexed
     private var displayedYear by Delegates.notNull<Int>()
+    private lateinit var currentDaysGrid: List<List<Int>>
 
     private val _uiState = MutableStateFlow(HijriDatePickerUiState())
     val uiState = _uiState.onStart {
@@ -64,7 +67,7 @@ class HijriDatePickerViewModel @Inject constructor(
             val month = date[1].toInt()
             val day = date[2].toInt()
 
-            initialPage = (year - domain.minYear) * 12 + month  // getpagenum
+            initialPage = getPageNum(year, month)
             displayedYear = year
             displayedMonth = month
             domain.setSelectedDate(year, month, day)
@@ -77,17 +80,13 @@ class HijriDatePickerViewModel @Inject constructor(
                     string = displayedYear.toString()
                 ),
                 displayedMonthText = getDisplayedMonthString(displayedMonth),
-                selectedDay = day.toString(),
                 weekDaysAbb = domain.getWeekDaysAbb(language),
                 yearSelectorItems = getYearSelectorItems()
             )}
         }
     }
 
-    fun onStart(
-        daysPagerState: PagerState,
-        coroutineScope: CoroutineScope
-    ) {
+    fun onStart(daysPagerState: PagerState, coroutineScope: CoroutineScope) {
         this.daysPagerState = daysPagerState
         this.coroutineScope = coroutineScope
     }
@@ -103,44 +102,41 @@ class HijriDatePickerViewModel @Inject constructor(
 
     fun onYearSelected(year: String) {
         coroutineScope.launch {
-            daysPagerState.scrollToPage(
-                (year.toInt() - domain.minYear) * 12
-                        + displayedMonth  // getpagenum
-            )
+            val newPageNum = getPageNum(year.toInt(), displayedMonth)
 
             _uiState.update { it.copy(
                 selectorMode = SelectorMode.DAY_MONTH
             )}
-
-            updateDisplayed()
+            updateDisplayed(newPageNum)
+            daysPagerState.scrollToPage(newPageNum)
         }
     }
 
     fun onPreviousMonthClick() {
         coroutineScope.launch {
-            daysPagerState.animateScrollToPage(daysPagerState.currentPage - 1)
+            val newPageNum = daysPagerState.currentPage - 1
 
-            updateDisplayed()
+            updateDisplayed(newPageNum)
+            daysPagerState.animateScrollToPage(daysPagerState.currentPage - 1)
         }
     }
 
     fun onNextMonthClick() {
         coroutineScope.launch {
-            daysPagerState.animateScrollToPage(daysPagerState.currentPage + 1)
+            val newPageNum = daysPagerState.currentPage + 1
 
-            updateDisplayed()
+            updateDisplayed(newPageNum)
+            daysPagerState.animateScrollToPage(newPageNum)
         }
     }
 
-    fun onDaySelected(selection: String) {
-        domain.setSelectedDate(
-            year = displayedYear,
-            month = displayedMonth,
-            day = selection.toInt()
-        )
+    fun onDaySelected(dayText: String, x: Int, y: Int) {
+        val day = currentDaysGrid[y][x]
 
+        Log.d(Global.TAG, "Day selected: $dayText, $day")
+
+        domain.setSelectedDate(year = displayedYear, month = displayedMonth, day = day)
         _uiState.update { it.copy(
-            selectedDay = selection,
             mainText = getMainText()
         )}
     }
@@ -160,16 +156,17 @@ class HijriDatePickerViewModel @Inject constructor(
         navigator.navigateBackWithResult(null)
     }
 
-    private fun updateDisplayed() {
-        displayedYear = (domain.minYear * 12 + daysPagerState.currentPage) / 12
-        displayedMonth = (domain.minYear * 12 + daysPagerState.currentPage) % 12 + 1
+    private fun updateDisplayed(pageNum: Int) {
+        val (year, month) = getYearAndMonth(pageNum)
+        displayedYear = year
+        displayedMonth = month
 
         _uiState.update { it.copy(
             displayedYearText = translateNums(
                 numeralsLanguage = numeralsLanguage,
-                string = displayedYear.toString()
+                string = year.toString()
             ),
-            displayedMonthText = getDisplayedMonthString(displayedMonth)
+            displayedMonthText = getDisplayedMonthString(month)
         )}
     }
 
@@ -199,44 +196,50 @@ class HijriDatePickerViewModel @Inject constructor(
             )
         }.toList()
 
-    fun getDaysGrid(page: Int): List<List<String>> {
-        val absMonth = domain.minYear * 12 + page
-        val current = UmmalquraCalendar()
-        current[Calendar.YEAR] = absMonth / 12
-        current[Calendar.MONTH] = absMonth % 12
+    fun getDaysGrid(page: Int): List<List<DayCell>> {
+        val (year, month) = getYearAndMonth(page)
+        val calendar = UmmalquraCalendar()
+        calendar[Calendar.YEAR] = year
+        calendar[Calendar.MONTH] = month - 1
 
-        val offset = current[Calendar.DAY_OF_WEEK]
+        val offset = calendar[Calendar.DAY_OF_WEEK]
         val grid = Array(5) { row ->  // 1 hijri month spans 5 weeks at most
             Array(7) { col ->  // 7 days a week
                 val idx = row * 7 + col - offset
-                if (row == 0 && col < offset || idx >= current.lengthOfMonth()) ""
-                else translateNums(
-                    numeralsLanguage = numeralsLanguage,
-                    string = (idx + 1).toString()
-                )
+                if (row == 0 && col < offset || idx >= calendar.lengthOfMonth()) 0
+                else idx + 1
             }.toList()
         }.toList()
 
         val currentDate = domain.getCurrentDate()
-        _uiState.update { it.copy(
-            selectedDay =
-                if (current[Calendar.YEAR].toString() == _uiState.value.displayedYearText
-                    && current[Calendar.MONTH].toString() == _uiState.value.displayedMonthText)
-                    _uiState.value.selectedDay
-                else ".",
-            currentDay =
-                if (current[Calendar.YEAR].toString() == currentDate[Calendar.YEAR].toString()
-                    && current[Calendar.MONTH].toString() == currentDate[Calendar.MONTH].toString())
-                    currentDate[Calendar.DATE].toString()
-                else "."
-        )}
+        val selectedDate = domain.getSelectedDate()
+        val textGrid = grid.map { row ->
+            row.map {  cell ->
+                DayCell(
+                    dayText =
+                        if (cell == 0) ""
+                        else translateNums(
+                            string = cell.toString(),
+                            numeralsLanguage = numeralsLanguage
+                        ),
+                    isToday = year == currentDate[Calendar.YEAR]
+                            && month == currentDate[Calendar.MONTH]+1
+                            && cell == currentDate[Calendar.DATE],
+                    isSelected = year == selectedDate[Calendar.YEAR]
+                            && month == selectedDate[Calendar.MONTH]+1
+                            && cell == selectedDate[Calendar.DATE]
+                )
+            }
+        }
 
-        return grid
+        if (page == daysPagerState.currentPage) currentDaysGrid = grid
+
+        return textGrid
     }
 
     private fun getPageNum(year: Int, month: Int) = (year - domain.minYear) * 12 + (month-1)
 
-    fun getYearAndMonth(pageNum: Int): Pair<Int, Int> {
+    private fun getYearAndMonth(pageNum: Int): Pair<Int, Int> {
         val year = domain.minYear + pageNum / 12
         val month = pageNum % 12 + 1
         return Pair(year, month)

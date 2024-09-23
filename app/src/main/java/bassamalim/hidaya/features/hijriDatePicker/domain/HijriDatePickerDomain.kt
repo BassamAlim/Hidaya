@@ -31,7 +31,7 @@ class HijriDatePickerDomain @Inject constructor(
     fun getSelectedDate() = selectedDate
 
     fun setSelectedDate(year: Int, month: Int, day: Int) {
-        currentDate.set(year, month-1, day)
+        selectedDate.set(year, month-1, day)
     }
 
     fun getCurrentDate() = currentDate

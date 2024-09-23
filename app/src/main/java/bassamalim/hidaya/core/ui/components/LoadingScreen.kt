@@ -30,8 +30,7 @@ fun LoadingScreen(
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(
-            color = color,
-            modifier = modifier
+            color = color
         )
     }
 }

@@ -78,8 +78,6 @@ fun HijriDatePickerDialog(
                         displayedMonth = state.displayedMonthText,
                         weekDaysAbb = state.weekDaysAbb,
                         pagerState = pagerState,
-                        selectedDay = state.selectedDay,
-                        currentDay = state.currentDay,
                         getDaysGrid = viewModel::getDaysGrid,
                         onPreviousMonthClick = viewModel::onPreviousMonthClick,
                         onNextMonthClick = viewModel::onNextMonthClick,
@@ -145,12 +143,10 @@ private fun DayMonthSelector(
     displayedMonth: String,
     weekDaysAbb: List<String>,
     pagerState: PagerState,
-    selectedDay: String,
-    currentDay: String,
-    getDaysGrid: (Int) -> List<List<String>>,
+    getDaysGrid: (Int) -> List<List<DayCell>>,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
-    onDaySelected: (String) -> Unit
+    onDaySelected: (String, Int, Int) -> Unit
 ) {
     MyColumn {
         MonthSelector(
@@ -160,11 +156,9 @@ private fun DayMonthSelector(
         )
 
         DaySelector(
-            weekDaysAbb = weekDaysAbb,
+            weekDaysAbbreviations = weekDaysAbb,
             pagerState = pagerState,
             getDaysGrid = getDaysGrid,
-            selectedDay = selectedDay,
-            currentDay = currentDay,
             onDaySelected = onDaySelected
         )
     }
@@ -204,22 +198,20 @@ private fun MonthSelector(
 
 @Composable
 private fun DaySelector(
-    weekDaysAbb: List<String>,
+    weekDaysAbbreviations: List<String>,
     pagerState: PagerState,
-    getDaysGrid: (Int) -> List<List<String>>,
-    selectedDay: String,
-    currentDay: String,
-    onDaySelected: (String) -> Unit
+    getDaysGrid: (Int) -> List<List<DayCell>>,
+    onDaySelected: (String, Int, Int) -> Unit
 ) {
     // week days
     Row(
         Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        weekDaysAbb.forEach {
+        weekDaysAbbreviations.forEach {
             MyText(
-                it,
-                Modifier.size(40.dp),
+                text = it,
+                modifier = Modifier.size(40.dp),
                 fontSize = 16.sp
             )
         }
@@ -234,8 +226,6 @@ private fun DaySelector(
     ) { page ->
         DaysGrid(
             daysGrid = getDaysGrid(page),
-            selectedDay = selectedDay,
-            currentDay = currentDay,
             onDaySelected = onDaySelected
         )
     }
@@ -269,10 +259,8 @@ private fun BottomArea(
 
 @Composable
 private fun DaysGrid(
-    daysGrid: List<List<String>>,
-    selectedDay: String,
-    currentDay: String,
-    onDaySelected: (String) -> Unit
+    daysGrid: List<List<DayCell>>,
+    onDaySelected: (String, Int, Int) -> Unit
 ) {
     Box(
         Modifier.height(250.dp)
@@ -280,29 +268,33 @@ private fun DaysGrid(
         Column(
             Modifier.fillMaxWidth()
         ) {
-            daysGrid.forEach { row ->
+            daysGrid.forEachIndexed { y, row ->
                 Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    row.forEach { value ->
-                        if (value.isEmpty()) MyText(value, Modifier.size(40.dp))
+                    row.forEachIndexed { x, cell ->
+                        if (cell.dayText.isEmpty()) {
+                            MyText(
+                                text = cell.dayText,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
                         else {
                             MyText(
-                                value,
-                                Modifier
+                                text = cell.dayText,
+                                modifier = Modifier
                                     .size(40.dp)
                                     .clip(CircleShape)
                                     .background(
-                                        if (value == selectedDay) AppTheme.colors.accent
+                                        if (cell.isSelected) AppTheme.colors.accent
                                         else AppTheme.colors.background
                                     )
-                                    .clickable { onDaySelected(value) },
-                                textColor = when (value) {
-                                    selectedDay -> AppTheme.colors.onPrimary
-                                    currentDay -> AppTheme.colors.accent
-                                    else -> AppTheme.colors.text
-                                }
+                                    .clickable { onDaySelected(cell.dayText, x, y) },
+                                textColor =
+                                    if (cell.isSelected) AppTheme.colors.onPrimary
+                                    else if (cell.isToday) AppTheme.colors.accent
+                                    else AppTheme.colors.text
                             )
                         }
                     }

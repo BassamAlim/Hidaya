@@ -7,7 +7,5 @@ data class HijriDatePickerUiState(
     val displayedYearText: String = "",
     val mainText: String = "",
     val displayedMonthText: String = "",
-    val selectedDay: String = ".",
-    val currentDay: String = ".",
     val weekDaysAbb: List<String> = emptyList(),
 )
