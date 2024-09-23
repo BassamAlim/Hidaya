@@ -11,22 +11,22 @@ class AppStateRepository @Inject constructor(
     private val appStatePreferencesDataSource: AppStatePreferencesDataSource
 ) {
 
-    fun getHijriMonths() =
+    fun getHijriMonthNames() =
         resources.getStringArray(R.array.hijri_months) as Array<String>
 
-    fun getGregorianMonths() =
+    fun getGregorianMonthNames() =
         resources.getStringArray(R.array.gregorian_months) as Array<String>
 
-    fun getNumberedHijriMonths() =
+    fun getNumberedHijriMonthNames() =
         resources.getStringArray(R.array.numbered_hijri_months) as Array<String>
 
-    fun getNumberedGregorianMonths() =
+    fun getNumberedGregorianMonthNames() =
         resources.getStringArray(R.array.numbered_gregorian_months) as Array<String>
 
-    fun getWeekDays() =
+    fun getWeekDayNames() =
         resources.getStringArray(R.array.week_days) as Array<String>
 
-    fun getWeekDaysAbb(language: Language) =
+    fun getWeekDaysAbbreviations(language: Language) =
         if (language == Language.ENGLISH) listOf("S", "M", "T", "W", "T", "F", "S")
         else listOf("أ", "إ", "ث", "أ", "خ", "ج", "س")
 

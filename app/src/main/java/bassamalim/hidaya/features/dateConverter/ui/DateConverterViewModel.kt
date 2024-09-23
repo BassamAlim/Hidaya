@@ -84,7 +84,7 @@ class DateConverterViewModel @Inject constructor(
                 "-${hijriCalendar[Calendar.DATE]}"
 
         navigator.navigateForResult(
-            Screen.HijriDatePicker(dateStr)
+            Screen.HijriDatePicker(initialDate = dateStr)
         ) { result ->
             if (result != null) {
                 val date =

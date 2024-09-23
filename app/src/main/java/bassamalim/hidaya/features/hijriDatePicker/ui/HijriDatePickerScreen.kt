@@ -48,11 +48,14 @@ fun HijriDatePickerDialog(
     viewModel: HijriDatePickerViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
+
+    if (state.isLoading) return
+
     val pagerState = rememberPagerState(
         initialPage = viewModel.initialPage,
         pageCount = viewModel.pageCount
     )
-    val coroutineScope = rememberCoroutineScope()
 
     DisposableEffect(key1 = viewModel) {
         viewModel.onStart(pagerState, coroutineScope)
@@ -64,7 +67,7 @@ fun HijriDatePickerDialog(
             Modifier.clip(RoundedCornerShape(16.dp))
         ) {
             TopArea(
-                displayedYear = state.displayedYear,
+                displayedYear = state.displayedYearText,
                 mainText = state.mainText,
                 onYearSelectorToggled = viewModel::onYearSelectorToggled
             )
@@ -72,7 +75,7 @@ fun HijriDatePickerDialog(
             Box(Modifier.height(350.dp)) {
                 when (state.selectorMode) {
                     SelectorMode.DAY_MONTH -> DayMonthSelector(
-                        displayedMonth = state.displayedMonth,
+                        displayedMonth = state.displayedMonthText,
                         weekDaysAbb = state.weekDaysAbb,
                         pagerState = pagerState,
                         selectedDay = state.selectedDay,
@@ -83,7 +86,7 @@ fun HijriDatePickerDialog(
                         onDaySelected = viewModel::onDaySelected
                     )
                     SelectorMode.YEAR -> YearSelector(
-                        selectedYear = state.displayedYear,
+                        selectedYear = state.displayedYearText,
                         yearOptions = state.yearSelectorItems,
                         onYearSelected = viewModel::onYearSelected
                     )
@@ -119,8 +122,8 @@ private fun TopArea(
                     .clickable { onYearSelectorToggled() }
             ) {
                 MyText(
-                    displayedYear,
-                    Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
+                    text = displayedYear,
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
                     fontSize = 19.sp,
                     textColor = AppTheme.colors.onPrimary,
                 )
@@ -128,7 +131,7 @@ private fun TopArea(
 
             // main text
             MyText(
-                mainText,
+                text = mainText,
                 fontSize = 22.nsp,
                 fontWeight = FontWeight.Bold,
                 textColor = AppTheme.colors.onPrimary

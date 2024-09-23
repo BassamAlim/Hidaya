@@ -22,16 +22,16 @@ class HijriDatePickerDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    fun getMonths() = appStateRepository.getHijriMonths()
+    fun getMonthNames() = appStateRepository.getHijriMonthNames()
 
-    fun getWeekDays() = appStateRepository.getWeekDays()
+    fun getWeekDays() = appStateRepository.getWeekDayNames()
 
-    fun getWeekDaysAbb(language: Language) = appStateRepository.getWeekDaysAbb(language)
+    fun getWeekDaysAbb(language: Language) = appStateRepository.getWeekDaysAbbreviations(language)
 
     fun getSelectedDate() = selectedDate
 
     fun setSelectedDate(year: Int, month: Int, day: Int) {
-        currentDate.set(year, month, day)
+        currentDate.set(year, month-1, day)
     }
 
     fun getCurrentDate() = currentDate

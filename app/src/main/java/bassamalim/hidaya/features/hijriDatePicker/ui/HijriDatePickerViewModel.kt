@@ -32,23 +32,20 @@ class HijriDatePickerViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    private val initialDate = savedStateHandle.get<String>("initial_date")
+    private val initialDate = savedStateHandle.get<String>("initial_date")!!
 
     private lateinit var language: Language
     private lateinit var numeralsLanguage: Language
-    private val months = domain.getMonths()
+    private val monthsNames = domain.getMonthNames()
     private val weekDays = domain.getWeekDays()
     var initialPage by Delegates.notNull<Int>()
     val pageCount = { (domain.maxYear - domain.minYear + 1) * 12 }
     private lateinit var daysPagerState: PagerState
     private lateinit var coroutineScope: CoroutineScope
+    private var displayedMonth by Delegates.notNull<Int>()
+    private var displayedYear by Delegates.notNull<Int>()
 
-    private val _uiState = MutableStateFlow(HijriDatePickerUiState(
-        displayedYear = getDisplayedYearString(),
-        yearSelectorItems = getYearSelectorItems(),
-        mainText = getMainText(),
-        displayedMonth = getDisplayedMonthString(initialPage)
-    ))
+    private val _uiState = MutableStateFlow(HijriDatePickerUiState())
     val uiState = _uiState.onStart {
         initializeData()
     }.stateIn(
@@ -62,25 +59,28 @@ class HijriDatePickerViewModel @Inject constructor(
             language = domain.getLanguage()
             numeralsLanguage = domain.getNumeralsLanguage()
 
+            val date = initialDate.split("-")
+            val year = date[0].toInt()
+            val month = date[1].toInt()
+            val day = date[2].toInt()
+
+            initialPage = (year - domain.minYear) * 12 + month  // getpagenum
+            displayedYear = year
+            displayedMonth = month
+            domain.setSelectedDate(year, month, day)
+
             _uiState.update { it.copy(
+                isLoading = false,
+                mainText = getMainText(),
+                displayedYearText = translateNums(
+                    numeralsLanguage = numeralsLanguage,
+                    string = displayedYear.toString()
+                ),
+                displayedMonthText = getDisplayedMonthString(displayedMonth),
+                selectedDay = day.toString(),
                 weekDaysAbb = domain.getWeekDaysAbb(language),
+                yearSelectorItems = getYearSelectorItems()
             )}
-
-            initialPage = ((_uiState.value.displayedYear.toInt() - domain.minYear) * 12
-                    + _uiState.value.displayedMonth.toInt())
-
-            initialDate?.let { dateStr ->
-                val date = dateStr.split("-")
-                val year = date[0].toInt()
-                val month = date[1].toInt() - 1  // 0-based
-                val day = date[2].toInt()
-
-                _uiState.update { it.copy(
-                    displayedYear = year.toString(),
-                    displayedMonth = month.toString(),
-                    selectedDay = day.toString(),
-                )}
-            }
         }
     }
 
@@ -104,36 +104,44 @@ class HijriDatePickerViewModel @Inject constructor(
     fun onYearSelected(year: String) {
         coroutineScope.launch {
             daysPagerState.scrollToPage(
-                (year.toInt() - domain.minYear) * 12 + _uiState.value.displayedMonth.toInt()
+                (year.toInt() - domain.minYear) * 12
+                        + displayedMonth  // getpagenum
             )
-        }
 
-        _uiState.update { it.copy(
-            selectorMode = SelectorMode.DAY_MONTH
-        )}
+            _uiState.update { it.copy(
+                selectorMode = SelectorMode.DAY_MONTH
+            )}
+
+            updateDisplayed()
+        }
     }
 
     fun onPreviousMonthClick() {
         coroutineScope.launch {
             daysPagerState.animateScrollToPage(daysPagerState.currentPage - 1)
+
+            updateDisplayed()
         }
     }
 
     fun onNextMonthClick() {
         coroutineScope.launch {
             daysPagerState.animateScrollToPage(daysPagerState.currentPage + 1)
+
+            updateDisplayed()
         }
     }
 
     fun onDaySelected(selection: String) {
         domain.setSelectedDate(
-            year = _uiState.value.displayedYear.toInt(),
-            month = _uiState.value.displayedMonth.toInt(),
+            year = displayedYear,
+            month = displayedMonth,
             day = selection.toInt()
         )
 
         _uiState.update { it.copy(
-            selectedDay = selection
+            selectedDay = selection,
+            mainText = getMainText()
         )}
     }
 
@@ -142,11 +150,7 @@ class HijriDatePickerViewModel @Inject constructor(
             Bundle().apply {
                 putSerializable(
                     "selected_date",
-                    UmmalquraCalendar(
-                        _uiState.value.displayedYear.toInt(),
-                        _uiState.value.displayedMonth.toInt(),
-                        _uiState.value.selectedDay.toInt()
-                    )
+                    domain.getSelectedDate()
                 )
             }
         )
@@ -156,20 +160,24 @@ class HijriDatePickerViewModel @Inject constructor(
         navigator.navigateBackWithResult(null)
     }
 
-    private fun getDisplayedYearString() =
-        translateNums(
-            numeralsLanguage = numeralsLanguage,
-            string = ((domain.minYear * 12 + daysPagerState.currentPage) / 12).toString()
-        )
+    private fun updateDisplayed() {
+        displayedYear = (domain.minYear * 12 + daysPagerState.currentPage) / 12
+        displayedMonth = (domain.minYear * 12 + daysPagerState.currentPage) % 12 + 1
 
-    private fun getDisplayedMonthString(currentPage: Int): String {
-        val absMonth = domain.minYear * 12 + currentPage
-        return "${months[absMonth % 12]} " +
-                translateNums(
-                    string = (absMonth / 12).toString(),
-                    numeralsLanguage = numeralsLanguage
-                )
+        _uiState.update { it.copy(
+            displayedYearText = translateNums(
+                numeralsLanguage = numeralsLanguage,
+                string = displayedYear.toString()
+            ),
+            displayedMonthText = getDisplayedMonthString(displayedMonth)
+        )}
     }
+
+    private fun getDisplayedMonthString(month: Int) =
+        "${monthsNames[month-1]} " + translateNums(
+            string = month.toString(),
+            numeralsLanguage = numeralsLanguage
+        )
 
     private fun getMainText(): String {
         val selectedDate = domain.getSelectedDate()
@@ -180,12 +188,15 @@ class HijriDatePickerViewModel @Inject constructor(
                         numeralsLanguage = numeralsLanguage
                     )
                 } " +
-                months[selectedDate[Calendar.MONTH]]
+                monthsNames[selectedDate[Calendar.MONTH]]
     }
 
     private fun getYearSelectorItems() =
         Array(domain.maxYear - domain.minYear + 1) { idx ->
-            (domain.minYear + idx).toString()
+            translateNums(
+                string = (domain.minYear + idx).toString(),
+                numeralsLanguage = numeralsLanguage
+            )
         }.toList()
 
     fun getDaysGrid(page: Int): List<List<String>> {
@@ -209,8 +220,8 @@ class HijriDatePickerViewModel @Inject constructor(
         val currentDate = domain.getCurrentDate()
         _uiState.update { it.copy(
             selectedDay =
-                if (current[Calendar.YEAR].toString() == _uiState.value.displayedYear
-                    && current[Calendar.MONTH].toString() == _uiState.value.displayedMonth)
+                if (current[Calendar.YEAR].toString() == _uiState.value.displayedYearText
+                    && current[Calendar.MONTH].toString() == _uiState.value.displayedMonthText)
                     _uiState.value.selectedDay
                 else ".",
             currentDay =
@@ -221,6 +232,14 @@ class HijriDatePickerViewModel @Inject constructor(
         )}
 
         return grid
+    }
+
+    private fun getPageNum(year: Int, month: Int) = (year - domain.minYear) * 12 + (month-1)
+
+    fun getYearAndMonth(pageNum: Int): Pair<Int, Int> {
+        val year = domain.minYear + pageNum / 12
+        val month = pageNum % 12 + 1
+        return Pair(year, month)
     }
 
 }

@@ -33,7 +33,7 @@ class PrayersBoardDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    fun getHijriMonths() = appStateRepository.getHijriMonths()
+    fun getHijriMonths() = appStateRepository.getHijriMonthNames()
 
     suspend fun getCountryName(countryId: Int, language: Language) =
         locationRepository.getCountryName(

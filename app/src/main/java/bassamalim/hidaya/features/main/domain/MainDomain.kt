@@ -24,10 +24,10 @@ class MainDomain @Inject constructor(
 
     fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
-    fun getWeekDays() = appStateRepository.getWeekDays()
+    fun getWeekDays() = appStateRepository.getWeekDayNames()
 
-    fun getHijriMonths() = appStateRepository.getHijriMonths()
+    fun getHijriMonths() = appStateRepository.getHijriMonthNames()
 
-    fun getGregorianMonths() = appStateRepository.getGregorianMonths()
+    fun getGregorianMonths() = appStateRepository.getGregorianMonthNames()
 
 }
