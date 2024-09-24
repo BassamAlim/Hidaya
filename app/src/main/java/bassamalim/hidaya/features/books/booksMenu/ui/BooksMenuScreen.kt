@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.data.dataSources.room.entities.Book
 import bassamalim.hidaya.core.enums.DownloadState
+import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyButtonSurface
 import bassamalim.hidaya.core.ui.components.MyCircularProgressIndicator
 import bassamalim.hidaya.core.ui.components.MyFloatingActionButton
@@ -39,6 +39,8 @@ fun BooksMenuScreen(
         onDispose {}
     }
 
+    if (state.isLoading) return LoadingScreen()
+
     MyScaffold(
         title = stringResource(R.string.hadeeth_books),
         fab = {
@@ -53,10 +55,10 @@ fun BooksMenuScreen(
         MyLazyColumn(
             Modifier.padding(vertical = 5.dp),
             lazyList = {
-                items(state.books) { item ->
+                items(state.books.toList()) { (id, book) ->
                     BookCard(
-                        item = item,
-                        downloadState = state.downloadStates[item.id]!!,
+                        id = id,
+                        book = book,
                         onItemClick = viewModel::onItemClick,
                         onDownloadButtonClick = viewModel::onDownloadButtonClick
                     )
@@ -64,7 +66,6 @@ fun BooksMenuScreen(
             }
         )
 
-        // tutorial dialog
         TutorialDialog(
             textResId = R.string.books_activity_tips,
             shown = state.tutorialDialogShown,
@@ -79,23 +80,23 @@ fun BooksMenuScreen(
 
 @Composable
 private fun BookCard(
-    item: Book,
-    downloadState: DownloadState,
-    onItemClick: (Book) -> Unit,
-    onDownloadButtonClick: (Book) -> Unit,
+    id: Int,
+    book: Book,
+    onItemClick: (Int, Book) -> Unit,
+    onDownloadButtonClick: (Int, Book) -> Unit,
 ) {
     MyButtonSurface(
-        text = item.titleAr,
+        text = book.title,
         innerVPadding = 15.dp,
         fontSize = 22.sp,
         modifier = Modifier.padding(vertical = 2.dp),
         iconButton = {
             DownloadBtn(
-                downloadState = downloadState,
-                onClick = { onDownloadButtonClick(item) }
+                downloadState = book.downloadState,
+                onClick = { onDownloadButtonClick(id, book) }
             )
         },
-        onClick = { onItemClick(item) }
+        onClick = { onItemClick(id, book) }
     )
 }
 
@@ -126,11 +127,9 @@ private fun DownloadBtn(
 }
 
 @Composable
-private fun WaitMessage(
-    shouldShowWait: Int
-) {
-    val ctx = LocalContext.current
+private fun WaitMessage(shouldShowWait: Int) {
+    val context = LocalContext.current
     LaunchedEffect(shouldShowWait) {
-        FileUtils.showWaitMassage(ctx)
+        FileUtils.showWaitMassage(context)
     }
 }

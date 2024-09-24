@@ -35,6 +35,8 @@ fun BookSearcherScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    if (state.isLoading) return
+
     MyScaffold(stringResource(R.string.books_searcher)) { padding ->
         Column(
             Modifier

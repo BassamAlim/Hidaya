@@ -102,11 +102,11 @@ fun LocatorScreen(
 
 @Composable
 private fun LocationToast() {
-    val ctx = LocalContext.current
+    val context = LocalContext.current
     LaunchedEffect(null) {
         Toast.makeText(
-            ctx,
-            ctx.getString(R.string.choose_allow_all_the_time),
+            context,
+            context.getString(R.string.choose_allow_all_the_time),
             Toast.LENGTH_LONG
         ).show()
     }

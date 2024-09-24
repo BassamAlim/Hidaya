@@ -139,9 +139,10 @@ object DomainModule {
 
     @Provides @Singleton
     fun provideLocatorDomain(
+        app: Application,
         locationRepository: LocationRepository,
         appSettingsRepository: AppSettingsRepository
-    ) = LocatorDomain(locationRepository, appSettingsRepository)
+    ) = LocatorDomain(app, locationRepository, appSettingsRepository)
 
     @Provides @Singleton
     fun provideMainDomain(

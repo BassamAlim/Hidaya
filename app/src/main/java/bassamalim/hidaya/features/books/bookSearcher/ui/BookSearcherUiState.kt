@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.books.bookSearcher.ui
 
 data class BookSearcherUiState(
+    val isLoading: Boolean = true,
     val searchText: String = "",
     val matches: List<BookSearcherMatch>? = null,
     val maxMatches: Int = 10,

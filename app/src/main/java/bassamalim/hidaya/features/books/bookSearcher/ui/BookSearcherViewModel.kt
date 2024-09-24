@@ -47,6 +47,7 @@ class BookSearcherViewModel @Inject constructor(
             numeralsLanguage = domain.getNumeralsLanguage()
 
             _uiState.update { it.copy(
+                isLoading = false,
                 bookTitles = domain.getBookTitles(language),
                 filtered = it.bookSelections.containsValue(false)
             )}

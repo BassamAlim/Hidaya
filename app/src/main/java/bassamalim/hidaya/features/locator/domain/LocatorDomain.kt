@@ -1,19 +1,88 @@
 package bassamalim.hidaya.features.locator.domain
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Application
+import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Build
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.core.app.ActivityCompat
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.LocationRepository
-import kotlinx.coroutines.flow.first
+import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class LocatorDomain @Inject constructor(
+    private val app: Application,
     private val locationRepository: LocationRepository,
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    fun getLanguage() = appSettingsRepository.getLanguage()
+    private lateinit var locationRequestLauncher:
+            ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
+    private lateinit var showBackgroundLocationPermissionNeeded: () -> Unit
+    private lateinit var launch: () -> Unit
 
-    suspend fun setAutoLocation(location: Location) {
+    @OptIn(DelicateCoroutinesApi::class)
+    @SuppressLint("MissingPermission")
+    suspend fun locate() {
+        if (isPermissionsGranted()) {
+            LocationServices.getFusedLocationProviderClient(app).lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    if (location != null) GlobalScope.launch {
+                        setAutoLocation(location)
+                    }
+
+                    requestBackgroundLocationPermission()
+
+                    launch()
+                }
+                .addOnFailureListener {
+                    launch()
+                }
+        }
+        else requestPermissions()
+    }
+
+    private fun requestBackgroundLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+            ActivityCompat.checkSelfPermission(
+                app,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED) {
+
+            showBackgroundLocationPermissionNeeded()
+
+            locationRequestLauncher.launch(
+                arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            )
+        }
+    }
+
+    private fun requestPermissions() {
+        locationRequestLauncher.launch(arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ))
+    }
+
+    suspend fun handleLocationRequestResult(result: Map<String, Boolean>) {
+        if (result.keys.contains(Manifest.permission.ACCESS_BACKGROUND_LOCATION))
+            return
+
+        val fineLoc = result[Manifest.permission.ACCESS_FINE_LOCATION]
+        val coarseLoc = result[Manifest.permission.ACCESS_COARSE_LOCATION]
+        if (fineLoc != null && fineLoc && coarseLoc != null && coarseLoc) {
+            locate()
+        }
+        else launch()
+    }
+
+    private suspend fun setAutoLocation(location: Location) {
         locationRepository.setLocation(location)
     }
 
@@ -23,6 +92,31 @@ class LocatorDomain @Inject constructor(
             countryId = city.countryId,
             cityId = city.id
         )
+    }
+
+    private fun isPermissionsGranted(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            app, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    app, Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun getLanguage() = appSettingsRepository.getLanguage()
+
+    fun setShowBackgroundLocationPermissionNeeded(showToast: () -> Unit) {
+        this.showBackgroundLocationPermissionNeeded = showToast
+    }
+
+    fun setLocationRequestLauncher(
+        locationRequestLauncher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
+    ) {
+        this.locationRequestLauncher = locationRequestLauncher
+    }
+
+    fun setLaunch(launch: () -> Unit) {
+        this.launch = launch
     }
 
 }

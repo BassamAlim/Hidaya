@@ -1,9 +1,7 @@
 package bassamalim.hidaya.features.books.booksMenu.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.data.dataSources.room.entities.Book
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
@@ -21,10 +19,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BooksMenuViewModel @Inject constructor(
-    app: Application,
     private val domain: BooksMenuDomain,
     private val navigator: Navigator
-): AndroidViewModel(app) {
+): ViewModel() {
 
     private lateinit var language: Language
 
@@ -42,37 +39,35 @@ class BooksMenuViewModel @Inject constructor(
             language = domain.getLanguage()
 
             _uiState.update { it.copy(
-                books = domain.getBooks(),
                 tutorialDialogShown = domain.getShowTutorial().first()
             )}
         }
     }
 
     fun onStart() {
-        _uiState.update { it.copy(
-            downloadStates = domain.getDownloadStates(books = it.books)
-        )}
+        viewModelScope.launch {
+            _uiState.update { it.copy(
+                isLoading = false,
+                books = domain.getBooks(language)
+            )}
+        }
     }
 
-    fun onFabClick() {
-        navigator.navigate(Screen.BookSearcher)
-    }
-
-    fun onItemClick(item: Book) {
-        when (_uiState.value.downloadStates[item.id]!!) {
+    fun onItemClick(id: Int, book: Book) {
+        when (book.downloadState) {
             DownloadState.NOT_DOWNLOADED -> {
                 _uiState.update { it.copy(
-                    downloadStates = it.downloadStates.toMutableMap().apply {
-                        this[item.id] = DownloadState.DOWNLOADING
+                    books = it.books.toMutableMap().apply {
+                        this[id] = book.copy(downloadState = DownloadState.DOWNLOADING)
                     }
                 )}
 
-                domain.download(
-                    bookId = item.id,
+                domain.downloadBook(
+                    bookId = id,
                     onDownloadedCallback = {
                         _uiState.update { it.copy(
-                            downloadStates = it.downloadStates.toMutableMap().apply {
-                                this[item.id] = DownloadState.DOWNLOADED
+                            books = it.books.toMutableMap().apply {
+                                this[id] = book.copy(downloadState = DownloadState.DOWNLOADED)
                             }
                         )}
                     }
@@ -81,10 +76,8 @@ class BooksMenuViewModel @Inject constructor(
             DownloadState.DOWNLOADED -> {
                 navigator.navigate(
                     Screen.BookChaptersMenu(
-                        bookId = item.id.toString(),
-                        bookTitle =
-                            if (language == Language.ENGLISH) item.titleEn
-                            else item.titleAr
+                        bookId = id.toString(),
+                        bookTitle = book.title
                     )
                 )
             }
@@ -96,21 +89,21 @@ class BooksMenuViewModel @Inject constructor(
         }
     }
 
-    fun onDownloadButtonClick(item: Book) {
-        when (_uiState.value.downloadStates[item.id]!!) {
+    fun onDownloadButtonClick(id: Int, book: Book) {
+        when (book.downloadState) {
             DownloadState.NOT_DOWNLOADED -> {
                 _uiState.update { it.copy(
-                    downloadStates = it.downloadStates.toMutableMap().apply {
-                        this[item.id] = DownloadState.DOWNLOADING
+                    books = it.books.toMutableMap().apply {
+                        this[id] = book.copy(downloadState = DownloadState.DOWNLOADING)
                     }
                 )}
 
-                domain.download(
-                    bookId = item.id,
+                domain.downloadBook(
+                    bookId = id,
                     onDownloadedCallback = {
                         _uiState.update { it.copy(
-                            downloadStates = it.downloadStates.toMutableMap().apply {
-                                this[item.id] = DownloadState.DOWNLOADED
+                            books = it.books.toMutableMap().apply {
+                                this[id] = book.copy(downloadState = DownloadState.DOWNLOADED)
                             }
                         )}
                     }
@@ -118,12 +111,12 @@ class BooksMenuViewModel @Inject constructor(
             }
             DownloadState.DOWNLOADED -> {
                 _uiState.update { it.copy(
-                    downloadStates = it.downloadStates.toMutableMap().apply {
-                        this[item.id] = DownloadState.NOT_DOWNLOADED
+                    books = it.books.toMutableMap().apply {
+                        this[id] = book.copy(downloadState = DownloadState.NOT_DOWNLOADED)
                     }
                 )}
 
-                domain.deleteBook(item.id)
+                domain.deleteBook(id)
             }
             DownloadState.DOWNLOADING -> {
                 _uiState.update { it.copy(
@@ -131,6 +124,10 @@ class BooksMenuViewModel @Inject constructor(
                 )}
             }
         }
+    }
+
+    fun onFabClick() {
+        navigator.navigate(Screen.BookSearcher)
     }
 
     fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {
