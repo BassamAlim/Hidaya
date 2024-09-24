@@ -47,7 +47,9 @@ import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -146,11 +148,10 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
 
     private val receiverManager = ReceiverManager(this, receiver, intentFilter)
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
 
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.Main).launch {
             ActivityUtils.onActivityCreateSetLocale(
                 context = applicationContext,
                 language = appSettingsRepository.getLanguage().first()

@@ -240,9 +240,8 @@ object DomainModule {
 
     @Provides @Singleton
     fun provideRadioDomain(
-        app: Application,
         liveContentRepository: LiveContentRepository
-    ) = RadioDomain(app, liveContentRepository)
+    ) = RadioDomain(liveContentRepository)
 
     @Provides @Singleton
     fun provideRecitationPlayerDomain(

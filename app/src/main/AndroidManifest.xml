@@ -86,7 +86,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".features.radio.RadioService"
+            android:name=".features.radio.service.RadioService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             android:permission="none">

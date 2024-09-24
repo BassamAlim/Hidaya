@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.radio
+package bassamalim.hidaya.features.radio.service
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -38,8 +38,8 @@ import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -72,8 +72,8 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     companion object {
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
         private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
-        private const val ACTION_PLAY_PAUSE = "bassamalim.hidaya.features.radio.RadioService.playpause"
-        private const val ACTION_STOP = "bassamalim.hidaya.features.radio.RadioService.stop"
+        private const val ACTION_PLAY_PAUSE = "bassamalim.hidaya.features.radio.service.RadioService.playpause"
+        private const val ACTION_STOP = "bassamalim.hidaya.features.radio.service.RadioService.stop"
     }
 
     private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -102,10 +102,9 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
     private val receiverManager = ReceiverManager(this, receiver, intentFilter)
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.Main).launch {
             ActivityUtils.onActivityCreateSetLocale(
                 context = applicationContext,
                 language = appSettingsRepository.getLanguage().first()

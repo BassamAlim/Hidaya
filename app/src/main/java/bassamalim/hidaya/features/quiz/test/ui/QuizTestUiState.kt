@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.quiz.test.ui
 import bassamalim.hidaya.core.enums.Language
 
 data class QuizTestUiState(
+    val isLoading: Boolean = true,
     val titleQuestionNumber: String = "",
     val questionIdx: Int = 0,
     val question: String = "",

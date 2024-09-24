@@ -93,8 +93,8 @@ class QuranReaderDomain @Inject constructor(
         this.getPageVersesCallback = getPageVersesCallback
 
         mediaBrowser = MediaBrowserCompat(
-            app,
-            ComponentName(app, VersePlayerService::class.java),
+            activity,
+            ComponentName(activity, VersePlayerService::class.java),
             connectionCallbacks,
             null
         )
@@ -112,7 +112,7 @@ class QuranReaderDomain @Inject constructor(
             val mediaController: MediaControllerCompat?
             try {
                 // Create a MediaControllerCompat
-                mediaController = MediaControllerCompat(app, mediaBrowser!!.sessionToken)
+                mediaController = MediaControllerCompat(activity, mediaBrowser!!.sessionToken)
             } catch (e: IllegalStateException) {
                 Log.e(Global.TAG, "Error in QuranReader: ${e.message}")
                 return

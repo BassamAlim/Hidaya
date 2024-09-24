@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -13,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.other.Global
@@ -30,6 +32,10 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 fun TvScreen(
     viewModel: TvViewModel
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    if (state.isLoading) return
+
     MyScaffold(title = stringResource(R.string.tv_channels)) {
         MyParentColumn(
             Modifier.padding(it)

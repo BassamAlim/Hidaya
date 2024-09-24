@@ -40,7 +40,9 @@ import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -123,11 +125,10 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
     private val receiverManager = ReceiverManager(this, receiver, intentFilter)
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
 
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.Main).launch {
             val language = appSettingsRepository.getLanguage().first()
 
             ActivityUtils.onActivityCreateSetLocale(

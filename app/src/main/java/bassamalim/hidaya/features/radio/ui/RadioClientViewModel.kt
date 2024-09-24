@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.radio.ui
 
+import android.app.Activity
 import android.os.Build
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -52,7 +53,9 @@ class RadioClientViewModel @Inject constructor(
             }
         }
 
-    fun onStart() {
+    fun onStart(activity: Activity) {
+        domain.setActivity(activity)
+
         updatePbState(PlaybackStateCompat.STATE_CONNECTING)
 
         domain.connect(connectionCallbacks)

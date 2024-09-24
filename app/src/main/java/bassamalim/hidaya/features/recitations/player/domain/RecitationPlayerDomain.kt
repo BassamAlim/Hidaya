@@ -38,6 +38,7 @@ class RecitationPlayerDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
+    private lateinit var activity: Activity
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
@@ -46,27 +47,30 @@ class RecitationPlayerDomain @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(UnstableApi::class)
     fun connect(
+        activity: Activity,
         connectionCallbacks: MediaBrowserCompat.ConnectionCallback,
         onComplete: BroadcastReceiver
     ) {
+        this.activity = activity
+
         mediaBrowser = MediaBrowserCompat(
-            app,
-            ComponentName(app, RecitationPlayerService::class.java),
+            activity,
+            ComponentName(activity, RecitationPlayerService::class.java),
             connectionCallbacks,
             null
         )
         mediaBrowser?.connect()
 
-        (app.applicationContext as Activity).volumeControlStream = AudioManager.STREAM_MUSIC
+        activity.volumeControlStream = AudioManager.STREAM_MUSIC
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            app.registerReceiver(
+            activity.registerReceiver(
                 onComplete,
                 IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
                 Context.RECEIVER_NOT_EXPORTED
             )
         else
-            app.registerReceiver(
+            activity.registerReceiver(
                 onComplete,
                 IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
             )
@@ -77,12 +81,12 @@ class RecitationPlayerDomain @Inject constructor(
         onComplete: BroadcastReceiver
     ) {
         try {
-            app.unregisterReceiver(onComplete)
+            activity.unregisterReceiver(onComplete)
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         }
 
-        MediaControllerCompat.getMediaController(app.applicationContext as Activity)
+        MediaControllerCompat.getMediaController(activity)
             ?.unregisterCallback(controllerCallback)
 
         disconnectMediaBrowser()
@@ -99,15 +103,12 @@ class RecitationPlayerDomain @Inject constructor(
         val token = mediaBrowser!!.sessionToken
 
         // Create a MediaControllerCompat
-        val mediaController = MediaControllerCompat(app, token)
+        val mediaController = MediaControllerCompat(activity, token)
 
         // Save the controller
-        MediaControllerCompat.setMediaController(
-            app.applicationContext as Activity,
-            mediaController
-        )
+        MediaControllerCompat.setMediaController(activity, mediaController)
 
-        controller = MediaControllerCompat.getMediaController(app.applicationContext as Activity)
+        controller = MediaControllerCompat.getMediaController(activity)
         tc = controller.transportControls
 
         // Register a Callback to stay in sync
@@ -161,7 +162,7 @@ class RecitationPlayerDomain @Inject constructor(
         request.setDestinationInExternalFilesDir(app, path, "${suraIdx}.mp3")
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
 
-        (app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
+        (activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
     }
 
     fun deleteRecitation() {

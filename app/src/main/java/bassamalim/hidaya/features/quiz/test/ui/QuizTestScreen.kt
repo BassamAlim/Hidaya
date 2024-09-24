@@ -36,6 +36,8 @@ fun QuizTestScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    if (state.isLoading) return
+
     MyScaffold(title = "${stringResource(R.string.question)} ${state.titleQuestionNumber}") {
         Column(
             Modifier.fillMaxSize(),

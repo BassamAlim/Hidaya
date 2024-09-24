@@ -132,8 +132,8 @@ class RecitationPlayerViewModel @Inject constructor(
         }
     }
 
-    fun onStart() {
-        domain.connect(connectionCallbacks, onComplete)
+    fun onStart(activity: Activity) {
+        domain.connect(activity, connectionCallbacks, onComplete)
     }
 
     fun onStop() {

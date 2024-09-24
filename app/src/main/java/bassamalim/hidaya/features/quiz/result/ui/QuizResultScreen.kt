@@ -35,6 +35,8 @@ fun QuizResultScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    if (state.isLoading) return
+
     MyScaffold(title = stringResource(R.string.quiz_result)) {
         Column(
             Modifier
@@ -78,7 +80,7 @@ fun Question(question: QuizResultQuestion) {
         ) {
             // Question number
             MyText(
-                "${stringResource(R.string.question)} ${question.questionNum+1}",
+                "${stringResource(R.string.question)} ${question.questionNum}",
                 Modifier.padding(bottom = 3.dp),
                 fontSize = 16.sp
             )

@@ -48,7 +48,7 @@ fun RecitationPlayerScreen(
     val activity = LocalContext.current as Activity
 
     DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
+        viewModel.onStart(activity)
         onDispose(viewModel::onStop)
     }
 

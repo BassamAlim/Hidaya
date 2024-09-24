@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuizFullQuestion
-import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.quiz.result.domain.QuizResultDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,12 +28,7 @@ class QuizResultViewModel @Inject constructor(
 
     private lateinit var numeralsLanguage: Language
 
-    private val _uiState = MutableStateFlow(QuizResultUiState(
-        score = translateNums(
-            numeralsLanguage = numeralsLanguage,
-            string = (score * 10).toString()
-        )
-    ))
+    private val _uiState = MutableStateFlow(QuizResultUiState())
     val uiState = _uiState.onStart {
         initializeData()
     }.stateIn(
@@ -45,14 +40,20 @@ class QuizResultViewModel @Inject constructor(
     private fun initializeData() {
         viewModelScope.launch {
             numeralsLanguage = domain.getNumeralsLanguage()
+
             _uiState.update { it.copy(
-                questions = getQuestionItems(domain.getFullQuestions(questionIds))
+                isLoading = false,
+                questions = getQuestionItems(domain.getFullQuestions(questionIds)),
+                score = LangUtils.translateNums(
+                    numeralsLanguage = numeralsLanguage,
+                    string = (score * 10).toString()
+                )
             )}
         }
     }
 
-    private fun getQuestionItems(fullQuestions: List<QuizFullQuestion>): List<QuizResultQuestion> {
-        return fullQuestions.mapIndexed { i, q ->
+    private fun getQuestionItems(fullQuestions: List<QuizFullQuestion>) =
+        fullQuestions.mapIndexed { i, q ->
             QuizResultQuestion(
                 questionNum = i + 1,
                 questionText = q.question,
@@ -61,6 +62,5 @@ class QuizResultViewModel @Inject constructor(
                 chosenAnswerId = chosenAnswers[i]
             )
         }
-    }
 
 }

@@ -30,7 +30,6 @@ class QuizTestViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(QuizTestUiState())
     val uiState = _uiState.onStart {
         initializeData()
-        ask(0)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
@@ -41,6 +40,12 @@ class QuizTestViewModel @Inject constructor(
         viewModelScope.launch {
             numeralsLanguage = domain.getNumeralsLanguage()
             questions = domain.getQuizQuestions()
+
+            _uiState.update { it.copy(
+                isLoading = false
+            )}
+
+            updateState()
         }
     }
 
