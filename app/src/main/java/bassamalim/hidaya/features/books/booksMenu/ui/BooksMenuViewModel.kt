@@ -39,16 +39,9 @@ class BooksMenuViewModel @Inject constructor(
             language = domain.getLanguage()
 
             _uiState.update { it.copy(
-                tutorialDialogShown = domain.getShowTutorial().first()
-            )}
-        }
-    }
-
-    fun onStart() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(
                 isLoading = false,
-                books = domain.getBooks(language)
+                books = domain.getBooks(language),
+                tutorialDialogShown = domain.getShowTutorial().first()
             )}
         }
     }

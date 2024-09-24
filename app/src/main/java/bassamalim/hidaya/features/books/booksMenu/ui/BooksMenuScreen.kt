@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -33,11 +32,6 @@ fun BooksMenuScreen(
     viewModel: BooksMenuViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    DisposableEffect(key1 = viewModel) {
-        viewModel.onStart()
-        onDispose {}
-    }
 
     if (state.isLoading) return LoadingScreen()
 
