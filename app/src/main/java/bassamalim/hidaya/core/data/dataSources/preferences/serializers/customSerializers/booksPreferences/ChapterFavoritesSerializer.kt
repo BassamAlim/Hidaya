@@ -1,10 +1,12 @@
 package bassamalim.hidaya.core.data.dataSources.preferences.serializers.customSerializers.booksPreferences
 
+import bassamalim.hidaya.core.data.dataSources.preferences.serializers.customSerializers.IntBooleanPersistentMapSerializer
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.serialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -25,10 +27,14 @@ class ChapterFavoritesSerializer(
     override val descriptor: SerialDescriptor = PersistentMapDescriptor()
 
     override fun serialize(encoder: Encoder, value: PersistentMap<Int, PersistentMap<Int, Boolean>>) {
+        val booleanSerializer = Boolean.serializer()
+        val valueSerializer = IntBooleanPersistentMapSerializer(keySerializer, booleanSerializer)
         return MapSerializer(keySerializer, valueSerializer).serialize(encoder, value)
     }
 
     override fun deserialize(decoder: Decoder): PersistentMap<Int, PersistentMap<Int, Boolean>> {
+        val booleanSerializer = Boolean.serializer()
+        val valueSerializer = IntBooleanPersistentMapSerializer(keySerializer, booleanSerializer)
         return MapSerializer(keySerializer, valueSerializer).deserialize(decoder).toPersistentMap()
     }
 

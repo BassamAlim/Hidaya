@@ -1,16 +1,14 @@
 package bassamalim.hidaya.core.data.repositories
 
 import android.app.Application
-import android.content.res.Resources
-import android.util.Log
-import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.BooksPreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.room.daos.BooksDao
 import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Book
-import bassamalim.hidaya.core.other.Global
+import bassamalim.hidaya.core.models.BookContent
+import bassamalim.hidaya.core.models.BookInfo
 import bassamalim.hidaya.core.utils.FileUtils
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FileDownloadTask
@@ -20,6 +18,7 @@ import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -28,53 +27,121 @@ import javax.inject.Inject
 
 class BooksRepository @Inject constructor(
     private val app: Application,
-    private val resources: Resources,
     private val booksDao: BooksDao,
     private val booksPreferencesDataSource: BooksPreferencesDataSource,
+    private val appSettingsRepository: AppSettingsRepository,
     private val gson: Gson,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
     @ApplicationScope private val scope: CoroutineScope
 ) {
 
     private val prefix = "/Books/"
-    private val path = "${app.getExternalFilesDir(null)}/Books/"
+    private val dir = "${app.getExternalFilesDir(null)}/Books/"
 
-    suspend fun getBooks() = withContext(dispatcher) {
-        booksDao.getAll()
-    }
-
-    fun getBook(bookId: Int): Book {
-        val path = app.getExternalFilesDir(null).toString() + "/Books/" + bookId + ".json"
-        val jsonStr = FileUtils.getJsonFromDownloads(path)
-        return gson.fromJson(jsonStr, Book::class.java)
-    }
-
-    fun getDoors(bookId: Int, chapterId: Int): List<Book.BookChapter.BookDoor> {
-        val book = getBook(bookId)
-        return book.chapters[chapterId].doors.toList()
-    }
-
-    fun getChapterFavorites(book: Book) = booksPreferencesDataSource.getChapterFavorites()
-        .map { chapterFavorites ->
-            if (chapterFavorites.containsKey(book.info.id))
-                chapterFavorites[book.info.id]!!
-            else {
-                val favs = book.chapters.associate { it.id to false }
-                booksPreferencesDataSource.updateChapterFavorites(
-                    chapterFavorites.mutate { oldMap ->
-                        oldMap[book.info.id] = favs.toPersistentMap()
-                    }
-                )
-                favs
-            }
+    suspend fun getBooksMenu(language: Language) = withContext(dispatcher) {
+        booksDao.getAll().map {
+            BookInfo(
+                id = it.id,
+                title = when (language) {
+                    Language.ARABIC -> it.titleAr
+                    Language.ENGLISH -> it.titleEn
+                },
+                author = when (language) {
+                    Language.ARABIC -> it.authorAr
+                    Language.ENGLISH -> it.authorEn
+                },
+                url = it.url,
+                isFavorite = it.isFavorite == 1
+            )
         }
+    }
 
-    suspend fun setChapterFavorites(bookId: Int, favs: Map<Int, Boolean>) {
-        booksPreferencesDataSource.updateChapterFavorites(
-            booksPreferencesDataSource.getChapterFavorites().first().mutate { oldMap ->
-                oldMap[bookId] = favs.toPersistentMap()
+    suspend fun getBookInfo(id: Int, language: Language) = withContext(dispatcher) {
+        booksDao.getById(id).let {
+            BookInfo(
+                id = it.id,
+                title = when (language) {
+                    Language.ARABIC -> it.titleAr
+                    Language.ENGLISH -> it.titleEn
+                },
+                author = when (language) {
+                    Language.ARABIC -> it.authorAr
+                    Language.ENGLISH -> it.authorEn
+                },
+                url = it.url,
+                isFavorite = it.isFavorite == 1
+            )
+        }
+    }
+
+    private fun getBookContent(bookId: Int): BookContent? {
+        if (!isDownloaded(bookId)) return null
+        val jsonStr = FileUtils.getJsonFromDownloads("$dir$bookId.json")
+        return gson.fromJson(jsonStr, BookContent::class.java)
+    }
+
+    suspend fun getBookContents(language: Language): List<BookContent> {
+        if (!File(dir).exists()) return emptyList()
+
+        return getBooksMenu(language)
+            .filter { bookInfo -> isDownloaded(bookInfo.id) }
+            .map { bookInfo ->
+                val jsonStr = FileUtils.getJsonFromDownloads("${dir}${bookInfo.id}.json")
+                gson.fromJson(jsonStr, BookContent::class.java)
+            }
+    }
+
+    suspend fun getFullBook(bookId: Int, language: Language): Book {
+        val bookInfo = getBookInfo(bookId, language)
+        val bookContent = getBookContent(bookId)!!
+        val favorites = getChapterFavorites(bookId).first()
+        return Book(
+            id = bookInfo.id,
+            title = bookInfo.title,
+            chapters = bookContent.chapters.map { chapter ->
+                Book.Chapter(
+                    id = chapter.id,
+                    title = chapter.title,
+                    doors = bookContent.chapters[chapter.id].doors.map { door ->
+                        Book.Chapter.Door(
+                            id = door.id,
+                            title = door.title,
+                            text = door.text
+                        )
+                    },
+                    isFavorite = favorites[chapter.id]!!
+                )
             }
         )
+    }
+
+    suspend fun getBookTitles(language: Language) = withContext(dispatcher) {
+        when (language) {
+            Language.ARABIC -> booksDao.getTitlesAr()
+            Language.ENGLISH -> booksDao.getTitlesEn()
+        }
+    }
+
+    suspend fun getBookTitle(bookId: Int, language: Language) = withContext(dispatcher) {
+        when (language) {
+            Language.ARABIC -> booksDao.getTitleAr(bookId)
+            Language.ENGLISH -> booksDao.getTitleEn(bookId)
+        }
+    }
+
+    fun getDoors(bookId: Int, chapterId: Int) =
+        getBookContent(bookId)!!.chapters[chapterId].doors.toList()
+
+    fun getChapterFavorites(bookId: Int): Flow<Map<Int, Boolean>> {
+        val bookContent = getBookContent(bookId)
+
+        return booksPreferencesDataSource.getChapterFavorites().map {
+            if (it.containsKey(bookId)) it[bookId]!!.toMap()
+            else {
+                val favs = bookContent!!.chapters.associate { it.id to false }
+                it.mutate { oldMap -> oldMap[bookId] = favs.toPersistentMap() }.toMap()
+            }
+        }
     }
 
     suspend fun setChapterFavorite(bookId: Int, chapterNum: Int, newValue: Boolean) {
@@ -91,10 +158,21 @@ class BooksRepository @Inject constructor(
         booksPreferencesDataSource.updateTextSize(textSize)
     }
 
-    fun getSearchSelections() = booksPreferencesDataSource.getSearchSelections()
+    fun getSearchSelections(language: Language): Flow<Map<Int, Boolean>> {
+        return booksPreferencesDataSource.getSearchSelections().map {
+            it.ifEmpty {
+                val books = getBooksMenu(language)
+                it.mutate { oldMap ->
+                    books.forEach { book -> oldMap[book.id] = true }
+                }
+            }.map { (id, isSelected) ->
+                id to if (isDownloaded(id)) isSelected else false
+            }.toMap()
+        }
+    }
 
-    suspend fun setSearchSelections(searchSelections: Map<Int, Boolean>) {
-        booksPreferencesDataSource.updateSearchSelections(searchSelections.toPersistentMap())
+    suspend fun setSearchSelections(selections: Map<Int, Boolean>) {
+        booksPreferencesDataSource.updateSearchSelections(selections.toPersistentMap())
     }
 
     fun getSearchMaxMatches() = booksPreferencesDataSource.getSearchMaxMatches()
@@ -122,13 +200,12 @@ class BooksRepository @Inject constructor(
     }
 
     fun isDownloaded(id: Int): Boolean {
-        val dir = File(path)
+        val dir = File(dir)
         if (!dir.exists()) return false
 
-        val files = dir.listFiles()
-        for (element in files!!) {
-            val name = element.name
-            val n = name.substring(0, name.length - 5)
+        for (file in dir.listFiles()!!) {
+            val fileName = file.name
+            val n = fileName.substring(0, fileName.length - 5)
             try {
                 val num = n.toInt()
                 if (num == id) return true
@@ -138,10 +215,10 @@ class BooksRepository @Inject constructor(
     }
 
     fun isDownloading(bookId: Int): Boolean {
-        val path = app.getExternalFilesDir(null).toString() + prefix + bookId + ".json"
+        val path = "$dir$bookId.json"
         val jsonStr = FileUtils.getJsonFromDownloads(path)
         return try {
-            gson.fromJson(jsonStr, Book::class.java)
+            gson.fromJson(jsonStr, BookContent::class.java)
             false
         } catch (e: Exception) {
             true
@@ -155,48 +232,6 @@ class BooksRepository @Inject constructor(
         )
     }
 
-    fun getBookSelections() =
-        booksPreferencesDataSource.getSearchSelections().map {
-            it.ifEmpty {
-                val books = getBooks()
-                it.mutate { oldMap ->
-                    books.forEach { book -> oldMap[book.id] = true }
-                }
-            }.toMap()
-        }
-
-    suspend fun setBookSelections(selections: Map<Int, Boolean>) {
-        booksPreferencesDataSource.updateSearchSelections(selections.toPersistentMap())
-    }
-
-    suspend fun getBookContents(): List<Book> {
-        val dir = File(path)
-        if (!dir.exists()) return emptyList()
-
-        val books = getBooks()
-
-        val bookContents = mutableListOf<Book>()
-        for (i in books.indices) {
-            val jsonStr = FileUtils.getJsonFromDownloads("$path$i.json")
-            try {
-                val bookContent = gson.fromJson(jsonStr, Book::class.java)
-                if (bookContent != null) bookContents.add(bookContent)
-            } catch (e: Exception) {
-                Log.e(Global.TAG, "Error in json read in BookSearcher")
-                e.printStackTrace()
-                continue
-            }
-        }
-
-        return bookContents
-    }
-
-    fun getMaxMatchesItems(): Array<String> =
-        resources.getStringArray(R.array.searcher_matches_items)
-
-    suspend fun getBookTitles(language: Language) = withContext(dispatcher) {
-        if (language == Language.ENGLISH) booksDao.getTitlesEn()
-        else booksDao.getTitlesAr()
-    }
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
 }

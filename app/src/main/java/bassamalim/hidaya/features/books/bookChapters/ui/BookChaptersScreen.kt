@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.ui.components.MyButtonSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
@@ -21,6 +22,8 @@ fun BookChaptersScreen(
     viewModel: BookChaptersViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    if (state.isLoading) return
 
     MyScaffold(title = state.title) {
         TabLayout(
@@ -48,8 +51,8 @@ fun BookChaptersScreen(
 
 @Composable
 private fun Tab(
-    chaptersFlow: Flow<List<BookChapter>>,
-    onItemClick: (BookChapter) -> Unit,
+    chaptersFlow: Flow<List<Book.Chapter>>,
+    onItemClick: (Book.Chapter) -> Unit,
     onFavClick: (Int) -> Unit
 ) {
     val chapters by chaptersFlow.collectAsStateWithLifecycle(emptyList())

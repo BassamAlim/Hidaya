@@ -14,9 +14,8 @@ sealed class Screen(val route: String) {
     ): Screen("remembrance_reader/$id")
 
     data class BookChaptersMenu(
-        val bookId: String,
-        val bookTitle: String
-    ): Screen("book_chapters_menu/$bookId/$bookTitle")
+        val bookId: String
+    ): Screen("book_chapters_menu/$bookId")
 
     data object BookSearcher: Screen("book_searcher")
 
@@ -24,9 +23,8 @@ sealed class Screen(val route: String) {
 
     data class BookReader(
         val bookId: String,
-        val bookTitle: String,
         val chapterId: String
-    ): Screen("book_reader/$bookId/$bookTitle/$chapterId")
+    ): Screen("book_reader/$bookId/$chapterId")
 
     data object DateConverter: Screen("date_converter")
 

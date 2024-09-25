@@ -127,10 +127,9 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.BookChaptersMenu("{book_id}", "{book_title}").route,
+            route = Screen.BookChaptersMenu("{book_id}").route,
             arguments = listOf(
-                navArgument("book_id") { type = NavType.IntType },
-                navArgument("book_title") { type = NavType.StringType }
+                navArgument("book_id") { type = NavType.IntType }
             ),
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
@@ -168,11 +167,10 @@ fun NavGraph(
 
         composable(
             route = Screen.BookReader(
-                "{book_id}", "{book_title}", "{chapter_id}"
+                "{book_id}", "{chapter_id}"
             ).route,
             arguments = listOf(
                 navArgument("book_id") { type = NavType.IntType },
-                navArgument("book_title") { type = NavType.StringType },
                 navArgument("chapter_id") { type = NavType.IntType }
             ),
             enterTransition = inFromBottom,

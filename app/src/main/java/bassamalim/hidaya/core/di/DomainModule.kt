@@ -70,13 +70,15 @@ object DomainModule {
 
     @Provides @Singleton
     fun provideBookChaptersDomain(
-        booksRepository: BooksRepository
-    ) = BookChaptersDomain(booksRepository)
+        booksRepository: BooksRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = BookChaptersDomain(booksRepository, appSettingsRepository)
 
     @Provides @Singleton
     fun provideBookReaderDomain(
-        booksRepository: BooksRepository
-    ) = BookReaderDomain(booksRepository)
+        booksRepository: BooksRepository,
+        appSettingsRepository: AppSettingsRepository
+    ) = BookReaderDomain(booksRepository, appSettingsRepository)
 
     @Provides @Singleton
     fun provideBookSearcherDomain(

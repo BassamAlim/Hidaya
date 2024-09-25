@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import bassamalim.hidaya.core.models.Book
+import bassamalim.hidaya.core.models.BookContent
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyReadingBottomBar
 import bassamalim.hidaya.core.ui.components.MyScaffold
@@ -25,6 +25,8 @@ fun BookReaderScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    if (state.isLoading) return
+
     MyScaffold(
         title = state.bookTitle,
         bottomBar = {
@@ -37,7 +39,7 @@ fun BookReaderScreen(
         MyLazyColumn(
             modifier = Modifier.padding(it),
             lazyList = {
-                items(state.items) { item ->
+                items(state.doors) { item ->
                     DoorCard(
                         door = item,
                         textSize = state.textSize
@@ -50,7 +52,7 @@ fun BookReaderScreen(
 
 @Composable
 private fun DoorCard(
-    door: Book.BookChapter.BookDoor,
+    door: BookContent.Chapter.Door,
     textSize: Float
 ) {
     val textSizeMargin = 15

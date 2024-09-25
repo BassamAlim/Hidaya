@@ -28,7 +28,7 @@ class BookSearcherViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(BookSearcherUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
-        domain.getBookSelections(),
+        domain.getBookSelections(language),
         domain.getMaxMatches()
     ) { state, bookSelections, maxMatches -> state.copy(
         bookSelections = bookSelections,
@@ -63,6 +63,7 @@ class BookSearcherViewModel @Inject constructor(
                     searchText = it.searchText,
                     bookSelections = it.bookSelections,
                     maxMatches = it.maxMatches,
+                    language = language,
                     highlightColor = highlightColor
                 )
             )}
@@ -92,6 +93,7 @@ class BookSearcherViewModel @Inject constructor(
                         searchText = _uiState.value.searchText,
                         bookSelections = selections,
                         maxMatches = _uiState.value.maxMatches,
+                        language = language,
                         highlightColor = it
                     )
                 }  // re-search if already searched
@@ -108,6 +110,7 @@ class BookSearcherViewModel @Inject constructor(
                     searchText = _uiState.value.searchText,
                     bookSelections = _uiState.value.bookSelections,
                     maxMatches = _uiState.value.maxMatches,
+                    language = language,
                     highlightColor = it
                 )
             }  // re-search if already searched

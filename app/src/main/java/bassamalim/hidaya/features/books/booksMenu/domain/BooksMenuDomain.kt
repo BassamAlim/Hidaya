@@ -17,18 +17,12 @@ class BooksMenuDomain @Inject constructor(
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
-    suspend fun getBooks(language: Language) = booksRepository.getBooks().associate {
+    suspend fun getBooks(language: Language) = booksRepository.getBooksMenu(language).associate {
         it.id to Book(
-            title = when (language) {
-                Language.ARABIC -> it.titleAr
-                Language.ENGLISH -> it.titleEn
-            },
-            author = when (language) {
-                Language.ARABIC -> it.authorAr
-                Language.ENGLISH -> it.authorEn
-            },
+            title = it.title,
+            author = it.author,
             url = it.url,
-            isFavorite = it.isFavorite == 1,
+            isFavorite = it.isFavorite,
             downloadState = getDownloadState(it.id)
         )
     }

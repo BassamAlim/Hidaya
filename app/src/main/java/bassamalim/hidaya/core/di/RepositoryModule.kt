@@ -65,17 +65,17 @@ object RepositoryModule {
     @Provides @Singleton
     fun provideBooksRepository(
         app: Application,
-        resources: Resources,
         booksDao: BooksDao,
         booksPreferencesDataSource: BooksPreferencesDataSource,
+        appSettingsRepository: AppSettingsRepository,
         gson: Gson,
         @DefaultDispatcher dispatcher: CoroutineDispatcher,
         @ApplicationScope scope: CoroutineScope
     ) = BooksRepository(
         app,
-        resources,
         booksDao,
         booksPreferencesDataSource,
+        appSettingsRepository,
         gson,
         dispatcher,
         scope

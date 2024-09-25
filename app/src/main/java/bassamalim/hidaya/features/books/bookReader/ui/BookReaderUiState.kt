@@ -1,9 +1,10 @@
 package bassamalim.hidaya.features.books.bookReader.ui
 
-import bassamalim.hidaya.core.models.Book
+import bassamalim.hidaya.core.models.BookContent
 
 data class BookReaderUiState(
+    val isLoading: Boolean = false,
     val bookTitle: String = "",
-    val textSize: Float = 15f,
-    val items: List<Book.BookChapter.BookDoor> = emptyList()
+    val doors: List<BookContent.Chapter.Door> = emptyList(),
+    val textSize: Float = 15f
 )

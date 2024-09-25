@@ -20,11 +20,12 @@ class BookSearcherDomain @Inject constructor(
         searchText: String,
         bookSelections: Map<Int, Boolean>,
         maxMatches: Int,
+        language: Language,
         highlightColor: Color
     ): List<BookSearcherMatch> {
         val matches = mutableListOf<BookSearcherMatch>()
 
-        val bookContents = booksRepository.getBookContents()
+        val bookContents = booksRepository.getBookContents(language)
         for (i in bookContents.indices) {
             if (!bookSelections[i]!! || !booksRepository.isDownloaded(i))
                 continue
@@ -77,10 +78,11 @@ class BookSearcherDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    fun getBookSelections() = booksRepository.getBookSelections()
+    fun getBookSelections(language: Language) =
+        booksRepository.getSearchSelections(language)
 
     suspend fun setBookSelections(selections: Map<Int, Boolean>) {
-        booksRepository.setBookSelections(selections)
+        booksRepository.setSearchSelections(selections)
     }
 
     fun getMaxMatches() = booksRepository.getSearchMaxMatches()
