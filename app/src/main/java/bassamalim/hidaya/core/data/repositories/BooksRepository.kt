@@ -91,28 +91,31 @@ class BooksRepository @Inject constructor(
             }
     }
 
-    suspend fun getFullBook(bookId: Int, language: Language): Book {
+    suspend fun getFullBook(bookId: Int, language: Language): Flow<Book> {
         val bookInfo = getBookInfo(bookId, language)
         val bookContent = getBookContent(bookId)!!
-        val favorites = getChapterFavorites(bookId).first()
-        return Book(
-            id = bookInfo.id,
-            title = bookInfo.title,
-            chapters = bookContent.chapters.map { chapter ->
-                Book.Chapter(
-                    id = chapter.id,
-                    title = chapter.title,
-                    doors = bookContent.chapters[chapter.id].doors.map { door ->
-                        Book.Chapter.Door(
-                            id = door.id,
-                            title = door.title,
-                            text = door.text
-                        )
-                    },
-                    isFavorite = favorites[chapter.id]!!
-                )
-            }
-        )
+        val favorites = getChapterFavorites(bookId)
+
+        return favorites.map {
+            Book(
+                id = bookInfo.id,
+                title = bookInfo.title,
+                chapters = bookContent.chapters.map { chapter ->
+                    Book.Chapter(
+                        id = chapter.id,
+                        title = chapter.title,
+                        doors = bookContent.chapters[chapter.id].doors.map { door ->
+                            Book.Chapter.Door(
+                                id = door.id,
+                                title = door.title,
+                                text = door.text
+                            )
+                        },
+                        isFavorite = it[chapter.id]!!
+                    )
+                }
+            )
+        }
     }
 
     suspend fun getBookTitles(language: Language) = withContext(dispatcher) {
@@ -139,7 +142,10 @@ class BooksRepository @Inject constructor(
             if (it.containsKey(bookId)) it[bookId]!!.toMap()
             else {
                 val favs = bookContent!!.chapters.associate { it.id to false }
-                it.mutate { oldMap -> oldMap[bookId] = favs.toPersistentMap() }.toMap()
+                booksPreferencesDataSource.updateChapterFavorites(
+                    it.mutate { oldMap -> oldMap[bookId] = favs.toPersistentMap() }
+                )
+                favs
             }
         }
     }

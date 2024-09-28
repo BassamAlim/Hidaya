@@ -13,6 +13,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -29,7 +31,7 @@ class BookChaptersViewModel @Inject constructor(
     private val bookId = savedStateHandle.get<Int>("book_id")?: 0
 
     private lateinit var language: Language
-    private lateinit var book: Book
+    private lateinit var book: Flow<Book>
 
     private val _uiState = MutableStateFlow(BookChaptersUiState())
     val uiState = _uiState.onStart {
@@ -47,7 +49,7 @@ class BookChaptersViewModel @Inject constructor(
 
             _uiState.update { it.copy(
                 isLoading = false,
-                title = book.title
+                title = book.first().title
             )}
         }
     }
@@ -55,9 +57,18 @@ class BookChaptersViewModel @Inject constructor(
     fun getItems(page: Int): Flow<List<Book.Chapter>> {
         val menuType = MenuType.entries[page]
 
-        return when (menuType) {
-            MenuType.FAVORITES -> book.chapters.filter { it.isFavorite }
-            else -> book.chapters
+        val items = when (menuType) {
+            MenuType.FAVORITES -> book.map {
+                it.chapters.filter { book -> book.isFavorite }
+            }
+            else -> book.map { it.chapters }
+        }
+
+        return if (_uiState.value.searchText.isEmpty()) items
+        else items.map {
+            it.filter {
+                it.title.contains(_uiState.value.searchText, true)
+            }
         }
     }
 
@@ -72,7 +83,7 @@ class BookChaptersViewModel @Inject constructor(
             domain.setFavoriteStatus(
                 bookId = bookId,
                 chapterNum = chapterNum,
-                newValue = !book.chapters[chapterNum].isFavorite
+                newValue = !book.first().chapters[chapterNum].isFavorite
             )
         }
     }

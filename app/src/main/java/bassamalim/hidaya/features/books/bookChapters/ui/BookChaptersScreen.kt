@@ -34,8 +34,8 @@ fun BookChaptersScreen(
             searchComponent = {
                 SearchComponent(
                     value = state.searchText,
-                    hint = stringResource(R.string.search),
                     modifier = Modifier.fillMaxWidth(),
+                    hint = stringResource(R.string.search),
                     onValueChange = viewModel::onSearchTextChange
                 )
             }
@@ -43,7 +43,7 @@ fun BookChaptersScreen(
             Tab(
                 chaptersFlow = viewModel.getItems(page),
                 onItemClick = viewModel::onItemClick,
-                onFavClick = viewModel::onFavoriteClick,
+                onFavClick = viewModel::onFavoriteClick
             )
         }
     }
