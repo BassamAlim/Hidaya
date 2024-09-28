@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.books.bookChapters.domain
+package bassamalim.hidaya.features.books.bookChaptersMenu.domain
 
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.BooksRepository

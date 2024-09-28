@@ -20,7 +20,7 @@ import bassamalim.hidaya.core.ui.outToBottom
 import bassamalim.hidaya.core.ui.outToLeft
 import bassamalim.hidaya.core.ui.outToTop
 import bassamalim.hidaya.features.about.ui.AboutScreen
-import bassamalim.hidaya.features.books.bookChapters.ui.BookChaptersScreen
+import bassamalim.hidaya.features.books.bookChaptersMenu.ui.BookChaptersScreen
 import bassamalim.hidaya.features.books.bookReader.ui.BookReaderScreen
 import bassamalim.hidaya.features.books.bookSearcher.ui.BookSearcherScreen
 import bassamalim.hidaya.features.books.booksMenu.ui.BooksMenuScreen
@@ -40,9 +40,11 @@ import bassamalim.hidaya.features.quiz.result.ui.QuizResultScreen
 import bassamalim.hidaya.features.quiz.test.ui.QuizTestScreen
 import bassamalim.hidaya.features.quran.reader.ui.QuranReaderScreen
 import bassamalim.hidaya.features.quran.searcher.ui.QuranSearcherScreen
+import bassamalim.hidaya.features.quran.settings.ui.QuranSettingsDialog
 import bassamalim.hidaya.features.radio.ui.RadioClientScreen
 import bassamalim.hidaya.features.recitations.player.ui.RecitationPlayerScreen
 import bassamalim.hidaya.features.recitations.recitersMenu.ui.RecitationRecitersMenuScreen
+import bassamalim.hidaya.features.recitations.recitersMenuFilter.ui.RecitersMenuFilterDialog
 import bassamalim.hidaya.features.recitations.surasMenu.ui.RecitationSurasMenuScreen
 import bassamalim.hidaya.features.remembrances.reader.ui.RemembranceReaderScreen
 import bassamalim.hidaya.features.remembrances.remembrancesMenu.ui.RemembrancesMenuScreen
@@ -96,37 +98,6 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.RemembrancesMenu("{type}", "{category_id}").route,
-            arguments = listOf(
-                navArgument("type") { type = NavType.StringType },
-                navArgument("category_id") { type = NavType.IntType }
-            ),
-            enterTransition = inFromBottom,
-            exitTransition = outToBottom,
-            popEnterTransition = inFromTop,
-            popExitTransition = outToTop
-        ) {
-            RemembrancesMenuScreen(
-                hiltViewModel()
-            )
-        }
-
-        composable(
-            route = Screen.RemembranceReader("{remembrance_id}").route,
-            arguments = listOf(
-                navArgument("remembrance_id") { type = NavType.IntType }
-            ),
-            enterTransition = inFromBottom,
-            exitTransition = outToBottom,
-            popEnterTransition = inFromTop,
-            popExitTransition = outToTop
-        ) {
-            RemembranceReaderScreen(
-                hiltViewModel()
-            )
-        }
-
-        composable(
             route = Screen.BookChaptersMenu("{book_id}").route,
             arguments = listOf(
                 navArgument("book_id") { type = NavType.IntType }
@@ -137,6 +108,24 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             BookChaptersScreen(
+                hiltViewModel()
+            )
+        }
+
+        composable(
+            route = Screen.BookReader(
+                "{book_id}", "{chapter_id}"
+            ).route,
+            arguments = listOf(
+                navArgument("book_id") { type = NavType.IntType },
+                navArgument("chapter_id") { type = NavType.IntType }
+            ),
+            enterTransition = inFromBottom,
+            exitTransition = outToBottom,
+            popEnterTransition = inFromTop,
+            popExitTransition = outToTop
+        ) {
+            BookReaderScreen(
                 hiltViewModel()
             )
         }
@@ -161,24 +150,6 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             BooksMenuScreen(
-                hiltViewModel()
-            )
-        }
-
-        composable(
-            route = Screen.BookReader(
-                "{book_id}", "{chapter_id}"
-            ).route,
-            arguments = listOf(
-                navArgument("book_id") { type = NavType.IntType },
-                navArgument("chapter_id") { type = NavType.IntType }
-            ),
-            enterTransition = inFromBottom,
-            exitTransition = outToBottom,
-            popEnterTransition = inFromTop,
-            popExitTransition = outToTop
-        ) {
-            BookReaderScreen(
                 hiltViewModel()
             )
         }
@@ -262,6 +233,18 @@ fun NavGraph(
             )
         }
 
+        composable(
+            route = Screen.Onboarding.route,
+            enterTransition = inFromBottom,
+            exitTransition = outToBottom,
+            popEnterTransition = inFromTop,
+            popExitTransition = outToTop
+        ) {
+            OnboardingScreen(
+                hiltViewModel()
+            )
+        }
+
         dialog(
             route = Screen.PrayerExtraReminderSettings("{prayer_name}").route,
             arguments = listOf(
@@ -340,18 +323,6 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.QuranSearcher.route,
-            enterTransition = inFromBottom,
-            exitTransition = outToBottom,
-            popEnterTransition = inFromTop,
-            popExitTransition = outToTop
-        ) {
-            QuranSearcherScreen(
-                hiltViewModel()
-            )
-        }
-
-        composable(
             route = Screen.QuranReader("{target_type}", "{target_value}").route,
             arguments = listOf(
                 navArgument("target_type") { type = NavType.StringType },
@@ -368,7 +339,27 @@ fun NavGraph(
         }
 
         composable(
-            route = Screen.RadioClient.route,
+            route = Screen.QuranSearcher.route,
+            enterTransition = inFromBottom,
+            exitTransition = outToBottom,
+            popEnterTransition = inFromTop,
+            popExitTransition = outToTop
+        ) {
+            QuranSearcherScreen(
+                hiltViewModel()
+            )
+        }
+
+        dialog(
+            route = Screen.QuranSettings.route
+        ) {
+            QuranSettingsDialog(
+                hiltViewModel()
+            )
+        }
+
+        composable(
+            route = Screen.Radio.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
             popEnterTransition = inFromTop,
@@ -379,18 +370,6 @@ fun NavGraph(
                     hiltViewModel()
                 )
             }
-        }
-
-        composable(
-            route = Screen.Settings.route,
-            enterTransition = inFromBottom,
-            exitTransition = outToBottom,
-            popEnterTransition = inFromTop,
-            popExitTransition = outToTop
-        ) {
-            SettingsScreen(
-                hiltViewModel()
-            )
         }
 
         composable(
@@ -409,6 +388,14 @@ fun NavGraph(
                     hiltViewModel()
                 )
             }
+        }
+
+        dialog(
+            route = Screen.RecitersMenuFilter.route
+        ) {
+            RecitersMenuFilterDialog(
+                hiltViewModel()
+            )
         }
 
         composable(
@@ -442,6 +429,49 @@ fun NavGraph(
         }
 
         composable(
+            route = Screen.RemembranceReader("{remembrance_id}").route,
+            arguments = listOf(
+                navArgument("remembrance_id") { type = NavType.IntType }
+            ),
+            enterTransition = inFromBottom,
+            exitTransition = outToBottom,
+            popEnterTransition = inFromTop,
+            popExitTransition = outToTop
+        ) {
+            RemembranceReaderScreen(
+                hiltViewModel()
+            )
+        }
+
+        composable(
+            route = Screen.RemembrancesMenu("{type}", "{category_id}").route,
+            arguments = listOf(
+                navArgument("type") { type = NavType.StringType },
+                navArgument("category_id") { type = NavType.IntType }
+            ),
+            enterTransition = inFromBottom,
+            exitTransition = outToBottom,
+            popEnterTransition = inFromTop,
+            popExitTransition = outToTop
+        ) {
+            RemembrancesMenuScreen(
+                hiltViewModel()
+            )
+        }
+
+        composable(
+            route = Screen.Settings.route,
+            enterTransition = inFromBottom,
+            exitTransition = outToBottom,
+            popEnterTransition = inFromTop,
+            popExitTransition = outToTop
+        ) {
+            SettingsScreen(
+                hiltViewModel()
+            )
+        }
+
+        composable(
             route = Screen.Tv.route,
             enterTransition = inFromBottom,
             exitTransition = outToBottom,
@@ -449,18 +479,6 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             TvScreen(
-                hiltViewModel()
-            )
-        }
-
-        composable(
-            route = Screen.Onboarding.route,
-            enterTransition = inFromBottom,
-            exitTransition = outToBottom,
-            popEnterTransition = inFromTop,
-            popExitTransition = outToTop
-        ) {
-            OnboardingScreen(
                 hiltViewModel()
             )
         }

@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.books.bookChapters.ui
+package bassamalim.hidaya.features.books.bookChaptersMenu.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.items

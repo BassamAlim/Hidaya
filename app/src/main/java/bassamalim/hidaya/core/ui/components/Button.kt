@@ -349,7 +349,7 @@ fun MyFavoriteButton(
 }
 
 @Composable
-fun MyDownloadBtn(
+fun MyDownloadButton(
     state: DownloadState,
     modifier: Modifier = Modifier,
     size: Dp = 26.dp,

@@ -15,7 +15,7 @@ import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.features.about.domain.AboutDomain
-import bassamalim.hidaya.features.books.bookChapters.domain.BookChaptersDomain
+import bassamalim.hidaya.features.books.bookChaptersMenu.domain.BookChaptersDomain
 import bassamalim.hidaya.features.books.bookReader.domain.BookReaderDomain
 import bassamalim.hidaya.features.books.bookSearcher.domain.BookSearcherDomain
 import bassamalim.hidaya.features.books.booksMenu.domain.BooksMenuDomain

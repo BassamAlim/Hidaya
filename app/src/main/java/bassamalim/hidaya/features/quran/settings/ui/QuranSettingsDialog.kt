@@ -29,16 +29,14 @@ import bassamalim.hidaya.features.settings.ui.SwitchSetting
 
 @Composable
 fun QuranSettingsDialog(
-    viewModel: QuranSettingsViewModel,
-    shown: Boolean,
-    onDone: () -> Unit
+    viewModel: QuranSettingsViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.isLoading) return
 
     MyDialog(
-        shown = shown
+        shown = true
     ) {
         Column(
             Modifier
@@ -105,7 +103,6 @@ fun QuranSettingsDialog(
             )
 
             BottomBar(
-                onDone = onDone,
                 onCancel = viewModel::onCancel,
                 onSave = viewModel::onSave
             )
@@ -114,22 +111,18 @@ fun QuranSettingsDialog(
 }
 
 @Composable
-private fun BottomBar(
-    onDone: () -> Unit,
-    onCancel: (() -> Unit) -> Unit,
-    onSave: (() -> Unit) -> Unit
-) {
+private fun BottomBar(onCancel: () -> Unit, onSave: () -> Unit) {
     MyRow {
         MySquareButton(
             text = stringResource(R.string.cancel),
             modifier = Modifier.fillMaxWidth(),
-            onClick = { onCancel(onDone) }
+            onClick = onCancel
         )
 
         MySquareButton(
             text = stringResource(R.string.save),
             modifier = Modifier.fillMaxWidth(),
-            onClick = { onSave(onDone) }
+            onClick = onSave
         )
     }
 }

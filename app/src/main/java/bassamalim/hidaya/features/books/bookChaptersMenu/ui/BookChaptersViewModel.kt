@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.books.bookChapters.ui
+package bassamalim.hidaya.features.books.bookChaptersMenu.ui
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -8,7 +8,7 @@ import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.core.models.Book
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
-import bassamalim.hidaya.features.books.bookChapters.domain.BookChaptersDomain
+import bassamalim.hidaya.features.books.bookChaptersMenu.domain.BookChaptersDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

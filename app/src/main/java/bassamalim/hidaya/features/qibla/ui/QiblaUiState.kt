@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.qibla.ui
 
 data class QiblaUiState(
+    val isLoading: Boolean = true,
     val error: Boolean = false,
     val errorMassageResId: Int = -1,
     val qiblaAngle: Float = 0F,

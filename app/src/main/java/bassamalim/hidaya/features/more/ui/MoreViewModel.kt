@@ -50,7 +50,7 @@ class MoreViewModel @Inject constructor(
 
     fun onRadioClick() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            navigator.navigate(Screen.RadioClient)
+            navigator.navigate(Screen.Radio)
         else {
             _uiState.update { it.copy(
                 shouldShowUnsupported = true

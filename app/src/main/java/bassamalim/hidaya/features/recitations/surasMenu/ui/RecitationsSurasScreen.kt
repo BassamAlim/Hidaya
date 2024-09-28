@@ -16,7 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
-import bassamalim.hidaya.core.ui.components.MyDownloadBtn
+import bassamalim.hidaya.core.ui.components.MyDownloadButton
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
@@ -105,7 +105,7 @@ private fun SuraCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            MyDownloadBtn(
+            MyDownloadButton(
                 state = sura.downloadState,
                 size = 28.dp,
                 onClick = { onDownloadClick(sura) }

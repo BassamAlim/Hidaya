@@ -8,8 +8,10 @@ import bassamalim.hidaya.core.data.dataSources.room.daos.VerseRecitationsDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.VerseRecitersDao
 import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.di.DefaultDispatcher
+import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.VerseRepeatMode
+import bassamalim.hidaya.core.models.Narration
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.models.Reciter
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
@@ -19,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 class RecitationsRepository @Inject constructor(
@@ -34,6 +37,7 @@ class RecitationsRepository @Inject constructor(
 
     val prefix = "/Telawat/"
     val dir = "${app.getExternalFilesDir(null)}$prefix"
+    private val downloading = mutableMapOf<Long, Pair<Int, Int>>()
 
     fun observeAllReciters(language: Language) =
         recitationRecitersDao.observeAll().map {
@@ -99,45 +103,15 @@ class RecitationsRepository @Inject constructor(
 
     suspend fun getAllNarrations(language: Language) = withContext(dispatcher) {
         recitationNarrationsDao.getAll().map {
-            Recitation.Narration(
+            Narration(
                 id = it.id,
+                reciterId = it.reciterId,
                 name = when (language) {
                     Language.ARABIC -> it.nameAr
                     Language.ENGLISH -> it.nameEn
                 },
                 server = it.url,
                 availableSuras = it.availableSuras
-            )
-        }
-    }
-
-    suspend fun getReciterWithNarrations(reciterId: Int, language: Language): Recitation {
-        val reciter = getReciter(reciterId, language)
-        val narrations = getReciterNarrations(reciterId, language)
-
-        return Recitation(
-            reciterId = reciter.id,
-            reciterName = reciter.name,
-            reciterIsFavorite = reciter.isFavorite,
-            narrations = narrations.map {
-                Recitation.Narration(
-                    id = it.id,
-                    name = it.name,
-                    server = it.server,
-                    availableSuras = it.availableSuras
-                )
-            }
-        )
-    }
-
-    suspend fun getAllRecitations(language: Language): List<Recitation> {
-        val reciters = getAllReciters(language)
-        return reciters.map {
-            Recitation(
-                reciterId = it.id,
-                reciterName = it.name,
-                reciterIsFavorite = it.isFavorite,
-                narrations = getReciterNarrations(it.id, language)
             )
         }
     }
@@ -158,17 +132,51 @@ class RecitationsRepository @Inject constructor(
         }
     }
 
-    fun getNarrationSelections() = recitationsPreferencesDataSource.getNarrationSelections().map {
-        it.ifEmpty {
-            withContext(dispatcher) {
-                val narrations = recitationNarrationsDao.getAll()
-                narrations.associate { narration -> narration.id to true }
+    suspend fun getNarrationSelections(language: Language): Map<String, Boolean> {
+        val narrations = getAllNarrations(language).distinct()
+        val selections = recitationsPreferencesDataSource.getNarrationSelections()
+            .first().toMutableMap()
+
+        var added = false
+        for (narration in narrations) {
+            if (!selections.containsKey(narration.name)) {
+                selections[narration.name] = true
+                added = true
             }
         }
+        if (added) setNarrationSelections(selections)
+
+        return selections
     }
 
-    suspend fun setNarrationSelections(selections: Map<Int, Boolean>) {
+    suspend fun setNarrationSelections(selections: Map<String, Boolean>) {
         recitationsPreferencesDataSource.updateNarrationSelections(selections.toPersistentMap())
+    }
+
+    private fun isFileExists(reciterId: Int, narrationId: Int) =
+        File("${dir}${reciterId}/${narrationId}").exists()
+
+    fun getNarrationDownloadStates(ids: Map<Int, List<Int>>): Map<Int, Map<Int, DownloadState>> {
+        return ids.map { (reciterId, narrationIds) ->
+            reciterId to narrationIds.associateWith { narrationId ->
+                if (isFileExists(reciterId, narrationId)) {
+                    if (isDownloading(reciterId, narrationId)) DownloadState.DOWNLOADING
+                    else DownloadState.DOWNLOADED
+                }
+                else DownloadState.NOT_DOWNLOADED
+            }
+        }.toMap()
+    }
+
+    private fun isDownloading(reciterId: Int, narrationId: Int) =
+        downloading.containsValue(Pair(reciterId, narrationId))
+
+    fun addToDownloading(downloadId: Long, reciterId: Int, narrationId: Int) {
+        downloading[downloadId] = Pair(reciterId, narrationId)
+    }
+
+    fun removeFromDownloading(downloadId: Long) {
+        downloading.remove(downloadId)
     }
 
     fun getRepeatMode() = recitationsPreferencesDataSource.getRepeatMode()
@@ -217,7 +225,7 @@ class RecitationsRepository @Inject constructor(
         verseRecitersDao.getNames()
     }
 
-    private suspend fun getReciter(id: Int, language: Language) = withContext(dispatcher) {
+    suspend fun getReciter(id: Int, language: Language) = withContext(dispatcher) {
         recitationRecitersDao.getReciter(id).let {
             Reciter(
                 id = it.id,
@@ -239,10 +247,6 @@ class RecitationsRepository @Inject constructor(
 
     suspend fun getNarration(reciterId: Int, narrationId: Int) = withContext(dispatcher) {
         recitationNarrationsDao.getNarration(reciterId, narrationId)
-    }
-
-    suspend fun getAllNarrations() = withContext(dispatcher) {
-        recitationNarrationsDao.getAll()
     }
 
     suspend fun getAllVerseRecitations() = withContext(dispatcher) {

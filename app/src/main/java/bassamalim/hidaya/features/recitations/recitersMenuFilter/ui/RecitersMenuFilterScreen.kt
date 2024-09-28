@@ -1,4 +1,4 @@
-package bassamalim.hidaya.core.ui.components
+package bassamalim.hidaya.features.recitations.recitersMenuFilter.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,30 +7,37 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.MyDialog
+import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MySquareButton
+import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun FilterDialog(
-    shown: Boolean,
-    title: String,
-    itemTitles: List<String>,
-    itemSelections: Map<Int, Boolean>,
-    onDismiss: (Map<Int, Boolean>) -> Unit
+fun RecitersMenuFilterDialog(
+    viewModel: RecitersMenuFilterViewModel
 ) {
-    val selections = itemSelections.toMutableMap()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyDialog(shown) {
+    if (state.isLoading) return
+
+    MyDialog(
+        shown = true,
+        onDismiss = viewModel::onDismiss
+    ) {
         Column(
             Modifier
                 .fillMaxWidth()
@@ -38,22 +45,22 @@ fun FilterDialog(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MyText(
-                title,
+                text = stringResource(R.string.choose_narration),
+                modifier = Modifier.padding(vertical = 10.dp),
                 fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 10.dp)
+                fontWeight = FontWeight.Bold
             )
 
             MyLazyColumn(
                 Modifier.heightIn(0.dp, 300.dp),
                 lazyList = {
-                    itemsIndexed(itemTitles) { index, _ ->
+
+                    items(state.options.toList()) { (name, isSelected) ->
                         CheckboxListItem(
-                            title = itemTitles[index],
-                            isChecked = selections[index]!!
-                        ) { isSelected ->
-                            selections[index] = isSelected
-                        }
+                            title = name,
+                            isChecked = isSelected,
+                            onCheckedChange = { viewModel.onSelection(name, it) }
+                        )
                     }
                 }
             )
@@ -67,26 +74,21 @@ fun FilterDialog(
                 MyText(
                     stringResource(R.string.select_all),
                     textColor = AppTheme.colors.accent,
-                    modifier = Modifier.clickable {
-                        selections.mapValues { true }
-                    }
+                    modifier = Modifier.clickable(onClick = viewModel::onSelectAll)
                 )
 
                 MyText(
                     stringResource(R.string.unselect_all),
-                    modifier = Modifier.clickable {
-                        selections.mapValues { false }
-                    },
+                    modifier = Modifier.clickable(onClick = viewModel::onUnselectAll),
                     textColor = AppTheme.colors.accent
                 )
             }
 
             MySquareButton(
                 text = stringResource(R.string.select),
-                modifier = Modifier.padding(horizontal = 10.dp)
-            ) {
-                onDismiss(selections)
-            }
+                modifier = Modifier.padding(horizontal = 10.dp),
+                onClick = viewModel::onSave
+            )
         }
     }
 }

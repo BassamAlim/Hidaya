@@ -4,27 +4,18 @@ sealed class Screen(val route: String) {
 
     data object About: Screen("about")
 
-    data class RemembrancesMenu(
-        val type: String,
-        val categoryId: String="0"
-    ): Screen("remembrances_menu/$type/$categoryId")
-
-    data class RemembranceReader(
-        val id: String
-    ): Screen("remembrance_reader/$id")
-
     data class BookChaptersMenu(
         val bookId: String
     ): Screen("book_chapters_menu/$bookId")
-
-    data object BookSearcher: Screen("book_searcher")
-
-    data object BooksMenu: Screen("books_menu")
 
     data class BookReader(
         val bookId: String,
         val chapterId: String
     ): Screen("book_reader/$bookId/$chapterId")
+
+    data object BookSearcher: Screen("book_searcher")
+
+    data object BooksMenu: Screen("books_menu")
 
     data object DateConverter: Screen("date_converter")
 
@@ -43,6 +34,8 @@ sealed class Screen(val route: String) {
     ): Screen("locator/$isInitial")
 
     data object Main: Screen("main")
+
+    data object Onboarding: Screen("onboarding")
 
     data class PrayerExtraReminderSettings(
         val prayerName: String
@@ -64,21 +57,23 @@ sealed class Screen(val route: String) {
 
     data object QuizTest: Screen("quiz_test")
 
-    data object QuranSearcher: Screen("quran_searcher")
-
     data class QuranReader(
         val targetType: String,
         val targetValue: String = "-1",
     ): Screen("quran_reader/$targetType/$targetValue")
 
-    data object RadioClient: Screen("radio_client")
+    data object QuranSearcher: Screen("quran_searcher")
 
-    data object Settings: Screen("settings")
+    data object QuranSettings: Screen("quran_settings")
+
+    data object Radio: Screen("radio")
 
     data class RecitationPlayer(
         val action: String,
         val mediaId: String
     ): Screen("recitations_player/$action/$mediaId")
+
+    data object RecitersMenuFilter: Screen("reciters_menu_filter")
 
     data object RecitationsRecitersMenu: Screen("recitations_reciters_menu")
 
@@ -87,8 +82,17 @@ sealed class Screen(val route: String) {
         val narrationId: String
     ): Screen("recitation_suras_menu/$reciterId/$narrationId")
 
-    data object Tv: Screen("tv")
+    data class RemembranceReader(
+        val id: String
+    ): Screen("remembrance_reader/$id")
 
-    data object Onboarding: Screen("onboarding")
+    data class RemembrancesMenu(
+        val type: String,
+        val categoryId: String="0"
+    ): Screen("remembrances_menu/$type/$categoryId")
+
+    data object Settings: Screen("settings")
+
+    data object Tv: Screen("tv")
 
 }

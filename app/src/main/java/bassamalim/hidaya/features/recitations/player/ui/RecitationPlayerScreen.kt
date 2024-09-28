@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.DownloadState
-import bassamalim.hidaya.core.ui.components.MyDownloadBtn
+import bassamalim.hidaya.core.ui.components.MyDownloadButton
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyIconPlayerBtn
 import bassamalim.hidaya.core.ui.components.MyRow
@@ -249,7 +249,7 @@ private fun BottomBar(
                 onClick = onRepeatClick
             )
 
-            MyDownloadBtn(
+            MyDownloadButton(
                 state = downloadState,
                 onClick = onDownloadClick,
             )

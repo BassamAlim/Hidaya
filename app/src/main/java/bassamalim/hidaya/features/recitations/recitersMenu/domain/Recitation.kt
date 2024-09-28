@@ -1,5 +1,6 @@
-package bassamalim.hidaya.core.models
+package bassamalim.hidaya.features.recitations.recitersMenu.domain
 
+import bassamalim.hidaya.core.enums.DownloadState
 import java.io.Serializable
 
 data class Recitation(
@@ -12,6 +13,7 @@ data class Recitation(
         val id: Int,
         val name: String,
         val server: String,
-        val availableSuras: String
+        val availableSuras: String,
+        val downloadState: DownloadState
     ) : Serializable
 }

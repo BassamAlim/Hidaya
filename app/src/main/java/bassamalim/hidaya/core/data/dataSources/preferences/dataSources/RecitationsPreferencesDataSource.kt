@@ -28,7 +28,7 @@ class RecitationsPreferencesDataSource(
     }
 
     fun getNarrationSelections() = flow.map { it.narrationSelections }
-    suspend fun updateNarrationSelections(selections: PersistentMap<Int, Boolean>) {
+    suspend fun updateNarrationSelections(selections: PersistentMap<String, Boolean>) {
         dataStore.updateData { preferences ->
             preferences.copy(narrationSelections = selections)
         }

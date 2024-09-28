@@ -59,21 +59,23 @@ class QiblaViewModel @Inject constructor(
                     )}
                 }
             )
-        }
 
-        if (domain.location != null) {
-            _uiState.update { it.copy(
-                distanceToKaaba = translateNums(
-                    numeralsLanguage = numeralsLanguage,
-                    string = domain.getDistance().toString()
-                )
-            )}
-        }
-        else {
-            _uiState.update { it.copy(
-                error = true,
-                errorMassageResId = R.string.location_permission_for_qibla
-            )}
+            if (domain.location != null) {
+                _uiState.update { it.copy(
+                    isLoading = false,
+                    distanceToKaaba = translateNums(
+                        numeralsLanguage = numeralsLanguage,
+                        string = domain.getDistance().toString()
+                    )
+                )}
+            }
+            else {
+                _uiState.update { it.copy(
+                    isLoading = false,
+                    error = true,
+                    errorMassageResId = R.string.location_permission_for_qibla
+                )}
+            }
         }
     }
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.VerseRepeatMode
+import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 import bassamalim.hidaya.features.quran.settings.domain.QuranSettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuranSettingsViewModel @Inject constructor(
-    private val domain: QuranSettingsDomain
+    private val domain: QuranSettingsDomain,
+    private val navigator: Navigator
 ): ViewModel() {
 
     lateinit var numeralsLanguage: Language
@@ -89,11 +91,11 @@ class QuranSettingsViewModel @Inject constructor(
         )}
     }
 
-    fun onCancel(mainOnDone: () -> Unit) {
-        mainOnDone()
+    fun onCancel() {
+        navigator.popBackStack()
     }
 
-    fun onSave(mainOnDone: () -> Unit) {
+    fun onSave() {
         viewModelScope.launch {
             domain.setViewType(uiState.value.viewType)
             domain.setTextSize(uiState.value.textSize)
@@ -102,7 +104,7 @@ class QuranSettingsViewModel @Inject constructor(
             domain.setShouldStopOnSuraEnd(uiState.value.shouldStopOnSuraEnd)
             domain.setShouldStopOnPageEnd(uiState.value.shouldStopOnPageEnd)
 
-            mainOnDone()
+            navigator.popBackStack()
         }
     }
 

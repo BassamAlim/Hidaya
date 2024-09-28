@@ -23,10 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.enums.DownloadState
-import bassamalim.hidaya.core.models.Recitation
-import bassamalim.hidaya.core.ui.components.FilterDialog
-import bassamalim.hidaya.core.ui.components.MyDownloadBtn
+import bassamalim.hidaya.core.ui.components.MyDownloadButton
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyIconButton
@@ -37,6 +34,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.theme.AppTheme
+import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -44,6 +42,8 @@ fun RecitationRecitersMenuScreen(
     viewModel: RecitationRecitersMenuViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    if (state.isLoading) return
 
     DisposableEffect(key1 = viewModel) {
         viewModel.onStart()
@@ -57,13 +57,13 @@ fun RecitationRecitersMenuScreen(
         Column {
             MySquareButton(
                 text =
-                if (state.lastPlayedMedia != null) {
-                    "${stringResource(R.string.last_play)}: " +
-                            "${stringResource(R.string.sura)} ${state.lastPlayedMedia!!.suraName} " +
-                            "${stringResource(R.string.for_reciter)} ${state.lastPlayedMedia!!.reciterName}" +
-                            "${stringResource(R.string.in_narration_of)} ${state.lastPlayedMedia!!.narrationName}"
-                }
-                else stringResource(R.string.no_last_play),
+                    if (state.lastPlayedMedia != null) {
+                        "${stringResource(R.string.last_play)}: " +
+                                "${stringResource(R.string.sura)} ${state.lastPlayedMedia!!.suraName} " +
+                                "${stringResource(R.string.for_reciter)} ${state.lastPlayedMedia!!.reciterName}" +
+                                "${stringResource(R.string.in_narration_of)} ${state.lastPlayedMedia!!.narrationName}"
+                    }
+                    else stringResource(R.string.no_last_play),
                 modifier = Modifier.fillMaxWidth(),
                 fontSize = 18.sp,
                 innerPadding = PaddingValues(vertical = 4.dp),
@@ -103,39 +103,29 @@ fun RecitationRecitersMenuScreen(
             ) { page ->
                 Tab(
                     itemsFlow = viewModel.getItems(page),
-                    downloadStates = state.downloadStates,
                     onFavoriteClick = viewModel::onFavoriteClick,
                     onNarrationClick = viewModel::onNarrationClick,
                     onDownloadNarrationClick = viewModel::onDownloadNarrationClick
                 )
             }
         }
-
-        FilterDialog(
-            shown = state.filterDialogShown,
-            title = stringResource(R.string.choose_narration),
-            itemTitles = viewModel.narrationOptions,
-            itemSelections = state.narrationSelections,
-            onDismiss = viewModel::onFilterDialogDismiss
-        )
     }
 }
 
 @Composable
 private fun Tab(
     itemsFlow: Flow<List<Recitation>>,
-    downloadStates: Map<Int, DownloadState>,
     onFavoriteClick: (Int, Boolean) -> Unit,
     onNarrationClick: (Int, Int) -> Unit,
     onDownloadNarrationClick: (Int, Recitation.Narration, String) -> Unit
 ) {
     val items by itemsFlow.collectAsStateWithLifecycle(initialValue = emptyList())
+
     MyLazyColumn(
         lazyList = {
             items(items) { item ->
                 ReciterCard(
                     reciter = item,
-                    downloadStates = downloadStates,
                     onFavoriteClick = onFavoriteClick,
                     onNarrationClick = onNarrationClick,
                     onDownloadNarrationClick = onDownloadNarrationClick
@@ -148,7 +138,6 @@ private fun Tab(
 @Composable
 private fun ReciterCard(
     reciter: Recitation,
-    downloadStates: Map<Int, DownloadState>,
     onFavoriteClick: (Int, Boolean) -> Unit,
     onNarrationClick: (Int, Int) -> Unit,
     onDownloadNarrationClick: (Int, Recitation.Narration, String) -> Unit
@@ -180,8 +169,8 @@ private fun ReciterCard(
                 )
 
                 MyFavoriteButton(
-                    isFavorite = reciter.reciterIsFavorite,
-                    onClick = { onFavoriteClick(reciter.reciterId, reciter.reciterIsFavorite) }
+                    isFavorite = reciter.isFavoriteReciter,
+                    onClick = { onFavoriteClick(reciter.reciterId, reciter.isFavoriteReciter) }
                 )
             }
 
@@ -195,7 +184,6 @@ private fun ReciterCard(
                         idx = idx,
                         reciterId = reciter.reciterId,
                         narration = narration,
-                        downloadStates = downloadStates,
                         onNarrationClick = onNarrationClick,
                         onDownloadClick = onDownloadNarrationClick
                     )
@@ -210,7 +198,6 @@ private fun NarrationsCard(
     idx: Int,
     reciterId: Int,
     narration: Recitation.Narration,
-    downloadStates: Map<Int, DownloadState>,
     onNarrationClick: (Int, Int) -> Unit,
     onDownloadClick: (Int, Recitation.Narration, String) -> Unit
 ) {
@@ -241,10 +228,8 @@ private fun NarrationsCard(
                     modifier = Modifier.weight(1F)
                 )
 
-                MyDownloadBtn(
-                    state =
-                        if (downloadStates.isEmpty()) DownloadState.NOT_DOWNLOADED
-                        else downloadStates[narration.id]!!,
+                MyDownloadButton(
+                    state = narration.downloadState,
                     size = 28.dp,
                     onClick = { onDownloadClick(reciterId, narration, suraString) }
                 )

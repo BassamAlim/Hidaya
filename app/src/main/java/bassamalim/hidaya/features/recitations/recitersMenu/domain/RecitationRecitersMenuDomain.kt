@@ -4,16 +4,20 @@ import android.app.Application
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.utils.FileUtils
+import bassamalim.hidaya.features.quran.surasMenu.ui.LastPlayedMedia
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.io.File
 import java.util.Locale
 import javax.inject.Inject
@@ -25,25 +29,58 @@ class RecitationRecitersMenuDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    private val downloading = HashMap<Long, Int>()
+    suspend fun observeRecitersWithNarrations(language: Language): Flow<List<Recitation>> {
+        val allReciters = recitationsRepository.observeAllReciters(language)
+        val allNarrations = recitationsRepository.getAllNarrations(language)
+        val downloadStates = recitationsRepository.getNarrationDownloadStates(
+            ids = allReciters.first().associate { reciter ->
+                reciter.id to allNarrations.filter { narration ->
+                    narration.reciterId == reciter.id
+                }.map { narration ->
+                    narration.id
+                }
+            }
+        )
 
-    fun registerDownloadReceiver(onComplete: BroadcastReceiver) {
+        return allReciters.map {
+            it.map { reciter ->
+                Recitation(
+                    reciterId = reciter.id,
+                    reciterName = reciter.name,
+                    isFavoriteReciter = reciter.isFavorite,
+                    narrations = allNarrations.filter { narration ->
+                        narration.reciterId == reciter.id
+                    }.map { narration ->
+                        Recitation.Narration(
+                            id = narration.id,
+                            name = narration.name,
+                            server = narration.server,
+                            availableSuras = narration.availableSuras,
+                            downloadState = downloadStates[reciter.id]?.get(narration.id)!!
+                        )
+                    }
+                )
+            }
+        }
+    }
+
+    fun registerDownloadReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             app.registerReceiver(
-                onComplete,
+                onDownloadComplete,
                 IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
                 Context.RECEIVER_NOT_EXPORTED
             )
         else
             app.registerReceiver(
-                onComplete,
+                onDownloadComplete,
                 IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
             )
     }
 
-    fun unregisterDownloadReceiver(onComplete: BroadcastReceiver) {
+    fun unregisterDownloadReceiver() {
         try {
-            app.unregisterReceiver(onComplete)
+            app.unregisterReceiver(onDownloadComplete)
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         }
@@ -90,16 +127,13 @@ class RecitationRecitersMenuDomain @Inject constructor(
 
                     val downloadId = downloadManager.enqueue(request)
                     if (!posted) {
-                        downloading[downloadId] = narration.id
+                        recitationsRepository.addToDownloading(downloadId, reciterId, narration.id)
                         posted = true
                     }
                 }
             }
         }.start()
     }
-
-    suspend fun getAllRecitations(language: Language) =
-        recitationsRepository.getAllRecitations(language)
 
     fun deleteNarration(reciterId: Int, narration: Recitation.Narration) {
         FileUtils.deleteFile(
@@ -108,9 +142,16 @@ class RecitationRecitersMenuDomain @Inject constructor(
         )
     }
 
-    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
+    var onDownloadComplete: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            try {
+                recitationsRepository.removeFromDownloading(downloadId)
+            } catch (_: RuntimeException) {}
+        }
+    }
 
-    fun getFavorites() = recitationsRepository.getReciterFavoritesBackup()
+    suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
     suspend fun setFavorite(reciterId: Int, value: Boolean) {
         recitationsRepository.setReciterFavorite(
@@ -119,17 +160,25 @@ class RecitationRecitersMenuDomain @Inject constructor(
         )
     }
 
-    fun getDownloadingNarrationId(downloadId: Long) = downloading[downloadId]!!
+    suspend fun getLastPlayedMedia(mediaId: String): LastPlayedMedia? {
+        if (mediaId.isEmpty() || mediaId == "00000000") return null  // added the second part to prevent errors due to change in db
+        Log.d("RecitationsRecitersMenuViewModel", "continueListeningMediaId: $mediaId")
 
-    fun removeDownloading(downloadId: Long) {
-        downloading.remove(downloadId)
+        val reciterId = mediaId.substring(0, 3).toInt()
+        val narrationId = mediaId.substring(3, 5).toInt()
+        val suraId = mediaId.substring(5).toInt()
+        Log.d(
+            "RecitationsRecitersMenuViewModel",
+            "reciterId: $reciterId, narrationId: $narrationId, suraIndex: $suraId"
+        )
+
+        val language = getLanguage()
+        return LastPlayedMedia(
+            reciterName = getReciterName(reciterId, language),
+            suraName = getSuraNames(language)[suraId],
+            narrationName = getNarration(reciterId, narrationId).nameAr
+        )
     }
-
-    fun observeAllReciters(language: Language) =
-        recitationsRepository.observeAllReciters(language)
-
-    suspend fun getAllReciters(language: Language) =
-        recitationsRepository.getAllReciters(language)
 
     suspend fun getReciterNarrations(reciterId: Int, language: Language) =
         recitationsRepository.getReciterNarrations(reciterId, language)
@@ -148,8 +197,5 @@ class RecitationRecitersMenuDomain @Inject constructor(
     fun getNarrationSelections() = recitationsRepository.getNarrationSelections()
 
     fun getLastPlayed() = recitationsRepository.getLastPlayedMedia()
-
-    fun checkIsDownloaded(reciterId: Int, narrationId: Int) =
-        File("${recitationsRepository.dir}${reciterId}/${narrationId}").exists()
 
 }
