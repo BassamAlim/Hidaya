@@ -9,10 +9,10 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bassamalim.hidaya.core.data.dataSources.room.entities.RecitationNarration
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.MenuType
+import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.models.ReciterSura
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
@@ -41,7 +41,7 @@ class RecitationsSurasViewModel @Inject constructor(
     private val narrationId = savedStateHandle.get<Int>("narration_id") ?: 0
 
     private lateinit var language: Language
-    private lateinit var narration: RecitationNarration
+    private lateinit var narration: Recitation.Narration
     private lateinit var decoratedSuraNames: List<String>
     private lateinit var plainSuraNames: List<String>
     private val suraFavorites = domain.getSuraFavorites()
@@ -60,7 +60,7 @@ class RecitationsSurasViewModel @Inject constructor(
             language = domain.getLanguage()
             plainSuraNames = domain.getPlainSuraNames()
             decoratedSuraNames = domain.getDecoratedSuraNames(language)
-            narration = domain.getNarration(reciterId, narrationId)
+            narration = domain.getNarration(reciterId, narrationId, language)
 
             _uiState.update { it.copy(
                 title = domain.getReciterName(reciterId, language)
@@ -168,7 +168,7 @@ class RecitationsSurasViewModel @Inject constructor(
                 }
             )}
 
-            domain.download(sura = sura, server = narration.url)
+            domain.download(sura = sura, server = narration.server)
         }
         else {
             _uiState.update { it.copy(

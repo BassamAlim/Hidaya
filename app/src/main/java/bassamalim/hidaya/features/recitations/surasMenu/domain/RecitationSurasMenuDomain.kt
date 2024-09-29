@@ -109,8 +109,8 @@ class RecitationSurasMenuDomain @Inject constructor(
     suspend fun getReciterName(id: Int, language: Language) =
         recitationsRepository.getReciterName(id, language)
 
-    suspend fun getNarration(reciterId: Int, narrationId: Int) =
-        recitationsRepository.getNarration(reciterId, narrationId)
+    suspend fun getNarration(reciterId: Int, narrationId: Int, language: Language) =
+        recitationsRepository.getNarration(reciterId, narrationId, language)
 
     suspend fun setFavoriteStatus(suraId: Int, value: Boolean) {
         quranRepository.setSuraFavoriteStatus(suraId, value)
