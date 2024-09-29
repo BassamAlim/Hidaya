@@ -176,7 +176,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
         return LastPlayedMedia(
             reciterName = getReciterName(reciterId, language),
             suraName = getSuraNames(language)[suraId],
-            narrationName = getNarration(reciterId, narrationId).nameAr
+            narrationName = getNarration(reciterId, narrationId, language).name
         )
     }
 
@@ -186,15 +186,16 @@ class RecitationRecitersMenuDomain @Inject constructor(
     suspend fun getAllNarrations(language: Language) =
         recitationsRepository.getAllNarrations(language)
 
-    suspend fun getNarration(reciterId: Int, narrationId: Int) =
-        recitationsRepository.getNarration(reciterId, narrationId)
+    suspend fun getNarration(reciterId: Int, narrationId: Int, language: Language) =
+        recitationsRepository.getNarration(reciterId, narrationId, language)
 
     suspend fun getReciterName(reciterId: Int, language: Language) =
         recitationsRepository.getReciterName(reciterId, language)
 
     suspend fun getSuraNames(language: Language) = quranRepository.getDecoratedSuraNames(language)
 
-    fun getNarrationSelections() = recitationsRepository.getNarrationSelections()
+    suspend fun getNarrationSelections(language: Language) =
+        recitationsRepository.getNarrationSelections(language)
 
     fun getLastPlayed() = recitationsRepository.getLastPlayedMedia()
 

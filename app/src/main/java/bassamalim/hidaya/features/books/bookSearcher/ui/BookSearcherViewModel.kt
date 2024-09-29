@@ -4,6 +4,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.features.books.bookSearcher.domain.BookSearcherDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BookSearcherViewModel @Inject constructor(
-    private val domain: BookSearcherDomain
+    private val domain: BookSearcherDomain,
+    private val navigator: Navigator
 ): ViewModel() {
 
     private var highlightColor: Color? = null
@@ -32,7 +35,8 @@ class BookSearcherViewModel @Inject constructor(
         domain.getMaxMatches()
     ) { state, bookSelections, maxMatches -> state.copy(
         bookSelections = bookSelections,
-        maxMatches = maxMatches
+        maxMatches = maxMatches,
+        filtered = bookSelections.containsValue(false)
     )}.onStart {
         initializeData()
     }.stateIn(
@@ -48,10 +52,23 @@ class BookSearcherViewModel @Inject constructor(
 
             _uiState.update { it.copy(
                 isLoading = false,
-                bookTitles = domain.getBookTitles(language),
-                filtered = it.bookSelections.containsValue(false)
+                bookTitles = domain.getBookTitles(language)
             )}
         }
+    }
+
+    fun onStart() {
+        highlightColor?.let {
+            viewModelScope.launch {
+                domain.search(
+                    searchText = _uiState.value.searchText,
+                    bookSelections = _uiState.value.bookSelections,
+                    maxMatches = _uiState.value.maxMatches,
+                    language = language,
+                    highlightColor = it
+                )
+            }
+        }  // re-search if already searched
     }
 
     fun onSearch(highlightColor: Color) {
@@ -71,34 +88,7 @@ class BookSearcherViewModel @Inject constructor(
     }
 
     fun onFilterClick() {
-        _uiState.update { it.copy(
-            filterDialogShown = true
-        )}
-    }
-
-    fun onFilterDialogDismiss(selections: Map<Int, Boolean>) {
-        val changed = selections != _uiState.value.bookSelections
-
-        viewModelScope.launch {
-            domain.setBookSelections(selections)
-
-            _uiState.update { it.copy(
-                filterDialogShown = false,
-                filtered = selections.containsValue(false)
-            )}
-
-            if (changed) {
-                highlightColor?.let {
-                    domain.search(
-                        searchText = _uiState.value.searchText,
-                        bookSelections = selections,
-                        maxMatches = _uiState.value.maxMatches,
-                        language = language,
-                        highlightColor = it
-                    )
-                }  // re-search if already searched
-            }
-        }
+        navigator.navigate(Screen.BooksMenuFilter)
     }
 
     fun onMaxMatchesIndexChange(newValue: Int) {

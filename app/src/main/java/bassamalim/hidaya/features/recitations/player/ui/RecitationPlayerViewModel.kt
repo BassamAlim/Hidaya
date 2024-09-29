@@ -26,11 +26,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.features.recitations.player.domain.RecitationPlayerDomain
+import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -152,14 +152,7 @@ class RecitationPlayerViewModel @Inject constructor(
 
     private fun updateTrackState() {
         viewModelScope.launch {
-            narration = domain.getNarration(reciterId, narrationId).let {
-                Recitation.Narration(
-                    id = narrationId,
-                    server = it.url,
-                    name = it.nameAr,
-                    availableSuras = it.availableSuras
-                )
-            }
+            narration = domain.getNarration(reciterId, narrationId, language)
 
             _uiState.update { it.copy(
                 suraName = suraNames[suraIdx],

@@ -23,9 +23,9 @@ import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService
+import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import kotlinx.coroutines.flow.first
 import java.io.File
 import java.util.Locale
@@ -173,6 +173,8 @@ class RecitationPlayerDomain @Inject constructor(
         this.path = "${"${recitationsRepository.prefix}${reciterId}/${narrationId}/"}$suraId.mp3"
     }
 
+    fun observeAllReciters(language: Language) = recitationsRepository.observeAllReciters(language)
+
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
     suspend fun getSuraNames(language: Language) = quranRepository.getDecoratedSuraNames(language)
@@ -180,8 +182,19 @@ class RecitationPlayerDomain @Inject constructor(
     suspend fun getReciterName(id: Int, language: Language) =
         recitationsRepository.getReciterName(id, language)
 
-    suspend fun getNarration(reciterId: Int, narrationId: Int) =
-        recitationsRepository.getNarration(reciterId, narrationId)
+    suspend fun getNarration(reciterId: Int, narrationId: Int, language: Language) =
+        recitationsRepository.getNarration(reciterId, narrationId, language).let {
+            Recitation.Narration(
+                id = it.id,
+                name = it.name,
+                server = it.server,
+                availableSuras = it.availableSuras,
+                downloadState = recitationsRepository.getNarrationDownloadState(
+                    reciterId,
+                    narrationId
+                )
+            )
+        }
 
     fun getRepeatMode() = recitationsRepository.getRepeatMode()
 

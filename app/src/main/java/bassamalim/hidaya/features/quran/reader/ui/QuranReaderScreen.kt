@@ -46,7 +46,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
@@ -66,7 +65,6 @@ import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType.LIST
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType.PAGE
-import bassamalim.hidaya.features.quran.settings.ui.QuranSettingsDialog
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -133,12 +131,6 @@ fun QuranReaderScreen(
         title = stringResource(R.string.interpretation),
         text = state.infoDialogText,
         onDismiss = viewModel::onInfoDialogDismiss  // :: gives the reference to the function
-    )
-
-    QuranSettingsDialog(
-        viewModel = hiltViewModel(),
-        shown = state.isSettingsDialogShown,
-        onDone = viewModel::onSettingsDialogDismiss
     )
 
     if (state.isPlayerNotSupportedShown) {

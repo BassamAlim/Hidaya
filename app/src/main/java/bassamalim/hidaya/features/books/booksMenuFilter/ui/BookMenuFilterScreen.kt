@@ -1,4 +1,4 @@
-package bassamalim.hidaya.features.recitations.recitersMenuFilter.ui
+package bassamalim.hidaya.features.books.booksMenuFilter.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,8 +27,8 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun RecitersMenuFilterDialog(
-    viewModel: RecitersMenuFilterViewModel
+fun BooksMenuFilterDialog(
+    viewModel: BooksMenuFilterViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -45,7 +45,7 @@ fun RecitersMenuFilterDialog(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MyText(
-                text = stringResource(R.string.choose_narration),
+                text = stringResource(R.string.choose_books),
                 modifier = Modifier.padding(vertical = 10.dp),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
@@ -54,11 +54,11 @@ fun RecitersMenuFilterDialog(
             MyLazyColumn(
                 Modifier.heightIn(0.dp, 300.dp),
                 lazyList = {
-                    items(state.options.toList()) { (name, isSelected) ->
+                    items(state.options.toList()) { (id, item) ->
                         CheckboxListItem(
-                            title = name,
-                            isChecked = isSelected,
-                            onCheckedChange = { viewModel.onSelection(name, it) }
+                            title = item.name,
+                            isChecked = item.isSelected,
+                            onCheckedChange = { viewModel.onSelection(id, it) }
                         )
                     }
                 }

@@ -11,6 +11,7 @@ import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedi
 import com.google.gson.Gson
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toPersistentMap
 
 object RecitationsPreferencesMigration {
 
@@ -31,17 +32,7 @@ object RecitationsPreferencesMigration {
                         index to ((fav as Double).toInt() == 1)
                     }
                 },
-                narrationSelections = persistentMapOf<Int, Boolean>().mutate {
-                    Gson().fromJson(
-                        sharedPrefs.getString(
-                            key = Preference.SelectedNarrations.key,
-                            defValue = Preference.SelectedNarrations.default as String
-                        )!!,
-                        BooleanArray::class.java
-                    ).mapIndexed { index, selected ->
-                        index to selected
-                    }
-                },
+                narrationSelections = emptyMap<String, Boolean>().toPersistentMap(),
                 repeatMode = sharedPrefs.getInt(
                     key = Preference.RecitationsRepeatMode.key,
                     defValue = Preference.RecitationsRepeatMode.default as Int

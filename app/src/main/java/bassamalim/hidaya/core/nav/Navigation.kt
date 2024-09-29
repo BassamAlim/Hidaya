@@ -24,6 +24,7 @@ import bassamalim.hidaya.features.books.bookChaptersMenu.ui.BookChaptersScreen
 import bassamalim.hidaya.features.books.bookReader.ui.BookReaderScreen
 import bassamalim.hidaya.features.books.bookSearcher.ui.BookSearcherScreen
 import bassamalim.hidaya.features.books.booksMenu.ui.BooksMenuScreen
+import bassamalim.hidaya.features.books.booksMenuFilter.ui.BooksMenuFilterDialog
 import bassamalim.hidaya.features.dateConverter.ui.DateConverterScreen
 import bassamalim.hidaya.features.dateEditor.ui.DateEditorDialog
 import bassamalim.hidaya.features.hijriDatePicker.ui.HijriDatePickerDialog
@@ -150,6 +151,14 @@ fun NavGraph(
             popExitTransition = outToTop
         ) {
             BooksMenuScreen(
+                hiltViewModel()
+            )
+        }
+
+        dialog(
+            route = Screen.BooksMenuFilter.route
+        ) {
+            BooksMenuFilterDialog(
                 hiltViewModel()
             )
         }

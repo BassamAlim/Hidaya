@@ -17,6 +17,8 @@ sealed class Screen(val route: String) {
 
     data object BooksMenu: Screen("books_menu")
 
+    data object BooksMenuFilter: Screen("books_menu_filter")
+
     data object DateConverter: Screen("date_converter")
 
     data object DateEditor: Screen("date_editor")

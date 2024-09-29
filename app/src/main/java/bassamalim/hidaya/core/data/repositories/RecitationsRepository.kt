@@ -18,6 +18,7 @@ import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedi
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -132,21 +133,21 @@ class RecitationsRepository @Inject constructor(
         }
     }
 
-    suspend fun getNarrationSelections(language: Language): Map<String, Boolean> {
+    suspend fun getNarrationSelections(language: Language): Flow<Map<String, Boolean>> {
         val narrations = getAllNarrations(language).distinct()
-        val selections = recitationsPreferencesDataSource.getNarrationSelections()
-            .first().toMutableMap()
-
-        var added = false
-        for (narration in narrations) {
-            if (!selections.containsKey(narration.name)) {
-                selections[narration.name] = true
-                added = true
+        return recitationsPreferencesDataSource.getNarrationSelections().map { selections ->
+            val mutableSelections = selections.toMutableMap()
+            var added = false
+            for (narration in narrations) {
+                if (!mutableSelections.containsKey(narration.name)) {
+                    mutableSelections[narration.name] = true
+                    added = true
+                }
             }
-        }
-        if (added) setNarrationSelections(selections)
+            if (added) setNarrationSelections(mutableSelections)
 
-        return selections
+            mutableSelections
+        }
     }
 
     suspend fun setNarrationSelections(selections: Map<String, Boolean>) {
@@ -156,14 +157,18 @@ class RecitationsRepository @Inject constructor(
     private fun isFileExists(reciterId: Int, narrationId: Int) =
         File("${dir}${reciterId}/${narrationId}").exists()
 
+    fun getNarrationDownloadState(reciterId: Int, narrationId: Int): DownloadState {
+        return if (isFileExists(reciterId, narrationId)) {
+            if (isDownloading(reciterId, narrationId)) DownloadState.DOWNLOADING
+            else DownloadState.DOWNLOADED
+        }
+        else DownloadState.NOT_DOWNLOADED
+    }
+
     fun getNarrationDownloadStates(ids: Map<Int, List<Int>>): Map<Int, Map<Int, DownloadState>> {
         return ids.map { (reciterId, narrationIds) ->
             reciterId to narrationIds.associateWith { narrationId ->
-                if (isFileExists(reciterId, narrationId)) {
-                    if (isDownloading(reciterId, narrationId)) DownloadState.DOWNLOADING
-                    else DownloadState.DOWNLOADED
-                }
-                else DownloadState.NOT_DOWNLOADED
+                getNarrationDownloadState(reciterId, narrationId)
             }
         }.toMap()
     }
@@ -245,9 +250,20 @@ class RecitationsRepository @Inject constructor(
         }
     }
 
-    suspend fun getNarration(reciterId: Int, narrationId: Int) = withContext(dispatcher) {
-        recitationNarrationsDao.getNarration(reciterId, narrationId)
-    }
+    suspend fun getNarration(reciterId: Int, narrationId: Int, language: Language) =
+        withContext(dispatcher) {
+            recitationNarrationsDao.getNarration(reciterId, narrationId).let {
+                Recitation.Narration(
+                    id = it.id,
+                    name = when (language) {
+                        Language.ARABIC -> it.nameAr
+                        Language.ENGLISH -> it.nameEn
+                    },
+                    server = it.url,
+                    availableSuras = it.availableSuras
+                )
+            }
+        }
 
     suspend fun getAllVerseRecitations() = withContext(dispatcher) {
         verseRecitationsDao.getAll()

@@ -17,7 +17,6 @@ data class QuranReaderUiState(
     val isBookmarked: Boolean = false,
     val isInfoDialogShown: Boolean = false,
     val infoDialogText: String = "",
-    val isSettingsDialogShown: Boolean = false,
     val isTutorialDialogShown: Boolean = false,
     val isPlayerNotSupportedShown: Boolean = false,
 )

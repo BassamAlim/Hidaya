@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -35,15 +34,18 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     private var continueListeningMediaId = ""
     private lateinit var allRecitations: Flow<List<Recitation>>
     private lateinit var suraNames: List<String>
+    private lateinit var narrationSelections: Flow<Map<String, Boolean>>
 
     private val _uiState = MutableStateFlow(RecitationRecitersMenuUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
-        domain.getNarrationSelections(),
         domain.getLastPlayed()
-    ) { state, narrationSelections, lastPlayed ->
-        state.copy(
-            narrationSelections = narrationSelections,
+    ) { state, lastPlayed ->
+        if (!state.isLoading) state.copy(
+            lastPlayedMedia = domain.getLastPlayedMedia(lastPlayed.mediaId),
+            isFiltered = narrationSelections.first().values.any { bool -> !bool }
+        )
+        else state.copy(
             lastPlayedMedia = domain.getLastPlayedMedia(lastPlayed.mediaId)
         )
     }.onStart {
@@ -59,12 +61,12 @@ class RecitationRecitersMenuViewModel @Inject constructor(
             language = domain.getLanguage()
             suraNames = domain.getSuraNames(language)
             allRecitations = domain.observeRecitersWithNarrations(language)
+            narrationSelections = domain.getNarrationSelections(language)
 
             domain.cleanFiles()
 
             _uiState.update { it.copy(
-                isLoading = false,
-                isFiltered = it.narrationSelections.values.any { bool -> !bool }
+                isLoading = false
             )}
         }
     }
@@ -92,8 +94,8 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     fun getItems(page: Int): Flow<List<Recitation>> {
         val menuType = MenuType.entries[page]
 
-        return allRecitations.map { recitations ->
-            val all = recitations.map { recitation ->
+        return combine(allRecitations, narrationSelections) { allRecitations, narrationSelections ->
+            val all = allRecitations.map { recitation ->
                 Recitation(
                     reciterId = recitation.reciterId,
                     reciterName = recitation.reciterName,
@@ -112,12 +114,12 @@ class RecitationRecitersMenuViewModel @Inject constructor(
 
             val filtered = all.filter { recitation ->
                 recitation.narrations.any { narration ->
-                    _uiState.value.narrationSelections[narration.id]!!
+                    narrationSelections[narration.name]!!
                 }
             }.map { recitation ->
                 recitation.copy(
                     narrations = recitation.narrations.filter { narration ->
-                        _uiState.value.narrationSelections[narration.id]!!
+                        narrationSelections[narration.name]!!
                     }
                 )
             }
@@ -160,16 +162,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     }
 
     fun onFilterClick() {
-        _uiState.update { it.copy(
-            filterDialogShown = true
-        )}
-    }
-
-    fun onFilterDialogDismiss(selections: Map<Int, Boolean>) {
-        _uiState.update { it.copy(
-            filterDialogShown = false,
-            narrationSelections = selections
-        )}
+        navigator.navigate(Screen.RecitersMenuFilter)
     }
 
     fun onFavoriteClick(reciterId: Int, oldValue: Boolean) {

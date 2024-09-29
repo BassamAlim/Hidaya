@@ -18,6 +18,8 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.core.models.Verse
+import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.reader.domain.QuranReaderDomain
@@ -39,7 +41,8 @@ import bassamalim.hidaya.core.data.dataSources.room.entities.Verse as VerseEntit
 @HiltViewModel
 class QuranReaderViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val domain: QuranReaderDomain
+    private val domain: QuranReaderDomain,
+    private val navigator: Navigator
 ): ViewModel() {
 
     private val targetType = QuranTarget.valueOf(
@@ -230,9 +233,7 @@ class QuranReaderViewModel @Inject constructor(
     }
 
     fun onSettingsClick() {
-        _uiState.update { it.copy(
-            isSettingsDialogShown = true
-        )}
+        navigator.navigate(Screen.QuranSettings)
     }
 
     fun onVerseClick(verseId: Int, offset: Int) {
@@ -326,12 +327,6 @@ class QuranReaderViewModel @Inject constructor(
     fun onInfoDialogDismiss() {
         _uiState.update { it.copy(
             isInfoDialogShown = false
-        )}
-    }
-
-    fun onSettingsDialogDismiss() {
-        _uiState.update { it.copy(
-            isSettingsDialogShown = false
         )}
     }
 

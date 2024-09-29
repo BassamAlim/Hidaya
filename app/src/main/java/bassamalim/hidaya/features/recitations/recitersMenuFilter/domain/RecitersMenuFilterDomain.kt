@@ -12,7 +12,7 @@ class RecitersMenuFilterDomain @Inject constructor(
 ) {
 
     suspend fun getOptions(language: Language) =
-        recitationsRepository.getNarrationSelections(language)
+        recitationsRepository.getNarrationSelections(language).first()
 
     suspend fun setOptions(options: Map<String, Boolean>) {
         recitationsRepository.setNarrationSelections(options)

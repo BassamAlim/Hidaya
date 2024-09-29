@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.ui.components.FilterDialog
 import bassamalim.hidaya.core.ui.components.MyDropDownMenu
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
@@ -36,6 +36,11 @@ fun BookSearcherScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.isLoading) return
+
+    DisposableEffect(key1 = viewModel) {
+        viewModel.onStart()
+        onDispose {}
+    }
 
     MyScaffold(stringResource(R.string.books_searcher)) { padding ->
         Column(
@@ -66,14 +71,6 @@ fun BookSearcherScreen(
                 }
             }
         }
-
-        FilterDialog(
-            title = stringResource(R.string.choose_books),
-            itemTitles = state.bookTitles,
-            itemSelections = state.bookSelections,
-            shown = state.filterDialogShown,
-            onDismiss = { selections -> viewModel.onFilterDialogDismiss(selections) }
-        )
     }
 }
 

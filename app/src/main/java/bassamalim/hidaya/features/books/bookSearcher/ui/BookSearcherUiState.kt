@@ -7,6 +7,5 @@ data class BookSearcherUiState(
     val maxMatches: Int = 10,
     val bookSelections: Map<Int, Boolean> = emptyMap(),
     val bookTitles: List<String> = emptyList(),
-    val filtered: Boolean = false,
-    val filterDialogShown: Boolean = false
+    val filtered: Boolean = false
 )
