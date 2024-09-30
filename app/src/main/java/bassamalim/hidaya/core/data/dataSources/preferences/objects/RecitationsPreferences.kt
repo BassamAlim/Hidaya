@@ -19,7 +19,7 @@ data class RecitationsPreferences(
     val shuffleMode: Int = PlaybackStateCompat.SHUFFLE_MODE_NONE,
     val lastPlayedMedia: LastPlayedMedia = LastPlayedMedia(),
     val verseReciterId: Int = 13,
-    val verseRepeatMode: VerseRepeatMode = VerseRepeatMode.NONE,
+    val verseRepeatMode: VerseRepeatMode = VerseRepeatMode.NO_REPEAT,
     val shouldStopOnSuraEnd: Boolean = false,
     val shouldStopOnPageEnd: Boolean = false,
 )

@@ -109,7 +109,6 @@ fun QuranReaderScreen(
             theme = viewModel.theme,
             scrollTo = viewModel.scrollTo,
             onScrolled = viewModel::onScrolled,
-            setScrollState = viewModel::setScrollState,
             pagerState = pagerState,
             padding = it,
             onPageChange = viewModel::onPageChange,
@@ -165,7 +164,6 @@ private fun TopBar(
                 textColor = AppTheme.colors.onPrimary
             )
 
-            Log.d(Global.TAG, "Final Page Number: $pageNumText")
             // Page number
             MyText(
                 text = "${stringResource(R.string.page)} $pageNumText",
@@ -211,7 +209,7 @@ private fun BottomBar(
                 description = stringResource(R.string.bookmark_page_button_description),
                 tint = AppTheme.colors.onPrimary,
                 size = 40.dp,
-                onClick = { vm.onBookmarkClick() }
+                onClick = { vm.onBookmarkClick(st.isBookmarked) }
             )
 
             MyRow {
@@ -270,8 +268,7 @@ private fun PageContent(
     padding: PaddingValues,
     scrollTo: Float,
     onScrolled: () -> Unit,
-    setScrollState: (ScrollState) -> Unit,
-    onPageChange: (Int, Int) -> Unit,
+    onPageChange: (Int, Int, ScrollState) -> Unit,
     buildPage: (Int) -> List<Verse>,
     onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
     onAyaGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
@@ -286,9 +283,7 @@ private fun PageContent(
         val isCurrentPage = pageIdx == pagerState.currentPage
         val scrollState = rememberScrollState()
 
-        if (isCurrentPage) setScrollState(scrollState)
-
-        onPageChange(pagerState.currentPage, pageIdx)
+        onPageChange(pagerState.currentPage, pageIdx, scrollState)
 
         Column(
             Modifier

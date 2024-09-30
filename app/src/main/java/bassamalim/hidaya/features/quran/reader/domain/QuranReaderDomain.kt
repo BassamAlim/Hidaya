@@ -68,8 +68,8 @@ class QuranReaderDomain @Inject constructor(
             setWerdDone()
     }
 
-    fun handlePageChange(pageIdx: Int) {
-        if (pageIdx != lastRecordedPage) {
+    fun handlePageChange(pageNum: Int) {
+        if (pageNum != lastRecordedPage) {
             handler.removeCallbacks(runnable)
             checkPage()
         }

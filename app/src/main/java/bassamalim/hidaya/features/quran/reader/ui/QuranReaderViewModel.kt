@@ -5,7 +5,6 @@ import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.pager.PagerState
@@ -134,36 +133,37 @@ class QuranReaderViewModel @Inject constructor(
         domain.stopPlayer(activity)
     }
 
-    fun onPageChange(currentPageIdx: Int, pageIdx: Int) {
-        Log.d(Global.TAG, "Page change: $currentPageIdx -> $pageIdx")
-
+    fun onPageChange(currentPageIdx: Int, pageIdx: Int, scrollState: ScrollState) {
         if (currentPageIdx == pageIdx) {
-            updatePageState(pageIdx + 1) // page number = page index + 1
+            pageNum = pageIdx+1
 
-            domain.handlePageChange(pageIdx)
+            suraId = allVerses.first { verse -> verse.pageNum == pageNum }.suraNum - 1
+            _uiState.update { it.copy(
+                pageNum = translateNums(
+                    string = pageNum.toString(),
+                    numeralsLanguage = numeralsLanguage
+                ),
+                suraName = suraNames[suraId],
+                juzNum = translateNums(
+                    string = allVerses.first { verse ->
+                        verse.pageNum == pageNum
+                    }.juzNum.toString(),
+                    numeralsLanguage = numeralsLanguage
+                ),
+                pageVerses = buildPage(pageNum)
+            )}
+
+            domain.handlePageChange(pageNum)
+
+            this.scrollState = scrollState
         }
     }
 
-    fun onBookmarkClick() {
-        if (_uiState.value.isBookmarked) {
-            viewModelScope.launch {
-                domain.setBookmarkedPage(null)
-            }
+    fun onBookmarkClick(isBookmarked: Boolean) {
+        viewModelScope.launch {
+            if (isBookmarked) domain.setBookmarkedPage(null)
+            else domain.setBookmarkedPage(QuranPageBookmark(pageNum = pageNum, suraId = suraId))
         }
-        else {
-            viewModelScope.launch {
-                domain.setBookmarkedPage(
-                    QuranPageBookmark(
-                        pageNum = pageNum,
-                        suraId = suraId
-                    )
-                )
-            }
-        }
-
-        _uiState.update { it.copy(
-            isBookmarked = !it.isBookmarked
-        )}
     }
 
     fun onPlayPauseClick(activity: Activity) {
@@ -267,7 +267,7 @@ class QuranReaderViewModel @Inject constructor(
             )}
         }
         else {  // single click
-            if (_uiState.value.selectedVerse!!.id == verse!!.id) {
+            if (_uiState.value.selectedVerse?.id == verse!!.id) {
                 _uiState.update { it.copy(
                     selectedVerse = null
                 )}
@@ -330,13 +330,7 @@ class QuranReaderViewModel @Inject constructor(
         )}
     }
 
-    fun setScrollState(scrollState: ScrollState) {
-        this.scrollState = scrollState
-    }
-
     fun buildPage(pageNumber: Int): List<Verse> {
-        Log.d(Global.TAG, "Building page $pageNumber")
-
         val pageVerses = mutableListOf<Verse>()
 
         // get page start
@@ -368,12 +362,15 @@ class QuranReaderViewModel @Inject constructor(
     private var controllerCallback = object : MediaControllerCompat.Callback() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat) {
             _uiState.update { it.copy(
-                trackedVerseId = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
+                trackedVerseId = metadata
+                    .getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
             )}
             if (_uiState.value.viewType == QuranViewType.LIST) {
                 coroutineScope.launch {
                     if (versePositions[_uiState.value.trackedVerseId] != null)
-                        scrollState.animateScrollTo(versePositions[_uiState.value.trackedVerseId]!!.toInt())
+                        scrollState.animateScrollTo(
+                            versePositions[_uiState.value.trackedVerseId]!!.toInt()
+                        )
                 }
             }
 
@@ -400,23 +397,6 @@ class QuranReaderViewModel @Inject constructor(
         override fun onSessionDestroyed() {
             domain.disconnectMediaBrowser()
         }
-    }
-
-    private fun updatePageState(pageNum: Int) {
-        Log.d(Global.TAG, "PageNum: $pageNum")
-        suraId = allVerses.first { verse -> verse.pageNum == pageNum }.suraNum - 1
-        _uiState.update { it.copy(
-            pageNum = translateNums(
-                string = pageNum.toString(),
-                numeralsLanguage = numeralsLanguage
-            ),
-            suraName = suraNames[suraId],
-            juzNum = translateNums(
-                string = allVerses.first { verse -> verse.pageNum == pageNum }.juzNum.toString(),
-                numeralsLanguage = numeralsLanguage
-            ),
-            pageVerses = buildPage(pageNum)
-        )}
     }
 
     private fun updateButton(state: Int) {

@@ -55,7 +55,7 @@ object RecitationsPreferencesMigration {
                     key = Preference.VerseReciter.key,
                     defValue = Preference.VerseReciter.default as String
                 )!!.toInt(),
-                verseRepeatMode = VerseRepeatMode.NONE,
+                verseRepeatMode = VerseRepeatMode.NO_REPEAT,
                 shouldStopOnPageEnd = sharedPrefs.getBoolean(
                     key = Preference.StopOnPageEnd.key,
                     defValue = Preference.StopOnPageEnd.default as Boolean

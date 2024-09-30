@@ -245,7 +245,7 @@ fun CategoryTitle(titleResId: Int) {
 }
 
 @Composable
-private fun PreferenceTitle(
+fun PreferenceTitle(
     title: String,
     modifier: Modifier = Modifier
 ) {

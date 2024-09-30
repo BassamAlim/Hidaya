@@ -1,7 +1,7 @@
 package bassamalim.hidaya.core.enums
 
 enum class VerseRepeatMode {
-    NONE,
+    NO_REPEAT,
     TWO,
     THREE,
     FIVE,

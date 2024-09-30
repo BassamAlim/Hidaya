@@ -253,7 +253,7 @@ class AlternatingPlayersManager(
         Log.d(Global.TAG, "Repeat Mode: $repeatMode")
 
         return when (repeatMode) {
-            VerseRepeatMode.NONE -> false
+            VerseRepeatMode.NO_REPEAT -> false
             VerseRepeatMode.TWO -> aps[playerIdx].repeated < 1
             VerseRepeatMode.THREE -> aps[playerIdx].repeated < 2
             VerseRepeatMode.FIVE -> aps[playerIdx].repeated < 4

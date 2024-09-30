@@ -40,6 +40,8 @@ class QuranSurasViewModel @Inject constructor(
         _uiState.asStateFlow(),
         domain.getBookmark()
     ) { state, bookmark ->
+        if (state.isLoading) return@combine state
+
         bookmarkedPage = bookmark?.pageNum ?: -1
         state.copy(
             bookmarkPageText =
