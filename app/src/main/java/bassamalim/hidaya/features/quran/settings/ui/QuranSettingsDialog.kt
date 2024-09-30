@@ -89,7 +89,7 @@ fun QuranSettingsDialog(
 
             PreferenceTitle(
                 title = stringResource(R.string.aya_repeat),
-                modifier = Modifier.padding(top = 10.dp, bottom = 5.dp)
+                modifier = Modifier.padding(top = 15.dp, bottom = 10.dp, start = 10.dp)
             )
 
             RepeatRadioGroup(
@@ -130,7 +130,9 @@ private fun RepeatRadioGroup(
     entries: Array<String>,
     onSelect: (VerseRepeatMode) -> Unit
 ) {
-    Column {
+    Column(
+        modifier = Modifier.padding(bottom = 15.dp)
+    ) {
         // No repeat
         MySquareButton(
             text = entries[0],
@@ -210,13 +212,13 @@ private fun BottomBar(onCancel: () -> Unit, onSave: () -> Unit) {
     MyRow {
         MySquareButton(
             text = stringResource(R.string.cancel),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.weight(1f),
             onClick = onCancel
         )
 
         MySquareButton(
             text = stringResource(R.string.save),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.weight(1f),
             onClick = onSave
         )
     }
