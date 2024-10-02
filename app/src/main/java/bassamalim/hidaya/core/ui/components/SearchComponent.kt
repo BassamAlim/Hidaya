@@ -52,35 +52,31 @@ fun SearchComponent(
                 clipRect {
                     val strokeWidth = Stroke.DefaultMiter
                     val y = size.height
-                    if (layoutDirection == LayoutDirection.Rtl) {
-                        drawLine(
-                            brush = SolidColor(lineColor),
-                            strokeWidth = strokeWidth,
-                            cap = StrokeCap.Square,
-                            start = Offset.Zero.copy(x = 20F, y = y - 15),
-                            end = Offset(x = size.width - 120F, y = y - 15)
-                        )
-                    }
-                    else {
-                        drawLine(
-                            brush = SolidColor(lineColor),
-                            strokeWidth = strokeWidth,
-                            cap = StrokeCap.Square,
-                            start = Offset.Zero.copy(x = 140F, y = y - 15),
-                            end = Offset(x = size.width - 20F, y = y - 15)
-                        )
-                    }
+                    if (layoutDirection == LayoutDirection.Rtl) drawLine(
+                        brush = SolidColor(lineColor),
+                        strokeWidth = strokeWidth,
+                        cap = StrokeCap.Square,
+                        start = Offset.Zero.copy(x = 20F, y = y - 15),
+                        end = Offset(x = size.width - 120F, y = y - 15)
+                    )
+                    else drawLine(
+                        brush = SolidColor(lineColor),
+                        strokeWidth = strokeWidth,
+                        cap = StrokeCap.Square,
+                        start = Offset.Zero.copy(x = 140F, y = y - 15),
+                        end = Offset(x = size.width - 20F, y = y - 15)
+                    )
                 }
             },
         textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
         leadingIcon = {
             Icon(
-                Icons.Default.Search,
-                tint = AppTheme.colors.weakText,
+                imageVector = Icons.Default.Search,
                 contentDescription = "",
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
-                    .size(24.dp)
+                    .size(24.dp),
+                tint = AppTheme.colors.weakText
             )
         },
         trailingIcon = {
@@ -89,7 +85,7 @@ fun SearchComponent(
                     onClick = { onValueChange("") }
                 ) {
                     Icon(
-                        Icons.Default.Close,
+                        imageVector = Icons.Default.Close,
                         contentDescription = "",
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
@@ -108,9 +104,7 @@ fun SearchComponent(
         singleLine = true,
         shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(
-            onSearch = { onSubmit() }
-        ),
+        keyboardActions = KeyboardActions(onSearch = { onSubmit() }),
         colors = TextFieldDefaults.textFieldColors(
             textColor = Color.White,
             cursorColor = Color.White,

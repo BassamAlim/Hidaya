@@ -6,7 +6,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.MenuType
 import bassamalim.hidaya.features.remembrances.remembrancesMenu.ui.RemembrancesItem
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class RemembrancesMenuDomain @Inject constructor(
@@ -16,23 +16,25 @@ class RemembrancesMenuDomain @Inject constructor(
 
     fun getLanguage() = appSettingsRepository.getLanguage()
 
-    fun getRemembrances(
-        menuType: MenuType,
-        categoryId: Int,
-        language: Language
-    ): Flow<List<RemembrancesItem>> {
-        return when (menuType) {
+    fun getRemembrances(menuType: MenuType, categoryId: Int): Flow<List<RemembrancesItem>> {
+        val remembrancesFlow = when (menuType) {
             MenuType.ALL, MenuType.DOWNLOADED -> remembrancesRepository.observeAllRemembrances()
             MenuType.FAVORITES -> remembrancesRepository.observeFavorites()
             MenuType.CUSTOM -> remembrancesRepository.observeCategoryRemembrances(categoryId)
-        }.map {
-            it.map { remembrance ->
+        }
+
+        return combine(
+            remembrancesFlow,
+            getLanguage()
+        ) { remembrances, language ->
+            remembrances.map { remembrance ->
                 RemembrancesItem(
                     id = remembrance.id,
                     categoryId = remembrance.categoryId,
-                    name =
-                        if (language == Language.ARABIC) remembrance.nameAr!!
-                        else remembrance.nameEn!!,
+                    name = when (language) {
+                        Language.ARABIC -> remembrance.nameAr!!
+                        Language.ENGLISH -> remembrance.nameEn!!
+                    },
                     isFavorite = remembrance.isFavorite == 1
                 )
             }

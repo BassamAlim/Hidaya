@@ -18,10 +18,10 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.SearchComponent
 
 @Composable
-fun RemembrancesMenuScreen(
-    viewModel: RemembrancesMenuViewModel
-) {
+fun RemembrancesMenuScreen(viewModel: RemembrancesMenuViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    if (state.isLoading) return
 
     MyScaffold(
         title = when (state.menuType) {
@@ -35,9 +35,11 @@ fun RemembrancesMenuScreen(
                 .fillMaxWidth()
                 .padding(padding)
         ) {
-            SearchBar(
-                searchText = state.searchText,
-                onSearchValueChange = viewModel::onSearchChange
+            SearchComponent(
+                value = state.searchText,
+                modifier = Modifier.fillMaxWidth(),
+                hint = stringResource(R.string.remembrances_search_hint),
+                onValueChange = viewModel::onSearchTextChange
             )
 
             RemembrancesList(
@@ -47,19 +49,6 @@ fun RemembrancesMenuScreen(
             )
         }
     }
-}
-
-@Composable
-private fun SearchBar(
-    searchText: String,
-    onSearchValueChange: (String) -> Unit
-) {
-    SearchComponent (
-        value = searchText,
-        hint = stringResource(R.string.remembrances_search_hint),
-        modifier = Modifier.fillMaxWidth(),
-        onValueChange = onSearchValueChange
-    )
 }
 
 @Composable
