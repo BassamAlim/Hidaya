@@ -32,6 +32,7 @@ import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.data.dataSources.room.entities.Verse
+import bassamalim.hidaya.core.data.dataSources.room.entities.VerseRecitation
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
@@ -40,12 +41,12 @@ import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -57,6 +58,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     @Inject lateinit var recitationsRepository: RecitationsRepository
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
     @Inject lateinit var userRepository: UserRepository
+    private lateinit var allRecitations: List<VerseRecitation>
     private val intentFilter = IntentFilter()
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var apm: AlternatingPlayersManager
@@ -78,7 +80,6 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     private lateinit var reciterNames: List<String>
     private lateinit var suarNames: List<String>
     private val notificationId = 101
-    private var reciterId = -1
     private var updateRecordCounter = 0
     private var channelId = "channel ID"
 
@@ -128,7 +129,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     override fun onCreate() {
         super.onCreate()
 
-        CoroutineScope(Dispatchers.Main).launch {
+        runBlocking {
             val language = appSettingsRepository.getLanguage().first()
 
             ActivityUtils.onActivityCreateSetLocale(
@@ -137,6 +138,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
             )
 
             allVerses = quranRepository.getAllVerses()
+            allRecitations = recitationsRepository.getAllVerseRecitations()
             reciterNames = recitationsRepository.getVerseReciterNames()
             suarNames = quranRepository.getDecoratedSuraNames(language)
 
@@ -159,23 +161,21 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
             val ayaId = mediaId.toInt()
 
+            if (apm.isNotInitialized()) {
+                // Start the service
+                startService(Intent(applicationContext, VersePlayerService::class.java))
+            }
+
+            mediaSession.isActive = true
+
+            buildNotification()
+
+            // Put the service in the foreground, post notification
+            startForeground(notificationId, notification)
+
+            wifiLock.acquire()
+
             GlobalScope.launch {
-                reciterId = recitationsRepository.getVerseReciterId().first()
-
-                if (apm.isNotInitialized()) {
-                    // Start the service
-                    startService(Intent(applicationContext, VersePlayerService::class.java))
-                }
-
-                mediaSession.isActive = true
-
-                buildNotification()
-
-                // Put the service in the foreground, post notification
-                startForeground(notificationId, notification)
-
-                wifiLock.acquire()
-
                 updatePbState(PlaybackStateCompat.STATE_PLAYING)
                 updateNotification(true)
                 updateMetadata(ayaId, false)
@@ -305,14 +305,17 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     /**
      * Initialize the two media players and the wifi lock
      */
-    private suspend fun initAPM() {
+    private fun initAPM() {
         apm = AlternatingPlayersManager(
             context = this,
             allVerses = allVerses,
-            recitations = recitationsRepository.getAllVerseRecitations(),
-            repeatMode = recitationsRepository.getVerseRepeatMode().first(),
-            shouldStopOnPageEnd = recitationsRepository.getShouldStopOnPageEnd().first(),
-            shouldStopOnSuraEnd = recitationsRepository.getShouldStopOnSuraEnd().first(),
+            recitationFlow = recitationsRepository.getVerseReciterId().map { reciterId ->
+                val reciterRecitations = allRecitations.filter { it.reciterId == reciterId }
+                return@map reciterRecitations.maxBy<VerseRecitation, Int> { it.bitrate }
+            },
+            repeatModeFlow = recitationsRepository.getVerseRepeatMode(),
+            stopOnPageEndFlow = recitationsRepository.getShouldStopOnPageEnd(),
+            stopOnSuraEndFlow = recitationsRepository.getShouldStopOnSuraEnd(),
             callback = this@VersePlayerService
         )
 
@@ -364,7 +367,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         return controller.playbackState.state
     }
 
-    override fun track(verseId: Int) {
+    override suspend fun track(verseId: Int) {
         updateMetadata(verseId, true)
     }
 
@@ -568,8 +571,9 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         )
     }
 
-    private fun updateMetadata(ayaId: Int = apm.verseIdx, duration: Boolean) {
+    private suspend fun updateMetadata(ayaId: Int = apm.verseIdx, duration: Boolean) {
         val aya = getAya(ayaId)
+        val reciterId = recitationsRepository.getVerseReciterId().first()
 
         mediaMetadata = MediaMetadataCompat.Builder()
             .putBitmap(    //Notification icon in card

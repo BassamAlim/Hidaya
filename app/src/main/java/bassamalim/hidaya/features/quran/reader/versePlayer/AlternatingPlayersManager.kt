@@ -19,6 +19,11 @@ import bassamalim.hidaya.core.data.dataSources.room.entities.Verse
 import bassamalim.hidaya.core.data.dataSources.room.entities.VerseRecitation
 import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.other.Global
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @UnstableApi
@@ -26,10 +31,10 @@ import java.util.Locale
 class AlternatingPlayersManager(
     private val context: Context,
     private val allVerses: List<Verse>,
-    private val recitations: List<VerseRecitation>,
-    private val repeatMode: VerseRepeatMode,
-    private val shouldStopOnSuraEnd: Boolean,
-    private val shouldStopOnPageEnd: Boolean,
+    private val recitationFlow: Flow<VerseRecitation>,
+    private val repeatModeFlow: Flow<VerseRepeatMode>,
+    private val stopOnPageEndFlow: Flow<Boolean>,
+    private val stopOnSuraEndFlow: Flow<Boolean>,
     private val callback: PlayerCallback
 ) : OnPreparedListener, OnCompletionListener, OnErrorListener {
 
@@ -49,6 +54,7 @@ class AlternatingPlayersManager(
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onPrepared(mp: MediaPlayer) {
         val currentPlayerIdx = idx(mp)
         val prvPlayerIdx = prvIdx(mp)
@@ -62,27 +68,33 @@ class AlternatingPlayersManager(
         aps[currentPlayerIdx].state = PlayerState.PREPARED
 
         if (aps[prvPlayerIdx].state == PlayerState.NONE
-            || aps[prvPlayerIdx].state == PlayerState.COMPLETED
-        ) {
+            || aps[prvPlayerIdx].state == PlayerState.COMPLETED) {
             // check
             if (!isOtherPlayerPlaying())
                 play(playerIdx = currentPlayerIdx, verseIdx = aps[currentPlayerIdx].verseIdx)
         }
 
-        if (shouldStop(currentVerse = aps[currentPlayerIdx].verseIdx, jumpSize = 1))
-            aps[nxtPlayerIdx].state = PlayerState.STOPPED
-        else {
-            if (!isOtherPlayerPreparing()
-                && (aps[nxtPlayerIdx].state == PlayerState.NONE
-                        || aps[nxtPlayerIdx].state == PlayerState.COMPLETED)) {
-                prepare(  // prepare next
-                    playerIdx = nxt(currentPlayerIdx),
-                    verseIdx = aps[currentPlayerIdx].verseIdx + 1
-                )
+        GlobalScope.launch {
+            val shouldStop = checkShouldStop(
+                currentVerse = aps[currentPlayerIdx].verseIdx,
+                shouldStopOnPageEnd = stopOnPageEndFlow.first(),
+                shouldStopOnSuraEnd = stopOnSuraEndFlow.first()
+            )
+            if (shouldStop) aps[nxtPlayerIdx].state = PlayerState.STOPPED
+            else {
+                if (!isOtherPlayerPreparing()
+                    && (aps[nxtPlayerIdx].state == PlayerState.NONE
+                            || aps[nxtPlayerIdx].state == PlayerState.COMPLETED)) {
+                    prepare(  // prepare next
+                        playerIdx = nxt(currentPlayerIdx),
+                        verseIdx = aps[currentPlayerIdx].verseIdx + 1
+                    )
+                }
             }
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCompletion(mp: MediaPlayer) {
         val currentPlayerIdx = idx(mp)
         val nxtPlayerIdx = nxtIdx(mp)
@@ -95,28 +107,35 @@ class AlternatingPlayersManager(
         aps[currentPlayerIdx].state = PlayerState.COMPLETED
         aps[currentPlayerIdx].repeated++
 
-        if (shouldRepeat(currentPlayerIdx))
-            aps[currentPlayerIdx].mp.start()
-        else {
-            when (aps[nxtPlayerIdx].state) {
-                PlayerState.PREPARED -> {
-                    if (!isOtherPlayerPlaying())
-                        play(playerIdx = nxtPlayerIdx, verseIdx = aps[nxtPlayerIdx].verseIdx)
-                }
-                PlayerState.STOPPED -> {  // finished
-                    callback.updatePbState(PlaybackStateCompat.STATE_STOPPED)
-                }
-                else -> {}
-            }
-
-            if (shouldStop(currentVerse = aps[currentPlayerIdx].verseIdx, jumpSize = NUM_OF_PLAYERS))
-                aps[currentPlayerIdx].state = PlayerState.STOPPED
+        GlobalScope.launch {
+            val shouldRepeat = checkShouldRepeat(currentPlayerIdx, repeatModeFlow.first())
+            if (shouldRepeat)
+                aps[currentPlayerIdx].mp.start()
             else {
-                if (!isOtherPlayerPreparing()) {
-                    prepare(
-                        playerIdx = currentPlayerIdx,
-                        verseIdx = aps[currentPlayerIdx].verseIdx + NUM_OF_PLAYERS
-                    )
+                when (aps[nxtPlayerIdx].state) {
+                    PlayerState.PREPARED -> {
+                        if (!isOtherPlayerPlaying())
+                            play(playerIdx = nxtPlayerIdx, verseIdx = aps[nxtPlayerIdx].verseIdx)
+                    }
+                    PlayerState.STOPPED -> {  // finished
+                        callback.updatePbState(PlaybackStateCompat.STATE_STOPPED)
+                    }
+                    else -> {}
+                }
+
+                val shouldStop = checkShouldStop(
+                    currentVerse = aps[currentPlayerIdx].verseIdx,
+                    shouldStopOnPageEnd = stopOnPageEndFlow.first(),
+                    shouldStopOnSuraEnd = stopOnSuraEndFlow.first()
+                )
+                if (shouldStop) aps[currentPlayerIdx].state = PlayerState.STOPPED
+                else {
+                    if (!isOtherPlayerPreparing()) {
+                        prepare(
+                            playerIdx = currentPlayerIdx,
+                            verseIdx = aps[currentPlayerIdx].verseIdx + NUM_OF_PLAYERS
+                        )
+                    }
                 }
             }
         }
@@ -224,39 +243,45 @@ class AlternatingPlayersManager(
         prepare(playerIdx = 0, verseIdx = verseIdx)  // prepare first
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun play(playerIdx: Int, verseIdx: Int) {
         aps[playerIdx].state = PlayerState.PLAYING
         this.playerIdx = playerIdx
         this.verseIdx = verseIdx
         aps[playerIdx].mp.start()
-        callback.track(verseId = verseIdx+1)
+        GlobalScope.launch {
+            callback.track(verseId = verseIdx+1)
+        }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun prepare(playerIdx: Int, verseIdx: Int) {
         aps[playerIdx].state = PlayerState.PREPARING
         aps[playerIdx].verseIdx = verseIdx
         aps[playerIdx].repeated = 0
 
-        val uri: Uri
-        try {
-            aps[playerIdx].mp.reset()
-            uri = getUri(allVerses[verseIdx])
-            aps[playerIdx].mp.setDataSource(context, uri)
-            aps[playerIdx].mp.prepareAsync()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.e(Global.TAG, "Reciter not found in verse recitations")
+        GlobalScope.launch {
+            val uri: Uri
+            try {
+                aps[playerIdx].mp.reset()
+                uri = getUri(allVerses[verseIdx], recitation = recitationFlow.first())
+                aps[playerIdx].mp.setDataSource(context, uri)
+                aps[playerIdx].mp.prepareAsync()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.e(Global.TAG, "Reciter not found in verse recitations")
+            }
         }
     }
 
-    private fun shouldRepeat(playerIdx: Int): Boolean {
-        Log.d(Global.TAG, "Repeat Mode: $repeatMode")
+    private fun checkShouldRepeat(playerIdx: Int, repeatMode: VerseRepeatMode): Boolean {
+        Log.d(Global.TAG, "in shouldRepeat with playerIdx: $playerIdx, repeatMode: $repeatMode")
 
         return when (repeatMode) {
             VerseRepeatMode.NO_REPEAT -> false
-            VerseRepeatMode.TWO -> aps[playerIdx].repeated < 1
-            VerseRepeatMode.THREE -> aps[playerIdx].repeated < 2
-            VerseRepeatMode.FIVE -> aps[playerIdx].repeated < 4
+            VerseRepeatMode.TWO -> aps[playerIdx].repeated < 2
+            VerseRepeatMode.THREE -> aps[playerIdx].repeated < 3
+            VerseRepeatMode.FIVE -> aps[playerIdx].repeated < 5
             VerseRepeatMode.INFINITE -> true
         }
     }
@@ -273,8 +298,12 @@ class AlternatingPlayersManager(
         }.contains(true)
     }
 
-    private fun shouldStop(currentVerse: Int, jumpSize: Int): Boolean {
-        val targetVerse = currentVerse + jumpSize
+    private fun checkShouldStop(
+        currentVerse: Int,
+        shouldStopOnPageEnd: Boolean,
+        shouldStopOnSuraEnd: Boolean
+    ): Boolean {
+        val targetVerse = currentVerse + NUM_OF_PLAYERS
         return targetVerse >= allVerses.size
                 || (shouldStopOnSuraEnd
                 && allVerses[currentVerse].suraNum != allVerses[targetVerse].suraNum)
@@ -282,9 +311,11 @@ class AlternatingPlayersManager(
                 && allVerses[currentVerse].pageNum != allVerses[targetVerse].pageNum)
     }
 
-    private fun getUri(verse: Verse): Uri {
+    private fun getUri(verse: Verse, recitation: VerseRecitation): Uri {
+        Log.d(Global.TAG, "In getUri with verse: $verse, recitation: $recitation")
+
         var uri = "https://www.everyayah.com/data/"
-        uri += recitations[0].source
+        uri += recitation.source
         uri += String.format(Locale.US, "%03d%03d.mp3", verse.suraNum, verse.num)
         return Uri.parse(uri)
     }

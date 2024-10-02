@@ -119,10 +119,7 @@ class QuranReaderDomain @Inject constructor(
             }
 
             // Save the controller
-            MediaControllerCompat.setMediaController(
-                activity,
-                mediaController
-            )
+            MediaControllerCompat.setMediaController(activity, mediaController)
 
             if (getSelectedVerseCallback() == null) {
                 setSelectedVerseCallback(getPageVersesCallback()[0])

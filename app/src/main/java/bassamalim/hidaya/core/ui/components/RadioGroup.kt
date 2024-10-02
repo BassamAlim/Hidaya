@@ -70,15 +70,16 @@ fun <V> HorizontalRadioGroup(
             .padding(vertical = 10.dp),
     ) {
         entries.forEachIndexed { index, text ->
+            val item = items[index]
             MySquareButton(
                 text = text,
                 fontSize = 20.nsp,
                 textColor =
-                    if (text == selection) AppTheme.colors.accent
+                    if (item == selection) AppTheme.colors.accent
                     else AppTheme.colors.text,
                 innerPadding = PaddingValues(vertical = 1.dp),
                 modifier =
-                    if (text == selection)
+                    if (item == selection)
                         Modifier
                             .weight(1F)
                             .padding(horizontal = 5.dp)

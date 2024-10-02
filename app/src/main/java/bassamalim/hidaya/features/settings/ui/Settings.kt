@@ -233,26 +233,21 @@ fun SliderPref(
 }
 
 @Composable
-fun CategoryTitle(titleResId: Int) {
+fun CategoryTitle(title: String) {
     MyText(
-        stringResource(titleResId),
-        Modifier
+        text = title,
+        modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 15.dp, horizontal = 15.dp),
         fontSize = 16.sp,
         textAlign = TextAlign.Start,
-        textColor = AppTheme.colors.accent)
+        textColor = AppTheme.colors.accent
+    )
 }
 
 @Composable
-fun PreferenceTitle(
-    title: String,
-    modifier: Modifier = Modifier
-) {
-    MyText(
-        text = title,
-        modifier = modifier
-    )
+fun PreferenceTitle(title: String, modifier: Modifier = Modifier) {
+    MyText(text = title, modifier = modifier)
 }
 
 @Composable

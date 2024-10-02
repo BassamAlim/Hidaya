@@ -43,16 +43,14 @@ fun QuranSettingsDialog(
 
     if (state.isLoading) return
 
-    MyDialog(
-        shown = true
-    ) {
+    MyDialog(shown = true) {
         Column(
             Modifier
                 .fillMaxWidth()
                 .padding(vertical = 10.dp, horizontal = 10.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            CategoryTitle(titleResId = R.string.page_preferences)
+            CategoryTitle(stringResource(R.string.page_preferences))
 
             MyText(
                 text = stringResource(R.string.display_method),
@@ -75,7 +73,7 @@ fun QuranSettingsDialog(
             )
 
             MyHorizontalDivider()
-            CategoryTitle(titleResId = R.string.recitation_settings)
+            CategoryTitle(stringResource(R.string.recitation_settings))
 
             MenuSetting(
                 selection = state.reciterId,
@@ -115,10 +113,7 @@ fun QuranSettingsDialog(
                 onSwitch = viewModel::onShouldStopOnPageEndChange
             )
 
-            BottomBar(
-                onCancel = viewModel::onCancel,
-                onSave = viewModel::onSave
-            )
+            BottomBar(onCancel = viewModel::onCancel, onSave = viewModel::onSave)
         }
     }
 }
