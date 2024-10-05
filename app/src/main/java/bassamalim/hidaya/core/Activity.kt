@@ -29,6 +29,7 @@ import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.di.IoDispatcher
+import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.Theme
@@ -109,27 +110,13 @@ class Activity : ComponentActivity() {
             test = surasDao::getPlainNamesAr,
             dispatcher = dispatcher
         )
+
         if (shouldReviveDb) {
-            reviveDb()
+            DbUtils.resetDB(this)
             appStateRepository.setLastDbVersion(Global.DB_VERSION)
             ActivityUtils.restartApplication(this)
         }
-        else
-            Log.d(Global.TAG, "Database is up to date")
-    }
-
-    private suspend fun reviveDb() {
-        DbUtils.resetDB(this)
-
-        DbUtils.restoreDbData(
-            suraFavorites = quranRepository.getSuraFavoritesBackup().first(),
-            setSuraFavorites = quranRepository::setSuraFavorites,
-            reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
-            setReciterFavorites = recitationsRepository::setReciterFavorites,
-            remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
-            setRemembranceFavorites = remembrancesRepository::setFavorites,
-        )
-        Log.d(Global.TAG, "Database data restored")
+        else Log.d(Global.TAG, "Database is up to date")
     }
 
     private suspend fun bootstrapApp() {
@@ -141,21 +128,37 @@ class Activity : ComponentActivity() {
         )
     }
 
-    private fun handleAction(action: String?) {
-        if (action == null) return
+    private suspend fun handleAction(action: String?) {
+        if (action == null || action == "android.intent.action.MAIN") return
 
-        when (action) {
-            Global.STOP_ATHAN -> {
+        val startAction = StartAction.valueOf(action)
+        when (startAction) {
+            StartAction.STOP_ATHAN -> {
                 // stop athan if it is running
                 stopService(Intent(this, AthanService::class.java))
             }
-            Global.GO_TO_RECITATION -> {
+            StartAction.GO_TO_RECITATION -> {
                 startRoute = Screen.RecitationPlayer(
                     "back",
                     intent.getStringExtra("media_id")!!
                 ).route
             }
+            StartAction.RESET_DATABASE -> {
+                restoreDbData()
+            }
         }
+    }
+
+    private suspend fun restoreDbData() {
+        DbUtils.restoreDbData(
+            suraFavorites = quranRepository.getSuraFavoritesBackup().first(),
+            setSuraFavorites = quranRepository::setSuraFavorites,
+            reciterFavorites = recitationsRepository.getReciterFavoritesBackup().first(),
+            setReciterFavorites = recitationsRepository::setReciterFavorites,
+            remembranceFavorites = remembrancesRepository.getFavoritesBackup().first(),
+            setRemembranceFavorites = remembrancesRepository::setFavorites,
+        )
+        Log.d(Global.TAG, "Database data restored")
     }
 
     private suspend fun getLocationAndLaunch() {

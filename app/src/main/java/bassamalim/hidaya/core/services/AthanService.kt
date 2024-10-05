@@ -24,6 +24,7 @@ import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
 import bassamalim.hidaya.core.enums.Prayer
+import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,7 +60,7 @@ class AthanService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == Global.STOP_ATHAN) {
+        if (intent?.action == StartAction.STOP_ATHAN.name) {
             onDestroy()
             return START_NOT_STICKY
         }
@@ -129,7 +130,7 @@ class AthanService : Service() {
         return PendingIntent.getService(
             this, 11,
             Intent(this, AthanService::class.java)
-                .setAction(Global.STOP_ATHAN)
+                .setAction(StartAction.STOP_ATHAN.name)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -139,7 +140,7 @@ class AthanService : Service() {
         return PendingIntent.getActivity(
             this, 12,
             Intent(this, Activity::class.java)
-                .setAction(Global.STOP_ATHAN),
+                .setAction(StartAction.STOP_ATHAN.name),
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }

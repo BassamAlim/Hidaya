@@ -41,9 +41,7 @@ class RemembrancesMenuViewModel @Inject constructor(
     ) { state, remembrances ->
         if (state.isLoading) return@combine state
 
-        state.copy(
-            remembrances = getFilteredRemembrances(remembrances)
-        )
+        state.copy(remembrances = getFilteredRemembrances(remembrances))
     }.onStart {
         initializeData()
     }.stateIn(

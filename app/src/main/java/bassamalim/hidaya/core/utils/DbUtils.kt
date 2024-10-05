@@ -13,16 +13,17 @@ object DbUtils {
 
     suspend fun shouldReviveDb(
         lastDbVersion: Int,
-        test: () -> Unit,
+        test: () -> List<Any>,
         dispatcher: CoroutineDispatcher
     ): Boolean {
         if (Global.DB_VERSION > lastDbVersion) return true
 
         return try {  // if there is a problem in the db it will cause an error
             withContext(dispatcher) {
-                test()
+                val results = test()
+                Log.d(Global.TAG, "DB Result: ${results.size}")
+                results.isEmpty()
             }
-            false
         } catch (e: IllegalStateException) {
             Log.e(Global.TAG, "DB Error: ${e.message}")
             e.printStackTrace()

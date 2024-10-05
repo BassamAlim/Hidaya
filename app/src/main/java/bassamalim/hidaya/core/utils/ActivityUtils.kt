@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.Theme
 import java.util.Locale
 
@@ -57,6 +58,7 @@ object ActivityUtils {
         val intent = activity.packageManager.getLaunchIntentForPackage(activity.packageName)
         val componentName = intent?.component
         val mainIntent = Intent.makeRestartActivityTask(componentName)
+        mainIntent.setAction(StartAction.RESET_DATABASE.name)
         activity.startActivity(mainIntent)
         Runtime.getRuntime().exit(0)
     }

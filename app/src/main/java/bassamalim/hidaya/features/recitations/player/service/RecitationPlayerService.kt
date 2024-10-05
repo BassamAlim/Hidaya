@@ -41,11 +41,12 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
+import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.helpers.ReceiverManager
-import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
+import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -769,7 +770,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
 
     private fun getContentIntent(): PendingIntent {
         val intent = Intent(this, Activity::class.java).apply {
-            action = Global.GO_TO_RECITATION
+            action = StartAction.GO_TO_RECITATION.name
             putExtra("media_id", mediaId)
         }
 

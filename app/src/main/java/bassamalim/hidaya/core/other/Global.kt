@@ -6,7 +6,6 @@ object Global {
     const val CONTACT_EMAIL = "Bassamalim@outlook.com"
     const val PLAY_ATHAN = "play_athan"
     const val STOP_ATHAN = "stop_athan"
-    const val GO_TO_RECITATION = "go_to_recitation"
     const val NUM_OF_QURAN_PAGES = 604
     const val NUM_OF_QURAN_SURAS = 114
     const val NUM_OF_QURAN_VERSES = 6236
