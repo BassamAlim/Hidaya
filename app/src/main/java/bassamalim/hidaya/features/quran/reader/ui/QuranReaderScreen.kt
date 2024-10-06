@@ -3,7 +3,6 @@
 package bassamalim.hidaya.features.quran.reader.ui
 
 import android.app.Activity
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -121,7 +120,7 @@ fun QuranReaderScreen(
 
     TutorialDialog(
         shown = state.isTutorialDialogShown,
-        textResId = R.string.quran_tips,
+        text = stringResource(R.string.quran_tips),
         onDismiss = viewModel::onTutorialDialogDismiss
     )
 

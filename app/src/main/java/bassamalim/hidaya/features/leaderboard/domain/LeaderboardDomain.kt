@@ -37,8 +37,8 @@ class LeaderboardDomain @Inject constructor(
         items.indexOfFirst { it.userId == userRecord.userId } + 1
 
     fun getSortedRanks(sortBy: RankType) = when (sortBy) {
-        RankType.BY_READING -> ranks.sortedBy { it.quranPages }
-        RankType.BY_LISTENING -> ranks.sortedBy { it.recitationsTime }
+        RankType.BY_READING -> ranks.sortedByDescending { it.quranPages }
+        RankType.BY_LISTENING -> ranks.sortedByDescending { it.recitationsTime }
     }
 
 }

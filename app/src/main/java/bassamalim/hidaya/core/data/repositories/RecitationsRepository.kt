@@ -1,9 +1,12 @@
 package bassamalim.hidaya.core.data.repositories
 
 import android.app.Application
+import android.app.DownloadManager
+import android.content.Context
+import android.net.Uri
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.RecitationsPreferencesDataSource
 import bassamalim.hidaya.core.data.dataSources.room.daos.RecitationNarrationsDao
-import bassamalim.hidaya.core.data.dataSources.room.daos.RecitationRecitersDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.SuraRecitersDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.VerseRecitationsDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.VerseRecitersDao
 import bassamalim.hidaya.core.di.ApplicationScope
@@ -11,10 +14,13 @@ import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.VerseRepeatMode
+import bassamalim.hidaya.core.models.DownloadingRecitation
 import bassamalim.hidaya.core.models.Narration
 import bassamalim.hidaya.core.models.Recitation
 import bassamalim.hidaya.core.models.Reciter
+import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.LastPlayedMedia
+import com.google.gson.Gson
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -23,25 +29,57 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.Locale
 import javax.inject.Inject
 
 class RecitationsRepository @Inject constructor(
-    app: Application,
+    private val app: Application,
     private val recitationsPreferencesDataSource: RecitationsPreferencesDataSource,
-    private val recitationRecitersDao: RecitationRecitersDao,
+    private val suraRecitersDao: SuraRecitersDao,
     private val verseRecitationsDao: VerseRecitationsDao,
     private val verseRecitersDao: VerseRecitersDao,
     private val recitationNarrationsDao: RecitationNarrationsDao,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
-    @ApplicationScope private val scope: CoroutineScope
+    @ApplicationScope private val scope: CoroutineScope,
+    private val gson: Gson
 ) {
 
     val prefix = "/Telawat/"
     val dir = "${app.getExternalFilesDir(null)}$prefix"
-    private val downloading = mutableMapOf<Long, Pair<Int, Int>>()
+    private val downloading = mutableMapOf<Long, DownloadingRecitation>()
 
-    fun observeAllReciters(language: Language) =
-        recitationRecitersDao.observeAll().map {
+    fun downloadSura(
+        reciterId: Int,
+        narrationId: Int,
+        suraId: Int,
+        suraSearchName: String,
+        server: String
+    ) {
+        Thread {
+            val link = String.format(Locale.US, "%s/%03d.mp3", server, suraId+1)
+            val uri = Uri.parse(link)
+
+            val request = DownloadManager.Request(uri)
+            request.setTitle(suraSearchName)
+            FileUtils.createDir(app, prefix)
+            request.setDestinationInExternalFilesDir(app, "$prefix/$reciterId/$narrationId/", "$suraId.mp3")
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+
+            val downloadId = (app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager)
+                .enqueue(request)
+            addToDownloading(downloadId, narrationId, suraId)
+        }.start()
+    }
+
+    fun deleteSura(reciterId: Int, narrationId: Int, suraId: Int) {
+        FileUtils.deleteFile(
+            context = app,
+            path = "$prefix$reciterId/$narrationId/$suraId.mp3"
+        )
+    }
+
+    fun observeAllSuraReciters(language: Language) =
+        suraRecitersDao.observeAll().map {
             it.map { reciter ->
                 Reciter(
                     id = reciter.id,
@@ -54,8 +92,8 @@ class RecitationsRepository @Inject constructor(
             }
         }
 
-    suspend fun getAllReciters(language: Language) = withContext(dispatcher) {
-        recitationRecitersDao.getAll().map {
+    suspend fun getAllSuraReciters(language: Language) = withContext(dispatcher) {
+        suraRecitersDao.getAll().map {
             it.let {
                 Reciter(
                     id = it.id,
@@ -69,13 +107,26 @@ class RecitationsRepository @Inject constructor(
         }
     }
 
-    private fun getReciterFavoriteStatuses() = recitationRecitersDao.observeFavoriteStatuses().map {
+    suspend fun getSuraReciter(id: Int, language: Language) = withContext(dispatcher) {
+        suraRecitersDao.getReciter(id).let {
+            Reciter(
+                id = it.id,
+                name = when (language) {
+                    Language.ARABIC -> it.nameAr
+                    Language.ENGLISH -> it.nameEn
+                },
+                isFavorite = it.isFavorite != 0
+            )
+        }
+    }
+
+    private fun getReciterFavoriteStatuses() = suraRecitersDao.observeFavoriteStatuses().map {
         it.map { (id, isFavorite) -> id to (isFavorite == 1) }.toMap()
     }
 
     suspend fun setReciterFavorite(reciterId: Int, isFavorite: Boolean) {
         withContext(dispatcher) {
-            recitationRecitersDao.setFavoriteStatus(
+            suraRecitersDao.setFavoriteStatus(
                 id = reciterId,
                 value = if (isFavorite) 1 else 0
             )
@@ -89,10 +140,17 @@ class RecitationsRepository @Inject constructor(
         }
     }
 
-    suspend fun getReciterNames(language: Language) = withContext(dispatcher) {
+    suspend fun getSuraReciterName(id: Int, language: Language) = withContext(dispatcher) {
         when (language) {
-            Language.ARABIC -> recitationRecitersDao.getNamesAr()
-            Language.ENGLISH -> recitationRecitersDao.getNamesEn()
+            Language.ARABIC -> suraRecitersDao.getNameAr(id)
+            Language.ENGLISH -> suraRecitersDao.getNameEn(id)
+        }
+    }
+
+    suspend fun getSuraReciterNames(language: Language) = withContext(dispatcher) {
+        when (language) {
+            Language.ARABIC -> suraRecitersDao.getNamesAr()
+            Language.ENGLISH -> suraRecitersDao.getNamesEn()
         }
     }
 
@@ -112,7 +170,7 @@ class RecitationsRepository @Inject constructor(
                     Language.ENGLISH -> it.nameEn
                 },
                 server = it.url,
-                availableSuras = it.availableSuras
+                availableSuras = gson.fromJson(it.availableSuras, IntArray::class.java)
             )
         }
     }
@@ -127,7 +185,7 @@ class RecitationsRepository @Inject constructor(
                         Language.ENGLISH -> it.nameEn
                     },
                     server = it.url,
-                    availableSuras = it.availableSuras
+                    availableSuras = gson.fromJson(it.availableSuras, IntArray::class.java)
                 )
             }
         }
@@ -154,12 +212,19 @@ class RecitationsRepository @Inject constructor(
         recitationsPreferencesDataSource.updateNarrationSelections(selections.toPersistentMap())
     }
 
-    private fun isFileExists(reciterId: Int, narrationId: Int) =
-        File("${dir}${reciterId}/${narrationId}").exists()
-
     fun getNarrationDownloadState(reciterId: Int, narrationId: Int): DownloadState {
-        return if (isFileExists(reciterId, narrationId)) {
-            if (isDownloading(reciterId, narrationId)) DownloadState.DOWNLOADING
+        val fileExists = File("${dir}${reciterId}/${narrationId}").exists()
+        return if (fileExists) {
+            if (isNarrationDownloading(narrationId)) DownloadState.DOWNLOADING
+            else DownloadState.DOWNLOADED
+        }
+        else DownloadState.NOT_DOWNLOADED
+    }
+
+    fun getSuraDownloadState(reciterId: Int, narrationId: Int, suraId: Int): DownloadState {
+        val fileExists = File("${dir}${reciterId}/${narrationId}/${suraId}.mp3").exists()
+        return if (fileExists) {
+            if (isSuraDownloading(narrationId, suraId)) DownloadState.DOWNLOADING
             else DownloadState.DOWNLOADED
         }
         else DownloadState.NOT_DOWNLOADED
@@ -173,16 +238,17 @@ class RecitationsRepository @Inject constructor(
         }.toMap()
     }
 
-    private fun isDownloading(reciterId: Int, narrationId: Int) =
-        downloading.containsValue(Pair(reciterId, narrationId))
+    private fun isNarrationDownloading(narrationId: Int) =
+        downloading.values.any { it.narrationId == narrationId }
 
-    fun addToDownloading(downloadId: Long, reciterId: Int, narrationId: Int) {
-        downloading[downloadId] = Pair(reciterId, narrationId)
+    private fun isSuraDownloading(narrationId: Int, suraId: Int) =
+        downloading.values.any { it.narrationId == narrationId && it.suraId == suraId }
+
+    fun addToDownloading(downloadId: Long, narrationId: Int, suraId: Int) {
+        downloading[downloadId] = DownloadingRecitation(narrationId, suraId)
     }
 
-    fun removeFromDownloading(downloadId: Long) {
-        downloading.remove(downloadId)
-    }
+    fun popFromDownloading(downloadId: Long) = downloading.remove(downloadId)
 
     fun getRepeatMode() = recitationsPreferencesDataSource.getRepeatMode()
 
@@ -230,26 +296,6 @@ class RecitationsRepository @Inject constructor(
         verseRecitersDao.getNames()
     }
 
-    suspend fun getReciter(id: Int, language: Language) = withContext(dispatcher) {
-        recitationRecitersDao.getReciter(id).let {
-            Reciter(
-                id = it.id,
-                name = when (language) {
-                    Language.ARABIC -> it.nameAr
-                    Language.ENGLISH -> it.nameEn
-                },
-                isFavorite = it.isFavorite != 0
-            )
-        }
-    }
-
-    suspend fun getReciterName(id: Int, language: Language) = withContext(dispatcher) {
-        when (language) {
-            Language.ARABIC -> recitationRecitersDao.getNameAr(id)
-            Language.ENGLISH -> recitationRecitersDao.getNameEn(id)
-        }
-    }
-
     suspend fun getNarration(reciterId: Int, narrationId: Int, language: Language) =
         withContext(dispatcher) {
             recitationNarrationsDao.getNarration(reciterId, narrationId).let {
@@ -260,7 +306,7 @@ class RecitationsRepository @Inject constructor(
                         Language.ENGLISH -> it.nameEn
                     },
                     server = it.url,
-                    availableSuras = it.availableSuras
+                    availableSuras = gson.fromJson(it.availableSuras, IntArray::class.java)
                 )
             }
         }

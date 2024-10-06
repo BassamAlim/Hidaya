@@ -92,22 +92,22 @@ private fun ColumnScope.SourcesList() {
             .weight(1F)
             .verticalScroll(rememberScrollState())
     ) {
-        Source(R.string.quran_source)
+        Source(stringResource(R.string.quran_source))
         MyHorizontalDivider()
-        Source(R.string.interpretation_source)
+        Source(stringResource(R.string.interpretation_source))
         MyHorizontalDivider()
-        Source(R.string.hadeeth_source)
+        Source(stringResource(R.string.hadeeth_source))
         MyHorizontalDivider()
-        Source(R.string.remembrances_source)
+        Source(stringResource(R.string.remembrances_source))
         MyHorizontalDivider()
-        Source(R.string.quiz_source)
+        Source(stringResource(R.string.quiz_source))
     }
 }
 
 @Composable
-private fun Source(textResId: Int) {
+private fun Source(text: String) {
     MyText(
-        text = stringResource(textResId),
+        text = text,
         modifier = Modifier.padding(10.dp),
         fontSize = 22.sp,
         textAlign = TextAlign.Start

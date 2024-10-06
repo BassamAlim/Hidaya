@@ -30,7 +30,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
 ) {
 
     suspend fun observeRecitersWithNarrations(language: Language): Flow<List<Recitation>> {
-        val allReciters = recitationsRepository.observeAllReciters(language)
+        val allReciters = recitationsRepository.observeAllSuraReciters(language)
         val allNarrations = recitationsRepository.getAllNarrations(language)
         val downloadStates = recitationsRepository.getNarrationDownloadStates(
             ids = allReciters.first().associate { reciter ->
@@ -98,13 +98,13 @@ class RecitationRecitersMenuDomain @Inject constructor(
         language: Language,
         suraString: String
     ) {
-        val reciterNames = recitationsRepository.getReciterNames(language)
+        val reciterNames = recitationsRepository.getSuraReciterNames(language)
         Thread {
             val downloadManager = app.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             var request: DownloadManager.Request
             var posted = false
             for (i in 0..113) {
-                if (narration.availableSuras.contains("," + (i + 1) + ",")) {
+                if (narration.availableSuras.contains(i+1)) {
                     val link = String.format(
                         Locale.US,
                         "%s/%03d.mp3",
@@ -146,7 +146,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
         override fun onReceive(context: Context, intent: Intent) {
             val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             try {
-                recitationsRepository.removeFromDownloading(downloadId)
+                recitationsRepository.popFromDownloading(downloadId)
             } catch (_: RuntimeException) {}
         }
     }
@@ -190,7 +190,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
         recitationsRepository.getNarration(reciterId, narrationId, language)
 
     suspend fun getReciterName(reciterId: Int, language: Language) =
-        recitationsRepository.getReciterName(reciterId, language)
+        recitationsRepository.getSuraReciterName(reciterId, language)
 
     suspend fun getSuraNames(language: Language) = quranRepository.getDecoratedSuraNames(language)
 

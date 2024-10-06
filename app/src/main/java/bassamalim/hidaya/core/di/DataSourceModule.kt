@@ -229,7 +229,7 @@ object DataSourceModule {
     fun provideQuizQuestionsDao(database: AppDatabase) = database.quizQuestionsDao()
 
     @Provides
-    fun provideRecitationRecitersDao(database: AppDatabase) = database.recitationRecitersDao()
+    fun provideRecitationRecitersDao(database: AppDatabase) = database.suraRecitersDao()
 
     @Provides
     fun provideRecitationNarrationsDao(database: AppDatabase) = database.recitationNarrationsDao()

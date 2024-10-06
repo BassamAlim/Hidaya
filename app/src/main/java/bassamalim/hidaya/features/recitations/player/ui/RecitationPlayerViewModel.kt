@@ -205,7 +205,7 @@ class RecitationPlayerViewModel @Inject constructor(
         suraIdx = metadata.getLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER).toInt()
         duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
 
-        domain.setPath(reciterId = reciterId, narrationId = narrationId, suraId = suraIdx)
+        domain.setPath(reciterId = reciterId, narrationId = narrationId)
 
         _uiState.update { it.copy(
             suraName = suraNames[suraIdx],

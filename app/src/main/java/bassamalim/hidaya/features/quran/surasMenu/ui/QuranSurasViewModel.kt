@@ -70,7 +70,8 @@ class QuranSurasViewModel @Inject constructor(
             suraNames = domain.getSuraNames(language)
 
             _uiState.update { it.copy(
-                isLoading = false
+                isLoading = false,
+                isTutorialDialogShown = domain.getShouldShowTutorial()
             )}
         }
     }

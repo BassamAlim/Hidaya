@@ -17,10 +17,10 @@ import bassamalim.hidaya.core.data.dataSources.room.daos.CountriesDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.QuizAnswersDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.QuizQuestionsDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.RecitationNarrationsDao
-import bassamalim.hidaya.core.data.dataSources.room.daos.RecitationRecitersDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.RemembranceCategoriesDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.RemembrancePassagesDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.RemembrancesDao
+import bassamalim.hidaya.core.data.dataSources.room.daos.SuraRecitersDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.SurasDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.VerseRecitationsDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.VerseRecitersDao
@@ -127,21 +127,23 @@ object RepositoryModule {
     fun provideRecitationsRepository(
         app: Application,
         recitationsPreferencesDataSource: RecitationsPreferencesDataSource,
-        recitationRecitersDao: RecitationRecitersDao,
+        suraRecitersDao: SuraRecitersDao,
         verseRecitationsDao: VerseRecitationsDao,
         verseRecitersDao: VerseRecitersDao,
         recitationNarrationsDao: RecitationNarrationsDao,
         @DefaultDispatcher dispatcher: CoroutineDispatcher,
-        @ApplicationScope scope: CoroutineScope
+        @ApplicationScope scope: CoroutineScope,
+        gson: Gson
     ) = RecitationsRepository(
         app,
         recitationsPreferencesDataSource,
-        recitationRecitersDao,
+        suraRecitersDao,
         verseRecitationsDao,
         verseRecitersDao,
         recitationNarrationsDao,
         dispatcher,
-        scope
+        scope,
+        gson
     )
 
     @Provides @Singleton

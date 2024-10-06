@@ -101,8 +101,8 @@ fun QuranSurasScreen(
         }
 
         TutorialDialog(
-            textResId = R.string.quran_fragment_tips,
             shown = state.isTutorialDialogShown,
+            text = stringResource(R.string.quran_fragment_tips),
             onDismiss = viewModel::onTutorialDialogDismiss
         )
 

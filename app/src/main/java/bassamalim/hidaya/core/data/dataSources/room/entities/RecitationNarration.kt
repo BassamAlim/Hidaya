@@ -8,7 +8,7 @@ import androidx.room.ForeignKey
     tableName = "recitation_narrations",
     primaryKeys = ["reciter_id", "id"],
     foreignKeys = [ForeignKey(
-        entity = RecitationsReciter::class,
+        entity = SuraReciter::class,
         parentColumns = arrayOf("id"),
         childColumns = arrayOf("reciter_id"),
         onUpdate = ForeignKey.CASCADE,

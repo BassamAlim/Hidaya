@@ -153,7 +153,7 @@ class RecitationPlayerDomain @Inject constructor(
         suraName: String
     ) {
         val server = narration.server
-        val link = String.format(Locale.US, "%s/%03d.mp3", server, suraIdx + 1)
+        val link = String.format(Locale.US, "%s/%03d.mp3", server, suraIdx+1)
         val uri = Uri.parse(link)
 
         val request = DownloadManager.Request(uri)
@@ -169,18 +169,18 @@ class RecitationPlayerDomain @Inject constructor(
         FileUtils.deleteFile(app, path)
     }
 
-    fun setPath(reciterId: Int, narrationId: Int, suraId: Int) {
-        this.path = "${"${recitationsRepository.prefix}${reciterId}/${narrationId}/"}$suraId.mp3"
+    fun setPath(reciterId: Int, narrationId: Int) {
+        this.path = "${recitationsRepository.prefix}${reciterId}/$narrationId/"
     }
 
-    fun observeAllReciters(language: Language) = recitationsRepository.observeAllReciters(language)
+    fun observeAllReciters(language: Language) = recitationsRepository.observeAllSuraReciters(language)
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 
     suspend fun getSuraNames(language: Language) = quranRepository.getDecoratedSuraNames(language)
 
     suspend fun getReciterName(id: Int, language: Language) =
-        recitationsRepository.getReciterName(id, language)
+        recitationsRepository.getSuraReciterName(id, language)
 
     suspend fun getNarration(reciterId: Int, narrationId: Int, language: Language) =
         recitationsRepository.getNarration(reciterId, narrationId, language).let {

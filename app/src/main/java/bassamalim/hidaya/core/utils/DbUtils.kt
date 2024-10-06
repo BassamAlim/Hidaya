@@ -20,9 +20,7 @@ object DbUtils {
 
         return try {  // if there is a problem in the db it will cause an error
             withContext(dispatcher) {
-                val results = test()
-                Log.d(Global.TAG, "DB Result: ${results.size}")
-                results.isEmpty()
+                test().isEmpty()
             }
         } catch (e: IllegalStateException) {
             Log.e(Global.TAG, "DB Error: ${e.message}")

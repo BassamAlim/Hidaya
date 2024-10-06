@@ -339,14 +339,13 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp++
-            } while (temp < Global.NUM_OF_QURAN_SURAS &&
-                !narration.availableSuras.contains("," + (temp + 1) + ","))
+            } while (temp < Global.NUM_OF_QURAN_SURAS && !narration.availableSuras.contains(temp+1))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
                 temp = random.nextInt(Global.NUM_OF_QURAN_SURAS)
-            } while (!narration.availableSuras.contains("," + (temp + 1) + ","))
+            } while (!narration.availableSuras.contains(temp+1))
         }
 
         if (temp < Global.NUM_OF_QURAN_SURAS) {
@@ -366,13 +365,13 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
             do {
                 temp--
-            } while (temp >= 0 && !narration.availableSuras.contains("," + (temp + 1) + ","))
+            } while (temp >= 0 && !narration.availableSuras.contains(temp+1))
         }
         else if (shuffle == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
             val random = Random()
             do {
                 temp = random.nextInt(Global.NUM_OF_QURAN_SURAS)
-            } while (!narration.availableSuras.contains("," + (temp + 1) + ","))
+            } while (!narration.availableSuras.contains(temp+1))
         }
 
         if (temp >= 0) {
@@ -554,8 +553,6 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     }
 
     private fun updateMetadata(duration: Boolean) {
-        val numOfAvailableSuras = narration.availableSuras.split(",").size
-
         mediaMetadata = MediaMetadataCompat.Builder()
             .putBitmap(    //Notification icon in card
                 MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
@@ -576,7 +573,8 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, reciterName!!)
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, narration.name)
             .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, suraIndex.toLong())
-            .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, numOfAvailableSuras.toLong())
+            .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS,
+                narration.availableSuras.size.toLong())
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
                 (if (duration) player.duration else 0).toLong()
             )

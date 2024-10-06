@@ -75,7 +75,7 @@ class PrayersBoardViewModel @Inject constructor(
             _uiState.update { it.copy(
                 isLoading = false,
                 dateText = getDateText(viewedDate),
-                tutorialDialogShown = domain.getShouldShowTutorial()
+                isTutorialDialogShown = domain.getShouldShowTutorial()
             )}
         }
     }
@@ -127,7 +127,7 @@ class PrayersBoardViewModel @Inject constructor(
 
     fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {
         _uiState.update { it.copy(
-            tutorialDialogShown = false
+            isTutorialDialogShown = false
         )}
 
         if (doNotShowAgain) {

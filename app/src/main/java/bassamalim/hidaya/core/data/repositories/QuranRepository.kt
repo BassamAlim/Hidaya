@@ -7,6 +7,7 @@ import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.QuranPageBookmark
+import bassamalim.hidaya.core.models.Sura
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,7 +25,23 @@ class QuranRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope
 ) {
 
-    fun observeAllSuras() = surasDao.observeAll()
+    fun observeAllSuras(language: Language) = surasDao.observeAll().map {
+        it.map { sura ->
+            Sura(
+                id = sura.id,
+                decoratedName = when (language) {
+                    Language.ARABIC -> sura.decoratedNameAr
+                    Language.ENGLISH -> sura.decoratedNameEn
+                },
+                plainName = when (language) {
+                    Language.ARABIC -> sura.plainNameAr
+                    Language.ENGLISH -> sura.plainNameEn?: sura.plainNameAr
+                },
+                revelation = sura.revelation,
+                isFavorite = sura.isFavorite == 1
+            )
+        }
+    }
 
     suspend fun getDecoratedSuraNames(language: Language) = withContext(dispatcher) {
         if (language == Language.ENGLISH) surasDao.getDecoratedNamesEn()
@@ -36,7 +53,12 @@ class QuranRepository @Inject constructor(
     }
 
     fun getSuraFavorites() = surasDao.observeIsFavorites().map {
-        it.mapIndexed { index, value -> index + 1 to (value == 1) }.toMap()
+        if (it.isEmpty()) {
+            val favorites = (0..113).associateWith { false }
+            setSuraFavorites(favorites)
+            favorites
+        }
+        else it.mapIndexed { index, value -> index + 1 to (value == 1) }.toMap()
     }
 
     suspend fun setSuraFavoriteStatus(suraId: Int, isFavorite: Boolean) {

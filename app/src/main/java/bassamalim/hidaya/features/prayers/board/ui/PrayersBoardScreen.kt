@@ -77,8 +77,8 @@ fun PrayersBoardScreen(
         }
 
         TutorialDialog(
-            shown = state.tutorialDialogShown,
-            textResId = R.string.prayers_tips,
+            shown = state.isTutorialDialogShown,
+            text = stringResource(R.string.prayers_tips),
             onDismiss = viewModel::onTutorialDialogDismiss
         )
 

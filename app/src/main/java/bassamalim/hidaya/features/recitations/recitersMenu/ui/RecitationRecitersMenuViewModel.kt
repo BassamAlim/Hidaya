@@ -41,12 +41,11 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         _uiState.asStateFlow(),
         domain.getLastPlayed()
     ) { state, lastPlayed ->
-        if (!state.isLoading) state.copy(
+        if (state.isLoading) return@combine state
+
+        state.copy(
             lastPlayedMedia = domain.getLastPlayedMedia(lastPlayed.mediaId),
             isFiltered = narrationSelections.first().values.any { bool -> !bool }
-        )
-        else state.copy(
-            lastPlayedMedia = domain.getLastPlayedMedia(lastPlayed.mediaId)
         )
     }.onStart {
         initializeData()
@@ -134,7 +133,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
                             narration.downloadState == DownloadState.DOWNLOADED
                         }
                     }
-                    hasDownloaded.map {  recitation ->
+                    hasDownloaded.map { recitation ->
                         recitation.copy(narrations = recitation.narrations.filter { narration ->
                             narration.downloadState == DownloadState.DOWNLOADED
                         })
@@ -200,6 +199,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         )
     }
 
+    // TODO: fix writing error
     fun onSearchTextChange(text: String) {
         _uiState.update { it.copy(
             searchText = text

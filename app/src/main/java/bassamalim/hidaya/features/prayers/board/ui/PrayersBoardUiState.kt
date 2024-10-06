@@ -11,6 +11,6 @@ data class PrayersBoardUiState(
     val isNoDateOffset: Boolean = true,
     val dateText: String = "",
     val settingsDialogShown: Boolean = false,
-    val tutorialDialogShown: Boolean = false,
+    val isTutorialDialogShown: Boolean = false,
     val shouldShowLocationFailedToast: Boolean = false
 )

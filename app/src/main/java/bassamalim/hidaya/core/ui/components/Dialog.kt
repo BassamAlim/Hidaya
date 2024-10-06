@@ -87,7 +87,7 @@ fun InfoDialog(
 @Composable
 fun TutorialDialog(
     shown: Boolean,
-    textResId: Int,
+    text: String,
     onDismiss: (Boolean) -> Unit
 ) {
     var doNotShowAgain by remember { mutableStateOf(false) }
@@ -110,7 +110,7 @@ fun TutorialDialog(
                     ) {
                         MyCloseBtn(onClose = { onDismiss(doNotShowAgain) })
 
-                        MyText(stringResource(textResId))
+                        MyText(text)
 
                         Row(
                             Modifier

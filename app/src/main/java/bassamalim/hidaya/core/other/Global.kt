@@ -5,7 +5,6 @@ object Global {
     const val PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=bassamalim.hidaya"
     const val CONTACT_EMAIL = "Bassamalim@outlook.com"
     const val PLAY_ATHAN = "play_athan"
-    const val STOP_ATHAN = "stop_athan"
     const val NUM_OF_QURAN_PAGES = 604
     const val NUM_OF_QURAN_SURAS = 114
     const val NUM_OF_QURAN_VERSES = 6236
