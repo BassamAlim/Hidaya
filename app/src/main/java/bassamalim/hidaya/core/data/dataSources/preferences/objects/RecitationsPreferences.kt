@@ -17,7 +17,7 @@ data class RecitationsPreferences(
     val narrationSelections: PersistentMap<String, Boolean> = persistentMapOf(),
     val repeatMode: Int = PlaybackStateCompat.REPEAT_MODE_NONE,
     val shuffleMode: Int = PlaybackStateCompat.SHUFFLE_MODE_NONE,
-    val lastPlayedMedia: LastPlayedMedia = LastPlayedMedia(),
+    val lastPlayedMedia: LastPlayedMedia? = null,
     val verseReciterId: Int = 13,
     val verseRepeatMode: VerseRepeatMode = VerseRepeatMode.NO_REPEAT,
     val shouldStopOnSuraEnd: Boolean = false,

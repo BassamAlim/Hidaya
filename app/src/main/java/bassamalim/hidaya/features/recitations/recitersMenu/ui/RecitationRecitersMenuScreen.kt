@@ -60,8 +60,10 @@ fun RecitationRecitersMenuScreen(
                     if (state.lastPlayedMedia != null) {
                         "${stringResource(R.string.last_play)}: " +
                                 "${stringResource(R.string.sura)} ${state.lastPlayedMedia!!.suraName} " +
-                                "${stringResource(R.string.for_reciter)} ${state.lastPlayedMedia!!.reciterName}" +
-                                "${stringResource(R.string.in_narration_of)} ${state.lastPlayedMedia!!.narrationName}"
+                                stringResource(R.string.for_reciter) +
+                                " ${state.lastPlayedMedia!!.reciterName}" +
+                                stringResource(R.string.in_narration_of) +
+                                " ${state.lastPlayedMedia!!.narrationName}"
                     }
                     else stringResource(R.string.no_last_play),
                 modifier = Modifier.fillMaxWidth(),

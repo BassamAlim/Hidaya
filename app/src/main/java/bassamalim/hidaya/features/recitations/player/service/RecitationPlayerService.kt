@@ -194,7 +194,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
                 GlobalScope.launch {
                     if (playType == "continue")
                         continueFrom = recitationsRepository.getLastPlayedMedia()
-                            .first().progress.toInt()
+                            .first()!!.progress.toInt()
 
                     buildNotification()
                     updateMetadata(false)

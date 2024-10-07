@@ -49,7 +49,7 @@ class RecitationsPreferencesDataSource(
     }
 
     fun getLastPlayedMedia() = flow.map { it.lastPlayedMedia }
-    suspend fun updateLastPlayedMedia(media: LastPlayedMedia) {
+    suspend fun updateLastPlayedMedia(media: LastPlayedMedia?) {
         dataStore.updateData { preferences ->
             preferences.copy(lastPlayedMedia = media)
         }

@@ -31,7 +31,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
 ): ViewModel() {
 
     private lateinit var language: Language
-    private var continueListeningMediaId = ""
+    private var lastPlayedMediaId: String? = null
     private lateinit var allRecitations: Flow<List<Recitation>>
     private lateinit var suraNames: List<String>
     private lateinit var narrationSelections: Flow<Map<String, Boolean>>
@@ -43,8 +43,10 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     ) { state, lastPlayed ->
         if (state.isLoading) return@combine state
 
+        lastPlayed?.let { lastPlayedMediaId = it.mediaId }
+
         state.copy(
-            lastPlayedMedia = domain.getLastPlayedMedia(lastPlayed.mediaId),
+            lastPlayedMedia = lastPlayed?.mediaId?.let { domain.getLastPlayedMedia(it) },
             isFiltered = narrationSelections.first().values.any { bool -> !bool }
         )
     }.onStart {
@@ -111,24 +113,12 @@ class RecitationRecitersMenuViewModel @Inject constructor(
                 )
             }
 
-            val filtered = all.filter { recitation ->
-                recitation.narrations.any { narration ->
-                    narrationSelections[narration.name]!!
-                }
-            }.map { recitation ->
-                recitation.copy(
-                    narrations = recitation.narrations.filter { narration ->
-                        narrationSelections[narration.name]!!
-                    }
-                )
-            }
-
             val items = when (menuType) {
                 MenuType.FAVORITES -> {
-                    filtered.filter { recitation -> recitation.isFavoriteReciter }
+                    all.filter { recitation -> recitation.isFavoriteReciter }
                 }
                 MenuType.DOWNLOADED -> {
-                    val hasDownloaded = filtered.filter { recitation ->
+                    val hasDownloaded = all.filter { recitation ->
                         recitation.narrations.any { narration ->
                             narration.downloadState == DownloadState.DOWNLOADED
                         }
@@ -139,22 +129,33 @@ class RecitationRecitersMenuViewModel @Inject constructor(
                         })
                     }
                 }
-                else -> filtered
+                else -> all
             }
 
-            if (_uiState.value.searchText.isEmpty()) items
-            else items.filter { reciter ->
-                reciter.reciterName.contains(_uiState.value.searchText, true)
-            }
+            items.filter { recitation ->
+                val isSelected = recitation.narrations.any { narration ->
+                    narrationSelections[narration.name]!!
+                }
+                val isSearched = _uiState.value.searchText.isEmpty() ||
+                        recitation.reciterName.contains(_uiState.value.searchText, true)
+
+                isSelected && isSearched
+            }.map { recitation ->
+                recitation.copy(
+                    narrations = recitation.narrations.filter { narration ->
+                        narrationSelections[narration.name]!!
+                    }
+                )
+            }.filter { recitation -> recitation.narrations.isNotEmpty() }
         }
     }
 
     fun onContinueListeningClick() {
-        if (continueListeningMediaId.isNotEmpty()) {
+        if (lastPlayedMediaId != null) {
             navigator.navigate(
                 Screen.RecitationPlayer(
                     action = "continue",
-                    mediaId = continueListeningMediaId
+                    mediaId = lastPlayedMediaId.toString()
                 )
             )
         }
