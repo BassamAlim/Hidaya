@@ -4,6 +4,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import bassamalim.hidaya.core.enums.DownloadState
 
 data class RecitationPlayerUiState(
+    val isLoading: Boolean = true,
     val repeatMode: Int = PlaybackStateCompat.REPEAT_MODE_NONE,
     val shuffleMode: Int = PlaybackStateCompat.SHUFFLE_MODE_NONE,
     val duration: String = "00:00",

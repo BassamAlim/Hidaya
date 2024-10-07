@@ -47,6 +47,8 @@ fun RecitationPlayerScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
 
+    if (state.isLoading) return
+
     DisposableEffect(key1 = viewModel) {
         viewModel.onStart(activity)
         onDispose(viewModel::onStop)
@@ -80,8 +82,10 @@ fun RecitationPlayerScreen(
             )
 
             ProgressSpace(
-                progress = state.progress,
-                duration = state.duration,
+                progress = viewModel.progress,
+                progressText = state.progress,
+                duration = viewModel.duration,
+                durationText = state.duration,
                 playbackState = state.btnState,
                 areControlsEnabled = state.controlsEnabled,
                 onSliderChange = viewModel::onSliderChange,
@@ -138,8 +142,10 @@ private fun InfoSpace(
 
 @Composable
 private fun ProgressSpace(
-    progress: String,
-    duration: String,
+    progress: Long,
+    progressText: String,
+    duration: Long,
+    durationText: String,
     playbackState: Int,
     areControlsEnabled: Boolean,
     onSliderChange: (Float) -> Unit,
@@ -162,7 +168,7 @@ private fun ProgressSpace(
                 .padding(vertical = 10.dp)
         ) {
             MyText(
-                text = progress,
+                text = progressText,
                 modifier = Modifier.padding(10.dp),
                 fontSize = 19.sp
             )
@@ -177,7 +183,7 @@ private fun ProgressSpace(
             )
 
             MyText(
-                text = duration,
+                text = durationText,
                 modifier = Modifier.padding(10.dp),
                 fontSize = 19.sp
             )
@@ -227,8 +233,8 @@ private fun BottomBar(
     repeatMode: Int,
     shuffleMode: Int,
     downloadState: DownloadState,
-    onRepeatClick: () -> Unit,
-    onShuffleClick: () -> Unit,
+    onRepeatClick: (Int) -> Unit,
+    onShuffleClick: (Int) -> Unit,
     onDownloadClick: () -> Unit,
 ) {
     BottomAppBar(
@@ -246,7 +252,7 @@ private fun BottomBar(
                 tint =
                     if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) AppTheme.colors.secondary
                     else AppTheme.colors.onPrimary,
-                onClick = onRepeatClick
+                onClick = { onRepeatClick(repeatMode) }
             )
 
             MyDownloadButton(
@@ -261,7 +267,7 @@ private fun BottomBar(
                 tint =
                     if (shuffleMode == SHUFFLE_MODE_ALL) AppTheme.colors.secondary
                     else AppTheme.colors.onPrimary,
-                onClick = onShuffleClick
+                onClick = { onShuffleClick(shuffleMode) }
             )
         }
     }

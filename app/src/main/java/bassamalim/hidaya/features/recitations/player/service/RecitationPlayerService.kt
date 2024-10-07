@@ -36,11 +36,11 @@ import androidx.media.session.MediaButtonReceiver
 import androidx.media3.common.util.UnstableApi
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
-import bassamalim.hidaya.core.data.dataSources.room.AppDatabase
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.helpers.ReceiverManager
 import bassamalim.hidaya.core.other.Global
@@ -72,7 +72,6 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     private val notificationId = 333
     private val handler: Handler = Handler(Looper.getMainLooper())
     private val intentFilter: IntentFilter = IntentFilter()
-    private lateinit var db: AppDatabase
     private lateinit var notificationManager: NotificationManager
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private lateinit var notification: Notification
@@ -105,15 +104,15 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
         private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
         private const val ACTION_PLAY =
-            "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.PLAY"
+            "bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService.PLAY"
         private const val ACTION_PAUSE =
-            "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.PAUSE"
+            "bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService.PAUSE"
         private const val ACTION_NEXT =
-            "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.NEXT"
+            "bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService.NEXT"
         private const val ACTION_PREV =
-            "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.PREVIOUS"
+            "bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService.PREVIOUS"
         private const val ACTION_STOP =
-            "bassamalim.hidaya.features.recitationsPlayer.RecitationsPlayerService.STOP"
+            "bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService.STOP"
     }
 
     private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -153,12 +152,13 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         super.onCreate()
 
         CoroutineScope(Dispatchers.Main).launch {
+            val language = appSettingsRepository.getLanguage().first()
             ActivityUtils.onActivityCreateSetLocale(
                 context = applicationContext,
-                language = appSettingsRepository.getLanguage().first()
+                language = language
             )
 
-            getSuraNames()
+            getSuraNames(language)
 
             initSession()
             initPlayer()
@@ -762,8 +762,8 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
         notificationManager.createNotificationChannel(notificationChannel)
     }
 
-    private fun getSuraNames() {
-        suraNames = db.surasDao().getDecoratedNamesAr()
+    private suspend fun getSuraNames(language: Language) {
+        suraNames = quranRepository.getDecoratedSuraNames(language)
     }
 
     private fun getContentIntent(): PendingIntent {

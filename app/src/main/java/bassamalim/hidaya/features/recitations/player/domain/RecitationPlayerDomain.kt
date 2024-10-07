@@ -15,6 +15,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.media3.common.util.UnstableApi
@@ -23,6 +24,7 @@ import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService
 import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
@@ -99,6 +101,8 @@ class RecitationPlayerDomain @Inject constructor(
     fun isMediaBrowserInitialized() = mediaBrowser != null
 
     fun initializeController(controllerCallback: MediaControllerCompat.Callback) {
+        Log.d(Global.TAG, "in initializeController of RecitationPlayerDomain")
+
         // Get the token for the MediaSession
         val token = mediaBrowser!!.sessionToken
 
@@ -172,8 +176,6 @@ class RecitationPlayerDomain @Inject constructor(
     fun setPath(reciterId: Int, narrationId: Int) {
         this.path = "${recitationsRepository.prefix}${reciterId}/$narrationId/"
     }
-
-    fun observeAllReciters(language: Language) = recitationsRepository.observeAllSuraReciters(language)
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()
 

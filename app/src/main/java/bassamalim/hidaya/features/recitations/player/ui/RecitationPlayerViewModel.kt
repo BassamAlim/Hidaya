@@ -61,8 +61,8 @@ class RecitationPlayerViewModel @Inject constructor(
     private var suraIdx = mediaId.substring(5).toInt()
     private lateinit var narration: Recitation.Narration
     private lateinit var suraNames: List<String>
-    private var duration = 0L
-    private var progress = 0L
+    var duration = 0L
+    var progress = 0L
 
     private val _uiState = MutableStateFlow(RecitationPlayerUiState())
     val uiState = combine(
@@ -88,16 +88,17 @@ class RecitationPlayerViewModel @Inject constructor(
             suraNames = domain.getSuraNames(language)
 
             _uiState.update { it.copy(
+                isLoading = false,
                 reciterName = domain.getReciterName(id = reciterId, language = language)
             )}
-        }
 
-        updateTrackState()
+            updateTrackState()
+        }
     }
 
     private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
-            if (domain.isMediaBrowserInitialized()) return
+            Log.i(Global.TAG, "onConnected in RecitationsPlayerViewModel")
 
             domain.initializeController(controllerCallback)
 
@@ -133,16 +134,18 @@ class RecitationPlayerViewModel @Inject constructor(
     }
 
     fun onStart(activity: Activity) {
-        domain.connect(activity, connectionCallbacks, onComplete)
+        Log.i(Global.TAG, "in onStart of RecitationsPlayerViewModel")
+
+        domain.connect(activity, connectionCallbacks, onDownloadComplete)
     }
 
     fun onStop() {
         Log.i(Global.TAG, "in onStop of RecitationsPlayerViewModel")
 
-        domain.stopMediaBrowser(controllerCallback, onComplete)
+        domain.stopMediaBrowser(controllerCallback, onDownloadComplete)
     }
 
-    private var onComplete = object : BroadcastReceiver() {
+    private var onDownloadComplete = object : BroadcastReceiver() {
         override fun onReceive(ctx: Context, intent: Intent) {
             _uiState.update { it.copy(
                 downloadState = domain.checkDownload()
@@ -150,17 +153,15 @@ class RecitationPlayerViewModel @Inject constructor(
         }
     }
 
-    private fun updateTrackState() {
-        viewModelScope.launch {
-            narration = domain.getNarration(reciterId, narrationId, language)
+    private suspend fun updateTrackState() {
+        narration = domain.getNarration(reciterId, narrationId, language)
 
-            _uiState.update { it.copy(
-                suraName = suraNames[suraIdx],
-                narrationName = narration.name,
-                reciterName = domain.getReciterName(id = reciterId, language = language),
-                downloadState = domain.checkDownload()
-            )}
-        }
+        _uiState.update { it.copy(
+            suraName = suraNames[suraIdx],
+            narrationName = narration.name,
+            reciterName = domain.getReciterName(id = reciterId, language = language),
+            downloadState = domain.checkDownload()
+        )}
     }
 
     private fun enableControls() {
@@ -181,7 +182,7 @@ class RecitationPlayerViewModel @Inject constructor(
 
         // Display the initial state
         updateMetadata(domain.getMetadata())
-        updatePbState(domain.getPlaybackState())
+        updatePlaybackState(domain.getPlaybackState())
     }
 
     private var controllerCallback = object : MediaControllerCompat.Callback() {
@@ -193,7 +194,7 @@ class RecitationPlayerViewModel @Inject constructor(
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
             // To change the playback state inside the app when the user changes it
             // from the notification
-            updatePbState(state)
+            updatePlaybackState(state)
         }
 
         override fun onSessionDestroyed() {
@@ -214,7 +215,7 @@ class RecitationPlayerViewModel @Inject constructor(
         )}
     }
 
-    private fun updatePbState(state: PlaybackStateCompat) {
+    private fun updatePlaybackState(state: PlaybackStateCompat) {
         progress = state.position
 
         _uiState.update { it.copy(
@@ -289,19 +290,19 @@ class RecitationPlayerViewModel @Inject constructor(
         domain.seekTo(progress)
     }
 
-    fun onRepeatClick() {
+    fun onRepeatClick(oldMode: Int) {
         viewModelScope.launch {
             domain.setRepeatMode(
-                if (_uiState.value.repeatMode == REPEAT_MODE_NONE) REPEAT_MODE_ONE
+                if (oldMode == REPEAT_MODE_NONE) REPEAT_MODE_ONE
                 else REPEAT_MODE_NONE
             )
         }
     }
 
-    fun onShuffleClick() {
+    fun onShuffleClick(oldMode: Int) {
         viewModelScope.launch {
             domain.setShuffleMode(
-                if (_uiState.value.shuffleMode == SHUFFLE_MODE_NONE) SHUFFLE_MODE_ALL
+                if (oldMode == SHUFFLE_MODE_NONE) SHUFFLE_MODE_ALL
                 else SHUFFLE_MODE_NONE
             )
         }
