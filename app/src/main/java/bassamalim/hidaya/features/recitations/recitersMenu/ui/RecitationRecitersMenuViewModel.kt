@@ -51,6 +51,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         )
     }.onStart {
         initializeData()
+        domain.cleanFiles()
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
@@ -63,8 +64,6 @@ class RecitationRecitersMenuViewModel @Inject constructor(
             suraNames = domain.getSuraNames(language)
             allRecitations = domain.observeRecitersWithNarrations(language)
             narrationSelections = domain.getNarrationSelections(language)
-
-            domain.cleanFiles()
 
             _uiState.update { it.copy(
                 isLoading = false
@@ -96,29 +95,12 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         val menuType = MenuType.entries[page]
 
         return combine(allRecitations, narrationSelections) { allRecitations, narrationSelections ->
-            val all = allRecitations.map { recitation ->
-                Recitation(
-                    reciterId = recitation.reciterId,
-                    reciterName = recitation.reciterName,
-                    isFavoriteReciter = recitation.isFavoriteReciter,
-                    narrations = recitation.narrations.map { narration ->
-                        Recitation.Narration(
-                            id = narration.id,
-                            name = narration.name,
-                            server = narration.server,
-                            availableSuras = narration.availableSuras,
-                            downloadState = narration.downloadState
-                        )
-                    }
-                )
-            }
-
             val items = when (menuType) {
                 MenuType.FAVORITES -> {
-                    all.filter { recitation -> recitation.isFavoriteReciter }
+                    allRecitations.filter { recitation -> recitation.isFavoriteReciter }
                 }
                 MenuType.DOWNLOADED -> {
-                    val hasDownloaded = all.filter { recitation ->
+                    val hasDownloaded = allRecitations.filter { recitation ->
                         recitation.narrations.any { narration ->
                             narration.downloadState == DownloadState.DOWNLOADED
                         }
@@ -129,7 +111,7 @@ class RecitationRecitersMenuViewModel @Inject constructor(
                         })
                     }
                 }
-                else -> all
+                else -> allRecitations
             }
 
             items.filter { recitation ->

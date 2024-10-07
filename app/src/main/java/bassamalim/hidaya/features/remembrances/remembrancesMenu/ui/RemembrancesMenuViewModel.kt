@@ -86,11 +86,9 @@ class RemembrancesMenuViewModel @Inject constructor(
     }
 
     fun onSearchTextChange(text: String) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(
-                searchText = text
-            )}
-        }
+        _uiState.update { it.copy(
+            searchText = text
+        )}
     }
 
 }
