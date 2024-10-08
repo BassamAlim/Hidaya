@@ -78,7 +78,10 @@ fun HijriDatePickerDialog(
                         displayedMonth = state.displayedMonthText,
                         weekDaysAbb = state.weekDaysAbb,
                         pagerState = pagerState,
+                        onMonthPageChanged = viewModel::onMonthPageChanged,
                         getDaysGrid = viewModel::getDaysGrid,
+                        isSelectedDayDisplayed = state.isSelectedDayDisplayed,
+                        selectedDay = state.selectedDay,
                         onPreviousMonthClick = viewModel::onPreviousMonthClick,
                         onNextMonthClick = viewModel::onNextMonthClick,
                         onDaySelected = viewModel::onDaySelected
@@ -143,10 +146,13 @@ private fun DayMonthSelector(
     displayedMonth: String,
     weekDaysAbb: List<String>,
     pagerState: PagerState,
+    onMonthPageChanged: (Int) -> Unit,
     getDaysGrid: (Int) -> List<List<DayCell>>,
+    isSelectedDayDisplayed: Boolean,
+    selectedDay: String,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
-    onDaySelected: (String, Int, Int) -> Unit
+    onDaySelected: (Int, Int) -> Unit
 ) {
     MyColumn {
         MonthSelector(
@@ -158,7 +164,10 @@ private fun DayMonthSelector(
         DaySelector(
             weekDaysAbbreviations = weekDaysAbb,
             pagerState = pagerState,
+            onMonthPageChanged = onMonthPageChanged,
             getDaysGrid = getDaysGrid,
+            isSelectedDayDisplayed = isSelectedDayDisplayed,
+            selectedDay = selectedDay,
             onDaySelected = onDaySelected
         )
     }
@@ -200,8 +209,11 @@ private fun MonthSelector(
 private fun DaySelector(
     weekDaysAbbreviations: List<String>,
     pagerState: PagerState,
+    onMonthPageChanged: (Int) -> Unit,
     getDaysGrid: (Int) -> List<List<DayCell>>,
-    onDaySelected: (String, Int, Int) -> Unit
+    isSelectedDayDisplayed: Boolean,
+    selectedDay: String,
+    onDaySelected: (Int, Int) -> Unit
 ) {
     // week days
     Row(
@@ -224,8 +236,12 @@ private fun DaySelector(
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
     ) { page ->
+        onMonthPageChanged(page)
+
         DaysGrid(
             daysGrid = getDaysGrid(page),
+            isSelectedDayDisplayed = isSelectedDayDisplayed,
+            selectedDay = selectedDay,
             onDaySelected = onDaySelected
         )
     }
@@ -260,7 +276,9 @@ private fun BottomArea(
 @Composable
 private fun DaysGrid(
     daysGrid: List<List<DayCell>>,
-    onDaySelected: (String, Int, Int) -> Unit
+    isSelectedDayDisplayed: Boolean,
+    selectedDay: String,
+    onDaySelected: (Int, Int) -> Unit
 ) {
     Box(
         Modifier.height(250.dp)
@@ -274,6 +292,7 @@ private fun DaysGrid(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     row.forEachIndexed { x, cell ->
+                        val isSelected = isSelectedDayDisplayed && cell.dayText == selectedDay
                         if (cell.dayText.isEmpty()) {
                             MyText(
                                 text = cell.dayText,
@@ -287,12 +306,12 @@ private fun DaysGrid(
                                     .size(40.dp)
                                     .clip(CircleShape)
                                     .background(
-                                        if (cell.isSelected) AppTheme.colors.accent
+                                        if (isSelected) AppTheme.colors.accent
                                         else AppTheme.colors.background
                                     )
-                                    .clickable { onDaySelected(cell.dayText, x, y) },
+                                    .clickable { onDaySelected(x, y) },
                                 textColor =
-                                    if (cell.isSelected) AppTheme.colors.onPrimary
+                                    if (isSelected) AppTheme.colors.onPrimary
                                     else if (cell.isToday) AppTheme.colors.accent
                                     else AppTheme.colors.text
                             )

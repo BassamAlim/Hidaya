@@ -8,4 +8,6 @@ data class HijriDatePickerUiState(
     val mainText: String = "",
     val displayedMonthText: String = "",
     val weekDaysAbb: List<String> = emptyList(),
+    val isSelectedDayDisplayed: Boolean = true,
+    val selectedDay: String = "-"
 )

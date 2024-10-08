@@ -170,8 +170,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun formatTime(timeOfDay: TimeOfDay): String {
-        val formatted = "${timeOfDay.hour.toString().format("%02d")}:" +
-                timeOfDay.minute.toString().format("%02d")
+        val formatted = "${timeOfDay.hour}:${String.format("%02d", timeOfDay.minute)}"
         return translateNums(
             numeralsLanguage = _uiState.value.numeralsLanguage,
             string = formatted,

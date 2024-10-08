@@ -3,7 +3,6 @@
 package bassamalim.hidaya.features.hijriDatePicker.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.PagerState
 import androidx.lifecycle.SavedStateHandle
@@ -11,7 +10,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.nav.Navigator
-import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.hijriDatePicker.domain.HijriDatePickerDomain
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
@@ -81,7 +79,11 @@ class HijriDatePickerViewModel @Inject constructor(
                 ),
                 displayedMonthText = getDisplayedMonthString(displayedMonth),
                 weekDaysAbb = domain.getWeekDaysAbb(language),
-                yearSelectorItems = getYearSelectorItems()
+                yearSelectorItems = getYearSelectorItems(),
+                selectedDay = translateNums(
+                    string = day.toString(),
+                    numeralsLanguage = numeralsLanguage
+                )
             )}
         }
     }
@@ -130,24 +132,23 @@ class HijriDatePickerViewModel @Inject constructor(
         }
     }
 
-    fun onDaySelected(dayText: String, x: Int, y: Int) {
+    fun onDaySelected(x: Int, y: Int) {
         val day = currentDaysGrid[y][x]
-
-        Log.d(Global.TAG, "Day selected: $dayText, $day")
 
         domain.setSelectedDate(year = displayedYear, month = displayedMonth, day = day)
         _uiState.update { it.copy(
-            mainText = getMainText()
+            mainText = getMainText(),
+            selectedDay = translateNums(
+                string = day.toString(),
+                numeralsLanguage = numeralsLanguage
+            )
         )}
     }
 
     fun onSelectClicked() {
         navigator.navigateBackWithResult(
             Bundle().apply {
-                putSerializable(
-                    "selected_date",
-                    domain.getSelectedDate()
-                )
+                putSerializable("selected_date", domain.getSelectedDate())
             }
         )
     }
@@ -161,12 +162,18 @@ class HijriDatePickerViewModel @Inject constructor(
         displayedYear = year
         displayedMonth = month
 
+        val selectedDate = domain.getSelectedDate()
+        val isCurrent = year == selectedDate[Calendar.YEAR]
+                && month == selectedDate[Calendar.MONTH] + 1
+        println("isCurrent: $isCurrent, year: $year, month: $month, selectedDate: $selectedDate")
+
         _uiState.update { it.copy(
             displayedYearText = translateNums(
                 numeralsLanguage = numeralsLanguage,
                 string = year.toString()
             ),
-            displayedMonthText = getDisplayedMonthString(month)
+            displayedMonthText = getDisplayedMonthString(month),
+            isSelectedDayDisplayed = isCurrent
         )}
     }
 
@@ -196,6 +203,11 @@ class HijriDatePickerViewModel @Inject constructor(
             )
         }.toList()
 
+    fun onMonthPageChanged(pageNum: Int) {
+        val isActive = pageNum == daysPagerState.currentPage
+        if (isActive) updateDisplayed(pageNum)
+    }
+
     fun getDaysGrid(page: Int): List<List<DayCell>> {
         val (year, month) = getYearAndMonth(page)
         val calendar = UmmalquraCalendar()
@@ -212,9 +224,8 @@ class HijriDatePickerViewModel @Inject constructor(
         }.toList()
 
         val currentDate = domain.getCurrentDate()
-        val selectedDate = domain.getSelectedDate()
-        val textGrid = grid.map { row ->
-            row.map {  cell ->
+        val textGrid = grid.mapIndexed { i, row ->
+            row.mapIndexed { j, cell ->
                 DayCell(
                     dayText =
                         if (cell == 0) ""
@@ -225,9 +236,6 @@ class HijriDatePickerViewModel @Inject constructor(
                     isToday = year == currentDate[Calendar.YEAR]
                             && month == currentDate[Calendar.MONTH]+1
                             && cell == currentDate[Calendar.DATE],
-                    isSelected = year == selectedDate[Calendar.YEAR]
-                            && month == selectedDate[Calendar.MONTH]+1
-                            && cell == selectedDate[Calendar.DATE]
                 )
             }
         }

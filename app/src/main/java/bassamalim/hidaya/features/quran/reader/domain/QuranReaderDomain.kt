@@ -41,7 +41,7 @@ class QuranReaderDomain @Inject constructor(
     private var mediaBrowser: MediaBrowserCompat? = null
     private var controller: MediaControllerCompat? = null
     private var tc: MediaControllerCompat.TransportControls? = null
-    private lateinit var controllerCallback: MediaControllerCompat.Callback
+    private var controllerCallback: MediaControllerCompat.Callback? = null
     private var lastRecordedPage = 0
     private lateinit var getPageNumCallback: () -> Int
     private lateinit var getPageVersesCallback: () -> List<Verse>
@@ -147,7 +147,7 @@ class QuranReaderDomain @Inject constructor(
         tc = controller!!.transportControls
 
         // Register a Callback to stay in sync
-        controller?.registerCallback(controllerCallback)
+        controller?.registerCallback(controllerCallback!!)
     }
 
     fun requestPlay(ayaId: Int) {
@@ -173,8 +173,9 @@ class QuranReaderDomain @Inject constructor(
     }
 
     fun stopPlayer(activity: Activity) {
-        MediaControllerCompat.getMediaController(activity)
-            ?.unregisterCallback(controllerCallback)
+        controllerCallback?.let {
+            MediaControllerCompat.getMediaController(activity)?.unregisterCallback(it)
+        }
 
         mediaBrowser?.disconnect()
         mediaBrowser = null
