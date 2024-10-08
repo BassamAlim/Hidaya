@@ -26,6 +26,8 @@ user runBlocking to run suspend functions synchronously
 
 use lazy initialization for expensive object creation
 
+use database indexes
+
 Clean code:
 - don't pass more than 3 parameters to a function (if you do, consider using a data class)
 - don't use more than 3 levels of indentation
