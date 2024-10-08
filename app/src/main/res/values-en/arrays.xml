@@ -16,16 +16,16 @@
         <item>Asr prayer</item>
         <item>Maghrib prayer</item>
         <item>Ishaa prayer</item>
-        <item>Morning remembrance</item>
-        <item>Evening remembrance</item>
-        <item>Daily werd</item>
-        <item>Surat al-Kahf</item>
         <item>Fajr reminder</item>
         <item>Sunrise reminder</item>
         <item>Duhr reminder</item>
         <item>Asr reminder</item>
         <item>Maghrib reminder</item>
         <item>Ishaa reminder</item>
+        <item>Morning remembrance</item>
+        <item>Evening remembrance</item>
+        <item>Daily werd</item>
+        <item>Surat al-Kahf</item>
     </string-array>
 
     <string-array name="prayer_subtitles">
@@ -35,6 +35,12 @@
         <item>It\'s Asr athan time</item>
         <item>It\'s Maghrib athan time</item>
         <item>It\'s Ishaa athan time</item>
+        <item>Remember Fajr prayer</item>
+        <item>Remember Sunrise</item>
+        <item>Remember Duhr prayer</item>
+        <item>Remember Asr prayer</item>
+        <item>Remember Maghrib prayer</item>
+        <item>Remember Ishaa prayer</item>
         <item>Click to read morning remembrance</item>
         <item>Click to read evening remembrance</item>
         <item>Click to read today\'s quran page</item>
@@ -48,16 +54,16 @@
         <item>Prayer alerts</item>
         <item>Prayer alerts</item>
         <item>Prayer alerts</item>
+        <item>Prayer reminder</item>
+        <item>Prayer reminder</item>
+        <item>Prayer reminder</item>
+        <item>Prayer reminder</item>
+        <item>Prayer reminder</item>
+        <item>Prayer reminder</item>
         <item>Morning and evening remembrance reminders</item>
         <item>Morning and evening remembrance reminders</item>
         <item>Daily werd reminder</item>
         <item>Surat al-Kahf reminder</item>
-        <item>Prayer reminder</item>
-        <item>Prayer reminder</item>
-        <item>Prayer reminder</item>
-        <item>Prayer reminder</item>
-        <item>Prayer reminder</item>
-        <item>Prayer reminder</item>
     </string-array>
 
     <string-array name="themes_entries">

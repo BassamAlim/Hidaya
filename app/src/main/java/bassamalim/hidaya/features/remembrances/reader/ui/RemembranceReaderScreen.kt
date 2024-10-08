@@ -32,9 +32,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun RemembranceReaderScreen(
-    viewModel: RemembranceReaderViewModel
-) {
+fun RemembranceReaderScreen(viewModel: RemembranceReaderViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(

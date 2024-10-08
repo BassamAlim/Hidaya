@@ -24,9 +24,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.features.settings.ui.AppearanceSettings
 
 @Composable
-fun OnboardingScreen(
-    viewModel: OnboardingViewModel
-) {
+fun OnboardingScreen(viewModel: OnboardingViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
 

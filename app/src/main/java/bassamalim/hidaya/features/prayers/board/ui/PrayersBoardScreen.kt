@@ -42,9 +42,7 @@ import bassamalim.hidaya.core.ui.theme.nsp
 import java.util.SortedMap
 
 @Composable
-fun PrayersBoardScreen(
-    viewModel: PrayersBoardViewModel
-) {
+fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.isLoading) LoadingScreen()

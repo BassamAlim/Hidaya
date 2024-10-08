@@ -29,9 +29,7 @@ import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun LeaderboardScreen(
-    viewModel: LeaderboardViewModel
-) {
+fun LeaderboardScreen(viewModel: LeaderboardViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(stringResource(R.string.leaderboard)) {

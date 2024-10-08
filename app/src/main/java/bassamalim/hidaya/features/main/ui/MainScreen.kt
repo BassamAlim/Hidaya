@@ -40,9 +40,7 @@ import bassamalim.hidaya.features.quran.surasMenu.ui.QuranSurasScreen
 import bassamalim.hidaya.features.remembrances.categoriesMenu.ui.RemembranceCategoriesScreen
 
 @Composable
-fun MainScreen(
-    viewModel: MainViewModel
-) {
+fun MainScreen(viewModel: MainViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val bottomNavController = rememberNavController()
 

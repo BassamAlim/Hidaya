@@ -39,9 +39,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.Positive
 
 @Composable
-fun HomeScreen(
-    viewModel: HomeViewModel
-) {
+fun HomeScreen(viewModel: HomeViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     DisposableEffect(key1 = viewModel) {

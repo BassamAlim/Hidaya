@@ -19,9 +19,7 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
 
 @Composable
-fun RemembranceCategoriesScreen(
-    viewModel: RemembranceCategoriesViewModel
-) {
+fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
     Column(
         Modifier
             .fillMaxSize()

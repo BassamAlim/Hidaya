@@ -31,9 +31,7 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 
 @Composable
-fun SettingsScreen(
-    viewModel: SettingsViewModel
-) {
+fun SettingsScreen(viewModel: SettingsViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
 

@@ -16,16 +16,16 @@
         <item>صلاة العصر</item>
         <item>صلاة المغرب</item>
         <item>صلاة العشاء</item>
-        <item>أذكار الصباح</item>
-        <item>أذكار المساء</item>
-        <item>الوِرد اليومي</item>
-        <item>سورة الكهف</item>
         <item>تذكير الفجر</item>
         <item>تذكير الشروق</item>
         <item>تذكير الظهر</item>
         <item>تذكير العصر</item>
         <item>تذكير المغرب</item>
         <item>تذكير العشاء</item>
+        <item>أذكار الصباح</item>
+        <item>أذكار المساء</item>
+        <item>الوِرد اليومي</item>
+        <item>سورة الكهف</item>
     </string-array>
 
     <string-array name="prayer_subtitles">
@@ -35,10 +35,35 @@
         <item>حان موعد أذان العصر</item>
         <item>حان موعد أذان المغرب</item>
         <item>حان موعد أذان العشاء</item>
+        <item>تذكر صلاة الفجر</item>
+        <item>تذكر الشروق</item>
+        <item>تذكر صلاة الظهر</item>
+        <item>تذكر صلاة العصر</item>
+        <item>تذكر صلاة المغرب</item>
+        <item>تذكر صلاة العشاء</item>
         <item>اضغط لقراءة أذكار الصباح</item>
         <item>اضغط لقراءة أذكار المساء</item>
         <item>اضغط لقراءة الوِرد اليومي</item>
         <item>اضغط لقراءة سورة الكهف</item>
+    </string-array>
+
+    <string-array name="reminders">
+        <item>إشعارات الصلوات</item>
+        <item>إشعار الشروق</item>
+        <item>إشعارات الصلوات</item>
+        <item>إشعارات الصلوات</item>
+        <item>إشعارات الصلوات</item>
+        <item>إشعارات الصلوات</item>
+        <item>التذكيرات الإضافية للصلوات</item>
+        <item>التذكيرات الإضافية للصلوات</item>
+        <item>التذكيرات الإضافية للصلوات</item>
+        <item>التذكيرات الإضافية للصلوات</item>
+        <item>التذكيرات الإضافية للصلوات</item>
+        <item>التذكيرات الإضافية للصلوات</item>
+        <item>تذكيرات أذكار الصباح والمساء</item>
+        <item>تذكيرات أذكار الصباح والمساء</item>
+        <item>تذكير الورِد اليومي</item>
+        <item>تذكير سورة الكهف يوم الجمعة</item>
     </string-array>
 
     <string-array name="themes_entries">

@@ -28,9 +28,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.utils.FileUtils
 
 @Composable
-fun BooksMenuScreen(
-    viewModel: BooksMenuViewModel
-) {
+fun BooksMenuScreen(viewModel: BooksMenuViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.isLoading) return LoadingScreen()

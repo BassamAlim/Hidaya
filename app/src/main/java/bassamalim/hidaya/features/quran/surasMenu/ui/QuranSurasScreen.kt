@@ -37,9 +37,7 @@ import bassamalim.hidaya.core.ui.components.TutorialDialog
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun QuranSurasScreen(
-    viewModel: QuranSurasViewModel
-) {
+fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.isLoading) {

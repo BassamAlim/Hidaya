@@ -27,9 +27,7 @@ import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 
 @Composable
-fun LocatorScreen(
-    viewModel: LocatorViewModel
-) {
+fun LocatorScreen(viewModel: LocatorViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val requestLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()

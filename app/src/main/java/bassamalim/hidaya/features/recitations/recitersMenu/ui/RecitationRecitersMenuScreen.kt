@@ -38,9 +38,7 @@ import bassamalim.hidaya.features.recitations.recitersMenu.domain.Recitation
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun RecitationRecitersMenuScreen(
-    viewModel: RecitationRecitersMenuViewModel
-) {
+fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.isLoading) return

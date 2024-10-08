@@ -29,9 +29,7 @@ import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun QuranSearcherScreen(
-    viewModel: QuranSearcherViewModel
-) {
+fun QuranSearcherScreen(viewModel: QuranSearcherViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyScaffold(stringResource(R.string.quran_searcher)) { padding ->

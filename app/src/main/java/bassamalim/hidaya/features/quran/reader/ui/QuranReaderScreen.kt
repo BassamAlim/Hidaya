@@ -67,9 +67,7 @@ import bassamalim.hidaya.features.quran.reader.ui.QuranViewType.PAGE
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun QuranReaderScreen(
-    viewModel: QuranReaderViewModel
-) {
+fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
     val activity = LocalContext.current as Activity

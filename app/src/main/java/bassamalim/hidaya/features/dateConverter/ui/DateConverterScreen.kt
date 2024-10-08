@@ -25,9 +25,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun DateConverterScreen(
-    viewModel: DateConverterViewModel
-) {
+fun DateConverterScreen(viewModel: DateConverterViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 

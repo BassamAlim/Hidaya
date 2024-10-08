@@ -38,9 +38,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun RadioClientScreen(
-    viewModel: RadioClientViewModel
-) {
+fun RadioClientScreen(viewModel: RadioClientViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
 

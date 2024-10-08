@@ -17,9 +17,7 @@ import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun QuizLobbyScreen(
-    viewModel: QuizLobbyViewModel
-) {
+fun QuizLobbyScreen(viewModel: QuizLobbyViewModel) {
     MyScaffold(title = stringResource(R.string.quiz_title)) {
         Column(
             Modifier.fillMaxSize(),

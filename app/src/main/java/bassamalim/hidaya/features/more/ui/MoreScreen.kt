@@ -18,9 +18,7 @@ import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySquareButton
 
 @Composable
-fun MoreScreen(
-    viewModel: MoreViewModel
-) {
+fun MoreScreen(viewModel: MoreViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 

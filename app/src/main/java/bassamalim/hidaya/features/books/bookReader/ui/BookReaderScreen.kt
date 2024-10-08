@@ -20,9 +20,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
-fun BookReaderScreen(
-    viewModel: BookReaderViewModel
-) {
+fun BookReaderScreen(viewModel: BookReaderViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (state.isLoading) return
