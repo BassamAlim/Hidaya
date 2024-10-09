@@ -65,7 +65,7 @@ class PrayersWidget : AppWidgetProvider() {
     }
 
     private suspend fun bootstrapApp(context: Context) {
-        ActivityUtils.bootstrapApp(
+        ActivityUtils.configure(
             context = context,
             applicationContext = context.applicationContext,
             language = appSettingsRepository.getLanguage().first(),

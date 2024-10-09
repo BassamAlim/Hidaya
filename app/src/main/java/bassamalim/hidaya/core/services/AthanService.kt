@@ -51,9 +51,10 @@ class AthanService : Service() {
         super.onCreate()
 
         GlobalScope.launch {
-            ActivityUtils.onActivityCreateSetLocale(
-                context = applicationContext,
-                language = appSettingsRepository.getLanguage().first()
+            ActivityUtils.configure(
+                context = application,
+                applicationContext = applicationContext,
+                language = appSettingsRepository.getLanguage().first(),
             )
             createNotificationChannel()
         }

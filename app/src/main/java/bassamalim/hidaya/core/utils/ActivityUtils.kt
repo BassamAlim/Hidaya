@@ -12,16 +12,18 @@ import java.util.Locale
 
 object ActivityUtils {
 
-    fun bootstrapApp(
+    fun configure(
         context: Context,
         applicationContext: Context = context.applicationContext,
         language: Language,
-        theme: Theme
+        theme: Theme? = null
     ) {
         onActivityCreateSetLocale(context = context, language = language)
-        onActivityCreateSetTheme(context = context, theme = theme)
         onActivityCreateSetLocale(context = applicationContext, language = language)
-        onActivityCreateSetTheme(context = applicationContext, theme = theme)
+        if (theme != null) {
+            onActivityCreateSetTheme(context = context, theme = theme)
+            onActivityCreateSetTheme(context = applicationContext, theme = theme)
+        }
     }
 
     private fun onActivityCreateSetTheme(context: Context, theme: Theme) {

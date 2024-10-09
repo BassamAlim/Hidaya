@@ -20,6 +20,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
+import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.enums.NotificationType
@@ -27,6 +28,7 @@ import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.services.AthanService
+import bassamalim.hidaya.core.utils.ActivityUtils
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -43,6 +45,7 @@ class NotificationReceiver : BroadcastReceiver() {
     private lateinit var ctx: Context
     @Inject lateinit var notificationsRepository: NotificationsRepository
     @Inject lateinit var quranRepository: QuranRepository
+    @Inject lateinit var appSettingsRepository: AppSettingsRepository
     private var notificationId = 0
     private var channelId = ""
 
@@ -56,6 +59,12 @@ class NotificationReceiver : BroadcastReceiver() {
         notificationId = reminder.id
 
         GlobalScope.launch {
+            ActivityUtils.configure(
+                context = context,
+                applicationContext = context.applicationContext,
+                language = appSettingsRepository.getLanguage().first()
+            )
+
             if (isOnTime(time) || !isAlreadyNotified(reminder)) {
                 when (reminder) {
                     is Reminder.Prayer -> handlePrayerReminder(reminder, time)
@@ -237,9 +246,9 @@ class NotificationReceiver : BroadcastReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             channelId = getChannelId(reminder)
             val channel = NotificationChannel(
-                /* id = */ channelId,
-                /* name = */ getChannelName(reminder),
-                /* importance = */ NotificationManager.IMPORTANCE_HIGH
+                channelId,
+                getChannelName(reminder),
+                NotificationManager.IMPORTANCE_HIGH
             )
             channel.description = "description"
             channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC

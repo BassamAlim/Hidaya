@@ -29,9 +29,9 @@ import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.RemembrancesRepository
 import bassamalim.hidaya.core.di.IoDispatcher
-import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
+import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.helpers.Alarm
 import bassamalim.hidaya.core.nav.Navigation
@@ -120,7 +120,7 @@ class Activity : ComponentActivity() {
     }
 
     private suspend fun bootstrapApp() {
-        ActivityUtils.bootstrapApp(
+        ActivityUtils.configure(
             context = this@Activity,
             applicationContext = applicationContext,
             language = language,

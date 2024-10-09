@@ -59,7 +59,11 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
         testDb(context)
         GlobalScope.launch {
-            bootstrapApp(context)
+            ActivityUtils.configure(
+                context = context,
+                applicationContext = context.applicationContext,
+                language = appSettingsRepository.getLanguage().first(),
+            )
 
             val now = Calendar.getInstance()
             if ((intent.action == "daily" && notUpdatedToday(now)) || intent.action == "boot") {
@@ -78,15 +82,6 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
             setTomorrow(context)
         }
-    }
-
-    private suspend fun bootstrapApp(context: Context) {
-        ActivityUtils.bootstrapApp(
-            context = context,
-            applicationContext = context.applicationContext,
-            language = appSettingsRepository.getLanguage().first(),
-            theme = appSettingsRepository.getTheme().first(),
-        )
     }
 
     @OptIn(DelicateCoroutinesApi::class)
