@@ -80,15 +80,15 @@ class BooksRepository @Inject constructor(
         return gson.fromJson(jsonStr, BookContent::class.java)
     }
 
-    suspend fun getBookContents(language: Language): List<BookContent> {
-        if (!File(dir).exists()) return emptyList()
+    suspend fun getBookContents(language: Language): Map<Int, BookContent> {
+        if (!File(dir).exists()) return emptyMap()
 
         return getBooksMenu(language)
             .filter { bookInfo -> isDownloaded(bookInfo.id) }
             .map { bookInfo ->
                 val jsonStr = FileUtils.getJsonFromDownloads("${dir}${bookInfo.id}.json")
-                gson.fromJson(jsonStr, BookContent::class.java)
-            }
+                bookInfo.id to gson.fromJson(jsonStr, BookContent::class.java)
+            }.toMap()
     }
 
     suspend fun getFullBook(bookId: Int, language: Language): Flow<Book> {
@@ -164,10 +164,10 @@ class BooksRepository @Inject constructor(
         booksPreferencesDataSource.updateTextSize(textSize)
     }
 
-    fun getSearchSelections(language: Language): Flow<Map<Int, Boolean>> {
-        return booksPreferencesDataSource.getSearchSelections().map {
+    fun getSearchSelections() =
+        booksPreferencesDataSource.getSearchSelections().map {
             it.ifEmpty {
-                val books = getBooksMenu(language)
+                val books = getBooksMenu(Language.ARABIC)
                 it.mutate { oldMap ->
                     books.forEach { book -> oldMap[book.id] = true }
                 }
@@ -175,7 +175,6 @@ class BooksRepository @Inject constructor(
                 id to if (isDownloaded(id)) isSelected else false
             }.toMap()
         }
-    }
 
     suspend fun setSearchSelections(selections: Map<Int, Boolean>) {
         booksPreferencesDataSource.updateSearchSelections(selections.toPersistentMap())

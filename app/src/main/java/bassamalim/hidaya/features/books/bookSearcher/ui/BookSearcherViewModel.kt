@@ -31,13 +31,15 @@ class BookSearcherViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(BookSearcherUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
-        domain.getBookSelections(language),
+        domain.getBookSelections(),
         domain.getMaxMatches()
-    ) { state, bookSelections, maxMatches -> state.copy(
-        bookSelections = bookSelections,
-        maxMatches = maxMatches,
-        filtered = bookSelections.containsValue(false)
-    )}.onStart {
+    ) { state, bookSelections, maxMatches ->
+        state.copy(
+            bookSelections = bookSelections,
+            maxMatches = maxMatches,
+            filtered = bookSelections.containsValue(false)
+        )
+    }.onStart {
         initializeData()
     }.stateIn(
         scope = viewModelScope,
@@ -71,14 +73,17 @@ class BookSearcherViewModel @Inject constructor(
         }  // re-search if already searched
     }
 
-    fun onSearch(highlightColor: Color) {
+    fun onSearch(highlightColor: Color, bookSelections: Map<Int, Boolean>) {
         this.highlightColor = highlightColor
+
+        println("in onSearch: ${_uiState.value.bookSelections}")
+        println("in onSearch: $bookSelections")
 
         viewModelScope.launch {
             _uiState.update { it.copy(
                 matches = domain.search(
                     searchText = it.searchText,
-                    bookSelections = it.bookSelections,
+                    bookSelections = bookSelections,
                     maxMatches = it.maxMatches,
                     language = language,
                     highlightColor = highlightColor

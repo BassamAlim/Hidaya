@@ -12,7 +12,7 @@ class BooksMenuFilterDomain @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository
 ) {
 
-    suspend fun getOptions(language: Language) = booksRepository.getSearchSelections(language).map {
+    suspend fun getOptions(language: Language) = booksRepository.getSearchSelections().map {
         it.map { (id, isSelected) ->
             id to BooksMenuFilterItem(
                 name = booksRepository.getBookTitle(id, language),

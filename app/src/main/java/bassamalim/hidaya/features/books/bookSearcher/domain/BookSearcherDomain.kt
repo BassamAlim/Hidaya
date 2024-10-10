@@ -26,16 +26,16 @@ class BookSearcherDomain @Inject constructor(
         val matches = mutableListOf<BookSearcherMatch>()
 
         val bookContents = booksRepository.getBookContents(language)
-        for (i in bookContents.indices) {
-            if (!bookSelections[i]!! || !booksRepository.isDownloaded(i))
+        println("bookSelections = $bookSelections")
+        for ((bookId, bookContent) in bookContents) {
+            if (!bookSelections[bookId]!! || !booksRepository.isDownloaded(bookId))
                 continue
 
-            val bookContent = bookContents[i]
-            for (j in bookContent.chapters.indices) {
-                val chapter = bookContent.chapters[j]
+            for (c in bookContent.chapters.indices) {
+                val chapter = bookContent.chapters[c]
 
-                for (k in chapter.doors.indices) {
-                    val door = chapter.doors[k]
+                for (d in chapter.doors.indices) {
+                    val door = chapter.doors[d]
                     val doorText = door.text
 
                     val matcher = Pattern.compile(searchText).matcher(doorText)
@@ -54,11 +54,11 @@ class BookSearcherDomain @Inject constructor(
 
                         matches.add(
                             BookSearcherMatch(
-                                bookId = i,
+                                bookId = bookId,
                                 bookTitle = bookContent.info.title,
-                                chapterId = j,
+                                chapterId = c,
                                 chapterTitle = chapter.title,
-                                doorId = k,
+                                doorId = d,
                                 doorTitle = door.title,
                                 text = annotatedString
                             )
@@ -78,12 +78,7 @@ class BookSearcherDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    fun getBookSelections(language: Language) =
-        booksRepository.getSearchSelections(language)
-
-    suspend fun setBookSelections(selections: Map<Int, Boolean>) {
-        booksRepository.setSearchSelections(selections)
-    }
+    fun getBookSelections() = booksRepository.getSearchSelections()
 
     fun getMaxMatches() = booksRepository.getSearchMaxMatches()
 

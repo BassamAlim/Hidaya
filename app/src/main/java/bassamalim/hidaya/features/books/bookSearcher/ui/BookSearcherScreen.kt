@@ -52,7 +52,7 @@ fun BookSearcherScreen(viewModel: BookSearcherViewModel) {
                 isFiltered = state.filtered,
                 maxMatches = state.maxMatches,
                 onSearchTextChange = viewModel::onSearchTextChange,
-                onSearch = { color -> viewModel.onSearch(color) },
+                onSearch = { color -> viewModel.onSearch(color, state.bookSelections) },
                 onFilterClick = viewModel::onFilterClick,
                 onMaxMatchesIndexChange = viewModel::onMaxMatchesIndexChange
             )
