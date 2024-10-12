@@ -34,7 +34,7 @@ class HomeDomain @Inject constructor(
     suspend fun getPrayerTimeMap(location: Location): SortedMap<Prayer, Calendar?> {
         return PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance()
         )
@@ -43,7 +43,7 @@ class HomeDomain @Inject constructor(
     suspend fun getStrPrayerTimeMap(location: Location): SortedMap<Prayer, String> {
         val prayerTimeMap = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance()
         )
@@ -58,7 +58,7 @@ class HomeDomain @Inject constructor(
 
     suspend fun getTomorrowFajr(location: Location) = PrayerTimeUtils.getPrayerTimes(
         settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-        timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+        selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
         location = location,
         calendar = Calendar.getInstance().apply { add(Calendar.DATE, 1) }
     )[Prayer.FAJR]!!
@@ -66,7 +66,7 @@ class HomeDomain @Inject constructor(
     suspend fun getStrTomorrowFajr(location: Location): String {
         val time = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance().apply { add(Calendar.DATE, 1) }
         )[Prayer.FAJR]!!

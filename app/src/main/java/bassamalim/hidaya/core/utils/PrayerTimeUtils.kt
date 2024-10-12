@@ -10,7 +10,6 @@ import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
 import java.util.Calendar
-import java.util.Date
 import java.util.SortedMap
 import java.util.TimeZone
 
@@ -18,12 +17,16 @@ object PrayerTimeUtils {
 
     fun getPrayerTimes(
         settings: PrayerTimeCalculatorSettings,
-        timeZoneId: String = "",
+        selectedTimeZoneId: String = "",
         location: Location,
         calendar: Calendar = Calendar.getInstance()
     ): SortedMap<Prayer, Calendar?> {
         val coordinates = Coordinates(location.coordinates.latitude, location.coordinates.longitude)
-        calendar[Calendar.ZONE_OFFSET] = getUTCOffset(location.type, timeZoneId) * 3600000
+        calendar[Calendar.ZONE_OFFSET] = getZoneOffset(
+            locationType = location.type,
+            date = calendar.timeInMillis,
+            selectedTimeZone = selectedTimeZoneId
+        )
         println("in getPrayerTimes: coordinates: $coordinates, calendar: $calendar")
 
         val times1 = PrayerTimeCalculator(settings).getPrayerTimes(coordinates, calendar)
@@ -54,12 +57,15 @@ object PrayerTimeUtils {
         }
     }
 
-    private fun getUTCOffset(locationType: LocationType, timeZone: String = "") =
-        when (locationType) {
-            LocationType.AUTO -> TimeZone.getDefault().getOffset(Date().time) / 3600000
-            LocationType.MANUAL -> TimeZone.getTimeZone(timeZone).getOffset(Date().time) / 3600000
-            LocationType.NONE -> 0
-        }
+    private fun getZoneOffset(
+        locationType: LocationType,
+        date: Long,
+        selectedTimeZone: String = ""
+    ) = when (locationType) {
+        LocationType.AUTO -> TimeZone.getDefault().getOffset(date)
+        LocationType.MANUAL -> TimeZone.getTimeZone(selectedTimeZone).getOffset(date)
+        LocationType.NONE -> 0
+    }
 
     fun formatPrayerTime(
         time: Calendar?,

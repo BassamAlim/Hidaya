@@ -82,7 +82,7 @@ class PrayersBoardDomain @Inject constructor(
     ): SortedMap<Prayer, String> {
         val prayerTimes = PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = date
         )

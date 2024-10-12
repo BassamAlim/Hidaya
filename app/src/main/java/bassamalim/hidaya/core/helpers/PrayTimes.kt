@@ -22,7 +22,6 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
     private var asrJuristic =
         if (settings.juristicMethod == PrayerTimeJuristicMethod.HANAFI) 1
         else 0
-    private val adjustHighLats = settings.highLatitudesAdjustmentMethod
 
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
     private var latitude = 0.0 // latitude
@@ -191,7 +190,7 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
             times[5] = times[4] + (methodParams[settings.calculationMethod]?.get(2)!!) / 60
         if (methodParams[settings.calculationMethod]?.get(3)?.toInt() == 1) // Isha
             times[6] = times[5] + (methodParams[settings.calculationMethod]?.get(4)!!) / 60
-        if (adjustHighLats != HighLatitudesAdjustmentMethod.NONE)
+        if (settings.highLatitudesAdjustmentMethod != HighLatitudesAdjustmentMethod.NONE)
             adjustHighLatTimes(times)
 
         return times
@@ -242,7 +241,7 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
 
     // the night portion used for adjusting times in higher latitudes
     private fun nightPortion(angle: Double): Double {
-        return when (adjustHighLats) {
+        return when (settings.highLatitudesAdjustmentMethod) {
             HighLatitudesAdjustmentMethod.MIDNIGHT -> 0.5
             HighLatitudesAdjustmentMethod.ONE_SEVENTH -> 0.14286
             HighLatitudesAdjustmentMethod.ANGLE_BASED -> angle / 60.0

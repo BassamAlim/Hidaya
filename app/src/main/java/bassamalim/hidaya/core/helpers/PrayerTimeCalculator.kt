@@ -15,7 +15,6 @@ import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
 import java.util.Calendar
 import java.util.SortedMap
-import java.util.TimeZone
 import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.asin
@@ -76,12 +75,6 @@ class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
         cal[Calendar.SECOND] = 0
         cal[Calendar.MILLISECOND] = 0
         return cal
-    }
-
-    // ---------------------- Time-Zone Functions -----------------------
-    // compute local time-zone for a specific date
-    private fun getDefaultUtcOffset(): Double {
-        return TimeZone.getDefault().rawOffset / 3600000.0
     }
 
     // ---------------------- Julian Date Functions -----------------------

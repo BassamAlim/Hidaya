@@ -42,7 +42,7 @@ class Alarm(
                 val location = locationRepository.getLocation().first() ?: return
                 val prayerTimes = PrayerTimeUtils.getPrayerTimes(
                     settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-                    timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+                    selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
                     location = location,
                     calendar = Calendar.getInstance()
                 ).map { (prayer, time) -> prayer.toReminder() to time }.toMap()
@@ -53,7 +53,7 @@ class Alarm(
                 val location = locationRepository.getLocation().first() ?: return
                 val prayerTime = PrayerTimeUtils.getPrayerTimes(
                     settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-                    timeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+                    selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
                     location = location,
                     calendar = Calendar.getInstance()
                 )[reminder.toPrayer()]!!

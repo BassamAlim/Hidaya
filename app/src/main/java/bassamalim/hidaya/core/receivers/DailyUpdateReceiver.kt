@@ -150,7 +150,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
 
             val prayerTimes = PrayerTimeUtils.getPrayerTimes(
                 settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-                timeZoneId = locationRepository.getTimeZone(latestLocation.ids.cityId),
+                selectedTimeZoneId = locationRepository.getTimeZone(latestLocation.ids.cityId),
                 location = latestLocation,
                 calendar = now
             )
