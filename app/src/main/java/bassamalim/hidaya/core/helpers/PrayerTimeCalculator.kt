@@ -50,6 +50,7 @@ class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
             utcOffset = calendar[Calendar.ZONE_OFFSET].toDouble() / 3600000.0,
             jDate = getJulianDate(calendar = calendar, longitude = coordinates.longitude)
         )
+        println("in PrayerTimeCalculator: rawTimes: $times")
 
         return sortedMapOf(
             FAJR to buildCalendar(time = times[FAJR]!!, date = calendar),
@@ -110,12 +111,9 @@ class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
             MAGHRIB to 18.0,
             ISHAA to 18.0
         )  // default times
-        for (i in 1..numIterations) times = computeTimes(
-            times = times,
-            latitude = coordinates.latitude,
-            jDate = jDate
-        )
-        times = adjustTimes(times = times, utcOffset = utcOffset, longitude = coordinates.longitude)
+        for (i in 1..numIterations)
+            times = computeTimes(times = times, latitude = coordinates.latitude, jDate = jDate)
+        times = adjustTimes(times = times, longitude = coordinates.longitude, utcOffset = utcOffset)
         return times
     }
 
@@ -221,8 +219,8 @@ class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
     // adjust times in a prayer time array
     private fun adjustTimes(
         times: SortedMap<Prayer, Double>,
-        utcOffset: Double,
-        longitude: Double
+        longitude: Double,
+        utcOffset: Double
     ): SortedMap<Prayer, Double> {
         times.forEach { (point, time) ->
             times[point] = fixHour(time + utcOffset - longitude / 15)

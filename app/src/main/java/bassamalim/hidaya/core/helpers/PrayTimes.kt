@@ -1,11 +1,13 @@
 package bassamalim.hidaya.core.helpers
 
 import bassamalim.hidaya.core.enums.HighLatitudesAdjustmentMethod
+import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.PrayerTimeCalculationMethod
 import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
 import java.util.Calendar
+import java.util.SortedMap
 import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.asin
@@ -35,28 +37,58 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
 
     // -------------------- Interface Functions --------------------
     // returns prayer times in Calendar object
-    fun getPrayerTimes(coordinates: Coordinates, calendar: Calendar): Array<Calendar?> {
-        val times = floatToTime24(computeDayTimes(
+    fun getPrayerTimes(coordinates: Coordinates, calendar: Calendar): SortedMap<Prayer, Calendar?> {
+        val times = computeDayTimes(
             coordinates = coordinates,
-            timeZone = calendar[Calendar.ZONE_OFFSET].toDouble() / 3600000.0,
-            julianDate = getJulianDate(calendar = calendar, longitude = coordinates.longitude)
-        ))
+            utcOffset = calendar[Calendar.ZONE_OFFSET].toDouble() / 3600000.0,
+            jDate = getJulianDate(calendar = calendar, longitude = coordinates.longitude)
+        )
+        println("in PrayTimes: rawTimes: ${times.contentToString()}")
 
-        times.removeAt(4)  // removing sunset time
+        return sortedMapOf(
+            Prayer.FAJR to buildCalendar(time = times[0]!!, date = calendar),
+            Prayer.SUNRISE to buildCalendar(time = times[1]!!, date = calendar),
+            Prayer.DHUHR to buildCalendar(time = times[2]!!, date = calendar),
+            Prayer.ASR to buildCalendar(time = times[3]!!, date = calendar),
+            // skipping sunset time
+            Prayer.MAGHRIB to buildCalendar(time = times[5]!!, date = calendar),
+            Prayer.ISHAA to buildCalendar(time = times[6]!!, date = calendar)
+        )
+    }
 
-        val cals = arrayOfNulls<Calendar>(times.size)
-        for (i in times.indices) {
-            val nums = times[i].split(":")
+    private fun buildCalendar(time: Double, date: Calendar): Calendar {
+        val fixed = fixHour(time + 0.5 / 60.0) // add 0.5 minutes to round
+        val hours = floor(fixed).toInt()
+        val minutes = floor((fixed - hours) * 60.0).roundToInt()
 
-            val cal = Calendar.getInstance()
-            cal[Calendar.HOUR_OF_DAY] = nums[0].toInt()
-            cal[Calendar.MINUTE] = nums[1].toInt()
-            cal[Calendar.SECOND] = 0
-            cal[Calendar.MILLISECOND] = 0
-            cals[i] = cal
+        val cal = date.clone() as Calendar
+        cal[Calendar.HOUR_OF_DAY] = hours
+        cal[Calendar.MINUTE] = minutes
+        cal[Calendar.SECOND] = 0
+        cal[Calendar.MILLISECOND] = 0
+        return cal
+    }
+
+    // convert double hours to 24h format
+    private fun floatToTime24(times: DoubleArray): ArrayList<String> {
+        val result = ArrayList<String>()
+        for (time in times) {
+            val fixed = fixHour(time + 0.5 / 60.0) // add 0.5 minutes to round
+            val hours = floor(fixed).toInt()
+            val minutes = floor((fixed - hours) * 60.0)
+
+            result.add(
+                if (hours in 0..9 && minutes >= 0 && minutes <= 9)
+                    "0" + hours + ":0" + minutes.roundToInt()
+                else if (hours in 0..9)
+                    "0" + hours + ":" + minutes.roundToInt()
+                else if (minutes in 0.0..9.0)
+                    hours.toString() + ":0" + minutes.roundToInt()
+                else
+                    hours.toString() + ":" + minutes.roundToInt()
+            )
         }
-
-        return cals
+        return result
     }
 
     private fun getJulianDate(calendar: Calendar, longitude: Double): Double {
@@ -80,13 +112,13 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
     // compute prayer times at given julian date
     private fun computeDayTimes(
         coordinates: Coordinates,
-        timeZone: Double,
-        julianDate: Double
+        utcOffset: Double,
+        jDate: Double
     ): DoubleArray {
         var times = doubleArrayOf(5.0, 6.0, 12.0, 13.0, 18.0, 18.0, 18.0)  // default times
         for (i in 1..numIterations)
-            times = computeTimes(times, coordinates.latitude, julianDate)
-        adjustTimes(times, coordinates.longitude, timeZone)
+            times = computeTimes(times = times, latitude = coordinates.latitude, jDate = jDate)
+        times = adjustTimes(times = times, longitude = coordinates.longitude, utcOffset = utcOffset)
         return times
     }
 
@@ -174,8 +206,8 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
     }
 
     // adjust times in a prayer time array
-    private fun adjustTimes(times: DoubleArray, longitude: Double, timeZone: Double): DoubleArray {
-        for (i in times.indices) times[i] += timeZone - longitude / 15
+    private fun adjustTimes(times: DoubleArray, longitude: Double, utcOffset: Double): DoubleArray {
+        for (i in times.indices) times[i] += utcOffset - longitude / 15
 
         times[2] += dhuhrMinutes / 60.0 // Dhuhr
         if (methodParams[settings.calculationMethod]?.get(1)?.toInt() == 1) // Maghrib
@@ -239,28 +271,6 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
             HighLatitudesAdjustmentMethod.ANGLE_BASED -> angle / 60.0
             else -> 0.0
         }
-    }
-
-    // convert double hours to 24h format
-    private fun floatToTime24(times: DoubleArray): ArrayList<String> {
-        val result = ArrayList<String>()
-        for (time in times) {
-            val fixed = fixHour(time + 0.5 / 60.0) // add 0.5 minutes to round
-            val hours = floor(fixed).toInt()
-            val minutes = floor((fixed - hours) * 60.0)
-
-            result.add(
-                if (hours in 0..9 && minutes >= 0 && minutes <= 9)
-                    "0" + hours + ":0" + minutes.roundToInt()
-                else if (hours in 0..9)
-                    "0" + hours + ":" + minutes.roundToInt()
-                else if (minutes in 0.0..9.0)
-                    hours.toString() + ":0" + minutes.roundToInt()
-                else
-                    hours.toString() + ":" + minutes.roundToInt()
-            )
-        }
-        return result
     }
 
     // ---------------------- Trigonometric Functions -----------------------

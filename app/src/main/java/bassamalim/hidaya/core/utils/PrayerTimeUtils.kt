@@ -33,7 +33,7 @@ object PrayerTimeUtils {
         println("in getPrayerTimes: times1: $times1")
 
         val times2 = PrayTimes(settings).getPrayerTimes(coordinates, calendar)
-        println("in getPrayerTimes: times2: ${times2.contentToString()}")
+        println("in getPrayerTimes: times2: $times2")
 
         return times1
     }
