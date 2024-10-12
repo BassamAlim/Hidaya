@@ -131,7 +131,7 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
     // Shafii: step=1, Hanafi: step=2
     private fun computeAsr(step: Double, t: Double): Double {
         val d = sunDeclination(jDate + t)
-        val g = -dArcCot(step + dTan(abs(latitude - d)))
+        val g = -degreeArcCot(step + degreeTan(abs(latitude - d)))
         return computeTime(g, t)
     }
 
@@ -140,9 +140,9 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
     private fun computeTime(G: Double, t: Double): Double {
         val d = sunDeclination(jDate + t)
         val z = computeMidDay(t)
-        val beg = -dSin(G) - dSin(d) * dSin(latitude)
-        val mid = dCos(d) * dCos(latitude)
-        val v = dArcCos(beg / mid) / 15.0
+        val beg = -degreeSin(G) - degreeSin(d) * degreeSin(latitude)
+        val mid = degreeCos(d) * degreeCos(latitude)
+        val v = degreeArcCos(beg / mid) / 15.0
         return z + if (G > 90) -v else v
     }
 
@@ -167,13 +167,13 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
         val dd = jd - 2451545
         val g = fixAngle(357.529 + 0.98560028 * dd)
         val q = fixAngle(280.459 + 0.98564736 * dd)
-        val l = fixAngle(q + 1.915 * dSin(g) + 0.020 * dSin(2 * g))
+        val l = fixAngle(q + 1.915 * degreeSin(g) + 0.020 * degreeSin(2 * g))
 
         // double R = 1.00014 - 0.01671 * [self dCos:g] - 0.00014 * [self dCos:
         // (2*g)];
         val e = 23.439 - 0.00000036 * dd
-        val d = dArcSin(dSin(e) * dSin(l))
-        var ra = dArcTan2(dCos(e) * dSin(l), dCos(l)) / 15.0
+        val d = degreeArcSin(degreeSin(e) * degreeSin(l))
+        var ra = degreeArcTan2(degreeCos(e) * degreeSin(l), degreeCos(l)) / 15.0
         ra = fixHour(ra)
         val eqT = q / 15.0 - ra
         val sPosition = DoubleArray(2)
@@ -272,31 +272,8 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
         return result
     }
 
-    // convert double hours to 12h format
-    private fun floatToTime12(times: DoubleArray): ArrayList<String> {
-        val result = ArrayList<String>()
-        for (time in times) {
-            val fixed = fixHour(time + 0.5 / 60) // add 0.5 minutes to round
-            var hours = floor(fixed).toInt()
-            val minutes = floor((fixed - hours) * 60)
-            val suffix = if (hours >= 12) "pm" else "am"
-            hours = (hours + 12 - 1) % 12 + 1
-
-            result.add(
-                if (hours in 0..9 && minutes >= 0 && minutes <= 9)
-                    ("0" + hours + ":0" + minutes.roundToInt() + " " + suffix)
-                else if (hours in 0..9)
-                    "0" + hours + ":" + minutes.roundToInt() + " " + suffix
-                else if (minutes in 0.0..9.0)
-                    hours.toString() + ":0" + minutes.roundToInt() + " " + suffix
-                else
-                    hours.toString() + ":" + minutes.roundToInt() + " " + suffix
-            )
-        }
-        return result
-    }
-
     // ---------------------- Trigonometric Functions -----------------------
+
     // range reduce angle in degrees.
     private fun fixAngle(gA: Double): Double {
         var a = gA
@@ -313,47 +290,22 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
         return a
     }
 
-    // degree sin
-    private fun dSin(d: Double): Double {
-        return sin(degreesToRadians(d))
-    }
+    private fun degreeSin(d: Double) = sin(degreesToRadians(d))
 
-    // degree cos
-    private fun dCos(d: Double): Double {
-        return cos(degreesToRadians(d))
-    }
+    private fun degreeCos(d: Double) = cos(degreesToRadians(d))
 
-    // degree tan
-    private fun dTan(d: Double): Double {
-        return tan(degreesToRadians(d))
-    }
+    private fun degreeTan(d: Double) = tan(degreesToRadians(d))
 
-    // degree arcSin
-    private fun dArcSin(x: Double): Double {
-        return radiansToDegrees(asin(x))
-    }
+    private fun degreeArcSin(x: Double) = radiansToDegrees(asin(x))
 
-    // degree arcCos
-    private fun dArcCos(x: Double): Double {
-        return radiansToDegrees(acos(x))
-    }
+    private fun degreeArcCos(x: Double) = radiansToDegrees(acos(x))
 
-    // degree arcTan2
-    private fun dArcTan2(y: Double, x: Double): Double {
-        return radiansToDegrees(atan2(y, x))
-    }
+    private fun degreeArcTan2(y: Double, x: Double) = radiansToDegrees(atan2(y, x))
 
-    // degree arcCot
-    private fun dArcCot(x: Double): Double {
-        return radiansToDegrees(atan2(1.0, x))
-    }
+    private fun degreeArcCot(x: Double) = radiansToDegrees(atan2(1.0, x))
 
-    private fun radiansToDegrees(alpha: Double): Double {
-        return alpha * 180.0 / Math.PI
-    }
+    private fun radiansToDegrees(alpha: Double) = alpha * 180.0 / Math.PI
 
-    private fun degreesToRadians(alpha: Double): Double {
-        return alpha * Math.PI / 180.0
-    }
+    private fun degreesToRadians(alpha: Double) = alpha * Math.PI / 180.0
 
 }

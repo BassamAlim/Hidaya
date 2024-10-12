@@ -317,6 +317,7 @@ class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
     }
 
     // ---------------------- Trigonometric Functions -----------------------
+
     // range reduce angle in degrees.
     private fun fixAngle(gA: Double): Double {
         var a = gA
