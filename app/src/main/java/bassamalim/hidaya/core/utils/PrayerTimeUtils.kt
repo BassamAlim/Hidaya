@@ -4,7 +4,6 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.LocationType
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.enums.TimeFormat
-import bassamalim.hidaya.core.helpers.PrayTimes
 import bassamalim.hidaya.core.helpers.PrayerTimeCalculator
 import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.Location
@@ -27,15 +26,7 @@ object PrayerTimeUtils {
             date = calendar.timeInMillis,
             selectedTimeZone = selectedTimeZoneId
         )
-        println("in getPrayerTimes: coordinates: $coordinates, calendar: $calendar")
-
-        val times1 = PrayerTimeCalculator(settings).getPrayerTimes(coordinates, calendar)
-        println("in getPrayerTimes: times1: $times1")
-
-        val times2 = PrayTimes(settings).getPrayerTimes(coordinates, calendar)
-        println("in getPrayerTimes: times2: $times2")
-
-        return times1
+        return PrayerTimeCalculator(settings).getPrayerTimes(coordinates, calendar)
     }
 
     fun formatPrayerTimes(
