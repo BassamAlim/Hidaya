@@ -69,28 +69,6 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
         return cal
     }
 
-    // convert double hours to 24h format
-    private fun floatToTime24(times: DoubleArray): ArrayList<String> {
-        val result = ArrayList<String>()
-        for (time in times) {
-            val fixed = fixHour(time + 0.5 / 60.0) // add 0.5 minutes to round
-            val hours = floor(fixed).toInt()
-            val minutes = floor((fixed - hours) * 60.0)
-
-            result.add(
-                if (hours in 0..9 && minutes >= 0 && minutes <= 9)
-                    "0" + hours + ":0" + minutes.roundToInt()
-                else if (hours in 0..9)
-                    "0" + hours + ":" + minutes.roundToInt()
-                else if (minutes in 0.0..9.0)
-                    hours.toString() + ":0" + minutes.roundToInt()
-                else
-                    hours.toString() + ":" + minutes.roundToInt()
-            )
-        }
-        return result
-    }
-
     private fun getJulianDate(calendar: Calendar, longitude: Double): Double {
         var year = calendar[Calendar.YEAR]
         var month = calendar[Calendar.MONTH] + 1
@@ -126,7 +104,7 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
     private fun computeTimes(times: DoubleArray, latitude: Double, jDate: Double): DoubleArray {
         val t = dayPortion(times)
         val fajr = computeTime(
-            G = 180 - (methodParams[settings.calculationMethod]!![0]),
+            g = 180 - (methodParams[settings.calculationMethod]!![0]),
             t = t[0],
             latitude = latitude,
             jDate = jDate
@@ -136,13 +114,13 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
         val asr = computeAsr((1 + asrJuristic).toDouble(), t[3], latitude, jDate)
         val sunset = computeTime(0.833, t[4], latitude, jDate)
         val maghrib = computeTime(
-            G = methodParams[settings.calculationMethod]!![2],
+            g = methodParams[settings.calculationMethod]!![2],
             t = t[5],
             latitude = latitude,
             jDate = jDate
         )
         val isha = computeTime(
-            G = methodParams[settings.calculationMethod]!![4],
+            g = methodParams[settings.calculationMethod]!![4],
             t = t[6],
             latitude = latitude,
             jDate = jDate
@@ -160,13 +138,13 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
 
     // compute time for a given angle G
     // Error here in some cases such as poland (v = NaN)
-    private fun computeTime(G: Double, t: Double, latitude: Double, jDate: Double): Double {
+    private fun computeTime(g: Double, t: Double, latitude: Double, jDate: Double): Double {
         val d = sunDeclination(jDate + t)
         val z = computeMidDay(t, jDate)
-        val beg = -degreeSin(G) - degreeSin(d) * degreeSin(latitude)
+        val beg = -degreeSin(g) - degreeSin(d) * degreeSin(latitude)
         val mid = degreeCos(d) * degreeCos(latitude)
         val v = degreeArcCos(beg / mid) / 15.0
-        return z + if (G > 90) -v else v
+        return z + if (g > 90) -v else v
     }
 
     // compute declination angle of sun
