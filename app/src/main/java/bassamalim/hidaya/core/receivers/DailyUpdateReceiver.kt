@@ -70,9 +70,7 @@ class DailyUpdateReceiver : BroadcastReceiver() {
                 val location = locationRepository.getLocation().first() ?: return@launch
                 when (location.type) {
                     LocationType.AUTO -> locate(context, now)
-                    LocationType.MANUAL -> {
-                        update(context = context, location = null, now = now)
-                    }
+                    LocationType.MANUAL -> update(context = context, location = null, now = now)
                     LocationType.NONE -> return@launch
                 }
 

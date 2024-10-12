@@ -22,8 +22,9 @@ import androidx.core.app.NotificationManagerCompat
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
+import bassamalim.hidaya.core.data.repositories.NotificationsRepository
 import bassamalim.hidaya.core.data.repositories.PrayersRepository
-import bassamalim.hidaya.core.enums.Prayer
+import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.StartAction
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
@@ -40,7 +41,8 @@ class AthanService : Service() {
 
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
     @Inject lateinit var prayersRepository: PrayersRepository
-    private lateinit var prayer: Prayer
+    @Inject lateinit var notificationsRepository: NotificationsRepository
+    private var notificationId = 0
     private var channelId = ""
     private var mediaPlayer: MediaPlayer? = null
 
@@ -60,44 +62,48 @@ class AthanService : Service() {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == StartAction.STOP_ATHAN.name) {
             onDestroy()
             return START_NOT_STICKY
         }
 
-        prayer = Prayer.valueOf(intent?.getStringExtra("prayer")!!)
+        val reminder = Reminder.getById(intent!!.getIntExtra("id", -1))
+        notificationId = reminder.id
 
-        startForeground(243, build())
+        GlobalScope.launch {
+            startForeground(243, build(reminder))
 
-        Log.i(Global.TAG, "In athan service for $prayer")
+            Log.i(Global.TAG, "In athan service for $reminder")
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val am = getSystemService(AUDIO_SERVICE) as AudioManager
-            // Request audio focus
-            am.requestAudioFocus(             // Request permanent focus.
-                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                    .setAudioAttributes(
-                        AudioAttributes.Builder()
-                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                            .build()
-                    ).build()
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val am = getSystemService(AUDIO_SERVICE) as AudioManager
+                // Request audio focus
+                am.requestAudioFocus(             // Request permanent focus.
+                    AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                        .setAudioAttributes(
+                            AudioAttributes.Builder()
+                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                                .build()
+                        ).build()
+                )
+            }
+
+            play(reminder)
         }
-
-        play()
 
         return START_NOT_STICKY
     }
 
-    private fun build(): Notification {
+    private suspend fun build(reminder: Reminder): Notification {
         val builder = NotificationCompat.Builder(this, channelId)
         builder.setSmallIcon(R.drawable.ic_athan)
         builder.setTicker(resources.getString(R.string.app_name))
 
-        builder.setContentTitle(getTitle())
-        builder.setContentText(getSubtitle())
+        builder.setContentTitle(getTitle(reminder))
+        builder.setContentText(getSubtitle(reminder))
 
         builder.addAction(0, getString(R.string.stop_athan), getStopIntent())
         builder.clearActions()
@@ -111,20 +117,19 @@ class AthanService : Service() {
         return builder.build()
     }
 
-    private fun getTitle(): String {
-        return if (prayer == Prayer.DHUHR &&
+    private fun getTitle(reminder: Reminder): String {
+        return if ((reminder == Reminder.Prayer.Dhuhr || reminder == Reminder.PrayerExtra.Dhuhr) &&
             Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
             resources.getString(R.string.jumuah_title)
         }
-        else resources.getStringArray(R.array.prayer_titles)[prayer.ordinal]
+        else resources.getStringArray(R.array.prayer_titles)[reminder.id+1]
     }
 
-    private fun getSubtitle(): String {
-        return if (prayer == Prayer.DHUHR &&
-            Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
+    private fun getSubtitle(reminder: Reminder): String {
+        return if (reminder == Reminder.Prayer.Dhuhr &&
+            Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
             resources.getString(R.string.jumuah_subtitle)
-        }
-        else resources.getStringArray(R.array.prayer_subtitles)[prayer.ordinal]
+        else resources.getStringArray(R.array.prayer_subtitles)[reminder.id+1]
     }
 
     private fun getStopIntent(): PendingIntent {
@@ -148,20 +153,21 @@ class AthanService : Service() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channelId = "Athan"
-            val name = getString(R.string.prayer_alerts)
-
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val notificationChannel = NotificationChannel(channelId, name, importance)
-            notificationChannel.description = "Athan"
-            notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            channelId = "athan"
+            val channel = NotificationChannel(
+                channelId,
+                getString(R.string.prayer_notification_channel),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            channel.description = "Athan notification channel"
+            channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(notificationChannel)
+            notificationManager.createNotificationChannel(channel)
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun play() {
+    private fun play(reminder: Reminder) {
         Log.i(Global.TAG, "Playing Athan")
 
         GlobalScope.launch {
@@ -174,8 +180,10 @@ class AthanService : Service() {
             )
             mediaPlayer!!.setOnPreparedListener { mediaPlayer?.start() }
             mediaPlayer!!.setOnCompletionListener {
-                showReminderNotification()
-                onDestroy()
+                GlobalScope.launch {
+                    showReminderNotification(reminder)
+                    onDestroy()
+                }
             }
         }
     }
@@ -190,7 +198,7 @@ class AthanService : Service() {
         }
     }
 
-    private fun showReminderNotification() {
+    private suspend fun showReminderNotification(reminder: Reminder) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
             // Request audio focus
@@ -205,13 +213,14 @@ class AthanService : Service() {
             )
         }
 
-        if (ActivityCompat.checkSelfPermission(
+        val havePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            NotificationManagerCompat.from(this).notify(prayer.ordinal, build())
-        }
+        } else true
+        if (havePermission)
+            NotificationManagerCompat.from(this).notify(notificationId, build(reminder))
     }
 
     override fun onDestroy() {

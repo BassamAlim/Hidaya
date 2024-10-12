@@ -139,16 +139,19 @@ class NotificationReceiver : BroadcastReceiver() {
         markAsNotified(reminder)
     }
 
-    private fun startService(reminder: Reminder.Prayer, time: Long) {
-        val intent = Intent(ctx, AthanService::class.java)
-        intent.action = Global.PLAY_ATHAN
-        intent.putExtra("prayer", reminder.name)
-        intent.putExtra("time", time)
+    private suspend fun startService(reminder: Reminder.Prayer, time: Long) {
+        val intent = Intent(ctx, AthanService::class.java).apply {
+            action = Global.PLAY_ATHAN
+            putExtra("id", reminder.id)
+            putExtra("time", time)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             ctx.startForegroundService(intent)
         else
             ctx.startService(intent)
+
+        markAsNotified(reminder)
     }
 
     private suspend fun build(
@@ -182,7 +185,7 @@ class NotificationReceiver : BroadcastReceiver() {
             else
                 ctx.resources.getString(R.string.jumuah_title)
         }
-        else ctx.resources.getStringArray(R.array.prayer_titles)[notificationId]
+        else ctx.resources.getStringArray(R.array.prayer_titles)[reminder.id+1]
     }
 
     private suspend fun getSubtitle(reminder: Reminder): String {
@@ -196,7 +199,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     if (reminder == Reminder.PrayerExtra.Dhuhr &&
                         Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
                         ctx.resources.getString(R.string.jumuah)
-                    else ctx.resources.getStringArray(R.array.prayer_names)[reminder.id],
+                    else ctx.resources.getStringArray(R.array.prayer_names)[reminder.id+1],
                 abs(offset) // to remove - sign
             )
         }
@@ -204,7 +207,7 @@ class NotificationReceiver : BroadcastReceiver() {
             if (reminder == Reminder.Prayer.Dhuhr &&
                 Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
                 ctx.resources.getString(R.string.jumuah_subtitle)
-            else ctx.resources.getStringArray(R.array.prayer_subtitles)[notificationId]
+            else ctx.resources.getStringArray(R.array.prayer_subtitles)[reminder.id+1]
         }
     }
 
