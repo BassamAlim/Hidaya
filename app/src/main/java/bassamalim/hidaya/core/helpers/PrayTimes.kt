@@ -6,7 +6,6 @@ import bassamalim.hidaya.core.enums.PrayerTimeJuristicMethod
 import bassamalim.hidaya.core.models.Coordinates
 import bassamalim.hidaya.core.models.PrayerTimeCalculatorSettings
 import java.util.Calendar
-import java.util.TimeZone
 import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.asin
@@ -22,12 +21,7 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
     private var asrJuristic =
         if (settings.juristicMethod == PrayerTimeJuristicMethod.HANAFI) 1
         else 0
-
     private var dhuhrMinutes = 0 // minutes after midday for Dhuhr
-    private var latitude = 0.0 // latitude
-    private var longitude = 0.0 // longitude
-    private var timeZone = 0.0 // time-zone UTC Offset
-    private var jDate = 0.0 // Julian date
     private var numIterations = 1 // number of iterations needed to compute times
 
     private val methodParams = hashMapOf(
@@ -42,16 +36,11 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
     // -------------------- Interface Functions --------------------
     // returns prayer times in Calendar object
     fun getPrayerTimes(coordinates: Coordinates, calendar: Calendar): Array<Calendar?> {
-        setValues(
-            coordinates.latitude,
-            coordinates.longitude,
-            calendar[Calendar.ZONE_OFFSET].toDouble() / 3600000.0,
-            calendar[Calendar.YEAR],
-            calendar[Calendar.MONTH] + 1,
-            calendar[Calendar.DATE]
-        )
-
-        val times = floatToTime24(computeDayTimes())
+        val times = floatToTime24(computeDayTimes(
+            coordinates = coordinates,
+            timeZone = calendar[Calendar.ZONE_OFFSET].toDouble() / 3600000.0,
+            julianDate = getJulianDate(calendar = calendar, longitude = coordinates.longitude)
+        ))
 
         times.removeAt(4)  // removing sunset time
 
@@ -67,78 +56,81 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
             cals[i] = cal
         }
 
-        // add offsets
-
         return cals
     }
 
-    private fun setValues(
-        lat: Double, lng: Double, tZone: Double, year: Int, month: Int, day: Int
-    ) {
-        latitude = lat
-        longitude = lng
-        timeZone = tZone
-        jDate = julianDate(year, month, day)
-        jDate -= lng / (15.0 * 24.0)
-    }
-
-    // ---------------------- Time-Zone Functions -----------------------
-    // compute local time-zone for a specific date
-    private fun getDefaultTimeZone(): Double {
-        return TimeZone.getDefault().rawOffset / 3600000.0
-    }
-
-    // ---------------------- Julian Date Functions -----------------------
-    // calculate julian date from a calendar date
-    private fun julianDate(gYear: Int, gMonth: Int, gDay: Int): Double {
-        var year = gYear
-        var month = gMonth
+    private fun getJulianDate(calendar: Calendar, longitude: Double): Double {
+        var year = calendar[Calendar.YEAR]
+        var month = calendar[Calendar.MONTH] + 1
         if (month <= 2) {
             year -= 1
             month += 12
         }
+        val day = calendar[Calendar.DATE]
 
         val a = floor(year / 100.0)
         val b = 2 - a + floor(a / 4.0)
-        return (
-                floor(365.25 * (year + 4716)) + floor(30.6001 * (month + 1)) + gDay + b
+        var jDate = (
+                floor(365.25 * (year + 4716)) + floor(30.6001 * (month + 1)) + day + b
                 ) - 1524.5
+        jDate -= longitude / (15.0 * 24.0)
+        return jDate
     }
 
     // compute prayer times at given julian date
-    private fun computeDayTimes(): DoubleArray {
+    private fun computeDayTimes(
+        coordinates: Coordinates,
+        timeZone: Double,
+        julianDate: Double
+    ): DoubleArray {
         var times = doubleArrayOf(5.0, 6.0, 12.0, 13.0, 18.0, 18.0, 18.0)  // default times
-        for (i in 1..numIterations) times = computeTimes(times)
-        adjustTimes(times)
+        for (i in 1..numIterations)
+            times = computeTimes(times, coordinates.latitude, julianDate)
+        adjustTimes(times, coordinates.longitude, timeZone)
         return times
     }
 
     // compute prayer times at given julian date
-    private fun computeTimes(times: DoubleArray): DoubleArray {
+    private fun computeTimes(times: DoubleArray, latitude: Double, jDate: Double): DoubleArray {
         val t = dayPortion(times)
-        val fajr = computeTime(180 - (methodParams[settings.calculationMethod]!![0]), t[0])
-        val sunrise = computeTime(180 - 0.833, t[1])
-        val dhuhr = computeMidDay(t[2])
-        val asr = computeAsr((1 + asrJuristic).toDouble(), t[3])
-        val sunset = computeTime(0.833, t[4])
-        val maghrib = computeTime(methodParams[settings.calculationMethod]!![2], t[5])
-        val isha = computeTime(methodParams[settings.calculationMethod]!![4], t[6])
+        val fajr = computeTime(
+            G = 180 - (methodParams[settings.calculationMethod]!![0]),
+            t = t[0],
+            latitude = latitude,
+            jDate = jDate
+        )
+        val sunrise = computeTime(180 - 0.833, t[1], latitude, jDate)
+        val dhuhr = computeMidDay(t[2], jDate)
+        val asr = computeAsr((1 + asrJuristic).toDouble(), t[3], latitude, jDate)
+        val sunset = computeTime(0.833, t[4], latitude, jDate)
+        val maghrib = computeTime(
+            G = methodParams[settings.calculationMethod]!![2],
+            t = t[5],
+            latitude = latitude,
+            jDate = jDate
+        )
+        val isha = computeTime(
+            G = methodParams[settings.calculationMethod]!![4],
+            t = t[6],
+            latitude = latitude,
+            jDate = jDate
+        )
         return doubleArrayOf(fajr, sunrise, dhuhr, asr, sunset, maghrib, isha)
     }
 
     // compute the time of Asr
     // Shafii: step=1, Hanafi: step=2
-    private fun computeAsr(step: Double, t: Double): Double {
+    private fun computeAsr(step: Double, t: Double, latitude: Double, jDate: Double): Double {
         val d = sunDeclination(jDate + t)
         val g = -degreeArcCot(step + degreeTan(abs(latitude - d)))
-        return computeTime(g, t)
+        return computeTime(g, t, latitude, jDate)
     }
 
     // compute time for a given angle G
     // Error here in some cases such as poland (v = NaN)
-    private fun computeTime(G: Double, t: Double): Double {
+    private fun computeTime(G: Double, t: Double, latitude: Double, jDate: Double): Double {
         val d = sunDeclination(jDate + t)
-        val z = computeMidDay(t)
+        val z = computeMidDay(t, jDate)
         val beg = -degreeSin(G) - degreeSin(d) * degreeSin(latitude)
         val mid = degreeCos(d) * degreeCos(latitude)
         val v = degreeArcCos(beg / mid) / 15.0
@@ -151,7 +143,7 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
     }
 
     // compute mid-day (Dhuhr, Zawal) time
-    private fun computeMidDay(gT: Double): Double {
+    private fun computeMidDay(gT: Double, jDate: Double): Double {
         val t = equationOfTime(jDate + gT)
         return fixHour(12 - t)
     }
@@ -182,7 +174,7 @@ class PrayTimes(private val settings: PrayerTimeCalculatorSettings) {
     }
 
     // adjust times in a prayer time array
-    private fun adjustTimes(times: DoubleArray): DoubleArray {
+    private fun adjustTimes(times: DoubleArray, longitude: Double, timeZone: Double): DoubleArray {
         for (i in times.indices) times[i] += timeZone - longitude / 15
 
         times[2] += dhuhrMinutes / 60.0 // Dhuhr
