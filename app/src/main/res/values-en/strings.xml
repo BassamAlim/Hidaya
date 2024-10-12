@@ -129,6 +129,7 @@
     <string name="recitation_not_available">This aya\'s recitation is not available for the selected reciter</string>
 
     <!-- Notification Channels -->
+    <string name="no_downloaded_books">You have not downloaded any books yet, please download books to search in</string>
     <string name="prayer_notification_channel">Prayer Notifications</string>
     <string name="prayer_extra_notification_channel">Prayer Extra Reminders</string>
     <string name="morning_and_evening_remembrances_notification_channel">Morning and Evening Remembrances</string>

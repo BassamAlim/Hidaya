@@ -114,8 +114,16 @@ class BooksMenuViewModel @Inject constructor(
         }
     }
 
-    fun onFabClick() {
-        navigator.navigate(Screen.BookSearcher)
+    fun onSearcherClick() {
+        val noDownloadedBooks = !uiState.value.books.values.any {
+            it.downloadState == DownloadState.DOWNLOADED
+        }
+        if (noDownloadedBooks) {
+            _uiState.update { it.copy(
+                shouldShowNoBooksDownloaded = it.shouldShowNoBooksDownloaded + 1
+            )}
+        }
+        else navigator.navigate(Screen.BookSearcher)
     }
 
     fun onTutorialDialogDismiss(doNotShowAgain: Boolean) {

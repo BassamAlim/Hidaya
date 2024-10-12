@@ -34,7 +34,7 @@ class BookSearcherViewModel @Inject constructor(
         domain.getBookSelections(),
         domain.getMaxMatches()
     ) { state, bookSelections, maxMatches ->
-        state.copy(
+        if (state.searched) state.copy(
             matches = domain.search(
                 searchText = state.searchText,
                 bookSelections = bookSelections,
@@ -42,6 +42,13 @@ class BookSearcherViewModel @Inject constructor(
                 language = language,
                 highlightColor = highlightColor!!
             ),
+            maxMatches = maxMatches,
+            bookSelections = bookSelections,
+            filtered = bookSelections.containsValue(false)
+        )
+        else state.copy(
+            maxMatches = maxMatches,
+            bookSelections = bookSelections,
             filtered = bookSelections.containsValue(false)
         )
     }.onStart {
@@ -67,7 +74,6 @@ class BookSearcherViewModel @Inject constructor(
     fun onSearch(highlightColor: Color, bookSelections: Map<Int, Boolean>) {
         this.highlightColor = highlightColor
 
-        println("in onSearch: ${_uiState.value.bookSelections}")
         println("in onSearch: $bookSelections")
 
         viewModelScope.launch {

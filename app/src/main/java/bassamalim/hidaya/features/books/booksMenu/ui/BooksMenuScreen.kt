@@ -1,5 +1,6 @@
 package bassamalim.hidaya.features.books.booksMenu.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,7 +40,7 @@ fun BooksMenuScreen(viewModel: BooksMenuViewModel) {
             MyFloatingActionButton(
                 iconId = R.drawable.ic_quran_search,
                 description = stringResource(R.string.search_in_books),
-                onClick = { viewModel.onFabClick() }
+                onClick = { viewModel.onSearcherClick() }
             )
         }
     ) {
@@ -64,9 +65,10 @@ fun BooksMenuScreen(viewModel: BooksMenuViewModel) {
             onDismiss = viewModel::onTutorialDialogDismiss
         )
 
-        if (state.shouldShowWait != 0) {
+        if (state.shouldShowWait != 0)
             WaitMessage(state.shouldShowWait)
-        }
+        if (state.shouldShowNoBooksDownloaded != 0)
+            NoBooksDownloadedMessage(state.shouldShowNoBooksDownloaded)
     }
 }
 
@@ -119,9 +121,21 @@ private fun DownloadBtn(
 }
 
 @Composable
-private fun WaitMessage(shouldShowWait: Int) {
+private fun WaitMessage(shouldShow: Int) {
     val context = LocalContext.current
-    LaunchedEffect(shouldShowWait) {
+    LaunchedEffect(shouldShow) {
         FileUtils.showWaitMassage(context)
+    }
+}
+
+@Composable
+private fun NoBooksDownloadedMessage(shouldShow: Int) {
+    val context = LocalContext.current
+    LaunchedEffect(shouldShow) {
+        Toast.makeText(
+            context,
+            context.getString(R.string.no_downloaded_books),
+            Toast.LENGTH_LONG
+        ).show()
     }
 }

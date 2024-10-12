@@ -165,7 +165,6 @@ class HijriDatePickerViewModel @Inject constructor(
         val selectedDate = domain.getSelectedDate()
         val isCurrent = year == selectedDate[Calendar.YEAR]
                 && month == selectedDate[Calendar.MONTH] + 1
-        println("isCurrent: $isCurrent, year: $year, month: $month, selectedDate: $selectedDate")
 
         _uiState.update { it.copy(
             displayedYearText = translateNums(

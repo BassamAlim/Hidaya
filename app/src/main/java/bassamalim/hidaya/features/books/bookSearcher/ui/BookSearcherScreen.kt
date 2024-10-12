@@ -50,15 +50,13 @@ fun BookSearcherScreen(viewModel: BookSearcherViewModel) {
             )
 
             state.matches?.let {
-                if (state.matches!!.isEmpty()) {
+                if (state.searched && state.matches!!.isEmpty()) {
                     MyText(
                         text = stringResource(R.string.books_no_matches),
                         modifier = Modifier.padding(top = 100.dp)
                     )
                 }
-                else {
-                    ResultsList(state.matches!!)
-                }
+                else ResultsList(state.matches!!)
             }
         }
     }

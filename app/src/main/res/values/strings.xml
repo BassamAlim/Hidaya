@@ -127,6 +127,7 @@
     <string name="playback_failed">فشل التشغيل</string>
     <string name="choose_allow_all_the_time">اختر \"السماح طوال الوقت\" لإبقاء أوقات الصلاة وإتجاه القبلة دقيقة</string>
     <string name="recitation_not_available">لا يتوفر تسجيل الآية لهذا القارئ</string>
+    <string name="no_downloaded_books">لم يتم تحميل أي كتب بعد، حمل كتبا للبحث فيها</string>
 
     <!-- Notification Channels -->
     <string name="prayer_notification_channel">إشعارات الصلاة</string>

@@ -112,9 +112,7 @@ class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
         )  // default times
         for (i in 1..numIterations)
             times = computeTimes(times = times, latitude = coordinates.latitude, jDate = jDate)
-        println("in PrayerTimeCalculator.computeDayTimes1: $times")
         times = adjustTimes(times = times, longitude = coordinates.longitude, utcOffset = utcOffset)
-        println("in PrayerTimeCalculator.computeDayTime2: $times")
         return times
     }
 
