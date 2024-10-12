@@ -23,22 +23,13 @@ object PrayerTimeUtils {
         calendar: Calendar = Calendar.getInstance()
     ): SortedMap<Prayer, Calendar?> {
         val coordinates = Coordinates(location.coordinates.latitude, location.coordinates.longitude)
-        val utcOffset = getUTCOffset(location.type, timeZoneId).toDouble()
-        println("in getPrayerTimes: coordinates: $coordinates, utcOffset: $utcOffset, calendar: $calendar")
+        calendar[Calendar.ZONE_OFFSET] = getUTCOffset(location.type, timeZoneId) * 3600000
+        println("in getPrayerTimes: coordinates: $coordinates, calendar: $calendar")
 
-        val times1 = PrayerTimeCalculator(settings).getPrayerTimes(
-            coordinates = coordinates,
-            utcOffset = utcOffset,
-            calendar = calendar
-        )
+        val times1 = PrayerTimeCalculator(settings).getPrayerTimes(coordinates, calendar)
         println("in getPrayerTimes: times1: $times1")
 
-        val times2 = PrayTimes(settings).getPrayerTimes(
-            lat = location.coordinates.latitude,
-            lon = location.coordinates.longitude,
-            tZone = utcOffset,
-            date = calendar
-        )
+        val times2 = PrayTimes(settings).getPrayerTimes(coordinates, calendar)
         println("in getPrayerTimes: times2: ${times2.contentToString()}")
 
         return times1

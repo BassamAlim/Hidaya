@@ -26,9 +26,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.tan
 
-class PrayerTimeCalculator(
-    private val settings: PrayerTimeCalculatorSettings
-) {
+class PrayerTimeCalculator(private val settings: PrayerTimeCalculatorSettings) {
 
     private var asrJuristic =
         if (settings.juristicMethod == PrayerTimeJuristicMethod.HANAFI) 1
@@ -47,16 +45,12 @@ class PrayerTimeCalculator(
 
     // -------------------- Interface Functions --------------------
     // returns prayer times in Calendar object
-    fun getPrayerTimes(
-        coordinates: Coordinates,
-        utcOffset: Double = getDefaultUtcOffset(),
-        calendar: Calendar = Calendar.getInstance()
-    ): SortedMap<Prayer, Calendar?> {
+    fun getPrayerTimes(coordinates: Coordinates, calendar: Calendar): SortedMap<Prayer, Calendar?> {
         val julianDate = getJulianDate(calendar = calendar, longitude = coordinates.longitude)
 
         val times = computeDayTimes(
             coordinates = coordinates,
-            utcOffset = utcOffset,
+            utcOffset = calendar[Calendar.ZONE_OFFSET].toDouble() / 3600000.0,
             julianDate = julianDate
         )
 
