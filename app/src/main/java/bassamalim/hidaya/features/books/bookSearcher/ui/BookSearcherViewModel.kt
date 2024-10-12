@@ -74,8 +74,6 @@ class BookSearcherViewModel @Inject constructor(
     fun onSearch(highlightColor: Color, bookSelections: Map<Int, Boolean>) {
         this.highlightColor = highlightColor
 
-        println("in onSearch: $bookSelections")
-
         viewModelScope.launch {
             _uiState.update { it.copy(
                 searched = true,
