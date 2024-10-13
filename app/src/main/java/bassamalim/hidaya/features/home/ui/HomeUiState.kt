@@ -14,6 +14,7 @@ data class HomeUiState(
     val quranRecord: String = "",
     val recitationsRecord: String = "",
     val isLeaderboardEnabled: Boolean = false,
+    val language: Language = Language.ARABIC,
     val numeralsLanguage: Language = Language.ARABIC,
     val location: Location? = null
 )

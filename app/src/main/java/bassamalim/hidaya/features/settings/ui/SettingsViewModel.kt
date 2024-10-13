@@ -12,7 +12,7 @@ import bassamalim.hidaya.core.enums.Reminder
 import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.enums.TimeFormat
 import bassamalim.hidaya.core.models.TimeOfDay
-import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.core.utils.LangUtils.translateTimeNums
 import bassamalim.hidaya.features.settings.domain.SettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,7 +61,7 @@ class SettingsViewModel @Inject constructor(
             devotionalReminderTimes = devotionReminderTimeOfDayMap,
             devotionalReminderSummaries = devotionReminderTimeOfDayMap.mapValues {
                 if (!state.devotionalReminderEnabledStatuses[it.key]!!) ""
-                else formatTime(it.value)
+                else formatTime(it.value, state.language, state.numeralsLanguage, state.timeFormat)
             }.toMutableMap()
         )
     }.combine(
@@ -169,24 +169,35 @@ class SettingsViewModel @Inject constructor(
         )}
     }
 
-    private fun formatTime(timeOfDay: TimeOfDay): String {
-        val string = when (_uiState.value.timeFormat) {
+    // TODO: fix english numerals with 24 hour format
+    private fun formatTime(
+        timeOfDay: TimeOfDay,
+        language: Language,
+        numeralsLanguage: Language,
+        timeFormat: TimeFormat
+    ): String {
+        val string = when (timeFormat) {
             TimeFormat.TWENTY_FOUR -> {
-                val hour = timeOfDay.hour
+                val hour = String.format("%02d", timeOfDay.hour)
                 val minute = String.format("%02d", timeOfDay.minute)
                 "$hour:$minute"
             }
             TimeFormat.TWELVE -> {
-                val hour = if (timeOfDay.hour == 0) 12 else timeOfDay.hour % 12
-                val minute = String.format("%02d", timeOfDay.minute)
-                val amPm = if (timeOfDay.hour >= 12) "pm" else "am"
-                "$hour:$minute $amPm"
+                var hour = timeOfDay.hour
+                val suffix = when (language) {
+                    Language.ENGLISH -> { if (hour >= 12) "pm" else "am" }
+                    Language.ARABIC -> { if (hour >= 12) "م" else "ص" }
+                }
+                hour = (hour + 12 - 1) % 12 + 1
+                val formattedMinute = String.format("%02d", timeOfDay.minute)
+                "$hour:$formattedMinute $suffix"
             }
         }
-        return translateNums(
-            numeralsLanguage = _uiState.value.numeralsLanguage,
-            string = string,
-            isTime = true
+
+        return translateTimeNums(
+            language = language,
+            numeralsLanguage = numeralsLanguage,
+            string = string
         )
     }
 

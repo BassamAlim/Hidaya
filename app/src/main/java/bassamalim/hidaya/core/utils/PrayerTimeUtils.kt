@@ -86,10 +86,10 @@ object PrayerTimeUtils {
             }
         }
 
-        return LangUtils.translateNums(
+        return LangUtils.translateTimeNums(
+            language = language,
             numeralsLanguage = numeralsLanguage,
-            string = formattedTime,
-            isTime = true
+            string = formattedTime
         )
     }
 

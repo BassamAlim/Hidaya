@@ -88,6 +88,8 @@ class HomeDomain @Inject constructor(
         return null
     }
 
+    fun getLanguage() = appSettingsRepository.getLanguage()
+
     fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage()
 
     fun getWerdPage() = quranRepository.getWerdPageNum()

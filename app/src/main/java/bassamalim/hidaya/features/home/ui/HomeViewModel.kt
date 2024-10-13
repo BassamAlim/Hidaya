@@ -9,6 +9,7 @@ import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
+import bassamalim.hidaya.core.utils.LangUtils.translateTimeNums
 import bassamalim.hidaya.features.home.domain.HomeDomain
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,11 +44,11 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = combine(
         _uiState.asStateFlow(),
+        domain.getLanguage(),
         domain.getNumeralsLanguage(),
         domain.getLocation(),
-        domain.getWerdPage(),
-        domain.isWerdDone()
-    ) { state, numeralsLanguage, location, werdPage, isWerdDone ->
+        domain.getWerdPage()
+    ) { state, language, numeralsLanguage, location, werdPage ->
         if (location != null && timer == null)
             setupPrayersCard(location)
 
@@ -56,10 +57,14 @@ class HomeViewModel @Inject constructor(
                 string = werdPage.toString(),
                 numeralsLanguage = numeralsLanguage
             ),
-            isWerdDone = isWerdDone,
+            language = language,
             numeralsLanguage = numeralsLanguage,
             location = location
         )
+    }.combine(
+        domain.isWerdDone()
+    ) { state, isWerdDone ->
+        state.copy(isWerdDone = isWerdDone,)
     }.combine(
         domain.getLocalRecord()
     ) { state, localRecord ->
@@ -162,10 +167,10 @@ class HomeViewModel @Inject constructor(
                 )
 
                 _uiState.update { it.copy(
-                    remaining = translateNums(
+                    remaining = translateTimeNums(
                         string = hms,
-                        numeralsLanguage = it.numeralsLanguage,
-                        isTime = true
+                        language = it.language,
+                        numeralsLanguage = it.numeralsLanguage
                     ),
                     timeFromPreviousPrayer =
                         if (upcomingPrayer == Prayer.FAJR) -1L
