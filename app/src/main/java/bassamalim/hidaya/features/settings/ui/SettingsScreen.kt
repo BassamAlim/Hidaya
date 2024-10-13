@@ -35,9 +35,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
 
-    MyScaffold(
-        title = stringResource(R.string.settings)
-    ) { padding ->
+    MyScaffold(title = stringResource(R.string.settings)) { padding ->
         Box(
             Modifier
                 .padding(padding)
@@ -50,10 +48,9 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                     expandedContent = {
                         AppearanceSettings(
                             selectedLanguage = state.language,
-                            onLanguageChange = { viewModel.onLanguageChange(
-                                newLanguage = it,
-                                activity = activity
-                            ) },
+                            onLanguageChange = {
+                                viewModel.onLanguageChange(newLanguage = it, activity = activity)
+                            },
                             selectedNumeralsLanguage = state.numeralsLanguage,
                             onNumeralsLanguageChange = viewModel::onNumeralsLanguageChange,
                             selectedTimeFormat = state.timeFormat,
@@ -70,7 +67,8 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                     modifier = Modifier.padding(vertical = 2.dp),
                     expandedContent = {
                         DevotionReminderSettings(
-                            devotionReminderEnabledStatuses = state.devotionalReminderEnabledStatuses,
+                            devotionReminderEnabledStatuses =
+                            state.devotionalReminderEnabledStatuses,
                             devotionReminderSummaries = state.devotionalReminderSummaries,
                             onDevotionReminderSwitch = viewModel::onDevotionReminderSwitch
                         )
@@ -249,10 +247,7 @@ private fun PrayerTimesSettings(
 }
 
 @Composable
-private fun AthanSettings(
-    athanAudioId: Int,
-    onAthanAudioIdChange: (Int) -> Unit
-) {
+private fun AthanSettings(athanAudioId: Int, onAthanAudioIdChange: (Int) -> Unit) {
     Column(
         Modifier.padding(bottom = 10.dp)
     ) {

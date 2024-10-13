@@ -105,7 +105,7 @@ class SettingsViewModel @Inject constructor(
 
     fun onDevotionReminderSwitch(devotion: Reminder.Devotional, isEnabled: Boolean) {
         _uiState.update { it.copy(
-            isTimePickerShown = true
+            isTimePickerShown = isEnabled
         )}
 
         if (isEnabled) timePickerReminder = devotion
