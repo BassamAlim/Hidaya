@@ -40,7 +40,9 @@ object LangUtils {
 
         return temp
             .replace(Regex("am"), "ص")
+            .replace(Regex("AM"), "ص")
             .replace(Regex("pm"), "م")
+            .replace(Regex("PM"), "م")
     }
 
     private fun arToEn(arabic: String): String {

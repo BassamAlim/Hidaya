@@ -170,10 +170,22 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun formatTime(timeOfDay: TimeOfDay): String {
-        val formatted = "${timeOfDay.hour}:${String.format("%02d", timeOfDay.minute)}"
+        val string = when (_uiState.value.timeFormat) {
+            TimeFormat.TWENTY_FOUR -> {
+                val hour = timeOfDay.hour
+                val minute = String.format("%02d", timeOfDay.minute)
+                "$hour:$minute"
+            }
+            TimeFormat.TWELVE -> {
+                val hour = if (timeOfDay.hour == 0) 12 else timeOfDay.hour % 12
+                val minute = String.format("%02d", timeOfDay.minute)
+                val amPm = if (timeOfDay.hour >= 12) "pm" else "am"
+                "$hour:$minute $amPm"
+            }
+        }
         return translateNums(
             numeralsLanguage = _uiState.value.numeralsLanguage,
-            string = formatted,
+            string = string,
             isTime = true
         )
     }
