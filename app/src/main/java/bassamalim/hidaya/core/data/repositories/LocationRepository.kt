@@ -13,6 +13,7 @@ import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.models.LocationIds
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -27,43 +28,35 @@ class LocationRepository @Inject constructor(
     fun getLocation() = userPreferencesDataSource.getLocation()
 
     suspend fun setLocation(location: android.location.Location) {
-        val closestCity = getClosestCity(
-            Coordinates(
-                latitude = location.latitude,
-                longitude = location.longitude
+        scope.launch {
+            val closestCity = getClosestCity(
+                Coordinates(latitude = location.latitude, longitude = location.longitude)
             )
-        )
-        userPreferencesDataSource.updateLocation(
-            location = Location(
-                type = LocationType.AUTO,
-                coordinates = Coordinates(
-                    latitude = location.latitude,
-                    longitude = location.longitude
-                ),
-                ids = LocationIds(
-                    countryId = closestCity.countryId,
-                    cityId = closestCity.id
+            userPreferencesDataSource.updateLocation(
+                location = Location(
+                    type = LocationType.AUTO,
+                    coordinates = Coordinates(
+                        latitude = location.latitude,
+                        longitude = location.longitude
+                    ),
+                    ids = LocationIds(countryId = closestCity.countryId, cityId = closestCity.id)
                 )
             )
-        )
+        }
     }
 
     suspend fun setLocation(countryId: Int, cityId: Int) {
-        val city = getCity(cityId)
+        scope.launch {
+            val city = getCity(cityId)
 
-        userPreferencesDataSource.updateLocation(
-            location = Location(
-                type = LocationType.MANUAL,
-                coordinates = Coordinates(
-                    latitude = city.latitude,
-                    longitude = city.longitude
-                ),
-                ids = LocationIds(
-                    countryId = countryId,
-                    cityId = cityId
+            userPreferencesDataSource.updateLocation(
+                location = Location(
+                    type = LocationType.MANUAL,
+                    coordinates = Coordinates(latitude = city.latitude, longitude = city.longitude),
+                    ids = LocationIds(countryId = countryId, cityId = cityId)
                 )
             )
-        )
+        }
     }
 
     suspend fun getTimeZone(cityId: Int) = withContext(dispatcher) {
@@ -72,16 +65,18 @@ class LocationRepository @Inject constructor(
 
     suspend fun getCountries(language: Language) = withContext(dispatcher) {
         countriesDao.getAll().sortedBy { country: Country ->
-            if (language == Language.ENGLISH) country.nameEn
-            else country.nameAr
+            when (language) {
+                Language.ARABIC -> country.nameAr
+                Language.ENGLISH -> country.nameEn
+            }
         }
     }
 
     suspend fun getCities(countryId: Int, language: Language) = withContext(dispatcher) {
-        if (language == Language.ENGLISH)
-            citiesDao.getTopEn(countryId, "").toList()
-        else
-            citiesDao.getTopAr(countryId, "").toList()
+        when (language) {
+            Language.ARABIC -> citiesDao.getTopAr(countryId, "").toList()
+            Language.ENGLISH -> citiesDao.getTopEn(countryId, "").toList()
+        }
     }
 
     suspend fun getCity(cityId: Int) = withContext(dispatcher) {
@@ -93,13 +88,17 @@ class LocationRepository @Inject constructor(
     }
 
     suspend fun getCountryName(countryId: Int, language: Language) = withContext(dispatcher) {
-        if (language == Language.ENGLISH) countriesDao.getNameEn(countryId)
-        else countriesDao.getNameAr(countryId)
+        when (language) {
+            Language.ARABIC -> countriesDao.getNameAr(countryId)
+            Language.ENGLISH -> countriesDao.getNameEn(countryId)
+        }
     }
 
     suspend fun getCityName(cityId: Int, language: Language) = withContext(dispatcher) {
-        if (language == Language.ENGLISH) citiesDao.getCity(cityId).nameEn
-        else citiesDao.getCity(cityId).nameAr
+        when (language) {
+            Language.ARABIC -> citiesDao.getCity(cityId).nameAr
+            Language.ENGLISH -> citiesDao.getCity(cityId).nameEn
+        }
     }
 
 }

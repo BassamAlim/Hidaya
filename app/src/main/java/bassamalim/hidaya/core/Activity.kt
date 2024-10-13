@@ -221,7 +221,10 @@ class Activity : ComponentActivity() {
 
     private fun launchApp() {
         setContent {
-            val themeState by theme.collectAsState(initial = Theme.DARK, lifecycleScope.coroutineContext)
+            val themeState by theme.collectAsState(
+                initial = Theme.DARK,
+                context = lifecycleScope.coroutineContext
+            )
 
             ActivityUtils.onActivityCreateSetLocale(
                 context = LocalContext.current,
@@ -241,9 +244,9 @@ class Activity : ComponentActivity() {
         }
     }
 
-    private fun getDirection(language: Language): LayoutDirection {
-        return if (language == Language.ENGLISH) LayoutDirection.Ltr
-        else LayoutDirection.Rtl
+    private fun getDirection(language: Language) = when (language) {
+        Language.ARABIC -> LayoutDirection.Rtl
+        Language.ENGLISH -> LayoutDirection.Ltr
     }
 
     private fun postLaunch() {

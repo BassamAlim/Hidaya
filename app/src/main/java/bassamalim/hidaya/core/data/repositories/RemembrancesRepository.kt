@@ -4,6 +4,7 @@ import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.Remembran
 import bassamalim.hidaya.core.data.dataSources.room.daos.RemembranceCategoriesDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.RemembrancePassagesDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.RemembrancesDao
+import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.di.DefaultDispatcher
 import bassamalim.hidaya.core.enums.Language
 import kotlinx.collections.immutable.toPersistentMap
@@ -20,12 +21,14 @@ class RemembrancesRepository @Inject constructor(
     private val remembrancesDao: RemembrancesDao,
     private val remembrancePassagesDao: RemembrancePassagesDao,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
-    private val scope: CoroutineScope
+    @ApplicationScope private val scope: CoroutineScope
 ) {
 
     suspend fun getRemembranceCategoryName(id: Int, language: Language) = withContext(dispatcher) {
-        if (language == Language.ARABIC) remembranceCategoriesDao.getNameAr(id)
-        else remembranceCategoriesDao.getNameEn(id)
+        when (language) {
+            Language.ARABIC -> remembranceCategoriesDao.getNameAr(id)
+            Language.ENGLISH -> remembranceCategoriesDao.getNameEn(id)
+        }
     }
 
     fun observeAllRemembrances() = remembrancesDao.observeAll()
@@ -50,9 +53,11 @@ class RemembrancesRepository @Inject constructor(
     }
 
     suspend fun setFavorites(favorites: Map<Int, Boolean>) {
-        withContext(dispatcher) {
-            favorites.forEach { (id, value) ->
-                remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
+        scope.launch {
+            withContext(dispatcher) {
+                favorites.forEach { (id, value) ->
+                    remembrancesDao.setFavoriteStatus(id = id, value = if (value) 1 else 0)
+                }
             }
         }
     }
@@ -64,8 +69,10 @@ class RemembrancesRepository @Inject constructor(
     }
 
     suspend fun getRemembranceName(id: Int, language: Language) = withContext(dispatcher) {
-        if (language == Language.ARABIC) remembrancesDao.getNameAr(id)
-        else remembrancesDao.getNameEn(id)
+        when (language) {
+            Language.ARABIC -> remembrancesDao.getNameAr(id)
+            Language.ENGLISH -> remembrancesDao.getNameEn(id)
+        }
     }
 
     suspend fun getRemembrancePassages(remembranceId: Int) = withContext(dispatcher) {

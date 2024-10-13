@@ -21,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
@@ -151,11 +152,13 @@ class BooksRepository @Inject constructor(
     }
 
     suspend fun setChapterFavorite(bookId: Int, chapterNum: Int, newValue: Boolean) {
-        booksPreferencesDataSource.updateChapterFavorites(
-            booksPreferencesDataSource.getChapterFavorites().first().mutate { oldMap ->
-                oldMap[bookId] = oldMap[bookId]!!.mutate { it[chapterNum] = newValue }
-            }
-        )
+        scope.launch {
+            booksPreferencesDataSource.updateChapterFavorites(
+                booksPreferencesDataSource.getChapterFavorites().first().mutate { oldMap ->
+                    oldMap[bookId] = oldMap[bookId]!!.mutate { it[chapterNum] = newValue }
+                }
+            )
+        }
     }
 
     fun getTextSize() = booksPreferencesDataSource.getTextSize()
@@ -189,7 +192,9 @@ class BooksRepository @Inject constructor(
     fun getShouldShowTutorial() = booksPreferencesDataSource.getShouldShowTutorial()
 
     suspend fun setShouldShowTutorial(shouldShowTutorial: Boolean) {
-        booksPreferencesDataSource.updateShouldShowTutorial(shouldShowTutorial)
+        scope.launch {
+            booksPreferencesDataSource.updateShouldShowTutorial(shouldShowTutorial)
+        }
     }
 
     fun download(bookId: Int): FileDownloadTask {

@@ -36,8 +36,10 @@ object ActivityUtils {
 
     fun onActivityCreateSetLocale(context: Context, language: Language) {
         val locale = Locale(
-            if (language == Language.ENGLISH) "en"
-            else "ar"
+            when (language) {
+                Language.ARABIC -> "ar"
+                Language.ENGLISH -> "en"
+            }
         )
         Locale.setDefault(locale)
         val resources = context.resources

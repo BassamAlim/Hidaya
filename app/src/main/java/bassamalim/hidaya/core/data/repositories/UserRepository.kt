@@ -2,18 +2,22 @@ package bassamalim.hidaya.core.data.repositories
 
 import android.util.Log
 import bassamalim.hidaya.core.data.dataSources.preferences.dataSources.UserPreferencesDataSource
+import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.other.Global
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
     private val userPreferencesDataSource: UserPreferencesDataSource,
     private val firestore: FirebaseFirestore,
+    @ApplicationScope private val scope: CoroutineScope
 ) {
 
     fun getLocalRecord() = userPreferencesDataSource.getUserRecord()
@@ -23,19 +27,25 @@ class UserRepository @Inject constructor(
     fun getRecitationsRecord() = getLocalRecord().map { it.recitationsTime }
 
     suspend fun setLocalRecord(userRecord: UserRecord) {
-        userPreferencesDataSource.updateUserRecord(userRecord)
+        scope.launch {
+            userPreferencesDataSource.updateUserRecord(userRecord)
+        }
     }
 
     suspend fun setQuranRecord(quranPages: Int) {
-        userPreferencesDataSource.updateUserRecord(
-            getLocalRecord().first().copy(quranPages = quranPages)
-        )
+        scope.launch {
+            userPreferencesDataSource.updateUserRecord(
+                getLocalRecord().first().copy(quranPages = quranPages)
+            )
+        }
     }
 
     suspend fun setRecitationsRecord(recitationsTime: Long) {
-        userPreferencesDataSource.updateUserRecord(
-            getLocalRecord().first().copy(recitationsTime = recitationsTime)
-        )
+        scope.launch {
+            userPreferencesDataSource.updateUserRecord(
+                getLocalRecord().first().copy(recitationsTime = recitationsTime)
+            )
+        }
     }
 
     suspend fun getRemoteRecord(deviceId: String): Response<UserRecord> {
@@ -66,22 +76,24 @@ class UserRepository @Inject constructor(
     }
 
     suspend fun setRemoteRecord(deviceId: String, record: UserRecord) {
-        firestore.collection("Leaderboard")
-            .document(deviceId)
-            .set(
-                mapOf(
-                    "user_id" to record.userId,
-                    "reading_record" to record.quranPages,
-                    "listening_record" to record.recitationsTime
+        scope.launch {
+            firestore.collection("Leaderboard")
+                .document(deviceId)
+                .set(
+                    mapOf(
+                        "user_id" to record.userId,
+                        "reading_record" to record.quranPages,
+                        "listening_record" to record.recitationsTime
+                    )
                 )
-            )
-            .addOnSuccessListener {
-                Log.i(Global.TAG, "DocumentSnapshot successfully updated!")
-            }
-            .addOnFailureListener { e ->
-                Log.e(Global.TAG, "Error getting documents: $e")
-            }
-            .await()
+                .addOnSuccessListener {
+                    Log.i(Global.TAG, "DocumentSnapshot successfully updated!")
+                }
+                .addOnFailureListener { e ->
+                    Log.e(Global.TAG, "Error getting documents: $e")
+                }
+                .await()
+        }
     }
 
     suspend fun registerDevice(deviceId: String): UserRecord? {

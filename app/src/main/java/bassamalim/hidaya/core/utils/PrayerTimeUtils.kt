@@ -89,7 +89,7 @@ object PrayerTimeUtils {
         return LangUtils.translateNums(
             numeralsLanguage = numeralsLanguage,
             string = formattedTime,
-            timeFormat = true
+            isTime = true
         )
     }
 

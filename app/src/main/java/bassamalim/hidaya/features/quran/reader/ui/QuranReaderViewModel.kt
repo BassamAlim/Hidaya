@@ -80,9 +80,7 @@ class QuranReaderViewModel @Inject constructor(
                 string = pageNum.toString(),
                 numeralsLanguage = numeralsLanguage
             ),
-            viewType =
-                if (language == Language.ENGLISH) QuranViewType.LIST
-                else viewType,
+            viewType = if (language == Language.ARABIC) viewType else QuranViewType.LIST,
             textSize = textSize,
             isBookmarked = (pageBookmark?.pageNum ?: -1) == pageNum,
         )

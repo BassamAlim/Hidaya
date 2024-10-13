@@ -10,19 +10,23 @@ object LangUtils {
     fun translateNums(
         string: String,
         numeralsLanguage: Language,
-        timeFormat: Boolean = false
+        isTime: Boolean = false
     ) : String {
         if (string.isEmpty()) return string
 
-        val str = if (timeFormat) cleanup(string, numeralsLanguage) else string
+        val str = if (isTime) cleanup(string, numeralsLanguage) else string
 
         return if (arNums.contains(string[0])) {
-            if (numeralsLanguage == Language.ARABIC) str
-            else arToEn(str)
+            when (numeralsLanguage) {
+                Language.ARABIC -> str
+                Language.ENGLISH -> arToEn(str)
+            }
         }
         else {
-            if (numeralsLanguage == Language.ENGLISH) str
-            else enToAr(str)
+            when (numeralsLanguage) {
+                Language.ARABIC -> enToAr(str)
+                Language.ENGLISH -> str
+            }
         }
     }
 
@@ -55,23 +59,25 @@ object LangUtils {
     private fun cleanup(string: String, language: Language) : String {
         var str = string
 
-        if (language == Language.ENGLISH) {
-            if (str.startsWith('٠')) {
-                str = str.replaceFirst("٠", "")
-                if (str.startsWith('٠')) {
-                    str = str.replaceFirst("٠:", "")
-                    if (str.startsWith('٠') && !str.startsWith("٠٠"))
-                        str = str.replaceFirst("٠", "")
+        when (language) {
+            Language.ARABIC -> {
+                if (str.startsWith('0')) {
+                    str = str.replaceFirst("0", "")
+                    if (str.startsWith('0')) {
+                        str = str.replaceFirst("0:", "")
+                        if (str.startsWith('0') && !str.startsWith("00"))
+                            str = str.replaceFirst("0", "")
+                    }
                 }
             }
-        }
-        else {
-            if (str.startsWith('0')) {
-                str = str.replaceFirst("0", "")
-                if (str.startsWith('0')) {
-                    str = str.replaceFirst("0:", "")
-                    if (str.startsWith('0') && !str.startsWith("00"))
-                        str = str.replaceFirst("0", "")
+            Language.ENGLISH -> {
+                if (str.startsWith('٠')) {
+                    str = str.replaceFirst("٠", "")
+                    if (str.startsWith('٠')) {
+                        str = str.replaceFirst("٠:", "")
+                        if (str.startsWith('٠') && !str.startsWith("٠٠"))
+                            str = str.replaceFirst("٠", "")
+                    }
                 }
             }
         }

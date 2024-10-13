@@ -174,7 +174,7 @@ class SettingsViewModel @Inject constructor(
         return translateNums(
             numeralsLanguage = _uiState.value.numeralsLanguage,
             string = formatted,
-            timeFormat = true
+            isTime = true
         )
     }
 

@@ -165,7 +165,7 @@ class HomeViewModel @Inject constructor(
                     remaining = translateNums(
                         string = hms,
                         numeralsLanguage = it.numeralsLanguage,
-                        timeFormat = true
+                        isTime = true
                     ),
                     timeFromPreviousPrayer =
                         if (upcomingPrayer == Prayer.FAJR) -1L

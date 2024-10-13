@@ -53,14 +53,16 @@ object RepositoryModule {
 
     @Provides @Singleton
     fun provideAppSettingsRepository(
-        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource
-    ) = AppSettingsRepository(appSettingsPreferencesDataSource)
+        appSettingsPreferencesDataSource: AppSettingsPreferencesDataSource,
+        @ApplicationScope scope: CoroutineScope
+    ) = AppSettingsRepository(appSettingsPreferencesDataSource, scope)
 
     @Provides @Singleton
     fun provideAppStateRepository(
         resources: Resources,
-        appStatePreferencesDataSource: AppStatePreferencesDataSource
-    ) = AppStateRepository(resources, appStatePreferencesDataSource)
+        appStatePreferencesDataSource: AppStatePreferencesDataSource,
+        @ApplicationScope scope: CoroutineScope
+    ) = AppStateRepository(resources, appStatePreferencesDataSource, scope)
 
     @Provides @Singleton
     fun provideBooksRepository(
@@ -97,22 +99,23 @@ object RepositoryModule {
 
     @Provides @Singleton
     fun provideNotificationsRepository(
-        notificationsPreferencesDataSource: NotificationsPreferencesDataSource
-    ) = NotificationsRepository(notificationsPreferencesDataSource)
+        notificationsPreferencesDataSource: NotificationsPreferencesDataSource,
+        @ApplicationScope scope: CoroutineScope
+    ) = NotificationsRepository(notificationsPreferencesDataSource, scope)
 
     @Provides @Singleton
     fun providePrayersRepository(
         resources: Resources,
-        prayersPreferencesDataSource: PrayersPreferencesDataSource
-    ) = PrayersRepository(resources, prayersPreferencesDataSource)
+        prayersPreferencesDataSource: PrayersPreferencesDataSource,
+        @ApplicationScope scope: CoroutineScope
+    ) = PrayersRepository(resources, prayersPreferencesDataSource, scope)
 
     @Provides @Singleton
     fun provideQuizRepository(
         quizQuestionsDao: QuizQuestionsDao,
         quizAnswersDao: QuizAnswersDao,
-        @DefaultDispatcher dispatcher: CoroutineDispatcher,
-        @ApplicationScope scope: CoroutineScope
-    ) = QuizRepository(quizQuestionsDao, quizAnswersDao, dispatcher, scope)
+        @DefaultDispatcher dispatcher: CoroutineDispatcher
+    ) = QuizRepository(quizQuestionsDao, quizAnswersDao, dispatcher)
 
     @Provides @Singleton
     fun provideQuranRepository(
@@ -166,7 +169,8 @@ object RepositoryModule {
     @Provides @Singleton
     fun provideUserRepository(
         userPreferencesDataSource: UserPreferencesDataSource,
-        firestore: FirebaseFirestore
-    ) = UserRepository(userPreferencesDataSource, firestore)
+        firestore: FirebaseFirestore,
+        @ApplicationScope scope: CoroutineScope
+    ) = UserRepository(userPreferencesDataSource, firestore, scope)
 
 }

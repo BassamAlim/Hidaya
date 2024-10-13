@@ -27,6 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Locale
@@ -72,10 +73,7 @@ class RecitationsRepository @Inject constructor(
     }
 
     fun deleteSura(reciterId: Int, narrationId: Int, suraId: Int) {
-        FileUtils.deleteFile(
-            context = app,
-            path = "$prefix$reciterId/$narrationId/$suraId.mp3"
-        )
+        FileUtils.deleteFile(context = app, path = "$prefix$reciterId/$narrationId/$suraId.mp3")
     }
 
     fun observeAllSuraReciters(language: Language) =
@@ -125,18 +123,19 @@ class RecitationsRepository @Inject constructor(
     }
 
     suspend fun setReciterFavorite(reciterId: Int, isFavorite: Boolean) {
-        withContext(dispatcher) {
-            suraRecitersDao.setFavoriteStatus(
-                id = reciterId,
-                value = if (isFavorite) 1 else 0
-            )
+        scope.launch {
+            withContext(dispatcher) {
+                suraRecitersDao.setFavoriteStatus(id = reciterId, value = if (isFavorite) 1 else 0)
+                updateReciterFavoritesBackup(getReciterFavoriteStatuses().first())
+            }
         }
-        updateReciterFavoritesBackup(getReciterFavoriteStatuses().first())
     }
 
     suspend fun setReciterFavorites(favorites: Map<Int, Boolean>) {
-        favorites.map { (id, isFavorite) ->
-            setReciterFavorite(id, isFavorite)
+        scope.launch {
+            favorites.map { (id, isFavorite) ->
+                setReciterFavorite(id, isFavorite)
+            }
         }
     }
 
@@ -265,31 +264,41 @@ class RecitationsRepository @Inject constructor(
     fun getLastPlayedMedia() = recitationsPreferencesDataSource.getLastPlayedMedia()
 
     suspend fun setLastPlayedMedia(lastPlayed: LastPlayedMedia) {
-        recitationsPreferencesDataSource.updateLastPlayedMedia(lastPlayed)
+        scope.launch {
+            recitationsPreferencesDataSource.updateLastPlayedMedia(lastPlayed)
+        }
     }
 
     fun getVerseReciterId() = recitationsPreferencesDataSource.getVerseReciterId()
 
     suspend fun setVerseReciterId(verseReciterId: Int) {
-        recitationsPreferencesDataSource.updateVerseReciterId(verseReciterId)
+        scope.launch {
+            recitationsPreferencesDataSource.updateVerseReciterId(verseReciterId)
+        }
     }
 
     fun getVerseRepeatMode() = recitationsPreferencesDataSource.getVerseRepeatMode()
 
     suspend fun setVerseRepeatMode(verseRepeatMode: VerseRepeatMode) {
-        recitationsPreferencesDataSource.updateVerseRepeatMode(verseRepeatMode)
+        scope.launch {
+            recitationsPreferencesDataSource.updateVerseRepeatMode(verseRepeatMode)
+        }
     }
 
     fun getShouldStopOnSuraEnd() = recitationsPreferencesDataSource.getShouldStopOnSuraEnd()
 
     suspend fun setShouldStopOnSuraEnd(shouldStopOnSuraEnd: Boolean) {
-        recitationsPreferencesDataSource.updateShouldStopOnSuraEnd(shouldStopOnSuraEnd)
+        scope.launch {
+            recitationsPreferencesDataSource.updateShouldStopOnSuraEnd(shouldStopOnSuraEnd)
+        }
     }
 
     fun getShouldStopOnPageEnd() = recitationsPreferencesDataSource.getShouldStopOnPageEnd()
 
     suspend fun setShouldStopOnPageEnd(shouldStopOnPageEnd: Boolean) {
-        recitationsPreferencesDataSource.updateShouldStopOnPageEnd(shouldStopOnPageEnd)
+        scope.launch {
+            recitationsPreferencesDataSource.updateShouldStopOnPageEnd(shouldStopOnPageEnd)
+        }
     }
 
     suspend fun getVerseReciterNames() = withContext(dispatcher) {

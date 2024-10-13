@@ -47,11 +47,10 @@ class AnalogClock(
         setupPaint()
 
         this.numeralsLanguage = numeralsLanguage
-        numerals =
-            if (numeralsLanguage == Language.ENGLISH)
-                context.resources.getStringArray(R.array.numerals_en)
-            else
-                context.resources.getStringArray(R.array.numerals)
+        numerals = when (numeralsLanguage) {
+            Language.ARABIC -> context.resources.getStringArray(R.array.numerals)
+            Language.ENGLISH -> context.resources.getStringArray(R.array.numerals_en)
+        }
     }
 
     private fun setupPaint() {
@@ -120,9 +119,10 @@ class AnalogClock(
         minuteHandR = radius * 0.7F
         secondHandR = radius * 0.7F
 
-        numeralsPaint.textSize =
-            if (numeralsLanguage == Language.ENGLISH) size * 0.065F
-            else size * 0.08F
+        numeralsPaint.textSize = when (numeralsLanguage) {
+            Language.ARABIC -> size * 0.08F
+            Language.ENGLISH -> size * 0.065F
+        }
     }
 
     override fun onDraw(canvas: Canvas) {

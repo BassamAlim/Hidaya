@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -44,8 +45,10 @@ class QuranRepository @Inject constructor(
     }
 
     suspend fun getDecoratedSuraNames(language: Language) = withContext(dispatcher) {
-        if (language == Language.ENGLISH) surasDao.getDecoratedNamesEn()
-        else surasDao.getDecoratedNamesAr()
+        when (language) {
+            Language.ARABIC -> surasDao.getDecoratedNamesAr()
+            Language.ENGLISH -> surasDao.getDecoratedNamesEn()
+        }
     }
 
     suspend fun getPlainSuraNames() = withContext(dispatcher) {
@@ -62,20 +65,24 @@ class QuranRepository @Inject constructor(
     }
 
     suspend fun setSuraFavoriteStatus(suraId: Int, isFavorite: Boolean) {
-        withContext(dispatcher) {
-            surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
+        scope.launch {
+            withContext(dispatcher) {
+                surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
+            }
+            setSuraFavoritesBackup(
+                surasDao.observeIsFavorites().first().mapIndexed { index, value ->
+                    index + 1 to (value == 1)
+                }.toMap()
+            )
         }
-        setSuraFavoritesBackup(
-            surasDao.observeIsFavorites().first().mapIndexed { index, value ->
-                index + 1 to (value == 1)
-            }.toMap()
-        )
     }
 
     suspend fun setSuraFavorites(map: Map<Int, Boolean>) {
-        withContext(dispatcher) {
-            map.forEach { (suraId, isFavorite) ->
-                surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
+        scope.launch {
+            withContext(dispatcher) {
+                map.forEach { (suraId, isFavorite) ->
+                    surasDao.setFavoriteStatus(suraId, if (isFavorite) 1 else 0)
+                }
             }
         }
     }
@@ -113,7 +120,9 @@ class QuranRepository @Inject constructor(
     fun getPageBookmark() = quranPreferencesDataSource.getPageBookmark()
 
     suspend fun setPageBookmark(bookmark: QuranPageBookmark?) {
-        quranPreferencesDataSource.updatePageBookmark(bookmark)
+        scope.launch {
+            quranPreferencesDataSource.updatePageBookmark(bookmark)
+        }
     }
 
     fun getSearchMaxMatches() = quranPreferencesDataSource.getSearchMaxMatches()
@@ -125,25 +134,33 @@ class QuranRepository @Inject constructor(
     fun getShouldShowMenuTutorial() = quranPreferencesDataSource.getShouldShowMenuTutorial()
 
     suspend fun setShouldShowMenuTutorial(shouldShowMenuTutorial: Boolean) {
-        quranPreferencesDataSource.updateShouldShowMenuTutorial(shouldShowMenuTutorial)
+        scope.launch{
+            quranPreferencesDataSource.updateShouldShowMenuTutorial(shouldShowMenuTutorial)
+        }
     }
 
     fun getShouldShowReaderTutorial() = quranPreferencesDataSource.getShouldShowReaderTutorial()
 
     suspend fun setShouldShowReaderTutorial(shouldShowReaderTutorial: Boolean) {
-        quranPreferencesDataSource.updateShouldShowReaderTutorial(shouldShowReaderTutorial)
+        scope.launch {
+            quranPreferencesDataSource.updateShouldShowReaderTutorial(shouldShowReaderTutorial)
+        }
     }
 
     fun getWerdPageNum() = quranPreferencesDataSource.getWerdPageNum()
 
     suspend fun setWerdPageNum(werdPageNum: Int) {
-        quranPreferencesDataSource.updateWerdPageNum(werdPageNum)
+        scope.launch {
+            quranPreferencesDataSource.updateWerdPageNum(werdPageNum)
+        }
     }
 
     fun isWerdDone() = quranPreferencesDataSource.getWerdDone()
 
     suspend fun setWerdDone(isWerdDone: Boolean) {
-        quranPreferencesDataSource.updateWerdDone(isWerdDone)
+        scope.launch {
+            quranPreferencesDataSource.updateWerdDone(isWerdDone)
+        }
     }
 
 }
