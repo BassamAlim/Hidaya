@@ -122,14 +122,14 @@ class AthanService : Service() {
             Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY) {
             resources.getString(R.string.jumuah_title)
         }
-        else resources.getStringArray(R.array.prayer_titles)[reminder.id+1]
+        else resources.getStringArray(R.array.prayer_titles)[reminder.id-1]
     }
 
     private fun getSubtitle(reminder: Reminder): String {
         return if (reminder == Reminder.Prayer.Dhuhr &&
             Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
             resources.getString(R.string.jumuah_subtitle)
-        else resources.getStringArray(R.array.prayer_subtitles)[reminder.id+1]
+        else resources.getStringArray(R.array.prayer_subtitles)[reminder.id-1]
     }
 
     private fun getStopIntent(): PendingIntent {

@@ -185,7 +185,7 @@ class NotificationReceiver : BroadcastReceiver() {
             else
                 ctx.resources.getString(R.string.jumuah_title)
         }
-        else ctx.resources.getStringArray(R.array.prayer_titles)[reminder.id+1]
+        else ctx.resources.getStringArray(R.array.prayer_titles)[reminder.id-1]
     }
 
     private suspend fun getSubtitle(reminder: Reminder): String {
@@ -199,7 +199,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     if (reminder == Reminder.PrayerExtra.Dhuhr &&
                         Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
                         ctx.resources.getString(R.string.jumuah)
-                    else ctx.resources.getStringArray(R.array.prayer_names)[reminder.id+1],
+                    else ctx.resources.getStringArray(R.array.prayer_names)[reminder.id-1],
                 abs(offset) // to remove - sign
             )
         }
@@ -207,7 +207,7 @@ class NotificationReceiver : BroadcastReceiver() {
             if (reminder == Reminder.Prayer.Dhuhr &&
                 Calendar.getInstance()[Calendar.DAY_OF_WEEK] == Calendar.FRIDAY)
                 ctx.resources.getString(R.string.jumuah_subtitle)
-            else ctx.resources.getStringArray(R.array.prayer_subtitles)[reminder.id+1]
+            else ctx.resources.getStringArray(R.array.prayer_subtitles)[reminder.id-1]
         }
     }
 
@@ -215,12 +215,8 @@ class NotificationReceiver : BroadcastReceiver() {
         val intent = Intent(ctx, Activity::class.java)
 
         val route = when (reminder) {
-            Reminder.Devotional.MorningRemembrances -> {
-                Screen.RemembranceReader(0.toString()).route
-            }
-            Reminder.Devotional.EveningRemembrances -> {
-                Screen.RemembranceReader(1.toString()).route
-            }
+            Reminder.Devotional.MorningRemembrances -> Screen.RemembranceReader(0.toString()).route
+            Reminder.Devotional.EveningRemembrances -> Screen.RemembranceReader(1.toString()).route
             Reminder.Devotional.DailyWerd -> {
                 Screen.QuranReader(
                     targetType = QuranTarget.PAGE.name,
@@ -240,7 +236,9 @@ class NotificationReceiver : BroadcastReceiver() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
         return PendingIntent.getActivity(
-            ctx, reminder.id, intent,
+            ctx,
+            reminder.id,
+            intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
