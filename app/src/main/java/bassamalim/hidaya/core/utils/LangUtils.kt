@@ -22,10 +22,18 @@ object LangUtils {
         }
     }
 
-    fun translateTimeNums(string: String, language: Language, numeralsLanguage: Language) : String {
+    fun translateTimeNums(
+        string: String,
+        language: Language,
+        numeralsLanguage: Language,
+        removeLeadingZeros: Boolean = true
+    ) : String {
         if (string.isEmpty()) return string
 
-        var str = cleanup(string, numeralsLanguage)
+        var str = string
+
+        if (removeLeadingZeros)
+            str = removeLeadingZeros(string)
 
         str = when (numeralsLanguage) {
             Language.ARABIC -> {
@@ -80,32 +88,20 @@ object LangUtils {
             .replace(Regex("م"), "pm")
     }
     
-    private fun cleanup(string: String, language: Language) : String {
-        var str = string
+    private fun removeLeadingZeros(string: String) : String {
+        val zeros = listOf("٠", "0")
 
-        when (language) {
-            Language.ARABIC -> {
-                if (str.startsWith('0')) {
-                    str = str.replaceFirst("0", "")
-                    if (str.startsWith('0')) {
-                        str = str.replaceFirst("0:", "")
-                        if (str.startsWith('0') && !str.startsWith("00"))
-                            str = str.replaceFirst("0", "")
-                    }
-                }
-            }
-            Language.ENGLISH -> {
-                if (str.startsWith('٠')) {
-                    str = str.replaceFirst("٠", "")
-                    if (str.startsWith('٠')) {
-                        str = str.replaceFirst("٠:", "")
-                        if (str.startsWith('٠') && !str.startsWith("٠٠"))
-                            str = str.replaceFirst("٠", "")
-                    }
+        var str = string
+        for (zero in zeros) {
+            if (str.startsWith(zero)) {
+                str = str.replaceFirst(zero, "")
+                if (str.startsWith(zero)) {
+                    str = str.replaceFirst("$zero:", "")
+                    if (str.startsWith(zero) && !str.startsWith("$zero$zero"))
+                        str = str.replaceFirst(zero, "")
                 }
             }
         }
-        
         return str
     }
 

@@ -197,7 +197,8 @@ class SettingsViewModel @Inject constructor(
         return translateTimeNums(
             language = language,
             numeralsLanguage = numeralsLanguage,
-            string = string
+            string = string,
+            removeLeadingZeros = false
         )
     }
 
