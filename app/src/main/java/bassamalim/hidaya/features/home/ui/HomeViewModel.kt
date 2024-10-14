@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
-import bassamalim.hidaya.core.models.Location
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -39,7 +39,6 @@ class HomeViewModel @Inject constructor(
     private var timer: CountDownTimer? = null
     private var upcomingPrayer: Prayer? = null
     private var tomorrow = false
-    private var counterCounter = 0
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = combine(
@@ -49,17 +48,25 @@ class HomeViewModel @Inject constructor(
         domain.getLocation(),
         domain.getWerdPage()
     ) { state, language, numeralsLanguage, location, werdPage ->
+        if (state.isLoading) return@combine state
+
+        val upcomingPrayer = getUpcomingPrayer()
         if (location != null && timer == null)
-            setupPrayersCard(location)
+            count()
 
         state.copy(
+            upcomingPrayerName = prayerNames[upcomingPrayer]!!,
+            upcomingPrayerTime = translateNums(
+                string = if (tomorrow) formattedTomorrowFajr
+                else formattedTimes[upcomingPrayer]!!,
+                numeralsLanguage = numeralsLanguage
+            ),
             werdPage = translateNums(
                 string = werdPage.toString(),
                 numeralsLanguage = numeralsLanguage
             ),
             language = language,
             numeralsLanguage = numeralsLanguage,
-            location = location
         )
     }.combine(
         domain.isWerdDone()
@@ -75,6 +82,7 @@ class HomeViewModel @Inject constructor(
             ),
             recitationsRecord = formatRecitationsTime(
                 millis = localRecord.recitationsTime,
+                language = state.language,
                 numeralsLanguage = state.numeralsLanguage
             )
         )
@@ -88,17 +96,25 @@ class HomeViewModel @Inject constructor(
 
     private fun initializeData() {
         viewModelScope.launch {
-            val isSuccess = domain.syncRecords()
-            if (isSuccess) {
-                _uiState.update { it.copy(
-                    isLeaderboardEnabled = true
-                )}
+            val location = domain.getLocation().first()
+            if (location != null) {
+                times = domain.getPrayerTimeMap(location)
+                formattedTimes = domain.getStrPrayerTimeMap(location)
+                tomorrowFajr = domain.getTomorrowFajr(location)
+                formattedTomorrowFajr = domain.getStrTomorrowFajr(location)
             }
+
+            val leaderboardConnected = domain.syncRecords()
+
+            _uiState.update { it.copy(
+                isLoading = false,
+                isLeaderboardEnabled = leaderboardConnected
+            )}
         }
     }
 
     fun onStart() {
-
+        timer?.start()
     }
 
     fun onStop() {
@@ -118,18 +134,7 @@ class HomeViewModel @Inject constructor(
         navigator.navigate(Screen.Leaderboard)
     }
 
-    private fun setupPrayersCard(location: Location) {
-        viewModelScope.launch {
-            times = domain.getPrayerTimeMap(location)
-            formattedTimes = domain.getStrPrayerTimeMap(location)
-            tomorrowFajr = domain.getTomorrowFajr(location)
-            formattedTomorrowFajr = domain.getStrTomorrowFajr(location)
-
-            setupUpcomingPrayer(location)
-        }
-    }
-
-    private fun setupUpcomingPrayer(location: Location) {
+    private fun getUpcomingPrayer(): Prayer? {
         upcomingPrayer = domain.getUpcomingPrayer(times)
 
         tomorrow = false
@@ -138,21 +143,13 @@ class HomeViewModel @Inject constructor(
             upcomingPrayer = Prayer.FAJR
         }
 
+        return upcomingPrayer
+    }
+
+    private fun count() {
         val till =
             if (tomorrow) tomorrowFajr.timeInMillis
             else times[upcomingPrayer]!!.timeInMillis
-
-        _uiState.update { it.copy(
-            upcomingPrayerName = prayerNames[upcomingPrayer]!!,
-            upcomingPrayerTime =
-                if (tomorrow) formattedTomorrowFajr
-                else formattedTimes[upcomingPrayer]!!
-        )}
-
-        count(till, location)
-    }
-
-    private fun count(till: Long, location: Location) {
         timer = object : CountDownTimer(
             till - System.currentTimeMillis(), 1000
         ) {
@@ -166,39 +163,43 @@ class HomeViewModel @Inject constructor(
                     hours, minutes, seconds
                 )
 
-                _uiState.update { it.copy(
-                    remaining = translateTimeNums(
-                        string = hms,
-                        language = it.language,
-                        numeralsLanguage = it.numeralsLanguage
-                    ),
-                    timeFromPreviousPrayer =
-                        if (upcomingPrayer == Prayer.FAJR) -1L
-                        else times[Prayer.entries[
-                            Prayer.entries.indexOf(upcomingPrayer) - 1
-                        ]]!!.timeInMillis,
-                    timeToNextPrayer = millisUntilFinished
-                )}
+                viewModelScope.launch {
+                    val numeralsLanguage = domain.getNumeralsLanguage().first()
+                    _uiState.update { it.copy(
+                        remaining = translateTimeNums(
+                            string = hms,
+                            language = it.language,
+                            numeralsLanguage = numeralsLanguage
+                        ),
+                        timeFromPreviousPrayer =
+                            if (upcomingPrayer == Prayer.FAJR) -1L
+                            else times[Prayer.entries[
+                                Prayer.entries.indexOf(upcomingPrayer) - 1
+                            ]]!!.timeInMillis,
+                        timeToNextPrayer = millisUntilFinished
+                    )}
+                }
             }
 
-            override fun onFinish() {
-                counterCounter++
-                if (counterCounter < 5)
-                    setupPrayersCard(location)
-            }
+            override fun onFinish() {}
         }.start()
     }
 
-    private fun formatRecitationsTime(millis: Long, numeralsLanguage: Language): String {
+    private fun formatRecitationsTime(
+        millis: Long,
+        language: Language,
+        numeralsLanguage: Language
+    ): String {
         val hours = millis / (60 * 60 * 1000) % 24
         val minutes = millis / (60 * 1000) % 60
         val seconds = millis / 1000 % 60
 
-        return translateNums(
+        return translateTimeNums(
             string = String.format(
                 Locale.US, "%02d:%02d:%02d",
                 hours, minutes, seconds
             ),
+            language = language,
             numeralsLanguage = numeralsLanguage
         )
     }

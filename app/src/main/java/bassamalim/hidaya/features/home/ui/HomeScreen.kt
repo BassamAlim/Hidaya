@@ -42,6 +42,8 @@ import bassamalim.hidaya.core.ui.theme.Positive
 fun HomeScreen(viewModel: HomeViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    if (state.isLoading) return
+
     DisposableEffect(key1 = viewModel) {
         viewModel.onStart()
         onDispose { viewModel.onStop() }
@@ -108,24 +110,24 @@ private fun UpcomingPrayerCard(
             )
 
             MyText(
-                upcomingPrayerName,
-                Modifier.padding(3.dp),
+                text = upcomingPrayerName,
+                modifier = Modifier.padding(3.dp),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
 
             MyText(
-                upcomingPrayerTime,
-                Modifier.padding(3.dp),
+                text = upcomingPrayerTime,
+                modifier = Modifier.padding(3.dp),
                 fontSize = 24.sp
             )
 
             MyText(
-                String.format(
+                text = String.format(
                     stringResource(R.string.remaining),
                     remaining
                 ),
-                Modifier.padding(top = 3.dp, bottom = 15.dp),
+                modifier = Modifier.padding(top = 3.dp, bottom = 15.dp),
                 fontSize = 24.sp
             )
         }
