@@ -52,7 +52,7 @@ class RecitationPlayerDomain @Inject constructor(
     private val downloadReceiver = ReceiverWrapper(
         context = activity,
         intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-        receiver = object : BroadcastReceiver() {
+        broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 updateDownloadStates(checkDownload())
             }

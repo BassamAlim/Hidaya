@@ -32,7 +32,7 @@ class RecitationRecitersMenuDomain @Inject constructor(
     private val downloadReceiver = ReceiverWrapper(
         context = app,
         intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-        receiver = object : BroadcastReceiver() {
+        broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                 try {

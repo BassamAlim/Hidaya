@@ -115,38 +115,40 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             "bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService.STOP"
     }
 
-    private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when (intent.action) {
-                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
-                    Log.i(Global.TAG, "In ACTION_BECOMING_NOISY")
-                    callback.onPause()
-                }
-                ACTION_PLAY -> {
-                    Log.i(Global.TAG, "In ACTION_PLAY")
-                    callback.onPlay()
-                }
-                ACTION_PAUSE -> {
-                    Log.i(Global.TAG, "In ACTION_PAUSE")
-                    callback.onPause()
-                }
-                ACTION_NEXT -> {
-                    Log.i(Global.TAG, "In ACTION_NEXT")
-                    skipToNext()
-                }
-                ACTION_PREV -> {
-                    Log.i(Global.TAG, "In ACTION_PREV")
-                    skipToPrevious()
-                }
-                ACTION_STOP -> {
-                    Log.i(Global.TAG, "In ACTION_STOP")
-                    callback.onStop()
+    private val receiver = ReceiverWrapper(
+        context = this,
+        intentFilter = intentFilter,
+        broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                when (intent.action) {
+                    AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
+                        Log.i(Global.TAG, "In ACTION_BECOMING_NOISY")
+                        callback.onPause()
+                    }
+                    ACTION_PLAY -> {
+                        Log.i(Global.TAG, "In ACTION_PLAY")
+                        callback.onPlay()
+                    }
+                    ACTION_PAUSE -> {
+                        Log.i(Global.TAG, "In ACTION_PAUSE")
+                        callback.onPause()
+                    }
+                    ACTION_NEXT -> {
+                        Log.i(Global.TAG, "In ACTION_NEXT")
+                        skipToNext()
+                    }
+                    ACTION_PREV -> {
+                        Log.i(Global.TAG, "In ACTION_PREV")
+                        skipToPrevious()
+                    }
+                    ACTION_STOP -> {
+                        Log.i(Global.TAG, "In ACTION_STOP")
+                        callback.onStop()
+                    }
                 }
             }
         }
-    }
-
-    private val receiverWrapper = ReceiverWrapper(this, receiver, intentFilter)
+    )
 
     override fun onCreate() {
         super.onCreate()
@@ -223,7 +225,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
                 // Set the session active  (and update metadata and state)
                 mediaSession.isActive = true
 
-                receiverWrapper.register()
+                receiver.register()
                 // Put the service in the foreground, post notification
                 startForeground(notificationId, notification)
 
@@ -276,7 +278,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
 
             handler.removeCallbacks(runnable)
             am.abandonAudioFocusRequest(audioFocusRequest)    // Abandon audio focus
-            receiverWrapper.unregister()
+            receiver.unregister()
             if (wifiLock.isHeld) wifiLock.release()
 
             GlobalScope.launch {

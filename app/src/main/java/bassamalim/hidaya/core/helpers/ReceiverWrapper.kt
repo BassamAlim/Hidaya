@@ -8,21 +8,21 @@ import android.os.Build
 class ReceiverWrapper(
     private val context: Context,
     private val intentFilter: IntentFilter,
-    private val receiver: BroadcastReceiver
+    private val broadcastReceiver: BroadcastReceiver
 ) {
 
     fun register() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                context.registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
+                context.registerReceiver(broadcastReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
             else
-                context.registerReceiver(receiver, intentFilter)
+                context.registerReceiver(broadcastReceiver, intentFilter)
         } catch (_: IllegalArgumentException) {}
     }
 
     fun unregister() {
         try {
-            context.unregisterReceiver(receiver)
+            context.unregisterReceiver(broadcastReceiver)
         } catch (_: IllegalArgumentException) {}
     }
 

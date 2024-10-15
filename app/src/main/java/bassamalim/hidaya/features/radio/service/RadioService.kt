@@ -80,7 +80,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private val receiverWrapper = ReceiverWrapper(
         context = this,
         intentFilter = intentFilter,
-        receiver = object : BroadcastReceiver() {
+        broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 when (intent.action) {
                     AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {

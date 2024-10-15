@@ -93,38 +93,40 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         private const val ACTION_STOP = "bassamalim.hidaya.features.quranViewer.AyaPlayerService.STOP"
     }
 
-    private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when (intent.action) {
-                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
-                    Log.i(Global.TAG, "In ACTION_BECOMING_NOISY")
-                    callback.onPause()
-                }
-                ACTION_PLAY -> {
-                    Log.i(Global.TAG, "In ACTION_PLAY")
-                    callback.onPlay()
-                }
-                ACTION_PAUSE -> {
-                    Log.i(Global.TAG, "In ACTION_PAUSE")
-                    callback.onPause()
-                }
-                ACTION_NEXT -> {
-                    Log.i(Global.TAG, "In ACTION_NEXT")
-                    apm.nextVerse()
-                }
-                ACTION_PREV -> {
-                    Log.i(Global.TAG, "In ACTION_PREV")
-                    apm.previousVerse()
-                }
-                ACTION_STOP -> {
-                    Log.i(Global.TAG, "In ACTION_STOP")
-                    callback.onStop()
+    private val receiver = ReceiverWrapper(
+        context = this,
+        intentFilter = intentFilter,
+        broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                when (intent.action) {
+                    AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
+                        Log.i(Global.TAG, "In ACTION_BECOMING_NOISY")
+                        callback.onPause()
+                    }
+                    ACTION_PLAY -> {
+                        Log.i(Global.TAG, "In ACTION_PLAY")
+                        callback.onPlay()
+                    }
+                    ACTION_PAUSE -> {
+                        Log.i(Global.TAG, "In ACTION_PAUSE")
+                        callback.onPause()
+                    }
+                    ACTION_NEXT -> {
+                        Log.i(Global.TAG, "In ACTION_NEXT")
+                        apm.nextVerse()
+                    }
+                    ACTION_PREV -> {
+                        Log.i(Global.TAG, "In ACTION_PREV")
+                        apm.previousVerse()
+                    }
+                    ACTION_STOP -> {
+                        Log.i(Global.TAG, "In ACTION_STOP")
+                        callback.onStop()
+                    }
                 }
             }
         }
-    }
-
-    private val receiverWrapper = ReceiverWrapper(this, receiver, intentFilter)
+    )
 
     override fun onCreate() {
         super.onCreate()
@@ -186,7 +188,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
                     != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                     return@launch
 
-                receiverWrapper.register()
+                receiver.register()
 
                 apm.playFromMediaId(verseIdx = ayaId-1)
             }
@@ -219,7 +221,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
                 != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 return
 
-            receiverWrapper.register()
+            receiver.register()
 
             apm.resume()
         }
@@ -254,7 +256,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
             handler.removeCallbacks(runnable)
             abandonAudioFocus()
-            receiverWrapper.unregister()
+            receiver.unregister()
             if (wifiLock.isHeld) wifiLock.release()
 
             GlobalScope.launch {
@@ -678,7 +680,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
         abandonAudioFocus()
 
-        receiverWrapper.unregister()
+        receiver.unregister()
     }
 
 }
