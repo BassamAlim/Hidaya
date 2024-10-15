@@ -9,7 +9,7 @@ data class HomeUiState(
     val remaining: String = "",
     val timeFromPreviousPrayer: Long = 0L,
     val timeToNextPrayer: Long = 0L,
-    val werdPage: String = "25",
+    val werdPage: String = "",
     val isWerdDone: Boolean = false,
     val quranRecord: String = "",
     val recitationsRecord: String = "",

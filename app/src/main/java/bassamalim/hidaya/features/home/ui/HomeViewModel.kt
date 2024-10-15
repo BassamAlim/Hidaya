@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -39,6 +40,7 @@ class HomeViewModel @Inject constructor(
     private var timer: CountDownTimer? = null
     private var upcomingPrayer: Prayer? = null
     private var tomorrow = false
+    private var werdPage by Delegates.notNull<Int>()
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = combine(
@@ -50,6 +52,7 @@ class HomeViewModel @Inject constructor(
     ) { state, language, numeralsLanguage, location, werdPage ->
         if (state.isLoading) return@combine state
 
+        this.werdPage = werdPage
         val upcomingPrayer = getUpcomingPrayer()
         if (location != null && timer == null)
             count()
@@ -125,7 +128,7 @@ class HomeViewModel @Inject constructor(
         navigator.navigate(
             Screen.QuranReader(
                 targetType = QuranTarget.PAGE.name,
-                targetValue = _uiState.value.werdPage
+                targetValue = werdPage.toString()
             )
         )
     }

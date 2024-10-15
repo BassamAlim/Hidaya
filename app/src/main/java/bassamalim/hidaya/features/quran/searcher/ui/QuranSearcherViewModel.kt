@@ -40,9 +40,11 @@ class QuranSearcherViewModel @Inject constructor(
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.getMaxMatches()
-    ) { state, maxMatches -> state.copy(
-        maxMatches = maxMatches
-    )}.onStart {
+    ) { state, maxMatches ->
+        state.copy(
+            maxMatches = maxMatches
+        )
+    }.onStart {
         initializeData()
     }.stateIn(
         scope = viewModelScope,

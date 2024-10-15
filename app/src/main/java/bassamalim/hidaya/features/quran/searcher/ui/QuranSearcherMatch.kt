@@ -2,7 +2,7 @@ package bassamalim.hidaya.features.quran.searcher.ui
 
 import androidx.compose.ui.text.AnnotatedString
 
-class QuranSearcherMatch(
+data class QuranSearcherMatch(
     var id: Int,
     val verseNum: String,
     val suraName: String,

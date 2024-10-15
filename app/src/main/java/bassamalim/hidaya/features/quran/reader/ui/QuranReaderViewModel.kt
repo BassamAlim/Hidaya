@@ -5,7 +5,6 @@ import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.ui.layout.LayoutCoordinates
@@ -36,7 +35,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import bassamalim.hidaya.core.data.dataSources.room.entities.Verse as VerseEntity
 
-@OptIn(ExperimentalFoundationApi::class)
 @HiltViewModel
 class QuranReaderViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -65,6 +63,7 @@ class QuranReaderViewModel @Inject constructor(
     var scrollTo = -1F
         private set
     private val versePositions = mutableMapOf<Int, Float>()
+    private var shouldSelectVerse = false
 
     private val _uiState = MutableStateFlow(QuranReaderUiState())
     val uiState = combine(
@@ -104,7 +103,10 @@ class QuranReaderViewModel @Inject constructor(
             pageNum = when (targetType) {
                 QuranTarget.PAGE -> targetValue
                 QuranTarget.SURA -> domain.getSuraPageNum(targetValue)
-                QuranTarget.VERSE -> domain.getVersePageNum(targetValue)
+                QuranTarget.VERSE -> {
+                    shouldSelectVerse = true
+                    domain.getVersePageNum(targetValue)
+                }
             }
 
             domain.setPageNumCallback { pageNum }
@@ -112,12 +114,6 @@ class QuranReaderViewModel @Inject constructor(
             _uiState.update { it.copy(
                 isLoading = false,
                 isTutorialDialogShown = domain.getShouldShowTutorial()
-            )}
-        }
-
-        if (targetType == QuranTarget.VERSE) {
-            _uiState.update { it.copy(
-                selectedVerse = it.pageVerses.first { verse -> verse.id == targetValue }
             )}
         }
     }
@@ -150,6 +146,13 @@ class QuranReaderViewModel @Inject constructor(
                 ),
                 pageVerses = buildPage(pageNum)
             )}
+
+            if (shouldSelectVerse) {
+                _uiState.update { it.copy(
+                    selectedVerse = it.pageVerses.first { verse -> verse.id == targetValue }
+                )}
+                shouldSelectVerse = false
+            }
 
             domain.handlePageChange(pageNum)
 
