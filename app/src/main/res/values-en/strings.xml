@@ -104,6 +104,7 @@
     <string name="jumuah">Jumuah</string>
 
     <!-- Formats -->
+    <string name="passed">Passed: %1$s</string>
     <string name="remaining">Remaining: %1$s</string>
     <string name="settings_of">%s Settings</string>
     <string name="reminder_of">%s Extra reminder</string>

@@ -104,6 +104,7 @@
     <string name="jumuah">جمعة</string>
 
     <!-- Formats -->
+    <string name="passed">مرت: %1$s</string>
     <string name="remaining">متبقي: %1$s</string>
     <string name="settings_of">إعدادات %s</string>
     <string name="reminder_of">تنبيه إضافي ل%s</string>

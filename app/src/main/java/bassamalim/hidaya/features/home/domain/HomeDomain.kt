@@ -16,7 +16,6 @@ import bassamalim.hidaya.core.utils.OS.getDeviceId
 import bassamalim.hidaya.core.utils.PrayerTimeUtils
 import kotlinx.coroutines.flow.first
 import java.util.Calendar
-import java.util.SortedMap
 import javax.inject.Inject
 import kotlin.math.max
 
@@ -31,55 +30,64 @@ class HomeDomain @Inject constructor(
 
     private val deviceId = getDeviceId(app)
 
-    suspend fun getPrayerTimeMap(location: Location): SortedMap<Prayer, Calendar?> {
-        return PrayerTimeUtils.getPrayerTimes(
-            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
-            location = location,
-            calendar = Calendar.getInstance()
-        )
-    }
-
-    suspend fun getStrPrayerTimeMap(location: Location): SortedMap<Prayer, String> {
-        val prayerTimeMap = PrayerTimeUtils.getPrayerTimes(
+    suspend fun getPrayerTimeMap(location: Location) =
+        PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance()
         )
 
-        return PrayerTimeUtils.formatPrayerTimes(
-            prayerTimes = prayerTimeMap,
+    suspend fun getStrPrayerTimeMap(location: Location) =
+        PrayerTimeUtils.formatPrayerTimes(
+            prayerTimes = getPrayerTimeMap(location),
             timeFormat = appSettingsRepository.getTimeFormat().first(),
             language = appSettingsRepository.getLanguage().first(),
             numeralsLanguage = getNumeralsLanguage().first()
         )
-    }
 
-    suspend fun getTomorrowFajr(location: Location) = PrayerTimeUtils.getPrayerTimes(
-        settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
-        selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
-        location = location,
-        calendar = Calendar.getInstance().apply { add(Calendar.DATE, 1) }
-    )[Prayer.FAJR]!!
+    suspend fun getYesterdayIshaa(location: Location) =
+        PrayerTimeUtils.getPrayerTimes(
+            settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
+            selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
+            location = location,
+            calendar = Calendar.getInstance().apply { add(Calendar.DATE, -1) }
+        )[Prayer.ISHAA]!!
 
-    suspend fun getStrTomorrowFajr(location: Location): String {
-        val time = PrayerTimeUtils.getPrayerTimes(
+    suspend fun getStrYesterdayIshaa(location: Location) =
+        PrayerTimeUtils.formatPrayerTime(
+            time = getYesterdayIshaa(location),
+            language = appSettingsRepository.getLanguage().first(),
+            numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
+            timeFormat = appSettingsRepository.getTimeFormat().first()
+        )
+
+    suspend fun getTomorrowFajr(location: Location) =
+        PrayerTimeUtils.getPrayerTimes(
             settings = prayersRepository.getPrayerTimesCalculatorSettings().first(),
             selectedTimeZoneId = locationRepository.getTimeZone(location.ids.cityId),
             location = location,
             calendar = Calendar.getInstance().apply { add(Calendar.DATE, 1) }
         )[Prayer.FAJR]!!
 
-        return PrayerTimeUtils.formatPrayerTime(
-            time = time,
+    suspend fun getStrTomorrowFajr(location: Location) =
+        PrayerTimeUtils.formatPrayerTime(
+            time = getTomorrowFajr(location),
             language = appSettingsRepository.getLanguage().first(),
             numeralsLanguage = appSettingsRepository.getNumeralsLanguage().first(),
             timeFormat = appSettingsRepository.getTimeFormat().first()
         )
+
+    fun getPreviousPrayer(times: Map<Prayer, Calendar?>): Prayer? {
+        val currentMillis = System.currentTimeMillis()
+        for (prayer in times.entries.reversed()) {
+            val millis = prayer.value!!.timeInMillis
+            if (millis < currentMillis) return prayer.key
+        }
+        return null
     }
 
-    fun getUpcomingPrayer(times: Map<Prayer, Calendar?>): Prayer? {
+    fun getNextPrayer(times: Map<Prayer, Calendar?>): Prayer? {
         val currentMillis = System.currentTimeMillis()
         for (prayer in times.entries) {
             val millis = prayer.value!!.timeInMillis

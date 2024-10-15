@@ -50,9 +50,12 @@ fun HomeScreen(viewModel: HomeViewModel) {
     }
 
     MyParentColumn {
-        UpcomingPrayerCard(
-            upcomingPrayerName = state.upcomingPrayerName,
-            upcomingPrayerTime = state.upcomingPrayerTime,
+        PrayerCard(
+            previousPrayerName = state.previousPrayerName,
+            previousPrayerTime = state.previousPrayerTime,
+            passed = state.passed,
+            nextPrayerName = state.nextPrayerName,
+            nextPrayerTime = state.nextPrayerTime,
             remaining = state.remaining,
             timeFromPreviousPrayer = state.timeFromPreviousPrayer,
             timeToNextPrayer = state.timeToNextPrayer,
@@ -75,9 +78,12 @@ fun HomeScreen(viewModel: HomeViewModel) {
 }
 
 @Composable
-private fun UpcomingPrayerCard(
-    upcomingPrayerName: String,
-    upcomingPrayerTime: String,
+private fun PrayerCard(
+    previousPrayerName: String,
+    previousPrayerTime: String,
+    passed: String,
+    nextPrayerName: String,
+    nextPrayerTime: String,
     remaining: String,
     timeFromPreviousPrayer: Long,
     timeToNextPrayer: Long,
@@ -109,27 +115,63 @@ private fun UpcomingPrayerCard(
                     .padding(vertical = 10.dp)
             )
 
-            MyText(
-                text = upcomingPrayerName,
-                modifier = Modifier.padding(3.dp),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Column(
+                    Modifier.weight(0.4f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    MyText(
+                        text = previousPrayerName,
+                        modifier = Modifier.padding(3.dp),
+                        fontSize = 23.sp,
+                        fontWeight = FontWeight.Bold
+                    )
 
-            MyText(
-                text = upcomingPrayerTime,
-                modifier = Modifier.padding(3.dp),
-                fontSize = 24.sp
-            )
+                    MyText(
+                        text = previousPrayerTime,
+                        modifier = Modifier.padding(3.dp),
+                        fontSize = 23.sp
+                    )
 
-            MyText(
-                text = String.format(
-                    stringResource(R.string.remaining),
-                    remaining
-                ),
-                modifier = Modifier.padding(top = 3.dp, bottom = 15.dp),
-                fontSize = 24.sp
-            )
+                    MyText(
+                        text = String.format(
+                            stringResource(R.string.passed),
+                            passed
+                        ),
+                        modifier = Modifier.padding(top = 3.dp, bottom = 15.dp),
+                        fontSize = 23.sp
+                    )
+                }
+
+                Column(
+                    Modifier.weight(0.4f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    MyText(
+                        text = nextPrayerName,
+                        modifier = Modifier.padding(3.dp),
+                        fontSize = 23.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    MyText(
+                        text = nextPrayerTime,
+                        modifier = Modifier.padding(3.dp),
+                        fontSize = 23.sp
+                    )
+
+                    MyText(
+                        text = String.format(
+                            stringResource(R.string.remaining),
+                            remaining
+                        ),
+                        modifier = Modifier.padding(top = 3.dp, bottom = 15.dp),
+                        fontSize = 23.sp
+                    )
+                }
+            }
         }
     }
 }
