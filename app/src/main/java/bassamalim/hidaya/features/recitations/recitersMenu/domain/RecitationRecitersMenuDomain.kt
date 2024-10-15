@@ -7,12 +7,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
-import android.os.Build
 import android.util.Log
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.features.quran.surasMenu.ui.LastPlayedMedia
 import kotlinx.coroutines.flow.Flow
@@ -28,6 +28,19 @@ class RecitationRecitersMenuDomain @Inject constructor(
     private val quranRepository: QuranRepository,
     private val appSettingsRepository: AppSettingsRepository
 ) {
+
+    private val downloadReceiver = ReceiverWrapper(
+        context = app,
+        intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+        receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                try {
+                    recitationsRepository.popFromDownloading(downloadId)
+                } catch (_: RuntimeException) {}
+            }
+        }
+    )
 
     suspend fun observeRecitersWithNarrations(language: Language): Flow<List<Recitation>> {
         val allReciters = recitationsRepository.observeAllSuraReciters(language)
@@ -65,25 +78,11 @@ class RecitationRecitersMenuDomain @Inject constructor(
     }
 
     fun registerDownloadReceiver() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            app.registerReceiver(
-                onDownloadComplete,
-                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-                Context.RECEIVER_NOT_EXPORTED
-            )
-        else
-            app.registerReceiver(
-                onDownloadComplete,
-                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-            )
+        downloadReceiver.register()
     }
 
     fun unregisterDownloadReceiver() {
-        try {
-            app.unregisterReceiver(onDownloadComplete)
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
+        downloadReceiver.unregister()
     }
 
     fun cleanFiles() {
@@ -140,15 +139,6 @@ class RecitationRecitersMenuDomain @Inject constructor(
             context = app,
             path = "${recitationsRepository.prefix}$reciterId/${narration.id}"
         )
-    }
-
-    var onDownloadComplete: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            try {
-                recitationsRepository.popFromDownloading(downloadId)
-            } catch (_: RuntimeException) {}
-        }
     }
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()

@@ -37,7 +37,7 @@ import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.data.repositories.UserRepository
-import bassamalim.hidaya.core.helpers.ReceiverManager
+import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -124,7 +124,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
         }
     }
 
-    private val receiverManager = ReceiverManager(this, receiver, intentFilter)
+    private val receiverWrapper = ReceiverWrapper(this, receiver, intentFilter)
 
     override fun onCreate() {
         super.onCreate()
@@ -186,7 +186,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
                     != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                     return@launch
 
-                receiverManager.register()
+                receiverWrapper.register()
 
                 apm.playFromMediaId(verseIdx = ayaId-1)
             }
@@ -219,7 +219,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
                 != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 return
 
-            receiverManager.register()
+            receiverWrapper.register()
 
             apm.resume()
         }
@@ -254,7 +254,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
             handler.removeCallbacks(runnable)
             abandonAudioFocus()
-            receiverManager.unregister()
+            receiverWrapper.unregister()
             if (wifiLock.isHeld) wifiLock.release()
 
             GlobalScope.launch {
@@ -678,7 +678,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
 
         abandonAudioFocus()
 
-        receiverManager.unregister()
+        receiverWrapper.unregister()
     }
 
 }

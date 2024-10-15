@@ -34,7 +34,7 @@ import androidx.media.session.MediaButtonReceiver
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.Activity
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
-import bassamalim.hidaya.core.helpers.ReceiverManager
+import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,6 +51,7 @@ import javax.inject.Inject
 @RequiresApi(Build.VERSION_CODES.O)
 class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
+    @Inject lateinit var appSettingsRepository: AppSettingsRepository
     private lateinit var playPauseAction: NotificationCompat.Action
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var controller: MediaControllerCompat
@@ -67,40 +68,45 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
     private lateinit var wifiLock: WifiLock
     private var staticUrl: String? = null
     private lateinit var dynamicUrl: String
-    @Inject lateinit var appSettingsRepository: AppSettingsRepository
 
     companion object {
         private const val MY_MEDIA_ROOT_ID = "media_root_id"
         private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
-        private const val ACTION_PLAY_PAUSE = "bassamalim.hidaya.features.radio.service.RadioService.playpause"
+        private const val ACTION_PLAY_PAUSE =
+            "bassamalim.hidaya.features.radio.service.RadioService.playpause"
         private const val ACTION_STOP = "bassamalim.hidaya.features.radio.service.RadioService.stop"
     }
 
-    private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when (intent.action) {
-                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
-                    Log.i(Global.TAG, "In ACTION_BECOMING_NOISY of RadioService")
-                    callback.onPause()
-                }
-                ACTION_PLAY_PAUSE ->
-                    if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
-                        Log.i(Global.TAG, "In ACTION_PAUSE of RadioService")
+    private val receiverWrapper = ReceiverWrapper(
+        context = this,
+        intentFilter = intentFilter,
+        receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                when (intent.action) {
+                    AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
+                        Log.i(Global.TAG, "In ACTION_BECOMING_NOISY of RadioService")
                         callback.onPause()
                     }
-                    else if (controller.playbackState.state == PlaybackStateCompat.STATE_PAUSED) {
-                        Log.i(Global.TAG, "In ACTION_PLAY of RadioService")
-                        callback.onPlay()
+
+                    ACTION_PLAY_PAUSE ->
+                        if (controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
+                            Log.i(Global.TAG, "In ACTION_PAUSE of RadioService")
+                            callback.onPause()
+                        }
+                        else if (controller.playbackState.state
+                            == PlaybackStateCompat.STATE_PAUSED) {
+                            Log.i(Global.TAG, "In ACTION_PLAY of RadioService")
+                            callback.onPlay()
+                        }
+
+                    ACTION_STOP -> {
+                        Log.i(Global.TAG, "In ACTION_STOP of RadioService")
+                        callback.onStop()
                     }
-                ACTION_STOP -> {
-                    Log.i(Global.TAG, "In ACTION_STOP of RadioService")
-                    callback.onStop()
                 }
             }
         }
-    }
-
-    private val receiverManager = ReceiverManager(this, receiver, intentFilter)
+    )
 
     override fun onCreate() {
         super.onCreate()
@@ -154,7 +160,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
                 updateNotification(true)
 
                 // Register Receiver
-                receiverManager.register()
+                receiverWrapper.register()
                 // Put the service in the foreground, post notification
                 startForeground(id, notification)
 
@@ -168,7 +174,7 @@ class RadioService : MediaBrowserServiceCompat(), OnAudioFocusChangeListener {
 
             updatePbState(PlaybackStateCompat.STATE_STOPPED, player.currentPosition)
 
-            receiverManager.unregister()
+            receiverWrapper.unregister()
             am.abandonAudioFocusRequest(audioFocusRequest)    // Abandon audio focus
             if (wifiLock.isHeld) wifiLock.release()
             player.release()

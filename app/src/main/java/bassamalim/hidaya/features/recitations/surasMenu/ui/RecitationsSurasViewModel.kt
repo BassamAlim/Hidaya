@@ -1,10 +1,6 @@
 package bassamalim.hidaya.features.recitations.surasMenu.ui
 
 import android.app.Activity
-import android.app.DownloadManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -75,11 +71,26 @@ class RecitationsSurasViewModel @Inject constructor(
             )}
         }
 
-        domain.registerDownloadReceiver(onDownloadComplete)
+        domain.registerDownloadReceiver(
+            reciterId = reciterId,
+            narrationId = narrationId,
+            setAsDownloaded = { suraId ->
+                _uiState.update { it.copy(
+                    downloadStates = it.downloadStates.toMutableMap().apply {
+                        this[suraId] = DownloadState.DOWNLOADED
+                    }
+                )}
+            },
+            setDownloadStates = { downloadStates ->
+                _uiState.update { it.copy(
+                    downloadStates = downloadStates
+                )}
+            }
+        )
     }
 
     fun onStop() {
-        domain.unregisterDownloadReceiver(onDownloadComplete)
+        domain.unregisterDownloadReceiver()
     }
 
     fun onBackPressed() {
@@ -116,25 +127,6 @@ class RecitationsSurasViewModel @Inject constructor(
                         || sura.suraName.contains(_uiState.value.searchText, true)
 
                 suraExists && isWanted && isSearched
-            }
-        }
-    }
-
-    private var onDownloadComplete: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(ctx: Context, intent: Intent) {
-            val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            try {
-                val downloadedItem = domain.popFromDownloading(downloadId)!!
-
-                _uiState.update { it.copy(
-                    downloadStates = it.downloadStates.toMutableMap().apply {
-                        this[downloadedItem.suraId] = DownloadState.DOWNLOADED
-                    }
-                )}
-            } catch (e: Exception) {
-                _uiState.update { it.copy(
-                    downloadStates = domain.getDownloadStates(reciterId, narrationId)
-                )}
             }
         }
     }

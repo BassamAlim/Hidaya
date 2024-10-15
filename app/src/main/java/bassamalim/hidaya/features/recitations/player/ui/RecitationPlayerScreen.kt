@@ -97,17 +97,15 @@ fun RecitationPlayerScreen(viewModel: RecitationPlayerViewModel) {
 }
 
 @Composable
-private fun InfoSpace(
-    suraName: String,
-    narrationName: String,
-    reciterName: String
-) {
+private fun InfoSpace(suraName: String, narrationName: String, reciterName: String) {
     Box(
-        Modifier.border(
-            width = 2.dp,
-            shape = RoundedCornerShape(10),
-            color = AppTheme.colors.accent
-        )
+        Modifier
+            .padding(horizontal = 10.dp)
+            .border(
+                width = 2.dp,
+                shape = RoundedCornerShape(10),
+                color = AppTheme.colors.accent
+            )
     ) {
         Column(
             Modifier.padding(vertical = 25.dp, horizontal = 75.dp),

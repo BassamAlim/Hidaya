@@ -4,24 +4,49 @@ import android.app.Application
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import bassamalim.hidaya.core.data.repositories.AppSettingsRepository
 import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.models.ReciterSura
+import bassamalim.hidaya.core.other.Global
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 class RecitationSurasMenuDomain @Inject constructor(
-    private val app: Application,
+    app: Application,
     private val recitationsRepository: RecitationsRepository,
     private val quranRepository: QuranRepository,
     private val appSettingsRepository: AppSettingsRepository
 ) {
+
+    private var reciterId by Delegates.notNull<Int>()
+    private var narrationId by Delegates.notNull<Int>()
+    private lateinit var setAsDownloaded: (suraId: Int) -> Unit
+    private lateinit var setDownloadStates: (downloadState: Map<Int, DownloadState>) -> Unit
+
+    private val downloadReceiver = ReceiverWrapper(
+        context = app,
+        intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+        receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                try {
+                    val downloadId =
+                        intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                    val downloadedItem = popFromDownloading(downloadId)!!
+                    setAsDownloaded(downloadedItem.suraId)
+                } catch (e: Exception) {
+                    setDownloadStates(getDownloadStates(reciterId, narrationId))
+                }
+            }
+        }
+    )
 
     fun observeSuras(reciterId: Int, narrationId: Int, language: Language) =
         quranRepository.observeAllSuras(language).map {
@@ -52,38 +77,31 @@ class RecitationSurasMenuDomain @Inject constructor(
 
     fun popFromDownloading(downloadId: Long) = recitationsRepository.popFromDownloading(downloadId)
 
-    fun getDownloadState(reciterId: Int, narrationId: Int, suraId: Int): DownloadState {
+    private fun getDownloadState(reciterId: Int, narrationId: Int, suraId: Int): DownloadState {
         return recitationsRepository.getSuraDownloadState(reciterId, narrationId, suraId)
     }
 
-    fun getDownloadStates(reciterId: Int, narrationId: Int) = (0..113).associateWith {
-        getDownloadState(reciterId, narrationId, it)
+    fun getDownloadStates(reciterId: Int, narrationId: Int) =
+        (0..<Global.NUM_OF_QURAN_SURAS).associateWith { suraId ->
+            getDownloadState(reciterId, narrationId, suraId)
+        }
+
+    fun registerDownloadReceiver(
+        reciterId: Int,
+        narrationId: Int,
+        setAsDownloaded: (suraId: Int) -> Unit,
+        setDownloadStates: (downloadState: Map<Int, DownloadState>) -> Unit
+    ) {
+        this.reciterId = reciterId
+        this.narrationId = narrationId
+        this.setAsDownloaded = setAsDownloaded
+        this.setDownloadStates = setDownloadStates
+
+        downloadReceiver.register()
     }
 
-    fun registerDownloadReceiver(onComplete: BroadcastReceiver) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                app.registerReceiver(
-                    onComplete,
-                    IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-                    Context.RECEIVER_NOT_EXPORTED
-                )
-            else
-                app.registerReceiver(
-                    onComplete,
-                    IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-                )
-        } catch (e: IllegalArgumentException) {
-                e.printStackTrace()
-        }
-    }
-
-    fun unregisterDownloadReceiver(onComplete: BroadcastReceiver) {
-        try {
-            app.unregisterReceiver(onComplete)
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
+    fun unregisterDownloadReceiver() {
+        downloadReceiver.unregister()
     }
 
     suspend fun getLanguage() = appSettingsRepository.getLanguage().first()

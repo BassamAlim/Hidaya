@@ -6,6 +6,7 @@ import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.net.Uri
@@ -24,6 +25,7 @@ import bassamalim.hidaya.core.data.repositories.QuranRepository
 import bassamalim.hidaya.core.data.repositories.RecitationsRepository
 import bassamalim.hidaya.core.enums.DownloadState
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.helpers.ReceiverWrapper
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.utils.FileUtils
 import bassamalim.hidaya.features.recitations.player.service.RecitationPlayerService
@@ -41,19 +43,31 @@ class RecitationPlayerDomain @Inject constructor(
 ) {
 
     private lateinit var activity: Activity
+    private lateinit var updateDownloadStates: (DownloadState) -> Unit
     private var mediaBrowser: MediaBrowserCompat? = null
     private lateinit var controller: MediaControllerCompat
     private lateinit var tc: MediaControllerCompat.TransportControls
     private var path = ""
+
+    private val downloadReceiver = ReceiverWrapper(
+        context = activity,
+        intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+        receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                updateDownloadStates(checkDownload())
+            }
+        }
+    )
 
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(UnstableApi::class)
     fun connect(
         activity: Activity,
         connectionCallbacks: MediaBrowserCompat.ConnectionCallback,
-        onComplete: BroadcastReceiver
+        updateDownloadStates: (DownloadState) -> Unit
     ) {
         this.activity = activity
+        this.updateDownloadStates = updateDownloadStates
 
         mediaBrowser = MediaBrowserCompat(
             activity,
@@ -65,28 +79,11 @@ class RecitationPlayerDomain @Inject constructor(
 
         activity.volumeControlStream = AudioManager.STREAM_MUSIC
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            activity.registerReceiver(
-                onComplete,
-                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-                Context.RECEIVER_NOT_EXPORTED
-            )
-        else
-            activity.registerReceiver(
-                onComplete,
-                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-            )
+        downloadReceiver.register()
     }
 
-    fun stopMediaBrowser(
-        controllerCallback: MediaControllerCompat.Callback,
-        onComplete: BroadcastReceiver
-    ) {
-        try {
-            activity.unregisterReceiver(onComplete)
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
+    fun stopMediaBrowser(controllerCallback: MediaControllerCompat.Callback) {
+        downloadReceiver.unregister()
 
         MediaControllerCompat.getMediaController(activity)
             ?.unregisterCallback(controllerCallback)
@@ -97,8 +94,6 @@ class RecitationPlayerDomain @Inject constructor(
     fun disconnectMediaBrowser() {
         mediaBrowser?.disconnect()
     }
-
-    fun isMediaBrowserInitialized() = mediaBrowser != null
 
     fun initializeController(controllerCallback: MediaControllerCompat.Callback) {
         Log.d(Global.TAG, "in initializeController of RecitationPlayerDomain")
@@ -151,11 +146,7 @@ class RecitationPlayerDomain @Inject constructor(
 
     fun getPlaybackState(): PlaybackStateCompat = controller.playbackState
 
-    fun downloadRecitation(
-        narration: Recitation.Narration,
-        suraIdx: Int,
-        suraName: String
-    ) {
+    fun downloadRecitation(narration: Recitation.Narration, suraIdx: Int, suraName: String) {
         val server = narration.server
         val link = String.format(Locale.US, "%s/%03d.mp3", server, suraIdx+1)
         val uri = Uri.parse(link)

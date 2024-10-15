@@ -1,9 +1,6 @@
 package bassamalim.hidaya.features.recitations.player.ui
 
 import android.app.Activity
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -136,21 +133,21 @@ class RecitationPlayerViewModel @Inject constructor(
     fun onStart(activity: Activity) {
         Log.i(Global.TAG, "in onStart of RecitationsPlayerViewModel")
 
-        domain.connect(activity, connectionCallbacks, onDownloadComplete)
+        domain.connect(
+            activity = activity,
+            connectionCallbacks = connectionCallbacks,
+            updateDownloadStates = { newState ->
+                _uiState.update { it.copy(
+                    downloadState = newState
+                )}
+            }
+        )
     }
 
     fun onStop() {
         Log.i(Global.TAG, "in onStop of RecitationsPlayerViewModel")
 
-        domain.stopMediaBrowser(controllerCallback, onDownloadComplete)
-    }
-
-    private var onDownloadComplete = object : BroadcastReceiver() {
-        override fun onReceive(ctx: Context, intent: Intent) {
-            _uiState.update { it.copy(
-                downloadState = domain.checkDownload()
-            )}
-        }
+        domain.stopMediaBrowser(controllerCallback)
     }
 
     private suspend fun updateTrackState() {
