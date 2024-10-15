@@ -73,31 +73,28 @@ fun QuizResultScreen(viewModel: QuizResultViewModel) {
 fun Question(question: QuizResultQuestion) {
     MySurface {
         Column(
-            Modifier.padding(vertical = 5.dp, horizontal = 5.dp),
+            Modifier.padding(top = 5.dp, bottom = 8.dp, start = 5.dp, end = 5.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Question number
             MyText(
-                "${stringResource(R.string.question)} ${question.questionNum}",
-                Modifier.padding(bottom = 3.dp),
+                text = "${stringResource(R.string.question)} ${question.questionNum}",
+                modifier = Modifier.padding(bottom = 3.dp),
                 fontSize = 16.sp
             )
 
             // Question text
-            MyText(
-                question.questionText,
-                Modifier.padding(vertical = 3.dp)
-            )
+            MyText(text = question.questionText, modifier = Modifier.padding(vertical = 3.dp))
 
             MyHorizontalDivider(thickness = 2.dp)
 
             // Answers
             for (i in 0..3) {
                 Answer(
-                    ansNum = i,
-                    ansText = question.answers[i],
-                    correctAns = question.correctAnswerId,
-                    chosenAns = question.chosenAnswerId
+                    answerNum = i,
+                    answerText = question.answers[i],
+                    correctAnswer = question.correctAnswerId,
+                    chosenAnswer = question.chosenAnswerId
                 )
             }
         }
@@ -105,13 +102,8 @@ fun Question(question: QuizResultQuestion) {
 }
 
 @Composable
-private fun Answer(
-    ansNum: Int,
-    ansText: String,
-    correctAns: Int,
-    chosenAns: Int
-) {
-    if (ansNum != 0)
+private fun Answer(answerNum: Int, answerText: String, correctAnswer: Int, chosenAnswer: Int) {
+    if (answerNum != 0)
         MyHorizontalDivider(Modifier.padding(horizontal = 5.dp))
 
     Row(
@@ -121,19 +113,16 @@ private fun Answer(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        MyText(
-            ansText,
-            fontSize = 18.sp
-        )
+        MyText(text = answerText, fontSize = 18.sp)
 
-        if (ansNum == chosenAns || ansNum == correctAns) {
+        if (answerNum == chosenAnswer || answerNum == correctAnswer) {
             Image(
                 painter = painterResource(
-                    if (ansNum == correctAns) R.drawable.ic_check
+                    if (answerNum == correctAnswer) R.drawable.ic_check
                     else R.drawable.ic_wrong
                 ),
                 contentDescription = "",
-                Modifier.size(25.dp)
+                modifier = Modifier.size(25.dp)
             )
         }
     }
