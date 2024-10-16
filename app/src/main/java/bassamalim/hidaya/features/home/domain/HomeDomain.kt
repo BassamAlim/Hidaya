@@ -114,7 +114,7 @@ class HomeDomain @Inject constructor(
         if (!isInternetConnected(app)) return false
 
         return when (
-            val response = userRepository.getRemoteRecord(deviceId)
+            val response = userRepository.getRemoteRecord(deviceId).first()
         ) {
             is Response.Success -> {
                 val remoteRecord = response.data!!

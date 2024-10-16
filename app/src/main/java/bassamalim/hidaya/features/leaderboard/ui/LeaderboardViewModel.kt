@@ -3,6 +3,7 @@ package bassamalim.hidaya.features.leaderboard.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.leaderboard.domain.LeaderboardDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,37 +36,44 @@ class LeaderboardViewModel @Inject constructor(
         viewModelScope.launch {
             numeralsLanguage = domain.getNumeralsLanguage()
 
-            val userId = domain.fetchData()
+            val userRecord = domain.getUserRecord().data
+            val ranks = domain.getRanks()
+            val userRank =
+                if (userRecord == null) emptyMap()
+                else {
+                    domain.getUserRank(userRecord, ranks).map { (rankType, rank) ->
+                        rankType to rank.toString()
+                    }.toMap()
+                }
+
+            val isError = userRecord == null || userRecord.userId == -1
+                    || ranks.values.any { it is Response.Error<*> }
+
             _uiState.update { it.copy(
                 isLoading = false,
-                isError = userId == -1,
-                userId = userId.toString(),
+                isError = isError,
+                userId = if (isError) "-1" else userRecord?.userId.toString(),
+                userRanks = userRank,
+                ranks =
+                    if (isError) emptyMap()
+                    else ranks.map { (rankType, rank) ->
+                        rankType to rank.data!!.map { record ->
+                            LeaderboardItem(
+                                userId = record.userId.toString(),
+                                quranRecord = record.quranPages.toString(),
+                                recitationsRecord =
+                                    formatRecitationsTime(userRecord?.recitationsTime ?: 0)
+                            )
+                        }
+                    }.toMap()
             )}
         }
     }
 
     fun getTabContent(rankType: RankType): LeaderboardTabContent {
-        _uiState.update { it.copy(
-            isLoading = true
-        )}
-
-        val ranks = domain.getSortedRanks(sortBy = rankType)
-
-        val items = ranks.map {
-            LeaderboardItem(
-                userId = it.userId.toString(),
-                quranRecord = it.quranPages.toString(),
-                recitationsRecord = formatRecitationsTime(it.recitationsTime)
-            )
-        }
-
-        _uiState.update { it.copy(
-            isLoading = false
-        )}
-
         return LeaderboardTabContent(
-            userRank = domain.getUserRank(ranks).toString(),
-            items = items
+            userRank = _uiState.value.userRanks[rankType] ?: "",
+            items = _uiState.value.ranks[rankType] ?: emptyList()
         )
     }
 

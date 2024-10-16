@@ -1,8 +1,5 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package bassamalim.hidaya.core.ui.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.pager.HorizontalPager
@@ -46,10 +43,7 @@ fun TabLayout(
 }
 
 @Composable
-fun Tabs(
-    pagerState: PagerState,
-    pageNames: List<String>
-) {
+fun Tabs(pagerState: PagerState, pageNames: List<String>) {
     // creating a variable for the scope.
     val scope = rememberCoroutineScope()
     // creating a row for our tab layout.
@@ -100,10 +94,7 @@ fun Tabs(
 
 // creating a tab content method in which we will be displaying the individual page of our tab.
 @Composable
-fun ColumnScope.TabsContent(
-    pagerState: PagerState,
-    content: @Composable (Int) -> Unit
-) {
+fun ColumnScope.TabsContent(pagerState: PagerState, content: @Composable (Int) -> Unit) {
     // creating horizontal pager for our tab layout.
     HorizontalPager(
         state = pagerState,

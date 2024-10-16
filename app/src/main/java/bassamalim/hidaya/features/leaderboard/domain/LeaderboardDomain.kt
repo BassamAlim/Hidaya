@@ -17,28 +17,28 @@ class LeaderboardDomain @Inject constructor(
 ) {
 
     private val deviceId = getDeviceId(app)
-    private lateinit var ranks: List<UserRecord>
-    private lateinit var userRecord: UserRecord
 
-    suspend fun fetchData(): Int {
-        val userRecordResponse = userRepository.getRemoteRecord(deviceId)
-        val ranksResponse = userRepository.getRanks()
-        return if (userRecordResponse is Response.Success && ranksResponse is Response.Success) {
-            userRecord = userRecordResponse.data!!
-            ranks = ranksResponse.data!!
-            userRecord.userId
-        }
-        else -1
+    suspend fun getUserRecord() = userRepository.getRemoteRecord(deviceId).first()
+
+    suspend fun getRanks() = mapOf(
+        RankType.BY_READING to userRepository.getRanks("reading_record"),
+        RankType.BY_LISTENING to userRepository.getRanks("listening_record")
+    )
+
+    fun getUserRank(
+        userRecord: UserRecord,
+        ranks: Map<RankType, Response<List<UserRecord>>>
+    ): Map<RankType, Int?> {
+        return mapOf(
+            RankType.BY_READING to ranks[RankType.BY_READING].let { response ->
+                response?.data?.indexOfFirst { it.userId == userRecord.userId }
+            },
+            RankType.BY_LISTENING to ranks[RankType.BY_LISTENING].let { response ->
+                response?.data?.indexOfFirst { it.userId == userRecord.userId }
+            }
+        )
     }
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
-
-    fun getUserRank(items: List<UserRecord>) =
-        items.indexOfFirst { it.userId == userRecord.userId } + 1
-
-    fun getSortedRanks(sortBy: RankType) = when (sortBy) {
-        RankType.BY_READING -> ranks.sortedByDescending { it.quranPages }
-        RankType.BY_LISTENING -> ranks.sortedByDescending { it.recitationsTime }
-    }
 
 }

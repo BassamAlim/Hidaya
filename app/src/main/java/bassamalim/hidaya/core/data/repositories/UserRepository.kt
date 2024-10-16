@@ -7,7 +7,10 @@ import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.other.Global
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.snapshots
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -48,31 +51,25 @@ class UserRepository @Inject constructor(
         }
     }
 
-    suspend fun getRemoteRecord(deviceId: String): Response<UserRecord> {
-        return try {
-            firestore.collection("Leaderboard")
-                .document(deviceId)
-                .get()
-                .await()
-                .let { result ->
-                    if (result.data == null) {
-                        Response.Error("Device not registered")
-                    }
-                    else {
-                        val data = result.data!!
-                        Response.Success(
-                            UserRecord(
-                                userId = data["user_id"].toString().toInt(),
-                                quranPages = data["reading_record"].toString().toInt(),
-                                recitationsTime = data["listening_record"].toString().toLong()
-                            )
-                        )
-                    }
+    fun getRemoteRecord(deviceId: String): Flow<Response<UserRecord>> {
+        return firestore.collection("Leaderboard")
+            .document(deviceId)
+            .snapshots()
+            .map {
+                if (it.data == null) {
+                    Response.Error("Device not registered")
                 }
-        } catch (e: Exception) {
-            Log.e(Global.TAG, "Error getting documents: $e")
-            Response.Error("Error fetching data")
-        }
+                else {
+                    val data = it.data!!
+                    Response.Success(
+                        UserRecord(
+                            userId = data["user_id"].toString().toInt(),
+                            quranPages = data["reading_record"].toString().toInt(),
+                            recitationsTime = data["listening_record"].toString().toLong()
+                        )
+                    )
+                }
+            }
     }
 
     suspend fun setRemoteRecord(deviceId: String, record: UserRecord) {
@@ -146,8 +143,9 @@ class UserRepository @Inject constructor(
         return id
     }
 
-    suspend fun getRanks(): Response<List<UserRecord>> {
+    suspend fun getRanks(rankBy: String): Response<List<UserRecord>> {
         return firestore.collection("Leaderboard")
+            .orderBy(rankBy, Query.Direction.DESCENDING)
             .get()
             .await()
             .let { result ->

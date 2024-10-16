@@ -35,18 +35,12 @@ fun LeaderboardScreen(viewModel: LeaderboardViewModel) {
     MyScaffold(stringResource(R.string.leaderboard)) {
         if (state.isLoading) LoadingScreen()
         else if (state.isError) ErrorScreen(message = stringResource(R.string.error_fetching_data))
-        else UsersList(
-            userId = state.userId,
-            getTabContent = viewModel::getTabContent
-        )
+        else UsersList(userId = state.userId, getTabContent = viewModel::getTabContent)
     }
 }
 
 @Composable
-private fun UsersList(
-    userId: String,
-    getTabContent: (RankType) -> LeaderboardTabContent,
-) {
+private fun UsersList(userId: String, getTabContent: (RankType) -> LeaderboardTabContent) {
     TabLayout(
         pageNames = listOf(
             stringResource(R.string.by_reading),
@@ -57,26 +51,17 @@ private fun UsersList(
         val content = getTabContent(rankBy)
 
         MyColumn {
-            UserRankCard(
-                userId = userId,
-                userRank = content.userRank
-            )
+            UserRankCard(userId = userId, userRank = content.userRank)
 
             MyHorizontalDivider(thickness = 1.dp)
 
-            UsersList(
-                items = content.items,
-                rankType = rankBy
-            )
+            UsersList(items = content.items, rankType = rankBy)
         }
     }
 }
 
 @Composable
-private fun UserRankCard(
-    userId: String,
-    userRank: String
-) {
+private fun UserRankCard(userId: String, userRank: String) {
     MySurface(
         Modifier.padding(top = 6.dp, bottom = 2.dp),
         cornerRadius = 15.dp
@@ -129,27 +114,22 @@ private fun UserRankCard(
 }
 
 @Composable
-private fun UsersList(
-    items: List<LeaderboardItem>,
-    rankType: RankType
-) {
-    MyLazyColumn(lazyList = {
-        itemsIndexed(items) { idx, item ->
-            ItemCard(
-                item = item,
-                rank = idx + 1,
-                rankType = rankType
-            )
+private fun UsersList(items: List<LeaderboardItem>, rankType: RankType) {
+    MyLazyColumn(
+        lazyList = {
+            itemsIndexed(items) { idx, item ->
+                ItemCard(
+                    item = item,
+                    rank = idx + 1,
+                    rankType = rankType
+                )
+            }
         }
-    })
+    )
 }
 
 @Composable
-private fun ItemCard(
-    item: LeaderboardItem,
-    rank: Int,
-    rankType: RankType
-) {
+private fun ItemCard(item: LeaderboardItem, rank: Int, rankType: RankType) {
     MySurface(
         Modifier.heightIn(min = 80.dp)
     ) {
