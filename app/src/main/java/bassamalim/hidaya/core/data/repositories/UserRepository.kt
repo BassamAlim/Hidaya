@@ -147,8 +147,6 @@ class UserRepository @Inject constructor(
     suspend fun getReadingRanks(
         previousLast: DocumentSnapshot? = null
     ): Pair<Response<Map<Int, Long>>, DocumentSnapshot?> {
-        println("getReadingRanks: $previousLast")
-
         var last: DocumentSnapshot? = null
 
         var query = firestore.collection("Leaderboard")
@@ -172,16 +170,12 @@ class UserRepository @Inject constructor(
                     Response.Error("Error fetching data")
                 }
             }
-
-        println("results: ${results.data}")
         return Pair(results, last)
     }
 
     suspend fun getListeningRanks(
         previousLast: DocumentSnapshot? = null
     ): Pair<Response<Map<Int, Long>>, DocumentSnapshot?> {
-        println("getListeningRanks: $previousLast")
-
         var last: DocumentSnapshot? = null
 
         var query = firestore.collection("Leaderboard")
@@ -205,7 +199,6 @@ class UserRepository @Inject constructor(
                     Response.Error("Error fetching data")
                 }
             }
-        println("results: $results")
         return Pair(results, last)
     }
 

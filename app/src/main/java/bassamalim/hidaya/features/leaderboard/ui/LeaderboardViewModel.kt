@@ -38,7 +38,6 @@ class LeaderboardViewModel @Inject constructor(
 
             val userRecord = domain.getUserRecord().data
             val ranks = domain.getRanks()
-            println("ranks: ${ranks[RankType.BY_READING]!!.data}")
 
             val userRank =
                 if (userRecord == null) emptyMap()
@@ -66,7 +65,6 @@ class LeaderboardViewModel @Inject constructor(
                         userId.toString() to formatRecitationsTime(value)
                     }.toList()
             )
-            println("ranksList: $ranksList")
 
             _uiState.update { it.copy(
                 isLoading = false,
@@ -92,11 +90,9 @@ class LeaderboardViewModel @Inject constructor(
             val newRanks = newRanksMap.map { (userId, value) ->
                 userId.toString() to translateNums(value.toString(), numeralsLanguage)
             }.toList()
-            println("newRanks: $newRanks")
 
             val added = _uiState.value.ranks[rankType]!! + newRanks
 
-            println("added: $added")
             println("added size: ${added.size}")
 
             _uiState.update { it.copy(
@@ -109,7 +105,6 @@ class LeaderboardViewModel @Inject constructor(
             )}
 
             println("ranks size: ${_uiState.value.ranks[RankType.BY_READING]!!.size}")
-            println("ranks: ${_uiState.value.ranks[RankType.BY_READING]!!}")
         }
     }
 
