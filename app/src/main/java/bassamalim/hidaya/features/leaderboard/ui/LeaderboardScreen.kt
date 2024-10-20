@@ -6,7 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -20,13 +21,14 @@ import bassamalim.hidaya.core.ui.components.ErrorScreen
 import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
-import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
+import bassamalim.hidaya.core.ui.components.PaginatedLazyColumn
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.theme.AppTheme
+import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun LeaderboardScreen(viewModel: LeaderboardViewModel) {
@@ -35,12 +37,24 @@ fun LeaderboardScreen(viewModel: LeaderboardViewModel) {
     MyScaffold(stringResource(R.string.leaderboard)) {
         if (state.isLoading) LoadingScreen()
         else if (state.isError) ErrorScreen(message = stringResource(R.string.error_fetching_data))
-        else UsersList(userId = state.userId, getTabContent = viewModel::getTabContent)
+        else UsersList(
+            userId = state.userId,
+            userRankMap = state.userRanks,
+            ranksMap = state.ranks,
+            isLoadingItems = state.isLoadingItems,
+            loadMoreItems = viewModel::loadMore
+        )
     }
 }
 
 @Composable
-private fun UsersList(userId: String, getTabContent: (RankType) -> LeaderboardTabContent) {
+private fun UsersList(
+    userId: String,
+    userRankMap: Map<RankType, String>,
+    ranksMap: Map<RankType, List<Pair<String, String>>>,
+    isLoadingItems: Map<RankType, Boolean>,
+    loadMoreItems: (RankType) -> Unit
+) {
     TabLayout(
         pageNames = listOf(
             stringResource(R.string.by_reading),
@@ -48,14 +62,21 @@ private fun UsersList(userId: String, getTabContent: (RankType) -> LeaderboardTa
         )
     ) { page ->
         val rankBy = RankType.entries[page]
-        val content = getTabContent(rankBy)
+        val userRank = userRankMap[rankBy]!!
+        val ranks = ranksMap[rankBy]!!
 
         MyColumn {
-            UserRankCard(userId = userId, userRank = content.userRank)
+            UserRankCard(userId = userId, userRank = userRank)
 
             MyHorizontalDivider(thickness = 1.dp)
 
-            UsersList(items = content.items, rankType = rankBy)
+            UsersList(
+                items = ranks,
+                rankType = rankBy,
+                listState = rememberLazyListState(),
+                loadMoreItems = { loadMoreItems(rankBy) },
+                isLoading = isLoadingItems[rankBy]!!
+            )
         }
     }
 }
@@ -114,22 +135,24 @@ private fun UserRankCard(userId: String, userRank: String) {
 }
 
 @Composable
-private fun UsersList(items: List<LeaderboardItem>, rankType: RankType) {
-    MyLazyColumn(
-        lazyList = {
-            itemsIndexed(items) { idx, item ->
-                ItemCard(
-                    item = item,
-                    rank = idx + 1,
-                    rankType = rankType
-                )
-            }
-        }
+private fun UsersList(
+    items: List<Pair<String, String>>,
+    rankType: RankType,
+    listState: LazyListState = rememberLazyListState(),
+    isLoading: Boolean = false,
+    loadMoreItems: () -> Unit = {}
+) {
+    PaginatedLazyColumn(
+        items = items.toPersistentList(),  // Convert the list to a PersistentList
+        loadMoreItems = loadMoreItems,
+        listState = listState,
+        isLoading = isLoading,
+        itemComponent = { index, item -> ItemCard(item, index+1, rankType) }
     )
 }
 
 @Composable
-private fun ItemCard(item: LeaderboardItem, rank: Int, rankType: RankType) {
+private fun ItemCard(item: Pair<String, String>, rank: Int, rankType: RankType) {
     MySurface(
         Modifier.heightIn(min = 80.dp)
     ) {
@@ -148,7 +171,7 @@ private fun ItemCard(item: LeaderboardItem, rank: Int, rankType: RankType) {
             )
 
             MyText(
-                text = "${stringResource(R.string.user)} ${item.userId}",
+                text = "${stringResource(R.string.user)} ${item.first}",
                 fontWeight =
                     if (rank <= 3) FontWeight.Bold
                     else FontWeight.Normal,
@@ -164,8 +187,8 @@ private fun ItemCard(item: LeaderboardItem, rank: Int, rankType: RankType) {
 
             MyText(
                 text = when (rankType) {
-                    RankType.BY_READING -> "${item.quranRecord} ${stringResource(R.string.pages)}"
-                    RankType.BY_LISTENING -> item.recitationsRecord
+                    RankType.BY_READING -> "${item.second} ${stringResource(R.string.pages)}"
+                    RankType.BY_LISTENING -> item.second
                 },
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,

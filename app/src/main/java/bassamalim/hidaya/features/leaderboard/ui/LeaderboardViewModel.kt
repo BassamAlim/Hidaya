@@ -38,6 +38,8 @@ class LeaderboardViewModel @Inject constructor(
 
             val userRecord = domain.getUserRecord().data
             val ranks = domain.getRanks()
+            println("ranks: ${ranks[RankType.BY_READING]!!.data}")
+
             val userRank =
                 if (userRecord == null) emptyMap()
                 else {
@@ -48,33 +50,67 @@ class LeaderboardViewModel @Inject constructor(
 
             val isError = userRecord == null || userRecord.userId == -1
                     || ranks.values.any { it is Response.Error<*> }
+            println("isError: $isError")
+
+            val ranksList = if (isError) mapOf(
+                RankType.BY_READING to emptyList(),
+                RankType.BY_LISTENING to emptyList()
+            )
+            else mapOf(
+                RankType.BY_READING to ranks[RankType.BY_READING]!!.data!!
+                    .map { (userId, value) ->
+                        userId.toString() to translateNums(value.toString(), numeralsLanguage)
+                    }.toList(),
+                RankType.BY_LISTENING to ranks[RankType.BY_LISTENING]!!.data!!
+                    .map { (userId, value) ->
+                        userId.toString() to formatRecitationsTime(value)
+                    }.toList()
+            )
+            println("ranksList: $ranksList")
 
             _uiState.update { it.copy(
                 isLoading = false,
                 isError = isError,
                 userId = if (isError) "-1" else userRecord?.userId.toString(),
                 userRanks = userRank,
-                ranks =
-                    if (isError) emptyMap()
-                    else ranks.map { (rankType, rank) ->
-                        rankType to rank.data!!.map { record ->
-                            LeaderboardItem(
-                                userId = record.userId.toString(),
-                                quranRecord = record.quranPages.toString(),
-                                recitationsRecord =
-                                    formatRecitationsTime(userRecord?.recitationsTime ?: 0)
-                            )
-                        }
-                    }.toMap()
+                ranks = ranksList
             )}
         }
     }
 
-    fun getTabContent(rankType: RankType): LeaderboardTabContent {
-        return LeaderboardTabContent(
-            userRank = _uiState.value.userRanks[rankType] ?: "",
-            items = _uiState.value.ranks[rankType] ?: emptyList()
-        )
+    fun loadMore(rankType: RankType) {
+        println("loadMore: $rankType")
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(
+                isLoadingItems = it.isLoadingItems.toMutableMap().also { map ->
+                    map[rankType] = true
+                }
+            )}
+
+            val newRanksMap = domain.getMoreRanks(rankType = rankType).data ?: emptyMap()
+            val newRanks = newRanksMap.map { (userId, value) ->
+                userId.toString() to translateNums(value.toString(), numeralsLanguage)
+            }.toList()
+            println("newRanks: $newRanks")
+
+            val added = _uiState.value.ranks[rankType]!! + newRanks
+
+            println("added: $added")
+            println("added size: ${added.size}")
+
+            _uiState.update { it.copy(
+                isLoadingItems = it.isLoadingItems.toMutableMap().also { map ->
+                    map[rankType] = false
+                },
+                ranks = it.ranks.toMutableMap().also { map ->
+                    map[rankType] = added
+                }
+            )}
+
+            println("ranks size: ${_uiState.value.ranks[RankType.BY_READING]!!.size}")
+            println("ranks: ${_uiState.value.ranks[RankType.BY_READING]!!}")
+        }
     }
 
     private fun formatRecitationsTime(millis: Long): String {

@@ -5,5 +5,9 @@ data class LeaderboardUiState(
     val isError: Boolean = false,
     val userId: String = "",
     val userRanks: Map<RankType, String> = emptyMap(),
-    val ranks: Map<RankType, List<LeaderboardItem>> = emptyMap()
+    val ranks: Map<RankType, List<Pair<String, String>>> = emptyMap(),
+    val isLoadingItems: Map<RankType, Boolean> = mapOf(
+        RankType.BY_READING to false,
+        RankType.BY_LISTENING to false
+    )
 )

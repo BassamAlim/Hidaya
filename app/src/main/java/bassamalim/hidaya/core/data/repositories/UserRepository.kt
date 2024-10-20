@@ -6,6 +6,7 @@ import bassamalim.hidaya.core.di.ApplicationScope
 import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.other.Global
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.snapshots
@@ -25,15 +26,13 @@ class UserRepository @Inject constructor(
 
     fun getLocalRecord() = userPreferencesDataSource.getUserRecord()
 
-    fun getQuranRecord() = getLocalRecord().map { it.quranPages }
-
-    fun getRecitationsRecord() = getLocalRecord().map { it.recitationsTime }
-
     suspend fun setLocalRecord(userRecord: UserRecord) {
         scope.launch {
             userPreferencesDataSource.updateUserRecord(userRecord)
         }
     }
+
+    fun getQuranRecord() = getLocalRecord().map { it.quranPages }
 
     suspend fun setQuranRecord(quranPages: Int) {
         scope.launch {
@@ -42,6 +41,8 @@ class UserRepository @Inject constructor(
             )
         }
     }
+
+    fun getRecitationsRecord() = getLocalRecord().map { it.recitationsTime }
 
     suspend fun setRecitationsRecord(recitationsTime: Long) {
         scope.launch {
@@ -143,22 +144,27 @@ class UserRepository @Inject constructor(
         return id
     }
 
-    suspend fun getRanks(rankBy: String): Response<List<UserRecord>> {
-        return firestore.collection("Leaderboard")
-            .orderBy(rankBy, Query.Direction.DESCENDING)
+    suspend fun getReadingRanks(
+        previousLast: DocumentSnapshot? = null
+    ): Pair<Response<Map<Int, Long>>, DocumentSnapshot?> {
+        println("getReadingRanks: $previousLast")
+
+        var last: DocumentSnapshot? = null
+
+        var query = firestore.collection("Leaderboard")
+            .orderBy("reading_record", Query.Direction.DESCENDING)
+            .orderBy("user_id")
+        if (previousLast != null) query = query.startAfter(previousLast)
+        val results = query.limit(100)
             .get()
             .await()
             .let { result ->
                 try {
+                    last = result.documents.last()
                     Response.Success(
-                        result.documents.map { document ->
-                            UserRecord(
-                                userId = document.data!!["user_id"].toString().toInt(),
-                                quranPages = document.data!!["reading_record"]
-                                    .toString().toInt(),
-                                recitationsTime = document.data!!["listening_record"]
-                                    .toString().toLong()
-                            )
+                        result.documents.associate { document ->
+                            document.data!!["user_id"].toString().toInt() to
+                                    document.data!!["reading_record"].toString().toLong()
                         }
                     )
                 } catch (e: Exception) {
@@ -166,6 +172,41 @@ class UserRepository @Inject constructor(
                     Response.Error("Error fetching data")
                 }
             }
+
+        println("results: ${results.data}")
+        return Pair(results, last)
+    }
+
+    suspend fun getListeningRanks(
+        previousLast: DocumentSnapshot? = null
+    ): Pair<Response<Map<Int, Long>>, DocumentSnapshot?> {
+        println("getListeningRanks: $previousLast")
+
+        var last: DocumentSnapshot? = null
+
+        var query = firestore.collection("Leaderboard")
+            .orderBy("listening_record", Query.Direction.DESCENDING)
+            .orderBy("user_id")
+            if (previousLast != null) query = query.startAfter(previousLast)
+            val results = query.startAfter(previousLast)
+            .limit(100)
+            .get()
+            .await()
+            .let { result ->
+                try {
+                    Response.Success(
+                        result.documents.associate { document ->
+                            document.data!!["user_id"].toString().toInt() to
+                                    document.data!!["listening_record"].toString().toLong()
+                        }
+                    )
+                } catch (e: Exception) {
+                    Log.i(Global.TAG, "Error getting documents: ${e.message}")
+                    Response.Error("Error fetching data")
+                }
+            }
+        println("results: $results")
+        return Pair(results, last)
     }
 
 }

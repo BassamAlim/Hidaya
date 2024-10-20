@@ -7,6 +7,7 @@ import bassamalim.hidaya.core.models.Response
 import bassamalim.hidaya.core.models.UserRecord
 import bassamalim.hidaya.core.utils.OS.getDeviceId
 import bassamalim.hidaya.features.leaderboard.ui.RankType
+import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
@@ -17,26 +18,46 @@ class LeaderboardDomain @Inject constructor(
 ) {
 
     private val deviceId = getDeviceId(app)
-
-    suspend fun getUserRecord() = userRepository.getRemoteRecord(deviceId).first()
-
-    suspend fun getRanks() = mapOf(
-        RankType.BY_READING to userRepository.getRanks("reading_record"),
-        RankType.BY_LISTENING to userRepository.getRanks("listening_record")
+    private val previousLastDocuments: MutableMap<RankType, DocumentSnapshot?> = mutableMapOf(
+        RankType.BY_READING to null,
+        RankType.BY_LISTENING to null
     )
 
     fun getUserRank(
         userRecord: UserRecord,
-        ranks: Map<RankType, Response<List<UserRecord>>>
+        ranks: Map<RankType, Response<Map<Int, Long>>>
     ): Map<RankType, Int?> {
         return mapOf(
             RankType.BY_READING to ranks[RankType.BY_READING].let { response ->
-                response?.data?.indexOfFirst { it.userId == userRecord.userId }
+                response?.data?.keys!!.indexOfFirst { userId -> userId == userRecord.userId }
             },
             RankType.BY_LISTENING to ranks[RankType.BY_LISTENING].let { response ->
-                response?.data?.indexOfFirst { it.userId == userRecord.userId }
+                response?.data?.keys!!.indexOfFirst { userId -> userId == userRecord.userId }
             }
         )
+    }
+
+    suspend fun getUserRecord() = userRepository.getRemoteRecord(deviceId).first()
+
+    suspend fun getRanks(): Map<RankType, Response<Map<Int, Long>>> {
+        val (readingRanks, lastReading) = userRepository.getReadingRanks()
+        val (listeningRanks, lastListening) = userRepository.getListeningRanks()
+
+        previousLastDocuments[RankType.BY_READING] = lastReading
+        previousLastDocuments[RankType.BY_LISTENING] = lastListening
+
+        return mapOf(
+            RankType.BY_READING to readingRanks,
+            RankType.BY_LISTENING to listeningRanks
+        )
+    }
+
+    suspend fun getMoreRanks(rankType: RankType): Response<Map<Int, Long>> {
+        val (ranks, last) = userRepository.getReadingRanks(previousLastDocuments[rankType])
+
+        previousLastDocuments[rankType] = last
+
+        return ranks
     }
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
