@@ -77,7 +77,7 @@ class LeaderboardViewModel @Inject constructor(
     }
 
     fun loadMore(rankType: RankType) {
-        println("loadMore: $rankType")
+        if (_uiState.value.isLoadingItems[rankType] == true) return
 
         viewModelScope.launch {
             _uiState.update { it.copy(
