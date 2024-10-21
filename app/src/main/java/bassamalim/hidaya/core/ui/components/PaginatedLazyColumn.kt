@@ -1,7 +1,6 @@
 package bassamalim.hidaya.core.ui.components
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -47,21 +46,10 @@ fun <V> PaginatedLazyColumn(
             }
     }
 
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        state = listState
-    ) {
+    LazyColumn(modifier = modifier, state = listState) {
         itemsIndexed(items) { index, item ->
             itemComponent(index, item)
-//            Text(text = item, modifier = Modifier.padding(8.dp))  // Add padding to each item
         }
-
-        // Check if we've reached the end of the list
-        // if (index == items.lastIndex && !isLoading) {
-        //     loadMoreItems()
-        // }
 
         if (isLoading) {
             item {
