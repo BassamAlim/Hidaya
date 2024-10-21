@@ -42,7 +42,6 @@ class LeaderboardDomain @Inject constructor(
     suspend fun getRanks(): Map<RankType, Response<Map<Int, Long>>> {
         val (readingRanks, lastReading) = userRepository.getReadingRanks()
         val (listeningRanks, lastListening) = userRepository.getListeningRanks()
-        println("listeningRanks: ${listeningRanks.data}")
 
         previousLastDocuments[RankType.BY_READING] = lastReading
         previousLastDocuments[RankType.BY_LISTENING] = lastListening

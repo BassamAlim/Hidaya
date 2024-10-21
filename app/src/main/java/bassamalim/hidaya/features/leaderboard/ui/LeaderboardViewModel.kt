@@ -45,7 +45,6 @@ class LeaderboardViewModel @Inject constructor(
 
             val isError = userRecord == null || userRecord.userId == -1
                     || ranks.values.any { it is Response.Error<*> }
-            println("isError: $isError")
 
             val ranksList =
                 if (isError) mapOf(
@@ -105,8 +104,6 @@ class LeaderboardViewModel @Inject constructor(
                     map[rankType] = it.ranks[rankType]!! + newRanks
                 }
             )}
-
-            println("ranks size: ${_uiState.value.ranks[RankType.BY_READING]!!.size}")
         }
     }
 
