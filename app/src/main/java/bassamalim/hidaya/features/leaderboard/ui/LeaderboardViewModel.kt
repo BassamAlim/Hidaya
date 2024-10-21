@@ -21,7 +21,7 @@ class LeaderboardViewModel @Inject constructor(
     private val domain: LeaderboardDomain
 ): ViewModel() {
 
-    private lateinit var numeralsLanguage: Language
+    lateinit var numeralsLanguage: Language
 
     private val _uiState = MutableStateFlow(LeaderboardUiState())
     val uiState = _uiState.onStart {
@@ -39,37 +39,38 @@ class LeaderboardViewModel @Inject constructor(
             val userRecord = domain.getUserRecord().data
             val ranks = domain.getRanks()
 
-            val userRank =
-                if (userRecord == null) emptyMap()
-                else {
-                    domain.getUserRank(userRecord, ranks).map { (rankType, rank) ->
-                        rankType to rank.toString()
-                    }.toMap()
-                }
+            val userRank = userRecord?.let { domain.getUserRank(it, ranks) }
+                ?.mapValues { (_, rank) -> translateNums(rank.toString(), numeralsLanguage) }
+                ?: emptyMap()
 
             val isError = userRecord == null || userRecord.userId == -1
                     || ranks.values.any { it is Response.Error<*> }
             println("isError: $isError")
 
-            val ranksList = if (isError) mapOf(
-                RankType.BY_READING to emptyList(),
-                RankType.BY_LISTENING to emptyList()
-            )
-            else mapOf(
-                RankType.BY_READING to ranks[RankType.BY_READING]!!.data!!
-                    .map { (userId, value) ->
-                        userId.toString() to translateNums(value.toString(), numeralsLanguage)
-                    }.toList(),
-                RankType.BY_LISTENING to ranks[RankType.BY_LISTENING]!!.data!!
-                    .map { (userId, value) ->
-                        userId.toString() to formatRecitationsTime(value)
-                    }.toList()
-            )
+            val ranksList =
+                if (isError) mapOf(
+                    RankType.BY_READING to emptyList(),
+                    RankType.BY_LISTENING to emptyList()
+                )
+                else mapOf(
+                    RankType.BY_READING to ranks[RankType.BY_READING]!!.data!!
+                        .map { (userId, value) ->
+                            translateNums(userId.toString(), numeralsLanguage) to
+                                    translateNums(value.toString(), numeralsLanguage)
+                        }.toList(),
+                    RankType.BY_LISTENING to ranks[RankType.BY_LISTENING]!!.data!!
+                        .map { (userId, value) ->
+                            translateNums(userId.toString(), numeralsLanguage) to
+                                    formatRecitationsTime(value)
+                        }.toList()
+                )
 
             _uiState.update { it.copy(
                 isLoading = false,
                 isError = isError,
-                userId = if (isError) "-1" else userRecord?.userId.toString(),
+                userId =
+                    if (isError) "-1"
+                    else translateNums(userRecord?.userId.toString(), numeralsLanguage),
                 userRanks = userRank,
                 ranks = ranksList
             )}
@@ -87,20 +88,21 @@ class LeaderboardViewModel @Inject constructor(
             )}
 
             val newRanksMap = domain.getMoreRanks(rankType = rankType).data ?: emptyMap()
-            val newRanks = newRanksMap.map { (userId, value) ->
-                userId.toString() to translateNums(value.toString(), numeralsLanguage)
+            val newRanks = when (rankType) {
+                RankType.BY_READING -> newRanksMap.map { (userId, value) ->
+                    userId.toString() to translateNums(value.toString(), numeralsLanguage)
+                }
+                RankType.BY_LISTENING -> newRanksMap.map { (userId, value) ->
+                    userId.toString() to formatRecitationsTime(value)
+                }
             }.toList()
-
-            val added = _uiState.value.ranks[rankType]!! + newRanks
-
-            println("added size: ${added.size}")
 
             _uiState.update { it.copy(
                 isLoadingItems = it.isLoadingItems.toMutableMap().also { map ->
                     map[rankType] = false
                 },
                 ranks = it.ranks.toMutableMap().also { map ->
-                    map[rankType] = added
+                    map[rankType] = it.ranks[rankType]!! + newRanks
                 }
             )}
 
@@ -109,16 +111,13 @@ class LeaderboardViewModel @Inject constructor(
     }
 
     private fun formatRecitationsTime(millis: Long): String {
-        val hours = millis / (60 * 60 * 1000) % 24
+        val hours = millis / (60 * 60 * 1000)
         val minutes = millis / (60 * 1000) % 60
         val seconds = millis / 1000 % 60
 
         return translateNums(
             numeralsLanguage = numeralsLanguage,
-            string = String.format(
-                Locale.US, "%02d:%02d:%02d",
-                hours, minutes, seconds
-            )
+            string = String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
         )
     }
 

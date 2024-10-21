@@ -236,8 +236,6 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
             // pause the player
             apm.pause()
 
-            // Update metadata and state
-
             GlobalScope.launch {
                 updateDurationRecord(updateRecordCounter)
             }
@@ -516,7 +514,7 @@ class VersePlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeListen
     private fun refresh() {
         updatePbState(getPbState())
 
-        if (updateRecordCounter++ == 10) {
+        if (updateRecordCounter++ >= 10) {
             GlobalScope.launch {
                 updateDurationRecord(updateRecordCounter)
             }

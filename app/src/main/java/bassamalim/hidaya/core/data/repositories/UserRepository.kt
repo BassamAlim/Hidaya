@@ -153,7 +153,8 @@ class UserRepository @Inject constructor(
             .orderBy("reading_record", Query.Direction.DESCENDING)
             .orderBy("user_id")
         if (previousLast != null) query = query.startAfter(previousLast)
-        val results = query.limit(100)
+        val results = query
+            .limit(100)
             .get()
             .await()
             .let { result ->
@@ -181,8 +182,8 @@ class UserRepository @Inject constructor(
         var query = firestore.collection("Leaderboard")
             .orderBy("listening_record", Query.Direction.DESCENDING)
             .orderBy("user_id")
-            if (previousLast != null) query = query.startAfter(previousLast)
-            val results = query.startAfter(previousLast)
+        if (previousLast != null) query = query.startAfter(previousLast)
+        val results = query
             .limit(100)
             .get()
             .await()

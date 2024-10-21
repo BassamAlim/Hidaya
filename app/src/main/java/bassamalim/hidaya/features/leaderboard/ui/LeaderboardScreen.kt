@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.ui.components.ErrorScreen
 import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyColumn
@@ -28,6 +29,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.PaginatedLazyColumn
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.theme.AppTheme
+import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
@@ -42,7 +44,8 @@ fun LeaderboardScreen(viewModel: LeaderboardViewModel) {
             userRankMap = state.userRanks,
             ranksMap = state.ranks,
             isLoadingItems = state.isLoadingItems,
-            loadMoreItems = viewModel::loadMore
+            loadMoreItems = viewModel::loadMore,
+            numeralsLanguage = viewModel.numeralsLanguage
         )
     }
 }
@@ -53,7 +56,8 @@ private fun UsersList(
     userRankMap: Map<RankType, String>,
     ranksMap: Map<RankType, List<Pair<String, String>>>,
     isLoadingItems: Map<RankType, Boolean>,
-    loadMoreItems: (RankType) -> Unit
+    loadMoreItems: (RankType) -> Unit,
+    numeralsLanguage: Language
 ) {
     TabLayout(
         pageNames = listOf(
@@ -75,7 +79,8 @@ private fun UsersList(
                 rankType = rankBy,
                 listState = rememberLazyListState(),
                 loadMoreItems = { loadMoreItems(rankBy) },
-                isLoading = isLoadingItems[rankBy]!!
+                isLoading = isLoadingItems[rankBy]!!,
+                numeralsLanguage = numeralsLanguage
             )
         }
     }
@@ -138,27 +143,33 @@ private fun UserRankCard(userId: String, userRank: String) {
 private fun UsersList(
     items: List<Pair<String, String>>,
     rankType: RankType,
-    listState: LazyListState = rememberLazyListState(),
-    isLoading: Boolean = false,
-    loadMoreItems: () -> Unit = {}
+    listState: LazyListState,
+    isLoading: Boolean,
+    loadMoreItems: () -> Unit,
+    numeralsLanguage: Language
 ) {
     PaginatedLazyColumn(
         items = items.toPersistentList(),  // Convert the list to a PersistentList
         loadMoreItems = loadMoreItems,
         listState = listState,
         isLoading = isLoading,
-        itemComponent = { index, item -> ItemCard(item, index+1, rankType) }
+        itemComponent = { index, item -> ItemCard(item, index+1, rankType, numeralsLanguage) }
     )
 }
 
 @Composable
-private fun ItemCard(item: Pair<String, String>, rank: Int, rankType: RankType) {
+private fun ItemCard(
+    item: Pair<String, String>,
+    rank: Int,
+    rankType: RankType,
+    numeralsLanguage: Language
+) {
     MySurface(
         Modifier.heightIn(min = 80.dp)
     ) {
         MyRow {
             MyText(
-                text = "$rank.",
+                text = translateNums("$rank.", numeralsLanguage),
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 textColor = when (rank) {

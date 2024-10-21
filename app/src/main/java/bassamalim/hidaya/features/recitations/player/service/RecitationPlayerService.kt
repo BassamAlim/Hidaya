@@ -615,7 +615,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
             controller.playbackState.bufferedPosition
         )
 
-        if (updateRecordCounter++ == 10) {
+        if (updateRecordCounter++ >= 10) {
             GlobalScope.launch {
                 updateDurationRecord(updateRecordCounter)
             }
