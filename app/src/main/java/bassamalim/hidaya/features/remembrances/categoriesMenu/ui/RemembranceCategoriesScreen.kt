@@ -11,12 +11,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MySquareButton
+import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
 fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
@@ -47,14 +47,16 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
             // day and night recitations button
             MySquareButton(
                 text = stringResource(R.string.day_and_night_remembrances),
-                imagePainter = painterResource(R.drawable.ic_day_and_night),
+                drawableId = R.drawable.ic_day_and_night,
+                tint = AppTheme.colors.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 0) }
             )
 
             // prayer recitations button
             MySquareButton(
                 text = stringResource(R.string.prayers_remembrances),
-                imagePainter = painterResource(R.drawable.ic_praying),
+                drawableId = R.drawable.ic_praying,
+                tint = AppTheme.colors.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 1) }
             )
         }
@@ -66,13 +68,15 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
             // quran recitations button
             MySquareButton(
                 text = stringResource(R.string.quran_remembrances),
-                imagePainter = painterResource(R.drawable.ic_closed_quran),
+                drawableId = R.drawable.ic_quran,
+                tint = AppTheme.colors.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 2) }
             )
             // actions recitations button
             MySquareButton(
                 text = stringResource(R.string.actions_remembrances),
-                imagePainter = painterResource(R.drawable.ic_actions),
+                drawableId = R.drawable.ic_moving,
+                tint = AppTheme.colors.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 3) }
             )
         }
@@ -84,13 +88,15 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
             // events recitations button
             MySquareButton(
                 text = stringResource(R.string.events_remembrances),
-                imagePainter = painterResource(R.drawable.ic_events),
+                drawableId = R.drawable.ic_events,
+                tint = AppTheme.colors.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 4) }
             )
             // emotion recitations button
             MySquareButton(
                 text = stringResource(R.string.emotion_remembrances),
-                imagePainter = painterResource(R.drawable.ic_emotion),
+                drawableId = R.drawable.ic_emotions,
+                tint = AppTheme.colors.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 5) }
             )
         }
@@ -102,13 +108,15 @@ fun RemembranceCategoriesScreen(viewModel: RemembranceCategoriesViewModel) {
             // places recitations button
             MySquareButton(
                 text = stringResource(R.string.places_remembrances),
-                imagePainter = painterResource(R.drawable.ic_going_out),
+                drawableId = R.drawable.ic_going_out,
+                tint = AppTheme.colors.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 6) }
             )
             // more recitations button
             MySquareButton(
                 text = stringResource(R.string.title_more),
-                imagePainter = painterResource(R.drawable.ic_duaa_moon),
+                drawableId = R.drawable.ic_duaa_light_hands,
+                tint = AppTheme.colors.onSurface,
                 onClick = { viewModel.onCategoryClick(categoryId = 7) }
             )
         }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
@@ -136,7 +137,8 @@ private fun Tab(
                                 if (item.revelation == 0) R.drawable.ic_kaaba
                                 else R.drawable.ic_madina
                             ),
-                            contentDescription = stringResource(R.string.revelation_view_description)
+                            contentDescription = stringResource(R.string.revelation_view_description),
+                            modifier = Modifier.size(34.dp)
                         )
 
                         MyText(

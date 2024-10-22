@@ -36,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -312,7 +311,9 @@ fun MyBackButton(onClick: (() -> Unit)? = null) {
 @Composable
 fun MySquareButton(
     text: String,
-    imagePainter: Painter,
+    drawableId: Int,
+    tint: Color,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     MySquareButton(
@@ -322,10 +323,11 @@ fun MySquareButton(
             .size(180.dp)
             .padding(vertical = 7.dp, horizontal = 7.dp),
         image = {
-            Image(
-                painter = imagePainter,
+            Icon(
+                painter = painterResource(drawableId),
                 contentDescription = text,
-                modifier = Modifier.size(70.dp)
+                modifier = modifier.size(70.dp),
+                tint = tint
             )
         },
         onClick = onClick
