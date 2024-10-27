@@ -9,6 +9,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
     id("kotlin-kapt")
     id("kotlin-parcelize")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -64,57 +65,53 @@ android {
         compose true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion "1.5.6"
-    }
-
 }
 
 dependencies {
     // AndroidX
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.activity:activity-ktx:$activity_version")
-    implementation("androidx.activity:activity-compose:$activity_version")
-    implementation("androidx.navigation:navigation-compose:$navigation_version")
-    implementation("androidx.navigation:navigation-ui-ktx:$navigation_version")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version")
-    implementation("androidx.media:media:1.7.0")
-    implementation("androidx.media3:media3-ui:$media3_version")
-    implementation("androidx.media3:media3-common:$media3_version")
-    implementation("androidx.glance:glance-appwidget:1.1.1")
-    implementation("androidx.datastore:datastore-preferences:$datastore_version")
-    implementation("androidx.datastore:datastore:$datastore_version")
-    implementation("androidx.room:room-runtime:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.media)
+    implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.media3.common)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
     // Compose
-    implementation("androidx.compose.ui:ui:$compose_version")
-    implementation("androidx.compose.ui:ui-viewbinding:$compose_version")
-    implementation("androidx.compose.ui:ui-tooling-preview:$compose_version")
-    debugImplementation("androidx.compose.ui:ui-tooling:$compose_version")
-    implementation("androidx.compose.runtime:runtime:$compose_version")
-    implementation("androidx.compose.runtime:runtime-livedata:$compose_version")
-    implementation("androidx.compose.foundation:foundation:$compose_version")
-    implementation("androidx.compose.foundation:foundation-layout:$compose_version")
-    implementation("androidx.compose.material:material:$compose_version")
-    implementation("androidx.compose.material:material-icons-extended:$compose_version")
-    implementation 'androidx.compose.material3:material3-android:1.3.0'
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.viewbinding)
+    implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.runtime)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.material.icons.extended)
+    implementation libs.androidx.material3.android
     // Google
-    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanist_version")
-    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanist_version")
-    implementation("com.google.android.gms:play-services-location:21.3.0")
-    implementation("com.google.android.material:material:1.12.0")
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.pager.indicators)
+    implementation(libs.play.services.location)
+    implementation(libs.material)
+    implementation(libs.gson)
     // Firebase
-    implementation platform("com.google.firebase:firebase-bom:33.5.1")
+    implementation platform(libs.firebase.bom)
     implementation("com.google.firebase:firebase-config")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
@@ -125,20 +122,20 @@ dependencies {
     implementation("com.google.firebase:firebase-perf")
     implementation("com.google.firebase:firebase-storage-ktx")
     // Hilt
-    implementation("com.google.dagger:hilt-android:$hilt_version")
-    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
     // Other
-    implementation("io.coil-kt:coil-compose:$coil_version")
-    implementation("io.coil-kt:coil-gif:$coil_version")
-    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    testImplementation("junit:junit:4.13.2")
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
+    implementation(libs.core)
+    implementation(libs.kotlinx.collections.immutable)
+    implementation(libs.kotlinx.serialization.json)
+    testImplementation(libs.junit)
     // jar Files
     implementation files("libs/YouTubeAndroidPlayerApi.jar")
     // GitHub
-    implementation("com.github.msarhan:ummalqura-calendar:2.0.2")
+    implementation(libs.ummalqura.calendar)
     // Temporary
 //    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.7")
 }

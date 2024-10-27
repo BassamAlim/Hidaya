@@ -1,44 +1,26 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext {
-        gradle_version = "8.3.1"
-        kotlin_version = "1.9.21"
-        compose_version = "1.7.3"
-        activity_version = "1.9.3"
-        lifecycle_version = "2.8.6"
-        hilt_version = "2.51.1"
-        room_version = "2.6.1"
-        navigation_version = "2.8.3"
-        media3_version = "1.4.1"
-        datastore_version = "1.1.1"
-        accompanist_version = "0.34.0"
-        coil_version = "2.6.0"
-    }
-
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:$gradle_version")
-        classpath("com.google.gms:google-services:4.4.2")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:$hilt_version")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:3.0.2")
-        classpath("com.google.firebase:perf-plugin:1.4.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
+        classpath(libs.gradle)
+        classpath(libs.google.services)
+        classpath(libs.hilt.android.gradle.plugin)
+        classpath(libs.firebase.crashlytics.gradle)
+        classpath(libs.perf.plugin)
+        classpath(libs.kotlin.gradle.plugin)
+        classpath(libs.kotlin.serialization)
     }
 }
 
 plugins {
-    id("com.android.application") version "$gradle_version" apply false
-    id("com.android.library") version "$gradle_version" apply false
-    id("org.jetbrains.kotlin.android") version "$kotlin_version" apply false
-    id("com.google.dagger.hilt.android") version "$hilt_version" apply false
-    id("com.google.devtools.ksp") version "$kotlin_version-1.0.16" apply false
-}
-
-tasks.register("clean", Delete) {
-    delete rootProject.buildDir
+    id("com.android.application") version libs.versions.gradle apply false
+    id("com.android.library") version libs.versions.gradle apply false
+    id("org.jetbrains.kotlin.android") version libs.versions.kotlin apply false
+    id("com.google.dagger.hilt.android") version libs.versions.hilt apply false
+    id("com.google.devtools.ksp") version libs.versions.ksp apply false
+    alias(libs.plugins.compose.compiler) apply false
 }
