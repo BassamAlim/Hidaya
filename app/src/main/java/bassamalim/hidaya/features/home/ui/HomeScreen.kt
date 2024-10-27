@@ -5,13 +5,16 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Icon
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -115,13 +118,32 @@ private fun PrayerCard(
                     .padding(vertical = 10.dp)
             )
 
+//            val width = LocalConfiguration.current.screenWidthDp
+//            AnalogClock(
+//                timeFromPreviousPrayer = timeFromPreviousPrayer,
+//                timeToNextPrayer = timeToNextPrayer,
+//                numeralsLanguage = numeralsLanguage,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height((width * 0.7).dp)
+//                    .padding(vertical = 10.dp)
+//            )
+
             Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(
-                    Modifier.weight(0.4f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    MyText(
+                        text = stringResource(R.string.previous_prayer),
+                        modifier = Modifier.padding(3.dp),
+                        fontSize = 20.sp
+                    )
+
                     MyText(
                         text = previousPrayerName,
                         modifier = Modifier.padding(3.dp),
@@ -145,10 +167,21 @@ private fun PrayerCard(
                     )
                 }
 
+                VerticalDivider(
+                    Modifier.padding(vertical = 20.dp),
+                    color = AppTheme.colors.shadow
+                )
+
                 Column(
-                    Modifier.weight(0.4f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+
+                    MyText(
+                        text = stringResource(R.string.next_prayer),
+                        modifier = Modifier.padding(3.dp),
+                        fontSize = 20.sp
+                    )
+
                     MyText(
                         text = nextPrayerName,
                         modifier = Modifier.padding(3.dp),

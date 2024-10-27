@@ -335,10 +335,7 @@ fun MySquareButton(
 }
 
 @Composable
-fun MyFavoriteButton(
-    isFavorite: Boolean,
-    onClick: () -> Unit
-) {
+fun MyFavoriteButton(isFavorite: Boolean, onClick: () -> Unit) {
     MyIconButton(
         iconId =
             if (isFavorite) R.drawable.ic_star

@@ -229,5 +229,7 @@
     <string name="location_failed">Location Selection Failed</string>
     <string name="athan_voice">Athan Voice</string>
     <string name="compass_calibration">Compass calibration</string>
+    <string name="previous_prayer">Previous Prayer</string>
+    <string name="next_prayer">Upcoming Prayer</string>
 
 </resources>

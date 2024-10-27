@@ -230,5 +230,7 @@
     <string name="location_failed">فشل تحديد الموقع</string>
     <string name="athan_voice">المؤذن</string>
     <string name="compass_calibration">معايرة الجهاز</string>
+    <string name="previous_prayer">الصلاة السابقة</string>
+    <string name="next_prayer">الصلاة القادمة</string>
 
 </resources>

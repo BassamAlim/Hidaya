@@ -138,7 +138,7 @@ private fun Tab(
                                 else R.drawable.ic_madina
                             ),
                             contentDescription = stringResource(R.string.revelation_view_description),
-                            modifier = Modifier.size(34.dp)
+                            modifier = Modifier.size(30.dp)
                         )
 
                         MyText(
