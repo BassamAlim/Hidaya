@@ -68,7 +68,7 @@ fun MoreScreen(viewModel: MoreViewModel) {
 
             MySquareButton(
                 text = stringResource(R.string.quran_radio),
-                drawableId = R.drawable.ic_radio1,
+                drawableId = R.drawable.ic_radio,
                 tint = AppTheme.colors.onSurface,
                 onClick = viewModel::onRadioClick
             )
@@ -84,7 +84,7 @@ fun MoreScreen(viewModel: MoreViewModel) {
 
             MySquareButton(
                 text = stringResource(R.string.settings),
-                drawableId = R.drawable.ic_settings2,
+                drawableId = R.drawable.ic_settings,
                 tint = AppTheme.colors.onSurface,
                 onClick = viewModel::onSettingsClick
             )
