@@ -43,7 +43,10 @@ fun QuranSettingsDialog(
 
     if (state.isLoading) return
 
-    MyDialog(shown = true) {
+    MyDialog(
+        shown = true,
+        onDismiss = viewModel::onDismiss
+    ) {
         Column(
             Modifier
                 .fillMaxWidth()
@@ -113,7 +116,7 @@ fun QuranSettingsDialog(
                 onSwitch = viewModel::onShouldStopOnPageEndChange
             )
 
-            BottomBar(onCancel = viewModel::onCancel, onSave = viewModel::onSave)
+            BottomBar(onCancel = viewModel::onDismiss, onSave = viewModel::onSave)
         }
     }
 }

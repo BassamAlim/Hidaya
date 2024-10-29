@@ -35,6 +35,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
 import bassamalim.hidaya.core.ui.components.TutorialDialog
+import bassamalim.hidaya.core.ui.theme.AppTheme
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -138,7 +139,8 @@ private fun Tab(
                                 else R.drawable.ic_madina
                             ),
                             contentDescription = stringResource(R.string.revelation_view_description),
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(30.dp),
+                            tint = AppTheme.colors.shadow
                         )
 
                         MyText(

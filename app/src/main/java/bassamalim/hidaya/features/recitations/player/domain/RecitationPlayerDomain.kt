@@ -49,15 +49,7 @@ class RecitationPlayerDomain @Inject constructor(
     private lateinit var tc: MediaControllerCompat.TransportControls
     private var path = ""
 
-    private val downloadReceiver = ReceiverWrapper(
-        context = activity,
-        intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-        broadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                updateDownloadStates(checkDownload())
-            }
-        }
-    )
+    private lateinit var downloadReceiver: ReceiverWrapper
 
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(UnstableApi::class)
@@ -68,6 +60,16 @@ class RecitationPlayerDomain @Inject constructor(
     ) {
         this.activity = activity
         this.updateDownloadStates = updateDownloadStates
+
+        downloadReceiver = ReceiverWrapper(
+            context = activity,
+            intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+            broadcastReceiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    updateDownloadStates(checkDownload())
+                }
+            }
+        )
 
         mediaBrowser = MediaBrowserCompat(
             activity,

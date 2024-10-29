@@ -91,7 +91,7 @@ class QuranSettingsViewModel @Inject constructor(
         )}
     }
 
-    fun onCancel() {
+    fun onDismiss() {
         navigator.popBackStack()
     }
 
