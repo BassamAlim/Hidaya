@@ -89,20 +89,14 @@ class QiblaDomain @Inject constructor(
         else showUnsupported()
     }
 
-    private fun adjustQiblaDial(
-        azimuth: Float,
-        adjustQiblaDial: (Float) -> Unit
-    ) {
+    private fun adjustQiblaDial(azimuth: Float, adjustQiblaDial: (Float) -> Unit) {
         val target = bearing - currentAzimuth
         currentAzimuth = azimuth
 
         adjustQiblaDial(target)
     }
 
-    fun adjustNorthDial(
-        azimuth: Float,
-        adjustNorthDial: (Float) -> Unit
-    ) {
+    fun adjustNorthDial(azimuth: Float, adjustNorthDial: (Float) -> Unit) {
         currentAzimuth = azimuth
 
         adjustNorthDial(-azimuth)

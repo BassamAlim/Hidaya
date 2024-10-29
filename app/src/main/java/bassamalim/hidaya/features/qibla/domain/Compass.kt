@@ -6,10 +6,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 
-class Compass(
-    context: Context,
-    private var listener: CompassListener
-) : SensorEventListener {
+class Compass(context: Context, private var listener: CompassListener) : SensorEventListener {
 
     private val sensorManager: SensorManager
     private val mSensor: Sensor?
@@ -45,7 +42,8 @@ class Compass(
     // It's a way to make sure that the code is executed in a synchronized way.
     override fun onSensorChanged(event: SensorEvent) {
         synchronized(this) {
-            val alpha = 0.97f
+            // apply smoothing
+            val alpha = 0.97f  // smoothing factor
             if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
                 aData[0] = alpha * aData[0] + (1 - alpha) * event.values[0]
                 aData[1] = alpha * aData[1] + (1 - alpha) * event.values[1]
