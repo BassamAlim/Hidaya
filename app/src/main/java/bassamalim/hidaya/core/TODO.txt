@@ -1,6 +1,4 @@
 Bugs:
-- recitations search field bug
-- aya recitations showing not found before playing
 - qibla accuracy
 
 Modifications:
@@ -8,6 +6,7 @@ Modifications:
 - showing past prayer for only 30 minutes after the prayer
 - white theme
 - new logo
+- waves for radio screen
 
 Parallelism:
 class GetAllBooksAndAuthorsUseCase(

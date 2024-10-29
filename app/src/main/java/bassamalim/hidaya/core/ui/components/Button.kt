@@ -314,6 +314,7 @@ fun MySquareButton(
     drawableId: Int,
     tint: Color,
     modifier: Modifier = Modifier,
+    iconSize: Dp = 70.dp,
     onClick: () -> Unit
 ) {
     MySquareButton(
@@ -326,7 +327,7 @@ fun MySquareButton(
             Icon(
                 painter = painterResource(drawableId),
                 contentDescription = text,
-                modifier = modifier.size(70.dp),
+                modifier = modifier.size(iconSize),
                 tint = tint
             )
         },

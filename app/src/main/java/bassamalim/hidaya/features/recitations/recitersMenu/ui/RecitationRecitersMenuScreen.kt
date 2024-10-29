@@ -82,7 +82,7 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         SearchComponent(
-                            value = state.searchText,
+                            value = viewModel.searchText,
                             hint = stringResource(R.string.reciters_search_hint),
                             modifier = Modifier.weight(1F),
                             onValueChange = viewModel::onSearchTextChange

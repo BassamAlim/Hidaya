@@ -62,7 +62,10 @@ fun HijriDatePickerDialog(
         onDispose {}
     }
 
-    MyDialog(shown = true) {
+    MyDialog(
+        shown = true,
+        onDismiss = viewModel::onCancelClicked
+    ) {
         Column(
             Modifier.clip(RoundedCornerShape(16.dp))
         ) {

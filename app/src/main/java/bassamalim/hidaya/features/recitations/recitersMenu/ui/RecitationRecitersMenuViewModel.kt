@@ -2,6 +2,9 @@ package bassamalim.hidaya.features.recitations.recitersMenu.ui
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.DownloadState
@@ -35,6 +38,8 @@ class RecitationRecitersMenuViewModel @Inject constructor(
     private lateinit var allRecitations: Flow<List<Recitation>>
     private lateinit var suraNames: List<String>
     private lateinit var narrationSelections: Flow<Map<String, Boolean>>
+    var searchText by mutableStateOf("")
+        private set
 
     private val _uiState = MutableStateFlow(RecitationRecitersMenuUiState())
     val uiState = combine(
@@ -182,8 +187,10 @@ class RecitationRecitersMenuViewModel @Inject constructor(
         )
     }
 
-    // TODO: fix writing error
+    // TODO: find a better fix for this
     fun onSearchTextChange(text: String) {
+        println("onSearchTextChange: $text")
+        searchText = text
         _uiState.update { it.copy(
             searchText = text
         )}
