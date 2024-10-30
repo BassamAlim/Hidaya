@@ -85,10 +85,10 @@ class Alarm(
 
         val millis = time.timeInMillis
         if (System.currentTimeMillis() <= millis) {
-            val intent = Intent(app, NotificationReceiver::class.java).also {
-                it.action = if (reminder == Reminder.Prayer.Sunrise) "devotion" else "prayer"
-                it.putExtra("id", reminder.id)
-                it.putExtra("time", millis)
+            val intent = Intent(app, NotificationReceiver::class.java).apply {
+                action = if (reminder == Reminder.Prayer.Sunrise) "devotion" else "prayer"
+                putExtra("id", reminder.id)
+                putExtra("time", millis)
             }
 
             val pendingIntent = PendingIntent.getBroadcast(
@@ -176,10 +176,11 @@ class Alarm(
         time[Calendar.SECOND] = 0
         time[Calendar.MILLISECOND] = 0
 
-        val intent = Intent(app, NotificationReceiver::class.java)
-        intent.action = "devotion"
-        intent.putExtra("id", devotion.id)
-        intent.putExtra("time", time.timeInMillis)
+        val intent = Intent(app, NotificationReceiver::class.java).apply {
+            action = "devotion"
+            putExtra("id", devotion.id)
+            putExtra("time", time.timeInMillis)
+        }
 
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 

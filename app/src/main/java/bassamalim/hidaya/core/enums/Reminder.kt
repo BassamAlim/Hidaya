@@ -117,7 +117,7 @@ sealed class Reminder(val id: Int, val name: String) {
                 14 -> Devotional.EveningRemembrances
                 15 -> Devotional.DailyWerd
                 16 -> Devotional.FridayKahf
-                else -> throw IllegalArgumentException("Invalid Reminder ID")
+                else -> throw IllegalArgumentException("Invalid Reminder ID: $id")
             }
         }
     }

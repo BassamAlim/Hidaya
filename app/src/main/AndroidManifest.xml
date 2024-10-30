@@ -62,13 +62,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/prayers_widget_info" />
         </receiver>
-        <receiver
-            android:name="androidx.media.session.MediaButtonReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
-        </receiver>
 
         <service
             android:name=".core.services.AthanService"
@@ -81,7 +74,6 @@
             android:foregroundServiceType="mediaPlayback"
             android:permission="none">
             <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
@@ -91,7 +83,6 @@
             android:foregroundServiceType="mediaPlayback"
             android:permission="none">
             <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
@@ -101,7 +92,6 @@
             android:foregroundServiceType="mediaPlayback"
             android:permission="none">
             <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
