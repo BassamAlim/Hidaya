@@ -210,6 +210,7 @@ fun SliderPref(
     numeralsLanguage: Language,
     infinite: Boolean = false,
     sliderFraction: Float = 0.8F,
+    enabled: Boolean = true,
     onValueChange: (Float) -> Unit = {},
     onValueChangeFinished: () -> Unit = {}
 ) {
@@ -226,6 +227,7 @@ fun SliderPref(
             numeralsLanguage = numeralsLanguage,
             infinite = infinite,
             sliderFraction = sliderFraction,
+            enabled = enabled,
             onValueChange = onValueChange,
             onValueChangeFinished = onValueChangeFinished
         )

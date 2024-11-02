@@ -21,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.ui.components.HorizontalRadioGroup
+import bassamalim.hidaya.core.ui.components.MyCheckbox
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyRow
@@ -67,11 +68,29 @@ fun QuranSettingsDialog(
                 onSelect = viewModel::onViewTypeChange
             )
 
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MyCheckbox(
+                    isChecked = state.fillPage,
+                    onCheckedChange = viewModel::onFillPageChange
+                )
+
+                MyText(
+                    stringResource(R.string.fill_page),
+                    textColor = AppTheme.colors.accent
+                )
+            }
+
             SliderPref(
                 value = state.textSize,
                 title = stringResource(R.string.text_size_title),
                 valueRange = 20F..50F,
                 numeralsLanguage = viewModel.numeralsLanguage,
+                enabled = state.isTextSizeSliderEnabled,
                 onValueChange = viewModel::onTextSizeChange
             )
 

@@ -4,6 +4,9 @@ Modifications:
 - white theme
 - new logo
 - waves for radio screen
+- longer time before screen off in quran
+- rewrite records with big numbers
+- digital dua counter?
 
 Parallelism:
 class GetAllBooksAndAuthorsUseCase(

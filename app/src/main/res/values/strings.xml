@@ -232,5 +232,6 @@
     <string name="compass_calibration">معايرة الجهاز</string>
     <string name="previous_prayer">الصلاة السابقة</string>
     <string name="next_prayer">الصلاة القادمة</string>
+    <string name="fill_page">ملئ الصفحة</string>
 
 </resources>

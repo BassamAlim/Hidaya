@@ -231,5 +231,6 @@
     <string name="compass_calibration">Compass calibration</string>
     <string name="previous_prayer">Previous Prayer</string>
     <string name="next_prayer">Upcoming Prayer</string>
+    <string name="fill_page">Fill page</string>
 
 </resources>

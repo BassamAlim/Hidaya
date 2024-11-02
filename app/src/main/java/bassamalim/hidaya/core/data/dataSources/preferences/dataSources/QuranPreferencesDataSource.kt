@@ -34,6 +34,13 @@ class QuranPreferencesDataSource(
         }
     }
 
+    fun getFillPage() = flow.map { it.fillPage }
+    suspend fun updateFillPage(fillPage: Boolean) {
+        dataStore.updateData { preferences ->
+            preferences.copy(fillPage = fillPage)
+        }
+    }
+
     fun getTextSize() = flow.map { it.textSize }
     suspend fun updateTextSize(textSize: Float) {
         dataStore.updateData { preferences ->

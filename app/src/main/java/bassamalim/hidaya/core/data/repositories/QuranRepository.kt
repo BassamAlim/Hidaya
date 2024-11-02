@@ -111,6 +111,12 @@ class QuranRepository @Inject constructor(
         quranPreferencesDataSource.updateViewType(viewType)
     }
 
+    fun getFillPage() = quranPreferencesDataSource.getFillPage()
+
+    suspend fun setFillPage(fillPage: Boolean) {
+        quranPreferencesDataSource.updateFillPage(fillPage)
+    }
+
     fun getTextSize() = quranPreferencesDataSource.getTextSize()
 
     suspend fun setTextSize(textSize: Float) {

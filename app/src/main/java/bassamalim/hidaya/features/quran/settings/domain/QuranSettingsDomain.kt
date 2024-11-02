@@ -24,6 +24,12 @@ class QuranSettingsDomain @Inject constructor(
         quranRepository.setViewType(viewType)
     }
 
+    fun getFillPage() = quranRepository.getFillPage()
+
+    suspend fun setFillPage(fillPage: Boolean) {
+        quranRepository.setFillPage(fillPage)
+    }
+
     fun getTextSize() = quranRepository.getTextSize()
 
     suspend fun setTextSize(size: Float) {
