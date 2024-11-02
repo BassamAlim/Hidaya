@@ -55,11 +55,13 @@ fun MyHorizontalDivider(
 @Composable
 fun MyCheckbox(
     isChecked: Boolean,
-    onCheckedChange: (Boolean) -> Unit = {}
+    onCheckedChange: (Boolean) -> Unit = {},
+    isEnabled: Boolean = true
 ) {
     Checkbox(
         checked = isChecked,
         onCheckedChange = onCheckedChange,
+        enabled = isEnabled,
         colors = CheckboxDefaults.colors(
             checkedColor = AppTheme.colors.accent,
             uncheckedColor = AppTheme.colors.text

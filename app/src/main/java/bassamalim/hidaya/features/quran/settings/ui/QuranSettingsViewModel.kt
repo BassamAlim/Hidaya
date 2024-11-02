@@ -43,12 +43,14 @@ class QuranSettingsViewModel @Inject constructor(
             reciterNames = domain.getReciterNames()
             reciterIds = Array(size = reciterNames.size) { idx -> idx }
 
+            val viewType = domain.getViewType().first()
             val fillPage = domain.getFillPage().first()
             _uiState.update { it.copy(
                 isLoading = false,
-                viewType = domain.getViewType().first(),
+                viewType = viewType,
                 fillPage = fillPage,
                 isTextSizeSliderEnabled = !fillPage,
+                isFillPageEnabled = viewType == QuranViewType.PAGE,
                 textSize = domain.getTextSize().first(),
                 reciterId = domain.getReciterId().first(),
                 repeatMode = domain.getRepeatMode().first(),
@@ -60,7 +62,9 @@ class QuranSettingsViewModel @Inject constructor(
 
     fun onViewTypeChange(viewType: QuranViewType) {
         _uiState.update { it.copy(
-            viewType = viewType
+            viewType = viewType,
+            isFillPageEnabled = viewType == QuranViewType.PAGE,
+            isTextSizeSliderEnabled = viewType == QuranViewType.LIST
         )}
     }
 

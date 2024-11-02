@@ -76,7 +76,8 @@ fun QuranSettingsDialog(
             ) {
                 MyCheckbox(
                     isChecked = state.fillPage,
-                    onCheckedChange = viewModel::onFillPageChange
+                    onCheckedChange = viewModel::onFillPageChange,
+                    isEnabled = state.isFillPageEnabled
                 )
 
                 MyText(

@@ -7,6 +7,7 @@ data class QuranSettingsUiState(
     val isLoading: Boolean = true,
     val viewType: QuranViewType = QuranViewType.PAGE,
     val fillPage: Boolean = true,
+    val isFillPageEnabled: Boolean = true,
     val isTextSizeSliderEnabled: Boolean = true,
     val textSize: Float = 20f,
     val reciterId: Int = 0,
