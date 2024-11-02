@@ -237,26 +237,14 @@ class QuranReaderViewModel @Inject constructor(
         navigator.navigate(Screen.QuranSettings)
     }
 
-    fun onVerseClick(verseId: Int, offset: Int) {
+    fun onVerseClick(verseId: Int) {
+        println("onVerseClick: $verseId")
         val maxDuration = 1200
 
-        var verse: Verse? = null
-        when (_uiState.value.viewType) {
-            QuranViewType.PAGE -> {
-                val startIdx = _uiState.value.pageVerses.indexOfFirst { it.id == verseId }
-                for (idx in startIdx until _uiState.value.pageVerses.size) {
-                    val a = _uiState.value.pageVerses[idx]
-                    if (offset < a.end) {
-                        verse = a
-                        break
-                    }
-                }
-            }
-            QuranViewType.LIST -> verse = _uiState.value.pageVerses.find { it.id == verseId }
-        }
+        val verse = _uiState.value.pageVerses.find { it.id == verseId }!!
 
         // double click
-        if (verse?.id == lastClickedId
+        if (verse.id == lastClickedId
             && System.currentTimeMillis() < lastClickT + maxDuration) {
             _uiState.update { it.copy(
                 selectedVerse = null
@@ -268,7 +256,7 @@ class QuranReaderViewModel @Inject constructor(
             )}
         }
         else {  // single click
-            if (_uiState.value.selectedVerse?.id == verse!!.id) {
+            if (_uiState.value.selectedVerse?.id == verse.id) {
                 _uiState.update { it.copy(
                     selectedVerse = null
                 )}

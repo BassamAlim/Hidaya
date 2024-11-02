@@ -1,10 +1,7 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package bassamalim.hidaya.features.quran.reader.ui
 
 import android.app.Activity
 import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
@@ -20,9 +17,9 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomAppBar
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -38,11 +35,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -65,7 +65,6 @@ import bassamalim.hidaya.core.ui.theme.uthmanic
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType.LIST
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType.PAGE
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -100,7 +99,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
             pageVerses = state.pageVerses,
             viewType = state.viewType,
             selectedVerse = state.selectedVerse,
-            trackedAyaId = state.trackedVerseId,
+            trackedVerseId = state.trackedVerseId,
             textSize = state.textSize.toInt(),
             language = viewModel.language,
             theme = viewModel.theme,
@@ -111,8 +110,8 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
             onPageChange = viewModel::onPageChange,
             buildPage = viewModel::buildPage,
             onSuraHeaderGloballyPositioned = viewModel::onSuraHeaderGloballyPositioned,
-            onAyaGloballyPositioned = viewModel::onVerseGloballyPositioned,
-            onAyaScreenClick = viewModel::onVerseClick
+            onVerseGloballyPositioned = viewModel::onVerseGloballyPositioned,
+            onVerseClick = viewModel::onVerseClick
         )
     }
 
@@ -251,13 +250,12 @@ private fun BottomBar(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PageContent(
     pageVerses: List<Verse>,
     viewType: QuranViewType,
     selectedVerse: Verse?,
-    trackedAyaId: Int,
+    trackedVerseId: Int,
     textSize: Int,
     language: Language,
     theme: Theme,
@@ -268,8 +266,8 @@ private fun PageContent(
     onPageChange: (Int, Int, ScrollState) -> Unit,
     buildPage: (Int) -> List<Verse>,
     onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
-    onAyaGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
-    onAyaScreenClick: (Int, Int) -> Unit
+    onVerseGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
+    onVerseClick: (Int) -> Unit
 ) {
     HorizontalPager(
         state = pagerState,
@@ -298,10 +296,10 @@ private fun PageContent(
                         verses = verses,
                         isCurrentPage = isCurrentPage,
                         selectedVerse = selectedVerse,
-                        trackedAyaId = trackedAyaId,
+                        trackedVerseId = trackedVerseId,
                         textSize = textSize,
                         theme = theme,
-                        onAyaScreenClick = onAyaScreenClick,
+                        onVerseClick = onVerseClick,
                         onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
                     )
                 }
@@ -310,13 +308,12 @@ private fun PageContent(
                         verses = verses,
                         isCurrentPage = isCurrentPage,
                         selectedVerse = selectedVerse,
-                        trackedAyaId = trackedAyaId,
+                        trackedVerseId = trackedVerseId,
                         textSize = textSize,
                         language = language,
                         theme = theme,
                         onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned,
-                        onAyaGloballyPositioned = onAyaGloballyPositioned,
-                        onAyaScreenClick = onAyaScreenClick
+                        onVerseGloballyPositioned = onVerseGloballyPositioned
                     )
                 }
             }
@@ -336,10 +333,10 @@ private fun PageItems(
     verses: List<Verse>,
     isCurrentPage: Boolean,
     selectedVerse: Verse?,
-    trackedAyaId: Int,
+    trackedVerseId: Int,
     textSize: Int,
     theme: Theme,
-    onAyaScreenClick: (Int, Int) -> Unit,
+    onVerseClick: (Int) -> Unit,
     onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
 ) {
     var sequenceText = StringBuilder()
@@ -359,12 +356,11 @@ private fun PageItems(
     for (verse in verses) {
         if (verse.suraNum != lastSura) {
             PageItem(
-                text = sequenceText.toString(),
                 sequence = sequence,
                 selectedVerse = selectedVerse,
-                trackedAyaId = trackedAyaId,
+                trackedVerseId = trackedVerseId,
                 textSize = textSize,
-                onAyaScreenClick = onAyaScreenClick
+                onVerseClick = onVerseClick
             )
 
             if (verse.num == 1) {
@@ -402,47 +398,44 @@ private fun PageItems(
         lastSura = verse.suraNum
     }
     PageItem(
-        text = sequenceText.toString(),
         sequence = sequence,
         selectedVerse = selectedVerse,
-        trackedAyaId = trackedAyaId,
+        trackedVerseId = trackedVerseId,
         textSize = textSize,
-        onAyaScreenClick = onAyaScreenClick
+        onVerseClick = onVerseClick
     )
 }
 
 @Composable
 private fun PageItem(
-    text: String,
     sequence: List<Verse>,
     selectedVerse: Verse?,
-    trackedAyaId: Int,
+    trackedVerseId: Int,
     textSize: Int,
-    onAyaScreenClick: (Int, Int) -> Unit
+    onVerseClick: (Int) -> Unit
 ) {
     val annotatedString = buildAnnotatedString {
-        append(text)
-
-        for (seqAya in sequence) {
-            addStyle(
-                style = SpanStyle(
-                    color =
-                        if (selectedVerse == seqAya) AppTheme.colors.highlight
-                        else if (trackedAyaId == seqAya.id) AppTheme.colors.track
-                        else AppTheme.colors.strongText
-                ),
-                start = seqAya.start,
-                end = seqAya.end
-            )
+        for (seqVerse in sequence) {
+            withLink(
+                link = LinkAnnotation.Clickable(
+                    tag = seqVerse.id.toString(),
+                    styles = TextLinkStyles(
+                        style = SpanStyle(
+                            color =
+                                if (selectedVerse == seqVerse) AppTheme.colors.highlight
+                                else if (trackedVerseId == seqVerse.id) AppTheme.colors.track
+                                else AppTheme.colors.strongText
+                        )
+                    ),
+                    linkInteractionListener = { onVerseClick(seqVerse.id) }
+                )
+            ) {
+                append(seqVerse.text)
+            }
         }
     }
 
-    PageViewScreen(
-        annotatedString = annotatedString,
-        firstVerse = sequence[0],
-        textSize = textSize,
-        onAyaScreenClick = onAyaScreenClick
-    )
+    PageViewScreen(annotatedString = annotatedString, textSize = textSize)
 }
 
 @Composable
@@ -450,18 +443,17 @@ private fun ListItems(
     verses: List<Verse>,
     isCurrentPage: Boolean,
     selectedVerse: Verse?,
-    trackedAyaId: Int,
+    trackedVerseId: Int,
     textSize: Int,
     language: Language,
     theme: Theme,
     onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
-    onAyaGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
-    onAyaScreenClick: (Int, Int) -> Unit
+    onVerseGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
 ) {
-    for (aya in verses) {
-        if (aya.num == 1)
+    for (verse in verses) {
+        if (verse.num == 1)
             NewSura(
-                verse = aya,
+                verse = verse,
                 isCurrentPage = isCurrentPage,
                 textSize = textSize,
                 theme = theme,
@@ -470,9 +462,9 @@ private fun ListItems(
 
         val verseText =
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
-                aya.text!!
-            else {  // reverse aya number if below android 13 (because of a bug)
-                val text = aya.text!!
+                verse.text!!
+            else {  // reverse verse number if below android 13 (because of a bug)
+                val text = verse.text!!
                 val reversedNum = text
                     .split(" ")
                     .last()
@@ -484,36 +476,30 @@ private fun ListItems(
 
         ListViewScreen(
             annotatedString = AnnotatedString(verseText),
-            verse = aya,
+            verse = verse,
             isCurrentPage = isCurrentPage,
             textSize = textSize,
             selectedVerse = selectedVerse,
-            trackedAyaId = trackedAyaId,
-            onAyaGloballyPositioned = onAyaGloballyPositioned,
-            onAyaScreenClick = onAyaScreenClick
+            trackedVerseId = trackedVerseId,
+            onVerseGloballyPositioned = onVerseGloballyPositioned
         )
 
         if (language != Language.ARABIC) {
             MyText(
-                text = aya.translation!!,
+                text = verse.translation!!,
                 fontSize = (textSize - 5).sp,
                 modifier = Modifier.padding(6.dp)
             )
         }
 
-        if (aya.num != verses.last().num)
+        if (verse.num != verses.last().num)
             MyHorizontalDivider()
     }
 }
 
 @Composable
-private fun PageViewScreen(
-    annotatedString: AnnotatedString,
-    firstVerse: Verse,
-    textSize: Int,
-    onAyaScreenClick: (Int, Int) -> Unit
-) {
-    ClickableText(
+private fun PageViewScreen(annotatedString: AnnotatedString, textSize: Int) {
+    Text(
         text = annotatedString,
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp),
         style = TextStyle(
@@ -521,8 +507,7 @@ private fun PageViewScreen(
             fontSize = textSize.sp,
             color = AppTheme.colors.strongText,
             textAlign = TextAlign.Center
-        ),
-        onClick = { offset -> onAyaScreenClick(firstVerse.id, offset) }
+        )
     )
 }
 
@@ -532,17 +517,17 @@ private fun ListViewScreen(
     verse: Verse,
     isCurrentPage: Boolean,
     selectedVerse: Verse?,
-    trackedAyaId: Int,
+    trackedVerseId: Int,
     textSize: Int,
-    onAyaGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
-    onAyaScreenClick: (Int, Int) -> Unit
+    onVerseGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
 ) {
-    ClickableText(
+
+    Text(
         text = annotatedString,
         modifier = Modifier
             .padding(vertical = 4.dp, horizontal = 6.dp)
             .onGloballyPositioned { layoutCoordinates ->
-                onAyaGloballyPositioned(
+                onVerseGloballyPositioned(
                     verse,
                     isCurrentPage,
                     layoutCoordinates
@@ -553,13 +538,10 @@ private fun ListViewScreen(
             fontSize = textSize.sp,
             color =
                 if (selectedVerse == verse) AppTheme.colors.highlight
-                else if (trackedAyaId == verse.id) AppTheme.colors.track
+                else if (trackedVerseId == verse.id) AppTheme.colors.track
                 else AppTheme.colors.strongText,
             textAlign = TextAlign.Center
-        ),
-        onClick = { offset ->
-            onAyaScreenClick(verse.id, offset)
-        }
+        )
     )
 }
 
