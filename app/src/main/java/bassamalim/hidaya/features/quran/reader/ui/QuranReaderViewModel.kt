@@ -336,7 +336,18 @@ class QuranReaderViewModel @Inject constructor(
                     suraNum = suraNum,
                     suraName = suraNames[suraNum - 1],
                     num = verseNum,
-                    text = "${verse.decoratedText} ",
+                    text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                        "${verse.decoratedText} "
+                    else {  // reverse verse number if below android 13 (because of a bug)
+                        val text = "${verse.decoratedText} "
+                        val reversedNum = text
+                            .split(" ")
+                            .last()
+                            .dropLast(1)
+                            .reversed()
+                        val rest = text.dropLast(reversedNum.length + 1)
+                        "$rest$reversedNum "
+                    },
                     translation = verse.translationEn,
                     interpretation = verse.interpretation
                 )

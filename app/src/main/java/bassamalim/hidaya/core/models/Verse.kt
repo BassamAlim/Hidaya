@@ -11,7 +11,4 @@ data class Verse(
     var text: String?,
     var translation: String?,
     val interpretation: String
-) : Serializable {
-    var start = 0
-    var end = 0
-}
+) : Serializable

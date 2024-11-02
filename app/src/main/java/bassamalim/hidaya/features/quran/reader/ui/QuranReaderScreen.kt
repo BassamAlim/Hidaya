@@ -339,7 +339,6 @@ private fun PageItems(
     onVerseClick: (Int) -> Unit,
     onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
 ) {
-    var sequenceText = StringBuilder()
     var sequence = mutableListOf<Verse>()
     var lastSura = verses[0].suraNum
 
@@ -354,7 +353,7 @@ private fun PageItems(
     }
 
     for (verse in verses) {
-        if (verse.suraNum != lastSura) {
+            if (verse.suraNum != lastSura) {
             PageItem(
                 sequence = sequence,
                 selectedVerse = selectedVerse,
@@ -373,26 +372,9 @@ private fun PageItems(
                 )
             }
 
-            sequenceText = StringBuilder()
             sequence = mutableListOf()
         }
 
-        verse.start = sequenceText.length
-        val verseText =
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
-                verse.text!!
-            else {  // reverse verse number if below android 13 (because of a bug)
-                val text = verse.text!!
-                val reversedNum = text
-                    .split(" ")
-                    .last()
-                    .dropLast(1)
-                    .reversed()
-                val rest = text.dropLast(reversedNum.length + 1)
-                "$rest$reversedNum "
-            }
-        sequenceText.append(verseText)
-        verse.end = sequenceText.length
         sequence.add(verse)
 
         lastSura = verse.suraNum
@@ -460,22 +442,8 @@ private fun ListItems(
                 onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
             )
 
-        val verseText =
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
-                verse.text!!
-            else {  // reverse verse number if below android 13 (because of a bug)
-                val text = verse.text!!
-                val reversedNum = text
-                    .split(" ")
-                    .last()
-                    .dropLast(1)
-                    .reversed()
-                val rest = text.dropLast(reversedNum.length + 1)
-                "$rest$reversedNum "
-            }
-
         ListViewScreen(
-            annotatedString = AnnotatedString(verseText),
+            annotatedString = AnnotatedString(verse.text!!),
             verse = verse,
             isCurrentPage = isCurrentPage,
             textSize = textSize,
