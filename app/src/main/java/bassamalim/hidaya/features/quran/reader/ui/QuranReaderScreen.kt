@@ -4,6 +4,7 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,18 +26,19 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -470,77 +472,71 @@ private fun ListItems(
 @Composable
 private fun PageViewScreen(annotatedString: AnnotatedString) {
     val numberOfLines = 15
+    val density = LocalDensity.current
     var fontSize by remember { mutableStateOf(10.sp) }
+    var fullHeight by remember { mutableFloatStateOf(0f) }
     var lineHeight by remember { mutableFloatStateOf(3f) }
-    var fullHeightPx by remember { mutableIntStateOf(0) }
     var ready by remember { mutableStateOf(false) }
     var stage by remember { mutableStateOf("font_size") }
 
-    Box(
+    Text(
+        text = annotatedString,
+        fontSize = fontSize,
+        style = TextStyle(
+            fontFamily = uthmanic,
+            color = AppTheme.colors.strongText,
+            lineHeight = fontSize * lineHeight,
+            lineHeightStyle = LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None
+            )
+        ),
+        textAlign = TextAlign.Justify,
         modifier = Modifier
             .fillMaxSize()
+            .padding(vertical = 4.dp, horizontal = 6.dp)
+            .background(Color.Red)
             .onSizeChanged {
-                fullHeightPx = it.height
-                println("in onSizeChanged, heightPx: $fullHeightPx")
-            }
-    ) {
-        Text(
-            text = annotatedString,
-            fontSize = fontSize,
-            style = TextStyle(
-                fontFamily = uthmanic,
-                color = AppTheme.colors.strongText,
-                lineHeight = fontSize * lineHeight,
-                lineHeightStyle = LineHeightStyle(
-                    alignment = LineHeightStyle.Alignment.Center,
-                    trim = LineHeightStyle.Trim.None
-                )
-            ),
-            textAlign = TextAlign.Justify,
-            maxLines = numberOfLines,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 4.dp, horizontal = 6.dp),
+                fullHeight = with(density) { it.height.toDp().value }
+                lineHeight = fullHeight / numberOfLines / 20 + 0.01f
+                println("in onSizeChanged, fullHeight: $fullHeight, lineHeight: $lineHeight")
+            },
 //                .drawWithContent {
 //                    println("in drawWithContent, ready: $ready, stage: $stage, fontSize: $fontSize, lineHeight: $lineHeight")
 //                    if (ready || stage == "line_height") {
 //                        drawContent()
 //                    }
 //                },
-            onTextLayout = { textLayoutResult ->
-                println("in onTextLayout, ready: $ready, stage: $stage, fontSize: $fontSize, lineHeight: $lineHeight, lineCount: ${textLayoutResult.lineCount}, didOverflowHeight: ${textLayoutResult.didOverflowHeight}")
-                if (!ready) {
-                    val totalTextHeight = lineHeight * numberOfLines * 100
-                    val heightDifference = kotlin.math.abs(totalTextHeight - fullHeightPx)
-                    println("in line_height, totalTextHeight: $totalTextHeight, heightDifference: $heightDifference, fullHeightPx: $fullHeightPx")
-                    when (stage) {
-                        "font_size" -> {
-                            when {
-                                textLayoutResult.lineCount > numberOfLines -> {
-                                    fontSize *= 0.9f
-                                }
-                                textLayoutResult.lineCount < numberOfLines -> {
-                                    fontSize *= 1.1f
-                                }
-                                else -> {
-                                    stage = "line_height"
-                                    lineHeight *= 1.01f
-                                }
+        onTextLayout = { textLayoutResult ->
+            println("in onTextLayout, ready: $ready, stage: $stage, fontSize: $fontSize, lineHeight: $lineHeight, lineCount: ${textLayoutResult.lineCount}, didOverflowHeight: ${textLayoutResult.didOverflowHeight}")
+            if (!ready) {
+                when (stage) {
+                    "font_size" -> {
+                        when {
+                            textLayoutResult.lineCount > numberOfLines -> {
+                                fontSize *= 0.9f
+                            }
+                            textLayoutResult.lineCount < numberOfLines -> {
+                                fontSize *= 1.1f
+                            }
+                            else -> {
+                                stage = "line_height"
+                                lineHeight *= 1.01f
                             }
                         }
-                        "line_height" -> {
-                            if (textLayoutResult.didOverflowHeight) {
-                                lineHeight *= 0.99f
-                            }
-                            else {
-                                ready = true
-                            }
+                    }
+                    "line_height" -> {
+                        if (textLayoutResult.didOverflowHeight) {
+                            lineHeight *= 0.99f
+                        }
+                        else {
+                            ready = true
                         }
                     }
                 }
             }
-        )
-    }
+        }
+    )
 }
 
 @Composable
