@@ -4,7 +4,6 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +31,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -469,11 +467,13 @@ private fun ListItems(
     }
 }
 
+// TODO: I need a database table specifying the page parts and the number of lines for each part
+
 @Composable
 private fun PageViewScreen(annotatedString: AnnotatedString) {
     val numberOfLines = 15
     val density = LocalDensity.current
-    var fontSize by remember { mutableStateOf(10.sp) }
+    var fontSize by remember { mutableStateOf(30.sp) }
     var fullHeight by remember { mutableFloatStateOf(0f) }
     var lineHeight by remember { mutableFloatStateOf(3f) }
     var ready by remember { mutableStateOf(false) }
@@ -495,7 +495,6 @@ private fun PageViewScreen(annotatedString: AnnotatedString) {
         modifier = Modifier
             .fillMaxSize()
             .padding(vertical = 4.dp, horizontal = 6.dp)
-            .background(Color.Red)
             .onSizeChanged {
                 fullHeight = with(density) { it.height.toDp().value }
                 lineHeight = fullHeight / numberOfLines / 20 + 0.01f
