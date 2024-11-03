@@ -4,6 +4,7 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -25,12 +25,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,6 +48,7 @@ import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
@@ -62,8 +70,6 @@ import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
-import bassamalim.hidaya.features.quran.reader.ui.QuranViewType.LIST
-import bassamalim.hidaya.features.quran.reader.ui.QuranViewType.PAGE
 
 @Composable
 fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
@@ -281,9 +287,7 @@ private fun PageContent(
         onPageChange(pagerState.currentPage, pageIdx, scrollState)
 
         Column(
-            Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState),
+            Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val verses =
@@ -291,7 +295,7 @@ private fun PageContent(
                 else buildPage(pageIdx + 1)
 
             when (viewType) {
-                PAGE -> {
+                QuranViewType.PAGE -> {
                     PageItems(
                         verses = verses,
                         isCurrentPage = isCurrentPage,
@@ -303,7 +307,7 @@ private fun PageContent(
                         onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
                     )
                 }
-                LIST -> {
+                QuranViewType.LIST -> {
                     ListItems(
                         verses = verses,
                         isCurrentPage = isCurrentPage,
@@ -417,7 +421,7 @@ private fun PageItem(
         }
     }
 
-    PageViewScreen(annotatedString = annotatedString, textSize = textSize)
+    PageViewScreen(annotatedString = annotatedString)
 }
 
 @Composable
@@ -466,17 +470,79 @@ private fun ListItems(
 }
 
 @Composable
-private fun PageViewScreen(annotatedString: AnnotatedString, textSize: Int) {
-    Text(
-        text = annotatedString,
-        modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp),
-        style = TextStyle(
-            fontFamily = uthmanic,
-            fontSize = textSize.sp,
-            color = AppTheme.colors.strongText,
-            textAlign = TextAlign.Center
+private fun PageViewScreen(annotatedString: AnnotatedString) {
+    val numberOfLines = 15
+    var fontSize by remember { mutableStateOf(10.sp) }
+    var lineHeight by remember { mutableFloatStateOf(3f) }
+    var fullHeightPx by remember { mutableIntStateOf(0) }
+    var ready by remember { mutableStateOf(false) }
+    var stage by remember { mutableStateOf("font_size") }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .onSizeChanged {
+                fullHeightPx = it.height
+                println("in onSizeChanged, heightPx: $fullHeightPx")
+            }
+    ) {
+        Text(
+            text = annotatedString,
+            fontSize = fontSize,
+            style = TextStyle(
+                fontFamily = uthmanic,
+                color = AppTheme.colors.strongText,
+                lineHeight = fontSize * lineHeight,
+                lineHeightStyle = LineHeightStyle(
+                    alignment = LineHeightStyle.Alignment.Center,
+                    trim = LineHeightStyle.Trim.None
+                )
+            ),
+            textAlign = TextAlign.Justify,
+            maxLines = numberOfLines,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Gray),
+//                .drawWithContent {
+//                    println("in drawWithContent, ready: $ready, stage: $stage, fontSize: $fontSize, lineHeight: $lineHeight")
+//                    if (ready || stage == "line_height") {
+//                        drawContent()
+//                    }
+//                },
+            onTextLayout = { textLayoutResult ->
+                println("in onTextLayout, ready: $ready, stage: $stage, fontSize: $fontSize, lineHeight: $lineHeight, lineCount: ${textLayoutResult.lineCount}, didOverflowHeight: ${textLayoutResult.didOverflowHeight}")
+                if (!ready) {
+                    val totalTextHeight = lineHeight * numberOfLines * 100
+                    val heightDifference = kotlin.math.abs(totalTextHeight - fullHeightPx)
+                    println("in line_height, totalTextHeight: $totalTextHeight, heightDifference: $heightDifference, fullHeightPx: $fullHeightPx")
+                    when (stage) {
+                        "font_size" -> {
+                            when {
+                                textLayoutResult.lineCount > numberOfLines -> {
+                                    fontSize *= 0.9f
+                                }
+                                textLayoutResult.lineCount < numberOfLines -> {
+                                    fontSize *= 1.1f
+                                }
+                                else -> {
+                                    stage = "line_height"
+                                    lineHeight *= 1.01f
+                                }
+                            }
+                        }
+                        "line_height" -> {
+                            if (textLayoutResult.didOverflowHeight) {
+                                lineHeight *= 0.99f
+                            }
+                            else {
+                                ready = true
+                            }
+                        }
+                    }
+                }
+            }
         )
-    )
+    }
 }
 
 @Composable
