@@ -4,7 +4,6 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +32,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -502,7 +500,7 @@ private fun PageViewScreen(annotatedString: AnnotatedString) {
             maxLines = numberOfLines,
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Gray),
+                .padding(vertical = 4.dp, horizontal = 6.dp),
 //                .drawWithContent {
 //                    println("in drawWithContent, ready: $ready, stage: $stage, fontSize: $fontSize, lineHeight: $lineHeight")
 //                    if (ready || stage == "line_height") {
