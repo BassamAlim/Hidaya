@@ -67,7 +67,6 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.core.ui.theme.suraName2
 import bassamalim.hidaya.core.ui.theme.uthmanic
 
 @Composable
@@ -591,7 +590,7 @@ private fun SuraHeader(
 ) {
     Box(
         Modifier
-            .padding(vertical = 10.dp, horizontal = 5.dp)
+            .padding(top = 10.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
             .onGloballyPositioned { layoutCoordinates ->
                 onGloballyPositioned(verse, isCurrentPage, layoutCoordinates)
             },
@@ -601,18 +600,17 @@ private fun SuraHeader(
             painter = painterResource(R.drawable.sura_header),
             contentDescription = verse.suraName,
             modifier = Modifier
-                .fillMaxWidth()
-                .height((textSize * 2).dp),
+                .fillMaxWidth(0.95f)
+                .height((textSize * 1.6).dp),
             contentScale = ContentScale.FillBounds,
-            colorFilter = ColorFilter.tint(AppTheme.colors.shadow)
+            colorFilter = ColorFilter.tint(AppTheme.colors.text)
         )
 
         MyText(
             text = "${stringResource(R.string.sura)} ${verse.suraName}",
-            fontSize = (textSize).sp,
-            fontWeight = FontWeight.Bold,
+            fontSize = textSize.sp,
             textColor = AppTheme.colors.strongText,
-            fontFamily = suraName2
+            fontFamily = uthmanic
         )
     }
 }
@@ -623,10 +621,10 @@ private fun Basmalah(textSize: Int) {
         painter = painterResource(R.drawable.basmala),
         contentDescription = stringResource(R.string.basmalah),
         modifier = Modifier
-            .fillMaxWidth()
-            .height((textSize * 2).dp),
-        contentScale = ContentScale.FillHeight,
-        colorFilter = ColorFilter.tint(AppTheme.colors.text)
+            .fillMaxWidth(0.75f)
+            .height((textSize * 1.6).dp),
+        contentScale = ContentScale.FillBounds,
+        colorFilter = ColorFilter.tint(AppTheme.colors.strongText)
     )
 }
 
