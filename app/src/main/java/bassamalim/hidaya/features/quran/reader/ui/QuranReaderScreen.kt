@@ -31,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -54,7 +55,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.ui.components.InfoDialog
@@ -67,6 +67,7 @@ import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
+import bassamalim.hidaya.core.ui.theme.suraName2
 import bassamalim.hidaya.core.ui.theme.uthmanic
 
 @Composable
@@ -106,7 +107,6 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
             trackedVerseId = state.trackedVerseId,
             textSize = state.textSize.toInt(),
             language = viewModel.language,
-            theme = viewModel.theme,
             scrollTo = viewModel.scrollTo,
             onScrolled = viewModel::onScrolled,
             pagerState = pagerState,
@@ -262,7 +262,6 @@ private fun PageContent(
     trackedVerseId: Int,
     textSize: Int,
     language: Language,
-    theme: Theme,
     pagerState: PagerState,
     padding: PaddingValues,
     scrollTo: Float,
@@ -300,7 +299,6 @@ private fun PageContent(
                         selectedVerse = selectedVerse,
                         trackedVerseId = trackedVerseId,
                         textSize = textSize,
-                        theme = theme,
                         onVerseClick = onVerseClick,
                         onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
                     )
@@ -313,7 +311,6 @@ private fun PageContent(
                         trackedVerseId = trackedVerseId,
                         textSize = textSize,
                         language = language,
-                        theme = theme,
                         onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned,
                         onVerseGloballyPositioned = onVerseGloballyPositioned
                     )
@@ -337,7 +334,6 @@ private fun PageItems(
     selectedVerse: Verse?,
     trackedVerseId: Int,
     textSize: Int,
-    theme: Theme,
     onVerseClick: (Int) -> Unit,
     onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
 ) {
@@ -349,7 +345,6 @@ private fun PageItems(
             verse = verses[0],
             isCurrentPage = isCurrentPage,
             textSize = textSize,
-            theme = theme,
             onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
         )
     }
@@ -369,7 +364,6 @@ private fun PageItems(
                     verse = verse,
                     isCurrentPage = isCurrentPage,
                     textSize = textSize,
-                    theme = theme,
                     onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
                 )
             }
@@ -430,7 +424,6 @@ private fun ListItems(
     trackedVerseId: Int,
     textSize: Int,
     language: Language,
-    theme: Theme,
     onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
     onVerseGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
 ) {
@@ -440,7 +433,6 @@ private fun ListItems(
                 verse = verse,
                 isCurrentPage = isCurrentPage,
                 textSize = textSize,
-                theme = theme,
                 onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
             )
 
@@ -577,14 +569,12 @@ private fun NewSura(
     verse: Verse,
     isCurrentPage: Boolean,
     textSize: Int,
-    theme: Theme,
     onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
 ) {
     SuraHeader(
         verse = verse,
         isCurrentPage = isCurrentPage,
         textSize = textSize,
-        theme = theme,
         onGloballyPositioned = onSuraHeaderGloballyPositioned
     )
 
@@ -597,45 +587,46 @@ private fun SuraHeader(
     verse: Verse,
     isCurrentPage: Boolean,
     textSize: Int,
-    theme: Theme,
     onGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
 ) {
     Box(
         Modifier
-            .fillMaxWidth()
-            .height((textSize * 2.6).dp)
-            .padding(top = 5.dp, bottom = 10.dp, start = 5.dp, end = 5.dp)
+            .padding(vertical = 10.dp, horizontal = 5.dp)
             .onGloballyPositioned { layoutCoordinates ->
                 onGloballyPositioned(verse, isCurrentPage, layoutCoordinates)
             },
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(
-                if (theme == Theme.LIGHT) R.drawable.sura_header_light
-                else R.drawable.sura_header
-            ),
+            painter = painterResource(R.drawable.sura_header),
             contentDescription = verse.suraName,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds
+            modifier = Modifier
+                .fillMaxWidth()
+                .height((textSize * 2).dp),
+            contentScale = ContentScale.FillBounds,
+            colorFilter = ColorFilter.tint(AppTheme.colors.shadow)
         )
 
         MyText(
-            text = verse.suraName,
-            fontSize = (textSize + 2).sp,
+            text = "${stringResource(R.string.sura)} ${verse.suraName}",
+            fontSize = (textSize).sp,
             fontWeight = FontWeight.Bold,
-            textColor = AppTheme.colors.strongText
+            textColor = AppTheme.colors.strongText,
+            fontFamily = suraName2
         )
     }
 }
 
 @Composable
 private fun Basmalah(textSize: Int) {
-    MyText(
-        text = stringResource(R.string.basmalah),
-        modifier = Modifier.padding(bottom = 5.dp),
-        fontSize = (textSize - 3).sp,
-        fontWeight = FontWeight.Bold
+    Image(
+        painter = painterResource(R.drawable.basmala),
+        contentDescription = stringResource(R.string.basmalah),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height((textSize * 2).dp),
+        contentScale = ContentScale.FillHeight,
+        colorFilter = ColorFilter.tint(AppTheme.colors.text)
     )
 }
 

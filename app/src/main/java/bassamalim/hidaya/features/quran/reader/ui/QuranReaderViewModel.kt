@@ -13,7 +13,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.enums.Theme
 import bassamalim.hidaya.core.models.QuranPageBookmark
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.nav.Navigator
@@ -49,7 +48,6 @@ class QuranReaderViewModel @Inject constructor(
 
     lateinit var language: Language
     lateinit var numeralsLanguage: Language
-    lateinit var theme: Theme
     private lateinit var coroutineScope: CoroutineScope
     private lateinit var pagerState: PagerState
     private lateinit var scrollState: ScrollState
@@ -95,7 +93,6 @@ class QuranReaderViewModel @Inject constructor(
         viewModelScope.launch {
             language = domain.getLanguage()
             numeralsLanguage = domain.getNumeralsLanguage()
-            theme = domain.getTheme()
 
             allVerses = domain.getAllVerses()
             suraNames = domain.getSuraNames(language)

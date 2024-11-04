@@ -204,8 +204,6 @@ class QuranReaderDomain @Inject constructor(
 
     suspend fun getNumeralsLanguage() = appSettingsRepository.getNumeralsLanguage().first()
 
-    suspend fun getTheme() = appSettingsRepository.getTheme().first()
-
     suspend fun getSuraPageNum(suraId: Int) = quranRepository.getSuraPageNum(suraId)
 
     suspend fun getVersePageNum(ayaId: Int) = quranRepository.getVersePageNum(ayaId)
