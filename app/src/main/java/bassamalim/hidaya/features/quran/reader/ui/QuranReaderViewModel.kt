@@ -141,7 +141,7 @@ class QuranReaderViewModel @Inject constructor(
                     }.juzNum.toString(),
                     numeralsLanguage = numeralsLanguage
                 ),
-                pageVerses = buildPage(pageNum)
+                pageVerses = getPageVerses(pageNum)
             )}
 
             if (shouldSelectVerse) {
@@ -270,7 +270,7 @@ class QuranReaderViewModel @Inject constructor(
     }
 
     fun onSuraHeaderGloballyPositioned(
-        verse: Verse,
+        suraNum: Int,
         isCurrentPage: Boolean,
         layoutCoordinates: LayoutCoordinates
     ) {
@@ -278,7 +278,7 @@ class QuranReaderViewModel @Inject constructor(
             isCurrentPage
             && scrollTo == -1F
             && targetType == QuranTarget.SURA
-            && verse.suraNum == targetValue+1
+            && suraNum == targetValue+1
             ) {
             scrollTo = layoutCoordinates.positionInParent().y - 13
         }
@@ -316,23 +316,64 @@ class QuranReaderViewModel @Inject constructor(
         )}
     }
 
-    fun buildPage(pageNumber: Int): List<Verse> {
-        val pageVerses = mutableListOf<Verse>()
+    private fun getPageVerses(pageNumber: Int) =
+        allVerses.filter { it.pageNum == pageNumber }.map { verse ->
+            Verse(
+                id = verse.id,
+                juzNum = verse.juzNum,
+                suraNum = verse.suraNum,
+                suraName = suraNames[verse.suraNum - 1],
+                num = verse.num,
+                text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                    "${verse.decoratedText} "
+                else {  // reverse verse number if below android 13 (because of a bug)
+                    val text = "${verse.decoratedText} "
+                    val reversedNum = text
+                        .split(" ")
+                        .last()
+                        .dropLast(1)
+                        .reversed()
+                    val rest = text.dropLast(reversedNum.length + 1)
+                    "$rest$reversedNum "
+                },
+                translation = verse.translationEn,
+                interpretation = verse.interpretation
+            )
+        }
 
+    fun buildPage(pageNumber: Int): List<Section> {
+        val sections = mutableListOf<Section>()
+
+        val tempVerses = mutableListOf<Verse>()
         // get page start
         var counter = allVerses.indexOfFirst { verse -> verse.pageNum == pageNumber }
         do {
             val verse = allVerses[counter]
-            val suraNum = verse.suraNum // starts from 1
-            val verseNum = verse.num
 
-            pageVerses.add(
+            if (verse.num == 1) {
+                if (tempVerses.isNotEmpty()) {
+                    sections.add(VersesSection(tempVerses.toList()))  // toList() to make a copy
+                    tempVerses.clear()
+                }
+
+                sections.add(
+                    SuraHeaderSection(
+                        suraNum = verse.suraNum,
+                        suraName = suraNames[verse.suraNum - 1]
+                    )
+                )
+
+                if (verse.suraNum != 1 && verse.suraNum != 9)
+                    sections.add(BasmalahSection())
+            }
+
+            tempVerses.add(
                 Verse(
                     id = verse.id,
                     juzNum = verse.juzNum,
-                    suraNum = suraNum,
-                    suraName = suraNames[suraNum - 1],
-                    num = verseNum,
+                    suraNum = verse.suraNum,
+                    suraName = suraNames[verse.suraNum - 1],
+                    num = verse.num,
                     text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                         "${verse.decoratedText} "
                     else {  // reverse verse number if below android 13 (because of a bug)
@@ -353,7 +394,35 @@ class QuranReaderViewModel @Inject constructor(
             counter++
         } while (counter != Global.NUM_OF_QURAN_VERSES && allVerses[counter].pageNum == pageNumber)
 
-        return pageVerses
+        if (tempVerses.isNotEmpty()) {
+            sections.add(VersesSection(tempVerses.toList()))  // toList() to make a copy
+            tempVerses.clear()
+        }
+
+        return measureLines(sections)
+    }
+
+    private fun measureLines(sections: List<Section>): List<Section> {
+        var numOfLines = 15
+        numOfLines -= sections.count { !VersesSection::class.isInstance(it) }
+
+        var totalChars = 0
+        for (section in sections) {
+            if (section is VersesSection) {
+                totalChars += section.verses.sumOf { it.text!!.length }
+            }
+        }
+
+        val charsPerLine = totalChars / numOfLines
+
+        for (section in sections) {
+            if (section is VersesSection) {
+                val sectionChars = section.verses.sumOf { it.text!!.length }
+                section.numOfLines = sectionChars / charsPerLine
+            }
+        }
+
+        return sections
     }
 
     private var controllerCallback = object : MediaControllerCompat.Callback() {

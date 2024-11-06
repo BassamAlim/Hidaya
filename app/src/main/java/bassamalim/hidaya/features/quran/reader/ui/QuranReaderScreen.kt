@@ -111,7 +111,6 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
         }
     ) {
         PageContent(
-            pageVerses = state.pageVerses,
             viewType = state.viewType,
             selectedVerse = state.selectedVerse,
             trackedVerseId = state.trackedVerseId,
@@ -266,7 +265,6 @@ private fun BottomBar(
 
 @Composable
 private fun PageContent(
-    pageVerses: List<Verse>,
     viewType: QuranViewType,
     selectedVerse: Verse?,
     trackedVerseId: Int,
@@ -277,8 +275,8 @@ private fun PageContent(
     scrollTo: Float,
     onScrolled: () -> Unit,
     onPageChange: (Int, Int, ScrollState) -> Unit,
-    buildPage: (Int) -> List<Verse>,
-    onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
+    buildPage: (Int) -> List<Section>,
+    onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVerseGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
     onVerseClick: (Int) -> Unit
 ) {
@@ -297,14 +295,15 @@ private fun PageContent(
             Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val verses =
-                if (isCurrentPage && pageVerses.isNotEmpty()) pageVerses
-                else buildPage(pageIdx + 1)
+            val t1 = System.nanoTime()
+            val pageContent = buildPage(pageIdx + 1)
+            val t2 = System.nanoTime()
+            println("buildPage took ${t2 - t1} ns")
 
             when (viewType) {
                 QuranViewType.PAGE -> {
                     PageItems(
-                        verses = verses,
+                        sections = pageContent,
                         isCurrentPage = isCurrentPage,
                         selectedVerse = selectedVerse,
                         trackedVerseId = trackedVerseId,
@@ -315,7 +314,7 @@ private fun PageContent(
                 }
                 QuranViewType.LIST -> {
                     ListItems(
-                        verses = verses,
+                        sections = pageContent,
                         isCurrentPage = isCurrentPage,
                         selectedVerse = selectedVerse,
                         trackedVerseId = trackedVerseId,
@@ -339,64 +338,46 @@ private fun PageContent(
 
 @Composable
 private fun PageItems(
-    verses: List<Verse>,
+    sections: List<Section>,
     isCurrentPage: Boolean,
     selectedVerse: Verse?,
     trackedVerseId: Int,
     textSize: Int,
     onVerseClick: (Int) -> Unit,
-    onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
+    onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
-    var sequence = mutableListOf<Verse>()
-    var lastSura = verses[0].suraNum
-
-    if (verses[0].num == 1) {
-        NewSura(
-            verse = verses[0],
-            isCurrentPage = isCurrentPage,
-            textSize = textSize,
-            onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
-        )
-    }
-
-    for (verse in verses) {
-            if (verse.suraNum != lastSura) {
-            PageItem(
-                sequence = sequence,
-                selectedVerse = selectedVerse,
-                trackedVerseId = trackedVerseId,
-                textSize = textSize,
-                onVerseClick = onVerseClick
-            )
-
-            if (verse.num == 1) {
-                NewSura(
-                    verse = verse,
+    for (section in sections) {
+        when (section) {
+            is SuraHeaderSection -> {
+                SuraHeader(
+                    suraNum = section.suraNum,
+                    suraName = section.suraName,
                     isCurrentPage = isCurrentPage,
                     textSize = textSize,
-                    onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
+                    onGloballyPositioned = onSuraHeaderGloballyPositioned
                 )
             }
-
-            sequence = mutableListOf()
+            is BasmalahSection -> {
+                Basmalah(textSize)
+            }
+            is VersesSection -> {
+                PageItem(
+                    sequence = section.verses,
+                    numOfLines = section.numOfLines,
+                    selectedVerse = selectedVerse,
+                    trackedVerseId = trackedVerseId,
+                    textSize = textSize,
+                    onVerseClick = onVerseClick
+                )
+            }
         }
-
-        sequence.add(verse)
-
-        lastSura = verse.suraNum
     }
-    PageItem(
-        sequence = sequence,
-        selectedVerse = selectedVerse,
-        trackedVerseId = trackedVerseId,
-        textSize = textSize,
-        onVerseClick = onVerseClick
-    )
 }
 
 @Composable
 private fun PageItem(
     sequence: List<Verse>,
+    numOfLines: Int,
     selectedVerse: Verse?,
     trackedVerseId: Int,
     textSize: Int,
@@ -423,57 +404,65 @@ private fun PageItem(
         }
     }
 
-    PageViewScreen(annotatedString = annotatedString)
+    PageViewScreen(annotatedString = annotatedString, numOfLines = numOfLines)
 }
 
 @Composable
 private fun ListItems(
-    verses: List<Verse>,
+    sections: List<Section>,
     isCurrentPage: Boolean,
     selectedVerse: Verse?,
     trackedVerseId: Int,
     textSize: Int,
     language: Language,
-    onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
+    onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVerseGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
 ) {
-    for (verse in verses) {
-        if (verse.num == 1)
-            NewSura(
-                verse = verse,
-                isCurrentPage = isCurrentPage,
-                textSize = textSize,
-                onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
-            )
+    for (section in sections) {
+        when (section) {
+            is SuraHeaderSection -> {
+                SuraHeader(
+                    suraNum = section.suraNum,
+                    suraName = section.suraName,
+                    isCurrentPage = isCurrentPage,
+                    textSize = textSize,
+                    onGloballyPositioned = onSuraHeaderGloballyPositioned
+                )
+            }
+            is BasmalahSection -> {
+                Basmalah(textSize)
+            }
+            is VersesSection -> {
+                for (verse in section.verses) {
+                    ListViewScreen(
+                        annotatedString = AnnotatedString(verse.text!!),
+                        verse = verse,
+                        isCurrentPage = isCurrentPage,
+                        textSize = textSize,
+                        selectedVerse = selectedVerse,
+                        trackedVerseId = trackedVerseId,
+                        onVerseGloballyPositioned = onVerseGloballyPositioned
+                    )
 
-        ListViewScreen(
-            annotatedString = AnnotatedString(verse.text!!),
-            verse = verse,
-            isCurrentPage = isCurrentPage,
-            textSize = textSize,
-            selectedVerse = selectedVerse,
-            trackedVerseId = trackedVerseId,
-            onVerseGloballyPositioned = onVerseGloballyPositioned
-        )
+                    if (language != Language.ARABIC) {
+                        MyText(
+                            text = verse.translation!!,
+                            fontSize = (textSize - 5).sp,
+                            modifier = Modifier.padding(6.dp)
+                        )
+                    }
 
-        if (language != Language.ARABIC) {
-            MyText(
-                text = verse.translation!!,
-                fontSize = (textSize - 5).sp,
-                modifier = Modifier.padding(6.dp)
-            )
+                    if (verse.num != section.verses.last().num)
+                        MyHorizontalDivider()
+                }
+            }
         }
-
-        if (verse.num != verses.last().num)
-            MyHorizontalDivider()
     }
 }
 
 // TODO: I need a database table specifying the page parts and the number of lines for each part
-
 @Composable
-private fun PageViewScreen(annotatedString: AnnotatedString) {
-    val numberOfLines = 15
+private fun PageViewScreen(annotatedString: AnnotatedString, numOfLines: Int) {
     val density = LocalDensity.current
     var fontSize by remember { mutableStateOf(30.sp) }
     var fullHeight by remember { mutableFloatStateOf(0f) }
@@ -499,7 +488,7 @@ private fun PageViewScreen(annotatedString: AnnotatedString) {
             .padding(vertical = 4.dp, horizontal = 6.dp)
             .onSizeChanged {
                 fullHeight = with(density) { it.height.toDp().value }
-                lineHeight = fullHeight / numberOfLines / 20 + 0.01f
+                lineHeight = fullHeight / numOfLines / 20 + 0.01f
                 println("in onSizeChanged, fullHeight: $fullHeight, lineHeight: $lineHeight")
             },
 //                .drawWithContent {
@@ -514,10 +503,10 @@ private fun PageViewScreen(annotatedString: AnnotatedString) {
                 when (stage) {
                     "font_size" -> {
                         when {
-                            textLayoutResult.lineCount > numberOfLines -> {
+                            textLayoutResult.lineCount > numOfLines -> {
                                 fontSize *= 0.9f
                             }
-                            textLayoutResult.lineCount < numberOfLines -> {
+                            textLayoutResult.lineCount < numOfLines -> {
                                 fontSize *= 1.1f
                             }
                             else -> {
@@ -575,41 +564,24 @@ private fun ListViewScreen(
 }
 
 @Composable
-private fun NewSura(
-    verse: Verse,
-    isCurrentPage: Boolean,
-    textSize: Int,
-    onSuraHeaderGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
-) {
-    SuraHeader(
-        verse = verse,
-        isCurrentPage = isCurrentPage,
-        textSize = textSize,
-        onGloballyPositioned = onSuraHeaderGloballyPositioned
-    )
-
-    // surat al-fatiha and At-Taubah
-    if (verse.suraNum != 1 && verse.suraNum != 9) Basmalah(textSize)
-}
-
-@Composable
 private fun SuraHeader(
-    verse: Verse,
+    suraNum: Int,
+    suraName: String,
     isCurrentPage: Boolean,
     textSize: Int,
-    onGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
+    onGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
     Box(
         Modifier
             .padding(top = 10.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
             .onGloballyPositioned { layoutCoordinates ->
-                onGloballyPositioned(verse, isCurrentPage, layoutCoordinates)
+                onGloballyPositioned(suraNum, isCurrentPage, layoutCoordinates)
             },
         contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(R.drawable.sura_header),
-            contentDescription = verse.suraName,
+            contentDescription = suraName,
             modifier = Modifier
                 .fillMaxWidth(0.95f)
                 .height((textSize * 1.6).dp),
@@ -618,7 +590,7 @@ private fun SuraHeader(
         )
 
         MyText(
-            text = "${stringResource(R.string.sura)} ${verse.suraName}",
+            text = "${stringResource(R.string.sura)} $suraName",
             fontSize = textSize.sp,
             textColor = AppTheme.colors.strongText,
             fontFamily = uthmanic
