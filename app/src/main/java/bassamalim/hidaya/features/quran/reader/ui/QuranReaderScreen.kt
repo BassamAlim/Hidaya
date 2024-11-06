@@ -97,7 +97,18 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
                 juzNumText = state.juzNum
             )
         },
-        bottomBar = { BottomBar(viewModel, state) }
+        bottomBar = {
+            BottomBar(
+                activity = activity,
+                isBookmarked = state.isBookmarked,
+                playerState = state.playerState,
+                onBookmarkClick = viewModel::onBookmarkClick,
+                onPreviousVerseClick = viewModel::onPreviousVerseClick,
+                onPlayPauseClick = viewModel::onPlayPauseClick,
+                onNextVerseClick = viewModel::onNextVerseClick,
+                onSettingsClick = viewModel::onSettingsClick
+            )
+        }
     ) {
         PageContent(
             pageVerses = state.pageVerses,
@@ -137,20 +148,16 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
 }
 
 @Composable
-private fun TopBar(
-    suraName: String,
-    pageNumText: String,
-    juzNumText: String
-) {
+private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
     TopAppBar(
-        backgroundColor = AppTheme.colors.primary,
-        modifier = Modifier.fillMaxWidth(),
-        elevation = 8.dp
+        modifier = Modifier.fillMaxWidth().height(36.dp),
+        backgroundColor = AppTheme.colors.quranBG,
+        elevation = 4.dp
     ) {
         Row(
             Modifier
                 .fillMaxSize()
-                .padding(horizontal = 10.dp),
+                .padding(horizontal = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -158,7 +165,7 @@ private fun TopBar(
             MyText(
                 text = "${stringResource(R.string.sura)} $suraName",
                 fontSize = 18.nsp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Start,
                 textColor = AppTheme.colors.onPrimary
             )
@@ -167,7 +174,7 @@ private fun TopBar(
             MyText(
                 text = "${stringResource(R.string.page)} $pageNumText",
                 fontSize = 18.nsp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Medium,
                 textColor = AppTheme.colors.onPrimary
             )
 
@@ -175,7 +182,7 @@ private fun TopBar(
             MyText(
                 text = "${stringResource(R.string.juz)} $juzNumText",
                 fontSize = 18.nsp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.End,
                 textColor = AppTheme.colors.onPrimary
             )
@@ -185,11 +192,15 @@ private fun TopBar(
 
 @Composable
 private fun BottomBar(
-    vm: QuranReaderViewModel,
-    st: QuranReaderUiState
+    activity: Activity,
+    isBookmarked: Boolean,
+    playerState: Int,
+    onBookmarkClick: (Boolean) -> Unit,
+    onPreviousVerseClick: () -> Unit,
+    onPlayPauseClick: (Activity) -> Unit,
+    onNextVerseClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
-    val activity = LocalContext.current as Activity
-
     BottomAppBar(
         backgroundColor = AppTheme.colors.primary
     ) {
@@ -203,12 +214,12 @@ private fun BottomBar(
             // Bookmark btn
             MyIconButton(
                 iconId =
-                    if (st.isBookmarked) R.drawable.ic_bookmarked
+                    if (isBookmarked) R.drawable.ic_bookmarked
                     else R.drawable.ic_bookmark,
                 description = stringResource(R.string.bookmark_page_button_description),
                 tint = AppTheme.colors.onPrimary,
                 size = 40.dp,
-                onClick = { vm.onBookmarkClick(st.isBookmarked) }
+                onClick = { onBookmarkClick(isBookmarked) }
             )
 
             MyRow {
@@ -218,17 +229,17 @@ private fun BottomBar(
                     description = stringResource(R.string.rewind_btn_description),
                     size = 40.dp,
                     tint = AppTheme.colors.onPrimary,
-                    onClick = { vm.onPreviousVerseClick() }
+                    onClick = onPreviousVerseClick
                 )
 
                 // Play/Pause btn
                 MyIconPlayerBtn(
-                    state = st.playerState,
+                    state = playerState,
                     size = 50.dp,
                     padding = 5.dp,
                     modifier = Modifier.padding(horizontal = 4.dp),
                     tint = AppTheme.colors.onPrimary,
-                    onClick = { vm.onPlayPauseClick(activity) }
+                    onClick = { onPlayPauseClick(activity) }
                 )
 
                 // Fast Forward btn
@@ -237,17 +248,17 @@ private fun BottomBar(
                     description = stringResource(R.string.fast_forward_btn_description),
                     size = 40.dp,
                     tint = AppTheme.colors.onPrimary,
-                    onClick = { vm.onNextVerseClick() }
+                    onClick = onNextVerseClick
                 )
             }
 
             // Preference btn
             MyIconButton(
-                iconId = R.drawable.ic_preferences,
+                iconId = R.drawable.ic_display_settings,
                 description = stringResource(R.string.settings),
                 tint = AppTheme.colors.onPrimary,
-                size = 44.dp,
-                onClick = { vm.onSettingsClick() }
+                size = 40.dp,
+                onClick = onSettingsClick
             )
         }
     }

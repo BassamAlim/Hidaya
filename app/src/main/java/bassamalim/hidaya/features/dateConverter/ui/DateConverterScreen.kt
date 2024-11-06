@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
@@ -38,7 +39,7 @@ fun DateConverterScreen(viewModel: DateConverterViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column {
-                MySquareButton(
+                MyRectangleButton(
                     text = stringResource(R.string.pick_hijri_date),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -48,7 +49,7 @@ fun DateConverterScreen(viewModel: DateConverterViewModel) {
                     onClick = viewModel::onPickHijriClick
                 )
 
-                MySquareButton(
+                MyRectangleButton(
                     text = stringResource(R.string.pick_gregorian_date),
                     modifier = Modifier
                         .fillMaxWidth()

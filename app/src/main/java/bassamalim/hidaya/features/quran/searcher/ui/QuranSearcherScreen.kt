@@ -21,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyDropDownMenu
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MySurface
@@ -132,7 +133,7 @@ fun MatchItem(
                 modifier = Modifier.padding(6.dp)
             )
 
-            MySquareButton(
+            MyRectangleButton(
                 text = stringResource(R.string.go_to_page),
                 modifier = Modifier.padding(bottom = 6.dp),
                 textColor = AppTheme.colors.accent,

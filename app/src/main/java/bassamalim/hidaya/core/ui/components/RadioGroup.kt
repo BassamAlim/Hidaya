@@ -28,26 +28,26 @@ fun RadioGroup(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         options.forEachIndexed { index, text ->
-            MySquareButton(
+            MyRectangleButton(
                 text = text,
                 textColor =
-                if (index == selection) AppTheme.colors.accent
-                else AppTheme.colors.text,
+                    if (index == selection) AppTheme.colors.accent
+                    else AppTheme.colors.text,
                 innerPadding = PaddingValues(vertical = 10.dp),
                 modifier =
-                if (index == selection)
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 10.dp, horizontal = 16.dp)
-                        .border(
-                            width = 3.dp,
-                            color = AppTheme.colors.accent,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                else
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 10.dp, horizontal = 16.dp)
+                    if (index == selection)
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 10.dp, horizontal = 16.dp)
+                            .border(
+                                width = 3.dp,
+                                color = AppTheme.colors.accent,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                    else
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 10.dp, horizontal = 16.dp)
             ) {
                 onSelect(index)
             }
@@ -71,7 +71,7 @@ fun <V> HorizontalRadioGroup(
     ) {
         entries.forEachIndexed { index, text ->
             val item = items[index]
-            MySquareButton(
+            MyRectangleButton(
                 text = text,
                 fontSize = 20.nsp,
                 textColor =

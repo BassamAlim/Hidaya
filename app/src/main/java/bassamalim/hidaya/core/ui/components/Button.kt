@@ -129,9 +129,10 @@ fun SecondaryPillBtn(
 }
 
 @Composable
-fun MySquareButton(
+fun MyRectangleButton(
     text: String,
     modifier: Modifier = Modifier,
+    padding: PaddingValues = PaddingValues(3.dp),
     colors: ButtonColors = ButtonDefaults.buttonColors(backgroundColor = AppTheme.colors.surface),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
@@ -144,7 +145,7 @@ fun MySquareButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.padding(3.dp),
+        modifier = modifier.padding(padding),
         colors = colors,
         shape = RoundedCornerShape(10.dp),
         elevation =  ButtonDefaults.elevation(
@@ -168,7 +169,6 @@ fun MySquareButton(
                 textColor = textColor
             )
         }
-
     }
 }
 
@@ -317,7 +317,7 @@ fun MySquareButton(
     iconSize: Dp = 70.dp,
     onClick: () -> Unit
 ) {
-    MySquareButton(
+    MyRectangleButton(
         text = text,
         fontSize = 18.nsp,
         modifier = Modifier

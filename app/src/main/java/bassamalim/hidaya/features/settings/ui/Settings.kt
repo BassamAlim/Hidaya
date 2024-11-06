@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
-import bassamalim.hidaya.core.ui.components.MySquareButton
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.MyValuedSlider
 import bassamalim.hidaya.core.ui.theme.AppTheme
@@ -140,16 +140,15 @@ fun <V> MenuSetting(
                                 }
                             }
 
-                            MySquareButton(
-                                stringResource(R.string.cancel),
+                            MyRectangleButton(
+                                text = stringResource(R.string.cancel),
                                 colors = ButtonDefaults.buttonColors(
                                     backgroundColor = AppTheme.colors.background
                                 ),
                                 elevation = 0,
-                                innerPadding = PaddingValues(0.dp)
-                            ) {
-                                isShown = !isShown
-                            }
+                                innerPadding = PaddingValues(0.dp),
+                                onClick = { isShown = !isShown }
+                            )
                         }
                     }
                 }
@@ -163,13 +162,13 @@ fun SwitchSetting(
     value: Boolean,
     title: String,
     summary: String,
+    padding: PaddingValues = PaddingValues(vertical = 6.dp, horizontal = 16.dp),
     bgColor: Color = AppTheme.colors.surface,
     onSwitch: (Boolean) -> Unit = {}
 ) {
     Box(
         Modifier
             .fillMaxWidth()
-            .padding(4.dp)
             .background(bgColor)
             .clip(RoundedCornerShape(10.dp))
             .clickable { onSwitch(!value) }
@@ -177,7 +176,7 @@ fun SwitchSetting(
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(vertical = 6.dp, horizontal = 16.dp)
+                .padding(padding)
         ) {
             Row(
                 Modifier.fillMaxWidth(),

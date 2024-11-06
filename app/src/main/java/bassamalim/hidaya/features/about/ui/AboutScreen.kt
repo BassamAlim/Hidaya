@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
@@ -129,9 +130,9 @@ private fun ColumnScope.HiddenArea(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // rebuild database button
-            MySquareButton(
+            MyRectangleButton(
                 text = stringResource(R.string.rebuild_database),
-                Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = onRebuildDatabaseClick
             )
 

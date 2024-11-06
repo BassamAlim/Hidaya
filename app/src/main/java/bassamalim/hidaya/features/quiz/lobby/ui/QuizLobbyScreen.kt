@@ -12,8 +12,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.theme.AppTheme
 
 @Composable
@@ -24,7 +24,7 @@ fun QuizLobbyScreen(viewModel: QuizLobbyViewModel) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            MySquareButton(
+            MyRectangleButton(
                 text = stringResource(R.string.start_quiz),
                 innerPadding = PaddingValues(vertical = 10.dp, horizontal = 25.dp),
                 fontSize = 24.sp,

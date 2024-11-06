@@ -24,8 +24,8 @@ import bassamalim.hidaya.core.ui.components.HorizontalRadioGroup
 import bassamalim.hidaya.core.ui.components.MyCheckbox
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyRow
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
 import bassamalim.hidaya.core.ui.theme.nsp
@@ -110,7 +110,7 @@ fun QuranSettingsDialog(
 
             PreferenceTitle(
                 title = stringResource(R.string.aya_repeat),
-                modifier = Modifier.padding(top = 15.dp, bottom = 10.dp, start = 10.dp)
+                modifier = Modifier.padding(top = 12.dp, bottom = 6.dp, start = 10.dp)
             )
 
             RepeatRadioGroup(
@@ -123,6 +123,7 @@ fun QuranSettingsDialog(
             SwitchSetting(
                 value = state.shouldStopOnSuraEnd,
                 title = stringResource(R.string.stop_on_sura_end),
+                padding = PaddingValues(horizontal = 16.dp),
                 bgColor = AppTheme.colors.background,
                 summary = "",
                 onSwitch = viewModel::onShouldStopOnSuraEndChange
@@ -131,6 +132,7 @@ fun QuranSettingsDialog(
             SwitchSetting(
                 value = state.shouldStopOnPageEnd,
                 title = stringResource(R.string.stop_on_page_end),
+                padding = PaddingValues(horizontal = 16.dp),
                 bgColor = AppTheme.colors.background,
                 summary = "",
                 onSwitch = viewModel::onShouldStopOnPageEndChange
@@ -151,90 +153,97 @@ private fun RepeatRadioGroup(
     Column(
         modifier = Modifier.padding(bottom = 15.dp)
     ) {
-        // No repeat
-        MySquareButton(
-            text = entries[0],
-            fontSize = 16.nsp,
-            textColor = if (items[0] == selection) AppTheme.colors.accent
-            else AppTheme.colors.text,
-            innerPadding = PaddingValues(vertical = 1.dp),
-            modifier = if (items[0] == selection) Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 5.dp)
-                .border(
-                    width = 3.dp,
-                    color = AppTheme.colors.accent,
-                    shape = RoundedCornerShape(10.dp)
-                )
-            else Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 5.dp),
-            onClick = { onSelect(items[0]) }
-        )
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp),
+                .padding(vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             for (i in 1 until entries.lastIndex) {
-                MySquareButton(
+                MyRectangleButton(
                     text = entries[i],
                     fontSize = 16.nsp,
-                    textColor = if (items[i] == selection) AppTheme.colors.accent
-                    else AppTheme.colors.text,
-                    innerPadding = PaddingValues(vertical = 1.dp),
-                    modifier = if (items[i] == selection) Modifier
-                        .weight(1F)
-                        .padding(horizontal = 5.dp)
-                        .border(
-                            width = 3.dp,
-                            color = AppTheme.colors.accent,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                    else Modifier
-                        .weight(1F)
-                        .padding(horizontal = 5.dp),
+                    textColor =
+                        if (items[i] == selection) AppTheme.colors.accent
+                        else AppTheme.colors.text,
+                    modifier =
+                        if (items[i] == selection) Modifier
+                            .weight(1F)
+                            .border(
+                                width = 3.dp,
+                                color = AppTheme.colors.accent,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                        else Modifier.weight(1F),
+                    padding = PaddingValues(horizontal = 5.dp),
                     onClick = { onSelect(items[i]) }
                 )
             }
         }
 
-        // Infinite repeat
-        MySquareButton(
-            text = entries.last(),
-            fontSize = 16.nsp,
-            textColor = if (items.last() == selection) AppTheme.colors.accent
-            else AppTheme.colors.text,
-            innerPadding = PaddingValues(vertical = 1.dp),
-            modifier = if (items.last() == selection) Modifier
+        Row(
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 5.dp)
-                .border(
-                    width = 3.dp,
-                    color = AppTheme.colors.accent,
-                    shape = RoundedCornerShape(10.dp)
-                )
-            else Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 5.dp),
-            onClick = { onSelect(items.last()) }
-        )
+                .padding(vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // No repeat
+            MyRectangleButton(
+                text = entries[0],
+                fontSize = 16.nsp,
+                textColor =
+                if (items[0] == selection) AppTheme.colors.accent
+                else AppTheme.colors.text,
+                modifier =
+                if (items[0] == selection) Modifier
+                    .weight(1F)
+                    .border(
+                        width = 3.dp,
+                        color = AppTheme.colors.accent,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                else Modifier.weight(1F),
+                padding = PaddingValues(horizontal = 5.dp),
+                onClick = { onSelect(items[0]) }
+            )
+
+            // Infinite repeat
+            MyRectangleButton(
+                text = entries.last(),
+                fontSize = 16.nsp,
+                textColor =
+                if (items.last() == selection) AppTheme.colors.accent
+                else AppTheme.colors.text,
+                modifier =
+                if (items.last() == selection) Modifier
+                    .weight(1F)
+                    .border(
+                        width = 3.dp,
+                        color = AppTheme.colors.accent,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                else Modifier.weight(1F),
+                padding = PaddingValues(horizontal = 5.dp),
+                onClick = { onSelect(items.last()) }
+            )
+        }
+
+
     }
 }
 
 @Composable
 private fun BottomBar(onCancel: () -> Unit, onSave: () -> Unit) {
     MyRow {
-        MySquareButton(
+        MyRectangleButton(
             text = stringResource(R.string.cancel),
             modifier = Modifier.weight(1f),
             onClick = onCancel
         )
 
-        MySquareButton(
+        MyRectangleButton(
             text = stringResource(R.string.save),
             modifier = Modifier.weight(1f),
             onClick = onSave

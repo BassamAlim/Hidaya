@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyTopBar
@@ -99,7 +100,7 @@ private fun LocationItems(
         state = lazyListState,
         lazyList = {
             items(items) { item ->
-                MySquareButton(
+                MyRectangleButton(
                     text = item.name,
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onSelect(item.id) }

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
@@ -104,7 +105,7 @@ fun ColumnScope.BottomBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        MySquareButton(
+        MyRectangleButton(
             text = stringResource(R.string.previous_question),
             textColor =
                 if (isPreviousButtonEnabled) AppTheme.colors.text
@@ -113,7 +114,7 @@ fun ColumnScope.BottomBar(
             onClick = onPreviousQuestionClick
         )
 
-        MySquareButton(
+        MyRectangleButton(
             text = stringResource(
                 if (questionIdx == 9) {
                     if (isAllAnswered) R.string.finish_quiz

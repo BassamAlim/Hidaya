@@ -29,6 +29,7 @@ import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyFloatingActionButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
@@ -60,16 +61,18 @@ fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
             Column(
                 Modifier.fillMaxSize()
             ) {
-                MySquareButton(
-                    text = if (state.bookmarkPageText == null) {
-                        stringResource(R.string.no_bookmarked_page)
-                    } else {
-                        stringResource(R.string.bookmarked_page) +
-                                " ${stringResource(R.string.page)}" +
-                                " ${state.bookmarkPageText}," +
-                                " ${stringResource(R.string.sura)}" +
-                                " ${state.bookmarkSuraText}"
-                    },
+                MyRectangleButton(
+                    text =
+                        if (state.bookmarkPageText == null) {
+                            stringResource(R.string.no_bookmarked_page)
+                        }
+                        else {
+                            stringResource(R.string.bookmarked_page) +
+                                    " ${stringResource(R.string.page)}" +
+                                    " ${state.bookmarkPageText}," +
+                                    " ${stringResource(R.string.sura)}" +
+                                    " ${state.bookmarkSuraText}"
+                        },
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 18.sp,
                     innerPadding = PaddingValues(vertical = 4.dp),

@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
@@ -83,7 +84,7 @@ fun RecitersMenuFilterDialog(
                 )
             }
 
-            MySquareButton(
+            MyRectangleButton(
                 text = stringResource(R.string.select),
                 modifier = Modifier.padding(horizontal = 10.dp),
                 onClick = viewModel::onSave

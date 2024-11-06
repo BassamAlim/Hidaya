@@ -28,6 +28,7 @@ import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
@@ -53,7 +54,7 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
         onBack = viewModel::onBackPressed
     ) {
         Column {
-            MySquareButton(
+            MyRectangleButton(
                 text =
                     if (state.lastPlayedMedia != null) {
                         "${stringResource(R.string.last_play)}: " +

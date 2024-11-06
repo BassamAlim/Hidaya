@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
@@ -58,7 +59,7 @@ fun LocatorScreen(viewModel: LocatorViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Locate button
-            MySquareButton(
+            MyRectangleButton(
                 text = stringResource(R.string.locate),
                 fontSize = 22.sp,
                 colors = ButtonDefaults.buttonColors(backgroundColor = AppTheme.colors.accent),
@@ -70,7 +71,7 @@ fun LocatorScreen(viewModel: LocatorViewModel) {
             )
 
             // Choose manually button
-            MySquareButton(
+            MyRectangleButton(
                 text = stringResource(R.string.choose_manually),
                 fontSize = 22.sp,
                 modifier = Modifier
@@ -81,7 +82,7 @@ fun LocatorScreen(viewModel: LocatorViewModel) {
 
             if (state.shouldShowSkipLocationButton) {
                 // Skip button
-                MySquareButton(
+                MyRectangleButton(
                     text = stringResource(R.string.rejected),
                     fontSize = 22.sp,
                     modifier = Modifier

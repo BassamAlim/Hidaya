@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.ui.components.MyDialog
 import bassamalim.hidaya.core.ui.components.MyIconButton
+import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.theme.AppTheme
@@ -104,12 +105,12 @@ private fun BottomBar(
         Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        MySquareButton(
+        MyRectangleButton(
             text = stringResource(R.string.save),
             onClick = onSave
         )
 
-        MySquareButton(
+        MyRectangleButton(
             text = stringResource(R.string.cancel),
             onClick = onDismiss
         )
