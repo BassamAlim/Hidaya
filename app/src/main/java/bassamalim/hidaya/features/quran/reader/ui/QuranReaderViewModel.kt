@@ -260,8 +260,7 @@ class QuranReaderViewModel @Inject constructor(
     }
 
     fun onVerseReleased(verseId: Int) {
-        if (verseId == pressedVerseId)
-            pressedVerseId = null
+        pressedVerseId = null
     }
 
     private fun onVerseHold(verseId: Int) {
