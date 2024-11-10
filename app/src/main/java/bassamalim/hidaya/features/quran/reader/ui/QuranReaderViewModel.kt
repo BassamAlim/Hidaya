@@ -23,6 +23,7 @@ import bassamalim.hidaya.features.quran.reader.domain.QuranReaderDomain
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -56,12 +57,11 @@ class QuranReaderViewModel @Inject constructor(
     var pageNum = 0
         private set
     private var suraId = 0
-    private var lastClickT = 0L
-    private var lastClickedId = -1
     var scrollTo = -1F
         private set
     private val versePositions = mutableMapOf<Int, Float>()
     private var shouldSelectVerse = false
+    private var pressedVerseId: Int? = null
 
     private val _uiState = MutableStateFlow(QuranReaderUiState())
     val uiState = combine(
@@ -235,35 +235,38 @@ class QuranReaderViewModel @Inject constructor(
     }
 
     fun onVerseClick(verseId: Int) {
-        println("onVerseClick: $verseId")
-        val maxDuration = 1200
-
         val verse = _uiState.value.pageVerses.find { it.id == verseId }!!
 
-        // double click
-        if (verse.id == lastClickedId
-            && System.currentTimeMillis() < lastClickT + maxDuration) {
+        if (_uiState.value.selectedVerse?.id == verse.id) {
             _uiState.update { it.copy(
                 selectedVerse = null
             )}
-
-            navigator.navigate(Screen.VerseInfo(verse.id.toString()))
         }
-        else {  // single click
-            if (_uiState.value.selectedVerse?.id == verse.id) {
-                _uiState.update { it.copy(
-                    selectedVerse = null
-                )}
-            }
-            else {
-                _uiState.update { it.copy(
-                    selectedVerse = verse
-                )}
-            }
+        else {
+            _uiState.update { it.copy(
+                selectedVerse = verse
+            )}
         }
+    }
 
-        lastClickedId = verse.id
-        lastClickT = System.currentTimeMillis()
+    fun onVersePressed(verseId: Int) {
+        pressedVerseId = verseId
+
+        coroutineScope.launch {
+            delay(500)
+            if (pressedVerseId == verseId)
+                onVerseHold(verseId)
+        }
+    }
+
+    fun onVerseReleased(verseId: Int) {
+        if (verseId == pressedVerseId)
+            pressedVerseId = null
+    }
+
+    private fun onVerseHold(verseId: Int) {
+        navigator.navigate(Screen.VerseInfo(verseId.toString()))
+        pressedVerseId = null
     }
 
     fun onSuraHeaderGloballyPositioned(

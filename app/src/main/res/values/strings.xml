@@ -24,7 +24,7 @@
     <string name="friday_kahf_title">إشعار سورة الكهف</string>
     <string name="text_size_title">حجم الخط</string>
     <string name="reciter">القارئ</string>
-    <string name="aya_repeat">تكرار الآية</string>
+    <string name="verse_repeat">تكرار الآية</string>
     <string name="time_format">صيغة الوقت</string>
     <string name="calculation_method_title">طريقة الحساب</string>
     <string name="juristic_method_title">الطريقة الفقهية</string>
@@ -79,9 +79,9 @@
 
     <!-- Tips -->
     <string name="prayers_tips">اضغط على اسم الصلاة لعرض اعدادات كل صلاة.\n\nاضغط على السهمين الايمن والايسر في اسفل الشاشة لاظهار اوقات صلاة الايام الاخرى .. ثم اضغط على النص بين السهمين للعودة الى اليوم الحالي.</string>
-    <string name="quran_tips">اضغط على الاية مرتين لاظهار تفسيرها.\n\nاضغط على الاية ثم اضغط على زر التشغيل في الشريط السفلي لبدأ التشغيل من الاية المختارة.\n\nيمكنك تغيير القارئ اثناء التلاوة.</string>
-    <string name="quran_fragment_tips">يمكنك الضغط عل الزر في الزاوية السفلية من الشاشة للبحث عن نص في المصحف.</string>
-    <string name="books_activity_tips">يمكنك الضغط على الزر في الزاوية السفلية من الشاشة للبحث عن نص في الكتب المحملة.</string>
+    <string name="suras_reader_tips">اضغط ضغطة مطولة على الآية لإظهار معلوماتها.\n\nاضغط على الاية ثم اضغط على زر التشغيل في الشريط السفلي لبدأ التشغيل من الاية المختارة.\n\nيمكنك تغيير القارئ اثناء التلاوة.</string>
+    <string name="quran_menu_tips">يمكنك الضغط عل الزر في الزاوية السفلية من الشاشة للبحث عن نص في المصحف.</string>
+    <string name="books_menu_tips">يمكنك الضغط على الزر في الزاوية السفلية من الشاشة للبحث عن نص في الكتب المحملة.</string>
 
     <!-- Hints -->
     <string name="quran_search_hint">ابحث عن اسم السورة أو رقم الصفحة</string>
@@ -203,7 +203,7 @@
     <string name="stop_athan">إيقاف الأذان</string>
     <string name="for_reciter">للقارئ</string>
     <string name="in_narration_of">برواية</string>
-    <string name="aya_number">آية رقم</string>
+    <string name="verse_number">آية رقم</string>
     <string name="basmalah" translatable="false">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</string>
     <string name="list_view">قائمة</string>
     <string name="display_method">طريقة العرض</string>

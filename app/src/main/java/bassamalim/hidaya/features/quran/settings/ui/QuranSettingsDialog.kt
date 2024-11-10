@@ -109,7 +109,7 @@ fun QuranSettingsDialog(
             )
 
             PreferenceTitle(
-                title = stringResource(R.string.aya_repeat),
+                title = stringResource(R.string.verse_repeat),
                 modifier = Modifier.padding(top = 12.dp, bottom = 6.dp, start = 10.dp)
             )
 

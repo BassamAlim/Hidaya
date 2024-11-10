@@ -31,7 +31,6 @@ import bassamalim.hidaya.core.ui.components.MyFloatingActionButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
 import bassamalim.hidaya.core.ui.components.TabLayout
@@ -105,7 +104,7 @@ fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
 
         TutorialDialog(
             shown = state.isTutorialDialogShown,
-            text = stringResource(R.string.quran_fragment_tips),
+            text = stringResource(R.string.quran_menu_tips),
             onDismiss = viewModel::onTutorialDialogDismiss
         )
 

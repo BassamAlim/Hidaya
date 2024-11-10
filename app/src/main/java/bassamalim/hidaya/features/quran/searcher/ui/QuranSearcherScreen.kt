@@ -23,7 +23,6 @@ import bassamalim.hidaya.core.ui.components.MyDropDownMenu
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
-import bassamalim.hidaya.core.ui.components.MySquareButton
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.SearchComponent
@@ -121,7 +120,7 @@ fun MatchItem(
             }
 
             MyText(
-                text = "${stringResource(R.string.aya_number)} ${item.verseNum}",
+                text = "${stringResource(R.string.verse_number)} ${item.verseNum}",
                 modifier = Modifier.padding(6.dp)
             )
             MyText(

@@ -34,6 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -45,6 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -127,13 +130,15 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
             buildPage = viewModel::buildPage,
             onSuraHeaderGloballyPositioned = viewModel::onSuraHeaderGloballyPositioned,
             onVerseGloballyPositioned = viewModel::onVerseGloballyPositioned,
-            onVerseClick = viewModel::onVerseClick
+            onVerseClick = viewModel::onVerseClick,
+            onVersePressed = viewModel::onVersePressed,
+            onVerseReleased = viewModel::onVerseReleased
         )
     }
 
     TutorialDialog(
         shown = state.isTutorialDialogShown,
-        text = stringResource(R.string.quran_tips),
+        text = stringResource(R.string.suras_reader_tips),
         onDismiss = viewModel::onTutorialDialogDismiss
     )
 
@@ -279,7 +284,9 @@ private fun PageContent(
     buildPage: (Int) -> List<Section>,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVerseGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
-    onVerseClick: (Int) -> Unit
+    onVerseClick: (Int) -> Unit,
+    onVersePressed: (Int) -> Unit,
+    onVerseReleased: (Int) -> Unit
 ) {
     HorizontalPager(
         state = pagerState,
@@ -310,6 +317,8 @@ private fun PageContent(
                         trackedVerseId = trackedVerseId,
                         textSize = textSize,
                         onVerseClick = onVerseClick,
+                        onVersePressed = onVersePressed,
+                        onVerseReleased = onVerseReleased,
                         onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
                     )
                 }
@@ -345,6 +354,8 @@ private fun PageItems(
     trackedVerseId: Int,
     textSize: Int,
     onVerseClick: (Int) -> Unit,
+    onVersePressed: (Int) -> Unit,
+    onVerseReleased: (Int) -> Unit,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
     val lineHeight = getLineHeight()
@@ -372,7 +383,9 @@ private fun PageItems(
                     trackedVerseId = trackedVerseId,
                     textSize = textSize,
                     lineHeight = lineHeight,
-                    onVerseClick = onVerseClick
+                    onVerseClick = onVerseClick,
+                    onVersePressed = onVersePressed,
+                    onVerseReleased = onVerseReleased
                 )
             }
         }
@@ -387,7 +400,9 @@ private fun PageItem(
     trackedVerseId: Int,
     textSize: Int,
     lineHeight: TextUnit,
-    onVerseClick: (Int) -> Unit
+    onVerseClick: (Int) -> Unit,
+    onVersePressed: (Int) -> Unit,
+    onVerseReleased: (Int) -> Unit
 ) {
     val annotatedString = buildAnnotatedString {
         for (seqVerse in sequence) {
@@ -413,7 +428,9 @@ private fun PageItem(
     PageViewScreen(
         annotatedString = annotatedString,
         numOfLines = numOfLines,
-        lineHeight = lineHeight
+        lineHeight = lineHeight,
+        onVersePressed = onVersePressed,
+        onVerseReleased = onVerseReleased
     )
 }
 
@@ -474,10 +491,13 @@ private fun ListItems(
 private fun PageViewScreen(
     annotatedString: AnnotatedString,
     numOfLines: Int,
-    lineHeight: TextUnit
+    lineHeight: TextUnit,
+    onVersePressed: (Int) -> Unit,
+    onVerseReleased: (Int) -> Unit
 ) {
     var fontSize by remember { mutableStateOf(25.sp) }
     var ready by remember { mutableStateOf(false) }
+    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
     Text(
         text = annotatedString,
@@ -485,9 +505,40 @@ private fun PageViewScreen(
             .fillMaxWidth()
             .height((lineHeight.value * numOfLines).dp)
             .padding(vertical = 4.dp, horizontal = 6.dp)
+            .pointerInput(Unit) {
+                println("pointerInput")
+                awaitPointerEventScope {
+                    println("awaitPointerEventScope")
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val offset = event.changes[0].position
+                        val position = layoutResult?.getOffsetForPosition(offset)
+                        val verseId = position?.let {
+                            annotatedString.getLinkAnnotations(start = position, end = position)
+                                .firstOrNull()?.item?.toString()
+                                ?.substringAfter('=')
+                                ?.substringBefore(')')
+                                ?.toInt()
+                        }
+                        println("event, event.type: ${event.type}, event.changes.size: ${event.changes.size}, verseId: $verseId")
+
+                        when (event.type) {
+                            PointerEventType.Press -> {
+                                println("Press")
+                                verseId?.let(onVersePressed)
+                            }
+                            PointerEventType.Release -> {
+                                println("Release")
+                                verseId?.let(onVerseReleased)
+                            }
+                        }
+                    }
+                }
+            }
             .drawWithContent {
                 println("in drawWithContent, ready: $ready, fontSize: $fontSize, lineHeight: $lineHeight")
-                if (ready) drawContent()
+//                if (ready)
+                    drawContent()
             },
         fontSize = fontSize,
         style = TextStyle(
@@ -502,6 +553,9 @@ private fun PageViewScreen(
         textAlign = TextAlign.Justify,
         onTextLayout = { textLayoutResult ->
             println("in onTextLayout, ready: $ready, fontSize: $fontSize, lineHeight: $lineHeight, lineCount: ${textLayoutResult.lineCount}, didOverflowHeight: ${textLayoutResult.didOverflowHeight}")
+
+            layoutResult = textLayoutResult
+
             if (!ready) {
                 when {
                     textLayoutResult.lineCount > numOfLines -> fontSize *= 0.99f

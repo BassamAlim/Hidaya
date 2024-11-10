@@ -25,7 +25,7 @@
     <string name="friday_kahf_title">Surat al-kahf reminder</string>
     <string name="text_size_title">Text size</string>
     <string name="reciter">Reciter</string>
-    <string name="aya_repeat">Aya repetition</string>
+    <string name="verse_repeat">Verse repetition</string>
     <string name="time_format">Time format</string>
     <string name="calculation_method_title">Calculation method</string>
     <string name="juristic_method_title">Juristic method</string>
@@ -79,9 +79,9 @@
 
     <!-- Tips -->
     <string name="prayers_tips">Click on the prayer name to edit prayer preferences.\n\n Click on the right and left arrows in the bottom of the screen to view other days prayer times .. Then click on the text between the arrows to return to the current day.</string>
-    <string name="quran_tips">Double click the aya to view its interpretation.\n\n Click on an aya then click on the play button in the bottom bar to start playing from that aya.\n\n You can change the reciter while recitation is playing.</string>
-    <string name="quran_fragment_tips">You can click on the button in the bottom corner of the screen to search in the quran.</string>
-    <string name="books_activity_tips">You can click on the button in the bottom corner of the screen to search in the downloaded books.</string>
+    <string name="suras_reader_tips">Click and hold the verse to view its interpretation.\n\n Click on a verse then click on the play button in the bottom bar to start playing from that verse.\n\n You can change the reciter while recitation is playing.</string>
+    <string name="quran_menu_tips">You can click on the button in the bottom corner of the screen to search in the quran.</string>
+    <string name="books_menu_tips">You can click on the button in the bottom corner of the screen to search in the downloaded books.</string>
 
     <!-- Search Hints -->
     <string name="quran_search_hint">Search for sura name or page number</string>
@@ -127,7 +127,7 @@
     <string name="page_does_not_exist">No page with this number</string>
     <string name="playback_failed">Playback failed</string>
     <string name="choose_allow_all_the_time">Choose \"Allow all the time\" to keep the prayer times and qibla direction accurate</string>
-    <string name="recitation_not_available">This aya\'s recitation is not available for the selected reciter</string>
+    <string name="recitation_not_available">This verse\'s recitation is not available for the selected reciter</string>
 
     <!-- Notification Channels -->
     <string name="no_downloaded_books">You have not downloaded any books yet, please download books to search in</string>
@@ -202,7 +202,7 @@
     <string name="stop_athan">Stop athan</string>
     <string name="for_reciter">for reciter</string>
     <string name="in_narration_of">in the narration of</string>
-    <string name="aya_number">Aya number</string>
+    <string name="verse_number">Verse number</string>
     <string name="list_view">List</string>
     <string name="display_method">View Method</string>
     <string name="qibla">Qibla</string>

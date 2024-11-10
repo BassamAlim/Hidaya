@@ -61,7 +61,7 @@ fun BooksMenuScreen(viewModel: BooksMenuViewModel) {
 
         TutorialDialog(
             shown = state.tutorialDialogShown,
-            text = stringResource(R.string.books_activity_tips),
+            text = stringResource(R.string.books_menu_tips),
             onDismiss = viewModel::onTutorialDialogDismiss
         )
 
