@@ -214,6 +214,8 @@ class QuranReaderDomain @Inject constructor(
 
     fun getViewType() = quranRepository.getViewType()
 
+    fun getFillPage() = quranRepository.getFillPage()
+
     suspend fun getShouldShowTutorial() = quranRepository.getShouldShowReaderTutorial().first()
 
     fun getTextSize() = quranRepository.getTextSize()

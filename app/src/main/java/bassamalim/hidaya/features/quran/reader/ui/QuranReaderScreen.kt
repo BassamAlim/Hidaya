@@ -17,6 +17,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -111,6 +112,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     ) {
         PageContent(
             viewType = state.viewType,
+            fillPage = state.fillPage,
             selectedVerse = state.selectedVerse,
             trackedVerseId = state.trackedVerseId,
             textSize = state.textSize.toInt(),
@@ -264,6 +266,7 @@ private fun BottomBar(
 @Composable
 private fun PageContent(
     viewType: QuranViewType,
+    fillPage: Boolean,
     selectedVerse: Verse?,
     trackedVerseId: Int,
     textSize: Int,
@@ -288,8 +291,12 @@ private fun PageContent(
 
         onPageChange(pagerState.currentPage, pageIdx, scrollState)
 
+        val modifier =
+            if (viewType == QuranViewType.PAGE && fillPage) Modifier.fillMaxSize()
+            else Modifier.fillMaxSize().verticalScroll(scrollState)
+
         Column(
-            Modifier.fillMaxSize(),
+            modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (viewType) {
@@ -302,6 +309,7 @@ private fun PageContent(
                     )
 
                     PageItems(
+                        fillPage = fillPage,
                         sections = pageContent,
                         isCurrentPage = isCurrentPage,
                         textSize = textSize,
@@ -343,6 +351,7 @@ private fun PageContent(
 
 @Composable
 private fun PageItems(
+    fillPage: Boolean,
     sections: List<Section>,
     isCurrentPage: Boolean,
     textSize: Int,
@@ -368,12 +377,20 @@ private fun PageItems(
                 Basmalah(textSize = textSize, lineHeight = lineHeight)
             }
             is VersesSection -> {
-                PageViewScreen(
-                    annotatedString = section.annotatedString,
-                    numOfLines = section.numOfLines,
-                    lineHeight = lineHeight,
-                    onVersePointerInput = onVersePointerInput
-                )
+                if (fillPage) {
+                    FilledPageViewScreen(
+                        annotatedString = section.annotatedString,
+                        numOfLines = section.numOfLines,
+                        lineHeight = lineHeight,
+                        onVersePointerInput = onVersePointerInput
+                    )
+                }
+                else {
+                    PageViewScreen(
+                        annotatedString = section.annotatedString,
+                        textSize = textSize
+                    )
+                }
             }
         }
     }
@@ -431,7 +448,21 @@ private fun ListItems(
 }
 
 @Composable
-private fun PageViewScreen(
+private fun PageViewScreen(annotatedString: AnnotatedString, textSize: Int) {
+    Text(
+        text = annotatedString,
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp),
+        style = TextStyle(
+            fontFamily = hafs,
+            fontSize = textSize.sp,
+            color = AppTheme.colors.strongText,
+            textAlign = TextAlign.Center
+        )
+    )
+}
+
+@Composable
+private fun FilledPageViewScreen(
     annotatedString: AnnotatedString,
     numOfLines: Int,
     lineHeight: Dp,

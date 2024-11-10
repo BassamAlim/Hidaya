@@ -77,9 +77,10 @@ class QuranReaderViewModel @Inject constructor(
     val uiState = combine(
         _uiState.asStateFlow(),
         domain.getViewType(),
+        domain.getFillPage(),
         domain.getTextSize(),
         domain.getPageBookmark()
-    ) { state, viewType, textSize, pageBookmark ->
+    ) { state, viewType, fillPage, textSize, pageBookmark ->
         if (state.isLoading) return@combine state
 
         state.copy(
@@ -88,6 +89,7 @@ class QuranReaderViewModel @Inject constructor(
                 numeralsLanguage = numeralsLanguage
             ),
             viewType = if (language == Language.ARABIC) viewType else QuranViewType.LIST,
+            fillPage = fillPage,
             textSize = textSize,
             isBookmarked = (pageBookmark?.pageNum ?: -1) == pageNum,
         )

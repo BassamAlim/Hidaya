@@ -12,6 +12,7 @@ data class QuranReaderUiState(
     val trackedVerseId: Int = -1,
     val selectedVerse: Verse? = null,
     val viewType: QuranViewType = QuranViewType.PAGE,
+    val fillPage: Boolean = true,
     val textSize: Float = 15f,
     val playerState: Int = PlaybackStateCompat.STATE_STOPPED,
     val isBookmarked: Boolean = false,
