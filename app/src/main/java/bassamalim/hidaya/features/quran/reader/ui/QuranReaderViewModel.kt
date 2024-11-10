@@ -7,8 +7,12 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -256,6 +260,35 @@ class QuranReaderViewModel @Inject constructor(
             delay(500)
             if (pressedVerseId == verseId)
                 onVerseHold(verseId)
+        }
+    }
+
+    fun onVersePointerInput(
+        pointerInputScope: PointerInputScope,
+        layoutResult: TextLayoutResult?,
+        annotatedString: AnnotatedString
+    ) {
+        viewModelScope.launch {
+            pointerInputScope.awaitPointerEventScope {
+                while (true) {
+                    val event = awaitPointerEvent()
+                    val offset = event.changes[0].position
+                    val position = layoutResult?.getOffsetForPosition(offset)
+                    val verseId = position?.let {
+                        annotatedString.getLinkAnnotations(start = position, end = position)
+                            .firstOrNull()?.item?.toString()
+                            ?.substringAfter('=')
+                            ?.substringBefore(')')
+                            ?.toInt()
+                    }
+                    println("event, event.type: ${event.type}, event.changes.size: ${event.changes.size}, verseId: $verseId")
+
+                    when (event.type) {
+                        PointerEventType.Press -> verseId?.let { onVersePressed(verseId) }
+                        PointerEventType.Release -> verseId?.let { onVerseReleased(verseId) }
+                    }
+                }
+            }
         }
     }
 

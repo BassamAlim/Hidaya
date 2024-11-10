@@ -34,7 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
@@ -131,8 +131,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
             onSuraHeaderGloballyPositioned = viewModel::onSuraHeaderGloballyPositioned,
             onVerseGloballyPositioned = viewModel::onVerseGloballyPositioned,
             onVerseClick = viewModel::onVerseClick,
-            onVersePressed = viewModel::onVersePressed,
-            onVerseReleased = viewModel::onVerseReleased
+            onVersePointerInput = viewModel::onVersePointerInput
         )
     }
 
@@ -285,8 +284,7 @@ private fun PageContent(
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVerseGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
     onVerseClick: (Int) -> Unit,
-    onVersePressed: (Int) -> Unit,
-    onVerseReleased: (Int) -> Unit
+    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
 ) {
     HorizontalPager(
         state = pagerState,
@@ -317,8 +315,7 @@ private fun PageContent(
                         trackedVerseId = trackedVerseId,
                         textSize = textSize,
                         onVerseClick = onVerseClick,
-                        onVersePressed = onVersePressed,
-                        onVerseReleased = onVerseReleased,
+                        onVersePointerInput = onVersePointerInput,
                         onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
                     )
                 }
@@ -354,8 +351,7 @@ private fun PageItems(
     trackedVerseId: Int,
     textSize: Int,
     onVerseClick: (Int) -> Unit,
-    onVersePressed: (Int) -> Unit,
-    onVerseReleased: (Int) -> Unit,
+    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
     val lineHeight = getLineHeight()
@@ -384,8 +380,7 @@ private fun PageItems(
                     textSize = textSize,
                     lineHeight = lineHeight,
                     onVerseClick = onVerseClick,
-                    onVersePressed = onVersePressed,
-                    onVerseReleased = onVerseReleased
+                    onVersePointerInput = onVersePointerInput
                 )
             }
         }
@@ -401,8 +396,7 @@ private fun PageItem(
     textSize: Int,
     lineHeight: TextUnit,
     onVerseClick: (Int) -> Unit,
-    onVersePressed: (Int) -> Unit,
-    onVerseReleased: (Int) -> Unit
+    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
 ) {
     val annotatedString = buildAnnotatedString {
         for (seqVerse in sequence) {
@@ -429,8 +423,7 @@ private fun PageItem(
         annotatedString = annotatedString,
         numOfLines = numOfLines,
         lineHeight = lineHeight,
-        onVersePressed = onVersePressed,
-        onVerseReleased = onVerseReleased
+        onVersePointerInput = onVersePointerInput
     )
 }
 
@@ -492,8 +485,7 @@ private fun PageViewScreen(
     annotatedString: AnnotatedString,
     numOfLines: Int,
     lineHeight: TextUnit,
-    onVersePressed: (Int) -> Unit,
-    onVerseReleased: (Int) -> Unit
+    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
 ) {
     var fontSize by remember { mutableStateOf(25.sp) }
     var ready by remember { mutableStateOf(false) }
@@ -506,34 +498,7 @@ private fun PageViewScreen(
             .height((lineHeight.value * numOfLines).dp)
             .padding(vertical = 4.dp, horizontal = 6.dp)
             .pointerInput(Unit) {
-                println("pointerInput")
-                awaitPointerEventScope {
-                    println("awaitPointerEventScope")
-                    while (true) {
-                        val event = awaitPointerEvent()
-                        val offset = event.changes[0].position
-                        val position = layoutResult?.getOffsetForPosition(offset)
-                        val verseId = position?.let {
-                            annotatedString.getLinkAnnotations(start = position, end = position)
-                                .firstOrNull()?.item?.toString()
-                                ?.substringAfter('=')
-                                ?.substringBefore(')')
-                                ?.toInt()
-                        }
-                        println("event, event.type: ${event.type}, event.changes.size: ${event.changes.size}, verseId: $verseId")
-
-                        when (event.type) {
-                            PointerEventType.Press -> {
-                                println("Press")
-                                verseId?.let(onVersePressed)
-                            }
-                            PointerEventType.Release -> {
-                                println("Release")
-                                verseId?.let(onVerseReleased)
-                            }
-                        }
-                    }
-                }
+                onVersePointerInput(this, layoutResult, annotatedString)
             }
             .drawWithContent {
                 println("in drawWithContent, ready: $ready, fontSize: $fontSize, lineHeight: $lineHeight")
