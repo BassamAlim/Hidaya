@@ -7,12 +7,18 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withLink
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -317,13 +323,13 @@ class QuranReaderViewModel @Inject constructor(
     }
 
     fun onVerseGloballyPositioned(
-        verse: Verse,
+        verseId: Int,
         isCurrentPage: Boolean,
         layoutCoordinates: LayoutCoordinates
     ) {
         val screenHeight = domain.getScreenHeight()
         if (isCurrentPage && _uiState.value.viewType == QuranViewType.LIST)
-            versePositions[verse.id] = layoutCoordinates.positionInParent().y - screenHeight / 3f
+            versePositions[verseId] = layoutCoordinates.positionInParent().y - screenHeight / 3f
     }
 
     fun onScrolled() {
@@ -358,7 +364,12 @@ class QuranReaderViewModel @Inject constructor(
             )
         }
 
-    fun buildPage(pageNumber: Int): List<Section> {
+    fun buildPage(
+        pageNumber: Int,
+        defaultVerseColor: Color,
+        selectedVerseColor: Color,
+        trackedVerseColor: Color
+    ): List<Section> {
         val sections = mutableListOf<Section>()
 
         val tempVerses = mutableListOf<Verse>()
@@ -371,7 +382,12 @@ class QuranReaderViewModel @Inject constructor(
                 if (tempVerses.isNotEmpty()) {
                     sections.add(
                         VersesSection(
-                            verses = tempVerses.toList(),  // toList() to make a copy
+                            annotatedString = versesToAnnotatedString(
+                                verses = tempVerses.toList(),
+                                defaultVerseColor = defaultVerseColor,
+                                selectedVerseColor = selectedVerseColor,
+                                trackedVerseColor = trackedVerseColor
+                            ),  // toList() to make a copy
                             numOfLines =
                             tempVerses.last().endLineNum - tempVerses.first().startLineNum + 1
                         )
@@ -411,7 +427,12 @@ class QuranReaderViewModel @Inject constructor(
         if (tempVerses.isNotEmpty()) {
             sections.add(
                 VersesSection(
-                    verses = tempVerses.toList(),  // toList() to make a copy
+                    annotatedString = versesToAnnotatedString(
+                        verses = tempVerses.toList(),
+                        defaultVerseColor = defaultVerseColor,
+                        selectedVerseColor = selectedVerseColor,
+                        trackedVerseColor = trackedVerseColor
+                    ),  // toList() to make a copy
                     numOfLines = tempVerses.last().endLineNum - tempVerses.first().startLineNum + 1
                 )
             )
@@ -419,6 +440,91 @@ class QuranReaderViewModel @Inject constructor(
         }
 
         return sections
+    }
+
+    fun buildListPage(
+        pageNumber: Int,
+        defaultVerseColor: Color,
+        selectedVerseColor: Color,
+        trackedVerseColor: Color
+    ): List<Section> {
+        val sections = mutableListOf<Section>()
+
+        // get page start
+        var counter = allVerses.indexOfFirst { verse -> verse.pageNum == pageNumber }
+        do {
+            val verse = allVerses[counter]
+
+            if (verse.num == 1) {
+                sections.add(
+                    SuraHeaderSection(
+                        suraNum = verse.suraNum,
+                        suraName = suraNames[verse.suraNum - 1]
+                    )
+                )
+
+                if (verse.suraNum != 1 && verse.suraNum != 9)
+                    sections.add(BasmalahSection())
+            }
+
+            sections.add(
+                ListVerse(
+                    id = verse.id,
+                    text = versesToAnnotatedString(
+                        listOf(
+                            Verse(
+                                id = verse.id,
+                                juzNum = verse.juzNum,
+                                suraNum = verse.suraNum,
+                                suraName = suraNames[verse.suraNum - 1],
+                                num = verse.num,
+                                text = "${verse.decoratedText} ",
+                                startLineNum = verse.startLineNum,
+                                endLineNum = verse.endLineNum,
+                                translation = verse.translationEn,
+                                interpretation = verse.interpretation
+                            )
+                        ),
+                        defaultVerseColor = defaultVerseColor,
+                        selectedVerseColor = selectedVerseColor,
+                        trackedVerseColor = trackedVerseColor
+                    ),
+                    translation = verse.translationEn
+                )
+            )
+
+            counter++
+        } while (counter != Global.NUM_OF_QURAN_VERSES && allVerses[counter].pageNum == pageNumber)
+
+        return sections
+    }
+
+    private fun versesToAnnotatedString(
+        verses: List<Verse>,
+        defaultVerseColor: Color,
+        selectedVerseColor: Color,
+        trackedVerseColor: Color
+    ): AnnotatedString {
+        return buildAnnotatedString {
+            for (verse in verses) {
+                withLink(
+                    link = LinkAnnotation.Clickable(
+                        tag = verse.id.toString(),
+                        styles = TextLinkStyles(
+                            style = SpanStyle(
+                                color =
+                                if (_uiState.value.selectedVerse == verse) selectedVerseColor
+                                else if (_uiState.value.trackedVerseId == verse.id) trackedVerseColor
+                                else defaultVerseColor
+                            )
+                        ),
+                        linkInteractionListener = { onVerseClick(verse.id) }
+                    )
+                ) {
+                    append(verse.text)
+                }
+            }
+        }
     }
 
     private var controllerCallback = object : MediaControllerCompat.Callback() {

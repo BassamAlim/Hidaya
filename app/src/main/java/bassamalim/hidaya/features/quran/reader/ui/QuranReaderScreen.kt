@@ -18,6 +18,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.BottomAppBar
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
@@ -43,16 +45,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,7 +62,6 @@ import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyIconPlayerBtn
 import bassamalim.hidaya.core.ui.components.MyRow
-import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
@@ -91,8 +87,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
         onDispose { viewModel.onStop(activity) }
     }
 
-    MyScaffold(
-        title = "",
+    Scaffold(
         backgroundColor = AppTheme.colors.quranBG,
         topBar = {
             TopBar(
@@ -126,6 +121,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
             padding = it,
             onPageChange = viewModel::onPageChange,
             buildPage = viewModel::buildPage,
+            buildListPage = viewModel::buildListPage,
             onSuraHeaderGloballyPositioned = viewModel::onSuraHeaderGloballyPositioned,
             onVerseGloballyPositioned = viewModel::onVerseGloballyPositioned,
             onVerseClick = viewModel::onVerseClick,
@@ -278,17 +274,16 @@ private fun PageContent(
     scrollTo: Float,
     onScrolled: () -> Unit,
     onPageChange: (Int, Int, ScrollState) -> Unit,
-    buildPage: (Int) -> List<Section>,
+    buildPage: (Int, Color, Color, Color) -> List<Section>,
+    buildListPage: (Int, Color, Color, Color) -> List<Section>,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
-    onVerseGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit,
+    onVerseGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVerseClick: (Int) -> Unit,
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
 ) {
     HorizontalPager(
         state = pagerState,
-        modifier = Modifier
-            .fillMaxSize()
-//            .padding(padding)  // TODO: remove
+        modifier = Modifier.fillMaxSize()
     ) { pageIdx ->
         val isCurrentPage = pageIdx == pagerState.currentPage
         val scrollState = rememberScrollState()
@@ -299,13 +294,15 @@ private fun PageContent(
             Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val t1 = System.nanoTime()
-            val pageContent = buildPage(pageIdx + 1)
-            val t2 = System.nanoTime()
-            println("buildPage took ${t2 - t1} ns")
-
             when (viewType) {
                 QuranViewType.PAGE -> {
+                    val pageContent = buildPage(
+                        pageIdx + 1,
+                        AppTheme.colors.strongText,
+                        AppTheme.colors.highlight,
+                        AppTheme.colors.track
+                    )
+
                     PageItems(
                         sections = pageContent,
                         isCurrentPage = isCurrentPage,
@@ -319,6 +316,13 @@ private fun PageContent(
                     )
                 }
                 QuranViewType.LIST -> {
+                    val pageContent = buildListPage(
+                        pageIdx + 1,
+                        AppTheme.colors.strongText,
+                        AppTheme.colors.highlight,
+                        AppTheme.colors.track
+                    )
+
                     ListItems(
                         sections = pageContent,
                         isCurrentPage = isCurrentPage,
@@ -372,59 +376,15 @@ private fun PageItems(
                 Basmalah(textSize = textSize, lineHeight = lineHeight)
             }
             is VersesSection -> {
-                PageItem(
-                    sequence = section.verses,
+                PageViewScreen(
+                    annotatedString = section.annotatedString,
                     numOfLines = section.numOfLines,
-                    selectedVerse = selectedVerse,
-                    trackedVerseId = trackedVerseId,
-                    textSize = textSize,
                     lineHeight = lineHeight,
-                    onVerseClick = onVerseClick,
                     onVersePointerInput = onVersePointerInput
                 )
             }
         }
     }
-}
-
-@Composable
-private fun PageItem(
-    sequence: List<Verse>,
-    numOfLines: Int,
-    selectedVerse: Verse?,
-    trackedVerseId: Int,
-    textSize: Int,
-    lineHeight: Dp,
-    onVerseClick: (Int) -> Unit,
-    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
-) {
-    val annotatedString = buildAnnotatedString {
-        for (seqVerse in sequence) {
-            withLink(
-                link = LinkAnnotation.Clickable(
-                    tag = seqVerse.id.toString(),
-                    styles = TextLinkStyles(
-                        style = SpanStyle(
-                            color =
-                                if (selectedVerse == seqVerse) AppTheme.colors.highlight
-                                else if (trackedVerseId == seqVerse.id) AppTheme.colors.track
-                                else AppTheme.colors.strongText
-                        )
-                    ),
-                    linkInteractionListener = { onVerseClick(seqVerse.id) }
-                )
-            ) {
-                append(seqVerse.text)
-            }
-        }
-    }
-
-    PageViewScreen(
-        annotatedString = annotatedString,
-        numOfLines = numOfLines,
-        lineHeight = lineHeight,
-        onVersePointerInput = onVersePointerInput
-    )
 }
 
 @Composable
@@ -436,7 +396,7 @@ private fun ListItems(
     textSize: Int,
     language: Language,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
-    onVerseGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
+    onVerseGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
     for (section in sections) {
         when (section) {
@@ -452,29 +412,27 @@ private fun ListItems(
             is BasmalahSection -> {
                 Basmalah(textSize)
             }
-            is VersesSection -> {
-                for (verse in section.verses) {
-                    ListViewScreen(
-                        annotatedString = AnnotatedString(verse.text!!),
-                        verse = verse,
-                        isCurrentPage = isCurrentPage,
-                        textSize = textSize,
-                        selectedVerse = selectedVerse,
-                        trackedVerseId = trackedVerseId,
-                        onVerseGloballyPositioned = onVerseGloballyPositioned
+            is ListVerse -> {
+                ListViewScreen(
+                    verseId = section.id,
+                    annotatedString = section.text,
+                    isCurrentPage = isCurrentPage,
+                    textSize = textSize,
+                    selectedVerse = selectedVerse,
+                    trackedVerseId = trackedVerseId,
+                    onVerseGloballyPositioned = onVerseGloballyPositioned
+                )
+
+                if (language != Language.ARABIC) {
+                    MyText(
+                        text = section.translation,
+                        modifier = Modifier.padding(6.dp),
+                        fontSize = (textSize - 5).sp
                     )
-
-                    if (language != Language.ARABIC) {
-                        MyText(
-                            text = verse.translation!!,
-                            modifier = Modifier.padding(6.dp),
-                            fontSize = (textSize - 5).sp
-                        )
-                    }
-
-                    if (verse.num != section.verses.last().num)
-                        MyHorizontalDivider()
                 }
+
+                if (section != sections.last())
+                    MyHorizontalDivider()
             }
         }
     }
@@ -547,27 +505,27 @@ private fun getLineHeight(padding: PaddingValues): Dp {
 
 @Composable
 private fun ListViewScreen(
+    verseId: Int,
     annotatedString: AnnotatedString,
-    verse: Verse,
     isCurrentPage: Boolean,
     selectedVerse: Verse?,
     trackedVerseId: Int,
     textSize: Int,
-    onVerseGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
+    onVerseGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
     Text(
         text = annotatedString,
         modifier = Modifier
             .padding(vertical = 4.dp, horizontal = 6.dp)
             .onGloballyPositioned { layoutCoordinates ->
-                onVerseGloballyPositioned(verse, isCurrentPage, layoutCoordinates)
+                onVerseGloballyPositioned(verseId, isCurrentPage, layoutCoordinates)
             },
         style = TextStyle(
             fontFamily = hafs,
             fontSize = textSize.sp,
             color =
-                if (selectedVerse == verse) AppTheme.colors.highlight
-                else if (trackedVerseId == verse.id) AppTheme.colors.track
+                if (selectedVerse?.id == verseId) AppTheme.colors.highlight
+                else if (trackedVerseId == verseId) AppTheme.colors.track
                 else AppTheme.colors.strongText,
             textAlign = TextAlign.Center
         )
