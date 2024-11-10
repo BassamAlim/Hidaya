@@ -343,7 +343,13 @@ class QuranReaderViewModel @Inject constructor(
 
             if (verse.num == 1) {
                 if (tempVerses.isNotEmpty()) {
-                    sections.add(VersesSection(tempVerses.toList()))  // toList() to make a copy
+                    sections.add(
+                        VersesSection(
+                            verses = tempVerses.toList(),  // toList() to make a copy
+                            numOfLines =
+                            tempVerses.last().endLineNum - tempVerses.first().startLineNum + 1
+                        )
+                    )
                     tempVerses.clear()
                 }
 
@@ -377,20 +383,13 @@ class QuranReaderViewModel @Inject constructor(
         } while (counter != Global.NUM_OF_QURAN_VERSES && allVerses[counter].pageNum == pageNumber)
 
         if (tempVerses.isNotEmpty()) {
-            sections.add(VersesSection(tempVerses.toList()))  // toList() to make a copy
+            sections.add(
+                VersesSection(
+                    verses = tempVerses.toList(),  // toList() to make a copy
+                    numOfLines = tempVerses.last().endLineNum - tempVerses.first().startLineNum + 1
+                )
+            )
             tempVerses.clear()
-        }
-
-        return measureLines(sections)
-    }
-
-    private fun measureLines(sections: List<Section>): List<Section> {
-        for (section in sections) {
-            if (section is VersesSection) {
-                val startLine = section.verses.first().startLineNum
-                val endLine = section.verses.last().endLineNum
-                section.numOfLines = endLine - startLine + 1
-            }
         }
 
         return sections

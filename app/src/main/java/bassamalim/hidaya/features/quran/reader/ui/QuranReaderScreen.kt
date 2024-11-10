@@ -31,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -483,7 +484,7 @@ private fun PageViewScreen(
     numOfLines: Int,
     lineHeight: TextUnit
 ) {
-    var fontSize by remember { mutableStateOf(30.sp) }
+    var fontSize by remember { mutableStateOf(25.sp) }
     var ready by remember { mutableStateOf(false) }
 
     Text(
@@ -491,13 +492,11 @@ private fun PageViewScreen(
         modifier = Modifier
             .fillMaxWidth()
             .height((lineHeight.value * numOfLines).dp)
-            .padding(vertical = 4.dp, horizontal = 6.dp),
-//            .drawWithContent {
-//                println("in drawWithContent, ready: $ready, stage: $stage, fontSize: $fontSize, lineHeight: $lineHeight")
-//                if (ready || stage == "line_height") {
-//                    drawContent()
-//                }
-//            },
+            .padding(vertical = 4.dp, horizontal = 6.dp)
+            .drawWithContent {
+                println("in drawWithContent, ready: $ready, fontSize: $fontSize, lineHeight: $lineHeight")
+                if (ready) drawContent()
+            },
         fontSize = fontSize,
         style = TextStyle(
             fontFamily = hafs,
@@ -513,15 +512,9 @@ private fun PageViewScreen(
             println("in onTextLayout, ready: $ready, fontSize: $fontSize, lineHeight: $lineHeight, lineCount: ${textLayoutResult.lineCount}, didOverflowHeight: ${textLayoutResult.didOverflowHeight}")
             if (!ready) {
                 when {
-                    textLayoutResult.lineCount > numOfLines -> {
-                        fontSize *= 0.95f
-                    }
-                    textLayoutResult.lineCount < numOfLines -> {
-                        fontSize *= 1.05f
-                    }
-                    else -> {
-                        ready = true
-                    }
+                    textLayoutResult.lineCount > numOfLines -> fontSize *= 0.99f
+                    textLayoutResult.lineCount < numOfLines -> fontSize *= 1.01f
+                    else -> ready = true
                 }
             }
         }
