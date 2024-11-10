@@ -124,7 +124,6 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
             buildListPage = viewModel::buildListPage,
             onSuraHeaderGloballyPositioned = viewModel::onSuraHeaderGloballyPositioned,
             onVerseGloballyPositioned = viewModel::onVerseGloballyPositioned,
-            onVerseClick = viewModel::onVerseClick,
             onVersePointerInput = viewModel::onVersePointerInput
         )
     }
@@ -278,7 +277,6 @@ private fun PageContent(
     buildListPage: (Int, Color, Color, Color) -> List<Section>,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVerseGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
-    onVerseClick: (Int) -> Unit,
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
 ) {
     HorizontalPager(
@@ -306,11 +304,8 @@ private fun PageContent(
                     PageItems(
                         sections = pageContent,
                         isCurrentPage = isCurrentPage,
-                        selectedVerse = selectedVerse,
-                        trackedVerseId = trackedVerseId,
                         textSize = textSize,
                         padding = padding,
-                        onVerseClick = onVerseClick,
                         onVersePointerInput = onVersePointerInput,
                         onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
                     )
@@ -350,11 +345,8 @@ private fun PageContent(
 private fun PageItems(
     sections: List<Section>,
     isCurrentPage: Boolean,
-    selectedVerse: Verse?,
-    trackedVerseId: Int,
     textSize: Int,
     padding: PaddingValues,
-    onVerseClick: (Int) -> Unit,
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
@@ -454,7 +446,7 @@ private fun PageViewScreen(
         modifier = Modifier
             .fillMaxWidth()
             .height((lineHeight.value * numOfLines).dp)
-            .padding(vertical = 0.dp, horizontal = 6.dp)  // TODO: 4
+            .padding(horizontal = 6.dp)
             .pointerInput(Unit) {
                 onVersePointerInput(this, layoutResult, annotatedString)
             }

@@ -244,7 +244,7 @@ class QuranReaderViewModel @Inject constructor(
         navigator.navigate(Screen.QuranSettings)
     }
 
-    fun onVerseClick(verseId: Int) {
+    private fun onVerseClick(verseId: Int) {
         val verse = _uiState.value.pageVerses.find { it.id == verseId }!!
 
         if (_uiState.value.selectedVerse?.id == verse.id) {
@@ -259,7 +259,7 @@ class QuranReaderViewModel @Inject constructor(
         }
     }
 
-    fun onVersePressed(verseId: Int) {
+    private fun onVersePressed(verseId: Int) {
         pressedVerseId = verseId
 
         coroutineScope.launch {
@@ -291,14 +291,14 @@ class QuranReaderViewModel @Inject constructor(
 
                     when (event.type) {
                         PointerEventType.Press -> verseId?.let { onVersePressed(verseId) }
-                        PointerEventType.Release -> verseId?.let { onVerseReleased(verseId) }
+                        PointerEventType.Release -> verseId?.let { onVerseReleased() }
                     }
                 }
             }
         }
     }
 
-    fun onVerseReleased(verseId: Int) {
+    private fun onVerseReleased() {
         pressedVerseId = null
     }
 
