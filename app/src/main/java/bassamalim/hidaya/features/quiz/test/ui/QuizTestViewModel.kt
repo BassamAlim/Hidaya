@@ -110,7 +110,7 @@ class QuizTestViewModel @Inject constructor(
                 string = (it.questionIdx + 1).toString()
             ),
             question = question.question,
-            answers = question.answers,
+            answers = question.answers.map { answer -> answer.text },
             selection = chosenAs[it.questionIdx],
             prevBtnEnabled = it.questionIdx != 0,
             nextBtnEnabled = !(it.questionIdx == 9 && !it.allAnswered),

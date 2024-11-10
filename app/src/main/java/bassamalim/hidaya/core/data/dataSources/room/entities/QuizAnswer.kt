@@ -11,12 +11,11 @@ import androidx.room.ForeignKey
         entity = QuizQuestion::class,
         parentColumns = arrayOf("id"),
         childColumns = arrayOf("question_id"),
-        onUpdate = ForeignKey.CASCADE,
-        onDelete = ForeignKey.SET_DEFAULT
+        onDelete = ForeignKey.CASCADE
     )]
 )
 data class QuizAnswer(
     @field:ColumnInfo(name = "id") val id: Int,
     @field:ColumnInfo(name = "question_id") val questionId: Int,
-    @field:ColumnInfo(name = "text") val text: String
+    @field:ColumnInfo(name = "answer") val answer: String
 )

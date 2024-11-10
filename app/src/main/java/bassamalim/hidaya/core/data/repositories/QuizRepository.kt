@@ -3,6 +3,7 @@ package bassamalim.hidaya.core.data.repositories
 import bassamalim.hidaya.core.data.dataSources.room.daos.QuizAnswersDao
 import bassamalim.hidaya.core.data.dataSources.room.daos.QuizQuestionsDao
 import bassamalim.hidaya.core.di.DefaultDispatcher
+import bassamalim.hidaya.core.models.QuizAnswer
 import bassamalim.hidaya.core.models.QuizFullQuestion
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -28,9 +29,14 @@ class QuizRepository @Inject constructor(
             val answers = quizAnswerDao.getAnswers(id)
             QuizFullQuestion(
                 id = question.id,
-                question = question.text!!,
-                answers = answers.map { it.text },
-                correctAnswerId = question.correctAnswerId
+                question = question.question,
+                answers = answers.mapIndexed { i, answer ->
+                    QuizAnswer(
+                        id = answer.id,
+                        text = answer.answer,
+                        isCorrect = i == 0
+                    )
+                }
             )
         }
     }

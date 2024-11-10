@@ -4,6 +4,7 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,18 +25,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -50,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withLink
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -66,6 +68,7 @@ import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
+import bassamalim.hidaya.core.ui.theme.hafs
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.core.ui.theme.uthmanic
 
@@ -149,7 +152,9 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
 @Composable
 private fun TopBar(suraName: String, pageNumText: String, juzNumText: String) {
     TopAppBar(
-        modifier = Modifier.fillMaxWidth().height(36.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(36.dp),
         backgroundColor = AppTheme.colors.quranBG,
         elevation = 4.dp
     ) {
@@ -201,6 +206,9 @@ private fun BottomBar(
     onSettingsClick: () -> Unit
 ) {
     BottomAppBar(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
         backgroundColor = AppTheme.colors.primary
     ) {
         Row(
@@ -346,6 +354,8 @@ private fun PageItems(
     onVerseClick: (Int) -> Unit,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
+    val lineHeight = getLineHeight()
+
     for (section in sections) {
         when (section) {
             is SuraHeaderSection -> {
@@ -354,11 +364,12 @@ private fun PageItems(
                     suraName = section.suraName,
                     isCurrentPage = isCurrentPage,
                     textSize = textSize,
+                    lineHeight = lineHeight,
                     onGloballyPositioned = onSuraHeaderGloballyPositioned
                 )
             }
             is BasmalahSection -> {
-                Basmalah(textSize)
+                Basmalah(textSize = textSize, lineHeight = lineHeight)
             }
             is VersesSection -> {
                 PageItem(
@@ -367,6 +378,7 @@ private fun PageItems(
                     selectedVerse = selectedVerse,
                     trackedVerseId = trackedVerseId,
                     textSize = textSize,
+                    lineHeight = lineHeight,
                     onVerseClick = onVerseClick
                 )
             }
@@ -381,6 +393,7 @@ private fun PageItem(
     selectedVerse: Verse?,
     trackedVerseId: Int,
     textSize: Int,
+    lineHeight: TextUnit,
     onVerseClick: (Int) -> Unit
 ) {
     val annotatedString = buildAnnotatedString {
@@ -404,7 +417,11 @@ private fun PageItem(
         }
     }
 
-    PageViewScreen(annotatedString = annotatedString, numOfLines = numOfLines)
+    PageViewScreen(
+        annotatedString = annotatedString,
+        numOfLines = numOfLines,
+        lineHeight = lineHeight
+    )
 }
 
 @Composable
@@ -460,73 +477,77 @@ private fun ListItems(
     }
 }
 
-// TODO: I need a database table specifying the page parts and the number of lines for each part
 @Composable
-private fun PageViewScreen(annotatedString: AnnotatedString, numOfLines: Int) {
-    val density = LocalDensity.current
+private fun PageViewScreen(
+    annotatedString: AnnotatedString,
+    numOfLines: Int,
+    lineHeight: TextUnit
+) {
     var fontSize by remember { mutableStateOf(30.sp) }
-    var fullHeight by remember { mutableFloatStateOf(0f) }
-    var lineHeight by remember { mutableFloatStateOf(3f) }
     var ready by remember { mutableStateOf(false) }
-    var stage by remember { mutableStateOf("font_size") }
 
     Text(
         text = annotatedString,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height((lineHeight.value * numOfLines).dp)
+            .padding(vertical = 4.dp, horizontal = 6.dp),
+//            .drawWithContent {
+//                println("in drawWithContent, ready: $ready, stage: $stage, fontSize: $fontSize, lineHeight: $lineHeight")
+//                if (ready || stage == "line_height") {
+//                    drawContent()
+//                }
+//            },
         fontSize = fontSize,
         style = TextStyle(
-            fontFamily = uthmanic,
+            fontFamily = hafs,
             color = AppTheme.colors.strongText,
-            lineHeight = fontSize * lineHeight,
+            lineHeight = (lineHeight.value * 0.95).sp,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
                 trim = LineHeightStyle.Trim.None
             )
         ),
         textAlign = TextAlign.Justify,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 4.dp, horizontal = 6.dp)
-            .onSizeChanged {
-                fullHeight = with(density) { it.height.toDp().value }
-                lineHeight = fullHeight / numOfLines / 20 + 0.01f
-                println("in onSizeChanged, fullHeight: $fullHeight, lineHeight: $lineHeight")
-            },
-//                .drawWithContent {
-//                    println("in drawWithContent, ready: $ready, stage: $stage, fontSize: $fontSize, lineHeight: $lineHeight")
-//                    if (ready || stage == "line_height") {
-//                        drawContent()
-//                    }
-//                },
         onTextLayout = { textLayoutResult ->
-            println("in onTextLayout, ready: $ready, stage: $stage, fontSize: $fontSize, lineHeight: $lineHeight, lineCount: ${textLayoutResult.lineCount}, didOverflowHeight: ${textLayoutResult.didOverflowHeight}")
+            println("in onTextLayout, ready: $ready, fontSize: $fontSize, lineHeight: $lineHeight, lineCount: ${textLayoutResult.lineCount}, didOverflowHeight: ${textLayoutResult.didOverflowHeight}")
             if (!ready) {
-                when (stage) {
-                    "font_size" -> {
-                        when {
-                            textLayoutResult.lineCount > numOfLines -> {
-                                fontSize *= 0.9f
-                            }
-                            textLayoutResult.lineCount < numOfLines -> {
-                                fontSize *= 1.1f
-                            }
-                            else -> {
-                                stage = "line_height"
-                                lineHeight *= 1.01f
-                            }
-                        }
+                when {
+                    textLayoutResult.lineCount > numOfLines -> {
+                        fontSize *= 0.95f
                     }
-                    "line_height" -> {
-                        if (textLayoutResult.didOverflowHeight) {
-                            lineHeight *= 0.99f
-                        }
-                        else {
-                            ready = true
-                        }
+                    textLayoutResult.lineCount < numOfLines -> {
+                        fontSize *= 1.05f
+                    }
+                    else -> {
+                        ready = true
                     }
                 }
             }
         }
     )
+}
+
+@Composable
+private fun getLineHeight(): TextUnit {
+    val configuration = LocalConfiguration.current
+    val screenHeightPx = configuration.screenHeightDp.dp
+
+    // Define the heights of top and bottom bars
+    val topBarHeight = 36.dp
+    val bottomBarHeight = 56.dp
+
+    // Calculate available height for text lines
+    val availableHeight = screenHeightPx - topBarHeight - bottomBarHeight
+
+    // Convert Dp to sp for line height calculation
+    val lineHeight = with(LocalDensity.current) {
+        (availableHeight / 15).toSp()
+    }
+
+    println("in getLineHeight, availableHeight: $availableHeight, lineHeight: $lineHeight")
+
+    return lineHeight
 }
 
 @Composable
@@ -539,20 +560,15 @@ private fun ListViewScreen(
     textSize: Int,
     onVerseGloballyPositioned: (Verse, Boolean, LayoutCoordinates) -> Unit
 ) {
-
     Text(
         text = annotatedString,
         modifier = Modifier
             .padding(vertical = 4.dp, horizontal = 6.dp)
             .onGloballyPositioned { layoutCoordinates ->
-                onVerseGloballyPositioned(
-                    verse,
-                    isCurrentPage,
-                    layoutCoordinates
-                )
+                onVerseGloballyPositioned(verse, isCurrentPage, layoutCoordinates)
             },
         style = TextStyle(
-            fontFamily = uthmanic,
+            fontFamily = hafs,
             fontSize = textSize.sp,
             color =
                 if (selectedVerse == verse) AppTheme.colors.highlight
@@ -569,8 +585,13 @@ private fun SuraHeader(
     suraName: String,
     isCurrentPage: Boolean,
     textSize: Int,
+    lineHeight: TextUnit? = null,
     onGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
+    val lineHeightDp =
+        if (lineHeight != null) with(LocalDensity.current) { lineHeight.toDp() }
+        else (textSize * 1.6).dp
+
     Box(
         Modifier
             .padding(top = 10.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
@@ -584,7 +605,8 @@ private fun SuraHeader(
             contentDescription = suraName,
             modifier = Modifier
                 .fillMaxWidth(0.95f)
-                .height((textSize * 1.6).dp),
+                .background(Color.Gray)
+                .height(lineHeightDp),
             contentScale = ContentScale.FillBounds,
             colorFilter = ColorFilter.tint(AppTheme.colors.text)
         )
@@ -599,13 +621,18 @@ private fun SuraHeader(
 }
 
 @Composable
-private fun Basmalah(textSize: Int) {
+private fun Basmalah(textSize: Int, lineHeight: TextUnit? = null) {
+    val lineHeightDp =
+        if (lineHeight != null) with(LocalDensity.current) { lineHeight.toDp() }
+        else (textSize * 1.6).dp
+
     Image(
         painter = painterResource(R.drawable.basmala),
         contentDescription = stringResource(R.string.basmalah),
         modifier = Modifier
             .fillMaxWidth(0.75f)
-            .height((textSize * 1.6).dp),
+            .background(Color.DarkGray)
+            .height(lineHeightDp),
         contentScale = ContentScale.FillBounds,
         colorFilter = ColorFilter.tint(AppTheme.colors.strongText)
     )

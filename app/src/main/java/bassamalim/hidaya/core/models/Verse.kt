@@ -9,6 +9,8 @@ data class Verse(
     val suraNum: Int,
     val suraName: String,
     var text: String?,
+    val startLineNum: Int,
+    val endLineNum: Int,
     var translation: String?,
     val interpretation: String
 ) : Serializable

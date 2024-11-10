@@ -58,7 +58,6 @@ class QuizResultViewModel @Inject constructor(
                 questionNum = i + 1,
                 questionText = q.question,
                 answers = q.answers,
-                correctAnswerId = q.correctAnswerId,
                 chosenAnswerId = chosenAnswers[i]
             )
         }

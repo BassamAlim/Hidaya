@@ -22,6 +22,8 @@ val tajwal = FontFamily(
 
 val uthmanic = FontFamily(Font(R.font.uthmanic_hafs_v22))
 
+val hafs = FontFamily(Font(R.font.hafs_smart_8))
+
 data class AppTypography(
     val h1: TextStyle = TextStyle(
         fontFamily = tajwal,

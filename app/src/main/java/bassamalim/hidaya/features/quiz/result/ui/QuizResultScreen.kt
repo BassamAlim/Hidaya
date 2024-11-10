@@ -92,8 +92,8 @@ fun Question(question: QuizResultQuestion) {
             for (i in 0..3) {
                 Answer(
                     answerNum = i,
-                    answerText = question.answers[i],
-                    correctAnswer = question.correctAnswerId,
+                    answerText = question.answers[i].text,
+                    isCorrectAnswer = question.answers[i].isCorrect,
                     chosenAnswer = question.chosenAnswerId
                 )
             }
@@ -102,7 +102,7 @@ fun Question(question: QuizResultQuestion) {
 }
 
 @Composable
-private fun Answer(answerNum: Int, answerText: String, correctAnswer: Int, chosenAnswer: Int) {
+private fun Answer(answerNum: Int, answerText: String, isCorrectAnswer: Boolean, chosenAnswer: Int) {
     if (answerNum != 0)
         MyHorizontalDivider(Modifier.padding(horizontal = 5.dp))
 
@@ -115,10 +115,10 @@ private fun Answer(answerNum: Int, answerText: String, correctAnswer: Int, chose
     ) {
         MyText(text = answerText, fontSize = 18.sp)
 
-        if (answerNum == chosenAnswer || answerNum == correctAnswer) {
+        if (answerNum == chosenAnswer || isCorrectAnswer) {
             Image(
                 painter = painterResource(
-                    if (answerNum == correctAnswer) R.drawable.ic_check
+                    if (isCorrectAnswer) R.drawable.ic_check
                     else R.drawable.ic_wrong
                 ),
                 contentDescription = "",

@@ -14,7 +14,7 @@ class QuizTestDomain @Inject constructor(
     fun calculateScore(questions: List<QuizFullQuestion>, chosenAs: IntArray): Int {
         var score = 0
         questions.forEachIndexed { i, q ->
-            if (chosenAs[i] == q.correctAnswerId)
+            if (q.answers[chosenAs[i]].isCorrect)
                 score++
         }
         return score

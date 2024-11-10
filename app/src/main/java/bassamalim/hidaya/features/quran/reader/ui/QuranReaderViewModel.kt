@@ -324,18 +324,9 @@ class QuranReaderViewModel @Inject constructor(
                 suraNum = verse.suraNum,
                 suraName = suraNames[verse.suraNum - 1],
                 num = verse.num,
-                text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                    "${verse.decoratedText} "
-                else {  // reverse verse number if below android 13 (because of a bug)
-                    val text = "${verse.decoratedText} "
-                    val reversedNum = text
-                        .split(" ")
-                        .last()
-                        .dropLast(1)
-                        .reversed()
-                    val rest = text.dropLast(reversedNum.length + 1)
-                    "$rest$reversedNum "
-                },
+                text = "${verse.decoratedText} ",
+                startLineNum = verse.startLineNum,
+                endLineNum = verse.endLineNum,
                 translation = verse.translationEn,
                 interpretation = verse.interpretation
             )
@@ -374,18 +365,9 @@ class QuranReaderViewModel @Inject constructor(
                     suraNum = verse.suraNum,
                     suraName = suraNames[verse.suraNum - 1],
                     num = verse.num,
-                    text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                        "${verse.decoratedText} "
-                    else {  // reverse verse number if below android 13 (because of a bug)
-                        val text = "${verse.decoratedText} "
-                        val reversedNum = text
-                            .split(" ")
-                            .last()
-                            .dropLast(1)
-                            .reversed()
-                        val rest = text.dropLast(reversedNum.length + 1)
-                        "$rest$reversedNum "
-                    },
+                    text = "${verse.decoratedText} ",
+                    startLineNum = verse.startLineNum,
+                    endLineNum = verse.endLineNum,
                     translation = verse.translationEn,
                     interpretation = verse.interpretation
                 )
@@ -403,22 +385,11 @@ class QuranReaderViewModel @Inject constructor(
     }
 
     private fun measureLines(sections: List<Section>): List<Section> {
-        var numOfLines = 15
-        numOfLines -= sections.count { !VersesSection::class.isInstance(it) }
-
-        var totalChars = 0
         for (section in sections) {
             if (section is VersesSection) {
-                totalChars += section.verses.sumOf { it.text!!.length }
-            }
-        }
-
-        val charsPerLine = totalChars / numOfLines
-
-        for (section in sections) {
-            if (section is VersesSection) {
-                val sectionChars = section.verses.sumOf { it.text!!.length }
-                section.numOfLines = sectionChars / charsPerLine
+                val startLine = section.verses.first().startLineNum
+                val endLine = section.verses.last().endLineNum
+                section.numOfLines = endLine - startLine + 1
             }
         }
 
