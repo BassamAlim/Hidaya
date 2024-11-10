@@ -55,7 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withLink
-import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -290,7 +290,7 @@ private fun PageContent(
         state = pagerState,
         modifier = Modifier
             .fillMaxSize()
-            .padding(padding)
+            .padding(padding)  // TODO: remove
     ) { pageIdx ->
         val isCurrentPage = pageIdx == pagerState.currentPage
         val scrollState = rememberScrollState()
@@ -314,6 +314,7 @@ private fun PageContent(
                         selectedVerse = selectedVerse,
                         trackedVerseId = trackedVerseId,
                         textSize = textSize,
+                        padding = padding,
                         onVerseClick = onVerseClick,
                         onVersePointerInput = onVersePointerInput,
                         onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
@@ -350,11 +351,12 @@ private fun PageItems(
     selectedVerse: Verse?,
     trackedVerseId: Int,
     textSize: Int,
+    padding: PaddingValues,
     onVerseClick: (Int) -> Unit,
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
-    val lineHeight = getLineHeight()
+    val lineHeight = getLineHeight(padding)
 
     for (section in sections) {
         when (section) {
@@ -394,7 +396,7 @@ private fun PageItem(
     selectedVerse: Verse?,
     trackedVerseId: Int,
     textSize: Int,
-    lineHeight: TextUnit,
+    lineHeight: Dp,
     onVerseClick: (Int) -> Unit,
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
 ) {
@@ -467,8 +469,8 @@ private fun ListItems(
                     if (language != Language.ARABIC) {
                         MyText(
                             text = verse.translation!!,
-                            fontSize = (textSize - 5).sp,
-                            modifier = Modifier.padding(6.dp)
+                            modifier = Modifier.padding(6.dp),
+                            fontSize = (textSize - 5).sp
                         )
                     }
 
@@ -484,7 +486,7 @@ private fun ListItems(
 private fun PageViewScreen(
     annotatedString: AnnotatedString,
     numOfLines: Int,
-    lineHeight: TextUnit,
+    lineHeight: Dp,
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
 ) {
     var fontSize by remember { mutableStateOf(25.sp) }
@@ -496,7 +498,7 @@ private fun PageViewScreen(
         modifier = Modifier
             .fillMaxWidth()
             .height((lineHeight.value * numOfLines).dp)
-            .padding(vertical = 4.dp, horizontal = 6.dp)
+            .padding(vertical = 0.dp, horizontal = 6.dp)  // TODO: 4
             .pointerInput(Unit) {
                 onVersePointerInput(this, layoutResult, annotatedString)
             }
@@ -509,7 +511,7 @@ private fun PageViewScreen(
         style = TextStyle(
             fontFamily = hafs,
             color = AppTheme.colors.strongText,
-            lineHeight = (lineHeight.value * 0.95).sp,
+            lineHeight = with(LocalDensity.current) { lineHeight.toSp() },  // TODO: *96
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
                 trim = LineHeightStyle.Trim.None
@@ -533,24 +535,15 @@ private fun PageViewScreen(
 }
 
 @Composable
-private fun getLineHeight(): TextUnit {
+private fun getLineHeight(padding: PaddingValues): Dp {
     val configuration = LocalConfiguration.current
     val screenHeightPx = configuration.screenHeightDp.dp
-
-    // Define the heights of top and bottom bars
     val topBarHeight = 36.dp
-    val bottomBarHeight = 56.dp
 
-    // Calculate available height for text lines
-    val availableHeight = screenHeightPx - topBarHeight - bottomBarHeight
-
-    // Convert Dp to sp for line height calculation
-    val lineHeight = with(LocalDensity.current) {
-        (availableHeight / 15).toSp()
-    }
-
-    println("in getLineHeight, availableHeight: $availableHeight, lineHeight: $lineHeight")
-
+    val availableHeight = screenHeightPx -
+            topBarHeight - padding.calculateTopPadding() - padding.calculateBottomPadding()
+    val lineHeight = availableHeight / 15
+    println("in getLineHeight, availableHeight: $availableHeight, lineHeight: $lineHeight, padding: $padding")
     return lineHeight
 }
 
@@ -589,16 +582,15 @@ private fun SuraHeader(
     suraName: String,
     isCurrentPage: Boolean,
     textSize: Int,
-    lineHeight: TextUnit? = null,
+    lineHeight: Dp? = null,
     onGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
-    val lineHeightDp =
-        if (lineHeight != null) with(LocalDensity.current) { lineHeight.toDp() }
-        else (textSize * 1.6).dp
-
     Box(
         Modifier
-            .padding(top = 10.dp, bottom = 5.dp, start = 5.dp, end = 5.dp)
+            .fillMaxWidth(0.95f)
+            .height(lineHeight ?: (textSize * 1.6).dp)
+            .padding(vertical = 0.dp, horizontal = 5.dp)  // TODO: 5
+            .background(Color.Gray)
             .onGloballyPositioned { layoutCoordinates ->
                 onGloballyPositioned(suraNum, isCurrentPage, layoutCoordinates)
             },
@@ -607,10 +599,7 @@ private fun SuraHeader(
         Image(
             painter = painterResource(R.drawable.sura_header),
             contentDescription = suraName,
-            modifier = Modifier
-                .fillMaxWidth(0.95f)
-                .background(Color.Gray)
-                .height(lineHeightDp),
+            modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillBounds,
             colorFilter = ColorFilter.tint(AppTheme.colors.text)
         )
@@ -625,18 +614,14 @@ private fun SuraHeader(
 }
 
 @Composable
-private fun Basmalah(textSize: Int, lineHeight: TextUnit? = null) {
-    val lineHeightDp =
-        if (lineHeight != null) with(LocalDensity.current) { lineHeight.toDp() }
-        else (textSize * 1.6).dp
-
+private fun Basmalah(textSize: Int, lineHeight: Dp? = null) {
     Image(
         painter = painterResource(R.drawable.basmala),
         contentDescription = stringResource(R.string.basmalah),
         modifier = Modifier
             .fillMaxWidth(0.75f)
-            .background(Color.DarkGray)
-            .height(lineHeightDp),
+            .height(lineHeight ?: (textSize * 1.6).dp)
+            .background(Color.DarkGray),
         contentScale = ContentScale.FillBounds,
         colorFilter = ColorFilter.tint(AppTheme.colors.strongText)
     )
