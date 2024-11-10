@@ -15,8 +15,6 @@ data class QuranReaderUiState(
     val textSize: Float = 15f,
     val playerState: Int = PlaybackStateCompat.STATE_STOPPED,
     val isBookmarked: Boolean = false,
-    val isInfoDialogShown: Boolean = false,
-    val infoDialogText: String = "",
     val isTutorialDialogShown: Boolean = false,
     val isPlayerNotSupportedShown: Boolean = false,
 )

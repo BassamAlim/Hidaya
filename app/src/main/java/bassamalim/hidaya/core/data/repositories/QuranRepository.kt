@@ -98,6 +98,10 @@ class QuranRepository @Inject constructor(
     suspend fun getAllVerses() =  withContext(dispatcher) {
         versesDao.getAll()
     }
+
+    suspend fun getVerse(id: Int) =  withContext(dispatcher) {
+        versesDao.getVerse(id)
+    }
     
     fun getSuraFavoritesBackup() = quranPreferencesDataSource.getSuraFavorites()
 

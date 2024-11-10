@@ -62,10 +62,7 @@ fun InfoDialog(
     shown: Boolean,
     onDismiss: () -> Unit = {}
 ) {
-    MyDialog(
-        shown = shown,
-        onDismiss = onDismiss
-    ) {
+    MyDialog(shown = shown, onDismiss = onDismiss) {
         Column(
             Modifier.padding(top = 5.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)
         ) {

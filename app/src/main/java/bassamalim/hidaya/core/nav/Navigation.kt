@@ -42,6 +42,7 @@ import bassamalim.hidaya.features.quiz.test.ui.QuizTestScreen
 import bassamalim.hidaya.features.quran.reader.ui.QuranReaderScreen
 import bassamalim.hidaya.features.quran.searcher.ui.QuranSearcherScreen
 import bassamalim.hidaya.features.quran.settings.ui.QuranSettingsDialog
+import bassamalim.hidaya.features.quran.verseInfo.ui.VerseInfoDialog
 import bassamalim.hidaya.features.radio.ui.RadioClientScreen
 import bassamalim.hidaya.features.recitations.player.ui.RecitationPlayerScreen
 import bassamalim.hidaya.features.recitations.recitersMenu.ui.RecitationRecitersMenuScreen
@@ -491,9 +492,19 @@ fun NavGraph(
                 hiltViewModel()
             )
         }
+
+        dialog(
+            route = Screen.VerseInfo("{verse_id}").route,
+            arguments = listOf(
+                navArgument("verse_id") { type = NavType.IntType }
+            ),
+        ) {
+            VerseInfoDialog(
+                hiltViewModel()
+            )
+        }
     }
 }
-
 
 // custom nav type because the default one crashes
 val IntArrType: NavType<IntArray> = object : NavType<IntArray>(false) {

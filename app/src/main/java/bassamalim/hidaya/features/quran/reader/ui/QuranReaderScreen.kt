@@ -60,7 +60,6 @@ import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.models.Verse
 import bassamalim.hidaya.core.other.Global
-import bassamalim.hidaya.core.ui.components.InfoDialog
 import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyIconButton
 import bassamalim.hidaya.core.ui.components.MyIconPlayerBtn
@@ -136,13 +135,6 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
         shown = state.isTutorialDialogShown,
         text = stringResource(R.string.quran_tips),
         onDismiss = viewModel::onTutorialDialogDismiss
-    )
-
-    InfoDialog(
-        shown = state.isInfoDialogShown,
-        title = stringResource(R.string.interpretation),
-        text = state.infoDialogText,
-        onDismiss = viewModel::onInfoDialogDismiss  // :: gives the reference to the function
     )
 
     if (state.isPlayerNotSupportedShown) {

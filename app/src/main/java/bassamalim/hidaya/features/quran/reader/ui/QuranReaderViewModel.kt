@@ -247,10 +247,7 @@ class QuranReaderViewModel @Inject constructor(
                 selectedVerse = null
             )}
 
-            _uiState.update { it.copy(
-                isInfoDialogShown = true,
-                infoDialogText = verse.interpretation
-            )}
+            navigator.navigate(Screen.VerseInfo(verse.id.toString()))
         }
         else {  // single click
             if (_uiState.value.selectedVerse?.id == verse.id) {
@@ -308,12 +305,6 @@ class QuranReaderViewModel @Inject constructor(
                 domain.setDoNotShowTutorial()
             }
         }
-    }
-
-    fun onInfoDialogDismiss() {
-        _uiState.update { it.copy(
-            isInfoDialogShown = false
-        )}
     }
 
     private fun getPageVerses(pageNumber: Int) =

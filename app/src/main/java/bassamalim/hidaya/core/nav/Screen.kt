@@ -97,4 +97,8 @@ sealed class Screen(val route: String) {
 
     data object Tv: Screen("tv")
 
+    data class VerseInfo(
+        val verseId: String
+    ): Screen("verse_info/$verseId")
+
 }
