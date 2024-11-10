@@ -4,7 +4,6 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
@@ -290,7 +288,7 @@ private fun PageContent(
         state = pagerState,
         modifier = Modifier
             .fillMaxSize()
-            .padding(padding)  // TODO: remove
+//            .padding(padding)  // TODO: remove
     ) { pageIdx ->
         val isCurrentPage = pageIdx == pagerState.currentPage
         val scrollState = rememberScrollState()
@@ -589,8 +587,6 @@ private fun SuraHeader(
         Modifier
             .fillMaxWidth(0.95f)
             .height(lineHeight ?: (textSize * 1.6).dp)
-            .padding(vertical = 0.dp, horizontal = 5.dp)  // TODO: 5
-            .background(Color.Gray)
             .onGloballyPositioned { layoutCoordinates ->
                 onGloballyPositioned(suraNum, isCurrentPage, layoutCoordinates)
             },
@@ -599,14 +595,16 @@ private fun SuraHeader(
         Image(
             painter = painterResource(R.drawable.sura_header),
             contentDescription = suraName,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 5.dp, horizontal = 5.dp),
             contentScale = ContentScale.FillBounds,
             colorFilter = ColorFilter.tint(AppTheme.colors.text)
         )
 
         MyText(
             text = "${stringResource(R.string.sura)} $suraName",
-            fontSize = textSize.sp,
+            fontSize = (textSize * 0.9).sp,
             textColor = AppTheme.colors.strongText,
             fontFamily = uthmanic
         )
@@ -620,8 +618,7 @@ private fun Basmalah(textSize: Int, lineHeight: Dp? = null) {
         contentDescription = stringResource(R.string.basmalah),
         modifier = Modifier
             .fillMaxWidth(0.75f)
-            .height(lineHeight ?: (textSize * 1.6).dp)
-            .background(Color.DarkGray),
+            .height(lineHeight ?: (textSize * 1.6).dp),
         contentScale = ContentScale.FillBounds,
         colorFilter = ColorFilter.tint(AppTheme.colors.strongText)
     )
