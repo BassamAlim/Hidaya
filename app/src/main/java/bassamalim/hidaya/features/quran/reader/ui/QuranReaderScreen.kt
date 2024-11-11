@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.quran.reader.ui
 
 import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -91,6 +92,8 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
         viewModel.onStart(pagerState, coroutineScope)
         onDispose { viewModel.onStop(activity) }
     }
+
+    EnforcePortrait(activity)
 
     Scaffold(
         backgroundColor = AppTheme.colors.quranBG,
@@ -632,13 +635,21 @@ private fun PlayerNotSupportedToast() {
     }
 }
 
+@Composable
+private fun EnforcePortrait(activity: Activity) {
+    DisposableEffect(Unit) {
+        val originalOrientation = activity.requestedOrientation
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        onDispose {
+            activity.requestedOrientation = originalOrientation
+        }
+    }
+}
+
 private fun getLineHeight(padding: PaddingValues, configuration: Configuration): Dp {
     val screenHeightPx = configuration.screenHeightDp.dp
     val topBarHeight = 36.dp
-
     val availableHeight = screenHeightPx -
             topBarHeight - padding.calculateTopPadding() - padding.calculateBottomPadding()
-    val lineHeight = availableHeight / 15f
-    println("in getLineHeight, availableHeight: $availableHeight, lineHeight: $lineHeight, padding: $padding")
-    return lineHeight
+    return availableHeight / 15f
 }
