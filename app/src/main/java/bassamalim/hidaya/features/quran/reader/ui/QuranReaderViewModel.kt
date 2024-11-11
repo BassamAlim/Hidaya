@@ -326,11 +326,11 @@ class QuranReaderViewModel @Inject constructor(
     }
 
     private fun onVerseClick(verseId: Int) {
-        val verse = _uiState.value.pageVerses.find { it.id == verseId }!!
-
-        _uiState.update { it.copy(
-            selectedVerse = if (_uiState.value.selectedVerse?.id == verse.id) null else verse
-        )}
+        _uiState.value.pageVerses.find { it.id == verseId }?.let { verse ->
+            _uiState.update { it.copy(
+                selectedVerse = if (_uiState.value.selectedVerse?.id == verse.id) null else verse
+            )}
+        }
     }
 
     private fun onVerseHold(verseId: Int) {
