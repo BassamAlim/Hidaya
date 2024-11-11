@@ -1,6 +1,7 @@
 package bassamalim.hidaya.features.quran.reader.ui
 
 import android.app.Activity
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -42,7 +43,6 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -293,7 +293,9 @@ private fun PageContent(
 
         val modifier =
             if (viewType == QuranViewType.PAGE && fillPage) Modifier.fillMaxSize()
-            else Modifier.fillMaxSize().verticalScroll(scrollState)
+            else Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
 
         Column(
             modifier = modifier,
@@ -359,33 +361,50 @@ private fun PageItems(
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
-    val lineHeight = getLineHeight(padding)
+    val configuration = LocalConfiguration.current
+    val lineHeight = remember { getLineHeight(padding, configuration) }
 
     for (section in sections) {
-        when (section) {
-            is SuraHeaderSection -> {
-                SuraHeader(
-                    suraNum = section.suraNum,
-                    suraName = section.suraName,
-                    isCurrentPage = isCurrentPage,
-                    textSize = textSize,
-                    lineHeight = lineHeight,
-                    onGloballyPositioned = onSuraHeaderGloballyPositioned
-                )
-            }
-            is BasmalahSection -> {
-                Basmalah(textSize = textSize, lineHeight = lineHeight)
-            }
-            is VersesSection -> {
-                if (fillPage) {
+        if (fillPage) {
+            when (section) {
+                is SuraHeaderSection -> {
+                    SuraHeader(
+                        suraNum = section.suraNum,
+                        suraName = section.suraName,
+                        isCurrentPage = isCurrentPage,
+                        textSize = textSize,
+                        height = lineHeight,
+                        onGloballyPositioned = onSuraHeaderGloballyPositioned
+                    )
+                }
+                is BasmalahSection -> {
+                    Basmalah(textSize = textSize, height = lineHeight)
+                }
+                is VersesSection -> {
                     FilledPageViewScreen(
-                        annotatedString = section.annotatedString,
+                        annotatedString = AnnotatedString(section.annotatedString.toString()),
                         numOfLines = section.numOfLines,
                         lineHeight = lineHeight,
                         onVersePointerInput = onVersePointerInput
                     )
                 }
-                else {
+            }
+        }
+        else {
+            when (section) {
+                is SuraHeaderSection -> {
+                    SuraHeader(
+                        suraNum = section.suraNum,
+                        suraName = section.suraName,
+                        isCurrentPage = isCurrentPage,
+                        textSize = textSize,
+                        onGloballyPositioned = onSuraHeaderGloballyPositioned
+                    )
+                }
+                is BasmalahSection -> {
+                    Basmalah(textSize)
+                }
+                is VersesSection -> {
                     PageViewScreen(
                         annotatedString = section.annotatedString,
                         textSize = textSize
@@ -484,13 +503,13 @@ private fun FilledPageViewScreen(
             .drawWithContent {
                 println("in drawWithContent, ready: $ready, fontSize: $fontSize, lineHeight: $lineHeight")
 //                if (ready)
-                    drawContent()
+                drawContent()
             },
         fontSize = fontSize,
         style = TextStyle(
             fontFamily = hafs,
             color = AppTheme.colors.strongText,
-            lineHeight = with(LocalDensity.current) { lineHeight.toSp() },  // TODO: *96
+            lineHeight = (lineHeight.value * 0.96).sp,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
                 trim = LineHeightStyle.Trim.None
@@ -504,8 +523,8 @@ private fun FilledPageViewScreen(
 
             if (!ready) {
                 when {
-                    textLayoutResult.lineCount > numOfLines -> fontSize *= 0.99f
-                    textLayoutResult.lineCount < numOfLines -> fontSize *= 1.01f
+                    textLayoutResult.lineCount > numOfLines -> fontSize = (fontSize.value - 0.1f).sp
+                    textLayoutResult.lineCount < numOfLines -> fontSize = (fontSize.value + 0.1f).sp
                     else -> ready = true
                 }
             }
@@ -513,15 +532,13 @@ private fun FilledPageViewScreen(
     )
 }
 
-@Composable
-private fun getLineHeight(padding: PaddingValues): Dp {
-    val configuration = LocalConfiguration.current
+private fun getLineHeight(padding: PaddingValues, configuration: Configuration): Dp {
     val screenHeightPx = configuration.screenHeightDp.dp
     val topBarHeight = 36.dp
 
     val availableHeight = screenHeightPx -
             topBarHeight - padding.calculateTopPadding() - padding.calculateBottomPadding()
-    val lineHeight = availableHeight / 15
+    val lineHeight = availableHeight / 15f
     println("in getLineHeight, availableHeight: $availableHeight, lineHeight: $lineHeight, padding: $padding")
     return lineHeight
 }
@@ -561,13 +578,13 @@ private fun SuraHeader(
     suraName: String,
     isCurrentPage: Boolean,
     textSize: Int,
-    lineHeight: Dp? = null,
+    height: Dp? = null,
     onGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
     Box(
         Modifier
             .fillMaxWidth(0.95f)
-            .height(lineHeight ?: (textSize * 1.6).dp)
+            .height(height ?: (textSize * 1.6).dp)
             .onGloballyPositioned { layoutCoordinates ->
                 onGloballyPositioned(suraNum, isCurrentPage, layoutCoordinates)
             },
@@ -593,13 +610,13 @@ private fun SuraHeader(
 }
 
 @Composable
-private fun Basmalah(textSize: Int, lineHeight: Dp? = null) {
+private fun Basmalah(textSize: Int, height: Dp? = null) {
     Image(
         painter = painterResource(R.drawable.basmala),
         contentDescription = stringResource(R.string.basmalah),
         modifier = Modifier
             .fillMaxWidth(0.75f)
-            .height(lineHeight ?: (textSize * 1.6).dp),
+            .height(height ?: (textSize * 1.6).dp),
         contentScale = ContentScale.FillBounds,
         colorFilter = ColorFilter.tint(AppTheme.colors.strongText)
     )

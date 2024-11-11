@@ -515,9 +515,9 @@ class QuranReaderViewModel @Inject constructor(
                         styles = TextLinkStyles(
                             style = SpanStyle(
                                 color =
-                                if (_uiState.value.selectedVerse == verse) selectedVerseColor
-                                else if (_uiState.value.trackedVerseId == verse.id) trackedVerseColor
-                                else defaultVerseColor
+                                    if (_uiState.value.selectedVerse == verse) selectedVerseColor
+                                    else if (_uiState.value.trackedVerseId == verse.id) trackedVerseColor
+                                    else defaultVerseColor
                             )
                         ),
                         linkInteractionListener = { onVerseClick(verse.id) }
