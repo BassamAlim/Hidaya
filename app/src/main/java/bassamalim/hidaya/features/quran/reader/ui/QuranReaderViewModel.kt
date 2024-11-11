@@ -7,18 +7,17 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withLink
+import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,6 +32,7 @@ import bassamalim.hidaya.features.quran.reader.domain.QuranReaderDomain
 import bassamalim.hidaya.features.quran.reader.domain.QuranTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -72,6 +72,7 @@ class QuranReaderViewModel @Inject constructor(
     private val versePositions = mutableMapOf<Int, Float>()
     private var shouldSelectVerse = false
     private var pressedVerseId: Int? = null
+    private var longPressJob: Job? = null
 
     private val _uiState = MutableStateFlow(QuranReaderUiState())
     val uiState = combine(
@@ -246,67 +247,96 @@ class QuranReaderViewModel @Inject constructor(
         navigator.navigate(Screen.QuranSettings)
     }
 
-    private fun onVerseClick(verseId: Int) {
-        val verse = _uiState.value.pageVerses.find { it.id == verseId }!!
-
-        if (_uiState.value.selectedVerse?.id == verse.id) {
-            _uiState.update { it.copy(
-                selectedVerse = null
-            )}
-        }
-        else {
-            _uiState.update { it.copy(
-                selectedVerse = verse
-            )}
-        }
-    }
-
-    private fun onVersePressed(verseId: Int) {
-        pressedVerseId = verseId
-
-        coroutineScope.launch {
-            delay(500)
-            if (pressedVerseId == verseId)
-                onVerseHold(verseId)
-        }
-    }
-
     fun onVersePointerInput(
         pointerInputScope: PointerInputScope,
         layoutResult: TextLayoutResult?,
         annotatedString: AnnotatedString
     ) {
+        val swipeThreshold = 10f
+
         viewModelScope.launch {
             pointerInputScope.awaitPointerEventScope {
+                var initialPosition: Offset? = null
+                var verseId: Int? = null
+                var isLongPressDetected = false
+
                 while (true) {
                     val event = awaitPointerEvent()
                     val offset = event.changes[0].position
-                    val position = layoutResult?.getOffsetForPosition(offset)
-                    val verseId = position?.let {
-                        annotatedString.getLinkAnnotations(start = position, end = position)
-                            .firstOrNull()?.item?.toString()
-                            ?.substringAfter('=')
-                            ?.substringBefore(')')
-                            ?.toInt()
-                    }
-                    println("event, event.type: ${event.type}, event.changes.size: ${event.changes.size}, verseId: $verseId")
 
                     when (event.type) {
-                        PointerEventType.Press -> verseId?.let { onVersePressed(verseId) }
-                        PointerEventType.Release -> verseId?.let { onVerseReleased() }
+                        PointerEventType.Press -> {
+                            longPressJob?.cancel()
+                            isLongPressDetected = false
+
+                            initialPosition = offset
+                            val position = layoutResult?.getOffsetForPosition(offset)
+                            verseId = position?.let {
+                                annotatedString.getStringAnnotations(start = position, end = position)
+                                    .firstOrNull()?.item
+                                    ?.substringAfter('=')
+                                    ?.substringBefore(')')
+                                    ?.toInt()
+                            }
+
+                            verseId?.let { onVersePressed(it) }
+                        }
+                        PointerEventType.Release -> {
+                            val movementDistance = initialPosition?.let { start ->
+                                (offset - start).getDistance()
+                            } ?: 0f
+
+                            if (movementDistance <= swipeThreshold && !isLongPressDetected)
+                                verseId?.let { onVerseReleased() }
+
+                            initialPosition = null
+                            verseId = null
+                            isLongPressDetected = false
+                        }
+                        PointerEventType.Move -> {
+                            val movementDistance = initialPosition?.let { start ->
+                                (offset - start).getDistance()
+                            } ?: 0f
+
+                            if (movementDistance > swipeThreshold) {
+                                isLongPressDetected = true
+                                longPressJob?.cancel()
+                                pressedVerseId = null
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
+    private fun onVersePressed(verseId: Int) {
+        pressedVerseId = verseId
+
+        longPressJob = coroutineScope.launch {
+            delay(500)
+            if (pressedVerseId == verseId) onVerseHold(verseId)
+        }
+    }
+
     private fun onVerseReleased() {
+        pressedVerseId?.let { onVerseClick(it) }
         pressedVerseId = null
+        longPressJob?.cancel()
+    }
+
+    private fun onVerseClick(verseId: Int) {
+        val verse = _uiState.value.pageVerses.find { it.id == verseId }!!
+
+        _uiState.update { it.copy(
+            selectedVerse = if (_uiState.value.selectedVerse?.id == verse.id) null else verse
+        )}
     }
 
     private fun onVerseHold(verseId: Int) {
         navigator.navigate(Screen.VerseInfo(verseId.toString()))
         pressedVerseId = null
+        longPressJob?.cancel()
     }
 
     fun onSuraHeaderGloballyPositioned(
@@ -518,17 +548,11 @@ class QuranReaderViewModel @Inject constructor(
                     else -> defaultVerseColor
                 }
 
-                withLink(
-                    link = LinkAnnotation.Clickable(
-                        tag = verse.id.toString(),
-                        styles = TextLinkStyles(
-                            style = SpanStyle(color = verseColor)
-                        ),
-                        linkInteractionListener = { onVerseClick(verse.id) }
-                    )
-                ) {
+                pushStringAnnotation(tag = verse.id.toString(), annotation = verse.id.toString())
+                withStyle(style = SpanStyle(color = verseColor)) {
                     append(verse.text)
                 }
+                pop()
             }
         }
     }
