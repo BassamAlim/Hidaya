@@ -537,17 +537,6 @@ private fun FilledPageViewScreen(
     )
 }
 
-private fun getLineHeight(padding: PaddingValues, configuration: Configuration): Dp {
-    val screenHeightPx = configuration.screenHeightDp.dp
-    val topBarHeight = 36.dp
-
-    val availableHeight = screenHeightPx -
-            topBarHeight - padding.calculateTopPadding() - padding.calculateBottomPadding()
-    val lineHeight = availableHeight / 15f
-    println("in getLineHeight, availableHeight: $availableHeight, lineHeight: $lineHeight, padding: $padding")
-    return lineHeight
-}
-
 @Composable
 private fun ListViewScreen(
     verseId: Int,
@@ -637,4 +626,15 @@ private fun PlayerNotSupportedToast() {
             Toast.LENGTH_SHORT
         ).show()
     }
+}
+
+private fun getLineHeight(padding: PaddingValues, configuration: Configuration): Dp {
+    val screenHeightPx = configuration.screenHeightDp.dp
+    val topBarHeight = 36.dp
+
+    val availableHeight = screenHeightPx -
+            topBarHeight - padding.calculateTopPadding() - padding.calculateBottomPadding()
+    val lineHeight = availableHeight / 15f
+    println("in getLineHeight, availableHeight: $availableHeight, lineHeight: $lineHeight, padding: $padding")
+    return lineHeight
 }
