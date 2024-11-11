@@ -12,7 +12,7 @@ data class QuranPreferences(
     @Serializable(with = IntBooleanPersistentMapSerializer::class)
     val suraFavorites: PersistentMap<Int, Boolean> = persistentMapOf(),
     val viewType: QuranViewType = QuranViewType.PAGE,
-    val fillPage: Boolean = true,
+    val fillPage: Boolean = false,
     val textSize: Float = 30f,
     val pageBookmark: QuranPageBookmark? = null,
     val searchMaxMatches: Int = 10,
