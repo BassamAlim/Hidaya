@@ -382,7 +382,7 @@ private fun PageItems(
                 }
                 is VersesSection -> {
                     FilledPageViewScreen(
-                        annotatedString = AnnotatedString(section.annotatedString.toString()),
+                        annotatedString = section.annotatedString,
                         numOfLines = section.numOfLines,
                         lineHeight = lineHeight,
                         onVersePointerInput = onVersePointerInput
