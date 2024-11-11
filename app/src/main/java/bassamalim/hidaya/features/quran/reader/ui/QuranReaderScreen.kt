@@ -46,9 +46,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -356,8 +358,7 @@ private fun PageContent(
         }
     }
 }
-// TODO: handle <aya> in tafseer
-// TODO: find a way to center filled page text
+
 @Composable
 private fun PageItems(
     fillPage: Boolean,
@@ -515,11 +516,14 @@ private fun FilledPageViewScreen(
         style = TextStyle(
             fontFamily = hafs,
             color = AppTheme.colors.strongText,
-            lineHeight = (lineHeight.value * 0.95).sp,
+            lineHeight = (lineHeight.value * 0.96).sp,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
-                trim = LineHeightStyle.Trim.None
-            )
+                trim = LineHeightStyle.Trim.Both
+            ),
+            textAlign = TextAlign.Center,
+            platformStyle = PlatformTextStyle(includeFontPadding = false),
+            lineBreak = LineBreak(strategy = LineBreak.Strategy.Balanced, strictness = LineBreak.Strictness.Strict, wordBreak = LineBreak.WordBreak.Default)
         ),
         overflow = TextOverflow.Visible,
         textAlign = TextAlign.Justify,

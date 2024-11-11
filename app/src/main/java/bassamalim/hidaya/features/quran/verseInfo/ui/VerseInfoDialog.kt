@@ -36,6 +36,7 @@ fun VerseInfoDialog(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+// TODO: handle <aya> in tafseer
 
             MyText(state.interpretation, Modifier.fillMaxWidth())
         }
