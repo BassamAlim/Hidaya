@@ -272,11 +272,11 @@ class QuranReaderViewModel @Inject constructor(
                             initialPosition = offset
                             val position = layoutResult?.getOffsetForPosition(offset)
                             verseId = position?.let {
-                                annotatedString.getStringAnnotations(start = position, end = position)
-                                    .firstOrNull()?.item
-                                    ?.substringAfter('=')
-                                    ?.substringBefore(')')
-                                    ?.toInt()
+                                annotatedString.getStringAnnotations(
+                                    start = position,
+                                    end = position
+                                ).firstOrNull()
+                                    ?.tag?.toInt()
                             }
 
                             verseId?.let { onVersePressed(it) }
