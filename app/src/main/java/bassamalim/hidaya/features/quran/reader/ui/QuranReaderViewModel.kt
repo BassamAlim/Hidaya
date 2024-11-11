@@ -507,18 +507,22 @@ class QuranReaderViewModel @Inject constructor(
         selectedVerseColor: Color,
         trackedVerseColor: Color
     ): AnnotatedString {
+        val selectedVerseId = _uiState.value.selectedVerse?.id
+        val trackedVerseId = _uiState.value.trackedVerseId
+
         return buildAnnotatedString {
             for (verse in verses) {
+                val verseColor = when (verse.id) {
+                    selectedVerseId -> selectedVerseColor
+                    trackedVerseId -> trackedVerseColor
+                    else -> defaultVerseColor
+                }
+
                 withLink(
                     link = LinkAnnotation.Clickable(
                         tag = verse.id.toString(),
                         styles = TextLinkStyles(
-                            style = SpanStyle(
-                                color =
-                                    if (_uiState.value.selectedVerse == verse) selectedVerseColor
-                                    else if (_uiState.value.trackedVerseId == verse.id) trackedVerseColor
-                                    else defaultVerseColor
-                            )
+                            style = SpanStyle(color = verseColor)
                         ),
                         linkInteractionListener = { onVerseClick(verse.id) }
                     )

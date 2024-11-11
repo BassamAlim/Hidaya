@@ -350,7 +350,9 @@ private fun PageContent(
         }
     }
 }
-
+// TODO: find a fix for AnnotatedString being very slow
+// TODO: handle <aya> in tafseer
+// TODO: find a way to center filled page text
 @Composable
 private fun PageItems(
     fillPage: Boolean,
