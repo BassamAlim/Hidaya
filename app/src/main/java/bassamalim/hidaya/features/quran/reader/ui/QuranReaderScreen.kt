@@ -515,7 +515,7 @@ private fun FilledPageViewScreen(
         style = TextStyle(
             fontFamily = hafs,
             color = AppTheme.colors.strongText,
-            lineHeight = (lineHeight.value * 0.96).sp,
+            lineHeight = (lineHeight.value * 0.95).sp,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
                 trim = LineHeightStyle.Trim.None
@@ -528,8 +528,8 @@ private fun FilledPageViewScreen(
 
             if (!ready) {
                 when {
-                    textLayoutResult.lineCount > numOfLines -> fontSize = (fontSize.value - 0.3f).sp
-                    textLayoutResult.lineCount < numOfLines -> fontSize = (fontSize.value + 0.3f).sp
+                    textLayoutResult.lineCount > numOfLines -> fontSize = (fontSize.value - 0.5f).sp
+                    textLayoutResult.lineCount < numOfLines -> fontSize = (fontSize.value + 0.5f).sp
                     else -> ready = true
                 }
             }
