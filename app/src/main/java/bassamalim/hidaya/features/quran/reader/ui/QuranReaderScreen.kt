@@ -51,6 +51,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -75,6 +76,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
     val activity = LocalContext.current as Activity
+    val configuration = LocalConfiguration.current
 
     if (state.isLoading) return
 
@@ -126,7 +128,8 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
             buildListPage = viewModel::buildListPage,
             onSuraHeaderGloballyPositioned = viewModel::onSuraHeaderGloballyPositioned,
             onVerseGloballyPositioned = viewModel::onVerseGloballyPositioned,
-            onVersePointerInput = viewModel::onVersePointerInput
+            onVersePointerInput = viewModel::onVersePointerInput,
+            configuration = configuration
         )
     }
 
@@ -280,8 +283,11 @@ private fun PageContent(
     buildListPage: (Int, Color, Color, Color) -> List<Section>,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
     onVerseGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit,
-    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit
+    onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit,
+    configuration: Configuration
 ) {
+    val lineHeight = remember { getLineHeight(padding, configuration) }
+
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize()
@@ -315,7 +321,7 @@ private fun PageContent(
                         sections = pageContent,
                         isCurrentPage = isCurrentPage,
                         textSize = textSize,
-                        padding = padding,
+                        lineHeight = lineHeight,
                         onVersePointerInput = onVersePointerInput,
                         onSuraHeaderGloballyPositioned = onSuraHeaderGloballyPositioned
                     )
@@ -350,7 +356,6 @@ private fun PageContent(
         }
     }
 }
-// TODO: find a fix for AnnotatedString being very slow
 // TODO: handle <aya> in tafseer
 // TODO: find a way to center filled page text
 @Composable
@@ -359,13 +364,10 @@ private fun PageItems(
     sections: List<Section>,
     isCurrentPage: Boolean,
     textSize: Int,
-    padding: PaddingValues,
+    lineHeight: Dp,
     onVersePointerInput: (PointerInputScope, TextLayoutResult?, AnnotatedString) -> Unit,
     onSuraHeaderGloballyPositioned: (Int, Boolean, LayoutCoordinates) -> Unit
 ) {
-    val configuration = LocalConfiguration.current
-    val lineHeight = remember { getLineHeight(padding, configuration) }
-
     for (section in sections) {
         if (fillPage) {
             when (section) {
@@ -492,6 +494,7 @@ private fun FilledPageViewScreen(
     var fontSize by remember { mutableStateOf(25.sp) }
     var ready by remember { mutableStateOf(false) }
     var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+    val t1 = remember { System.currentTimeMillis() }
 
     Text(
         text = annotatedString,
@@ -503,9 +506,10 @@ private fun FilledPageViewScreen(
                 onVersePointerInput(this, layoutResult, annotatedString)
             }
             .drawWithContent {
-                println("in drawWithContent, ready: $ready, fontSize: $fontSize, lineHeight: $lineHeight")
-//                if (ready)
-                drawContent()
+                if (ready) {
+                    drawContent()
+                    println("Took ${System.currentTimeMillis() - t1} ms to draw content")
+                }
             },
         fontSize = fontSize,
         style = TextStyle(
@@ -517,22 +521,98 @@ private fun FilledPageViewScreen(
                 trim = LineHeightStyle.Trim.None
             )
         ),
+        overflow = TextOverflow.Visible,
         textAlign = TextAlign.Justify,
         onTextLayout = { textLayoutResult ->
-            println("in onTextLayout, ready: $ready, fontSize: $fontSize, lineHeight: $lineHeight, lineCount: ${textLayoutResult.lineCount}, didOverflowHeight: ${textLayoutResult.didOverflowHeight}")
-
             layoutResult = textLayoutResult
 
             if (!ready) {
                 when {
-                    textLayoutResult.lineCount > numOfLines -> fontSize = (fontSize.value - 0.1f).sp
-                    textLayoutResult.lineCount < numOfLines -> fontSize = (fontSize.value + 0.1f).sp
+                    textLayoutResult.lineCount > numOfLines -> fontSize = (fontSize.value - 0.3f).sp
+                    textLayoutResult.lineCount < numOfLines -> fontSize = (fontSize.value + 0.3f).sp
                     else -> ready = true
                 }
             }
         }
     )
 }
+
+//fun estimateFontSize1(
+//    text: AnnotatedString,
+//    fontFamily: FontFamily,
+//    numLines: Int,
+//    lineHeight: Dp,
+//    configuration: Configuration,
+//    density: Density
+//): TextUnit {
+//    val screenWidth = with(density) { configuration.screenWidthDp.dp.toPx() }
+//    val screenHeight = with(density) { configuration.screenHeightDp.dp.toPx() }
+//
+//    // Initial font size guess
+//    var fontSize = 25.sp
+//
+//    // Helper function to check if the text fits
+//    fun doesTextFit(size: Float): Boolean {
+//        val textStyle = TextStyle(fontSize = size.sp, fontFamily = fontFamily, lineHeight = with(density) { lineHeight.toSp() })
+//        val layoutResult = TextLayoutResult(
+//            layoutInput = TextLayoutInput(
+//                text = text,
+//                style = textStyle,
+//                density = density
+//            ),
+//            multiParagraph = MultiParagraph(),
+//            size = screenWidth.toInt()
+//        )
+//        return layoutResult.lineCount <= numLines
+//    }
+//
+//    // Iterate to adjust font size
+//    var low = 8.sp
+//    var high = 100.sp
+//
+//    while (high - low > 0.5.sp) {
+//        val mid = (low + high) / 2
+//        if (doesTextFit(mid)) {
+//            low = mid
+//        } else {
+//            high = mid
+//        }
+//    }
+//
+//    return floor(low.value).sp
+//}
+//
+//fun estimateFontSize2(
+//    text: String,
+//    fontFamily: FontFamily,
+//    numLines: Int,
+//    lineHeight: Dp,
+//    configuration: Configuration,
+//    density: Density
+//): TextUnit {
+//    val paint = android.graphics.Paint().apply {
+//        textSize = 1.sp.toPx() // Start with a very small font size
+//        typeface = fontFamily
+//    }
+//
+//    val layoutParams = android.graphics.Paint.FontMetricsInt()
+//    paint.getFontMetricsInt(layoutParams)
+//
+//    val lineHeightPx = lineHeight.toPx()
+//    val maxHeight = numLines * lineHeightPx
+//
+//    var fontSize = 1.sp
+//    while (true) {
+//        paint.textSize = fontSize.toPx()
+//        val textHeight = (layoutParams.descent - layoutParams.ascent).toFloat()
+//
+//        if (textHeight <= maxHeight) {
+//            return fontSize
+//        }
+//
+//        fontSize += 1.sp
+//    }
+//}
 
 private fun getLineHeight(padding: PaddingValues, configuration: Configuration): Dp {
     val screenHeightPx = configuration.screenHeightDp.dp
