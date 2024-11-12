@@ -293,23 +293,25 @@ private fun PageContent(
 ) {
     val lineHeight = remember { getLineHeight(padding, configuration) }
 
+    var pagerModifier = Modifier.fillMaxSize()
+    if (!(viewType == QuranViewType.PAGE && fillPage))
+        pagerModifier = pagerModifier.padding(padding)
+
     HorizontalPager(
         state = pagerState,
-        modifier = Modifier.fillMaxSize()
+        modifier = pagerModifier
     ) { pageIdx ->
         val isCurrentPage = pageIdx == pagerState.currentPage
         val scrollState = rememberScrollState()
 
         onPageChange(pagerState.currentPage, pageIdx, scrollState)
 
-        val modifier =
-            if (viewType == QuranViewType.PAGE && fillPage) Modifier.fillMaxSize()
-            else Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
+        var columnModifier = Modifier.fillMaxSize()
+        if (!(viewType == QuranViewType.PAGE && fillPage))
+            columnModifier = columnModifier.verticalScroll(scrollState)
 
         Column(
-            modifier = modifier,
+            modifier = columnModifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (viewType) {
