@@ -27,18 +27,26 @@ fun VerseInfoDialog(
         Column(
             Modifier.padding(top = 5.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)
         ) {
-            Box(Modifier.fillMaxWidth()) {
-                MyCloseBtn(Modifier.align(Alignment.CenterStart)) { viewModel.onDismiss() }
+            Header(viewModel::onDismiss)
 
-                MyText(
-                    text = stringResource(R.string.interpretation),
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-// TODO: handle <aya> in tafseer
-
-            MyText(state.interpretation, Modifier.fillMaxWidth())
+            // Interpretation
+            MyText(
+                text = state.interpretation,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
+    }
+}
+
+@Composable
+private fun Header(onDismiss: () -> Unit) {
+    Box(Modifier.fillMaxWidth()) {
+        MyCloseBtn(Modifier.align(Alignment.CenterStart)) { onDismiss() }
+
+        MyText(
+            text = stringResource(R.string.interpretation),
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.align(Alignment.Center)
+        )
     }
 }

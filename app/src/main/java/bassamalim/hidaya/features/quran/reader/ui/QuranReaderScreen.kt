@@ -70,9 +70,9 @@ import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.TutorialDialog
 import bassamalim.hidaya.core.ui.theme.AppTheme
-import bassamalim.hidaya.core.ui.theme.hafs
+import bassamalim.hidaya.core.ui.theme.hafs_smart
 import bassamalim.hidaya.core.ui.theme.nsp
-import bassamalim.hidaya.core.ui.theme.uthmanic
+import bassamalim.hidaya.core.ui.theme.uthmanic_hafs
 
 @Composable
 fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
@@ -482,7 +482,7 @@ private fun PageViewScreen(annotatedString: AnnotatedString, textSize: Int) {
         text = annotatedString,
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp),
         style = TextStyle(
-            fontFamily = hafs,
+            fontFamily = hafs_smart,
             fontSize = textSize.sp,
             color = AppTheme.colors.strongText,
             textAlign = TextAlign.Center
@@ -519,7 +519,7 @@ private fun FilledPageViewScreen(
             },
         fontSize = fontSize,
         style = TextStyle(
-            fontFamily = hafs,
+            fontFamily = hafs_smart,
             color = AppTheme.colors.strongText,
             lineHeight = (lineHeight.value * 0.96).sp,
             lineHeightStyle = LineHeightStyle(
@@ -564,7 +564,7 @@ private fun ListViewScreen(
                 onVerseGloballyPositioned(verseId, isCurrentPage, layoutCoordinates)
             },
         style = TextStyle(
-            fontFamily = hafs,
+            fontFamily = hafs_smart,
             fontSize = textSize.sp,
             color =
                 if (selectedVerse?.id == verseId) AppTheme.colors.highlight
@@ -607,7 +607,7 @@ private fun SuraHeader(
             text = "${stringResource(R.string.sura)} $suraName",
             fontSize = (textSize * 0.9).sp,
             textColor = AppTheme.colors.strongText,
-            fontFamily = uthmanic
+            fontFamily = uthmanic_hafs
         )
     }
 }

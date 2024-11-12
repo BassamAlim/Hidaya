@@ -1,9 +1,13 @@
 package bassamalim.hidaya.features.quran.verseInfo.ui
 
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.ui.theme.uthmanic_hafs
 import bassamalim.hidaya.features.quran.verseInfo.domain.VerseInfoDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,8 +42,32 @@ class VerseInfoViewModel @Inject constructor(
 
             _uiState.update { it.copy(
                 isLoading = false,
-                interpretation = verse.interpretation
+                interpretation = annotateInterpretation(verse.interpretation)
             )}
+        }
+    }
+
+    private fun annotateInterpretation(interpretation: String): AnnotatedString {
+        return buildAnnotatedString {
+            val regex = Regex("(<aya>(.*?)</aya>)")
+            var lastIndex = 0
+
+            regex.findAll(interpretation).forEach { matchResult ->
+                val ayaStartIndex = matchResult.range.first
+                val ayaEndIndex = matchResult.range.last + 1
+
+                append(interpretation.substring(lastIndex, ayaStartIndex))
+
+                pushStyle(SpanStyle(fontFamily = uthmanic_hafs))
+                append(matchResult.groups[2]?.value.orEmpty()) // Groups[2] contains the text within the tags
+                pop()
+
+                lastIndex = ayaEndIndex
+            }
+
+            if (lastIndex < interpretation.length) {
+                append(interpretation.substring(lastIndex))
+            }
         }
     }
 
