@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
+import bassamalim.hidaya.core.models.TimeOfDay
 import bassamalim.hidaya.core.nav.Navigator
 import bassamalim.hidaya.core.nav.Screen
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
@@ -64,13 +65,13 @@ class HomeViewModel @Inject constructor(
 
         state.copy(
             previousPrayerName = prayerNames[previousPrayer]!!,
-            previousPrayerTime = translateNums(
+            previousPrayerTimeText = translateNums(
                 string = if (previousPrayerWasYesterday) formattedYesterdayIshaa
                 else formattedTimes[previousPrayer]!!,
                 numeralsLanguage = numeralsLanguage
             ),
             nextPrayerName = prayerNames[nextPrayer]!!,
-            nextPrayerTime = translateNums(
+            nextPrayerTimeText = translateNums(
                 string = if (nextPrayerIsTomorrow) formattedTomorrowFajr
                 else formattedTimes[nextPrayer]!!,
                 numeralsLanguage = numeralsLanguage
@@ -183,9 +184,16 @@ class HomeViewModel @Inject constructor(
             /* countDownInterval = */ 1000
         ) {
             override fun onTick(millisUntilFinished: Long) {
+                val previousPrayerTime =
+                    if (nextPrayer == Prayer.FAJR) yesterdayIshaa
+                    else times[previousPrayer]!!
+                val nextPrayerTime =
+                    if (nextPrayerIsTomorrow) tomorrowFajr
+                    else times[nextPrayer]!!
+
                 val timeFromPreviousPrayer =
                     if (nextPrayer == Prayer.FAJR)
-                        System.currentTimeMillis() - yesterdayIshaa.timeInMillis
+                        System.currentTimeMillis() - previousPrayerTime.timeInMillis
                     else
                         System.currentTimeMillis() - times[previousPrayer]!!.timeInMillis
                 val timeFromPreviousPrayerHours = timeFromPreviousPrayer / (60 * 60 * 1000) % 24
@@ -211,22 +219,19 @@ class HomeViewModel @Inject constructor(
                 )
 
                 viewModelScope.launch {
-                    val numeralsLanguage = domain.getNumeralsLanguage().first()
                     _uiState.update { it.copy(
                         passed = translateTimeNums(
                             string = timeFromPreviousPrayerHms,
                             language = it.language,
-                            numeralsLanguage = numeralsLanguage
+                            numeralsLanguage = it.numeralsLanguage
                         ),
                         remaining = translateTimeNums(
                             string = timeToNextPrayerHms,
                             language = it.language,
-                            numeralsLanguage = numeralsLanguage
+                            numeralsLanguage = it.numeralsLanguage
                         ),
-                        timeFromPreviousPrayer =
-                            if (nextPrayer == Prayer.FAJR) -1L
-                            else timeFromPreviousPrayer,
-                        timeToNextPrayer = millisUntilFinished
+                        previousPrayerTime = TimeOfDay.fromCalendar(previousPrayerTime),
+                        nextPrayerTime = TimeOfDay.fromCalendar(nextPrayerTime)
                     )}
                 }
             }

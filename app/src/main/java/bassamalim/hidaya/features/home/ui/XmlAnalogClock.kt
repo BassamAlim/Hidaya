@@ -15,7 +15,7 @@ import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
 
-class AnalogClock(
+class XmlAnalogClock(
     context: Context,
     attrs: AttributeSet
 ) : View(context, attrs) {

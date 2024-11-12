@@ -24,7 +24,7 @@ import kotlin.math.min
 import kotlin.math.sin
 
 @Composable
-fun AnalogClock(
+fun ComposeAnalogClock(
     timeFromPreviousPrayer: Long,
     timeToNextPrayer: Long,
     numeralsLanguage: Language,

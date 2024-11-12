@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.home.ui
 
-import android.view.LayoutInflater
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.Arrangement
@@ -27,10 +26,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import bassamalim.hidaya.R
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.models.TimeOfDay
+import bassamalim.hidaya.core.ui.components.AnalogClock
 import bassamalim.hidaya.core.ui.components.MyClickableText
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
@@ -55,13 +55,13 @@ fun HomeScreen(viewModel: HomeViewModel) {
     MyParentColumn {
         PrayerCard(
             previousPrayerName = state.previousPrayerName,
-            previousPrayerTime = state.previousPrayerTime,
+            previousPrayerTimeText = state.previousPrayerTimeText,
             passed = state.passed,
             nextPrayerName = state.nextPrayerName,
-            nextPrayerTime = state.nextPrayerTime,
+            nextPrayerTimeText = state.nextPrayerTimeText,
             remaining = state.remaining,
-            timeFromPreviousPrayer = state.timeFromPreviousPrayer,
-            timeToNextPrayer = state.timeToNextPrayer,
+            previousPrayerTime = state.previousPrayerTime,
+            nextPrayerTime = state.nextPrayerTime,
             numeralsLanguage = state.numeralsLanguage
         )
 
@@ -83,13 +83,13 @@ fun HomeScreen(viewModel: HomeViewModel) {
 @Composable
 private fun PrayerCard(
     previousPrayerName: String,
-    previousPrayerTime: String,
+    previousPrayerTimeText: String,
     passed: String,
     nextPrayerName: String,
-    nextPrayerTime: String,
+    nextPrayerTimeText: String,
     remaining: String,
-    timeFromPreviousPrayer: Long,
-    timeToNextPrayer: Long,
+    previousPrayerTime: TimeOfDay?,
+    nextPrayerTime: TimeOfDay?,
     numeralsLanguage: Language
 ) {
     MySurface(
@@ -99,35 +99,11 @@ private fun PrayerCard(
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AndroidView(
-                factory = { context ->
-                    val view = LayoutInflater.from(context).inflate(
-                        R.layout.clock_view,
-                        null,
-                        false
-                    ) as AnalogClock
-                    view.init(numeralsLanguage)
-                    view
-                },
-                update = { view ->
-                    // Update the view
-                    view.updateArcs(timeFromPreviousPrayer, timeToNextPrayer)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp)
+            AnalogClock(
+                previousPrayerTime = previousPrayerTime,
+                nextPrayerTime = nextPrayerTime,
+                numeralsLanguage = numeralsLanguage
             )
-
-//            val width = LocalConfiguration.current.screenWidthDp
-//            AnalogClock(
-//                timeFromPreviousPrayer = timeFromPreviousPrayer,
-//                timeToNextPrayer = timeToNextPrayer,
-//                numeralsLanguage = numeralsLanguage,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height((width * 0.7).dp)
-//                    .padding(vertical = 10.dp)
-//            )
 
             Row(
                 Modifier
@@ -152,7 +128,7 @@ private fun PrayerCard(
                     )
 
                     MyText(
-                        text = previousPrayerTime,
+                        text = previousPrayerTimeText,
                         modifier = Modifier.padding(3.dp),
                         fontSize = 23.sp
                     )
@@ -190,7 +166,7 @@ private fun PrayerCard(
                     )
 
                     MyText(
-                        text = nextPrayerTime,
+                        text = nextPrayerTimeText,
                         modifier = Modifier.padding(3.dp),
                         fontSize = 23.sp
                     )

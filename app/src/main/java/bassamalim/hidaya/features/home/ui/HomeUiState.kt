@@ -1,17 +1,18 @@
 package bassamalim.hidaya.features.home.ui
 
 import bassamalim.hidaya.core.enums.Language
+import bassamalim.hidaya.core.models.TimeOfDay
 
 data class HomeUiState(
     val isLoading: Boolean = true,
     val previousPrayerName: String = "",
-    val previousPrayerTime: String = "",
+    val previousPrayerTimeText: String = "",
     val passed: String = "",
     val nextPrayerName: String = "",
-    val nextPrayerTime: String = "",
+    val nextPrayerTimeText: String = "",
     val remaining: String = "",
-    val timeFromPreviousPrayer: Long = 0L,
-    val timeToNextPrayer: Long = 0L,
+    val previousPrayerTime: TimeOfDay? = null,
+    val nextPrayerTime: TimeOfDay? = null,
     val werdPage: String = "",
     val isWerdDone: Boolean = false,
     val quranRecord: String = "",
