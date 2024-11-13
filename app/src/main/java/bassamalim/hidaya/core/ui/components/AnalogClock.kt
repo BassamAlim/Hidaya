@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
@@ -100,6 +102,7 @@ private fun Draw(
             )
 
             drawArcs(
+                currentTime = currentTime,
                 previousPrayerTime = previousPrayerTime,
                 nextPrayerTime = nextPrayerTime,
                 center = center,
@@ -210,14 +213,8 @@ private fun DrawScope.drawHoursHand(
     val radius = fullRadius * 0.5f
 
     drawLine(
-        start = Offset(
-            x = center,
-            y = center
-        ),
-        end = Offset(
-            x = (center + cos(angle) * radius),
-            y = (center + sin(angle) * radius)
-        ),
+        start = Offset(x = center, y = center),
+        end = Offset(x = (center + cos(angle) * radius), y = (center + sin(angle) * radius)),
         strokeWidth = 11f,
         cap = StrokeCap.Round,
         color = color
@@ -234,14 +231,8 @@ private fun DrawScope.drawMinutesHand(
     val radius = fullRadius * 0.7f
 
     drawLine(
-        start = Offset(
-            x = center,
-            y = center
-        ),
-        end = Offset(
-            x = (center + cos(angle) * radius),
-            y = (center + sin(angle) * radius)
-        ),
+        start = Offset(x = center, y = center),
+        end = Offset(x = (center + cos(angle) * radius), y = (center + sin(angle) * radius)),
         strokeWidth = 9f,
         cap = StrokeCap.Round,
         color = color
@@ -258,14 +249,8 @@ private fun DrawScope.drawSecondsHand(
     val radius = fullRadius * 0.7f
 
     drawLine(
-        start = Offset(
-            x = center,
-            y = center
-        ),
-        end = Offset(
-            x = (center + cos(angle) * radius),
-            y = (center + sin(angle) * radius)
-        ),
+        start = Offset(x = center, y = center),
+        end = Offset(x = (center + cos(angle) * radius), y = (center + sin(angle) * radius)),
         strokeWidth = 6f,
         cap = StrokeCap.Round,
         color = color
@@ -273,6 +258,7 @@ private fun DrawScope.drawSecondsHand(
 }
 
 private fun DrawScope.drawArcs(
+    currentTime: TimeOfDay,
     previousPrayerTime: TimeOfDay?,
     nextPrayerTime: TimeOfDay?,
     center: Float,
@@ -282,6 +268,7 @@ private fun DrawScope.drawArcs(
 ) {
     if (previousPrayerTime != null) {
         drawPassedArc(
+            currentTime = currentTime,
             previousPrayerTime = previousPrayerTime,
             center = center,
             fullRadius = fullRadius,
@@ -291,6 +278,7 @@ private fun DrawScope.drawArcs(
 
     if (nextPrayerTime != null) {
         drawRemainingArc(
+            currentTime = currentTime,
             nextPrayerTime = nextPrayerTime,
             center = center,
             fullRadius = fullRadius,
@@ -300,19 +288,59 @@ private fun DrawScope.drawArcs(
 }
 
 private fun DrawScope.drawPassedArc(
-    previousPrayerTime: TimeOfDay?,
+    currentTime: TimeOfDay,
+    previousPrayerTime: TimeOfDay,
     center: Float,
     fullRadius: Float,
     color: Color
 ) {
+    val previousPrayerTimeAngle = timeToDegrees(previousPrayerTime)
+    val currentTimeAngle = timeToDegrees(currentTime)
+    val sweepAngle = (currentTimeAngle - previousPrayerTimeAngle + 360) % 360
 
+    drawArc(
+        startAngle = previousPrayerTimeAngle,
+        sweepAngle = sweepAngle,
+        useCenter = false,
+        size = Size(
+            width = center + fullRadius,
+            height = center + fullRadius
+        ),
+        style = Stroke(
+            width = 8f,
+            cap = StrokeCap.Round
+        ),
+        color = color
+    )
 }
 
 private fun DrawScope.drawRemainingArc(
-    nextPrayerTime: TimeOfDay?,
+    currentTime: TimeOfDay,
+    nextPrayerTime: TimeOfDay,
     center: Float,
     fullRadius: Float,
     color: Color
 ) {
+    val currentTimeAngle = timeToDegrees(currentTime)
+    val nextPrayerTimeAngle = timeToDegrees(nextPrayerTime)
+    val sweepAngle = (nextPrayerTimeAngle - currentTimeAngle + 360) % 360
 
+    drawArc(
+        startAngle = currentTimeAngle,
+        sweepAngle = sweepAngle,
+        useCenter = false,
+        size = Size(
+            width = center + fullRadius,
+            height = center + fullRadius
+        ),
+        style = Stroke(
+            width = 8f,
+            cap = StrokeCap.Round
+        ),
+        color = color
+    )
+}
+
+fun timeToDegrees(time: TimeOfDay): Float {
+    return -90f + (time.hour % 12) * 30 + time.minute * 0.5f
 }
