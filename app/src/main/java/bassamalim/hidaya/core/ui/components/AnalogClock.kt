@@ -220,6 +220,7 @@ private fun DrawScope.drawHoursHand(
 
     drawLine(
         start = Offset(x = center, y = center),
+//        start = Offset(x = (center - cos(angle) * 20), y = (center - sin(angle) * 20)),  // extend the hand a bit beyond the center
         end = Offset(x = (center + cos(angle) * radius), y = (center + sin(angle) * radius)),
         strokeWidth = 11f,
         cap = StrokeCap.Round,
@@ -238,6 +239,7 @@ private fun DrawScope.drawMinutesHand(
 
     drawLine(
         start = Offset(x = center, y = center),
+//        start = Offset(x = (center - cos(angle) * 30), y = (center - sin(angle) * 30)),  // extend the hand a bit beyond the center
         end = Offset(x = (center + cos(angle) * radius), y = (center + sin(angle) * radius)),
         strokeWidth = 9f,
         cap = StrokeCap.Round,
@@ -255,7 +257,8 @@ private fun DrawScope.drawSecondsHand(
     val radius = fullRadius * 0.68f
 
     drawLine(
-        start = Offset(x = center, y = center),
+//        start = Offset(x = center, y = center),
+        start = Offset(x = (center - cos(angle) * 40), y = (center - sin(angle) * 40)),  // extend the hand a bit beyond the center
         end = Offset(x = (center + cos(angle) * radius), y = (center + sin(angle) * radius)),
         strokeWidth = 6f,
         cap = StrokeCap.Round,
