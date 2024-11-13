@@ -10,6 +10,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -39,7 +44,13 @@ fun AnalogClock(
     numeralsLanguage: Language,
     modifier: Modifier = Modifier
 ) {
-    val currentTime = TimeOfDay.fromCalendar(Calendar.getInstance())
+    var currentTime by remember { mutableStateOf(TimeOfDay.fromCalendar(Calendar.getInstance())) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            kotlinx.coroutines.delay(1000)
+            currentTime = TimeOfDay.fromCalendar(Calendar.getInstance())
+        }
+    }
 
     Draw(
         currentTime = currentTime,
@@ -220,7 +231,8 @@ private fun DrawScope.drawHoursHand(
 
     drawLine(
         start = Offset(x = center, y = center),
-//        start = Offset(x = (center - cos(angle) * 20), y = (center - sin(angle) * 20)),  // extend the hand a bit beyond the center
+        // extend the hand a bit beyond the center
+//        start = Offset(x = (center - cos(angle) * 20), y = (center - sin(angle) * 20)),
         end = Offset(x = (center + cos(angle) * radius), y = (center + sin(angle) * radius)),
         strokeWidth = 11f,
         cap = StrokeCap.Round,
@@ -239,7 +251,8 @@ private fun DrawScope.drawMinutesHand(
 
     drawLine(
         start = Offset(x = center, y = center),
-//        start = Offset(x = (center - cos(angle) * 30), y = (center - sin(angle) * 30)),  // extend the hand a bit beyond the center
+        // extend the hand a bit beyond the center
+//        start = Offset(x = (center - cos(angle) * 30), y = (center - sin(angle) * 30)),
         end = Offset(x = (center + cos(angle) * radius), y = (center + sin(angle) * radius)),
         strokeWidth = 9f,
         cap = StrokeCap.Round,
@@ -253,12 +266,13 @@ private fun DrawScope.drawSecondsHand(
     fullRadius: Float,
     color: Color
 ) {
-    val angle = (Math.PI * second * 5f / 30f - Math.PI / 2f).toFloat()
+    val angle = (Math.PI * second / 30f - Math.PI / 2f).toFloat()
     val radius = fullRadius * 0.68f
 
     drawLine(
 //        start = Offset(x = center, y = center),
-        start = Offset(x = (center - cos(angle) * 40), y = (center - sin(angle) * 40)),  // extend the hand a bit beyond the center
+        // extend the hand a bit beyond the center
+        start = Offset(x = (center - cos(angle) * 40), y = (center - sin(angle) * 40)),
         end = Offset(x = (center + cos(angle) * radius), y = (center + sin(angle) * radius)),
         strokeWidth = 6f,
         cap = StrokeCap.Round,

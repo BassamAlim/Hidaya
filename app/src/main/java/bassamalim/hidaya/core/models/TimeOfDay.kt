@@ -12,7 +12,8 @@ data class TimeOfDay(
     companion object {
         fun fromCalendar(calendar: Calendar) = TimeOfDay(
             hour = calendar.get(Calendar.HOUR_OF_DAY),
-            minute = calendar.get(Calendar.MINUTE)
+            minute = calendar.get(Calendar.MINUTE),
+            second = calendar.get(Calendar.SECOND)
         )
     }
 }
