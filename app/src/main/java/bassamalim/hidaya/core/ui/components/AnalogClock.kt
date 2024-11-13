@@ -125,7 +125,7 @@ private fun Draw(
 }
 
 private fun DrawScope.drawTeeth(center: Float, fullRadius: Float, color: Color) {
-    val radius = fullRadius * 0.97f
+    val radius = fullRadius * 0.93f
 
     for (i in 0..59) {
         val theta = i * 0.105f  // 0.105 is the distance between each two teeth spaces
@@ -156,7 +156,7 @@ private fun DrawScope.drawNumbers(
         Language.ARABIC -> context.resources.getStringArray(R.array.numerals)
         Language.ENGLISH -> context.resources.getStringArray(R.array.numerals_en)
     }
-    val radius = fullRadius * 0.85f
+    val radius = fullRadius * 0.82f
     val textSize = radius * 0.07f
 
     for (number in numerals) {
@@ -234,7 +234,7 @@ private fun DrawScope.drawMinutesHand(
     color: Color
 ) {
     val angle = (Math.PI * minute / 30f - Math.PI / 2f).toFloat()
-    val radius = fullRadius * 0.7f
+    val radius = fullRadius * 0.68f
 
     drawLine(
         start = Offset(x = center, y = center),
@@ -252,7 +252,7 @@ private fun DrawScope.drawSecondsHand(
     color: Color
 ) {
     val angle = (Math.PI * second * 5f / 30f - Math.PI / 2f).toFloat()
-    val radius = fullRadius * 0.7f
+    val radius = fullRadius * 0.68f
 
     drawLine(
         start = Offset(x = center, y = center),
