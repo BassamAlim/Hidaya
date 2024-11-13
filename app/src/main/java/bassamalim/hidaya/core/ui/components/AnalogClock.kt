@@ -3,9 +3,12 @@ package bassamalim.hidaya.core.ui.components
 import android.content.Context
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -66,60 +69,63 @@ private fun Draw(
     val pastArcColor = AppTheme.colors.accent
     val remainingArcColor = AppTheme.colors.altAccent
 
-    BoxWithConstraints(
+    Surface(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(10.dp)
+            .fillMaxSize()
+            .padding(10.dp),
+        shape = CircleShape,
+        color = AppTheme.colors.surface,
+        elevation = 10.dp
     ) {
-        Canvas(
-            modifier = Modifier.size(maxWidth)
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            val center = size.maxDimension / 2f
-            val fullRadius = size.maxDimension / 2f
+            Canvas(
+                modifier = Modifier.size(maxWidth)
+            ) {
+                val center = size.maxDimension / 2f
+                val fullRadius = size.maxDimension / 2f
 
-            drawTeeth(
-                center = center,
-                fullRadius = fullRadius,
-                color = teethColor
-            )
+                drawTeeth(
+                    center = center,
+                    fullRadius = fullRadius,
+                    color = teethColor
+                )
 
-            drawNumbers(
-                context = context,
-                numeralsLanguage = numeralsLanguage,
-                center = center,
-                fullRadius = fullRadius,
-                textMeasurer = textMeasurer,
-                color = numbersColor
-            )
+                drawNumbers(
+                    context = context,
+                    numeralsLanguage = numeralsLanguage,
+                    center = center,
+                    fullRadius = fullRadius,
+                    textMeasurer = textMeasurer,
+                    color = numbersColor
+                )
 
-            drawHands(
-                currentTime = currentTime,
-                center = center,
-                fullRadius = fullRadius,
-                hoursHandColor = hoursHandColor,
-                minutesHandColor = minutesHandColor,
-                secondsHandColor = secondsHandColor
-            )
+                drawHands(
+                    currentTime = currentTime,
+                    center = center,
+                    fullRadius = fullRadius,
+                    hoursHandColor = hoursHandColor,
+                    minutesHandColor = minutesHandColor,
+                    secondsHandColor = secondsHandColor
+                )
 
-            drawArcs(
-                currentTime = currentTime,
-                previousPrayerTime = previousPrayerTime,
-                nextPrayerTime = nextPrayerTime,
-                center = center,
-                fullRadius = fullRadius,
-                pastArcColor = pastArcColor,
-                remainingArcColor = remainingArcColor
-            )
+                drawArcs(
+                    currentTime = currentTime,
+                    previousPrayerTime = previousPrayerTime,
+                    nextPrayerTime = nextPrayerTime,
+                    center = center,
+                    fullRadius = fullRadius,
+                    pastArcColor = pastArcColor,
+                    remainingArcColor = remainingArcColor
+                )
+            }
         }
     }
 }
 
-private fun DrawScope.drawTeeth(
-    center: Float,
-    fullRadius: Float,
-    color: Color
-) {
-    val radius = fullRadius * 0.985f
+private fun DrawScope.drawTeeth(center: Float, fullRadius: Float, color: Color) {
+    val radius = fullRadius * 0.97f
 
     for (i in 0..59) {
         val theta = i * 0.105f  // 0.105 is the distance between each two teeth spaces
@@ -266,12 +272,14 @@ private fun DrawScope.drawArcs(
     pastArcColor: Color,
     remainingArcColor: Color
 ) {
+    val radius = fullRadius * 0.98f
+
     if (previousPrayerTime != null) {
         drawPassedArc(
             currentTime = currentTime,
             previousPrayerTime = previousPrayerTime,
             center = center,
-            fullRadius = fullRadius,
+            radius = radius,
             color = pastArcColor
         )
     }
@@ -281,7 +289,7 @@ private fun DrawScope.drawArcs(
             currentTime = currentTime,
             nextPrayerTime = nextPrayerTime,
             center = center,
-            fullRadius = fullRadius,
+            radius = radius,
             color = remainingArcColor
         )
     }
@@ -291,7 +299,7 @@ private fun DrawScope.drawPassedArc(
     currentTime: TimeOfDay,
     previousPrayerTime: TimeOfDay,
     center: Float,
-    fullRadius: Float,
+    radius: Float,
     color: Color
 ) {
     val previousPrayerTimeAngle = timeToDegrees(previousPrayerTime)
@@ -302,14 +310,9 @@ private fun DrawScope.drawPassedArc(
         startAngle = previousPrayerTimeAngle,
         sweepAngle = sweepAngle,
         useCenter = false,
-        size = Size(
-            width = center + fullRadius,
-            height = center + fullRadius
-        ),
-        style = Stroke(
-            width = 8f,
-            cap = StrokeCap.Round
-        ),
+        topLeft = Offset(x = center - radius, y = center - radius),
+        size = Size(width = radius * 2, height = radius * 2),
+        style = Stroke(width = 8f, cap = StrokeCap.Round),
         color = color
     )
 }
@@ -318,7 +321,7 @@ private fun DrawScope.drawRemainingArc(
     currentTime: TimeOfDay,
     nextPrayerTime: TimeOfDay,
     center: Float,
-    fullRadius: Float,
+    radius: Float,
     color: Color
 ) {
     val currentTimeAngle = timeToDegrees(currentTime)
@@ -329,14 +332,9 @@ private fun DrawScope.drawRemainingArc(
         startAngle = currentTimeAngle,
         sweepAngle = sweepAngle,
         useCenter = false,
-        size = Size(
-            width = center + fullRadius,
-            height = center + fullRadius
-        ),
-        style = Stroke(
-            width = 8f,
-            cap = StrokeCap.Round
-        ),
+        topLeft = Offset(x = center - radius, y = center - radius),
+        size = Size(width = radius * 2, height = radius * 2),
+        style = Stroke(width = 8f, cap = StrokeCap.Round),
         color = color
     )
 }
