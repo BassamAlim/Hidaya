@@ -65,70 +65,6 @@ val Bronze = Color(0xFFCD7F32)
 //val ShadowN = Color(0xFF343D47)
 //val QuranBGN = Color(0xFF101010)
 
-//class AppColors(
-//    primary: Color,
-//    onPrimary: Color,
-//    primaryContainer: Color,
-//    onPrimaryContainer: Color,
-//    secondary: Color,
-//    onSecondary: Color,
-//    secondaryContainer: Color,
-//    onSecondaryContainer: Color,
-//    background: Color,
-//    onBackground: Color,
-//    surface: Color,
-//    onSurface: Color,
-//    surfaceVariant: Color,  // to be used for quran
-//    onSurfaceVariant: Color,  // to be used for quran
-//    error: Color,
-//    onError: Color,
-//    errorContainer: Color,
-//    onErrorContainer: Color,
-//    outline: Color,
-//    outlineVariant: Color
-//) {
-//    var primary by mutableStateOf(primary)
-//        private set
-//    var onPrimary by mutableStateOf(onPrimary)
-//        private set
-//    var primaryContainer by mutableStateOf(primaryContainer)
-//        private set
-//    var onPrimaryContainer by mutableStateOf(onPrimaryContainer)
-//        private set
-//    var secondary by mutableStateOf(secondary)
-//        private set
-//    var onSecondary by mutableStateOf(onSecondary)
-//        private set
-//    var secondaryContainer by mutableStateOf(secondaryContainer)
-//        private set
-//    var onSecondaryContainer by mutableStateOf(onSecondaryContainer)
-//        private set
-//    var background by mutableStateOf(background)
-//        private set
-//    var onBackground by mutableStateOf(onBackground)
-//        private set
-//    var surface by mutableStateOf(surface)
-//        private set
-//    var onSurface by mutableStateOf(onSurface)
-//        private set
-//    var surfaceVariant by mutableStateOf(surfaceVariant)
-//        private set
-//    var onSurfaceVariant by mutableStateOf(onSurfaceVariant)
-//        private set
-//    var error by mutableStateOf(error)
-//        private set
-//    var onError by mutableStateOf(onError)
-//        private set
-//    var errorContainer by mutableStateOf(errorContainer)
-//        private set
-//    var onErrorContainer by mutableStateOf(onErrorContainer)
-//        private set
-//    var outline by mutableStateOf(outline)
-//        private set
-//    var outlineVariant by mutableStateOf(outlineVariant)
-//        private set
-//}
-
 //fun lightColors(): AppColors = AppColors(
 //    background = BGL,
 //    surface = SurfaceL,
@@ -195,9 +131,6 @@ val Bronze = Color(0xFFCD7F32)
 //    quranBG = QuranBGN
 //)
 
-//val LocalColors = staticCompositionLocalOf { lightColors() }
-
-
 val colorSchemeO = darkColorScheme(
     primary = Color(0xFF00ADB5),
     onPrimary = Color(0xFFBCC2C7),
@@ -216,7 +149,7 @@ val colorSchemeO = darkColorScheme(
     onBackground = Color(0xFFBCC2C7),
     surface = Color(0xFF1A2027),
     onSurface = Color(0xFFBCC2C7),
-    surfaceVariant = Color(0xFF2D3B47),  // used for quran background
+    surfaceVariant = Color(0xFF1A2027),  // used for quran background
     onSurfaceVariant = Color(0xFFBCC2C7),  // used for quran text
     surfaceTint = Color(0xFF00ADB5),
     inverseSurface = Color(0xFF141A20),

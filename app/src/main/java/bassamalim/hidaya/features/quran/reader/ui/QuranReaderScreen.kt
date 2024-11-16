@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -291,13 +292,12 @@ private fun PageContent(
 ) {
     val lineHeight = remember { getLineHeight(padding, configuration) }
 
-    var pagerModifier = Modifier.fillMaxSize()
-    if (!(viewType == QuranViewType.PAGE && fillPage))
-        pagerModifier = pagerModifier.padding(padding)
-
     HorizontalPager(
         state = pagerState,
-        modifier = pagerModifier
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
     ) { pageIdx ->
         val isCurrentPage = pageIdx == pagerState.currentPage
         val scrollState = rememberScrollState()
@@ -521,14 +521,18 @@ private fun FilledPageViewScreen(
         style = TextStyle(
             fontFamily = hafs_smart,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            lineHeight = (lineHeight.value * 0.96).sp,
+            lineHeight = lineHeight.value.sp,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
                 trim = LineHeightStyle.Trim.Both
             ),
             textAlign = TextAlign.Center,
             platformStyle = PlatformTextStyle(includeFontPadding = false),
-            lineBreak = LineBreak(strategy = LineBreak.Strategy.Balanced, strictness = LineBreak.Strictness.Strict, wordBreak = LineBreak.WordBreak.Default)
+            lineBreak = LineBreak(
+                strategy = LineBreak.Strategy.Balanced,
+                strictness = LineBreak.Strictness.Strict,
+                wordBreak = LineBreak.WordBreak.Default
+            )
         ),
         overflow = TextOverflow.Visible,
         textAlign = TextAlign.Justify,
