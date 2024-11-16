@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,7 +35,6 @@ import bassamalim.hidaya.features.settings.ui.CategoryTitle
 import bassamalim.hidaya.features.settings.ui.MenuSetting
 import bassamalim.hidaya.features.settings.ui.PreferenceTitle
 import bassamalim.hidaya.features.settings.ui.SliderPref
-import bassamalim.hidaya.features.settings.ui.SwitchSetting
 
 @Composable
 fun QuranSettingsDialog(
@@ -104,7 +104,6 @@ fun QuranSettingsDialog(
                 entries = viewModel.reciterNames.toTypedArray(),
                 title = stringResource(R.string.reciter),
                 iconResId = -1,
-                bgColor = MaterialTheme.colorScheme.surface,
                 onSelection = viewModel::onReciterChange
             )
 
@@ -121,20 +120,14 @@ fun QuranSettingsDialog(
             )
 
             SwitchSetting(
-                value = state.shouldStopOnSuraEnd,
                 title = stringResource(R.string.stop_on_sura_end),
-                padding = PaddingValues(horizontal = 16.dp),
-                bgColor = MaterialTheme.colorScheme.surface,
-                summary = "",
+                isOn = state.shouldStopOnSuraEnd,
                 onSwitch = viewModel::onShouldStopOnSuraEndChange
             )
 
             SwitchSetting(
-                value = state.shouldStopOnPageEnd,
-                title = stringResource(R.string.stop_on_page_end),
-                padding = PaddingValues(horizontal = 16.dp),
-                bgColor = MaterialTheme.colorScheme.surface,
-                summary = "",
+                title = stringResource(R.string.stop_on_sura_end),
+                isOn = state.shouldStopOnPageEnd,
                 onSwitch = viewModel::onShouldStopOnPageEndChange
             )
 
@@ -231,6 +224,24 @@ private fun RepeatRadioGroup(
         }
 
 
+    }
+}
+
+@Composable
+private fun SwitchSetting(title: String, isOn: Boolean, onSwitch: (Boolean) -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        PreferenceTitle(
+            title = title,
+            modifier = Modifier.padding(end = 40.dp)
+        )
+
+        Switch(checked = isOn, onCheckedChange = onSwitch)
     }
 }
 

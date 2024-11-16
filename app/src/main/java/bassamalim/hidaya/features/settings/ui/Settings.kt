@@ -21,7 +21,6 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +48,6 @@ fun <V> MenuSetting(
     entries: Array<String>,
     title: String,
     iconResId: Int = -1,
-    bgColor: Color = MaterialTheme.colorScheme.surface,
     onSelection: (V) -> Unit = {}
 ) {
     var isShown by remember { mutableStateOf(false) }
@@ -64,7 +62,6 @@ fun <V> MenuSetting(
         Row(
             Modifier
                 .fillMaxWidth()
-                .background(bgColor)
                 .padding(vertical = 6.dp, horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -160,42 +157,36 @@ fun <V> MenuSetting(
 fun SwitchSetting(
     value: Boolean,
     title: String,
-    summary: String,
+    summary: String? = null,
     padding: PaddingValues = PaddingValues(vertical = 6.dp, horizontal = 16.dp),
-    bgColor: Color = MaterialTheme.colorScheme.surface,
     onSwitch: (Boolean) -> Unit = {}
 ) {
     Box(
         Modifier
             .fillMaxWidth()
-            .background(bgColor)
             .clip(RoundedCornerShape(10.dp))
             .clickable { onSwitch(!value) }
     ) {
-        Column(
-            Modifier
+        Row(
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(padding)
+                .padding(padding),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            Column {
                 PreferenceTitle(title, Modifier.padding(end = 40.dp))
 
-                Switch(
-                    checked = value,
-                    onCheckedChange = { onSwitch(!value) },
-                    modifier = Modifier.height(10.dp),
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colorScheme.primary,
-                        checkedTrackColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                )
+                if (summary != null) {
+                    SummaryText(summary)
+                }
             }
 
-            SummaryText(summary)
+            Switch(
+                checked = value,
+                onCheckedChange = { onSwitch(!value) },
+                modifier = Modifier.height(10.dp)
+            )
         }
     }
 }
