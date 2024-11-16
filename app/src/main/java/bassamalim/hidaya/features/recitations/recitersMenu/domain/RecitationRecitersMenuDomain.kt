@@ -155,8 +155,8 @@ class RecitationRecitersMenuDomain @Inject constructor(
         Log.d("RecitationsRecitersMenuViewModel", "continueListeningMediaId: $mediaId")
 
         val reciterId = mediaId.substring(0, 3).toInt()
-        val narrationId = mediaId.substring(3, 5).toInt()
-        val suraId = mediaId.substring(5).toInt()
+        val narrationId = mediaId.substring(3, 6).toInt()
+        val suraId = mediaId.substring(6).toInt()
         Log.d(
             "RecitationsRecitersMenuViewModel",
             "reciterId: $reciterId, narrationId: $narrationId, suraIndex: $suraId"

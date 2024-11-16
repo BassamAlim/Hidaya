@@ -54,8 +54,8 @@ class RecitationPlayerViewModel @Inject constructor(
 
     private lateinit var language: Language
     var reciterId = mediaId.substring(0, 3).toInt()
-    private var narrationId = mediaId.substring(3, 5).toInt()
-    private var suraIdx = mediaId.substring(5).toInt()
+    private var narrationId = mediaId.substring(3, 6).toInt()
+    private var suraIdx = mediaId.substring(6).toInt()
     private lateinit var narration: Recitation.Narration
     private lateinit var suraNames: List<String>
     var duration = 0L

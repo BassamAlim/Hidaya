@@ -189,7 +189,6 @@ class RecitationRecitersMenuViewModel @Inject constructor(
 
     // TODO: find a better fix for this
     fun onSearchTextChange(text: String) {
-        println("onSearchTextChange: $text")
         searchText = text
         _uiState.update { it.copy(
             searchText = text

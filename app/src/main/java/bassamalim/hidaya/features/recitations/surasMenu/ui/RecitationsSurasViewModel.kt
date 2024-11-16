@@ -133,7 +133,7 @@ class RecitationsSurasViewModel @Inject constructor(
 
     fun onSuraClick(suraId: Int) {
         val formattedReciterId = String.format(Locale.US, "%03d", reciterId)
-        val formattedNarrationId = String.format(Locale.US, "%02d", narrationId)
+        val formattedNarrationId = String.format(Locale.US, "%03d", narrationId)
         val formattedSuraId = String.format(Locale.US, "%03d", suraId)
         val mediaId = formattedReciterId + formattedNarrationId + formattedSuraId
 

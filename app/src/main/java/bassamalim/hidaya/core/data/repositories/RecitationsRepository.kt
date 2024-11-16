@@ -261,9 +261,17 @@ class RecitationsRepository @Inject constructor(
         recitationsPreferencesDataSource.updateShuffleMode(mode)
     }
 
-    fun getLastPlayedMedia() = recitationsPreferencesDataSource.getLastPlayedMedia()
+    fun getLastPlayedMedia(): Flow<LastPlayedMedia?> {
+        return recitationsPreferencesDataSource.getLastPlayedMedia().map {
+            it?.let {
+                // TODO: remove after a while, added to handle migrating from 8 to 9 digit mediaId
+                if (it.mediaId.length < 9) setLastPlayedMedia(null)
+                it
+            }
+        }
+    }
 
-    suspend fun setLastPlayedMedia(lastPlayed: LastPlayedMedia) {
+    suspend fun setLastPlayedMedia(lastPlayed: LastPlayedMedia?) {
         scope.launch {
             recitationsPreferencesDataSource.updateLastPlayedMedia(lastPlayed)
         }

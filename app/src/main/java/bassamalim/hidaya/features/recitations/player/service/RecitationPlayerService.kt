@@ -151,6 +151,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     )
 
     override fun onCreate() {
+        println("onCreate")
         super.onCreate()
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -162,6 +163,7 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
 
             getSuraNames(language)
 
+            println("Initializing player service...")
             initSession()
             initPlayer()
             setupActions()
@@ -170,6 +172,8 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        println("onStartCommand")
+
         MediaButtonReceiver.handleIntent(mediaSession, intent)
         return super.onStartCommand(intent, flags, startId)
     }
@@ -184,8 +188,8 @@ class RecitationPlayerService : MediaBrowserServiceCompat(), OnAudioFocusChangeL
                 mediaId = givenMediaId
 
                 reciterId = givenMediaId.substring(0, 3).toInt()
-                versionId = givenMediaId.substring(3, 5).toInt()
-                suraIndex = givenMediaId.substring(5).toInt()
+                versionId = givenMediaId.substring(3, 6).toInt()
+                suraIndex = givenMediaId.substring(6).toInt()
                 reciterName = extras.getString("reciter_name")!!
                 narration =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
