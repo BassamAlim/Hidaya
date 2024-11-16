@@ -130,7 +130,7 @@ fun MyRectangleButton(
     text: String,
     modifier: Modifier = Modifier,
     padding: PaddingValues = PaddingValues(3.dp),
-    colors: ButtonColors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+    colors: ButtonColors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
@@ -173,7 +173,7 @@ fun MyRectangleButton(
 fun MyHorizontalButton(
     text: String,
     modifier: Modifier = Modifier,
-    colors: ButtonColors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+    colors: ButtonColors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
     fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
