@@ -38,11 +38,11 @@ fun AboutScreen(viewModel: AboutViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
 
-    MyScaffold(title = stringResource(R.string.about)) {
+    MyScaffold(title = stringResource(R.string.about)) { padding ->
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(padding)
                 .padding(horizontal = 5.dp)
         ) {
             ThankYouMessage(

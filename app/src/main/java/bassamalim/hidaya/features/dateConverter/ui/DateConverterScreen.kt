@@ -29,10 +29,11 @@ fun DateConverterScreen(viewModel: DateConverterViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    MyScaffold(stringResource(R.string.date_converter)) {
+    MyScaffold(title = stringResource(R.string.date_converter)) { padding ->
         Column(
             Modifier
                 .fillMaxSize()
+                .padding(padding)
                 .padding(bottom = 50.dp),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally

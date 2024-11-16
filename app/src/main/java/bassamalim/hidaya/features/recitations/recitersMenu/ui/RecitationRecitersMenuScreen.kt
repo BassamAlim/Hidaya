@@ -51,8 +51,12 @@ fun RecitationRecitersMenuScreen(viewModel: RecitationRecitersMenuViewModel) {
     MyScaffold(
         title = stringResource(R.string.recitations),
         onBack = viewModel::onBackPressed
-    ) {
-        Column {
+    ) { padding ->
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(padding)
+        ) {
             MyRectangleButton(
                 text =
                     if (state.lastPlayedMedia != null) {

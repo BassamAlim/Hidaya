@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.VerseRepeatMode
 import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 import bassamalim.hidaya.features.quran.settings.domain.QuranSettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +24,7 @@ class QuranSettingsViewModel @Inject constructor(
     private val navigator: Navigator
 ): ViewModel() {
 
-    lateinit var numeralsLanguage: Language
+    private lateinit var numeralsLanguage: Language
     lateinit var reciterNames: List<String>
     lateinit var reciterIds: Array<Int>
 
@@ -121,6 +122,13 @@ class QuranSettingsViewModel @Inject constructor(
 
             navigator.popBackStack()
         }
+    }
+
+    fun formatSliderValue(value: String): String {
+        return translateNums(
+            string = value,
+            numeralsLanguage = numeralsLanguage
+        )
     }
 
 }

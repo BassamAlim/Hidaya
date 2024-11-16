@@ -55,8 +55,8 @@ fun MainScreen(viewModel: MainViewModel) {
             )
         },
         bottomBar = { MyBottomNavigation(bottomNavController) }
-    ) {
-        NavigationGraph(bottomNavController, it)
+    ) { padding ->
+        NavigationGraph(bottomNavController, padding)
     }
 }
 

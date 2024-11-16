@@ -43,10 +43,12 @@ fun BooksMenuScreen(viewModel: BooksMenuViewModel) {
                 onClick = { viewModel.onSearcherClick() }
             )
         }
-    ) {
+    ) { padding ->
         // books list
         MyLazyColumn(
-            Modifier.padding(vertical = 5.dp),
+            Modifier
+                .padding(padding)
+                .padding(vertical = 5.dp),
             lazyList = {
                 items(state.books.toList()) { (id, book) ->
                     BookCard(

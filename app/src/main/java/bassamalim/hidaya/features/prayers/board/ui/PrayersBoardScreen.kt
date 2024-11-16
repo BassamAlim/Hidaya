@@ -34,7 +34,7 @@ import bassamalim.hidaya.core.ui.components.LoadingScreen
 import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyClickableText
 import bassamalim.hidaya.core.ui.components.MyIconButton
-import bassamalim.hidaya.core.ui.components.MyParentColumn
+import bassamalim.hidaya.core.ui.components.ParentColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
@@ -48,7 +48,7 @@ fun PrayersBoardScreen(viewModel: PrayersBoardViewModel) {
 
     if (state.isLoading) LoadingScreen()
     else {
-        MyParentColumn {
+        ParentColumn {
             LocationCard(
                 isLocationAvailable = state.isLocationAvailable,
                 locationName = state.locationName,

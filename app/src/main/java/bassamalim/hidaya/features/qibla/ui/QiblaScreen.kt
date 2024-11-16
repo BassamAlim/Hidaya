@@ -55,10 +55,11 @@ fun QiblaScreen(viewModel: QiblaViewModel) {
         onDispose { viewModel.onStop() }
     }
 
-    MyScaffold(stringResource(R.string.qibla)) {
+    MyScaffold(title = stringResource(R.string.qibla)) { padding ->
         Column(
             Modifier
                 .fillMaxSize()
+                .padding(padding)
                 .padding(top = 20.dp, bottom = 100.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.enums.Prayer
 import bassamalim.hidaya.core.nav.Navigator
+import bassamalim.hidaya.core.utils.LangUtils
 import bassamalim.hidaya.features.prayers.extraReminderSettings.domain.PrayerExtraReminderSettingsDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +27,7 @@ class PrayerExtraReminderSettingsViewModel @Inject constructor(
     private val prayer = Prayer.valueOf(savedStateHandle.get<String>("prayer_name") ?: "")
 
     val offsetMin = domain.offsetMin
-    lateinit var numeralsLanguage: Language
+    private lateinit var numeralsLanguage: Language
 
     private val _uiState = MutableStateFlow(PrayerExtraReminderSettingsUiState(
         prayer = prayer,
@@ -69,6 +70,13 @@ class PrayerExtraReminderSettingsViewModel @Inject constructor(
 
     fun onDismiss() {
         navigator.popBackStack()
+    }
+
+    fun formatSliderValue(value: String): String {
+        return LangUtils.translateNums(
+            string = value,
+            numeralsLanguage = numeralsLanguage
+        )
     }
 
 }

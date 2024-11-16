@@ -39,13 +39,14 @@ fun RecitationSurasMenuScreen(viewModel: RecitationsSurasViewModel) {
     MyScaffold(
         title = state.title,
         onBack = viewModel::onBackPressed
-    ) {
+    ) { padding ->
         TabLayout(
             pageNames = listOf(
                 stringResource(R.string.all),
                 stringResource(R.string.favorite),
                 stringResource(R.string.downloaded)
             ),
+            modifier = Modifier.padding(padding),
             searchComponent = {
                 SearchComponent(
                     value = state.searchText,

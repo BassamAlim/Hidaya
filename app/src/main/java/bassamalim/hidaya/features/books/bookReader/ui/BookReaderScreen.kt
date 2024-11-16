@@ -33,9 +33,9 @@ fun BookReaderScreen(viewModel: BookReaderViewModel) {
                 onSeek = viewModel::onTextSizeChange
             )
         }
-    ) {
+    ) { padding ->
         MyLazyColumn(
-            modifier = Modifier.padding(it),
+            modifier = Modifier.padding(padding),
             lazyList = {
                 items(state.doors) { item ->
                     DoorCard(

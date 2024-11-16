@@ -43,10 +43,10 @@ fun RemembranceReaderScreen(viewModel: RemembranceReaderViewModel) {
                 onSeek = viewModel::onTextSizeSliderChange
             )
         }
-    ) {
+    ) { padding ->
         // remembrances list
         MyLazyColumn(
-            modifier = Modifier.padding(it),
+            modifier = Modifier.padding(padding),
             lazyList = {
                 items(state.items) { item ->
                     RemembrancePassageCard(

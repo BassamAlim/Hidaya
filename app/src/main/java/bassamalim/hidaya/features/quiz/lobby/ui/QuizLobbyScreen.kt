@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,9 +19,11 @@ import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun QuizLobbyScreen(viewModel: QuizLobbyViewModel) {
-    MyScaffold(title = stringResource(R.string.quiz_title)) {
+    MyScaffold(title = stringResource(R.string.quiz_title)) { padding ->
         Column(
-            Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

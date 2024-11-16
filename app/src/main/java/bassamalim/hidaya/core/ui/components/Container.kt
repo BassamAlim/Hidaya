@@ -17,12 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun MyParentColumn(
+fun ParentColumn(
     modifier: Modifier = Modifier,
+    padding: PaddingValues = PaddingValues(0.dp),
     scroll: Boolean = true,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    var adjustedModifier = modifier.fillMaxSize()
+    var adjustedModifier = modifier
+        .fillMaxSize()
+        .padding(padding)
     if (scroll) adjustedModifier = adjustedModifier.verticalScroll(rememberScrollState())
 
     Column(

@@ -2,6 +2,7 @@ package bassamalim.hidaya.features.quran.surasMenu.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +29,6 @@ import bassamalim.hidaya.core.ui.components.MyClickableSurface
 import bassamalim.hidaya.core.ui.components.MyFavoriteButton
 import bassamalim.hidaya.core.ui.components.MyFloatingActionButton
 import bassamalim.hidaya.core.ui.components.MyLazyColumn
-import bassamalim.hidaya.core.ui.components.MyParentColumn
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.ui.components.MyText
@@ -55,8 +55,12 @@ fun QuranSurasScreen(viewModel: QuranSurasViewModel) {
                     onClick = viewModel::onQuranSearcherClick
                 )
             }
-        ) {
-            MyParentColumn(scroll = false) {
+        ) { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(padding)
+            ) {
                 MyRectangleButton(
                     text =
                         if (state.bookmarkPageText == null) {

@@ -47,10 +47,11 @@ fun LocationPickerScreen(viewModel: LocationPickerViewModel) {
                 onBack = { viewModel.onBack() }
             )
         }
-    ) {
+    ) { padding ->
         Column(
             Modifier
                 .fillMaxWidth()
+                .padding(padding)
                 .padding(horizontal = 5.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

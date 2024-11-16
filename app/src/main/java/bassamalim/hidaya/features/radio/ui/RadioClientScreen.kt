@@ -47,11 +47,11 @@ fun RadioClientScreen(viewModel: RadioClientViewModel) {
         onDispose(viewModel::onStop)
     }
 
-    MyScaffold(stringResource(R.string.quran_radio)) {
+    MyScaffold(title = stringResource(R.string.quran_radio)) { padding ->
         Column(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
+                .padding(padding),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

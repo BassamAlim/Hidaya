@@ -35,11 +35,12 @@ fun QuizResultScreen(viewModel: QuizResultViewModel) {
 
     if (state.isLoading) return
 
-    MyScaffold(title = stringResource(R.string.quiz_result)) {
+    MyScaffold(title = stringResource(R.string.quiz_result)) { padding ->
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(it).padding(bottom = 5.dp),
+                .padding(padding)
+                .padding(bottom = 5.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

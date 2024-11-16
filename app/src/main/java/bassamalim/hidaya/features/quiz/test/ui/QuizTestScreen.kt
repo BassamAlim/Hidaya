@@ -37,9 +37,13 @@ fun QuizTestScreen(viewModel: QuizTestViewModel) {
 
     if (state.isLoading) return
 
-    MyScaffold(title = "${stringResource(R.string.question)} ${state.titleQuestionNumber}") {
+    MyScaffold(
+        title = "${stringResource(R.string.question)} ${state.titleQuestionNumber}"
+    ) { padding ->
         Column(
-            Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

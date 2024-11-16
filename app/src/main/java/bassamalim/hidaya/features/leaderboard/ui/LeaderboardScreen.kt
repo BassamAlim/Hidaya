@@ -1,13 +1,16 @@
 package bassamalim.hidaya.features.leaderboard.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -28,7 +31,6 @@ import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.PaginatedLazyColumn
 import bassamalim.hidaya.core.ui.components.TabLayout
-import androidx.compose.material3.MaterialTheme
 import bassamalim.hidaya.core.utils.LangUtils.translateNums
 import kotlinx.collections.immutable.toPersistentList
 
@@ -36,17 +38,23 @@ import kotlinx.collections.immutable.toPersistentList
 fun LeaderboardScreen(viewModel: LeaderboardViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyScaffold(stringResource(R.string.leaderboard)) {
-        if (state.isLoading) LoadingScreen()
-        else if (state.isError) ErrorScreen(message = stringResource(R.string.error_fetching_data))
-        else UsersList(
-            userId = state.userId,
-            userRankMap = state.userRanks,
-            ranksMap = state.ranks,
-            isLoadingItems = state.isLoadingItems,
-            loadMoreItems = viewModel::loadMore,
-            numeralsLanguage = viewModel.numeralsLanguage
-        )
+    MyScaffold(title = stringResource(R.string.leaderboard)) { padding ->
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            if (state.isLoading) LoadingScreen()
+            else if (state.isError) ErrorScreen(message = stringResource(R.string.error_fetching_data))
+            else UsersList(
+                userId = state.userId,
+                userRankMap = state.userRanks,
+                ranksMap = state.ranks,
+                isLoadingItems = state.isLoadingItems,
+                loadMoreItems = viewModel::loadMore,
+                numeralsLanguage = viewModel.numeralsLanguage
+            )
+        }
     }
 }
 

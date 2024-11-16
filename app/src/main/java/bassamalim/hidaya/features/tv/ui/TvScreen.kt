@@ -20,7 +20,7 @@ import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.other.Global
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
-import bassamalim.hidaya.core.ui.components.MyParentColumn
+import bassamalim.hidaya.core.ui.components.ParentColumn
 import bassamalim.hidaya.core.ui.components.MyScaffold
 import bassamalim.hidaya.core.utils.ActivityUtils
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
@@ -34,9 +34,9 @@ fun TvScreen(viewModel: TvViewModel) {
 
     if (state.isLoading) return
 
-    MyScaffold(title = stringResource(R.string.tv_channels)) {
-        MyParentColumn(
-            Modifier.padding(it)
+    MyScaffold(title = stringResource(R.string.tv_channels)) { padding ->
+        ParentColumn(
+            Modifier.padding(padding)
         ) {
             YoutubeScreen(
                 language = viewModel.language,

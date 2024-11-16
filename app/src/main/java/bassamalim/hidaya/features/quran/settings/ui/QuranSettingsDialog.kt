@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,7 +28,6 @@ import bassamalim.hidaya.core.ui.components.MyHorizontalDivider
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MyText
-import androidx.compose.material3.MaterialTheme
 import bassamalim.hidaya.core.ui.theme.nsp
 import bassamalim.hidaya.features.quran.reader.ui.QuranViewType
 import bassamalim.hidaya.features.settings.ui.CategoryTitle
@@ -90,7 +90,7 @@ fun QuranSettingsDialog(
                 value = state.textSize,
                 title = stringResource(R.string.text_size_title),
                 valueRange = 20F..50F,
-                numeralsLanguage = viewModel.numeralsLanguage,
+                valueFormatter = viewModel::formatSliderValue,
                 enabled = state.isTextSizeSliderEnabled,
                 onValueChange = viewModel::onTextSizeChange
             )

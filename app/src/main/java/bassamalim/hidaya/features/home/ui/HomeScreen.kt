@@ -34,7 +34,7 @@ import bassamalim.hidaya.core.ui.components.AnalogClock
 import bassamalim.hidaya.core.ui.components.MyClickableText
 import bassamalim.hidaya.core.ui.components.MyColumn
 import bassamalim.hidaya.core.ui.components.MyHorizontalButton
-import bassamalim.hidaya.core.ui.components.MyParentColumn
+import bassamalim.hidaya.core.ui.components.ParentColumn
 import bassamalim.hidaya.core.ui.components.MyRow
 import bassamalim.hidaya.core.ui.components.MySurface
 import bassamalim.hidaya.core.ui.components.MyText
@@ -51,7 +51,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
         onDispose { viewModel.onStop() }
     }
 
-    MyParentColumn {
+    ParentColumn {
         PrayerCard(
             previousPrayerName = state.previousPrayerName,
             previousPrayerTimeText = state.previousPrayerTimeText,

@@ -22,23 +22,18 @@ import kotlinx.coroutines.launch
 @Composable
 fun TabLayout(
     pageNames: List<String>,
+    modifier: Modifier = Modifier,
     searchComponent: @Composable () -> Unit = {},
     tabsContent: @Composable (Int) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { pageNames.size })
 
-    Column {
-        Tabs(
-            pagerState = pagerState,
-            pageNames = pageNames
-        )
+    Column(modifier) {
+        Tabs(pagerState = pagerState, pageNames = pageNames)
 
         searchComponent()
 
-        TabsContent(
-            pagerState = pagerState,
-            content = tabsContent
-        )
+        TabsContent(pagerState = pagerState, content = tabsContent)
     }
 }
 

@@ -65,11 +65,11 @@ fun RecitationPlayerScreen(viewModel: RecitationPlayerViewModel) {
             )
         },
         onBack = { viewModel.onBackPressed(activity) }
-    ) {
+    ) { padding ->
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(it),
+                .padding(padding),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

@@ -1,6 +1,8 @@
 package bassamalim.hidaya.features.books.bookChaptersMenu.ui
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,12 +25,13 @@ fun BookChaptersScreen(viewModel: BookChaptersViewModel) {
 
     if (state.isLoading) return
 
-    MyScaffold(title = state.title) {
+    MyScaffold(title = state.title) { padding ->
         TabLayout(
             pageNames = listOf(
                 stringResource(R.string.all),
                 stringResource(R.string.favorite)
             ),
+            modifier = Modifier.padding(padding),
             searchComponent = {
                 SearchComponent(
                     value = state.searchText,

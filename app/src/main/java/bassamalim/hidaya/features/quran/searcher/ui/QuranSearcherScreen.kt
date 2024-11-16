@@ -32,7 +32,7 @@ import bassamalim.hidaya.core.ui.components.SearchComponent
 fun QuranSearcherScreen(viewModel: QuranSearcherViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MyScaffold(stringResource(R.string.quran_searcher)) { padding ->
+    MyScaffold(title = stringResource(R.string.quran_searcher)) { padding ->
         Column(
             Modifier
                 .fillMaxSize()

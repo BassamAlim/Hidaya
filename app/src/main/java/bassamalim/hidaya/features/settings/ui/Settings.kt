@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import bassamalim.hidaya.R
-import bassamalim.hidaya.core.enums.Language
 import bassamalim.hidaya.core.ui.components.MyRectangleButton
 import bassamalim.hidaya.core.ui.components.MyText
 import bassamalim.hidaya.core.ui.components.MyValuedSlider
@@ -206,8 +205,7 @@ fun SliderPref(
     value: Float,
     title: String,
     valueRange: ClosedFloatingPointRange<Float>,
-    numeralsLanguage: Language,
-    infinite: Boolean = false,
+    valueFormatter: (String) -> String,
     sliderFraction: Float = 0.8F,
     enabled: Boolean = true,
     onValueChange: (Float) -> Unit = {},
@@ -223,8 +221,7 @@ fun SliderPref(
         MyValuedSlider(
             value = value,
             valueRange = valueRange,
-            numeralsLanguage = numeralsLanguage,
-            infinite = infinite,
+            valueFormatter = valueFormatter,
             sliderFraction = sliderFraction,
             enabled = enabled,
             onValueChange = onValueChange,

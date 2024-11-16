@@ -116,7 +116,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
                 onSettingsClick = viewModel::onSettingsClick
             )
         }
-    ) {
+    ) { padding ->
         PageContent(
             viewType = state.viewType,
             fillPage = state.fillPage,
@@ -127,7 +127,7 @@ fun QuranReaderScreen(viewModel: QuranReaderViewModel) {
             scrollTo = viewModel.scrollTo,
             onScrolled = viewModel::onScrolled,
             pagerState = pagerState,
-            padding = it,
+            padding = padding,
             onPageChange = viewModel::onPageChange,
             buildPage = viewModel::buildPage,
             buildListPage = viewModel::buildListPage,

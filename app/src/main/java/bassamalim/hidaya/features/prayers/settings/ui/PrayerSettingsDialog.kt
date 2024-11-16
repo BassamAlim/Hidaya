@@ -1,6 +1,5 @@
 package bassamalim.hidaya.features.prayers.settings.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -147,9 +147,12 @@ private fun NotificationTypeOption(
                     .padding(vertical = 14.dp, horizontal = 20.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
+                Icon(
                     painter = icon,
-                    contentDescription = name
+                    contentDescription = name,
+                    tint =
+                        if (isSelected) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurface
                 )
 
                 MyText(
